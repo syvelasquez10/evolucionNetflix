@@ -6,18 +6,21 @@ package com.netflix.mediaclient.service.webclient.model;
 
 import java.util.Locale;
 import android.content.Context;
+import com.netflix.mediaclient.servicemgr.model.trackable.SearchTrackable;
 import java.util.Iterator;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
+import com.netflix.mediaclient.service.webclient.model.leafs.SearchTrackableListSummary;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
 
 public class SearchResults implements ISearchResults
 {
     private List<SearchPerson> people;
+    private SearchTrackableListSummary peopleListSummary;
     private final List<Object> sectionsList;
     private List<SearchSuggestion> suggestions;
-    private TrackableListSummary summary;
+    private SearchTrackableListSummary suggestionsListSummary;
+    private SearchTrackableListSummary videoListSummary;
     private List<SearchVideo> videos;
     
     private SearchResults() {
@@ -34,11 +37,6 @@ public class SearchResults implements ISearchResults
     
     private boolean hasVideos() {
         return this.videos != null && this.videos.size() > 0;
-    }
-    
-    @Override
-    public int getListPos() {
-        return 0;
     }
     
     @Override
@@ -89,11 +87,8 @@ public class SearchResults implements ISearchResults
     }
     
     @Override
-    public String getRequestId() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getRequestId();
+    public SearchTrackable getPeopleListTrackable() {
+        return this.peopleListSummary;
     }
     
     @Override
@@ -147,11 +142,13 @@ public class SearchResults implements ISearchResults
     }
     
     @Override
-    public int getTrackId() {
-        if (this.summary == null) {
-            return -1;
-        }
-        return this.summary.getTrackId();
+    public SearchTrackable getSuggestionsListTrackable() {
+        return this.suggestionsListSummary;
+    }
+    
+    @Override
+    public SearchTrackable getVideosListTrackable() {
+        return this.videoListSummary;
     }
     
     @Override
@@ -196,8 +193,16 @@ public class SearchResults implements ISearchResults
             return this.results;
         }
         
-        public void setSummary(final TrackableListSummary trackableListSummary) {
-            this.results.summary = trackableListSummary;
+        public void setPeopleListSummary(final SearchTrackableListSummary searchTrackableListSummary) {
+            this.results.peopleListSummary = searchTrackableListSummary;
+        }
+        
+        public void setSuggestionsListSummary(final SearchTrackableListSummary searchTrackableListSummary) {
+            this.results.suggestionsListSummary = searchTrackableListSummary;
+        }
+        
+        public void setVideoListSummary(final SearchTrackableListSummary searchTrackableListSummary) {
+            this.results.videoListSummary = searchTrackableListSummary;
         }
     }
 }

@@ -8,6 +8,7 @@ import android.text.Spannable;
 import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
+import android.graphics.Typeface;
 import com.netflix.mediaclient.servicemgr.model.search.SearchSuggestion;
 import android.view.View$OnClickListener;
 import android.view.View;
@@ -40,8 +41,8 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     private String playableId;
     protected TextView rating;
     private int resId;
+    private String searchReferenceId;
     protected TextView title;
-    private int trackId;
     private IClientLogging.ModalView trackModalview;
     private VideoDetailsClickListener videoClickListener;
     
@@ -81,13 +82,13 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(this.resId, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837875));
+        this.setForeground(this.getResources().getDrawable(2130837877));
         this.findViews();
         this.setupViews();
         this.videoClickListener = new VideoDetailsClickListener(netflixActivity, this);
     }
     
-    private void setTitleTextWithHighlighting(final String text, final String s) {
+    private void setTitleTextWithSubtextHighlighting(final String text, final String s) {
         if (this.title == null || text == null || s == null) {
             return;
         }
@@ -101,7 +102,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
             n = text.length() - 1;
         }
         final SpannableString text2 = new SpannableString((CharSequence)text);
-        ((Spannable)text2).setSpan((Object)new ForegroundColorSpan(this.getContext().getResources().getColor(2131296389)), index, n, 33);
+        ((Spannable)text2).setSpan((Object)new ForegroundColorSpan(this.getContext().getResources().getColor(2131296390)), index, n, 33);
         this.title.setText((CharSequence)text2);
     }
     
@@ -120,7 +121,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         this.setTag((Object)"People");
         this.trackModalview = IClientLogging.ModalView.peopleTitleResults;
         if (name != null) {
-            this.setTitleTextWithHighlighting(name, s);
+            this.setTitleTextWithSubtextHighlighting(name, s);
         }
         if (this.img != null) {
             this.img.setVisibility(0);
@@ -144,7 +145,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         this.setTag((Object)"Suggestion");
         this.trackModalview = IClientLogging.ModalView.suggestionTitleResults;
         if (title != null) {
-            this.setTitleTextWithHighlighting(title, s);
+            this.setTitleTextWithSubtextHighlighting(title, s);
         }
         if (this.img != null) {
             this.img.setVisibility(8);
@@ -152,6 +153,13 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         if (!this.ignoreClicks) {
             this.videoClickListener.remove((View)this);
             this.setOnClickListener((View$OnClickListener)new SuggestionClickListener(searchSuggestion.getTitle(), searchSuggestion.getTitle(), s));
+        }
+    }
+    
+    public void clearTitleTextHighlighting() {
+        if (this.title != null && this.displayName != null) {
+            this.title.setText((CharSequence)this.displayName);
+            this.title.setTypeface(Typeface.DEFAULT);
         }
     }
     
@@ -172,16 +180,26 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     }
     
     protected int getYearColorResId() {
-        return 2131296315;
+        return 2131296316;
     }
     
     public void setIgnoreClicks() {
         this.ignoreClicks = true;
     }
     
-    public void update(final Object o, final PlayContext playContext, final String s, final int trackId) {
+    public void setTitleTextWithSelectdHighlighting() {
+        if (this.title == null || this.title.getText() == null) {
+            return;
+        }
+        final SpannableString text = new SpannableString(this.title.getText());
+        ((Spannable)text).setSpan((Object)new ForegroundColorSpan(-1), 0, this.title.getText().length(), 33);
+        this.title.setText((CharSequence)text);
+        this.title.setTypeface(Typeface.DEFAULT_BOLD);
+    }
+    
+    public void update(final Object o, final PlayContext playContext, final String s, final String searchReferenceId) {
         this.playContext = playContext;
-        this.trackId = trackId;
+        this.searchReferenceId = searchReferenceId;
         if (o instanceof SearchVideo) {
             this.playableId = ((SearchVideo)o).getId();
             this.displayName = this.playableId;
@@ -236,7 +254,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         }
         
         public void onClick(final View view) {
-            SearchQueryDetailsActivity.show((Activity)SearchResultView.this.getContext(), SearchQueryDetailsActivity.SearchQueryDetailsType.PERSON, this.id, this.name, this.query, SearchResultView.this.trackId, SearchResultView.this.trackModalview);
+            SearchQueryDetailsActivity.show((Activity)SearchResultView.this.getContext(), SearchQueryDetailsActivity.SearchQueryDetailsType.PERSON, this.id, this.name, this.query, SearchResultView.this.searchReferenceId, SearchResultView.this.trackModalview);
         }
     }
     
@@ -253,7 +271,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         }
         
         public void onClick(final View view) {
-            SearchQueryDetailsActivity.show((Activity)SearchResultView.this.getContext(), SearchQueryDetailsActivity.SearchQueryDetailsType.SEARCH_SUGGESTION, this.id, this.title, this.query, SearchResultView.this.trackId, SearchResultView.this.trackModalview);
+            SearchQueryDetailsActivity.show((Activity)SearchResultView.this.getContext(), SearchQueryDetailsActivity.SearchQueryDetailsType.SEARCH_SUGGESTION, this.id, this.title, this.query, SearchResultView.this.searchReferenceId, SearchResultView.this.trackModalview);
         }
     }
 }

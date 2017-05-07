@@ -31,10 +31,10 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         this.inflater = (LayoutInflater)this.context.getSystemService("layout_inflater");
         int itemBgDrawableId;
         if (context.isForKids()) {
-            itemBgDrawableId = 2130837755;
+            itemBgDrawableId = 2130837756;
         }
         else {
-            itemBgDrawableId = 2130837874;
+            itemBgDrawableId = 2130837876;
         }
         this.itemBgDrawableId = itemBgDrawableId;
     }

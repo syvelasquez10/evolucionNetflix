@@ -56,7 +56,7 @@ public class CwView extends RelativeLayout implements IVideoView<CWVideo>
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837876);
+        this.setBackgroundResource(2130837878);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(2130903082, (ViewGroup)this);

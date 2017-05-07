@@ -15,9 +15,9 @@ public interface ISearchLogging
     public static final String EXTRA_PARENT_ID = "parentId";
     public static final String EXTRA_PLAYABLE_ID = "playableId";
     public static final String EXTRA_QUERY = "query";
+    public static final String EXTRA_REFERENCE_ID = "reference";
     public static final String EXTRA_SESSION_ID = "session_id";
     public static final String EXTRA_TO = "to";
-    public static final String EXTRA_TRACK_ID = "track_id";
     public static final String EXTRA_VIEW = "view";
     public static final String SEARCH_EDIT = "com.netflix.mediaclient.intent.action.LOG_SUS_FOCUS_SEARCH_EDIT";
     public static final String SEARCH_FOCUS_SESSION_END = "com.netflix.mediaclient.intent.action.LOG_SUS_FOCUS_SEARCH_SESSION_END";

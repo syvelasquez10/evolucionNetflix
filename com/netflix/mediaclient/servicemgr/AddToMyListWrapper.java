@@ -130,7 +130,7 @@ public class AddToMyListWrapper
             switch (addToListState) {
                 case IN_LIST: {
                     this.textView.setContentDescription((CharSequence)this.activity.getString(2131492971));
-                    this.textView.setCompoundDrawablesWithIntrinsicBounds(2130837865, 0, 0, 0);
+                    this.textView.setCompoundDrawablesWithIntrinsicBounds(2130837866, 0, 0, 0);
                     this.textView.setEnabled(true);
                     this.textView.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
                         public void onClick(final View view) {

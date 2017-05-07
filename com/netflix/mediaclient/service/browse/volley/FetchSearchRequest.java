@@ -16,7 +16,7 @@ import com.netflix.mediaclient.service.webclient.model.SearchPerson;
 import com.google.gson.JsonArray;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
-import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
+import com.netflix.mediaclient.service.webclient.model.leafs.SearchTrackableListSummary;
 import java.util.Map;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -67,13 +67,21 @@ public class FetchSearchRequest extends FalcorVolleyWebClientRequest<ISearchResu
         }
     }
     
-    private void extractCategoryElements(final SearchResults.Builder builder, JsonObject asJsonObject) {
+    private void extractCategoryElements(final SearchResults.Builder builder, JsonObject asJsonObject, String string) {
         final Iterator<Map.Entry<String, JsonElement>> iterator = asJsonObject.entrySet().iterator();
         if (iterator.hasNext()) {
             asJsonObject = ((Map.Entry<String, JsonElement>)iterator.next()).getValue().getAsJsonObject().getAsJsonObject(this.profileType.toString());
-            builder.setSummary(FalcorParseUtils.getPropertyObject(asJsonObject, "summary", TrackableListSummary.class));
+            if (string.equals("videos")) {
+                builder.setVideoListSummary(FalcorParseUtils.getPropertyObject(asJsonObject, "summary", SearchTrackableListSummary.class));
+            }
+            else if (string.equals("people")) {
+                builder.setPeopleListSummary(FalcorParseUtils.getPropertyObject(asJsonObject, "summary", SearchTrackableListSummary.class));
+            }
+            else if (string.equals("suggestions")) {
+                builder.setSuggestionsListSummary(FalcorParseUtils.getPropertyObject(asJsonObject, "summary", SearchTrackableListSummary.class));
+            }
             for (int i = this.fromIndex; i <= this.toIndex; ++i) {
-                final String string = Integer.toString(i);
+                string = Integer.toString(i);
                 if (asJsonObject.has(string)) {
                     final JsonObject asJsonObject2 = asJsonObject.getAsJsonObject(string);
                     final JsonArray asJsonArray = asJsonObject2.getAsJsonArray("path");
@@ -159,13 +167,13 @@ public class FetchSearchRequest extends FalcorVolleyWebClientRequest<ISearchResu
             final JsonObject asJsonObject3 = asJsonObject.getAsJsonObject("people");
             final JsonObject asJsonObject4 = asJsonObject.getAsJsonObject("suggestions");
             if (asJsonObject2 != null) {
-                this.extractCategoryElements(builder, asJsonObject2);
+                this.extractCategoryElements(builder, asJsonObject2, "videos");
             }
             if (asJsonObject3 != null) {
-                this.extractCategoryElements(builder, asJsonObject3);
+                this.extractCategoryElements(builder, asJsonObject3, "people");
             }
             if (asJsonObject4 != null) {
-                this.extractCategoryElements(builder, asJsonObject4);
+                this.extractCategoryElements(builder, asJsonObject4, "suggestions");
             }
             return builder.getResults();
         }

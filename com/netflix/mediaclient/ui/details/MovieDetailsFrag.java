@@ -125,7 +125,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361870);
         final View inflate = ((ViewStub)onCreateView.findViewById(2131165654)).inflate();
         inflate.setPadding(dimensionPixelOffset, 0, dimensionPixelOffset, 0);
-        this.similarShowsTitle = (TextView)inflate.findViewById(2131165627);
+        this.similarShowsTitle = (TextView)inflate.findViewById(2131165626);
         (this.gridView = (StaticGridView)inflate.findViewById(2131165634)).setFocusable(false);
         this.adapter = new SimilarItemsGridViewAdapter(this.getActivity(), this.gridView, true);
         this.gridView.setAdapter((ListAdapter)this.adapter);

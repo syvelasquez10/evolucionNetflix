@@ -606,8 +606,8 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         this.launchTask(new FetchShowDetailsTask(s, s2, browseAgentCallback));
     }
     
-    public void fetchSimilarVideosForPerson(final String s, final int n, final BrowseAgentCallback browseAgentCallback) {
-        this.launchTask(new FetchSimilarVideosForPersonTask(s, n, browseAgentCallback));
+    public void fetchSimilarVideosForPerson(final String s, final int n, final BrowseAgentCallback browseAgentCallback, final String s2) {
+        this.launchTask(new FetchSimilarVideosForPersonTask(s, n, browseAgentCallback, s2));
     }
     
     public void fetchSimilarVideosForQuerySuggestion(final String s, final int n, final BrowseAgentCallback browseAgentCallback, final String s2) {
@@ -1413,9 +1413,10 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     
     private class FetchSimilarVideosForPersonTask extends CachedFetchTask<SearchVideoList>
     {
+        private String originalSearchTerm;
         private final BrowseAgentCallback webClientCallback;
         
-        public FetchSimilarVideosForPersonTask(final String s, final int n, final BrowseAgentCallback browseAgentCallback) {
+        public FetchSimilarVideosForPersonTask(final String s, final int n, final BrowseAgentCallback browseAgentCallback, final String originalSearchTerm) {
             super(s, 0, n, browseAgentCallback);
             this.webClientCallback = new SimpleBrowseAgentCallback() {
                 @Override
@@ -1429,13 +1430,14 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                     });
                 }
             };
+            this.originalSearchTerm = originalSearchTerm;
         }
         
         @Override
         public void run() {
             final SearchVideoList list = ((CachedFetchTask<SearchVideoList>)this).getCachedValue();
             if (list == null) {
-                BrowseAgent.this.mBrowseWebClient.fetchSimilarVideosForPerson(((FetchTask)this).getCategory(), ((FetchTask)this).getToIndex(), this.webClientCallback);
+                BrowseAgent.this.mBrowseWebClient.fetchSimilarVideosForPerson(((FetchTask)this).getCategory(), ((FetchTask)this).getToIndex(), this.webClientCallback, this.originalSearchTerm);
                 return;
             }
             this.webClientCallback.onSimilarVideosFetched(list, CommonStatus.OK);

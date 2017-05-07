@@ -39,10 +39,10 @@ public class KidsGenreEntryHeader extends RelativeLayout
         final View viewById = this.findViewById(2131165411);
         int backgroundResource;
         if (portrait) {
-            backgroundResource = 2130837742;
+            backgroundResource = 2130837743;
         }
         else {
-            backgroundResource = 2130837741;
+            backgroundResource = 2130837742;
         }
         viewById.setBackgroundResource(backgroundResource);
         this.pressHandler = new PressedStateHandler((View)this);

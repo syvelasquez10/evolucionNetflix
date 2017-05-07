@@ -56,7 +56,7 @@ public class KidsDetailsViewGroup extends LinearLayout
     private void init() {
         LayoutInflater.from(this.getContext()).inflate(2130903099, (ViewGroup)this, true);
         this.setOrientation(1);
-        this.setBackgroundColor(this.getContext().getResources().getColor(2131296376));
+        this.setBackgroundColor(this.getContext().getResources().getColor(2131296377));
         this.imgGroup = (ViewGroup)this.findViewById(2131165400);
         this.imgGroup.getLayoutParams().height = DeviceUtils.getScreenWidthInPixels(this.getContext());
         (this.img = (AdvancedImageView)this.findViewById(2131165402)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361923));

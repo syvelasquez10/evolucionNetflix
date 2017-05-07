@@ -28,6 +28,16 @@ public abstract class NetflixDialogFrag extends DialogFragment implements Loadin
         return false;
     }
     
+    public void onActivityCreated(final Bundle bundle) {
+        final boolean showsDialog = this.getShowsDialog();
+        if (this.getDialog() == null) {
+            Log.w("NetflixDialogFrag", "Dialog is null upon activity creation! Setting shows dialog to false.");
+            this.setShowsDialog(false);
+        }
+        super.onActivityCreated(bundle);
+        this.setShowsDialog(showsDialog);
+    }
+    
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         if (Log.isLoggable("NetflixDialogFrag", 2)) {

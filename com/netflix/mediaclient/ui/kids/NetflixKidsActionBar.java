@@ -15,7 +15,7 @@ public class NetflixKidsActionBar extends NetflixActionBar
 {
     public NetflixKidsActionBar(final NetflixActivity netflixActivity, final boolean b) {
         super(netflixActivity, b);
-        this.systemActionBar.setBackgroundDrawable((Drawable)new ColorDrawable(netflixActivity.getResources().getColor(2131296362)));
+        this.systemActionBar.setBackgroundDrawable((Drawable)new ColorDrawable(netflixActivity.getResources().getColor(2131296363)));
         ViewUtils.setTextViewSizeByRes(this.title, 2131361841);
         if (b) {
             final PerformUpActionOnClickListener performUpActionOnClickListener = new PerformUpActionOnClickListener(netflixActivity);
@@ -26,7 +26,7 @@ public class NetflixKidsActionBar extends NetflixActionBar
     
     @Override
     protected int getFullSizeLogoId() {
-        return 2130837747;
+        return 2130837748;
     }
     
     @Override

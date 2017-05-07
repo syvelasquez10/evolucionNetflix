@@ -75,7 +75,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
             n = 2131296306;
         }
         else {
-            n = 2131296314;
+            n = 2131296315;
         }
         textView.setTextColor(resources.getColor(n));
         final LoMoRowContent rowContent = this.createRowContent(linearLayout, (View)textView);
@@ -174,7 +174,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
             return;
         }
         if (item.getType() == LoMoType.CONTINUE_WATCHING) {
-            rowHolder.contentGroup.setBackgroundResource(2130837744);
+            rowHolder.contentGroup.setBackgroundResource(2130837745);
             rowHolder.contentGroup.setPadding(0, 0, 0, AndroidUtils.dipToPixels((Context)this.activity, 22));
             rowHolder.title.setTextColor(this.activity.getResources().getColor(2131296309));
             return;

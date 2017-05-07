@@ -37,8 +37,8 @@ public class MdxTargetSelectionDialog
         public Builder(final Activity activity) {
             super((Context)activity);
             this.activity = activity;
-            MdxTargetSelectionDialog.mSelectedRowColor = activity.getResources().getColor(2131296326);
-            MdxTargetSelectionDialog.mRowColor = activity.getResources().getColor(2131296325);
+            MdxTargetSelectionDialog.mSelectedRowColor = activity.getResources().getColor(2131296327);
+            MdxTargetSelectionDialog.mRowColor = activity.getResources().getColor(2131296326);
             final LayoutInflater layoutInflater = activity.getLayoutInflater();
             this.content = layoutInflater.inflate(2130903140, (ViewGroup)null);
             this.title = (TextView)this.content.findViewById(2131165509);

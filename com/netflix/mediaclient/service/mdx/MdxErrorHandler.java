@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx;
 
-import android.widget.Toast;
 import android.app.DialogFragment;
 import android.content.Context;
 import com.netflix.mediaclient.ui.common.NetflixAlertDialog;
@@ -62,7 +61,6 @@ public class MdxErrorHandler
     }
     
     private void sendToast(final int n, final String s) {
-        Toast.makeText((Context)this.activity, (CharSequence)this.getErrorMessage(n, s), 1).show();
     }
     
     public boolean handleDialogButton(final String s, final String s2) {

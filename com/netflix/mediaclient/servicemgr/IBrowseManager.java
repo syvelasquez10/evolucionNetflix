@@ -48,7 +48,7 @@ public interface IBrowseManager
     
     boolean fetchShowDetails(final String p0, final String p1, final ManagerCallback p2);
     
-    boolean fetchSimilarVideosForPerson(final String p0, final int p1, final ManagerCallback p2);
+    boolean fetchSimilarVideosForPerson(final String p0, final int p1, final ManagerCallback p2, final String p3);
     
     boolean fetchSimilarVideosForQuerySuggestion(final String p0, final int p1, final ManagerCallback p2, final String p3);
     

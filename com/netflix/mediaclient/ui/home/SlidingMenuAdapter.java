@@ -145,7 +145,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
         Log.v("SlidingMenuAdapter", "Showing 'switch to kids' menu item in sliding menu");
         final TextView textView = (TextView)((ViewStub)this.content.findViewById(2131165395)).inflate().findViewById(2131165397);
         textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361884)));
-        textView.setBackgroundResource(2130837860);
+        textView.setBackgroundResource(2130837861);
         textView.setCompoundDrawablesWithIntrinsicBounds(2130837733, 0, 0, 0);
         textView.setCompoundDrawablePadding(AndroidUtils.dipToPixels((Context)this.activity, 12));
         textView.setText(2131492948);
@@ -226,7 +226,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
     protected void applySelectionStyle(final View view) {
         final Holder holder = (Holder)view.getTag();
         ViewUtils.setTextViewToBold(holder.tv);
-        holder.tv.setBackgroundResource(2130837873);
+        holder.tv.setBackgroundResource(2130837875);
         holder.selectionIndicator.setVisibility(0);
     }
     
@@ -255,7 +255,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
     protected void removeSelectionStyle(final View view) {
         final Holder holder = (Holder)view.getTag();
         ViewUtils.setTextViewToNormal(holder.tv);
-        holder.tv.setBackgroundResource(2130837872);
+        holder.tv.setBackgroundResource(2130837874);
         holder.selectionIndicator.setVisibility(8);
     }
     

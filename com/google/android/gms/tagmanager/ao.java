@@ -69,8 +69,8 @@ class ao extends aj
                             byte[] array = j.getBytes();
                             try {
                                 return dh.r(com.google.android.gms.tagmanager.j.d(this.c((String)i, array)));
-                                i = dh.j((d.a)i);
-                                continue Label_0073_Outer;
+                                k = dh.j(a2);
+                                continue;
                                 // iftrue(Label_0135:, !"base16".equals((Object)k))
                                 array = com.google.android.gms.tagmanager.j.bm(j);
                                 return dh.r(com.google.android.gms.tagmanager.j.d(this.c((String)i, array)));
@@ -78,8 +78,8 @@ class ao extends aj
                                     bh.w("Hash: unknown input format: " + k);
                                 }
                                 return dh.lT();
-                                k = dh.j(a2);
-                                continue;
+                                i = dh.j((d.a)i);
+                                continue Label_0073_Outer;
                             }
                             catch (NoSuchAlgorithmException ex) {
                                 bh.w("Hash: unknown algorithm: " + (String)i);

@@ -81,7 +81,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
     private TextView createStatusTextView() {
         final Resources resources = this.activity.getResources();
         final TextView textView = new TextView((Context)this.activity);
-        textView.setTextColor(resources.getColor(2131296363));
+        textView.setTextColor(resources.getColor(2131296364));
         textView.setTextSize(0, (float)resources.getDimensionPixelSize(2131361840));
         textView.setGravity(17);
         textView.setLayoutParams((ViewGroup$LayoutParams)this.itemParams);

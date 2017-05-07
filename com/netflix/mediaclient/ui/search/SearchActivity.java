@@ -26,8 +26,8 @@ import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
 import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.text.TextUtils;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 import android.content.Context;
 import com.netflix.mediaclient.util.LogUtils;
@@ -79,7 +79,6 @@ public class SearchActivity extends NetflixActivity
                 SearchActivity.this.isLoading = true;
                 SearchActivity.this.searchBar.showProgressSpinner();
                 LogUtils.reportSearchActionStarted(SearchActivity.this.requestId, (Context)SearchActivity.this, null, SearchActivity.this.getUiScreen(), SearchActivity.this.query);
-                SearchLogUtils.reportSearchFocusSessionStarted(SearchActivity.this.requestId, (Context)SearchActivity.this, SearchActivity.this.getUiScreen(), SearchActivity.this.query);
                 SearchActivity.this.serviceManager.getBrowse().searchNetflix(SearchActivity.this.query, new FetchSearchResultsHandler(SearchActivity.this.requestId));
             }
         };
@@ -171,9 +170,10 @@ public class SearchActivity extends NetflixActivity
             public void onFocusChange(final View view, final boolean b) {
                 if (b) {
                     SearchActivity.this.focusSessionId = SearchLogUtils.reportSearchFocusSessionStarted(SearchActivity.this.requestId, (Context)SearchActivity.this, SearchActivity.this.getUiScreen(), SearchActivity.this.query);
-                    return;
                 }
-                SearchLogUtils.reportSearchFocusSessionEnded(SearchActivity.this.requestId, (Context)SearchActivity.this, SearchActivity.this.focusSessionId);
+                else if (SearchActivity.this.focusSessionId != 0L) {
+                    SearchLogUtils.reportSearchFocusSessionEnded(SearchActivity.this.requestId, (Context)SearchActivity.this, SearchActivity.this.focusSessionId);
+                }
             }
         });
         if (SearchUtils.shouldResetQueryOnTouch()) {
@@ -275,6 +275,7 @@ public class SearchActivity extends NetflixActivity
         if (bundle == null) {
             DeviceUtils.showSoftKeyboard(this);
         }
+        this.loggingSessionId = SearchLogUtils.reportSearchSessionStarted(this.requestId, (Context)this, this.getUiScreen(), this.query);
         this.handleNewIntent(this.getIntent());
     }
     
@@ -292,7 +293,6 @@ public class SearchActivity extends NetflixActivity
     
     @Override
     protected void onResume() {
-        this.loggingSessionId = SearchLogUtils.reportSearchSessionStarted(this.requestId, (Context)this, this.getUiScreen(), this.query);
         super.onResume();
     }
     
@@ -334,7 +334,7 @@ public class SearchActivity extends NetflixActivity
                 LogUtils.reportSearchActionEnded(this.requestId, (Context)SearchActivity.this, logReportErrorArgs.getReason(), logReportErrorArgs.getError());
                 return;
             }
-            Log.d("SearchActivity", String.format("searchResults size %d trackId %d", searchResults.getNumResults(), searchResults.getTrackId()));
+            Log.d("SearchActivity", String.format("searchResults size %d ", searchResults.getNumResults()));
             SearchActivity.this.reportUiViewChanged(IClientLogging.ModalView.searchResults);
             SearchActivity.this.showResults(searchResults);
             LogUtils.reportSearchActionEnded(this.requestId, (Context)SearchActivity.this, logReportErrorArgs.getReason(), logReportErrorArgs.getError());

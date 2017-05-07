@@ -22,7 +22,7 @@ import android.annotation.TargetApi;
 @TargetApi(4)
 public final class ErrorLoggingManager
 {
-    private static final String CRITTER_VERSION_NAME = "3.8.0";
+    private static final String CRITTER_VERSION_NAME = "3.8.1";
     private static final boolean ENABLE_CRITTERCISM = true;
     private static final String TAG = "nf_log_crit";
     private static boolean sBreadcrumbLoggingEnabled;
@@ -45,7 +45,7 @@ public final class ErrorLoggingManager
             initBreadcrumbLogging((Context)application);
             final CrittercismConfig crittercismConfig = new CrittercismConfig();
             crittercismConfig.setNdkCrashReportingEnabled(true);
-            crittercismConfig.setCustomVersionName("3.8.0");
+            crittercismConfig.setCustomVersionName("3.8.1");
             try {
                 Crittercism.initialize(application.getApplicationContext(), SecurityRepository.getCrittercismAppId(), crittercismConfig);
                 final JSONObject metadata = new JSONObject();

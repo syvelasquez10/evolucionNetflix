@@ -826,10 +826,14 @@ public class MdxAgent extends ServiceAgent implements IMdx, PropertyUpdateListen
         if (this.mVideoDetails != null && this.mVideoDetails instanceof EpisodeDetails) {
             final EpisodeDetails episodeDetails = (EpisodeDetails)this.mVideoDetails;
             final Intent intent = new Intent("com.netflix.mediaclient.intent.action.MDX_PLAY_VIDEOIDS");
-            intent.putExtra("episodeId", Integer.parseInt(episodeDetails.getNextEpisodeId()));
-            intent.putExtra("catalogId", Integer.parseInt(this.mVideoDetails.getPlayable().getParentId()));
-            intent.putExtra("playNext", true);
-            return this.createNotificationButtonIntent(intent);
+            final String nextEpisodeId = episodeDetails.getNextEpisodeId();
+            final String parentId = this.mVideoDetails.getPlayable().getParentId();
+            if (!TextUtils.isEmpty((CharSequence)parentId) && !TextUtils.isEmpty((CharSequence)nextEpisodeId)) {
+                intent.putExtra("episodeId", Integer.parseInt(nextEpisodeId));
+                intent.putExtra("catalogId", Integer.parseInt(parentId));
+                intent.putExtra("playNext", true);
+                return this.createNotificationButtonIntent(intent);
+            }
         }
         return null;
     }

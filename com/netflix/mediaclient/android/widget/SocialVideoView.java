@@ -231,17 +231,17 @@ public class SocialVideoView extends VideoView
     private void initTextPaint(final Resources resources) {
         if (SocialVideoView.microSecondaryLeftPaint == null) {
             (SocialVideoView.microSecondaryLeftPaint = new TextPaint()).setTextSize((float)this.textSizeMicro);
-            SocialVideoView.microSecondaryLeftPaint.setColor(resources.getColor(2131296315));
+            SocialVideoView.microSecondaryLeftPaint.setColor(resources.getColor(2131296316));
             SocialVideoView.microSecondaryLeftPaint.setTextAlign(Paint$Align.LEFT);
         }
         if (SocialVideoView.microSecondaryCenterPaint == null) {
             (SocialVideoView.microSecondaryCenterPaint = new TextPaint()).setTextSize((float)this.textSizeMicro);
-            SocialVideoView.microSecondaryCenterPaint.setColor(resources.getColor(2131296315));
+            SocialVideoView.microSecondaryCenterPaint.setColor(resources.getColor(2131296316));
             SocialVideoView.microSecondaryCenterPaint.setTextAlign(Paint$Align.CENTER);
         }
         if (SocialVideoView.smallPrimaryLeftPaint == null) {
             (SocialVideoView.smallPrimaryLeftPaint = new TextPaint()).setTextSize((float)resources.getDimensionPixelOffset(2131361838));
-            SocialVideoView.smallPrimaryLeftPaint.setColor(resources.getColor(2131296314));
+            SocialVideoView.smallPrimaryLeftPaint.setColor(resources.getColor(2131296315));
             SocialVideoView.smallPrimaryLeftPaint.setTextAlign(Paint$Align.LEFT);
         }
     }

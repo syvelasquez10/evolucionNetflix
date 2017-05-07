@@ -160,7 +160,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         }
         this.gcmRegistrationId = gcmRegistrationId;
         this.mGcmRegistered = true;
-        if (this.reportOnRegistered) {
+        if (this.reportOnRegistered && this.mCurrentUserSettings != null) {
             this.report(this.mCurrentUserSettings.optedIn, true);
         }
     }

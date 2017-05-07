@@ -210,23 +210,21 @@ public final class PlayerTypeFactory
             if (currentType != null) {
                 break Label_0019;
             }
-        Label_0053_Outer:
             while (true) {
                 try {
                     Log.w("nf-playertypefactory", "Type is null, do nothing!");
                     return;
                     // iftrue(Label_0077:, isValidPlayerType(currentType))
+                    // iftrue(Label_0053:, !Log.isLoggable("nf-playertypefactory", 3))
+                Block_7:
                     while (true) {
-                        while (true) {
-                            Log.e("nf-playertypefactory", "Invalid player type for this device. We should never be here!");
-                            return;
-                            continue Label_0053_Outer;
-                        }
+                        break Block_7;
                         Log.d("nf-playertypefactory", "Updating player type " + currentType);
                         continue;
                     }
+                    Log.e("nf-playertypefactory", "Invalid player type for this device. We should never be here!");
+                    return;
                 }
-                // iftrue(Label_0053:, !Log.isLoggable("nf-playertypefactory", 3))
                 finally {
                 }
                 // monitorexit(PlayerTypeFactory.class)
@@ -252,25 +250,27 @@ public final class PlayerTypeFactory
             if (currentType != null) {
                 break Label_0019;
             }
-        Label_0053_Outer:
+            final Context context2;
+            Label_0053_Outer:Block_6_Outer:
             while (true) {
                 try {
                     Log.w("nf-playertypefactory", "setPlayerTypeForQAOverride: Type is null, do nothing!");
                     return;
-                    // iftrue(Label_0053:, !Log.isLoggable("nf-playertypefactory", 3))
                     // iftrue(Label_0077:, isValidPlayerType(currentType))
                     while (true) {
-                    Block_6:
                         while (true) {
-                            Log.e("nf-playertypefactory", "setPlayerTypeForQAOverride: Invalid player type for this device. We should never be here!");
-                            return;
-                            break Block_6;
-                            continue Label_0053_Outer;
+                            while (true) {
+                                Log.e("nf-playertypefactory", "setPlayerTypeForQAOverride: Invalid player type for this device. We should never be here!");
+                                return;
+                                continue Label_0053_Outer;
+                            }
+                            Log.d("nf-playertypefactory", "setPlayerTypeForQAOverride: Updating player type " + currentType);
+                            continue Block_6_Outer;
                         }
-                        Log.d("nf-playertypefactory", "setPlayerTypeForQAOverride: Updating player type " + currentType);
                         continue;
                     }
                 }
+                // iftrue(Label_0053:, !Log.isLoggable("nf-playertypefactory", 3))
                 finally {
                 }
                 // monitorexit(PlayerTypeFactory.class)
@@ -284,7 +284,6 @@ public final class PlayerTypeFactory
                     Log.d("nf-playertypefactory", "SsetPlayerTypeForQAOverride: aving to persistence new player type " + currentType);
                 }
                 PlayerTypeFactory.currentType = currentType;
-                final Context context2;
                 PreferenceUtils.putIntPref(context2, "nflx_player_type_qa", currentType.getValue());
             }
         }

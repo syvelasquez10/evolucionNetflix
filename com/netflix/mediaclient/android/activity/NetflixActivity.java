@@ -423,7 +423,6 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
             if (!b) {
                 break Label_0098;
             }
-        Block_10_Outer:
             while (true) {
                 try {
                     if (Log.isLoggable("NetflixActivity", 3)) {
@@ -432,20 +431,17 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
                     this.displayDialog(dialog);
                     return;
                     // iftrue(Label_0165:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
+                    // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
                     while (true) {
-                        Block_9: {
-                            break Block_9;
-                            while (true) {
-                                this.displayDialog(dialog);
-                                return;
-                                Log.d("NetflixActivity", "displayUserAgentDialog " + s);
-                                continue Block_10_Outer;
-                            }
+                        Block_10: {
+                            break Block_10;
+                            this.displayDialog(dialog);
+                            return;
                         }
+                        Log.d("NetflixActivity", "displayUserAgentDialog " + s);
                         continue;
                     }
                 }
-                // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
                 finally {
                 }
                 // monitorexit(visibleDialogLock)
@@ -708,7 +704,7 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
             this.setRequestedOrientation(1);
         }
         if (this.shouldShowKidsBackground()) {
-            this.getWindow().setBackgroundDrawableResource(2130837738);
+            this.getWindow().setBackgroundDrawableResource(2130837739);
         }
         if (bundle == null || !bundle.getBoolean("mini_player_expanded", false)) {
             shouldExpandMiniPlayer = false;
@@ -856,7 +852,7 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
         if (this.slidingPanel != null) {
             this.slidingPanel.setDragView(this.mdxFrag.getSlidingPanelDragView());
             this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131361844));
-            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837880));
+            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837882));
             this.slidingPanel.setPanelSlideListener(this.panelSlideListener);
             if (this.shouldApplyPaddingToSlidingPanel()) {
                 final View child = this.slidingPanel.getChildAt(0);

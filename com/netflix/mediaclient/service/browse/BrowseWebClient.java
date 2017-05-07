@@ -44,7 +44,7 @@ public interface BrowseWebClient
     
     void fetchShowDetails(final String p0, final String p1, final BrowseAgentCallback p2);
     
-    void fetchSimilarVideosForPerson(final String p0, final int p1, final BrowseAgentCallback p2);
+    void fetchSimilarVideosForPerson(final String p0, final int p1, final BrowseAgentCallback p2, final String p3);
     
     void fetchSimilarVideosForQuerySuggestion(final String p0, final int p1, final BrowseAgentCallback p2, final String p3);
     

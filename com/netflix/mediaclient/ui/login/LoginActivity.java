@@ -209,13 +209,13 @@ public class LoginActivity extends AccountActivity
             return;
         }
         if (statusCode == StatusCode.NRD_LOGIN_ACTIONID_2) {
-            final String string2 = this.getString(2131493270) + " (" + statusCode + ")";
+            final String string2 = this.getString(2131493270) + " (" + statusCode.getValue() + ")";
             this.displayUserAgentDialog(string2, null, false);
             this.reportError(status, string2);
             return;
         }
         if (statusCode == StatusCode.NETWORK_ERROR) {
-            final String string3 = this.getString(2131493272) + " (" + statusCode + ")";
+            final String string3 = this.getString(2131493272) + " (" + statusCode.getValue() + ")";
             this.displayUserAgentDialog(string3, null, true);
             this.reportError(status, string3);
             return;

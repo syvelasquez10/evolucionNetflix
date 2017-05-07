@@ -4,12 +4,17 @@
 
 package com.netflix.mediaclient.service.logging;
 
+import com.netflix.mediaclient.service.logging.search.model.SearchSessionEndedEvent;
+import com.netflix.mediaclient.service.logging.search.model.SearchFocusSessionEndedEvent;
+import com.netflix.mediaclient.service.logging.search.model.SearchSessionStartedEvent;
 import com.netflix.mediaclient.service.logging.search.SearchSession;
+import com.netflix.mediaclient.service.logging.search.model.SearchFocusSessionStartedEvent;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import com.netflix.mediaclient.service.logging.search.SearchFocusSession;
 import com.netflix.mediaclient.service.logging.search.model.SearchImpressionEvent;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.util.StringUtils;
+import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.service.logging.search.model.SearchEditEvent;
@@ -37,8 +42,12 @@ public class SearchLogging implements ISearchLogging
         if (this.mEventHandler == null) {
             return;
         }
-        this.mEventHandler.post(new SearchEditEvent(intent.getStringExtra("query")));
-        Log.d("nf_log_search", "Search Edit Event fired");
+        final SearchEditEvent searchEditEvent = new SearchEditEvent(intent.getStringExtra("query"));
+        this.mEventHandler.post(searchEditEvent);
+        try {
+            Log.d("nf_log_search", "Search Edit Event fired" + searchEditEvent.toJSONObject().toString(5));
+        }
+        catch (JSONException ex) {}
     }
     
     @Override
@@ -48,20 +57,24 @@ public class SearchLogging implements ISearchLogging
         }
         final int intExtra = intent.getIntExtra("from", 0);
         final int intExtra2 = intent.getIntExtra("to", 0);
-        final int intExtra3 = intent.getIntExtra("track_id", -1);
-        final String stringExtra = intent.getStringExtra("view");
-        final String stringExtra2 = intent.getStringExtra("modal_view");
+        final String stringExtra = intent.getStringExtra("reference");
+        final String stringExtra2 = intent.getStringExtra("view");
+        final String stringExtra3 = intent.getStringExtra("modal_view");
         final String[] stringArrayExtra = intent.getStringArrayExtra("childIds");
         Enum<IClientLogging.ModalView> value = null;
-        if (StringUtils.isNotEmpty(stringExtra)) {
-            value = IClientLogging.ModalView.valueOf(stringExtra);
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value = IClientLogging.ModalView.valueOf(stringExtra2);
         }
         Enum<IClientLogging.ModalView> value2 = null;
-        if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+        if (StringUtils.isNotEmpty(stringExtra3)) {
+            value2 = IClientLogging.ModalView.valueOf(stringExtra3);
         }
-        this.mEventHandler.post(new SearchImpressionEvent(intExtra3, intExtra, intExtra2, stringArrayExtra, (IClientLogging.ModalView)value2, (IClientLogging.ModalView)value));
-        Log.d("nf_log_search", "Search Impression Event fired");
+        final SearchImpressionEvent searchImpressionEvent = new SearchImpressionEvent(stringExtra, intExtra, intExtra2, stringArrayExtra, (IClientLogging.ModalView)value2, (IClientLogging.ModalView)value);
+        this.mEventHandler.post(searchImpressionEvent);
+        try {
+            Log.d("nf_log_search", "Search Impression Event fired" + searchImpressionEvent.toJSONObject().toString(5));
+        }
+        catch (JSONException ex) {}
     }
     
     public boolean handleIntent(final Intent intent) {
@@ -110,8 +123,12 @@ public class SearchLogging implements ISearchLogging
                 final SearchFocusSession searchFocusSession = new SearchFocusSession(longExtra);
                 this.focusFocusSessions.put(longExtra, searchFocusSession);
                 this.mEventHandler.addSession(searchFocusSession);
-                this.mEventHandler.post(searchFocusSession.createStartEvent());
-                Log.d("nf_log_search", "startFocusSession done.");
+                final SearchFocusSessionStartedEvent startEvent = searchFocusSession.createStartEvent(intent.getStringExtra("term"));
+                this.mEventHandler.post(startEvent);
+                try {
+                    Log.d("nf_log_search", "startFocusSession done." + startEvent.toJSONObject().toString(5));
+                }
+                catch (JSONException ex) {}
             }
         }
     }
@@ -124,8 +141,12 @@ public class SearchLogging implements ISearchLogging
                 final SearchSession searchSession = new SearchSession(longExtra);
                 this.searchSessions.put(longExtra, searchSession);
                 this.mEventHandler.addSession(searchSession);
-                this.mEventHandler.post(searchSession.createStartEvent());
-                Log.d("nf_log_search", "Search session start done.");
+                final SearchSessionStartedEvent startEvent = searchSession.createStartEvent();
+                this.mEventHandler.post(startEvent);
+                try {
+                    Log.d("nf_log_search", "Search session start done." + startEvent.toJSONObject().toString(5));
+                }
+                catch (JSONException ex) {}
             }
         }
     }
@@ -138,9 +159,13 @@ public class SearchLogging implements ISearchLogging
                 final SearchFocusSession searchFocusSession = this.focusFocusSessions.get(longExtra);
                 if (searchFocusSession != null) {
                     this.mEventHandler.removeSession(searchFocusSession);
-                    this.mEventHandler.post(searchFocusSession.createEndedEvent());
+                    final SearchFocusSessionEndedEvent endedEvent = searchFocusSession.createEndedEvent();
+                    this.mEventHandler.post(endedEvent);
                     this.focusFocusSessions.remove(longExtra);
-                    Log.d("nf_log_search", "SearchFocusSession stop done.");
+                    try {
+                        Log.d("nf_log_search", "SearchFocusSession stop done." + endedEvent.toJSONObject().toString(5));
+                    }
+                    catch (JSONException ex) {}
                 }
             }
         }
@@ -154,10 +179,14 @@ public class SearchLogging implements ISearchLogging
                 final SearchSession searchSession = this.searchSessions.get(longExtra);
                 if (searchSession != null) {
                     this.mEventHandler.removeSession(searchSession);
-                    this.mEventHandler.post(searchSession.createEndedEvent());
+                    final SearchSessionEndedEvent endedEvent = searchSession.createEndedEvent();
+                    this.mEventHandler.post(endedEvent);
                     this.searchSessions.remove(longExtra);
+                    try {
+                        Log.d("nf_log_search", "Search session stop done." + endedEvent.toJSONObject().toString(5));
+                    }
+                    catch (JSONException ex) {}
                 }
-                Log.d("nf_log_search", "Search session stop done.");
             }
         }
     }

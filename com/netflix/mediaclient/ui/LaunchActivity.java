@@ -29,12 +29,13 @@ import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.ImageView;
+import com.netflix.mediaclient.protocol.nflx.NflxHandlerFactory;
+import com.netflix.mediaclient.protocol.nflx.NflxHandler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.protocol.nflx.NflxHandler;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -49,7 +50,6 @@ public class LaunchActivity extends NetflixActivity
     private long mSplashScreenStarted;
     private long mStarted;
     private final BroadcastReceiver nflxBroadcastReceiver;
-    private final NflxHandler nflxHandler;
     
     static {
         sampleVideo = new Video() {
@@ -96,7 +96,6 @@ public class LaunchActivity extends NetflixActivity
     }
     
     public LaunchActivity() {
-        this.nflxHandler = new NflxHandler();
         this.isLoading = true;
         this.nflxBroadcastReceiver = new BroadcastReceiver() {
             public void onReceive(final Context context, final Intent intent) {
@@ -104,7 +103,7 @@ public class LaunchActivity extends NetflixActivity
                     Log.v("LaunchActivity", "Received intent " + intent);
                 }
                 final String action = intent.getAction();
-                if ("com.netflix.mediaclient.intent.action.NFLX_HANDLER_RESULT".equals(action)) {
+                if ("com.netflix.mediaclient.intent.action.HANDLER_RESULT".equals(action)) {
                     Log.d("LaunchActivity", "Delayed nflx action completed, finish activity");
                     LaunchActivity.this.finish();
                 }
@@ -117,7 +116,7 @@ public class LaunchActivity extends NetflixActivity
     
     private NflxHandler.Response canHandleIntent() {
         try {
-            return this.nflxHandler.handleNflxIntent(this, this.getIntent(), this.mStarted);
+            return NflxHandlerFactory.getHandlerForIntent(this, this.getIntent(), this.mStarted).handle();
         }
         catch (Throwable t) {
             Log.e("LaunchActivity", "Failed to parse nflx url ", t);
@@ -130,10 +129,10 @@ public class LaunchActivity extends NetflixActivity
         final ImageView imageView = (ImageView)this.findViewById(2131165635);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837889;
+            imageResource = 2130837891;
         }
         else {
-            imageResource = 2130837888;
+            imageResource = 2130837890;
         }
         imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi(this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
@@ -230,7 +229,7 @@ public class LaunchActivity extends NetflixActivity
     
     private void registerNflxReceiver() {
         Log.d("LaunchActivity", "Register receiver");
-        final IntentFilter intentFilter = new IntentFilter("com.netflix.mediaclient.intent.action.NFLX_HANDLER_RESULT");
+        final IntentFilter intentFilter = new IntentFilter("com.netflix.mediaclient.intent.action.HANDLER_RESULT");
         intentFilter.addCategory("LocalIntentNflxUi");
         intentFilter.setPriority(999);
         try {

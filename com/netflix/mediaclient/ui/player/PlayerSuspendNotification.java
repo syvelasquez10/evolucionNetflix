@@ -139,7 +139,7 @@ public final class PlayerSuspendNotification
         if (!this.mShowNotification.get()) {
             return;
         }
-        final Notification build = new NotificationCompat.Builder((Context)this.mPlayerActivity).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837801).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, bitmap, false)).setWhen(System.currentTimeMillis()).build();
+        final Notification build = new NotificationCompat.Builder((Context)this.mPlayerActivity).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837802).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, bitmap, false)).setWhen(System.currentTimeMillis()).build();
         if (AndroidUtils.getAndroidVersion() >= 16) {
             build.bigContentView = this.getContentView(this.mTitle, this.mSecondaryTitle, bitmap, true);
         }

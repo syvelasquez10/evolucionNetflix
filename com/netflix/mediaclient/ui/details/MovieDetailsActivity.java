@@ -43,6 +43,7 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
         }
         this.setVideoId(this.getIntent().getStringExtra("extra_video_id"));
         this.setPlayContext((PlayContext)this.getIntent().getParcelableExtra("extra_playcontext"));
+        this.setAction((Action)this.getIntent().getSerializableExtra("extra_action"));
     }
     
     private void showNewDetailsFrag(final int scrollYOffset) {

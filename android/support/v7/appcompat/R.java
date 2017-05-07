@@ -138,7 +138,7 @@ public final class R
     
     public static final class color
     {
-        public static final int abc_search_url_text_holo = 2131296391;
+        public static final int abc_search_url_text_holo = 2131296392;
         public static final int abc_search_url_text_normal = 2131296256;
         public static final int abc_search_url_text_pressed = 2131296258;
         public static final int abc_search_url_text_selected = 2131296257;

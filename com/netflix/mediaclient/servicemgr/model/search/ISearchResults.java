@@ -5,9 +5,9 @@
 package com.netflix.mediaclient.servicemgr.model.search;
 
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.SearchTrackable;
 
-public interface ISearchResults extends Trackable
+public interface ISearchResults
 {
     int getNumResults();
     
@@ -21,6 +21,8 @@ public interface ISearchResults extends Trackable
     
     int getNumSections();
     
+    SearchTrackable getPeopleListTrackable();
+    
     Object getResult(final int p0);
     
     Object getResultsPeople(final int p0);
@@ -30,6 +32,10 @@ public interface ISearchResults extends Trackable
     Object getResultsVideos(final int p0);
     
     CharSequence getSectionTitle(final Context p0, final int p1);
+    
+    SearchTrackable getSuggestionsListTrackable();
+    
+    SearchTrackable getVideosListTrackable();
     
     boolean hasResults();
 }

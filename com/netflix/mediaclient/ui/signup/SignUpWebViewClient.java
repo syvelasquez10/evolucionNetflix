@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import java.util.Locale;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.protocol.nflx.NflxHandlerFactory;
 import android.net.Uri;
 import com.netflix.mediaclient.protocol.nflx.NflxHandler;
 import android.webkit.WebViewClient;
@@ -22,18 +23,16 @@ class SignUpWebViewClient extends WebViewClient
     private String mCurrentPageURL;
     private boolean mSecurityFailure;
     private final SignupActivity mUi;
-    private final NflxHandler nflxHandler;
     
     SignUpWebViewClient(final SignupActivity mUi) {
         this.mClearHistory = false;
         this.mCurrentPageURL = null;
-        this.nflxHandler = new NflxHandler();
         this.mUi = mUi;
     }
     
     private NflxHandler.Response canHandleUri(final String s) {
         try {
-            return this.nflxHandler.handleUri(this.mUi, Uri.parse(s), 0L);
+            return NflxHandlerFactory.getHandler(this.mUi, Uri.parse(s), 0L).handle();
         }
         catch (Throwable t) {
             Log.e("SignupActivity", "Failed to parse nflx url ", t);

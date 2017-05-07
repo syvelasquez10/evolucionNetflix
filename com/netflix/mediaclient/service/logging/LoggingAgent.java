@@ -158,6 +158,9 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging, 
         if (this.mAdvertiserIdLoggingManager != null) {
             this.mAdvertiserIdLoggingManager.destroy();
         }
+        if (this.mIntegratedClientLoggingManager != null) {
+            this.mIntegratedClientLoggingManager.destroy();
+        }
         super.destroy();
     }
     

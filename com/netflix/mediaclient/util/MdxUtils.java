@@ -209,6 +209,14 @@ public final class MdxUtils
     }
     
     public static boolean isSameVideoPlaying(final IMdx mdx, final String s) {
+        if (mdx == null) {
+            Log.w("MdxUtils", "MDX agent is null - isSameVideoPlaying returning false");
+            return false;
+        }
+        if (mdx.getVideoDetail() == null) {
+            Log.w("MdxUtils", "Video detail is null - isSameVideoPlaying returning false");
+            return false;
+        }
         final Playable playable = mdx.getVideoDetail().getPlayable();
         if (Log.isLoggable("MdxUtils", 3)) {
             if (StringUtils.isNotEmpty(s)) {

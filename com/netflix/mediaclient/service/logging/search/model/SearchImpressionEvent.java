@@ -4,30 +4,28 @@
 
 package com.netflix.mediaclient.service.logging.search.model;
 
-import com.netflix.mediaclient.service.logging.client.model.EventType;
 import org.json.JSONException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import com.netflix.mediaclient.service.logging.client.model.EventType;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
+import android.annotation.SuppressLint;
 import com.netflix.mediaclient.service.logging.client.model.DiscreteEvent;
 
+@SuppressLint({ "DefaultLocale" })
 public class SearchImpressionEvent extends DiscreteEvent
 {
-    public static final String CATEGORY = "uiEvent";
+    private static final String CATEGORY = "uiView";
+    private static final String NAME = "impression";
     private String[] childIds;
     private int from;
-    private IClientLogging.ModalView modalView;
+    private String searchReferenceId;
     private int to;
-    private int trackId;
     private IClientLogging.ModalView view;
     
-    public SearchImpressionEvent(final int trackId, final int from, final int to, final String[] childIds, final IClientLogging.ModalView modalView, final IClientLogging.ModalView view) {
-        this.modalView = modalView;
-        this.childIds = childIds;
-        this.trackId = trackId;
-        this.from = from;
-        this.view = view;
-        this.to = to;
+    public SearchImpressionEvent(final String s, final int n, final int n2, final String[] array, final IClientLogging.ModalView modalView, final IClientLogging.ModalView modalView2) {
+        this.setupData(s, n, n2, array, modalView, modalView2);
+        this.setupAttributes(modalView);
     }
     
     private String idsToString() {
@@ -42,9 +40,21 @@ public class SearchImpressionEvent extends DiscreteEvent
         return sb.toString();
     }
     
-    @Override
-    public String getCategory() {
-        return "uiEvent";
+    private void setupAttributes(final IClientLogging.ModalView modalView) {
+        this.modalView = modalView;
+        this.type = EventType.event;
+        this.category = "uiView";
+        this.name = this.getName();
+        this.name = "impression";
+    }
+    
+    private void setupData(final String searchReferenceId, final int from, final int to, final String[] childIds, final IClientLogging.ModalView modalView, final IClientLogging.ModalView view) {
+        this.modalView = modalView;
+        this.childIds = childIds;
+        this.searchReferenceId = searchReferenceId;
+        this.from = from;
+        this.view = view;
+        this.to = to;
     }
     
     @Override
@@ -55,29 +65,15 @@ public class SearchImpressionEvent extends DiscreteEvent
         }
         String s;
         if (this.childIds != null && this.childIds.length > 0) {
-            s = String.format("['search', 'lists', '%d',{'from': %d, 'to': %d,'ids':[%s]}]", this.trackId, this.from, this.to, this.idsToString());
+            s = String.format("['search', 'lists', '%s',{'from': %d, 'to': %d,'ids':[%s]}]", this.searchReferenceId, this.from, this.to, this.idsToString());
         }
         else {
-            s = String.format("['search', 'lists', '%d',{'from': %d, 'to': %d}]", this.trackId, this.from, this.to);
+            s = String.format("['search', 'lists', '%s',{'from': %d, 'to': %d}]", this.searchReferenceId, this.from, this.to);
         }
         data.put("path", (Object)new JSONArray(s));
         if (this.view != null) {
             data.put("view", (Object)this.view.name());
         }
         return data;
-    }
-    
-    @Override
-    public String getName() {
-        return "impression";
-    }
-    
-    @Override
-    public EventType getType() {
-        return EventType.event;
-    }
-    
-    public IClientLogging.ModalView getView() {
-        return this.modalView;
     }
 }

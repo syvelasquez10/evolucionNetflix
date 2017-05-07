@@ -4,24 +4,31 @@
 
 package com.netflix.mediaclient.service.logging.search.model;
 
-import com.netflix.mediaclient.service.logging.client.model.EventType;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
 import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.service.logging.client.model.EventType;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 import com.netflix.mediaclient.service.logging.client.model.SessionEndedEvent;
 
 public final class SearchFocusSessionEndedEvent extends SessionEndedEvent
 {
     private static final String APP_SESSION_NAME = "focus";
+    private static final String CATEGORY = "uiView";
+    private static final String NAME = "focus.ended";
     
     public SearchFocusSessionEndedEvent(final long n) {
         super("focus", new DeviceUniqueId(), n);
+        this.setupAttributes();
     }
     
-    @Override
-    public String getCategory() {
-        return "search";
+    private void setupAttributes() {
+        this.sessionName = "focus";
+        this.type = EventType.sessionEnded;
+        this.modalView = IClientLogging.ModalView.search;
+        this.category = "uiView";
+        this.name = "focus.ended";
     }
     
     @Override
@@ -30,27 +37,7 @@ public final class SearchFocusSessionEndedEvent extends SessionEndedEvent
         if ((data = super.getData()) == null) {
             data = new JSONObject();
         }
-        data.put("path", (Object)"['']");
+        data.put("path", (Object)new JSONArray());
         return data;
-    }
-    
-    @Override
-    public IClientLogging.ModalView getModalView() {
-        return IClientLogging.ModalView.search;
-    }
-    
-    @Override
-    public String getName() {
-        return "focus.ended";
-    }
-    
-    @Override
-    public String getSessionName() {
-        return "focus";
-    }
-    
-    @Override
-    public EventType getType() {
-        return EventType.sessionEnded;
     }
 }

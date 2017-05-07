@@ -96,8 +96,14 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
     
     private ImageContainer get(final String s, final IClientLogging.AssetType assetType, final ImageListener imageListener, final int n, final int n2, final Request.Priority priority) {
         this.throwIfNotOnMainThread();
-        if (!UriUtil.isValidUri(s)) {
-            final String string = "Request URL is NOT valid, unable to load " + s;
+        if (!UriUtil.isValidUri(s) || this.mRequestQueue == null) {
+            String string;
+            if (this.mRequestQueue == null) {
+                string = "Request queue is null - can't get bitmap";
+            }
+            else {
+                string = "Request URL is NOT valid, unable to load " + s;
+            }
             Log.v("ImageLoader", string);
             final ImageContainer imageContainer = new ImageContainer(null, s, "ERROR", imageListener);
             if (imageListener != null) {

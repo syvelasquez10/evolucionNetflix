@@ -1968,17 +1968,17 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         synchronized (this) {
             Log.d("PlayerActivity", "Playout started");
             ThreadUtils.assertOnMain();
-            final PlayerType currentPlayerType = this.getServiceManager().getConfiguration().getCurrentPlayerType();
+            final PlayerType currentType = PlayerTypeFactory.getCurrentType((Context)this);
             if (this.mState.activityState == PlayerActivityState.ACTIVITY_PLAYER_READY) {
                 this.mState.playStarted = true;
                 this.mScreen.removeSplashScreen();
                 this.startScreenUpdate();
-                LogUtils.reportPlayActionEnded((Context)this, IClientLogging.CompletionReason.success, null, null, currentPlayerType);
+                LogUtils.reportPlayActionEnded((Context)this, IClientLogging.CompletionReason.success, null, null, currentType);
                 this.mState.playStartInProgress.set(false);
             }
             else {
                 Log.e("PlayerActivity", "onStarted not in correct state, destroyed:" + this.destroyed() + " ActivityState: " + this.mState.activityState.getName());
-                LogUtils.reportPlayActionEnded((Context)this, IClientLogging.CompletionReason.failed, new UIError(RootCause.clientFailure, ActionOnUIError.handledSilently, null, null), null, currentPlayerType);
+                LogUtils.reportPlayActionEnded((Context)this, IClientLogging.CompletionReason.failed, new UIError(RootCause.clientFailure, ActionOnUIError.handledSilently, null, null), null, currentType);
                 this.mState.playStartInProgress.set(false);
                 this.cleanupAndExit();
             }
@@ -2004,7 +2004,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         }
         if (this.mState.playStartInProgress.getAndSet(false)) {
             Log.d("PlayerActivity", "Start play is in progress and user canceled playback");
-            LogUtils.reportPlayActionEnded((Context)this, IClientLogging.CompletionReason.canceled, null, null, this.getServiceManager().getConfiguration().getCurrentPlayerType());
+            LogUtils.reportPlayActionEnded((Context)this, IClientLogging.CompletionReason.canceled, null, null, PlayerTypeFactory.getCurrentType((Context)this));
         }
         final String mMaxStreamsReachedDialogId = this.mMaxStreamsReachedDialogId;
         if (mMaxStreamsReachedDialogId != null) {

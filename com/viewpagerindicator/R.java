@@ -69,8 +69,8 @@ public final class R
         public static final int vpi__bright_foreground_holo_light = 2131296285;
         public static final int vpi__bright_foreground_inverse_holo_dark = 2131296288;
         public static final int vpi__bright_foreground_inverse_holo_light = 2131296289;
-        public static final int vpi__dark_theme = 2131296397;
-        public static final int vpi__light_theme = 2131296398;
+        public static final int vpi__dark_theme = 2131296398;
+        public static final int vpi__light_theme = 2131296399;
     }
     
     public static final class dimen
@@ -92,13 +92,13 @@ public final class R
     
     public static final class drawable
     {
-        public static final int vpi__tab_indicator = 2130837898;
-        public static final int vpi__tab_selected_focused_holo = 2130837899;
-        public static final int vpi__tab_selected_holo = 2130837900;
-        public static final int vpi__tab_selected_pressed_holo = 2130837901;
-        public static final int vpi__tab_unselected_focused_holo = 2130837902;
-        public static final int vpi__tab_unselected_holo = 2130837903;
-        public static final int vpi__tab_unselected_pressed_holo = 2130837904;
+        public static final int vpi__tab_indicator = 2130837900;
+        public static final int vpi__tab_selected_focused_holo = 2130837901;
+        public static final int vpi__tab_selected_holo = 2130837902;
+        public static final int vpi__tab_selected_pressed_holo = 2130837903;
+        public static final int vpi__tab_unselected_focused_holo = 2130837904;
+        public static final int vpi__tab_unselected_holo = 2130837905;
+        public static final int vpi__tab_unselected_pressed_holo = 2130837906;
     }
     
     public static final class id

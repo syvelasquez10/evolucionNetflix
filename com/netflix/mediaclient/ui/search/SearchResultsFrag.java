@@ -4,27 +4,30 @@
 
 package com.netflix.mediaclient.ui.search;
 
-import com.netflix.mediaclient.util.DeviceUtils;
-import android.widget.EditText;
 import android.view.MotionEvent;
+import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.ui.kids.search.KidsSearchResultView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import android.widget.BaseAdapter;
-import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
-import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
 import java.util.List;
-import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import com.netflix.mediaclient.servicemgr.model.search.SearchSuggestion;
+import com.netflix.mediaclient.servicemgr.model.search.SearchPerson;
+import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
+import android.app.Activity;
+import android.util.Pair;
+import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
+import android.widget.ScrollView;
 import android.view.View$OnTouchListener;
 import com.netflix.mediaclient.util.StringUtils;
 import android.widget.AdapterView;
@@ -33,11 +36,15 @@ import java.util.Locale;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.content.Context;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
+import com.netflix.mediaclient.util.DeviceUtils;
+import android.widget.EditText;
+import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.widget.ListAdapter;
 import android.widget.GridView;
 import com.netflix.mediaclient.Log;
 import android.view.View;
+import com.netflix.mediaclient.servicemgr.model.trackable.SearchTrackable;
 import com.netflix.mediaclient.ui.common.SearchSimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.android.widget.LoggingScrollView;
 import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
@@ -74,13 +81,16 @@ public class SearchResultsFrag extends NetflixFrag
     private ISearchResults results;
     private LoggingScrollView scrollView;
     private LoggingScrollView scrollView2;
+    private SearchCategory secondarySearch;
     private SearchSimilarItemsGridViewAdapter simAdapter;
+    private SearchTrackable trackableTitles;
     
     public SearchResultsFrag() {
         this.clickPresseHistory = new Stack<ItemClick>();
+        this.secondarySearch = SearchCategory.VIDEOS;
     }
     
-    static /* synthetic */ int access$1016(final SearchResultsFrag searchResultsFrag, final float n) {
+    static /* synthetic */ int access$1116(final SearchResultsFrag searchResultsFrag, final float n) {
         return searchResultsFrag.imgHeightPeople += (int)n;
     }
     
@@ -90,6 +100,15 @@ public class SearchResultsFrag extends NetflixFrag
             this.clickPresseHistory.push(new ItemClick(staticGridView, view, n, n2, ((SearchResultView)view).getDisplayName()));
         }
         view.setTag(2131165244, (Object)Boolean.TRUE);
+    }
+    
+    private void clearGridSelections() {
+        for (int i = 0; i < this.gridViewPeople.getCount(); ++i) {
+            ((SearchResultView)this.gridViewPeople.getChildAt(i)).clearTitleTextHighlighting();
+        }
+        for (int j = 0; j < this.gridViewSuggestions.getCount(); ++j) {
+            ((SearchResultView)this.gridViewSuggestions.getChildAt(j)).clearTitleTextHighlighting();
+        }
     }
     
     public static SearchResultsFrag create() {
@@ -104,8 +123,9 @@ public class SearchResultsFrag extends NetflixFrag
         this.simAdapter = new SearchSimilarItemsGridViewAdapter(this.getActivity(), this.gridViewVideos, false);
         if (this.gridViewVideos != null) {
             this.gridViewVideos.setAdapter((ListAdapter)this.simAdapter);
+            this.setupGridViewObserverForTitles(this.gridViewVideos);
         }
-        this.manager.getBrowse().fetchSimilarVideosForPerson(s, 40, new OnSimsFetchedCallback(System.nanoTime(), s));
+        this.manager.getBrowse().fetchSimilarVideosForPerson(s, 40, new OnSimsFetchedCallback(System.nanoTime(), s, SearchCategory.PEOPLE), this.query);
     }
     
     private void fetchSuggestedVideoData(final String s) {
@@ -116,8 +136,9 @@ public class SearchResultsFrag extends NetflixFrag
         this.simAdapter = new SearchSimilarItemsGridViewAdapter(this.getActivity(), this.gridViewVideos, false);
         if (this.gridViewVideos != null) {
             this.gridViewVideos.setAdapter((ListAdapter)this.simAdapter);
+            this.setupGridViewObserverForTitles(this.gridViewVideos);
         }
-        this.manager.getBrowse().fetchSimilarVideosForQuerySuggestion(s, 40, new OnSimsFetchedCallback(System.nanoTime(), s), this.query);
+        this.manager.getBrowse().fetchSimilarVideosForQuerySuggestion(s, 40, new OnSimsFetchedCallback(System.nanoTime(), s, SearchCategory.SUGGESTIONS), this.query);
     }
     
     private void findViews(final View view) {
@@ -125,12 +146,71 @@ public class SearchResultsFrag extends NetflixFrag
         this.gridViewVideos = (StaticGridView)view.findViewById(2131165621);
         this.gridViewPeople = (StaticGridView)view.findViewById(2131165623);
         this.labelSuggestions = (TextView)view.findViewById(2131165624);
-        this.relatedlabel = (TextView)view.findViewById(2131165627);
-        this.scrollView2 = (LoggingScrollView)view.findViewById(2131165626);
+        this.relatedlabel = (TextView)view.findViewById(2131165626);
+        this.scrollView2 = (LoggingScrollView)view.findViewById(2131165627);
         this.labelVideos = (TextView)view.findViewById(2131165620);
         this.labelPeople = (TextView)view.findViewById(2131165622);
         this.scrollView = (LoggingScrollView)view.findViewById(2131165619);
         this.progressBar = (ProgressBar)view.findViewById(2131165443);
+    }
+    
+    public static Object getItem(final ISearchResults searchResults, final SearchCategory searchCategory, final int n) {
+        if (searchResults == null) {
+            return null;
+        }
+        switch (searchCategory) {
+            default: {
+                return null;
+            }
+            case SUGGESTIONS: {
+                return searchResults.getResultsSuggestions(n);
+            }
+            case VIDEOS: {
+                return searchResults.getResultsVideos(n);
+            }
+            case PEOPLE: {
+                return searchResults.getResultsPeople(n);
+            }
+        }
+    }
+    
+    private String[] getItemIdsForRange(final SearchCategory searchCategory, int i, final int n) {
+        if (n < i) {
+            return null;
+        }
+        final ArrayList<String> list = new ArrayList<String>();
+        while (i <= n) {
+            final Object item = getItem(this.results, searchCategory, i);
+            if (item != null) {
+                final String searchObjectId = this.getSearchObjectId(item);
+                if (searchObjectId != null) {
+                    list.add(searchObjectId);
+                }
+            }
+            ++i;
+        }
+        return list.toArray(new String[list.size()]);
+    }
+    
+    private String getReferenceId(final SearchTrackable searchTrackable) {
+        if (searchTrackable != null) {
+            return searchTrackable.getReferenceId();
+        }
+        return null;
+    }
+    
+    private void hideKeyboard() {
+        final View currentFocus = this.getActivity().getCurrentFocus();
+        if (currentFocus instanceof EditText) {
+            DeviceUtils.forceHideKeyboard(this.getActivity(), (EditText)currentFocus);
+        }
+    }
+    
+    private String highlightTitle(final View view) {
+        final SearchResultView searchResultView = (SearchResultView)view;
+        final String playablId = searchResultView.getPlayablId();
+        searchResultView.setTitleTextWithSelectdHighlighting();
+        return playablId;
     }
     
     private void notifyAdapters() {
@@ -176,10 +256,22 @@ public class SearchResultsFrag extends NetflixFrag
                 final int numPeopleGridCols = SearchUtils.getNumPeopleGridCols((Context)SearchResultsFrag.this.getActivity());
                 if (numPeopleGridCols > 0) {
                     SearchResultsFrag.this.imgHeightPeople = (int)(n / numPeopleGridCols * SearchUtils.getPeopleImageAspectRatio() + 0.5);
-                    SearchResultsFrag.access$1016(SearchResultsFrag.this, SearchResultsFrag.this.getActivity().getResources().getDimension(2131361982));
+                    SearchResultsFrag.access$1116(SearchResultsFrag.this, SearchResultsFrag.this.getActivity().getResources().getDimension(2131361982));
                     Log.v("SearchResultsFrag", "imgHeightPeople: " + SearchResultsFrag.this.imgHeightPeople);
                 }
+                SearchResultsFrag.this.fireImpressionEvents();
                 ViewUtils.removeGlobalLayoutListener((View)staticGridView, (ViewTreeObserver$OnGlobalLayoutListener)this);
+            }
+        });
+    }
+    
+    private void setupGridViewObserverForTitles(final StaticGridView staticGridView) {
+        staticGridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                SearchResultsFrag.this.fireGridViewVideosImpressionEvents();
+                if (staticGridView.getCount() > 0) {
+                    ViewUtils.removeGlobalLayoutListener((View)staticGridView, (ViewTreeObserver$OnGlobalLayoutListener)this);
+                }
             }
         });
     }
@@ -229,18 +321,19 @@ public class SearchResultsFrag extends NetflixFrag
         if (!SearchUtils.shouldOpenNewActivityForRelated()) {
             this.setupPeopleOnItemClick();
         }
-        this.setupGridViewObserver(this.gridViewPeople);
         this.gridViewPeople.setNumColumns(SearchUtils.getNumPeopleGridCols((Context)this.getActivity()));
     }
     
     private void setupPeopleOnItemClick() {
         this.gridViewPeople.setOnItemClickListener((AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
             public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
-                if (view != null) {
-                    final String playablId = ((SearchResultView)view).getPlayablId();
-                    if (StringUtils.isNotEmpty(playablId)) {
+                if (view != null && view instanceof SearchResultView) {
+                    SearchResultsFrag.this.hideKeyboard();
+                    SearchResultsFrag.this.clearGridSelections();
+                    final String access$200 = SearchResultsFrag.this.highlightTitle(view);
+                    if (StringUtils.isNotEmpty(access$200)) {
                         SearchResultsFrag.this.updateSimilarLabel(view);
-                        SearchResultsFrag.this.fetchPeopleVideoData(playablId);
+                        SearchResultsFrag.this.fetchPeopleVideoData(access$200);
                         SearchResultsFrag.this.addToClickHistory(SearchResultsFrag.this.gridViewPeople, view, n, n2);
                         if (SearchResultsFrag.this.progressBar != null) {
                             SearchResultsFrag.this.progressBar.setVisibility(0);
@@ -285,18 +378,19 @@ public class SearchResultsFrag extends NetflixFrag
         if (!SearchUtils.shouldOpenNewActivityForRelated()) {
             this.setupSuggestionsOnItemClick();
         }
-        this.setupGridViewObserver(this.gridViewSuggestions);
         this.gridViewSuggestions.setNumColumns(SearchUtils.getNumRelatedGridCols((Context)this.getActivity()));
     }
     
     private void setupSuggestionsOnItemClick() {
         this.gridViewSuggestions.setOnItemClickListener((AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
             public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
-                if (view != null) {
-                    final String playablId = ((SearchResultView)view).getPlayablId();
-                    if (StringUtils.isNotEmpty(playablId)) {
+                if (view != null && view instanceof SearchResultView) {
+                    SearchResultsFrag.this.hideKeyboard();
+                    SearchResultsFrag.this.clearGridSelections();
+                    final String access$200 = SearchResultsFrag.this.highlightTitle(view);
+                    if (StringUtils.isNotEmpty(access$200)) {
                         SearchResultsFrag.this.updateSimilarLabel(view);
-                        SearchResultsFrag.this.fetchSuggestedVideoData(playablId);
+                        SearchResultsFrag.this.fetchSuggestedVideoData(access$200);
                         SearchResultsFrag.this.addToClickHistory(SearchResultsFrag.this.gridViewSuggestions, view, n, n2);
                         if (SearchResultsFrag.this.progressBar != null) {
                             SearchResultsFrag.this.progressBar.setVisibility(0);
@@ -379,6 +473,103 @@ public class SearchResultsFrag extends NetflixFrag
         this.clickPresseHistory.clear();
     }
     
+    public void fireGridViewVideosImpressionEvents() {
+        boolean b = true;
+        boolean b2;
+        if (this.gridViewVideos != null) {
+            b2 = true;
+        }
+        else {
+            b2 = false;
+        }
+        if (this.gridViewVideos.getCount() <= 0) {
+            b = false;
+        }
+        if (b2 & b) {
+            final Pair<Integer, Integer> visiblePositions = ViewUtils.getVisiblePositions(this.gridViewVideos, this.scrollView);
+            if (visiblePositions != null) {
+                final int intValue = (int)visiblePositions.first;
+                final int intValue2 = (int)visiblePositions.second;
+                IClientLogging.ModalView modalView = null;
+                switch (this.secondarySearch) {
+                    default: {
+                        modalView = IClientLogging.ModalView.titleResults;
+                        break;
+                    }
+                    case SUGGESTIONS: {
+                        modalView = IClientLogging.ModalView.suggestionTitleResults;
+                        break;
+                    }
+                    case PEOPLE: {
+                        modalView = IClientLogging.ModalView.peopleTitleResults;
+                        break;
+                    }
+                }
+                final Activity activity = this.getActivity();
+                final IClientLogging.ModalView searchResults = IClientLogging.ModalView.searchResults;
+                SearchTrackable searchTrackable;
+                if (this.secondarySearch == SearchCategory.VIDEOS) {
+                    searchTrackable = this.results.getVideosListTrackable();
+                }
+                else {
+                    searchTrackable = this.trackableTitles;
+                }
+                SearchLogUtils.reportSearchImpression(1L, (Context)activity, searchResults, this.getReferenceId(searchTrackable), null, intValue, intValue2, modalView);
+            }
+        }
+    }
+    
+    public void fireImpressionEvents() {
+        final boolean b = true;
+        this.fireGridViewVideosImpressionEvents();
+        boolean b2;
+        if (this.gridViewPeople != null) {
+            b2 = true;
+        }
+        else {
+            b2 = false;
+        }
+        boolean b3;
+        if (this.gridViewPeople.getCount() > 0) {
+            b3 = true;
+        }
+        else {
+            b3 = false;
+        }
+        if (b2 & b3) {
+            final Pair<Integer, Integer> visiblePositions = ViewUtils.getVisiblePositions(this.gridViewPeople, this.scrollView);
+            if (visiblePositions != null) {
+                SearchLogUtils.reportSearchImpression(1L, (Context)this.getActivity(), IClientLogging.ModalView.searchResults, this.getReferenceId(this.results.getPeopleListTrackable()), null, (int)visiblePositions.first, (int)visiblePositions.second, IClientLogging.ModalView.peopleResults);
+            }
+        }
+        boolean b4;
+        if (this.gridViewSuggestions != null) {
+            b4 = true;
+        }
+        else {
+            b4 = false;
+        }
+        if (b4 & (this.gridViewSuggestions.getCount() > 0 && b)) {
+            final Pair<Integer, Integer> visiblePositions2 = ViewUtils.getVisiblePositions(this.gridViewSuggestions, this.scrollView);
+            if (visiblePositions2 != null) {
+                SearchLogUtils.reportSearchImpression(1L, (Context)this.getActivity(), IClientLogging.ModalView.searchResults, this.getReferenceId(this.results.getSuggestionsListTrackable()), null, (int)visiblePositions2.first, (int)visiblePositions2.second, IClientLogging.ModalView.suggestionResults);
+            }
+        }
+    }
+    
+    public String getSearchObjectId(final Object o) {
+        if (o instanceof SearchVideo) {
+            return ((SearchVideo)o).getId();
+        }
+        if (o instanceof SearchPerson) {
+            return ((SearchPerson)o).getId();
+        }
+        if (o instanceof SearchSuggestion) {
+            return ((SearchSuggestion)o).getTitle();
+        }
+        throw new IllegalStateException("Unknown search result type");
+    }
+    
     public boolean isLoadingData() {
         return false;
     }
@@ -403,7 +594,7 @@ public class SearchResultsFrag extends NetflixFrag
     public boolean showLastSelectedItem() {
         while (!this.clickPresseHistory.isEmpty()) {
             final ItemClick itemClick = this.clickPresseHistory.pop();
-            if (itemClick.displayName.compareToIgnoreCase(this.currentlyDisplaying) != 0) {
+            if (itemClick.displayName != null && this.currentlyDisplaying != null && itemClick.displayName.compareToIgnoreCase(this.currentlyDisplaying) != 0) {
                 itemClick.view.setTag(2131165244, (Object)Boolean.TRUE);
                 itemClick.gridView.performItemClick(itemClick.view, itemClick.position, itemClick.id);
                 return true;
@@ -415,6 +606,7 @@ public class SearchResultsFrag extends NetflixFrag
     public void update(final ISearchResults results, final String query) {
         Log.v("SearchResultsFrag", "Updating...");
         this.results = results;
+        this.secondarySearch = SearchCategory.VIDEOS;
         this.clearSelectedStack();
         if (this.progressBar != null) {
             this.progressBar.setVisibility(8);
@@ -452,8 +644,11 @@ public class SearchResultsFrag extends NetflixFrag
     
     private class OnSimsFetchedCallback extends LoggingManagerCallback
     {
-        public OnSimsFetchedCallback(final long n, final String s) {
+        SearchCategory searchCategory;
+        
+        public OnSimsFetchedCallback(final long n, final String s, final SearchCategory searchCategory) {
             super("SearchResultsFrag");
+            this.searchCategory = searchCategory;
         }
         
         @Override
@@ -462,20 +657,22 @@ public class SearchResultsFrag extends NetflixFrag
             if (status.isError()) {
                 Log.w("SearchResultsFrag", "Invalid status code");
                 ((SearchActivity)SearchResultsFrag.this.getActivity()).showError();
+                return;
             }
-            else {
-                if (list == null || list.size() < 1) {
-                    Log.v("SearchResultsFrag", "No details in response");
-                    ((SearchActivity)SearchResultsFrag.this.getActivity()).showError();
-                    return;
-                }
-                if (SearchResultsFrag.this.simAdapter != null) {
-                    SearchResultsFrag.this.simAdapter.setData(list, PlayContext.EMPTY_CONTEXT);
-                }
-                if (SearchResultsFrag.this.progressBar != null) {
-                    SearchResultsFrag.this.progressBar.setVisibility(8);
-                }
+            if (list == null || list.size() < 1) {
+                Log.v("SearchResultsFrag", "No details in response");
+                ((SearchActivity)SearchResultsFrag.this.getActivity()).showError();
+                return;
             }
+            if (SearchResultsFrag.this.simAdapter != null) {
+                SearchResultsFrag.this.secondarySearch = this.searchCategory;
+                SearchResultsFrag.this.trackableTitles = list.getVideosListTrackable();
+                SearchResultsFrag.this.simAdapter.setData(list, SearchResultsFrag.this.trackableTitles);
+            }
+            if (SearchResultsFrag.this.progressBar != null) {
+                SearchResultsFrag.this.progressBar.setVisibility(8);
+            }
+            SearchResultsFrag.this.fireImpressionEvents();
         }
     }
     
@@ -483,51 +680,7 @@ public class SearchResultsFrag extends NetflixFrag
     {
         @Override
         public void log() {
-            final boolean b = true;
-            boolean b2;
-            if (SearchResultsFrag.this.gridViewVideos != null) {
-                b2 = true;
-            }
-            else {
-                b2 = false;
-            }
-            boolean b3;
-            if (SearchResultsFrag.this.gridViewVideos.getCount() > 0) {
-                b3 = true;
-            }
-            else {
-                b3 = false;
-            }
-            if (b2 & b3) {
-                SearchLogUtils.reportSearchImpression(1L, (Context)SearchResultsFrag.this.getActivity(), IClientLogging.ModalView.searchResults, SearchResultsFrag.this.results.getTrackId(), null, SearchResultsFrag.this.gridViewVideos.getFirstVisiblePosition(), SearchResultsFrag.this.gridViewVideos.getLastVisiblePosition(), IClientLogging.ModalView.titleResults);
-            }
-            boolean b4;
-            if (SearchResultsFrag.this.gridViewPeople != null) {
-                b4 = true;
-            }
-            else {
-                b4 = false;
-            }
-            boolean b5;
-            if (SearchResultsFrag.this.gridViewPeople.getCount() > 0) {
-                b5 = true;
-            }
-            else {
-                b5 = false;
-            }
-            if (b4 & b5) {
-                SearchLogUtils.reportSearchImpression(1L, (Context)SearchResultsFrag.this.getActivity(), IClientLogging.ModalView.searchResults, SearchResultsFrag.this.results.getTrackId(), null, SearchResultsFrag.this.gridViewPeople.getFirstVisiblePosition(), SearchResultsFrag.this.gridViewPeople.getLastVisiblePosition(), IClientLogging.ModalView.peopleTitleResults);
-            }
-            boolean b6;
-            if (SearchResultsFrag.this.gridViewSuggestions != null) {
-                b6 = true;
-            }
-            else {
-                b6 = false;
-            }
-            if (b6 & (SearchResultsFrag.this.gridViewSuggestions.getCount() > 0 && b)) {
-                SearchLogUtils.reportSearchImpression(1L, (Context)SearchResultsFrag.this.getActivity(), IClientLogging.ModalView.searchResults, SearchResultsFrag.this.results.getTrackId(), null, SearchResultsFrag.this.gridViewSuggestions.getFirstVisiblePosition(), SearchResultsFrag.this.gridViewSuggestions.getLastVisiblePosition(), IClientLogging.ModalView.suggestionTitleResults);
-            }
+            SearchResultsFrag.this.fireImpressionEvents();
         }
     }
     
@@ -587,6 +740,23 @@ public class SearchResultsFrag extends NetflixFrag
             return (View)searchResultView;
         }
         
+        private SearchTrackable getTrackableForPos(final int n) {
+            switch (this.searchCategory) {
+                default: {
+                    return null;
+                }
+                case VIDEOS: {
+                    return SearchResultsFrag.this.results.getVideosListTrackable();
+                }
+                case PEOPLE: {
+                    return SearchResultsFrag.this.results.getPeopleListTrackable();
+                }
+                case SUGGESTIONS: {
+                    return SearchResultsFrag.this.results.getSuggestionsListTrackable();
+                }
+            }
+        }
+        
         private void setResid() {
             switch (this.searchCategory) {
                 default: {
@@ -630,23 +800,7 @@ public class SearchResultsFrag extends NetflixFrag
         }
         
         public Object getItem(final int n) {
-            if (SearchResultsFrag.this.results == null) {
-                return null;
-            }
-            switch (this.searchCategory) {
-                default: {
-                    return null;
-                }
-                case PEOPLE: {
-                    return SearchResultsFrag.this.results.getResultsPeople(n);
-                }
-                case VIDEOS: {
-                    return SearchResultsFrag.this.results.getResultsVideos(n);
-                }
-                case SUGGESTIONS: {
-                    return SearchResultsFrag.this.results.getResultsSuggestions(n);
-                }
-            }
+            return SearchResultsFrag.getItem(SearchResultsFrag.this.results, this.searchCategory, n);
         }
         
         public long getItemId(final int n) {
@@ -664,7 +818,8 @@ public class SearchResultsFrag extends NetflixFrag
                 }
                 view2 = this.createView();
             }
-            ((SearchResultView)view2).update(this.getItem(n), new PlayContextImp(SearchResultsFrag.this.results, n), SearchResultsFrag.this.query, SearchResultsFrag.this.results.getTrackId());
+            final SearchTrackable trackableForPos = this.getTrackableForPos(n);
+            ((SearchResultView)view2).update(this.getItem(n), new PlayContextImp(trackableForPos, n), SearchResultsFrag.this.query, trackableForPos.getReferenceId());
             return view2;
         }
         
@@ -682,11 +837,8 @@ public class SearchResultsFrag extends NetflixFrag
     
     class keyboardHider implements View$OnTouchListener
     {
-        public boolean onTouch(View currentFocus, final MotionEvent motionEvent) {
-            currentFocus = SearchResultsFrag.this.getActivity().getCurrentFocus();
-            if (currentFocus instanceof EditText) {
-                DeviceUtils.forceHideKeyboard(SearchResultsFrag.this.getActivity(), (EditText)currentFocus);
-            }
+        public boolean onTouch(final View view, final MotionEvent motionEvent) {
+            SearchResultsFrag.this.hideKeyboard();
             return false;
         }
     }

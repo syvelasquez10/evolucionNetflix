@@ -139,8 +139,8 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
-    public void fetchSimilarVideosForPerson(final String s, final int n, final int n2, final int n3) {
-        this.mBrowseAgent.fetchSimilarVideosForPerson(s, n, this.wrapCallback(new BrowseAgentClientCallback(n2, n3)));
+    public void fetchSimilarVideosForPerson(final String s, final int n, final int n2, final int n3, final String s2) {
+        this.mBrowseAgent.fetchSimilarVideosForPerson(s, n, this.wrapCallback(new BrowseAgentClientCallback(n2, n3)), s2);
     }
     
     @Override

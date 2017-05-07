@@ -54,8 +54,8 @@ public final class R
         public static final int common_signin_btn_light_text_disabled = 2131296265;
         public static final int common_signin_btn_light_text_focused = 2131296266;
         public static final int common_signin_btn_light_text_pressed = 2131296264;
-        public static final int common_signin_btn_text_dark = 2131296392;
-        public static final int common_signin_btn_text_light = 2131296393;
+        public static final int common_signin_btn_text_dark = 2131296393;
+        public static final int common_signin_btn_text_light = 2131296394;
         public static final int wallet_bright_foreground_disabled_holo_light = 2131296274;
         public static final int wallet_bright_foreground_holo_dark = 2131296269;
         public static final int wallet_bright_foreground_holo_light = 2131296275;
@@ -69,8 +69,8 @@ public final class R
         public static final int wallet_hint_foreground_holo_light = 2131296276;
         public static final int wallet_holo_blue_light = 2131296280;
         public static final int wallet_link_text_light = 2131296281;
-        public static final int wallet_primary_text_holo_light = 2131296399;
-        public static final int wallet_secondary_text_holo_dark = 2131296400;
+        public static final int wallet_primary_text_holo_light = 2131296400;
+        public static final int wallet_secondary_text_holo_dark = 2131296401;
     }
     
     public static final class drawable
@@ -103,8 +103,8 @@ public final class R
         public static final int ic_plusone_small_off_client = 2130837705;
         public static final int ic_plusone_standard_off_client = 2130837706;
         public static final int ic_plusone_tall_off_client = 2130837707;
-        public static final int powered_by_google_dark = 2130837855;
-        public static final int powered_by_google_light = 2130837856;
+        public static final int powered_by_google_dark = 2130837856;
+        public static final int powered_by_google_light = 2130837857;
     }
     
     public static final class id

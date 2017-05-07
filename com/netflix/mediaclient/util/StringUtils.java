@@ -62,6 +62,9 @@ public final class StringUtils
     }
     
     public static CharSequence createBoldLabeledText(final Context context, final int n, final String s) {
+        if (context == null) {
+            return "";
+        }
         return createBoldLabeledText(context, context.getString(n), s);
     }
     

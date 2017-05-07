@@ -284,7 +284,7 @@ public class AvatarsGridActivity extends NetflixActivity
             if (AvatarsGridActivity.this.mSelectedIconPos == n) {
                 viewHolder.topEditImg.setVisibility(0);
                 viewHolder.topEditImg.setImageResource(2131296304);
-                viewHolder.topEditImg.setBackgroundResource(2130837858);
+                viewHolder.topEditImg.setBackgroundResource(2130837859);
             }
             else {
                 viewHolder.topEditImg.setVisibility(8);

@@ -24,6 +24,10 @@ public interface IPlayer
 {
     public static final String EXTRA_TYPE = "lookupType";
     public static final String LOCAL_INTENT_CATEGORY = "com.netflix.mediaclient.intent.category.PLAYER";
+    public static final String PLAYER_LOCAL_PLAYBACK_ENDED = "com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_ENDED";
+    public static final String PLAYER_LOCAL_PLAYBACK_PAUSED = "com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_PAUSED";
+    public static final String PLAYER_LOCAL_PLAYBACK_STARTED = "com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_STARTED";
+    public static final String PLAYER_LOCAL_PLAYBACK_UNPAUSED = "com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_UNPAUSED";
     public static final String PLAYER_SUBTITLE_CONFIG_CHANGED = "com.netflix.mediaclient.intent.action.PLAYER_SUBTITLE_CONFIG_CHANGED";
     
     void addPlayerListener(final PlayerListener p0);

@@ -586,7 +586,7 @@ public class ProfileSelectionActivity extends NetflixActivity
             final Holder holder = (Holder)inflate.getTag();
             final UserProfile item = this.getItem(visibility);
             if (visibility == ProfileSelectionActivity.this.profiles.size()) {
-                holder.img.setImageResource(2130837861);
+                holder.img.setImageResource(2130837862);
                 holder.title.setText(2131493332);
                 holder.topEditImg.setVisibility(8);
                 return inflate;

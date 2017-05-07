@@ -4,24 +4,29 @@
 
 package com.netflix.mediaclient.service.logging.search.model;
 
-import com.netflix.mediaclient.service.logging.client.model.EventType;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
 import org.json.JSONException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import com.netflix.mediaclient.service.logging.client.model.EventType;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.logging.client.model.DiscreteEvent;
 
 public class SearchEditEvent extends DiscreteEvent
 {
+    private static final String CATEGORY = "uiView";
+    private static final String NAME = "edit";
     String query;
     
     public SearchEditEvent(final String query) {
         this.query = query;
+        this.setupAttributes();
     }
     
-    @Override
-    public String getCategory() {
-        return "uiView";
+    private void setupAttributes() {
+        this.modalView = IClientLogging.ModalView.search;
+        this.type = EventType.edit;
+        this.category = "uiView";
+        this.name = "edit";
     }
     
     @Override
@@ -33,20 +38,5 @@ public class SearchEditEvent extends DiscreteEvent
         data.put("path", (Object)new JSONArray("['searchQuery']"));
         data.put("value", (Object)this.query);
         return data;
-    }
-    
-    @Override
-    public IClientLogging.ModalView getModalView() {
-        return IClientLogging.ModalView.search;
-    }
-    
-    @Override
-    public String getName() {
-        return "edit";
-    }
-    
-    @Override
-    public EventType getType() {
-        return EventType.edit;
     }
 }

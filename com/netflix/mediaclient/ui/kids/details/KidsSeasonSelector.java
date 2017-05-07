@@ -49,15 +49,15 @@ public class KidsSeasonSelector extends RelativeLayout
         final List<SeasonDetails> seasons = this.adapter.getSeasons();
         Log.v("KidsSeasonSelector", "Creating Season Selector, num seasons: " + seasons.size());
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
-        this.selectedColor = this.getResources().getColor(2131296373);
-        this.unselectedColor = this.getResources().getColor(2131296374);
+        this.selectedColor = this.getResources().getColor(2131296374);
+        this.unselectedColor = this.getResources().getColor(2131296375);
         this.itemWidth = this.getResources().getDimensionPixelSize(2131361926);
         this.halfItemWidth = this.itemWidth / 2;
         this.centerOffset = (DeviceUtils.getScreenWidthInPixels((Context)this.activity) - this.itemWidth) / 2;
         this.padViewWidth = this.centerOffset;
         Log.v("KidsSeasonSelector", "Item width: " + this.itemWidth + ", centerOffset: " + this.centerOffset);
         this.activity.getLayoutInflater().inflate(2130903106, (ViewGroup)this);
-        this.setBackgroundColor(this.activity.getResources().getColor(2131296372));
+        this.setBackgroundColor(this.activity.getResources().getColor(2131296373));
         this.seasonsGroup = (LinearLayout)this.findViewById(2131165425);
         (this.scroller = (HorizontalScrollView)this.findViewById(2131165424)).setHorizontalScrollBarEnabled(false);
         this.scroller.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {

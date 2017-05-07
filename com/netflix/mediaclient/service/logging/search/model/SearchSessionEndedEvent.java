@@ -4,41 +4,27 @@
 
 package com.netflix.mediaclient.service.logging.search.model;
 
-import com.netflix.mediaclient.service.logging.client.model.EventType;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.service.logging.client.model.EventType;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 import com.netflix.mediaclient.service.logging.client.model.SessionEndedEvent;
 
 public final class SearchSessionEndedEvent extends SessionEndedEvent
 {
     private static final String APP_SESSION_NAME = "search";
+    private static final String CATEGORY = "search";
+    private static final String NAME = "session.ended";
     
     public SearchSessionEndedEvent(final long n) {
         super("search", new DeviceUniqueId(), n);
+        this.setupAttributes();
     }
     
-    @Override
-    public String getCategory() {
-        return "search";
-    }
-    
-    @Override
-    public IClientLogging.ModalView getModalView() {
-        return IClientLogging.ModalView.search;
-    }
-    
-    @Override
-    public String getName() {
-        return "session.ended";
-    }
-    
-    @Override
-    public String getSessionName() {
-        return "search";
-    }
-    
-    @Override
-    public EventType getType() {
-        return EventType.sessionEnded;
+    private void setupAttributes() {
+        this.type = EventType.sessionEnded;
+        this.sessionName = "search";
+        this.modalView = IClientLogging.ModalView.search;
+        this.category = "search";
+        this.name = "session.ended";
     }
 }

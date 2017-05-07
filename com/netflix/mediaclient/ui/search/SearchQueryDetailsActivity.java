@@ -12,14 +12,18 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import android.os.Bundle;
+import android.util.Pair;
+import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
+import android.widget.ScrollView;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import java.io.Serializable;
-import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
 import android.widget.AbsListView;
 import android.widget.AbsListView$OnScrollListener;
 import android.content.Intent;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.ViewUtils;
+import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.widget.ListAdapter;
 import android.widget.GridView;
 import android.app.Activity;
@@ -30,10 +34,11 @@ import com.netflix.mediaclient.Log;
 import android.widget.TextView;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import android.view.View;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper;
 import com.netflix.mediaclient.android.widget.StaticGridView;
-import android.view.View;
+import com.netflix.mediaclient.android.widget.LoggingScrollView;
 import com.netflix.mediaclient.ui.common.SearchSimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
@@ -41,13 +46,13 @@ public class SearchQueryDetailsActivity extends NetflixActivity
 {
     private static final String EXTRA_ID = "extra_id";
     private static final String EXTRA_ORIGINAL_SEARCH_TERM = "extra_original_query";
+    private static final String EXTRA_REFERNCE_ID = "extra_reference_id";
     private static final String EXTRA_TITLE = "extra_title";
-    private static final String EXTRA_TRACK_ID = "extra_tracking_id";
     private static final String EXTRA_TYPE = "extra_type";
     private static final int NUM_SIMS_TO_FETCH = 40;
     private static final String TAG = "SearchQueryDetailsActivity";
     private SearchSimilarItemsGridViewAdapter adapter;
-    private View content;
+    private LoggingScrollView content;
     private StaticGridView gridView;
     private String id;
     private boolean isLoading;
@@ -57,11 +62,11 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     private ServiceManager manager;
     private IClientLogging.ModalView nonModalView;
     private String originalSearchTerm;
+    private String referenceId;
     private long requestId;
     private String title;
     private TextView titleView;
     private View topSpacer;
-    private int trackId;
     private SearchQueryDetailsType type;
     
     public SearchQueryDetailsActivity() {
@@ -83,7 +88,7 @@ public class SearchQueryDetailsActivity extends NetflixActivity
         this.requestId = System.nanoTime();
         if (this.type == SearchQueryDetailsType.PERSON) {
             Log.v("SearchQueryDetailsActivity", "Fetching data for person, Id: " + this.id);
-            this.manager.getBrowse().fetchSimilarVideosForPerson(this.id, 40, new OnSimsFetchedCallback(this.requestId));
+            this.manager.getBrowse().fetchSimilarVideosForPerson(this.id, 40, new OnSimsFetchedCallback(this.requestId), this.originalSearchTerm);
             return;
         }
         if (this.type == SearchQueryDetailsType.SEARCH_SUGGESTION) {
@@ -95,10 +100,10 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     }
     
     private void findViews() {
-        this.titleView = (TextView)this.findViewById(2131165627);
+        this.titleView = (TextView)this.findViewById(2131165626);
         this.gridView = (StaticGridView)this.findViewById(2131165634);
         this.loadingWrapper = this.findViewById(2131165615);
-        this.content = this.findViewById(2131165616);
+        this.content = (LoggingScrollView)this.findViewById(2131165616);
         this.topSpacer = this.findViewById(2131165633);
     }
     
@@ -125,6 +130,17 @@ public class SearchQueryDetailsActivity extends NetflixActivity
         this.setupScrollViewLogging();
     }
     
+    private void setupGridViewObserver() {
+        this.gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                SearchQueryDetailsActivity.this.fireImpressionEvents();
+                if (SearchQueryDetailsActivity.this.gridView.getCount() > 0) {
+                    ViewUtils.removeGlobalLayoutListener((View)SearchQueryDetailsActivity.this.gridView, (ViewTreeObserver$OnGlobalLayoutListener)this);
+                }
+            }
+        });
+    }
+    
     private void setupLoading() {
         this.leWrapper = new LoadingAndErrorWrapper(this.loadingWrapper, this.leCallback);
     }
@@ -135,7 +151,7 @@ public class SearchQueryDetailsActivity extends NetflixActivity
         this.id = intent.getStringExtra("extra_id");
         this.title = intent.getStringExtra("extra_title");
         this.originalSearchTerm = intent.getStringExtra("extra_original_query");
-        this.trackId = intent.getIntExtra("extra_tracking_id", -1);
+        this.referenceId = intent.getStringExtra("extra_reference_id");
         final String stringExtra = intent.getStringExtra("view");
         if (StringUtils.isNotEmpty(stringExtra)) {
             this.nonModalView = IClientLogging.ModalView.valueOf(stringExtra);
@@ -149,10 +165,18 @@ public class SearchQueryDetailsActivity extends NetflixActivity
             
             public void onScrollStateChanged(final AbsListView absListView, final int n) {
                 if (n == 0 && SearchQueryDetailsActivity.this.gridView.getCount() > 0) {
-                    SearchLogUtils.reportSearchImpression(1L, absListView.getContext(), IClientLogging.ModalView.titleResults, SearchQueryDetailsActivity.this.trackId, null, SearchQueryDetailsActivity.this.gridView.getFirstVisiblePosition(), SearchQueryDetailsActivity.this.gridView.getLastVisiblePosition(), SearchQueryDetailsActivity.this.nonModalView);
+                    SearchQueryDetailsActivity.this.fireImpressionEvents();
                 }
             }
         });
+        if (this.content != null) {
+            this.content.setOnScrollStopListener((LoggingScrollView.OnScrollStopListener)new LoggingScrollView.OnScrollStopListener() {
+                @Override
+                public void log() {
+                    SearchQueryDetailsActivity.this.fireImpressionEvents();
+                }
+            });
+        }
     }
     
     private void setupViews() {
@@ -164,23 +188,23 @@ public class SearchQueryDetailsActivity extends NetflixActivity
         this.titleView.setVisibility(0);
     }
     
-    public static void show(final Activity activity, final SearchQueryDetailsType searchQueryDetailsType, final String s, final String s2, final String s3, final int n, final IClientLogging.ModalView modalView) {
-        activity.startActivity(new Intent((Context)activity, (Class)SearchQueryDetailsActivity.class).putExtra("extra_type", (Serializable)searchQueryDetailsType).putExtra("extra_id", s).putExtra("extra_tracking_id", n).putExtra("view", modalView.name()).putExtra("extra_original_query", s3).putExtra("extra_title", s2));
+    public static void show(final Activity activity, final SearchQueryDetailsType searchQueryDetailsType, final String s, final String s2, final String s3, final String s4, final IClientLogging.ModalView modalView) {
+        activity.startActivity(new Intent((Context)activity, (Class)SearchQueryDetailsActivity.class).putExtra("extra_type", (Serializable)searchQueryDetailsType).putExtra("extra_id", s).putExtra("extra_reference_id", s4).putExtra("view", modalView.name()).putExtra("extra_original_query", s3).putExtra("extra_title", s2));
     }
     
     private void showContentView() {
         this.leWrapper.hide(true);
-        AnimationUtils.showView(this.content, true);
+        AnimationUtils.showView((View)this.content, true);
     }
     
     private void showErrorView() {
         this.leWrapper.showErrorView(true);
-        AnimationUtils.hideView(this.content, true);
+        AnimationUtils.hideView((View)this.content, true);
     }
     
     private void showLoadingView() {
         this.leWrapper.showLoadingView(true);
-        AnimationUtils.hideView(this.content, true);
+        AnimationUtils.hideView((View)this.content, true);
     }
     
     @Override
@@ -197,6 +221,26 @@ public class SearchQueryDetailsActivity extends NetflixActivity
                 SearchQueryDetailsActivity.this.manager = null;
             }
         };
+    }
+    
+    void fireImpressionEvents() {
+        boolean b = true;
+        boolean b2;
+        if (this.content == null) {
+            b2 = true;
+        }
+        else {
+            b2 = false;
+        }
+        if (this.content.getChildCount() != 0) {
+            b = false;
+        }
+        if (!(b2 & b)) {
+            final Pair<Integer, Integer> visiblePositions = ViewUtils.getVisiblePositions(this.gridView, this.content);
+            if (visiblePositions != null) {
+                SearchLogUtils.reportSearchImpression(1L, this.gridView.getContext(), IClientLogging.ModalView.titleResults, this.referenceId, null, (int)visiblePositions.first, (int)visiblePositions.second, this.nonModalView);
+            }
+        }
     }
     
     @Override
@@ -217,6 +261,7 @@ public class SearchQueryDetailsActivity extends NetflixActivity
         this.setupLoading();
         this.setupViews();
         this.setupGridView();
+        this.setupGridViewObserver();
     }
     
     private class OnSimsFetchedCallback extends LoggingManagerCallback
@@ -246,6 +291,7 @@ public class SearchQueryDetailsActivity extends NetflixActivity
                 SearchQueryDetailsActivity.this.showErrorView();
                 return;
             }
+            SearchQueryDetailsActivity.this.referenceId = list.getVideosListTrackable().getReferenceId();
             SearchQueryDetailsActivity.this.adapter.setData(list, PlayContext.EMPTY_CONTEXT);
             SearchQueryDetailsActivity.this.showContentView();
         }

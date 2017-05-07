@@ -122,7 +122,7 @@ public abstract class MdxRemoteViews
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131165503, 2130837810);
+        remoteViews.setImageViewResource(2131165503, 2130837811);
         remoteViews.setOnClickPendingIntent(2131165503, this.mIntentRetriever.getPauseIntent());
     }
     
@@ -130,7 +130,7 @@ public abstract class MdxRemoteViews
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131165503, 2130837811);
+        remoteViews.setImageViewResource(2131165503, 2130837812);
         remoteViews.setOnClickPendingIntent(2131165503, this.mIntentRetriever.getNoActionIntent());
     }
     
@@ -138,7 +138,7 @@ public abstract class MdxRemoteViews
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131165503, 2130837812);
+        remoteViews.setImageViewResource(2131165503, 2130837813);
         remoteViews.setOnClickPendingIntent(2131165503, this.mIntentRetriever.getPlayNextIntent());
     }
     
@@ -146,7 +146,7 @@ public abstract class MdxRemoteViews
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131165503, 2130837812);
+        remoteViews.setImageViewResource(2131165503, 2130837813);
         remoteViews.setOnClickPendingIntent(2131165503, this.mIntentRetriever.getResumeIntent());
     }
     
@@ -154,7 +154,7 @@ public abstract class MdxRemoteViews
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131165503, 2130837813);
+        remoteViews.setImageViewResource(2131165503, 2130837814);
         remoteViews.setOnClickPendingIntent(2131165503, this.mIntentRetriever.getNoActionIntent());
     }
     
@@ -164,7 +164,7 @@ public abstract class MdxRemoteViews
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131165504, 2130837814);
+        remoteViews.setImageViewResource(2131165504, 2130837815);
         remoteViews.setOnClickPendingIntent(2131165504, this.mIntentRetriever.getStopIntent());
     }
     
@@ -172,7 +172,7 @@ public abstract class MdxRemoteViews
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131165504, 2130837815);
+        remoteViews.setImageViewResource(2131165504, 2130837816);
         remoteViews.setOnClickPendingIntent(2131165504, this.mIntentRetriever.getNoActionIntent());
     }
     

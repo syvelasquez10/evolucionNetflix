@@ -56,7 +56,7 @@ public class ErrorWrapper
         final ViewGroup$LayoutParams layoutParams = this.retryBtn.getLayoutParams();
         layoutParams.height = resources.getDimensionPixelSize(2131361928);
         layoutParams.width = resources.getDimensionPixelSize(2131361927);
-        this.retryBtn.setBackgroundResource(2130837752);
+        this.retryBtn.setBackgroundResource(2130837753);
         this.retryBtn.setTextColor(resources.getColor(2131296309));
         ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131361843);
         ViewUtils.setTextViewToBold((TextView)this.retryBtn);

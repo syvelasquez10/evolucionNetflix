@@ -264,10 +264,10 @@ public class SearchUtils
         sparseIntArray3.put(2, 3);
         sparseIntArray.put(3, 2);
         sparseIntArray2.put(3, 3);
-        sparseIntArray3.put(3, 2);
+        sparseIntArray3.put(3, 3);
         sparseIntArray.put(4, 3);
         sparseIntArray2.put(4, 3);
-        sparseIntArray3.put(4, 2);
+        sparseIntArray3.put(4, 3);
         SearchUtils.numVideoColumnsTable.put(1, (Object)sparseIntArray);
         SearchUtils.numPeopleColumnsTable.put(1, (Object)sparseIntArray2);
         SearchUtils.numRelatedColumnsTable.put(1, (Object)sparseIntArray3);

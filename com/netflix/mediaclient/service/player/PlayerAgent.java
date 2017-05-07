@@ -19,6 +19,7 @@ import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.configuration.BitrateRangeFactory;
+import android.support.v4.content.LocalBroadcastManager;
 import android.media.AudioManager;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.service.player.subtitles.TextStyle;
@@ -69,16 +70,12 @@ import com.netflix.mediaclient.service.ServiceAgent;
 public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentListener
 {
     private static final int BANDWITH_CHECK_INTERVAL = 30000;
-    public static final int CREATED = 1;
     private static final int DELAY_SEEKCOMPLETE_MS = 300;
     private static final int EOS_DELTA = 10000;
-    public static final int IN_PLAYBACK = 3;
     private static final int MAX_CELLULAR_DOWNLOAD_LIMIT = 90000;
     private static final int MAX_WIFI_DOWNLOAD_LIMIT = 300000;
     private static final int NETWORK_CHECK_INTERVAL = 1000;
     private static final int NETWORK_CHECK_TIMEOUT = 30000;
-    public static final int PLAYBACK_ENDED = 4;
-    public static final int PLAYBACK_INITIATED = 2;
     private static final int SIXTY_COUNT = 60;
     private static final int STATE_CLOSED = 4;
     private static final int STATE_CREATED = -1;
@@ -827,6 +824,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     
     private void release() {
         Log.d(PlayerAgent.TAG, "release()");
+        this.reportPlaybackEnded();
         if (this.mHelper != null) {
             this.mHelper.release();
             this.mHelper = null;
@@ -842,6 +840,30 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         this.pendingError = null;
         this.muteAudio(false);
         this.clearBifs();
+    }
+    
+    private void reportPlaybackEnded() {
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_ENDED");
+        intent.addCategory("com.netflix.mediaclient.intent.category.PLAYER");
+        LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(intent);
+    }
+    
+    private void reportPlaybackPaused() {
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_PAUSED");
+        intent.addCategory("com.netflix.mediaclient.intent.category.PLAYER");
+        LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(intent);
+    }
+    
+    private void reportPlaybackStarted() {
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_STARTED");
+        intent.addCategory("com.netflix.mediaclient.intent.category.PLAYER");
+        LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(intent);
+    }
+    
+    private void reportPlaybackUnpaused() {
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_UNPAUSED");
+        intent.addCategory("com.netflix.mediaclient.intent.category.PLAYER");
+        LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(intent);
     }
     
     private void startBif() {
@@ -1185,12 +1207,14 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
             this.mPlayContext = mPlayContext;
             this.mBookmark = mBookmark;
             this.mPlayerExecutor.execute(this.onOpenRunnable);
+            this.reportPlaybackStarted();
         }
     }
     
     @Override
     public void pause() {
         this.mMedia.pause();
+        this.reportPlaybackPaused();
     }
     
     @Override
@@ -1465,6 +1489,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     @Override
     public void unpause() {
         this.mMedia.unpause();
+        this.reportPlaybackUnpaused();
     }
     
     private class CloseTimeoutTask extends TimerTask

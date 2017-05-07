@@ -42,8 +42,8 @@ public abstract class LanguageSelector
     LanguageSelector(final NetflixActivity mController, final LanguageSelectorCallback mCallback) {
         this.mController = mController;
         this.mCallback = mCallback;
-        this.mSelectedRowColor = this.mController.getResources().getColor(2131296357);
-        this.mRowColor = this.mController.getResources().getColor(2131296356);
+        this.mSelectedRowColor = this.mController.getResources().getColor(2131296358);
+        this.mRowColor = this.mController.getResources().getColor(2131296357);
     }
     
     public static LanguageSelector createInstance(final NetflixActivity netflixActivity, final boolean b, final LanguageSelectorCallback languageSelectorCallback) {
@@ -115,8 +115,8 @@ public abstract class LanguageSelector
                 return;
             }
             Log.d("nf_language_selector", "Button found!");
-            button.setBackgroundColor(this.mController.getResources().getColor(2131296356));
-            button.setTextColor(this.mController.getResources().getColor(2131296312));
+            button.setBackgroundColor(this.mController.getResources().getColor(2131296357));
+            button.setTextColor(this.mController.getResources().getColor(2131296313));
             button.setTextAppearance((Context)this.mController, 2131558595);
         }
     }

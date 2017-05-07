@@ -48,7 +48,7 @@ public class SearchActionBar extends NetflixActionBar
     private void configureSearchViewTextView() {
         this.textView = (TextView)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_src_text", (String)null, (String)null));
         if (this.textView != null) {
-            this.textView.setHintTextColor(this.searchView.getResources().getColor(2131296314));
+            this.textView.setHintTextColor(this.searchView.getResources().getColor(2131296315));
             this.textView.setImeOptions(33554432);
         }
     }
@@ -63,8 +63,8 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     private void replaceBackgroundDrawables() {
-        this.replaceBackgroundDrawable("android:id/search_plate", 2130837866);
-        this.replaceBackgroundDrawable("android:id/submit_area", 2130837867);
+        this.replaceBackgroundDrawable("android:id/search_plate", 2130837868);
+        this.replaceBackgroundDrawable("android:id/submit_area", 2130837869);
     }
     
     public void clearFocus() {

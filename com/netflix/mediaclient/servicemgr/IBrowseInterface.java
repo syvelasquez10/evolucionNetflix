@@ -48,7 +48,7 @@ public interface IBrowseInterface
     
     void fetchShowDetails(final String p0, final String p1, final int p2, final int p3);
     
-    void fetchSimilarVideosForPerson(final String p0, final int p1, final int p2, final int p3);
+    void fetchSimilarVideosForPerson(final String p0, final int p1, final int p2, final int p3, final String p4);
     
     void fetchSimilarVideosForQuerySuggestion(final String p0, final int p1, final int p2, final int p3, final String p4);
     

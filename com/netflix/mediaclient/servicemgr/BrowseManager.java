@@ -443,13 +443,13 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public boolean fetchSimilarVideosForPerson(final String s, final int n, final ManagerCallback managerCallback) {
+    public boolean fetchSimilarVideosForPerson(final String s, final int n, final ManagerCallback managerCallback, final String s2) {
         synchronized (this) {
             final int requestId = this.mgr.getRequestId(managerCallback);
             final INetflixService service = this.mgr.getService();
             boolean b;
             if (service != null) {
-                service.getBrowse().fetchSimilarVideosForPerson(s, n, this.mgr.getClientId(), requestId);
+                service.getBrowse().fetchSimilarVideosForPerson(s, n, this.mgr.getClientId(), requestId, s2);
                 b = true;
             }
             else {

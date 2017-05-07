@@ -4,40 +4,26 @@
 
 package com.netflix.mediaclient.service.logging.search.model;
 
-import com.netflix.mediaclient.service.logging.client.model.EventType;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.service.logging.client.model.EventType;
 import com.netflix.mediaclient.service.logging.client.model.SessionStartedEvent;
 
 public class SearchSessionStartedEvent extends SessionStartedEvent
 {
     private static final String APP_SESSION_NAME = "search";
+    private static final String CATEGORY = "search";
+    private static final String NAME = "session.started";
     
     public SearchSessionStartedEvent() {
         super("search");
+        this.setupAttributes();
     }
     
-    @Override
-    public String getCategory() {
-        return "search";
-    }
-    
-    @Override
-    public IClientLogging.ModalView getModalView() {
-        return IClientLogging.ModalView.search;
-    }
-    
-    @Override
-    public String getName() {
-        return "session.started";
-    }
-    
-    @Override
-    public String getSessionName() {
-        return "search";
-    }
-    
-    @Override
-    public EventType getType() {
-        return EventType.sessionStarted;
+    private void setupAttributes() {
+        this.type = EventType.sessionStarted;
+        this.sessionName = "search";
+        this.modalView = IClientLogging.ModalView.search;
+        this.category = "search";
+        this.name = "session.started";
     }
 }

@@ -4,23 +4,33 @@
 
 package com.netflix.mediaclient.service.logging.search.model;
 
-import com.netflix.mediaclient.service.logging.client.model.EventType;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
 import org.json.JSONException;
+import com.netflix.mediaclient.util.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.service.logging.client.model.EventType;
 import com.netflix.mediaclient.service.logging.client.model.SessionStartedEvent;
 
 public class SearchFocusSessionStartedEvent extends SessionStartedEvent
 {
     private static final String APP_SESSION_NAME = "focus";
+    private static final String CATEGORY = "uiView";
+    private static final String NAME = "focus.started";
+    private String query;
     
-    public SearchFocusSessionStartedEvent() {
+    public SearchFocusSessionStartedEvent(final String query) {
         super("focus");
+        this.query = query;
+        this.setupAttributes();
     }
     
-    @Override
-    public String getCategory() {
-        return "search";
+    private void setupAttributes() {
+        this.sessionName = "focus";
+        this.type = EventType.sessionStarted;
+        this.modalView = IClientLogging.ModalView.search;
+        this.category = "uiView";
+        this.name = "focus.started";
     }
     
     @Override
@@ -29,27 +39,11 @@ public class SearchFocusSessionStartedEvent extends SessionStartedEvent
         if ((data = super.getData()) == null) {
             data = new JSONObject();
         }
-        data.put("path", (Object)"['']");
+        final JSONArray jsonArray = new JSONArray();
+        if (StringUtils.isNotEmpty(this.query)) {
+            jsonArray.put((Object)this.query);
+        }
+        data.put("path", (Object)jsonArray);
         return data;
-    }
-    
-    @Override
-    public IClientLogging.ModalView getModalView() {
-        return IClientLogging.ModalView.search;
-    }
-    
-    @Override
-    public String getName() {
-        return "focus.started";
-    }
-    
-    @Override
-    public String getSessionName() {
-        return "focus";
-    }
-    
-    @Override
-    public EventType getType() {
-        return EventType.sessionStarted;
     }
 }

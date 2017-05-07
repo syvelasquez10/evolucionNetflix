@@ -12,6 +12,9 @@ import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
+import android.util.Pair;
+import android.widget.ScrollView;
+import com.netflix.mediaclient.android.widget.StaticGridView;
 import java.util.ArrayList;
 import java.util.List;
 import android.graphics.Paint;
@@ -226,6 +229,60 @@ public class ViewUtils
             }
         }
         return list;
+    }
+    
+    public static Pair<Integer, Integer> getVisiblePositions(final StaticGridView staticGridView, final ScrollView scrollView) {
+        final boolean b = true;
+        boolean b2;
+        if (staticGridView == null) {
+            b2 = true;
+        }
+        else {
+            b2 = false;
+        }
+        boolean b3;
+        if (staticGridView.getCount() > 0) {
+            b3 = true;
+        }
+        else {
+            b3 = false;
+        }
+        if (b2 & b3) {
+            return null;
+        }
+        boolean b4;
+        if (scrollView == null) {
+            b4 = true;
+        }
+        else {
+            b4 = false;
+        }
+        if (b4 & (scrollView.getChildCount() > 0 && b)) {
+            return null;
+        }
+        final Rect rect = new Rect();
+        scrollView.getHitRect(rect);
+        final int childCount = staticGridView.getChildCount();
+        int n = -1;
+        int i;
+        int n2;
+        for (i = 0; i < childCount; ++i, n = n2) {
+            final boolean localVisibleRect = staticGridView.getChildAt(i).getLocalVisibleRect(rect);
+            if (localVisibleRect && n == -1) {
+                n2 = i;
+            }
+            else {
+                n2 = n;
+                if (!localVisibleRect && (n2 = n) != -1) {
+                    break;
+                }
+            }
+        }
+        final int n3 = i - 1;
+        if (n != -1 && n3 != -1) {
+            return (Pair<Integer, Integer>)new Pair((Object)n, (Object)n3);
+        }
+        return null;
     }
     
     public static void removeGlobalLayoutListener(final View view, final ViewTreeObserver$OnGlobalLayoutListener viewTreeObserver$OnGlobalLayoutListener) {

@@ -11,12 +11,13 @@ import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.os.SystemClock;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClientFactory;
 import com.netflix.mediaclient.util.DeviceUtils;
-import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 import com.netflix.mediaclient.service.logging.client.model.LoggingRequest;
+import android.support.v4.content.LocalBroadcastManager;
+import android.content.IntentFilter;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
@@ -25,16 +26,19 @@ import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.client.model.Event;
+import com.netflix.mediaclient.Log;
+import android.content.Intent;
 import java.util.HashMap;
 import java.util.Collections;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.service.NetflixService;
 import java.util.concurrent.atomic.AtomicLong;
+import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.android.app.UserInputManager;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.Random;
@@ -60,8 +64,10 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     private final ClientLoggingEventQueue mEventQueue;
     private ScheduledExecutorService mExecutor;
     private UserInputManager mInputManager;
+    private AtomicBoolean mLocalPlaybackInProgress;
     private final List<LoggingSession> mLoggingSessions;
     private final LoggingAgent mOwner;
+    private final BroadcastReceiver mPlayerReceiver;
     private SearchLogging mSearchLogging;
     private final AtomicLong mSequence;
     private final NetflixService mService;
@@ -76,6 +82,47 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         this.mEventQueue = new ClientLoggingEventQueue();
         this.mUserSessionEnabledStatusMap = new HashMap<String, Boolean>();
         this.mEventPerSessionRndGeneratorMap = new HashMap<String, Random>();
+        this.mLocalPlaybackInProgress = new AtomicBoolean(false);
+        this.mPlayerReceiver = new BroadcastReceiver() {
+            public void onReceive(final Context context, final Intent intent) {
+                if (Log.isLoggable("nf_log", 2)) {
+                    Log.v("nf_log", "Received intent " + intent);
+                }
+                final String action = intent.getAction();
+                if ("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_STARTED".equals(action)) {
+                    if (Log.isLoggable("nf_log", 3)) {
+                        Log.d("nf_log", "Local playback started, was started " + IntegratedClientLoggingManager.this.mLocalPlaybackInProgress.get());
+                    }
+                    IntegratedClientLoggingManager.this.mLocalPlaybackInProgress.set(true);
+                }
+                else {
+                    if ("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_ENDED".equals(action)) {
+                        if (Log.isLoggable("nf_log", 3)) {
+                            Log.d("nf_log", "Local playback ended, was started " + IntegratedClientLoggingManager.this.mLocalPlaybackInProgress.get());
+                        }
+                        IntegratedClientLoggingManager.this.mLocalPlaybackInProgress.set(false);
+                        return;
+                    }
+                    if ("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_PAUSED".equals(action)) {
+                        if (Log.isLoggable("nf_log", 3)) {
+                            Log.d("nf_log", "Local playback paused, was playing " + IntegratedClientLoggingManager.this.mLocalPlaybackInProgress.get());
+                        }
+                        IntegratedClientLoggingManager.this.mLocalPlaybackInProgress.set(false);
+                        return;
+                    }
+                    if ("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_UNPAUSED".equals(action)) {
+                        if (Log.isLoggable("nf_log", 3)) {
+                            Log.d("nf_log", "Local playback unpaused, was playing " + IntegratedClientLoggingManager.this.mLocalPlaybackInProgress.get());
+                        }
+                        IntegratedClientLoggingManager.this.mLocalPlaybackInProgress.set(true);
+                        return;
+                    }
+                    if (Log.isLoggable("nf_log", 3)) {
+                        Log.d("nf_log", "We do not support action " + action);
+                    }
+                }
+            }
+        };
         this.mOwner = mOwner;
         this.mContext = mContext;
         this.mUser = mUser;
@@ -83,18 +130,26 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     }
     
     private void checkUserSessionState() {
-        final long timeSinceLastUserInteraction = this.mInputManager.getTimeSinceLastUserInteraction();
-        if (Log.isLoggable("nf_log", 3)) {
-            Log.d("nf_log", "Since last user interaction elapsed (sec): " + timeSinceLastUserInteraction / 1000L);
+        if (this.mLocalPlaybackInProgress.get()) {
+            Log.d("nf_log", "Local playback is in progress, consider that user just interacted with UI. Exit.");
+            this.mInputManager.updateUserInteraction();
         }
-        final long userSessionDurationInMs = this.getUserSessionDurationInMs();
-        if (timeSinceLastUserInteraction >= userSessionDurationInMs && this.mApmLogging.isUserSessionExist()) {
-            Log.d("nf_log", "It is more than 30 minutes and user session exist. End user session");
-            this.mApmLogging.endUserSession(ApplicationPerformanceMetricsLogging.EndReason.timeout, System.currentTimeMillis() - timeSinceLastUserInteraction);
-        }
-        else if (timeSinceLastUserInteraction < userSessionDurationInMs && !this.mApmLogging.isUserSessionExist()) {
-            Log.d("nf_log", "It is less than 30 minutes and user session does NOT exist. Start user session");
-            this.mApmLogging.startUserSession(ApplicationPerformanceMetricsLogging.Trigger.inputEvent);
+        else {
+            Log.d("nf_log", "Local playback is NOT in progress, check last user interaction");
+            final long timeSinceLastUserInteraction = this.mInputManager.getTimeSinceLastUserInteraction();
+            if (Log.isLoggable("nf_log", 3)) {
+                Log.d("nf_log", "Since last user interaction elapsed (sec): " + timeSinceLastUserInteraction / 1000L);
+            }
+            final long userSessionDurationInMs = this.getUserSessionDurationInMs();
+            if (timeSinceLastUserInteraction >= userSessionDurationInMs && this.mApmLogging.isUserSessionExist()) {
+                Log.d("nf_log", "It is more than 30 minutes and user session exist. End user session");
+                this.mApmLogging.endUserSession(ApplicationPerformanceMetricsLogging.EndReason.timeout, System.currentTimeMillis() - timeSinceLastUserInteraction);
+                return;
+            }
+            if (timeSinceLastUserInteraction < userSessionDurationInMs && !this.mApmLogging.isUserSessionExist()) {
+                Log.d("nf_log", "It is less than 30 minutes and user session does NOT exist. Start user session");
+                this.mApmLogging.startUserSession(ApplicationPerformanceMetricsLogging.Trigger.inputEvent);
+            }
         }
     }
     
@@ -245,6 +300,21 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         });
     }
     
+    private void registerReceivers() {
+        final IntentFilter intentFilter = new IntentFilter("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_STARTED");
+        intentFilter.addCategory("com.netflix.mediaclient.intent.category.PLAYER");
+        intentFilter.addAction("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_ENDED");
+        intentFilter.addAction("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_PAUSED");
+        intentFilter.addAction("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_UNPAUSED");
+        intentFilter.setPriority(999);
+        try {
+            LocalBroadcastManager.getInstance(this.mContext).registerReceiver(this.mPlayerReceiver, intentFilter);
+        }
+        catch (Throwable t) {
+            Log.e("nf_log", "Failed to register ", t);
+        }
+    }
+    
     private void removeSavedEvents(final String s) {
         try {
             this.mDataRepository.remove(s);
@@ -284,6 +354,15 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         }
     }
     
+    private void unRegisterReceivers() {
+        try {
+            LocalBroadcastManager.getInstance(this.mContext).unregisterReceiver(this.mPlayerReceiver);
+        }
+        catch (Throwable t) {
+            Log.e("nf_log", "Failed to unregister ", t);
+        }
+    }
+    
     @Override
     public void addSession(final LoggingSession loggingSession) {
         if (loggingSession == null) {
@@ -306,6 +385,10 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     public void createUserSession(final com.netflix.mediaclient.javabridge.ui.Log.ResetSessionIdCallback resetSessionIdCallback) {
         this.mOwner.getNrdController().getNrdp().getLog().resetSessionID(resetSessionIdCallback);
         this.newUserSession();
+    }
+    
+    void destroy() {
+        this.unRegisterReceivers();
     }
     
     @Override
@@ -400,6 +483,7 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         this.mSearchLogging = new SearchLogging(this);
         this.initDataRepository();
         this.mApmLogging.handleConnectivityChange(this.mContext);
+        this.registerReceivers();
     }
     
     public boolean isConsolidatedLoggingSessionEnabled(String sessionLookupKey, final String s) {

@@ -241,7 +241,7 @@ public class PinDialog extends NetflixDialogFrag
         this.mPinMessage = (TextView)inflate.findViewById(2131165518);
         (this.mPinForgotView = (TextView)inflate.findViewById(2131165521)).setMovementMethod((MovementMethod)new LinkMovementMethod() {
             public boolean onTouchEvent(final TextView textView, final Spannable spannable, final MotionEvent motionEvent) {
-                PinDialog.this.mPinForgotView.setLinkTextColor(PinDialog.this.getResources().getColor(2131296388));
+                PinDialog.this.mPinForgotView.setLinkTextColor(PinDialog.this.getResources().getColor(2131296389));
                 return super.onTouchEvent(textView, spannable, motionEvent);
             }
         });

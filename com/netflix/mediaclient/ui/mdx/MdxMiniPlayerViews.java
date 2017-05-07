@@ -386,7 +386,7 @@ class MdxMiniPlayerViews
         final int dimensionPixelSize = resources.getDimensionPixelSize(2131361852);
         this.seekBar.setPadding(dimensionPixelSize, 0, dimensionPixelSize, 0);
         if (this.isTablet) {
-            this.seekBar.setScrubberDentBitmap(2130837771);
+            this.seekBar.setScrubberDentBitmap(2130837772);
             this.seekBar.setShouldSnapToTouchStartPosition(true);
         }
         this.maxTitleTextYDelta = (int)((resources.getDimensionPixelOffset(2131361846) - resources.getDimensionPixelOffset(2131361844)) * 0.75f);
@@ -817,10 +817,10 @@ class MdxMiniPlayerViews
             if (imageView != null) {
                 int imageResource;
                 if (b) {
-                    imageResource = 2130837832;
+                    imageResource = 2130837833;
                 }
                 else {
-                    imageResource = 2130837831;
+                    imageResource = 2130837832;
                 }
                 imageView.setImageResource(imageResource);
                 View$OnClickListener onClickListener;

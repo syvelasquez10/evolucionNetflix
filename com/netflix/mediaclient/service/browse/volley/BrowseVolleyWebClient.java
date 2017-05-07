@@ -160,8 +160,8 @@ public final class BrowseVolleyWebClient implements BrowseWebClient
     }
     
     @Override
-    public void fetchSimilarVideosForPerson(final String s, final int n, final BrowseAgentCallback browseAgentCallback) {
-        this.webclient.sendRequest(new FetchSimilarVideosRequest.FetchSimilarVideosForPersonRequest(this.service.getApplicationContext(), s, n, browseAgentCallback));
+    public void fetchSimilarVideosForPerson(final String s, final int n, final BrowseAgentCallback browseAgentCallback, final String s2) {
+        this.webclient.sendRequest(new FetchSimilarVideosRequest.FetchSimilarVideosForPersonRequest(this.service.getApplicationContext(), s, n, browseAgentCallback, s2));
     }
     
     @Override
