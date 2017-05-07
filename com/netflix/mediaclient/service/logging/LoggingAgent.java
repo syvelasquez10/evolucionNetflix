@@ -9,9 +9,13 @@ import com.netflix.mediaclient.servicemgr.PresentationTracking;
 import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import java.util.List;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import android.support.v4.content.LocalBroadcastManager;
+import com.netflix.mediaclient.servicemgr.ISearchLogging;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import android.content.IntentFilter;
@@ -31,10 +35,11 @@ import com.netflix.mediaclient.servicemgr.CmpEventLogging;
 import com.netflix.mediaclient.servicemgr.BreadcrumbLogging;
 import com.netflix.mediaclient.service.logging.ads.AdvertiserIdLoggingManager;
 import java.util.concurrent.ThreadFactory;
+import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.ServiceAgent;
 
-public final class LoggingAgent extends ServiceAgent implements IClientLogging
+public final class LoggingAgent extends ServiceAgent implements IClientLogging, ConfigAgentListener
 {
     private static final long EVENT_POST_TIMEOUT_MS = 60000L;
     static final String ICL_REPOSITORY_DIR = "iclevents";
@@ -97,6 +102,13 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
         Log.d("nf_log", "ClientLoggingAgent:: done");
     }
     
+    private void addConfigurationChangeListener() {
+        final ConfigurationAgentInterface configurationAgent = this.getConfigurationAgent();
+        if (configurationAgent instanceof ConfigurationAgent) {
+            ((ConfigurationAgent)configurationAgent).addConfigAgentListener((ConfigurationAgent.ConfigAgentListener)this);
+        }
+    }
+    
     private void registerReceiver() {
         Log.d("nf_log", "Register receiver");
         final IntentFilter intentFilter = new IntentFilter();
@@ -111,6 +123,10 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
         final String[] actions3 = UIViewLoggingImpl.ACTIONS;
         for (int length3 = actions3.length, k = 0; k < length3; ++k) {
             intentFilter.addAction(actions3[k]);
+        }
+        final String[] actions4 = ISearchLogging.ACTIONS;
+        for (int length4 = actions4.length, l = 0; l < length4; ++l) {
+            intentFilter.addAction(actions4[l]);
         }
         intentFilter.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intentFilter.setPriority(999);
@@ -161,7 +177,9 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
         this.mPresentationTrackingManager.init(this.mExecutor);
         this.mAdvertiserIdLoggingManager.init();
         this.registerReceiver();
-        this.initCompleted(0);
+        ErrorLoggingManager.onConfigurationChanged(this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
+        this.addConfigurationChangeListener();
+        this.initCompleted(CommonStatus.OK);
         Log.d("nf_log", "ClientLoggingAgent::init done ");
     }
     
@@ -266,6 +284,17 @@ public final class LoggingAgent extends ServiceAgent implements IClientLogging
     @Override
     public boolean isReady() {
         return true;
+    }
+    
+    @Override
+    public void onConfigRefreshed(final Status status) {
+        if (Log.isLoggable("nf_log", 2)) {
+            Log.v("nf_log", "Configuration is refreshed with status code " + status.getStatusCode());
+        }
+        if (status.isSucces()) {
+            Log.v("nf_log", "Refresh configuration for error and breadcrumb logging");
+            ErrorLoggingManager.onConfigurationChanged(this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
+        }
     }
     
     @Override

@@ -4,9 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model.branches;
 
-import com.netflix.mediaclient.service.webclient.model.leafs.ListSummary;
-
-public abstract class ListOfEpisodes extends ListModel<ListSummary, Episode>
+public abstract class ListOfEpisodes extends ListModel<Episode>
 {
     public Episode current;
 }

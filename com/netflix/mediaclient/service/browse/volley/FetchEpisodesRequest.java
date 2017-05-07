@@ -12,13 +12,14 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
@@ -33,14 +34,14 @@ public class FetchEpisodesRequest extends FalcorVolleyWebClientRequest<List<Epis
     private final int toEpisodes;
     private final boolean userConnectedToFacebook;
     
-    public FetchEpisodesRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String mVideoId, final int fromEpisodes, final int toEpisodes, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchEpisodesRequest(final Context context, final String mVideoId, final int fromEpisodes, final int toEpisodes, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.mVideoId = mVideoId;
         this.fromEpisodes = fromEpisodes;
         this.toEpisodes = toEpisodes;
         this.userConnectedToFacebook = userConnectedToFacebook;
-        this.pqlQuery = "['videos', '" + this.mVideoId + "', 'episodes', {'to':" + toEpisodes + ",'from':" + fromEpisodes + "},['detail', 'summary', 'bookmark']]";
+        this.pqlQuery = String.format("['videos','%s','episodes', {'from':%d,'to':%d}, ['detail', 'summary', 'bookmark']]", this.mVideoId, fromEpisodes, toEpisodes);
         if (Log.isLoggable("nf_service_browse_fetchepisodesrequest", 2)) {
             Log.v("nf_service_browse_fetchepisodesrequest", "PQL = " + this.pqlQuery);
         }
@@ -52,16 +53,16 @@ public class FetchEpisodesRequest extends FalcorVolleyWebClientRequest<List<Epis
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onEpisodesFetched(Collections.emptyList(), n);
+            this.responseCallback.onEpisodesFetched(Collections.emptyList(), status);
         }
     }
     
     @Override
     protected void onSuccess(final List<EpisodeDetails> list) {
         if (this.responseCallback != null) {
-            this.responseCallback.onEpisodesFetched(list, 0);
+            this.responseCallback.onEpisodesFetched(list, CommonStatus.OK);
         }
     }
     

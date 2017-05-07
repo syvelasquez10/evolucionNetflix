@@ -9,9 +9,8 @@ import com.netflix.mediaclient.ui.Section;
 
 public abstract class PlayerSection extends Section
 {
-    protected PlayerActivity context;
-    protected boolean tablet;
-    protected int transpColor;
+    protected final PlayerActivity context;
+    protected final boolean tablet;
     
     public PlayerSection(final PlayerActivity context) {
         super(context);

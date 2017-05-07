@@ -5,8 +5,8 @@
 package com.netflix.mediaclient.android.widget;
 
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.Trackable;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import android.text.Layout$Alignment;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.BitmapDrawable;
@@ -16,16 +16,16 @@ import android.content.res.Resources;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.FriendProfile;
+import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import android.graphics.Paint;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.Log;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.VideoDetails;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.graphics.Rect;
 import android.text.StaticLayout;
 import android.graphics.Bitmap;
@@ -87,7 +87,7 @@ public class SocialVideoView extends VideoView
     
     @SuppressLint({ "WrongCall" })
     private void drawConnectToFacebook(final Canvas canvas) {
-        this.setImageResource(2130837683);
+        this.setImageResource(2130837684);
         super.onDraw(canvas);
         Log.v("SocialVideoView", "drawConnectToFacebook: " + this.getWidth() + "x" + this.getHeight());
         canvas.save();
@@ -222,7 +222,7 @@ public class SocialVideoView extends VideoView
     
     private void init() {
         final Resources resources = this.getResources();
-        this.singleImgSize = resources.getDimensionPixelOffset(2131361871);
+        this.singleImgSize = resources.getDimensionPixelOffset(2131361869);
         this.textSizeMicro = resources.getDimensionPixelOffset(2131361837);
         this.padding = resources.getDimensionPixelOffset(2131361835);
         this.initTextPaint(resources);

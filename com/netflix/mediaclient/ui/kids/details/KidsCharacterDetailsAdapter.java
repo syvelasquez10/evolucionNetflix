@@ -11,16 +11,16 @@ import android.content.Context;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsOneToOneVideoView;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsHorizontalVideoView;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import android.widget.TextView;
 import com.netflix.mediaclient.Log;
 import android.view.ViewGroup;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.VideoType;
-import com.netflix.mediaclient.servicemgr.TrackableObject;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.model.trackable.TrackableObject;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.servicemgr.Trackable;
-import com.netflix.mediaclient.servicemgr.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import android.widget.BaseAdapter;
@@ -56,10 +56,10 @@ public class KidsCharacterDetailsAdapter extends BaseAdapter implements StickyLi
         View inflate = view;
         if (view == null) {
             Log.v("KidsCharacterDetailsAdapter", "Creating header view for position: " + text);
-            inflate = this.activity.getLayoutInflater().inflate(2130903103, (ViewGroup)null);
+            inflate = this.activity.getLayoutInflater().inflate(2130903111, (ViewGroup)null);
         }
-        int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361926);
-        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361927);
+        int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361940);
+        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361941);
         final int contentPadding = this.contentPadding;
         if (text != 0) {
             dimensionPixelSize = 0;
@@ -67,7 +67,7 @@ public class KidsCharacterDetailsAdapter extends BaseAdapter implements StickyLi
         final int contentPadding2 = this.contentPadding;
         if (text == 0) {}
         inflate.setPadding(contentPadding, dimensionPixelSize, contentPadding2, dimensionPixelSize2);
-        final TextView textView = (TextView)inflate.findViewById(2131165411);
+        final TextView textView = (TextView)inflate.findViewById(2131165432);
         if (this.getHeaderType(text) == VideoType.MOVIE) {
             text = 2131492956;
         }
@@ -97,8 +97,8 @@ public class KidsCharacterDetailsAdapter extends BaseAdapter implements StickyLi
             else {
                 videoView = new KidsOneToOneVideoView((Context)this.activity, false);
             }
-            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361918);
-            final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361919);
+            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361932);
+            final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361933);
             ((View)videoView).setPadding(dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2);
             ((View)videoView).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeSkidmarkRowHeight(this.activity, dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2, false)));
             o = videoView;

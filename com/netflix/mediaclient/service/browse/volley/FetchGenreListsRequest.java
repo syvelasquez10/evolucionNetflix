@@ -13,13 +13,14 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.GenreList;
+import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
@@ -33,8 +34,8 @@ public class FetchGenreListsRequest extends FalcorVolleyWebClientRequest<List<Ge
     private final long rStart;
     private final BrowseAgentCallback responseCallback;
     
-    public FetchGenreListsRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final int n, final int n2, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchGenreListsRequest(final Context context, final int n, final int n2, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.pqlQuery = new StringBuilder("['genreList']").toString();
         if (Log.isLoggable("nf_service_browse_fetchgenrelistrequest", 2)) {
@@ -49,16 +50,16 @@ public class FetchGenreListsRequest extends FalcorVolleyWebClientRequest<List<Ge
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onGenreListsFetched(Collections.emptyList(), n);
+            this.responseCallback.onGenreListsFetched(Collections.emptyList(), status);
         }
     }
     
     @Override
     protected void onSuccess(final List<GenreList> list) {
         if (this.responseCallback != null) {
-            this.responseCallback.onGenreListsFetched(list, 0);
+            this.responseCallback.onGenreListsFetched(list, CommonStatus.OK);
         }
     }
     

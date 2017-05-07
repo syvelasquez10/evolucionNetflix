@@ -5,10 +5,10 @@
 package com.netflix.mediaclient.ui.kids.lolomo;
 
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
 import com.netflix.mediaclient.ui.kids.KidsUtils;

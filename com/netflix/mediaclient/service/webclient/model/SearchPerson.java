@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
-public class SearchPerson implements com.netflix.mediaclient.servicemgr.SearchPerson
+public class SearchPerson implements com.netflix.mediaclient.servicemgr.model.search.SearchPerson
 {
     public String id;
     public String imgUrl;

@@ -8,7 +8,7 @@ import com.netflix.mediaclient.ui.kids.lolomo.KidsPaginatedCwAdapter;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.servicemgr.CWVideo;
+import com.netflix.mediaclient.servicemgr.model.CWVideo;
 
 public abstract class ProgressiveCwPagerAdapter extends BaseProgressivePagerAdapter<CWVideo>
 {

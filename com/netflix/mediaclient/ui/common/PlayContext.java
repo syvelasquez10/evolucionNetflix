@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.common;
 
 import android.os.Parcelable;
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 
 public interface PlayContext extends Trackable, Parcelable
 {

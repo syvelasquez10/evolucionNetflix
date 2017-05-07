@@ -15,6 +15,8 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import android.media.MediaDrm$CryptoSession;
 import android.util.Base64;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import android.media.NotProvisionedException;
 import java.util.HashMap;
 import android.media.MediaDrm$KeyRequest;
@@ -110,12 +112,12 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     
     private boolean createNccpCryptoFactoryDrmSession() {
         while (true) {
-            Label_0148: {
+            Label_0149: {
                 try {
                     this.nccpCryptoFactoryCryptoSession.sessionId = this.drm.openSession();
                     if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
                         if (this.nccpCryptoFactoryCryptoSession.sessionId == null) {
-                            break Label_0148;
+                            break Label_0149;
                         }
                         Log.d(WidevineDrmManager.TAG, "Device is provisioned. NCCP crypto factory session ID: " + new String(this.nccpCryptoFactoryCryptoSession.sessionId));
                     }
@@ -128,7 +130,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                 }
                 catch (Throwable t) {
                     Log.e(WidevineDrmManager.TAG, "Fatal error, can not recover!", t);
-                    this.mCallback.drmError(-100);
+                    this.mCallback.drmError(CommonStatus.DRM_FAILURE_CDM);
                     this.mErrorLogging.logHandledException("Failed to created NCCP crypto factory DRM session " + t.getMessage());
                     return false;
                 }
@@ -304,7 +306,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                         }
                         catch (DeniedByServerException ex) {
                             Log.d(WidevineDrmManager.TAG, "Server declined Widewine provisioning request. Server URL: " + this.val$url, (Throwable)ex);
-                            WidevineDrmManager.this.mCallback.drmError(-101);
+                            WidevineDrmManager.this.mCallback.drmError(CommonStatus.DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED);
                             WidevineDrmManager.this.mErrorLogging.logHandledException(new Exception("Server declined Widewine provisioning request. Server URL: " + this.val$url + ". Build: " + Build.DISPLAY, (Throwable)ex));
                             return;
                         }
@@ -312,13 +314,13 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                             Log.d(WidevineDrmManager.TAG, "Fatal error on seting Widewine provisioning response", t);
                             WidevineDrmManager.this.mErrorLogging.logHandledException(new Exception("Fatal error on seting Widewine provisioning response received from URL: " + this.val$url + ". Build: " + Build.DISPLAY, t));
                             if (WidevineDrmManager.this.mCallback != null) {
-                                WidevineDrmManager.this.mCallback.drmError(-100);
+                                WidevineDrmManager.this.mCallback.drmError(CommonStatus.DRM_FAILURE_CDM);
                             }
                             return;
                         }
                     }
                     Log.e(WidevineDrmManager.TAG, "Failed to get provisiong certificate");
-                    WidevineDrmManager.this.mCallback.drmError(-100);
+                    WidevineDrmManager.this.mCallback.drmError(CommonStatus.DRM_FAILURE_CDM);
                     WidevineDrmManager.this.mErrorLogging.logHandledException("Failed to get provisiong certificate. Response is null from URL " + this.val$url);
                 }
             }).execute((Object[])new String[] { ((MediaDrm$ProvisionRequest)o).getDefaultUrl() });

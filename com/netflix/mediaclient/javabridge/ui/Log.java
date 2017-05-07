@@ -13,12 +13,6 @@ public interface Log
     
     void addEventListener(final String p0, final EventListener p1);
     
-    void debug(final LogArguments p0);
-    
-    void error(final LogArguments p0);
-    
-    void fatal(final LogArguments p0);
-    
     void flush();
     
     String getAppId();
@@ -27,15 +21,11 @@ public interface Log
     
     String getXid();
     
-    void info(final LogArguments p0);
+    void log(final LogArguments p0);
     
     void removeEventListener(final String p0, final EventListener p1);
     
     void resetSessionID(final ResetSessionIdCallback p0);
-    
-    void trace(final LogArguments p0);
-    
-    void warn(final LogArguments p0);
     
     public interface ResetSessionIdCallback
     {

@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.kids.details;
 
 import java.util.Iterator;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.ui.details.DummyEpisodeDetails;
 import android.widget.AbsListView;
@@ -18,12 +19,12 @@ import android.widget.TextView;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import java.util.ArrayList;
-import com.netflix.mediaclient.servicemgr.ShowDetails;
-import com.netflix.mediaclient.servicemgr.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import android.widget.AbsListView$LayoutParams;
-import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
@@ -70,8 +71,8 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         for (int i = 0; i < this.getCount(); ++i) {
             this.episodes.add(this.loadingEpisode);
         }
-        this.lr = this.activity.getResources().getDimensionPixelSize(2131361918);
-        this.tb = this.activity.getResources().getDimensionPixelSize(2131361919);
+        this.lr = this.activity.getResources().getDimensionPixelSize(2131361932);
+        this.tb = this.activity.getResources().getDimensionPixelSize(2131361933);
         this.itemHeight = (int)((DeviceUtils.getScreenWidthInPixels((Context)this.activity) - this.lr - this.lr) * 0.75f) + this.tb;
         this.firstItemHeight = this.itemHeight + this.tb;
         this.itemParams = new AbsListView$LayoutParams(-1, this.itemHeight);
@@ -80,7 +81,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
     private TextView createStatusTextView() {
         final Resources resources = this.activity.getResources();
         final TextView textView = new TextView((Context)this.activity);
-        textView.setTextColor(resources.getColor(2131296359));
+        textView.setTextColor(resources.getColor(2131296363));
         textView.setTextSize(0, (float)resources.getDimensionPixelSize(2131361840));
         textView.setGravity(17);
         textView.setLayoutParams((ViewGroup$LayoutParams)this.itemParams);
@@ -100,7 +101,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         if (Log.isLoggable("KidsShowDetailsAdapter", 2)) {
             Log.v("KidsShowDetailsAdapter", String.format("Fetching episodes, id: %s, from: %d, to: %d", id, max, min));
         }
-        this.manager.fetchEpisodes(id, max, min, new FetchEpisodesCallback(this.requestId, max, min));
+        this.manager.getBrowse().fetchEpisodes(id, max, min, new FetchEpisodesCallback(this.requestId, max, min));
     }
     
     private void updateSeasonHeaderView(final boolean b) {
@@ -295,8 +296,8 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         }
         
         @Override
-        public void onEpisodesFetched(final List<EpisodeDetails> list, int i) {
-            super.onEpisodesFetched(list, i);
+        public void onEpisodesFetched(final List<EpisodeDetails> list, final Status status) {
+            super.onEpisodesFetched(list, status);
             if (KidsShowDetailsAdapter.this.activity.destroyed()) {
                 return;
             }
@@ -306,23 +307,23 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
             }
             KidsShowDetailsAdapter.this.isLoading = false;
             List<EpisodeDetails> list2 = null;
-            Label_0128: {
-                if (i == 0 && list != null) {
+            Label_0133: {
+                if (!status.isError() && list != null) {
                     list2 = list;
                     if (list.size() != 0) {
-                        break Label_0128;
+                        break Label_0133;
                     }
                 }
                 Log.w("KidsShowDetailsAdapter", "Error occurred");
                 final ArrayList<EpisodeDetails> list3 = new ArrayList<EpisodeDetails>();
-                i = 0;
+                int n = 0;
                 while (true) {
                     list2 = list3;
-                    if (i >= this.to - this.from + 1) {
+                    if (n >= this.to - this.from + 1) {
                         break;
                     }
                     list3.add(KidsShowDetailsAdapter.this.errorEpisode);
-                    ++i;
+                    ++n;
                 }
             }
             if (Log.isLoggable("KidsShowDetailsAdapter", 2)) {
@@ -331,7 +332,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
                     Log.v("KidsShowDetailsAdapter", String.format("  S%02d:E%02d - %s", episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle()));
                 }
             }
-            for (i = 0; i < list2.size(); ++i) {
+            for (int i = 0; i < list2.size(); ++i) {
                 KidsShowDetailsAdapter.this.episodes.set(this.from + i, list2.get(i));
             }
             KidsShowDetailsAdapter.this.notifyDataSetChanged();

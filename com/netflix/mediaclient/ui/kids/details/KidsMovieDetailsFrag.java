@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.kids.details;
 
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.widget.ErrorWrapper;
 import android.content.Context;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
@@ -17,7 +18,7 @@ import android.view.ViewGroup;
 import android.os.Bundle;
 import android.app.Fragment;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.MovieDetails;
+import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.ListView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
@@ -68,8 +69,8 @@ public class KidsMovieDetailsFrag extends NetflixFrag
     }
     
     private View createSimilarMoviesHeader() {
-        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903103, (ViewGroup)null);
-        ((TextView)inflate.findViewById(2131165411)).setText(2131492954);
+        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903111, (ViewGroup)null);
+        ((TextView)inflate.findViewById(2131165432)).setText(2131492954);
         return inflate;
     }
     
@@ -82,7 +83,7 @@ public class KidsMovieDetailsFrag extends NetflixFrag
         this.isLoading = true;
         this.requestId = System.nanoTime();
         Log.v("KidsMovieDetailsFrag", "Fetching data for show ID: " + this.movieId);
-        this.manager.fetchMovieDetails(this.movieId, new FetchMovieDetailsCallback(this.requestId));
+        this.manager.getBrowse().fetchMovieDetails(this.movieId, new FetchMovieDetailsCallback(this.requestId));
     }
     
     private void showErrorView() {
@@ -125,7 +126,7 @@ public class KidsMovieDetailsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        this.content = layoutInflater.inflate(2130903109, (ViewGroup)null);
+        this.content = layoutInflater.inflate(2130903117, (ViewGroup)null);
         this.listView = (ListView)this.content.findViewById(16908298);
         KidsUtils.configureListViewForKids(this.getNetflixActivity(), this.listView);
         this.detailsViewGroup = new KidsDetailsViewGroup((Context)this.getActivity());
@@ -142,16 +143,16 @@ public class KidsMovieDetailsFrag extends NetflixFrag
     }
     
     @Override
-    public void onManagerReady(final ServiceManager manager, final int n) {
+    public void onManagerReady(final ServiceManager manager, final Status status) {
         Log.v("KidsMovieDetailsFrag", "onManagerReady");
-        super.onManagerReady(manager, n);
+        super.onManagerReady(manager, status);
         this.manager = manager;
         this.completeInitIfPossible();
     }
     
     @Override
-    public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
-        super.onManagerUnavailable(serviceManager, n);
+    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
+        super.onManagerUnavailable(serviceManager, status);
         this.manager = null;
     }
     
@@ -165,13 +166,13 @@ public class KidsMovieDetailsFrag extends NetflixFrag
         }
         
         @Override
-        public void onMovieDetailsFetched(final MovieDetails movieDetails, final int n) {
-            super.onMovieDetailsFetched(movieDetails, n);
+        public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
+            super.onMovieDetailsFetched(movieDetails, status);
             if (this.requestId != KidsMovieDetailsFrag.this.requestId) {
                 Log.v("KidsMovieDetailsFrag", "Ignoring stale callback");
                 return;
             }
-            if (n != 0) {
+            if (status.isError()) {
                 Log.w("KidsMovieDetailsFrag", "Invalid status code");
                 KidsMovieDetailsFrag.this.showErrorView();
                 return;

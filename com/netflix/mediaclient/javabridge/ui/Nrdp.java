@@ -32,6 +32,8 @@ public interface Nrdp
     
     Device getDevice();
     
+    NetworkDiagnosis getDiagnosisTool();
+    
     Log getLog();
     
     MdxController getMdxController();

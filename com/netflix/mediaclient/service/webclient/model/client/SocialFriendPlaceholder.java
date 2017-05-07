@@ -4,14 +4,20 @@
 
 package com.netflix.mediaclient.service.webclient.model.client;
 
-import com.netflix.mediaclient.servicemgr.VideoType;
-import com.netflix.mediaclient.servicemgr.FriendProfile;
-import com.netflix.mediaclient.servicemgr.LoMo;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
+import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
 
 public class SocialFriendPlaceholder extends SocialPlaceholder
 {
     public SocialFriendPlaceholder(final LoMo loMo) {
         super(loMo);
+    }
+    
+    @Override
+    public Playable getPlayable() {
+        return null;
     }
     
     @Override

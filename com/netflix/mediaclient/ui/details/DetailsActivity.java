@@ -4,18 +4,18 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import android.view.Menu;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.VideoDetails;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import java.io.Serializable;
 import com.netflix.mediaclient.ui.kids.details.KidsDetailsActivity;
-import com.netflix.mediaclient.servicemgr.Video;
-import com.netflix.mediaclient.servicemgr.VideoType;
-import com.netflix.mediaclient.servicemgr.Playable;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 import android.app.Fragment;
@@ -57,14 +57,6 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         ((ErrorWrapper.Callback)fragment).onRetryRequested();
     }
     
-    public static void show(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext) {
-        if (playable.getType() == VideoType.EPISODE) {
-            show(netflixActivity, VideoType.SHOW, playable.getParentId(), playable.getParentTitle(), playContext);
-            return;
-        }
-        show(netflixActivity, playable.getType(), playable.getId(), playable.getTitle(), playContext);
-    }
-    
     public static void show(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext) {
         show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext);
     }
@@ -103,7 +95,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     @Override
-    protected DataContext getDataContext() {
+    public DataContext getDataContext() {
         return new DataContext(this.mPlayContext, this.videoId);
     }
     
@@ -155,26 +147,26 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     @Override
-    public void onManagerReady(final ServiceManager serviceMan, final int n) {
+    public void onManagerReady(final ServiceManager serviceMan, final Status status) {
         Log.v("DetailsActivity", "ServiceManager ready");
         this.serviceMan = serviceMan;
         if (this.detailsMenu != null) {
             this.invalidateOptionsMenu();
         }
-        ((ManagerStatusListener)this.getPrimaryFrag()).onManagerReady(serviceMan, n);
+        ((ManagerStatusListener)this.getPrimaryFrag()).onManagerReady(serviceMan, status);
         final Fragment secondaryFrag = this.getSecondaryFrag();
         if (secondaryFrag != null) {
-            ((ManagerStatusListener)secondaryFrag).onManagerReady(serviceMan, n);
+            ((ManagerStatusListener)secondaryFrag).onManagerReady(serviceMan, status);
         }
     }
     
     @Override
-    public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
+    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
         Log.w("DetailsActivity", "ServiceManager unavailable");
-        ((ManagerStatusListener)this.getPrimaryFrag()).onManagerUnavailable(serviceManager, n);
+        ((ManagerStatusListener)this.getPrimaryFrag()).onManagerUnavailable(serviceManager, status);
         final Fragment secondaryFrag = this.getSecondaryFrag();
         if (secondaryFrag != null) {
-            ((ManagerStatusListener)secondaryFrag).onManagerUnavailable(serviceManager, n);
+            ((ManagerStatusListener)secondaryFrag).onManagerUnavailable(serviceManager, status);
         }
     }
     

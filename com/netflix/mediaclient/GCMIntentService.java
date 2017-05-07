@@ -45,7 +45,8 @@ public class GCMIntentService extends GCMBaseIntentService
         intent.addCategory("com.netflix.mediaclient.intent.category.PUSH");
         intent.setClass((Context)this, (Class)NetflixService.class);
         intent.setAction("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_GCM_ONMESSAGE");
-        Log.d("nf_push_service", "Sending command to NetflixService started...");
+        intent.putExtra("isRunning", NetflixService.isInstanceCreated());
+        Log.d("nf_push_service", "Sending command to NetflixService started...isNetflixServiceRunning: " + NetflixService.isInstanceCreated());
         this.startService(intent);
         Log.d("nf_push_service", "Sending command to NetflixService done.");
     }

@@ -10,10 +10,11 @@ import com.netflix.mediaclient.service.webclient.model.leafs.SubtitlePreference;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
@@ -27,8 +28,8 @@ public class FetchProfileDataRequest extends FalcorVolleyWebClientRequest<UserPr
     private final String pqlQuery1;
     private final UserAgentWebCallback responseCallback;
     
-    public FetchProfileDataRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String mProfileId, final UserAgentWebCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchProfileDataRequest(final Context context, final String mProfileId, final UserAgentWebCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.mProfileId = mProfileId;
         this.pqlQuery1 = "['profiles','" + mProfileId + "',['summary', 'subtitlePreference']]";
@@ -43,16 +44,16 @@ public class FetchProfileDataRequest extends FalcorVolleyWebClientRequest<UserPr
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onProfileDataFetched(null, n);
+            this.responseCallback.onProfileDataFetched(null, status);
         }
     }
     
     @Override
     protected void onSuccess(final UserProfile userProfile) {
         if (this.responseCallback != null) {
-            this.responseCallback.onProfileDataFetched(userProfile, 0);
+            this.responseCallback.onProfileDataFetched(userProfile, CommonStatus.OK);
         }
     }
     

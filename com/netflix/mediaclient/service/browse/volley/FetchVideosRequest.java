@@ -7,22 +7,20 @@ package com.netflix.mediaclient.service.browse.volley;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
-import com.google.gson.JsonElement;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
-import com.netflix.mediaclient.service.webclient.model.BillboardDetails;
 import com.netflix.mediaclient.service.browse.BrowseVideoSentinels;
-import com.netflix.mediaclient.util.StringUtils;
 import java.util.ArrayList;
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.servicemgr.LoMoType;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.LoMo;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
@@ -36,95 +34,44 @@ public class FetchVideosRequest extends FalcorVolleyWebClientRequest<List<Video>
     private final BrowseAgentCallback responseCallback;
     private final int toVideo;
     
-    public FetchVideosRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String listType, final LoMo mLoMo, final int fromVideo, final int toVideo, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchVideosRequest(final Context context, final String listType, final LoMo mLoMo, final int fromVideo, final int toVideo, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.mLoMo = mLoMo;
         this.fromVideo = fromVideo;
         this.toVideo = toVideo;
         this.listType = listType;
-        this.pqlQuery = "['" + listType + "','" + this.mLoMo.getId() + "',{'to':" + toVideo + ",'from':" + fromVideo + "},['summary','billboardDetail']]";
+        this.pqlQuery = String.format("['%s', '%s', {'from':%d,'to':%d}, 'summary']", listType, this.mLoMo.getId(), fromVideo, toVideo);
         if (Log.isLoggable("nf_service_browse_fetchvideosrequest", 2)) {
             Log.v("nf_service_browse_fetchvideosrequest", "PQL = " + this.pqlQuery);
         }
     }
     
-    public static List<Video> buildVideoList(final LoMoType loMoType, final JsonObject jsonObject, final int n, int n2, final boolean b) {
+    public static List<Video> buildVideoList(final LoMoType loMoType, final JsonObject jsonObject, final int n, int i, final boolean b) {
         final ArrayList<com.netflix.mediaclient.service.webclient.model.branches.Video.Summary> list = new ArrayList<com.netflix.mediaclient.service.webclient.model.branches.Video.Summary>();
-        int n3 = 0;
-        final int n4 = 0;
-        int n5 = 0;
-        int i = n2;
-        n2 = n4;
+        int n2 = 0;
         while (i >= n) {
             final String string = Integer.toString(i);
-            int n6;
-            int n7;
-            int n8;
+            int n3;
             if (jsonObject.has(string)) {
-                final boolean b2 = true;
-                final Video summaryByLomoType = getSummaryByLomoType(loMoType, jsonObject.getAsJsonObject(string));
-                list.add(0, (com.netflix.mediaclient.service.webclient.model.branches.Video.Summary)summaryByLomoType);
-                n6 = (b2 ? 1 : 0);
-                n7 = n3;
-                n8 = n2;
-                if (Log.isLoggable("nf_service_browse_fetchvideosrequest", 2)) {
-                    final int n9 = n3 + 1;
-                    n6 = (b2 ? 1 : 0);
-                    n7 = n9;
-                    n8 = n2;
-                    if (summaryByLomoType != null) {
-                        n6 = (b2 ? 1 : 0);
-                        n7 = n9;
-                        n8 = n2;
-                        if (StringUtils.isNotEmpty(summaryByLomoType.getBoxshotURL())) {
-                            n6 = (b2 ? 1 : 0);
-                            n7 = n9;
-                            n8 = n2;
-                            if (summaryByLomoType.getBoxshotURL().contains(".webp")) {
-                                n8 = n2 + 1;
-                                n7 = n9;
-                                n6 = (b2 ? 1 : 0);
-                            }
-                        }
-                    }
-                }
+                n3 = 1;
+                list.add(0, (com.netflix.mediaclient.service.webclient.model.branches.Video.Summary)getSummaryByLomoType(loMoType, jsonObject.getAsJsonObject(string)));
             }
-            else {
-                n6 = n5;
-                n7 = n3;
-                n8 = n2;
-                if (n5 != 0) {
-                    n6 = n5;
-                    n7 = n3;
-                    n8 = n2;
-                    if (b) {
-                        Log.d("nf_service_browse_fetchvideosrequest", String.format("Adding sentinel at index %s", string));
-                        list.add(0, BrowseVideoSentinels.getUnavailableVideoSummary());
-                        n6 = n5;
-                        n7 = n3;
-                        n8 = n2;
-                    }
+            else if ((n3 = n2) != 0) {
+                n3 = n2;
+                if (b) {
+                    Log.d("nf_service_browse_fetchvideosrequest", String.format("Adding sentinel at index %s", string));
+                    list.add(0, BrowseVideoSentinels.getUnavailableVideoSummary());
+                    n3 = n2;
                 }
             }
             --i;
-            n5 = n6;
-            n3 = n7;
-            n2 = n8;
-        }
-        if (Log.isLoggable("nf_service_browse_fetchvideosrequest", 2) && n3 > 0 && n2 > 0) {
-            Log.d("nf_service_browse_fetchvideosrequest", String.format("videoCount:%d webpCount %d (%d%%)", n3, n2, n2 * 100 / n3));
+            n2 = n3;
         }
         return (List<Video>)list;
     }
     
     private static Video getSummaryByLomoType(final LoMoType loMoType, final JsonObject jsonObject) {
-        if (loMoType == LoMoType.BILLBOARD) {
-            if (Log.isLoggable("nf_service_browse_fetchvideosrequest", 3)) {
-                Log.d("nf_service_browse_fetchvideosrequest", "Found billboard row - getting summary");
-            }
-            return FalcorParseUtils.getGson().fromJson(jsonObject, BillboardDetails.class);
-        }
         return FalcorParseUtils.getPropertyObject(jsonObject, "summary", com.netflix.mediaclient.service.webclient.model.branches.Video.Summary.class);
     }
     
@@ -134,16 +81,16 @@ public class FetchVideosRequest extends FalcorVolleyWebClientRequest<List<Video>
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onVideosFetched(Collections.emptyList(), n);
+            this.responseCallback.onVideosFetched(Collections.emptyList(), status);
         }
     }
     
     @Override
     protected void onSuccess(final List<Video> list) {
         if (this.responseCallback != null) {
-            this.responseCallback.onVideosFetched(list, 0);
+            this.responseCallback.onVideosFetched(list, CommonStatus.OK);
         }
     }
     

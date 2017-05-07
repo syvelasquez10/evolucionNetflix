@@ -10,9 +10,9 @@ import java.io.IOException;
 import android.net.Uri;
 import com.netflix.mediaclient.Log;
 import java.io.File;
-import com.netflix.mediaclient.servicemgr.VideoDetails;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.content.res.Resources;
-import com.netflix.mediaclient.servicemgr.ShowDetails;
 import java.util.StringTokenizer;
 import android.util.Pair;
 import android.text.Html;
@@ -62,18 +62,21 @@ public final class StringUtils
     }
     
     public static CharSequence createBoldLabeledText(final Context context, final int n, final String s) {
+        return createBoldLabeledText(context, context.getString(n), s);
+    }
+    
+    public static CharSequence createBoldLabeledText(final Context context, String string, final String s) {
         if (context == null) {
             return "";
         }
-        final String string = context.getString(n);
         final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder((CharSequence)string);
         spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, string.length(), 0);
-        String string2 = s;
+        string = s;
         if (isEmpty(s)) {
-            string2 = context.getString(2131493174);
+            string = context.getString(2131493174);
         }
         spannableStringBuilder.append((CharSequence)" ");
-        spannableStringBuilder.append((CharSequence)string2);
+        spannableStringBuilder.append((CharSequence)string);
         return (CharSequence)spannableStringBuilder;
     }
     
@@ -141,7 +144,7 @@ public final class StringUtils
         return array;
     }
     
-    public static CharSequence getBasicInfoString(final Context context, final ShowDetails showDetails) {
+    public static CharSequence getBasicMovieInfoString(final Context context, final int n, final String s, final int n2) {
         if (context == null) {
             return "";
         }
@@ -149,13 +152,39 @@ public final class StringUtils
         if (resources == null) {
             return "";
         }
-        final String quantityString = resources.getQuantityString(2131623937, showDetails.getNumOfSeasons(), new Object[] { showDetails.getNumOfSeasons() });
         final StringBuilder sb = new StringBuilder();
-        if (showDetails.getYear() > 0) {
-            sb.append(showDetails.getYear()).append("   ");
+        if (n > 0) {
+            sb.append(n).append("   ");
         }
-        if (isNotEmpty(showDetails.getCertification())) {
-            sb.append(showDetails.getCertification()).append("   ");
+        if (isNotEmpty(s)) {
+            sb.append(s).append("   ");
+        }
+        sb.append(String.format(resources.getString(2131493179), TimeUtils.convertSecondsToMinutes(n2)));
+        return sb.toString();
+    }
+    
+    public static CharSequence getBasicMovieInfoString(final Context context, final VideoDetails videoDetails) {
+        if (context == null) {
+            return "";
+        }
+        return getBasicMovieInfoString(context, videoDetails.getYear(), videoDetails.getCertification(), videoDetails.getPlayable().getRuntime());
+    }
+    
+    public static CharSequence getBasicShowInfoString(final Context context, final int n, final String s, final int n2) {
+        if (context == null) {
+            return "";
+        }
+        final Resources resources = context.getResources();
+        if (resources == null) {
+            return "";
+        }
+        final String quantityString = resources.getQuantityString(2131623937, n2, new Object[] { n2 });
+        final StringBuilder sb = new StringBuilder();
+        if (n > 0) {
+            sb.append(n).append("   ");
+        }
+        if (isNotEmpty(s)) {
+            sb.append(s).append("   ");
         }
         if (isNotEmpty(quantityString)) {
             sb.append(quantityString);
@@ -163,23 +192,11 @@ public final class StringUtils
         return sb.toString();
     }
     
-    public static CharSequence getBasicInfoString(final Context context, final VideoDetails videoDetails) {
+    public static CharSequence getBasicShowInfoString(final Context context, final ShowDetails showDetails) {
         if (context == null) {
             return "";
         }
-        final Resources resources = context.getResources();
-        if (resources == null) {
-            return "";
-        }
-        final StringBuilder sb = new StringBuilder();
-        if (videoDetails.getYear() > 0) {
-            sb.append(videoDetails.getYear()).append("   ");
-        }
-        if (isNotEmpty(videoDetails.getCertification())) {
-            sb.append(videoDetails.getCertification()).append("   ");
-        }
-        sb.append(String.format(resources.getString(2131493179), TimeUtils.convertSecondsToMinutes(videoDetails.getRuntime())));
-        return sb.toString();
+        return getBasicShowInfoString(context, showDetails.getYear(), showDetails.getCertification(), showDetails.getNumOfSeasons());
     }
     
     public static String getFileAsString(final File p0) throws Exception {
@@ -637,11 +654,19 @@ public final class StringUtils
         return s == null || "".equals(s.trim());
     }
     
-    public static boolean isInteger(final String s) {
-        return isInteger(s, 10);
+    public static boolean isNotEmpty(final CharSequence charSequence) {
+        return !isEmpty(charSequence);
     }
     
-    public static boolean isInteger(String trim, final int n) {
+    public static boolean isNotEmpty(final String s) {
+        return !isEmpty(s);
+    }
+    
+    public static boolean isNumeric(final String s) {
+        return isNumeric(s, 10);
+    }
+    
+    public static boolean isNumeric(String trim, final int n) {
         if (!isEmpty(trim)) {
             trim = trim.trim();
             for (int i = 0; i < trim.length(); ++i) {
@@ -657,14 +682,6 @@ public final class StringUtils
             return true;
         }
         return false;
-    }
-    
-    public static boolean isNotEmpty(final CharSequence charSequence) {
-        return !isEmpty(charSequence);
-    }
-    
-    public static boolean isNotEmpty(final String s) {
-        return !isEmpty(s);
     }
     
     public static String joinArray(final String[] array) {

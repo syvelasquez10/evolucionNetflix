@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.kids.search;
 
 import android.widget.TextView;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.SearchVideo;
+import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.util.AttributeSet;
 import android.content.Context;
@@ -14,8 +14,8 @@ import com.netflix.mediaclient.ui.search.SearchResultView;
 
 public class KidsSearchResultView extends SearchResultView
 {
-    public KidsSearchResultView(final Context context) {
-        super(context);
+    public KidsSearchResultView(final Context context, final int n) {
+        super(context, null);
         this.init();
     }
     
@@ -25,8 +25,10 @@ public class KidsSearchResultView extends SearchResultView
     }
     
     private void init() {
-        this.title.setTextColor(this.getResources().getColor(2131296306));
-        ViewUtils.clearShadow(this.title);
+        if (this.title != null) {
+            this.title.setTextColor(this.getResources().getColor(2131296306));
+            ViewUtils.clearShadow(this.title);
+        }
     }
     
     @Override
@@ -35,17 +37,21 @@ public class KidsSearchResultView extends SearchResultView
     }
     
     @Override
-    protected void updateForVideo(final SearchVideo searchVideo, int visibility) {
-        super.updateForVideo(searchVideo, visibility);
+    protected void updateForVideo(final SearchVideo searchVideo, int visibility, final String s) {
+        super.updateForVideo(searchVideo, visibility, s);
         final String certification = searchVideo.getCertification();
-        final TextView rating = this.rating;
-        if (StringUtils.isEmpty(certification)) {
-            visibility = 8;
+        if (this.rating != null) {
+            final TextView rating = this.rating;
+            if (StringUtils.isEmpty(certification)) {
+                visibility = 8;
+            }
+            else {
+                visibility = 0;
+            }
+            rating.setVisibility(visibility);
         }
-        else {
-            visibility = 0;
+        if (this.rating != null) {
+            this.rating.setText((CharSequence)certification);
         }
-        rating.setVisibility(visibility);
-        this.rating.setText((CharSequence)certification);
     }
 }

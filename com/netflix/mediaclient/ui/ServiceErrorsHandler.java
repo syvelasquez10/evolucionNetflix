@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.ui;
 
 import android.app.AlertDialog$Builder;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.android.app.Status;
 import android.content.Intent;
 import android.content.ActivityNotFoundException;
 import com.netflix.mediaclient.util.AppStoreHelper;
@@ -74,37 +76,38 @@ public class ServiceErrorsHandler
         return true;
     }
     
-    public static boolean handleManagerResponse(final Activity activity, final int n) {
+    public static boolean handleManagerResponse(final Activity activity, final Status status) {
         boolean b = false;
-        Log.v("ServiceErrorsHandler", "Handling manager response, code: " + n + " [" + activity.getClass().toString() + "]");
-        switch (n) {
+        final StatusCode statusCode = status.getStatusCode();
+        Log.v("ServiceErrorsHandler", "Handling manager response, code: " + statusCode + " [" + activity.getClass().toString() + "]");
+        switch (statusCode) {
             default: {
-                provideDialog(activity, activity.getString(2131493273) + " (" + n + ")");
+                provideDialog(activity, activity.getString(2131493273) + " (" + statusCode.getValue() + ")");
                 b = true;
                 return b;
             }
-            case 0: {
+            case OK: {
                 return b;
             }
-            case 1: {
+            case NON_RECOMMENDED_APP_VERSION: {
                 return handleAppUpdateNeeded(activity, false);
             }
-            case -5: {
+            case OBSOLETE_APP_VERSION: {
                 return handleAppUpdateNeeded(activity, true);
             }
-            case -11: {
+            case NO_CONNECTIVITY: {
                 provideDialog(activity, activity.getString(2131493134));
                 return true;
             }
-            case -101:
-            case -100: {
+            case DRM_FAILURE_CDM:
+            case DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED: {
                 provideDialog(activity, activity.getString(2131493246));
                 return true;
             }
-            case -122:
-            case -121:
-            case -120: {
-                provideDialog(activity, activity.getString(2131493272) + " (" + n + ")");
+            case HTTP_SSL_DATE_TIME_ERROR:
+            case HTTP_SSL_ERROR:
+            case HTTP_SSL_NO_VALID_CERT: {
+                provideDialog(activity, activity.getString(2131493272) + " (" + statusCode.getValue() + ")");
                 return true;
             }
         }

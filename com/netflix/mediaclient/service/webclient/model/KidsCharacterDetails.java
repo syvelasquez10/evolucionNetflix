@@ -6,14 +6,15 @@ package com.netflix.mediaclient.service.webclient.model;
 
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
 import com.netflix.mediaclient.service.webclient.model.branches.KidsCharacter;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
+import com.netflix.mediaclient.servicemgr.model.Playable;
 
-public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.KidsCharacterDetails
+public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails, Playable
 {
     private static final String TAG = "nf_kidscharacter";
     public TrackableListSummary galleryListSummary;
@@ -62,6 +63,11 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
             b = false;
         }
         return b;
+    }
+    
+    @Override
+    public boolean canBeSharedOnFacebook() {
+        return false;
     }
     
     @Override
@@ -140,11 +146,6 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
     }
     
     @Override
-    public boolean getFbDntShare() {
-        return true;
-    }
-    
-    @Override
     public List<Video> getGallery() {
         return this.galleryVideos;
     }
@@ -211,6 +212,11 @@ public class KidsCharacterDetails implements com.netflix.mediaclient.servicemgr.
             return null;
         }
         return this.watchNextEpisodeDetail.getShowTitle();
+    }
+    
+    @Override
+    public Playable getPlayable() {
+        return this;
     }
     
     @Override

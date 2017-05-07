@@ -11,7 +11,7 @@ import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.util.TimeUtils;
-import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.util.StringUtils;
 import android.view.ViewGroup;
 import android.app.Activity;
@@ -58,12 +58,12 @@ public class EpisodeRowView extends RelativeLayout implements Checkable
     }
     
     private void init() {
-        ((Activity)this.getContext()).getLayoutInflater().inflate(2130903081, (ViewGroup)this);
-        this.setBackgroundResource(2130837857);
-        this.title = (TextView)this.findViewById(2131165331);
-        this.synopsis = (TextView)this.findViewById(2131165333);
-        this.playButton = (ImageView)this.findViewById(2131165330);
-        this.progressBar = (ProgressBar)this.findViewById(2131165332);
+        ((Activity)this.getContext()).getLayoutInflater().inflate(2130903089, (ViewGroup)this);
+        this.setBackgroundResource(2130837877);
+        this.title = (TextView)this.findViewById(2131165351);
+        this.synopsis = (TextView)this.findViewById(2131165353);
+        this.playButton = (ImageView)this.findViewById(2131165350);
+        this.progressBar = (ProgressBar)this.findViewById(2131165352);
     }
     
     public void handleItemClick() {
@@ -107,15 +107,15 @@ public class EpisodeRowView extends RelativeLayout implements Checkable
     
     public void updateToEpisode(final EpisodeDetails episodeDetails, final boolean isCurrentEpisode) {
         this.isCurrentEpisode = isCurrentEpisode;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493195), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getRuntime())));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493195), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
         this.title.setText(this.createTitleText(episodeDetails.getEpisodeNumber(), episodeDetails.getTitle()));
         this.title.setClickable(false);
         this.synopsis.setText((CharSequence)episodeDetails.getSynopsis());
         this.synopsis.setVisibility(8);
         final int max = Math.max(0, episodeDetails.getBookmarkPosition());
         int progressVal;
-        if (episodeDetails.getRuntime() > 0) {
-            progressVal = max * 100 / episodeDetails.getRuntime();
+        if (episodeDetails.getPlayable().getRuntime() > 0) {
+            progressVal = max * 100 / episodeDetails.getPlayable().getRuntime();
         }
         else {
             progressVal = 0;

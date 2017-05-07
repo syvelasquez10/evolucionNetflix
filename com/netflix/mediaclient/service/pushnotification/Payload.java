@@ -6,10 +6,10 @@ package com.netflix.mediaclient.service.pushnotification;
 
 import java.util.Locale;
 import java.net.URLEncoder;
-import com.netflix.mediaclient.util.StringUtils;
 import java.io.UnsupportedEncodingException;
 import android.net.Uri;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.StringUtils;
 import java.util.ArrayList;
 import android.content.Intent;
 import java.util.List;
@@ -18,7 +18,9 @@ public class Payload
 {
     private static final String ACTION_HOME = "action=home&source=pn";
     private static final String BROWSE = "nflx://www.netflix.com/Browse?q=";
+    public static final String DEFAULT_INFO_ACTION = "INFO";
     public static final String DEFAULT_sound_KEY = "default";
+    private static final String PARAM_ActionInfoType = "type";
     public static final String PARAM_GUID = "guid";
     public static final String PARAM_MESSAGE_GUID = "messageGuid";
     public static final String PARAM_ORIGINATOR = "originator";
@@ -35,6 +37,7 @@ public class Payload
     private static final String PARAM_info = "info";
     private static final String PARAM_largeIcon = "largeIcon";
     private static final String PARAM_ledColor = "ledColor";
+    private static final String PARAM_profileId = "profileId";
     private static final String PARAM_smallIcon = "smallIcon";
     private static final String PARAM_sound = "sound";
     private static final String PARAM_subtext = "subtext";
@@ -48,6 +51,7 @@ public class Payload
     private static final String PROTOCOL_NFLX = "nflx://";
     private static final String TAG = "nf_push";
     private static final String TARGET_URL = "target_url=";
+    public String actionInfoType;
     protected List<Action> actions;
     public String bigViewPicture;
     public String bigViewSummary;
@@ -61,6 +65,7 @@ public class Payload
     public int ledColor;
     public String messageGuid;
     public String originator;
+    public String profileId;
     public String smallIcon;
     public String sound;
     public String subtext;
@@ -100,7 +105,15 @@ public class Payload
             this.smallIcon = intent.getStringExtra("smallIcon");
         }
         if (intent.hasExtra("ledColor")) {
-            this.ledColor = intent.getIntExtra("ledColor", 0);
+            final String stringExtra = intent.getStringExtra("ledColor");
+            int int1;
+            if (StringUtils.isNumeric(stringExtra)) {
+                int1 = Integer.parseInt(stringExtra);
+            }
+            else {
+                int1 = 0;
+            }
+            this.ledColor = int1;
         }
         if (intent.hasExtra("sound")) {
             this.sound = intent.getStringExtra("sound");
@@ -121,13 +134,27 @@ public class Payload
             this.vibrate = intent.getStringExtra("vibrate");
         }
         if (intent.hasExtra("when")) {
-            this.when = intent.getLongExtra("when", 0L);
+            final String stringExtra2 = intent.getStringExtra("when");
+            long long1;
+            if (StringUtils.isNumeric(stringExtra2)) {
+                long1 = Long.parseLong(stringExtra2);
+            }
+            else {
+                long1 = 0L;
+            }
+            this.when = long1;
         }
         if (intent.hasExtra("guid")) {
             this.guid = intent.getStringExtra("guid");
         }
         if (intent.hasExtra("messageGuid")) {
             this.messageGuid = intent.getStringExtra("messageGuid");
+        }
+        if (intent.hasExtra("profileId")) {
+            this.profileId = intent.getStringExtra("profileId");
+        }
+        if (intent.hasExtra("type")) {
+            this.actionInfoType = intent.getStringExtra("type");
         }
         this.originator = extractOriginator(this.defaultActionPayload);
         int i = 0;
@@ -244,14 +271,21 @@ public class Payload
     }
     
     private void validate() {
-        if (this.title == null) {
-            throw new IllegalArgumentException("Payload:: title is missing!");
+        if ("INFO".equals(this.defaultActionKey)) {
+            if (StringUtils.isEmpty(this.profileId) || StringUtils.isEmpty(this.actionInfoType)) {
+                throw new IllegalArgumentException("Payload:: missing fields in INFO !");
+            }
         }
-        if (this.text == null) {
-            throw new IllegalArgumentException("Payload:: text is missing!");
-        }
-        if (this.defaultActionPayload == null) {
-            throw new IllegalArgumentException("Payload:: defaultActionPayload is missing!");
+        else {
+            if (this.title == null) {
+                throw new IllegalArgumentException("Payload:: title is missing!");
+            }
+            if (this.text == null) {
+                throw new IllegalArgumentException("Payload:: text is missing!");
+            }
+            if (this.defaultActionPayload == null) {
+                throw new IllegalArgumentException("Payload:: defaultActionPayload is missing!");
+            }
         }
     }
     
@@ -322,7 +356,7 @@ public class Payload
         }
         
         public int getIcon() {
-            return 2130837726;
+            return 2130837736;
         }
         
         public Uri getPayload() {
@@ -338,6 +372,34 @@ public class Payload
         @Override
         public String toString() {
             return "Action [key=" + this.key + ", text=" + this.text + ", payload=" + this.payload + ", icon=" + this.icon + "]";
+        }
+    }
+    
+    public enum ActionInfoType
+    {
+        EVENT_MYLIST_CHANGED("M"), 
+        EVENT_PLAYBACK_ENDED("P"), 
+        UNKNOWN("");
+        
+        private String value;
+        
+        private ActionInfoType(final String value) {
+            this.value = value;
+        }
+        
+        public static ActionInfoType create(final String s) {
+            final ActionInfoType[] values = values();
+            for (int length = values.length, i = 0; i < length; ++i) {
+                final ActionInfoType actionInfoType = values[i];
+                if (actionInfoType.value.equalsIgnoreCase(s)) {
+                    return actionInfoType;
+                }
+            }
+            return ActionInfoType.UNKNOWN;
+        }
+        
+        public String getValue() {
+            return this.value;
         }
     }
 }

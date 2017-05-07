@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import android.view.View;
 
 interface RowAdapter

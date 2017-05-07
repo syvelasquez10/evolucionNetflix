@@ -4,7 +4,11 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.mediaclient.servicemgr.model.CWVideo;
+import com.netflix.mediaclient.servicemgr.model.Billboard;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 
 public class FetchVideosHandler<T> extends LoggingManagerCallback
@@ -24,12 +28,12 @@ public class FetchVideosHandler<T> extends LoggingManagerCallback
         this.end = end;
     }
     
-    private void handleResponse(final List<? extends Video> list, final int n) {
+    private void handleResponse(final List<? extends Video> list, final Status status) {
         if (this.requestId != this.callback.getRequestId()) {
             Log.v(this.tag, "Ignoring stale onVideosFetched callback");
             return;
         }
-        if (n != 0) {
+        if (status.isError()) {
             Log.w(this.tag, "Invalid status code");
             this.callback.onErrorResponse();
             return;
@@ -43,15 +47,21 @@ public class FetchVideosHandler<T> extends LoggingManagerCallback
     }
     
     @Override
-    public void onCWVideosFetched(final List<CWVideo> list, final int n) {
-        super.onCWVideosFetched(list, n);
-        this.handleResponse(list, n);
+    public void onBBVideosFetched(final List<Billboard> list, final Status status) {
+        super.onBBVideosFetched(list, status);
+        this.handleResponse(list, status);
     }
     
     @Override
-    public void onVideosFetched(final List<Video> list, final int n) {
-        super.onVideosFetched(list, n);
-        this.handleResponse(list, n);
+    public void onCWVideosFetched(final List<CWVideo> list, final Status status) {
+        super.onCWVideosFetched(list, status);
+        this.handleResponse(list, status);
+    }
+    
+    @Override
+    public void onVideosFetched(final List<Video> list, final Status status) {
+        super.onVideosFetched(list, status);
+        this.handleResponse(list, status);
     }
     
     public interface FetchCallback<T>

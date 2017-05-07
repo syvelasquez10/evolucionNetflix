@@ -5,14 +5,13 @@
 package com.netflix.mediaclient.ui.kids.lolomo;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import com.netflix.mediaclient.servicemgr.Playable;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.view.View;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.view.ViewGroup;
 import android.app.Activity;
@@ -25,7 +24,7 @@ import android.widget.TextView;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.servicemgr.CWVideo;
+import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 import android.widget.RelativeLayout;
 
@@ -42,9 +41,9 @@ public class KidsHorizontalCwView extends RelativeLayout implements IVideoView<C
         this.setFocusable(true);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeHorizontalRowHeight((NetflixActivity)this.getContext(), b)));
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        ((Activity)this.getContext()).getLayoutInflater().inflate(2130903094, (ViewGroup)this);
-        this.title = (TextView)this.findViewById(2131165393);
-        (this.img = (AdvancedImageView)this.findViewById(2131165391)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361909));
+        ((Activity)this.getContext()).getLayoutInflater().inflate(2130903102, (ViewGroup)this);
+        this.title = (TextView)this.findViewById(2131165414);
+        (this.img = (AdvancedImageView)this.findViewById(2131165412)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361923));
     }
     
     public PlayContext getPlayContext() {
@@ -65,7 +64,7 @@ public class KidsHorizontalCwView extends RelativeLayout implements IVideoView<C
         final String format = String.format(this.getResources().getString(2131493187), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.title.setText((CharSequence)this.getContext().getString(2131493252, new Object[] { cwVideo.getTitle(), cwVideo.getCurrentSeasonNumber(), cwVideo.getCurrentEpisodeNumber() }));
+            this.title.setText((CharSequence)this.getContext().getString(2131493252, new Object[] { cwVideo.getTitle(), cwVideo.getPlayable().getSeasonNumber(), cwVideo.getPlayable().getEpisodeNumber() }));
         }
         else {
             this.title.setText((CharSequence)cwVideo.getTitle());
@@ -83,7 +82,7 @@ public class KidsHorizontalCwView extends RelativeLayout implements IVideoView<C
         imageLoader.showImg(img, interestingUrl, bif, format, false, true, n);
         this.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
-                PlaybackLauncher.startPlaybackAfterPIN((NetflixActivity)KidsHorizontalCwView.this.getContext(), cwVideo, KidsHorizontalCwView.this.playContext);
+                PlaybackLauncher.startPlaybackAfterPIN((NetflixActivity)KidsHorizontalCwView.this.getContext(), cwVideo.getPlayable(), KidsHorizontalCwView.this.playContext);
             }
         });
     }

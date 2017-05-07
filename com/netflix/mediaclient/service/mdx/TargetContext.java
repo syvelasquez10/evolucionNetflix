@@ -567,7 +567,9 @@ public class TargetContext implements TargetStateManagerListener
     
     @Override
     public void removeEvents(final TargetContextEvent targetContextEvent) {
-        this.mTargetContextHandler.removeMessages(1, (Object)targetContextEvent);
+        if (this.mTargetContextHandler != null) {
+            this.mTargetContextHandler.removeMessages(1, (Object)targetContextEvent);
+        }
     }
     
     @Override
@@ -576,10 +578,13 @@ public class TargetContext implements TargetStateManagerListener
         message.what = 1;
         message.obj = obj;
         if (n > 0) {
-            this.mTargetContextHandler.sendMessageDelayed(message, (long)n);
-            return;
+            if (this.mTargetContextHandler != null) {
+                this.mTargetContextHandler.sendMessageDelayed(message, (long)n);
+            }
         }
-        this.mTargetContextHandler.sendMessage(message);
+        else if (this.mTargetContextHandler != null) {
+            this.mTargetContextHandler.sendMessage(message);
+        }
     }
     
     public void sendCommand(String s, final JSONObject jsonObject) {
@@ -638,6 +643,9 @@ public class TargetContext implements TargetStateManagerListener
                 TargetContext.this.mController.getSession().sendMessage(TargetContext.this.mSessionId, s, jsonObject);
             }
         };
+        if (this.mTargetContextHandler == null) {
+            return;
+        }
         this.mTargetContextHandler.sendMessage(message);
         if ("PLAYER_SET_VOLUME".equals(s)) {
             final int optInt = jsonObject.optInt("volume", -1);

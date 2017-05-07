@@ -7,16 +7,15 @@ package com.netflix.mediaclient.ui.lolomo;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.MenuItem;
-import com.netflix.mediaclient.Log;
 import com.viewpagerindicator.android.osp.ViewPager;
 import android.view.ViewParent;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
+import com.netflix.mediaclient.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.View$OnTouchListener;
-import android.widget.AbsListView;
-import android.widget.AbsListView$OnScrollListener;
+import android.view.View;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.database.DataSetObserver;
 
 public class LoLoMoFocusHandler extends DataSetObserver
@@ -25,30 +24,24 @@ public class LoLoMoFocusHandler extends DataSetObserver
     private static final boolean LOG_VERBOSE = false;
     private static final boolean RIGHT = true;
     private static final String TAG = "LoLoMoFocusHandler";
-    private static final int VERTICAL_SCROLL_POSITION_OFFSET_PX = 16;
     private static final int VIEW_ID_ROW_MULTIPLIER = 1000;
     private static boolean viewIdsValidated;
+    private final NetflixActivity activity;
     private int col;
     private final StickyListHeadersListView listView;
+    private View prevFocusView;
     private int row;
     private boolean touchEnabled;
     
-    LoLoMoFocusHandler(final StickyListHeadersListView listView) {
+    LoLoMoFocusHandler(final NetflixActivity activity, final StickyListHeadersListView listView) {
         this.touchEnabled = true;
         this.validateViewIdsIfNecessary();
-        (this.listView = listView).setOnScrollListener((AbsListView$OnScrollListener)new AbsListView$OnScrollListener() {
-            public void onScroll(final AbsListView absListView, final int n, final int n2, final int n3) {
-            }
-            
-            public void onScrollStateChanged(final AbsListView absListView, final int n) {
-                if (LoLoMoFocusHandler.this.touchEnabled) {
-                    return;
-                }
-                LoLoMoFocusHandler.this.requestFocusAtCurrPos();
-            }
-        });
-        listView.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
+        this.activity = activity;
+        (this.listView = listView).setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
             public boolean onTouch(final View view, final MotionEvent motionEvent) {
+                if (!LoLoMoFocusHandler.this.touchEnabled) {
+                    Log.v("LoLoMoFocusHandler", "enabling touch");
+                }
                 LoLoMoFocusHandler.this.touchEnabled = true;
                 return false;
             }
@@ -112,52 +105,59 @@ public class LoLoMoFocusHandler extends DataSetObserver
     private void handleDpadEvent(final int n) {
         boolean b = true;
         boolean b2 = false;
-        switch (n) {
-            default: {
-                Log.w("LoLoMoFocusHandler", "Unknown keyCode");
-                return;
-            }
-            case 20: {
-                this.row = Math.min(this.row + 1, this.listView.getAdapter().getCount() - 1);
-                break;
-            }
-            case 19: {
-                this.row = Math.max(0, this.row - 1);
-                break;
-            }
-            case 21: {
-                b2 = true;
-                if (this.canScrollHorizontally(false)) {
-                    --this.col;
-                    b2 = b2;
+        Label_0072: {
+            switch (n) {
+                default: {
+                    Log.w("LoLoMoFocusHandler", "Unknown keyCode");
                     break;
                 }
-                break;
-            }
-            case 22: {
-                final boolean b3 = b2 = true;
-                if (this.canScrollHorizontally(true)) {
-                    ++this.col;
-                    b2 = b3;
-                    break;
+                case 20: {
+                    this.row = Math.min(this.row + 1, this.listView.getAdapter().getCount() - 1);
+                    break Label_0072;
                 }
-                break;
+                case 19: {
+                    this.row = Math.max(0, this.row - 1);
+                    break Label_0072;
+                }
+                case 21: {
+                    b2 = true;
+                    if (this.canScrollHorizontally(false)) {
+                        --this.col;
+                        b2 = b2;
+                    }
+                    break Label_0072;
+                }
+                case 22: {
+                    final boolean b3 = b2 = true;
+                    if (this.canScrollHorizontally(true)) {
+                        ++this.col;
+                        b2 = b3;
+                    }
+                    break Label_0072;
+                }
             }
-        }
-        if (b2) {
-            this.scrollHorizontallyIfRequired();
-            this.requestFocusAtCurrPos();
             return;
         }
-        this.scrollVertically(this.row);
+        if (b2) {
+            this.requestFocusAtCurrPos();
+            this.scrollHorizontallyIfRequired();
+            return;
+        }
         if (n != 20) {
             b = false;
         }
-        this.handleVerticalKeyEvent(b);
+        if (this.handleVerticalKeyEvent(b)) {
+            this.scrollVertically(this.row);
+        }
     }
     
-    private void handleVerticalKeyEvent(final boolean b) {
-        final StickyListHeadersListView listView = this.listView;
+    private boolean handleVerticalKeyEvent(final boolean b) {
+        if (this.prevFocusView == null) {
+            this.prevFocusView = this.listView.getFocusedChild();
+            if (this.prevFocusView == null) {
+                this.prevFocusView = (View)this.listView;
+            }
+        }
         int n;
         if (b) {
             n = 130;
@@ -165,14 +165,16 @@ public class LoLoMoFocusHandler extends DataSetObserver
         else {
             n = 33;
         }
-        final View focusSearch = listView.focusSearch(n);
+        final View focusSearch = this.prevFocusView.focusSearch(n);
         if (focusSearch != null && !(focusSearch instanceof MenuItem)) {
             final VideoViewGroup<?, ?> videoViewGroup = this.getVideoViewGroup(focusSearch);
             if (videoViewGroup != null) {
                 this.col = this.computeColFromViewId(videoViewGroup.getChildAt(0).getId()) + this.col % videoViewGroup.getChildCount();
                 this.requestFocusAtCurrPos();
+                return true;
             }
         }
+        return false;
     }
     
     private void requestFocusAtCurrPos() {
@@ -181,6 +183,7 @@ public class LoLoMoFocusHandler extends DataSetObserver
             return;
         }
         viewById.requestFocus();
+        this.prevFocusView = viewById;
     }
     
     private void scrollHorizontallyIfRequired() {
@@ -209,7 +212,7 @@ public class LoLoMoFocusHandler extends DataSetObserver
     }
     
     private void scrollVertically(final int n) {
-        this.listView.smoothScrollToPositionFromTop(n, 16);
+        this.listView.smoothScrollToPositionFromTop(n, this.activity.getActionBarHeight());
     }
     
     private void validateViewIdsIfNecessary() {

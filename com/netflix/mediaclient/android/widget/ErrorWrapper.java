@@ -36,9 +36,9 @@ public class ErrorWrapper
             }
         };
         this.callback = callback;
-        this.errorGroup = view.findViewById(2131165334);
-        this.errorMsg = (TextView)view.findViewById(2131165335);
-        (this.retryBtn = (Button)this.errorGroup.findViewById(2131165336)).setOnClickListener(this.retryClickListener);
+        this.errorGroup = view.findViewById(2131165354);
+        this.errorMsg = (TextView)view.findViewById(2131165355);
+        (this.retryBtn = (Button)this.errorGroup.findViewById(2131165356)).setOnClickListener(this.retryClickListener);
         if (view.getContext() instanceof NetflixActivity) {
             final NetflixActivity netflixActivity = (NetflixActivity)view.getContext();
             if (netflixActivity.isForKids()) {
@@ -54,9 +54,9 @@ public class ErrorWrapper
         ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131361838);
         ViewUtils.setTextViewToBold(this.errorMsg);
         final ViewGroup$LayoutParams layoutParams = this.retryBtn.getLayoutParams();
-        layoutParams.height = resources.getDimensionPixelSize(2131361914);
-        layoutParams.width = resources.getDimensionPixelSize(2131361913);
-        this.retryBtn.setBackgroundResource(2130837741);
+        layoutParams.height = resources.getDimensionPixelSize(2131361928);
+        layoutParams.width = resources.getDimensionPixelSize(2131361927);
+        this.retryBtn.setBackgroundResource(2130837752);
         this.retryBtn.setTextColor(resources.getColor(2131296309));
         ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131361843);
         ViewUtils.setTextViewToBold((TextView)this.retryBtn);

@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.kids.lolomo;
 
 import com.netflix.mediaclient.util.LogUtils;
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.PressedStateHandler;
 import android.widget.TextView;
-import com.netflix.mediaclient.servicemgr.LoMo;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import java.util.List;
@@ -50,13 +50,13 @@ public class SkidmarkMoreButton extends FrameLayout
         };
         this.activity = activity;
         Log.v("SkidmarkMoreButton", "Creating more button");
-        activity.getLayoutInflater().inflate(2130903101, (ViewGroup)this);
+        activity.getLayoutInflater().inflate(2130903109, (ViewGroup)this);
         this.setOnClickListener(this.launchLomoDetailsClickListener);
-        this.imgViews.add(this.findAndConfigureView(2131165406));
-        this.imgViews.add(this.findAndConfigureView(2131165407));
-        this.imgViews.add(this.findAndConfigureView(2131165408));
-        this.lomoTitle = (TextView)this.findViewById(2131165410);
-        final int dimensionPixelSize = activity.getResources().getDimensionPixelSize(2131361918);
+        this.imgViews.add(this.findAndConfigureView(2131165427));
+        this.imgViews.add(this.findAndConfigureView(2131165428));
+        this.imgViews.add(this.findAndConfigureView(2131165429));
+        this.lomoTitle = (TextView)this.findViewById(2131165431);
+        final int dimensionPixelSize = activity.getResources().getDimensionPixelSize(2131361932);
         this.setPadding(dimensionPixelSize, 0, dimensionPixelSize, AndroidUtils.dipToPixels((Context)activity, 50));
         this.pressedStateHandler = new PressedStateHandler((View)this);
     }

@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import java.io.InputStream;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.Log;
@@ -45,8 +46,8 @@ public final class MdxImageLoader
         }
         this.mResourceFetcher.fetchResource(s, IClientLogging.AssetType.boxArt, new ResourceFetcherCallback() {
             @Override
-            public void onResourceFetched(final String s, final String s2, final int n) {
-                if (n == 0) {
+            public void onResourceFetched(final String s, final String s2, final Status status) {
+                if (status.isSucces()) {
                     if (Log.isLoggable("nf_mdxImageLoader", 3)) {
                         Log.d("nf_mdxImageLoader", "resource fetched to " + s2);
                     }
@@ -86,7 +87,7 @@ public final class MdxImageLoader
             }
             
             @Override
-            public void onResourcePrefetched(final String s, final int n, final int n2) {
+            public void onResourcePrefetched(final String s, final int n, final Status status) {
                 if (Log.isLoggable("nf_mdxImageLoader", 3)) {
                     Log.d("nf_mdxImageLoader", "ERROR resource prefetched from " + s);
                 }

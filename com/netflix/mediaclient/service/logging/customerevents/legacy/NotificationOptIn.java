@@ -17,12 +17,14 @@ public class NotificationOptIn implements Runnable
     private static final String TAG = "nf_rest";
     private Context mContext;
     private String mDeviceToken;
+    private boolean mGcmInfoOptIn;
     private boolean mOptIn;
     private UserData mUser;
     
-    public NotificationOptIn(final Context mContext, final boolean mOptIn, final String mDeviceToken, final UserData mUser) {
+    public NotificationOptIn(final Context mContext, final boolean mOptIn, final boolean mGcmInfoOptIn, final String mDeviceToken, final UserData mUser) {
         this.mContext = mContext;
         this.mOptIn = mOptIn;
+        this.mGcmInfoOptIn = mGcmInfoOptIn;
         this.mDeviceToken = mDeviceToken;
         this.mUser = mUser;
     }
@@ -44,7 +46,7 @@ public class NotificationOptIn implements Runnable
     public void run() {
         try {
             final AuthorizationCredentials authorizationCredentials = new AuthorizationCredentials(this.mUser.netflixId, this.mUser.secureNetflixId);
-            final CustomerEventCommand customerEventCommand = new CustomerEventCommand(this.mUser.esn, authorizationCredentials, new PushNotificationOptInStatus(this.mUser.esn, this.getCommonRequestParameters(this.mContext, this.mUser), this.mDeviceToken, this.mOptIn, true, authorizationCredentials).toString());
+            final CustomerEventCommand customerEventCommand = new CustomerEventCommand(this.mUser.esn, authorizationCredentials, new PushNotificationOptInStatus(this.mUser.esn, this.getCommonRequestParameters(this.mContext, this.mUser), this.mDeviceToken, this.mOptIn, this.mGcmInfoOptIn, true, authorizationCredentials).toString());
             Log.d("nf_rest", "Executing NotificationOptInCommand WebAPI call start");
             final String execute = customerEventCommand.execute();
             Log.d("nf_rest", "Executing NotificationOptInCommand WebAPI call done");
@@ -53,5 +55,10 @@ public class NotificationOptIn implements Runnable
         catch (Throwable t) {
             Log.e("nf_rest", "Failed to execute both WebAPI call!", t);
         }
+    }
+    
+    @Override
+    public String toString() {
+        return "NotificationOptIn [mDeviceToken=" + this.mDeviceToken + ", mOptIn=" + this.mOptIn + ", mGcmInfoOptIn=" + this.mGcmInfoOptIn + ", mUser=" + this.mUser + ", mContext=" + this.mContext + "]";
     }
 }

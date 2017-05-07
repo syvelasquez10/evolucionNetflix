@@ -16,7 +16,7 @@ public final class PushNotificationOptInStatus extends BaseCustomerEvent
     private static final String NAME = "UI Push Notification Opt-In Status";
     protected JSONArray event;
     
-    public PushNotificationOptInStatus(final String s, final CommonRequestParameters commonRequestParameters, final String s2, final boolean b, final boolean b2, final AuthorizationCredentials authorizationCredentials) throws JSONException {
+    public PushNotificationOptInStatus(final String s, final CommonRequestParameters commonRequestParameters, final String s2, final boolean b, final boolean b2, final boolean b3, final AuthorizationCredentials authorizationCredentials) throws JSONException {
         super(null);
         final long currentTimeMillis = System.currentTimeMillis();
         this.event = new JSONArray();
@@ -33,7 +33,8 @@ public final class PushNotificationOptInStatus extends BaseCustomerEvent
         BaseCustomerEvent.addIfNotNull(jsonObject2, "ui_version", commonRequestParameters.uiVersion);
         BaseCustomerEvent.addIfNotNull(jsonObject2, "deviceToken", s2);
         jsonObject2.put("pushOptStatus", b);
-        jsonObject2.put("loggedIn", b2);
+        jsonObject2.put("infoOptStatus", b2);
+        jsonObject2.put("loggedIn", b3);
         jsonObject2.put("timestamp", currentTimeMillis);
         jsonObject2.put("source", (Object)"pn");
         BaseCustomerEvent.addIfNotNull(jsonObject2, "device_cat", commonRequestParameters.deviceCategory);

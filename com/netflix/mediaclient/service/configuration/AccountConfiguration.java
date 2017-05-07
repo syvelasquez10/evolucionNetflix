@@ -56,6 +56,13 @@ public class AccountConfiguration
         return this.mAccountConfigData.getMdxBlacklistAsJsonArray();
     }
     
+    public int getSearchTest() {
+        if (this.mAccountConfigData == null) {
+            return 1;
+        }
+        return this.mAccountConfigData.getSearchTest();
+    }
+    
     public int getVideoBufferSize() {
         if (this.mAccountConfigData == null) {
             return 0;
@@ -70,5 +77,9 @@ public class AccountConfiguration
         }
         PreferenceUtils.putStringPref(this.mContext, "accountConfig", string);
         this.mAccountConfigData = mAccountConfigData;
+    }
+    
+    public boolean toDisableSuspendPlay() {
+        return this.mAccountConfigData != null && this.mAccountConfigData.toDisableSuspendPlay();
     }
 }

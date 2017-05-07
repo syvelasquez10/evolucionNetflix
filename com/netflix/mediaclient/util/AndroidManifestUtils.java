@@ -41,7 +41,7 @@ public final class AndroidManifestUtils
         }
     }
     
-    public static String getVersionName(final Context context) {
+    private static String getVersionName(final Context context) {
         if (context == null) {
             throw new IllegalArgumentException("Context cannot be null!");
         }

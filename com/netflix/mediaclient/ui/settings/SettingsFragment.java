@@ -4,29 +4,21 @@
 
 package com.netflix.mediaclient.ui.settings;
 
-import com.netflix.mediaclient.util.LogUtils;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.os.Bundle;
-import android.content.pm.PackageInfo;
-import java.io.Serializable;
-import android.content.pm.PackageManager$NameNotFoundException;
-import android.os.Build;
 import android.preference.PreferenceScreen;
 import android.preference.PreferenceGroup;
 import com.netflix.mediaclient.util.AndroidUtils;
 import java.util.ArrayList;
-import com.netflix.mediaclient.util.StringUtils;
 import com.google.android.gcm.GCMRegistrar;
 import android.support.v4.content.LocalBroadcastManager;
+import android.content.Intent;
 import android.preference.Preference$OnPreferenceClickListener;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference$OnPreferenceChangeListener;
-import com.netflix.mediaclient.service.configuration.CastConfiguration;
-import android.net.Uri;
-import android.content.Intent;
+import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import android.app.Fragment;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.android.app.BackgroundTask;
@@ -79,18 +71,10 @@ public class SettingsFragment extends PreferenceFragment
         return (Fragment)new SettingsFragment();
     }
     
-    private Intent createViewLegalTermsOfUseIntent() {
-        return new Intent("android.intent.action.VIEW").setData(Uri.parse("https://www.netflix.com/TermsOfUse"));
-    }
-    
-    private Intent createViewPrivacyPolicyIntent() {
-        return new Intent("android.intent.action.VIEW").setData(Uri.parse("https://signup.netflix.com/PrivacyPolicy"));
-    }
-    
     private void handleCastAppIdSettings() {
         final Preference preference = this.findPreference((CharSequence)"ui.castAppId");
         if (preference != null) {
-            preference.setSummary((CharSequence)((Object)this.getText(2131493310) + CastConfiguration.getCastApplicationId((Context)this.activity)));
+            preference.setSummary((CharSequence)((Object)this.getText(2131493310) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
             preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new Preference$OnPreferenceChangeListener() {
                 public boolean onPreferenceChange(final Preference preference, final Object o) {
                     Log.d("SettingsFragment", "onPreferenceChange " + o);
@@ -100,7 +84,7 @@ public class SettingsFragment extends PreferenceFragment
                         new BackgroundTask().execute(new Runnable() {
                             @Override
                             public void run() {
-                                CastConfiguration.setNewCastApplicationId((Context)SettingsFragment.this.activity, string);
+                                SettingsConfiguration.setNewCastApplicationId((Context)SettingsFragment.this.activity, string);
                             }
                         });
                         return true;
@@ -266,9 +250,7 @@ public class SettingsFragment extends PreferenceFragment
     }
     
     private boolean isRegisteredForPushNotifications() {
-        final String registrationId = GCMRegistrar.getRegistrationId((Context)this.activity);
-        Log.d("SettingsFragment", "RegId " + registrationId);
-        return !StringUtils.isEmpty(registrationId);
+        return SettingsConfiguration.getPushOptInStatus((Context)this.activity);
     }
     
     private void populatePlayerTypes(final ListPreference listPreference) {
@@ -374,34 +356,6 @@ public class SettingsFragment extends PreferenceFragment
         }
     }
     
-    private void updateAboutDevice() {
-        final String string = this.getString(2131493174);
-        int n = 0;
-        Serializable s = string;
-        while (true) {
-            try {
-                final PackageInfo packageInfo = this.activity.getPackageManager().getPackageInfo(this.activity.getPackageName(), 0);
-                s = string;
-                final String s2 = (String)(s = packageInfo.versionName);
-                final int versionCode = packageInfo.versionCode;
-                s = s2;
-                n = versionCode;
-                s = new StringBuilder().append((String)s);
-                if (n > 0) {
-                    ((StringBuilder)s).append(" (code ").append(n).append(")").append(", ");
-                }
-                ((StringBuilder)s).append("OS API: ").append(AndroidUtils.getAndroidVersion()).append("\n").append("model: ").append(Build.MODEL).append(", ").append("build: ").append(Build.DISPLAY);
-                this.findPreference((CharSequence)"ui.about").setSummary((CharSequence)((StringBuilder)s).toString());
-                this.findPreference((CharSequence)"ui.about").setSelectable(false);
-            }
-            catch (PackageManager$NameNotFoundException ex) {
-                Log.handleException("SettingsFragment", (Exception)ex);
-                continue;
-            }
-            break;
-        }
-    }
-    
     private void updateSubtitleConfig(final SubtitleConfiguration subtitleConfiguration) {
         Log.d("SettingsFragment", "Update subtitle config");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PLAYER_SUBTITLE_CONFIG_CHANGED");
@@ -415,25 +369,7 @@ public class SettingsFragment extends PreferenceFragment
         this.activity = this.getActivity();
         this.getPreferenceManager().setSharedPreferencesMode(0);
         this.getPreferenceManager().setSharedPreferencesName("nfxpref");
-        this.addPreferencesFromResource(2131034113);
-        this.findPreference((CharSequence)this.getString(2131492946)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
-        final Preference preference = this.findPreference((CharSequence)"pref.privacy");
-        preference.setIntent(this.createViewPrivacyPolicyIntent());
-        preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new Preference$OnPreferenceClickListener() {
-            public boolean onPreferenceClick(final Preference preference) {
-                LogUtils.reportUiModalViewChanged((Context)SettingsFragment.this.activity, IClientLogging.ModalView.privacyPolicy);
-                return false;
-            }
-        });
-        final Preference preference2 = this.findPreference((CharSequence)"pref.terms");
-        preference2.setIntent(this.createViewLegalTermsOfUseIntent());
-        preference2.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new Preference$OnPreferenceClickListener() {
-            public boolean onPreferenceClick(final Preference preference) {
-                LogUtils.reportUiModalViewChanged((Context)SettingsFragment.this.activity, IClientLogging.ModalView.legalTerms);
-                return false;
-            }
-        });
-        this.updateAboutDevice();
+        this.addPreferencesFromResource(2131034114);
         ((PreferenceGroup)this.findPreference((CharSequence)"pref.screen")).removePreference(this.findPreference((CharSequence)"pref.qa.debugonly"));
         this.handlePushNotificationsSettings();
     }

@@ -5,13 +5,13 @@
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.FriendProfile;
+import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import android.os.Parcel;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.LoMoType;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import android.os.Parcelable$Creator;
-import com.netflix.mediaclient.servicemgr.Genre;
-import com.netflix.mediaclient.servicemgr.LoMo;
+import com.netflix.mediaclient.servicemgr.model.genre.Genre;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
 
 public class ListOfMoviesSummary extends TrackableListSummary implements LoMo, Genre
 {

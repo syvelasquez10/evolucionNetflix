@@ -42,8 +42,8 @@ public abstract class LanguageSelector
     LanguageSelector(final NetflixActivity mController, final LanguageSelectorCallback mCallback) {
         this.mController = mController;
         this.mCallback = mCallback;
-        this.mSelectedRowColor = this.mController.getResources().getColor(2131296353);
-        this.mRowColor = this.mController.getResources().getColor(2131296352);
+        this.mSelectedRowColor = this.mController.getResources().getColor(2131296357);
+        this.mRowColor = this.mController.getResources().getColor(2131296356);
     }
     
     public static LanguageSelector createInstance(final NetflixActivity netflixActivity, final boolean b, final LanguageSelectorCallback languageSelectorCallback) {
@@ -115,9 +115,9 @@ public abstract class LanguageSelector
                 return;
             }
             Log.d("nf_language_selector", "Button found!");
-            button.setBackgroundColor(this.mController.getResources().getColor(2131296352));
+            button.setBackgroundColor(this.mController.getResources().getColor(2131296356));
             button.setTextColor(this.mController.getResources().getColor(2131296312));
-            button.setTextAppearance((Context)this.mController, 2131558593);
+            button.setTextAppearance((Context)this.mController, 2131558595);
         }
     }
     
@@ -230,10 +230,10 @@ public abstract class LanguageSelector
     }
     
     protected void initLists(final View view, final Language language) {
-        (this.mAudiosListView = (ListView)view.findViewById(2131165413)).setChoiceMode(1);
+        (this.mAudiosListView = (ListView)view.findViewById(2131165434)).setChoiceMode(1);
         final AudioAdapter adapter = new AudioAdapter(language);
         this.mAudiosListView.setAdapter((ListAdapter)adapter);
-        (this.mSubtitlesListView = (ListView)view.findViewById(2131165414)).setChoiceMode(1);
+        (this.mSubtitlesListView = (ListView)view.findViewById(2131165435)).setChoiceMode(1);
         final SubtitleAdapter adapter2 = new SubtitleAdapter(language);
         this.mSubtitlesListView.setAdapter((ListAdapter)adapter2);
         this.mAudiosListView.setOnItemClickListener((AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
@@ -293,7 +293,7 @@ public abstract class LanguageSelector
             View inflate = view;
             if (view == null) {
                 Log.d("nf_language_selector", "Audio create row " + n);
-                inflate = LanguageSelector.this.mController.getLayoutInflater().inflate(2130903105, viewGroup, false);
+                inflate = LanguageSelector.this.mController.getLayoutInflater().inflate(2130903113, viewGroup, false);
                 inflate.setTag((Object)new RowHolder(inflate));
             }
             final RowHolder rowHolder = (RowHolder)inflate.getTag();
@@ -343,8 +343,8 @@ public abstract class LanguageSelector
         TextView name;
         
         RowHolder(final View view) {
-            this.name = (TextView)view.findViewById(2131165415);
-            this.choice = (RadioButton)view.findViewById(2131165416);
+            this.name = (TextView)view.findViewById(2131165436);
+            this.choice = (RadioButton)view.findViewById(2131165437);
         }
     }
     
@@ -373,7 +373,7 @@ public abstract class LanguageSelector
             View inflate = view;
             if (view == null) {
                 Log.d("nf_language_selector", "Subtitle create row " + n);
-                inflate = LanguageSelector.this.mController.getLayoutInflater().inflate(2130903105, viewGroup, false);
+                inflate = LanguageSelector.this.mController.getLayoutInflater().inflate(2130903113, viewGroup, false);
                 inflate.setTag((Object)new RowHolder(inflate));
             }
             final RowHolder rowHolder = (RowHolder)inflate.getTag();

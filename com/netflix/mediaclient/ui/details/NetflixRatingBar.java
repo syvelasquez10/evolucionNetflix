@@ -8,6 +8,7 @@ import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
 import java.util.List;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import android.widget.Toast;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 import com.netflix.mediaclient.util.LogUtils;
@@ -34,7 +35,7 @@ import android.util.AttributeSet;
 import android.content.Context;
 import com.netflix.mediaclient.ui.common.VideoDetailsProvider;
 import android.graphics.drawable.Drawable;
-import com.netflix.mediaclient.servicemgr.VideoDetails;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.widget.RatingBar$OnRatingBarChangeListener;
 import android.widget.RatingBar;
 
@@ -104,12 +105,12 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         else {
             trackId = -1;
         }
-        serviceManager.setVideoRating(videoId, n, trackId, new SetVideoRatingCallback(n));
+        serviceManager.getBrowse().setVideoRating(videoId, n, trackId, new SetVideoRatingCallback(n));
     }
     
     private void init() {
-        this.netflixStars = this.tileify(this.getResources().getDrawable(2130837873), true);
-        this.userStars = this.tileify(this.getResources().getDrawable(2130837874), true);
+        this.netflixStars = this.tileify(this.getResources().getDrawable(2130837893), true);
+        this.userStars = this.tileify(this.getResources().getDrawable(2130837894), true);
         this.setOnRatingBarChangeListener((RatingBar$OnRatingBarChangeListener)this);
         final Context context = this.getContext();
         if (context instanceof VideoDetailsProvider) {
@@ -309,14 +310,14 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         }
         
         @Override
-        public void onVideoRatingSet(final int n) {
-            super.onVideoRatingSet(n);
+        public void onVideoRatingSet(final Status status) {
+            super.onVideoRatingSet(status);
             if (NetflixRatingBar.this.provider == null || NetflixRatingBar.this.provider.destroyed()) {
                 Log.v("NetflixRatingBar", "Activity destroyed - ignoring ratings update callback");
                 return;
             }
             NetflixRatingBar.this.setEnabled(true);
-            if (n != 0) {
+            if (status.isError()) {
                 Log.w("NetflixRatingBar", "Invalid status code");
                 Toast.makeText(NetflixRatingBar.this.getContext(), 2131493200, 1).show();
                 NetflixRatingBar.this.setRating((float)NetflixRatingBar.this.currRating);
@@ -334,7 +335,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
             NetflixRatingBar.this.updateRatingDrawable();
             NetflixRatingBar.this.setRating((float)NetflixRatingBar.this.currRating);
             Log.d("NetflixRatingBar", "Report rate action ended");
-            final LogUtils.LogReportErrorArgs logReportErrorArgs = new LogUtils.LogReportErrorArgs(n, ActionOnUIError.displayedError, "", null);
+            final LogUtils.LogReportErrorArgs logReportErrorArgs = new LogUtils.LogReportErrorArgs(status, ActionOnUIError.displayedError, "", null);
             LogUtils.reportRateActionEnded(NetflixRatingBar.this.getContext(), logReportErrorArgs.getReason(), logReportErrorArgs.getError(), null, NetflixRatingBar.this.currRating);
         }
     }

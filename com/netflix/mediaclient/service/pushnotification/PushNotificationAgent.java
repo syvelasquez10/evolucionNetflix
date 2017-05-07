@@ -4,11 +4,14 @@
 
 package com.netflix.mediaclient.service.pushnotification;
 
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.IntentFilter;
 import android.net.Uri;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.google.android.gcm.GCMRegistrar;
@@ -25,16 +28,19 @@ import com.netflix.mediaclient.service.ServiceAgent;
 
 public class PushNotificationAgent extends ServiceAgent implements IPushNotification
 {
-    private static final long DELTA_FOR_REPORT = 86400000L;
+    private static final boolean GCM_INFO_OPT_IN = true;
+    private static final long SERVICE_KILL_DELAY_FOR_GCM_REPORTING_MS = 30000L;
     private static final String TAG = "nf_push";
     private static int idCounter;
     private String gcmRegistrationId;
     private NotificationUserSettings mCurrentUserSettings;
+    private boolean mGcmInfoEventStartedService;
     private boolean mGcmRegistered;
     private boolean mGcmSupported;
     private ImageLoader mImageLoader;
     private Map<String, NotificationUserSettings> mSettings;
     private final BroadcastReceiver pushNotificationReceiver;
+    private boolean reportOnRegistered;
     
     static {
         PushNotificationAgent.idCounter = -1;
@@ -54,17 +60,17 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
                 else {
                     if ("com.netflix.mediaclient.intent.action.PUSH_ONLOGOUT".equals(action)) {
                         Log.d("nf_push", "onLogout");
-                        PushNotificationAgent.this.unregisterOnUserLogout(PushNotificationAgent.this.createUserData(intent));
+                        PushNotificationAgent.this.onLogout(PushNotificationAgent.this.createUserData(intent));
                         return;
                     }
                     if ("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTIN".equals(action)) {
                         Log.d("nf_push", "optIn");
-                        PushNotificationAgent.this.registerForPushNotification();
+                        PushNotificationAgent.this.onNotificationOptIn(true);
                         return;
                     }
                     if ("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTOUT".equals(action)) {
                         Log.d("nf_push", "optOut");
-                        PushNotificationAgent.this.unregisterFromPushNotification();
+                        PushNotificationAgent.this.onNotificationOptIn(false);
                         return;
                     }
                     if (Log.isLoggable("nf_push", 3)) {
@@ -100,19 +106,14 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         return userData;
     }
     
-    private void doRegisterForNotifications() {
-        this.validateCurrentUser();
-        if (this.mCurrentUserSettings == null) {
-            Log.d("nf_push", "User is NOT logged in, do nothing. We can not register");
-            return;
+    private void doGcmRegistration() {
+        if (!this.isGcmSupported()) {
+            Log.e("nf_push", "device does NOT support GCM!");
         }
-        this.mCurrentUserSettings.optedIn = true;
-        this.mCurrentUserSettings.optInDisplayed = true;
-        if (Log.isLoggable("nf_push", 3)) {
-            Log.d("nf_push", "Save user settings " + this.mCurrentUserSettings);
+        else if (!this.mGcmRegistered) {
+            Log.d("nf_push", "device supports GCM and device is NOT registered!");
+            GCMRegistrar.register(this.getContext(), "484286080282");
         }
-        this.saveSettings();
-        GCMRegistrar.register(this.getContext(), "484286080282");
     }
     
     private int getMessageId(final Context context) {
@@ -149,100 +150,113 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         return userData;
     }
     
-    private boolean isApplicationUpdated() {
-        if (this.mCurrentUserSettings == null) {
-            Log.d("nf_push", "User NOT found. Device is not registered. No need for check for update!");
-        }
-        else {
-            if (!this.mCurrentUserSettings.optedIn) {
-                Log.d("nf_push", "User is NOT oped in, no reason to force reregistration");
-                return false;
-            }
-            final int versionCode = AndroidManifestUtils.getVersionCode(this.getContext());
-            if (this.mCurrentUserSettings.oldAppVersion != Integer.MIN_VALUE && this.mCurrentUserSettings.oldAppVersion != versionCode) {
-                if (Log.isLoggable("nf_push", 3)) {
-                    Log.d("nf_push", "App version changed from " + this.mCurrentUserSettings.oldAppVersion + " to " + versionCode + "; resetting registration id");
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    private boolean isBeaconDeltaExpire() {
-        final long currentTimeMillis = System.currentTimeMillis();
-        final long timestamp = this.mCurrentUserSettings.timestamp;
-        if (timestamp <= 0L) {
-            Log.d("nf_push", "We do not know when last time beacon was sent. Probably data from previous app version");
-            return true;
-        }
-        final long n = currentTimeMillis - timestamp;
-        if (n <= 0L) {
-            Log.d("nf_push", "Now is older than last time? Time messed up. Assume it was not sent");
-            return true;
-        }
-        if (n >= 86400000L) {
-            Log.d("nf_push", "More than 24 hours elapsed. Sent.");
-            return true;
-        }
-        return false;
-    }
-    
     private void loadConfiguration() {
         this.mSettings = NotificationUserSettings.loadSettings(this.getContext());
     }
     
+    private void onGcmRegistration(final String gcmRegistrationId) {
+        if (Log.isLoggable("nf_push", 3)) {
+            Log.d("nf_push", "onGcmRegistration " + gcmRegistrationId);
+        }
+        this.gcmRegistrationId = gcmRegistrationId;
+        this.mGcmRegistered = true;
+        if (this.reportOnRegistered) {
+            this.report(this.mCurrentUserSettings.optedIn, true);
+        }
+    }
+    
+    private void onGcmUnregistration(final String s) {
+        if (s != null && s.equals(this.gcmRegistrationId)) {
+            Log.d("nf_push", "onGcmUnregistration - Same registrration ID");
+        }
+        else {
+            Log.e("nf_push", "onGcmUnregistration - Received registration ID: " + s + " is NOT the same as registration ID known to app: " + this.gcmRegistrationId);
+        }
+        this.mGcmRegistered = false;
+    }
+    
     private void onLogin() {
+        if (!this.isGcmSupported()) {
+            Log.e("nf_push", "We can not do anything because device does not support push notifications!");
+            return;
+        }
         final String userId = this.getService().getUserId();
         final String currentProfileUserId = this.getService().getCurrentProfileUserId();
-        boolean b = false;
-        boolean b2 = false;
         if (Log.isLoggable("nf_push", 3)) {
             Log.d("nf_push", "onLogin with user ID: " + userId);
         }
         this.mCurrentUserSettings = this.mSettings.get(userId);
-        Label_0130: {
-            if (this.mCurrentUserSettings != null) {
-                break Label_0130;
-            }
-            Log.d("nf_push", "User was not know from before");
-            this.mCurrentUserSettings = this.createNewCurrentUserSettings(userId, currentProfileUserId);
-            try {
-                // iftrue(Label_0170:, StringUtils.safeEquals(this.mCurrentUserSettings.currentProfileUserId, currentProfileUserId))
-                // iftrue(Label_0100:, !Log.isLoggable("nf_push", 3))
-                while (true) {
-                    Log.d("nf_push", "Checks if application is updated (only if app was registered before)...");
-                    if (this.isApplicationUpdated()) {
-                        Log.d("nf_push", "Application was updated, execute silent reregistration!");
-                        this.doRegisterForNotifications();
-                    }
-                    else if (!this.validateRegistration()) {
-                        if (b2 || this.isBeaconDeltaExpire()) {
-                            Log.d("nf_push", "Report");
-                            this.report(this.mGcmRegistered);
+        while (true) {
+            Label_0161: {
+                if (this.mCurrentUserSettings != null) {
+                    break Label_0161;
+                }
+                Log.d("nf_push", "User was not know from before");
+                this.mCurrentUserSettings = this.createNewCurrentUserSettings(userId, currentProfileUserId);
+                Label_0241: {
+                    try {
+                        Log.d("nf_push", String.format("report sGcmInfoEventStartedService: %s", this.mGcmInfoEventStartedService));
+                        if (this.mGcmInfoEventStartedService) {
+                            this.reportAndKillService();
                             return;
                         }
-                        break Label_0130;
+                        break Label_0241;
                     }
-                    return;
-                    this.mCurrentUserSettings.current = true;
-                    Log.d("nf_push", "currentProfile change detected");
-                    b = true;
-                    this.updateCurrentUserSettings(currentProfileUserId);
-                    Label_0170: {
-                        b2 = b;
+                    catch (Throwable t) {
+                        Log.e("nf_push", "Check if we are registered already failed!", t);
+                        return;
                     }
-                    Log.d("nf_push", "User was know from before and he opted in " + this.mCurrentUserSettings.optedIn);
-                    b2 = b;
-                    continue;
+                    break Label_0161;
                 }
-            }
-            catch (Throwable t) {
-                Log.e("nf_push", "Check if we are registered already failed!", t);
+                if (this.wasNotificationOptInDisplayed()) {
+                    SettingsConfiguration.setPushOptInStatus(this.getContext(), this.mCurrentUserSettings.optedIn);
+                    this.report(this.mCurrentUserSettings.optedIn, true);
+                    return;
+                }
+                Log.d("nf_push", String.format("onLogin: dont report yet, wasNotificationOptInDisplayed: %b", this.wasNotificationOptInDisplayed()));
                 return;
             }
+            this.mCurrentUserSettings.current = true;
+            if (!StringUtils.safeEquals(this.mCurrentUserSettings.currentProfileUserId, currentProfileUserId)) {
+                Log.d("nf_push", "currentProfile change detected");
+                this.updateCurrentUserSettings(currentProfileUserId);
+            }
+            if (Log.isLoggable("nf_push", 3)) {
+                Log.d("nf_push", "User was know from before and he opted in " + this.mCurrentUserSettings.optedIn);
+            }
+            continue;
         }
-        Log.d("nf_push", "No need to report, it was already done inside of last 24 hours or profileDidNotChange");
+    }
+    
+    private void onLogout(final UserData userData) {
+        synchronized (this) {
+            Log.d("nf_push", "User is logging out");
+            if (!this.isGcmSupported()) {
+                Log.e("nf_push", "We can not do anything because device does not support push notifications!");
+            }
+            else {
+                this.report(false, false, userData);
+                if (userData != null) {
+                    this.mCurrentUserSettings = this.mSettings.get(userData.userId);
+                    if (this.mCurrentUserSettings == null) {
+                        Log.e("nf_push", "User is logging out and it was uknown before?");
+                        this.mCurrentUserSettings = new NotificationUserSettings();
+                        this.mCurrentUserSettings.current = true;
+                        this.mCurrentUserSettings.userId = userData.userId;
+                        this.mCurrentUserSettings.optedIn = true;
+                        this.mCurrentUserSettings.currentProfileUserId = userData.currentProfileUserId;
+                        this.mCurrentUserSettings.oldAppVersion = AndroidManifestUtils.getVersionCode(this.getContext());
+                    }
+                }
+                this.saveSettings();
+                this.mCurrentUserSettings = null;
+            }
+        }
+    }
+    
+    private void onMessage(final Intent intent) {
+        Log.d("nf_push", "Message received, create notification. Running it on main thread.");
+        NotificationFactory.createNotification(this.getService(), intent, this.mImageLoader, this.getMessageId(this.getContext()), this.getService().getClientLogging().getErrorLogging());
     }
     
     private void onNotificationBrowserRedirect(final Intent intent) {
@@ -294,19 +308,12 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         this.getService().getClientLogging().getCmpEventLogging().reportUserFeedbackOnReceivedPushNotification(new MessageData(stringExtra, stringExtra2, stringExtra3), UserFeedbackOnReceivedPushNotification.canceled);
     }
     
-    private void registerForPushNotification() {
-        Log.d("nf_push", "Notification is enabled by UI.");
-        if (!this.mGcmSupported) {
-            Log.e("nf_push", "Notification is enabled by UI, but device does NOT support GCM!");
-            return;
-        }
-        if (this.mGcmRegistered) {
-            Log.d("nf_push", "Notification is enabled by UI, device does support GCM, but it is already registered!");
-            return;
-        }
-        Log.d("nf_push", "Notification is enabled by UI, device does support GCM and device is NOT registered!");
-        this.doRegisterForNotifications();
-        Log.d("nf_push", "Registered!");
+    private void onNotificationOptIn(final boolean b) {
+        Log.d("nf_push", String.format("onNotificationOptIn - user optIn ? %b", b));
+        this.validateCurrentUser();
+        this.updateSettingsOnOptedIn(b);
+        SettingsConfiguration.setPushOptInStatus(this.getContext(), b);
+        this.report(b, true);
     }
     
     private void registerReceiver() {
@@ -325,23 +332,31 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         }
     }
     
-    private void report(final boolean b) {
-        this.report(b, null);
+    private void report(final boolean b, final boolean b2) {
+        this.report(b, b2, null);
     }
     
-    private void report(final boolean b, final UserData userData) {
+    private void report(final boolean b, final boolean b2, final UserData userData) {
         if (!this.isGcmSupported()) {
-            Log.e("nf_push", "We can not report anything is device does not support push notifications!");
-            return;
-        }
-        if (userData == null) {
-            Log.d("nf_push", "Gets user data");
-            this.getUserData();
+            Log.e("nf_push", "We can not report anything if device does not support push notifications!");
         }
         else {
-            Log.d("nf_push", "Use given user data");
+            if (userData == null) {
+                Log.d("nf_push", "Gets user data");
+                this.getUserData();
+            }
+            else {
+                Log.d("nf_push", "Use given user data");
+            }
+            if (!StringUtils.isEmpty(this.gcmRegistrationId)) {
+                this.getService().getClientLogging().getCustomerEventLogging().reportNotificationOptIn(b, b2, this.gcmRegistrationId);
+                return;
+            }
+            this.reportOnRegistered = true;
+            if (Log.isLoggable("nf_push", 3)) {
+                Log.d("nf_push", String.format("can't report yet.. wait for registration to finish.. optIn:%b,  gcmInfoOptIn:%b", b, b2));
+            }
         }
-        this.getService().getClientLogging().getCustomerEventLogging().reportNotificationOptIn(b, this.gcmRegistrationId);
     }
     
     private void saveSettings() {
@@ -358,65 +373,6 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         });
     }
     
-    private void unregisterFromPushNotification() {
-        this.validateCurrentUser();
-        if (this.mCurrentUserSettings == null) {
-            Log.d("nf_push", "User is NOT logged in, do nothing");
-            return;
-        }
-        this.mCurrentUserSettings.optedIn = false;
-        this.mCurrentUserSettings.optInDisplayed = true;
-        this.saveSettings();
-        Log.d("nf_push", "Notification is enabled by UI.");
-        if (this.mGcmSupported) {
-            if (this.mGcmRegistered) {
-                Log.d("nf_push", "Notification is enabled by UI, device does support GCM, but it is already registered! Unregister!");
-            }
-            else {
-                Log.d("nf_push", "Notification is enabled by UI, device does support GCM and device is NOT registered! Just in case deactivate!");
-            }
-            GCMRegistrar.unregister(this.getContext());
-            if (this.mCurrentUserSettings != null) {
-                this.mCurrentUserSettings.optInDisplayed = true;
-            }
-            this.report(false);
-            this.mGcmRegistered = false;
-            this.gcmRegistrationId = null;
-            return;
-        }
-        Log.d("nf_push", "Notification is enabled by UI, but device does NOT support GCM! Do nothing!");
-    }
-    
-    private void unregisterOnUserLogout(final UserData userData) {
-        synchronized (this) {
-            Log.d("nf_push", "User is loging out");
-            if (!this.isGcmSupported()) {
-                Log.e("nf_push", "We can not do anything because device does not support push notifications!");
-            }
-            else {
-                Log.d("nf_push", "User is opted in, unregister device and send opt put state, but preserve user choice so we can restore it on his/her next login");
-                GCMRegistrar.unregister(this.getContext());
-                this.report(false, userData);
-                if (userData != null) {
-                    this.mCurrentUserSettings = this.mSettings.get(userData.userId);
-                    if (this.mCurrentUserSettings == null) {
-                        Log.e("nf_push", "User is logging out and it was uknown before?");
-                        this.mCurrentUserSettings = new NotificationUserSettings();
-                        this.mCurrentUserSettings.current = true;
-                        this.mCurrentUserSettings.userId = userData.userId;
-                        this.mCurrentUserSettings.optedIn = true;
-                        this.mCurrentUserSettings.currentProfileUserId = userData.currentProfileUserId;
-                        this.mCurrentUserSettings.oldAppVersion = AndroidManifestUtils.getVersionCode(this.getContext());
-                    }
-                }
-                this.saveSettings();
-                this.mCurrentUserSettings = null;
-                this.mGcmRegistered = false;
-                this.gcmRegistrationId = null;
-            }
-        }
-    }
-    
     private void unregisterReceiver() {
         try {
             LocalBroadcastManager.getInstance(this.getContext()).unregisterReceiver(this.pushNotificationReceiver);
@@ -431,6 +387,19 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         this.mCurrentUserSettings.timestamp = System.currentTimeMillis();
         this.mSettings.put(this.mCurrentUserSettings.userId, this.mCurrentUserSettings);
         NotificationUserSettings.saveSettings(this.getContext(), this.mSettings);
+    }
+    
+    private void updateSettingsOnOptedIn(final boolean optedIn) {
+        if (this.mCurrentUserSettings == null) {
+            Log.d("nf_push", "User is NOT logged in, do nothing. We can not register");
+            return;
+        }
+        this.mCurrentUserSettings.optedIn = optedIn;
+        this.mCurrentUserSettings.optInDisplayed = true;
+        if (Log.isLoggable("nf_push", 3)) {
+            Log.d("nf_push", "Save user settings " + this.mCurrentUserSettings);
+        }
+        this.saveSettings();
     }
     
     private void validateCurrentUser() {
@@ -457,31 +426,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             if (Log.isLoggable("nf_push", 3)) {
                 Log.d("nf_push", "User was know from before and he opted in " + this.mCurrentUserSettings.optedIn);
             }
-            if (this.validateRegistration()) {
-                return;
-            }
         }
-    }
-    
-    private boolean validateRegistration() {
-        Log.d("nf_push", "Checks GCM registration...");
-        this.gcmRegistrationId = GCMRegistrar.getRegistrationId(this.getContext());
-        if (StringUtils.isEmpty(this.gcmRegistrationId)) {
-            Log.d("nf_push", "Not registered to GCM");
-            this.mGcmRegistered = false;
-            if (this.mCurrentUserSettings.optedIn) {
-                Log.d("nf_push", "User was opted in, execute silent reregistration");
-                this.doRegisterForNotifications();
-                return true;
-            }
-        }
-        else {
-            this.mGcmRegistered = true;
-            if (Log.isLoggable("nf_push", 3)) {
-                Log.d("nf_push", "Already registered to GCM with id: " + this.gcmRegistrationId);
-            }
-        }
-        return false;
     }
     
     @Override
@@ -497,7 +442,8 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         this.verifyGCM();
         this.registerReceiver();
         this.mImageLoader = this.getService().getImageLoader();
-        this.initCompleted(0);
+        this.doGcmRegistration();
+        this.initCompleted(CommonStatus.OK);
     }
     
     public String getGcmRegistrationId() {
@@ -511,11 +457,11 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         }
         if ("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_GCM_ONREGISTERED".equals(intent.getAction())) {
             Log.d("nf_push", "Handle registration");
-            this.setRegistrationIdFromRegistrationServer(intent.getStringExtra("reg_id"));
+            this.onGcmRegistration(intent.getStringExtra("reg_id"));
         }
         else if ("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_GCM_ONUNREGISTERED".equals(intent.getAction())) {
             Log.d("nf_push", "Handle unregistration");
-            this.unregistrationFromFromRegistrationServer(intent.getStringExtra("reg_id"));
+            this.onGcmUnregistration(intent.getStringExtra("reg_id"));
         }
         else if ("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_GCM_ONMESSAGE".equals(intent.getAction())) {
             Log.d("nf_push", "Handle message");
@@ -536,8 +482,10 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         return true;
     }
     
-    public boolean isGcmRegistered() {
-        return this.mGcmRegistered;
+    @Override
+    public void informServiceStartedOnGcmInfo() {
+        Log.d("nf_push", "noting that gcmInfoEvent started NetflixService");
+        this.mGcmInfoEventStartedService = true;
     }
     
     public boolean isGcmSupported() {
@@ -550,39 +498,16 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
     }
     
     @Override
-    public boolean isRegistered() {
-        return this.mGcmRegistered;
-    }
-    
-    @Override
     public boolean isSupported() {
         return this.isGcmSupported();
     }
     
     @Override
-    public void onMessage(final Intent intent) {
-        Log.d("nf_push", "Message received, create notification. Running it on main thread.");
-        NotificationFactory.createNotification(this.getContext(), intent, this.mImageLoader, this.getMessageId(this.getContext()), this.getService().getClientLogging().getErrorLogging());
-    }
-    
-    @Override
-    public void setRegistrationIdFromRegistrationServer(final String gcmRegistrationId) {
-        if (Log.isLoggable("nf_push", 3)) {
-            Log.d("nf_push", "setRegistrationIdFromRegistrationServer " + gcmRegistrationId);
-        }
-        this.gcmRegistrationId = gcmRegistrationId;
-        this.report(this.mGcmRegistered = true);
-    }
-    
-    @Override
-    public void unregistrationFromFromRegistrationServer(final String s) {
-        if (s != null && s.equals(this.gcmRegistrationId)) {
-            Log.d("nf_push", "Same registrration ID, report to back end");
-        }
-        else {
-            Log.e("nf_push", "Received registration ID " + s + " is NOT the same as registration ID known to app " + this.gcmRegistrationId + ". Ignore!");
-        }
-        this.report(false);
+    public void reportAndKillService() {
+        Log.d("nf_push", "Telling back-end to stop sending gcm info events");
+        this.report(this.mCurrentUserSettings.optedIn, false);
+        Log.d("nf_push", "Stopping NetflixService in 30000");
+        this.getService().stopSelfInMs(30000L);
     }
     
     public void verifyGCM() {

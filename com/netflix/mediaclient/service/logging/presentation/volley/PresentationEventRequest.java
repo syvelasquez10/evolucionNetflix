@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.logging.presentation.volley;
 
 import com.android.volley.VolleyError;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.Log;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.presentation.PresentationRequest;
@@ -32,9 +33,9 @@ public class PresentationEventRequest extends PresentationVolleyWebClientRequest
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (Log.isLoggable("nf_presentation", 2)) {
-            Log.v("nf_presentation", "presentationEvent FAIL : " + n);
+            Log.v("nf_presentation", "presentationEvent FAIL : " + status);
         }
         this.mCallback.onEventsDeliveryFailed(this.mDeliveryRequestId);
     }

@@ -40,7 +40,7 @@ public class Version
     }
     
     Version(final Context context) {
-        this.app = AndroidManifestUtils.getVersionName(context);
+        this.app = AndroidManifestUtils.getVersion(context);
         this.ui = this.app;
         this.nrdapp = SecurityRepository.getNrdAppVersion();
         this.nrdlib = SecurityRepository.getNrdLibVersion();

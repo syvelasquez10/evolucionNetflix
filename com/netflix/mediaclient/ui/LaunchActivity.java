@@ -8,6 +8,7 @@ import android.app.ActionBar;
 import com.netflix.mediaclient.android.fragment.LoadingView;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.os.Bundle;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.IntentFilter;
@@ -32,10 +33,10 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.protocol.nflx.NflxHandler;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class LaunchActivity extends NetflixActivity
@@ -116,7 +117,7 @@ public class LaunchActivity extends NetflixActivity
     
     private NflxHandler.Response canHandleIntent() {
         try {
-            return this.nflxHandler.handleNflxIntent(this, this.getServiceManager(), this.getIntent(), this.mStarted);
+            return this.nflxHandler.handleNflxIntent(this, this.getIntent(), this.mStarted);
         }
         catch (Throwable t) {
             Log.e("LaunchActivity", "Failed to parse nflx url ", t);
@@ -125,14 +126,14 @@ public class LaunchActivity extends NetflixActivity
     }
     
     private void createContentView() {
-        this.setContentView(2130903168);
-        final ImageView imageView = (ImageView)this.findViewById(2131165598);
+        this.setContentView(2130903182);
+        final ImageView imageView = (ImageView)this.findViewById(2131165635);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837869;
+            imageResource = 2130837889;
         }
         else {
-            imageResource = 2130837868;
+            imageResource = 2130837888;
         }
         imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi(this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
@@ -188,7 +189,7 @@ public class LaunchActivity extends NetflixActivity
                 applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.profilesGate, this.mStarted, display);
                 applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
             }
-            this.startNextActivity(ProfileSelectionActivity.createStartIntent(this));
+            this.startNextActivity(ProfileSelectionActivity.createStartIntent((Context)this));
             this.finish();
             return;
         }
@@ -202,10 +203,10 @@ public class LaunchActivity extends NetflixActivity
     }
     
     private void manipulateSplashBackground() {
-        final ImageView imageView = (ImageView)this.findViewById(2131165598);
+        final ImageView imageView = (ImageView)this.findViewById(2131165635);
         imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
-            final /* synthetic */ ImageView val$logo = (ImageView)LaunchActivity.this.findViewById(2131165396);
-            final /* synthetic */ ProgressBar val$progress = (ProgressBar)LaunchActivity.this.findViewById(2131165397);
+            final /* synthetic */ ImageView val$logo = (ImageView)LaunchActivity.this.findViewById(2131165417);
+            final /* synthetic */ ProgressBar val$progress = (ProgressBar)LaunchActivity.this.findViewById(2131165418);
             
             public void onGlobalLayout() {
                 if (imageView.getWidth() <= 0) {
@@ -259,18 +260,18 @@ public class LaunchActivity extends NetflixActivity
     protected ManagerStatusListener createManagerStatusListener() {
         return new ManagerStatusListener() {
             @Override
-            public void onManagerReady(final ServiceManager serviceManager, final int n) {
+            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
                 LaunchActivity.this.isLoading = false;
-                if (ServiceErrorsHandler.handleManagerResponse(LaunchActivity.this, n)) {
+                if (ServiceErrorsHandler.handleManagerResponse(LaunchActivity.this, status)) {
                     return;
                 }
                 LaunchActivity.this.handleManagerReady(serviceManager);
             }
             
             @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
+            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
                 LaunchActivity.this.isLoading = false;
-                ServiceErrorsHandler.handleManagerResponse(LaunchActivity.this, n);
+                ServiceErrorsHandler.handleManagerResponse(LaunchActivity.this, status);
             }
         };
     }

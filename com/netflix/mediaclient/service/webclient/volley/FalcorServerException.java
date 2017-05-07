@@ -7,12 +7,14 @@ package com.netflix.mediaclient.service.webclient.volley;
 import java.util.Locale;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import com.android.volley.VolleyError;
 
 public class FalcorServerException extends VolleyError
 {
     private static String TAG;
+    private static final long serialVersionUID = -8643186878472303994L;
     
     static {
         FalcorServerException.TAG = "FalcorServerException";
@@ -30,36 +32,40 @@ public class FalcorServerException extends VolleyError
         super(t);
     }
     
-    public static int getErrorCode(String lowerCase, final ErrorLogging errorLogging) {
-        int n = -62;
-        if (StringUtils.isEmpty(lowerCase)) {
-            return -62;
+    public static StatusCode getErrorCode(final String s, final ErrorLogging errorLogging) {
+        final StatusCode server_ERROR = StatusCode.SERVER_ERROR;
+        if (StringUtils.isEmpty(s)) {
+            return server_ERROR;
         }
         if (Log.isLoggable(FalcorServerException.TAG, 3)) {
-            Log.d(FalcorServerException.TAG, "errorMsg:" + lowerCase);
+            Log.d(FalcorServerException.TAG, "errorMsg:" + s);
         }
-        lowerCase = lowerCase.toLowerCase(Locale.US);
+        final String lowerCase = s.toLowerCase(Locale.US);
+        StatusCode statusCode;
         if (FalcorParseUtils.isNotAuthorized(lowerCase)) {
-            n = -61;
+            statusCode = StatusCode.USER_NOT_AUTHORIZED;
         }
         else if (FalcorParseUtils.isNullPointerException(lowerCase)) {
             if (errorLogging != null) {
                 errorLogging.logHandledException("Endpoint NPE " + lowerCase);
             }
-            n = -60;
+            statusCode = StatusCode.WRONG_PATH;
         }
         else if (FalcorParseUtils.isMapCacheError(lowerCase)) {
             if (errorLogging != null) {
                 errorLogging.logHandledException("map cache miss");
             }
-            n = -64;
+            statusCode = StatusCode.SERVER_ERROR_MAP_CACHE_MISS;
         }
-        else if (FalcorParseUtils.isMapError(lowerCase)) {
-            if (errorLogging != null) {
-                errorLogging.logHandledException("map error " + lowerCase);
+        else {
+            statusCode = server_ERROR;
+            if (FalcorParseUtils.isMapError(lowerCase)) {
+                if (errorLogging != null) {
+                    errorLogging.logHandledException("map error " + lowerCase);
+                }
+                statusCode = StatusCode.MAP_ERROR;
             }
-            n = -65;
         }
-        return n;
+        return statusCode;
     }
 }

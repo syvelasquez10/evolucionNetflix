@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.netflix.mediaclient.service.logging.apm.model.UserSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIStartupSessionEndedEvent;
+import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIBrowseStartupSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
@@ -350,7 +351,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     }
     
     @Override
-    public void endUiStartupSession(final boolean b, final UIError uiError) {
+    public void endUiStartupSession(final boolean b, final UIError uiError, final PlayerType playerType) {
         if (this.mUIStartupSession == null) {
             return;
         }
@@ -368,7 +369,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
                 }
                 ApmLoggingImpl.this.mEventHandler.removeSession(ApmLoggingImpl.this.mUIStartupSession);
                 Log.d("nf_log_apm", "UI startup session end event posting...");
-                final UIStartupSessionEndedEvent endedEvent = ApmLoggingImpl.this.mUIStartupSession.createEndedEvent(b, uiError);
+                final UIStartupSessionEndedEvent endedEvent = ApmLoggingImpl.this.mUIStartupSession.createEndedEvent(b, uiError, playerType);
                 ApmLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, this.val$ui);
                 ApmLoggingImpl.this.mEventHandler.post(endedEvent);
                 ApmLoggingImpl.this.mUIStartupSession = null;

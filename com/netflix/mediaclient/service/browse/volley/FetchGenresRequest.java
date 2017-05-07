@@ -10,16 +10,15 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.service.browse.cache.SoftCache;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.service.browse.cache.HardCache;
-import com.netflix.mediaclient.servicemgr.Genre;
+import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
+import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
@@ -28,29 +27,29 @@ public class FetchGenresRequest extends FalcorVolleyWebClientRequest<List<Genre>
     private static final String FIELD_GENRE_LOLOMO = "genreLolomo";
     private static final String FIELD_TOP_GENRE = "topGenre";
     private static final String TAG = "nf_service_browse_fetchgenresrequest";
+    private final BrowseWebClientCache browseCache;
     private final int fromGenre;
     private final String genreId;
-    private final HardCache hardCache;
     private final String lolomoId;
     private final boolean lolomoIdInCache;
     private final String pqlQuery;
     private final BrowseAgentCallback responseCallback;
     private final int toGenre;
     
-    public FetchGenresRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final HardCache hardCache, final SoftCache softCache, final String genreId, final int fromGenre, final int toGenre, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchGenresRequest(final Context context, final BrowseWebClientCache browseCache, final String genreId, final int fromGenre, final int toGenre, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.genreId = genreId;
         this.fromGenre = fromGenre;
         this.toGenre = toGenre;
-        this.hardCache = hardCache;
-        this.lolomoId = BrowseAgent.getGenreLoLoMoId(hardCache, genreId);
+        this.browseCache = browseCache;
+        this.lolomoId = browseCache.getGenreLoLoMoId(genreId);
         this.lolomoIdInCache = (this.lolomoId != null);
         if (this.lolomoIdInCache) {
-            this.pqlQuery = "['genreLolomo','" + this.lolomoId + "',{'from':" + fromGenre + ",'to':" + toGenre + "},'summary']";
+            this.pqlQuery = String.format("['genreLolomo', '%s', {'from':%d,'to':%d}, 'summary']", this.lolomoId, fromGenre, toGenre);
         }
         else {
-            this.pqlQuery = "['topGenre','" + genreId + "',{'from':" + fromGenre + ",'to':" + toGenre + "},'summary']";
+            this.pqlQuery = String.format("['topGenre', '%s', {'from':%d,'to':%d}, 'summary']", genreId, fromGenre, toGenre);
         }
         if (Log.isLoggable("nf_service_browse_fetchgenresrequest", 2)) {
             Log.v("nf_service_browse_fetchgenresrequest", "PQL = " + this.pqlQuery);
@@ -63,16 +62,16 @@ public class FetchGenresRequest extends FalcorVolleyWebClientRequest<List<Genre>
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onGenresFetched(Collections.emptyList(), n);
+            this.responseCallback.onGenresFetched(Collections.emptyList(), status);
         }
     }
     
     @Override
     protected void onSuccess(final List<Genre> list) {
         if (this.responseCallback != null) {
-            this.responseCallback.onGenresFetched(list, 0);
+            this.responseCallback.onGenresFetched(list, CommonStatus.OK);
         }
     }
     
@@ -90,7 +89,7 @@ public class FetchGenresRequest extends FalcorVolleyWebClientRequest<List<Genre>
                     o = dataObj.getAsJsonObject("topGenre").getAsJsonObject(this.genreId);
                 }
                 if (!this.lolomoIdInCache) {
-                    PrefetchGenreLoLoMoRequest.putGenreLoLoMoIdInBrowseCache(this.hardCache, this.genreId, (JsonObject)o);
+                    PrefetchGenreLoLoMoRequest.putGenreLoLoMoIdInBrowseCache(this.browseCache, this.genreId, (JsonObject)o);
                 }
                 for (int i = this.fromGenre; i <= this.toGenre; ++i) {
                     final String string = Integer.toString(i);

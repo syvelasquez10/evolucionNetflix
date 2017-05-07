@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.javabridge.invoke.media;
 
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import org.json.JSONObject;

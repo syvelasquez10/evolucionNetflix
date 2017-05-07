@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.widget.TextView;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.servicemgr.AddToListData;
 import com.netflix.mediaclient.android.widget.ErrorWrapper;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.servicemgr.VideoDetails;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 
 public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag implements Callback
 {
@@ -26,7 +27,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     private final Callback errorCallback;
     private LoadingAndErrorWrapper leWrapper;
     private ServiceManager manager;
-    private View primaryView;
+    protected View primaryView;
     
     public DetailsFrag() {
         this.errorCallback = new Callback() {
@@ -47,10 +48,10 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("DetailsFrag", "Creating new frag view...");
-        final View inflate = layoutInflater.inflate(2130903170, (ViewGroup)null, false);
-        this.detailsViewGroup = (VideoDetailsViewGroup)inflate.findViewById(2131165600);
+        final View inflate = layoutInflater.inflate(2130903188, (ViewGroup)null, false);
+        this.detailsViewGroup = (VideoDetailsViewGroup)inflate.findViewById(2131165643);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        (this.primaryView = inflate.findViewById(2131165599)).setVerticalScrollBarEnabled(false);
+        (this.primaryView = inflate.findViewById(2131165642)).setVerticalScrollBarEnabled(false);
         return inflate;
     }
     
@@ -63,8 +64,8 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     }
     
     @Override
-    public void onManagerReady(final ServiceManager manager, final int n) {
-        super.onManagerReady(manager, n);
+    public void onManagerReady(final ServiceManager manager, final Status status) {
+        super.onManagerReady(manager, status);
         this.manager = manager;
         final TextView addToMyListButton = this.detailsViewGroup.getAddToMyListButton();
         if (manager != null && this.getActivity() != null && addToMyListButton != null) {

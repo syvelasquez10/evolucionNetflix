@@ -74,6 +74,8 @@ public interface IPlayer
     
     void seekTo(final int p0, final boolean p1);
     
+    void seekWithFuzzRange(final int p0, final int p1);
+    
     boolean selectTracks(final AudioSource p0, final Subtitle p1);
     
     void setJPlayerListener(final JPlayer.JplayerListener p0);

@@ -5,11 +5,11 @@
 package com.netflix.mediaclient.ui.kids.lolomo;
 
 import android.os.Parcel;
-import com.netflix.mediaclient.servicemgr.LoMoType;
-import com.netflix.mediaclient.servicemgr.FriendProfile;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
-import com.netflix.mediaclient.servicemgr.LoMo;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
 
 public class KidsLomoWrapper implements LoMo
 {

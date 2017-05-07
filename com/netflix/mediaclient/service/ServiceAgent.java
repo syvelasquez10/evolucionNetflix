@@ -6,7 +6,7 @@ package com.netflix.mediaclient.service;
 
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.service.player.subtitles.TextStyle;
-import com.netflix.mediaclient.servicemgr.UserProfile;
+import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.media.bitrate.VideoBitrateRange;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
@@ -14,11 +14,13 @@ import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
 import org.json.JSONObject;
 import com.netflix.mediaclient.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
+import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import org.json.JSONArray;
+import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
@@ -28,7 +30,9 @@ import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
 import android.content.Context;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import android.os.Handler;
+import com.netflix.mediaclient.android.app.Status;
 
 public abstract class ServiceAgent
 {
@@ -36,11 +40,11 @@ public abstract class ServiceAgent
     private AgentContext agentContext;
     private InitCallback initCallback;
     private boolean initCalled;
-    private int initErrorCode;
+    private Status initErrorResult;
     private Handler mainHandler;
     
     public ServiceAgent() {
-        this.initErrorCode = -1;
+        this.initErrorResult = CommonStatus.UNKNOWN;
     }
     
     public void destroy() {
@@ -144,15 +148,17 @@ public abstract class ServiceAgent
     }
     // monitorexit(this)
     
-    protected final void initCompleted(final int initErrorCode) {
+    protected final void initCompleted(final Status initErrorResult) {
         synchronized (this) {
-            this.initErrorCode = initErrorCode;
-            Log.d("nf_service_ServiceAgent", "InitComplete with errorCode " + this.initErrorCode + " for " + this.getClass().getSimpleName());
+            this.initErrorResult = initErrorResult;
+            if (Log.isLoggable("nf_service_ServiceAgent", 3)) {
+                Log.d("nf_service_ServiceAgent", "InitComplete with errorCode " + this.initErrorResult + " for " + this.getClass().getSimpleName());
+            }
             if (this.initCallback != null) {
                 this.mainHandler.post((Runnable)new Runnable() {
                     @Override
                     public void run() {
-                        ServiceAgent.this.initCallback.onInitComplete(ServiceAgent.this, ServiceAgent.this.initErrorCode);
+                        ServiceAgent.this.initCallback.onInitComplete(ServiceAgent.this, ServiceAgent.this.initErrorResult);
                     }
                 });
             }
@@ -161,7 +167,7 @@ public abstract class ServiceAgent
     
     public boolean isReady() {
         synchronized (this) {
-            return this.initErrorCode == 0;
+            return this.initErrorResult.isSucces();
         }
     }
     
@@ -211,6 +217,8 @@ public abstract class ServiceAgent
         
         int getBitrateCap();
         
+        BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification();
+        
         JSONArray getCastWhiteList();
         
         ConsolidatedLoggingSessionSpecification getConsolidatedLoggingSessionSpecification(final String p0);
@@ -224,6 +232,8 @@ public abstract class ServiceAgent
         int getDiskCacheSizeBytes();
         
         DrmManager getDrmManager();
+        
+        ErrorLoggingSpecification getErrorLoggingSpecification();
         
         EsnProvider getEsnProvider();
         
@@ -241,9 +251,13 @@ public abstract class ServiceAgent
         
         int getPresentationTrackingAggregationSize();
         
+        int getRateLimitForGcmBrowseEvents();
+        
         int getResFetcherThreadPoolSize();
         
         int getResourceRequestTimeout();
+        
+        int getSearchTest();
         
         String getSoftwareVersion();
         
@@ -271,12 +285,14 @@ public abstract class ServiceAgent
         
         boolean isLogoutRequired();
         
+        boolean toDisableSuspendPlayback();
+        
         void userAgentLogoutComplete();
     }
     
     public interface InitCallback
     {
-        void onInitComplete(final ServiceAgent p0, final int p1);
+        void onInitComplete(final ServiceAgent p0, final Status p1);
     }
     
     public interface UserAgentInterface

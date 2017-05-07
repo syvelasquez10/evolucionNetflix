@@ -4,12 +4,13 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.FriendProfile;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 
 public class DummyEpisodeDetails implements EpisodeDetails
 {
@@ -58,16 +59,6 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
-    public String getCreators() {
-        return null;
-    }
-    
-    @Override
-    public int getEndtime() {
-        return 0;
-    }
-    
-    @Override
     public String getEpisodeIdUrl() {
         return null;
     }
@@ -85,11 +76,6 @@ public class DummyEpisodeDetails implements EpisodeDetails
     @Override
     public List<FriendProfile> getFacebookFriends() {
         return null;
-    }
-    
-    @Override
-    public boolean getFbDntShare() {
-        return false;
     }
     
     @Override
@@ -133,33 +119,8 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
-    public String getParentId() {
-        return null;
-    }
-    
-    @Override
-    public String getParentTitle() {
-        return null;
-    }
-    
-    @Override
-    public int getPlayableBookmarkPosition() {
-        return 0;
-    }
-    
-    @Override
-    public long getPlayableBookmarkUpdateTime() {
-        return 0L;
-    }
-    
-    @Override
-    public String getPlayableId() {
-        return null;
-    }
-    
-    @Override
-    public String getPlayableTitle() {
-        return null;
+    public Playable getPlayable() {
+        return new DummyPlayable();
     }
     
     @Override
@@ -170,11 +131,6 @@ public class DummyEpisodeDetails implements EpisodeDetails
     @Override
     public String getQuality() {
         return null;
-    }
-    
-    @Override
-    public int getRuntime() {
-        return 100;
     }
     
     @Override
@@ -233,32 +189,7 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
-    public boolean isAutoPlayEnabled() {
-        return false;
-    }
-    
-    @Override
     public boolean isInQueue() {
-        return false;
-    }
-    
-    @Override
-    public boolean isNextPlayableEpisode() {
-        return false;
-    }
-    
-    @Override
-    public boolean isPinProtected() {
-        return false;
-    }
-    
-    @Override
-    public boolean isPlayableEpisode() {
-        return true;
-    }
-    
-    @Override
-    public boolean isUserConnectedToFacebook() {
         return false;
     }
     

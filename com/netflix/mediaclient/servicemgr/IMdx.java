@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.util.WebApiUtils;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.util.Pair;
 import java.nio.ByteBuffer;
 import java.util.HashMap;

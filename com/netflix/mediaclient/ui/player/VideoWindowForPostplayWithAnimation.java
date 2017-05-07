@@ -37,7 +37,7 @@ public class VideoWindowForPostplayWithAnimation extends VideoWindowForPostplayW
         this.removeCenterInParent((View)this.mSurface);
         this.removeCenterInParent((View)this.mSurface2);
         if (this.mSurface != null) {
-            this.mSurface.setBackgroundResource(2130837842);
+            this.mSurface.setBackgroundResource(2130837854);
             this.mSurface.setPadding(1, 1, 1, 1);
         }
         this.mOriginalSurfaceState = this.getCurrentSurfaceState();

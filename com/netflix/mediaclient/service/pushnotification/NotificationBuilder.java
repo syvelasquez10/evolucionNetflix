@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.pushnotification;
 import android.app.NotificationManager;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import android.app.Notification;
+import android.media.AudioManager;
 import java.util.Locale;
 import com.netflix.mediaclient.Log;
 import android.net.Uri;
@@ -108,7 +109,19 @@ abstract class NotificationBuilder
     }
     
     protected static boolean isSoundEnabled(final Context context) {
-        return false;
+        boolean b = false;
+        switch (((AudioManager)context.getSystemService("audio")).getRingerMode()) {
+            case 0:
+            case 1: {
+                return b;
+            }
+            case 2: {
+                Log.i("nf_push", "Normal mode");
+                break;
+            }
+        }
+        b = true;
+        return b;
     }
     
     protected static void sendNotification(final Context context, final Notification notification, final int n, final ErrorLogging errorLogging) {

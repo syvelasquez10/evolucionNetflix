@@ -10,18 +10,18 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import com.netflix.mediaclient.service.webclient.model.ShowDetails;
 import com.netflix.mediaclient.service.webclient.model.MovieDetails;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.Log;
 import android.content.Context;
-import com.netflix.mediaclient.service.browse.cache.SoftCache;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.service.browse.cache.HardCache;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
@@ -32,28 +32,26 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
     private static final String FIELD_LOLOMOS = "lolomos";
     private static final String FIELD_QUEUE = "queue";
     private static final String TAG = "nf_service_browse_fetchiqvideosrequest";
+    private final BrowseWebClientCache browseCache;
     private final int fromVideo;
-    private final HardCache hardCache;
     private final String iqId;
     private final boolean iqInCache;
     private final String lolomoId;
     private final boolean lolomoIdInCache;
     private final String pqlQuery;
     private final BrowseAgentCallback responseCallback;
-    private final SoftCache softCache;
     private final int toVideo;
     
-    public FetchIQVideosRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final HardCache hardCache, final SoftCache softCache, final int fromVideo, final int toVideo, final BrowseAgentCallback responseCallback) {
+    public FetchIQVideosRequest(final Context context, final BrowseWebClientCache browseCache, final int fromVideo, final int toVideo, final BrowseAgentCallback responseCallback) {
         final boolean b = true;
-        super(context, configurationAgentInterface);
+        super(context);
         this.responseCallback = responseCallback;
         this.fromVideo = fromVideo;
         this.toVideo = toVideo;
-        this.hardCache = hardCache;
-        this.softCache = softCache;
-        this.iqId = BrowseAgent.getIQLoMoId(hardCache);
+        this.browseCache = browseCache;
+        this.iqId = browseCache.getIQLoMoId();
         this.iqInCache = (this.iqId != null);
-        this.lolomoId = BrowseAgent.getLoLoMoId(hardCache);
+        this.lolomoId = browseCache.getLoLoMoId();
         this.lolomoIdInCache = (this.lolomoId != null && b);
         StringBuilder sb;
         if (this.iqInCache) {
@@ -71,11 +69,11 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
         }
     }
     
-    public static void updateMdpWithIQInfo(final HardCache hardCache, final SoftCache softCache, final String s, final boolean b) {
+    public static void updateMdpAndSdpWithIQInfo(final BrowseWebClientCache browseWebClientCache, final String s, final boolean b) {
         while (true) {
-            Label_0101: {
+            Label_0096: {
                 synchronized (FetchIQVideosRequest.class) {
-                    final Object fromCaches = BrowseAgent.getFromCaches(hardCache, softCache, BrowseAgent.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_MDP, s, "0", "0"));
+                    final Object fromCaches = browseWebClientCache.getFromCaches(BrowseWebClientCache.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_MDP, s, "0", "0"));
                     if (fromCaches != null) {
                         final MovieDetails movieDetails = (MovieDetails)fromCaches;
                         if (movieDetails.inQueue != null) {
@@ -83,9 +81,9 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
                         }
                     }
                     else {
-                        final Object fromCaches2 = BrowseAgent.getFromCaches(hardCache, softCache, BrowseAgent.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_SDP, s, "0", "0"));
+                        final Object fromCaches2 = browseWebClientCache.getFromCaches(BrowseWebClientCache.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_SDP, s, "0", "0"));
                         if (fromCaches2 == null) {
-                            break Label_0101;
+                            break Label_0096;
                         }
                         final ShowDetails showDetails = (ShowDetails)fromCaches2;
                         if (showDetails.inQueue != null) {
@@ -105,16 +103,16 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onVideosFetched(Collections.emptyList(), n);
+            this.responseCallback.onVideosFetched(Collections.emptyList(), status);
         }
     }
     
     @Override
     protected void onSuccess(final List<Video> list) {
         if (this.responseCallback != null) {
-            this.responseCallback.onVideosFetched(list, 0);
+            this.responseCallback.onVideosFetched(list, CommonStatus.OK);
         }
     }
     
@@ -124,24 +122,24 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
         final ArrayList<com.netflix.mediaclient.service.webclient.model.branches.Video.Summary> list = (ArrayList<com.netflix.mediaclient.service.webclient.model.branches.Video.Summary>)new ArrayList<Video>();
         final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_fetchiqvideosrequest", (String)asJsonObject);
         if (!FalcorParseUtils.isEmpty(dataObj)) {
-        Label_0141_Outer:
+        Label_0137_Outer:
             while (true) {
                 while (true) {
                     int n = 0;
                     String string = null;
-                Label_0294:
+                Label_0290:
                     while (true) {
-                        Label_0243: {
+                        Label_0239: {
                             try {
                                 if (this.iqInCache) {
                                     asJsonObject = dataObj.getAsJsonObject("lists").getAsJsonObject(this.iqId);
                                 }
                                 else {
                                     if (!this.lolomoIdInCache) {
-                                        break Label_0243;
+                                        break Label_0239;
                                     }
                                     final JsonObject asJsonObject2 = dataObj.getAsJsonObject("lolomos").getAsJsonObject(this.lolomoId).getAsJsonObject("queue");
-                                    BrowseAgent.putIQLoMoId(this.hardCache, FalcorParseUtils.getIdFromPath("nf_service_browse_fetchiqvideosrequest", asJsonObject2));
+                                    this.browseCache.putIQLoMoId(FalcorParseUtils.getIdFromPath("nf_service_browse_fetchiqvideosrequest", asJsonObject2));
                                     asJsonObject = asJsonObject2;
                                 }
                                 n = 0;
@@ -149,11 +147,11 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
                                 for (int i = this.toVideo; i >= this.fromVideo; --i, n = n2) {
                                     string = Integer.toString(i);
                                     if (!((JsonObject)asJsonObject).has(string)) {
-                                        break Label_0294;
+                                        break Label_0290;
                                     }
                                     n2 = 1;
                                     final com.netflix.mediaclient.service.webclient.model.branches.Video.Summary summary = FalcorParseUtils.getPropertyObject(((JsonObject)asJsonObject).getAsJsonObject(string), "summary", com.netflix.mediaclient.service.webclient.model.branches.Video.Summary.class);
-                                    updateMdpWithIQInfo(this.hardCache, this.softCache, summary.getId(), true);
+                                    updateMdpAndSdpWithIQInfo(this.browseCache, summary.getId(), true);
                                     list.add(0, summary);
                                 }
                                 break;
@@ -165,10 +163,10 @@ public class FetchIQVideosRequest extends FalcorVolleyWebClientRequest<List<Vide
                         }
                         final JsonObject asJsonObject3 = dataObj.getAsJsonObject("lolomo");
                         final JsonObject asJsonObject4 = asJsonObject3.getAsJsonObject("queue");
-                        BrowseAgent.putIQLoMoId(this.hardCache, FalcorParseUtils.getIdFromPath("nf_service_browse_fetchiqvideosrequest", asJsonObject4));
-                        PrefetchHomeLoLoMoRequest.putLoLoMoIdInBrowseCache(this.hardCache, asJsonObject3);
+                        this.browseCache.putIQLoMoId(FalcorParseUtils.getIdFromPath("nf_service_browse_fetchiqvideosrequest", asJsonObject4));
+                        PrefetchHomeLoLoMoRequest.putLoLoMoIdInBrowseCache(this.browseCache, asJsonObject3);
                         asJsonObject = asJsonObject4;
-                        continue Label_0141_Outer;
+                        continue Label_0137_Outer;
                     }
                     int n2;
                     if ((n2 = n) != 0) {

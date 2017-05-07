@@ -9,7 +9,11 @@ import com.netflix.mediaclient.javabridge.ui.android.registration.DeactivateComp
 import com.netflix.mediaclient.javabridge.ui.android.registration.SelectedAccountCompleteCommand;
 import com.netflix.mediaclient.javabridge.ui.android.registration.CreateAccountCompleteCommand;
 import com.netflix.mediaclient.event.CallbackEvent;
+import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.service.webclient.model.leafs.AccountData;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import org.json.JSONException;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
@@ -276,7 +280,7 @@ public class UserAgentStateManager implements Callback
     
     private void signalInitilizationCompleted() {
         if (!this.mInitilizationCompleted) {
-            this.mUserAgent.initialized(0);
+            this.mUserAgent.initialized(CommonStatus.OK);
             this.mInitilizationCompleted = true;
         }
     }
@@ -397,17 +401,17 @@ public class UserAgentStateManager implements Callback
         return false;
     }
     
-    void accountDataFetchFailed(final int n, final boolean b) {
+    void accountDataFetchFailed(final Status status, final boolean b) {
         while (true) {
             Log.d("nf_service_useragentstate", "@event profileDataFetchFailed");
             synchronized (this.mState) {
                 if (this.validateState(STATES.NEED_FETCH_PROFILE_DATA, "accountDataFetchFailed") && !b) {
-                    this.mUserAgent.userAccountDataResult(n);
+                    this.mUserAgent.userAccountDataResult(status);
                 }
                 else {
-                    this.mUserAgent.userAccountDataResult(0);
+                    this.mUserAgent.userAccountDataResult(CommonStatus.OK);
                 }
-                if (n == -61) {
+                if (status.getStatusCode() == StatusCode.USER_NOT_AUTHORIZED) {
                     if (!this.isProfileIdValid() || !this.fallbackToPrimaryAccount()) {
                         this.transitionTo(STATES.FATAL_ERROR);
                     }
@@ -430,15 +434,15 @@ public class UserAgentStateManager implements Callback
     void accountDataFetched(final AccountData accountData) {
         while (true) {
             Log.d("nf_service_useragentstate", "@event accountDataFetched");
-            Label_0088: {
+            Label_0090: {
                 synchronized (this.mState) {
-                    this.mUserAgent.userAccountDataResult(0);
+                    this.mUserAgent.userAccountDataResult(CommonStatus.OK);
                     if (this.validateState(STATES.NEED_FETCH_PROFILE_DATA, "accountDataFetched")) {
                         this.transitionTo(STATES.WAIT_SELECT_PROFILE);
                     }
                     else if (this.validateState(STATES.NEED_VALIDATE_PROFILE_DATA, "accountDataFetched")) {
                         if (!this.isCurrentProfileValid(accountData.getUserProfiles())) {
-                            break Label_0088;
+                            break Label_0090;
                         }
                         this.transitionTo(STATES.PROFILE_ACTIVATED);
                     }
@@ -498,7 +502,7 @@ public class UserAgentStateManager implements Callback
                 this.transitionTo(STATES.WAIT_ACTIVATE_ACC);
                 return;
             }
-            this.mUserAgent.selectProfileResult(-4);
+            this.mUserAgent.selectProfileResult(new NetflixStatus(StatusCode.NRD_ERROR));
             if (!this.fallbackToPrimaryAccount()) {
                 this.transitionTo(STATES.FATAL_ERROR);
             }
@@ -581,7 +585,7 @@ public class UserAgentStateManager implements Callback
             synchronized (this.mState) {
                 try {
                     this.mToken = new ActivationTokens(acccountKeyFromProfileId.getUserBoundNetflixId(), acccountKeyFromProfileId.getUserBoundSecureNetflixId());
-                    this.mUserAgent.selectProfileResult(0);
+                    this.mUserAgent.selectProfileResult(CommonStatus.OK);
                     acccountKeyFromProfileId = (UserBoundCookies)this.mProfileMap.getAcccountKeyFromProfileId(this.mProfileId);
                     if (StringUtils.isNotEmpty((String)acccountKeyFromProfileId)) {
                         this.mCurrentDeviceAcc = this.getAccountWithKey(this.mRegistration.getDeviceAccounts(), (String)acccountKeyFromProfileId);
@@ -593,7 +597,7 @@ public class UserAgentStateManager implements Callback
                 }
                 catch (JSONException ex) {
                     Log.e("nf_service_useragentstate", "profileSwitched failed with userBoundCookies " + acccountKeyFromProfileId);
-                    this.mUserAgent.selectProfileResult(-2);
+                    this.mUserAgent.selectProfileResult(CommonStatus.INTERNAL_ERROR);
                     if (!this.fallbackToPrimaryAccount()) {
                         this.transitionTo(STATES.FATAL_ERROR);
                     }
@@ -604,22 +608,23 @@ public class UserAgentStateManager implements Callback
         }
     }
     
-    void profileSwitchedFailed(final int n) {
+    void profileSwitchedFailed(final Status status) {
         while (true) {
-            Label_0109: {
+            Label_0118: {
                 synchronized (this.mState) {
+                    final StatusCode statusCode = status.getStatusCode();
                     if (Log.isLoggable("nf_service_useragentstate", 2)) {
-                        Log.v("nf_service_useragentstate", "profileSwitchFailed, status: " + n + ", state: " + this.mState);
+                        Log.v("nf_service_useragentstate", "profileSwitchFailed, status: " + statusCode + ", state: " + this.mState);
                     }
-                    this.mUserAgent.selectProfileResult(n);
-                    if (n == -61) {
+                    this.mUserAgent.selectProfileResult(status);
+                    if (statusCode == StatusCode.USER_NOT_AUTHORIZED) {
                         if (!this.fallbackToPrimaryAccount()) {
                             this.transitionTo(STATES.FATAL_ERROR);
                         }
                     }
                     else {
-                        if (n != -3) {
-                            break Label_0109;
+                        if (statusCode != StatusCode.NETWORK_ERROR) {
+                            break Label_0118;
                         }
                         this.transitionTo(STATES.WAIT_SELECT_PROFILE);
                     }
@@ -701,7 +706,7 @@ public class UserAgentStateManager implements Callback
     {
         void fetchAccountData();
         
-        void initialized(final int p0);
+        void initialized(final Status p0);
         
         void profileActivated(final String p0, final DeviceAccount p1);
         
@@ -709,13 +714,13 @@ public class UserAgentStateManager implements Callback
         
         void readyToSelectProfile();
         
-        void selectProfileResult(final int p0);
+        void selectProfileResult(final Status p0);
         
         void switchWebUserProfile(final String p0);
         
         void userAccountActivated(final DeviceAccount p0);
         
-        void userAccountDataResult(final int p0);
+        void userAccountDataResult(final Status p0);
         
         void userAccountDeactivated();
         

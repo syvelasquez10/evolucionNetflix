@@ -22,6 +22,7 @@ import android.annotation.TargetApi;
 @TargetApi(19)
 public class MediaDecoder2Audio extends MediaDecoderPipe2
 {
+    private static final int AUDIO_CLOCK_OFFSET_SAMPLES = 4800;
     private static final int MSG_RENDER_FLUSH = 2;
     private static final int MSG_RENDER_FLUSHED = 4;
     private static final int MSG_RENDER_FRAME = 1;
@@ -38,12 +39,16 @@ public class MediaDecoder2Audio extends MediaDecoderPipe2
     private int mSampleSize;
     private long nFrameRendered;
     
-    public MediaDecoder2Audio(final InputDataSource inputDataSource, final String s, final MediaFormat mediaFormat) throws Exception {
-        super(inputDataSource, s, mediaFormat, null, null);
+    public MediaDecoder2Audio(final InputDataSource inputDataSource, final String s, final MediaFormat mediaFormat, final EventListener eventListener) throws Exception {
+        super(inputDataSource, s, mediaFormat, null, null, eventListener);
         this.mSampleRate = 48000;
         this.mChannelConfig = 12;
         this.nFrameRendered = 0L;
         this.mRenderState = new LocalStateNotifier(this);
+    }
+    
+    private boolean canAssumeRenderingStarted() {
+        return this.mSampleCnt > this.mBufferSize / 2;
     }
     
     private void createAudioTrack() {
@@ -62,20 +67,22 @@ public class MediaDecoder2Audio extends MediaDecoderPipe2
     }
     
     private long getAudioHeaderPosition() {
-        if (MediaDecoder2Audio.USE_ANDROID_L_API) {
+        if (MediaDecoder2Audio.USE_ANDROID_L_API || this.mAudioUseGetTimestampAPI) {
             final AudioTimestamp audioTimestamp = new AudioTimestamp();
             if (this.mAudioTrack.getTimestamp(audioTimestamp)) {
-                return audioTimestamp.framePosition;
+                if (audioTimestamp.framePosition > 4800L) {
+                    return audioTimestamp.framePosition - 4800L;
+                }
+                return 0L;
             }
         }
         return this.mAudioTrack.getPlaybackHeadPosition();
     }
     
     private long getAudioPresentationLatencyMs() {
-        if (MediaDecoder2Audio.USE_ANDROID_L_API) {
+        if (MediaDecoder2Audio.USE_ANDROID_L_API || this.mAudioUseGetTimestampAPI) {
             final AudioTimestamp audioTimestamp = new AudioTimestamp();
             if (this.mAudioTrack.getTimestamp(audioTimestamp)) {
-                Log.d("MediaDecoder2Audio", "AudioClock: diff nanoTime in ms = " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - audioTimestamp.nanoTime));
                 final long millis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - audioTimestamp.nanoTime);
                 if (millis >= 0L && millis <= 20L) {
                     return millis;
@@ -100,16 +107,16 @@ public class MediaDecoder2Audio extends MediaDecoderPipe2
         //    10: pop            
         //    11: aload_3        
         //    12: invokevirtual   java/nio/ByteBuffer.hasArray:()Z
-        //    15: ifeq            446
+        //    15: ifeq            455
         //    18: aload_3        
         //    19: invokevirtual   java/nio/ByteBuffer.array:()[B
         //    22: astore_3       
         //    23: aload_3        
-        //    24: ifnull          315
+        //    24: ifnull          324
         //    27: lload           4
         //    29: ldc2_w          5000
         //    32: lcmp           
-        //    33: ifge            472
+        //    33: ifge            481
         //    36: aload_0        
         //    37: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mAudioTrack:Landroid/media/AudioTrack;
         //    40: invokestatic    android/media/AudioTrack.getMinVolume:()F
@@ -133,7 +140,7 @@ public class MediaDecoder2Audio extends MediaDecoderPipe2
         //    76: i2l            
         //    77: ldiv           
         //    78: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.shouldUpdate:(J)Z
-        //    81: ifeq            273
+        //    81: ifeq            282
         //    84: ldc2_w          1000
         //    87: aload_0        
         //    88: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mSampleCnt:J
@@ -163,7 +170,7 @@ public class MediaDecoder2Audio extends MediaDecoderPipe2
         //   131: ldc             "MediaDecoder2Audio"
         //   133: iconst_3       
         //   134: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //   137: ifeq            264
+        //   137: ifeq            266
         //   140: ldc             "MediaDecoder2Audio"
         //   142: new             Ljava/lang/StringBuilder;
         //   145: dup            
@@ -203,172 +210,181 @@ public class MediaDecoder2Audio extends MediaDecoderPipe2
         //   221: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
         //   224: lload           6
         //   226: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-        //   229: ldc             " ms, delta = "
-        //   231: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   234: lload           6
-        //   236: aload_0        
-        //   237: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
-        //   240: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.get:()J
-        //   243: lsub           
-        //   244: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-        //   247: ldc             ", pending in ms = "
-        //   249: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   252: lload           4
-        //   254: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-        //   257: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   260: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   263: pop            
-        //   264: aload_0        
-        //   265: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
-        //   268: lload           6
-        //   270: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.update:(J)V
+        //   229: ldc_w           " ms, delta = "
+        //   232: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   235: lload           6
+        //   237: aload_0        
+        //   238: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
+        //   241: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.get:()J
+        //   244: lsub           
+        //   245: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+        //   248: ldc_w           ", pending in ms = "
+        //   251: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   254: lload           4
+        //   256: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+        //   259: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   262: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   265: pop            
+        //   266: aload_0        
+        //   267: invokespecial   com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.canAssumeRenderingStarted:()Z
+        //   270: ifeq            507
         //   273: aload_0        
-        //   274: aload_0        
-        //   275: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mSampleCnt:J
-        //   278: aload_2        
-        //   279: getfield        android/media/MediaCodec$BufferInfo.size:I
-        //   282: i2l            
-        //   283: ladd           
-        //   284: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mSampleCnt:J
-        //   287: aload_0        
-        //   288: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
-        //   291: ifnull          315
-        //   294: aload_0        
-        //   295: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
-        //   298: iconst_1       
-        //   299: aload_0        
-        //   300: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.nFrameRendered:J
+        //   274: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
+        //   277: lload           6
+        //   279: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.update:(J)V
+        //   282: aload_0        
+        //   283: aload_0        
+        //   284: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mSampleCnt:J
+        //   287: aload_2        
+        //   288: getfield        android/media/MediaCodec$BufferInfo.size:I
+        //   291: i2l            
+        //   292: ladd           
+        //   293: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mSampleCnt:J
+        //   296: aload_0        
+        //   297: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
+        //   300: ifnull          324
         //   303: aload_0        
-        //   304: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
-        //   307: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.get:()J
-        //   310: invokeinterface com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener.onSampleRendered:(ZJJ)V
-        //   315: aload_0        
-        //   316: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBuffersQ:Ljava/util/LinkedList;
-        //   319: astore_3       
-        //   320: aload_3        
-        //   321: monitorenter   
-        //   322: aload_0        
-        //   323: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBuffersQ:Ljava/util/LinkedList;
-        //   326: invokevirtual   java/util/LinkedList.removeFirst:()Ljava/lang/Object;
-        //   329: pop            
-        //   330: aload_0        
-        //   331: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBufferInfo:[Landroid/media/MediaCodec$BufferInfo;
-        //   334: iload_1        
-        //   335: aconst_null    
-        //   336: aastore        
-        //   337: aload_3        
-        //   338: monitorexit    
+        //   304: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
+        //   307: iconst_1       
+        //   308: aload_0        
+        //   309: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.nFrameRendered:J
+        //   312: aload_0        
+        //   313: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
+        //   316: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.get:()J
+        //   319: invokeinterface com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener.onSampleRendered:(ZJJ)V
+        //   324: aload_0        
+        //   325: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBuffersQ:Ljava/util/LinkedList;
+        //   328: astore_3       
+        //   329: aload_3        
+        //   330: monitorenter   
+        //   331: aload_0        
+        //   332: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBuffersQ:Ljava/util/LinkedList;
+        //   335: invokevirtual   java/util/LinkedList.removeFirst:()Ljava/lang/Object;
+        //   338: pop            
         //   339: aload_0        
-        //   340: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mDecoder:Landroid/media/MediaCodec;
+        //   340: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBufferInfo:[Landroid/media/MediaCodec$BufferInfo;
         //   343: iload_1        
-        //   344: iconst_0       
-        //   345: invokevirtual   android/media/MediaCodec.releaseOutputBuffer:(IZ)V
+        //   344: aconst_null    
+        //   345: aastore        
+        //   346: aload_3        
+        //   347: monitorexit    
         //   348: aload_0        
-        //   349: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.nFrameRendered:J
-        //   352: lconst_0       
-        //   353: lcmp           
-        //   354: ifgt            435
-        //   357: ldc             "MediaDecoder2Audio"
-        //   359: iconst_3       
-        //   360: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //   363: ifeq            435
+        //   349: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mDecoder:Landroid/media/MediaCodec;
+        //   352: iload_1        
+        //   353: iconst_0       
+        //   354: invokevirtual   android/media/MediaCodec.releaseOutputBuffer:(IZ)V
+        //   357: aload_0        
+        //   358: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.nFrameRendered:J
+        //   361: lconst_0       
+        //   362: lcmp           
+        //   363: ifgt            444
         //   366: ldc             "MediaDecoder2Audio"
-        //   368: new             Ljava/lang/StringBuilder;
-        //   371: dup            
-        //   372: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   375: ldc_w           "ReleaseOutputBuffer "
-        //   378: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   381: iload_1        
-        //   382: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
-        //   385: ldc_w           " size= "
-        //   388: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   391: aload_2        
-        //   392: getfield        android/media/MediaCodec$BufferInfo.size:I
-        //   395: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
-        //   398: ldc_w           " @"
-        //   401: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   404: aload_2        
-        //   405: getfield        android/media/MediaCodec$BufferInfo.presentationTimeUs:J
-        //   408: ldc2_w          1000
-        //   411: ldiv           
-        //   412: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-        //   415: ldc_w           " ms,flags "
-        //   418: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   421: aload_2        
-        //   422: getfield        android/media/MediaCodec$BufferInfo.flags:I
-        //   425: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
-        //   428: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   431: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   434: pop            
-        //   435: aload_0        
-        //   436: aload_0        
-        //   437: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.nFrameRendered:J
-        //   440: lconst_1       
-        //   441: ladd           
-        //   442: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.nFrameRendered:J
-        //   445: return         
-        //   446: aload_2        
-        //   447: getfield        android/media/MediaCodec$BufferInfo.size:I
-        //   450: newarray        B
-        //   452: astore          8
-        //   454: aload_3        
-        //   455: aload           8
-        //   457: iconst_0       
-        //   458: aload_2        
-        //   459: getfield        android/media/MediaCodec$BufferInfo.size:I
-        //   462: invokevirtual   java/nio/ByteBuffer.get:([BII)Ljava/nio/ByteBuffer;
-        //   465: pop            
-        //   466: aload           8
-        //   468: astore_3       
-        //   469: goto            23
-        //   472: lload           4
-        //   474: ldc2_w          15000
-        //   477: lcmp           
-        //   478: ifge            50
-        //   481: aload_0        
-        //   482: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mAudioTrack:Landroid/media/AudioTrack;
-        //   485: invokestatic    android/media/AudioTrack.getMaxVolume:()F
-        //   488: invokestatic    android/media/AudioTrack.getMaxVolume:()F
-        //   491: invokevirtual   android/media/AudioTrack.setStereoVolume:(FF)I
-        //   494: pop            
-        //   495: goto            50
-        //   498: astore_3       
-        //   499: ldc             "MediaDecoder2Audio"
-        //   501: new             Ljava/lang/StringBuilder;
-        //   504: dup            
-        //   505: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   508: ldc_w           "update clock has Exception"
-        //   511: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   514: aload_3        
-        //   515: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
-        //   518: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   521: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   524: pop            
-        //   525: goto            273
-        //   528: astore_2       
-        //   529: aload_3        
-        //   530: monitorexit    
-        //   531: aload_2        
-        //   532: athrow         
-        //   533: astore_3       
-        //   534: ldc             "MediaDecoder2Audio"
-        //   536: ldc_w           "get un-documented exception as a result of releaseOutputBuffer()"
-        //   539: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   542: pop            
-        //   543: goto            348
+        //   368: iconst_3       
+        //   369: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
+        //   372: ifeq            444
+        //   375: ldc             "MediaDecoder2Audio"
+        //   377: new             Ljava/lang/StringBuilder;
+        //   380: dup            
+        //   381: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   384: ldc_w           "ReleaseOutputBuffer "
+        //   387: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   390: iload_1        
+        //   391: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //   394: ldc_w           " size= "
+        //   397: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   400: aload_2        
+        //   401: getfield        android/media/MediaCodec$BufferInfo.size:I
+        //   404: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //   407: ldc_w           " @"
+        //   410: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   413: aload_2        
+        //   414: getfield        android/media/MediaCodec$BufferInfo.presentationTimeUs:J
+        //   417: ldc2_w          1000
+        //   420: ldiv           
+        //   421: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+        //   424: ldc_w           " ms,flags "
+        //   427: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   430: aload_2        
+        //   431: getfield        android/media/MediaCodec$BufferInfo.flags:I
+        //   434: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //   437: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   440: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   443: pop            
+        //   444: aload_0        
+        //   445: aload_0        
+        //   446: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.nFrameRendered:J
+        //   449: lconst_1       
+        //   450: ladd           
+        //   451: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.nFrameRendered:J
+        //   454: return         
+        //   455: aload_2        
+        //   456: getfield        android/media/MediaCodec$BufferInfo.size:I
+        //   459: newarray        B
+        //   461: astore          8
+        //   463: aload_3        
+        //   464: aload           8
+        //   466: iconst_0       
+        //   467: aload_2        
+        //   468: getfield        android/media/MediaCodec$BufferInfo.size:I
+        //   471: invokevirtual   java/nio/ByteBuffer.get:([BII)Ljava/nio/ByteBuffer;
+        //   474: pop            
+        //   475: aload           8
+        //   477: astore_3       
+        //   478: goto            23
+        //   481: lload           4
+        //   483: ldc2_w          15000
+        //   486: lcmp           
+        //   487: ifge            50
+        //   490: aload_0        
+        //   491: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mAudioTrack:Landroid/media/AudioTrack;
+        //   494: invokestatic    android/media/AudioTrack.getMaxVolume:()F
+        //   497: invokestatic    android/media/AudioTrack.getMaxVolume:()F
+        //   500: invokevirtual   android/media/AudioTrack.setStereoVolume:(FF)I
+        //   503: pop            
+        //   504: goto            50
+        //   507: aload_0        
+        //   508: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
+        //   511: lload           6
+        //   513: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.updateAndPause:(J)V
+        //   516: goto            282
+        //   519: astore_3       
+        //   520: ldc             "MediaDecoder2Audio"
+        //   522: new             Ljava/lang/StringBuilder;
+        //   525: dup            
+        //   526: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   529: ldc_w           "update clock has Exception"
+        //   532: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   535: aload_3        
+        //   536: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   539: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   542: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   545: pop            
+        //   546: goto            282
+        //   549: astore_2       
+        //   550: aload_3        
+        //   551: monitorexit    
+        //   552: aload_2        
+        //   553: athrow         
+        //   554: astore_3       
+        //   555: ldc             "MediaDecoder2Audio"
+        //   557: ldc_w           "get un-documented exception as a result of releaseOutputBuffer()"
+        //   560: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   563: pop            
+        //   564: goto            357
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  84     264    498    528    Ljava/lang/Exception;
-        //  264    273    498    528    Ljava/lang/Exception;
-        //  322    339    528    533    Any
-        //  339    348    533    546    Ljava/lang/Exception;
-        //  529    531    528    533    Any
+        //  84     266    519    549    Ljava/lang/Exception;
+        //  266    282    519    549    Ljava/lang/Exception;
+        //  331    348    549    554    Any
+        //  348    357    554    567    Ljava/lang/Exception;
+        //  507    516    519    549    Ljava/lang/Exception;
+        //  550    552    549    554    Any
         // 
         // The error that occurred was:
         // 
-        // java.lang.IndexOutOfBoundsException: Index: 265, Size: 265
+        // java.lang.IndexOutOfBoundsException: Index: 273, Size: 273
         //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
         //     at java.util.ArrayList.get(ArrayList.java:429)
         //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)

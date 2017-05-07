@@ -4,13 +4,12 @@
 
 package com.netflix.mediaclient.ui.kids.details;
 
-import com.netflix.mediaclient.servicemgr.Playable;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.view.View;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.util.AttributeSet;
@@ -40,9 +39,9 @@ public class KidsEpisodeViewGroup extends RelativeLayout
     }
     
     private void init() {
-        LayoutInflater.from(this.getContext()).inflate(2130903092, (ViewGroup)this, true);
-        (this.img = (AdvancedImageView)this.findViewById(2131165388)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361909));
-        this.title = (TextView)this.findViewById(2131165389);
+        LayoutInflater.from(this.getContext()).inflate(2130903100, (ViewGroup)this, true);
+        (this.img = (AdvancedImageView)this.findViewById(2131165409)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361923));
+        this.title = (TextView)this.findViewById(2131165410);
     }
     
     public void update(final EpisodeDetails episodeDetails) {
@@ -52,7 +51,7 @@ public class KidsEpisodeViewGroup extends RelativeLayout
         this.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
                 final KidsDetailsActivity kidsDetailsActivity = (KidsDetailsActivity)KidsEpisodeViewGroup.this.getContext();
-                PlaybackLauncher.startPlaybackAfterPIN(kidsDetailsActivity, episodeDetails, kidsDetailsActivity.getPlayContext());
+                PlaybackLauncher.startPlaybackAfterPIN(kidsDetailsActivity, episodeDetails.getPlayable(), kidsDetailsActivity.getPlayContext());
             }
         });
     }

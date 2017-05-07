@@ -4,13 +4,14 @@
 
 package com.netflix.mediaclient.service.webclient.model.branches;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.ListSummary;
 import java.util.List;
 
-public abstract class ListModel<S, M> implements List<M>
+public abstract class ListModel<M> implements List<M>
 {
-    private S summary;
+    private ListSummary summary;
     
-    public S getSummary() {
+    public ListSummary getSummary() {
         return this.summary;
     }
 }

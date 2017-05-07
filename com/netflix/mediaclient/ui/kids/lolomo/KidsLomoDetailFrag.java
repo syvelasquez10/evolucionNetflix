@@ -5,12 +5,12 @@
 package com.netflix.mediaclient.ui.kids.lolomo;
 
 import android.util.Log;
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
-import com.netflix.mediaclient.servicemgr.LoMoType;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.os.Parcelable;
 import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.LoMo;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 
 public class KidsLomoDetailFrag extends LoLoMoFrag

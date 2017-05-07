@@ -5,14 +5,15 @@
 package com.netflix.mediaclient.service.webclient.model;
 
 import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.servicemgr.FriendProfile;
+import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.netflix.mediaclient.servicemgr.model.Playable;
 
-public class PostPlayVideo implements com.netflix.mediaclient.servicemgr.PostPlayVideo
+public class PostPlayVideo implements com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo, Playable
 {
     public com.netflix.mediaclient.service.webclient.model.branches.Video.Bookmark bookmark;
     public com.netflix.mediaclient.service.webclient.model.branches.Video.Detail detail;
@@ -29,6 +30,11 @@ public class PostPlayVideo implements com.netflix.mediaclient.servicemgr.PostPla
             return detail.synopsisNarrative;
         }
         return detail.synopsis;
+    }
+    
+    @Override
+    public boolean canBeSharedOnFacebook() {
+        return this.userConnectedToFacebook && this.socialEvidence != null && !this.socialEvidence.isVideoHidden();
     }
     
     @Override
@@ -82,14 +88,6 @@ public class PostPlayVideo implements com.netflix.mediaclient.servicemgr.PostPla
     }
     
     @Override
-    public String getCreators() {
-        if (this.detail == null) {
-            return null;
-        }
-        return this.detail.directors;
-    }
-    
-    @Override
     public int getEndtime() {
         if (VideoType.MOVIE.equals(this.getType())) {
             if (this.detail != null) {
@@ -121,11 +119,6 @@ public class PostPlayVideo implements com.netflix.mediaclient.servicemgr.PostPla
     @Override
     public List<FriendProfile> getFacebookFriends() {
         return null;
-    }
-    
-    @Override
-    public boolean getFbDntShare() {
-        return this.userConnectedToFacebook && this.socialEvidence != null && !this.socialEvidence.isVideoHidden();
     }
     
     @Override
@@ -210,6 +203,11 @@ public class PostPlayVideo implements com.netflix.mediaclient.servicemgr.PostPla
             return null;
         }
         return this.episodeDetail.getShowTitle();
+    }
+    
+    @Override
+    public Playable getPlayable() {
+        return this;
     }
     
     @Override

@@ -5,22 +5,24 @@
 package com.netflix.mediaclient.ui.lolomo;
 
 import android.content.res.ColorStateList;
-import com.netflix.mediaclient.servicemgr.LoMo;
-import com.netflix.mediaclient.servicemgr.Genre;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
-import android.graphics.drawable.Drawable;
-import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.ui.lomo.BillboardView;
 import java.util.Collection;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.ThreadUtils;
 import android.view.ViewGroup;
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.LoMoType;
+import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.ui.lomo.BillboardView;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.content.res.Resources;
-import com.netflix.mediaclient.servicemgr.LoMoUtils;
+import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
 import android.widget.RelativeLayout$LayoutParams;
 import android.widget.TextView;
 import android.widget.LinearLayout;
@@ -33,7 +35,7 @@ import com.netflix.mediaclient.android.app.LoadingStatus;
 import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.BaseAdapter;
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 
 public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter implements ILoLoMoAdapter
 {
@@ -64,9 +66,9 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     private RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165434);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165454);
         linearLayout.setFocusable(false);
-        final TextView textView = (TextView)view.findViewById(2131165436);
+        final TextView textView = (TextView)view.findViewById(2131165456);
         final Resources resources = this.activity.getResources();
         int n;
         if (this.activity.isForKids()) {
@@ -79,15 +81,15 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         final LoMoRowContent rowContent = this.createRowContent(linearLayout, (View)textView);
         TextView textView2;
         if (this.activity.isForKids()) {
-            view.findViewById(2131165437).setVisibility(8);
-            textView2 = (TextView)view.findViewById(2131165438);
+            view.findViewById(2131165457).setVisibility(8);
+            textView2 = (TextView)view.findViewById(2131165458);
             textView2.setVisibility(0);
         }
         else {
-            textView2 = (TextView)view.findViewById(2131165437);
+            textView2 = (TextView)view.findViewById(2131165457);
         }
-        ((RelativeLayout$LayoutParams)textView2.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragOffsetLeftPx(this.activity) + this.activity.getResources().getDimensionPixelOffset(2131361873);
-        return new RowHolder((View)linearLayout, textView2, rowContent, view.findViewById(2131165433));
+        ((RelativeLayout$LayoutParams)textView2.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragOffsetLeftPx(this.activity) + this.activity.getResources().getDimensionPixelOffset(2131361871);
+        return new RowHolder((View)linearLayout, textView2, rowContent, view.findViewById(2131165453));
     }
     
     private void fetchMoreData() {
@@ -121,6 +123,78 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     private void showErrorView() {
         this.frag.showErrorView();
+    }
+    
+    private void updateRowViews(View contentGroup, int dipToPixels) {
+        final int n = 8;
+        final boolean b = false;
+        final BasicLoMo item = this.getItem(dipToPixels);
+        if (item == null) {
+            Log.w("BaseLoLoMoAdapter", "Trying to show data for null lomo! Position: " + dipToPixels);
+            return;
+        }
+        if (Log.isLoggable("BaseLoLoMoAdapter", 2)) {
+            Log.v("BaseLoLoMoAdapter", "Updating LoMo row content: " + item.getTitle() + ", type: " + item.getType() + ", pos: " + dipToPixels);
+        }
+        final RowHolder rowHolder = (RowHolder)contentGroup.getTag();
+        final TextView title = rowHolder.title;
+        String text;
+        if (item.getType() == LoMoType.BILLBOARD) {
+            text = this.activity.getString(2131493304);
+        }
+        else {
+            text = item.getTitle();
+        }
+        title.setText((CharSequence)text);
+        final TextView title2 = rowHolder.title;
+        int visibility;
+        if (item.getType() != LoMoType.BILLBOARD || BillboardView.shouldShowArtworkOnly(this.activity)) {
+            visibility = 0;
+        }
+        else {
+            visibility = 8;
+        }
+        title2.setVisibility(visibility);
+        final View shelf = rowHolder.shelf;
+        int visibility2 = n;
+        if (this.isRowAfterBillboardOrCwRow(dipToPixels, item.getType())) {
+            visibility2 = n;
+            if (!this.activity.isForKids()) {
+                visibility2 = 0;
+            }
+        }
+        shelf.setVisibility(visibility2);
+        rowHolder.rowContent.refresh(item, dipToPixels);
+        if (!this.activity.isForKids()) {
+            int actionBarHeight = b ? 1 : 0;
+            if (dipToPixels == 0) {
+                actionBarHeight = this.activity.getActionBarHeight();
+            }
+            ViewUtils.setPaddingTop(contentGroup, actionBarHeight);
+            return;
+        }
+        if (item.getType() == LoMoType.CONTINUE_WATCHING) {
+            rowHolder.contentGroup.setBackgroundResource(2130837744);
+            rowHolder.contentGroup.setPadding(0, 0, 0, AndroidUtils.dipToPixels((Context)this.activity, 22));
+            rowHolder.title.setTextColor(this.activity.getResources().getColor(2131296309));
+            return;
+        }
+        ViewUtils.setBackgroundDrawableCompat(rowHolder.contentGroup, null);
+        if (dipToPixels == this.getCount() - 1) {
+            dipToPixels = 1;
+        }
+        else {
+            dipToPixels = 0;
+        }
+        contentGroup = rowHolder.contentGroup;
+        if (dipToPixels != 0) {
+            dipToPixels = AndroidUtils.dipToPixels((Context)this.activity, 24);
+        }
+        else {
+            dipToPixels = 0;
+        }
+        contentGroup.setPadding(0, 0, 0, dipToPixels);
+        rowHolder.title.setTextColor(rowHolder.defaultTitleColors);
     }
     
     public boolean areAllItemsEnabled() {
@@ -185,10 +259,10 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         }
         View inflate;
         if ((inflate = view) == null) {
-            inflate = this.activity.getLayoutInflater().inflate(2130903113, (ViewGroup)null);
+            inflate = this.activity.getLayoutInflater().inflate(2130903121, (ViewGroup)null);
             inflate.setTag((Object)this.createViewsAndHolder(inflate));
         }
-        this.updateRowViews((RowHolder)inflate.getTag(), n);
+        this.updateRowViews(inflate, n);
         if (this.hasMoreData && n == this.getCount() - 1) {
             this.fetchMoreData();
         }
@@ -228,18 +302,18 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         }
     }
     
-    protected void onDataLoaded(final int n) {
+    protected void onDataLoaded(final Status status) {
         if (this.mLoadingStatusCallback != null) {
-            this.mLoadingStatusCallback.onDataLoaded(n);
+            this.mLoadingStatusCallback.onDataLoaded(status);
         }
     }
     
-    public void onManagerReady(final ServiceManager manager, final int n) {
+    public void onManagerReady(final ServiceManager manager, final Status status) {
         this.manager = manager;
         this.refreshData();
     }
     
-    public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
+    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
         this.manager = null;
     }
     
@@ -258,7 +332,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     public void setLoadingStatusCallback(final LoadingStatusCallback mLoadingStatusCallback) {
         if (!this.isLoadingData() && mLoadingStatusCallback != null) {
-            mLoadingStatusCallback.onDataLoaded(0);
+            mLoadingStatusCallback.onDataLoaded(CommonStatus.OK);
             return;
         }
         this.mLoadingStatusCallback = mLoadingStatusCallback;
@@ -268,71 +342,6 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         this.lomos.addAll((Collection<? extends T>)list);
         this.loMoStartIndex += list.size();
         this.notifyDataSetChanged();
-    }
-    
-    protected void updateRowViews(final RowHolder rowHolder, int dipToPixels) {
-        final int n = 8;
-        final BasicLoMo item = this.getItem(dipToPixels);
-        if (item == null) {
-            Log.w("BaseLoLoMoAdapter", "Trying to show data for null lomo! Position: " + dipToPixels);
-        }
-        else {
-            if (Log.isLoggable("BaseLoLoMoAdapter", 2)) {
-                Log.v("BaseLoLoMoAdapter", "Updating LoMo row content: " + item.getTitle() + ", type: " + item.getType() + ", pos: " + dipToPixels);
-            }
-            final TextView title = rowHolder.title;
-            String text;
-            if (item.getType() == LoMoType.BILLBOARD) {
-                text = this.activity.getString(2131493304);
-            }
-            else {
-                text = item.getTitle();
-            }
-            title.setText((CharSequence)text);
-            final TextView title2 = rowHolder.title;
-            int visibility;
-            if (item.getType() != LoMoType.BILLBOARD || BillboardView.shouldShowArtworkOnly(this.activity)) {
-                visibility = 0;
-            }
-            else {
-                visibility = 8;
-            }
-            title2.setVisibility(visibility);
-            final View shelf = rowHolder.shelf;
-            int visibility2 = n;
-            if (this.isRowAfterBillboardOrCwRow(dipToPixels, item.getType())) {
-                visibility2 = n;
-                if (!this.activity.isForKids()) {
-                    visibility2 = 0;
-                }
-            }
-            shelf.setVisibility(visibility2);
-            rowHolder.rowContent.refresh(item, dipToPixels);
-            if (this.activity.isForKids()) {
-                if (item.getType() == LoMoType.CONTINUE_WATCHING) {
-                    rowHolder.contentGroup.setBackgroundResource(2130837733);
-                    rowHolder.contentGroup.setPadding(0, 0, 0, AndroidUtils.dipToPixels((Context)this.activity, 22));
-                    rowHolder.title.setTextColor(this.activity.getResources().getColor(2131296309));
-                    return;
-                }
-                ViewUtils.setBackgroundDrawableCompat(rowHolder.contentGroup, null);
-                if (dipToPixels == this.getCount() - 1) {
-                    dipToPixels = 1;
-                }
-                else {
-                    dipToPixels = 0;
-                }
-                final View contentGroup = rowHolder.contentGroup;
-                if (dipToPixels != 0) {
-                    dipToPixels = AndroidUtils.dipToPixels((Context)this.activity, 24);
-                }
-                else {
-                    dipToPixels = 0;
-                }
-                contentGroup.setPadding(0, 0, 0, dipToPixels);
-                rowHolder.title.setTextColor(rowHolder.defaultTitleColors);
-            }
-        }
     }
     
     private class LoMoCallbacks extends LoggingManagerCallback
@@ -346,7 +355,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
             this.numItems = numItems;
         }
         
-        private void handleResult(final List<T> list, final int n) {
+        private void handleResult(final List<T> list, final Status status) {
             BaseLoLoMoAdapter.this.hasMoreData = true;
             BaseLoLoMoAdapter.this.lomoRequestPending = false;
             if (this.requestId != BaseLoLoMoAdapter.this.lomoRequestId) {
@@ -354,8 +363,8 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
                 return;
             }
             BaseLoLoMoAdapter.this.isLoading = false;
-            BaseLoLoMoAdapter.this.onDataLoaded(n);
-            if (n != 0) {
+            BaseLoLoMoAdapter.this.onDataLoaded(status);
+            if (status.isError()) {
                 Log.w("BaseLoLoMoAdapter", "Invalid status code");
                 BaseLoLoMoAdapter.this.hasMoreData = false;
                 BaseLoLoMoAdapter.this.notifyDataSetChanged();
@@ -377,15 +386,15 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         }
         
         @Override
-        public void onGenresFetched(final List<Genre> list, final int n) {
-            super.onGenresFetched(list, n);
-            this.handleResult((List<T>)list, n);
+        public void onGenresFetched(final List<Genre> list, final Status status) {
+            super.onGenresFetched(list, status);
+            this.handleResult((List<T>)list, status);
         }
         
         @Override
-        public void onLoMosFetched(final List<LoMo> list, final int n) {
-            super.onLoMosFetched(list, n);
-            this.handleResult((List<T>)list, n);
+        public void onLoMosFetched(final List<LoMo> list, final Status status) {
+            super.onLoMosFetched(list, status);
+            this.handleResult((List<T>)list, status);
         }
     }
     

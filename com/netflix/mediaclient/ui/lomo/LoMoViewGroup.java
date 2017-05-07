@@ -10,7 +10,7 @@ import com.netflix.mediaclient.android.widget.SocialVideoView;
 import android.view.View;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.VideoView;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 
 public class LoMoViewGroup extends VideoViewGroup<Video, VideoView>
 {

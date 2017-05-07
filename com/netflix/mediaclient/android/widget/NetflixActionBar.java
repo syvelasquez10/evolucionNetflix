@@ -6,6 +6,9 @@ package com.netflix.mediaclient.android.widget;
 
 import android.view.MenuItem;
 import android.view.ViewGroup$LayoutParams;
+import android.content.Context;
+import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import android.view.View$OnClickListener;
 import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -34,7 +37,7 @@ public class NetflixActionBar
     protected final NetflixActivity activity;
     protected final View content;
     private final ViewTreeObserver$OnGlobalLayoutListener globalLayoutListener;
-    protected final boolean hasUpAction;
+    protected boolean hasUpAction;
     private View homeView;
     protected final ImageView logo;
     protected final ActionBar systemActionBar;
@@ -98,7 +101,6 @@ public class NetflixActionBar
             throw new InvalidParameterException("ActionBar is null");
         }
         this.systemActionBar.setCustomView(this.getLayoutId());
-        this.systemActionBar.setDisplayHomeAsUpEnabled(b);
         this.systemActionBar.setDisplayShowCustomEnabled(true);
         this.systemActionBar.setDisplayShowHomeEnabled(true);
         this.systemActionBar.setDisplayShowTitleEnabled(true);
@@ -108,14 +110,12 @@ public class NetflixActionBar
         this.systemActionBar.setLogo(2131296304);
         this.systemActionBar.setTitle((CharSequence)"");
         this.content = this.systemActionBar.getCustomView();
-        this.logo = (ImageView)this.content.findViewById(2131165281);
-        this.title = (TextView)this.content.findViewById(2131165282);
+        this.logo = (ImageView)this.content.findViewById(2131165283);
+        this.title = (TextView)this.content.findViewById(2131165284);
         this.fixBackgroundRepeat(this.content);
         this.setupFocusability();
         this.setLogoType(LogoType.FULL_SIZE);
-        if (b) {
-            this.content.getViewTreeObserver().addOnGlobalLayoutListener(this.globalLayoutListener);
-        }
+        this.setDisplayHomeAsUpEnabled(b);
     }
     
     private void fixBackgroundRepeat(final View view) {
@@ -126,7 +126,7 @@ public class NetflixActionBar
     }
     
     private boolean performUpAction() {
-        if (this.activity != null) {
+        if (this.activity != null && this.hasUpAction) {
             Log.v("NetflixActionBar", "performing up action");
             this.activity.performUpAction();
             return true;
@@ -153,7 +153,7 @@ public class NetflixActionBar
             actionBar.setDisplayShowHomeEnabled(false);
             if (!b || DeviceUtils.getScreenResolutionDpi(this.activity) >= 320) {
                 Log.v("NetflixActionBar", "Configuring action bar 'up' affordance for back behavior");
-                final View viewById = this.content.findViewById(2131165280);
+                final View viewById = this.content.findViewById(2131165282);
                 final ViewGroup$LayoutParams layoutParams = viewById.getLayoutParams();
                 final int actionBarHeight = this.activity.getActionBarHeight();
                 layoutParams.width = actionBarHeight;
@@ -163,7 +163,12 @@ public class NetflixActionBar
                 }
                 layoutParams.height = actionBarHeight;
                 viewById.setVisibility(0);
-                viewById.setOnClickListener((View$OnClickListener)new PerformUpActionOnClickListener(this.activity));
+                viewById.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
+                    public void onClick(final View view) {
+                        LogUtils.reportUIViewCommand((Context)NetflixActionBar.this.activity, UIViewLogging.UIViewCommandName.actionBarBackButton, NetflixActionBar.this.activity.getUiScreen(), NetflixActionBar.this.activity.getDataContext());
+                        NetflixActionBar.this.activity.finish();
+                    }
+                });
             }
         }
     }
@@ -202,6 +207,16 @@ public class NetflixActionBar
     
     public void setBackgroundResource(final int n) {
         this.systemActionBar.setBackgroundDrawable(this.activity.getResources().getDrawable(n));
+    }
+    
+    public void setDisplayHomeAsUpEnabled(final boolean b) {
+        this.hasUpAction = b;
+        this.systemActionBar.setDisplayHomeAsUpEnabled(b);
+        if (this.hasUpAction) {
+            this.content.getViewTreeObserver().addOnGlobalLayoutListener(this.globalLayoutListener);
+            return;
+        }
+        ViewUtils.removeGlobalLayoutListener(this.content, this.globalLayoutListener);
     }
     
     public void setLogoType(final LogoType logoType) {

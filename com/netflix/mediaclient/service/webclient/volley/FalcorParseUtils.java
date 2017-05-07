@@ -4,13 +4,16 @@
 
 package com.netflix.mediaclient.service.webclient.volley;
 
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import java.util.Iterator;
-import java.util.Map;
-import com.google.gson.JsonElement;
 import com.netflix.mediaclient.Log;
 import com.google.gson.JsonParser;
+import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
+import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.google.gson.JsonElement;
+import java.util.Map;
 import com.google.gson.JsonObject;
+import com.netflix.mediaclient.NetflixApplication;
 import com.google.gson.Gson;
 
 public class FalcorParseUtils
@@ -28,7 +31,7 @@ public class FalcorParseUtils
     private static final Gson gson;
     
     static {
-        gson = new Gson();
+        gson = NetflixApplication.getGson();
     }
     
     public static String buildEmptyValueMessage() {
@@ -57,6 +60,30 @@ public class FalcorParseUtils
     
     public static boolean containsErrors(final JsonObject jsonObject) {
         return jsonObject.has("error") || jsonObject.has("innerErrors");
+    }
+    
+    public static Object createObjectFromJsonEntry(final Map.Entry<String, JsonElement> entry) {
+        final JsonElement jsonElement = entry.getValue();
+        final String s = entry.getKey();
+        if ("summary".equals(s)) {
+            return FalcorParseUtils.gson.fromJson(jsonElement, Video.Summary.class);
+        }
+        if ("detail".equals(s)) {
+            return FalcorParseUtils.gson.fromJson(jsonElement, Video.Detail.class);
+        }
+        if ("rating".equals(s)) {
+            return FalcorParseUtils.gson.fromJson(jsonElement, Video.Rating.class);
+        }
+        if ("inQueue".equals(s)) {
+            return FalcorParseUtils.gson.fromJson(jsonElement, Video.InQueue.class);
+        }
+        if ("bookmark".equals(s)) {
+            return FalcorParseUtils.gson.fromJson(jsonElement, Video.Bookmark.class);
+        }
+        if ("socialEvidence".equals(s)) {
+            return FalcorParseUtils.gson.fromJson(jsonElement, SocialEvidence.class);
+        }
+        return null;
     }
     
     public static JsonObject getDataObj(final String s, final String s2) throws FalcorParseException, FalcorServerException {

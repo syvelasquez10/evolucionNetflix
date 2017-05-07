@@ -8,12 +8,11 @@ import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.InterestingVideoDetails;
+import com.netflix.mediaclient.servicemgr.model.details.InterestingVideoDetails;
 import java.util.List;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.servicemgr.Playable;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
-import com.netflix.mediaclient.servicemgr.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
@@ -95,10 +94,10 @@ public class PostPlayForEpisodes extends PostPlay
     }
     
     protected void findViews() {
-        this.mPlayButtonImage = (AdvancedImageView)this.mContext.findViewById(2131165562);
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165551);
-        this.mAutoPlayView = this.mContext.findViewById(2131165550);
-        this.mTimerView = (TextView)this.mContext.findViewById(2131165552);
+        this.mPlayButtonImage = (AdvancedImageView)this.mContext.findViewById(2131165582);
+        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165571);
+        this.mAutoPlayView = this.mContext.findViewById(2131165570);
+        this.mTimerView = (TextView)this.mContext.findViewById(2131165572);
     }
     
     @Override
@@ -110,7 +109,7 @@ public class PostPlayForEpisodes extends PostPlay
             Log.d("nf_postplay", "Play NEXT episode!");
             final PostPlayVideo postPlayVideo = this.mPostPlayVideos.get(0);
             if (postPlayVideo != null) {
-                this.mContext.playNextVideo(postPlayVideo, new PlayContextImp(postPlayVideo.getPostPlayRequestId(), postPlayVideo.getPostPlayTrackId(), 0, 0), b);
+                this.mContext.playNextVideo(postPlayVideo.getPlayable(), new PlayContextImp(postPlayVideo.getPostPlayRequestId(), postPlayVideo.getPostPlayTrackId(), 0, 0), b);
             }
         }
     }
@@ -201,7 +200,7 @@ public class PostPlayForEpisodes extends PostPlay
         if (!StringUtils.isEmpty(interestingUrl) && this.mPlayButtonImage != null) {
             NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mPlayButtonImage, interestingUrl, IClientLogging.AssetType.merchStill, string, true, true, 1);
         }
-        final String string2 = this.mContext.getResources().getString(2131493318, new Object[] { interestingVideoDetails.getSeasonNumber(), interestingVideoDetails.getEpisodeNumber(), title });
+        final String string2 = this.mContext.getResources().getString(2131493318, new Object[] { interestingVideoDetails.getPlayable().getSeasonNumber(), interestingVideoDetails.getPlayable().getEpisodeNumber(), title });
         if (Log.isLoggable("nf_postplay", 3)) {
             Log.d("nf_postplay", "Title: " + string2);
         }

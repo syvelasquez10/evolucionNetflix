@@ -6,5 +6,9 @@ package com.netflix.mediaclient.servicemgr;
 
 public interface BreadcrumbLogging
 {
+    String getLookupName();
+    
     void leaveBreadcrumb(final String p0);
+    
+    void setEnable(final boolean p0);
 }

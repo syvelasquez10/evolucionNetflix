@@ -34,6 +34,6 @@ public class CwPagerAdapter extends ProgressiveCwPagerAdapter
             }
         }
         Log.v("BaseProgressivePagerAdapter", "fetching for continue watching, start: " + n + ", end: " + n3);
-        this.getManager().fetchCWVideos(n, n3, new FetchVideosHandler<Object>("BaseProgressivePagerAdapter", (FetchVideosHandler.FetchCallback<Object>)this, "CW", n, n3));
+        this.getManager().getBrowse().fetchCWVideos(n, n3, new FetchVideosHandler<Object>("BaseProgressivePagerAdapter", (FetchVideosHandler.FetchCallback<Object>)this, "CW", n, n3));
     }
 }

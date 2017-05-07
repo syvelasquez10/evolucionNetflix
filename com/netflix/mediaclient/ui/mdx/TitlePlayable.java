@@ -4,12 +4,12 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import com.netflix.mediaclient.servicemgr.VideoType;
 import com.netflix.mediaclient.ui.Asset;
-import com.netflix.mediaclient.servicemgr.Playable;
+import com.netflix.mediaclient.servicemgr.model.Playable;
 
 class TitlePlayable implements Playable
 {
+    private boolean mCanBeSharedOnFacebook;
     private int mDuration;
     private int mEndtime;
     private boolean mEpisode;
@@ -22,7 +22,6 @@ class TitlePlayable implements Playable
     private String mPlayableId;
     private int mPlaybackBookmark;
     private int mSeasonNumber;
-    private boolean mSocialDoNotShareVisible;
     private String mTitle;
     private long mWatchedDate;
     
@@ -34,7 +33,7 @@ class TitlePlayable implements Playable
         this.mParentTitle = asset.getParentTitle();
         this.mWatchedDate = asset.getWatchedDate();
         this.mPlaybackBookmark = asset.getPlaybackBookmark();
-        this.mSocialDoNotShareVisible = asset.isSocialDoNotShareVisible();
+        this.mCanBeSharedOnFacebook = asset.canBeSharedOnFacebook();
         this.mSeasonNumber = asset.getSeasonNumber();
         this.mEpisodeNumber = asset.getEpisodeNumber();
         this.mDuration = asset.getDuration();
@@ -44,8 +43,8 @@ class TitlePlayable implements Playable
     }
     
     @Override
-    public String getBoxshotURL() {
-        return null;
+    public boolean canBeSharedOnFacebook() {
+        return this.mCanBeSharedOnFacebook;
     }
     
     @Override
@@ -56,26 +55,6 @@ class TitlePlayable implements Playable
     @Override
     public int getEpisodeNumber() {
         return this.mEpisodeNumber;
-    }
-    
-    @Override
-    public VideoType getErrorType() {
-        return null;
-    }
-    
-    @Override
-    public boolean getFbDntShare() {
-        return this.mSocialDoNotShareVisible;
-    }
-    
-    @Override
-    public String getHorzDispUrl() {
-        return null;
-    }
-    
-    @Override
-    public String getId() {
-        return this.mPlayableId;
     }
     
     @Override
@@ -119,26 +98,6 @@ class TitlePlayable implements Playable
     }
     
     @Override
-    public String getSquareUrl() {
-        return null;
-    }
-    
-    @Override
-    public String getTitle() {
-        return this.mTitle;
-    }
-    
-    @Override
-    public String getTvCardUrl() {
-        return null;
-    }
-    
-    @Override
-    public VideoType getType() {
-        return null;
-    }
-    
-    @Override
     public boolean isAutoPlayEnabled() {
         return this.mIsAutoPlayEnabled;
     }
@@ -160,6 +119,6 @@ class TitlePlayable implements Playable
     
     @Override
     public boolean isUserConnectedToFacebook() {
-        return this.mSocialDoNotShareVisible;
+        return this.mCanBeSharedOnFacebook;
     }
 }

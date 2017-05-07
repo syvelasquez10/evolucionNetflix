@@ -4,18 +4,19 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
-import com.netflix.mediaclient.service.webclient.model.BillboardDetails;
+import com.netflix.mediaclient.servicemgr.model.Billboard;
 
-public class PaginatedBillboardAdapter extends BasePaginatedAdapter<BillboardDetails>
+public class PaginatedBillboardAdapter extends BasePaginatedAdapter<Billboard>
 {
+    public static final int NUM_BILLBOARDS_TO_FETCH_PER_BATCH = 10;
     private static final String TAG = "PaginatedBillboardAdapter";
     
     public PaginatedBillboardAdapter(final Context context) {
@@ -29,7 +30,7 @@ public class PaginatedBillboardAdapter extends BasePaginatedAdapter<BillboardDet
     
     @Override
     protected int computeNumVideosToFetchPerBatch(final Context context) {
-        return 20;
+        return 10;
     }
     
     @Override
@@ -54,13 +55,13 @@ public class PaginatedBillboardAdapter extends BasePaginatedAdapter<BillboardDet
     }
     
     @Override
-    protected View getView(final ViewRecycler viewRecycler, final List<BillboardDetails> list, final int n, final int n2, final BasicLoMo basicLoMo) {
+    protected View getView(final ViewRecycler viewRecycler, final List<Billboard> list, final int n, final int n2, final BasicLoMo basicLoMo) {
         BillboardViewGroup billboardViewGroup;
         if ((billboardViewGroup = (BillboardViewGroup)viewRecycler.pop(BillboardViewGroup.class)) == null) {
             billboardViewGroup = new BillboardViewGroup((Context)this.getActivity());
             billboardViewGroup.init(n);
         }
-        ((VideoViewGroup<BillboardDetails, V>)billboardViewGroup).updateDataThenViews(list, n, n2, this.getListViewPos(), basicLoMo);
+        ((VideoViewGroup<Billboard, V>)billboardViewGroup).updateDataThenViews(list, n, n2, this.getListViewPos(), basicLoMo);
         return (View)billboardViewGroup;
     }
 }

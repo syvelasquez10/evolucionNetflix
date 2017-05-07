@@ -10,9 +10,9 @@ import android.view.View;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.FetchVideosHandler;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 
 public abstract class BaseProgressivePagerAdapter<T extends Video> implements RowAdapter, FetchCallback<T>
 {

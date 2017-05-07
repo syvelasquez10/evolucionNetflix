@@ -7,11 +7,10 @@ package com.netflix.mediaclient.ui.details;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.content.Context;
 import android.widget.Toast;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
-import com.netflix.mediaclient.servicemgr.ShowDetails;
-import com.netflix.mediaclient.servicemgr.MovieDetails;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.VideoDetails;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.view.MenuItem$OnMenuItemClickListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -50,14 +49,7 @@ public class DetailsMenu
             Log.w("DetailsMenu", "Service manager is null");
             return;
         }
-        boolean b = false;
-        if (videoDetails instanceof MovieDetails) {
-            b = ((MovieDetails)videoDetails).isShared();
-        }
-        else if (videoDetails instanceof ShowDetails) {
-            b = ((ShowDetails)videoDetails).isShared();
-        }
-        if (b) {
+        if (videoDetails.getPlayable().canBeSharedOnFacebook()) {
             this.updateShareItemToUnshare(serviceManager, videoDetails.getId());
             return;
         }
@@ -71,10 +63,10 @@ public class DetailsMenu
         }
         
         @Override
-        public void onVideoHide(final int n) {
-            super.onVideoHide(n);
+        public void onVideoHide(final Status status) {
+            super.onVideoHide(status);
             DetailsMenu.this.shareItem.setEnabled(true);
-            if (n != 0) {
+            if (status.isError()) {
                 Log.w("DetailsMenu", "Invalid status code");
                 Toast.makeText((Context)DetailsMenu.this.activity, 2131493131, 1).show();
                 return;
@@ -97,7 +89,7 @@ public class DetailsMenu
         public boolean onMenuItemClick(final MenuItem menuItem) {
             menuItem.setEnabled(false);
             if (this.serviceMan != null) {
-                this.serviceMan.hideVideo(this.videoId, new OnVideoHideCallback());
+                this.serviceMan.getBrowse().hideVideo(this.videoId, new OnVideoHideCallback());
             }
             return true;
         }

@@ -5,25 +5,25 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import java.util.Iterator;
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.UiLocation;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
 import android.app.Activity;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DataUtil;
-import com.netflix.mediaclient.servicemgr.LoMoUtils;
+import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
 import com.netflix.mediaclient.util.MathUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
 import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 
 public abstract class BasePaginatedAdapter<T extends Video>
 {

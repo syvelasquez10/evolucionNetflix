@@ -11,14 +11,15 @@ import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.ShowDetails;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
 public class FetchShowDetailsRequest extends FalcorVolleyWebClientRequest<ShowDetails>
@@ -33,19 +34,19 @@ public class FetchShowDetailsRequest extends FalcorVolleyWebClientRequest<ShowDe
     private final BrowseAgentCallback responseCallback;
     private final boolean userConnectedToFacebook;
     
-    public FetchShowDetailsRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String mShowId, final String mReqEpisodeId, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchShowDetailsRequest(final Context context, final String mShowId, final String mReqEpisodeId, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.mShowId = mShowId;
         this.mReqEpisodeId = mReqEpisodeId;
         this.isCurrentEpisodeLocal = StringUtils.isNotEmpty(this.mReqEpisodeId);
         this.userConnectedToFacebook = userConnectedToFacebook;
-        this.pqlQuery = "['videos','" + this.mShowId + "',['summary','detail', 'rating', 'inQueue', 'socialEvidence']]";
+        this.pqlQuery = String.format("['videos','%s',['summary','detail', 'rating', 'inQueue', 'socialEvidence']]", this.mShowId);
         if (this.isCurrentEpisodeLocal) {
-            this.pqlQuery2 = "['episodes','" + this.mReqEpisodeId + "', ['detail', 'bookmark']]";
+            this.pqlQuery2 = String.format("['episodes','%s', ['detail', 'bookmark']]", this.mReqEpisodeId);
         }
         else {
-            this.pqlQuery2 = "['videos','" + this.mShowId + "','episodes', 'current', ['detail', 'bookmark']]";
+            this.pqlQuery2 = String.format("['videos','%s','episodes', 'current', ['detail', 'bookmark']]", this.mShowId);
         }
         if (Log.isLoggable("nf_service_browse_fetchshowdetailsrequest", 2)) {
             Log.v("nf_service_browse_fetchshowdetailsrequest", "PQL = " + this.pqlQuery + this.pqlQuery2);
@@ -58,16 +59,16 @@ public class FetchShowDetailsRequest extends FalcorVolleyWebClientRequest<ShowDe
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onShowDetailsFetched(null, n);
+            this.responseCallback.onShowDetailsFetched(null, status);
         }
     }
     
     @Override
     protected void onSuccess(final ShowDetails showDetails) {
         if (this.responseCallback != null) {
-            this.responseCallback.onShowDetailsFetched(showDetails, 0);
+            this.responseCallback.onShowDetailsFetched(showDetails, CommonStatus.OK);
         }
     }
     

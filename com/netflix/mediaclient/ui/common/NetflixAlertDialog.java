@@ -74,7 +74,7 @@ public class NetflixAlertDialog extends NetflixDialogFrag
             throw new IllegalArgumentException("Dialog metadata can not be null!");
         }
         final NetflixAlertDialog netflixAlertDialog = new NetflixAlertDialog();
-        netflixAlertDialog.setStyle(1, 2131558603);
+        netflixAlertDialog.setStyle(1, 2131558605);
         netflixAlertDialog.setCancelable(alertDialogDescriptor.isCancelOnBack());
         final Bundle arguments = new Bundle();
         netflixAlertDialog.setArguments(arguments);
@@ -129,12 +129,12 @@ public class NetflixAlertDialog extends NetflixDialogFrag
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View inflate = layoutInflater.inflate(2130903065, viewGroup, false);
-        this.mMessageView = (TextView)inflate.findViewById(2131165285);
-        this.mPositiveButton = (Button)inflate.findViewById(2131165290);
-        this.mNegativeButton = (Button)inflate.findViewById(2131165286);
-        this.mNeutralButton = (Button)inflate.findViewById(2131165288);
-        this.mNegativeDivider = inflate.findViewById(2131165287);
-        this.mNeutralDivider = inflate.findViewById(2131165289);
+        this.mMessageView = (TextView)inflate.findViewById(2131165287);
+        this.mPositiveButton = (Button)inflate.findViewById(2131165292);
+        this.mNegativeButton = (Button)inflate.findViewById(2131165288);
+        this.mNeutralButton = (Button)inflate.findViewById(2131165290);
+        this.mNegativeDivider = inflate.findViewById(2131165289);
+        this.mNeutralDivider = inflate.findViewById(2131165291);
         this.mMessageView.setText((CharSequence)this.mMessage);
         if (this.mNeutralButtonUsed) {
             this.mNeutralButton.setText((CharSequence)this.mNeutralButtonLabel);
@@ -308,7 +308,6 @@ public class NetflixAlertDialog extends NetflixDialogFrag
             intent.putExtra("nflx_action_selected", this.mActionId);
             intent.putExtra("nflx_dialog_id", NetflixAlertDialog.this.mDialogId);
             intent.addCategory("LocalIntentNflxUi");
-            LocalBroadcastManager.getInstance((Context)NetflixAlertDialog.this.getActivity()).sendBroadcast(intent);
             final Context context;
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             NetflixAlertDialog.this.dismissAllowingStateLoss();

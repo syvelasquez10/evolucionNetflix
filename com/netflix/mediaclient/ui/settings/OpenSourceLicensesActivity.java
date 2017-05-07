@@ -14,6 +14,9 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.Intent;
 import android.content.Context;
 import java.util.ArrayList;
@@ -46,8 +49,27 @@ public class OpenSourceLicensesActivity extends NetflixActivity
     }
     
     @Override
+    protected ManagerStatusListener createManagerStatusListener() {
+        return new ManagerStatusListener() {
+            @Override
+            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
+                OpenSourceLicensesActivity.this.getNetflixActionBar().setDisplayHomeAsUpEnabled(serviceManager.isUserLoggedIn());
+            }
+            
+            @Override
+            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
+            }
+        };
+    }
+    
+    @Override
     public IClientLogging.ModalView getUiScreen() {
         return IClientLogging.ModalView.openSourceLicenses;
+    }
+    
+    @Override
+    protected boolean hasUpAction() {
+        return false;
     }
     
     public boolean isLoadingData() {
@@ -65,6 +87,11 @@ public class OpenSourceLicensesActivity extends NetflixActivity
         final ListView contentView = new ListView((Context)this);
         contentView.setAdapter((ListAdapter)new OslAdapter());
         this.setContentView((View)contentView);
+    }
+    
+    @Override
+    protected boolean showAboutInMenu() {
+        return false;
     }
     
     @Override
@@ -105,8 +132,8 @@ public class OpenSourceLicensesActivity extends NetflixActivity
         public View getView(final int n, final View view, final ViewGroup viewGroup) {
             View inflate = view;
             if (view == null) {
-                inflate = OpenSourceLicensesActivity.this.getLayoutInflater().inflate(2130903136, (ViewGroup)null);
-                inflate.setTag((Object)new Holder((TextView)inflate.findViewById(2131165496), (TextView)inflate.findViewById(2131165497)));
+                inflate = OpenSourceLicensesActivity.this.getLayoutInflater().inflate(2130903144, (ViewGroup)null);
+                inflate.setTag((Object)new Holder((TextView)inflate.findViewById(2131165516), (TextView)inflate.findViewById(2131165517)));
             }
             final Holder holder = (Holder)inflate.getTag();
             final OslInfo item = this.getItem(n);

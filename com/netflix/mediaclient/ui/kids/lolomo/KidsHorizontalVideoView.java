@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.kids.lolomo;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
@@ -19,7 +19,7 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 import android.widget.RelativeLayout;
 
@@ -35,8 +35,8 @@ public class KidsHorizontalVideoView extends RelativeLayout implements IVideoVie
         this.setFocusable(true);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -1));
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        netflixActivity.getLayoutInflater().inflate(2130903095, (ViewGroup)this);
-        (this.img = (AdvancedImageView)this.findViewById(2131165394)).setCornerRadius(netflixActivity.getResources().getDimensionPixelSize(2131361909));
+        netflixActivity.getLayoutInflater().inflate(2130903103, (ViewGroup)this);
+        (this.img = (AdvancedImageView)this.findViewById(2131165415)).setCornerRadius(netflixActivity.getResources().getDimensionPixelSize(2131361923));
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
     }
     

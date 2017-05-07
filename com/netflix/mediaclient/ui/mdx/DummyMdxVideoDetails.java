@@ -4,10 +4,11 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import com.netflix.mediaclient.servicemgr.FriendProfile;
+import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.VideoType;
-import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 
 class DummyMdxVideoDetails implements EpisodeDetails
 {
@@ -42,16 +43,6 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
-    public String getCreators() {
-        return null;
-    }
-    
-    @Override
-    public int getEndtime() {
-        return 0;
-    }
-    
-    @Override
     public String getEpisodeIdUrl() {
         return null;
     }
@@ -69,11 +60,6 @@ class DummyMdxVideoDetails implements EpisodeDetails
     @Override
     public List<FriendProfile> getFacebookFriends() {
         return null;
-    }
-    
-    @Override
-    public boolean getFbDntShare() {
-        return false;
     }
     
     @Override
@@ -117,33 +103,88 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
-    public String getParentId() {
-        return "70178217";
-    }
-    
-    @Override
-    public String getParentTitle() {
-        return "Dummy parent title - extra long version of the string to test textView ellipsize functionality";
-    }
-    
-    @Override
-    public int getPlayableBookmarkPosition() {
-        return 0;
-    }
-    
-    @Override
-    public long getPlayableBookmarkUpdateTime() {
-        return 0L;
-    }
-    
-    @Override
-    public String getPlayableId() {
-        return "70178217";
-    }
-    
-    @Override
-    public String getPlayableTitle() {
-        return "Dummy playable title";
+    public Playable getPlayable() {
+        return new Playable() {
+            @Override
+            public boolean canBeSharedOnFacebook() {
+                return true;
+            }
+            
+            @Override
+            public int getEndtime() {
+                return 0;
+            }
+            
+            @Override
+            public int getEpisodeNumber() {
+                return 0;
+            }
+            
+            @Override
+            public String getParentId() {
+                return "70178217";
+            }
+            
+            @Override
+            public String getParentTitle() {
+                return "Dummy parent title - extra long version of the string to test textView ellipsize functionality";
+            }
+            
+            @Override
+            public int getPlayableBookmarkPosition() {
+                return 0;
+            }
+            
+            @Override
+            public long getPlayableBookmarkUpdateTime() {
+                return 0L;
+            }
+            
+            @Override
+            public String getPlayableId() {
+                return "70178217";
+            }
+            
+            @Override
+            public String getPlayableTitle() {
+                return "Dummy playable title";
+            }
+            
+            @Override
+            public int getRuntime() {
+                return 4980;
+            }
+            
+            @Override
+            public int getSeasonNumber() {
+                return 0;
+            }
+            
+            @Override
+            public boolean isAutoPlayEnabled() {
+                return false;
+            }
+            
+            @Override
+            public boolean isNextPlayableEpisode() {
+                return false;
+            }
+            
+            @Override
+            public boolean isPinProtected() {
+                return false;
+            }
+            
+            @Override
+            public boolean isPlayableEpisode() {
+                return false;
+            }
+            
+            @Override
+            public boolean isUserConnectedToFacebook() {
+                return false;
+            }
+        };
     }
     
     @Override
@@ -154,11 +195,6 @@ class DummyMdxVideoDetails implements EpisodeDetails
     @Override
     public String getQuality() {
         return null;
-    }
-    
-    @Override
-    public int getRuntime() {
-        return 4980;
     }
     
     @Override
@@ -217,32 +253,7 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
-    public boolean isAutoPlayEnabled() {
-        return false;
-    }
-    
-    @Override
     public boolean isInQueue() {
-        return false;
-    }
-    
-    @Override
-    public boolean isNextPlayableEpisode() {
-        return false;
-    }
-    
-    @Override
-    public boolean isPinProtected() {
-        return false;
-    }
-    
-    @Override
-    public boolean isPlayableEpisode() {
-        return false;
-    }
-    
-    @Override
-    public boolean isUserConnectedToFacebook() {
         return false;
     }
     

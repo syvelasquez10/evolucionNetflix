@@ -24,6 +24,8 @@ import com.netflix.mediaclient.javabridge.invoke.mdx.InterfaceChanged;
 import com.netflix.mediaclient.repository.UserLocale;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.util.FileUtils;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.event.UIEvent;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
@@ -61,7 +63,7 @@ public class NrdController extends ServiceAgent
                         Log.d("nf_nrdcontroller", "Bridge is initialized");
                         NrdController.this.nrdp.removeEventListener("init", this.val$el);
                         NrdController.this.nrdp.getDevice().setUIVersion(NrdController.this.getConfigurationAgent().getSoftwareVersion());
-                        NrdController.this.initCompleted(0);
+                        NrdController.this.initCompleted(CommonStatus.OK);
                     }
                 });
             }
@@ -113,7 +115,7 @@ public class NrdController extends ServiceAgent
     protected void doInit() {
         Log.d("nf_nrdcontroller", "NrdController starting doInit");
         if (!this.loadNrdLib()) {
-            this.initCompleted(-4);
+            this.initCompleted(CommonStatus.NRD_ERROR);
         }
     }
     

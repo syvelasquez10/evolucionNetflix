@@ -4,11 +4,12 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.FriendProfile;
+import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import java.util.Random;
-import com.netflix.mediaclient.servicemgr.ShowDetails;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 
 public class DummyShowDetails implements ShowDetails
 {
@@ -69,16 +70,6 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
-    public int getEndtime() {
-        return 0;
-    }
-    
-    @Override
-    public int getEpisodeNumber() {
-        return 0;
-    }
-    
-    @Override
     public VideoType getErrorType() {
         return null;
     }
@@ -86,11 +77,6 @@ public class DummyShowDetails implements ShowDetails
     @Override
     public List<FriendProfile> getFacebookFriends() {
         return null;
-    }
-    
-    @Override
-    public boolean getFbDntShare() {
-        return false;
     }
     
     @Override
@@ -129,33 +115,8 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
-    public String getParentId() {
-        return null;
-    }
-    
-    @Override
-    public String getParentTitle() {
-        return null;
-    }
-    
-    @Override
-    public int getPlayableBookmarkPosition() {
-        return 0;
-    }
-    
-    @Override
-    public long getPlayableBookmarkUpdateTime() {
-        return 0L;
-    }
-    
-    @Override
-    public String getPlayableId() {
-        return null;
-    }
-    
-    @Override
-    public String getPlayableTitle() {
-        return null;
+    public Playable getPlayable() {
+        return new DummyPlayable();
     }
     
     @Override
@@ -166,16 +127,6 @@ public class DummyShowDetails implements ShowDetails
     @Override
     public String getQuality() {
         return null;
-    }
-    
-    @Override
-    public int getRuntime() {
-        return 0;
-    }
-    
-    @Override
-    public int getSeasonNumber() {
-        return 0;
     }
     
     @Override
@@ -219,37 +170,7 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
-    public boolean isAutoPlayEnabled() {
-        return false;
-    }
-    
-    @Override
     public boolean isInQueue() {
-        return false;
-    }
-    
-    @Override
-    public boolean isNextPlayableEpisode() {
-        return false;
-    }
-    
-    @Override
-    public boolean isPinProtected() {
-        return false;
-    }
-    
-    @Override
-    public boolean isPlayableEpisode() {
-        return false;
-    }
-    
-    @Override
-    public boolean isShared() {
-        return false;
-    }
-    
-    @Override
-    public boolean isUserConnectedToFacebook() {
         return false;
     }
     

@@ -6,20 +6,24 @@ package com.netflix.mediaclient.ui.login;
 
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;
 import android.app.AlertDialog$Builder;
+import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.app.Activity;
 import com.netflix.mediaclient.ui.RelaunchActivity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.Toast;
+import com.netflix.mediaclient.service.logging.client.model.UIError;
+import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
+import com.netflix.mediaclient.android.app.Status;
 
 public class LogoutActivity extends AccountActivity
 {
@@ -31,6 +35,7 @@ public class LogoutActivity extends AccountActivity
     
     private void handleLogoutComplete() {
         Log.i("LogoutActivity", "Handling logout completion...");
+        LogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging.CompletionReason.success, null);
         Toast.makeText(this.getApplicationContext(), 2131493215, 1).show();
         relaunchApp(this, "handleLogoutComplete()");
     }
@@ -38,16 +43,21 @@ public class LogoutActivity extends AccountActivity
     public static void relaunchApp(final NetflixActivity netflixActivity, final String s) {
         final ServiceManager serviceManager = netflixActivity.getServiceManager();
         if (serviceManager != null) {
-            serviceManager.flushCaches();
+            serviceManager.getBrowse().flushCaches();
         }
         NetflixActivity.finishAllActivities((Context)netflixActivity);
         netflixActivity.startActivity(RelaunchActivity.createStartIntent(netflixActivity, s));
+    }
+    
+    private void reportError(final Status status, final String s) {
+        LogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging.CompletionReason.failed, LogUtils.createUIError(status, s, ActionOnUIError.displayedError));
     }
     
     public static void showLogoutDialog(final Activity activity) {
         new AlertDialog$Builder((Context)activity).setMessage(2131493213).setNegativeButton(2131493121, (DialogInterface$OnClickListener)null).setPositiveButton(2131493185, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 activity.startActivity(LogoutActivity.create((Context)activity));
+                activity.overridePendingTransition(0, 0);
                 activity.finish();
             }
         }).show();
@@ -57,12 +67,12 @@ public class LogoutActivity extends AccountActivity
     protected ManagerStatusListener createManagerStatusListener() {
         return new ManagerStatusListener() {
             @Override
-            public void onManagerReady(final ServiceManager serviceManager, final int n) {
+            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
                 serviceManager.logoutUser(new LogoutHandler());
             }
             
             @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
+            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
             }
         };
     }
@@ -77,6 +87,11 @@ public class LogoutActivity extends AccountActivity
         super.onCreate(bundle);
     }
     
+    @Override
+    protected boolean shouldReportNavigationActionEndedOnStop() {
+        return false;
+    }
+    
     private class LogoutHandler extends LoggingManagerCallback
     {
         public LogoutHandler() {
@@ -84,13 +99,16 @@ public class LogoutActivity extends AccountActivity
         }
         
         @Override
-        public void onLogoutComplete(final int n) {
-            super.onLogoutComplete(n);
-            if (n == 0) {
+        public void onLogoutComplete(final Status status) {
+            super.onLogoutComplete(status);
+            if (status.isSucces()) {
                 LogoutActivity.this.handleLogoutComplete();
                 return;
             }
-            Log.e("LogoutActivity", "Could not log user out - status code: " + n);
+            if (Log.isLoggable("LogoutActivity", 6)) {
+                Log.e("LogoutActivity", "Could not log user out - status code: " + status.getStatusCode());
+            }
+            LogoutActivity.this.reportError(status, LogoutActivity.this.getString(2131493214));
             Toast.makeText(LogoutActivity.this.getApplicationContext(), 2131493214, 1).show();
             LogoutActivity.this.finish();
         }

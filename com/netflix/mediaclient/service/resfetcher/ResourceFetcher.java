@@ -12,12 +12,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.Response;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.WebClientInitParameters;
 import com.netflix.mediaclient.service.webclient.NetflixWebClientInitParameters;
 import com.android.volley.Network;
 import com.android.volley.Cache;
 import com.android.volley.toolbox.BasicNetwork;
 import com.netflix.mediaclient.util.gfx.BitmapLruCache;
+import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import android.content.Context;
@@ -103,9 +106,19 @@ public class ResourceFetcher extends ServiceAgent
                 imageCache2 = (ImageLoader.ImageCache)imageCache;
             }
             else {
-                final int imageCacheSizeBytes = this.getConfigurationAgent().getImageCacheSizeBytes();
-                Log.i("nf_service_resourcefetcher", "Creating new BitmapLruCache of size " + imageCacheSizeBytes + " bytes");
-                imageCache2 = new VolleyImageCache(imageCacheSizeBytes);
+                final ConfigurationAgentInterface configurationAgent = this.getConfigurationAgent();
+                if (configurationAgent == null) {
+                    Log.w("nf_service_resourcefetcher", "Config interface is null - using default img cache size");
+                }
+                int n;
+                if (configurationAgent == null) {
+                    n = ConfigurationAgent.DEFAULT_IMAGE_CACHE_SIZE_BYTES;
+                }
+                else {
+                    n = configurationAgent.getImageCacheSizeBytes();
+                }
+                Log.i("nf_service_resourcefetcher", "Creating new BitmapLruCache of size " + n + " bytes");
+                imageCache2 = new VolleyImageCache(n);
                 netflixApplication.setImageCache((BitmapLruCache)imageCache2);
             }
             return imageCache2;
@@ -148,7 +161,7 @@ public class ResourceFetcher extends ServiceAgent
             Log.i("nf_service_resourcefetcher", "Setting default timeout value for data request to " + dataRequestTimeout + "ms");
         }
         this.mWebClient.setTimeout(dataRequestTimeout);
-        this.initCompleted(0);
+        this.initCompleted(CommonStatus.OK);
     }
     
     public void fetchResource(final String s, final IClientLogging.AssetType assetType, final ResourceFetcherCallback resourceFetcherCallback) {
@@ -162,7 +175,7 @@ public class ResourceFetcher extends ServiceAgent
             public void onErrorResponse(final VolleyError volleyError) {
                 Log.e("nf_service_resourcefetcher", "FileDownloadRequest failed: ", volleyError);
                 if (resourceFetcherCallback2 != null) {
-                    resourceFetcherCallback2.onResourceFetched(s, null, -3);
+                    resourceFetcherCallback2.onResourceFetched(s, null, CommonStatus.NETWORK_ERROR);
                 }
             }
         }, this.getConfigurationAgent().getResourceRequestTimeout(), this.mDownloadsDir));
@@ -193,7 +206,7 @@ public class ResourceFetcher extends ServiceAgent
             this.getMainHandler().post((Runnable)new Runnable() {
                 @Override
                 public void run() {
-                    resourceFetcherCallback.onResourcePrefetched(s, 0, -2);
+                    resourceFetcherCallback.onResourcePrefetched(s, 0, CommonStatus.INTERNAL_ERROR);
                 }
             });
             return;
@@ -208,7 +221,7 @@ public class ResourceFetcher extends ServiceAgent
             public void onErrorResponse(final VolleyError volleyError) {
                 Log.e("nf_service_resourcefetcher", "PrefetchRequest failed: ", volleyError);
                 if (resourceFetcherCallback2 != null) {
-                    resourceFetcherCallback2.onResourcePrefetched(s, 0, -3);
+                    resourceFetcherCallback2.onResourcePrefetched(s, 0, CommonStatus.NETWORK_ERROR);
                 }
             }
         }, this.getConfigurationAgent().getResourceRequestTimeout()));
@@ -216,7 +229,7 @@ public class ResourceFetcher extends ServiceAgent
     
     private class ResourceFetcherCallbackWrapper implements ResourceFetcherCallback
     {
-        private ResourceFetcherCallback mCallback;
+        private final ResourceFetcherCallback mCallback;
         
         private ResourceFetcherCallbackWrapper(final ResourceFetcherCallback mCallback) {
             if (mCallback == null) {
@@ -226,15 +239,15 @@ public class ResourceFetcher extends ServiceAgent
         }
         
         @Override
-        public void onResourceFetched(final String s, final String s2, final int n) {
-            LogUtils.reportAssetRequestResult(s, n, ResourceFetcher.this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
-            this.mCallback.onResourceFetched(s, s2, n);
+        public void onResourceFetched(final String s, final String s2, final Status status) {
+            LogUtils.reportAssetRequestResult(s, status.getStatusCode(), ResourceFetcher.this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
+            this.mCallback.onResourceFetched(s, s2, status);
         }
         
         @Override
-        public void onResourcePrefetched(final String s, final int n, final int n2) {
-            LogUtils.reportAssetRequestResult(s, n2, ResourceFetcher.this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
-            this.mCallback.onResourcePrefetched(s, n, n2);
+        public void onResourcePrefetched(final String s, final int n, final Status status) {
+            LogUtils.reportAssetRequestResult(s, status.getStatusCode(), ResourceFetcher.this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
+            this.mCallback.onResourcePrefetched(s, n, status);
         }
     }
     

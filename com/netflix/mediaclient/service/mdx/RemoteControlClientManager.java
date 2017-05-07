@@ -8,9 +8,9 @@ import android.media.RemoteControlClient$MetadataEditor;
 import com.netflix.mediaclient.util.StringUtils;
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
-import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import android.content.Intent;
-import com.netflix.mediaclient.servicemgr.VideoDetails;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import com.netflix.mediaclient.Log;
 import android.media.RemoteControlClient;
 import android.content.ComponentName;
@@ -48,7 +48,7 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
             final Intent intent = new Intent("android.intent.action.MEDIA_BUTTON");
             intent.setComponent(this.mIntentReceiverComponentPostPlay);
             if (videoDetails instanceof EpisodeDetails) {
-                intent.putExtra("catalogId", Integer.parseInt(videoDetails.getParentId()));
+                intent.putExtra("catalogId", Integer.parseInt(videoDetails.getPlayable().getParentId()));
                 intent.putExtra("episodeId", Integer.parseInt(((EpisodeDetails)videoDetails).getNextEpisodeId()));
             }
             intent.putExtra("uuid", s);

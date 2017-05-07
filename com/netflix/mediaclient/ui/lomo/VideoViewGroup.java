@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui.lomo;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.util.DataUtil;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import java.util.List;
 import android.widget.LinearLayout$LayoutParams;
 import com.netflix.mediaclient.android.fragment.CustomViewPager;
@@ -16,7 +16,7 @@ import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import android.content.Context;
 import android.widget.LinearLayout;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 
 public abstract class VideoViewGroup<T extends Video, V extends View> extends LinearLayout
 {
@@ -35,7 +35,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
     protected abstract V createChildView(final Context p0);
     
     protected int getChildPaddingDimenResId() {
-        return 2131361873;
+        return 2131361871;
     }
     
     public void init(final int n) {

@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.webclient;
 
 import java.util.Locale;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.StatusCode;
 
 public abstract class BaseWebClient
 {
@@ -15,48 +16,28 @@ public abstract class BaseWebClient
         BaseWebClient.TAG = "BaseWebClient";
     }
     
-    public static int getFBConnectStatusCode(final String s) {
-        if (!s.contains("202") && !s.contains("200")) {
-            if (s.contains("400")) {
-                return -50;
-            }
-            if (s.contains("401")) {
-                return -51;
-            }
-            if (s.contains("403") || s.contains("405")) {
-                return -52;
-            }
-            if (s.contains("406")) {
-                return -53;
-            }
-            if (s.contains("500")) {
-                return -54;
-            }
-            if (s.contains("503")) {
-                return -55;
-            }
-        }
-        return 0;
-    }
-    
-    public static int getStatusCodeFromError(final Throwable t) {
-        int n = -60;
+    public static StatusCode getStatusCodeFromError(final Throwable t) {
+        final StatusCode wrong_PATH = StatusCode.WRONG_PATH;
         Log.w(BaseWebClient.TAG, "Received Error", t);
         final String message = t.getMessage();
         if (message == null) {
-            return -60;
+            return wrong_PATH;
         }
         final String lowerCase = message.toLowerCase(Locale.US);
         Log.d(BaseWebClient.TAG, ".next call failed with error =" + lowerCase);
+        StatusCode statusCode;
         if (lowerCase.contains("map error")) {
-            n = -65;
+            statusCode = StatusCode.MAP_ERROR;
         }
         else if (lowerCase.contains("not authorized")) {
-            n = -61;
+            statusCode = StatusCode.USER_NOT_AUTHORIZED;
         }
-        else if (lowerCase.contains("path error")) {
-            n = -60;
+        else {
+            statusCode = wrong_PATH;
+            if (lowerCase.contains("path error")) {
+                statusCode = StatusCode.WRONG_PATH;
+            }
         }
-        return n;
+        return statusCode;
     }
 }

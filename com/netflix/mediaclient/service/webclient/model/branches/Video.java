@@ -4,9 +4,10 @@
 
 package com.netflix.mediaclient.service.webclient.model.branches;
 
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.model.BaseFalkorObject;
 
-public class Video
+public abstract class Video extends BaseFalkorObject
 {
     public static boolean isSocialVideoType(final VideoType videoType) {
         return VideoType.SOCIAL_FRIEND.equals(videoType) || VideoType.SOCIAL_GROUP.equals(videoType) || VideoType.SOCIAL_POPULAR.equals(videoType);
@@ -16,6 +17,11 @@ public class Video
     {
         private int bookmarkPosition;
         private long lastModified;
+        
+        public void deepCopy(final Bookmark bookmark) {
+            this.bookmarkPosition = bookmark.bookmarkPosition;
+            this.lastModified = bookmark.lastModified;
+        }
         
         public int getBookmarkPosition() {
             return this.bookmarkPosition;
@@ -73,6 +79,33 @@ public class Video
         public String tvCardUrl;
         public int year;
         
+        public void deepCopy(final Detail detail) {
+            this.year = detail.year;
+            this.synopsis = detail.synopsis;
+            this.synopsisNarrative = detail.synopsisNarrative;
+            this.quality = detail.quality;
+            this.directors = detail.directors;
+            this.actors = detail.actors;
+            this.genres = detail.genres;
+            this.certification = detail.certification;
+            this.horzDispUrl = detail.horzDispUrl;
+            this.restUrl = detail.restUrl;
+            this.bifUrl = detail.bifUrl;
+            this.baseUrl = detail.baseUrl;
+            this.tvCardUrl = detail.tvCardUrl;
+            this.mdxHorzUrl = detail.mdxHorzUrl;
+            this.mdxVertUrl = detail.mdxVertUrl;
+            this.storyImgUrl = detail.storyImgUrl;
+            this.intrUrl = detail.intrUrl;
+            this.episodeCount = detail.episodeCount;
+            this.seasonCount = detail.seasonCount;
+            this.isHdAvailable = detail.isHdAvailable;
+            this.isAutoPlayEnabled = detail.isAutoPlayEnabled;
+            this.isNextPlayableEpisode = detail.isNextPlayableEpisode;
+            this.predictedRating = detail.predictedRating;
+            this.isPinProtected = detail.isPinProtected;
+        }
+        
         @Override
         public String toString() {
             return "Detail [year=" + this.year + ", synopsis=" + this.synopsis + ", synopsisNarrative=" + this.synopsisNarrative + ", quality=" + this.quality + ", directors=" + this.directors + ", actors=" + this.actors + ", genres=" + this.genres + ", certification=" + this.certification + ", horzDispUrl=" + this.horzDispUrl + ", restUrl=" + this.restUrl + ", bifUrl=" + this.bifUrl + ", baseUrl=" + this.baseUrl + ", tvCardUrl=" + this.tvCardUrl + ", mdxHorzUrl=" + this.mdxHorzUrl + ", mdxVertUrl=" + this.mdxVertUrl + ", storyImgUrl=" + this.storyImgUrl + ", intrUrl=" + this.intrUrl + ", episodeCount=" + this.episodeCount + ", seasonCount=" + this.seasonCount + ", isHdAvailable=" + this.isHdAvailable + ", isAutoPlayEnabled=" + this.isAutoPlayEnabled + ", isNextPlayableEpisode=" + this.isNextPlayableEpisode + ", predictedRating=" + this.predictedRating + ", isPinProtected=" + this.isPinProtected + ", runtime=" + this.runtime + ", endtime=" + this.endtime + "]";
@@ -102,6 +135,7 @@ public class Video
     public static class SearchTitle
     {
         public String certification;
+        public String horzDispUrl;
         public int releaseYear;
         public String title;
         
@@ -113,16 +147,16 @@ public class Video
     
     public static class Summary implements Video
     {
-        protected String boxartUrl;
-        protected VideoType enumType;
+        public String boxartUrl;
+        public VideoType enumType;
         public VideoType errorType;
         public String horzDispUrl;
-        protected String id;
-        protected boolean isEpisode;
+        public String id;
+        public boolean isEpisode;
         public String squareUrl;
-        protected String title;
+        public String title;
         public String tvCardUrl;
-        protected String type;
+        public String type;
         public int videoYear;
         
         @Override

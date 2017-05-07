@@ -6,7 +6,7 @@ package com.netflix.mediaclient.android.widget;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
@@ -14,13 +14,14 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.util.AttributeSet;
 import android.content.Context;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 
 public class VideoView extends AdvancedImageView implements IVideoView<Video>
 {
     public static final float LOMO_BOXART_HEIGHT_TO_WIDTH_RATIO = 1.43f;
     protected VideoDetailsClickListener clicker;
+    private boolean isHorizontal;
     protected PlayContext playContext;
     
     public VideoView(final Context context) {
@@ -41,6 +42,7 @@ public class VideoView extends AdvancedImageView implements IVideoView<Video>
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
+        this.setBackgroundResource(2130837876);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
     }
     
@@ -56,6 +58,10 @@ public class VideoView extends AdvancedImageView implements IVideoView<Video>
         this.clicker.remove((View)this);
     }
     
+    public void setIsHorizontal(final boolean isHorizontal) {
+        this.isHorizontal = isHorizontal;
+    }
+    
     public void update(final Video video, final Trackable trackable, int visibility, final boolean b) {
         this.playContext = new PlayContextImp(trackable, visibility);
         if (video.getBoxshotURL() == null) {
@@ -67,7 +73,13 @@ public class VideoView extends AdvancedImageView implements IVideoView<Video>
         this.setVisibility(visibility);
         this.clicker.update((View)this, video);
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
-        final String boxshotURL = video.getBoxshotURL();
+        String s;
+        if (this.isHorizontal) {
+            s = video.getHorzDispUrl();
+        }
+        else {
+            s = video.getBoxshotURL();
+        }
         final IClientLogging.AssetType boxArt = IClientLogging.AssetType.boxArt;
         final String title = video.getTitle();
         if (b) {
@@ -76,6 +88,6 @@ public class VideoView extends AdvancedImageView implements IVideoView<Video>
         else {
             visibility = 0;
         }
-        imageLoader.showImg(this, boxshotURL, boxArt, title, true, true, visibility);
+        imageLoader.showImg(this, s, boxArt, title, true, true, visibility);
     }
 }

@@ -8,7 +8,7 @@ import com.netflix.mediaclient.ui.kids.lolomo.KidsPaginatedLoMoAdapter;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 
 public abstract class ProgressiveLoMoPagerAdapter extends BaseProgressivePagerAdapter<Video>
 {

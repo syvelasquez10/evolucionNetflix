@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import java.util.List;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,7 +18,7 @@ import android.widget.Spinner;
 
 public class SeasonsSpinner extends Spinner
 {
-    private static final int STANDARD_BG_RES_ID = 2130837863;
+    private static final int STANDARD_BG_RES_ID = 2130837883;
     private static final String TAG = "SeasonsSpinner";
     private AdapterView$OnItemSelectedListener itemSelectedListener;
     private SeasonsSpinnerAdapter spinnerAdapter;
@@ -39,7 +39,7 @@ public class SeasonsSpinner extends Spinner
     }
     
     private void init() {
-        this.setBackgroundResource(2130837863);
+        this.setBackgroundResource(2130837883);
         this.setAdapter((SpinnerAdapter)(this.spinnerAdapter = new SeasonsSpinnerAdapter((NetflixActivity)this.getContext())));
     }
     
@@ -77,7 +77,7 @@ public class SeasonsSpinner extends Spinner
         this.setEnabled(enabled);
         int backgroundResource;
         if (enabled) {
-            backgroundResource = 2130837863;
+            backgroundResource = 2130837883;
         }
         else {
             backgroundResource = 2131296304;

@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
 import android.os.Bundle;
-import android.app.Activity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.util.ThreadUtils;
@@ -35,8 +34,10 @@ import android.view.View$OnTouchListener;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.Intent;
+import com.netflix.mediaclient.android.app.Status;
 import android.content.Context;
 import com.netflix.mediaclient.ui.login.LoginActivity;
 import com.netflix.mediaclient.Log;
@@ -91,11 +92,11 @@ public class SignupActivity extends AccountActivity
         };
         this.loginQueryCallback = new SimpleManagerCallback() {
             @Override
-            public void onLoginComplete(final int n, final String s) {
+            public void onLoginComplete(final Status status) {
                 SignupActivity.this.runOnUiThread((Runnable)new Runnable() {
                     @Override
                     public void run() {
-                        SignupActivity.this.handleLoginComplete(n, s);
+                        SignupActivity.this.handleLoginComplete(status);
                     }
                 });
             }
@@ -115,20 +116,27 @@ public class SignupActivity extends AccountActivity
         return new Intent(context, (Class)SignupActivity.class);
     }
     
-    private void handleLoginComplete(final int n, String string) {
-        if (string == null) {
-            string = "";
+    private void handleLoginComplete(final Status status) {
+        String message;
+        if (status.getMessage() != null) {
+            message = status.getMessage();
+        }
+        else {
+            message = "";
         }
         this.mSignupOngoing = false;
-        Log.d("SignupActivity", "Login Complete - Status: " + n + " DisplayMsg: " + string);
-        if (n == 0 || n == -41) {
+        if (Log.isLoggable("SignupActivity", 3)) {
+            Log.d("SignupActivity", "Login Complete - Status: " + status.getStatusCode() + " DisplayMsg: " + message);
+        }
+        final StatusCode statusCode = status.getStatusCode();
+        if (status.isSucces() || statusCode == StatusCode.NRD_REGISTRATION_EXISTS) {
             this.showToast(2131493216);
             this.clearCookies();
         }
         else {
-            this.provideDialog(this.getString(2131493276) + " (" + n + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131493276) + " (" + statusCode.getValue() + ")", this.mHandleError);
             if (this.mErrHandler != null) {
-                string = "javascript:" + this.mErrHandler + "('" + n + "')";
+                final String string = "javascript:" + this.mErrHandler + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
                 this.mWebView.loadUrl(string);
                 this.mErrHandler = null;
@@ -154,9 +162,9 @@ public class SignupActivity extends AccountActivity
     }
     
     private void setUpSignInView(final ServiceManager serviceManager) {
-        this.setContentView(2130903165);
-        this.mWebView = (WebView)this.findViewById(2131165593);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131165513);
+        this.setContentView(2130903179);
+        this.mWebView = (WebView)this.findViewById(2131165631);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131165533);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();
@@ -224,14 +232,16 @@ public class SignupActivity extends AccountActivity
     protected ManagerStatusListener createManagerStatusListener() {
         return new ManagerStatusListener() {
             @Override
-            public void onManagerReady(final ServiceManager serviceManager, final int n) {
-                Log.d("SignupActivity", "ServiceManager ready: " + n);
+            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
+                if (Log.isLoggable("SignupActivity", 6)) {
+                    Log.d("SignupActivity", "ServiceManager ready: " + status.getStatusCode());
+                }
                 ThreadUtils.assertOnMain();
                 SignupActivity.this.setUpSignInView(serviceManager);
             }
             
             @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
+            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
                 Log.e("SignupActivity", "NetflixService is NOT available!");
             }
         };
@@ -250,29 +260,29 @@ public class SignupActivity extends AccountActivity
         return IClientLogging.ModalView.nmLanding;
     }
     
-    @Override
-    protected void handleProfileReadyToSelect() {
-        Log.i("SignupActivity", "New profile requested - starting profile selection activity...");
-        this.startActivity(ProfileSelectionActivity.createStartIntent(this));
-        AccountActivity.finishAllAccountActivities((Context)this);
-    }
-    
-    @Override
-    public void onBackPressed() {
+    public boolean handleBackPressed() {
         if (this.mWebView == null || !this.mWebView.canGoBackOrForward(-1)) {
-            super.onBackPressed();
-            return;
+            return false;
         }
         if (!this.mWebView.canGoBackOrForward(-2) && this.mSignupMenuItem) {
             this.mWebView.goBack();
-            return;
         }
-        this.provideTwoButtonDialog(this.getString(2131493277), new Runnable() {
-            @Override
-            public void run() {
-                SignupActivity.this.reloadSignUp(false);
-            }
-        });
+        else {
+            this.provideTwoButtonDialog(this.getString(2131493277), new Runnable() {
+                @Override
+                public void run() {
+                    SignupActivity.this.reloadSignUp(false);
+                }
+            });
+        }
+        return true;
+    }
+    
+    @Override
+    protected void handleProfileReadyToSelect() {
+        Log.i("SignupActivity", "New profile requested - starting profile selection activity...");
+        this.startActivity(ProfileSelectionActivity.createStartIntent((Context)this));
+        AccountActivity.finishAllAccountActivities((Context)this);
     }
     
     @Override
@@ -282,8 +292,8 @@ public class SignupActivity extends AccountActivity
         this.getNetflixActionBar().setBackgroundResource(2130837597);
     }
     
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
+    public void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
+        super.onCreateOptionsMenu(menu, menu2);
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
             menuItem = menu.add((CharSequence)this.getString(2131493184));
@@ -313,7 +323,6 @@ public class SignupActivity extends AccountActivity
                 actionView.requestFocus();
             }
         }
-        return super.onCreateOptionsMenu(menu);
     }
     
     @Override
@@ -328,6 +337,11 @@ public class SignupActivity extends AccountActivity
     
     void provideTwoButtonDialog(final String s, final Runnable runnable) {
         this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, (AlertDialogFactory.AlertDialogDescriptor)new AlertDialogFactory.TwoButtonAlertDialogDescriptor(null, s, this.getString(17039370), runnable, this.getString(17039360), null)));
+    }
+    
+    @Override
+    protected boolean showAboutInMenu() {
+        return false;
     }
     
     void showToast(final String s) {

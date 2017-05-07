@@ -84,10 +84,10 @@ final class EnhancedSubtitleManager implements SubtitleManager
             throw new IllegalArgumentException("Player screen is not initialized!");
         }
         if (this.mActivity.isTablet()) {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361907);
+            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361921);
         }
         else {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361906);
+            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361920);
         }
         this.createDefaults();
         this.mHorizontalRegionPadding = AndroidUtils.dipToPixels((Context)mActivity, 5);
@@ -262,7 +262,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
         Log.v("nf_subtitles_render", "Create handler.");
         this.mHandler = new Handler();
         Log.v("nf_subtitles_render", "Find root display area");
-        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131165518);
+        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131165538);
         if (this.mDisplayArea == null) {
             Log.e("nf_subtitles_render", "Display area NOT found! This should NOT happen!");
             return;

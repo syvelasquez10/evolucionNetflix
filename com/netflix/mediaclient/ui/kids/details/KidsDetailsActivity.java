@@ -11,9 +11,10 @@ import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import android.app.Fragment;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
@@ -29,13 +30,13 @@ public class KidsDetailsActivity extends FragmentHostActivity implements PlayCon
     protected ManagerStatusListener createManagerStatusListener() {
         return new ManagerStatusListener() {
             @Override
-            public void onManagerReady(final ServiceManager serviceManager, final int n) {
-                ((ManagerStatusListener)KidsDetailsActivity.this.getPrimaryFrag()).onManagerReady(serviceManager, n);
+            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
+                ((ManagerStatusListener)KidsDetailsActivity.this.getPrimaryFrag()).onManagerReady(serviceManager, status);
             }
             
             @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
-                ((ManagerStatusListener)KidsDetailsActivity.this.getPrimaryFrag()).onManagerUnavailable(serviceManager, n);
+            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
+                ((ManagerStatusListener)KidsDetailsActivity.this.getPrimaryFrag()).onManagerUnavailable(serviceManager, status);
             }
         };
     }
@@ -59,7 +60,7 @@ public class KidsDetailsActivity extends FragmentHostActivity implements PlayCon
     }
     
     @Override
-    protected DataContext getDataContext() {
+    public DataContext getDataContext() {
         return new DataContext(this.playContext, this.videoId);
     }
     

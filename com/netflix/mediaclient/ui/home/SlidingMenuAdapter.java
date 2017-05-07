@@ -4,14 +4,17 @@
 
 package com.netflix.mediaclient.ui.home;
 
+import com.netflix.mediaclient.util.StringUtils;
 import android.widget.BaseAdapter;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
-import com.netflix.mediaclient.servicemgr.UserProfile;
+import com.netflix.mediaclient.service.webclient.model.leafs.ListOfGenreSummary;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
+import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
-import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
@@ -19,11 +22,11 @@ import android.view.ViewStub;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.GenreList;
 import java.util.List;
 import android.view.ViewGroup;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.widget.AdapterView;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import android.content.Intent;
 import android.widget.ImageView;
@@ -38,10 +41,14 @@ import com.netflix.mediaclient.android.widget.ErrorWrapper;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import android.annotation.SuppressLint;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 
+@SuppressLint({ "InflateParams" })
 public class SlidingMenuAdapter implements ManagerStatusListener
 {
+    private static final GenreList HOME_LOLOMO;
     private static final String TAG = "SlidingMenuAdapter";
     protected final NetflixActivity activity;
     private GenresListAdapter adapter;
@@ -49,6 +56,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
     private final DrawerLayout drawerLayout;
     private final ErrorWrapper.Callback errorCallback;
     protected final TextView home;
+    private final View homeRow;
     private final LoadingAndErrorWrapper leWrapper;
     private final ListView list;
     private ServiceManager manager;
@@ -58,7 +66,12 @@ public class SlidingMenuAdapter implements ManagerStatusListener
     private final AdvancedImageView profileImg;
     private final TextView profileName;
     protected final View profilesGroup;
+    private GenreList selectedGenre;
     private final ImageView switchProfilesIcon;
+    
+    static {
+        HOME_LOLOMO = new DummyGenreList();
+    }
     
     public SlidingMenuAdapter(final NetflixActivity activity, final DrawerLayout drawerLayout) {
         this.errorCallback = new ErrorWrapper.Callback() {
@@ -77,7 +90,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
         };
         this.onSwitchProfileClickListener = (View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
-                SlidingMenuAdapter.this.activity.startActivity(ProfileSelectionActivity.createStartIntent(SlidingMenuAdapter.this.activity));
+                SlidingMenuAdapter.this.activity.startActivity(ProfileSelectionActivity.createStartIntent((Context)SlidingMenuAdapter.this.activity));
             }
         };
         this.onRowClickListener = (AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
@@ -87,18 +100,20 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             }
         };
         this.activity = activity;
-        (this.content = drawerLayout.findViewById(2131165370)).setPadding(this.content.getPaddingLeft(), activity.getActionBarHeight(), this.content.getPaddingRight(), this.content.getPaddingBottom());
-        this.content.setOnClickListener((View$OnClickListener)null);
+        (this.content = drawerLayout.findViewById(2131165390)).setOnClickListener((View$OnClickListener)null);
+        ViewUtils.setPaddingTop(this.content, activity.getActionBarHeight());
         this.leWrapper = new LoadingAndErrorWrapper(this.content, this.errorCallback);
-        (this.profilesGroup = this.content.findViewById(2131165371)).setOnClickListener(this.onSwitchProfileClickListener);
-        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131165372);
-        this.profileName = (TextView)this.content.findViewById(2131165374);
-        (this.profileImg = (AdvancedImageView)this.content.findViewById(2131165373)).setPressedStateHandlerEnabled(false);
-        final View inflate = activity.getLayoutInflater().inflate(2130903089, (ViewGroup)null);
-        (this.home = (TextView)inflate.findViewById(2131165377)).setText(2131493181);
-        this.home.setOnClickListener(this.onHomeClickListener);
-        (this.list = (ListView)this.content.findViewById(2131165376)).setFocusable(false);
-        this.list.addHeaderView(inflate, (Object)null, false);
+        (this.profilesGroup = this.content.findViewById(2131165391)).setOnClickListener(this.onSwitchProfileClickListener);
+        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131165392);
+        this.profileName = (TextView)this.content.findViewById(2131165394);
+        (this.profileImg = (AdvancedImageView)this.content.findViewById(2131165393)).setPressedStateHandlerEnabled(false);
+        this.homeRow = activity.getLayoutInflater().inflate(2130903097, (ViewGroup)null);
+        (this.home = (TextView)this.homeRow.findViewById(2131165397)).setText(2131493181);
+        this.homeRow.setOnClickListener(this.onHomeClickListener);
+        this.homeRow.setTag((Object)new Holder(this.home, this.homeRow.findViewById(2131165398)));
+        this.setSelectedGenre(SlidingMenuAdapter.HOME_LOLOMO);
+        (this.list = (ListView)this.content.findViewById(2131165396)).setFocusable(false);
+        this.list.addHeaderView(this.homeRow, (Object)null, false);
         this.drawerLayout = drawerLayout;
         this.fetchGenresDataIfReady();
     }
@@ -112,7 +127,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             return;
         }
         Log.v("SlidingMenuAdapter", "Fetching genres list...");
-        this.manager.fetchGenreLists(new FetchGenresCallback());
+        this.manager.getBrowse().fetchGenreLists(new FetchGenresCallback());
     }
     
     private boolean managerNotReady() {
@@ -128,10 +143,10 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             return;
         }
         Log.v("SlidingMenuAdapter", "Showing 'switch to kids' menu item in sliding menu");
-        final TextView textView = (TextView)((ViewStub)this.content.findViewById(2131165375)).inflate().findViewById(2131165377);
-        textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361886)));
-        textView.setBackgroundResource(2130837845);
-        textView.setCompoundDrawablesWithIntrinsicBounds(2130837725, 0, 0, 0);
+        final TextView textView = (TextView)((ViewStub)this.content.findViewById(2131165395)).inflate().findViewById(2131165397);
+        textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361884)));
+        textView.setBackgroundResource(2130837860);
+        textView.setCompoundDrawablesWithIntrinsicBounds(2130837733, 0, 0, 0);
         textView.setCompoundDrawablePadding(AndroidUtils.dipToPixels((Context)this.activity, 12));
         textView.setText(2131492948);
         textView.setOnClickListener((View$OnClickListener)new KidsUtils.OnSwitchToKidsClickListener(this.activity, UIViewLogging.UIViewCommandName.slidingMenuKidsEntry));
@@ -203,9 +218,16 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             imageResource = 17301535;
         }
         else {
-            imageResource = 2130837690;
+            imageResource = 2130837692;
         }
         switchProfilesIcon.setImageResource(imageResource);
+    }
+    
+    protected void applySelectionStyle(final View view) {
+        final Holder holder = (Holder)view.getTag();
+        ViewUtils.setTextViewToBold(holder.tv);
+        holder.tv.setBackgroundResource(2130837873);
+        holder.selectionIndicator.setVisibility(0);
     }
     
     public void onActivityResume() {
@@ -213,7 +235,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
     }
     
     @Override
-    public void onManagerReady(final ServiceManager manager, final int n) {
+    public void onManagerReady(final ServiceManager manager, final Status status) {
         this.manager = manager;
         this.setupSwitchToKids();
         this.fetchGenresDataIfReady();
@@ -221,7 +243,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
     }
     
     @Override
-    public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
+    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
         this.manager = null;
     }
     
@@ -230,21 +252,55 @@ public class SlidingMenuAdapter implements ManagerStatusListener
         this.fetchGenresDataIfReady();
     }
     
+    protected void removeSelectionStyle(final View view) {
+        final Holder holder = (Holder)view.getTag();
+        ViewUtils.setTextViewToNormal(holder.tv);
+        holder.tv.setBackgroundResource(2130837872);
+        holder.selectionIndicator.setVisibility(8);
+    }
+    
+    public void setSelectedGenre(final GenreList selectedGenre) {
+        if (Log.isLoggable("SlidingMenuAdapter", 2)) {
+            if (selectedGenre == null) {
+                Log.v("SlidingMenuAdapter", "Selected genre is null so selecting home lolomo");
+            }
+            else if (selectedGenre == SlidingMenuAdapter.HOME_LOLOMO) {
+                Log.v("SlidingMenuAdapter", "Setting selected genre to home lolomo");
+            }
+            else {
+                Log.v("SlidingMenuAdapter", "Setting selected genre: " + selectedGenre.getTitle() + ", id: " + selectedGenre.getId());
+            }
+        }
+        if (selectedGenre == null || selectedGenre == SlidingMenuAdapter.HOME_LOLOMO) {
+            this.selectedGenre = SlidingMenuAdapter.HOME_LOLOMO;
+            this.applySelectionStyle(this.homeRow);
+        }
+        else {
+            this.selectedGenre = selectedGenre;
+            this.removeSelectionStyle(this.homeRow);
+        }
+        if (this.adapter != null) {
+            this.adapter.notifyDataSetChanged();
+        }
+    }
+    
     protected boolean shouldShowChangeProfilesItem() {
-        boolean b = true;
-        final List<? extends UserProfile> allProfiles = this.manager.getAllProfiles();
-        if (allProfiles == null) {
+        if (this.manager.getAllProfiles() == null) {
             Log.w("SlidingMenuAdapter", "No profiles found for user!");
             return false;
         }
-        if (allProfiles.size() <= 1) {
-            b = false;
-        }
-        return b;
+        return true;
     }
     
     protected void updateAdapterViews(final Holder holder, final GenreList list) {
         holder.tv.setText((CharSequence)list.getTitle());
+    }
+    
+    private static class DummyGenreList extends ListOfGenreSummary
+    {
+        public DummyGenreList() {
+            super(0, 0, 0, "", "", "", false, "");
+        }
     }
     
     private class FetchGenresCallback extends LoggingManagerCallback
@@ -254,9 +310,9 @@ public class SlidingMenuAdapter implements ManagerStatusListener
         }
         
         @Override
-        public void onGenreListsFetched(final List<GenreList> list, final int n) {
-            super.onGenreListsFetched(list, n);
-            if (n != 0) {
+        public void onGenreListsFetched(final List<GenreList> list, final Status status) {
+            super.onGenreListsFetched(list, status);
+            if (status.isError()) {
                 Log.w("SlidingMenuAdapter", "Invalid status code");
                 SlidingMenuAdapter.this.showErrorView();
                 return;
@@ -293,20 +349,29 @@ public class SlidingMenuAdapter implements ManagerStatusListener
         public View getView(final int n, final View view, final ViewGroup viewGroup) {
             View inflate = view;
             if (view == null) {
-                inflate = SlidingMenuAdapter.this.activity.getLayoutInflater().inflate(2130903089, (ViewGroup)null);
-                inflate.setTag((Object)new Holder((TextView)inflate.findViewById(2131165377)));
+                inflate = SlidingMenuAdapter.this.activity.getLayoutInflater().inflate(2130903097, (ViewGroup)null);
+                inflate.setTag((Object)new Holder((TextView)inflate.findViewById(2131165397), inflate.findViewById(2131165398)));
             }
-            SlidingMenuAdapter.this.updateAdapterViews((Holder)inflate.getTag(), this.getItem(n));
+            final Holder holder = (Holder)inflate.getTag();
+            final GenreList item = this.getItem(n);
+            SlidingMenuAdapter.this.updateAdapterViews(holder, item);
+            if (StringUtils.isNotEmpty(item.getId()) && item.getId().equals(SlidingMenuAdapter.this.selectedGenre.getId())) {
+                SlidingMenuAdapter.this.applySelectionStyle(inflate);
+                return inflate;
+            }
+            SlidingMenuAdapter.this.removeSelectionStyle(inflate);
             return inflate;
         }
     }
     
     protected static class Holder
     {
+        public final View selectionIndicator;
         public final TextView tv;
         
-        public Holder(final TextView tv) {
+        public Holder(final TextView tv, final View selectionIndicator) {
             this.tv = tv;
+            this.selectionIndicator = selectionIndicator;
         }
     }
 }

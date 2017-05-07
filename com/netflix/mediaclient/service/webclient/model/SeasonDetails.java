@@ -5,11 +5,11 @@
 package com.netflix.mediaclient.service.webclient.model;
 
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.branches.Season;
 
-public class SeasonDetails implements com.netflix.mediaclient.servicemgr.SeasonDetails
+public class SeasonDetails implements com.netflix.mediaclient.servicemgr.model.details.SeasonDetails
 {
     public Season.Detail detail;
     

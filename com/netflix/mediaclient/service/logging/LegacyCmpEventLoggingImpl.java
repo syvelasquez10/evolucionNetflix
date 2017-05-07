@@ -8,7 +8,7 @@ import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.service.logging.cmpevents.legacy.NotificationFeedback;
 import com.netflix.mediaclient.service.pushnotification.UserFeedbackOnReceivedPushNotification;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.servicemgr.UserProfile;
+import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.Log;
@@ -64,6 +64,6 @@ public final class LegacyCmpEventLoggingImpl implements CmpEventLogging
         final NotificationFeedback notificationFeedback = new NotificationFeedback(this.mContext, messageData, userFeedbackOnReceivedPushNotification, this.getUserData());
         Log.d("nf_log", "Execute feedback beacon...");
         new BackgroundTask().execute(notificationFeedback);
-        Log.d("nf_log", "Beacon send in background");
+        Log.d("nf_log", "reportUserFeedbackOnReceivedPushNotification - Beacon send in background");
     }
 }

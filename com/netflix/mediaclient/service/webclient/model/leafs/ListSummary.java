@@ -10,7 +10,7 @@ public class ListSummary
 {
     private int length;
     
-    protected ListSummary(final int length) {
+    public ListSummary(final int length) {
         this.length = length;
     }
     

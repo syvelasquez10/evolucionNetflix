@@ -5,9 +5,10 @@
 package com.netflix.mediaclient.ui.mdx;
 
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import android.text.TextUtils;
-import com.netflix.mediaclient.servicemgr.PostPlayVideo;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
@@ -37,6 +38,7 @@ public final class MdxReceiver extends BroadcastReceiver
     }
     
     private void cancelPin() {
+        Log.d("nf_pin", "cancelPin on PIN_VERIFICATION_NOT_REQUIRED");
         PinVerifier.getInstance().dismissPinVerification();
     }
     
@@ -47,7 +49,7 @@ public final class MdxReceiver extends BroadcastReceiver
     private void showFirstEpisodeInNextSeries(final MdxPostplayState mdxPostplayState) {
         final WebApiUtils.VideoIds videoIds = this.mActivity.getServiceManager().getMdx().getVideoIds();
         if (videoIds != null && videoIds.episodeId > 0) {
-            this.mActivity.getServiceManager().fetchPostPlayVideos(String.valueOf(videoIds.episodeId), new FetchNextSeriesEpisodeVideoDetailsForMdxCallback("nf_mdx", this.mActivity));
+            this.mActivity.getServiceManager().getBrowse().fetchPostPlayVideos(String.valueOf(videoIds.episodeId), new FetchNextSeriesEpisodeVideoDetailsForMdxCallback("nf_mdx", this.mActivity));
         }
     }
     
@@ -67,12 +69,14 @@ public final class MdxReceiver extends BroadcastReceiver
     private void showNextEpisodeInSeries(final MdxPostplayState mdxPostplayState) {
         final WebApiUtils.VideoIds videoIdsPostplay = ((MdxAgent)this.mActivity.getServiceManager().getMdx()).getVideoIdsPostplay();
         if (videoIdsPostplay != null && videoIdsPostplay.episodeId > 0) {
-            this.mActivity.getServiceManager().fetchEpisodeDetails(String.valueOf(videoIdsPostplay.episodeId), new FetchPostPlayForPlaybackCallback("nf_mdx", this.mActivity));
+            this.mActivity.getServiceManager().getBrowse().fetchEpisodeDetails(String.valueOf(videoIdsPostplay.episodeId), new FetchPostPlayForPlaybackCallback("nf_mdx", this.mActivity));
         }
     }
     
     private void verifyPinAndNotify(final Intent intent) {
-        PinVerifier.getInstance().verify(this.mActivity, true, new PinDialogVault(PinDialogVault.PinInvokedFrom.MDX.getValue(), intent.getExtras().getString("uuid")));
+        final String string = intent.getExtras().getString("uuid");
+        Log.d("nf_pin", "verifyPinAndNotify on PIN_VERIFICATION_SHOW");
+        PinVerifier.getInstance().verify(this.mActivity, true, new PinDialogVault(PinDialogVault.PinInvokedFrom.MDX.getValue(), string));
     }
     
     public IntentFilter getFilter() {
@@ -155,12 +159,12 @@ public final class MdxReceiver extends BroadcastReceiver
         }
         
         @Override
-        public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final int n) {
-            super.onPostPlayVideosFetched(list, n);
-            if (!this.processed && this.mActivity != null && n == 0 && list.size() > 0) {
+        public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final Status status) {
+            super.onPostPlayVideosFetched(list, status);
+            if (!this.processed && this.mActivity != null && status.isSucces() && list.size() > 0) {
                 final String id = list.get(0).getId();
                 if (!TextUtils.isEmpty((CharSequence)id)) {
-                    this.mActivity.getServiceManager().fetchEpisodeDetails(id, new FetchPostPlayForPlaybackCallback("nf_mdx", this.mActivity));
+                    this.mActivity.getServiceManager().getBrowse().fetchEpisodeDetails(id, new FetchPostPlayForPlaybackCallback("nf_mdx", this.mActivity));
                     this.processed = true;
                 }
             }
@@ -179,9 +183,9 @@ public final class MdxReceiver extends BroadcastReceiver
         }
         
         @Override
-        public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final int n) {
-            super.onEpisodeDetailsFetched(episodeDetails, n);
-            if (n == 0 && episodeDetails != null && !this.processed) {
+        public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
+            super.onEpisodeDetailsFetched(episodeDetails, status);
+            if (status.isSucces() && episodeDetails != null && !this.processed) {
                 MDXControllerActivity.showMDXController(this.mActivity, episodeDetails.getId(), PlayContext.DFLT_MDX_CONTEXT);
                 this.processed = true;
             }

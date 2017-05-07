@@ -18,6 +18,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_AD_ID_TIMESTAMP = "advertisement_id_ts";
     public static final String PREFERENCE_APM_USER_SESSION_TIMEOUT_OVERRIDE = "apm_user_session_timeout_duration_override";
     public static final String PREFERENCE_BITRATE_CAP = "nflx_bitrate_cap";
+    public static final String PREFERENCE_BREADCRUMB_LOGGING_CONFIGURATION = "breadcrumb_log_configuration";
     public static final String PREFERENCE_CL_CONFIGURATION = "cl_configuration";
     public static final String PREFERENCE_DEVICE_CATEGORY = "nf_device_category";
     public static final String PREFERENCE_DISABLE_MDX = "disable_mdx";
@@ -28,7 +29,9 @@ public interface PreferenceKeys
     public static final String PREFERENCE_DRM_KCE_KEY_ID = "nf_drm_kce_key_id";
     public static final String PREFERENCE_DRM_KCH_KEY_ID = "nf_drm_kch_key_id";
     public static final String PREFERENCE_DRM_SYSTEM_ID = "nf_drm_system_id";
+    public static final String PREFERENCE_ERROR_LOGGING_CONFIGURATION = "error_log_configuration";
     public static final String PREFERENCE_FIRST_APPLICATION_START_AFTER_INSTALLATION = "nf_first_start_after_install";
+    public static final String PREFERENCE_GCM_BROWSE_EVENT_RATE_LIMIT = "gcm_browse_rate_limit";
     public static final String PREFERENCE_HARDWARE_ACCELERATION = "nflx_hardwarer_acc";
     public static final String PREFERENCE_IMAGE_PREF = "image_pref";
     public static final String PREFERENCE_IP_CONNECTIVITY_POLICY_OVERRIDE = "ip_connectivity_policy_overide";
@@ -51,6 +54,8 @@ public interface PreferenceKeys
     public static final String PREFERENCE_USERAGENT_ESNMIGRATION_FLAGS = "useragent_esnmigration_flags";
     public static final String PREFERENCE_USERAGENT_PROFILE_MAP = "useragent_profilemap";
     public static final String PREFERENCE_USER_LOGGED_IN = "nf_user_status_loggedin";
+    public static final String PREFERENCE_USER_SELECTED_A_PROFILE = "user_profile_was_selected";
+    public static final String PREFERENCE_VIDEO_RESOLUTION_OVERRIDE = "video_resolution_override";
     public static final String PREFERENCE_WARN_WHEN_PLAY_ON_NOWIFI = "nf_play_no_wifi_warning";
     public static final String PREFERENCE__PLAYEROVERLAY = "ui.playeroverlay";
     public static final String UI_LOADING_WORKFLOW_TYPE = "ui_loading_workflow_type";

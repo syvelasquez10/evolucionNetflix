@@ -7,7 +7,7 @@ package com.netflix.mediaclient.service.logging;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.EventQueue;
 import com.netflix.mediaclient.servicemgr.UiLocation;
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebClientFactory;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebCallback;
 import com.netflix.mediaclient.service.logging.presentation.PresentationRequest;

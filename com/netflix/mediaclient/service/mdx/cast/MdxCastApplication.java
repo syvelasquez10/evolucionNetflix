@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
 import com.google.android.gms.cast.ApplicationMetadata;
-import com.netflix.mediaclient.Log;
 import com.google.android.gms.common.api.ResultCallback;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.Log;
 import com.google.android.gms.cast.CastDevice;
 import android.content.Context;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,7 +37,12 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
         this.mApplicationId = mApplicationId;
         this.mCallback = mCallback;
         this.mForceLaunch = mForceLaunch;
-        (this.mApiClient = new GoogleApiClient.Builder(context).addApi(Cast.API, Cast.CastOptions.builder(castDevice, this).build()).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()).connect();
+        final Cast.CastOptions.Builder builder = Cast.CastOptions.builder(castDevice, this);
+        if (Log.isLoggable(MdxCastApplication.TAG, 3)) {
+            Log.d(MdxCastApplication.TAG, "CastOptions.Builder setVerboseLoggingEnabled(true)");
+            builder.setVerboseLoggingEnabled(true);
+        }
+        (this.mApiClient = new GoogleApiClient.Builder(context).addApi(Cast.API, builder.build()).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()).connect();
     }
     
     private boolean isNetflixRunning() {

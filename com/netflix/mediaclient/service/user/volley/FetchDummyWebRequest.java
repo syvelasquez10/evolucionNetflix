@@ -4,12 +4,14 @@
 
 package com.netflix.mediaclient.service.user.volley;
 
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
@@ -20,8 +22,8 @@ public class FetchDummyWebRequest extends FalcorVolleyWebClientRequest<String>
     private final String pqlQuery;
     private final UserAgentWebCallback responseCallback;
     
-    public FetchDummyWebRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final UserAgentWebCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchDummyWebRequest(final Context context, final UserAgentWebCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.pqlQuery = new StringBuilder("['dummy']").toString();
         if (Log.isLoggable("nf_service_user_fetchdummywebrequest", 2)) {
@@ -35,23 +37,22 @@ public class FetchDummyWebRequest extends FalcorVolleyWebClientRequest<String>
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onDummyWebCallDone(n);
+            this.responseCallback.onDummyWebCallDone(status);
         }
     }
     
     @Override
     protected void onSuccess(final String s) {
         if (this.responseCallback != null) {
-            this.responseCallback.onDummyWebCallDone(0);
+            this.responseCallback.onDummyWebCallDone(CommonStatus.OK);
         }
     }
     
     @Override
     protected String parseFalcorResponse(final String s) throws FalcorParseException, FalcorServerException {
-        if (Log.isLoggable("nf_service_user_fetchdummywebrequest", 2)) {}
-        return Integer.toString(0);
+        return Integer.toString(StatusCode.OK.getValue());
     }
     
     @Override

@@ -4,13 +4,15 @@
 
 package com.netflix.mediaclient.service.browse;
 
-import com.netflix.mediaclient.servicemgr.ProfileType;
-import com.netflix.mediaclient.servicemgr.Video;
-import com.netflix.mediaclient.servicemgr.LoMo;
+import com.netflix.mediaclient.servicemgr.model.user.ProfileType;
+import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
 
 public interface BrowseWebClient
 {
     void addToQueue(final String p0, final int p1, final int p2, final int p3, final boolean p4, final BrowseAgentCallback p5);
+    
+    void fetchBBVideos(final LoMo p0, final int p1, final int p2, final BrowseAgentCallback p3);
     
     void fetchCWVideos(final int p0, final int p1, final BrowseAgentCallback p2);
     
@@ -30,7 +32,7 @@ public interface BrowseWebClient
     
     void fetchLoLoMoSummary(final String p0, final BrowseAgentCallback p1);
     
-    void fetchLoMos(final String p0, final int p1, final int p2, final BrowseAgentCallback p3);
+    void fetchLoMos(final int p0, final int p1, final BrowseAgentCallback p2);
     
     void fetchMovieDetails(final String p0, final BrowseAgentCallback p1);
     
@@ -44,7 +46,7 @@ public interface BrowseWebClient
     
     void fetchSimilarVideosForPerson(final String p0, final int p1, final BrowseAgentCallback p2);
     
-    void fetchSimilarVideosForQuerySuggestion(final String p0, final int p1, final BrowseAgentCallback p2);
+    void fetchSimilarVideosForQuerySuggestion(final String p0, final int p1, final BrowseAgentCallback p2, final String p3);
     
     void fetchVideos(final LoMo p0, final int p1, final int p2, final BrowseAgentCallback p3);
     
@@ -56,7 +58,7 @@ public interface BrowseWebClient
     
     void prefetchGenreLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final BrowseAgentCallback p5);
     
-    void prefetchLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final int p5, final int p6, final boolean p7, final BrowseAgentCallback p8);
+    void prefetchLoLoMo(final String p0, final int p1, final int p2, final int p3, final int p4, final boolean p5, final BrowseAgentCallback p6);
     
     void refreshCWList(final int p0, final int p1, final BrowseAgentCallback p2);
     

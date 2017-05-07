@@ -4,17 +4,22 @@
 
 package com.netflix.mediaclient.protocol.nflx;
 
-import com.netflix.mediaclient.servicemgr.MovieDetails;
-import com.netflix.mediaclient.servicemgr.EpisodeDetails;
-import com.netflix.mediaclient.servicemgr.GenreList;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfGenreSummary;
-import com.netflix.mediaclient.servicemgr.LoLoMo;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.model.LoLoMo;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 import com.netflix.mediaclient.util.DataUtil;
 import android.net.Uri;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.service.logging.apm.model.Display;
+import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
+import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.pushnotification.UserFeedbackOnReceivedPushNotification;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
+import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -26,14 +31,12 @@ import java.util.HashMap;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.util.MdxUtils;
 import com.netflix.mediaclient.ui.search.SearchActivity;
-import android.content.Context;
-import com.netflix.mediaclient.util.LogUtils;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import java.util.Locale;
+import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.util.WebApiUtils;
 import java.security.InvalidParameterException;
 import org.json.JSONException;
@@ -46,7 +49,7 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import android.app.Activity;
-import com.netflix.mediaclient.servicemgr.Playable;
+import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -72,6 +75,7 @@ public class NflxHandler
     private static final String NFLX_PARAM_MOVIE_ID = "movieid";
     private static final String NFLX_PARAM_MOVIE_ID_MOVIE_URI_PATH_KEY = "movies/";
     private static final String NFLX_PARAM_MOVIE_ID_SERIES_URI_PATH_KEY = "series/";
+    private static final String NFLX_PARAM_PROFILE_GATE = "profileGate";
     private static final String NFLX_PARAM_QUERY = "query";
     private static final String NFLX_PARAM_TARGET_ID = "targetid";
     private static final String NFLX_PARAM_TARGET_URL = "target_url";
@@ -90,7 +94,7 @@ public class NflxHandler
                 return s.substring(lastIndex + 1);
             }
             Log.d("NflxHandler", "Check if this is simple ID");
-            if (StringUtils.isInteger(s)) {
+            if (StringUtils.isNumeric(s)) {
                 return s.trim();
             }
         }
@@ -196,35 +200,35 @@ public class NflxHandler
         return null;
     }
     
-    private VideoInfo getVideoInfo(final NetflixActivity netflixActivity, final IMdx mdx, final String s, final Map<String, String> map) {
-        final String s2 = map.get("movieid");
-        final String episodeId = this.getEpisodeId(map);
-        if (StringUtils.isNotEmpty(episodeId)) {
-            Log.d("NflxHandler", "Episode ID found, go to SDP for that episode");
-            final VideoInfo videoInfoFromMovieId = this.getVideoInfoFromMovieId(s2);
-            if (videoInfoFromMovieId != null) {
-                final VideoInfo fromEpisode = VideoInfo.createFromEpisode(videoInfoFromMovieId.getCatalogId(), episodeId);
+    private VideoInfo getVideoInfo(final NetflixActivity netflixActivity, final IMdx mdx, String episodeId, final Map<String, String> map) {
+        final String s = map.get("movieid");
+        VideoInfo videoInfoFromTinyUrl;
+        if (StringUtils.isEmpty(s)) {
+            videoInfoFromTinyUrl = this.getVideoInfoFromTinyUrl(netflixActivity, mdx, episodeId, map);
+        }
+        else {
+            final VideoInfo videoInfoFromMovieIdUri = this.getVideoInfoFromMovieIdUri(s);
+            if (videoInfoFromMovieIdUri == null && Log.isLoggable("NflxHandler", 5)) {
+                Log.w("NflxHandler", "This should NOT happen! VideoInfo object not returned for video id " + s + ". Default to regular workflow");
+            }
+            episodeId = this.getEpisodeId(map);
+            videoInfoFromTinyUrl = videoInfoFromMovieIdUri;
+            if (StringUtils.isNotEmpty(episodeId) && (videoInfoFromTinyUrl = videoInfoFromMovieIdUri) != null) {
+                final VideoInfo fromEpisode = VideoInfo.createFromEpisode(videoInfoFromMovieIdUri.getCatalogId(), episodeId);
                 if (fromEpisode != null) {
-                    if (Log.isLoggable("NflxHandler", 3)) {
-                        Log.d("NflxHandler", "VideoInfo object found for episode id " + episodeId + ". Default to SDP " + fromEpisode);
-                    }
                     return fromEpisode;
                 }
+                videoInfoFromTinyUrl = videoInfoFromMovieIdUri;
                 if (Log.isLoggable("NflxHandler", 5)) {
                     Log.w("NflxHandler", "VideoInfo object not returned for episode id " + episodeId + ". Default to show");
+                    return videoInfoFromMovieIdUri;
                 }
             }
-            else if (Log.isLoggable("NflxHandler", 5)) {
-                Log.e("NflxHandler", "This should NOT happen! VideoInfo object not returned for show id " + s2 + ". Default to regular workflow");
-            }
         }
-        if (StringUtils.isEmpty(s2)) {
-            return this.getVideoInfoFromTinyUrl(netflixActivity, mdx, s, map);
-        }
-        return this.getVideoInfoFromMovieId(s2);
+        return videoInfoFromTinyUrl;
     }
     
-    private VideoInfo getVideoInfoFromMovieId(String s) {
+    private VideoInfo getVideoInfoFromMovieIdUri(String s) {
         while (true) {
             try {
                 s = URLDecoder.decode(s, "utf-8");
@@ -381,94 +385,71 @@ public class NflxHandler
         return Response.HANDLING;
     }
     
-    private Response handleNflxParams(final NetflixActivity netflixActivity, final IMdx mdx, final IClientLogging clientLogging, final Map<String, String> map, final long n) {
+    private Response handleNflxParams(final NetflixActivity netflixActivity, final Map<String, String> map, final long n) {
         if (Log.isLoggable("NflxHandler", 2)) {
             Log.v("NflxHandler", "Params map: " + map.toString());
         }
-        Response not_HANDLING;
         if (map.size() <= 0) {
             Log.w("NflxHandler", "no params exist");
-            not_HANDLING = Response.NOT_HANDLING;
+            return Response.NOT_HANDLING;
+        }
+        if (map.get("profileGate") != null) {
+            Log.d("NflxHandler", "Profile gate is required.");
+            this.reportOnProfileGate(netflixActivity, map, n);
+            netflixActivity.startActivity(ProfileSelectionActivity.createSwitchFromDeepLinking(netflixActivity, IClientLogging.ModalView.homeScreen));
+            return Response.HANDLING;
+        }
+        Log.d("NflxHandler", "Profile gate is not required.");
+        final String s = map.get("action");
+        if (s == null) {
+            Log.w("NflxHandler", "Action is null!");
+            return Response.NOT_HANDLING;
+        }
+        final String lowerCase = s.toLowerCase(Locale.US);
+        final Response not_HANDLING = Response.NOT_HANDLING;
+        Enum<IClientLogging.ModalView> enum1 = null;
+        boolean b = false;
+        final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
+        final IMdx mdx = netflixActivity.getServiceManager().getMdx();
+        this.reportApplicationLaunchedFromDeepLinking(netflixActivity, map, lowerCase);
+        Response response;
+        if ("home".equalsIgnoreCase(lowerCase)) {
+            Log.v("NflxHandler", "handleHomeAction starts...");
+            b = true;
+            enum1 = IClientLogging.ModalView.homeScreen;
+            response = this.handleHomeAction(netflixActivity);
+        }
+        else if ("play".equalsIgnoreCase(lowerCase)) {
+            enum1 = IClientLogging.ModalView.playback;
+            response = this.handlePlayAction(netflixActivity, mdx, map);
+        }
+        else if ("view_details".equalsIgnoreCase(lowerCase)) {
+            if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
+                clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking(map.toString());
+            }
+            enum1 = IClientLogging.ModalView.movieDetails;
+            response = this.handleViewDetailsAction(netflixActivity, map);
+        }
+        else if ("g".equalsIgnoreCase(lowerCase)) {
+            b = true;
+            enum1 = IClientLogging.ModalView.browseTitles;
+            response = this.handleViewGenreAction(netflixActivity, map);
+        }
+        else if ("search".equalsIgnoreCase(lowerCase)) {
+            enum1 = IClientLogging.ModalView.search;
+            response = this.handleSearchAction(netflixActivity, map);
+        }
+        else if ("sync".equalsIgnoreCase(lowerCase)) {
+            b = true;
+            enum1 = IClientLogging.ModalView.homeScreen;
+            response = this.handleSyncAction(netflixActivity, mdx, map);
         }
         else {
-            final String s = map.get("action");
-            if (s == null) {
-                Log.w("NflxHandler", "Action is null!");
-                return Response.NOT_HANDLING;
-            }
-            final String lowerCase = s.toLowerCase(Locale.US);
-            final Response not_HANDLING2 = Response.NOT_HANDLING;
-            final IClientLogging.ModalView modalView = null;
-            final String source = this.getSource(map);
-            int n2 = 0;
-            if (clientLogging != null) {
-                if (Log.isLoggable("NflxHandler", 3)) {
-                    Log.d("NflxHandler", "Reporting that application is started from deep link. Source: " + source + ", action: " + lowerCase);
-                }
-                if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
-                    clientLogging.getCustomerEventLogging().reportApplicationLaunchedFromDeepLinking(source, lowerCase, map.toString());
-                }
-            }
-            else {
-                Log.w("NflxHandler", "Client logging is null. Unable to report deep linking start!");
-            }
-            Enum<IClientLogging.ModalView> homeScreen;
-            Response response;
-            if ("home".equalsIgnoreCase(lowerCase)) {
-                Log.v("NflxHandler", "handleHomeAction starts...");
-                n2 = 1;
-                homeScreen = IClientLogging.ModalView.homeScreen;
-                response = this.handleHomeAction(netflixActivity);
-            }
-            else if ("play".equalsIgnoreCase(lowerCase)) {
-                final IClientLogging.ModalView playback = IClientLogging.ModalView.playback;
-                response = this.handlePlayAction(netflixActivity, mdx, map);
-                homeScreen = playback;
-            }
-            else if ("view_details".equalsIgnoreCase(lowerCase)) {
-                if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
-                    clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking(map.toString());
-                }
-                final IClientLogging.ModalView movieDetails = IClientLogging.ModalView.movieDetails;
-                final Response handleViewDetailsAction = this.handleViewDetailsAction(netflixActivity, map);
-                homeScreen = movieDetails;
-                response = handleViewDetailsAction;
-            }
-            else if ("g".equalsIgnoreCase(lowerCase)) {
-                n2 = 1;
-                final IClientLogging.ModalView browseTitles = IClientLogging.ModalView.browseTitles;
-                final Response handleViewGenreAction = this.handleViewGenreAction(netflixActivity, map);
-                homeScreen = browseTitles;
-                response = handleViewGenreAction;
-            }
-            else if ("search".equalsIgnoreCase(lowerCase)) {
-                final IClientLogging.ModalView search = IClientLogging.ModalView.search;
-                final Response handleSearchAction = this.handleSearchAction(netflixActivity, map);
-                homeScreen = search;
-                response = handleSearchAction;
-            }
-            else if ("sync".equalsIgnoreCase(lowerCase)) {
-                n2 = 1;
-                final IClientLogging.ModalView homeScreen2 = IClientLogging.ModalView.homeScreen;
-                response = this.handleSyncAction(netflixActivity, mdx, map);
-                homeScreen = homeScreen2;
-            }
-            else {
-                Log.w("NflxHandler", "Unknown Nflx action: " + lowerCase);
-                homeScreen = modalView;
-                response = not_HANDLING2;
-            }
-            not_HANDLING = response;
-            if (clientLogging != null && (response == Response.HANDLING || (not_HANDLING = response) == Response.HANDLING_WITH_DELAY)) {
-                clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.externalControlProtocol, (IClientLogging.ModalView)homeScreen, n, LogUtils.getDisplay((Context)netflixActivity));
-                not_HANDLING = response;
-                if (n2 != 0) {
-                    clientLogging.getApplicationPerformanceMetricsLogging().startUiBrowseStartupSession(n);
-                    return response;
-                }
-            }
+            Log.w("NflxHandler", "Unknown Nflx action: " + lowerCase);
+            response = not_HANDLING;
         }
-        return not_HANDLING;
+        this.reportUiSessions(netflixActivity, response, b, (IClientLogging.ModalView)enum1, n);
+        return response;
     }
     
     private Response handlePlayAction(final NetflixActivity netflixActivity, final IMdx mdx, final Map<String, String> map) {
@@ -484,10 +465,10 @@ public class NflxHandler
             return Response.HANDLING_WITH_DELAY;
         }
         if (videoInfo != null) {
-            Log.v("NflxHandler", "handlePlayAction ends, handling.");
+            Log.v("NflxHandler", "handlePlayAction, handling.");
             final VideoType videoType = videoInfo.getVideoType();
-            if (videoType == VideoType.MOVIE) {
-                this.playVideo(netflixActivity, mdx, videoInfo.getCatalogId(), VideoType.MOVIE, justUuid, map.get("trkid"));
+            if (videoType == VideoType.MOVIE || videoType == VideoType.SHOW) {
+                this.playVideo(netflixActivity, mdx, videoInfo.getCatalogId(), videoType, justUuid, map.get("trkid"));
                 return Response.HANDLING_WITH_DELAY;
             }
             if (videoType == VideoType.EPISODE) {
@@ -576,7 +557,7 @@ public class NflxHandler
         }
     }
     
-    private Response handleUriParams(final NetflixActivity netflixActivity, final IMdx mdx, final IClientLogging clientLogging, final String s, final long n) {
+    private Response handleUriParams(final NetflixActivity netflixActivity, final String s, final long n) {
         if (Log.isLoggable("NflxHandler", 2)) {
             Log.v("NflxHandler", "nflx params string: " + s);
         }
@@ -592,7 +573,7 @@ public class NflxHandler
                 hashMap.put(s2.substring(0, index), s2.substring(index + 1));
             }
         }
-        return this.handleNflxParams(netflixActivity, mdx, clientLogging, hashMap, n);
+        return this.handleNflxParams(netflixActivity, hashMap, n);
     }
     
     private Response handleViewDetailsAction(final NetflixActivity netflixActivity, final Map<String, String> map) {
@@ -629,7 +610,7 @@ public class NflxHandler
             Log.v("NflxHandler", "Could not find genre ID");
             return Response.NOT_HANDLING;
         }
-        netflixActivity.getServiceManager().fetchLoLoMoSummary(s, new FetchLoLoMoSummaryCallback(netflixActivity, s));
+        netflixActivity.getServiceManager().getBrowse().fetchLoLoMoSummary(s, new FetchLoLoMoSummaryCallback(netflixActivity, s));
         return Response.HANDLING_WITH_DELAY;
     }
     
@@ -659,14 +640,35 @@ public class NflxHandler
     
     private void playVideo(final NetflixActivity netflixActivity, final IMdx mdx, final String s, final VideoType videoType, final String s2, final String s3) {
         if (Log.isLoggable("NflxHandler", 2)) {
-            Log.v("NflxHandler", "Playing video: " + s);
+            Log.v("NflxHandler", String.format("Playing video: %s, videoType: %s", s, videoType));
         }
         if (VideoType.MOVIE.equals(videoType)) {
-            netflixActivity.getServiceManager().fetchMovieDetails(s, new FetchPlayableCallback(netflixActivity, s3, mdx, s2));
+            netflixActivity.getServiceManager().getBrowse().fetchMovieDetails(s, new FetchPlayableCallback(netflixActivity, s3, mdx, s2));
         }
-        else if (VideoType.EPISODE.equals(videoType)) {
-            netflixActivity.getServiceManager().fetchEpisodeDetails(s, new FetchPlayableCallback(netflixActivity, s3, mdx, s2));
+        else {
+            if (VideoType.EPISODE.equals(videoType)) {
+                netflixActivity.getServiceManager().getBrowse().fetchEpisodeDetails(s, new FetchPlayableCallback(netflixActivity, s3, mdx, s2));
+                return;
+            }
+            if (VideoType.SHOW.equals(videoType)) {
+                netflixActivity.getServiceManager().getBrowse().fetchShowDetails(s, null, new FetchPlayableCallback(netflixActivity, s3, mdx, s2));
+            }
         }
+    }
+    
+    private void reportApplicationLaunchedFromDeepLinking(final NetflixActivity netflixActivity, final Map<String, String> map, final String s) {
+        final String source = this.getSource(map);
+        final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
+        if (clientLogging != null) {
+            if (Log.isLoggable("NflxHandler", 3)) {
+                Log.d("NflxHandler", "Reporting that application is started from deep link. Source: " + source + ", action: " + s);
+            }
+            if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
+                clientLogging.getCustomerEventLogging().reportApplicationLaunchedFromDeepLinking(source, s, map.toString());
+            }
+            return;
+        }
+        Log.w("NflxHandler", "Client logging is null. Unable to report deep linking start!");
     }
     
     private void reportDelayedResponseHandled(final Activity activity) {
@@ -702,15 +704,33 @@ public class NflxHandler
         Log.e("NflxHandler", "Message guid not found, source is not push notification");
     }
     
-    public Response handleNflxIntent(final NetflixActivity netflixActivity, final ServiceManager serviceManager, final Intent intent, final long n) {
+    private void reportOnProfileGate(final NetflixActivity netflixActivity, final Map<String, String> map, final long n) {
+        final Display display = LogUtils.getDisplay((Context)netflixActivity);
+        final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
+        if (clientLogging != null) {
+            clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.touchGesture, IClientLogging.ModalView.profilesGate, n, display);
+            this.reportApplicationLaunchedFromDeepLinking(netflixActivity, map, "profileGate");
+            this.reportUiSessions(netflixActivity, Response.HANDLING, true, IClientLogging.ModalView.profilesGate, n);
+        }
+    }
+    
+    private void reportUiSessions(final NetflixActivity netflixActivity, final Response response, final boolean b, final IClientLogging.ModalView modalView, final long n) {
+        final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
+        if (clientLogging != null && (response == Response.HANDLING || response == Response.HANDLING_WITH_DELAY)) {
+            clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging.UiStartupTrigger.externalControlProtocol, modalView, n, LogUtils.getDisplay((Context)netflixActivity));
+            if (b) {
+                clientLogging.getApplicationPerformanceMetricsLogging().startUiBrowseStartupSession(n);
+            }
+        }
+    }
+    
+    public Response handleNflxIntent(final NetflixActivity netflixActivity, final Intent intent, final long n) {
         Log.d("NflxHandler", "Handle NFLX intent starts...");
         if (intent == null) {
             Log.v("NflxHandler", "null intent");
             return Response.NOT_HANDLING;
         }
-        final IMdx mdx = serviceManager.getMdx();
-        final IClientLogging clientLogging = serviceManager.getClientLogging();
-        this.reportIfSourceIsNotification(clientLogging, intent);
+        this.reportIfSourceIsNotification(netflixActivity.getServiceManager().getClientLogging(), intent);
         if (!"android.intent.action.VIEW".equalsIgnoreCase(intent.getAction())) {
             Log.v("NflxHandler", "unknown action");
             return Response.NOT_HANDLING;
@@ -720,10 +740,10 @@ public class NflxHandler
             return Response.NOT_HANDLING;
         }
         AndroidUtils.logVerboseIntentInfo("NflxHandler", intent);
-        return this.handleUri(netflixActivity, mdx, clientLogging, intent.getData(), n);
+        return this.handleUri(netflixActivity, intent.getData(), n);
     }
     
-    public Response handleUri(final NetflixActivity netflixActivity, final IMdx mdx, final IClientLogging clientLogging, final Uri uri, final long n) {
+    public Response handleUri(final NetflixActivity netflixActivity, final Uri uri, final long n) {
         DataUtil.logVerboseUriInfo("NflxHandler", uri);
         if (!"nflx".equalsIgnoreCase(uri.getScheme())) {
             Log.v("NflxHandler", "unknown scheme");
@@ -742,7 +762,7 @@ public class NflxHandler
             Log.v("NflxHandler", "no nflx params");
             return Response.NOT_HANDLING;
         }
-        return this.handleUriParams(netflixActivity, mdx, clientLogging, queryParameter, n);
+        return this.handleUriParams(netflixActivity, queryParameter, n);
     }
     
     class FetchLoLoMoSummaryCallback extends SimpleManagerCallback
@@ -756,8 +776,8 @@ public class NflxHandler
         }
         
         @Override
-        public void onLoLoMoSummaryFetched(final LoLoMo loLoMo, final int n) {
-            if (n == 0) {
+        public void onLoLoMoSummaryFetched(final LoLoMo loLoMo, final Status status) {
+            if (status.isSucces()) {
                 HomeActivity.showGenreList(this.activity, new ListOfGenreSummary(loLoMo.getNumLoMos(), -1, -1, "", loLoMo.getTitle(), this.genreId, false, loLoMo.getType().toString()));
             }
             NflxHandler.this.reportDelayedResponseHandled(this.activity);
@@ -779,17 +799,25 @@ public class NflxHandler
         }
         
         @Override
-        public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final int n) {
-            if (n == 0) {
-                NflxHandler.this.play(this.activity, this.val$mdx, episodeDetails, this.val$targetDialUuid, NflxHandler.this.getPlayContext(this.trackId));
+        public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
+            if (status.isSucces()) {
+                NflxHandler.this.play(this.activity, this.val$mdx, episodeDetails.getPlayable(), this.val$targetDialUuid, NflxHandler.this.getPlayContext(this.trackId));
             }
             NflxHandler.this.reportDelayedResponseHandled(this.activity);
         }
         
         @Override
-        public void onMovieDetailsFetched(final MovieDetails movieDetails, final int n) {
-            if (n == 0) {
-                NflxHandler.this.play(this.activity, this.val$mdx, movieDetails, this.val$targetDialUuid, NflxHandler.this.getPlayContext(this.trackId));
+        public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
+            if (status.isSucces()) {
+                NflxHandler.this.play(this.activity, this.val$mdx, movieDetails.getPlayable(), this.val$targetDialUuid, NflxHandler.this.getPlayContext(this.trackId));
+            }
+            NflxHandler.this.reportDelayedResponseHandled(this.activity);
+        }
+        
+        @Override
+        public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
+            if (status.isSucces()) {
+                NflxHandler.this.play(this.activity, this.val$mdx, showDetails.getPlayable(), this.val$targetDialUuid, NflxHandler.this.getPlayContext(this.trackId));
             }
             NflxHandler.this.reportDelayedResponseHandled(this.activity);
         }

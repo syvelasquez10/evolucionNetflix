@@ -4,14 +4,14 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import android.view.View;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.text.TextUtils;
-import com.netflix.mediaclient.servicemgr.InterestingVideoDetails;
+import com.netflix.mediaclient.servicemgr.model.details.InterestingVideoDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.Playable;
 import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -21,7 +21,7 @@ import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import android.content.Intent;
 import android.widget.TextView;
-import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 
 public final class PostPlayForMDX extends PostPlayForEpisodes
 {
@@ -69,8 +69,8 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     
     @Override
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mContext.findViewById(2131165553);
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165551);
+        this.mTargetNameView = (TextView)this.mContext.findViewById(2131165573);
+        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165571);
     }
     
     public void handleInfoButtonPress() {
@@ -78,7 +78,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
             if (this.mContext != null) {
                 this.mContext.finish();
             }
-            final Intent episodeDetailsIntent = DetailsActivity.getEpisodeDetailsIntent(this.mContext, this.episodeDetails.getParentId(), this.episodeDetails.getId(), PlayContext.NFLX_MDX_CONTEXT);
+            final Intent episodeDetailsIntent = DetailsActivity.getEpisodeDetailsIntent(this.mContext, this.episodeDetails.getPlayable().getParentId(), this.episodeDetails.getId(), PlayContext.NFLX_MDX_CONTEXT);
             episodeDetailsIntent.addFlags(67108864);
             this.mContext.startActivity(episodeDetailsIntent);
         }
@@ -87,7 +87,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void handlePlayNow(final boolean b) {
         if (this.episodeDetails != null && this.mContext != null) {
-            final Asset create = Asset.create(this.episodeDetails, PlayContext.DFLT_MDX_CONTEXT, PlayerActivity.PIN_VERIFIED);
+            final Asset create = Asset.create(this.episodeDetails.getPlayable(), PlayContext.DFLT_MDX_CONTEXT, PlayerActivity.PIN_VERIFIED);
             this.stopAllNotifications();
             MdxAgent.Utils.playVideo(this.mContext, create, true);
         }
@@ -123,7 +123,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
         this.mTimerValue = this.mContext.getResources().getInteger(2131427336);
         this.mOffset = this.mTimerValue * 1000;
         if (!TextUtils.isEmpty((CharSequence)s) && this.mContext != null && this.mContext.getServiceManager() != null) {
-            this.mContext.getServiceManager().fetchEpisodeDetails(s, new FetchPostPlayForPlaybackCallback());
+            this.mContext.getServiceManager().getBrowse().fetchEpisodeDetails(s, new FetchPostPlayForPlaybackCallback());
         }
     }
     
@@ -191,9 +191,9 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
         }
         
         @Override
-        public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final int n) {
-            super.onEpisodeDetailsFetched(episodeDetails, n);
-            if (n == 0 && episodeDetails != null) {
+        public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
+            super.onEpisodeDetailsFetched(episodeDetails, status);
+            if (status.isSucces() && episodeDetails != null) {
                 PostPlayForMDX.this.episodeDetails = episodeDetails;
                 PostPlayForMDX.this.updateViews(episodeDetails);
                 PostPlayForMDX.this.setMDXTargetName();

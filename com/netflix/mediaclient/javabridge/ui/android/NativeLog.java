@@ -14,6 +14,7 @@ import com.netflix.mediaclient.javabridge.ui.Log;
 public final class NativeLog extends NativeNrdObject implements Log
 {
     public static final String METHOD_flush = "flush";
+    public static final String METHOD_log = "log";
     public static final String METHOD_resetSessionID = "resetSessionID";
     private String mAppId;
     private ResetSessionIdCallback mSessionCallback;
@@ -81,18 +82,6 @@ public final class NativeLog extends NativeNrdObject implements Log
     }
     
     @Override
-    public void debug(final LogArguments logArguments) {
-    }
-    
-    @Override
-    public void error(final LogArguments logArguments) {
-    }
-    
-    @Override
-    public void fatal(final LogArguments logArguments) {
-    }
-    
-    @Override
     public void flush() {
         this.bridge.getNrdProxy().invokeMethod("log", "flush", null);
     }
@@ -123,7 +112,13 @@ public final class NativeLog extends NativeNrdObject implements Log
     }
     
     @Override
-    public void info(final LogArguments logArguments) {
+    public void log(final LogArguments logArguments) {
+        try {
+            this.bridge.getNrdProxy().invokeMethod("log", "log", logArguments.toJson().toString());
+        }
+        catch (JSONException ex) {
+            com.netflix.mediaclient.Log.e("nf_object", "Failed with JSON", (Throwable)ex);
+        }
     }
     
     @Override
@@ -156,13 +151,5 @@ public final class NativeLog extends NativeNrdObject implements Log
     public void resetSessionID(final ResetSessionIdCallback mSessionCallback) {
         this.mSessionCallback = mSessionCallback;
         this.bridge.getNrdProxy().invokeMethod("log", "resetSessionID", null);
-    }
-    
-    @Override
-    public void trace(final LogArguments logArguments) {
-    }
-    
-    @Override
-    public void warn(final LogArguments logArguments) {
     }
 }

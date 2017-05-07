@@ -4,22 +4,22 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.servicemgr.LoMoType;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.service.browse.cache.HardCache;
-import com.netflix.mediaclient.servicemgr.LoMo;
+import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
@@ -28,27 +28,27 @@ public class FetchLoMosRequest extends FalcorVolleyWebClientRequest<List<LoMo>>
     private static final String FIELD_LOLOMO = "lolomo";
     private static final String FIELD_LOLOMOS = "lolomos";
     private static final String TAG = "nf_service_browse_fetchlomosrequest";
+    private final BrowseWebClientCache browseCache;
     private final int fromLoMo;
-    private final HardCache hardCache;
     private final String lolomoId;
     private final boolean lolomoIdInCache;
     private final String pqlQuery;
     private final BrowseAgentCallback responseCallback;
     private final int toLoMo;
     
-    public FetchLoMosRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final HardCache hardCache, final int fromLoMo, final int toLoMo, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchLoMosRequest(final Context context, final BrowseWebClientCache browseCache, final int fromLoMo, final int toLoMo, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.fromLoMo = fromLoMo;
         this.toLoMo = toLoMo;
-        this.hardCache = hardCache;
-        this.lolomoId = BrowseAgent.getLoLoMoId(hardCache);
+        this.browseCache = browseCache;
+        this.lolomoId = browseCache.getLoLoMoId();
         this.lolomoIdInCache = (this.lolomoId != null);
         if (this.lolomoIdInCache) {
-            this.pqlQuery = "['lolomos','" + this.lolomoId + "',{'from':" + fromLoMo + ",'to':" + toLoMo + "},'summary']";
+            this.pqlQuery = String.format("['lolomos', '%s',  {'from':%d,'to':%d}, 'summary']", this.lolomoId, fromLoMo, toLoMo);
         }
         else {
-            this.pqlQuery = "['lolomo'" + ",{'from':" + fromLoMo + ",'to':" + toLoMo + "},'summary']";
+            this.pqlQuery = String.format("['lolomo', {'from':%d,'to':%d}, 'summary']", fromLoMo, toLoMo);
         }
         if (Log.isLoggable("nf_service_browse_fetchlomosrequest", 2)) {
             Log.v("nf_service_browse_fetchlomosrequest", "PQL = " + this.pqlQuery);
@@ -61,16 +61,16 @@ public class FetchLoMosRequest extends FalcorVolleyWebClientRequest<List<LoMo>>
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onLoMosFetched(Collections.emptyList(), n);
+            this.responseCallback.onLoMosFetched(Collections.emptyList(), status);
         }
     }
     
     @Override
     protected void onSuccess(final List<LoMo> list) {
         if (this.responseCallback != null) {
-            this.responseCallback.onLoMosFetched(list, 0);
+            this.responseCallback.onLoMosFetched(list, CommonStatus.OK);
         }
     }
     
@@ -88,7 +88,7 @@ public class FetchLoMosRequest extends FalcorVolleyWebClientRequest<List<LoMo>>
                     o = dataObj.getAsJsonObject("lolomo");
                 }
                 if (!this.lolomoIdInCache) {
-                    PrefetchHomeLoLoMoRequest.putLoLoMoIdInBrowseCache(this.hardCache, (JsonObject)o);
+                    PrefetchHomeLoLoMoRequest.putLoLoMoIdInBrowseCache(this.browseCache, (JsonObject)o);
                 }
                 for (int i = this.fromLoMo; i <= this.toLoMo; ++i) {
                     final String string = Integer.toString(i);
@@ -100,10 +100,10 @@ public class FetchLoMosRequest extends FalcorVolleyWebClientRequest<List<LoMo>>
                         list.add(listOfMoviesSummary);
                         if (!this.lolomoIdInCache) {
                             if (listOfMoviesSummary.getType() == LoMoType.CONTINUE_WATCHING) {
-                                PrefetchHomeLoLoMoRequest.putCWIdsInCache(this.hardCache, listOfMoviesSummary, string);
+                                this.browseCache.putCWIdsInCache(listOfMoviesSummary, string);
                             }
                             if (listOfMoviesSummary.getType() == LoMoType.INSTANT_QUEUE) {
-                                PrefetchHomeLoLoMoRequest.putIQIdsInCache(this.hardCache, listOfMoviesSummary, string);
+                                this.browseCache.putIQIdsInCache(listOfMoviesSummary, string);
                             }
                         }
                     }

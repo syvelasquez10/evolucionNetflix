@@ -15,10 +15,10 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
 import android.view.View;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.LoMoType;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import java.util.EnumMap;
 import android.support.v4.view.PagerAdapter;
 

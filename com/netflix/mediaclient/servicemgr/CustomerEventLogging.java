@@ -16,5 +16,5 @@ public interface CustomerEventLogging
     
     void reportMdpFromDeepLinking(final String p0);
     
-    void reportNotificationOptIn(final boolean p0, final String p1);
+    void reportNotificationOptIn(final boolean p0, final boolean p1, final String p2);
 }

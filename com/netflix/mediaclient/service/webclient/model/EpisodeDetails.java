@@ -6,19 +6,25 @@ package com.netflix.mediaclient.service.webclient.model;
 
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.servicemgr.FriendProfile;
+import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
 
-public class EpisodeDetails extends Episode implements com.netflix.mediaclient.servicemgr.EpisodeDetails
+public class EpisodeDetails extends Episode implements com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails, Playable
 {
     private static final String TAG = "EpisodeDetails";
     public Rating rating;
     public SocialEvidence showSocialEvidence;
     public boolean userConnectedToFacebook;
+    
+    @Override
+    public boolean canBeSharedOnFacebook() {
+        return this.userConnectedToFacebook && this.showSocialEvidence != null && !this.showSocialEvidence.isVideoHidden();
+    }
     
     @Override
     public String getActors() {
@@ -76,11 +82,6 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
     }
     
     @Override
-    public String getCreators() {
-        return null;
-    }
-    
-    @Override
     public int getEndtime() {
         if (this.detail == null) {
             return 0;
@@ -115,11 +116,6 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
     @Override
     public List<FriendProfile> getFacebookFriends() {
         return null;
-    }
-    
-    @Override
-    public boolean getFbDntShare() {
-        return this.userConnectedToFacebook && this.showSocialEvidence != null && !this.showSocialEvidence.isVideoHidden();
     }
     
     @Override
@@ -197,6 +193,11 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
             return null;
         }
         return this.detail.getShowTitle();
+    }
+    
+    @Override
+    public Playable getPlayable() {
+        return this;
     }
     
     @Override

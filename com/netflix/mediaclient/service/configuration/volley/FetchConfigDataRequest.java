@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.configuration.volley;
 
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
@@ -14,7 +16,6 @@ import com.netflix.mediaclient.service.webclient.model.leafs.AccountConfigData;
 import com.netflix.mediaclient.service.webclient.model.leafs.DeviceConfigData;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
@@ -40,8 +41,8 @@ public class FetchConfigDataRequest extends FalcorVolleyWebClientRequest<ConfigD
         streamingQoePqlDefault = String.format("['%s']", "streamingqoeDefault");
     }
     
-    public FetchConfigDataRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final ConfigurationAgentWebCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchConfigDataRequest(final Context context, final ConfigurationAgentWebCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         if (Log.isLoggable("nf_config_data", 2)) {
             Log.v("nf_config_data", "deviceConfigPql = " + FetchConfigDataRequest.deviceConfigPql);
@@ -90,16 +91,16 @@ public class FetchConfigDataRequest extends FalcorVolleyWebClientRequest<ConfigD
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onConfigDataFetched(null, n);
+            this.responseCallback.onConfigDataFetched(null, status);
         }
     }
     
     @Override
     protected void onSuccess(final ConfigData configData) {
         if (this.responseCallback != null) {
-            this.responseCallback.onConfigDataFetched(configData, 0);
+            this.responseCallback.onConfigDataFetched(configData, CommonStatus.OK);
         }
     }
     

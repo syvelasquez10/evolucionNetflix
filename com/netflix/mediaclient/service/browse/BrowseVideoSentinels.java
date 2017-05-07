@@ -5,15 +5,17 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.service.webclient.model.branches.Season;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.service.webclient.model.SeasonDetails;
 import com.netflix.mediaclient.service.webclient.model.PostPlayVideo;
 import com.netflix.mediaclient.service.webclient.model.EpisodeDetails;
 import com.netflix.mediaclient.service.webclient.model.CWVideo;
+import com.netflix.mediaclient.service.webclient.model.BillboardDetails;
 
 public class BrowseVideoSentinels
 {
+    private static final BillboardDetails bbVideoSentinel;
     private static final CWVideo cwVideoSentinel;
     private static final EpisodeDetails episodeDetailsSentinel;
     private static final PostPlayVideo postPlayVideoSentinel;
@@ -25,6 +27,7 @@ public class BrowseVideoSentinels
         episodeDetailsSentinel = new EpisodeDetails();
         seasonDetailsSentinel = new SeasonDetails();
         cwVideoSentinel = new CWVideo();
+        bbVideoSentinel = new BillboardDetails();
         postPlayVideoSentinel = new PostPlayVideo();
     }
     
@@ -33,6 +36,10 @@ public class BrowseVideoSentinels
         (BrowseVideoSentinels.episodeDetailsSentinel.summary = new Video.Summary()).setErrorType(VideoType.UNAVAILABLE);
         ((Video.Summary)(BrowseVideoSentinels.seasonDetailsSentinel.detail = new Season.Detail())).setErrorType(VideoType.UNAVAILABLE);
         (BrowseVideoSentinels.cwVideoSentinel.summary = new Video.Summary()).setErrorType(VideoType.UNAVAILABLE);
+    }
+    
+    public static BillboardDetails getUnavailableBBVideo() {
+        return BrowseVideoSentinels.bbVideoSentinel;
     }
     
     public static CWVideo getUnavailableCwVideo() {

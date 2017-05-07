@@ -17,10 +17,10 @@ import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 public class EndpointRegistryProvider implements ApiEndpointRegistry
 {
     private static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
-    private static final String ANDROID_ENDPOINT_FULL = "/android/3.7/api";
+    private static final String ANDROID_ENDPOINT_FULL = "/android/3.8/api";
     private static final boolean BROWSE_AUTO_REDIRECT_TRUE = true;
     private static final String BROWSE_RESP_AUTO_REDIRECT = "&routing=redirect";
-    private static final String BROWSE_RESP_FORMAT_FULL = "responseFormat=json&pathFormat=hierarchical&progressive=false";
+    private static final String BROWSE_RESP_FORMAT = "responseFormat=json&progressive=false";
     private static final String BROWSE_RESP_MANUAL_REDIRECT = "&routing=reject";
     private static final String CLIENT_LOGGING_ENDPOINT = "ichnaea.netflix.com";
     private static final String CLIENT_LOGGING_PATH = "/log";
@@ -39,6 +39,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String PARAM_BUILD_DISPLAY = "osDisplay";
     public static final String PARAM_CUR_NETFLIX_ID_HASH = "ckh";
     private static final String PARAM_DEBUG_BUILD = "dbg";
+    private static final String PARAM_DEVICE_MEM_LEVEL = "memLevel";
     private static final String PARAM_FORM_FACTOR = "ffbc";
     private static final String PARAM_IMG_PREFERENCE = "imgpref";
     public static final String PARAM_KOP_EXPERIENCE = "kop";
@@ -52,7 +53,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String PRESENTATION_TRACKING_ENDPOINT = "presentationtracking.netflix.com";
     private static final String PRESENTATION_TRACKING_PATH = "/users/presentationtracking";
     private static final String WEBCLIENT_ENDPOINT = "api-global.netflix.com";
-    private String mApiEndpointUrl;
+    private String mCachedEndpointUrl;
     private String mClientLogEndpointUrl;
     private ServiceAgent.ConfigurationAgentInterface mConfigAgent;
     private String mConfigEndpointUrl;
@@ -74,7 +75,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         this.mEndpointHost = "api-global.netflix.com";
     }
     
-    private StringBuilder addDynamicParams(final StringBuilder sb) {
+    private String addDynamicParams(final StringBuilder sb, final ResponsePathFormat responsePathFormat) {
         if (this.mUserAgent != null && StringUtils.isNotEmpty(this.mUserAgent.getLanguagesInCsv())) {
             sb.append(this.buildUrlParam("languages", UriUtil.urlEncodeParam(this.mUserAgent.getLanguagesInCsv())));
         }
@@ -87,7 +88,8 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
                 }
             }
         }
-        return sb;
+        sb.append(responsePathFormat.urlParams);
+        return sb.toString();
     }
     
     private String buildConfigUrl(final boolean b) {
@@ -101,7 +103,8 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         sb.append(this.mEndpointHost);
         sb.append("/android/samurai/config");
         sb.append("?");
-        sb.append("responseFormat=json&pathFormat=hierarchical&progressive=false");
+        sb.append("responseFormat=json&progressive=false");
+        sb.append(ResponsePathFormat.HIERARCHICAL.urlParams);
         String s;
         if (b) {
             s = "&routing=redirect";
@@ -128,6 +131,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         sb.append(this.buildUrlParam("api", Integer.toString(this.mDeviceModel.getApiLevel())));
         sb.append(this.buildUrlParam("mnf", UriUtil.urlEncodeParam(this.mDeviceModel.getManufacturer())));
         sb.append(this.buildUrlParam("store", AppStoreHelper.getInstallationSource(this.mContext)));
+        sb.append(this.buildUrlParam("memLevel", ConfigurationAgent.getMemLevel()));
         return sb.toString();
     }
     
@@ -151,9 +155,9 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     }
     
     @Override
-    public String getApiUrlFull() {
-        if (StringUtils.isNotEmpty(this.mApiEndpointUrl)) {
-            return this.addDynamicParams(new StringBuilder(this.mApiEndpointUrl)).toString();
+    public String getApiUrlFull(final ResponsePathFormat responsePathFormat) {
+        if (StringUtils.isNotEmpty(this.mCachedEndpointUrl)) {
+            return this.addDynamicParams(new StringBuilder(this.mCachedEndpointUrl), responsePathFormat);
         }
         final StringBuilder sb = new StringBuilder();
         if (this.isSecure()) {
@@ -163,14 +167,14 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             sb.append("http://");
         }
         sb.append(this.mEndpointHost);
-        sb.append("/android/3.7/api");
+        sb.append("/android/3.8/api");
         sb.append("?");
-        sb.append("responseFormat=json&pathFormat=hierarchical&progressive=false");
+        sb.append("responseFormat=json&progressive=false");
         sb.append("&routing=reject");
         sb.append(this.buildUrlParam("res", this.mUiResolutionType));
         sb.append(this.buildUrlParam("imgpref", this.getImagePreference()));
-        this.mApiEndpointUrl = sb.toString();
-        return this.addDynamicParams(sb).toString();
+        this.mCachedEndpointUrl = sb.toString();
+        return this.addDynamicParams(sb, responsePathFormat);
     }
     
     public String getAppStartConfigUrl() {
@@ -248,7 +252,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     @Override
     public void updateApiEndpointHost(final String mEndpointHost) {
         this.mEndpointHost = mEndpointHost;
-        this.mApiEndpointUrl = null;
+        this.mCachedEndpointUrl = null;
         this.mConfigEndpointUrl = null;
     }
 }

@@ -12,13 +12,14 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import java.util.ArrayList;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.MovieDetails;
+import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
 public class FetchMovieDetailsRequest extends FalcorVolleyWebClientRequest<MovieDetails>
@@ -34,16 +35,16 @@ public class FetchMovieDetailsRequest extends FalcorVolleyWebClientRequest<Movie
     private final int toVideo;
     private final boolean userConnectedToFacebook;
     
-    public FetchMovieDetailsRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String mMovieId, final int fromVideo, final int toVideo, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchMovieDetailsRequest(final Context context, final String mMovieId, final int fromVideo, final int toVideo, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.mMovieId = mMovieId;
         this.fromVideo = fromVideo;
         this.toVideo = toVideo;
         this.userConnectedToFacebook = userConnectedToFacebook;
-        this.pqlQuery = "['movies','" + this.mMovieId + "',['summary','detail', 'rating', 'inQueue', 'bookmark', 'socialEvidence']]";
-        this.pqlQuery2 = "['movies','" + this.mMovieId + "','similars" + "', {'to':" + toVideo + ",'from':" + fromVideo + "}, 'summary']";
-        this.pqlQuery3 = "['movies','" + this.mMovieId + "','similars', 'summary']";
+        this.pqlQuery = String.format("['movies', '%s', ['summary','detail', 'rating', 'inQueue', 'bookmark', 'socialEvidence']]", this.mMovieId);
+        this.pqlQuery2 = String.format("['movies', '%s', 'similars', {'from':%d,'to':%d}, 'summary']", this.mMovieId, fromVideo, toVideo);
+        this.pqlQuery3 = String.format("['movies', '%s', 'similars', 'summary']", this.mMovieId);
         if (Log.isLoggable("nf_service_browse_fetchmoviedetailsrequest", 2)) {
             Log.v("nf_service_browse_fetchmoviedetailsrequest", "PQL = " + this.pqlQuery + " " + this.pqlQuery2 + " " + this.pqlQuery3);
         }
@@ -55,16 +56,16 @@ public class FetchMovieDetailsRequest extends FalcorVolleyWebClientRequest<Movie
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onMovieDetailsFetched(null, n);
+            this.responseCallback.onMovieDetailsFetched(null, status);
         }
     }
     
     @Override
     protected void onSuccess(final MovieDetails movieDetails) {
         if (this.responseCallback != null) {
-            this.responseCallback.onMovieDetailsFetched(movieDetails, 0);
+            this.responseCallback.onMovieDetailsFetched(movieDetails, CommonStatus.OK);
         }
     }
     
@@ -103,7 +104,7 @@ public class FetchMovieDetailsRequest extends FalcorVolleyWebClientRequest<Movie
             }
             movieDetails.similarListSummary = FalcorParseUtils.getPropertyObject((JsonObject)asJsonObject, "summary", TrackableListSummary.class);
         }
-        movieDetails.similarVideos = (List<com.netflix.mediaclient.servicemgr.Video>)similarVideos;
+        movieDetails.similarVideos = (List<com.netflix.mediaclient.servicemgr.model.Video>)similarVideos;
         movieDetails.userConnectedToFacebook = this.userConnectedToFacebook;
         return movieDetails;
     }

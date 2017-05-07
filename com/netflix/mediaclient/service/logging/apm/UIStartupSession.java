@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.logging.apm;
 
 import com.netflix.mediaclient.service.logging.apm.model.UIStartupSessionEndedEvent;
+import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.service.logging.apm.model.Display;
@@ -36,8 +37,8 @@ public final class UIStartupSession extends BaseApmSession
         this.mDisplay = mDisplay;
     }
     
-    public UIStartupSessionEndedEvent createEndedEvent(final boolean b, final UIError error) {
-        final UIStartupSessionEndedEvent uiStartupSessionEndedEvent = new UIStartupSessionEndedEvent(System.currentTimeMillis() - this.mStarted, this.mTrigger, this.mDestination, b);
+    public UIStartupSessionEndedEvent createEndedEvent(final boolean b, final UIError error, final PlayerType playerType) {
+        final UIStartupSessionEndedEvent uiStartupSessionEndedEvent = new UIStartupSessionEndedEvent(System.currentTimeMillis() - this.mStarted, this.mTrigger, this.mDestination, b, playerType);
         uiStartupSessionEndedEvent.setCategory(this.getCategory());
         uiStartupSessionEndedEvent.setTrackId("" + this.mTrackId);
         uiStartupSessionEndedEvent.setActiveABTests(this.mActiveABTests);

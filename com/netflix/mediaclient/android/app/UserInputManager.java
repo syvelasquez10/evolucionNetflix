@@ -9,6 +9,9 @@ import android.app.Activity;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.pin.PinVerifier;
+import android.app.ActivityManager$RunningTaskInfo;
+import android.app.ActivityManager;
+import android.content.Context;
 import java.util.concurrent.Executors;
 import java.util.Collections;
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
     private static final String TAG = "nf_input";
     private static final ThreadFactory sThreadFactory;
     private AtomicInteger mActivitiesCount;
+    private boolean mForeground;
     private AtomicLong mLastUserInteraction;
     private List<ApplicationStateListener> mListeners;
     private AtomicInteger mResumed;
@@ -51,38 +55,55 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
         this.mScheduler = Executors.newSingleThreadScheduledExecutor(UserInputManager.sThreadFactory);
     }
     
+    private static boolean isApplicationBroughtToBackground(final Context context) {
+        final List runningTasks = ((ActivityManager)context.getSystemService("activity")).getRunningTasks(1);
+        return !runningTasks.isEmpty() && !runningTasks.get(0).topActivity.getPackageName().equals(context.getPackageName());
+    }
+    
     private void notifyOthersOfLastUserInteraction() {
         PinVerifier.lastUserInteractionTime(this.getTimeSinceLastUserInteraction());
     }
     
-    private void postOnBackground() {
-        if (this.mResumed != this.mStopped) {
-            Log.d("nf_input", "UI is in background");
-            this.mScheduler.execute(new Runnable() {
-                @Override
-                public void run() {
-                    final Iterator<ApplicationStateListener> iterator = UserInputManager.this.mListeners.iterator();
-                    while (iterator.hasNext()) {
-                        iterator.next().onBackground(UserInputManager.this);
-                    }
-                }
-            });
+    private void postOnBackground(final Context context) {
+        Log.d("nf_input", "B Resumed " + this.mResumed);
+        Log.d("nf_input", "B Stopped " + this.mStopped);
+        Log.d("nf_input", "F Foreground " + this.mForeground);
+        if (!isApplicationBroughtToBackground(context)) {
+            Log.d("nf_input", "Our app is still in foreground");
+            return;
         }
+        Log.d("nf_input", "Our app is in background");
+        this.mForeground = false;
+        this.mScheduler.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Iterator<ApplicationStateListener> iterator = UserInputManager.this.mListeners.iterator();
+                while (iterator.hasNext()) {
+                    iterator.next().onBackground(UserInputManager.this);
+                }
+            }
+        });
     }
     
-    private void postOnForeground() {
-        if (this.mResumed != this.mStopped) {
-            Log.d("nf_input", "UI is in foreground");
-            this.mScheduler.execute(new Runnable() {
-                @Override
-                public void run() {
-                    final Iterator<ApplicationStateListener> iterator = UserInputManager.this.mListeners.iterator();
-                    while (iterator.hasNext()) {
-                        iterator.next().onForeground(UserInputManager.this);
-                    }
-                }
-            });
+    private void postOnForeground(final Context context) {
+        Log.d("nf_input", "F Resumed " + this.mResumed);
+        Log.d("nf_input", "F Stopped " + this.mStopped);
+        Log.d("nf_input", "F Foreground " + this.mForeground);
+        if (this.mForeground) {
+            Log.d("nf_input", "Our app is in foreground already");
+            return;
         }
+        Log.d("nf_input", "Our app is in foreground");
+        this.mForeground = true;
+        this.mScheduler.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Iterator<ApplicationStateListener> iterator = UserInputManager.this.mListeners.iterator();
+                while (iterator.hasNext()) {
+                    iterator.next().onForeground(UserInputManager.this);
+                }
+            }
+        });
     }
     
     private void postUiExit(final int n) {
@@ -142,34 +163,55 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
     }
     
     public boolean isApplicationInForeground() {
-        return this.mResumed.get() > this.mStopped.get();
+        return this.mForeground;
     }
     
     public void onActivityCreated(final Activity activity, final Bundle bundle) {
+        if (Log.isLoggable("nf_input", 3)) {
+            Log.d("nf_input", "onActivityCreated " + activity.getClass().getSimpleName());
+        }
         this.postUiStart(this.mActivitiesCount.incrementAndGet());
     }
     
     public void onActivityDestroyed(final Activity activity) {
+        if (Log.isLoggable("nf_input", 3)) {
+            Log.d("nf_input", "onActivityDestroyed " + activity.getClass().getSimpleName());
+        }
         this.postUiExit(this.mActivitiesCount.decrementAndGet());
     }
     
     public void onActivityPaused(final Activity activity) {
+        if (Log.isLoggable("nf_input", 3)) {
+            Log.d("nf_input", "onActivityPaused " + activity.getClass().getSimpleName());
+        }
     }
     
     public void onActivityResumed(final Activity activity) {
+        if (Log.isLoggable("nf_input", 3)) {
+            Log.d("nf_input", "onActivityResumed " + activity.getClass().getSimpleName());
+        }
         this.mResumed.incrementAndGet();
-        this.postOnForeground();
+        this.postOnForeground((Context)activity);
     }
     
     public void onActivitySaveInstanceState(final Activity activity, final Bundle bundle) {
+        if (Log.isLoggable("nf_input", 3)) {
+            Log.d("nf_input", "onActivitySaveInstanceState " + activity.getClass().getSimpleName());
+        }
     }
     
     public void onActivityStarted(final Activity activity) {
+        if (Log.isLoggable("nf_input", 3)) {
+            Log.d("nf_input", "onActivityStarted " + activity.getClass().getSimpleName());
+        }
     }
     
     public void onActivityStopped(final Activity activity) {
+        if (Log.isLoggable("nf_input", 3)) {
+            Log.d("nf_input", "onActivityStopped " + activity.getClass().getSimpleName());
+        }
         this.mStopped.incrementAndGet();
-        this.postOnBackground();
+        this.postOnBackground((Context)activity);
     }
     
     public boolean removeListener(final ApplicationStateListener applicationStateListener) {

@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
 import com.netflix.mediaclient.Log;
@@ -15,7 +15,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Context;
 import android.util.SparseIntArray;
 import android.util.SparseArray;
-import com.netflix.mediaclient.servicemgr.CWVideo;
+import com.netflix.mediaclient.servicemgr.model.CWVideo;
 
 public class PaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
 {
@@ -61,7 +61,7 @@ public class PaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
     
     @Override
     public int getRowHeightInPx() {
-        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity)) * 0.5625f + 0.5f) + this.activity.getResources().getDimensionPixelOffset(2131361882);
+        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage(DeviceUtils.getBasicScreenOrientation((Context)this.activity), DeviceUtils.getScreenSizeCategory((Context)this.activity)) * 0.5625f + 0.5f) + this.activity.getResources().getDimensionPixelOffset(2131361880);
         Log.v("PaginatedCwAdapter", "Computed view height: " + n);
         return n;
     }

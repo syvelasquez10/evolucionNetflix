@@ -8,7 +8,7 @@ import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Context;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 
 @SuppressLint({ "ViewConstructor" })
@@ -32,9 +32,9 @@ public class KidsLoMoViewGroup<V extends View> extends VideoViewGroup<Video, V>
     @Override
     protected int getChildPaddingDimenResId() {
         if (KidsUtils.shouldShowHorizontalImages((NetflixActivity)this.getContext())) {
-            return 2131361916;
+            return 2131361930;
         }
-        return 2131361917;
+        return 2131361931;
     }
     
     @Override

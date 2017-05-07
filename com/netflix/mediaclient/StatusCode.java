@@ -4,59 +4,97 @@
 
 package com.netflix.mediaclient;
 
-public interface StatusCode
+public enum StatusCode
 {
-    public static final int BROWSE_AGENT_WRONG_STATE = -66;
-    public static final int BROWSE_CW_WRONG_STATE = -68;
-    public static final int BROWSE_IQ_WRONG_STATE = -67;
-    public static final int CONFIG_DOWNLOAD_FAILED = -12;
-    public static final int CONFIG_REFRESH_FAILED = -7;
-    public static final int DRM_FAILURE_CDM = -100;
-    public static final int DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED = -101;
-    public static final int FALCOR_RESPONSE_PARSE_ERROR = -80;
-    public static final int FORCED_TESTING_ERROR = -8;
-    public static final int HTTP_SSL_DATE_TIME_ERROR = -121;
-    public static final int HTTP_SSL_ERROR = -120;
-    public static final int HTTP_SSL_NO_VALID_CERT = -122;
-    public static final int INIT_SERVICE_TIMEOUT = -9;
-    public static final int INTERNAL_ERROR = -2;
-    public static final int MAP_ERROR = -65;
-    public static final int MISSING_ID_IN_CACHE = -63;
-    public static final int NETWORK_ERROR = -3;
-    public static final int NON_RECOMMENDED_APP_VERSION = 1;
-    public static final int NOT_IMPLEMENTED = -10;
-    public static final int NO_CONNECTIVITY = -11;
-    public static final int NRD_ERROR = -4;
-    public static final int NRD_INVALID_SW_VERSION = -20;
-    public static final int NRD_LOGIN_ACTIONID_1 = -200;
-    public static final int NRD_LOGIN_ACTIONID_10 = -209;
-    public static final int NRD_LOGIN_ACTIONID_11 = -210;
-    public static final int NRD_LOGIN_ACTIONID_12 = -211;
-    public static final int NRD_LOGIN_ACTIONID_2 = -201;
-    public static final int NRD_LOGIN_ACTIONID_3 = -202;
-    public static final int NRD_LOGIN_ACTIONID_4 = -203;
-    public static final int NRD_LOGIN_ACTIONID_5 = -204;
-    public static final int NRD_LOGIN_ACTIONID_6 = -205;
-    public static final int NRD_LOGIN_ACTIONID_7 = -206;
-    public static final int NRD_LOGIN_ACTIONID_8 = -207;
-    public static final int NRD_LOGIN_ACTIONID_9 = -208;
-    public static final int NRD_LOGIN_ONGOING = -40;
-    public static final int NRD_REGISTRATION_EXISTS = -41;
-    public static final int NRD_REGISTRATION_INVALID_CREDENTIALS = -42;
-    public static final int OBSOLETE_APP_VERSION = -5;
-    public static final int OK = 0;
-    public static final int RESPONSE_PARSE_ERROR = -300;
-    public static final int SERVER_ERROR = -62;
-    public static final int SERVER_ERROR_MAP_CACHE_MISS = -64;
-    public static final int SET_FAILED = -6;
-    public static final int UNKNOWN = -1;
-    public static final int USER_FB_CONNECT_FAILURE = -56;
-    public static final int USER_FB_CONNECT_ID_ALREADY_IN_USE = -52;
-    public static final int USER_FB_CONNECT_INVALID_CREDENTIALS = -51;
-    public static final int USER_FB_CONNECT_MISSING_PARAMS = -50;
-    public static final int USER_FB_CONNECT_RETRY_AFTER_FB_SMS = -53;
-    public static final int USER_FB_TRANSIENT_DO_NOT_RETRY = -54;
-    public static final int USER_FB_TRANSIENT_RETRY = -55;
-    public static final int USER_NOT_AUTHORIZED = -61;
-    public static final int WRONG_PATH = -60;
+    BROWSE_AGENT_WRONG_STATE(-66), 
+    BROWSE_CW_WRONG_STATE(-68), 
+    BROWSE_IQ_WRONG_STATE(-67), 
+    CONFIG_DOWNLOAD_FAILED(-12), 
+    CONFIG_REFRESH_FAILED(-7), 
+    DRM_FAILURE_CDM(-100), 
+    DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED(-101), 
+    FALCOR_RESPONSE_PARSE_ERROR(-80), 
+    FORCED_TESTING_ERROR(-8), 
+    HTTP_SSL_DATE_TIME_ERROR(-121), 
+    HTTP_SSL_ERROR(-120), 
+    HTTP_SSL_NO_VALID_CERT(-122), 
+    INIT_SERVICE_TIMEOUT(-9), 
+    INTERNAL_ERROR(-2), 
+    MAP_ERROR(-65), 
+    MISSING_ID_IN_CACHE(-63), 
+    NETWORK_ERROR(-3), 
+    NON_RECOMMENDED_APP_VERSION(1), 
+    NOT_IMPLEMENTED(-10), 
+    NO_CONNECTIVITY(-11), 
+    NRD_ERROR(-4), 
+    NRD_INVALID_SW_VERSION(-20), 
+    NRD_LOGIN_ACTIONID_1(-200), 
+    NRD_LOGIN_ACTIONID_10(-209), 
+    NRD_LOGIN_ACTIONID_11(-210), 
+    NRD_LOGIN_ACTIONID_12(-211), 
+    NRD_LOGIN_ACTIONID_2(-201), 
+    NRD_LOGIN_ACTIONID_3(-202), 
+    NRD_LOGIN_ACTIONID_4(-203), 
+    NRD_LOGIN_ACTIONID_5(-204), 
+    NRD_LOGIN_ACTIONID_6(-205), 
+    NRD_LOGIN_ACTIONID_7(-206), 
+    NRD_LOGIN_ACTIONID_8(-207), 
+    NRD_LOGIN_ACTIONID_9(-208), 
+    NRD_LOGIN_ONGOING(-40), 
+    NRD_REGISTRATION_EXISTS(-41), 
+    NRD_REGISTRATION_INVALID_CREDENTIALS(-42), 
+    OBSOLETE_APP_VERSION(-5), 
+    OK(0), 
+    RESPONSE_PARSE_ERROR(-300), 
+    SERVER_ERROR(-62), 
+    SERVER_ERROR_MAP_CACHE_MISS(-64), 
+    SET_FAILED(-6), 
+    UNKNOWN(-1), 
+    USER_FB_CONNECT_FAILURE(-56), 
+    USER_FB_CONNECT_ID_ALREADY_IN_USE(-52), 
+    USER_FB_CONNECT_INVALID_CREDENTIALS(-51), 
+    USER_FB_CONNECT_MISSING_PARAMS(-50), 
+    USER_FB_CONNECT_RETRY_AFTER_FB_SMS(-53), 
+    USER_FB_TRANSIENT_DO_NOT_RETRY(-54), 
+    USER_FB_TRANSIENT_RETRY(-55), 
+    USER_NOT_AUTHORIZED(-61), 
+    WRONG_PATH(-60);
+    
+    private int mValue;
+    
+    private StatusCode(final int mValue) {
+        this.mValue = mValue;
+    }
+    
+    public static StatusCode getStatusCodeByValue(final int n) {
+        final StatusCode[] values = values();
+        for (int length = values.length, i = 0; i < length; ++i) {
+            final StatusCode statusCode = values[i];
+            if (statusCode != null && statusCode.getValue() == n) {
+                return statusCode;
+            }
+        }
+        return null;
+    }
+    
+    public static boolean isSucess(final int n) {
+        return n >= 0;
+    }
+    
+    public int getValue() {
+        return this.mValue;
+    }
+    
+    public boolean isError() {
+        return this.mValue < 0;
+    }
+    
+    public boolean isSucess() {
+        return !this.isError();
+    }
+    
+    @Override
+    public String toString() {
+        return "StatusCode: [ code: " + this.mValue + ", name: " + this.name() + "]";
+    }
 }

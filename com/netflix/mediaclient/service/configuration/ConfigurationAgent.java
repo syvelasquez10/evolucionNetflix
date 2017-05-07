@@ -6,13 +6,12 @@ package com.netflix.mediaclient.service.configuration;
 
 import org.json.JSONObject;
 import com.netflix.mediaclient.net.IpConnectivityPolicy;
-import com.netflix.mediaclient.javabridge.transport.NativeTransport;
-import com.netflix.mediaclient.media.bitrate.VideoBitrateRange;
+import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.DeviceCategory;
-import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import org.json.JSONArray;
+import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.nccp.NccpKeyStore;
@@ -20,9 +19,17 @@ import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import java.util.Iterator;
+import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.api.Api19Util;
+import android.view.Display;
+import android.util.DisplayMetrics;
+import android.hardware.display.DisplayManager;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.media.PlayerType;
+import com.netflix.mediaclient.javabridge.transport.NativeTransport;
+import com.netflix.mediaclient.media.bitrate.VideoBitrateRange;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Locale;
 import java.io.IOException;
 import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
@@ -35,14 +42,18 @@ import com.netflix.mediaclient.Log;
 import android.os.Handler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.ArrayList;
+import android.annotation.SuppressLint;
 import com.netflix.mediaclient.service.ServiceAgent;
 
+@SuppressLint({ "InlinedApi" })
 public class ConfigurationAgent extends ServiceAgent implements ConfigurationAgentInterface
 {
     private static final int APM_USER_SESSION_TIMEOUT_SEC = 1800;
     private static final long CONFIG_REFRESH_DELAY_MS = 28800000L;
     private static final int DATA_REQUEST_TIMEOUT_MS = 10000;
+    public static final int DEFAULT_IMAGE_CACHE_SIZE_BYTES;
     private static final float DISK_CACHE_SIZE_AS_PERCENTAGE_OF_AVLBLMEM = 0.25f;
     private static final KidsOnPhoneConfiguration DUMMY_KIDS_CONFIG;
     private static final int HIGH_MEM_THREAD_COUNT = 4;
@@ -67,14 +78,13 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     private AccountConfiguration mAccountConfigOverride;
     private int mAppVersionCode;
     private final ArrayList<ConfigAgentListener> mConfigAgentListeners;
-    private int mConfigRefreshStatus;
+    private Status mConfigRefreshStatus;
     private ConfigurationWebClient mConfigurationWebClient;
     private DeviceConfiguration mDeviceConfigOverride;
     private int mDiskCacheSizeBytes;
     private DrmManager mDrmManager;
     private EsnProvider mESN;
     private EndpointRegistryProvider mEndpointRegistry;
-    private int mImageCacheSizeBytes;
     private boolean mIsConfigRefreshInBackground;
     private boolean mNeedEsMigration;
     private boolean mNeedLogout;
@@ -97,7 +107,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
             
             @Override
             public ScrollBehavior getScrollBehavior() {
-                return ScrollBehavior.LRUD;
+                return ScrollBehavior.UP_DOWN;
             }
             
             @Override
@@ -120,13 +130,13 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
                 return true;
             }
         };
+        DEFAULT_IMAGE_CACHE_SIZE_BYTES = (int)(Runtime.getRuntime().maxMemory() * 0.5f);
         sMemLevel = getMemLevel();
     }
     
     public ConfigurationAgent() {
         this.mConfigAgentListeners = new ArrayList<ConfigAgentListener>();
         this.mIsConfigRefreshInBackground = false;
-        this.mConfigRefreshStatus = -1;
         this.mAppVersionCode = -1;
         this.mSoftwareVersion = null;
         this.mNeedLogout = false;
@@ -164,7 +174,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         this.launchTask((FetchTask)new FetchConfigDataTask(configurationAgentWebCallback));
     }
     
-    private int fetchConfigSynchronouslyOnAppStart(String s) {
+    private Status fetchConfigSynchronouslyOnAppStart(String s) {
         Log.d("nf_configurationagent", "Need to fetchdeviceConfig synchronously ");
         ConfigData configString;
         try {
@@ -180,13 +190,97 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
             s = ex.toString().toLowerCase(Locale.US);
             Log.e("nf_configurationagent", "Could not fetch configuration! " + s);
             if (s.contains("could not validate certificate") || s.contains("sslhandshakeexception")) {
-                return -121;
+                return CommonStatus.HTTP_SSL_DATE_TIME_ERROR;
             }
-            return -12;
+            return CommonStatus.CONFIG_DOWNLOAD_FAILED;
         }
         this.mDeviceConfigOverride.persistDeviceConfigOverride(configString.getDeviceConfig());
         this.mStreamingConfigOverride.persistStreamingOverride(configString.getStreamingConfig());
-        return 0;
+        return CommonStatus.OK;
+    }
+    
+    private VideoBitrateRange[] getDeviceVideoProfiles() {
+        final String[] supportedVideoProfiles = NativeTransport.getSupportedVideoProfiles();
+        final VideoBitrateRange[] array = new VideoBitrateRange[supportedVideoProfiles.length];
+        final boolean b = !this.isTablet();
+        final PlayerType currentPlayerType = this.getCurrentPlayerType();
+        if (Log.isLoggable("nf_configurationagent", 3)) {
+            Log.d("VideoBitrateRange", "Device is phone: " + b + ",PlayerType: " + currentPlayerType);
+        }
+        int n = 0;
+        for (int length = supportedVideoProfiles.length, i = 0; i < length; ++i) {
+            final String s = supportedVideoProfiles[i];
+            int n2 = 4800;
+            if (s.equalsIgnoreCase("playready-h264bpl30-dash")) {
+                n2 = 1350;
+                Log.d("VideoBitrateRange", "player support BP30");
+            }
+            else if (s.equalsIgnoreCase("playready-h264mpl30-dash")) {
+                n2 = 1750;
+                Log.d("VideoBitrateRange", "player support MP30");
+            }
+            else if (s.equalsIgnoreCase("playready-h264mpl31-dash")) {
+                n2 = 3600;
+                Log.d("VideoBitrateRange", "player support MP31");
+            }
+            int n3 = n2;
+            if (!PlayerTypeFactory.isJPlayer2(currentPlayerType)) {
+                n3 = n2;
+                if (b) {
+                    if (s.equalsIgnoreCase("playready-h264bpl30-dash")) {
+                        n3 = 500;
+                    }
+                    else {
+                        n3 = n2;
+                        if (s.equalsIgnoreCase("playready-h264mpl30-dash")) {
+                            n3 = 750;
+                        }
+                    }
+                }
+            }
+            if (Log.isLoggable("nf_configurationagent", 3)) {
+                Log.d("VideoBitrateRange", "Profile: " + s + ", min: " + 0 + ", max: " + n3);
+            }
+            array[n] = new VideoBitrateRange(0, n3, s);
+            ++n;
+        }
+        return array;
+    }
+    
+    private int getMaxResolutionConfigured() {
+        int videoResolutionOverride;
+        if ((videoResolutionOverride = this.mDeviceConfigOverride.getVideoResolutionOverride()) <= 0) {
+            videoResolutionOverride = Integer.MAX_VALUE;
+        }
+        return videoResolutionOverride;
+    }
+    
+    private int getMaxResolutionRestriction() {
+        final int maxResolutionConfigured = this.getMaxResolutionConfigured();
+        int heightPixels = Integer.MAX_VALUE;
+        if (AndroidUtils.getAndroidVersion() >= 17) {
+            final Display[] displays = ((DisplayManager)this.getContext().getSystemService("display")).getDisplays();
+            final int length = displays.length;
+            int n = 0;
+            while (true) {
+                heightPixels = heightPixels;
+                if (n >= length) {
+                    break;
+                }
+                final Display display = displays[n];
+                Log.d("nf_configurationagent", "getMaxResolutionRestriction " + display.toString());
+                if (display.isValid() && display.getDisplayId() == 0) {
+                    final DisplayMetrics displayMetrics = new DisplayMetrics();
+                    display.getMetrics(displayMetrics);
+                    heightPixels = displayMetrics.heightPixels;
+                    break;
+                }
+                ++n;
+            }
+        }
+        final int min = Math.min(this.resolutionToBitrate(maxResolutionConfigured), this.resolutionToBitrate(heightPixels));
+        Log.d("nf_configurationagent", "maxBrBasedOnRes is " + min);
+        return min;
     }
     
     public static String getMemLevel() {
@@ -224,10 +318,11 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         fetchTask.run();
     }
     
-    private int loadConfigOverridesOnAppStart(final String s) {
+    private Status loadConfigOverridesOnAppStart(final String s) {
+        final NetflixImmutableStatus ok = CommonStatus.OK;
         if (this.mDeviceConfigOverride.isDeviceConfigInCache() && this.mStreamingConfigOverride.isStreamingConfigInCache()) {
             Log.d("nf_configurationagent", "DeviceConfig & streamingqoe in cache... proceed!");
-            return 0;
+            return ok;
         }
         return this.fetchConfigSynchronouslyOnAppStart(s);
     }
@@ -265,6 +360,19 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         if (this.mConfigurationWebClient == null) {
             this.mConfigurationWebClient = ConfigurationWebClientFactory.create(this.getService(), this.getResourceFetcher().getApiNextWebClient());
         }
+    }
+    
+    private int resolutionToBitrate(final int n) {
+        if (n < 480) {
+            return 750;
+        }
+        if (n < 720) {
+            return 1750;
+        }
+        if (n < 1080) {
+            return 3000;
+        }
+        return Integer.MAX_VALUE;
     }
     
     public static boolean shouldUseLowMemConfig() {
@@ -313,7 +421,6 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     protected void doInit() {
         this.mNeedLogout = false;
         this.mNeedEsMigration = false;
-        this.mImageCacheSizeBytes = Math.round(Runtime.getRuntime().maxMemory() * 0.5f);
         Log.i("nf_configurationagent", "Use low mem config: " + shouldUseLowMemConfig());
         this.mDiskCacheSizeBytes = PreferenceUtils.getIntPref(this.getContext(), "disk_cache_size", 0);
         if (this.mDiskCacheSizeBytes == 0) {
@@ -329,7 +436,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         if (Log.isLoggable("nf_configurationagent", 4)) {
             Log.i("nf_configurationagent", "Current app version code = " + this.mAppVersionCode);
         }
-        this.mSoftwareVersion = AndroidManifestUtils.getVersionName(this.getContext());
+        this.mSoftwareVersion = AndroidManifestUtils.getVersion(this.getContext());
         if (Log.isLoggable("nf_configurationagent", 4)) {
             Log.i("nf_configurationagent", "Current softwareVersion = " + this.mSoftwareVersion);
         }
@@ -338,18 +445,18 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         this.mAccountConfigOverride = new AccountConfiguration(this.getContext());
         this.mStreamingConfigOverride = new StreamingConfiguration(this.getContext());
         this.mEndpointRegistry = new EndpointRegistryProvider(this.getContext(), deviceModel, this.isDeviceHd(), this.mDeviceConfigOverride.getImageRepository(), this.getUiResolutionType());
-        final int loadConfigOverridesOnAppStart = this.loadConfigOverridesOnAppStart(this.mEndpointRegistry.getAppStartConfigUrl());
-        if (loadConfigOverridesOnAppStart != 0) {
+        final Status loadConfigOverridesOnAppStart = this.loadConfigOverridesOnAppStart(this.mEndpointRegistry.getAppStartConfigUrl());
+        if (loadConfigOverridesOnAppStart.isError()) {
             this.initCompleted(loadConfigOverridesOnAppStart);
             return;
         }
         final DrmManager.DrmReadyCallback drmReadyCallback = new DrmManager.DrmReadyCallback() {
             @Override
-            public void drmError(final int n) {
+            public void drmError(final Status status) {
                 if (Log.isLoggable("nf_configurationagent", 6)) {
-                    Log.d("nf_configurationagent", "DRM failed to initialize, Error code: " + n);
+                    Log.e("nf_configurationagent", "DRM failed to initialize, Error code: " + status.getStatusCode());
                 }
-                ConfigurationAgent.this.initCompleted(n);
+                ConfigurationAgent.this.initCompleted(status);
             }
             
             @Override
@@ -358,7 +465,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
                 if (DrmManagerRegistry.isDrmSystemChanged()) {
                     ConfigurationAgent.this.mNeedEsMigration = true;
                 }
-                ConfigurationAgent.this.initCompleted(0);
+                ConfigurationAgent.this.initCompleted(CommonStatus.OK);
             }
         };
         NccpKeyStore.init(this.getContext());
@@ -407,6 +514,11 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     @Override
+    public BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification() {
+        return this.mDeviceConfigOverride.getBreadcrumbLoggingSpecification();
+    }
+    
+    @Override
     public JSONArray getCastWhiteList() {
         return this.mAccountConfigOverride.getCastWhitelist();
     }
@@ -441,54 +553,6 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         return DeviceCategory.PHONE;
     }
     
-    public VideoBitrateRange[] getDeviceVideoProfiles() {
-        final String[] supportedVideoProfiles = NativeTransport.getSupportedVideoProfiles();
-        final VideoBitrateRange[] array = new VideoBitrateRange[supportedVideoProfiles.length];
-        final boolean b = !this.isTablet();
-        final PlayerType currentPlayerType = this.getCurrentPlayerType();
-        if (Log.isLoggable("nf_configurationagent", 3)) {
-            Log.d("VideoBitrateRange", "Device is phone: " + b + ",PlayerType: " + currentPlayerType);
-        }
-        int n = 0;
-        for (int length = supportedVideoProfiles.length, i = 0; i < length; ++i) {
-            final String s = supportedVideoProfiles[i];
-            int n2 = 4800;
-            if (s.equalsIgnoreCase("playready-h264bpl30-dash")) {
-                n2 = 1350;
-                Log.d("VideoBitrateRange", "player support BP30");
-            }
-            else if (s.equalsIgnoreCase("playready-h264mpl30-dash")) {
-                n2 = 1750;
-                Log.d("VideoBitrateRange", "player support MP30");
-            }
-            else if (s.equalsIgnoreCase("playready-h264mpl31-dash")) {
-                n2 = 3600;
-                Log.d("VideoBitrateRange", "player support MP31");
-            }
-            int n3 = n2;
-            if (!PlayerTypeFactory.isJPlayer2(currentPlayerType)) {
-                n3 = n2;
-                if (b) {
-                    if (s.equalsIgnoreCase("playready-h264bpl30-dash")) {
-                        n3 = 500;
-                    }
-                    else {
-                        n3 = n2;
-                        if (s.equalsIgnoreCase("playready-h264mpl30-dash")) {
-                            n3 = 750;
-                        }
-                    }
-                }
-            }
-            if (Log.isLoggable("nf_configurationagent", 3)) {
-                Log.d("VideoBitrateRange", "Profile: " + s + ", min: " + 0 + ", max: " + n3);
-            }
-            array[n] = new VideoBitrateRange(0, n3, s);
-            ++n;
-        }
-        return array;
-    }
-    
     @Override
     public int getDiskCacheSizeBytes() {
         return this.mDiskCacheSizeBytes;
@@ -497,6 +561,11 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     @Override
     public DrmManager getDrmManager() {
         return this.mDrmManager;
+    }
+    
+    @Override
+    public ErrorLoggingSpecification getErrorLoggingSpecification() {
+        return this.mDeviceConfigOverride.getErrorLoggingSpecification();
     }
     
     @Override
@@ -511,7 +580,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     
     @Override
     public int getImageCacheSizeBytes() {
-        return this.mImageCacheSizeBytes;
+        return ConfigurationAgent.DEFAULT_IMAGE_CACHE_SIZE_BYTES;
     }
     
     @Override
@@ -540,6 +609,11 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     @Override
+    public int getRateLimitForGcmBrowseEvents() {
+        return this.mDeviceConfigOverride.getRateLimitForGcmBrowseEvents();
+    }
+    
+    @Override
     public int getResFetcherThreadPoolSize() {
         if (shouldUseLowMemConfig()) {
             return 2;
@@ -550,6 +624,11 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     @Override
     public int getResourceRequestTimeout() {
         return 1000;
+    }
+    
+    @Override
+    public int getSearchTest() {
+        return this.mAccountConfigOverride.getSearchTest();
     }
     
     public SignUpConfiguration getSignUpConfiguration() {
@@ -575,8 +654,14 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     public VideoBitrateRange[] getVideoBitrateRange() {
         final VideoBitrateRange[] deviceVideoProfiles = this.getDeviceVideoProfiles();
         final int bitrateCap = this.getBitrateCap();
+        final int maxResolutionRestriction = this.getMaxResolutionRestriction();
+        int n;
+        if (bitrateCap <= 0 || (n = bitrateCap) > maxResolutionRestriction) {
+            Log.d("nf_configurationagent", "enforce resolution restriction");
+            n = maxResolutionRestriction;
+        }
         final VideoBitrateRange[] array = new VideoBitrateRange[deviceVideoProfiles.length];
-        int n = 0;
+        int n2 = 0;
         for (int length = deviceVideoProfiles.length, i = 0; i < length; ++i) {
             final VideoBitrateRange videoBitrateRange = deviceVideoProfiles[i];
             int maximal;
@@ -584,16 +669,16 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
                 maximal = Integer.MAX_VALUE;
                 Log.d("nf_configurationagent", "use limit");
             }
-            int n2 = maximal;
-            if (bitrateCap > 0 && (n2 = maximal) > bitrateCap) {
-                n2 = bitrateCap;
+            int n3 = maximal;
+            if (n > 0 && (n3 = maximal) > n) {
+                n3 = n;
                 Log.d("nf_configurationagent", "use bitratecap");
             }
-            array[n] = new VideoBitrateRange(videoBitrateRange.getMinimal(), n2, videoBitrateRange.getProfile());
+            array[n2] = new VideoBitrateRange(videoBitrateRange.getMinimal(), n3, videoBitrateRange.getProfile());
             if (Log.isLoggable("nf_configurationagent", 3)) {
-                Log.d("nf_configurationagent", " VideoBitrateRange[" + n + "] " + array[n]);
+                Log.d("nf_configurationagent", " VideoBitrateRange[" + n2 + "] " + array[n2]);
             }
-            ++n;
+            ++n2;
         }
         return array;
     }
@@ -712,13 +797,18 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     @Override
+    public boolean toDisableSuspendPlayback() {
+        return this.mAccountConfigOverride.toDisableSuspendPlay();
+    }
+    
+    @Override
     public void userAgentLogoutComplete() {
         this.mNeedLogout = false;
     }
     
     public interface ConfigAgentListener
     {
-        void onConfigRefreshed(final int p0);
+        void onConfigRefreshed(final Status p0);
     }
     
     private class FetchConfigDataTask extends FetchTask
@@ -729,12 +819,13 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
             super(configurationAgentWebCallback);
             this.webClientCallback = new SimpleConfigurationAgentWebCallback() {
                 @Override
-                public void onConfigDataFetched(final ConfigData configData, final int n) {
-                    Log.d("nf_configurationagent", String.format("onConfigDataFetched statusCode=%d", n));
-                    ConfigurationAgent.this.mConfigRefreshStatus = -7;
-                    if (n == 0 && configData != null) {
+                public void onConfigDataFetched(final ConfigData configData, final Status status) {
+                    if (Log.isLoggable("nf_configurationagent", 3)) {
+                        Log.d("nf_configurationagent", String.format("onConfigDataFetched statusCode=%d", status.getStatusCode().getValue()));
+                    }
+                    ConfigurationAgent.this.mConfigRefreshStatus = status;
+                    if (status.isSucces() && configData != null) {
                         ConfigurationAgent.this.persistConfigOverride(configData);
-                        ConfigurationAgent.this.mConfigRefreshStatus = 0;
                     }
                     ConfigurationAgent.this.mIsConfigRefreshInBackground = false;
                     ConfigurationAgent.this.refreshHandler.postDelayed(ConfigurationAgent.this.refreshRunnable, 28800000L);

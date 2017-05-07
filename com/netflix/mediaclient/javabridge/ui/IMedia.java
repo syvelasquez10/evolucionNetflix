@@ -110,6 +110,8 @@ public interface IMedia
     
     void stop();
     
+    void swim(final int p0, final boolean p1, final int p2, final boolean p3);
+    
     void unpause();
     
     public enum MediaEventEnum

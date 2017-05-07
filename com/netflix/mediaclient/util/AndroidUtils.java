@@ -20,8 +20,8 @@ import com.netflix.mediaclient.javabridge.transport.NativeTransport;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.Activity;
-import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.repository.SecurityRepository;
+import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import android.graphics.Xfermode;
 import android.graphics.PorterDuffXfermode;
@@ -500,14 +500,14 @@ public final class AndroidUtils
             Log.e("nf_utils", "This should not happen, player type was null at this point! Use default.");
             playerType = PlayerTypeFactory.findDefaultPlayerType();
         }
-        final String mapPlayerType = mapPlayerType(playerType);
+        final String mapPlayerTypeForLogging = PlayerType.mapPlayerTypeForLogging(playerType);
         final StringBuilder sb = new StringBuilder();
         sb.append("Netflix/").append(SecurityRepository.getNrdLibVersion());
         sb.append(' ').append("NCCP/2.15");
         sb.append(" (DEVTYPE=").append(version).append("-").append(versionCode);
         sb.append(' ').append("R").append(' ').append(SecurityRepository.getNrdLibVersion());
         sb.append(" android-").append(getAndroidVersion()).append('-');
-        sb.append(mapPlayerType).append(" ; CERTVER=0)");
+        sb.append(mapPlayerTypeForLogging).append(" ; CERTVER=0)");
         return sb.toString();
     }
     
@@ -748,25 +748,6 @@ public final class AndroidUtils
                 continue;
             }
         }
-    }
-    
-    public static String mapPlayerType(final PlayerType playerType) {
-        if (playerType == PlayerType.device7) {
-            return "XAL";
-        }
-        if (playerType == PlayerType.device8) {
-            return "XALMP";
-        }
-        if (playerType == PlayerType.device10) {
-            return "JPLAYER";
-        }
-        if (playerType == PlayerType.device11) {
-            return "JPLAYERBASE";
-        }
-        if (playerType == PlayerType.device12) {
-            return "JPLAYER2";
-        }
-        return "N/A";
     }
     
     public static ResolveInfo queryIntentActivities(final Context context, final Intent intent) {

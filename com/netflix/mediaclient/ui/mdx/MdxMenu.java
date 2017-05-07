@@ -44,9 +44,9 @@ public final class MdxMenu
     
     private int getIcon() {
         if (MdxUtils.isTargetReadyToControl(this.manager)) {
-            return 2130837789;
+            return 2130837800;
         }
-        return 2130837699;
+        return 2130837701;
     }
     
     private boolean isAnyMdxTargetAvailable() {

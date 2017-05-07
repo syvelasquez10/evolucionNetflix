@@ -47,7 +47,7 @@ public class ViewUtils
     public static final int DIM_ALPHA = 64;
     public static final int NO_ALPHA = 255;
     public static final Comparator<ViewComparator> REVERSE_SORT_BY_BOTTOM;
-    private static final String TAG = "nf_subtitles";
+    private static final String TAG = "ViewUtils";
     
     static {
         REVERSE_SORT_BY_BOTTOM = new Comparator<ViewComparator>() {
@@ -145,9 +145,9 @@ public class ViewUtils
         if (typeface == null) {
             default1 = Typeface.DEFAULT;
         }
-        if (Log.isLoggable("nf_subtitles", 3)) {
-            Log.d("nf_subtitles", "fs: " + measureText);
-            Log.d("nf_subtitles", "text: " + s);
+        if (Log.isLoggable("ViewUtils", 3)) {
+            Log.d("ViewUtils", "fs: " + measureText);
+            Log.d("ViewUtils", "text: " + s);
         }
         final Paint paint = new Paint();
         final Rect rect = new Rect();
@@ -155,10 +155,10 @@ public class ViewUtils
         paint.setTextSize(measureText);
         paint.getTextBounds(s, 0, s.length(), rect);
         measureText = paint.measureText(s);
-        if (Log.isLoggable("nf_subtitles", 3)) {
-            Log.d("nf_subtitles", "h: " + rect.height());
-            Log.d("nf_subtitles", "w: " + rect.width());
-            Log.d("nf_subtitles", "realW: " + measureText);
+        if (Log.isLoggable("ViewUtils", 3)) {
+            Log.d("ViewUtils", "h: " + rect.height());
+            Log.d("ViewUtils", "w: " + rect.width());
+            Log.d("ViewUtils", "realW: " + measureText);
         }
         return new Point((int)measureText, rect.height());
     }
@@ -168,16 +168,16 @@ public class ViewUtils
         if (typeface == null) {
             default1 = Typeface.DEFAULT;
         }
-        if (Log.isLoggable("nf_subtitles", 3)) {
-            Log.d("nf_subtitles", "fs: " + measureText);
-            Log.d("nf_subtitles", "text: " + s);
+        if (Log.isLoggable("ViewUtils", 3)) {
+            Log.d("ViewUtils", "fs: " + measureText);
+            Log.d("ViewUtils", "text: " + s);
         }
         final Paint paint = new Paint();
         paint.setTypeface(default1);
         paint.setTextSize(measureText);
         measureText = paint.measureText(s);
-        if (Log.isLoggable("nf_subtitles", 3)) {
-            Log.d("nf_subtitles", "realW: " + measureText);
+        if (Log.isLoggable("ViewUtils", 3)) {
+            Log.d("ViewUtils", "realW: " + measureText);
         }
         return measureText;
     }
@@ -196,7 +196,7 @@ public class ViewUtils
     }
     
     public static Rect getRect(final View view, final boolean b) {
-        Log.d("nf_subtitles", "getRect");
+        Log.d("ViewUtils", "getRect");
         if (!b) {
             final Rect rect = new Rect();
             getHitRect(view, rect);
@@ -204,10 +204,10 @@ public class ViewUtils
         }
         final Object tag = view.getTag();
         if (tag instanceof Rect) {
-            Log.d("nf_subtitles", "Rectangle was known from before, use it");
+            Log.d("ViewUtils", "Rectangle was known from before, use it");
             return (Rect)tag;
         }
-        Log.d("nf_subtitles", "Rectangle was NOT known from before, calculate");
+        Log.d("ViewUtils", "Rectangle was NOT known from before, calculate");
         final Rect tag2 = new Rect();
         getHitRect(view, tag2);
         view.setTag((Object)tag2);
@@ -263,12 +263,32 @@ public class ViewUtils
         }
     }
     
+    public static void setPaddingBottom(final View view, final int n) {
+        view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), n);
+    }
+    
+    public static void setPaddingLeft(final View view, final int n) {
+        view.setPadding(n, view.getPaddingTop(), view.getPaddingRight(), view.getPaddingBottom());
+    }
+    
+    public static void setPaddingRight(final View view, final int n) {
+        view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), n, view.getPaddingBottom());
+    }
+    
+    public static void setPaddingTop(final View view, final int n) {
+        view.setPadding(view.getPaddingLeft(), n, view.getPaddingRight(), view.getPaddingBottom());
+    }
+    
     public static void setTextViewSizeByRes(final TextView textView, final int n) {
         textView.setTextSize(0, (float)textView.getResources().getDimensionPixelOffset(n));
     }
     
     public static void setTextViewToBold(final TextView textView) {
-        textView.setTypeface(textView.getTypeface(), 1);
+        textView.setTypeface(Typeface.create(textView.getTypeface(), 1));
+    }
+    
+    public static void setTextViewToNormal(final TextView textView) {
+        textView.setTypeface(Typeface.create(textView.getTypeface(), 0));
     }
     
     public static void setVisibility(final View view, final Visibility visibility) {

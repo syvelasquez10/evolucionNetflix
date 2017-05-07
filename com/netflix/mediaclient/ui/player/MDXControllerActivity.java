@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.NetflixApplication;
@@ -53,7 +54,7 @@ public class MDXControllerActivity extends PlayerActivity
     }
     
     private void setupPostplayViews() {
-        this.postPlay = this.findViewById(2131165554);
+        this.postPlay = this.findViewById(2131165574);
         this.mPostPlay = PostPlayFactory.create(this, PostPlayFactory.PostPlayType.EpisodesForMDX);
     }
     
@@ -107,12 +108,12 @@ public class MDXControllerActivity extends PlayerActivity
     protected ManagerStatusListener createManagerStatusListener() {
         return new ManagerStatusListener() {
             @Override
-            public void onManagerReady(final ServiceManager serviceManager, final int n) {
+            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
                 MDXControllerActivity.this.showEpisodesData();
             }
             
             @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
+            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
                 MDXControllerActivity.this.cleanupAndExit();
             }
         };
@@ -128,20 +129,20 @@ public class MDXControllerActivity extends PlayerActivity
         return IClientLogging.ModalView.mdxPlayback;
     }
     
+    public boolean handleBackPressed() {
+        this.setResult(-1);
+        return true;
+    }
+    
     @Override
     public boolean isLoadingData() {
         return false;
     }
     
     @Override
-    public void onBackPressed() {
-        this.setResult(-1);
-    }
-    
-    @Override
     public void onConfigurationChanged(final Configuration configuration) {
         super.onConfigurationChanged(configuration);
-        this.setContentView(2130903114);
+        this.setContentView(2130903122);
         this.setupPostplayViews();
         this.showEpisodesData();
     }
@@ -149,7 +150,7 @@ public class MDXControllerActivity extends PlayerActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903114);
+        this.setContentView(2130903122);
         this.setupPostplayViews();
         AndroidUtils.logDeviceDensity(this);
         this.getWindow().getAttributes().buttonBrightness = 0.0f;

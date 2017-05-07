@@ -138,12 +138,12 @@ public final class BottomPanel extends PlayerSection
     }
     
     private void init(final PlayScreen.Listeners listeners) {
-        this.durationLabel = (TextView)this.context.findViewById(2131165535);
-        this.bottomPanel = this.context.findViewById(2131165531);
+        this.durationLabel = (TextView)this.context.findViewById(2131165555);
+        this.bottomPanel = this.context.findViewById(2131165551);
         if (this.bottomPanel == null) {
             Log.e("screen", "========>bottom null!");
         }
-        this.timeline = (NetflixSeekBar)this.context.findViewById(2131165534);
+        this.timeline = (NetflixSeekBar)this.context.findViewById(2131165554);
         if (this.timeline != null) {
             this.timeline.setOnSeekBarChangeListener(listeners.videoPositionListener);
             this.timeline.setDentVisible(false);
@@ -151,12 +151,12 @@ public final class BottomPanel extends PlayerSection
             this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineThumbOffsetInDip));
             this.timeline.setProgressBarPadding(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineHeightPaddingInDip));
         }
-        this.media = (ImageButton)this.context.findViewById(2131165532);
+        this.media = (ImageButton)this.context.findViewById(2131165552);
         if (this.media != null) {
             this.media.setOnClickListener(listeners.playPauseListener);
             this.media.setBackgroundColor(this.transpColor);
         }
-        this.skipBack = (IconFontTextView)this.context.findViewById(2131165533);
+        this.skipBack = (IconFontTextView)this.context.findViewById(2131165553);
         if (this.skipBack != null) {
             this.skipBack.setOnClickListener(listeners.skipBackListener);
             this.skipBack.setBackgroundColor(this.transpColor);
@@ -170,13 +170,13 @@ public final class BottomPanel extends PlayerSection
                 BottomPanel.this.displayMdxTargets();
             }
         };
-        this.mdxTarget = (ImageButton)this.context.findViewById(2131165526);
+        this.mdxTarget = (ImageButton)this.context.findViewById(2131165546);
         if (this.mdxTarget != null) {
             this.mdxTarget.setOnClickListener((View$OnClickListener)onClickListener);
             this.mdxTarget.setBackgroundColor(this.transpColor);
         }
-        this.zoomDivider = this.context.findViewById(2131165536);
-        this.zoom = (ImageButton)this.context.findViewById(2131165537);
+        this.zoomDivider = this.context.findViewById(2131165556);
+        this.zoom = (ImageButton)this.context.findViewById(2131165557);
         if (this.zoom != null) {
             this.zoom.setOnClickListener(listeners.zoomListener);
             this.zoom.setBackgroundColor(this.transpColor);

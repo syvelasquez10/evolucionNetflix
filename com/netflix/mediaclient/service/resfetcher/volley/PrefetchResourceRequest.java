@@ -6,6 +6,8 @@ package com.netflix.mediaclient.service.resfetcher.volley;
 
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.NetworkResponse;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.android.volley.RetryPolicy;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
@@ -28,7 +30,7 @@ public class PrefetchResourceRequest extends Request<Integer>
     @Override
     protected void deliverResponse(final Integer n) {
         if (this.mCallback != null) {
-            this.mCallback.onResourcePrefetched(this.getUrl(), n, 0);
+            this.mCallback.onResourcePrefetched(this.getUrl(), n, CommonStatus.OK);
         }
     }
     

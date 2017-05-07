@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.kids.lolomo;
 
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.ui.lomo.BasePaginatedAdapter;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.ViewRecycler;

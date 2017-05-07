@@ -53,7 +53,7 @@ public class JPlayer2
         mediaFormat.setInteger("channel-count", 2);
         mediaFormat.setInteger("sample-rate", 48000);
         mediaFormat.setInteger("is-adts", 1);
-        (this.mAudioPipe = new MediaDecoder2Audio(new MediaDataSource(true), "audio/mp4a-latm", mediaFormat)).setEventListener((MediaDecoderBase.EventListener)this.mDecoderListener);
+        this.mAudioPipe = new MediaDecoder2Audio(new MediaDataSource(true), "audio/mp4a-latm", mediaFormat, this.mDecoderListener);
     }
     
     private void configureVideoPipe() throws Exception {
@@ -79,7 +79,7 @@ public class JPlayer2
             mediaFormat.setInteger("height", 1080);
         }
         if (this.mVideoPipe == null) {
-            (this.mVideoPipe = new MediaDecoder2Video(new MediaDataSource(false), "video/avc", mediaFormat, this.mSurface, this.mCrypto)).setEventListener((MediaDecoderBase.EventListener)this.mDecoderListener);
+            this.mVideoPipe = new MediaDecoder2Video(new MediaDataSource(false), "video/avc", mediaFormat, this.mSurface, this.mCrypto, this.mDecoderListener);
             Log.d("NF_JPlayer2", "video pipe is ready");
             return;
         }
@@ -255,11 +255,14 @@ public class JPlayer2
     public void Start() {
         while (true) {
             if (this.mState != -1) {
-                break Label_0016;
+                break Label_0045;
             }
             try {
                 this.configureAudioPipe();
                 this.configureVideoPipe();
+                if (this.mAudioPipe != null && this.mCrypto != null && AndroidUtils.getAndroidVersion() == 19) {
+                    this.mAudioPipe.enableAudioUseGetTimestampAPI();
+                }
                 Log.d("NF_JPlayer2", "Start called");
             }
             catch (Exception ex) {

@@ -4,117 +4,123 @@
 
 package com.netflix.mediaclient.service.browse;
 
-import com.netflix.mediaclient.servicemgr.Video;
-import com.netflix.mediaclient.servicemgr.VideoList;
-import com.netflix.mediaclient.servicemgr.ShowDetails;
-import com.netflix.mediaclient.servicemgr.SeasonDetails;
-import com.netflix.mediaclient.servicemgr.SearchResults;
-import com.netflix.mediaclient.servicemgr.PostPlayVideo;
-import com.netflix.mediaclient.servicemgr.MovieDetails;
-import com.netflix.mediaclient.servicemgr.LoMo;
-import com.netflix.mediaclient.servicemgr.LoLoMo;
-import com.netflix.mediaclient.servicemgr.KidsCharacterDetails;
-import com.netflix.mediaclient.servicemgr.Genre;
-import com.netflix.mediaclient.servicemgr.GenreList;
-import com.netflix.mediaclient.servicemgr.EpisodeDetails;
-import com.netflix.mediaclient.servicemgr.CWVideo;
+import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.model.SearchVideoList;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.model.LoLoMo;
+import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.model.genre.Genre;
+import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.model.CWVideo;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.model.Billboard;
 import java.util.List;
 
 public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
 {
     @Override
-    public void onCWListRefresh(final int n) {
+    public void onBBVideosFetched(final List<Billboard> list, final Status status) {
     }
     
     @Override
-    public void onCWVideosFetched(final List<CWVideo> list, final int n) {
+    public void onCWListRefresh(final Status status) {
     }
     
     @Override
-    public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final int n) {
+    public void onCWVideosFetched(final List<CWVideo> list, final Status status) {
     }
     
     @Override
-    public void onEpisodesFetched(final List<EpisodeDetails> list, final int n) {
+    public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
     }
     
     @Override
-    public void onGenreListsFetched(final List<GenreList> list, final int n) {
+    public void onEpisodesFetched(final List<EpisodeDetails> list, final Status status) {
     }
     
     @Override
-    public void onGenreLoLoMoPrefetched(final int n) {
+    public void onGenreListsFetched(final List<GenreList> list, final Status status) {
     }
     
     @Override
-    public void onGenresFetched(final List<Genre> list, final int n) {
+    public void onGenreLoLoMoPrefetched(final Status status) {
     }
     
     @Override
-    public void onIQListRefresh(final int n) {
+    public void onGenresFetched(final List<Genre> list, final Status status) {
     }
     
     @Override
-    public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final int n) {
+    public void onIQListRefresh(final Status status) {
     }
     
     @Override
-    public void onLoLoMoPrefetched(final int n) {
+    public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
     }
     
     @Override
-    public void onLoLoMoSummaryFetched(final LoLoMo loLoMo, final int n) {
+    public void onLoLoMoPrefetched(final Status status) {
     }
     
     @Override
-    public void onLoMosFetched(final List<LoMo> list, final int n) {
+    public void onLoLoMoSummaryFetched(final LoLoMo loLoMo, final Status status) {
     }
     
     @Override
-    public void onMovieDetailsFetched(final MovieDetails movieDetails, final int n) {
+    public void onLoMosFetched(final List<LoMo> list, final Status status) {
     }
     
     @Override
-    public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final int n) {
+    public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
     }
     
     @Override
-    public void onQueueAdd(final int n) {
+    public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final Status status) {
     }
     
     @Override
-    public void onQueueRemove(final int n) {
+    public void onQueueAdd(final Status status) {
     }
     
     @Override
-    public void onSearchResultsFetched(final SearchResults searchResults, final int n) {
+    public void onQueueRemove(final Status status) {
     }
     
     @Override
-    public void onSeasonDetailsFetched(final SeasonDetails seasonDetails, final int n) {
+    public void onSearchResultsFetched(final ISearchResults searchResults, final Status status) {
     }
     
     @Override
-    public void onSeasonsFetched(final List<SeasonDetails> list, final int n) {
+    public void onSeasonDetailsFetched(final SeasonDetails seasonDetails, final Status status) {
     }
     
     @Override
-    public void onShowDetailsFetched(final ShowDetails showDetails, final int n) {
+    public void onSeasonsFetched(final List<SeasonDetails> list, final Status status) {
     }
     
     @Override
-    public void onSimilarVideosFetched(final VideoList list, final int n) {
+    public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
     }
     
     @Override
-    public void onVideoHide(final int n) {
+    public void onSimilarVideosFetched(final SearchVideoList list, final Status status) {
     }
     
     @Override
-    public void onVideoRatingSet(final int n) {
+    public void onVideoHide(final Status status) {
     }
     
     @Override
-    public void onVideosFetched(final List<Video> list, final int n) {
+    public void onVideoRatingSet(final Status status) {
+    }
+    
+    @Override
+    public void onVideosFetched(final List<Video> list, final Status status) {
     }
 }

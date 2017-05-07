@@ -4,24 +4,23 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.servicemgr.LoMoType;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
-import com.netflix.mediaclient.service.browse.cache.BrowseCache;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
-import com.netflix.mediaclient.service.browse.cache.SoftCache;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.service.browse.cache.HardCache;
+import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
 public class PrefetchGenreLoLoMoRequest extends FalcorVolleyWebClientRequest<String>
@@ -30,7 +29,7 @@ public class PrefetchGenreLoLoMoRequest extends FalcorVolleyWebClientRequest<Str
     private static final String FIELD_PATH = "path";
     private static final String FIELD_TOPGENRE = "topGenre";
     private static final String TAG = "nf_service_browse_prefetchgenrelolomorequest";
-    private final HardCache hardCache;
+    private final BrowseWebClientCache browseCache;
     private final int mFromLoMo;
     private final int mFromVideo;
     private final String mGenreId;
@@ -44,21 +43,19 @@ public class PrefetchGenreLoLoMoRequest extends FalcorVolleyWebClientRequest<Str
     private long rEnd;
     private final long rStart;
     private final BrowseAgentCallback responseCallback;
-    private final SoftCache softCache;
     
-    public PrefetchGenreLoLoMoRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final boolean mIsKopExp, final HardCache hardCache, final SoftCache softCache, final String mGenreId, final int mFromLoMo, final int mToLoMo, final int mFromVideo, final int mToVideo, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public PrefetchGenreLoLoMoRequest(final Context context, final boolean mIsKopExp, final BrowseWebClientCache browseCache, final String mGenreId, final int mFromLoMo, final int mToLoMo, final int mFromVideo, final int mToVideo, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.mGenreId = mGenreId;
         this.mFromLoMo = mFromLoMo;
         this.mToLoMo = mToLoMo;
         this.mFromVideo = mFromVideo;
         this.mToVideo = mToVideo;
-        this.hardCache = hardCache;
-        this.softCache = softCache;
+        this.browseCache = browseCache;
         this.mIsKopExp = mIsKopExp;
-        this.pqlQuery = "['topGenre', '" + mGenreId + "',{'from':" + mFromLoMo + ",'to':" + mToLoMo + "},'summary']";
-        this.pqlQuery2 = "['topGenre','" + mGenreId + "',{'from':" + mFromLoMo + ",'to':" + mToLoMo + "},{'from':" + mFromVideo + ",'to':" + mToVideo + "},'summary']";
+        this.pqlQuery = String.format("['topGenre', '%s', {'from':%d,'to':%d}, 'summary']", mGenreId, mFromLoMo, mToLoMo);
+        this.pqlQuery2 = String.format("['topGenre', '%s', {'from':%d,'to':%d}, {'from':%d,'to':%d}, 'summary']", mGenreId, mFromLoMo, mToLoMo, mFromVideo, mToVideo);
         this.pqlKop = String.format("['flatGenre', '%s', {'from':%s, 'to':%s}, 'summary']", mGenreId, mFromVideo, mToVideo);
         if (Log.isLoggable("nf_service_browse_prefetchgenrelolomorequest", 2)) {
             if (mIsKopExp) {
@@ -72,29 +69,14 @@ public class PrefetchGenreLoLoMoRequest extends FalcorVolleyWebClientRequest<Str
         this.rStart = System.nanoTime();
     }
     
-    public static void putGenreLoLoMoIdInBrowseCache(final HardCache hardCache, final String s, final JsonObject jsonObject) throws FalcorParseException {
+    public static void putGenreLoLoMoIdInBrowseCache(final BrowseWebClientCache browseWebClientCache, final String s, final JsonObject jsonObject) throws FalcorParseException {
         try {
-            putGenreLoLoMoIdInBrowseCache(hardCache, s, jsonObject.getAsJsonArray("path").get(1).getAsString());
+            browseWebClientCache.putGenreLoLoMoIdInBrowseCache(s, jsonObject.getAsJsonArray("path").get(1).getAsString());
         }
         catch (Exception ex) {
             Log.v("nf_service_browse_prefetchgenrelolomorequest", "Genre LoLoMoId path missing in: " + jsonObject.toString());
             throw new FalcorParseException("Missing Genre lolomoId", ex);
         }
-    }
-    
-    private static void putGenreLoLoMoIdInBrowseCache(final HardCache hardCache, final String s, final String s2) {
-        final String buildBrowseGenreLoLoMoCacheKey = BrowseAgent.buildBrowseGenreLoLoMoCacheKey(s);
-        Log.d("nf_service_browse_prefetchgenrelolomorequest", String.format("greneId %s grenreLoLoMoId %s", s, s2));
-        BrowseAgent.putInBrowseCache(hardCache, buildBrowseGenreLoLoMoCacheKey, s2);
-    }
-    
-    private void putGenreLoMoInBrowseCache(String buildBrowseCacheKey, final Object o) {
-        buildBrowseCacheKey = BrowseAgent.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_GENRE_VIDEOS, buildBrowseCacheKey, String.valueOf(this.mFromVideo), String.valueOf(this.mToVideo));
-        BrowseAgent.putInBrowseCache(this.softCache, buildBrowseCacheKey, o);
-    }
-    
-    private void putGenreLoMoSummaryInBrowseCache(final Object o) {
-        BrowseAgent.putInBrowseCache(this.hardCache, BrowseAgent.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_GENRE_LOMO, this.mGenreId, String.valueOf(this.mFromLoMo), String.valueOf(this.mToLoMo)), o);
     }
     
     @Override
@@ -106,10 +88,10 @@ public class PrefetchGenreLoLoMoRequest extends FalcorVolleyWebClientRequest<Str
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            Log.d("nf_service_browse_prefetchgenrelolomorequest", "prefetchGenreLoLoMo finished onFailure statusCode=" + n);
-            this.responseCallback.onGenreLoLoMoPrefetched(n);
+            Log.d("nf_service_browse_prefetchgenrelolomorequest", "prefetchGenreLoLoMo finished onFailure statusCode=" + status);
+            this.responseCallback.onGenreLoLoMoPrefetched(status);
         }
     }
     
@@ -117,7 +99,7 @@ public class PrefetchGenreLoLoMoRequest extends FalcorVolleyWebClientRequest<Str
     protected void onSuccess(final String s) {
         if (this.responseCallback != null) {
             Log.d("nf_service_browse_prefetchgenrelolomorequest", "prefetchGenreLoLoMo finished onSuccess");
-            this.responseCallback.onGenreLoLoMoPrefetched(0);
+            this.responseCallback.onGenreLoLoMoPrefetched(CommonStatus.OK);
         }
     }
     
@@ -132,18 +114,18 @@ public class PrefetchGenreLoLoMoRequest extends FalcorVolleyWebClientRequest<Str
         if (FalcorParseUtils.isEmpty(dataObj)) {
             throw new FalcorParseException("GenreLoLoMoPrefetch empty!!!");
         }
-        Label_0273: {
+        Label_0282: {
             if (!this.mIsKopExp) {
-                break Label_0273;
+                break Label_0282;
             }
             String s2 = "flatGenre";
-        Label_0241_Outer:
+        Label_0239_Outer:
             while (true) {
                 JsonObject asJsonObject = null;
-                Label_0454: {
-                Label_0327:
+                Label_0483: {
+                Label_0336:
                     while (true) {
-                        Label_0321: {
+                        Label_0330: {
                             try {
                                 asJsonObject = dataObj.getAsJsonObject(s2).getAsJsonObject(this.mGenreId);
                                 if (!this.mIsKopExp) {
@@ -161,17 +143,17 @@ public class PrefetchGenreLoLoMoRequest extends FalcorVolleyWebClientRequest<Str
                                             final int mFromVideo = this.mFromVideo;
                                             final int mToVideo = this.mToVideo;
                                             if (listOfMoviesSummary.isBillboard()) {
-                                                break Label_0321;
+                                                break Label_0330;
                                             }
                                             final boolean b = true;
-                                            this.putGenreLoMoInBrowseCache(listOfMoviesSummary.getId(), FetchVideosRequest.buildVideoList(type, asJsonObject2, mFromVideo, mToVideo, b));
+                                            this.browseCache.putGenreLoMoInBrowseCache(listOfMoviesSummary.getId(), FetchVideosRequest.buildVideoList(type, asJsonObject2, mFromVideo, mToVideo, b), this.mFromVideo, this.mToVideo);
                                         }
                                     }
-                                    break Label_0327;
+                                    break Label_0336;
                                 }
-                                break Label_0454;
+                                break Label_0483;
                                 s2 = "topGenre";
-                                continue Label_0241_Outer;
+                                continue Label_0239_Outer;
                             }
                             catch (Exception ex) {
                                 Log.v("nf_service_browse_prefetchgenrelolomorequest", "String response to parse = " + s);
@@ -182,13 +164,13 @@ public class PrefetchGenreLoLoMoRequest extends FalcorVolleyWebClientRequest<Str
                         continue;
                     }
                     if (((List)s).size() > 0) {
-                        this.putGenreLoMoSummaryInBrowseCache(s);
-                        putGenreLoLoMoIdInBrowseCache(this.hardCache, this.mGenreId, asJsonObject);
+                        this.browseCache.putGenreLoMoSummaryInBrowseCache(s, this.mGenreId, this.mFromLoMo, this.mToLoMo);
+                        putGenreLoLoMoIdInBrowseCache(this.browseCache, this.mGenreId, asJsonObject);
                         break;
                     }
                     break;
                 }
-                this.putGenreLoMoInBrowseCache(this.mGenreId, FetchVideosRequest.buildVideoList(LoMoType.FLAT_GENRE, asJsonObject, this.mFromVideo, this.mToVideo, true));
+                this.browseCache.putGenreLoMoInBrowseCache(this.mGenreId, FetchVideosRequest.buildVideoList(LoMoType.FLAT_GENRE, asJsonObject, this.mFromVideo, this.mToVideo, true), this.mFromVideo, this.mToVideo);
                 break;
             }
         }
@@ -197,6 +179,6 @@ public class PrefetchGenreLoLoMoRequest extends FalcorVolleyWebClientRequest<Str
         this.rDurationInMs = TimeUnit.MILLISECONDS.convert(this.rEnd - this.rStart, TimeUnit.NANOSECONDS);
         Log.d("nf_service_browse_prefetchgenrelolomorequest", String.format("prefetch pasing took took %d ms ", TimeUnit.MILLISECONDS.convert(nanoTime2 - nanoTime, TimeUnit.NANOSECONDS)));
         Log.d("nf_service_browse_prefetchgenrelolomorequest", String.format("prefetch success - took %d ms ", this.rDurationInMs));
-        return Integer.toString(0);
+        return Integer.toString(StatusCode.OK.getValue());
     }
 }

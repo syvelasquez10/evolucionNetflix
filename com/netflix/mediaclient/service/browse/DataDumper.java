@@ -5,20 +5,18 @@
 package com.netflix.mediaclient.service.browse;
 
 import java.util.Set;
-import java.io.IOException;
-import java.io.FileWriter;
-import java.io.File;
-import android.os.Environment;
+import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Iterator;
 import java.util.Collection;
 import java.util.ArrayList;
-import com.netflix.mediaclient.servicemgr.Genre;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.cache.SoftCache;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.LoMo;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
 import java.util.LinkedHashMap;
 import com.netflix.mediaclient.service.browse.cache.HardCache;
 
@@ -48,8 +46,8 @@ public class DataDumper
         Log.v("DataDumper", "Taking a dump for genre: " + s);
         this.mBrowseWebClient.fetchGenres(s, 0, 100, new SimpleBrowseAgentCallback() {
             @Override
-            public void onGenresFetched(final List<Genre> list, final int n) {
-                super.onGenresFetched(list, n);
+            public void onGenresFetched(final List<Genre> list, final Status status) {
+                super.onGenresFetched(list, status);
                 Log.v("DataDumper", "genres fetched, count: " + list.size());
                 final ArrayList<LoMo> list2 = new ArrayList<LoMo>(list);
                 for (final Genre genre : list) {
@@ -62,10 +60,10 @@ public class DataDumper
     
     private void dumpHomeLoLomo() {
         Log.v("DataDumper", "Taking a dump for home lolomo");
-        this.mBrowseWebClient.fetchLoMos("lolomo", 0, 100, new SimpleBrowseAgentCallback() {
+        this.mBrowseWebClient.fetchLoMos(0, 100, new SimpleBrowseAgentCallback() {
             @Override
-            public void onLoMosFetched(final List<LoMo> list, final int n) {
-                super.onLoMosFetched(list, n);
+            public void onLoMosFetched(final List<LoMo> list, final Status status) {
+                super.onLoMosFetched(list, status);
                 Log.v("DataDumper", "lomos fetched, count: " + list.size());
                 final ArrayList<LoMo> list2 = new ArrayList<LoMo>(list);
                 for (final LoMo loMo : list) {
@@ -133,24 +131,8 @@ public class DataDumper
         }
         append.append("</body></html>").append("\n");
         Log.v("DataDumper", "Writing to file...");
-        this.writeToFile(append.toString());
+        FileUtils.writeStringToFile("DataDumper", append.toString(), "lolomo.html");
         Log.v("DataDumper", "Writing to file complete");
-    }
-    
-    private void writeToFile(final String s) {
-        try {
-            final File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/lolomo.html");
-            final FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(s);
-            fileWriter.close();
-            Log.v("DataDumper", "Wrote file to: " + file);
-            Log.v("DataDumper", "*****************************************************************");
-            Log.v("DataDumper", "Get html data file with command: adb pull /sdcard" + "/lolomo.html");
-            Log.v("DataDumper", "*****************************************************************");
-        }
-        catch (IOException ex) {
-            Log.handleException("DataDumper", ex);
-        }
     }
     
     public void dumpHomeLoLoMosAndVideos(final String s, final String title) {
@@ -233,12 +215,12 @@ public class DataDumper
         }
         
         @Override
-        public void onVideosFetched(final List<Video> list, final int n) {
+        public void onVideosFetched(final List<Video> list, final Status status) {
             if (DataDumper.this.dumpErrorOccurred) {
                 return;
             }
-            super.onVideosFetched(list, n);
-            if (n != 0) {
+            super.onVideosFetched(list, status);
+            if (status.isError()) {
                 Log.e("DataDumper", "Bummer!  Invalid status code during data dump :(");
                 DataDumper.this.dumpErrorOccurred = true;
                 this.todo.clear();

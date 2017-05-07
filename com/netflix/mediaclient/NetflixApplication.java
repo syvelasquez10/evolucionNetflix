@@ -21,7 +21,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.ui.LaunchActivity;
-import com.netflix.mediaclient.service.NetflixService;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.android.app.UserInputManager;
@@ -31,6 +30,7 @@ import java.util.TimerTask;
 import java.util.Timer;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.BroadcastReceiver;
+import com.google.gson.Gson;
 import android.app.Application;
 
 public class NetflixApplication extends Application
@@ -43,6 +43,7 @@ public class NetflixApplication extends Application
     private static final int SO_VERSION_MISMATCH = 2001;
     private static final String TAG = "NetflixApplication";
     private static final String TAG_LOCALE = "nf_locale";
+    private static Gson gson;
     private static boolean mAactivityVisible;
     private final long MAX_ACTIVITY_TRANSITION_TIME_MS;
     private final BroadcastReceiver broadcastReceiver;
@@ -55,6 +56,10 @@ public class NetflixApplication extends Application
     private boolean mSignedUpOnce;
     private UserInputManager mUserInput;
     private boolean wasInBackground;
+    
+    static {
+        NetflixApplication.gson = new Gson();
+    }
     
     public NetflixApplication() {
         this.mSignedUpOnce = false;
@@ -72,11 +77,11 @@ public class NetflixApplication extends Application
                     NetflixApplication.this.mIsNetflixServiceReady.set(false);
                 }
                 else if ("com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_INIT_COMPLETE".equals(action)) {
-                    final int intExtra = intent.getIntExtra("status_code", -1);
+                    final StatusCode statusCode = (StatusCode)intent.getSerializableExtra("status_code");
                     if (Log.isLoggable("NetflixApplication", 3)) {
-                        Log.d("NetflixApplication", "Netflix service is ready with status " + intExtra);
+                        Log.d("NetflixApplication", "Netflix service is ready with status " + statusCode);
                     }
-                    if (NetflixService.isServiceReady(intExtra)) {
+                    if (statusCode.isSucess()) {
                         Log.d("NetflixApplication", " Netflix application is ready");
                         NetflixApplication.this.mIsNetflixServiceReady.set(true);
                         return;
@@ -101,6 +106,10 @@ public class NetflixApplication extends Application
     
     public static Intent createShowApplicationIntent(final Context context) {
         return new Intent(context, (Class)LaunchActivity.class).setAction("android.intent.action.MAIN").addCategory("android.intent.category.LAUNCHER");
+    }
+    
+    public static Gson getGson() {
+        return NetflixApplication.gson;
     }
     
     public static boolean isActivityVisible() {
@@ -312,7 +321,7 @@ public class NetflixApplication extends Application
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat.Builder setAutoCancel = new NotificationCompat.Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837726).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493282, new Object[] { n })).setContentTitle(this.getString(2131493280, new Object[] { n })).setContentText(this.getString(2131493281, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat.Builder setAutoCancel = new NotificationCompat.Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837736).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493282, new Object[] { n })).setContentTitle(this.getString(2131493280, new Object[] { n })).setContentText(this.getString(2131493281, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");

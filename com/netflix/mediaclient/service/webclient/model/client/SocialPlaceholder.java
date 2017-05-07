@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.service.webclient.model.client;
 
-import com.netflix.mediaclient.servicemgr.FriendProfile;
+import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.VideoType;
-import com.netflix.mediaclient.servicemgr.LoMo;
-import com.netflix.mediaclient.servicemgr.VideoDetails;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 
 public abstract class SocialPlaceholder implements VideoDetails
 {
@@ -52,21 +52,6 @@ public abstract class SocialPlaceholder implements VideoDetails
     }
     
     @Override
-    public String getCreators() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
-    public int getEndtime() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
-    public int getEpisodeNumber() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
     public VideoType getErrorType() {
         throw new RuntimeException("Not implemented");
     }
@@ -74,11 +59,6 @@ public abstract class SocialPlaceholder implements VideoDetails
     @Override
     public List<FriendProfile> getFacebookFriends() {
         return this.lomo.getFacebookFriends();
-    }
-    
-    @Override
-    public boolean getFbDntShare() {
-        throw new RuntimeException("Not implemented");
     }
     
     @Override
@@ -107,52 +87,12 @@ public abstract class SocialPlaceholder implements VideoDetails
     }
     
     @Override
-    public String getParentId() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
-    public String getParentTitle() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
-    public int getPlayableBookmarkPosition() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
-    public long getPlayableBookmarkUpdateTime() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
-    public String getPlayableId() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
-    public String getPlayableTitle() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
     public float getPredictedRating() {
         throw new RuntimeException("Not implemented");
     }
     
     @Override
     public String getQuality() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
-    public int getRuntime() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
-    public int getSeasonNumber() {
         throw new RuntimeException("Not implemented");
     }
     
@@ -197,32 +137,7 @@ public abstract class SocialPlaceholder implements VideoDetails
     }
     
     @Override
-    public boolean isAutoPlayEnabled() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
     public boolean isInQueue() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
-    public boolean isNextPlayableEpisode() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
-    public boolean isPinProtected() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
-    public boolean isPlayableEpisode() {
-        throw new RuntimeException("Not implemented");
-    }
-    
-    @Override
-    public boolean isUserConnectedToFacebook() {
         throw new RuntimeException("Not implemented");
     }
     

@@ -26,6 +26,7 @@ public class PinVerifier implements ApplicationStateListener
     private static PinVerifier mPinVeriyInstance;
     
     static {
+        PinVerifier.mPinDialog = null;
         PinVerifier.mPinVeriyInstance = new PinVerifier();
     }
     
@@ -50,6 +51,29 @@ public class PinVerifier implements ApplicationStateListener
     
     private static void setPinSessionToInactive() {
         PinVerifier.mPinSessionExpiryTime = 0L;
+    }
+    
+    private boolean shouldHandleNewRequest(final PinDialogVault pinDialogVault) {
+        Log.w("nf_pin", String.format("pinDialog!=null loc:%s, visibile:%b, hidden:%b", pinDialogVault.getInvokeLocation(), PinVerifier.mPinDialog.isVisible(), PinVerifier.mPinDialog.isHidden()));
+        if (!PinVerifier.mPinDialog.isVisible() && !PinVerifier.mPinDialog.isHidden()) {
+            Log.w("nf_pin", String.format("Error.. pinDialog!=null but not visible - killing.. loc:%s, visibile:%b, hidden:%b", pinDialogVault.getInvokeLocation(), PinVerifier.mPinDialog.isVisible(), PinVerifier.mPinDialog.isHidden()));
+            this.dismissPinVerification();
+            return true;
+        }
+        if (Log.isLoggable("nf_pin", 3)) {
+            Log.w("nf_pin", String.format("Error.. new pin request while in progress.. %s, visibile:%b, hidden:%b", pinDialogVault.getInvokeLocation(), PinVerifier.mPinDialog.isVisible(), PinVerifier.mPinDialog.isHidden()));
+        }
+        if (PinDialogVault.PinInvokedFrom.MDX.getValue().equals(pinDialogVault.getInvokeLocation())) {
+            if (Log.isLoggable("nf_pin", 3)) {
+                Log.d("nf_pin", String.format("Dismissing new request new one Invoked from: %s", pinDialogVault.getInvokeLocation()));
+            }
+            return false;
+        }
+        if (Log.isLoggable("nf_pin", 3)) {
+            Log.d("nf_pin", String.format("Dismising old dialog. old one Invoked from: %s", PinVerifier.mPinDialog.getInvokeLocation()));
+        }
+        this.dismissPinVerification();
+        return true;
     }
     
     private boolean shouldVerifyPin(final boolean b) {
@@ -102,6 +126,7 @@ public class PinVerifier implements ApplicationStateListener
     }
     
     protected void pinDialogDismissed() {
+        Log.d("nf_pin", "pinDialogDismissed mPinDialog=null");
         PinVerifier.mPinDialog = null;
     }
     
@@ -117,7 +142,7 @@ public class PinVerifier implements ApplicationStateListener
             b2 = true;
         }
         Log.d("nf_pin_session", String.format("isActive: %b, wasPinProtectedPlayback: %b, extendSession ? %b- registerPlayStopEvent", pinSessionActive, b, b2));
-        if (isPinSessionActive() || b) {
+        if (isPinSessionActive()) {
             updatePinSessionExpiryTime(System.currentTimeMillis() + 1800000L);
         }
     }
@@ -129,10 +154,16 @@ public class PinVerifier implements ApplicationStateListener
     public void verify(final NetflixActivity netflixActivity, final boolean b, final PinDialogVault pinDialogVault) {
         if (!this.shouldVerifyPin(b)) {
             PinDialog.notifyCallerPinVerified(netflixActivity, pinDialogVault);
-            return;
         }
-        ((NetflixApplication)netflixActivity.getApplication()).getUserInput().addListener(this);
-        netflixActivity.showDialog(PinVerifier.mPinDialog = PinDialog.createPinDialog(netflixActivity, pinDialogVault));
+        else {
+            if (Log.isLoggable("nf_pin", 3)) {
+                Log.d("nf_pin", String.format("verifyPin loc:%s", pinDialogVault.getInvokeLocation()));
+            }
+            if (PinVerifier.mPinDialog == null || this.shouldHandleNewRequest(pinDialogVault)) {
+                ((NetflixApplication)netflixActivity.getApplication()).getUserInput().addListener(this);
+                netflixActivity.showDialog(PinVerifier.mPinDialog = PinDialog.createPinDialog(netflixActivity, pinDialogVault));
+            }
+        }
     }
     
     public interface PinVerificationCallback

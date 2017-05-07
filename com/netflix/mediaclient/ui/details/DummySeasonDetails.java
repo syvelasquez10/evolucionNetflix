@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 
 public class DummySeasonDetails implements SeasonDetails
 {

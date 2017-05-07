@@ -6,7 +6,7 @@ package com.netflix.mediaclient.service.mdx.cast;
 
 import android.widget.Toast;
 import com.google.android.gms.cast.CastMediaControlIntent;
-import com.netflix.mediaclient.service.configuration.CastConfiguration;
+import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONException;
@@ -226,7 +226,6 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     
     private void notifySessionend() {
         if (this.mSelectedRoute != null) {
-            this.getUuid(this.mSelectedRoute.getId());
             final String string = "action=endCastSession\r\nfromuuid=" + this.getUuid(this.mSelectedRoute.getId()) + "\r\n";
             if (Log.isLoggable(CastManager.TAG, 3)) {
                 Log.d(CastManager.TAG, "onMessageReceived @session, body:" + string);
@@ -350,7 +349,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
                 s = s.substring(s.lastIndexOf("/"));
             }
             optString2 = jsonObject.optString("type");
-            if (optString2.equals("castHandShakeAck")) {
+            if (optString2.equals("castHandShakeAck") && this.mSelectedRoute != null) {
                 this.nativeLaunchResultWrapper(true, this.getUuid(this.mSelectedRoute.getId()));
                 return;
             }
@@ -510,10 +509,10 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     }
     
     public void start() {
-        if (StringUtils.isNotEmpty(CastConfiguration.getNewCastApplicationId(this.mContext))) {
-            this.mApplicationId = CastConfiguration.getNewCastApplicationId(this.mContext);
+        if (StringUtils.isNotEmpty(SettingsConfiguration.getNewCastApplicationId(this.mContext))) {
+            this.mApplicationId = SettingsConfiguration.getNewCastApplicationId(this.mContext);
         }
-        CastConfiguration.setCastApplicationId(this.mContext, this.mApplicationId);
+        SettingsConfiguration.setCastApplicationId(this.mContext, this.mApplicationId);
         this.mMainHandler.post((Runnable)new Runnable() {
             @Override
             public void run() {
@@ -525,7 +524,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
                 }
                 catch (IllegalArgumentException ex) {
                     Log.e(CastManager.TAG, "MediaRouteSelector: " + ex);
-                    CastConfiguration.setCastApplicationId(CastManager.this.mContext, "==invalid ApplicationId==");
+                    SettingsConfiguration.setCastApplicationId(CastManager.this.mContext, "==invalid ApplicationId==");
                     Toast.makeText(CastManager.this.mContext, (CharSequence)"Invalid ApplicationId, Enter New One", 1).show();
                 }
             }

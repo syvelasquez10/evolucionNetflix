@@ -9,13 +9,14 @@ import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.Log;
 import android.app.Fragment;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.os.Parcelable;
 import android.content.Context;
 import android.content.Intent;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.LoMo;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.android.widget.ViewRecycler;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 
@@ -33,13 +34,13 @@ public class KidsLomoDetailActivity extends FragmentHostActivity implements View
     protected ManagerStatusListener createManagerStatusListener() {
         return new ManagerStatusListener() {
             @Override
-            public void onManagerReady(final ServiceManager serviceManager, final int n) {
-                KidsLomoDetailActivity.this.getPrimaryFrag().onManagerReady(serviceManager, n);
+            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
+                KidsLomoDetailActivity.this.getPrimaryFrag().onManagerReady(serviceManager, status);
             }
             
             @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
-                KidsLomoDetailActivity.this.getPrimaryFrag().onManagerUnavailable(serviceManager, n);
+            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
+                KidsLomoDetailActivity.this.getPrimaryFrag().onManagerUnavailable(serviceManager, status);
             }
         };
     }

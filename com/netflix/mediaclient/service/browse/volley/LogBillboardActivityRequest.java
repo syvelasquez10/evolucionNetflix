@@ -7,13 +7,13 @@ package com.netflix.mediaclient.service.browse.volley;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.servicemgr.Video;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
@@ -22,8 +22,8 @@ public class LogBillboardActivityRequest extends FalcorVolleyWebClientRequest<St
     private static final String TAG = "LogBillboardActivityRequest";
     private final String pqlQuery;
     
-    public LogBillboardActivityRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final Video video, final BrowseAgent.BillboardActivityType billboardActivityType) {
-        super(context, configurationAgentInterface);
+    public LogBillboardActivityRequest(final Context context, final Video video, final BrowseAgent.BillboardActivityType billboardActivityType) {
+        super(context);
         this.pqlQuery = String.format("['logBillboardActivity', '%s', '%s']", video.getId(), billboardActivityType.getName());
         if (Log.isLoggable("LogBillboardActivityRequest", 2)) {
             Log.v("LogBillboardActivityRequest", "PQL = " + this.pqlQuery);
@@ -41,8 +41,10 @@ public class LogBillboardActivityRequest extends FalcorVolleyWebClientRequest<St
     }
     
     @Override
-    protected void onFailure(final int n) {
-        Log.v("LogBillboardActivityRequest", "onFailure, statusCode:" + n);
+    protected void onFailure(final Status status) {
+        if (Log.isLoggable("LogBillboardActivityRequest", 2)) {
+            Log.v("LogBillboardActivityRequest", "onFailure, statusCode:" + status);
+        }
     }
     
     @Override

@@ -4,13 +4,14 @@
 
 package com.netflix.mediaclient.ui.search;
 
+import android.text.Spannable;
 import android.app.Activity;
-import com.netflix.mediaclient.servicemgr.Video;
-import com.netflix.mediaclient.servicemgr.SearchVideo;
-import com.netflix.mediaclient.servicemgr.SearchSuggestion;
+import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
+import com.netflix.mediaclient.servicemgr.model.search.SearchSuggestion;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.servicemgr.SearchPerson;
+import android.view.View;
+import com.netflix.mediaclient.servicemgr.model.search.SearchPerson;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.text.style.ForegroundColorSpan;
@@ -20,7 +21,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.util.AttributeSet;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
-import android.view.View;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.widget.TextView;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
@@ -32,21 +33,36 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     public static final String PEOPLE_TAG = "People";
     public static final String SUGGESTION_TAG = "Suggestion";
     public static final String VIDEO_TAG = "Video";
+    private String displayName;
+    private boolean ignoreClicks;
     private AdvancedImageView img;
     private PlayContext playContext;
+    private String playableId;
     protected TextView rating;
+    private int resId;
     protected TextView title;
-    private View verticalDivider;
+    private int trackId;
+    private IClientLogging.ModalView trackModalview;
     private VideoDetailsClickListener videoClickListener;
     
-    public SearchResultView(final Context context) {
+    public SearchResultView(final Context context, final int resId) {
         super(context);
+        this.resId = 2130903169;
+        this.ignoreClicks = false;
+        this.resId = resId;
         this.init();
     }
     
     public SearchResultView(final Context context, final AttributeSet set) {
         super(context, set);
+        this.resId = 2130903169;
+        this.ignoreClicks = false;
         this.init();
+    }
+    
+    private void findViews() {
+        this.img = (AdvancedImageView)this.findViewById(2131165617);
+        this.title = (TextView)this.findViewById(2131165618);
     }
     
     private CharSequence getFormattedYearSpannable(final String s, final String s2) {
@@ -63,123 +79,181 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     private void init() {
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        netflixActivity.getLayoutInflater().inflate(2130903159, (ViewGroup)this);
+        netflixActivity.getLayoutInflater().inflate(this.resId, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837855));
-        (this.img = (AdvancedImageView)this.findViewById(2131165585)).setPressedStateHandlerEnabled(false);
-        this.title = (TextView)this.findViewById(2131165586);
-        this.verticalDivider = this.findViewById(2131165588);
-        (this.rating = (TextView)this.findViewById(2131165587)).setVisibility(8);
+        this.setForeground(this.getResources().getDrawable(2130837875));
+        this.findViews();
+        this.setupViews();
         this.videoClickListener = new VideoDetailsClickListener(netflixActivity, this);
     }
     
-    private void setViewHeights(final ImgSizeType imgSizeType) {
-        final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(imgSizeType.heightDimenId);
-        this.img.getLayoutParams().height = dimensionPixelOffset;
-        this.verticalDivider.getLayoutParams().height = dimensionPixelOffset;
+    private void setTitleTextWithHighlighting(final String text, final String s) {
+        if (this.title == null || text == null || s == null) {
+            return;
+        }
+        final int index = text.toLowerCase().indexOf(s.toLowerCase());
+        if (index < 0) {
+            this.title.setText((CharSequence)text);
+            return;
+        }
+        int n;
+        if ((n = index + s.length()) > text.length() - 1) {
+            n = text.length() - 1;
+        }
+        final SpannableString text2 = new SpannableString((CharSequence)text);
+        ((Spannable)text2).setSpan((Object)new ForegroundColorSpan(this.getContext().getResources().getColor(2131296389)), index, n, 33);
+        this.title.setText((CharSequence)text2);
     }
     
-    private void update(final SearchPerson searchPerson) {
-        this.setViewHeights(ImgSizeType.SQUARE);
+    private void setupViews() {
+        if (this.img != null) {
+            this.img.setPressedStateHandlerEnabled(false);
+        }
+        if (this.rating != null) {
+            this.rating.setVisibility(8);
+        }
+    }
+    
+    private void update(final SearchPerson searchPerson, final String s) {
         final String name = searchPerson.getName();
         this.setContentDescription((CharSequence)name);
         this.setTag((Object)"People");
-        this.title.setText((CharSequence)name);
-        this.img.setVisibility(0);
-        final String imgUrl = searchPerson.getImgUrl();
-        NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, imgUrl, IClientLogging.AssetType.heroImage, name, false, false);
-        if (StringUtils.isEmpty(imgUrl)) {
-            this.img.setImageResource(2130837876);
+        this.trackModalview = IClientLogging.ModalView.peopleTitleResults;
+        if (name != null) {
+            this.setTitleTextWithHighlighting(name, s);
         }
-        this.videoClickListener.remove((View)this);
-        this.setOnClickListener((View$OnClickListener)new PersonClickListener(searchPerson.getId(), searchPerson.getName()));
+        if (this.img != null) {
+            this.img.setVisibility(0);
+            final String imgUrl = searchPerson.getImgUrl();
+            if (StringUtils.isNotEmpty(imgUrl)) {
+                NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, imgUrl, IClientLogging.AssetType.heroImage, name, false, false);
+            }
+            else {
+                this.img.setImageResource(2130837602);
+            }
+        }
+        if (!this.ignoreClicks) {
+            this.videoClickListener.remove((View)this);
+            this.setOnClickListener((View$OnClickListener)new PersonClickListener(searchPerson.getId(), searchPerson.getName(), s));
+        }
     }
     
-    private void update(final SearchSuggestion searchSuggestion) {
-        this.setViewHeights(ImgSizeType.SQUARE);
+    private void update(final SearchSuggestion searchSuggestion, final String s) {
         final String title = searchSuggestion.getTitle();
         this.setContentDescription((CharSequence)title);
         this.setTag((Object)"Suggestion");
-        this.title.setText((CharSequence)title);
-        this.img.setVisibility(8);
-        this.videoClickListener.remove((View)this);
-        this.setOnClickListener((View$OnClickListener)new SuggestionClickListener(searchSuggestion.getTitle(), searchSuggestion.getTitle()));
+        this.trackModalview = IClientLogging.ModalView.suggestionTitleResults;
+        if (title != null) {
+            this.setTitleTextWithHighlighting(title, s);
+        }
+        if (this.img != null) {
+            this.img.setVisibility(8);
+        }
+        if (!this.ignoreClicks) {
+            this.videoClickListener.remove((View)this);
+            this.setOnClickListener((View$OnClickListener)new SuggestionClickListener(searchSuggestion.getTitle(), searchSuggestion.getTitle(), s));
+        }
+    }
+    
+    public String getDisplayName() {
+        return this.displayName;
+    }
+    
+    public AdvancedImageView getImage() {
+        return this.img;
     }
     
     public PlayContext getPlayContext() {
         return this.playContext;
     }
     
+    public String getPlayablId() {
+        return this.playableId;
+    }
+    
     protected int getYearColorResId() {
         return 2131296315;
     }
     
-    public void update(final Object o, final PlayContext playContext) {
+    public void setIgnoreClicks() {
+        this.ignoreClicks = true;
+    }
+    
+    public void update(final Object o, final PlayContext playContext, final String s, final int trackId) {
         this.playContext = playContext;
+        this.trackId = trackId;
         if (o instanceof SearchVideo) {
-            this.updateForVideo((SearchVideo)o, playContext.getVideoPos());
+            this.playableId = ((SearchVideo)o).getId();
+            this.displayName = this.playableId;
+            this.updateForVideo((SearchVideo)o, playContext.getVideoPos(), s);
             return;
         }
         if (o instanceof SearchPerson) {
-            this.update((SearchPerson)o);
+            this.playableId = ((SearchPerson)o).getId();
+            this.displayName = ((SearchPerson)o).getName();
+            this.update((SearchPerson)o, s);
             return;
         }
         if (o instanceof SearchSuggestion) {
-            this.update((SearchSuggestion)o);
+            this.playableId = ((SearchSuggestion)o).getTitle();
+            this.displayName = this.playableId;
+            this.update((SearchSuggestion)o, s);
             return;
         }
         throw new IllegalStateException("Unknown search result type");
     }
     
-    protected void updateForVideo(final SearchVideo searchVideo, final int n) {
-        this.setViewHeights(ImgSizeType.BOXART);
+    protected void updateForVideo(final SearchVideo searchVideo, final int n, String s) {
         this.setContentDescription((CharSequence)searchVideo.getTitle());
         this.setTag((Object)"Video");
-        this.title.setText(this.getFormattedYearSpannable(searchVideo.getTitle(), String.valueOf(searchVideo.getYear())));
-        this.img.setVisibility(0);
-        NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, searchVideo.getBoxshotURL(), IClientLogging.AssetType.boxArt, searchVideo.getTitle(), true, true);
-        this.videoClickListener.update((View)this, searchVideo);
-    }
-    
-    private enum ImgSizeType
-    {
-        BOXART(2131361862), 
-        SQUARE(2131361861);
-        
-        private final int heightDimenId;
-        
-        private ImgSizeType(final int heightDimenId) {
-            this.heightDimenId = heightDimenId;
+        this.trackModalview = IClientLogging.ModalView.titleResults;
+        if (this.title != null) {
+            this.title.setVisibility(8);
         }
+        if (this.img != null && searchVideo != null) {
+            this.img.setVisibility(0);
+            if (SearchUtils.shouldShowVerticalBoxArt()) {
+                s = searchVideo.getBoxshotURL();
+            }
+            else {
+                s = searchVideo.getHorzDispUrl();
+            }
+            NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, s, IClientLogging.AssetType.boxArt, searchVideo.getTitle(), true, true);
+        }
+        this.videoClickListener.update((View)this, searchVideo);
     }
     
     private class PersonClickListener implements View$OnClickListener
     {
         private final String id;
         private final String name;
+        private final String query;
         
-        public PersonClickListener(final String id, final String name) {
+        public PersonClickListener(final String id, final String name, final String query) {
             this.id = id;
             this.name = name;
+            this.query = query;
         }
         
         public void onClick(final View view) {
-            SearchQueryDetailsActivity.show((Activity)SearchResultView.this.getContext(), SearchQueryDetailsActivity.SearchQueryDetailsType.PERSON, this.id, this.name);
+            SearchQueryDetailsActivity.show((Activity)SearchResultView.this.getContext(), SearchQueryDetailsActivity.SearchQueryDetailsType.PERSON, this.id, this.name, this.query, SearchResultView.this.trackId, SearchResultView.this.trackModalview);
         }
     }
     
     private class SuggestionClickListener implements View$OnClickListener
     {
         private final String id;
+        private final String query;
         private final String title;
         
-        public SuggestionClickListener(final String id, final String title) {
+        public SuggestionClickListener(final String id, final String title, final String query) {
             this.id = id;
             this.title = title;
+            this.query = query;
         }
         
         public void onClick(final View view) {
-            SearchQueryDetailsActivity.show((Activity)SearchResultView.this.getContext(), SearchQueryDetailsActivity.SearchQueryDetailsType.SEARCH_SUGGESTION, this.id, this.title);
+            SearchQueryDetailsActivity.show((Activity)SearchResultView.this.getContext(), SearchQueryDetailsActivity.SearchQueryDetailsType.SEARCH_SUGGESTION, this.id, this.title, this.query, SearchResultView.this.trackId, SearchResultView.this.trackModalview);
         }
     }
 }

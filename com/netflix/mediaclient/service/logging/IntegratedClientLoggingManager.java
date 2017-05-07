@@ -18,7 +18,7 @@ import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 import com.netflix.mediaclient.service.logging.client.model.LoggingRequest;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
-import com.netflix.mediaclient.servicemgr.UserProfile;
+import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
@@ -62,8 +62,10 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     private UserInputManager mInputManager;
     private final List<LoggingSession> mLoggingSessions;
     private final LoggingAgent mOwner;
+    private SearchLogging mSearchLogging;
     private final AtomicLong mSequence;
     private final NetflixService mService;
+    private SuspendLoggingImpl mSuspendLogging;
     private UIViewLoggingImpl mUIViewLogging;
     private final ServiceAgent.UserAgentInterface mUser;
     private final Map<String, Boolean> mUserSessionEnabledStatusMap;
@@ -320,15 +322,14 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     }
     
     List<SessionKey> getActiveSessions() {
-        synchronized (this) {
-            final List<LoggingSession> mLoggingSessions = this.mLoggingSessions;
-            final ArrayList<SessionKey> list = new ArrayList<SessionKey>();
-            final Iterator<LoggingSession> iterator = mLoggingSessions.iterator();
+        final ArrayList<SessionKey> list = new ArrayList<SessionKey>();
+        synchronized (this.mLoggingSessions) {
+            final Iterator<LoggingSession> iterator = this.mLoggingSessions.iterator();
             while (iterator.hasNext()) {
                 list.add(iterator.next().getKey());
             }
         }
-        // monitorexit(this)
+        // monitorexit(list2)
         return;
     }
     
@@ -372,6 +373,14 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
             Log.d("nf_log", "Handled by UI View logger");
             return;
         }
+        if (this.mSearchLogging.handleIntent(intent)) {
+            Log.d("nf_log", "Handled by Search logger");
+            return;
+        }
+        if (this.mSuspendLogging.handleIntent(intent)) {
+            Log.d("nf_log", "Handled by suspend logging logger");
+            return;
+        }
         Log.w("nf_log", "Action not handled!");
     }
     
@@ -387,6 +396,8 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         Log.d("nf_log", "Add ICL manager as listener on user input...");
         this.mOwner.getApplication().getUserInput().addListener(this);
         Log.d("nf_log", "Add ICL manager as listener on user input done.");
+        this.mSuspendLogging = new SuspendLoggingImpl(this);
+        this.mSearchLogging = new SearchLogging(this);
         this.initDataRepository();
         this.mApmLogging.handleConnectivityChange(this.mContext);
     }
@@ -450,6 +461,9 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     @Override
     public void onBackground(final UserInputManager userInputManager) {
         Log.d("nf_log", "App in background");
+        this.mSuspendLogging.startBackgroundingSession();
+        this.mSuspendLogging.endBackgroundingSession();
+        this.mSuspendLogging.startBackgroundSession();
     }
     
     @Override
@@ -458,9 +472,13 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
         final long n = SystemClock.elapsedRealtime() - userInputManager.getTimeSinceLastUserInteraction();
         if (n > 0L) {
             this.mApmLogging.startUserSession(ApplicationPerformanceMetricsLogging.Trigger.resumeFromBackground, n);
-            return;
         }
-        this.mApmLogging.startUserSession(ApplicationPerformanceMetricsLogging.Trigger.resumeFromBackground);
+        else {
+            this.mApmLogging.startUserSession(ApplicationPerformanceMetricsLogging.Trigger.resumeFromBackground);
+        }
+        this.mSuspendLogging.startResumingSession();
+        this.mSuspendLogging.endResumingSession();
+        this.mSuspendLogging.endBackgroundSession();
     }
     
     @Override

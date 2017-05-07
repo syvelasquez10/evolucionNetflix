@@ -15,10 +15,15 @@ public abstract class MediaDecoderBase
     static final int STATE_PAUSED = 2;
     static final int STATE_PLAYING = 1;
     static final int STATE_STOPPED = 0;
+    protected boolean mAudioUseGetTimestampAPI;
     protected Clock mClock;
     protected EventListener mEventListener;
     protected Clock mRefClock;
     protected volatile int mState;
+    
+    public void enableAudioUseGetTimestampAPI() {
+        this.mAudioUseGetTimestampAPI = true;
+    }
     
     public abstract void flush();
     
@@ -49,7 +54,7 @@ public abstract class MediaDecoderBase
     
     public abstract void restart();
     
-    public void setEventListener(final EventListener mEventListener) {
+    protected void setEventListener(final EventListener mEventListener) {
         this.mEventListener = mEventListener;
     }
     
@@ -139,6 +144,12 @@ public abstract class MediaDecoderBase
             this.mLastPts = mLastPts;
             this.mLastUpdateTime = System.currentTimeMillis();
             this.unpause();
+        }
+        
+        public void updateAndPause(final long mLastPts) {
+            this.mLastPts = mLastPts;
+            this.mLastUpdateTime = System.currentTimeMillis();
+            this.mRunning = false;
         }
     }
     

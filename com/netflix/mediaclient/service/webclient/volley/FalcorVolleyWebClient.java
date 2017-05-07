@@ -67,6 +67,10 @@ public class FalcorVolleyWebClient extends VolleyWebClient
     }
     
     public void sendRequest(final FalcorVolleyWebClientRequest<?> falcorVolleyWebClientRequest) {
-        this.sendFalcorRequest(falcorVolleyWebClientRequest, this.mApiEndpointRegistry.getApiUrlFull());
+        this.sendRequest(falcorVolleyWebClientRequest, ApiEndpointRegistry.ResponsePathFormat.HIERARCHICAL);
+    }
+    
+    public void sendRequest(final FalcorVolleyWebClientRequest<?> falcorVolleyWebClientRequest, final ApiEndpointRegistry.ResponsePathFormat responsePathFormat) {
+        this.sendFalcorRequest(falcorVolleyWebClientRequest, this.mApiEndpointRegistry.getApiUrlFull(responsePathFormat));
     }
 }

@@ -4,360 +4,54 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
-import com.netflix.mediaclient.servicemgr.FriendProfile;
-import java.util.List;
-import com.netflix.mediaclient.servicemgr.VideoType;
-import com.netflix.mediaclient.servicemgr.Video;
-import com.netflix.mediaclient.servicemgr.MovieDetails;
-import com.netflix.mediaclient.servicemgr.ShowDetails;
-import com.netflix.mediaclient.service.webclient.model.branches.Billboard;
+import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.model.Billboard;
 
-public class BillboardDetails extends Billboard implements ShowDetails, MovieDetails, Video
+public class BillboardDetails extends PlayableVideo implements Billboard
 {
-    private static final String TAG = "BillboardDetails";
-    
-    @Override
-    public String getActors() {
-        if (this.billboardDetail == null) {
-            return null;
-        }
-        return this.billboardDetail.actors;
-    }
-    
-    @Override
-    public String getBifUrl() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public String getBoxshotURL() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getBoxshotURL();
-    }
-    
-    @Override
-    public String getCatalogIdUrl() {
-        if (this.billboardDetail == null) {
-            return null;
-        }
-        return this.billboardDetail.restUrl;
-    }
-    
     @Override
     public String getCertification() {
-        if (this.billboardDetail == null) {
+        if (this.detail == null) {
             return null;
         }
-        return this.billboardDetail.certification;
-    }
-    
-    @Override
-    public String getCreators() {
-        if (this.billboardDetail == null) {
-            return null;
-        }
-        return this.billboardDetail.directors;
-    }
-    
-    @Override
-    public String getCurrentEpisodeId() {
-        return this.getId();
-    }
-    
-    @Override
-    public int getCurrentEpisodeNumber() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public String getCurrentEpisodeTitle() {
-        return this.getTitle();
-    }
-    
-    @Override
-    public int getCurrentSeasonNumber() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public int getEndtime() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public int getEpisodeNumber() {
-        return -1;
-    }
-    
-    @Override
-    public VideoType getErrorType() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getErrorType();
-    }
-    
-    @Override
-    public List<FriendProfile> getFacebookFriends() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public boolean getFbDntShare() {
-        return false;
-    }
-    
-    @Override
-    public String getGenres() {
-        if (this.billboardDetail == null) {
-            return null;
-        }
-        return this.billboardDetail.genres;
-    }
-    
-    @Override
-    public String getHighResolutionLandscapeBoxArtUrl() {
-        if (this.billboardDetail == null) {
-            return null;
-        }
-        return this.billboardDetail.mdxHorzUrl;
-    }
-    
-    @Override
-    public String getHighResolutionPortraitBoxArtUrl() {
-        if (this.billboardDetail == null) {
-            return null;
-        }
-        return this.billboardDetail.mdxVertUrl;
-    }
-    
-    @Override
-    public String getHorzDispUrl() {
-        if (this.billboardDetail == null) {
-            return null;
-        }
-        return this.billboardDetail.horzDispUrl;
-    }
-    
-    @Override
-    public String getId() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getId();
-    }
-    
-    @Override
-    public int getNumOfEpisodes() {
-        if (this.billboardDetail == null) {
-            return -1;
-        }
-        return this.billboardDetail.episodeCount;
+        return this.detail.certification;
     }
     
     @Override
     public int getNumOfSeasons() {
-        if (this.billboardDetail == null) {
-            return -1;
-        }
-        return this.billboardDetail.seasonCount;
-    }
-    
-    @Override
-    public String getParentId() {
-        return this.getId();
-    }
-    
-    @Override
-    public String getParentTitle() {
-        return this.getTitle();
-    }
-    
-    @Override
-    public int getPlayableBookmarkPosition() {
-        return 0;
-    }
-    
-    @Override
-    public long getPlayableBookmarkUpdateTime() {
-        return 0L;
-    }
-    
-    @Override
-    public String getPlayableId() {
-        if (this.getType() == VideoType.SHOW) {
-            return this.getCurrentEpisodeId();
-        }
-        return this.getId();
-    }
-    
-    @Override
-    public String getPlayableTitle() {
-        if (this.getType() == VideoType.SHOW) {
-            return this.getCurrentEpisodeTitle();
-        }
-        return this.getTitle();
-    }
-    
-    @Override
-    public float getPredictedRating() {
-        if (this.billboardDetail == null) {
-            return -1.0f;
-        }
-        return this.billboardDetail.predictedRating;
-    }
-    
-    @Override
-    public String getQuality() {
-        if (this.billboardDetail == null) {
-            return null;
-        }
-        return this.billboardDetail.quality;
-    }
-    
-    @Override
-    public int getRuntime() {
-        if (this.billboardDetail == null) {
+        if (!VideoType.SHOW.equals(this.getType()) || this.detail == null) {
             return 0;
         }
-        return this.billboardDetail.runtime;
+        return this.detail.seasonCount;
     }
     
     @Override
-    public int getSeasonNumber() {
-        return -1;
-    }
-    
-    @Override
-    public List<Video> getSimilars() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public int getSimilarsListPos() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public String getSimilarsRequestId() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public int getSimilarsTrackId() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public String getSquareUrl() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getSquareUrl();
+    public Playable getPlayable() {
+        return this;
     }
     
     @Override
     public String getStoryUrl() {
-        if (this.billboardDetail == null) {
+        if (this.detail == null) {
             return null;
         }
-        return this.billboardDetail.storyImgUrl;
+        return this.detail.storyImgUrl;
     }
     
     @Override
     public String getSynopsis() {
-        if (this.billboardDetail == null) {
+        if (this.detail == null) {
             return null;
         }
-        return this.billboardDetail.synopsis;
-    }
-    
-    @Override
-    public String getTitle() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getTitle();
-    }
-    
-    @Override
-    public String getTvCardUrl() {
-        if (this.billboardDetail == null) {
-            return null;
-        }
-        return this.billboardDetail.tvCardUrl;
-    }
-    
-    @Override
-    public VideoType getType() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getType();
-    }
-    
-    @Override
-    public float getUserRating() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
+        return this.detail.synopsis;
     }
     
     @Override
     public int getYear() {
-        if (this.billboardDetail == null) {
+        if (this.detail == null) {
             return 0;
         }
-        return this.billboardDetail.year;
-    }
-    
-    @Override
-    public boolean isAutoPlayEnabled() {
-        return this.billboardDetail != null && this.billboardDetail.isAutoPlayEnabled;
-    }
-    
-    @Override
-    public boolean isInQueue() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public boolean isNextPlayableEpisode() {
-        return this.billboardDetail != null && this.billboardDetail.isAutoPlayEnabled;
-    }
-    
-    @Override
-    public boolean isPinProtected() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public boolean isPlayableEpisode() {
-        return false;
-    }
-    
-    @Override
-    public boolean isShared() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public boolean isUserConnectedToFacebook() {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public boolean isVideoHd() {
-        return this.billboardDetail != null && this.billboardDetail.isHdAvailable;
-    }
-    
-    @Override
-    public void setUserRating(final float n) {
-        throw new IllegalStateException("Not implemented by BillboardDetails");
-    }
-    
-    @Override
-    public String toString() {
-        return "BillboardDetails [getTitle()=" + this.getTitle() + ", getId()=" + this.getId() + ", getSynopsis()=" + this.getSynopsis() + ", getQuality()=" + this.getQuality() + ", getActors()=" + this.getActors() + ", getGenres()=" + this.getGenres() + ", getCertification()=" + this.getCertification() + ", getCreators()=" + this.getCreators() + ", getPredictedRating()=" + this.getPredictedRating() + ", getYear()=" + this.getYear() + ", getBoxshotURL()=" + this.getBoxshotURL() + ", getType()=" + this.getType() + ", getNumOfEpisodes()=" + this.getNumOfEpisodes() + ", getNumOfSeasons()=" + this.getNumOfSeasons() + "]";
+        return this.detail.year;
     }
 }

@@ -9,9 +9,11 @@ import android.content.res.Resources;
 import android.view.KeyCharacterMap;
 import android.annotation.SuppressLint;
 import android.util.DisplayMetrics;
-import android.app.Activity;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.app.Activity;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class DeviceUtils
@@ -22,6 +24,18 @@ public final class DeviceUtils
     public static final int SCREEN_SIZE_XLARGE = 4;
     private static final String TAG = "nf_device_utils";
     private static AtomicBoolean sFirstStartAfterInstall;
+    
+    public static void forceHideKeyboard(final Activity activity, final EditText editText) {
+        if (activity != null) {
+            forceHideKeyboard((InputMethodManager)activity.getSystemService("input_method"), editText);
+        }
+    }
+    
+    public static void forceHideKeyboard(final InputMethodManager inputMethodManager, final EditText editText) {
+        if (inputMethodManager != null && editText != null) {
+            inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+        }
+    }
     
     public static int getBasicScreenOrientation(final Context context) {
         return context.getResources().getConfiguration().orientation;
@@ -142,11 +156,11 @@ public final class DeviceUtils
     }
     
     public static String getSoftwareVersion(final Context context) {
-        String versionName;
-        if ((versionName = AndroidManifestUtils.getVersionName(context)) == null) {
-            versionName = "N/A";
+        String version;
+        if ((version = AndroidManifestUtils.getVersion(context)) == null) {
+            version = "N/A";
         }
-        return versionName;
+        return version;
     }
     
     public static boolean hasHardwareNavigationKeys() {

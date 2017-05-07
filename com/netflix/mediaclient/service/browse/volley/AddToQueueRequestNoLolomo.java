@@ -6,38 +6,37 @@ package com.netflix.mediaclient.service.browse.volley;
 
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
+import com.netflix.mediaclient.StatusCode;
 import com.google.gson.JsonParser;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
-import com.netflix.mediaclient.service.browse.cache.SoftCache;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.service.browse.cache.HardCache;
+import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
 public class AddToQueueRequestNoLolomo extends FalcorVolleyWebClientRequest<String>
 {
     public static final String FIELD_VIDEOS = "videos";
     public static final String TAG = "nf_service_browse_addtoqueuerequest";
-    private final HardCache hardCache;
+    private final BrowseWebClientCache browseCache;
     private final String mVideoId;
     private final String pqlQuery;
     private final BrowseAgentCallback responseCallback;
-    private final SoftCache softCache;
     private final int trackId;
     
-    public AddToQueueRequestNoLolomo(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final HardCache hardCache, final SoftCache softCache, final String mVideoId, final int trackId, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public AddToQueueRequestNoLolomo(final Context context, final BrowseWebClientCache browseCache, final String mVideoId, final int trackId, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
-        this.hardCache = hardCache;
-        this.softCache = softCache;
         this.mVideoId = mVideoId;
         this.trackId = trackId;
+        this.browseCache = browseCache;
         this.pqlQuery = String.format("['videos', '%s', 'addToQueue']", mVideoId);
         if (Log.isLoggable("nf_service_browse_addtoqueuerequest", 2)) {
             Log.v("nf_service_browse_addtoqueuerequest", "PQL = " + this.pqlQuery);
@@ -63,10 +62,12 @@ public class AddToQueueRequestNoLolomo extends FalcorVolleyWebClientRequest<Stri
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            Log.d("nf_service_browse_addtoqueuerequest", "AddToQueueRequestNoLolomo finished onFailure statusCode=" + n);
-            this.responseCallback.onQueueAdd(n);
+            if (Log.isLoggable("nf_service_browse_addtoqueuerequest", 3)) {
+                Log.d("nf_service_browse_addtoqueuerequest", "AddToQueueRequestNoLolomo finished onFailure statusCode=" + status.getStatusCode());
+            }
+            this.responseCallback.onQueueAdd(status);
         }
     }
     
@@ -74,7 +75,7 @@ public class AddToQueueRequestNoLolomo extends FalcorVolleyWebClientRequest<Stri
     protected void onSuccess(final String s) {
         if (this.responseCallback != null) {
             Log.d("nf_service_browse_addtoqueuerequest", "AddToQueueRequestNoLolomo finished onSuccess");
-            this.responseCallback.onQueueAdd(0);
+            this.responseCallback.onQueueAdd(CommonStatus.OK);
         }
     }
     
@@ -84,32 +85,36 @@ public class AddToQueueRequestNoLolomo extends FalcorVolleyWebClientRequest<Stri
             Log.v("nf_service_browse_addtoqueuerequest", "String response to parse = " + s);
         }
         JsonObject asJsonObject = null;
-        Label_0122: {
+        Label_0138: {
             try {
                 asJsonObject = new JsonParser().parse(s).getAsJsonObject();
                 if (!FalcorParseUtils.containsErrors(asJsonObject)) {
-                    break Label_0122;
+                    break Label_0138;
                 }
                 if (FalcorParseUtils.getErrorMessage(asJsonObject).contains("AlreadyInQueue")) {
-                    return Integer.toString(0);
+                    return Integer.toString(StatusCode.OK.getValue());
                 }
             }
             catch (Exception ex) {
-                Log.v("nf_service_browse_addtoqueuerequest", "String response to parse = " + s);
+                if (Log.isLoggable("nf_service_browse_addtoqueuerequest", 6)) {
+                    Log.e("nf_service_browse_addtoqueuerequest", "String response to parse = " + s, ex);
+                }
                 throw new FalcorParseException("Error in creating JsonObject", ex);
             }
             throw new FalcorServerException(FalcorParseUtils.getErrorMessage(asJsonObject));
         }
         final JsonObject asJsonObject2 = asJsonObject.getAsJsonObject("value");
         if (FalcorParseUtils.isEmpty(asJsonObject2)) {
-            return Integer.toString(0);
+            return Integer.toString(StatusCode.OK.getValue());
         }
         try {
-            FetchIQVideosRequest.updateMdpWithIQInfo(this.hardCache, this.softCache, this.mVideoId, FalcorParseUtils.getPropertyObject(asJsonObject2.getAsJsonObject("videos").getAsJsonObject(this.mVideoId), "inQueue", Video.InQueue.class).inQueue);
-            return Integer.toString(0);
+            FetchIQVideosRequest.updateMdpAndSdpWithIQInfo(this.browseCache, this.mVideoId, FalcorParseUtils.getPropertyObject(asJsonObject2.getAsJsonObject("videos").getAsJsonObject(this.mVideoId), "inQueue", Video.InQueue.class).inQueue);
+            return Integer.toString(StatusCode.OK.getValue());
         }
         catch (Exception ex2) {
-            Log.v("nf_service_browse_addtoqueuerequest", "String response to parse = " + s);
+            if (Log.isLoggable("nf_service_browse_addtoqueuerequest", 6)) {
+                Log.e("nf_service_browse_addtoqueuerequest", "String response to parse = " + s, ex2);
+            }
             throw new FalcorParseException("response missing expected json objects", ex2);
         }
     }

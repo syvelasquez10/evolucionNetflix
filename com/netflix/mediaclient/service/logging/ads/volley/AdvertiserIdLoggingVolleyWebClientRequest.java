@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.logging.ads.volley;
 
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.app.Status;
 import com.android.volley.AuthFailureError;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.ads.AdvertiserIdLoggingCallback;
@@ -35,9 +36,9 @@ public final class AdvertiserIdLoggingVolleyWebClientRequest extends ClientLoggi
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (Log.isLoggable("nf_volleyrequest", 3)) {
-            Log.d("nf_volleyrequest", "Advertiser ID and opt in startus failed to be delivered. Status code returned" + n);
+            Log.d("nf_volleyrequest", "Advertiser ID and opt in startus failed to be delivered. Status code returned" + status);
         }
         if (this.mCallback != null) {
             this.mCallback.onFailure();

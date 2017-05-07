@@ -59,10 +59,12 @@ public abstract class AsyncTaskCompat<Params, Progress, Result>
             
             @Override
             public Thread newThread(final Runnable runnable) {
-                return new Thread(runnable, "AsyncTask #" + this.mCount.getAndIncrement());
+                final Thread thread = new Thread(runnable, "AsyncTask #" + this.mCount.getAndIncrement());
+                thread.setPriority(5);
+                return thread;
             }
         };
-        sPoolWorkQueue = new LinkedBlockingQueue<Runnable>(10);
+        sPoolWorkQueue = new LinkedBlockingQueue<Runnable>(64);
         THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(4, AsyncTaskCompat.MAXIMUM_POOL_SIZE, 1L, TimeUnit.SECONDS, AsyncTaskCompat.sPoolWorkQueue, AsyncTaskCompat.sThreadFactory, new ThreadPoolExecutor.DiscardOldestPolicy());
         SERIAL_EXECUTOR = Executors.newSingleThreadExecutor();
         sHandler = new InternalHandler();

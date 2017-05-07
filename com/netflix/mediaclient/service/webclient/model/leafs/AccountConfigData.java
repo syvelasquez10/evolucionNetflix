@@ -22,6 +22,8 @@ public class AccountConfigData
     private static final String TAG = "nf_config";
     @SerializedName("castWhitelistTargets")
     private final String castWhitelist;
+    @SerializedName("disableSuspendPlay")
+    private boolean disableSuspendPlay;
     @SerializedName("enableCast")
     private boolean enableCast;
     @SerializedName("JPlayerConfig")
@@ -36,6 +38,8 @@ public class AccountConfigData
     private JSONArray mMdxBlacklistTargetsJSONArray;
     @SerializedName("mdxBlacklistTargets")
     private final String mdxBlacklistTargets;
+    @SerializedName("tabletSearchExperience")
+    private int searchTest;
     @SerializedName("videoBufferSize")
     private final int videoBufferSize;
     
@@ -174,8 +178,16 @@ public class AccountConfigData
         }
     }
     
+    public int getSearchTest() {
+        return this.searchTest;
+    }
+    
     public int getVideoBufferSize() {
         return 0;
+    }
+    
+    public boolean toDisableSuspendPlay() {
+        return this.disableSuspendPlay;
     }
     
     @Override

@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.kids.lolomo;
 
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import com.netflix.mediaclient.util.MathUtils;
 import android.view.ViewGroup$LayoutParams;
@@ -12,7 +12,7 @@ import android.widget.AbsListView$LayoutParams;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 
 public class KidsCharacterLomoDetailAdapter extends KidsLomoDetailAdapter
@@ -25,7 +25,7 @@ public class KidsCharacterLomoDetailAdapter extends KidsLomoDetailAdapter
     protected VideoViewGroup<?, ?> createVideoViewGroup() {
         final KidsCharacterViewGroup kidsCharacterViewGroup = new KidsCharacterViewGroup((Context)this.activity, false);
         kidsCharacterViewGroup.init(2);
-        kidsCharacterViewGroup.setPadding(this.activity.getResources().getDimensionPixelSize(2131361918), 0, 0, 0);
+        kidsCharacterViewGroup.setPadding(this.activity.getResources().getDimensionPixelSize(2131361932), 0, 0, 0);
         kidsCharacterViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeSkidmarkCharacterViewSize(this.activity)));
         return kidsCharacterViewGroup;
     }

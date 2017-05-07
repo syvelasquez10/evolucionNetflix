@@ -20,6 +20,25 @@ public enum PlayerType
         this.description = description;
     }
     
+    public static String mapPlayerTypeForLogging(final PlayerType playerType) {
+        if (playerType == PlayerType.device7) {
+            return "XAL";
+        }
+        if (playerType == PlayerType.device8) {
+            return "XALMP";
+        }
+        if (playerType == PlayerType.device10) {
+            return "JPLAYER";
+        }
+        if (playerType == PlayerType.device11) {
+            return "JPLAYERBASE";
+        }
+        if (playerType == PlayerType.device12) {
+            return "JPLAYER2";
+        }
+        return "N/A";
+    }
+    
     public static PlayerType toPlayerType(final int n) {
         for (int i = 0; i < values().length; ++i) {
             if (values()[i].value == n) {

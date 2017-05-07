@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 public class ErrorView
 {
     public static View create(final LayoutInflater layoutInflater, final ErrorWrapper.Callback callback) {
-        final View inflate = layoutInflater.inflate(2130903082, (ViewGroup)null);
+        final View inflate = layoutInflater.inflate(2130903090, (ViewGroup)null);
         new ErrorWrapper(inflate, callback);
         return inflate;
     }

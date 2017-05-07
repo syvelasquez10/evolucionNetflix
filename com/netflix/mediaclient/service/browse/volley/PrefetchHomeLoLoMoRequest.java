@@ -4,30 +4,29 @@
 
 package com.netflix.mediaclient.service.browse.volley;
 
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
-import com.netflix.mediaclient.service.browse.cache.BrowseCache;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.service.webclient.model.leafs.ListOfMoviesSummary;
-import com.netflix.mediaclient.servicemgr.LoMoUtils;
-import com.netflix.mediaclient.servicemgr.LoMo;
+import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.google.gson.JsonArray;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.LoMoType;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
-import com.netflix.mediaclient.service.browse.cache.SoftCache;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.service.browse.cache.HardCache;
+import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
 public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<String>
@@ -35,12 +34,17 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Stri
     private static final String FIELD_LOLOMO = "lolomo";
     private static final String FIELD_PATH = "path";
     private static final String TAG = "nf_service_browse_prefetchhomelolomorequest";
+    private final BrowseWebClientCache browseCache;
+    private final int fromBBVideo;
     private final int fromCWVideo;
     private int fromCharactersVideo;
     private final int fromLoMo;
     private final int fromSimilars;
     private final int fromVideo;
-    private final HardCache hardCache;
+    private final String pqlBB1;
+    private final String pqlBB2;
+    private final String pqlBB3;
+    private final String pqlBB4;
     private String pqlCharactersQuery;
     private final String pqlQuery;
     private final String pqlQuery2;
@@ -52,41 +56,44 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Stri
     private long rEnd;
     private final long rStart;
     private final BrowseAgentCallback responseCallback;
-    private final SoftCache softCache;
+    private final int toBBVideo;
     private final int toCWVideo;
     private int toCharactersVideo;
     private final int toLoMo;
     private final int toSimilars;
     private final int toVideo;
     private final boolean userConnectedToFacebook;
-    private final SoftCache weakSeasonsCache;
     
-    public PrefetchHomeLoLoMoRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final HardCache hardCache, final SoftCache softCache, final SoftCache weakSeasonsCache, final int fromLoMo, final int toLoMo, final int fromVideo, final int toVideo, final int fromCWVideo, final int toCWVideo, final int toSimilars, final boolean b, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public PrefetchHomeLoLoMoRequest(final Context context, final BrowseWebClientCache browseCache, final int toLoMo, final int toVideo, final int toCWVideo, final int toBBVideo, final int toSimilars, final boolean b, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.fromCharactersVideo = -1;
         this.toCharactersVideo = -1;
         this.responseCallback = responseCallback;
-        this.fromLoMo = fromLoMo;
+        this.fromLoMo = 0;
         this.toLoMo = toLoMo;
-        this.fromVideo = fromVideo;
+        this.fromVideo = 0;
         this.toVideo = toVideo;
-        this.fromCWVideo = fromCWVideo;
+        this.fromCWVideo = 0;
         this.toCWVideo = toCWVideo;
+        this.fromBBVideo = 0;
+        this.toBBVideo = toBBVideo;
         this.fromSimilars = 0;
         this.toSimilars = toSimilars;
         this.userConnectedToFacebook = userConnectedToFacebook;
-        this.hardCache = hardCache;
-        this.softCache = softCache;
-        this.weakSeasonsCache = weakSeasonsCache;
-        this.pqlQuery = "['lolomo'" + ",{'from':" + fromLoMo + ",'to':" + toLoMo + "},'summary']";
-        this.pqlQuery2 = "['lolomo'" + ",{'from':" + fromLoMo + ",'to':" + toLoMo + "},{'from':" + fromVideo + ",'to':" + toVideo + "},['summary','billboardDetail']]";
-        this.pqlQuery3 = "['lolomo'" + ",'continueWatching'" + ",{'from':" + fromCWVideo + ",'to':" + toCWVideo + "},['summary', 'detail', 'rating', 'inQueue', 'bookmark', 'bookmarkStill', 'socialEvidence']]";
-        this.pqlQuery4 = "['lolomo'" + ",'continueWatching" + "', {'to':" + toCWVideo + ",'from':" + fromCWVideo + "},'episodes', 'current', ['detail', 'bookmark']]";
-        this.pqlQuery5 = "['lolomo'" + ",'continueWatching" + "', {'to':" + toCWVideo + ",'from':" + fromCWVideo + "}, 'similars'," + "{'to':" + toSimilars + ",'from':" + this.fromSimilars + "}, 'summary']";
-        this.pqlQuery6 = "['lolomo'" + ",'continueWatching" + "', {'to':" + toCWVideo + ",'from':" + fromCWVideo + "}, 'similars','summary']";
+        this.browseCache = browseCache;
+        this.pqlQuery = String.format("['lolomo', {'from':%d,'to':%d}, 'summary']", this.fromLoMo, toLoMo);
+        this.pqlQuery2 = String.format("['lolomo', {'from':%d,'to':%d}, {'from':%d,'to':%d}, 'summary']", this.fromLoMo, toLoMo, this.fromVideo, toVideo);
+        this.pqlQuery3 = String.format("['lolomo','continueWatching', {'from':%d,'to':%d}, ['summary', 'detail', 'rating', 'inQueue', 'bookmark', 'bookmarkStill', 'socialEvidence']]", this.fromCWVideo, toCWVideo);
+        this.pqlQuery4 = String.format("['lolomo','continueWatching', {'from':%d,'to':%d}, 'episodes', 'current', ['detail', 'bookmark']]", this.fromCWVideo, toCWVideo);
+        this.pqlQuery5 = String.format("['lolomo','continueWatching', {'from':%d,'to':%d}, 'similars', {'from':%d,'to':%d}, 'summary']", this.fromCWVideo, toCWVideo, this.fromSimilars, toSimilars);
+        this.pqlQuery6 = String.format("['lolomo','continueWatching', {'from':%d,'to':%d}, 'similars', 'summary']", this.fromCWVideo, toCWVideo);
+        this.pqlBB1 = String.format("%s, {'from':%d,'to':%d}, ['summary','detail', 'rating', 'inQueue', 'bookmark', 'bookmarkStill', 'socialEvidence']]", "['lolomo','billboard'", this.fromBBVideo, toBBVideo);
+        this.pqlBB2 = String.format("%s, {'from':%d,'to':%d}, 'episodes', 'current', ['detail', 'bookmark']]", "['lolomo','billboard'", this.fromBBVideo, toBBVideo);
+        this.pqlBB3 = String.format("%s, {'from':%d,'to':%d}, 'similars', {'from':%d,'to':%d}, 'summary']", "['lolomo','billboard'", this.fromBBVideo, toBBVideo, this.fromSimilars, toSimilars);
+        this.pqlBB4 = String.format("%s, {'from':%d,'to':%d}, 'similars', 'summary']", "['lolomo','billboard'", this.fromBBVideo, toBBVideo);
         if (b) {
             this.fromCharactersVideo = toVideo + 1;
-            this.toCharactersVideo = toVideo - fromVideo + this.fromCharactersVideo;
+            this.toCharactersVideo = toVideo - this.fromVideo + this.fromCharactersVideo;
             this.pqlCharactersQuery = String.format("['lolomo','characters',{'from':%d,'to':%d},['summary']]", this.fromCharactersVideo, this.toCharactersVideo);
         }
         if (Log.isLoggable("nf_service_browse_prefetchhomelolomorequest", 2)) {
@@ -96,6 +103,10 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Stri
             Log.v("nf_service_browse_prefetchhomelolomorequest", "PQL4 = " + this.pqlQuery4);
             Log.v("nf_service_browse_prefetchhomelolomorequest", "PQL5 = " + this.pqlQuery5);
             Log.v("nf_service_browse_prefetchhomelolomorequest", "PQL6 = " + this.pqlQuery6);
+            Log.v("nf_service_browse_prefetchhomelolomorequest", "PQLBB1 = " + this.pqlBB1);
+            Log.v("nf_service_browse_prefetchhomelolomorequest", "PQLBB2 = " + this.pqlBB2);
+            Log.v("nf_service_browse_prefetchhomelolomorequest", "PQLBB3 = " + this.pqlBB3);
+            Log.v("nf_service_browse_prefetchhomelolomorequest", "PQLBB4 = " + this.pqlBB4);
             Log.v("nf_service_browse_prefetchhomelolomorequest", "pqlCharactersQuery = " + this.pqlCharactersQuery);
         }
         this.rStart = System.nanoTime();
@@ -118,7 +129,7 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Stri
                 return;
             }
             final String asString = asJsonArray.get(1).getAsString();
-            this.putLoMoInBrowseCache(asString, buildVideoList, this.fromCharactersVideo, this.toCharactersVideo);
+            this.browseCache.putLoMoInBrowseCache(asString, buildVideoList, this.fromCharactersVideo, this.toCharactersVideo);
             if (Log.isLoggable("nf_service_browse_prefetchhomelolomorequest", 2)) {
                 Log.v("nf_service_browse_prefetchhomelolomorequest", "Found " + buildVideoList.size() + " extra characters in lolomoObj, list id: " + asString);
             }
@@ -130,53 +141,21 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Stri
         LoMoUtils.injectSocialData(loMo, list);
     }
     
-    public static void putCWIdsInCache(final HardCache hardCache, final ListOfMoviesSummary listOfMoviesSummary, final String s) {
-        BrowseAgent.putCWLoMoSummary(hardCache, listOfMoviesSummary);
-        BrowseAgent.putCWLoMoIndex(hardCache, String.valueOf(s));
-        BrowseAgent.putCWLoMoId(hardCache, listOfMoviesSummary.getId());
-    }
-    
-    private void putCWVideosInBrowseCache(final Object o) {
-        BrowseAgent.putInBrowseCache(this.hardCache, BrowseAgent.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_CW_VIDEOS, "continueWatching", String.valueOf(this.fromCWVideo), String.valueOf(this.toCWVideo)), o);
-    }
-    
-    public static void putIQIdsInCache(final HardCache hardCache, final ListOfMoviesSummary listOfMoviesSummary, final String s) {
-        BrowseAgent.putIQLoMoSummary(hardCache, listOfMoviesSummary);
-        BrowseAgent.putIQLoMoIndex(hardCache, String.valueOf(s));
-        BrowseAgent.putIQLoMoId(hardCache, listOfMoviesSummary.getId());
-    }
-    
-    private void putIQVideosInBrowseCache(final Object o) {
-        BrowseAgent.putInBrowseCache(this.hardCache, BrowseAgent.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_IQ_VIDEOS, "queue", String.valueOf(this.fromVideo), String.valueOf(this.toVideo)), o);
-    }
-    
-    public static void putLoLoMoIdInBrowseCache(final HardCache hardCache, final JsonObject jsonObject) throws FalcorParseException {
+    public static void putLoLoMoIdInBrowseCache(final BrowseWebClientCache browseWebClientCache, final JsonObject jsonObject) throws FalcorParseException {
         try {
-            putLoLoMoIdInBrowseCache(hardCache, jsonObject.getAsJsonArray("path").get(1).getAsString());
+            browseWebClientCache.putLoLoMoIdInBrowseCache(jsonObject.getAsJsonArray("path").get(1).getAsString());
         }
         catch (Exception ex) {
-            Log.v("nf_service_browse_prefetchhomelolomorequest", "LoLoMoId path missing in: " + jsonObject.toString());
+            if (Log.isLoggable("nf_service_browse_prefetchhomelolomorequest", 6)) {
+                Log.e("nf_service_browse_prefetchhomelolomorequest", "LoLoMoId path missing in: " + jsonObject.toString(), ex);
+            }
             throw new FalcorParseException("Missing lolomoId", ex);
         }
     }
     
-    private static void putLoLoMoIdInBrowseCache(final HardCache hardCache, final Object o) {
-        BrowseAgent.putInBrowseCache(hardCache, "lolomo_id", o);
-        Log.d("nf_service_browse_prefetchhomelolomorequest", "lolomoId =" + o);
-    }
-    
-    private void putLoMoInBrowseCache(String buildBrowseCacheKey, final Object o, final int n, final int n2) {
-        buildBrowseCacheKey = BrowseAgent.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_VIDEOS, buildBrowseCacheKey, String.valueOf(n), String.valueOf(n2));
-        BrowseAgent.putInBrowseCache(this.hardCache, buildBrowseCacheKey, o);
-    }
-    
-    private void putLoMoSummaryInBrowseCache(final Object o) {
-        BrowseAgent.putInBrowseCache(this.hardCache, BrowseAgent.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_LOMO, "lolomo", String.valueOf(this.fromLoMo), String.valueOf(this.toLoMo)), o);
-    }
-    
     @Override
     protected List<String> getPQLQueries() {
-        final ArrayList<String> list = new ArrayList<String>(Arrays.asList(this.pqlQuery, this.pqlQuery2, this.pqlQuery3, this.pqlQuery4, this.pqlQuery5, this.pqlQuery6));
+        final ArrayList<String> list = new ArrayList<String>(Arrays.asList(this.pqlQuery, this.pqlQuery2, this.pqlQuery3, this.pqlQuery4, this.pqlQuery5, this.pqlQuery6, this.pqlBB1, this.pqlBB2, this.pqlBB3, this.pqlBB4));
         if (this.pqlCharactersQuery != null) {
             list.add(this.pqlCharactersQuery);
         }
@@ -184,10 +163,10 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Stri
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
             Log.d("nf_service_browse_prefetchhomelolomorequest", "prefetch finished onFailure");
-            this.responseCallback.onLoLoMoPrefetched(n);
+            this.responseCallback.onLoLoMoPrefetched(status);
         }
     }
     
@@ -195,7 +174,7 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Stri
     protected void onSuccess(final String s) {
         if (this.responseCallback != null) {
             Log.d("nf_service_browse_prefetchhomelolomorequest", "prefetch finished onSuccess");
-            this.responseCallback.onLoLoMoPrefetched(0);
+            this.responseCallback.onLoLoMoPrefetched(CommonStatus.OK);
         }
     }
     
@@ -205,7 +184,7 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Stri
         this.rDurationInMs = TimeUnit.MILLISECONDS.convert(this.rEnd - this.rStart, TimeUnit.NANOSECONDS);
         Log.d("nf_service_browse_prefetchhomelolomorequest", String.format(" prefetch request took %d ms ", this.rDurationInMs));
         if (Log.isLoggable("nf_service_browse_prefetchhomelolomorequest", 2)) {
-            Log.v("nf_service_browse_prefetchhomelolomorequest", "String response to parse = " + s.substring(0, Math.min(s.length(), 100)));
+            Log.v("nf_service_browse_prefetchhomelolomorequest", "String response to parse = " + s.substring(0, Math.min(s.length(), 1000)));
         }
         final long nanoTime = System.nanoTime();
         final JsonObject dataObj = FalcorParseUtils.getDataObj("nf_service_browse_prefetchhomelolomorequest", s);
@@ -215,11 +194,16 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Stri
         JsonObject asJsonObject;
         while (true) {
             while (true) {
-                Label_0465: {
+                Label_0544: {
                     try {
                         asJsonObject = dataObj.getAsJsonObject("lolomo");
                         if (asJsonObject.has("continueWatching")) {
-                            this.putCWVideosInBrowseCache(FetchCWVideosRequest.buildCWVideoList(asJsonObject.getAsJsonObject("continueWatching"), this.fromCWVideo, this.toCWVideo, this.toSimilars, this.userConnectedToFacebook, this.hardCache, this.softCache, this.weakSeasonsCache));
+                            s = (String)FetchCWVideosRequest.buildCWVideoList(asJsonObject.getAsJsonObject("continueWatching"), this.fromCWVideo, this.toCWVideo, this.toSimilars, this.userConnectedToFacebook, this.browseCache);
+                            this.browseCache.putCWVideosInBrowseCache(s, this.fromCWVideo, this.toCWVideo);
+                        }
+                        if (asJsonObject.has("billboard")) {
+                            s = (String)FetchBBVideosRequest.buildBBVideoList(asJsonObject.getAsJsonObject("billboard"), this.fromBBVideo, this.toBBVideo, this.toSimilars, this.userConnectedToFacebook, this.browseCache);
+                            this.browseCache.putBBVideosInBrowseCache(s, this.fromBBVideo, this.toBBVideo);
                         }
                         this.handleExtraChacterDataIfAvailable(asJsonObject);
                         s = (String)new ArrayList();
@@ -236,20 +220,20 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Stri
                                 final int fromVideo = this.fromVideo;
                                 final int toVideo = this.toVideo;
                                 if (listOfMoviesSummary.isBillboard()) {
-                                    break Label_0465;
+                                    break Label_0544;
                                 }
                                 final boolean b = true;
                                 final List<Video> buildVideoList = FetchVideosRequest.buildVideoList(type, asJsonObject2, fromVideo, toVideo, b);
                                 if (LoMoUtils.shouldInjectSocialData(listOfMoviesSummary, this.userConnectedToFacebook)) {
                                     injectSocialData(listOfMoviesSummary, buildVideoList);
                                 }
-                                this.putLoMoInBrowseCache(listOfMoviesSummary.getId(), buildVideoList, this.fromVideo, this.toVideo);
+                                this.browseCache.putLoMoInBrowseCache(listOfMoviesSummary.getId(), buildVideoList, this.fromVideo, this.toVideo);
                                 if (listOfMoviesSummary.getType() == LoMoType.CONTINUE_WATCHING) {
-                                    putCWIdsInCache(this.hardCache, listOfMoviesSummary, string);
+                                    this.browseCache.putCWIdsInCache(listOfMoviesSummary, string);
                                 }
                                 if (listOfMoviesSummary.getType() == LoMoType.INSTANT_QUEUE) {
-                                    putIQIdsInCache(this.hardCache, listOfMoviesSummary, string);
-                                    this.putIQVideosInBrowseCache(buildVideoList);
+                                    this.browseCache.putIQIdsInCache(listOfMoviesSummary, string);
+                                    this.browseCache.putIQVideosInBrowseCache(buildVideoList, this.fromVideo, this.toVideo);
                                 }
                             }
                         }
@@ -265,15 +249,15 @@ public class PrefetchHomeLoLoMoRequest extends FalcorVolleyWebClientRequest<Stri
             }
         }
         if (((List)s).size() > 0) {
-            this.putLoMoSummaryInBrowseCache(s);
+            this.browseCache.putLoMoSummaryInBrowseCache(s, this.fromLoMo, this.toLoMo);
         }
-        putLoLoMoIdInBrowseCache(this.hardCache, asJsonObject);
+        putLoLoMoIdInBrowseCache(this.browseCache, asJsonObject);
         final long nanoTime2 = System.nanoTime();
         this.rEnd = nanoTime2;
         final long convert = TimeUnit.MILLISECONDS.convert(nanoTime2 - nanoTime, TimeUnit.NANOSECONDS);
         this.rDurationInMs = TimeUnit.MILLISECONDS.convert(this.rEnd - this.rStart, TimeUnit.NANOSECONDS);
         Log.d("nf_service_browse_prefetchhomelolomorequest", String.format(" prefetch parsing took took %d ms ", convert));
         Log.d("nf_service_browse_prefetchhomelolomorequest", String.format(" prefetch success - took %d ms ", this.rDurationInMs));
-        return Integer.toString(0);
+        return Integer.toString(StatusCode.OK.getValue());
     }
 }

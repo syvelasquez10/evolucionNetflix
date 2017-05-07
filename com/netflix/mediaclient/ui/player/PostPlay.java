@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import android.animation.TimeInterpolator;
 import android.content.Context;
@@ -11,17 +12,15 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View$OnClickListener;
 import android.view.MotionEvent;
 import android.view.View$OnTouchListener;
-import com.netflix.mediaclient.servicemgr.UserProfile;
+import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.ui.Asset;
-import android.content.Intent;
-import com.netflix.mediaclient.servicemgr.VideoType;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.Log;
 import android.widget.TextView;
-import com.netflix.mediaclient.servicemgr.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
 import java.util.List;
 import android.view.animation.DecelerateInterpolator;
 import android.view.View;
@@ -105,7 +104,7 @@ public abstract class PostPlay
         }
     }
     
-    public static PostPlayFactory.PostPlayType getPostPlayType(final PlayerActivity playerActivity, final boolean b) {
+    public static PostPlayFactory.PostPlayType getPostPlayType(final PlayerActivity playerActivity) {
         final DeviceCategory deviceCategory = playerActivity.getServiceManager().getDeviceCategory();
         int n;
         if (deviceCategory == null || deviceCategory == DeviceCategory.UNKNOWN || deviceCategory == DeviceCategory.PHONE) {
@@ -114,36 +113,24 @@ public abstract class PostPlay
         else {
             n = 1;
         }
-        boolean b2 = false;
-        final boolean b3 = false;
-        boolean b5;
-        if (b) {
-            final Intent intent = playerActivity.getIntent();
-            final boolean b4 = b5 = intent.getBooleanExtra("extra_get_details_has_next_episode", (boolean)(0 != 0));
-            if (VideoType.create(intent.getStringExtra("extra_get_details_video_type")) == VideoType.MOVIE) {
-                b2 = true;
-                b5 = b4;
+        boolean b = false;
+        boolean nextPlayableEpisode = false;
+        final Asset currentAsset = playerActivity.getCurrentAsset();
+        if (currentAsset != null) {
+            nextPlayableEpisode = currentAsset.isNextPlayableEpisode();
+            if (!currentAsset.isEpisode()) {
+                b = true;
             }
-        }
-        else {
-            final Asset currentAsset = playerActivity.getCurrentAsset();
-            b5 = b3;
-            if (currentAsset != null) {
-                b5 = currentAsset.isNextPlayableEpisode();
-                if (!currentAsset.isEpisode()) {
-                    b2 = true;
-                }
-                else {
-                    b2 = false;
-                }
+            else {
+                b = false;
             }
         }
         if (n != 0) {
-            if (b2) {
+            if (b) {
                 Log.d("nf_postplay", "RecommendationForTablet postplay layout");
                 return PostPlayFactory.PostPlayType.RecommendationForTablet;
             }
-            if (b5) {
+            if (nextPlayableEpisode) {
                 Log.d("nf_postplay", "EpisodesForTablet postplay layout");
                 return PostPlayFactory.PostPlayType.EpisodesForTablet;
             }
@@ -151,11 +138,11 @@ public abstract class PostPlay
             return PostPlayFactory.PostPlayType.RecommendationForTablet;
         }
         else {
-            if (b2) {
+            if (b) {
                 Log.d("nf_postplay", "Phone recommendation (no) postplay layout");
                 return PostPlayFactory.PostPlayType.RecommendationForPhone;
             }
-            if (b5) {
+            if (nextPlayableEpisode) {
                 Log.d("nf_postplay", "Phone episodes postplay layout");
                 return PostPlayFactory.PostPlayType.EpisodesForPhone;
             }
@@ -213,18 +200,18 @@ public abstract class PostPlay
     abstract void findViews();
     
     protected void findViewsCommon() {
-        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131165509);
-        this.mInterrupterContinue = this.mContext.findViewById(2131165508);
-        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131165561);
-        this.mSynopsis = (TextView)this.mContext.findViewById(2131165559);
-        this.mInterrupterStop = this.mContext.findViewById(2131165510);
-        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131165557);
-        this.mMoreButton = this.mContext.findViewById(2131165549);
-        this.mPlayButton = this.mContext.findViewById(2131165547);
-        this.mStopButton = this.mContext.findViewById(2131165548);
-        this.mTitle = (TextView)this.mContext.findViewById(2131165558);
-        this.mInterrupter = this.mContext.findViewById(2131165507);
-        this.mPostPlay = this.mContext.findViewById(2131165554);
+        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131165529);
+        this.mInterrupterContinue = this.mContext.findViewById(2131165528);
+        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131165581);
+        this.mSynopsis = (TextView)this.mContext.findViewById(2131165579);
+        this.mInterrupterStop = this.mContext.findViewById(2131165530);
+        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131165577);
+        this.mMoreButton = this.mContext.findViewById(2131165569);
+        this.mPlayButton = this.mContext.findViewById(2131165567);
+        this.mStopButton = this.mContext.findViewById(2131165568);
+        this.mTitle = (TextView)this.mContext.findViewById(2131165578);
+        this.mInterrupter = this.mContext.findViewById(2131165527);
+        this.mPostPlay = this.mContext.findViewById(2131165574);
     }
     
     protected abstract void handlePlayNow(final boolean p0);
@@ -234,7 +221,7 @@ public abstract class PostPlay
     }
     
     public void init(final String s) {
-        this.mContext.getServiceManager().fetchPostPlayVideos(s, new FetchPostPlayForPlaybackCallback());
+        this.mContext.getServiceManager().getBrowse().fetchPostPlayVideos(s, new FetchPostPlayForPlaybackCallback());
         this.mOffset = this.mContext.getResources().getInteger(2131427335) * 1000;
     }
     
@@ -437,13 +424,13 @@ public abstract class PostPlay
         }
         
         @Override
-        public void onPostPlayVideosFetched(final List<PostPlayVideo> mPostPlayVideos, final int n) {
+        public void onPostPlayVideosFetched(final List<PostPlayVideo> mPostPlayVideos, final Status status) {
             final boolean b = false;
-            super.onPostPlayVideosFetched(mPostPlayVideos, n);
+            super.onPostPlayVideosFetched(mPostPlayVideos, status);
             if (PostPlay.this.mContext.destroyed()) {
                 return;
             }
-            if (n != 0 || mPostPlayVideos == null) {
+            if (status.isError() || mPostPlayVideos == null) {
                 Log.w("nf_postplay", "Error loading post play data");
                 PostPlay.this.mPostPlayDataExist = false;
                 return;

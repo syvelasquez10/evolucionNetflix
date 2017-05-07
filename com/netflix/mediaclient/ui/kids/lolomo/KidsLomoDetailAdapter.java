@@ -4,12 +4,13 @@
 
 package com.netflix.mediaclient.ui.kids.lolomo;
 
-import com.netflix.mediaclient.servicemgr.CWVideo;
+import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.util.LogUtils;
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import java.util.Collections;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -19,15 +20,16 @@ import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 import android.content.Context;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.LoMo;
+import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.LoMoType;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.ArrayList;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.android.app.LoadingStatus;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
@@ -74,25 +76,25 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
         }
         final FetchVideosCallback fetchVideosCallback = new FetchVideosCallback(this.requestId, n - this.videoStartIndex + 1);
         if (this.lomo.getType() == LoMoType.CONTINUE_WATCHING) {
-            this.manager.fetchCWVideos(this.videoStartIndex, n, fetchVideosCallback);
+            this.manager.getBrowse().fetchCWVideos(this.videoStartIndex, n, fetchVideosCallback);
             return;
         }
         if (this.lomo.getType() == LoMoType.FLAT_GENRE) {
-            this.manager.fetchGenreVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, fetchVideosCallback);
+            this.manager.getBrowse().fetchGenreVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, fetchVideosCallback);
             return;
         }
-        this.manager.fetchVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, fetchVideosCallback);
+        this.manager.getBrowse().fetchVideos(new KidsLomoWrapper(this.lomo), this.videoStartIndex, n, fetchVideosCallback);
     }
     
     private void hideLoadingAndErrorViews() {
         this.frag.hideLoadingAndErrorViews();
     }
     
-    private void onDataLoaded(final int n) {
+    private void onDataLoaded(final Status status) {
         if (this.loadingStatusCallback != null) {
-            this.loadingStatusCallback.onDataLoaded(n);
+            this.loadingStatusCallback.onDataLoaded(status);
         }
-        if (n == 0) {
+        if (status.isSucces()) {
             this.frag.onDataLoadSuccess();
         }
     }
@@ -127,8 +129,8 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
             linearLayout = new KidsLoMoViewGroup<Object>((Context)this.activity, false);
         }
         ((VideoViewGroup)linearLayout).init(1);
-        final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361918);
-        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361919);
+        final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361932);
+        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361933);
         ((VideoViewGroup)linearLayout).setPadding(dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2);
         int n;
         if (b) {
@@ -180,7 +182,7 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
             videoViewGroup = this.createVideoViewGroup();
         }
         final List<Video> item = this.getItem(n);
-        ((VideoViewGroup<Video, V>)videoViewGroup).updateDataThenViews(item, this.getNumItemsPerPage(), 0, n, this.lomo);
+        ((VideoViewGroup<Video, V>)videoViewGroup).updateDataThenViews(item, this.getNumItemsPerPage(), n, 0, this.lomo);
         if (this.shouldReportPresentationTracking()) {
             LogUtils.reportPresentationTracking(this.manager, this.lomo, item.get(0), n);
         }
@@ -226,12 +228,12 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
     public void onDestroyView() {
     }
     
-    public void onManagerReady(final ServiceManager manager, final int n) {
+    public void onManagerReady(final ServiceManager manager, final Status status) {
         this.manager = manager;
         this.refreshData();
     }
     
-    public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
+    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
         this.manager = null;
     }
     
@@ -250,7 +252,7 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
     
     public void setLoadingStatusCallback(final LoadingStatusCallback loadingStatusCallback) {
         if (!this.isLoadingData() && loadingStatusCallback != null) {
-            loadingStatusCallback.onDataLoaded(0);
+            loadingStatusCallback.onDataLoaded(CommonStatus.OK);
             return;
         }
         this.loadingStatusCallback = loadingStatusCallback;
@@ -271,69 +273,51 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
             this.numItems = numItems;
         }
         
-        private void handleResponse(final List<? extends Video> list, final int n) {
+        private void handleResponse(final List<? extends Video> list, final Status status) {
             KidsLomoDetailAdapter.this.hasMoreData = true;
             if (this.requestId != KidsLomoDetailAdapter.this.requestId) {
                 Log.v("KidsLomoDetailAdapter", "Ignoring stale callback");
                 return;
             }
             KidsLomoDetailAdapter.this.isLoading = false;
-            Label_0079: {
-                if (n == 0) {
-                    break Label_0079;
-                }
-                try {
+            try {
+                if (status.isError()) {
                     Log.w("KidsLomoDetailAdapter", "Invalid status code");
                     KidsLomoDetailAdapter.this.hasMoreData = false;
                     KidsLomoDetailAdapter.this.notifyDataSetChanged();
                     return;
-                    // iftrue(Label_0125:, list != null && list.size() > 0)
-                    // iftrue(Label_0147:, list.size() >= this.numItems)
-                    // iftrue(Label_0213:, !Log.isLoggable("KidsLomoDetailAdapter", 2))
-                Label_0147_Outer:
-                    while (true) {
-                    Block_6:
-                        while (true) {
-                            Block_5: {
-                                Label_0092: {
-                                    break Label_0092;
-                                    Label_0125: {
-                                        break Block_5;
-                                    }
-                                    KidsLomoDetailAdapter.this.videoData.addAll(list);
-                                    KidsLomoDetailAdapter.access$312(KidsLomoDetailAdapter.this, list.size());
-                                    KidsLomoDetailAdapter.this.notifyDataSetChanged();
-                                    return;
-                                    break Block_6;
-                                }
-                                Log.v("KidsLomoDetailAdapter", "No videos in response");
-                                KidsLomoDetailAdapter.this.hasMoreData = false;
-                                KidsLomoDetailAdapter.this.notifyDataSetChanged();
-                                return;
-                            }
-                            KidsLomoDetailAdapter.this.hasMoreData = false;
-                            continue;
-                        }
-                        Log.v("KidsLomoDetailAdapter", "Got " + list.size() + " items, expected " + this.numItems + ", hasMoreData: " + KidsLomoDetailAdapter.this.hasMoreData);
-                        continue Label_0147_Outer;
-                    }
                 }
-                finally {
-                    KidsLomoDetailAdapter.this.onDataLoaded(n);
+                if (list == null || list.size() <= 0) {
+                    Log.v("KidsLomoDetailAdapter", "No videos in response");
+                    KidsLomoDetailAdapter.this.hasMoreData = false;
+                    KidsLomoDetailAdapter.this.notifyDataSetChanged();
+                    return;
                 }
+                if (list.size() < this.numItems) {
+                    KidsLomoDetailAdapter.this.hasMoreData = false;
+                }
+                if (Log.isLoggable("KidsLomoDetailAdapter", 2)) {
+                    Log.v("KidsLomoDetailAdapter", "Got " + list.size() + " items, expected " + this.numItems + ", hasMoreData: " + KidsLomoDetailAdapter.this.hasMoreData);
+                }
+                KidsLomoDetailAdapter.this.videoData.addAll(list);
+                KidsLomoDetailAdapter.access$312(KidsLomoDetailAdapter.this, list.size());
+                KidsLomoDetailAdapter.this.notifyDataSetChanged();
+            }
+            finally {
+                KidsLomoDetailAdapter.this.onDataLoaded(status);
             }
         }
         
         @Override
-        public void onCWVideosFetched(final List<CWVideo> list, final int n) {
-            super.onCWVideosFetched(list, n);
-            this.handleResponse(list, n);
+        public void onCWVideosFetched(final List<CWVideo> list, final Status status) {
+            super.onCWVideosFetched(list, status);
+            this.handleResponse(list, status);
         }
         
         @Override
-        public void onVideosFetched(final List<Video> list, final int n) {
-            super.onVideosFetched(list, n);
-            this.handleResponse(list, n);
+        public void onVideosFetched(final List<Video> list, final Status status) {
+            super.onVideosFetched(list, status);
+            this.handleResponse(list, status);
         }
     }
 }

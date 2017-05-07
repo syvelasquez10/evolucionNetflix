@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.NumberUtils;
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.google.gson.annotations.Since;
 import com.google.gson.annotations.SerializedName;
 

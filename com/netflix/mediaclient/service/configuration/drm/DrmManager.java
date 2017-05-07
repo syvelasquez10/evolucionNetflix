@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.configuration.drm;
 
+import com.netflix.mediaclient.android.app.Status;
+
 public interface DrmManager
 {
     public static final int DRM_TYPE_NONE = 0;
@@ -21,7 +23,7 @@ public interface DrmManager
     
     public interface DrmReadyCallback
     {
-        void drmError(final int p0);
+        void drmError(final Status p0);
         
         void drmReady();
     }

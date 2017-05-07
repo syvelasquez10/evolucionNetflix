@@ -17,6 +17,7 @@ import com.netflix.mediaclient.servicemgr.CustomerEventLogging;
 public final class LegacyCustomerEventLoggingImpl implements CustomerEventLogging
 {
     private static final String TAG = "nf_log";
+    private static final String TAG_PUSH = "nf_push";
     private Context mContext;
     private MdxLoggingManager mMdxLoggingManager;
     private LoggingAgent mOwner;
@@ -42,9 +43,7 @@ public final class LegacyCustomerEventLoggingImpl implements CustomerEventLoggin
         userData.accountCountry = this.mOwner.getUser().getReqCountry();
         userData.accountCountry = this.mOwner.getUser().getGeoCountry();
         userData.languages = this.mOwner.getUser().getLanguagesInCsv();
-        if (Log.isLoggable("nf_log", 3)) {
-            Log.d("nf_log", "GetUserData: " + userData);
-        }
+        if (Log.isLoggable("nf_log", 3)) {}
         return userData;
     }
     
@@ -68,7 +67,7 @@ public final class LegacyCustomerEventLoggingImpl implements CustomerEventLoggin
         final LaunchedFromDeepLink launchedFromDeepLink = new LaunchedFromDeepLink(this.mContext, this.getUserData(), s, s2, s3);
         Log.d("nf_log", "Execute reportApplicationLaunchFromDeepLinking beacon...");
         new BackgroundTask().execute(launchedFromDeepLink);
-        Log.d("nf_log", "Beacon send in background");
+        Log.d("nf_log", "reportApplicationLaunchedFromDeepLinking - Beacon send in background");
     }
     
     @Override
@@ -76,14 +75,14 @@ public final class LegacyCustomerEventLoggingImpl implements CustomerEventLoggin
         final MdpFromDeepLink mdpFromDeepLink = new MdpFromDeepLink(this.mContext, this.getUserData(), s);
         Log.d("nf_log", "Execute reportMdpFromDeepLinking beacon...");
         new BackgroundTask().execute(mdpFromDeepLink);
-        Log.d("nf_log", "Beacon send in background");
+        Log.d("nf_log", "reportMdpFromDeepLinking - Beacon send in background");
     }
     
     @Override
-    public void reportNotificationOptIn(final boolean b, final String s) {
-        final NotificationOptIn notificationOptIn = new NotificationOptIn(this.mContext, b, s, this.getUserData());
-        Log.d("nf_log", "Execute opt in beacon...");
+    public void reportNotificationOptIn(final boolean b, final boolean b2, final String s) {
+        final NotificationOptIn notificationOptIn = new NotificationOptIn(this.mContext, b, b2, s, this.getUserData());
+        Log.d("nf_push", String.format("Execute opt in beacon... %s", notificationOptIn));
         new BackgroundTask().execute(notificationOptIn);
-        Log.d("nf_log", "Beacon send in background");
+        Log.d("nf_push", "reportNotificationOptIn - Beacon send in background");
     }
 }

@@ -6,19 +6,20 @@ package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
 import android.widget.LinearLayout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import com.netflix.mediaclient.servicemgr.VideoDetails;
+import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.ShowDetails;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 
 public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
 {
@@ -52,7 +53,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
         this.isLoading = true;
         this.requestId = System.nanoTime();
         Log.v("ShowDetailsFrag", "Fetching data for show ID: " + this.videoId);
-        serviceManager.fetchShowDetails(this.videoId, this.episodeId, new FetchShowDetailsCallback(this.requestId));
+        serviceManager.getBrowse().fetchShowDetails(this.videoId, this.episodeId, new FetchShowDetailsCallback(this.requestId));
     }
     
     @Override
@@ -79,7 +80,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
-        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131165612);
+        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131165655);
         if (linearLayout != null) {
             linearLayout.setOrientation(1);
             for (int i = 0; i < linearLayout.getChildCount(); ++i) {
@@ -93,8 +94,8 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     }
     
     @Override
-    public void onManagerReady(final ServiceManager serviceManager, final int n) {
-        super.onManagerReady(serviceManager, n);
+    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
+        super.onManagerReady(serviceManager, status);
         this.fetchShowData();
     }
     
@@ -113,14 +114,14 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
         }
         
         @Override
-        public void onShowDetailsFetched(final ShowDetails showDetails, final int n) {
-            super.onShowDetailsFetched(showDetails, n);
+        public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
+            super.onShowDetailsFetched(showDetails, status);
             if (this.requestId != ShowDetailsFrag.this.requestId || ShowDetailsFrag.this.isDestroyed()) {
                 Log.v("ShowDetailsFrag", "Ignoring stale callback");
                 return;
             }
             ShowDetailsFrag.this.isLoading = false;
-            if (n != 0) {
+            if (status.isError()) {
                 Log.w("ShowDetailsFrag", "Invalid status code");
                 ShowDetailsFrag.this.showErrorView();
                 return;
@@ -146,11 +147,14 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
         
         @Override
         public CharSequence getBasicInfoString() {
-            return StringUtils.getBasicInfoString(this.context, this.details);
+            return StringUtils.getBasicShowInfoString(this.context, this.details);
         }
         
         @Override
         public CharSequence getCreatorsText() {
+            if (StringUtils.isEmpty(this.details.getCreators())) {
+                return null;
+            }
             return StringUtils.createBoldLabeledText(this.context, 2131493176, this.details.getCreators());
         }
         

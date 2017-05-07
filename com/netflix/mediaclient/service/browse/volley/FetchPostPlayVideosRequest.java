@@ -7,19 +7,20 @@ package com.netflix.mediaclient.service.browse.volley;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.SocialEvidence;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
@@ -36,8 +37,8 @@ public class FetchPostPlayVideosRequest extends FalcorVolleyWebClientRequest<Lis
     private final BrowseAgentCallback responseCallback;
     private final boolean userConnectedToFacebook;
     
-    protected FetchPostPlayVideosRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String currentPlayId, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    protected FetchPostPlayVideosRequest(final Context context, final String currentPlayId, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.MAX_POSTPLAY_RECOS = 3;
         this.responseCallback = responseCallback;
         this.currentPlayId = currentPlayId;
@@ -53,16 +54,16 @@ public class FetchPostPlayVideosRequest extends FalcorVolleyWebClientRequest<Lis
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onPostPlayVideosFetched(Collections.emptyList(), n);
+            this.responseCallback.onPostPlayVideosFetched(Collections.emptyList(), status);
         }
     }
     
     @Override
     protected void onSuccess(final List<PostPlayVideo> list) {
         if (this.responseCallback != null) {
-            this.responseCallback.onPostPlayVideosFetched(list, 0);
+            this.responseCallback.onPostPlayVideosFetched(list, CommonStatus.OK);
         }
     }
     

@@ -8,16 +8,21 @@ import com.netflix.mediaclient.service.logging.uiaction.model.UpgradeStreamsEnde
 import com.netflix.mediaclient.service.logging.uiaction.model.SubmitPaymentEndedEvent;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.uiaction.model.StartPlayEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.SelectProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.SearchEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RemoveFromPlaylistEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RegisterEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RateTitleEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.NavigationEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.LoginEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.EditProfileEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.DeleteProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.AddToPlaylistEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.AddProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.AcknowledgeSignupEndedEvent;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.media.PlayerType;
 import java.io.Serializable;
 import org.json.JSONException;
 import com.netflix.mediaclient.util.StringUtils;
@@ -29,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.netflix.mediaclient.service.logging.uiaction.UpgradeStreamsSession;
 import com.netflix.mediaclient.service.logging.uiaction.SubmitPaymentSession;
 import com.netflix.mediaclient.service.logging.uiaction.StartPlaySession;
+import com.netflix.mediaclient.service.logging.uiaction.SelectProfileSession;
 import com.netflix.mediaclient.service.logging.uiaction.SearchSession;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.uiaction.RemoveFromPlaylistSession;
@@ -36,8 +42,11 @@ import com.netflix.mediaclient.service.logging.uiaction.RegisterSession;
 import com.netflix.mediaclient.service.logging.uiaction.RateTitleSession;
 import com.netflix.mediaclient.service.logging.uiaction.NavigationSession;
 import com.netflix.mediaclient.service.logging.uiaction.LoginSession;
+import com.netflix.mediaclient.service.logging.uiaction.EditProfileSession;
+import com.netflix.mediaclient.service.logging.uiaction.DeleteProfileSession;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.service.logging.uiaction.AddToPlaylistSession;
+import com.netflix.mediaclient.service.logging.uiaction.AddProfileSession;
 import com.netflix.mediaclient.service.logging.uiaction.AcknowledgeSignupSession;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 
@@ -45,8 +54,11 @@ final class UserActionLoggingImpl implements UserActionLogging
 {
     private static final String TAG = "nf_log";
     private AcknowledgeSignupSession mAcknowledgeSignup;
+    private AddProfileSession mAddProfileSession;
     private AddToPlaylistSession mAddToPlaylistSession;
     private DataContext mDataContext;
+    private DeleteProfileSession mDeleteProfileSession;
+    private EditProfileSession mEditProfileSession;
     private EventHandler mEventHandler;
     private LoginSession mLoginSession;
     private NavigationSession mNavigationSession;
@@ -54,6 +66,7 @@ final class UserActionLoggingImpl implements UserActionLogging
     private RegisterSession mRegisterSession;
     private RemoveFromPlaylistSession mRemoveFromPlaylistSession;
     private Map<Long, SearchSession> mSearchSessions;
+    private SelectProfileSession mSelectProfileSession;
     private StartPlaySession mStartPlaySession;
     private SubmitPaymentSession mSubmitPaymentSession;
     private UpgradeStreamsSession mUpgradeStreamsSession;
@@ -102,6 +115,45 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.startAcknowledgeSignupSession((CommandName)value, (IClientLogging.ModalView)value2);
     }
     
+    private void handleAddProfileEnded(final Intent intent) {
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
+        final String stringExtra3 = intent.getStringExtra("view");
+        Enum<IClientLogging.ModalView> value = null;
+        if (StringUtils.isNotEmpty(stringExtra3)) {
+            value = IClientLogging.ModalView.valueOf(stringExtra3);
+        }
+        UIError instance = null;
+        while (true) {
+            try {
+                instance = UIError.createInstance(stringExtra2);
+                Enum<IClientLogging.CompletionReason> value2 = null;
+                if (!StringUtils.isEmpty(stringExtra)) {
+                    value2 = IClientLogging.CompletionReason.valueOf(stringExtra);
+                }
+                this.endAddProfileSession((IClientLogging.CompletionReason)value2, (IClientLogging.ModalView)value, instance, new Profile(intent.getStringExtra("profile_id"), intent.getStringExtra("profile_name"), intent.getIntExtra("profile_age", -1), intent.getBooleanExtra("profile_is_kids", false)));
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handleAddProfileStart(final Intent intent) {
+        final String stringExtra = intent.getStringExtra("cmd");
+        Enum<CommandName> value = null;
+        if (StringUtils.isNotEmpty(stringExtra)) {
+            value = CommandName.valueOf(stringExtra);
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        Enum<IClientLogging.ModalView> value2 = null;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+        }
+        this.startAddProfileSession((CommandName)value, (IClientLogging.ModalView)value2);
+    }
+    
     private void handleAddToPlaylistEnded(Intent instance) {
         final String stringExtra = instance.getStringExtra("reason");
         final String stringExtra2 = instance.getStringExtra("error");
@@ -135,6 +187,84 @@ final class UserActionLoggingImpl implements UserActionLogging
             value2 = IClientLogging.ModalView.valueOf(stringExtra2);
         }
         this.startAddToPlaylistSession((CommandName)value, (IClientLogging.ModalView)value2);
+    }
+    
+    private void handleDeleteProfileEnded(Intent value) {
+        final String stringExtra = value.getStringExtra("reason");
+        final String stringExtra2 = value.getStringExtra("error");
+        final String stringExtra3 = value.getStringExtra("view");
+        value = null;
+        if (StringUtils.isNotEmpty(stringExtra3)) {
+            value = (Intent)IClientLogging.ModalView.valueOf(stringExtra3);
+        }
+        UIError instance = null;
+        while (true) {
+            try {
+                instance = UIError.createInstance(stringExtra2);
+                Enum<IClientLogging.CompletionReason> value2 = null;
+                if (!StringUtils.isEmpty(stringExtra)) {
+                    value2 = IClientLogging.CompletionReason.valueOf(stringExtra);
+                }
+                this.endDeleteProfileSession((IClientLogging.CompletionReason)value2, (IClientLogging.ModalView)value, instance);
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handleDeleteProfileStart(final Intent intent) {
+        final String stringExtra = intent.getStringExtra("cmd");
+        Enum<CommandName> value = null;
+        if (StringUtils.isNotEmpty(stringExtra)) {
+            value = CommandName.valueOf(stringExtra);
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        Enum<IClientLogging.ModalView> value2 = null;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+        }
+        this.startDeleteProfileSession(intent.getStringExtra("profile_id"), (CommandName)value, (IClientLogging.ModalView)value2);
+    }
+    
+    private void handleEditProfileEnded(final Intent intent) {
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
+        final String stringExtra3 = intent.getStringExtra("view");
+        Enum<IClientLogging.ModalView> value = null;
+        if (StringUtils.isNotEmpty(stringExtra3)) {
+            value = IClientLogging.ModalView.valueOf(stringExtra3);
+        }
+        UIError instance = null;
+        while (true) {
+            try {
+                instance = UIError.createInstance(stringExtra2);
+                Enum<IClientLogging.CompletionReason> value2 = null;
+                if (!StringUtils.isEmpty(stringExtra)) {
+                    value2 = IClientLogging.CompletionReason.valueOf(stringExtra);
+                }
+                this.endEditProfileSession((IClientLogging.CompletionReason)value2, (IClientLogging.ModalView)value, instance, new Profile(intent.getStringExtra("profile_id"), intent.getStringExtra("profile_name"), intent.getIntExtra("profile_age", -1), intent.getBooleanExtra("profile_is_kids", false)));
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handleEditProfileStart(final Intent intent) {
+        final String stringExtra = intent.getStringExtra("cmd");
+        Enum<CommandName> value = null;
+        if (StringUtils.isNotEmpty(stringExtra)) {
+            value = CommandName.valueOf(stringExtra);
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        Enum<IClientLogging.ModalView> value2 = null;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+        }
+        this.startEditProfileSession((CommandName)value, (IClientLogging.ModalView)value2);
     }
     
     private void handleLoginEnded(Intent instance) {
@@ -356,14 +486,60 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.startSearchSession(intent.getLongExtra("id", -1L), (CommandName)value, (IClientLogging.ModalView)value2, stringExtra2);
     }
     
-    private void handleStartPlayEnded(Intent instance) {
-        Serializable s = instance.getStringExtra("reason");
-        final String stringExtra = instance.getStringExtra("error");
-        final int intExtra = instance.getIntExtra("rank", Integer.MIN_VALUE);
-        instance = null;
+    private void handleSelectProfileEnded(Intent value) {
+        final String stringExtra = value.getStringExtra("reason");
+        final String stringExtra2 = value.getStringExtra("error");
+        final String stringExtra3 = value.getStringExtra("view");
+        value = null;
+        if (StringUtils.isNotEmpty(stringExtra3)) {
+            value = (Intent)IClientLogging.ModalView.valueOf(stringExtra3);
+        }
+        UIError instance = null;
         while (true) {
             try {
-                instance = (Intent)UIError.createInstance(stringExtra);
+                instance = UIError.createInstance(stringExtra2);
+                Enum<IClientLogging.CompletionReason> value2 = null;
+                if (!StringUtils.isEmpty(stringExtra)) {
+                    value2 = IClientLogging.CompletionReason.valueOf(stringExtra);
+                }
+                this.endSelectProfileSession((IClientLogging.CompletionReason)value2, (IClientLogging.ModalView)value, instance);
+            }
+            catch (JSONException ex) {
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handleSelectProfileStart(final Intent intent) {
+        final String stringExtra = intent.getStringExtra("cmd");
+        Enum<CommandName> value = null;
+        if (StringUtils.isNotEmpty(stringExtra)) {
+            value = CommandName.valueOf(stringExtra);
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        Enum<IClientLogging.ModalView> value2 = null;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging.ModalView.valueOf(stringExtra2);
+        }
+        final String stringExtra3 = intent.getStringExtra("profile_id");
+        final RememberProfile rememberProfile = null;
+        final String stringExtra4 = intent.getStringExtra("remember_profile");
+        Enum<RememberProfile> value3 = rememberProfile;
+        if (StringUtils.isNotEmpty(stringExtra4)) {
+            value3 = RememberProfile.valueOf(stringExtra4);
+        }
+        this.startSelectProfileSession(stringExtra3, (RememberProfile)value3, (CommandName)value, (IClientLogging.ModalView)value2);
+    }
+    
+    private void handleStartPlayEnded(final Intent intent) {
+        Serializable s = intent.getStringExtra("reason");
+        final String stringExtra = intent.getStringExtra("error");
+        final int intExtra = intent.getIntExtra("rank", Integer.MIN_VALUE);
+        UIError instance = null;
+        while (true) {
+            try {
+                instance = UIError.createInstance(stringExtra);
                 Enum<IClientLogging.CompletionReason> value = null;
                 if (StringUtils.isNotEmpty((String)s)) {
                     value = IClientLogging.CompletionReason.valueOf((String)s);
@@ -374,7 +550,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                 else {
                     s = intExtra;
                 }
-                this.endStartPlaySession((IClientLogging.CompletionReason)value, (UIError)instance, (Integer)s);
+                this.endStartPlaySession((IClientLogging.CompletionReason)value, instance, (Integer)s, PlayerType.toPlayerType(intent.getIntExtra("playerType", -1)));
             }
             catch (JSONException ex) {
                 continue;
@@ -599,6 +775,29 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
+    public void endAddProfileSession(final IClientLogging.CompletionReason completionReason, final IClientLogging.ModalView modalView, final UIError uiError, final Profile profile) {
+        Log.d("nf_log", "Add profile session ended and posted to executor");
+        final DataContext mDataContext = this.mDataContext;
+        Log.d("nf_log", "Add profile session ended");
+        if (this.mAddProfileSession == null) {
+            Log.w("nf_log", "Add profile session does NOT exist!");
+            return;
+        }
+        final AddProfileEndedEvent endedEvent = this.mAddProfileSession.createEndedEvent(completionReason, uiError, modalView, profile);
+        if (endedEvent == null) {
+            Log.d("nf_log", "Add profile session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, mDataContext, this.mAddProfileSession.getView());
+        this.mEventHandler.removeSession(this.mAddProfileSession);
+        Log.d("nf_log", "Add profile session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mAddProfileSession = null;
+        Log.d("nf_log", "Add profile session end event posted.");
+        Log.d("nf_log", "Add profile session end done.");
+    }
+    
+    @Override
     public void endAddToPlaylistSession(final IClientLogging.CompletionReason completionReason, final UIError uiError, final int n) {
         Log.d("nf_log", "AddToPlaylist session ended and posted to executor");
         this.mEventHandler.executeInBackground(new Runnable() {
@@ -625,6 +824,52 @@ final class UserActionLoggingImpl implements UserActionLogging
             }
         });
         Log.d("nf_log", "AddToPlaylist session end done.");
+    }
+    
+    @Override
+    public void endDeleteProfileSession(final IClientLogging.CompletionReason completionReason, final IClientLogging.ModalView modalView, final UIError uiError) {
+        Log.d("nf_log", "Delete profile session ended and posted to executor");
+        final DataContext mDataContext = this.mDataContext;
+        Log.d("nf_log", "Delete profile session ended");
+        if (this.mDeleteProfileSession == null) {
+            Log.w("nf_log", "Delete profile session does NOT exist!");
+            return;
+        }
+        final DeleteProfileEndedEvent endedEvent = this.mDeleteProfileSession.createEndedEvent(completionReason, uiError, modalView);
+        if (endedEvent == null) {
+            Log.d("nf_log", "Delete profile session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, mDataContext, this.mDeleteProfileSession.getView());
+        this.mEventHandler.removeSession(this.mDeleteProfileSession);
+        Log.d("nf_log", "Delete profile session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mDeleteProfileSession = null;
+        Log.d("nf_log", "Delete profile session end event posted.");
+        Log.d("nf_log", "Delete profile session end done.");
+    }
+    
+    @Override
+    public void endEditProfileSession(final IClientLogging.CompletionReason completionReason, final IClientLogging.ModalView modalView, final UIError uiError, final Profile profile) {
+        Log.d("nf_log", "Edit profile session ended and posted to executor");
+        final DataContext mDataContext = this.mDataContext;
+        Log.d("nf_log", "Edit profile session ended");
+        if (this.mEditProfileSession == null) {
+            Log.w("nf_log", "Edit profile session does NOT exist!");
+            return;
+        }
+        final EditProfileEndedEvent endedEvent = this.mEditProfileSession.createEndedEvent(completionReason, uiError, modalView, profile);
+        if (endedEvent == null) {
+            Log.d("nf_log", "Edit profile session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, mDataContext, this.mEditProfileSession.getView());
+        this.mEventHandler.removeSession(this.mEditProfileSession);
+        Log.d("nf_log", "Edit profile session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mEditProfileSession = null;
+        Log.d("nf_log", "Edit profile session end event posted.");
+        Log.d("nf_log", "Edit profile session end done.");
     }
     
     @Override
@@ -804,7 +1049,30 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
-    public void endStartPlaySession(final IClientLogging.CompletionReason completionReason, final UIError uiError, final Integer n) {
+    public void endSelectProfileSession(final IClientLogging.CompletionReason completionReason, final IClientLogging.ModalView modalView, final UIError uiError) {
+        Log.d("nf_log", "Select profile session ended and posted to executor");
+        final DataContext mDataContext = this.mDataContext;
+        Log.d("nf_log", "Select profile session ended");
+        if (this.mSelectProfileSession == null) {
+            Log.w("nf_log", "Select profile session does NOT exist!");
+            return;
+        }
+        final SelectProfileEndedEvent endedEvent = this.mSelectProfileSession.createEndedEvent(completionReason, uiError, modalView);
+        if (endedEvent == null) {
+            Log.d("nf_log", "Select profile session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, mDataContext, this.mSelectProfileSession.getView());
+        this.mEventHandler.removeSession(this.mSelectProfileSession);
+        Log.d("nf_log", "Select profile session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mSelectProfileSession = null;
+        Log.d("nf_log", "Select profile session end event posted.");
+        Log.d("nf_log", "Select profile session end done.");
+    }
+    
+    @Override
+    public void endStartPlaySession(final IClientLogging.CompletionReason completionReason, final UIError uiError, final Integer n, final PlayerType playerType) {
         Log.d("nf_log", "StartPlay session ended and posted to executor");
         this.mEventHandler.executeInBackground(new Runnable() {
             final /* synthetic */ DataContext val$dataContext = UserActionLoggingImpl.this.mDataContext;
@@ -816,7 +1084,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                     Log.w("nf_log", "StartPlay session does NOT exist!");
                     return;
                 }
-                final StartPlayEndedEvent endedEvent = UserActionLoggingImpl.this.mStartPlaySession.createEndedEvent(completionReason, uiError, n);
+                final StartPlayEndedEvent endedEvent = UserActionLoggingImpl.this.mStartPlaySession.createEndedEvent(completionReason, uiError, n, playerType);
                 if (endedEvent == null) {
                     Log.d("nf_log", "StartPlay session still waits on session id, do not post at this time.");
                     return;
@@ -1003,6 +1271,46 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.handleUpgradeStreamsEnded(intent);
             return true;
         }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SELECT_PROFILE_START".equals(action)) {
+            Log.d("nf_log", "SELECT_PROFILE_START");
+            this.handleSelectProfileStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SELECT_PROFILE_ENDED".equals(action)) {
+            Log.d("nf_log", "SELECT_PROFILE_ENDED");
+            this.handleSelectProfileEnded(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_START".equals(action)) {
+            Log.d("nf_log", "ADD_PROFILE_START");
+            this.handleAddProfileStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_ENDED".equals(action)) {
+            Log.d("nf_log", "ADD_PROFILE_ENDED");
+            this.handleAddProfileEnded(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_EDIT_PROFILE_START".equals(action)) {
+            Log.d("nf_log", "EDIT_PROFILE_START");
+            this.handleEditProfileStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_EDIT_PROFILE_ENDED".equals(action)) {
+            Log.d("nf_log", "EDIT_PROFILE_ENDED");
+            this.handleEditProfileEnded(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_DELETE_PROFILE_START".equals(action)) {
+            Log.d("nf_log", "DELETE_PROFILE_START");
+            this.handleDeleteProfileStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_DELETE_PROFILE_ENDED".equals(action)) {
+            Log.d("nf_log", "DELETE_PROFILE_ENDED");
+            this.handleDeleteProfileEnded(intent);
+            return true;
+        }
         if (Log.isLoggable("nf_log", 3)) {
             Log.d("nf_log", "We do not support action " + action);
         }
@@ -1028,6 +1336,19 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
+    public void startAddProfileSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+        if (this.mAddProfileSession != null) {
+            Log.e("nf_log", "Add profile session already started!");
+            return;
+        }
+        Log.d("nf_log", "Add profile session starting...");
+        final AddProfileSession mAddProfileSession = new AddProfileSession(commandName, modalView);
+        this.mEventHandler.addSession(mAddProfileSession);
+        this.mAddProfileSession = mAddProfileSession;
+        Log.d("nf_log", "Add profile session start done.");
+    }
+    
+    @Override
     public void startAddToPlaylistSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
         if (this.mAddToPlaylistSession != null) {
             Log.e("nf_log", "AddToPlaylist session already started!");
@@ -1038,6 +1359,32 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.addSession(mAddToPlaylistSession);
         this.mAddToPlaylistSession = mAddToPlaylistSession;
         Log.d("nf_log", "AddToPlaylist session start done.");
+    }
+    
+    @Override
+    public void startDeleteProfileSession(final String s, final CommandName commandName, final IClientLogging.ModalView modalView) {
+        if (this.mDeleteProfileSession != null) {
+            Log.e("nf_log", "Delete profile session already started!");
+            return;
+        }
+        Log.d("nf_log", "Delete profile session starting...");
+        final DeleteProfileSession mDeleteProfileSession = new DeleteProfileSession(s, commandName, modalView);
+        this.mEventHandler.addSession(mDeleteProfileSession);
+        this.mDeleteProfileSession = mDeleteProfileSession;
+        Log.d("nf_log", "Delete profile session start done.");
+    }
+    
+    @Override
+    public void startEditProfileSession(final CommandName commandName, final IClientLogging.ModalView modalView) {
+        if (this.mEditProfileSession != null) {
+            Log.e("nf_log", "Edit profile session already started!");
+            return;
+        }
+        Log.d("nf_log", "Edit profile session starting...");
+        final EditProfileSession mEditProfileSession = new EditProfileSession(commandName, modalView);
+        this.mEventHandler.addSession(mEditProfileSession);
+        this.mEditProfileSession = mEditProfileSession;
+        Log.d("nf_log", "Edit profile session start done.");
     }
     
     @Override
@@ -1114,6 +1461,19 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.addSession(searchSession);
         this.mSearchSessions.put(n, searchSession);
         Log.d("nf_log", "Search session start done.");
+    }
+    
+    @Override
+    public void startSelectProfileSession(final String s, final RememberProfile rememberProfile, final CommandName commandName, final IClientLogging.ModalView modalView) {
+        if (this.mSelectProfileSession != null) {
+            Log.e("nf_log", "Select profile session already started!");
+            return;
+        }
+        Log.d("nf_log", "Select profile session starting...");
+        final SelectProfileSession mSelectProfileSession = new SelectProfileSession(s, rememberProfile, commandName, modalView);
+        this.mEventHandler.addSession(mSelectProfileSession);
+        this.mSelectProfileSession = mSelectProfileSession;
+        Log.d("nf_log", "Select profile session start done.");
     }
     
     @Override

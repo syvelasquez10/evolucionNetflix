@@ -12,6 +12,6 @@ public interface LoadingStatus
     
     public interface LoadingStatusCallback
     {
-        void onDataLoaded(final int p0);
+        void onDataLoaded(final Status p0);
     }
 }

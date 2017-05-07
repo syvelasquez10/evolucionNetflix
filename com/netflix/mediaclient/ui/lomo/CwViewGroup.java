@@ -8,7 +8,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFocusHandler;
 import android.view.View;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.CWVideo;
+import com.netflix.mediaclient.servicemgr.model.CWVideo;
 
 public class CwViewGroup extends VideoViewGroup<CWVideo, CwView>
 {

@@ -11,7 +11,7 @@ import android.view.View;
 import com.netflix.mediaclient.Log;
 import java.util.ArrayList;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import java.util.List;
 import android.view.LayoutInflater;
 import android.content.Context;
@@ -31,10 +31,10 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         this.inflater = (LayoutInflater)this.context.getSystemService("layout_inflater");
         int itemBgDrawableId;
         if (context.isForKids()) {
-            itemBgDrawableId = 2130837744;
+            itemBgDrawableId = 2130837755;
         }
         else {
-            itemBgDrawableId = 2130837854;
+            itemBgDrawableId = 2130837874;
         }
         this.itemBgDrawableId = itemBgDrawableId;
     }
@@ -72,7 +72,7 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
     public View getView(int itemBgDrawableId, final View view, final ViewGroup viewGroup) {
         TextView textView;
         if ((textView = (TextView)view) == null) {
-            textView = (TextView)this.inflater.inflate(2130903163, (ViewGroup)null, false);
+            textView = (TextView)this.inflater.inflate(2130903177, (ViewGroup)null, false);
         }
         final SeasonDetails item = this.getItem(itemBgDrawableId);
         textView.setTag((Object)item.getSeasonNumber());

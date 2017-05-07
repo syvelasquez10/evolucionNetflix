@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
 import android.os.Parcel;
-import com.netflix.mediaclient.servicemgr.Trackable;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 
 public class TrackableListSummary extends ListSummary implements Trackable
 {

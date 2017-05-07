@@ -891,6 +891,11 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
+    public void swim(final int n, final boolean b, final int n2, final boolean b2) {
+        this.bridge.getNrdProxy().invokeMethod(new Swim(n, b, n2, b2));
+    }
+    
+    @Override
     public void unpause() {
         this.bridge.getNrdProxy().invokeMethod(new Unpause());
     }

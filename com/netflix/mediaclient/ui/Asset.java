@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.Playable;
+import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.util.ParcelUtils;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
@@ -40,6 +40,7 @@ public class Asset implements Parcelable, PlayContext
     public static final String PARAM_TRK_ID = "trkid";
     public static final String PARAM_VIDEO_POS = "videopos";
     private static final String TAG = "mdxui";
+    private boolean mCanBeSharedOnFacebook;
     private int mDuration;
     private int mEndtime;
     private int mEpisodeNumber;
@@ -57,7 +58,6 @@ public class Asset implements Parcelable, PlayContext
     private int mPostPlayVideoPlayed;
     private String mReqId;
     private int mSeasonNumber;
-    private boolean mSocialDoNotShareVisible;
     private String mTitle;
     private int mTrackId;
     private int mVideoPos;
@@ -88,7 +88,7 @@ public class Asset implements Parcelable, PlayContext
         this.mWatchedDate = ParcelUtils.readLong(parcel);
         this.mPlaybackBookmark = ParcelUtils.readInt(parcel);
         this.mNflx = ParcelUtils.readString(parcel);
-        this.mSocialDoNotShareVisible = ParcelUtils.readBoolean(parcel);
+        this.mCanBeSharedOnFacebook = ParcelUtils.readBoolean(parcel);
         this.mSeasonNumber = ParcelUtils.readInt(parcel);
         this.mEpisodeNumber = ParcelUtils.readInt(parcel);
         this.mDuration = ParcelUtils.readInt(parcel);
@@ -120,7 +120,7 @@ public class Asset implements Parcelable, PlayContext
             asset.mSeasonNumber = playable.getSeasonNumber();
             asset.mEpisodeNumber = playable.getEpisodeNumber();
             asset.mIsEpisode = playable.isPlayableEpisode();
-            asset.mSocialDoNotShareVisible = playable.getFbDntShare();
+            asset.mCanBeSharedOnFacebook = playable.canBeSharedOnFacebook();
             asset.mIsAutoPlayEnabled = playable.isAutoPlayEnabled();
             asset.mIsNextPlayableEpisode = playable.isNextPlayableEpisode();
             asset.mIsPinProtected = playable.isPinProtected();
@@ -155,7 +155,7 @@ public class Asset implements Parcelable, PlayContext
         asset.mNflx = ParcelUtils.readString(intent, "nflx");
         asset.mPlaybackBookmark = ParcelUtils.readInt(intent, "playback_bookmark");
         asset.mWatchedDate = ParcelUtils.readLong(intent, "watched_date");
-        asset.mSocialDoNotShareVisible = ParcelUtils.readBoolean(intent, "fb_dontsharebtn");
+        asset.mCanBeSharedOnFacebook = ParcelUtils.readBoolean(intent, "fb_dontsharebtn");
         asset.mSeasonNumber = ParcelUtils.readInt(intent, "seasonNumber");
         asset.mEpisodeNumber = ParcelUtils.readInt(intent, "episodeNumber");
         asset.mDuration = ParcelUtils.readInt(intent, "duration");
@@ -169,6 +169,10 @@ public class Asset implements Parcelable, PlayContext
         asset.mIsPinProtected = ParcelUtils.readBoolean(intent, "isPinProtected");
         asset.mIsPinVerified = ParcelUtils.readBoolean(intent, "isPinVerified");
         return asset;
+    }
+    
+    public boolean canBeSharedOnFacebook() {
+        return this.mCanBeSharedOnFacebook;
     }
     
     public int describeContents() {
@@ -263,10 +267,6 @@ public class Asset implements Parcelable, PlayContext
         return this.mIsPinVerified;
     }
     
-    public boolean isSocialDoNotShareVisible() {
-        return this.mSocialDoNotShareVisible;
-    }
-    
     public void setPlaybackBookmark(final int mPlaybackBookmark) {
         this.mPlaybackBookmark = mPlaybackBookmark;
     }
@@ -284,7 +284,7 @@ public class Asset implements Parcelable, PlayContext
         intent.putExtra("watched_date", this.mWatchedDate);
         intent.putExtra("playback_bookmark", this.mPlaybackBookmark);
         intent.putExtra("nflx", ParcelUtils.validateString(this.mNflx));
-        intent.putExtra("fb_dontsharebtn", this.mSocialDoNotShareVisible);
+        intent.putExtra("fb_dontsharebtn", this.mCanBeSharedOnFacebook);
         intent.putExtra("seasonNumber", this.mSeasonNumber);
         intent.putExtra("episodeNumber", this.mEpisodeNumber);
         intent.putExtra("duration", this.mDuration);
@@ -302,7 +302,7 @@ public class Asset implements Parcelable, PlayContext
     
     @Override
     public String toString() {
-        return "Asset [mPlayableId=" + this.mPlayableId + ", mParentId=" + this.mParentId + ", mIsEpisode=" + this.mIsEpisode + ", mIsAutoPlayEnabled=" + this.mIsAutoPlayEnabled + ", mIsNextPlayableEpisode=" + this.mIsNextPlayableEpisode + ", mTrackId=" + this.mTrackId + ", mReqId=" + this.mReqId + ", mListPos=" + this.mListPos + ", mVideoPos=" + this.mVideoPos + ", mTitle=" + this.mTitle + ", mParentTitle=" + this.mParentTitle + ", mWatchedDate=" + this.mWatchedDate + ", mPlaybackBookmark=" + this.mPlaybackBookmark + ", mNflx=" + this.mNflx + ", mDuration=" + this.mDuration + ", mEndtime=" + this.mEndtime + ", mIsPinProtected=" + this.mIsPinProtected + ", mIsPinVerified=" + this.mIsPinVerified + ", mSocialDoNotShareVisible=" + this.mSocialDoNotShareVisible + ", mSeasonNumber=" + this.mSeasonNumber + ", mEpisodeNumber=" + this.mEpisodeNumber + ", mPostPlayVideoPlayed=" + this.mPostPlayVideoPlayed + "]";
+        return "Asset [mPlayableId=" + this.mPlayableId + ", mParentId=" + this.mParentId + ", mIsEpisode=" + this.mIsEpisode + ", mIsAutoPlayEnabled=" + this.mIsAutoPlayEnabled + ", mIsNextPlayableEpisode=" + this.mIsNextPlayableEpisode + ", mTrackId=" + this.mTrackId + ", mReqId=" + this.mReqId + ", mListPos=" + this.mListPos + ", mVideoPos=" + this.mVideoPos + ", mTitle=" + this.mTitle + ", mParentTitle=" + this.mParentTitle + ", mWatchedDate=" + this.mWatchedDate + ", mPlaybackBookmark=" + this.mPlaybackBookmark + ", mNflx=" + this.mNflx + ", mDuration=" + this.mDuration + ", mEndtime=" + this.mEndtime + ", mIsPinProtected=" + this.mIsPinProtected + ", mIsPinVerified=" + this.mIsPinVerified + ", mCanBeSharedOnFacebook=" + this.mCanBeSharedOnFacebook + ", mSeasonNumber=" + this.mSeasonNumber + ", mEpisodeNumber=" + this.mEpisodeNumber + ", mPostPlayVideoPlayed=" + this.mPostPlayVideoPlayed + "]";
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
@@ -315,7 +315,7 @@ public class Asset implements Parcelable, PlayContext
         ParcelUtils.writeLong(parcel, this.mWatchedDate);
         ParcelUtils.writeInt(parcel, this.mPlaybackBookmark);
         ParcelUtils.writeString(parcel, this.mNflx);
-        ParcelUtils.writeBoolean(parcel, this.mSocialDoNotShareVisible);
+        ParcelUtils.writeBoolean(parcel, this.mCanBeSharedOnFacebook);
         ParcelUtils.writeInt(parcel, this.mSeasonNumber);
         ParcelUtils.writeInt(parcel, this.mEpisodeNumber);
         ParcelUtils.writeInt(parcel, this.mDuration);

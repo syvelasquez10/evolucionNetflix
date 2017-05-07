@@ -8,6 +8,13 @@ import com.netflix.mediaclient.servicemgr.ErrorLogging;
 
 public final class CrittercismErrorLoggingImpl implements ErrorLogging
 {
+    private static final String NAME = "crittercism";
+    
+    @Override
+    public String getLookupName() {
+        return "crittercism";
+    }
+    
     @Override
     public void logHandledException(final Exception ex) {
         ErrorLoggingManager.logHandledException(ex);

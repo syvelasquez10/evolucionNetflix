@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
-import com.netflix.mediaclient.servicemgr.ProfileType;
+import com.netflix.mediaclient.servicemgr.model.user.ProfileType;
 import java.util.List;
 import java.util.Iterator;
 import org.json.JSONException;
@@ -15,7 +15,7 @@ import org.json.JSONObject;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.ArrayList;
 
-public class UserProfile implements com.netflix.mediaclient.servicemgr.UserProfile
+public class UserProfile implements com.netflix.mediaclient.servicemgr.model.user.UserProfile
 {
     private static final String FIELD_AUTOPLAY_ON = "autoPlayOn";
     private static final String FIELD_AVATAR_URL = "avatarUrl";

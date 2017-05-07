@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.player;
 import com.netflix.mediaclient.event.nrdp.media.UpdatePts;
 import com.netflix.mediaclient.event.UIEvent;
 import android.view.SurfaceHolder;
+import com.netflix.mediaclient.media.JPlayer2Helper;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.media.Subtitle;
 import java.nio.ByteBuffer;
@@ -16,6 +17,7 @@ import java.util.concurrent.Executors;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.configuration.BitrateRangeFactory;
 import android.media.AudioManager;
 import com.netflix.mediaclient.media.PlayoutMetadata;
@@ -37,6 +39,8 @@ import com.netflix.mediaclient.event.nrdp.media.Buffering;
 import com.netflix.mediaclient.event.nrdp.media.GenericMediaEvent;
 import android.content.Intent;
 import android.content.Context;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.user.SimpleUserAgentWebCallback;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.javabridge.invoke.media.Open;
@@ -66,6 +70,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
 {
     private static final int BANDWITH_CHECK_INTERVAL = 30000;
     public static final int CREATED = 1;
+    private static final int DELAY_SEEKCOMPLETE_MS = 300;
     private static final int EOS_DELTA = 10000;
     public static final int IN_PLAYBACK = 3;
     private static final int MAX_CELLULAR_DOWNLOAD_LIMIT = 90000;
@@ -97,6 +102,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private boolean mBufferingCompleted;
     private CloseTimeoutTask mCloseTimeoutTask;
     private boolean mForcedRebuffer;
+    private int mFuzz;
     private MediaPlayerHelper mHelper;
     private boolean mInPlayback;
     private volatile JPlayer.JplayerListener mJPlayerListener;
@@ -111,6 +117,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     private ExecutorService mPlayerExecutor;
     private PlayerListenerManager mPlayerListenerManager;
     private PlayerType mPlayerType;
+    private int mRelativeSeekPosition;
     private boolean mScreenOnWhilePlaying;
     private StartPlayTimeoutTask mStartPlayTimeoutTask;
     private volatile int mState;
@@ -252,28 +259,37 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         this.onSeekRunnable = new Runnable() {
             @Override
             public void run() {
-                synchronized (PlayerAgent.this) {
-                    PlayerAgent.this.prevEndPosition = PlayerAgent.this.getCurrentPositionMs();
-                    PlayerAgent.this.validPtsRecieved = false;
-                    PlayerAgent.this.seeking = true;
-                    PlayerAgent.this.mInPlayback = false;
-                    final int duration = PlayerAgent.this.getDuration();
-                    final int access$800 = PlayerAgent.this.seekedToPosition;
-                    int n;
-                    if (PlayerAgent.this.seekedToPosition + 10000 >= duration && duration > 0) {
-                        Log.d(PlayerAgent.TAG, "seek to close to EOS, defaulting to 10 seconss before EOS.");
-                        n = duration - 10000;
-                    }
-                    else {
-                        n = access$800;
-                        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
-                            Log.d(PlayerAgent.TAG, "seek to position " + PlayerAgent.this.seekedToPosition + ", duration " + duration);
-                            n = access$800;
+                while (true) {
+                    while (true) {
+                        int n;
+                        synchronized (PlayerAgent.this) {
+                            PlayerAgent.this.prevEndPosition = PlayerAgent.this.getCurrentPositionMs();
+                            PlayerAgent.this.validPtsRecieved = false;
+                            PlayerAgent.this.seeking = true;
+                            PlayerAgent.this.mInPlayback = false;
+                            final int duration = PlayerAgent.this.getDuration();
+                            final int access$800 = PlayerAgent.this.seekedToPosition;
+                            if (PlayerAgent.this.seekedToPosition + 10000 >= duration && duration > 0) {
+                                Log.d(PlayerAgent.TAG, "seek to close to EOS, defaulting to 10 seconss before EOS.");
+                                n = duration - 10000;
+                            }
+                            else {
+                                n = access$800;
+                                if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                                    Log.d(PlayerAgent.TAG, "seek to position " + PlayerAgent.this.seekedToPosition + ", duration " + duration);
+                                    n = access$800;
+                                }
+                            }
+                            if (PlayerAgent.this.mFuzz != 0) {
+                                PlayerAgent.this.mMedia.swim(PlayerAgent.this.mRelativeSeekPosition, false, PlayerAgent.this.mFuzz, true);
+                                PlayerAgent.this.seekedToPosition = n;
+                                PlayerAgent.this.mBufferingCompleted = false;
+                                return;
+                            }
                         }
+                        PlayerAgent.this.mMedia.seekTo(n, PlayerAgent.this.mForcedRebuffer);
+                        continue;
                     }
-                    PlayerAgent.this.mMedia.seekTo(n, PlayerAgent.this.mForcedRebuffer);
-                    PlayerAgent.this.seekedToPosition = n;
-                    PlayerAgent.this.mBufferingCompleted = false;
                 }
             }
         };
@@ -306,16 +322,21 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         };
         this.webClientCallback = new SimpleUserAgentWebCallback() {
             @Override
-            public void onDummyWebCallDone(final int n) {
+            public void onDummyWebCallDone(final Status status) {
                 PlayerAgent.this.ignoreErrorsWhileActionId12IsProcessed = false;
-                if (n == 0) {
-                    Log.d(PlayerAgent.TAG, "Dummy webcall completed with statusCode=" + n);
-                    final NccpError access$4900 = PlayerAgent.this.mActionId12Error;
+                final StatusCode statusCode = status.getStatusCode();
+                if (status.isSucces()) {
+                    if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                        Log.d(PlayerAgent.TAG, "Dummy webcall completed with statusCode=" + statusCode);
+                    }
+                    final NccpError access$5100 = PlayerAgent.this.mActionId12Error;
                     PlayerAgent.this.mActionId12Error = null;
-                    PlayerAgent.this.handlePlayerListener(PlayerAgent.this.mPlayerListenerManager.getPlayerListenerRestartPlaybackHandler(), access$4900);
+                    PlayerAgent.this.handlePlayerListener(PlayerAgent.this.mPlayerListenerManager.getPlayerListenerRestartPlaybackHandler(), access$5100);
                     return;
                 }
-                Log.e(PlayerAgent.TAG, "Dummy webcall completed  failed (skipping user info update) with statusCode=" + n);
+                if (Log.isLoggable(PlayerAgent.TAG, 6)) {
+                    Log.e(PlayerAgent.TAG, "Dummy webcall completed  failed (skipping user info update) with statusCode=" + statusCode);
+                }
                 PlayerAgent.this.handlePlayerListener(PlayerAgent.this.mPlayerListenerManager.getPlayerListenerOnNccpErrorHandler(), PlayerAgent.this.mActionId12Error);
             }
         };
@@ -515,7 +536,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
             if (this.seeking) {
                 Log.d(PlayerAgent.TAG, "MEDIA_SEEK_COMPLETE 4");
                 this.seeking = false;
-                this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSeekCompleteHandler(), new Object[0]);
+                this.handlePlayerListenerWithDelay(this.mPlayerListenerManager.getPlayerListenerOnSeekCompleteHandler(), 300L, new Object[0]);
             }
             else {
                 Log.d(PlayerAgent.TAG, "MEDIA_PLAYBACK_STARTED 6");
@@ -535,6 +556,22 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
                             playerListenerHandler.handle(playerListener, array);
                         }
                     });
+                }
+            }
+        }
+    }
+    // monitorexit(playerListenerManager)
+    
+    private void handlePlayerListenerWithDelay(final PlayerListenerManager.PlayerListenerHandler playerListenerHandler, final long n, final Object... array) {
+        synchronized (this.mPlayerListenerManager) {
+            for (final PlayerListener playerListener : this.mPlayerListenerManager.getListeners()) {
+                if (playerListener != null && playerListener.isListening()) {
+                    this.getMainHandler().postDelayed((Runnable)new Runnable() {
+                        @Override
+                        public void run() {
+                            playerListenerHandler.handle(playerListener, array);
+                        }
+                    }, n);
                 }
             }
         }
@@ -968,7 +1005,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     protected void doInit() {
         this.mNrdp = this.getNrdController().getNrdp();
         if (this.mNrdp == null || !this.mNrdp.isReady()) {
-            this.initCompleted(-4);
+            this.initCompleted(CommonStatus.NRD_ERROR);
             Log.e(PlayerAgent.TAG, "NRDP is NOT READY");
             return;
         }
@@ -1007,7 +1044,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
         this.mTimer = new Timer("watchdog timer");
         this.registerReceivers();
         this.mPlayerExecutor = Executors.newSingleThreadExecutor();
-        this.initCompleted(0);
+        this.initCompleted(CommonStatus.OK);
     }
     
     void excuteOnPlayExecutor(final Runnable runnable) {
@@ -1132,8 +1169,8 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     }
     
     @Override
-    public void onConfigRefreshed(final int n) {
-        if (n == 0) {
+    public void onConfigRefreshed(final Status status) {
+        if (status.isSucces()) {
             this.updateSubtitleSettings(false);
         }
     }
@@ -1342,6 +1379,20 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     public void seekTo(final int seekedToPosition, final boolean mForcedRebuffer) {
         this.seekedToPosition = seekedToPosition;
         this.mForcedRebuffer = mForcedRebuffer;
+        this.mRelativeSeekPosition = 0;
+        this.mFuzz = 0;
+        this.mPlayerExecutor.execute(this.onSeekRunnable);
+        if (this.mSubtitles != null) {
+            this.mSubtitles.seeked();
+        }
+    }
+    
+    @Override
+    public void seekWithFuzzRange(final int mRelativeSeekPosition, final int mFuzz) {
+        this.seekedToPosition = this.getCurrentPositionMs() + mRelativeSeekPosition;
+        this.mForcedRebuffer = false;
+        this.mRelativeSeekPosition = mRelativeSeekPosition;
+        this.mFuzz = mFuzz;
         this.mPlayerExecutor.execute(this.onSeekRunnable);
         if (this.mSubtitles != null) {
             this.mSubtitles.seeked();
@@ -1382,6 +1433,12 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
                 s = "No Surface Existed";
             }
             Log.d(tag, append.append(s).toString());
+        }
+        if (this.mHelper != null && this.mHelper instanceof JPlayer2Helper) {
+            ((JPlayer2Helper)this.mHelper).updateSurface(surface);
+        }
+        if (surface == null) {
+            return;
         }
         this.mSurface = surface;
         this.mMedia.setSurface(surface);

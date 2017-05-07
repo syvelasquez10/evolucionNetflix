@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.service.resfetcher.volley;
 
 import com.android.volley.NetworkResponse;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.android.volley.RetryPolicy;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
@@ -31,7 +33,7 @@ public class FileDownloadRequest extends Request<String>
     @Override
     protected void deliverResponse(final String s) {
         if (this.mCallback != null) {
-            this.mCallback.onResourceFetched(this.getUrl(), s, 0);
+            this.mCallback.onResourceFetched(this.getUrl(), s, CommonStatus.OK);
         }
     }
     

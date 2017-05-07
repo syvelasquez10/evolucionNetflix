@@ -33,7 +33,7 @@ public class DebugMenuItems
             public boolean onMenuItemClick(final MenuItem menuItem) {
                 final ServiceManager serviceManager = DebugMenuItems.this.activity.getServiceManager();
                 if (serviceManager != null) {
-                    serviceManager.flushCaches();
+                    serviceManager.getBrowse().flushCaches();
                 }
                 return true;
             }

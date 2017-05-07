@@ -56,10 +56,11 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
         USE_ANDROID_L_API = (AndroidUtils.getAndroidVersion() > 19);
     }
     
-    public MediaDecoderPipe2(final InputDataSource mDataSource, final String s, final MediaFormat mediaFormat, final Surface surface, final MediaCrypto mediaCrypto) throws Exception {
+    public MediaDecoderPipe2(final InputDataSource mDataSource, final String s, final MediaFormat mediaFormat, final Surface surface, final MediaCrypto mediaCrypto, final EventListener eventListener) throws Exception {
         this.mDecoder = null;
         this.mInputState = new LocalStateNotifier();
         this.mOutputState = new LocalStateNotifier();
+        this.setEventListener(eventListener);
         final StringBuilder sb = new StringBuilder("MediaDecoder2");
         if (s.startsWith("audio/")) {
             this.mIsAudio = true;

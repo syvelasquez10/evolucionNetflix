@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.kids.details;
 
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.widget.ErrorWrapper;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.ViewGroup;
@@ -16,12 +17,12 @@ import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.os.Bundle;
 import android.app.Fragment;
-import com.netflix.mediaclient.servicemgr.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import java.util.List;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.ShowDetails;
+import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
@@ -96,7 +97,7 @@ public class KidsShowDetailsFrag extends NetflixFrag
         this.requestId = System.nanoTime();
         final int n = this.showDetails.getNumOfSeasons() - 1;
         Log.v("KidsShowDetailsFrag", "Fetching seasons data from: " + 0 + " to " + n + ", id: " + this.requestId);
-        this.manager.fetchSeasons(this.showDetails.getId(), 0, n, new FetchSeasonsCallback(this.requestId));
+        this.manager.getBrowse().fetchSeasons(this.showDetails.getId(), 0, n, new FetchSeasonsCallback(this.requestId));
     }
     
     private void fetchShowDetails() {
@@ -108,7 +109,7 @@ public class KidsShowDetailsFrag extends NetflixFrag
         this.isLoading = true;
         this.requestId = System.nanoTime();
         Log.v("KidsShowDetailsFrag", "Fetching data for show ID: " + this.showId);
-        this.manager.fetchShowDetails(this.showId, null, new FetchShowDetailsCallback(this.requestId));
+        this.manager.getBrowse().fetchShowDetails(this.showId, null, new FetchShowDetailsCallback(this.requestId));
     }
     
     private void showErrorView() {
@@ -162,7 +163,7 @@ public class KidsShowDetailsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        this.content = layoutInflater.inflate(2130903108, (ViewGroup)null);
+        this.content = layoutInflater.inflate(2130903116, (ViewGroup)null);
         this.listView = (StickyListHeadersListView)this.content.findViewById(16908298);
         KidsUtils.configureListViewForKids(this.getNetflixActivity(), this.listView);
         this.detailsViewGroup = new KidsDetailsViewGroup((Context)this.getActivity());
@@ -184,16 +185,16 @@ public class KidsShowDetailsFrag extends NetflixFrag
     }
     
     @Override
-    public void onManagerReady(final ServiceManager manager, final int n) {
+    public void onManagerReady(final ServiceManager manager, final Status status) {
         Log.v("KidsShowDetailsFrag", "onManagerReady");
-        super.onManagerReady(manager, n);
+        super.onManagerReady(manager, status);
         this.manager = manager;
         this.completeInitIfPossible();
     }
     
     @Override
-    public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
-        super.onManagerUnavailable(serviceManager, n);
+    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
+        super.onManagerUnavailable(serviceManager, status);
         this.manager = null;
     }
     
@@ -207,14 +208,14 @@ public class KidsShowDetailsFrag extends NetflixFrag
         }
         
         @Override
-        public void onSeasonsFetched(final List<SeasonDetails> list, final int n) {
-            super.onSeasonsFetched(list, n);
+        public void onSeasonsFetched(final List<SeasonDetails> list, final Status status) {
+            super.onSeasonsFetched(list, status);
             if (this.requestId != KidsShowDetailsFrag.this.requestId) {
                 Log.v("KidsShowDetailsFrag", "Stale request - ignoring");
                 return;
             }
             KidsShowDetailsFrag.this.isLoading = false;
-            if (n != 0) {
+            if (status.isError()) {
                 Log.w("KidsShowDetailsFrag", "Invalid status code");
                 KidsShowDetailsFrag.this.showErrorView();
                 return;
@@ -238,13 +239,13 @@ public class KidsShowDetailsFrag extends NetflixFrag
         }
         
         @Override
-        public void onShowDetailsFetched(final ShowDetails showDetails, final int n) {
-            super.onShowDetailsFetched(showDetails, n);
+        public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
+            super.onShowDetailsFetched(showDetails, status);
             if (this.requestId != KidsShowDetailsFrag.this.requestId) {
                 Log.v("KidsShowDetailsFrag", "Ignoring stale callback");
                 return;
             }
-            if (n != 0) {
+            if (status.isError()) {
                 Log.w("KidsShowDetailsFrag", "Invalid status code");
                 KidsShowDetailsFrag.this.showErrorView();
                 return;

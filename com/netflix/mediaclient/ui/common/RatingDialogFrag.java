@@ -41,7 +41,7 @@ public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnR
             throw new IllegalArgumentException("Playable ID can not be null!");
         }
         final RatingDialogFrag ratingDialogFrag = new RatingDialogFrag();
-        ratingDialogFrag.setStyle(1, 2131558603);
+        ratingDialogFrag.setStyle(1, 2131558605);
         final Bundle arguments = new Bundle();
         ratingDialogFrag.setArguments(arguments);
         arguments.putFloat("rating", rating.value);
@@ -66,15 +66,15 @@ public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnR
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903139, viewGroup, false);
-        int n = 2131165505;
+        final View inflate = layoutInflater.inflate(2130903147, viewGroup, false);
+        int n = 2131165525;
         if (this.mIsUserRating) {
-            n = 2131165506;
+            n = 2131165526;
         }
         (this.mRatingBar = (RatingBar)inflate.findViewById(n)).setOnRatingBarChangeListener((RatingBar$OnRatingBarChangeListener)this);
         this.mRatingBar.setRating(this.mRating);
         this.mRatingBar.setVisibility(0);
-        ((TextView)inflate.findViewById(2131165504)).setText((CharSequence)this.getString(2131493255, new Object[] { this.mVideoTitle }));
+        ((TextView)inflate.findViewById(2131165524)).setText((CharSequence)this.getString(2131493255, new Object[] { this.mVideoTitle }));
         return inflate;
     }
     

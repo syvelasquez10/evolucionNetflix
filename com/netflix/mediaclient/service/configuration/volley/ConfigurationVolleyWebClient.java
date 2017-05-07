@@ -22,7 +22,7 @@ public class ConfigurationVolleyWebClient implements ConfigurationWebClient
     
     @Override
     public void fetchConfigData(final ConfigurationAgentWebCallback configurationAgentWebCallback) {
-        this.webclient.sendConfigRequest(new FetchConfigDataRequest(this.service.getApplicationContext(), this.service.getConfiguration(), configurationAgentWebCallback));
+        this.webclient.sendConfigRequest(new FetchConfigDataRequest(this.service.getApplicationContext(), configurationAgentWebCallback));
     }
     
     @Override

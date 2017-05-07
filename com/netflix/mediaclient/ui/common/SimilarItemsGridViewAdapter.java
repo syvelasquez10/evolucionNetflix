@@ -19,8 +19,8 @@ import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.Log;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import java.util.ArrayList;
-import com.netflix.mediaclient.servicemgr.Trackable;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import android.widget.GridView;
 import android.app.Activity;
@@ -28,7 +28,6 @@ import android.widget.BaseAdapter;
 
 public class SimilarItemsGridViewAdapter extends BaseAdapter
 {
-    private static final int MIN_NUMBER_SIMS_TO_FETCH = 10;
     private static final String TAG = "SimilarItemsGridViewAdapter";
     private final Activity activity;
     private final boolean clipToCompleteRows;
@@ -64,15 +63,6 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
         return ((SparseIntArray)PaginatedLoMoAdapter.numVideosPerPageTable.get(DeviceUtils.getBasicScreenOrientation((Context)this.activity))).get(DeviceUtils.getScreenSizeCategory((Context)this.activity));
     }
     
-    public int computeNumSimsToFetch() {
-        final int screenSizeCategory = DeviceUtils.getScreenSizeCategory((Context)this.activity);
-        int i;
-        for (i = ((SparseIntArray)PaginatedLoMoAdapter.numVideosPerPageTable.get(1)).get(screenSizeCategory) * ((SparseIntArray)PaginatedLoMoAdapter.numVideosPerPageTable.get(2)).get(screenSizeCategory); i < 10; i *= 2) {}
-        final int n = i - 1;
-        Log.v("SimilarItemsGridViewAdapter", "Computed num sims to fetch as: " + n);
-        return n;
-    }
-    
     public int getCount() {
         if (this.clipToCompleteRows) {
             return this.clipCountToCompleteRows(this.similarMovies.size());
@@ -92,7 +82,7 @@ public class SimilarItemsGridViewAdapter extends BaseAdapter
         Object o = view;
         if (view == null) {
             o = new VideoView((Context)this.activity);
-            final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131361873);
+            final int dimensionPixelOffset = this.activity.getResources().getDimensionPixelOffset(2131361871);
             ((VideoView)o).setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
             ((VideoView)o).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.imgHeight));
             ((VideoView)o).setAdjustViewBounds(true);

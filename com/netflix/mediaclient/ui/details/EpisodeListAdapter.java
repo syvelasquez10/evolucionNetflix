@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import android.widget.AdapterView;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -21,9 +23,9 @@ import java.util.ArrayList;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.view.ViewGroup;
-import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.AdapterView$OnItemClickListener;
 import com.netflix.mediaclient.android.app.LoadingStatus;
@@ -56,7 +58,7 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
         this.activity = activity;
         this.episodeListFrag = episodeListFrag;
         this.leViewGroup = (ViewGroup)new FrameLayout((Context)activity);
-        activity.getLayoutInflater().inflate(2130903110, this.leViewGroup);
+        activity.getLayoutInflater().inflate(2130903118, this.leViewGroup);
         (this.leWrapper = new LoadingAndErrorWrapper((View)this.leViewGroup, new ErrorWrapper.Callback() {
             @Override
             public void onRetryRequested() {
@@ -86,7 +88,7 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
         if (Log.isLoggable("EpisodeListAdapter", 2)) {
             Log.v("EpisodeListAdapter", "Fetching data for: " + id + ", start: " + this.episodeStartIndex + ", end: " + n);
         }
-        serviceManager.fetchEpisodes(id, this.episodeStartIndex, n, new FetchEpisodesCallback(this.requestId, n - this.episodeStartIndex + 1));
+        serviceManager.getBrowse().fetchEpisodes(id, this.episodeStartIndex, n, new FetchEpisodesCallback(this.requestId, n - this.episodeStartIndex + 1));
     }
     
     private void initToLoadingState() {
@@ -202,15 +204,15 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
         }
     }
     
-    protected void onLoaded(final int n) {
+    protected void onLoaded(final Status status) {
         if (this.mLoadingStatusCallback != null) {
-            this.mLoadingStatusCallback.onDataLoaded(n);
+            this.mLoadingStatusCallback.onDataLoaded(status);
         }
     }
     
     public void setLoadingStatusCallback(final LoadingStatusCallback mLoadingStatusCallback) {
         if (!this.isLoadingData() && mLoadingStatusCallback != null) {
-            mLoadingStatusCallback.onDataLoaded(0);
+            mLoadingStatusCallback.onDataLoaded(CommonStatus.OK);
             return;
         }
         this.mLoadingStatusCallback = mLoadingStatusCallback;
@@ -248,8 +250,8 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
         }
         
         @Override
-        public void onEpisodesFetched(final List<EpisodeDetails> list, final int n) {
-            super.onEpisodesFetched(list, n);
+        public void onEpisodesFetched(final List<EpisodeDetails> list, final Status status) {
+            super.onEpisodesFetched(list, status);
             if (EpisodeListAdapter.this.activity.destroyed()) {
                 return;
             }
@@ -259,8 +261,8 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
             }
             EpisodeListAdapter.this.hasMoreData = true;
             EpisodeListAdapter.this.isLoading = false;
-            EpisodeListAdapter.this.onLoaded(n);
-            if (n != 0) {
+            EpisodeListAdapter.this.onLoaded(status);
+            if (status.isError()) {
                 Log.w("EpisodeListAdapter", "Invalid status code");
                 EpisodeListAdapter.this.hasMoreData = false;
                 EpisodeListAdapter.this.onFetchError();

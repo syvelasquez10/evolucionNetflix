@@ -4,12 +4,10 @@
 
 package com.netflix.mediaclient.service.webclient.model.branches;
 
-import com.netflix.mediaclient.service.webclient.model.leafs.ListSummary;
-
 public class Season
 {
     public Detail detail;
-    public ListModel<ListSummary, ListOfEpisodes> episodes;
+    public ListModel<ListOfEpisodes> episodes;
     
     public static class Detail extends Summary
     {
@@ -32,11 +30,6 @@ public class Season
         
         public int getYear() {
             return this.year;
-        }
-        
-        public Detail setId(final String id) {
-            this.id = id;
-            return this;
         }
     }
 }

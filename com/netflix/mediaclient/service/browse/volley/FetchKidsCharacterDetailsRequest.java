@@ -7,21 +7,22 @@ package com.netflix.mediaclient.service.browse.volley;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
 import com.netflix.mediaclient.service.webclient.model.branches.KidsCharacter;
 import java.util.ArrayList;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.google.gson.JsonObject;
 import java.util.Collection;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
 public class FetchKidsCharacterDetailsRequest extends FalcorVolleyWebClientRequest<KidsCharacterDetails>
@@ -41,8 +42,8 @@ public class FetchKidsCharacterDetailsRequest extends FalcorVolleyWebClientReque
         DATA_CHANGED = true;
     }
     
-    protected FetchKidsCharacterDetailsRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String mCharacterId, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    protected FetchKidsCharacterDetailsRequest(final Context context, final String mCharacterId, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.MAX_GALLERY_VIDEOS = 100;
         this.mCharacterId = mCharacterId;
         this.responseCallback = responseCallback;
@@ -106,16 +107,16 @@ public class FetchKidsCharacterDetailsRequest extends FalcorVolleyWebClientReque
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onKidsCharacterDetailsFetched(null, FetchKidsCharacterDetailsRequest.DATA_CHANGED, n);
+            this.responseCallback.onKidsCharacterDetailsFetched(null, FetchKidsCharacterDetailsRequest.DATA_CHANGED, status);
         }
     }
     
     @Override
     protected void onSuccess(final KidsCharacterDetails kidsCharacterDetails) {
         if (this.responseCallback != null) {
-            this.responseCallback.onKidsCharacterDetailsFetched(kidsCharacterDetails, FetchKidsCharacterDetailsRequest.DATA_CHANGED, 0);
+            this.responseCallback.onKidsCharacterDetailsFetched(kidsCharacterDetails, FetchKidsCharacterDetailsRequest.DATA_CHANGED, CommonStatus.OK);
         }
     }
     

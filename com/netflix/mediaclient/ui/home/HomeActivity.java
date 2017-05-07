@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.home;
 
 import android.view.View;
+import com.netflix.mediaclient.servicemgr.IBrowseManager;
 import android.view.MenuItem$OnMenuItemClickListener;
 import com.netflix.mediaclient.ui.search.SearchMenu;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
@@ -20,6 +21,7 @@ import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import android.app.Fragment;
 import android.os.Parcelable;
 import android.widget.Toast;
@@ -35,11 +37,12 @@ import com.netflix.mediaclient.android.app.LoadingStatus;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.app.Status;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.MenuItem;
-import com.netflix.mediaclient.servicemgr.GenreList;
+import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
 import com.netflix.mediaclient.android.osp.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;
@@ -75,19 +78,19 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
         this.backStackIntents = new LinkedList<Intent>();
         this.managerStatusListener = new ManagerStatusListener() {
             @Override
-            public void onManagerReady(final ServiceManager serviceManager, final int n) {
+            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
                 Log.v("HomeActivity", "ServiceManager ready");
                 HomeActivity.this.manager = serviceManager;
                 HomeActivity.this.showProfileToast();
                 HomeActivity.this.reportUiViewChanged(HomeActivity.this.getCurrentViewType());
-                HomeActivity.this.getPrimaryFrag().onManagerReady(serviceManager, n);
-                HomeActivity.this.slidingMenuAdapter.onManagerReady(serviceManager, n);
+                HomeActivity.this.getPrimaryFrag().onManagerReady(serviceManager, status);
+                HomeActivity.this.slidingMenuAdapter.onManagerReady(serviceManager, status);
                 KidsUtils.updateKidsMenuItem(HomeActivity.this, HomeActivity.this.kidsEntryItem);
                 HomeActivity.this.setLoadingStatusCallback(new LoadingStatusCallback() {
                     @Override
-                    public void onDataLoaded(final int n) {
+                    public void onDataLoaded(final Status status) {
                         Log.d("HomeActivity", "LOLOMO is loaded, report UI browse startup session ended in case this was on UI startup");
-                        HomeActivity.this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().endUiBrowseStartupSession(SystemClock.elapsedRealtime() - HomeActivity.this.mStartedTimeMs, n >= 0, null);
+                        HomeActivity.this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().endUiBrowseStartupSession(SystemClock.elapsedRealtime() - HomeActivity.this.mStartedTimeMs, status.isSucces(), null);
                         HomeActivity.this.setLoadingStatusCallback(null);
                     }
                 });
@@ -96,12 +99,12 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
             }
             
             @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
+            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
                 Log.w("HomeActivity", "ServiceManager unavailable");
                 KidsUtils.updateKidsMenuItem(HomeActivity.this, HomeActivity.this.kidsEntryItem);
                 HomeActivity.this.manager = null;
-                HomeActivity.this.getPrimaryFrag().onManagerUnavailable(serviceManager, n);
-                HomeActivity.this.slidingMenuAdapter.onManagerUnavailable(serviceManager, n);
+                HomeActivity.this.getPrimaryFrag().onManagerUnavailable(serviceManager, status);
+                HomeActivity.this.slidingMenuAdapter.onManagerUnavailable(serviceManager, status);
                 Log.d("HomeActivity", "LOLOMO failed, report UI startup session ended in case this was on UI startup");
             }
         };
@@ -122,7 +125,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     }
     
     private void clearAllStateAndRefresh() {
-        this.getServiceManager().flushCaches();
+        this.getServiceManager().getBrowse().flushCaches();
         this.getPrimaryFrag().refresh();
         this.slidingMenuAdapter.refresh();
     }
@@ -219,10 +222,11 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     
     private void showNewFrag() {
         this.updateActionBar();
+        this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131165367, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131165387, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
-        this.getPrimaryFrag().onManagerReady(this.manager, 0);
+        this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
     
     private void toggleDrawer() {
@@ -266,6 +270,10 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
         }
     }
     
+    private void updateSlidingDrawer() {
+        this.slidingMenuAdapter.setSelectedGenre(this.genre);
+    }
+    
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
         return this.managerStatusListener;
@@ -283,7 +291,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903087;
+        return 2130903095;
     }
     
     @Override
@@ -343,7 +351,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
         this.viewRecycler = new ViewRecycler();
         super.onCreate(bundle);
         this.showFetchErrorsToast();
-        this.drawerLayout = (DrawerLayout)this.findViewById(2131165369);
+        this.drawerLayout = (DrawerLayout)this.findViewById(2131165389);
         this.unlockSlidingDrawerIfPossible();
         SlidingMenuAdapter slidingMenuAdapter;
         if (this.isForKids()) {
@@ -353,10 +361,11 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
             slidingMenuAdapter = new SlidingMenuAdapter(this, this.drawerLayout);
         }
         this.slidingMenuAdapter = slidingMenuAdapter;
-        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2130837692, 2131493191, 2131493191);
+        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2130837694, 2131493191, 2131493191);
         this.drawerLayout.setDrawerListener((DrawerLayout.DrawerListener)this.drawerToggler);
         this.drawerLayout.setFocusable(false);
         this.updateActionBar();
+        this.updateSlidingDrawer();
         this.pauseTimeMs = SystemClock.elapsedRealtime();
     }
     
@@ -368,8 +377,8 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
         if (menu2 != null) {
             menu2.add((CharSequence)"Dump LoLoMo Data").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
                 public boolean onMenuItemClick(final MenuItem menuItem) {
-                    final ServiceManager access$200 = HomeActivity.this.manager;
-                    final String access$201 = HomeActivity.this.genreId;
+                    final IBrowseManager browse = HomeActivity.this.manager.getBrowse();
+                    final String access$000 = HomeActivity.this.genreId;
                     String title;
                     if (HomeActivity.this.genre == null) {
                         title = "lolomo";
@@ -377,7 +386,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
                     else {
                         title = HomeActivity.this.genre.getTitle();
                     }
-                    access$200.dumpHomeLoLoMosAndVideos(access$201, title);
+                    browse.dumpHomeLoLoMosAndVideos(access$000, title);
                     return false;
                 }
             });

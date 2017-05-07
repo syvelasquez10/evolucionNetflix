@@ -13,8 +13,8 @@ import android.content.res.TypedArray;
 import com.netflix.mediaclient.R;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.content.res.ColorStateList;
 import android.widget.ImageView$ScaleType;
 import android.widget.ImageView;
 
@@ -24,7 +24,6 @@ public class RoundedImageView extends ImageView
     public static final int DEFAULT_RADIUS = 0;
     private static final ImageView$ScaleType[] SCALE_TYPES;
     public static final String TAG = "RoundedImageView";
-    private Drawable mBackgroundDrawable;
     private ColorStateList mBorderColor;
     private int mBorderWidth;
     private int mCornerRadius;
@@ -135,7 +134,6 @@ public class RoundedImageView extends ImageView
     }
     
     private void updateBackgroundDrawableAttrs() {
-        this.updateAttrs(this.mBackgroundDrawable, true);
     }
     
     private void updateDrawableAttrs() {
@@ -173,17 +171,6 @@ public class RoundedImageView extends ImageView
     
     public boolean isRoundBackground() {
         return this.mRoundBackground;
-    }
-    
-    public void setBackground(final Drawable backgroundDrawable) {
-        this.setBackgroundDrawable(backgroundDrawable);
-    }
-    
-    @Deprecated
-    public void setBackgroundDrawable(final Drawable drawable) {
-        this.mBackgroundDrawable = RoundedDrawable.fromDrawable(drawable);
-        this.updateBackgroundDrawableAttrs();
-        super.setBackgroundDrawable(this.mBackgroundDrawable);
     }
     
     public void setBorderColor(final int n) {

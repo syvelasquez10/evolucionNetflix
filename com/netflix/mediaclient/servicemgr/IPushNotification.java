@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import android.content.Intent;
-
 public interface IPushNotification
 {
     public static final String CATEGORY_NFPUSH = "com.netflix.mediaclient.intent.category.PUSH";
@@ -27,15 +25,11 @@ public interface IPushNotification
     public static final String PUSH_OPTIN = "com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTIN";
     public static final String PUSH_OPTOUT = "com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTOUT";
     
-    boolean isRegistered();
+    void informServiceStartedOnGcmInfo();
     
     boolean isSupported();
     
-    void onMessage(final Intent p0);
-    
-    void setRegistrationIdFromRegistrationServer(final String p0);
-    
-    void unregistrationFromFromRegistrationServer(final String p0);
+    void reportAndKillService();
     
     boolean wasNotificationOptInDisplayed();
 }

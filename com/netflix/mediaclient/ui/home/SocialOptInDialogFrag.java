@@ -27,7 +27,7 @@ public class SocialOptInDialogFrag extends NetflixDialogFrag
     
     public static SocialOptInDialogFrag newInstance() {
         final SocialOptInDialogFrag socialOptInDialogFrag = new SocialOptInDialogFrag();
-        socialOptInDialogFrag.setStyle(1, 2131558603);
+        socialOptInDialogFrag.setStyle(1, 2131558605);
         socialOptInDialogFrag.setArguments(new Bundle());
         return socialOptInDialogFrag;
     }
@@ -38,9 +38,9 @@ public class SocialOptInDialogFrag extends NetflixDialogFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903137, viewGroup);
-        final Button button = (Button)inflate.findViewById(2131165286);
-        final Button button2 = (Button)inflate.findViewById(2131165290);
+        final View inflate = layoutInflater.inflate(2130903145, viewGroup);
+        final Button button = (Button)inflate.findViewById(2131165288);
+        final Button button2 = (Button)inflate.findViewById(2131165292);
         button2.requestFocus();
         final Activity activity = this.getActivity();
         if (!(activity instanceof OptInResponseHandler)) {

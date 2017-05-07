@@ -11,13 +11,14 @@ import com.netflix.mediaclient.service.webclient.model.branches.Episode;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
 public class FetchEpisodeDetailsRequest extends FalcorVolleyWebClientRequest<EpisodeDetails>
@@ -29,12 +30,12 @@ public class FetchEpisodeDetailsRequest extends FalcorVolleyWebClientRequest<Epi
     private final BrowseAgentCallback responseCallback;
     private final boolean userConnectedToFacebook;
     
-    public FetchEpisodeDetailsRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String mEpisodeId, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchEpisodeDetailsRequest(final Context context, final String mEpisodeId, final boolean userConnectedToFacebook, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.mEpisodeId = mEpisodeId;
         this.userConnectedToFacebook = userConnectedToFacebook;
-        this.pqlQuery = "['episodes','" + this.mEpisodeId + "', ['detail', 'summary', 'bookmark', 'socialEvidence', 'rating']]";
+        this.pqlQuery = String.format("['episodes','%s',['detail', 'summary', 'bookmark', 'socialEvidence', 'rating']]", this.mEpisodeId);
         if (Log.isLoggable("nf_service_browse_fetchepisodedetailsrequest", 2)) {
             Log.v("nf_service_browse_fetchepisodedetailsrequest", "PQL = " + this.pqlQuery);
         }
@@ -46,16 +47,16 @@ public class FetchEpisodeDetailsRequest extends FalcorVolleyWebClientRequest<Epi
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onEpisodeDetailsFetched(null, n);
+            this.responseCallback.onEpisodeDetailsFetched(null, status);
         }
     }
     
     @Override
     protected void onSuccess(final EpisodeDetails episodeDetails) {
         if (this.responseCallback != null) {
-            this.responseCallback.onEpisodeDetailsFetched(episodeDetails, 0);
+            this.responseCallback.onEpisodeDetailsFetched(episodeDetails, CommonStatus.OK);
         }
     }
     

@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
-import com.netflix.mediaclient.servicemgr.LoMoType;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.LoLoMo;
+import com.netflix.mediaclient.servicemgr.model.LoLoMo;
 
 public class LoLoMoSummary implements LoLoMo
 {

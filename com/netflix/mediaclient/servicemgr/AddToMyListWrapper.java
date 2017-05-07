@@ -11,6 +11,7 @@ import android.view.View$OnClickListener;
 import java.util.HashMap;
 import android.content.Context;
 import android.widget.Toast;
+import com.netflix.mediaclient.android.app.Status;
 import android.widget.TextView;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
 import com.netflix.mediaclient.Log;
@@ -27,11 +28,11 @@ public class AddToMyListWrapper
     }
     
     private void addVideoToMyList(final String s, final int n) {
-        this.serviceMan.addToQueue(s, n, new LoggingManagerCallback("AddToMyListWrapper"));
+        this.serviceMan.getBrowse().addToQueue(s, n, new LoggingManagerCallback("AddToMyListWrapper"));
     }
     
     private void removeVideoFromMyList(final String s) {
-        this.serviceMan.removeFromQueue(s, new LoggingManagerCallback("AddToMyListWrapper"));
+        this.serviceMan.getBrowse().removeFromQueue(s, new LoggingManagerCallback("AddToMyListWrapper"));
     }
     
     private void update(final String s, final AddToListData.AddToListState stateAndNotify) {
@@ -90,7 +91,7 @@ public class AddToMyListWrapper
         this.update(s, addToListState);
     }
     
-    public void updateToError(final int n, final String s, final boolean b) {
+    public void updateToError(final Status status, final String s, final boolean b) {
         final AddToListData addToListData = ((HashMap<K, AddToListData>)this.dataHash).get(s);
         if (addToListData == null) {
             Log.v("AddToMyListWrapper", "Could not revert state for video: " + s);
@@ -129,7 +130,7 @@ public class AddToMyListWrapper
             switch (addToListState) {
                 case IN_LIST: {
                     this.textView.setContentDescription((CharSequence)this.activity.getString(2131492971));
-                    this.textView.setCompoundDrawablesWithIntrinsicBounds(2130837847, 0, 0, 0);
+                    this.textView.setCompoundDrawablesWithIntrinsicBounds(2130837865, 0, 0, 0);
                     this.textView.setEnabled(true);
                     this.textView.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
                         public void onClick(final View view) {

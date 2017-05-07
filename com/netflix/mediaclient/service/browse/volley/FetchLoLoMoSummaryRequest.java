@@ -9,15 +9,15 @@ import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.LoLoMoSummary;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.service.browse.cache.HardCache;
-import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.LoLoMo;
+import com.netflix.mediaclient.servicemgr.model.LoLoMo;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
 public class FetchLoLoMoSummaryRequest extends FalcorVolleyWebClientRequest<LoLoMo>
@@ -31,17 +31,17 @@ public class FetchLoLoMoSummaryRequest extends FalcorVolleyWebClientRequest<LoLo
     private final String pqlQuery;
     private final BrowseAgentCallback responseCallback;
     
-    public FetchLoLoMoSummaryRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final HardCache hardCache, final String lolomoCategoryId, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchLoLoMoSummaryRequest(final Context context, final BrowseWebClientCache browseWebClientCache, final String lolomoCategoryId, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.lolomoCategoryId = lolomoCategoryId;
-        this.lolomoId = BrowseAgent.getGenreLoLoMoId(hardCache, lolomoCategoryId);
+        this.lolomoId = browseWebClientCache.getGenreLoLoMoId(lolomoCategoryId);
         this.lolomoIdInCache = (this.lolomoId != null);
         if (this.lolomoIdInCache) {
-            this.pqlQuery = "['genreLolomo','" + this.lolomoId + "','summary']";
+            this.pqlQuery = String.format("['genreLolomo','%s', 'summary']", this.lolomoId);
         }
         else {
-            this.pqlQuery = "['topGenre','" + lolomoCategoryId + "','summary']";
+            this.pqlQuery = String.format("['topGenre','%s', 'summary']", lolomoCategoryId);
         }
         if (Log.isLoggable("nf_service_browse_fetchlolomosummaryrequest", 2)) {
             Log.v("nf_service_browse_fetchlolomosummaryrequest", "PQL = " + this.pqlQuery);
@@ -54,16 +54,16 @@ public class FetchLoLoMoSummaryRequest extends FalcorVolleyWebClientRequest<LoLo
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onLoLoMoSummaryFetched(null, n);
+            this.responseCallback.onLoLoMoSummaryFetched(null, status);
         }
     }
     
     @Override
     protected void onSuccess(final LoLoMo loLoMo) {
         if (this.responseCallback != null) {
-            this.responseCallback.onLoLoMoSummaryFetched(loLoMo, 0);
+            this.responseCallback.onLoLoMoSummaryFetched(loLoMo, CommonStatus.OK);
         }
     }
     

@@ -24,6 +24,7 @@ public abstract class BaseCustomerEvent
     protected static final String DATA_DEVICE_CAT = "device_cat";
     protected static final String DATA_DEVICE_TYPE = "device_type";
     protected static final String DATA_GEOLOCATION_COUNTRY = "geolocation_country";
+    protected static final String DATA_INFOOPTSTATUS = "infoOptStatus";
     protected static final String DATA_LANGUAGES = "languages";
     protected static final String DATA_LOGGEDIN = "loggedIn";
     protected static final String DATA_NETFLIX_ID = "netflixId";

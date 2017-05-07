@@ -4,21 +4,39 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.servicemgr.FriendProfile;
+import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.VideoType;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
+import java.io.Serializable;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.model.branches.Video;
 import com.netflix.mediaclient.service.webclient.model.branches.Episode;
+import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.service.webclient.model.branches.Show;
 
-public class ShowDetails extends Show implements com.netflix.mediaclient.servicemgr.ShowDetails
+public class ShowDetails extends Show implements com.netflix.mediaclient.servicemgr.model.details.ShowDetails, Playable
 {
     private static final String TAG = "nf_service_browse_showdetails";
     public Episode.Detail currentEpisode;
     public Bookmark currentEpisodeBookmark;
     public boolean userConnectedToFacebook;
+    
+    @Override
+    public boolean canBeSharedOnFacebook() {
+        if (Log.isLoggable("nf_service_browse_showdetails", 2)) {
+            final boolean userConnectedToFacebook = this.userConnectedToFacebook;
+            Serializable value;
+            if (this.socialEvidence == null) {
+                value = "n/a";
+            }
+            else {
+                value = this.socialEvidence.isVideoHidden();
+            }
+            Log.v("nf_service_browse_showdetails", String.format("userConnectedToFacebook: %s, isVideoHidden(): %s", userConnectedToFacebook, value));
+        }
+        return this.userConnectedToFacebook && this.socialEvidence != null && !this.socialEvidence.isVideoHidden();
+    }
     
     @Override
     public String getActors() {
@@ -85,7 +103,7 @@ public class ShowDetails extends Show implements com.netflix.mediaclient.service
     @Override
     public String getCurrentEpisodeId() {
         if (this.currentEpisode == null) {
-            return "null";
+            return null;
         }
         return this.currentEpisode.getId();
     }
@@ -101,7 +119,7 @@ public class ShowDetails extends Show implements com.netflix.mediaclient.service
     @Override
     public String getCurrentEpisodeTitle() {
         if (this.currentEpisode == null) {
-            return "null";
+            return null;
         }
         return this.currentEpisode.getTitle();
     }
@@ -144,11 +162,6 @@ public class ShowDetails extends Show implements com.netflix.mediaclient.service
             return null;
         }
         return this.socialEvidence.getFacebookFriends();
-    }
-    
-    @Override
-    public boolean getFbDntShare() {
-        return this.userConnectedToFacebook && this.socialEvidence != null && !this.socialEvidence.isVideoHidden();
     }
     
     @Override
@@ -215,6 +228,11 @@ public class ShowDetails extends Show implements com.netflix.mediaclient.service
     @Override
     public String getParentTitle() {
         return this.getTitle();
+    }
+    
+    @Override
+    public Playable getPlayable() {
+        return this;
     }
     
     @Override
@@ -360,11 +378,6 @@ public class ShowDetails extends Show implements com.netflix.mediaclient.service
     @Override
     public boolean isPlayableEpisode() {
         return this.currentEpisode != null;
-    }
-    
-    @Override
-    public boolean isShared() {
-        return this.userConnectedToFacebook && this.socialEvidence != null && !this.socialEvidence.isVideoHidden() && this.getPlayableBookmarkPosition() > 0;
     }
     
     @Override

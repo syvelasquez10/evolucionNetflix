@@ -8,6 +8,7 @@ import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import android.os.Bundle;
 import java.io.Serializable;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.Intent;
 import android.app.Activity;
@@ -75,13 +76,13 @@ public class FacebookLoginActivity extends AccountActivity
     protected ManagerStatusListener createManagerStatusListener() {
         return new ManagerStatusListener() {
             @Override
-            public void onManagerReady(final ServiceManager serviceManager, final int n) {
+            public void onManagerReady(final ServiceManager serviceManager, final Status status) {
                 FacebookLoginActivity.this.manager = serviceManager;
                 FacebookLoginActivity.this.initFacebookSession();
             }
             
             @Override
-            public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
+            public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
                 FacebookLoginActivity.this.manager = null;
             }
         };
@@ -133,9 +134,9 @@ public class FacebookLoginActivity extends AccountActivity
         }
         
         @Override
-        public void onConnectWithFacebookComplete(final int n, final String s) {
-            super.onConnectWithFacebookComplete(n, s);
-            if (n == 0) {
+        public void onConnectWithFacebookComplete(final Status status) {
+            super.onConnectWithFacebookComplete(status);
+            if (status.isSucces()) {
                 FacebookLoginActivity.this.handleConnectSuccess();
                 return;
             }

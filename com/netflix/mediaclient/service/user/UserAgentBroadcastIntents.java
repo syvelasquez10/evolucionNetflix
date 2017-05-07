@@ -17,6 +17,7 @@ public final class UserAgentBroadcastIntents
 {
     public static final String EXTRA_USER_PROFILE_SELECTION_RESULT_INT = "com.netflix.mediaclient.intent.action.EXTRA_USER_PROFILE_SELECTION_RESULT_INT";
     public static final String EXTRA_USER_PROFILE_SELECTION_RESULT_STRING = "com.netflix.mediaclient.intent.action.EXTRA_USER_PROFILE_SELECTION_RESULT_STRING";
+    public static final String NOTIFY_PROFILES_LIST_UPDATED = "com.netflix.mediaclient.intent.action.NOTIFY_PROFILES_LIST_UPDATED";
     public static final String NOTIFY_USER_ACCOUNT_ACTIVE = "com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_ACTIVE";
     public static final String NOTIFY_USER_ACCOUNT_DEACTIVE = "com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_DEACTIVE";
     public static final String NOTIFY_USER_PROFILE_ACTIVE = "com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_ACTIVE";
@@ -34,6 +35,7 @@ public final class UserAgentBroadcastIntents
                 this.add("com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_DEACTIVE");
                 this.add("com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_READY_TO_SELECT");
                 this.add("com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_SELECTION_RESULT");
+                this.add("com.netflix.mediaclient.intent.action.NOTIFY_PROFILES_LIST_UPDATED");
             }
         };
     }
@@ -66,6 +68,10 @@ public final class UserAgentBroadcastIntents
             intent.putExtra("com.netflix.mediaclient.intent.action.EXTRA_USER_PROFILE_SELECTION_RESULT_STRING", s);
         }
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    static void signalProfilesListUpdated(final Context context) {
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.NOTIFY_PROFILES_LIST_UPDATED"));
     }
     
     static void signalUserAccountActive(final Context context) {

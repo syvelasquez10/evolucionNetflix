@@ -8,13 +8,14 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
 public class RefreshKidsCharacterDetails extends FalcorVolleyWebClientRequest<KidsCharacterDetails>
@@ -30,8 +31,8 @@ public class RefreshKidsCharacterDetails extends FalcorVolleyWebClientRequest<Ki
         DATA_CHANGED = true;
     }
     
-    protected RefreshKidsCharacterDetails(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String mCharacterId, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    protected RefreshKidsCharacterDetails(final Context context, final String mCharacterId, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.mCharacterId = mCharacterId;
         this.responseCallback = responseCallback;
         this.pqlQuery1 = String.format("['characters', '%s', 'watchNext', ['summary', 'detail', 'bookmark']]", this.mCharacterId);
@@ -46,16 +47,16 @@ public class RefreshKidsCharacterDetails extends FalcorVolleyWebClientRequest<Ki
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onKidsCharacterDetailsFetched(null, RefreshKidsCharacterDetails.DATA_CHANGED, n);
+            this.responseCallback.onKidsCharacterDetailsFetched(null, RefreshKidsCharacterDetails.DATA_CHANGED, status);
         }
     }
     
     @Override
     protected void onSuccess(final KidsCharacterDetails kidsCharacterDetails) {
         if (this.responseCallback != null) {
-            this.responseCallback.onKidsCharacterDetailsFetched(kidsCharacterDetails, RefreshKidsCharacterDetails.DATA_CHANGED, 0);
+            this.responseCallback.onKidsCharacterDetailsFetched(kidsCharacterDetails, RefreshKidsCharacterDetails.DATA_CHANGED, CommonStatus.OK);
         }
     }
     

@@ -8,10 +8,11 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
@@ -26,8 +27,8 @@ public class VerifyPinRequest extends FalcorVolleyWebClientRequest<Boolean>
     private final String pqlQuery1;
     private final UserAgentWebCallback responseCallback;
     
-    protected VerifyPinRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String enteredPin, final UserAgentWebCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    protected VerifyPinRequest(final Context context, final String enteredPin, final UserAgentWebCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.enteredPin = enteredPin;
         this.pqlQuery1 = String.format("['user', 'verifyPin', '%s']", enteredPin);
@@ -42,16 +43,16 @@ public class VerifyPinRequest extends FalcorVolleyWebClientRequest<Boolean>
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onPinVerified(false, n);
+            this.responseCallback.onPinVerified(false, status);
         }
     }
     
     @Override
     protected void onSuccess(final Boolean b) {
         if (this.responseCallback != null) {
-            this.responseCallback.onPinVerified(b, 0);
+            this.responseCallback.onPinVerified(b, CommonStatus.OK);
         }
     }
     

@@ -24,7 +24,7 @@ import android.widget.AbsListView$LayoutParams;
 import android.view.View;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import java.util.Iterator;
-import com.netflix.mediaclient.servicemgr.UserProfile;
+import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Intent;
@@ -65,7 +65,7 @@ public class KidsUtils
     public static void addListViewSpacerIfNoHeaders(final StickyListHeadersListView stickyListHeadersListView) {
         if (stickyListHeadersListView.getHeaderViewsCount() == 0) {
             final View view = new View(stickyListHeadersListView.getContext());
-            view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, stickyListHeadersListView.getResources().getDimensionPixelSize(2131361920)));
+            view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, stickyListHeadersListView.getResources().getDimensionPixelSize(2131361934)));
             stickyListHeadersListView.addHeaderView(view);
         }
     }
@@ -98,7 +98,7 @@ public class KidsUtils
     
     public static int computeSkidmarkCharacterViewSize(final NetflixActivity netflixActivity) {
         final Resources resources = netflixActivity.getResources();
-        return resources.getDimensionPixelSize(2131361919) + ((DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) - resources.getDimensionPixelSize(2131361918)) / 2 - resources.getDimensionPixelSize(2131361918));
+        return resources.getDimensionPixelSize(2131361933) + ((DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) - resources.getDimensionPixelSize(2131361932)) / 2 - resources.getDimensionPixelSize(2131361932));
     }
     
     public static int computeSkidmarkRowHeight(final NetflixActivity netflixActivity, int n, int n2, int n3, final int n4, final boolean b) {
@@ -251,10 +251,10 @@ public class KidsUtils
         }
         menuItem.setVisible(true).setEnabled(true);
         if (netflixActivity.isForKids()) {
-            menuItem.setTitle(2131492968).setIcon(2130837694).setIntent(createExitKidsIntent(netflixActivity, UIViewLogging.UIViewCommandName.actionBarKidsExit)).setShowAsAction(2);
+            menuItem.setTitle(2131492968).setIcon(2130837696).setIntent(createExitKidsIntent(netflixActivity, UIViewLogging.UIViewCommandName.actionBarKidsExit)).setShowAsAction(2);
             return;
         }
-        menuItem.setTitle(2131492948).setIcon(2130837725).setIntent(createSwitchToKidsIntent(netflixActivity, UIViewLogging.UIViewCommandName.actionBarKidsEntry)).setShowAsAction(2);
+        menuItem.setTitle(2131492948).setIcon(2130837733).setIntent(createSwitchToKidsIntent(netflixActivity, UIViewLogging.UIViewCommandName.actionBarKidsEntry)).setShowAsAction(2);
     }
     
     public static class OnSwitchToKidsClickListener implements View$OnClickListener

@@ -10,8 +10,6 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.webkit.WebView;
 import java.util.Locale;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.net.Uri;
 import com.netflix.mediaclient.protocol.nflx.NflxHandler;
@@ -35,7 +33,7 @@ class SignUpWebViewClient extends WebViewClient
     
     private NflxHandler.Response canHandleUri(final String s) {
         try {
-            return this.nflxHandler.handleUri(this.mUi, null, null, Uri.parse(s), 0L);
+            return this.nflxHandler.handleUri(this.mUi, Uri.parse(s), 0L);
         }
         catch (Throwable t) {
             Log.e("SignupActivity", "Failed to parse nflx url ", t);

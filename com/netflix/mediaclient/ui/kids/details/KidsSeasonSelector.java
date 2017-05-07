@@ -8,7 +8,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.view.View$OnClickListener;
 import android.widget.LinearLayout$LayoutParams;
 import android.widget.TextView;
-import com.netflix.mediaclient.servicemgr.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import java.util.ArrayList;
 import android.view.MotionEvent;
 import android.view.View$OnTouchListener;
@@ -49,17 +49,17 @@ public class KidsSeasonSelector extends RelativeLayout
         final List<SeasonDetails> seasons = this.adapter.getSeasons();
         Log.v("KidsSeasonSelector", "Creating Season Selector, num seasons: " + seasons.size());
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
-        this.selectedColor = this.getResources().getColor(2131296368);
-        this.unselectedColor = this.getResources().getColor(2131296369);
-        this.itemWidth = this.getResources().getDimensionPixelSize(2131361912);
+        this.selectedColor = this.getResources().getColor(2131296373);
+        this.unselectedColor = this.getResources().getColor(2131296374);
+        this.itemWidth = this.getResources().getDimensionPixelSize(2131361926);
         this.halfItemWidth = this.itemWidth / 2;
         this.centerOffset = (DeviceUtils.getScreenWidthInPixels((Context)this.activity) - this.itemWidth) / 2;
         this.padViewWidth = this.centerOffset;
         Log.v("KidsSeasonSelector", "Item width: " + this.itemWidth + ", centerOffset: " + this.centerOffset);
-        this.activity.getLayoutInflater().inflate(2130903098, (ViewGroup)this);
-        this.setBackgroundColor(this.activity.getResources().getColor(2131296367));
-        this.seasonsGroup = (LinearLayout)this.findViewById(2131165404);
-        (this.scroller = (HorizontalScrollView)this.findViewById(2131165403)).setHorizontalScrollBarEnabled(false);
+        this.activity.getLayoutInflater().inflate(2130903106, (ViewGroup)this);
+        this.setBackgroundColor(this.activity.getResources().getColor(2131296372));
+        this.seasonsGroup = (LinearLayout)this.findViewById(2131165425);
+        (this.scroller = (HorizontalScrollView)this.findViewById(2131165424)).setHorizontalScrollBarEnabled(false);
         this.scroller.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
             public boolean onTouch(final View view, final MotionEvent motionEvent) {
                 if (motionEvent.getAction() == 1) {
@@ -81,7 +81,7 @@ public class KidsSeasonSelector extends RelativeLayout
     }
     
     private View createItemView(final int n, final boolean b) {
-        final TextView textView = (TextView)this.activity.getLayoutInflater().inflate(2130903099, (ViewGroup)null);
+        final TextView textView = (TextView)this.activity.getLayoutInflater().inflate(2130903107, (ViewGroup)null);
         textView.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(this.itemWidth, -1));
         int textColor;
         if (b) {

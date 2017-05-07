@@ -8,9 +8,9 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFocusHandler;
 import android.view.View;
 import android.content.Context;
-import com.netflix.mediaclient.service.webclient.model.BillboardDetails;
+import com.netflix.mediaclient.servicemgr.model.Billboard;
 
-public class BillboardViewGroup extends VideoViewGroup<BillboardDetails, BillboardView>
+public class BillboardViewGroup extends VideoViewGroup<Billboard, BillboardView>
 {
     public BillboardViewGroup(final Context context) {
         super(context, false);

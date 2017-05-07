@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.logging.client.volley;
 
 import com.netflix.mediaclient.Log;
 import com.android.volley.VolleyError;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
 
 public class LoggingEventsRequest extends ClientLoggingVolleyWebClientRequest<String>
@@ -27,7 +28,7 @@ public class LoggingEventsRequest extends ClientLoggingVolleyWebClientRequest<St
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         this.mCallback.onEventsDeliveryFailed(this.mDeliveryRequestId);
     }
     

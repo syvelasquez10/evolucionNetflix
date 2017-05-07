@@ -6,9 +6,9 @@ package com.netflix.mediaclient.service.webclient.model.leafs;
 
 import com.netflix.mediaclient.util.StringUtils;
 import android.os.Parcel;
-import com.netflix.mediaclient.servicemgr.LoMoType;
+import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import android.os.Parcelable$Creator;
-import com.netflix.mediaclient.servicemgr.GenreList;
+import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
 
 public class ListOfGenreSummary extends TrackableListSummary implements GenreList
 {

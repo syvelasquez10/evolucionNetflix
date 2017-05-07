@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.webclient.volley;
 import java.util.Locale;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.StatusCode;
 import com.android.volley.VolleyError;
 
 public class FalcorParseException extends VolleyError
@@ -29,15 +30,15 @@ public class FalcorParseException extends VolleyError
         super(t);
     }
     
-    public static int getErrorCode(final String s) {
-        int n = -80;
+    public static StatusCode getErrorCode(final String s) {
+        StatusCode statusCode = StatusCode.FALCOR_RESPONSE_PARSE_ERROR;
         if (StringUtils.isEmpty(s)) {
-            return -80;
+            return statusCode;
         }
         Log.d(FalcorParseException.TAG, "errorMsg:" + s);
         if (FalcorParseUtils.isWrongState(s.toLowerCase(Locale.US))) {
-            n = -66;
+            statusCode = StatusCode.BROWSE_AGENT_WRONG_STATE;
         }
-        return n;
+        return statusCode;
     }
 }

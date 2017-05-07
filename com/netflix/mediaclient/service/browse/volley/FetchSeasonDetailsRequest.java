@@ -9,13 +9,14 @@ import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.branches.Season;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
 public class FetchSeasonDetailsRequest extends FalcorVolleyWebClientRequest<SeasonDetails>
@@ -26,11 +27,11 @@ public class FetchSeasonDetailsRequest extends FalcorVolleyWebClientRequest<Seas
     private final String pqlQuery;
     private final BrowseAgentCallback responseCallback;
     
-    public FetchSeasonDetailsRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String mSeasonId, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchSeasonDetailsRequest(final Context context, final String mSeasonId, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.mSeasonId = mSeasonId;
-        this.pqlQuery = "['videos', '" + this.mSeasonId + "','detail']";
+        this.pqlQuery = String.format("['videos', '%s', 'detail']", this.mSeasonId);
         if (Log.isLoggable("nf_service_browse_fetchseasondetailsrequest", 2)) {
             Log.v("nf_service_browse_fetchseasondetailsrequest", "PQL = " + this.pqlQuery);
         }
@@ -42,16 +43,16 @@ public class FetchSeasonDetailsRequest extends FalcorVolleyWebClientRequest<Seas
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onSeasonDetailsFetched(null, n);
+            this.responseCallback.onSeasonDetailsFetched(null, status);
         }
     }
     
     @Override
     protected void onSuccess(final SeasonDetails seasonDetails) {
         if (this.responseCallback != null) {
-            this.responseCallback.onSeasonDetailsFetched(seasonDetails, 0);
+            this.responseCallback.onSeasonDetailsFetched(seasonDetails, CommonStatus.OK);
         }
     }
     

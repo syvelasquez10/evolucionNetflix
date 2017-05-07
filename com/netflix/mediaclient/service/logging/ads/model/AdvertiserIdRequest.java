@@ -90,9 +90,4 @@ public final class AdvertiserIdRequest
             return "{}";
         }
     }
-    
-    @Override
-    public String toString() {
-        return "AdvertiserIdRequest [mAdvertiserId=" + this.mAdvertiserId + ", mOptedIn=" + this.mOptedIn + "]";
-    }
 }

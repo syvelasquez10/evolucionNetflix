@@ -23,6 +23,7 @@ public class ActivateEvent extends BaseRegistrationEvent
     private String message;
     private boolean networkError;
     private boolean ok;
+    private String origin;
     private int reasonCode;
     
     public ActivateEvent(final JSONObject jsonObject) throws JSONException {
@@ -47,6 +48,10 @@ public class ActivateEvent extends BaseRegistrationEvent
     
     public String getMessage() {
         return this.message;
+    }
+    
+    public String getOrigin() {
+        return this.origin;
     }
     
     public int getReasonCode() {
@@ -81,6 +86,7 @@ public class ActivateEvent extends BaseRegistrationEvent
             this.reasonCode = BaseNccpEvent.getInt(jsonObject, "reasonCode", 0);
             this.message = BaseNccpEvent.getString(jsonObject, "message", null);
             this.bcp47 = BaseNccpEvent.getString(jsonObject, "bcp47", null);
+            this.origin = BaseNccpEvent.getString(jsonObject, "origin", null);
             if ("ACTION_ID".equalsIgnoreCase(string)) {
                 this.actionId = true;
                 this.networkError = false;

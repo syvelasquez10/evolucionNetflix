@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.kids.lolomo;
 
 import android.content.Context;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.servicemgr.CWVideo;
+import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 
 @SuppressLint({ "ViewConstructor" })

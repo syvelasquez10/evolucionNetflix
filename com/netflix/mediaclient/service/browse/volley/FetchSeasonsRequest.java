@@ -11,13 +11,14 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Collections;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientRequest;
 
@@ -32,13 +33,13 @@ public class FetchSeasonsRequest extends FalcorVolleyWebClientRequest<List<Seaso
     private final BrowseAgentCallback responseCallback;
     private final int toSeason;
     
-    public FetchSeasonsRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String mShowId, final int fromSeason, final int toSeason, final BrowseAgentCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public FetchSeasonsRequest(final Context context, final String mShowId, final int fromSeason, final int toSeason, final BrowseAgentCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.mShowId = mShowId;
         this.fromSeason = fromSeason;
         this.toSeason = toSeason;
-        this.pqlQuery = "['videos', '" + this.mShowId + "', 'seasons',{'to':" + toSeason + ",'from':" + fromSeason + "},'detail']";
+        this.pqlQuery = String.format("['videos', '%s', 'seasons', {'from':%d,'to':%d}, 'detail']", this.mShowId, fromSeason, toSeason);
         if (Log.isLoggable("nf_service_browse_fetchseasonsrequest", 2)) {
             Log.v("nf_service_browse_fetchseasonsrequest", "PQL = " + this.pqlQuery);
         }
@@ -50,16 +51,16 @@ public class FetchSeasonsRequest extends FalcorVolleyWebClientRequest<List<Seaso
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onSeasonsFetched(Collections.emptyList(), n);
+            this.responseCallback.onSeasonsFetched(Collections.emptyList(), status);
         }
     }
     
     @Override
     protected void onSuccess(final List<SeasonDetails> list) {
         if (this.responseCallback != null) {
-            this.responseCallback.onSeasonsFetched(list, 0);
+            this.responseCallback.onSeasonsFetched(list, CommonStatus.OK);
         }
     }
     

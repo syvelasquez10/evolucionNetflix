@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.volley;
 
+import android.os.SystemClock;
 import com.android.volley.Response;
 import com.android.volley.NetworkResponse;
 import com.netflix.mediaclient.util.StringUtils;
@@ -11,6 +12,8 @@ import com.android.volley.AuthFailureError;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import java.util.List;
@@ -21,8 +24,8 @@ import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
 import com.android.volley.NetworkError;
 import com.android.volley.TimeoutError;
 import com.android.volley.ServerError;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.logging.client.model.Error;
-import android.os.SystemClock;
 import com.netflix.mediaclient.util.UriUtil;
 import com.netflix.mediaclient.Log;
 import java.util.Locale;
@@ -30,7 +33,6 @@ import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.android.volley.VolleyError;
 import java.util.UUID;
 import android.content.Context;
-import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 
 public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientRequest<T>
@@ -38,21 +40,19 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
     public static final String ENDPOINT_REVISION = "X-Netflix.api-script-revision";
     public static final String NETFLIX_API_SCRIPT_EXECUTION_TIME_HEADER = "X-Netflix.api-script-execution-time";
     public static final String NETFLIX_SERVER_EXECUTION_TIME_HEADER = "X-Netflix.execution-time";
-    private static final String TAG = "nf_volleyrequest";
+    private static final String TAG = "FalcorVolleyWebClientRequest";
     protected ApiEndpointRegistry mApiEndpointRegistry;
     protected long mApiScriptExecTimeInMs;
-    protected ServiceAgent.ConfigurationAgentInterface mConfig;
     protected Context mContext;
     protected String mEndpointRevision;
     protected long mParseTimeInMs;
     protected long mServerExecTimeInMs;
     protected UUID mUuid;
     
-    protected FalcorVolleyWebClientRequest(final Context mContext, final ServiceAgent.ConfigurationAgentInterface mConfig) {
+    protected FalcorVolleyWebClientRequest(final Context mContext) {
         super(0);
         this.mServerExecTimeInMs = -1L;
         this.mUuid = UUID.randomUUID();
-        this.mConfig = mConfig;
         this.mContext = mContext;
     }
     
@@ -64,8 +64,8 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
         }
         else {
             final String lowerCase = message.toLowerCase(Locale.US);
-            if (Log.isLoggable("nf_volleyrequest", 3)) {
-                Log.d("nf_volleyrequest", ".next call failed with error =" + lowerCase);
+            if (Log.isLoggable("FalcorVolleyWebClientRequest", 3)) {
+                Log.d("FalcorVolleyWebClientRequest", ".next call failed with error =" + lowerCase);
             }
             rootCause = RootCause.networkFailure;
             if (lowerCase.contains("sslhandshakeexception")) {
@@ -94,51 +94,54 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
     
     @Override
     public void deliverError(final VolleyError volleyError) {
-        this.mDurationTimeInMs = SystemClock.elapsedRealtime() - this.mDurationTimeInMs;
+        final long durationTimeMs = this.getDurationTimeMs();
+        if (Log.isLoggable("FalcorVolleyWebClientRequest", 3)) {
+            Log.d("FalcorVolleyWebClientRequest", "request duration time (ms): " + durationTimeMs + ", class: " + this.getClass().getSimpleName());
+        }
         final Error error = new Error();
-        if (Log.isLoggable("nf_volleyrequest", 5)) {
-            Log.w("nf_volleyrequest", "VolleyError: " + volleyError.getMessage());
+        if (Log.isLoggable("FalcorVolleyWebClientRequest", 5)) {
+            Log.w("FalcorVolleyWebClientRequest", "VolleyError: " + volleyError.getMessage());
         }
-        if (volleyError.networkResponse != null && Log.isLoggable("nf_volleyrequest", 3)) {
-            Log.d("nf_volleyrequest", "Error on response:" + new String(volleyError.networkResponse.data));
+        if (volleyError.networkResponse != null && Log.isLoggable("FalcorVolleyWebClientRequest", 3)) {
+            Log.d("FalcorVolleyWebClientRequest", "Error on response:" + new String(volleyError.networkResponse.data));
         }
-        int n = -2;
+        StatusCode statusCode = StatusCode.INTERNAL_ERROR;
         if (volleyError instanceof FalcorParseException) {
-            n = FalcorParseException.getErrorCode(((FalcorParseException)volleyError).getMessage());
+            statusCode = FalcorParseException.getErrorCode(((FalcorParseException)volleyError).getMessage());
             error.setRootCause(RootCause.serverResponseBad);
         }
         else if (volleyError instanceof FalcorServerException) {
-            n = FalcorServerException.getErrorCode(((FalcorServerException)volleyError).getMessage(), this.mErrorLogger);
+            statusCode = FalcorServerException.getErrorCode(((FalcorServerException)volleyError).getMessage(), this.mErrorLogger);
             error.setRootCause(RootCause.serverFailure);
         }
         else if (volleyError instanceof ServerError) {
-            n = -62;
+            statusCode = StatusCode.SERVER_ERROR;
             error.setRootCause(RootCause.serverFailure);
         }
         else if (volleyError instanceof TimeoutError) {
-            n = this.getStatusCodeFromVolleyNetworkError(volleyError);
+            statusCode = this.getStatusCodeFromVolleyNetworkError(volleyError);
             error.setRootCause(RootCause.tcpConnectionTimeout);
         }
         else if (volleyError instanceof NetworkError) {
-            n = this.getStatusCodeFromVolleyNetworkError(volleyError);
+            statusCode = this.getStatusCodeFromVolleyNetworkError(volleyError);
             error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
         }
         if (this.mContext != null) {
-            Log.d("nf_volleyrequest", "Report data request failed");
+            Log.d("FalcorVolleyWebClientRequest", "Report data request failed");
             final DeepErrorElement deepErrorElement = new DeepErrorElement();
             if (volleyError != null && volleyError.networkResponse != null) {
                 deepErrorElement.setErrorCode("" + volleyError.networkResponse.statusCode);
             }
             else {
-                Log.e("nf_volleyrequest", "Network response is not set!");
+                Log.e("FalcorVolleyWebClientRequest", "Network response is not set!");
                 deepErrorElement.setErrorCode("504");
             }
             deepErrorElement.setFatal(true);
             error.addDeepError(deepErrorElement);
             final HttpResponse httpResponse = new HttpResponse();
-            httpResponse.setResponseTime((int)this.mDurationTimeInMs);
+            httpResponse.setResponseTime((int)durationTimeMs);
             httpResponse.setMimeType("text/x-json");
-            httpResponse.setContentLength(this.mResponseSizeInBytes);
+            httpResponse.setContentLength(this.getResponseSizeInBytes());
             final List<String> pqlQueries = this.getPQLQueries();
             int size = 0;
             if (pqlQueries != null) {
@@ -153,20 +156,24 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
             }
             LogUtils.reportDataRequestEnded(this.mContext, String.valueOf(this.mUuid), IClientLogging.CompletionReason.failed, (List<FalcorPathResult>)list, error, httpResponse);
         }
-        this.onFailure(n);
+        this.onFailure(new NetflixStatus(statusCode));
     }
     
     @Override
     protected void deliverResponse(final T t) {
         super.deliverResponse(t);
+        final long durationTimeMs = this.getDurationTimeMs();
+        if (Log.isLoggable("FalcorVolleyWebClientRequest", 3)) {
+            Log.d("FalcorVolleyWebClientRequest", "request duration time (ms): " + durationTimeMs + ", class: " + this.getClass().getSimpleName());
+        }
         if (this.mContext != null) {
-            Log.d("nf_volleyrequest", "Report data request sucess");
+            Log.d("FalcorVolleyWebClientRequest", "Report data request sucess");
             final HttpResponse httpResponse = new HttpResponse();
-            httpResponse.setResponseTime((int)this.mDurationTimeInMs);
+            httpResponse.setResponseTime((int)durationTimeMs);
             httpResponse.setParseTime((int)this.mParseTimeInMs);
             httpResponse.setMimeType("text/x-json");
             httpResponse.setServerExecutionTime((int)this.mServerExecTimeInMs);
-            httpResponse.setContentLength(this.mResponseSizeInBytes);
+            httpResponse.setContentLength(this.getResponseSizeInBytes());
             httpResponse.setApiScriptExecutionTime((int)this.mApiScriptExecTimeInMs);
             httpResponse.setEndpointRevision(this.mEndpointRevision);
             final List<String> pqlQueries = this.getPQLQueries();
@@ -183,10 +190,6 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
             }
             LogUtils.reportDataRequestEnded(this.mContext, String.valueOf(this.mUuid), IClientLogging.CompletionReason.success, (List<FalcorPathResult>)list, null, httpResponse);
         }
-    }
-    
-    protected ServiceAgent.ConfigurationAgentInterface getConfig() {
-        return this.mConfig;
     }
     
     Context getContext() {
@@ -239,6 +242,9 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
         final String rawPQLQuery = this.getRawPQLQuery();
         final StringBuilder sb = new StringBuilder(string);
         sb.append(StringUtils.buildUnencodedUrlParam("method", this.getMethodType()));
+        if (this.shouldMaterializeRequest()) {
+            sb.append(StringUtils.buildUnencodedUrlParam("materialize", "true"));
+        }
         sb.append(rawPQLQuery);
         final String optionalParams = this.getOptionalParams();
         if (StringUtils.isNotEmpty(optionalParams)) {
@@ -246,8 +252,8 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
         }
         this.storeReqNetflixId(this.getCurrentNetflixId());
         string = sb.toString();
-        if (Log.isLoggable("nf_volleyrequest", 2)) {
-            Log.v("nf_volleyrequest", "VolleyWebClientRequest URL = " + string);
+        if (Log.isLoggable("FalcorVolleyWebClientRequest", 2)) {
+            Log.v("FalcorVolleyWebClientRequest", "VolleyWebClientRequest URL = " + string);
         }
         return string;
     }
@@ -285,11 +291,11 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
         //    48: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
         //    53: checkcast       Ljava/lang/String;
         //    56: putfield        com/netflix/mediaclient/service/webclient/volley/FalcorVolleyWebClientRequest.mEndpointRevision:Ljava/lang/String;
-        //    59: ldc             "nf_volleyrequest"
+        //    59: ldc             "FalcorVolleyWebClientRequest"
         //    61: iconst_3       
         //    62: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
         //    65: ifeq            117
-        //    68: ldc             "nf_volleyrequest"
+        //    68: ldc             "FalcorVolleyWebClientRequest"
         //    70: new             Ljava/lang/StringBuilder;
         //    73: dup            
         //    74: invokespecial   java/lang/StringBuilder.<init>:()V
@@ -328,20 +334,20 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
         //   149: invokespecial   com/netflix/mediaclient/service/webclient/volley/VolleyWebClientRequest.parseNetworkResponse:(Lcom/android/volley/NetworkResponse;)Lcom/android/volley/Response;
         //   152: areturn        
         //   153: astore_3       
-        //   154: ldc             "nf_volleyrequest"
+        //   154: ldc             "FalcorVolleyWebClientRequest"
         //   156: ldc_w           "Failed to parse server execution time!"
         //   159: aload_3        
         //   160: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
         //   163: pop            
         //   164: goto            132
         //   167: astore_2       
-        //   168: ldc             "nf_volleyrequest"
+        //   168: ldc             "FalcorVolleyWebClientRequest"
         //   170: ldc_w           "Failed to parse api script execution time!"
         //   173: aload_2        
         //   174: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
         //   177: pop            
         //   178: goto            147
-        //   181: ldc             "nf_volleyrequest"
+        //   181: ldc             "FalcorVolleyWebClientRequest"
         //   183: ldc_w           "execTime not found!"
         //   186: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
         //   189: pop            
@@ -387,8 +393,8 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
         try {
             falcorResponse = this.parseFalcorResponse(s);
             this.mParseTimeInMs = SystemClock.elapsedRealtime() - this.mParseTimeInMs;
-            if (Log.isLoggable("nf_volleyrequest", 2)) {
-                Log.v("nf_volleyrequest", "parse time (ms): " + this.mParseTimeInMs);
+            if (Log.isLoggable("FalcorVolleyWebClientRequest", 2)) {
+                Log.v("FalcorVolleyWebClientRequest", "parse time (ms): " + this.mParseTimeInMs + ", class: " + this.getClass().getSimpleName());
             }
             if (falcorResponse == null) {
                 throw new FalcorParseException("Parsing returned null.");
@@ -405,5 +411,9 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
     
     void setApiEndpointRegistry(final ApiEndpointRegistry mApiEndpointRegistry) {
         this.mApiEndpointRegistry = mApiEndpointRegistry;
+    }
+    
+    protected boolean shouldMaterializeRequest() {
+        return false;
     }
 }

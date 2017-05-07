@@ -4,7 +4,9 @@
 
 package com.netflix.mediaclient.android.fragment;
 
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.android.app.Status;
 import android.content.DialogInterface;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
@@ -46,21 +48,21 @@ public abstract class NetflixDialogFrag extends DialogFragment implements Loadin
         Log.d("NetflixDialogFrag", "NetflixDialogFrag is dismissed");
     }
     
-    protected void onLoaded(final int n) {
+    protected void onLoaded(final Status status) {
         if (this.mLoadingStatusCallback != null) {
-            this.mLoadingStatusCallback.onDataLoaded(n);
+            this.mLoadingStatusCallback.onDataLoaded(status);
         }
     }
     
-    public void onManagerReady(final ServiceManager serviceManager, final int n) {
+    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
     }
     
-    public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
+    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
     }
     
     public void setLoadingStatusCallback(final LoadingStatusCallback mLoadingStatusCallback) {
         if (!this.isLoadingData() && mLoadingStatusCallback != null) {
-            mLoadingStatusCallback.onDataLoaded(0);
+            mLoadingStatusCallback.onDataLoaded(CommonStatus.OK);
             return;
         }
         this.mLoadingStatusCallback = mLoadingStatusCallback;

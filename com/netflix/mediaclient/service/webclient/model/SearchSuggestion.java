@@ -6,7 +6,7 @@ package com.netflix.mediaclient.service.webclient.model;
 
 import com.netflix.mediaclient.util.StringUtils;
 
-public class SearchSuggestion implements com.netflix.mediaclient.servicemgr.SearchSuggestion
+public class SearchSuggestion implements com.netflix.mediaclient.servicemgr.model.search.SearchSuggestion
 {
     public String title;
     

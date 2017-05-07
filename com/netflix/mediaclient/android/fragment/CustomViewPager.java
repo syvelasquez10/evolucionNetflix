@@ -7,7 +7,7 @@ package com.netflix.mediaclient.android.fragment;
 import android.view.MotionEvent;
 import android.widget.ListView;
 import android.view.ViewParent;
-import com.netflix.mediaclient.servicemgr.LoMoUtils;
+import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
 import android.view.View;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.util.AttributeSet;

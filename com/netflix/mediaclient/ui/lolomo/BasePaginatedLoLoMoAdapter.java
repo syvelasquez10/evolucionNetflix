@@ -16,11 +16,10 @@ import java.util.Iterator;
 import java.util.HashSet;
 import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
 import java.util.Set;
-import com.netflix.mediaclient.servicemgr.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 
 public abstract class BasePaginatedLoLoMoAdapter<T extends BasicLoMo> extends BaseLoLoMoAdapter<T>
 {
-    protected static final String TAG = "BasePaginatedLoLoMoAdapter";
     private final Set<LoMoViewPager> pagerSet;
     
     public BasePaginatedLoLoMoAdapter(final LoLoMoFrag loLoMoFrag, final String s) {

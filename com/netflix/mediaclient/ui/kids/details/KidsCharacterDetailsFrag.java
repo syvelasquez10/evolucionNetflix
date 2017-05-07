@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.kids.details;
 
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.widget.ErrorWrapper;
 import android.content.Context;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
@@ -12,11 +13,12 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
+import com.netflix.mediaclient.servicemgr.IBrowseManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.os.Bundle;
 import android.app.Fragment;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
@@ -82,13 +84,13 @@ public class KidsCharacterDetailsFrag extends NetflixFrag
         this.isLoading = true;
         this.requestId = System.nanoTime();
         Log.v("KidsCharacterDetailsFrag", "Fetching data for character ID: " + this.charId);
-        final ServiceManager manager = this.manager;
+        final IBrowseManager browse = this.manager.getBrowse();
         final String charId = this.charId;
         final long requestId = this.requestId;
         if (KidsCharacterDetailsFrag.REFRESH_FETCH) {
             b = false;
         }
-        manager.fetchKidsCharacterDetails(charId, new FetchCharacterDetailsCallback(requestId, b));
+        browse.fetchKidsCharacterDetails(charId, new FetchCharacterDetailsCallback(requestId, b));
     }
     
     private void refreshCharacterDetails() {
@@ -98,7 +100,7 @@ public class KidsCharacterDetailsFrag extends NetflixFrag
         }
         this.refreshRequestId = System.nanoTime();
         Log.d("TAG", String.format("refresh watchNext for character id: %s, refreshRequestId: %d", this.charId, this.refreshRequestId));
-        this.manager.fetchKidsCharacterDetails(this.charId, new FetchCharacterDetailsCallback(this.refreshRequestId, KidsCharacterDetailsFrag.REFRESH_FETCH));
+        this.manager.getBrowse().fetchKidsCharacterDetails(this.charId, new FetchCharacterDetailsCallback(this.refreshRequestId, KidsCharacterDetailsFrag.REFRESH_FETCH));
     }
     
     private void showErrorView() {
@@ -141,7 +143,7 @@ public class KidsCharacterDetailsFrag extends NetflixFrag
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        this.content = layoutInflater.inflate(2130903108, (ViewGroup)null);
+        this.content = layoutInflater.inflate(2130903116, (ViewGroup)null);
         (this.listView = (StickyListHeadersListView)this.content.findViewById(16908298)).setAreHeadersSticky(false);
         KidsUtils.configureListViewForKids(this.getNetflixActivity(), this.listView);
         this.detailsViewGroup = new KidsDetailsViewGroup((Context)this.getActivity());
@@ -157,16 +159,16 @@ public class KidsCharacterDetailsFrag extends NetflixFrag
     }
     
     @Override
-    public void onManagerReady(final ServiceManager manager, final int n) {
+    public void onManagerReady(final ServiceManager manager, final Status status) {
         Log.v("KidsCharacterDetailsFrag", "onManagerReady");
-        super.onManagerReady(manager, n);
+        super.onManagerReady(manager, status);
         this.manager = manager;
         this.completeInitIfPossible();
     }
     
     @Override
-    public void onManagerUnavailable(final ServiceManager serviceManager, final int n) {
-        super.onManagerUnavailable(serviceManager, n);
+    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
+        super.onManagerUnavailable(serviceManager, status);
         this.manager = null;
     }
     
@@ -187,21 +189,21 @@ public class KidsCharacterDetailsFrag extends NetflixFrag
         }
         
         @Override
-        public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final int n) {
-            super.onKidsCharacterDetailsFetched(kidsCharacterDetails, b, n);
+        public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
+            super.onKidsCharacterDetailsFetched(kidsCharacterDetails, b, status);
             if (this.isRefresh && !b) {
                 Log.v("KidsCharacterDetailsFrag", "refreshCase data not changed - nothing to do");
                 return;
             }
-            long n2 = KidsCharacterDetailsFrag.this.requestId;
+            long n = KidsCharacterDetailsFrag.this.requestId;
             if (this.isRefresh) {
-                n2 = KidsCharacterDetailsFrag.this.refreshRequestId;
+                n = KidsCharacterDetailsFrag.this.refreshRequestId;
             }
-            if (this.requestId != n2) {
+            if (this.requestId != n) {
                 Log.v("KidsCharacterDetailsFrag", "Ignoring stale callback");
                 return;
             }
-            if (n != 0) {
+            if (status.isError()) {
                 Log.w("KidsCharacterDetailsFrag", "Invalid status code");
                 KidsCharacterDetailsFrag.this.showErrorView();
                 return;

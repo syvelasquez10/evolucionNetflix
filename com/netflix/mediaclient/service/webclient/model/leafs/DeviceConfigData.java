@@ -5,12 +5,14 @@
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
 import java.util.ArrayList;
-import com.google.gson.annotations.SerializedName;
 import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
 public class DeviceConfigData
 {
     private String bitrate_cap;
+    @SerializedName("breadcrumb_logging_specification")
+    private BreadcrumbLoggingSpecification breadcrumb_logging_specification;
     @SerializedName("consolidated_logging_specification")
     private List<ConsolidatedLoggingSessionSpecification> consolidated_logging_specification;
     private String current_version;
@@ -18,6 +20,10 @@ public class DeviceConfigData
     private String disable_mdx;
     private String disable_websocket;
     private String disable_widevine;
+    @SerializedName("error_logging_specification")
+    private ErrorLoggingSpecification error_logging_specification;
+    @SerializedName("gcmBrowseEventRateLimitInSecs")
+    private int gcmBrowseEventRateLimit;
     private String image_pref;
     @SerializedName("ip_connectivity_policy")
     private int ip_connectivity_policy;
@@ -29,6 +35,8 @@ public class DeviceConfigData
     private String type;
     @SerializedName("user_session_timeout_duration")
     private int user_session_timeout_duration;
+    @SerializedName("videoResolutionOverride")
+    private int videoResolutionOverride;
     
     public DeviceConfigData() {
         this.consolidated_logging_specification = new ArrayList<ConsolidatedLoggingSessionSpecification>();
@@ -48,12 +56,20 @@ public class DeviceConfigData
         return this.bitrate_cap;
     }
     
+    public BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification() {
+        return this.breadcrumb_logging_specification;
+    }
+    
     public List<ConsolidatedLoggingSessionSpecification> getConsolidatedloggingSpecification() {
         return this.consolidated_logging_specification;
     }
     
     public String getDeviceCategory() {
         return this.device_category;
+    }
+    
+    public ErrorLoggingSpecification getErrorLoggingSpecification() {
+        return this.error_logging_specification;
     }
     
     public String getImagePref() {
@@ -76,6 +92,10 @@ public class DeviceConfigData
         return this.type;
     }
     
+    public int getRateLimitForGcmBrowseEvents() {
+        return this.gcmBrowseEventRateLimit;
+    }
+    
     public String getSignUpEnabled() {
         return this.signup_enabled;
     }
@@ -90,6 +110,10 @@ public class DeviceConfigData
     
     public int getUserSessionTimeoutDuration() {
         return this.user_session_timeout_duration;
+    }
+    
+    public int getVideoResolutionOverride() {
+        return this.videoResolutionOverride;
     }
     
     public String getWebsocketDisabled() {

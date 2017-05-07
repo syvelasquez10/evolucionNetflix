@@ -7,11 +7,12 @@ package com.netflix.mediaclient.service.user.volley;
 import com.netflix.mediaclient.service.webclient.volley.FalcorServerException;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseException;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserBoundCookies;
@@ -25,8 +26,8 @@ public class SwitchUserProfileRequest extends FalcorVolleyWebClientRequest<UserB
     private final String pqlQuery;
     private final UserAgentWebCallback responseCallback;
     
-    public SwitchUserProfileRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final String guid, final UserAgentWebCallback responseCallback) {
-        super(context, configurationAgentInterface);
+    public SwitchUserProfileRequest(final Context context, final String guid, final UserAgentWebCallback responseCallback) {
+        super(context);
         this.responseCallback = responseCallback;
         this.guid = guid;
         this.pqlQuery = new StringBuilder("['switchProfile']").toString();
@@ -53,16 +54,16 @@ public class SwitchUserProfileRequest extends FalcorVolleyWebClientRequest<UserB
     }
     
     @Override
-    protected void onFailure(final int n) {
+    protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onUserProfileSwitched(null, n);
+            this.responseCallback.onUserProfileSwitched(null, status);
         }
     }
     
     @Override
     protected void onSuccess(final UserBoundCookies userBoundCookies) {
         if (this.responseCallback != null) {
-            this.responseCallback.onUserProfileSwitched(userBoundCookies, 0);
+            this.responseCallback.onUserProfileSwitched(userBoundCookies, CommonStatus.OK);
         }
     }
     

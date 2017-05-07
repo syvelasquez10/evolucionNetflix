@@ -12,7 +12,7 @@ import java.util.Map;
 public class TargetStateManager
 {
     private static final int DEFAULT_RETRY_INTERNAL = 1000;
-    private static final int LAUNCH_TIMEOUT = 40000;
+    private static final int LAUNCH_TIMEOUT = 64000;
     private static final int MAX_STATEMACHINE_RESET_ON_ERROR = 3;
     private static final int PAIRING_RETRY_INTERVAL = 3000;
     private static final int PAIRING_TIMEOUT = 24000;
@@ -392,7 +392,7 @@ public class TargetStateManager
                         return;
                     }
                     if (TargetContextEvent.LaunchSucceed.equals(targetContextEvent)) {
-                        this.transitionStateTo(TargetState.StateNeedHandShake);
+                        this.transitionStateTo(TargetState.StateHasPair);
                         return;
                     }
                     break;
@@ -532,7 +532,7 @@ public class TargetStateManager
         StateHasPair(StateId.StateHasPair, "haspair", 8, 8000, 100), 
         StateLaunched(StateId.StateLaunched, "launched", 0, 0, 1000), 
         StateNeedHandShake(StateId.StateNeedHandShake, "needhandshake", 8, 8000, 100), 
-        StateNeedLaunched(StateId.StateNeedLaunched, "needlaunch", 1, 40000, 7000), 
+        StateNeedLaunched(StateId.StateNeedLaunched, "needlaunch", 1, 64000, 7000), 
         StateNeedRegPair(StateId.StateNeedRegPair, "needregpair", 3, 32000, 4000), 
         StateNoPair(StateId.StateNoPair, "nopair", 3, 24000, 3000), 
         StateNoPairNeedRegPair(StateId.StateNoPairNeedRegPair, "nopairneedregpair", 0, 0, 1000), 

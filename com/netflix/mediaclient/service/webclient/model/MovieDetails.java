@@ -4,21 +4,47 @@
 
 package com.netflix.mediaclient.service.webclient.model;
 
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.servicemgr.FriendProfile;
-import com.netflix.mediaclient.servicemgr.VideoType;
-import com.netflix.mediaclient.servicemgr.Video;
+import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
+import com.netflix.mediaclient.servicemgr.model.VideoType;
+import java.io.Serializable;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableListSummary;
+import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.service.webclient.model.branches.Movie;
 
-public class MovieDetails extends Movie implements com.netflix.mediaclient.servicemgr.MovieDetails
+public class MovieDetails extends Movie implements com.netflix.mediaclient.servicemgr.model.details.MovieDetails, Playable
 {
     private static final String TAG = "nf_service_browse_moviedetails";
     public TrackableListSummary similarListSummary;
     public List<Video> similarVideos;
     public boolean userConnectedToFacebook;
+    
+    public static int getNumDirectors(final String s) {
+        if (StringUtils.isEmpty(s)) {
+            return 0;
+        }
+        return s.split(",").length;
+    }
+    
+    @Override
+    public boolean canBeSharedOnFacebook() {
+        if (Log.isLoggable("nf_service_browse_moviedetails", 2)) {
+            final boolean userConnectedToFacebook = this.userConnectedToFacebook;
+            Serializable value;
+            if (this.socialEvidence == null) {
+                value = "n/a";
+            }
+            else {
+                value = this.socialEvidence.isVideoHidden();
+            }
+            Log.v("nf_service_browse_moviedetails", String.format("userConnectedToFacebook: %s, isVideoHidden(): %s", userConnectedToFacebook, value));
+        }
+        return this.userConnectedToFacebook && this.socialEvidence != null && !this.socialEvidence.isVideoHidden();
+    }
     
     @Override
     public String getActors() {
@@ -75,7 +101,7 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     }
     
     @Override
-    public String getCreators() {
+    public String getDirectors() {
         if (this.detail == null) {
             return null;
         }
@@ -109,11 +135,6 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
             return null;
         }
         return this.socialEvidence.getFacebookFriends();
-    }
-    
-    @Override
-    public boolean getFbDntShare() {
-        return this.userConnectedToFacebook && this.socialEvidence != null && !this.socialEvidence.isVideoHidden();
     }
     
     @Override
@@ -157,6 +178,11 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     }
     
     @Override
+    public int getNumDirectors() {
+        return getNumDirectors(this.getDirectors());
+    }
+    
+    @Override
     public String getParentId() {
         return null;
     }
@@ -164,6 +190,11 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     @Override
     public String getParentTitle() {
         return null;
+    }
+    
+    @Override
+    public Playable getPlayable() {
+        return this;
     }
     
     @Override
@@ -335,11 +366,6 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     @Override
     public boolean isPlayableEpisode() {
         return VideoType.EPISODE.equals(this.getType());
-    }
-    
-    @Override
-    public boolean isShared() {
-        return this.userConnectedToFacebook && this.socialEvidence != null && !this.socialEvidence.isVideoHidden() && this.getPlayableBookmarkPosition() > 0;
     }
     
     @Override

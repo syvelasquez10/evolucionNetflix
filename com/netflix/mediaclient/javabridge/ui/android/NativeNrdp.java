@@ -9,6 +9,7 @@ import com.netflix.mediaclient.javabridge.ui.Storage;
 import com.netflix.mediaclient.javabridge.ui.Registration;
 import com.netflix.mediaclient.javabridge.ui.IMedia;
 import com.netflix.mediaclient.javabridge.ui.mdxcontroller.MdxController;
+import com.netflix.mediaclient.javabridge.ui.NetworkDiagnosis;
 import com.netflix.mediaclient.javabridge.ui.Device;
 import org.json.JSONException;
 import com.netflix.mediaclient.event.UIEvent;
@@ -104,6 +105,11 @@ public final class NativeNrdp extends NativeNrdObject implements Nrdp
     
     @Override
     public Device getDevice() {
+        return null;
+    }
+    
+    @Override
+    public NetworkDiagnosis getDiagnosisTool() {
         return null;
     }
     

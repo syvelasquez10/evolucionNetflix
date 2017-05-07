@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.util;
 
 import java.net.URLConnection;
+import java.io.FileWriter;
 import android.annotation.SuppressLint;
 import java.io.File;
 import android.os.Environment;
@@ -169,6 +170,22 @@ public final class FileUtils
                     Log.d("FileUtils", "File " + array[i] + " is deleted " + deleteFile);
                 }
             }
+        }
+    }
+    
+    public static void writeStringToFile(final String s, final String s2, final String s3) {
+        try {
+            final File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + s3);
+            final FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(s2);
+            fileWriter.close();
+            Log.v(s, "*****************************************************************");
+            Log.v(s, "Wrote string to file: " + file);
+            Log.v(s, "Get file with command: adb pull /sdcard/" + s3);
+            Log.v(s, "*****************************************************************");
+        }
+        catch (IOException ex) {
+            Log.handleException("FileUtils", ex);
         }
     }
 }

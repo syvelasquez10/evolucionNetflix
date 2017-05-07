@@ -4,56 +4,25 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import com.netflix.mediaclient.servicemgr.ShowDetails;
-import com.netflix.mediaclient.servicemgr.MovieDetails;
-import android.widget.Toast;
-import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import com.netflix.mediaclient.ui.pin.PinDialogVault;
 import com.netflix.mediaclient.ui.pin.PinVerifier;
+import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
+import android.content.Context;
 import android.os.Handler;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.ui.Asset;
-import com.netflix.mediaclient.servicemgr.Playable;
-import com.netflix.mediaclient.util.StringUtils;
-import android.util.Pair;
-import com.netflix.mediaclient.servicemgr.IMdx;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.servicemgr.VideoDetails;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.VideoType;
-import android.content.Context;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.webclient.model.BillboardDetails;
+import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import android.util.Pair;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.IMdx;
 
 public final class PlaybackLauncher
 {
     private static final String TAG = "nf_play";
-    
-    public static void getDetailsAndStartPlayback(final NetflixActivity netflixActivity, final BillboardDetails billboardDetails, final PlayContext playContext) {
-        if (shouldPlayOnRemoteTarget(netflixActivity.getServiceManager())) {
-            final ServiceManager serviceManager = netflixActivity.getServiceManager();
-            if (serviceManager != null) {
-                Log.d("nf_play", "Getting video details for mdx playback");
-                MdxMiniPlayerFrag.sendShowAndDisableIntent((Context)netflixActivity);
-                if (billboardDetails.getType() == VideoType.MOVIE) {
-                    serviceManager.fetchMovieDetails(billboardDetails.getId(), new FetchVideoDetailsForMdxCallback(netflixActivity, playContext));
-                }
-                else {
-                    if (billboardDetails.getType() == VideoType.SHOW) {
-                        serviceManager.fetchShowDetails(billboardDetails.getId(), null, new FetchVideoDetailsForMdxCallback(netflixActivity, playContext));
-                        return;
-                    }
-                    throw new IllegalStateException("Invalid billboard video type: " + billboardDetails.getType());
-                }
-            }
-            return;
-        }
-        Log.d("nf_play", "Starting local playback, asking for video details first");
-        PlayerActivity.getDetailsAndPlayVideo(netflixActivity, billboardDetails, playContext);
-    }
     
     private static boolean isExisitingMdxTargetAvailable(final IMdx mdx, final String s) {
         if (Log.isLoggable("nf_play", 3)) {
@@ -145,42 +114,5 @@ public final class PlaybackLauncher
     private static void verifyPinAndPlay(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
         Log.d("nf_play", String.format("nf_pin verifyPinAndPlay - %s protected:%b", asset.getPlayableId(), asset.isPinProtected()));
         PinVerifier.getInstance().verify(netflixActivity, asset.isPinProtected(), new PinDialogVault(PinDialogVault.PinInvokedFrom.PLAY_LAUNCHER.getValue(), asset, b));
-    }
-    
-    private static class FetchVideoDetailsForMdxCallback extends LoggingManagerCallback
-    {
-        private final NetflixActivity activity;
-        private final PlayContext playContext;
-        
-        public FetchVideoDetailsForMdxCallback(final NetflixActivity activity, final PlayContext playContext) {
-            super("nf_play");
-            this.activity = activity;
-            this.playContext = playContext;
-        }
-        
-        private void handleResponse(final VideoDetails videoDetails, final int n) {
-            if (this.activity.destroyed()) {
-                return;
-            }
-            if (n != 0 || videoDetails == null) {
-                Log.w("nf_play", "Error loading video details for MDX launch - hiding mini player");
-                Toast.makeText((Context)this.activity, 2131493118, 1).show();
-                this.activity.hideMdxMiniPlayer();
-                return;
-            }
-            PlaybackLauncher.startPlaybackAfterPIN(this.activity, videoDetails, this.playContext);
-        }
-        
-        @Override
-        public void onMovieDetailsFetched(final MovieDetails movieDetails, final int n) {
-            super.onMovieDetailsFetched(movieDetails, n);
-            this.handleResponse(movieDetails, n);
-        }
-        
-        @Override
-        public void onShowDetailsFetched(final ShowDetails showDetails, final int n) {
-            super.onShowDetailsFetched(showDetails, n);
-            this.handleResponse(showDetails, n);
-        }
     }
 }

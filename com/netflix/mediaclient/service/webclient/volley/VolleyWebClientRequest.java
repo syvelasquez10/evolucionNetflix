@@ -13,9 +13,12 @@ import android.text.TextUtils;
 import java.util.Locale;
 import com.android.volley.AuthFailureError;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.android.volley.NetworkError;
 import com.android.volley.TimeoutError;
 import com.android.volley.ServerError;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.Log;
 import com.android.volley.VolleyError;
 import android.os.SystemClock;
@@ -28,18 +31,17 @@ import com.android.volley.Request;
 
 public abstract class VolleyWebClientRequest<T> extends Request<T>
 {
-    protected static final String COOKIE_KEY_HEADER = "Cookie";
-    protected static final String ORIGINATING_URL_HEADER = "X-Originating-URL";
-    protected static final String SET_COOKIE_KEY_HEADER = "Set-Cookie";
+    private static final String COOKIE_KEY_HEADER = "Cookie";
+    private static final String SET_COOKIE_KEY_HEADER = "Set-Cookie";
     private static final String TAG = "nf_volleyrequest";
-    protected int mDefaultTrafficStatsTag;
+    private int mDefaultTrafficStatsTag;
     protected long mDurationTimeInMs;
     protected ErrorLogging mErrorLogger;
-    protected final Map<String, String> mHeaders;
-    protected String mReqNetflixId;
+    private final Map<String, String> mHeaders;
+    private String mReqNetflixId;
     protected int mResponseSizeInBytes;
-    protected String mUrl;
-    protected UserCredentialRegistry mUserCredentialRegistry;
+    private String mUrl;
+    private UserCredentialRegistry mUserCredentialRegistry;
     
     protected VolleyWebClientRequest(final int n) {
         super(n, null, null);
@@ -61,17 +63,17 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
         if (volleyError.networkResponse != null) {
             Log.d("nf_volleyrequest", "Error on response:" + new String(volleyError.networkResponse.data));
         }
-        int statusCodeFromVolleyNetworkError = -2;
+        StatusCode statusCode = StatusCode.INTERNAL_ERROR;
         if (volleyError instanceof ParseException) {
-            statusCodeFromVolleyNetworkError = -300;
+            statusCode = StatusCode.RESPONSE_PARSE_ERROR;
         }
         else if (volleyError instanceof ServerError) {
-            statusCodeFromVolleyNetworkError = -62;
+            statusCode = StatusCode.SERVER_ERROR;
         }
         else if (volleyError instanceof TimeoutError || volleyError instanceof NetworkError) {
-            statusCodeFromVolleyNetworkError = this.getStatusCodeFromVolleyNetworkError(volleyError);
+            statusCode = this.getStatusCodeFromVolleyNetworkError(volleyError);
         }
-        this.onFailure(statusCodeFromVolleyNetworkError);
+        this.onFailure(new NetflixStatus(statusCode));
     }
     
     @Override
@@ -85,6 +87,10 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
             return null;
         }
         return this.mUserCredentialRegistry.getNetflixID();
+    }
+    
+    protected long getDurationTimeMs() {
+        return this.mDurationTimeInMs;
     }
     
     @Override
@@ -108,27 +114,31 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
         return Priority.HIGH;
     }
     
-    protected int getStatusCodeFromVolleyNetworkError(final VolleyError volleyError) {
+    protected int getResponseSizeInBytes() {
+        return this.mResponseSizeInBytes;
+    }
+    
+    protected StatusCode getStatusCodeFromVolleyNetworkError(final VolleyError volleyError) {
         final String message = volleyError.getMessage();
-        int n;
+        StatusCode statusCode;
         if (message == null) {
-            n = -3;
+            statusCode = StatusCode.NETWORK_ERROR;
         }
         else {
             final String lowerCase = message.toLowerCase(Locale.US);
             Log.d("nf_volleyrequest", ".next call failed with error =" + lowerCase);
-            n = -3;
+            statusCode = StatusCode.NETWORK_ERROR;
             if (lowerCase.contains("sslhandshakeexception")) {
-                n = -120;
+                statusCode = StatusCode.HTTP_SSL_ERROR;
                 if (lowerCase.contains("current time") && lowerCase.contains("validation time")) {
-                    return -121;
+                    return StatusCode.HTTP_SSL_DATE_TIME_ERROR;
                 }
                 if (lowerCase.contains("no trusted certificate found")) {
-                    return -122;
+                    return StatusCode.HTTP_SSL_NO_VALID_CERT;
                 }
             }
         }
-        return n;
+        return statusCode;
     }
     
     @Override
@@ -176,29 +186,28 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
         return safeEquals;
     }
     
-    protected abstract void onFailure(final int p0);
+    protected abstract void onFailure(final Status p0);
     
     protected abstract void onSuccess(final T p0);
     
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse networkResponse) {
-        this.mDurationTimeInMs = SystemClock.elapsedRealtime() - this.mDurationTimeInMs;
         if (networkResponse != null && networkResponse.data != null) {
             this.mResponseSizeInBytes = networkResponse.data.length;
         }
         T response = null;
-        Label_0397: {
-            Label_0316: {
+        Label_0385: {
+            Label_0304: {
                 if (!this.shouldSkipProcessingOnInvalidUser()) {
-                    break Label_0316;
+                    break Label_0304;
                 }
                 boolean responseValid = this.isResponseValid();
-            Label_0124_Outer:
+            Label_0112_Outer:
                 while (true) {
                     final String s = networkResponse.headers.get("Set-Cookie");
-                    Label_0258: {
+                    Label_0246: {
                         if (s == null) {
-                            break Label_0258;
+                            break Label_0246;
                         }
                         if (Log.isLoggable("nf_volleyrequest", 2)) {
                             Log.v("nf_volleyrequest", "Received Volley response with Set-Cookie = " + s);
@@ -208,27 +217,27 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                         final String[] split = s.split(";");
                         final int length = split.length;
                         int n = 0;
-                    Label_0187_Outer:
+                    Label_0175_Outer:
                         while (true) {
                             if (n >= length) {
-                                break Label_0258;
+                                break Label_0246;
                             }
                             final String[] split2 = split[n].split("=");
                             String s4 = s2;
                             String s5 = s3;
-                            Label_0322: {
+                            Label_0310: {
                                 if (split2.length >= 2) {
                                     if (!this.mUserCredentialRegistry.getNetflixIdName().equalsIgnoreCase(split2[0].trim())) {
-                                        break Label_0322;
+                                        break Label_0310;
                                     }
                                     s4 = split2[1];
                                     s5 = s3;
                                 }
-                            Label_0281_Outer:
+                            Label_0269_Outer:
                                 while (true) {
-                                    Label_0365: {
+                                    Label_0353: {
                                         if (!StringUtils.isNotEmpty(s4) || !StringUtils.isNotEmpty(s5)) {
-                                            break Label_0365;
+                                            break Label_0353;
                                         }
                                         Log.d("nf_volleyrequest", String.format("update cookies ? %b - currentNetflixId %s, newId %s", responseValid, this.getCurrentNetflixId(), s4));
                                         if (responseValid) {
@@ -242,22 +251,19 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                                                     Log.d("nf_volleyrequest", (String)networkResponse);
                                                     return Response.error(new ParseException((String)networkResponse));
                                                 }
-                                                break Label_0397;
-                                                // iftrue(Label_0187:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
-                                                while (true) {
-                                                    s5 = split2[1];
-                                                    s4 = s2;
-                                                    continue Label_0281_Outer;
-                                                    responseValid = true;
-                                                    continue Label_0124_Outer;
-                                                    s4 = s2;
-                                                    s5 = s3;
-                                                    continue;
-                                                }
+                                                break Label_0385;
+                                                responseValid = true;
+                                                continue Label_0112_Outer;
+                                                s4 = s2;
+                                                s5 = s3;
+                                                // iftrue(Label_0175:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
+                                                s5 = split2[1];
+                                                s4 = s2;
+                                                continue Label_0269_Outer;
                                                 ++n;
                                                 s2 = s4;
                                                 s3 = s5;
-                                                continue Label_0187_Outer;
+                                                continue Label_0175_Outer;
                                             }
                                             catch (UnsupportedEncodingException ex2) {
                                                 networkResponse = (NetworkResponse)new String(networkResponse.data);

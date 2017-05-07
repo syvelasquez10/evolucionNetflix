@@ -55,12 +55,12 @@ public abstract class BaseNccpTransaction implements NccpTransaction
         }
         sb2.append("<nccp:header>");
         sb2.append("<nccp:sdkversion>").append(SecurityRepository.getNrdLibVersion()).append("</nccp:sdkversion>");
-        String versionName;
-        if ((versionName = AndroidManifestUtils.getVersionName(this.mContext)) == null) {
-            versionName = "N/A";
+        String version;
+        if ((version = AndroidManifestUtils.getVersion(this.mContext)) == null) {
+            version = "N/A";
         }
-        sb2.append("<nccp:softwareversion>").append(versionName).append("</nccp:softwareversion>");
-        sb2.append("<nccp:uiversion>").append(versionName).append("</nccp:uiversion>");
+        sb2.append("<nccp:softwareversion>").append(version).append("</nccp:softwareversion>");
+        sb2.append("<nccp:uiversion>").append(version).append("</nccp:uiversion>");
         sb2.append("<nccp:certificationversion>").append(0).append("</nccp:certificationversion>");
         this.createLanguages(sb2);
         this.createHeaderPayload(sb2);
