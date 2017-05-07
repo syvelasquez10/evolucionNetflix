@@ -7,6 +7,7 @@ package com.netflix.mediaclient.media.JPlayer;
 import com.netflix.mediaclient.Log;
 import android.media.MediaCodec$BufferInfo;
 import java.nio.ByteBuffer;
+import org.json.JSONObject;
 import android.view.Surface;
 import android.media.MediaFormat;
 import android.media.AudioTrack;
@@ -24,8 +25,8 @@ public class AudioDecoderPipe extends MediaDecoderPipe
     private int mSampleSize;
     private long nFrameRendered;
     
-    public AudioDecoderPipe(final InputDataSource inputDataSource, final String s, final MediaFormat mediaFormat, final Surface surface, final String s2) throws Exception {
-        super(inputDataSource, s, mediaFormat, surface, s2);
+    public AudioDecoderPipe(final InputDataSource inputDataSource, final String s, final MediaFormat mediaFormat, final Surface surface, final String s2, final JSONObject jsonObject) throws Exception {
+        super(inputDataSource, s, mediaFormat, surface, s2, jsonObject);
         this.mSampleRate = 48000;
         this.mChannelConfig = 12;
         this.nFrameRendered = 0L;

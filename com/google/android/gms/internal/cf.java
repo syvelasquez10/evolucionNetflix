@@ -42,87 +42,90 @@ public final class cf
     Label_0219_Outer:
         while (true) {
             List<String> fk = null;
-        Label_0219:
-            while (true) {
-            Label_0586:
+            Label_0566: {
                 while (true) {
-                    Label_0578: {
-                        while (true) {
-                            Label_0572: {
-                                while (true) {
-                                    Label_0303: {
-                                        try {
-                                            jsonObject = new JSONObject(s);
-                                            s = jsonObject.optString("ad_base_url", (String)null);
-                                            final String optString = jsonObject.optString("ad_url", (String)null);
-                                            optString2 = jsonObject.optString("ad_size", (String)null);
-                                            s2 = jsonObject.optString("ad_html", (String)null);
-                                            if (!jsonObject.has("interstitial_timeout")) {
-                                                break Label_0578;
-                                            }
-                                            n = (long)(jsonObject.getDouble("interstitial_timeout") * 1000.0);
-                                            final String optString3 = jsonObject.optString("orientation", (String)null);
-                                            n2 = -1;
-                                            if ("portrait".equals(optString3)) {
-                                                n2 = co.av();
-                                            }
-                                            else if ("landscape".equals(optString3)) {
-                                                n2 = co.au();
-                                            }
-                                            final JSONArray optJSONArray;
-                                            List<String> list;
-                                            if (!TextUtils.isEmpty((CharSequence)s2)) {
-                                                if (TextUtils.isEmpty((CharSequence)s)) {
-                                                    ct.v("Could not parse the mediation config: Missing required ad_base_url field");
-                                                    return new cb(0);
+                Label_0586:
+                    while (true) {
+                        Label_0578: {
+                            while (true) {
+                                Label_0572: {
+                                    while (true) {
+                                        Label_0303: {
+                                            try {
+                                                jsonObject = new JSONObject(s);
+                                                s = jsonObject.optString("ad_base_url", (String)null);
+                                                final String optString = jsonObject.optString("ad_url", (String)null);
+                                                optString2 = jsonObject.optString("ad_size", (String)null);
+                                                s2 = jsonObject.optString("ad_html", (String)null);
+                                                if (!jsonObject.has("interstitial_timeout")) {
+                                                    break Label_0578;
                                                 }
-                                                break Label_0572;
-                                            }
-                                            else {
-                                                if (TextUtils.isEmpty((CharSequence)optString)) {
-                                                    ct.v("Could not parse the mediation config: Missing required ad_html or ad_url field.");
-                                                    return new cb(0);
+                                                n = (long)(jsonObject.getDouble("interstitial_timeout") * 1000.0);
+                                                final String optString3 = jsonObject.optString("orientation", (String)null);
+                                                n2 = -1;
+                                                if ("portrait".equals(optString3)) {
+                                                    n2 = co.av();
                                                 }
-                                                a = ce.a(context, bz.ej.iJ, optString);
-                                                s = a.gL;
-                                                s2 = a.hw;
-                                                optJSONArray = jsonObject.optJSONArray("click_urls");
-                                                if (a != null) {
-                                                    break Label_0303;
+                                                else if ("landscape".equals(optString3)) {
+                                                    n2 = co.au();
                                                 }
-                                                fk = null;
-                                                if (optJSONArray == null) {
-                                                    break Label_0219;
+                                                final JSONArray optJSONArray;
+                                                List<String> list;
+                                                if (!TextUtils.isEmpty((CharSequence)s2)) {
+                                                    if (TextUtils.isEmpty((CharSequence)s)) {
+                                                        ct.v("Could not parse the mediation config: Missing required ad_base_url field");
+                                                        return new cb(0);
+                                                    }
+                                                    break Label_0572;
                                                 }
-                                                if ((list = fk) == null) {
-                                                    list = new LinkedList<String>();
+                                                else {
+                                                    if (TextUtils.isEmpty((CharSequence)optString)) {
+                                                        ct.v("Could not parse the mediation config: Missing required ad_html or ad_url field.");
+                                                        return new cb(0);
+                                                    }
+                                                    a = ce.a(context, bz.ej.iJ, optString);
+                                                    s = a.gL;
+                                                    s2 = a.hw;
+                                                    optJSONArray = jsonObject.optJSONArray("click_urls");
+                                                    if (a != null) {
+                                                        break Label_0303;
+                                                    }
+                                                    fk = null;
+                                                    if (optJSONArray == null) {
+                                                        break Label_0566;
+                                                    }
+                                                    if ((list = fk) == null) {
+                                                        list = new LinkedList<String>();
+                                                    }
+                                                    break Label_0586;
                                                 }
-                                                break Label_0586;
+                                                while (true) {
+                                                    final int n3;
+                                                    list.add(optJSONArray.getString(n3));
+                                                    ++n3;
+                                                    continue Label_0219_Outer;
+                                                }
                                             }
                                             // iftrue(Label_0592:, n3 >= optJSONArray.length())
-                                            final int n3;
-                                            list.add(optJSONArray.getString(n3));
-                                            ++n3;
-                                            continue Label_0219;
+                                            catch (JSONException ex) {
+                                                ct.v("Could not parse the mediation config: " + ex.getMessage());
+                                                return new cb(0);
+                                            }
                                         }
-                                        catch (JSONException ex) {
-                                            ct.v("Could not parse the mediation config: " + ex.getMessage());
-                                            return new cb(0);
-                                        }
+                                        fk = a.fK;
+                                        continue Label_0219_Outer;
                                     }
-                                    fk = a.fK;
-                                    continue Label_0219_Outer;
                                 }
+                                a = null;
+                                continue Label_0219_Outer;
                             }
-                            a = null;
-                            continue Label_0219_Outer;
                         }
+                        n = -1L;
+                        continue Label_0219_Outer;
                     }
-                    n = -1L;
-                    continue Label_0219_Outer;
+                    int n3 = 0;
+                    continue;
                 }
-                int n3 = 0;
-                continue Label_0219;
             }
             list2 = fk;
             break;

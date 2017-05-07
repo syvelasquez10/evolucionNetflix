@@ -190,6 +190,7 @@ public final class Settings
             }
             Object create2;
             executeAndWait = (String)(create2 = null);
+        Block_11_Outer:
             while (true) {
                 if (string3 == null) {
                     break Label_0204;
@@ -200,25 +201,28 @@ public final class Settings
                         return Response.createResponsesFromString("true", null, new RequestBatch(new Request[] { o }), true).get(0);
                     }
                     return new Response(null, null, (GraphObject)create2, true);
+                    // iftrue(Label_0270:, attributionId != null)
+                    // iftrue(Label_0356:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
+                    while (true) {
+                        while (true) {
+                            ((SharedPreferences$Editor)o).commit();
+                            return (Response)executeAndWait;
+                            throw new FacebookException("No attribution id returned from the Facebook application");
+                            ((SharedPreferences$Editor)o).putString(string2, ((Response)executeAndWait).getGraphObject().getInnerJSONObject().toString());
+                            continue Block_11_Outer;
+                        }
+                        Label_0288: {
+                            executeAndWait = (String)((Request)o).executeAndWait();
+                        }
+                        o = sharedPreferences.edit();
+                        ((SharedPreferences$Editor)o).putLong(string, System.currentTimeMillis());
+                        continue;
+                    }
                     Label_0270: {
                         throw new FacebookException("Install attribution has been disabled on the server.");
                     }
-                    // iftrue(Label_0288:, Utility.queryAppAttributionSupportAndWait(executeAndWait))
-                    Label_0288: {
-                        executeAndWait = (String)((Request)o).executeAndWait();
-                    }
-                    o = sharedPreferences.edit();
-                    ((SharedPreferences$Editor)o).putLong(string, System.currentTimeMillis());
-                    // iftrue(Label_0356:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
-                    ((SharedPreferences$Editor)o).putString(string2, ((Response)executeAndWait).getGraphObject().getInnerJSONObject().toString());
-                    // iftrue(Label_0270:, attributionId != null)
-                    Label_0356: {
-                        break Label_0356;
-                        throw new FacebookException("No attribution id returned from the Facebook application");
-                    }
-                    ((SharedPreferences$Editor)o).commit();
-                    return (Response)executeAndWait;
                 }
+                // iftrue(Label_0288:, Utility.queryAppAttributionSupportAndWait(executeAndWait))
                 catch (JSONException ex2) {
                     create2 = executeAndWait;
                     continue;

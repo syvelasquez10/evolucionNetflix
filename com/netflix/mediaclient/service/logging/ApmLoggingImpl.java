@@ -150,7 +150,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
                 }
                 ApmLoggingImpl.this.mEventHandler.removeSession(uiDataRequestSession);
                 Log.d("nf_log", "Data request session end event posting...");
-                final UIDataRequestSessionEndedEvent endedEvent = uiDataRequestSession.createEndedEvent(list, completionReason, httpResponse, error);
+                final UIDataRequestSessionEndedEvent endedEvent = uiDataRequestSession.createEndedEvent(completionReason, httpResponse, error);
                 ApmLoggingImpl.this.populateEvent(endedEvent, this.val$dataContext, this.val$ui);
                 ApmLoggingImpl.this.mEventHandler.post(endedEvent);
                 Log.d("nf_log", "Data request session end event posted.");

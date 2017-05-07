@@ -950,7 +950,7 @@ public class PlayerAgent extends ServiceAgent implements IPlayer, ConfigAgentLis
     
     private void preparePlayerType(final PlayerType playerType) {
         if (playerType == PlayerType.device10 || playerType == PlayerType.device11) {
-            this.mHelper.prepareJPlayer(this.mMedia, this.mSurface, this.mJPlayerListener, this.isPropertyStreamingVideoDrs());
+            this.mHelper.prepareJPlayer(this.mMedia, this.mSurface, this.mJPlayerListener, this.isPropertyStreamingVideoDrs(), this.getConfigurationAgent().getJPlayerConfig());
             return;
         }
         if (playerType != PlayerType.device9) {

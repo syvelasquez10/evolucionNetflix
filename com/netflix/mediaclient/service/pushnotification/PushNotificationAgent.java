@@ -207,39 +207,34 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             this.mCurrentUserSettings = this.createNewCurrentUserSettings(userId, currentProfileUserId);
             try {
                 // iftrue(Label_0170:, StringUtils.safeEquals(this.mCurrentUserSettings.currentProfileUserId, currentProfileUserId))
+                // iftrue(Label_0100:, !Log.isLoggable("nf_push", 3))
                 while (true) {
-                Block_5:
-                    while (true) {
-                        Log.d("nf_push", "Checks if application is updated (only if app was registered before)...");
-                        if (this.isApplicationUpdated()) {
-                            Log.d("nf_push", "Application was updated, execute silent reregistration!");
-                            this.doRegisterForNotifications();
-                        }
-                        else if (!this.validateRegistration()) {
-                            if (b2 || this.isBeaconDeltaExpire()) {
-                                Log.d("nf_push", "Report");
-                                this.report(this.mGcmRegistered);
-                                return;
-                            }
-                            break Label_0130;
-                        }
-                        return;
-                        this.mCurrentUserSettings.current = true;
-                        break Block_5;
-                        Log.d("nf_push", "User was know from before and he opted in " + this.mCurrentUserSettings.optedIn);
-                        b2 = b;
-                        continue;
+                    Log.d("nf_push", "Checks if application is updated (only if app was registered before)...");
+                    if (this.isApplicationUpdated()) {
+                        Log.d("nf_push", "Application was updated, execute silent reregistration!");
+                        this.doRegisterForNotifications();
                     }
+                    else if (!this.validateRegistration()) {
+                        if (b2 || this.isBeaconDeltaExpire()) {
+                            Log.d("nf_push", "Report");
+                            this.report(this.mGcmRegistered);
+                            return;
+                        }
+                        break Label_0130;
+                    }
+                    return;
+                    this.mCurrentUserSettings.current = true;
                     Log.d("nf_push", "currentProfile change detected");
                     b = true;
                     this.updateCurrentUserSettings(currentProfileUserId);
                     Label_0170: {
                         b2 = b;
                     }
+                    Log.d("nf_push", "User was know from before and he opted in " + this.mCurrentUserSettings.optedIn);
+                    b2 = b;
                     continue;
                 }
             }
-            // iftrue(Label_0100:, !Log.isLoggable("nf_push", 3))
             catch (Throwable t) {
                 Log.e("nf_push", "Check if we are registered already failed!", t);
                 return;

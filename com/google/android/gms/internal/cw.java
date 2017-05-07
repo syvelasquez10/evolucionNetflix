@@ -223,7 +223,6 @@ public final class cw extends WebView implements DownloadListener
     }
     
     protected void onMeasure(int n, int n2) {
-    Label_0080_Outer:
         while (true) {
             final int n3 = Integer.MAX_VALUE;
             while (true) {
@@ -246,19 +245,21 @@ public final class cw extends WebView implements DownloadListener
                                     break Label_0241;
                                 }
                                 break Label_0248;
+                                // iftrue(Label_0206:, this.fU.widthPixels <= n && this.fU.heightPixels <= n2)
+                                // iftrue(Label_0188:, this.getVisibility() == 8)
+                            Label_0188:
                                 while (true) {
-                                    this.setVisibility(4);
-                                    Label_0188: {
+                                    Label_0102: {
+                                        break Label_0102;
+                                        this.setVisibility(4);
                                         break Label_0188;
                                     }
-                                    this.setMeasuredDimension(0, 0);
-                                    return;
                                     ct.v("Not enough space to show ad. Needs " + this.fU.widthPixels + "x" + this.fU.heightPixels + " pixels, but only has " + size + "x" + size2 + " pixels.");
-                                    continue Label_0080_Outer;
+                                    continue;
                                 }
+                                this.setMeasuredDimension(0, 0);
+                                return;
                             }
-                            // iftrue(Label_0206:, this.fU.widthPixels <= n && this.fU.heightPixels <= n2)
-                            // iftrue(Label_0188:, this.getVisibility() == 8)
                             Label_0206: {
                                 if (this.getVisibility() != 8) {
                                     this.setVisibility(0);

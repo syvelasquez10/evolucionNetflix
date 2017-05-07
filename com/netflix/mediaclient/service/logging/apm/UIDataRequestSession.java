@@ -8,8 +8,6 @@ import com.netflix.mediaclient.service.logging.apm.model.UIDataRequestSessionEnd
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.service.logging.client.model.FalcorPathResult;
-import java.util.List;
 
 public final class UIDataRequestSession extends BaseApmSession
 {
@@ -22,14 +20,13 @@ public final class UIDataRequestSession extends BaseApmSession
         this.mRequestId = mRequestId;
     }
     
-    public UIDataRequestSessionEndedEvent createEndedEvent(final List<FalcorPathResult> falcorPathResults, final IClientLogging.CompletionReason reason, final HttpResponse response, final Error error) {
+    public UIDataRequestSessionEndedEvent createEndedEvent(final IClientLogging.CompletionReason reason, final HttpResponse response, final Error error) {
         final UIDataRequestSessionEndedEvent uiDataRequestSessionEndedEvent = new UIDataRequestSessionEndedEvent(System.currentTimeMillis() - this.mStarted);
         uiDataRequestSessionEndedEvent.setCategory(this.getCategory());
         uiDataRequestSessionEndedEvent.setSessionId(this.mId);
         uiDataRequestSessionEndedEvent.setUrl(this.mUrl);
         uiDataRequestSessionEndedEvent.setRequestId(this.mRequestId);
         uiDataRequestSessionEndedEvent.setError(error);
-        uiDataRequestSessionEndedEvent.setFalcorPathResults(falcorPathResults);
         uiDataRequestSessionEndedEvent.setReason(reason);
         uiDataRequestSessionEndedEvent.setRequestId(this.mRequestId);
         uiDataRequestSessionEndedEvent.setResponse(response);

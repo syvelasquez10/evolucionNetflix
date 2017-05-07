@@ -149,14 +149,10 @@ public class MediaMetadata
         array = (String[])(Object)new HashSet((Collection<? extends E>)Arrays.asList(array));
         try {
             final Iterator keys = jsonObject.keys();
-            String s;
-            String z;
-            Object value;
-            Object value2;
-            Block_15_Outer:Block_16_Outer:
+        Block_15_Outer:
             while (keys.hasNext()) {
-                s = keys.next();
-                z = MediaMetadata.kP.z(s);
+                final String s = keys.next();
+                final String z = MediaMetadata.kP.z(s);
                 Label_0237: {
                     if (z == null) {
                         break Label_0237;
@@ -165,64 +161,65 @@ public class MediaMetadata
                         continue;
                     }
                     try {
-                        value = jsonObject.get(s);
+                        final Object value = jsonObject.get(s);
                         if (value == null) {
-                            continue Block_15_Outer;
+                            continue;
                         }
                         switch (MediaMetadata.kP.A(z)) {
                             case 1: {
                                 if (value instanceof String) {
                                     this.kQ.putString(z, (String)value);
-                                    continue Block_15_Outer;
+                                    continue;
                                 }
-                                continue Block_15_Outer;
+                                continue;
                             }
                             case 4: {
                                 if (value instanceof String && dp.G((String)value) != null) {
                                     this.kQ.putString(z, (String)value);
-                                    continue Block_15_Outer;
+                                    continue;
                                 }
-                                continue Block_15_Outer;
+                                continue;
                             }
                             case 2: {
                                 if (value instanceof Integer) {
                                     this.kQ.putInt(z, (int)value);
-                                    continue Block_15_Outer;
+                                    continue;
                                 }
-                                continue Block_15_Outer;
+                                continue;
                             }
                             case 3: {
                                 if (value instanceof Double) {
                                     this.kQ.putDouble(z, (double)value);
-                                    continue Block_15_Outer;
+                                    continue;
                                 }
-                                continue Block_15_Outer;
+                                continue;
                             }
                             default: {
-                                continue Block_15_Outer;
-                            }
-                        }
-                        value2 = jsonObject.get(s);
-                        // iftrue(Label_0270:, !value2 instanceof String)
-                        this.kQ.putString(z, (String)value2);
-                        continue Block_15_Outer;
-                        // iftrue(Label_0298:, !value2 instanceof Integer)
-                        while (true) {
-                            this.kQ.putInt(z, (int)value2);
-                            continue Block_15_Outer;
-                            Label_0270: {
-                                continue Block_16_Outer;
-                            }
-                        }
-                        while (true) {
-                            this.kQ.putDouble(z, (double)value2);
-                            continue Block_15_Outer;
-                            Label_0298: {
                                 continue;
                             }
                         }
+                        final Object value2 = jsonObject.get(s);
+                        // iftrue(Label_0270:, !value2 instanceof String)
+                        // iftrue(Label_0018:, !value2 instanceof Double)
+                        // iftrue(Label_0298:, !value2 instanceof Integer)
+                        Block_16: {
+                            Block_14: {
+                                break Block_14;
+                                while (true) {
+                                    this.kQ.putInt(z, (int)value2);
+                                    continue Block_15_Outer;
+                                    Label_0298: {
+                                        break Block_16;
+                                    }
+                                    Label_0270:
+                                    continue;
+                                }
+                            }
+                            this.kQ.putString(z, (String)value2);
+                            continue;
+                        }
+                        this.kQ.putDouble(z, (double)value2);
                     }
-                    // iftrue(Label_0018:, !value2 instanceof Double)
                     catch (JSONException ex) {}
                 }
             }

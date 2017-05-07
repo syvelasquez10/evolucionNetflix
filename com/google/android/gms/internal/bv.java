@@ -252,7 +252,7 @@ public final class bv extends cm implements bw.a, cx.a
                         while (true) {
                         Label_0519:
                             while (true) {
-                            Label_0513:
+                                Label_0513:Block_15_Outer:
                                 while (true) {
                                     Label_0502: {
                                         synchronized (this.fx) {
@@ -333,32 +333,33 @@ public final class bv extends cm implements bw.a, cx.a
                                                         return;
                                                     }
                                                     break Label_0531;
-                                                    Label_0482: {
-                                                        gb = a2;
-                                                    }
-                                                    this.b(n);
-                                                    break Label_0537;
-                                                    Label_0454:
-                                                    gb = a2;
                                                     // iftrue(Label_0482:, !this.hg.hy)
                                                     // monitorexit(hc)
                                                     // iftrue(Label_0454:, gd.em.eH == null)
-                                                    Block_15: {
-                                                        Block_16: {
-                                                            break Block_16;
+                                                    Block_16: {
+                                                        while (true) {
+                                                            while (true) {
+                                                                gb = a2;
+                                                                break Block_16;
+                                                                gb = gc;
+                                                                a2 = this.a((bz)gd);
+                                                                continue Block_15_Outer;
+                                                            }
                                                             gb = gc;
                                                             this.c(n);
                                                             gb = gc;
                                                             this.aj();
                                                             gb = gc;
-                                                            break Block_15;
+                                                            continue;
                                                         }
-                                                        gb = a2;
-                                                        this.a((bz)gd, n);
-                                                        break Label_0537;
                                                     }
-                                                    gb = gc;
-                                                    a2 = this.a((bz)gd);
+                                                    gb = a2;
+                                                    this.a((bz)gd, n);
+                                                    break Label_0537;
+                                                    Label_0482: {
+                                                        gb = a2;
+                                                    }
+                                                    this.b(n);
                                                 }
                                             }
                                         }

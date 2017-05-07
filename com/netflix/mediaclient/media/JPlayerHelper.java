@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.media;
 
 import android.view.SurfaceView;
+import org.json.JSONObject;
 import android.view.SurfaceHolder;
 import android.content.Context;
 import android.view.Surface;
@@ -47,12 +48,12 @@ public class JPlayerHelper implements MediaPlayerHelper
     }
     
     @Override
-    public void prepareJPlayer(final IMedia media, final Surface surface, final JPlayer.JplayerListener jplayerListener, final boolean enablePlatformDrs) {
+    public void prepareJPlayer(final IMedia media, final Surface surface, final JPlayer.JplayerListener jplayerListener, final boolean enablePlatformDrs, final JSONObject jsonObject) {
         Log.d("NF_JPlayer", "Create JPlayer");
         if (this.jp != null) {
             this.jp.release();
         }
-        this.jp = new JPlayer(surface);
+        this.jp = new JPlayer(surface, jsonObject);
         media.setVOapi(0L, this.jp.getNativePlayer());
         this.jp.setJplayerListener(jplayerListener);
         this.jp.setEnablePlatformDrs(enablePlatformDrs);

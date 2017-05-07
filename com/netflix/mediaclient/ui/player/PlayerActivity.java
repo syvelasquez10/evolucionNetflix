@@ -83,6 +83,7 @@ import com.netflix.mediaclient.ui.common.Social;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.BroadcastReceiver;
 import android.os.Handler;
+import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.media.Language;
 import android.widget.SeekBar$OnSeekBarChangeListener;
@@ -114,6 +115,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
     private Language language;
     private int mActionId12Count;
     private Asset mAsset;
+    private ServiceAgent.ConfigurationAgentInterface mConfig;
     private String mErrorDialogId;
     protected Handler mHandler;
     private int mHeight;
@@ -1042,7 +1044,8 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
                 Log.d("PlayerActivity", "ManagerReady: Load" + deviceCategory.getValue() + " player UI");
                 PlayerActivity.this.setContentView(deviceCategory.getPlayerUi());
                 PlayerActivity.this.mPlayer = PlayerActivity.this.mServiceManager.getPlayer();
-                if (PlayerActivity.this.mPlayer == null) {
+                PlayerActivity.this.mConfig = PlayerActivity.this.mServiceManager.getConfiguration();
+                if (PlayerActivity.this.mPlayer == null || PlayerActivity.this.mConfig == null) {
                     Log.d("PlayerActivity", "Unable to receive handle to player object, finishing activity ");
                     PlayerActivity.this.finish();
                 }
@@ -1063,7 +1066,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
                     PlayerActivity.this.mScreen.getSurfaceView().setSecure(true);
                 }
                 PlayerActivity.this.setTargetSelection();
-                PlayerActivity.this.errorManager = new ErrorManager(PlayerActivity.this.handler, PlayerActivity.this);
+                PlayerActivity.this.errorManager = new ErrorManager(PlayerActivity.this.handler, PlayerActivity.this, PlayerActivity.this.mConfig);
                 PlayerActivity.this.registerReceiverWithAutoUnregister(PlayerActivity.this.mNetworkChangeReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
                 if (AndroidUtils.getAndroidVersion() >= 16 && (PlayerTypeFactory.isJPlayerBase(PlayerTypeFactory.getCurrentType((Context)PlayerActivity.this)) || PlayerTypeFactory.isJPlayer(PlayerTypeFactory.getCurrentType((Context)PlayerActivity.this)))) {
                     PlayerActivity.this.mSurface2 = new SecondSurface((TextureView)PlayerActivity.this.findViewById(2131231025));

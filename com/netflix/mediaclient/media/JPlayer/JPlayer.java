@@ -11,6 +11,7 @@ import android.util.Log;
 import android.media.MediaFormat;
 import android.view.SurfaceHolder;
 import android.view.Surface;
+import org.json.JSONObject;
 import android.annotation.TargetApi;
 
 @TargetApi(16)
@@ -32,6 +33,7 @@ public class JPlayer
     private boolean mFlushed;
     private boolean mInitialAudioInit;
     private boolean mInitialVideoInit;
+    private JSONObject mJPlayerConfig;
     private JplayerListener mJplayerListener;
     VideoEventListener mListener;
     private long mNativePlayer;
@@ -44,14 +46,16 @@ public class JPlayer
     private MediaDecoderPipe mVideoPipe1;
     private MediaDecoderPipe mVideoPipe2;
     
-    public JPlayer(final Surface mSurface1) {
+    public JPlayer(final Surface mSurface1, final JSONObject mjPlayerConfig) {
         this.mEnablePlatformDrs = false;
         this.mState = -1;
         this.mFlushed = false;
         this.mInitialVideoInit = false;
         this.mInitialAudioInit = false;
         this.mAudioErrStack = "";
+        this.mJPlayerConfig = null;
         this.mListener = new VideoEventListener();
+        this.mJPlayerConfig = mjPlayerConfig;
         final MediaFormat mediaFormat = new MediaFormat();
         mediaFormat.setString("mime", "audio/mp4a-latm");
         mediaFormat.setInteger("max-input-size", 1536);
@@ -59,7 +63,7 @@ public class JPlayer
         mediaFormat.setInteger("sample-rate", 48000);
         while (true) {
             try {
-                this.mAudioPipe = new AudioDecoderPipe(new AudioDataSource(), "audio/mp4a-latm", mediaFormat, null, "1");
+                this.mAudioPipe = new AudioDecoderPipe(new AudioDataSource(), "audio/mp4a-latm", mediaFormat, null, "1", mjPlayerConfig);
                 this.mInitialAudioInit = true;
                 this.mSurface1 = mSurface1;
             }
@@ -72,14 +76,16 @@ public class JPlayer
         }
     }
     
-    public JPlayer(final SurfaceHolder mSurfaceHolder) {
+    public JPlayer(final SurfaceHolder mSurfaceHolder, final JSONObject mjPlayerConfig) {
         this.mEnablePlatformDrs = false;
         this.mState = -1;
         this.mFlushed = false;
         this.mInitialVideoInit = false;
         this.mInitialAudioInit = false;
         this.mAudioErrStack = "";
+        this.mJPlayerConfig = null;
         this.mListener = new VideoEventListener();
+        this.mJPlayerConfig = mjPlayerConfig;
         final MediaFormat mediaFormat = new MediaFormat();
         mediaFormat.setString("mime", "audio/mp4a-latm");
         mediaFormat.setInteger("max-input-size", 1536);
@@ -87,7 +93,7 @@ public class JPlayer
         mediaFormat.setInteger("sample-rate", 48000);
         while (true) {
             try {
-                this.mAudioPipe = new AudioDecoderPipe(new AudioDataSource(), "audio/mp4a-latm", mediaFormat, null, "1");
+                this.mAudioPipe = new AudioDecoderPipe(new AudioDataSource(), "audio/mp4a-latm", mediaFormat, null, "1", mjPlayerConfig);
                 this.mInitialAudioInit = true;
                 this.mSurfaceHolder = mSurfaceHolder;
             }
@@ -107,23 +113,23 @@ public class JPlayer
             public void run() {
                 final MediaFormat mediaFormat = new MediaFormat();
                 mediaFormat.setString("mime", "video/avc");
-            Label_0187_Outer:
+            Label_0194_Outer:
                 while (true) {
                     while (true) {
-                        Label_0233: {
+                        Label_0240: {
                             if (AndroidUtils.getAndroidVersion() <= 18) {
-                                break Label_0233;
+                                break Label_0240;
                             }
                             mediaFormat.setInteger("max-width", 720);
                             mediaFormat.setInteger("max-height", 480);
                             mediaFormat.setInteger("width", 720);
                             mediaFormat.setInteger("height", 480);
                             if (JPlayer.this.mVideoPipe1 != null && (JPlayer.this.mVideoPipe == JPlayer.this.mVideoPipe1 || !JPlayer.this.mVideoPipe1.isStopped())) {
-                                break Label_0233;
+                                break Label_0240;
                             }
                             Log.d("NF_JPlayer", "mVideoPipe1 is idle");
                             try {
-                                JPlayer.this.mVideoPipe1 = new VideoDecoderPipe(new VideoDataSource(), "video/avc", mediaFormat, JPlayer.this.mSurface1, "1");
+                                JPlayer.this.mVideoPipe1 = new VideoDecoderPipe(new VideoDataSource(), "video/avc", mediaFormat, JPlayer.this.mSurface1, "1", JPlayer.this.mJPlayerConfig);
                                 JPlayer.this.mVideoPipe = JPlayer.this.mVideoPipe1;
                                 JPlayer.this.mInitialVideoInit = true;
                                 JPlayer.this.mVideoPipe1.setEventListener((MediaDecoderPipe.EventListener)JPlayer.this.mListener);
@@ -133,11 +139,11 @@ public class JPlayer
                                     JPlayer.this.mVideoPipe.setReferenceClock(clock);
                                     return;
                                 }
-                                break Label_0187_Outer;
+                                break Label_0194_Outer;
                                 mediaFormat.setInteger("max-input-size", 131072);
                                 mediaFormat.setInteger("width", 720);
                                 mediaFormat.setInteger("height", 480);
-                                continue Label_0187_Outer;
+                                continue Label_0194_Outer;
                             }
                             catch (Exception ex) {
                                 Log.e("NF_JPlayer", Log.getStackTraceString((Throwable)ex));
@@ -158,7 +164,7 @@ public class JPlayer
                                     Log.d("NF_JPlayer", "TextureSurface is not ready, wait...");
                                     try {
                                         Thread.sleep(10L);
-                                        continue Label_0187_Outer;
+                                        continue Label_0194_Outer;
                                     }
                                     catch (InterruptedException ex3) {
                                         Log.d("NF_JPlayer", "configureVideoPipe interrupted");
@@ -167,7 +173,7 @@ public class JPlayer
                                 }
                             }
                             try {
-                                JPlayer.this.mVideoPipe2 = new VideoDecoderPipe(new VideoDataSource(), "video/avc", mediaFormat, JPlayer.this.mSurface2, "2");
+                                JPlayer.this.mVideoPipe2 = new VideoDecoderPipe(new VideoDataSource(), "video/avc", mediaFormat, JPlayer.this.mSurface2, "2", JPlayer.this.mJPlayerConfig);
                                 JPlayer.this.mVideoPipe = JPlayer.this.mVideoPipe2;
                                 JPlayer.this.mVideoPipe2.setEventListener((MediaDecoderPipe.EventListener)JPlayer.this.mListener);
                                 continue;
@@ -181,7 +187,7 @@ public class JPlayer
                         try {
                             Thread.sleep(50L);
                             Log.d("NF_JPlayer", "video pipe is not ready, wait...");
-                            continue Label_0187_Outer;
+                            continue Label_0194_Outer;
                         }
                         catch (InterruptedException ex4) {
                             Log.d("NF_JPlayer", "configureVideoPipe interrupted");

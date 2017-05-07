@@ -10,6 +10,7 @@ import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
+import com.netflix.mediaclient.service.ServiceAgent;
 import java.util.List;
 import android.widget.TextView;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
@@ -612,6 +613,15 @@ public final class ServiceManager
             return mService.getClientLogging();
         }
         Log.w("ServiceManager", "getClientLogging:: service is not available");
+        return null;
+    }
+    
+    public ServiceAgent.ConfigurationAgentInterface getConfiguration() {
+        final INetflixService mService = this.mService;
+        if (mService != null) {
+            return mService.getConfiguration();
+        }
+        Log.w("ServiceManager", "getConfiguration: service is not available");
         return null;
     }
     

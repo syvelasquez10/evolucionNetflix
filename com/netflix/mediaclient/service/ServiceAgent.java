@@ -10,6 +10,7 @@ import com.netflix.mediaclient.servicemgr.UserProfile;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.media.bitrate.VideoBitrateRange;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
+import org.json.JSONObject;
 import com.netflix.mediaclient.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
@@ -227,6 +228,8 @@ public abstract class ServiceAgent
         
         IpConnectivityPolicy getIpConnectivityPolicy();
         
+        JSONObject getJPlayerConfig();
+        
         JSONArray getMdxBlackListTargets();
         
         int getPresentationTrackingAggregationSize();
@@ -244,6 +247,8 @@ public abstract class ServiceAgent
         VideoBitrateRange[] getVideoBitrateRange();
         
         int getVideoBufferSize();
+        
+        boolean isCurrentDrmWidevine();
         
         boolean isDeviceLowMem();
         

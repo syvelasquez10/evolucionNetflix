@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import org.json.JSONObject;
 import com.netflix.mediaclient.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.javabridge.transport.NativeTransport;
 import com.netflix.mediaclient.media.bitrate.VideoBitrateRange;
@@ -449,6 +450,11 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     @Override
+    public JSONObject getJPlayerConfig() {
+        return this.mAccountConfigOverride.getJPlayerConfig();
+    }
+    
+    @Override
     public JSONArray getMdxBlackListTargets() {
         return this.mAccountConfigOverride.getMdxBlacklist();
     }
@@ -545,6 +551,11 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
             Log.i("nf_configurationagent", "recommendedVersion = " + appRecommendedVersion + " appVersionCode = " + this.mAppVersionCode + " so isAppVersionRecommended = " + (this.mAppVersionCode >= appRecommendedVersion));
         }
         return this.mAppVersionCode >= appRecommendedVersion;
+    }
+    
+    @Override
+    public boolean isCurrentDrmWidevine() {
+        return DrmManagerRegistry.isCurrentDrmWidevine();
     }
     
     public boolean isDeviceHd() {

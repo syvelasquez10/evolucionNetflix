@@ -72,14 +72,23 @@ class NetflixHttpLocalServer implements Runnable
                         ((Channel)channel).close();
                         return;
                         // iftrue(Label_0069:, onNetflixHttpLocalServerInputData < 0)
-                        Label_0187: {
+                        while (true) {
+                            Block_8: {
+                                break Block_8;
+                                try {
+                                    Thread.sleep(10L);
+                                }
+                                catch (InterruptedException ex4) {
+                                    Log.d("NF_HttpLocalServer", "NetflixHttpLocalServer interrupted while idle");
+                                }
+                            }
                             try {
                                 final int onNetflixHttpLocalServerInputData;
                                 allocateDirect.limit(onNetflixHttpLocalServerInputData);
                                 allocateDirect.position(0);
                                 ((WritableByteChannel)channel).write(allocateDirect);
                                 if (!allocateDirect.hasRemaining()) {
-                                    break Label_0187;
+                                    continue;
                                 }
                                 Log.e("NF_HttpLocalServer", "try to write " + onNetflixHttpLocalServerInputData + " bytes,remains " + allocateDirect.remaining());
                             }
@@ -87,13 +96,7 @@ class NetflixHttpLocalServer implements Runnable
                                 Log.d("NF_HttpLocalServer", "NetflixHttpLocalServer error while outputing data");
                                 ex.printStackTrace();
                             }
-                            continue;
-                            try {
-                                Thread.sleep(10L);
-                            }
-                            catch (InterruptedException ex4) {
-                                Log.d("NF_HttpLocalServer", "NetflixHttpLocalServer interrupted while idle");
-                            }
+                            break;
                         }
                     }
                     catch (IOException ex2) {
@@ -137,12 +140,16 @@ class NetflixHttpLocalServer implements Runnable
                     if (n >= 2048) {
                         break Label_0173;
                     }
+                    int read;
+                    int index = 0;
+                    int index2 = 0;
+                    int index3;
+                    String s;
+                    Block_11_Outer:Block_10_Outer:Block_9_Outer:
                     while (true) {
-                        int index = 0;
-                        int index2 = 0;
                         Label_0541: {
                             try {
-                                final int read = ((InputStream)o2).read((byte[])o, n, 2048 - n);
+                                read = ((InputStream)o2).read((byte[])o, n, 2048 - n);
                                 if (read == -1) {
                                     Log.e("NF_HttpLocalServer", "NetflixHttpLocalServer CLIENT EOF " + n);
                                     return false;
@@ -151,60 +158,61 @@ class NetflixHttpLocalServer implements Runnable
                                 index2 = n + read;
                                 Log.v("NF_HttpLocalServer", "read CLIENT i=" + index + " r=" + read);
                                 break Label_0541;
-                            Block_10_Outer:
+                                // iftrue(Label_0533:, s.compareTo(this.expectedFile) == 0)
+                                // iftrue(Label_0303:, index3 >= 0 && index >= 0)
+                                // iftrue(Label_0442:, !o.startsWith(File.separator))
+                                // iftrue(Label_0399:, !Log.isLoggable("NF_HttpLocalServer", 3))
                                 while (true) {
-                                    Log.e("NF_HttpLocalServer", "GET has bad filename");
-                                    printStream.print("HTTP/1.0 405");
-                                    printStream.write(this.EOL);
-                                    printStream.flush();
-                                    return false;
-                                    String s = null;
-                                    Label_0303: {
-                                        s = "";
-                                    }
-                                    index2 = ((String)o2).indexOf(" ", index);
-                                Label_0442:
                                     while (true) {
-                                        Block_9: {
-                                            break Block_9;
-                                            int index3 = 0;
-                                            Log.d("NF_HttpLocalServer", "index of GET " + index3);
-                                            Log.d("NF_HttpLocalServer", "index of Fname " + index + ", size " + index2);
+                                        while (true) {
+                                        Label_0442_Outer:
                                             while (true) {
-                                                Label_0399: {
-                                                    break Label_0399;
-                                                    Log.e("NF_HttpLocalServer", "unsupported: indexGet " + index3 + "indexFname " + index);
-                                                    printStream.print("HTTP/1.0 405 unsupported method type: ");
-                                                    printStream.write((byte[])o, 0, 5);
+                                                Log.e("NF_HttpLocalServer", "unsupported: indexGet " + index3 + "indexFname " + index);
+                                                printStream.print("HTTP/1.0 405 unsupported method type: ");
+                                                printStream.write((byte[])o, 0, 5);
+                                                printStream.write(this.EOL);
+                                                printStream.flush();
+                                                return false;
+                                                while (true) {
+                                                    Log.d("NF_HttpLocalServer", "===GET FILENAME = |" + s + "|===");
+                                                    Block_12: {
+                                                        break Block_12;
+                                                        s = ((String)o).substring(1);
+                                                        continue Block_11_Outer;
+                                                    }
+                                                    Log.e("NF_HttpLocalServer", "GET has bad filename");
+                                                    printStream.print("HTTP/1.0 405");
                                                     printStream.write(this.EOL);
                                                     printStream.flush();
                                                     return false;
+                                                    Label_0518: {
+                                                        Log.e("NF_HttpLocalServer", "GET not properly formed, no filename");
+                                                    }
+                                                    continue Block_11_Outer;
                                                 }
-                                                o = (s = new String((byte[])o, index, index2).replace('/', File.separatorChar));
-                                                s = ((String)o).substring(1);
-                                                break Label_0442;
+                                                Log.d("NF_HttpLocalServer", "index of GET " + index3);
+                                                Log.d("NF_HttpLocalServer", "index of Fname " + index + ", size " + index2);
+                                                break Label_0442_Outer;
                                                 o2 = new String((byte[])o);
                                                 Log.v("NF_HttpLocalServer", "=== Client request ===\n" + ((String)o2).trim());
                                                 index3 = ((String)o2).indexOf("GET ");
                                                 index = ((String)o2).indexOf("/");
-                                                continue;
+                                                continue Label_0442_Outer;
                                             }
-                                            Label_0518:
-                                            Log.e("NF_HttpLocalServer", "GET not properly formed, no filename");
-                                            break Label_0442;
+                                            o = (s = new String((byte[])o, index, index2).replace('/', File.separatorChar));
+                                            continue Block_10_Outer;
                                         }
                                         index2 -= index;
-                                        continue;
+                                        continue Block_9_Outer;
                                     }
-                                    Log.d("NF_HttpLocalServer", "===GET FILENAME = |" + s + "|===");
-                                    continue Block_10_Outer;
+                                    Label_0303: {
+                                        s = "";
+                                    }
+                                    index2 = ((String)o2).indexOf(" ", index);
+                                    continue;
                                 }
                             }
                             // iftrue(Label_0518:, index2 <= 0)
-                            // iftrue(Label_0442:, !o.startsWith(File.separator))
-                            // iftrue(Label_0303:, index3 >= 0 && index >= 0)
-                            // iftrue(Label_0399:, !Log.isLoggable("NF_HttpLocalServer", 3))
-                            // iftrue(Label_0533:, s.compareTo(this.expectedFile) == 0)
                             finally {}
                             break Label_0072;
                         }

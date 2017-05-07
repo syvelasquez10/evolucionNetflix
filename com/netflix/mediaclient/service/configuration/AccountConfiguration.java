@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import org.json.JSONObject;
 import org.json.JSONArray;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
@@ -33,6 +34,13 @@ public class AccountConfiguration
     
     public boolean getCastEnabled() {
         return this.mAccountConfigData != null && this.mAccountConfigData.getCastEnabled();
+    }
+    
+    public JSONObject getJPlayerConfig() {
+        if (this.mAccountConfigData == null) {
+            return null;
+        }
+        return this.mAccountConfigData.getJPlayerThreadConfigAsJson();
     }
     
     public JSONArray getMdxBlacklist() {

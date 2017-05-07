@@ -8,6 +8,7 @@ import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import com.netflix.mediaclient.util.StringUtils;
+import org.json.JSONObject;
 import org.json.JSONArray;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;
@@ -20,8 +21,12 @@ public class AccountConfigData
     private String castBlacklist;
     @SerializedName("enableCast")
     private boolean enableCast;
+    @SerializedName("JPlayerConfig")
+    private String jPlayerConfig;
     @Expose
     private JSONArray mCastBlacklistJSONArray;
+    @Expose
+    private JSONObject mJPlayerConfigJSON;
     @Expose
     private JSONArray mMdxBlacklistTargetsJSONArray;
     @SerializedName("mdxBlacklistTargets")
@@ -35,6 +40,7 @@ public class AccountConfigData
         this.mdxBlacklistTargets = null;
         this.mCastBlacklistJSONArray = null;
         this.mMdxBlacklistTargetsJSONArray = null;
+        this.mJPlayerConfigJSON = null;
     }
     
     public static AccountConfigData fromString(final String s) {
@@ -44,6 +50,7 @@ public class AccountConfigData
         final AccountConfigData accountConfigData = FalcorParseUtils.getGson().fromJson(s, AccountConfigData.class);
         accountConfigData.mCastBlacklistJSONArray = null;
         accountConfigData.mMdxBlacklistTargetsJSONArray = null;
+        accountConfigData.mJPlayerConfigJSON = null;
         return accountConfigData;
     }
     
@@ -78,6 +85,31 @@ public class AccountConfigData
     
     public boolean getCastEnabled() {
         return this.enableCast;
+    }
+    
+    public JSONObject getJPlayerThreadConfigAsJson() {
+        Label_0038: {
+            if (this.mJPlayerConfigJSON != null) {
+                break Label_0038;
+            }
+            JSONObject mjPlayerConfigJSON = null;
+            while (true) {
+                if (!StringUtils.isNotEmpty(this.jPlayerConfig)) {
+                    break Label_0033;
+                }
+                try {
+                    mjPlayerConfigJSON = new JSONObject(this.jPlayerConfig);
+                    this.mJPlayerConfigJSON = mjPlayerConfigJSON;
+                    return this.mJPlayerConfigJSON;
+                }
+                catch (JSONException ex) {
+                    Log.d("nf_config", String.format("jPlayerThreadConfig bad json: %s", this.jPlayerConfig));
+                    mjPlayerConfigJSON = mjPlayerConfigJSON;
+                    continue;
+                }
+                break;
+            }
+        }
     }
     
     public String getMdxBlacklist() {

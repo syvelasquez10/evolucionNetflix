@@ -12,10 +12,8 @@ public final class MediaPlayerHelperFactory
     private static AndroidMediaPlayerHelper ampHelper;
     private static DefaultMediaPlayerHelper defaultHelper;
     private static JPlayerHelper jpHelper;
-    private static VisualOnPlayerHelper voHelper;
     
     static {
-        MediaPlayerHelperFactory.voHelper = null;
         MediaPlayerHelperFactory.jpHelper = null;
         MediaPlayerHelperFactory.ampHelper = null;
         MediaPlayerHelperFactory.defaultHelper = null;
@@ -24,13 +22,6 @@ public final class MediaPlayerHelperFactory
     public static MediaPlayerHelper getInstance(final PlayerType playerType) {
         if (playerType == null) {
             throw new IllegalArgumentException("Type is null!");
-        }
-        if (playerType == PlayerType.device6) {
-            Log.d("nf_player", "Use VisualOn renderer helper");
-            if (MediaPlayerHelperFactory.voHelper == null) {
-                MediaPlayerHelperFactory.voHelper = new VisualOnPlayerHelper();
-            }
-            return MediaPlayerHelperFactory.voHelper;
         }
         if (playerType == PlayerType.device9) {
             Log.d("nf_player", "Use Android MediaPlayer helper");

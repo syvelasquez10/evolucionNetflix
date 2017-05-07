@@ -191,19 +191,16 @@ class UserProfileMap
                         this.mEsnMigrationFlags.putOpt(s, (Object)true);
                         b = true;
                         continue Block_7_Outer;
-                        // iftrue(Label_0024:, !b)
                         while (true) {
-                            Block_6: {
-                                break Block_6;
-                                Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration " + this.mEsnMigrationFlags);
-                                Label_0131: {
-                                    PreferenceUtils.putStringPref(this.mContext, "useragent_esnmigration_flags", this.mEsnMigrationFlags.toString());
-                                }
-                                return;
+                            Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration " + this.mEsnMigrationFlags);
+                            Label_0131: {
+                                PreferenceUtils.putStringPref(this.mContext, "useragent_esnmigration_flags", this.mEsnMigrationFlags.toString());
                             }
+                            return;
                             continue;
                         }
                     }
+                    // iftrue(Label_0024:, !b)
                     // iftrue(Label_0131:, !Log.isLoggable("nf_service_useragentproilemap", 3))
                     catch (JSONException ex) {}
                 }

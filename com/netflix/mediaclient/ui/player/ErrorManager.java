@@ -14,6 +14,7 @@ import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.android.widget.UpdateDialog;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
+import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.event.nrdp.media.NccpNetworkingError;
 import com.netflix.mediaclient.event.android.NetworkError;
@@ -26,6 +27,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
+import java.io.File;
 import com.netflix.mediaclient.ui.login.LogoutActivity;
 import com.netflix.mediaclient.service.NetflixService;
 import android.content.Intent;
@@ -33,6 +35,7 @@ import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
+import com.netflix.mediaclient.service.ServiceAgent;
 import android.os.Handler;
 import java.util.Locale;
 
@@ -51,7 +54,9 @@ public class ErrorManager
     private Runnable exit;
     private final Runnable forceExit;
     private Handler handler;
+    private ServiceAgent.ConfigurationAgentInterface mConfig;
     private MediaEvent reportedError;
+    private Runnable resetApp;
     private Runnable restartApp;
     private final Runnable unregister;
     
@@ -60,7 +65,7 @@ public class ErrorManager
         ACTION_IDS = new String[] { "NFErr_MC_NCCP_NonRecoverableError", "NFErr_MC_NCCP_PotentiallyRecoverableError", "NFErr_MC_NCCP_CustomError", "NFErr_MC_NCCP_RegistrationRequired", "NFErr_MC_NCCP_CTicketRenewalRequired", "NFErr_MC_NCCP_MTicketRenewalRequired", "NFErr_MC_NCCP_ImpossibleImpossibility", "NFErr_MC_NCCP_GetNewCredentials", "NFErr_MC_NCCP_UnsupportedVersion", "NFErr_MC_NCCP_SecondaryCredentialsRenewalRequired", "NFErr_MC_NCCP_AbortPlayback", "NFErr_MC_NCCP_StaleCredentials" };
     }
     
-    public ErrorManager(final Handler handler, final PlayerActivity context) {
+    public ErrorManager(final Handler handler, final PlayerActivity context, final ServiceAgent.ConfigurationAgentInterface mConfig) {
         this.errorPosted = false;
         this.destroyed = false;
         this.exit = new Runnable() {
@@ -74,6 +79,19 @@ public class ErrorManager
             @Override
             public void run() {
                 Log.e("ErrorManager", "restartApp");
+                if (ErrorManager.this.context instanceof NetflixActivity) {
+                    NetflixActivity.finishAllActivities((Context)ErrorManager.this.context);
+                }
+                final Intent intent = new Intent();
+                intent.setClass((Context)ErrorManager.this.context, (Class)NetflixService.class);
+                ErrorManager.this.context.stopService(intent);
+            }
+        };
+        this.resetApp = new Runnable() {
+            @Override
+            public void run() {
+                ErrorManager.this.clearApplicationData();
+                Log.e("ErrorManager", "resetApp");
                 if (ErrorManager.this.context instanceof NetflixActivity) {
                     NetflixActivity.finishAllActivities((Context)ErrorManager.this.context);
                 }
@@ -109,6 +127,19 @@ public class ErrorManager
         };
         this.handler = handler;
         this.context = context;
+        this.mConfig = mConfig;
+    }
+    
+    public static boolean deleteDir(final File file) {
+        if (file != null && file.isDirectory()) {
+            final String[] list = file.list();
+            for (int i = 0; i < list.length; ++i) {
+                if (!deleteDir(new File(file, list[i]))) {
+                    return false;
+                }
+            }
+        }
+        return file.delete();
     }
     
     private LinkTag extractLink(final String s, final StringBuilder sb) {
@@ -458,15 +489,22 @@ public class ErrorManager
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getHandlerForMediaError(final Error error) {
+        final boolean checkForOpenDeviceFailureInStack = error.checkForOpenDeviceFailureInStack();
         if (Log.isLoggable("ErrorManager", 3)) {
             Log.d("ErrorManager", "MediaError " + error);
+            Log.d("ErrorManager", "checkForOpenDeviceFailureInStack : " + checkForOpenDeviceFailureInStack);
         }
-        final boolean checkForOpenDeviceFailureInStack = error.checkForOpenDeviceFailureInStack();
-        Log.d("ErrorManager", "checkForOpenDeviceFailureInStack : " + checkForOpenDeviceFailureInStack);
-        if (error.getError() == -268369916 || checkForOpenDeviceFailureInStack) {
+        if (error.getError() == -268369916) {
             return new AlertDialogFactory.AlertDialogDescriptor("", this.context.getString(2131296458), null, this.restartApp);
         }
-        return new AlertDialogFactory.AlertDialogDescriptor("", this.context.getString(2131296401), null, this.exit);
+        if (error.getError() != -268369915 || !checkForOpenDeviceFailureInStack) {
+            return new AlertDialogFactory.AlertDialogDescriptor("", this.context.getString(2131296401), null, this.exit);
+        }
+        final String string = this.context.getString(2131296458);
+        if (this.mConfig.getCurrentPlayerType() == PlayerType.device12 && this.mConfig.isCurrentDrmWidevine()) {
+            return new AlertDialogFactory.AlertDialogDescriptor("", string, null, this.restartApp);
+        }
+        return new AlertDialogFactory.AlertDialogDescriptor("", string, null, this.resetApp);
     }
     
     private AlertDialogFactory.AlertDialogDescriptor getHandlerForNetworkError(final NetworkError networkError) {
@@ -605,6 +643,22 @@ public class ErrorManager
         this.handler.post(this.handle(reportedError));
         // monitorexit(this)
         return true;
+    }
+    
+    public void clearApplicationData() {
+        final File file = new File(this.context.getCacheDir().getParent());
+        if (file.exists()) {
+            final String[] list = file.list();
+            for (int length = list.length, i = 0; i < length; ++i) {
+                final String s = list[i];
+                if (!s.equals("lib")) {
+                    deleteDir(new File(file, s));
+                    if (Log.isLoggable("ErrorManager", 3)) {
+                        Log.i("TAG", "File /data/data/com.netflix.mediaclient/" + s + " DELETED");
+                    }
+                }
+            }
+        }
     }
     
     public void destroy() {

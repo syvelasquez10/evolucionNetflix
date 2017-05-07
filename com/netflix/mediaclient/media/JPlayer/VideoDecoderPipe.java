@@ -4,9 +4,10 @@
 
 package com.netflix.mediaclient.media.JPlayer;
 
-import com.netflix.mediaclient.Log;
 import android.os.Message;
 import android.os.Looper;
+import com.netflix.mediaclient.Log;
+import org.json.JSONObject;
 import android.view.Surface;
 import android.media.MediaFormat;
 import android.os.HandlerThread;
@@ -26,6 +27,7 @@ public class VideoDecoderPipe extends MediaDecoderPipe
     private static final int RENDER_WHIGH = 20;
     private static final int SCHEDULE_OFFSET = 5;
     private static final String TAG = "MediaPipeVideo";
+    private static final String renderThreadPriority = "RenderThreadPriority";
     private volatile boolean mDecoderStopped;
     private boolean mFirstFrameRendered;
     private Handler mHandler;
@@ -39,8 +41,8 @@ public class VideoDecoderPipe extends MediaDecoderPipe
     private long nFrameSkipped;
     private long previousPts;
     
-    public VideoDecoderPipe(final InputDataSource inputDataSource, final String s, final MediaFormat mediaFormat, final Surface surface, final String s2) throws Exception {
-        super(inputDataSource, s, mediaFormat, surface, s2);
+    public VideoDecoderPipe(final InputDataSource inputDataSource, final String s, final MediaFormat mediaFormat, final Surface surface, final String s2, final JSONObject jsonObject) throws Exception {
+        super(inputDataSource, s, mediaFormat, surface, s2, jsonObject);
         this.nFrameRendered = 0L;
         this.nFrameSkipped = 0L;
         this.mRendererStarted = false;
@@ -57,7 +59,14 @@ public class VideoDecoderPipe extends MediaDecoderPipe
     }
     
     private void makeHandler() {
-        (this.mHandlerThread = new HandlerThread("RenderThread", -2)).start();
+        if (this.isJPlayerThreadConfigured()) {
+            this.mHandlerThread = new HandlerThread("RenderThread", this.getThreadPriority("RenderThreadPriority"));
+            Log.d(this.mTag, "Thread priority updated:" + this.getThreadPriority("RenderThreadPriority"));
+        }
+        else {
+            this.mHandlerThread = new HandlerThread("RenderThread");
+        }
+        this.mHandlerThread.start();
         this.mHandler = new Handler(this.mHandlerThread.getLooper()) {
             public void handleMessage(final Message p0) {
                 // 

@@ -5,8 +5,8 @@
 package com.netflix.mediaclient.service.configuration;
 
 import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
-import com.netflix.mediaclient.util.AppStoreHelper;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.util.AppStoreHelper;
 import com.netflix.mediaclient.util.UriUtil;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.ServiceAgent;
@@ -17,7 +17,10 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
 {
     private static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
     private static final String ANDROID_ENDPOINT_FULL = "/android/pathEvaluator/3.3.0";
-    private static final String BROWSE_RESP_FORMAT_FULL = "responseFormat=json&pathFormat=hierarchical&progressive=false&routing=reject";
+    private static final boolean BROWSE_AUTO_REDIRECT_TRUE = true;
+    private static final String BROWSE_RESP_AUTO_REDIRECT = "&routing=redirect";
+    private static final String BROWSE_RESP_FORMAT_FULL = "responseFormat=json&pathFormat=hierarchical&progressive=false";
+    private static final String BROWSE_RESP_MANUAL_REDIRECT = "&routing=reject";
     private static final String CLIENT_LOGGING_ENDPOINT = "ichnaea.netflix.com";
     private static final String CLIENT_LOGGING_PATH = "/log";
     protected static final String HTTP = "http://";
@@ -72,6 +75,47 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         return sb;
     }
     
+    private String buildConfigUrl(final boolean b) {
+        final StringBuilder sb = new StringBuilder();
+        if (this.isSecure()) {
+            sb.append("https://");
+        }
+        else {
+            sb.append("http://");
+        }
+        sb.append(this.mEndpointHost);
+        sb.append("/android/samurai/config");
+        sb.append("?");
+        sb.append("responseFormat=json&pathFormat=hierarchical&progressive=false");
+        String s;
+        if (b) {
+            s = "&routing=redirect";
+        }
+        else {
+            s = "&routing=reject";
+        }
+        sb.append(s);
+        sb.append(this.buildUrlParam("appType", this.mDeviceModel.getAppType()));
+        String s2;
+        if (this.mDeviceHd) {
+            s2 = "hd";
+        }
+        else {
+            s2 = "sd";
+        }
+        sb.append(this.buildUrlParam("qlty", s2));
+        sb.append(this.buildUrlParam("ffbc", this.mDeviceModel.getFormFactor()));
+        sb.append(this.buildUrlParam("osBoard", UriUtil.urlEncodeParam(this.mDeviceModel.getBuildPropBoard())));
+        sb.append(this.buildUrlParam("osDevice", UriUtil.urlEncodeParam(this.mDeviceModel.getBuildPropDevice())));
+        sb.append(this.buildUrlParam("osDisplay", UriUtil.urlEncodeParam(this.mDeviceModel.getBuildPropDisplay())));
+        sb.append(this.buildUrlParam("appVer", Integer.toString(this.mDeviceModel.getApkVer())));
+        sb.append(this.buildUrlParam("mId", UriUtil.urlEncodeParam(this.mDeviceModel.getEsnModelId())));
+        sb.append(this.buildUrlParam("api", Integer.toString(this.mDeviceModel.getApiLevel())));
+        sb.append(this.buildUrlParam("mnf", UriUtil.urlEncodeParam(this.mDeviceModel.getManufacturer())));
+        sb.append(this.buildUrlParam("store", AppStoreHelper.getInstallationSource(this.mContext)));
+        return sb.toString();
+    }
+    
     private String buildUrlParam(final String s, final String s2) {
         final StringBuilder sb = new StringBuilder("&");
         sb.append(s);
@@ -110,7 +154,8 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         sb.append(this.mEndpointHost);
         sb.append("/android/pathEvaluator/3.3.0");
         sb.append("?");
-        sb.append("responseFormat=json&pathFormat=hierarchical&progressive=false&routing=reject");
+        sb.append("responseFormat=json&pathFormat=hierarchical&progressive=false");
+        sb.append("&routing=reject");
         sb.append(this.buildUrlParam("res", this.mUiResolutionType));
         sb.append(this.buildUrlParam("imgpref", this.getImagePreference()));
         this.mApiEndpointUrl = sb.toString();
@@ -146,40 +191,11 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         if (StringUtils.isNotEmpty(this.mConfigEndpointUrl)) {
             return this.mConfigEndpointUrl;
         }
-        final StringBuilder sb = new StringBuilder();
-        if (this.isSecure()) {
-            sb.append("https://");
-        }
-        else {
-            sb.append("http://");
-        }
-        sb.append(this.mEndpointHost);
-        sb.append("/android/samurai/config");
-        sb.append("?");
-        sb.append("responseFormat=json&pathFormat=hierarchical&progressive=false&routing=reject");
-        sb.append(this.buildUrlParam("appType", this.mDeviceModel.getAppType()));
-        String s;
-        if (this.mDeviceHd) {
-            s = "hd";
-        }
-        else {
-            s = "sd";
-        }
-        sb.append(this.buildUrlParam("qlty", s));
-        sb.append(this.buildUrlParam("ffbc", this.mDeviceModel.getFormFactor()));
-        sb.append(this.buildUrlParam("osBoard", UriUtil.urlEncodeParam(this.mDeviceModel.getBuildPropBoard())));
-        sb.append(this.buildUrlParam("osDevice", UriUtil.urlEncodeParam(this.mDeviceModel.getBuildPropDevice())));
-        sb.append(this.buildUrlParam("osDisplay", UriUtil.urlEncodeParam(this.mDeviceModel.getBuildPropDisplay())));
-        sb.append(this.buildUrlParam("appVer", Integer.toString(this.mDeviceModel.getApkVer())));
-        sb.append(this.buildUrlParam("mId", UriUtil.urlEncodeParam(this.mDeviceModel.getEsnModelId())));
-        sb.append(this.buildUrlParam("api", Integer.toString(this.mDeviceModel.getApiLevel())));
-        sb.append(this.buildUrlParam("mnf", UriUtil.urlEncodeParam(this.mDeviceModel.getManufacturer())));
-        sb.append(this.buildUrlParam("store", AppStoreHelper.getInstallationSource(this.mContext)));
-        return this.mConfigEndpointUrl = sb.toString();
+        return this.mConfigEndpointUrl = this.buildConfigUrl(false);
     }
     
     public String getDeviceConfigUrl() {
-        return this.getConfigUrlFull() + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql));
+        return this.buildConfigUrl(true) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql));
     }
     
     @Override
