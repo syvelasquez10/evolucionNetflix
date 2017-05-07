@@ -173,6 +173,10 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         return this.addDynamicParams(sb).toString();
     }
     
+    public String getAppStartConfigUrl() {
+        return this.buildConfigUrl(true) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.streamingQoePqlDefault));
+    }
+    
     @Override
     public String getClientLoggingUrlFull() {
         synchronized (this) {
@@ -203,10 +207,6 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             return this.mConfigEndpointUrl;
         }
         return this.mConfigEndpointUrl = this.buildConfigUrl(false);
-    }
-    
-    public String getDeviceConfigUrl() {
-        return this.buildConfigUrl(true) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql));
     }
     
     @Override

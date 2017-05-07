@@ -7,6 +7,12 @@ package com.netflix.mediaclient.android.activity;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.ui.RelaunchActivity;
 import com.netflix.mediaclient.ui.LaunchActivity;
+import com.netflix.mediaclient.util.WebApiUtils;
+import com.netflix.mediaclient.ui.player.MDXControllerActivity;
+import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.service.mdx.MdxAgent;
+import android.text.TextUtils;
+import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
@@ -28,6 +34,7 @@ import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import com.netflix.mediaclient.ui.ServiceErrorsHandler;
 import com.netflix.mediaclient.ui.login.LogoutActivity;
+import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import com.netflix.mediaclient.NetflixApplication;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
@@ -293,6 +300,10 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
         return ((NetflixActivity)context).serviceManager.getImageLoader();
     }
     
+    private void onFromBackground() {
+        this.showMDXPostPlayOnResume();
+    }
+    
     private void postActionBarUpdate() {
         this.handler.removeCallbacks(this.updateActionBarVisibilityRunnable);
         this.handler.postDelayed(this.updateActionBarVisibilityRunnable, 1000L);
@@ -402,13 +413,8 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
                     }
                     this.displayDialog(dialog);
                     return;
-                    // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
                     // iftrue(Label_0165:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
-                Block_10:
-                    while (true) {
-                        break Block_10;
-                        continue;
-                    }
+                    // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
                     Log.d("NetflixActivity", "displayUserAgentDialog " + s);
                     Label_0150: {
                         this.displayDialog(dialog);
@@ -511,6 +517,10 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
         return this.serviceManager;
     }
     
+    protected IMdxSharedState getSharedState() {
+        return this.serviceManager.getMdx().getSharedState();
+    }
+    
     public abstract IClientLogging.ModalView getUiScreen();
     
     public Dialog getVisibleDialog() {
@@ -549,14 +559,14 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
         }
         switch (n) {
             default: {
-                this.displayErrorDialog(this.getString(2131493271), n);
+                this.displayErrorDialog(this.getString(2131493273), n);
             }
             case -202: {
                 this.displayUserAgentDialog(s, null, false);
             }
             case -207:
             case -203: {
-                this.displayUserAgentDialog(String.format("%s ( %d )", this.getString(2131493276), n), new Runnable() {
+                this.displayUserAgentDialog(String.format("%s ( %d )", this.getString(2131493278), n), new Runnable() {
                     @Override
                     public void run() {
                         Log.d("NetflixActivity", "Restarting app, time: " + System.nanoTime());
@@ -576,12 +586,12 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
             case -204:
             case -201:
             case -200: {
-                this.displayUserAgentDialog(String.format("%s ( %d )", this.getString(2131493267), n), null, false);
+                this.displayUserAgentDialog(String.format("%s ( %d )", this.getString(2131493269), n), null, false);
             }
             case -122:
             case -121:
             case -120: {
-                this.displayErrorDialog(this.getString(2131493270), n);
+                this.displayErrorDialog(this.getString(2131493272), n);
             }
         }
     }
@@ -594,6 +604,12 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
         if (this.mdxFrag != null) {
             this.mdxFrag.hide();
         }
+    }
+    
+    boolean isComingFromBackground(final boolean b) {
+        final boolean wasInBackground = ((NetflixApplication)this.getApplication()).wasInBackground(b);
+        Log.d("NetflixActivity", "isComingFromBackground, wasinBackground: " + wasInBackground);
+        return wasInBackground;
     }
     
     public boolean isDialogFragmentVisible() {
@@ -737,9 +753,12 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
     
     protected void onPause() {
         super.onPause();
-        ((NetflixApplication)this.getApplication()).releaseCurrentActivity(this);
+        final NetflixApplication netflixApplication = (NetflixApplication)this.getApplication();
+        NetflixApplication.activityPaused();
+        netflixApplication.releaseCurrentActivity(this);
         this.isVisible = false;
         this.handler.removeCallbacks(this.printLoadingStatusRunnable);
+        netflixApplication.startActivityTransitionTimer();
     }
     
     public void onPinVerified(final PinDialogVault pinDialogVault) {
@@ -769,10 +788,16 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
     
     protected void onResume() {
         super.onResume();
+        final NetflixApplication netflixApplication = (NetflixApplication)this.getApplication();
+        NetflixApplication.activityResumed();
+        if (this.isComingFromBackground(false)) {
+            this.onFromBackground();
+        }
         this.setInstanceStateSaved(false);
-        ((NetflixApplication)this.getApplication()).setCurrentActivity(this);
+        netflixApplication.setCurrentActivity(this);
         this.isVisible = true;
         this.handler.post(this.printLoadingStatusRunnable);
+        netflixApplication.stopActivityTransitionTimer();
     }
     
     protected void onSaveInstanceState(final Bundle bundle) {
@@ -834,8 +859,8 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
             this.finish();
             return;
         }
-        this.startActivity(HomeActivity.createShowIntent(this));
         LogUtils.reportUIViewCommand((Context)this, UIViewLogging.UIViewCommandName.upButton, this.getUiScreen(), this.getDataContext());
+        this.startActivity(HomeActivity.createShowIntent(this));
     }
     
     public void registerBroadcastReceiverLocallyWithAutoUnregister(final BroadcastReceiver broadcastReceiver, final IntentFilter intentFilter) {
@@ -929,7 +954,7 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
     }
     
     protected void setupServicemanager() {
-        this.serviceManager = new ServiceManager(this, new DefaultManagerStatusListener(this.createManagerStatusListener()));
+        this.serviceManager = new ServiceManager(this, new DefaultManagerStatusListener(this.createManagerStatusListener(), this.isComingFromBackground(true)));
     }
     
     public boolean shouldAddMdxToMenu() {
@@ -989,6 +1014,32 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
     public void showFetchErrorsToast() {
     }
     
+    protected void showMDXPostPlayOnResume() {
+        boolean b2;
+        final boolean b = b2 = false;
+        if (ServiceManagerUtils.isMdxAgentAvailable(this.serviceManager)) {
+            final IMdxSharedState sharedState = this.getSharedState();
+            b2 = b;
+            if (sharedState != null) {
+                b2 = b;
+                if (!TextUtils.isEmpty((CharSequence)sharedState.getPostplayState())) {
+                    final WebApiUtils.VideoIds videoIdsPostplay = ((MdxAgent)this.serviceManager.getMdx()).getVideoIdsPostplay();
+                    b2 = b;
+                    if (videoIdsPostplay != null) {
+                        b2 = b;
+                        if (videoIdsPostplay.episodeId > 0) {
+                            MDXControllerActivity.showMDXController(this, videoIdsPostplay.episodeId, PlayContext.DFLT_MDX_CONTEXT);
+                            b2 = true;
+                        }
+                    }
+                }
+            }
+        }
+        if (!b2) {
+            MDXControllerActivity.finishMDXController((Context)this);
+        }
+    }
+    
     protected boolean showMdxInMenu() {
         return true;
     }
@@ -1024,10 +1075,13 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
     
     private class DefaultManagerStatusListener implements ManagerStatusListener
     {
+        private boolean isFrombackground;
         private final ManagerStatusListener listener;
         
-        public DefaultManagerStatusListener(final ManagerStatusListener listener) {
+        public DefaultManagerStatusListener(final ManagerStatusListener listener, final boolean isFrombackground) {
+            this.isFrombackground = false;
             this.listener = listener;
+            this.isFrombackground = isFrombackground;
         }
         
         @Override
@@ -1070,6 +1124,9 @@ public abstract class NetflixActivity extends Activity implements EpisodeRowList
             }
             serviceManager.getClientLogging().setDataContext(NetflixActivity.this.getDataContext());
             NetflixActivity.this.reportUiViewChanged(NetflixActivity.this.getUiScreen());
+            if (this.isFrombackground) {
+                NetflixActivity.this.showMDXPostPlayOnResume();
+            }
         }
         
         @Override

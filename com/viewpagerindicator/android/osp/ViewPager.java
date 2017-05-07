@@ -12,7 +12,6 @@ import android.view.View$BaseSavedState;
 import android.os.Bundle;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.content.res.TypedArray;
-import android.util.Log;
 import android.database.DataSetObserver;
 import android.view.View$MeasureSpec;
 import android.support.v4.view.AccessibilityDelegateCompat;
@@ -28,6 +27,7 @@ import android.os.SystemClock;
 import android.view.SoundEffectConstants;
 import android.view.FocusFinder;
 import android.view.ViewGroup$LayoutParams;
+import android.util.Log;
 import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
 import android.view.ViewParent;
@@ -640,6 +640,10 @@ public class ViewPager extends ViewGroup
         float n2 = width * this.mLastOffset;
         boolean b4 = true;
         boolean b5 = true;
+        if (this.mItems.size() <= 0) {
+            Log.w("ViewPager", "We have no items to drag - returning early");
+            return false;
+        }
         final ItemInfo itemInfo = this.mItems.get(0);
         final ItemInfo itemInfo2 = this.mItems.get(this.mItems.size() - 1);
         if (itemInfo.position != 0) {

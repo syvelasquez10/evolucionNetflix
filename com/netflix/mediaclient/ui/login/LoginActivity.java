@@ -114,7 +114,7 @@ public class LoginActivity extends AccountActivity
         this.runOnUiThread((Runnable)new Runnable() {
             @Override
             public void run() {
-                LoginActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)LoginActivity.this, LoginActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, LoginActivity.this.getString(2131493266), LoginActivity.this.getString(17039370), null)));
+                LoginActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)LoginActivity.this, LoginActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, LoginActivity.this.getString(2131493268), LoginActivity.this.getString(17039370), null)));
             }
         });
     }
@@ -182,11 +182,11 @@ public class LoginActivity extends AccountActivity
             return;
         }
         if (n == -201) {
-            this.displayUserAgentDialog(this.getString(2131493268) + " (" + n + ")", null, false);
+            this.displayUserAgentDialog(this.getString(2131493270) + " (" + n + ")", null, false);
             return;
         }
         if (n == -3) {
-            this.displayUserAgentDialog(this.getString(2131493270) + " (" + n + ")", null, true);
+            this.displayUserAgentDialog(this.getString(2131493272) + " (" + n + ")", null, true);
             return;
         }
         super.handleUserAgentErrors(activity, n, s);

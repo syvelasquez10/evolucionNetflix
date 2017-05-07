@@ -36,6 +36,7 @@ public interface IMdx
     public static final String MDX_AUTOADV = "com.netflix.mediaclient.intent.action.MDX_AUTOADV";
     public static final String MDX_DIALOGRESP = "com.netflix.mediaclient.intent.action.MDX_DIALOGRESP";
     public static final int MDX_ERROR_INIT_ERROR = 103;
+    public static final int MDX_ERROR_LAUNCH_ERROR = 106;
     @SuppressLint({ "UseSparseArrays" })
     public static final Map<Integer, Integer> MDX_ERROR_MAP = new HashMap<Integer, Integer>() {
         {
@@ -66,6 +67,7 @@ public interface IMdx
     public static final String MDX_EXTRA_PIN_VIDEOID = "videoId";
     public static final String MDX_EXTRA_POSITION_SECONDS = "time";
     public static final String MDX_EXTRA_POSTPLAYSTATE = "postplayState";
+    public static final String MDX_EXTRA_POSTPLAY_PLAYNEXT = "playNext";
     public static final String MDX_EXTRA_SPEED = "speed";
     public static final String MDX_EXTRA_STRING_BLOB = "stringBlob";
     public static final String MDX_EXTRA_SUBTITLE_TRACK_ID = "subtitleTrackId";
@@ -123,6 +125,8 @@ public interface IMdx
     boolean isPaused();
     
     boolean isReady();
+    
+    boolean isTargetLaunchingOrLaunched();
     
     void setCurrentTarget(final String p0);
     

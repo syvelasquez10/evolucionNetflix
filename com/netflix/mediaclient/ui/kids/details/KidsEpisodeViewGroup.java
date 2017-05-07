@@ -46,7 +46,7 @@ public class KidsEpisodeViewGroup extends RelativeLayout
     }
     
     public void update(final EpisodeDetails episodeDetails) {
-        final String string = this.getResources().getString(2131493249, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        final String string = this.getResources().getString(2131493251, new Object[] { episodeDetails.getSeasonNumber(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
         this.title.setText((CharSequence)string);
         NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, episodeDetails.getHorzDispUrl(), IClientLogging.AssetType.boxArt, string, false, true);
         this.setOnClickListener((View$OnClickListener)new View$OnClickListener() {

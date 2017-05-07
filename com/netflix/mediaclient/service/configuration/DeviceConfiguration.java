@@ -11,12 +11,8 @@ import java.lang.reflect.Type;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.List;
 import com.google.gson.reflect.TypeToken;
-import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
-import java.util.Locale;
-import java.io.IOException;
-import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import java.util.HashMap;
@@ -71,34 +67,6 @@ public class DeviceConfiguration
         }
         this.mIsDisableWidevine = PreferenceUtils.getBooleanPref(mContext, "disable_widevine", b);
         this.mUserSessionDurationInSeconds = this.loadUserSessionTimeoutDuration();
-    }
-    
-    private int fetchDeviceConfigSynchronously(String s) {
-        Log.d(DeviceConfiguration.TAG, "Need to fetchdeviceConfig synchronously ");
-        ConfigData configString;
-        try {
-            Log.d(DeviceConfiguration.TAG, String.format("configurationUrl %s", s));
-            s = StringUtils.getRemoteDataAsString(s);
-            Log.d(DeviceConfiguration.TAG, String.format("Device config data=%s", s));
-            configString = FetchConfigDataRequest.parseConfigString(s);
-            if (configString.deviceConfig == null) {
-                throw new IOException();
-            }
-        }
-        catch (Exception ex) {
-            s = ex.toString().toLowerCase(Locale.US);
-            Log.e(DeviceConfiguration.TAG, "Could not fetch configuration! " + s);
-            if (s.contains("could not validate certificate") || s.contains("sslhandshakeexception")) {
-                return -121;
-            }
-            return -12;
-        }
-        this.persistDeviceConfigOverride(configString.getDeviceConfig());
-        return 0;
-    }
-    
-    private boolean isDeviceConfigInCache() {
-        return PreferenceUtils.getBooleanPref(this.mContext, "nf_device_config_cached", false);
     }
     
     private Map<String, ConsolidatedLoggingSessionSpecification> loadConsolidateLoggingSpecification() {
@@ -230,6 +198,10 @@ public class DeviceConfiguration
         return this.mUserSessionDurationInSeconds;
     }
     
+    public boolean isDeviceConfigInCache() {
+        return PreferenceUtils.getBooleanPref(this.mContext, "nf_device_config_cached", false);
+    }
+    
     public boolean isDisableMdx() {
         return this.mIsDisableMdx;
     }
@@ -240,14 +212,6 @@ public class DeviceConfiguration
     
     public boolean isDisableWidevine() {
         return this.mIsDisableWidevine;
-    }
-    
-    public int loadDeviceConfigOverrides(final String s) {
-        if (!this.isDeviceConfigInCache()) {
-            return this.fetchDeviceConfigSynchronously(s);
-        }
-        Log.d(DeviceConfiguration.TAG, "DeviceConfig in cache... proceed!");
-        return 0;
     }
     
     public void persistDeviceConfigOverride(final DeviceConfigData deviceConfigData) {

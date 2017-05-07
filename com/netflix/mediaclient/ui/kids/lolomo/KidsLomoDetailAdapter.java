@@ -287,29 +287,36 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements ILoLoMoAdapter
                     KidsLomoDetailAdapter.this.hasMoreData = false;
                     KidsLomoDetailAdapter.this.notifyDataSetChanged();
                     return;
-                    // iftrue(Label_0213:, !Log.isLoggable("KidsLomoDetailAdapter", 2))
-                    // iftrue(Label_0147:, list.size() >= this.numItems)
                     // iftrue(Label_0125:, list != null && list.size() > 0)
-                Label_0092:
+                    // iftrue(Label_0147:, list.size() >= this.numItems)
+                    // iftrue(Label_0213:, !Log.isLoggable("KidsLomoDetailAdapter", 2))
+                Label_0147_Outer:
                     while (true) {
+                    Block_6:
+                        while (true) {
+                            Block_5: {
+                                Label_0092: {
+                                    break Label_0092;
+                                    Label_0125: {
+                                        break Block_5;
+                                    }
+                                    KidsLomoDetailAdapter.this.videoData.addAll(list);
+                                    KidsLomoDetailAdapter.access$312(KidsLomoDetailAdapter.this, list.size());
+                                    KidsLomoDetailAdapter.this.notifyDataSetChanged();
+                                    return;
+                                    break Block_6;
+                                }
+                                Log.v("KidsLomoDetailAdapter", "No videos in response");
+                                KidsLomoDetailAdapter.this.hasMoreData = false;
+                                KidsLomoDetailAdapter.this.notifyDataSetChanged();
+                                return;
+                            }
+                            KidsLomoDetailAdapter.this.hasMoreData = false;
+                            continue;
+                        }
                         Log.v("KidsLomoDetailAdapter", "Got " + list.size() + " items, expected " + this.numItems + ", hasMoreData: " + KidsLomoDetailAdapter.this.hasMoreData);
-                        Label_0213: {
-                            KidsLomoDetailAdapter.this.videoData.addAll(list);
-                        }
-                        KidsLomoDetailAdapter.access$312(KidsLomoDetailAdapter.this, list.size());
-                        KidsLomoDetailAdapter.this.notifyDataSetChanged();
-                        return;
-                        Label_0125:
-                        Block_5: {
-                            break Block_5;
-                            break Label_0092;
-                        }
-                        KidsLomoDetailAdapter.this.hasMoreData = false;
-                        continue;
+                        continue Label_0147_Outer;
                     }
-                    Log.v("KidsLomoDetailAdapter", "No videos in response");
-                    KidsLomoDetailAdapter.this.hasMoreData = false;
-                    KidsLomoDetailAdapter.this.notifyDataSetChanged();
                 }
                 finally {
                     KidsLomoDetailAdapter.this.onDataLoaded(n);

@@ -8,11 +8,11 @@ import java.io.Serializable;
 import android.graphics.Bitmap;
 import java.io.InputStream;
 import java.io.IOException;
-import java.net.URL;
-import android.graphics.BitmapFactory;
-import com.facebook.FacebookException;
 import java.net.URLConnection;
+import com.facebook.FacebookException;
 import java.io.Closeable;
+import android.graphics.BitmapFactory;
+import java.net.URL;
 import com.facebook.internal.Utility;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -56,47 +56,25 @@ class ImageDownloader
     }
     
     private static void download(final RequestKey requestKey, Context removePendingRequest) {
-        URLConnection urlConnection;
-        URLConnection urlConnection2;
-        InputStream inputStream;
-        Closeable closeable;
-        Closeable closeable2;
-        IOException ex;
-        Bitmap bitmap;
-        Bitmap bitmap2;
-        boolean b;
-        boolean b3;
-        boolean b2;
-        Closeable closeable3;
-        Closeable closeable4;
-        HttpURLConnection httpURLConnection = null;
-        InputStream inputStream2 = null;
-        Serializable s = null;
-        char[] array = null;
-        int read = 0;
-        Bitmap decodeStream;
-        boolean b4 = false;
-        String headerField = null;
-        URL url;
-        Label_0237_Outer:Label_0132_Outer:
         while (true) {
-            urlConnection = null;
-            urlConnection2 = null;
-            inputStream = null;
-            closeable = null;
-            closeable2 = null;
-            ex = null;
-            bitmap = null;
-            bitmap2 = null;
-            b = true;
-            b2 = (b3 = true);
-            closeable3 = closeable2;
-            closeable4 = closeable;
-        Block_7_Outer:
+            URLConnection urlConnection = null;
+            URLConnection urlConnection2 = null;
+            final InputStream inputStream = null;
+            final Closeable closeable = null;
+            final Closeable closeable2 = null;
+            final IOException ex = null;
+            final Bitmap bitmap = null;
+            final Bitmap bitmap2 = null;
+            boolean b = true;
+            boolean b3;
+            boolean b2 = b3 = true;
+            Closeable closeable3 = closeable2;
+            Closeable closeable4 = closeable;
+        Label_0606_Outer:
             while (true) {
                 Label_0624: {
                     try {
-                        httpURLConnection = (HttpURLConnection)(urlConnection2 = requestKey.url.openConnection());
+                        final HttpURLConnection httpURLConnection = (HttpURLConnection)(urlConnection2 = requestKey.url.openConnection());
                         b3 = b2;
                         closeable3 = closeable2;
                         urlConnection = httpURLConnection;
@@ -119,95 +97,101 @@ class ImageDownloader
                                 break Label_0624;
                             }
                         }
-                        // iftrue(Label_0685:, read <= 0)
+                        urlConnection2 = httpURLConnection;
+                        b3 = b2;
+                        closeable3 = closeable2;
+                        urlConnection = httpURLConnection;
+                        closeable4 = closeable;
+                        final InputStream inputStream2 = httpURLConnection.getErrorStream();
+                        urlConnection2 = httpURLConnection;
+                        b3 = b2;
+                        closeable3 = inputStream2;
+                        urlConnection = httpURLConnection;
+                        closeable4 = inputStream2;
+                        removePendingRequest = (IOException)new InputStreamReader(inputStream2);
+                        urlConnection2 = httpURLConnection;
+                        b3 = b2;
+                        closeable3 = inputStream2;
+                        urlConnection = httpURLConnection;
+                        closeable4 = inputStream2;
+                        final char[] array = new char[128];
+                        urlConnection2 = httpURLConnection;
+                        b3 = b2;
+                        closeable3 = inputStream2;
+                        urlConnection = httpURLConnection;
+                        closeable4 = inputStream2;
+                        final Serializable s = new StringBuilder();
                         while (true) {
-                            while (true) {
-                                urlConnection2 = httpURLConnection;
-                                b3 = b2;
-                                closeable3 = inputStream2;
-                                urlConnection = httpURLConnection;
-                                closeable4 = inputStream2;
-                                ((StringBuilder)s).append(array, 0, read);
-                                urlConnection2 = httpURLConnection;
-                                b3 = b2;
-                                closeable3 = inputStream2;
-                                urlConnection = httpURLConnection;
-                                closeable4 = inputStream2;
-                                read = ((InputStreamReader)removePendingRequest).read(array, 0, array.length);
-                                continue Label_0237_Outer;
-                            }
-                            urlConnection2 = httpURLConnection;
-                            b3 = b2;
-                            closeable3 = closeable2;
-                            urlConnection = httpURLConnection;
-                            closeable4 = closeable;
-                            inputStream2 = httpURLConnection.getErrorStream();
                             urlConnection2 = httpURLConnection;
                             b3 = b2;
                             closeable3 = inputStream2;
                             urlConnection = httpURLConnection;
                             closeable4 = inputStream2;
-                            removePendingRequest = (IOException)new InputStreamReader(inputStream2);
+                            final int read = ((InputStreamReader)removePendingRequest).read(array, 0, array.length);
                             urlConnection2 = httpURLConnection;
                             b3 = b2;
                             closeable3 = inputStream2;
                             urlConnection = httpURLConnection;
                             closeable4 = inputStream2;
-                            array = new char[128];
-                            urlConnection2 = httpURLConnection;
-                            b3 = b2;
-                            closeable3 = inputStream2;
-                            urlConnection = httpURLConnection;
-                            closeable4 = inputStream2;
-                            s = new StringBuilder();
-                            continue Label_0132_Outer;
+                            ((StringBuilder)s).append(array, 0, read);
+                            continue;
                         }
                     }
+                    // iftrue(Label_0685:, read <= 0)
                     catch (IOException removePendingRequest) {
                         Utility.closeQuietly(closeable3);
                         Utility.disconnectQuietly(urlConnection2);
-                        decodeStream = bitmap2;
-                        // iftrue(Label_0606:, Utility.isNullOrEmpty(headerField))
+                        Bitmap decodeStream = bitmap2;
+                        // iftrue(Label_0606:, removePendingRequest == null)
                         // iftrue(Label_0606:, removePendingRequest.isCancelled)
+                        // iftrue(Label_0606:, Utility.isNullOrEmpty(headerField))
+                    Label_0606:
                         while (true) {
-                            Block_6: {
+                            final HttpURLConnection httpURLConnection;
+                            URL url = null;
+                            boolean b4 = false;
+                        Block_6_Outer:
+                            while (true) {
+                                if (b3) {
+                                    issueResponse(requestKey, removePendingRequest, decodeStream, false);
+                                }
+                                return;
+                                InputStream inputStream2;
+                                Serializable s;
                                 while (true) {
-                                    while (true) {
-                                        if (b3) {
-                                            issueResponse(requestKey, removePendingRequest, decodeStream, false);
-                                        }
-                                        return;
-                                        b4 = false;
-                                        b = false;
+                                    urlConnection = httpURLConnection;
+                                    closeable4 = closeable;
+                                    final String headerField;
+                                    url = new URL(headerField);
+                                    urlConnection = httpURLConnection;
+                                    closeable4 = closeable;
+                                    UrlRedirectCache.cacheUrlRedirect((Context)removePendingRequest, requestKey.url, url);
+                                    urlConnection = httpURLConnection;
+                                    closeable4 = closeable;
+                                    removePendingRequest = (IOException)removePendingRequest(requestKey);
+                                    decodeStream = bitmap;
+                                    s = ex;
+                                    b2 = b4;
+                                    inputStream2 = inputStream;
+                                    Block_7: {
+                                        break Block_7;
                                         urlConnection = httpURLConnection;
                                         closeable4 = closeable;
-                                        headerField = httpURLConnection.getHeaderField("location");
-                                        decodeStream = bitmap;
+                                        inputStream2 = ImageResponseCache.interceptAndCacheImageStream((Context)removePendingRequest, httpURLConnection);
+                                        urlConnection = httpURLConnection;
+                                        closeable4 = inputStream2;
+                                        decodeStream = BitmapFactory.decodeStream(inputStream2);
                                         s = ex;
-                                        b2 = b4;
-                                        inputStream2 = inputStream;
-                                        urlConnection = httpURLConnection;
-                                        closeable4 = closeable;
-                                        break Block_6;
-                                        decodeStream = bitmap;
-                                        s = ex;
-                                        b2 = b4;
-                                        inputStream2 = inputStream;
-                                        urlConnection = httpURLConnection;
-                                        closeable4 = closeable;
-                                        urlConnection = httpURLConnection;
-                                        closeable4 = closeable;
-                                        enqueueCacheRead(((DownloaderContext)removePendingRequest).request, new RequestKey(url, requestKey.tag), false);
-                                        inputStream2 = inputStream;
-                                        b2 = b4;
-                                        s = ex;
-                                        decodeStream = bitmap;
-                                        Utility.closeQuietly(inputStream2);
-                                        Utility.disconnectQuietly(httpURLConnection);
-                                        removePendingRequest = (IOException)s;
-                                        b3 = b2;
-                                        continue Block_7_Outer;
+                                        b2 = b;
+                                        break Label_0606;
                                     }
+                                    decodeStream = bitmap;
+                                    s = ex;
+                                    b2 = b4;
+                                    inputStream2 = inputStream;
+                                    urlConnection = httpURLConnection;
+                                    closeable4 = closeable;
+                                    break Block_6_Outer;
                                     Label_0685: {
                                         urlConnection = httpURLConnection;
                                     }
@@ -218,35 +202,36 @@ class ImageDownloader
                                     s = new FacebookException(((StringBuilder)s).toString());
                                     decodeStream = bitmap;
                                     b2 = b;
-                                    continue;
+                                    break Label_0606;
+                                    b4 = false;
+                                    b = false;
                                     urlConnection = httpURLConnection;
                                     closeable4 = closeable;
-                                    inputStream2 = ImageResponseCache.interceptAndCacheImageStream((Context)removePendingRequest, httpURLConnection);
-                                    urlConnection = httpURLConnection;
-                                    closeable4 = inputStream2;
-                                    decodeStream = BitmapFactory.decodeStream(inputStream2);
+                                    headerField = httpURLConnection.getHeaderField("location");
+                                    decodeStream = bitmap;
                                     s = ex;
-                                    b2 = b;
-                                    continue;
+                                    b2 = b4;
+                                    inputStream2 = inputStream;
+                                    urlConnection = httpURLConnection;
+                                    closeable4 = closeable;
+                                    continue Label_0606_Outer;
                                 }
+                                Utility.closeQuietly(inputStream2);
+                                Utility.disconnectQuietly(httpURLConnection);
+                                removePendingRequest = (IOException)s;
+                                b3 = b2;
+                                continue Block_6_Outer;
                             }
                             urlConnection = httpURLConnection;
                             closeable4 = closeable;
-                            url = new URL(headerField);
-                            urlConnection = httpURLConnection;
-                            closeable4 = closeable;
-                            UrlRedirectCache.cacheUrlRedirect((Context)removePendingRequest, requestKey.url, url);
-                            urlConnection = httpURLConnection;
-                            closeable4 = closeable;
-                            removePendingRequest = (IOException)removePendingRequest(requestKey);
-                            decodeStream = bitmap;
-                            s = ex;
+                            enqueueCacheRead(((DownloaderContext)removePendingRequest).request, new RequestKey(url, requestKey.tag), false);
+                            InputStream inputStream2 = inputStream;
                             b2 = b4;
-                            inputStream2 = inputStream;
-                            continue;
+                            Serializable s = ex;
+                            decodeStream = bitmap;
+                            continue Label_0606;
                         }
                     }
-                    // iftrue(Label_0606:, removePendingRequest == null)
                     finally {
                         Utility.closeQuietly(closeable4);
                         Utility.disconnectQuietly(urlConnection);

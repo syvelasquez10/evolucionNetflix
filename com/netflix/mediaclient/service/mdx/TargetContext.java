@@ -153,6 +153,12 @@ public class TargetContext implements TargetStateManagerListener
         return n2;
     }
     
+    private void endPlaybackWithError(final String s, final int n) {
+        if (n < 300) {
+            this.playbackEnd(s, null);
+        }
+    }
+    
     private String getTargetProperty(final String s) {
         String s2 = s;
         if (s == null) {
@@ -662,7 +668,7 @@ public class TargetContext implements TargetStateManagerListener
                 synchronized (this.mPlayerStateManager) {
                     this.mPlayerStateManager.forceToEndPlayback(mDialUuid, null);
                     // monitorexit(this.mPlayerStateManager)
-                    this.mNotifier.error(mDialUuid, 200, "session ended");
+                    this.mNotifier.error(mDialUuid, 201, "session ended");
                     final Message message = new Message();
                     message.what = 1;
                     message.obj = TargetContextEvent.SessionEnd;
@@ -696,6 +702,7 @@ public class TargetContext implements TargetStateManagerListener
         if (targetState != null) {
             string = targetState.getName() + " target error";
         }
+        this.endPlaybackWithError(s, determineStateErrorCode);
         this.mNotifier.error(s, determineStateErrorCode, string);
     }
     
@@ -713,6 +720,7 @@ public class TargetContext implements TargetStateManagerListener
         if (targetState != null) {
             string = targetState.getName() + ", failed: " + this.mLastError;
         }
+        this.endPlaybackWithError(s, determineStateErrorCode);
         this.mNotifier.error(s, determineStateErrorCode, string);
     }
     
@@ -729,6 +737,7 @@ public class TargetContext implements TargetStateManagerListener
         if (targetState != null) {
             string = targetState.getName() + ", timeout: " + this.mLastError;
         }
+        this.endPlaybackWithError(s, 100);
         this.mNotifier.error(s, 100, string);
     }
     

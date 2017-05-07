@@ -97,6 +97,7 @@ public final class ClientNotifier implements NotifierInterface
     
     @Override
     public void notready() {
+        this.mSharedStateMap.clear();
         this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_NOTREADY").addCategory("com.netflix.mediaclient.intent.category.MDX"));
         Log.v("nf_mdx", "Intent NOTREADY sent");
     }
@@ -106,7 +107,6 @@ public final class ClientNotifier implements NotifierInterface
         synchronized (this.mSharedStateMap) {
             if (this.mSharedStateMap.get(s) != null) {
                 this.mSharedStateMap.get(s).notifyPlaybackEnd();
-                this.mSharedStateMap.remove(s);
             }
             // monitorexit(this.mSharedStateMap)
             final Intent putExtra = new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s);
@@ -131,6 +131,9 @@ public final class ClientNotifier implements NotifierInterface
     
     @Override
     public void postplayState(final String s, final String s2) {
+        if (this.mSharedStateMap.get(s) != null) {
+            this.mSharedStateMap.get(s).notifyPostplayState(s2);
+        }
         this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_POSTPLAY").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s).putExtra("postplayState", s2));
     }
     

@@ -102,6 +102,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 public class PlayerActivity extends NetflixActivity implements AudioManager$OnAudioFocusChangeListener, PlayerListener, JplayerListener, DialogCanceledListenerProvider
 {
     private static final int DELAY_POST = 1000;
+    static final String EXTRA_GET_DETAILS_EPISODE_DETAILS = "extra_get_details_EPISODE_DETAILS";
     static final String EXTRA_GET_DETAILS_HAS_NEXT_EPISODE = "extra_get_details_has_next_episode";
     static final String EXTRA_GET_DETAILS_PLAY_CONTEXT = "extra_get_details_play_context";
     static final String EXTRA_GET_DETAILS_VIDEO_ID = "extra_get_details_video_id";
@@ -1069,7 +1070,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
                     sb.append(playoutMetadata.instantBitRate).append("/");
                     sb.append(playoutMetadata.targetBitRate).append("/");
                     if (playoutMetadata.isSuperHD) {
-                        sb.append(this.getString(2131493246));
+                        sb.append(this.getString(2131493248));
                     }
                     else if (playoutMetadata.isHD) {
                         sb.append(this.getString(2131493109));
@@ -1101,10 +1102,10 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
             final int n7 = (int)(Debug.getNativeHeapAllocatedSize() / 1048576L);
             String s3 = "N/A";
             if (this.mSubtitleManager instanceof EnhancedSubtitleManager) {
-                s3 = this.getString(2131493294);
+                s3 = this.getString(2131493296);
             }
             else if (this.mSubtitleManager instanceof SimpleSubtitleManager) {
-                s3 = this.getString(2131493296);
+                s3 = this.getString(2131493298);
             }
             final String string2 = this.getString(2131493107, new Object[] { "Release", AndroidManifestUtils.getVersionCode(this.getBaseContext()), n7, "UI Version", n4, n3, sb.toString(), sb2.toString(), PlayerTypeFactory.getCurrentType(this.getBaseContext()).getDescription(), s2, nccpCode, s3 });
             if (this.mScreen != null) {
@@ -1395,6 +1396,9 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
     
     @Override
     protected DataContext getDataContext() {
+        if (Log.isLoggable("PlayerActivity", 5) && this.mAsset == null) {
+            Log.w("PlayerActivity", "trying to create data context when mAsset is null!");
+        }
         return new DataContext(this.mAsset, null);
     }
     
@@ -2024,7 +2028,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
             return;
         }
         Log.d("PlayerActivity", "We failed to change subtitle");
-        Toast.makeText(this.getBaseContext(), 2131493297, 1).show();
+        Toast.makeText(this.getBaseContext(), 2131493299, 1).show();
         if (this.language != null) {
             Log.d("PlayerActivity", "Try to restore previous subtitle");
             this.language.restorePreviousSubtitle();

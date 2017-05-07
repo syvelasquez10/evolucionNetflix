@@ -83,10 +83,10 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     
     private String getTitleForType(final SearchQueryDetailsType searchQueryDetailsType, final String s) {
         if (searchQueryDetailsType == SearchQueryDetailsType.PERSON) {
-            return this.getString(2131493284, new Object[] { s });
+            return this.getString(2131493286, new Object[] { s });
         }
         if (searchQueryDetailsType == SearchQueryDetailsType.SEARCH_SUGGESTION) {
-            return this.getString(2131493284, new Object[] { s });
+            return this.getString(2131493286, new Object[] { s });
         }
         throw new IllegalStateException("Bad type");
     }

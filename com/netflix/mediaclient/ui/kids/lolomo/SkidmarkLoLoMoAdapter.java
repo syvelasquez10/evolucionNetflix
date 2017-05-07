@@ -316,10 +316,10 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements ILoLoMoAdapter
         }
         final Triple<LoMo, List<Video>, Integer> item = this.getItem(n);
         if (o instanceof KidsCharacterViewGroup) {
-            ((KidsCwViewGroup)o).updateDataThenViews(item.second, 2, 0, n, item.first);
+            ((KidsCwViewGroup)o).updateDataThenViews(item.second, 2, item.third, n, item.first);
         }
         else if (o instanceof VideoViewGroup) {
-            ((VideoViewGroup<Video, V>)o).updateDataThenViews(item.second, 1, 0, n, item.first);
+            ((VideoViewGroup<Video, V>)o).updateDataThenViews(item.second, 1, item.third, n, item.first);
         }
         else if (o instanceof SkidmarkMoreButton) {
             ((SkidmarkMoreButton)o).update(item.first);

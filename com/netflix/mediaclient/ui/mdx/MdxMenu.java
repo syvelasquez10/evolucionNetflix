@@ -6,10 +6,10 @@ package com.netflix.mediaclient.ui.mdx;
 
 import android.graphics.drawable.Drawable;
 import android.util.Pair;
-import com.netflix.mediaclient.Log;
 import android.app.Dialog;
 import com.netflix.mediaclient.util.MdxUtils;
 import android.view.MenuItem$OnMenuItemClickListener;
+import com.netflix.mediaclient.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -23,10 +23,11 @@ public final class MdxMenu
     private final MenuItem mdxItem;
     
     private MdxMenu(final MdxMiniPlayerFrag mdxMiniPlayerFrag, final Menu menu, final boolean enabled) {
+        Log.v("MdxMenu", "created");
         mdxMiniPlayerFrag.attachMenuItem(this);
         this.activity = (NetflixActivity)mdxMiniPlayerFrag.getActivity();
         this.manager = this.activity.getServiceManager();
-        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131493251))).setShowAsAction(1);
+        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131493253))).setShowAsAction(1);
         this.mdxItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
             public boolean onMenuItemClick(final MenuItem menuItem) {
                 MdxMenu.this.activity.displayDialog((Dialog)MdxUtils.createMdxTargetSelectionDialog(MdxMenu.this.activity, (MdxUtils.MdxTargetSelectionDialogInterface)MdxMenu.this.activity.getMdxMiniPlayerFrag()));
@@ -42,8 +43,8 @@ public final class MdxMenu
     }
     
     private int getIcon() {
-        if (MdxUtils.isCurrentMdxTargetAvailable(this.manager)) {
-            return 2130837700;
+        if (MdxUtils.isTargetReadyToControl(this.manager)) {
+            return 2130837789;
         }
         return 2130837699;
     }

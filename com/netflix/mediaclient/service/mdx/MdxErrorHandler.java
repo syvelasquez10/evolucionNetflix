@@ -45,9 +45,14 @@ public class MdxErrorHandler
             case 105: {
                 return this.activity.getString(2131493235);
             }
-            case 200:
-            case 201: {
+            case 200: {
                 return this.activity.getString(2131493236);
+            }
+            case 106: {
+                return this.activity.getString(2131493238);
+            }
+            case 201: {
+                return this.activity.getString(2131493237);
             }
         }
     }

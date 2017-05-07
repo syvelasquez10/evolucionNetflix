@@ -54,7 +54,7 @@ public class EpisodeRowView extends RelativeLayout implements Checkable
     }
     
     private CharSequence createTitleText(final int n, final String s) {
-        return this.getResources().getString(2131493248, new Object[] { n, s });
+        return this.getResources().getString(2131493250, new Object[] { n, s });
     }
     
     private void init() {

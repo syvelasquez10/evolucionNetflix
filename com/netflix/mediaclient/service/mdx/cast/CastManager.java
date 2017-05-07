@@ -28,6 +28,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     private static final String NF_APPID = "CA5E8412";
     private static final String TAG;
     private String mApplicationId;
+    private String mCastPrefix;
     private Context mContext;
     private boolean mForceLaunch;
     private List<RouteInfo> mListOfRoutes;
@@ -71,7 +72,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
             Log.d(CastManager.TAG, "createCastHandShakeMessage " + s + ", " + s2);
         }
         try {
-            jsonObject.put("type", (Object)"castHandShake").put("uuid", (Object)s).put("friendlyName", (Object)s2).put("payload", (Object)"intent=sync");
+            jsonObject.put("type", (Object)"castHandShake").put("uuid", (Object)s).put("controlleruuid", (Object)this.mMyUuid).put("friendlyName", (Object)s2).put("payload", (Object)"intent=sync");
             if (Log.isLoggable(CastManager.TAG, 3)) {
                 Log.d(CastManager.TAG, "createCastHandShakeMessage " + jsonObject.toString());
             }
@@ -139,9 +140,11 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
         if (this.mWhiteList != null) {
             for (int i = 0; i < this.mWhiteList.length(); ++i) {
                 if (this.mWhiteList.opt(i) instanceof JSONObject) {
-                    final String optString = ((JSONObject)this.mWhiteList.opt(i)).optString("modelName");
+                    final JSONObject jsonObject = (JSONObject)this.mWhiteList.opt(i);
+                    final String optString = jsonObject.optString("modelName");
                     final String modelName = castDevice.getModelName();
                     if (StringUtils.isNotEmpty(optString) && optString.equalsIgnoreCase(modelName)) {
+                        this.mCastPrefix = jsonObject.optString("castPrefix");
                         return true;
                     }
                 }
@@ -221,6 +224,17 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
         });
     }
     
+    private void notifySessionend() {
+        if (this.mSelectedRoute != null) {
+            this.getUuid(this.mSelectedRoute.getId());
+            final String string = "action=endCastSession\r\nfromuuid=" + this.getUuid(this.mSelectedRoute.getId()) + "\r\n";
+            if (Log.isLoggable(CastManager.TAG, 3)) {
+                Log.d(CastManager.TAG, "onMessageReceived @session, body:" + string);
+            }
+            this.nativeMessageReceivedWrapper(string, this.getUuid(this.mSelectedRoute.getId()), "session");
+        }
+    }
+    
     private void startDiscovery() {
         if (Log.isLoggable(CastManager.TAG, 3)) {
             Log.d(CastManager.TAG, "startDiscovery() AppId: " + this.mApplicationId);
@@ -278,11 +292,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     public void onApplicationStopped() {
         if (this.mSelectedRoute != null) {
             final String uuid = this.getUuid(this.mSelectedRoute.getId());
-            final String string = "action=endCastSession\r\nfromuuid=" + this.getUuid(this.mSelectedRoute.getId()) + "\r\n";
-            if (Log.isLoggable(CastManager.TAG, 3)) {
-                Log.d(CastManager.TAG, "onMessageReceived @session, body:" + string);
-            }
-            this.nativeMessageReceivedWrapper(string, this.getUuid(this.mSelectedRoute.getId()), "session");
+            this.notifySessionend();
             this.mWorkerHandler.postDelayed((Runnable)new Runnable() {
                 @Override
                 public void run() {
@@ -295,7 +305,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     @Override
     public void onFailToConnect() {
         Log.d(CastManager.TAG, "onFailToConnect");
-        this.onApplicationStopped();
+        this.notifySessionend();
     }
     
     @Override
@@ -331,6 +341,7 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
     @Override
     public void onMessageReceived(String s) {
         String optString;
+        String optString2;
         try {
             final JSONObject jsonObject = new JSONObject(s);
             optString = jsonObject.optString("body");
@@ -338,13 +349,19 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
             if (s.indexOf("/") >= 0) {
                 s = s.substring(s.lastIndexOf("/"));
             }
-            if (jsonObject.optString("type").equals("castHandShakeAck")) {
+            optString2 = jsonObject.optString("type");
+            if (optString2.equals("castHandShakeAck")) {
                 this.nativeLaunchResultWrapper(true, this.getUuid(this.mSelectedRoute.getId()));
                 return;
             }
         }
         catch (JSONException ex) {
             Log.e(CastManager.TAG, "error onMessageReceived ", (Throwable)ex);
+            return;
+        }
+        if (optString2.equals("castHandShakeRequest")) {
+            Log.d(CastManager.TAG, "onMessageReceived castHandShakeRequest");
+            this.onLaunched();
             return;
         }
         if (Log.isLoggable(CastManager.TAG, 3)) {
@@ -411,7 +428,14 @@ public class CastManager extends Callback implements MdxCastApplicaCallback
                 this.castLaunchApplication(this.mSelectedRoute = routeInfo);
             }
         }
-        this.nativeDeviceFoundWrapper(this.getUuid(routeInfo.getId()), this.getIpAddress(routeInfo), "CAST:" + routeInfo.getName());
+        String s;
+        if (StringUtils.isEmpty(this.mCastPrefix)) {
+            s = routeInfo.getName();
+        }
+        else {
+            s = this.mCastPrefix + routeInfo.getName();
+        }
+        this.nativeDeviceFoundWrapper(this.getUuid(routeInfo.getId()), this.getIpAddress(routeInfo), s);
     }
     
     @Override

@@ -466,7 +466,6 @@ class IntegratedClientLoggingManager implements EventHandler, ApplicationStateLi
     @Override
     public void onUiGone(final UserInputManager userInputManager) {
         Log.d("nf_log", "App ui gone");
-        this.mApmLogging.endUserSession(ApplicationPerformanceMetricsLogging.EndReason.appClose, System.currentTimeMillis() - userInputManager.getTimeSinceLastUserInteraction());
     }
     
     @Override

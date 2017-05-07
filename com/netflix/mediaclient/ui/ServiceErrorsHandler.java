@@ -79,7 +79,7 @@ public class ServiceErrorsHandler
         Log.v("ServiceErrorsHandler", "Handling manager response, code: " + n + " [" + activity.getClass().toString() + "]");
         switch (n) {
             default: {
-                provideDialog(activity, activity.getString(2131493271) + " (" + n + ")");
+                provideDialog(activity, activity.getString(2131493273) + " (" + n + ")");
                 b = true;
                 return b;
             }
@@ -98,13 +98,13 @@ public class ServiceErrorsHandler
             }
             case -101:
             case -100: {
-                provideDialog(activity, activity.getString(2131493244));
+                provideDialog(activity, activity.getString(2131493246));
                 return true;
             }
             case -122:
             case -121:
             case -120: {
-                provideDialog(activity, activity.getString(2131493270) + " (" + n + ")");
+                provideDialog(activity, activity.getString(2131493272) + " (" + n + ")");
                 return true;
             }
         }

@@ -243,21 +243,21 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                                                     return Response.error(new ParseException((String)networkResponse));
                                                 }
                                                 break Label_0397;
-                                                responseValid = true;
-                                                continue Label_0124_Outer;
-                                                s4 = s2;
-                                                s5 = s3;
                                                 // iftrue(Label_0187:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
-                                                Block_15: {
-                                                    break Block_15;
-                                                    ++n;
-                                                    s2 = s4;
-                                                    s3 = s5;
-                                                    continue Label_0187_Outer;
+                                                while (true) {
+                                                    s5 = split2[1];
+                                                    s4 = s2;
+                                                    continue Label_0281_Outer;
+                                                    responseValid = true;
+                                                    continue Label_0124_Outer;
+                                                    s4 = s2;
+                                                    s5 = s3;
+                                                    continue;
                                                 }
-                                                s5 = split2[1];
-                                                s4 = s2;
-                                                continue Label_0281_Outer;
+                                                ++n;
+                                                s2 = s4;
+                                                s3 = s5;
+                                                continue Label_0187_Outer;
                                             }
                                             catch (UnsupportedEncodingException ex2) {
                                                 networkResponse = (NetworkResponse)new String(networkResponse.data);

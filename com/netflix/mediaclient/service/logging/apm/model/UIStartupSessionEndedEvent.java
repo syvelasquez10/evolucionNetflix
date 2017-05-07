@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging.apm.model;
 
+import com.netflix.mediaclient.util.AndroidUtils;
 import org.json.JSONException;
 import java.util.Iterator;
 import java.util.HashMap;
@@ -27,6 +28,8 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
     public static final String TRACK_ID = "trackId";
     public static final String TRIGGER = "trigger";
     private static final String UI_STARTUP_SESSION_NAME = "uiStartup";
+    public static final String VERSION = "version";
+    public static final String VERSION_OS = "os";
     public static final String VOICE_ENABLED = "voiceEnabled";
     private Map<String, Integer> activeABTests;
     private IClientLogging.ModalView destinationView;
@@ -116,6 +119,9 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
                 jsonObject.put(s, (Object)this.activeABTests.get(s));
             }
         }
+        final JSONObject jsonObject2 = new JSONObject();
+        data.put("version", (Object)jsonObject2);
+        jsonObject2.put("os", (Object)String.valueOf(AndroidUtils.getAndroidVersion()));
         return data;
     }
     

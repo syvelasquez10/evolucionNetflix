@@ -1065,6 +1065,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
         layoutParams.setMargins(moveRegionInsideVisibleDisplayArea.left, moveRegionInsideVisibleDisplayArea.top, 0, 0);
         if (regionForRectangle.height() >= n2) {
             Log.d("nf_subtitles_render", "Original region is high enough, keep original measure");
+            layoutParams.height = regionForRectangle.height();
             n2 = moveRegionInsideVisibleDisplayArea.top + regionForRectangle.height();
         }
         else {
@@ -1074,6 +1075,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
         }
         if (regionForRectangle.width() >= n) {
             Log.d("nf_subtitles_render", "Original region is wide enough, keep original measure");
+            layoutParams.width = regionForRectangle.width();
             n = moveRegionInsideVisibleDisplayArea.left + regionForRectangle.width();
         }
         else {

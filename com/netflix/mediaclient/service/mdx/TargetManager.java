@@ -44,10 +44,12 @@ public class TargetManager implements EventListener, CommandInterface
     private String mEsn;
     private NotifierInterface mNotify;
     private AtomicLong mRecentMessageTime;
+    private boolean mTaregtLaunchingOrLaunched;
     private TargetContext mTarget;
     
     TargetManager(final NotifierInterface mNotify, final MdxController mController, final String mEsn) {
         this.mRecentMessageTime = new AtomicLong();
+        this.mTaregtLaunchingOrLaunched = true;
         this.mNotify = mNotify;
         this.mController = mController;
         this.mEsn = mEsn;
@@ -71,6 +73,10 @@ public class TargetManager implements EventListener, CommandInterface
     
     public boolean isTargetHaveContext(final String s) {
         return this.mTarget != null && this.mTarget.isThisTargetUuid(s);
+    }
+    
+    public boolean isTargetLaunchingOrLaunched(final String s) {
+        return this.mTaregtLaunchingOrLaunched;
     }
     
     @Override
@@ -293,12 +299,13 @@ public class TargetManager implements EventListener, CommandInterface
         }
     }
     
-    public void targetLaunched(final String s, final boolean b) {
+    public void targetLaunched(final String s, final boolean mTaregtLaunchingOrLaunched) {
+        this.mTaregtLaunchingOrLaunched = mTaregtLaunchingOrLaunched;
         if (this.mTarget == null) {
             Log.e("nf_mdx", "no active target for targetLaunched");
             return;
         }
-        this.mTarget.launchResult(b);
+        this.mTarget.launchResult(mTaregtLaunchingOrLaunched);
     }
     
     public void targetSelected(final RemoteDevice remoteDevice) {
@@ -314,6 +321,7 @@ public class TargetManager implements EventListener, CommandInterface
                 Log.d("nf_mdx", "TargetManager: targetSelected new target");
             }
         }
+        this.mTaregtLaunchingOrLaunched = true;
         if (this.mTarget != null) {
             this.mTarget.destroy();
         }

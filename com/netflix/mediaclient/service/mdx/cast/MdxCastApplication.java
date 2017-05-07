@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.mdx.cast;
 import com.google.android.gms.common.api.Result;
 import java.io.IOException;
 import com.google.android.gms.common.api.Status;
+import java.util.concurrent.TimeUnit;
 import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
 import com.google.android.gms.cast.ApplicationMetadata;
@@ -20,6 +21,7 @@ import com.google.android.gms.cast.Cast;
 
 public class MdxCastApplication extends Listener implements OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, MessageReceivedCallback
 {
+    private static final long CAST_SEND_MEESAGE_TIMEOUT_MS = 70L;
     private static final String MESSAGE_NAMESPACE = "urn:x-cast:mdx-netflix-com:service:target:2";
     private static final String TAG;
     private GoogleApiClient mApiClient;
@@ -131,7 +133,10 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
     }
     
     public void sendMessage(final String s) {
-        Cast.CastApi.sendMessage(this.mApiClient, "urn:x-cast:mdx-netflix-com:service:target:2", s).setResultCallback(new SendMessageResultCallback());
+        Cast.CastApi.sendMessage(this.mApiClient, "urn:x-cast:mdx-netflix-com:service:target:2", s).setResultCallback(new SendMessageResultCallback(), 70L, TimeUnit.MILLISECONDS);
+        if (Log.isLoggable(MdxCastApplication.TAG, 3)) {
+            Log.d(MdxCastApplication.TAG, "SendMessage(), message delivered to cast, time out in 70 miliseconds");
+        }
     }
     
     public void stop() {
@@ -226,7 +231,12 @@ public class MdxCastApplication extends Listener implements OnConnectionFailedLi
                 MdxCastApplication.this.mCallback.onMessageSent();
                 return;
             }
-            Log.d(MdxCastApplication.TAG, "SendMessage(), failure");
+            if (Log.isLoggable(MdxCastApplication.TAG, 3)) {
+                Log.d(MdxCastApplication.TAG, "SendMessage(), failure with result " + status);
+            }
+            if (status.getStatus().getStatusCode() == 15) {
+                Log.d(MdxCastApplication.TAG, "SendMessage(), has timed out");
+            }
             MdxCastApplication.this.mCallback.onFailToSendMessage();
         }
     }

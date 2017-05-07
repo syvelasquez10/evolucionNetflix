@@ -421,7 +421,7 @@ class MdxMiniPlayerViews
         }
         this.playOrPauseCollapsed = (ImageView)this.content.findViewById(2131165468);
         this.initCollapsedButton(this.languageCollapsed, 2131492944, 2131493159, 18);
-        this.initCollapsedButton(this.episodesCollapsed, 2131492945, 2131493239, 20);
+        this.initCollapsedButton(this.episodesCollapsed, 2131492945, 2131493241, 20);
         this.initCollapsedButton(this.skipBackCollapsed, 2131492943, 2131493157, 24);
         (this.collapsedViews = new ArrayList<View>()).add((View)this.playOrPauseCollapsed);
         this.collapsedViews.add((View)this.skipBackCollapsed);
@@ -719,6 +719,10 @@ class MdxMiniPlayerViews
         this.enableView((View)this.sharing, b && !this.callbacks.isVideoUnshared() && b2);
         if (this.mdxMenu != null) {
             this.mdxMenu.setEnabled(this.computeMdxMenuEnabled(b));
+            if (this.callbacks != null) {
+                Log.d("MdxMiniPlayerViews", "setControlsEnabled");
+                this.mdxMenu.update();
+            }
         }
         this.updateViewsForPanelChange(this.callbacks.isPanelExpanded());
         this.callbacks.notifyControlsEnabled(b);
@@ -789,7 +793,8 @@ class MdxMiniPlayerViews
     }
     
     public void updateMdxMenu() {
-        if (this.mdxMenu != null) {
+        if (this.mdxMenu != null && this.callbacks != null) {
+            Log.d("MdxMiniPlayerViews", "updateMdxMenu");
             this.mdxMenu.update();
         }
     }

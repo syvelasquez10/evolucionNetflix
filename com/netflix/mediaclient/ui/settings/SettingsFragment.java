@@ -90,7 +90,7 @@ public class SettingsFragment extends PreferenceFragment
     private void handleCastAppIdSettings() {
         final Preference preference = this.findPreference((CharSequence)"ui.castAppId");
         if (preference != null) {
-            preference.setSummary((CharSequence)((Object)this.getText(2131493308) + CastConfiguration.getCastApplicationId((Context)this.activity)));
+            preference.setSummary((CharSequence)((Object)this.getText(2131493310) + CastConfiguration.getCastApplicationId((Context)this.activity)));
             preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new Preference$OnPreferenceChangeListener() {
                 public boolean onPreferenceChange(final Preference preference, final Object o) {
                     Log.d("SettingsFragment", "onPreferenceChange " + o);
@@ -337,13 +337,13 @@ public class SettingsFragment extends PreferenceFragment
         final SubtitleConfiguration loadQaLocalOverride = SubtitleConfiguration.loadQaLocalOverride((Context)this.activity);
         final ArrayList<CharSequence> list = new ArrayList<CharSequence>();
         final ArrayList<String> list2 = new ArrayList<String>();
-        list.add(this.getText(2131493290));
-        list2.add("DEFAULT");
-        list.add(this.getText(2131493291));
-        list2.add("ENHANCED_XML");
         list.add(this.getText(2131493292));
-        list2.add("SIMPLE_XML");
+        list2.add("DEFAULT");
         list.add(this.getText(2131493293));
+        list2.add("ENHANCED_XML");
+        list.add(this.getText(2131493294));
+        list2.add("SIMPLE_XML");
+        list.add(this.getText(2131493295));
         list2.add("SIMPLE_EVENTS");
         listPreference.setDefaultValue((Object)"DEFAULT");
         if (loadQaLocalOverride == SubtitleConfiguration.SIMPLE_EVENTS) {

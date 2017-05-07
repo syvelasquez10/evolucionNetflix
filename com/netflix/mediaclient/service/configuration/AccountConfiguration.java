@@ -21,7 +21,6 @@ public class AccountConfiguration
     }
     
     public void clear() {
-        PreferenceUtils.putStringPref(this.mContext, "streamingqoe", null);
         PreferenceUtils.putStringPref(this.mContext, "accountConfig", null);
     }
     
@@ -57,10 +56,6 @@ public class AccountConfiguration
         return this.mAccountConfigData.getMdxBlacklistAsJsonArray();
     }
     
-    public String getStreamingQoe() {
-        return PreferenceUtils.getStringPref(this.mContext, "streamingqoe", null);
-    }
-    
     public int getVideoBufferSize() {
         if (this.mAccountConfigData == null) {
             return 0;
@@ -75,9 +70,5 @@ public class AccountConfiguration
         }
         PreferenceUtils.putStringPref(this.mContext, "accountConfig", string);
         this.mAccountConfigData = mAccountConfigData;
-    }
-    
-    public void persistStreamingOverride(final String s) {
-        PreferenceUtils.putStringPref(this.mContext, "streamingqoe", s);
     }
 }

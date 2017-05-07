@@ -127,7 +127,7 @@ public final class PostPlayForMovies extends PostPlay
                 title = "";
             }
             final String storyUrl = details.getStoryUrl();
-            final String format = String.format(this.mContext.getResources().getString(2131493314), title);
+            final String format = String.format(this.mContext.getResources().getString(2131493316), title);
             if (!StringUtils.isEmpty(storyUrl)) {
                 NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mBackground, storyUrl, IClientLogging.AssetType.merchStill, format, true, true, 1);
             }
@@ -263,7 +263,7 @@ public final class PostPlayForMovies extends PostPlay
                         if (postPlayVideo.getStoryUrl() != null) {
                             NetflixActivity.getImageLoader((Context)this.mContext).getImg(postPlayVideo.getStoryUrl(), IClientLogging.AssetType.merchStill, 1920, 1080, this.mImageLoaderListener);
                         }
-                        final String format = String.format(this.mContext.getResources().getString(2131493314), title);
+                        final String format = String.format(this.mContext.getResources().getString(2131493316), title);
                         if (postPlayVideo.getHighResolutionLandscapeBoxArtUrl() != null) {
                             NetflixActivity.getImageLoader((Context)this.mContext).showImg(this.mRecommendationBoxArts.get(i), postPlayVideo.getHighResolutionLandscapeBoxArtUrl(), IClientLogging.AssetType.merchStill, format, true, true, 1);
                         }

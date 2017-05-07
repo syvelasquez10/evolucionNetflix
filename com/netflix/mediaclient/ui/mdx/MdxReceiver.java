@@ -4,13 +4,16 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
+import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.servicemgr.EpisodeDetails;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.PostPlayVideo;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.ui.pin.PinDialogVault;
-import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.util.WebApiUtils;
@@ -38,13 +41,13 @@ public final class MdxReceiver extends BroadcastReceiver
     }
     
     private void hideMdxController(final Context context) {
-        MDXControllerActivity.finishMDXController((NetflixActivity)context);
+        MDXControllerActivity.finishMDXController(context);
     }
     
     private void showFirstEpisodeInNextSeries(final MdxPostplayState mdxPostplayState) {
         final WebApiUtils.VideoIds videoIds = this.mActivity.getServiceManager().getMdx().getVideoIds();
         if (videoIds != null && videoIds.episodeId > 0) {
-            this.mActivity.getServiceManager().fetchPostPlayVideos(String.valueOf(videoIds.episodeId), new FetchVideoDetailsForMdxCallback("nf_mdx", this.mActivity));
+            this.mActivity.getServiceManager().fetchPostPlayVideos(String.valueOf(videoIds.episodeId), new FetchNextSeriesEpisodeVideoDetailsForMdxCallback("nf_mdx", this.mActivity));
         }
     }
     
@@ -62,9 +65,9 @@ public final class MdxReceiver extends BroadcastReceiver
     }
     
     private void showNextEpisodeInSeries(final MdxPostplayState mdxPostplayState) {
-        final WebApiUtils.VideoIds videoIds = this.mActivity.getServiceManager().getMdx().getVideoIds();
-        if (videoIds != null && videoIds.episodeId > 0) {
-            MDXControllerActivity.showMDXController(this.mActivity, videoIds.episodeId, PlayContext.DFLT_MDX_CONTEXT);
+        final WebApiUtils.VideoIds videoIdsPostplay = ((MdxAgent)this.mActivity.getServiceManager().getMdx()).getVideoIdsPostplay();
+        if (videoIdsPostplay != null && videoIdsPostplay.episodeId > 0) {
+            this.mActivity.getServiceManager().fetchEpisodeDetails(String.valueOf(videoIdsPostplay.episodeId), new FetchPostPlayForPlaybackCallback("nf_mdx", this.mActivity));
         }
     }
     
@@ -81,6 +84,7 @@ public final class MdxReceiver extends BroadcastReceiver
         intentFilter.addAction("com.netflix.mediaclient.intent.action.PIN_VERIFICATION_NOT_REQUIRED");
         intentFilter.addAction("com.netflix.mediaclient.intent.action.MDXUPDATE_POSTPLAY");
         intentFilter.addAction("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART");
+        intentFilter.addAction("com.netflix.mediaclient.intent.action.MDXUPDATE_STATE");
         intentFilter.addCategory("com.netflix.mediaclient.intent.category.MDX");
         return intentFilter;
     }
@@ -125,30 +129,61 @@ public final class MdxReceiver extends BroadcastReceiver
                     this.showMdxController(intent, context);
                     return;
                 }
-                if (intent.getAction().equals("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART")) {
+                if ("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART".equals(action)) {
                     this.hideMdxController(context);
+                    return;
+                }
+                if (intent.getAction().equals("com.netflix.mediaclient.intent.action.MDXUPDATE_STATE")) {
+                    final IMdxSharedState sharedState = this.mActivity.getServiceManager().getMdx().getSharedState();
+                    if (sharedState != null && sharedState.getMdxPlaybackState() == IMdxSharedState.MdxPlaybackState.Transitioning) {
+                        this.hideMdxController(context);
+                    }
                 }
             }
         }
     }
     
-    private static class FetchVideoDetailsForMdxCallback extends LoggingManagerCallback
+    private static class FetchNextSeriesEpisodeVideoDetailsForMdxCallback extends LoggingManagerCallback
     {
         private final NetflixActivity mActivity;
+        private boolean processed;
         
-        public FetchVideoDetailsForMdxCallback(final String s, final NetflixActivity mActivity) {
+        public FetchNextSeriesEpisodeVideoDetailsForMdxCallback(final String s, final NetflixActivity mActivity) {
             super(s);
+            this.processed = false;
             this.mActivity = mActivity;
         }
         
         @Override
         public void onPostPlayVideosFetched(final List<PostPlayVideo> list, final int n) {
             super.onPostPlayVideosFetched(list, n);
-            if (this.mActivity != null && n == 0 && list.size() > 0) {
+            if (!this.processed && this.mActivity != null && n == 0 && list.size() > 0) {
                 final String id = list.get(0).getId();
                 if (!TextUtils.isEmpty((CharSequence)id)) {
-                    MDXControllerActivity.showMDXController(this.mActivity, id, PlayContext.DFLT_MDX_CONTEXT);
+                    this.mActivity.getServiceManager().fetchEpisodeDetails(id, new FetchPostPlayForPlaybackCallback("nf_mdx", this.mActivity));
+                    this.processed = true;
                 }
+            }
+        }
+    }
+    
+    private static class FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
+    {
+        private final NetflixActivity mActivity;
+        private boolean processed;
+        
+        public FetchPostPlayForPlaybackCallback(final String s, final NetflixActivity mActivity) {
+            super(s);
+            this.processed = false;
+            this.mActivity = mActivity;
+        }
+        
+        @Override
+        public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final int n) {
+            super.onEpisodeDetailsFetched(episodeDetails, n);
+            if (n == 0 && episodeDetails != null && !this.processed) {
+                MDXControllerActivity.showMDXController(this.mActivity, episodeDetails.getId(), PlayContext.DFLT_MDX_CONTEXT);
+                this.processed = true;
             }
         }
     }

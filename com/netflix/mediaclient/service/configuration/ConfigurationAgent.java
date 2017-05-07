@@ -23,6 +23,10 @@ import java.util.Iterator;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.api.Api19Util;
 import com.netflix.mediaclient.util.AndroidUtils;
+import java.util.Locale;
+import java.io.IOException;
+import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
@@ -75,6 +79,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     private boolean mNeedEsMigration;
     private boolean mNeedLogout;
     private String mSoftwareVersion;
+    private StreamingConfiguration mStreamingConfigOverride;
     private Handler refreshHandler;
     private final Runnable refreshRunnable;
     
@@ -159,6 +164,31 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         this.launchTask((FetchTask)new FetchConfigDataTask(configurationAgentWebCallback));
     }
     
+    private int fetchConfigSynchronouslyOnAppStart(String s) {
+        Log.d("nf_configurationagent", "Need to fetchdeviceConfig synchronously ");
+        ConfigData configString;
+        try {
+            Log.d("nf_configurationagent", String.format("configurationUrl %s", s));
+            s = StringUtils.getRemoteDataAsString(s);
+            Log.d("nf_configurationagent", String.format("Device config data=%s", s));
+            configString = FetchConfigDataRequest.parseConfigString(s);
+            if (configString.deviceConfig == null) {
+                throw new IOException();
+            }
+        }
+        catch (Exception ex) {
+            s = ex.toString().toLowerCase(Locale.US);
+            Log.e("nf_configurationagent", "Could not fetch configuration! " + s);
+            if (s.contains("could not validate certificate") || s.contains("sslhandshakeexception")) {
+                return -121;
+            }
+            return -12;
+        }
+        this.mDeviceConfigOverride.persistDeviceConfigOverride(configString.getDeviceConfig());
+        this.mStreamingConfigOverride.persistStreamingOverride(configString.getStreamingConfig());
+        return 0;
+    }
+    
     public static String getMemLevel() {
         String s = "high";
         final long maxMemory = Runtime.getRuntime().maxMemory();
@@ -194,6 +224,14 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         fetchTask.run();
     }
     
+    private int loadConfigOverridesOnAppStart(final String s) {
+        if (this.mDeviceConfigOverride.isDeviceConfigInCache() && this.mStreamingConfigOverride.isStreamingConfigInCache()) {
+            Log.d("nf_configurationagent", "DeviceConfig & streamingqoe in cache... proceed!");
+            return 0;
+        }
+        return this.fetchConfigSynchronouslyOnAppStart(s);
+    }
+    
     private void notifyConfigRefreshed() {
         this.getMainHandler().post((Runnable)new Runnable() {
             @Override
@@ -217,7 +255,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
             Log.d("nf_configurationagent", String.format("persistConfigOverride configData %s", configData.toString()));
         }
         this.mDeviceConfigOverride.persistDeviceConfigOverride(configData.getDeviceConfig());
-        this.mAccountConfigOverride.persistStreamingOverride(configData.getStreamingConfig());
+        this.mStreamingConfigOverride.persistStreamingOverride(configData.getStreamingConfig());
         this.mAccountConfigOverride.persistAccountConfigOverride(configData.getAccountConfig());
     }
     
@@ -298,10 +336,11 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
         final DeviceModel deviceModel = new DeviceModel(this.mAppVersionCode, this.getContext());
         this.mDeviceConfigOverride = new DeviceConfiguration(this.getContext());
         this.mAccountConfigOverride = new AccountConfiguration(this.getContext());
+        this.mStreamingConfigOverride = new StreamingConfiguration(this.getContext());
         this.mEndpointRegistry = new EndpointRegistryProvider(this.getContext(), deviceModel, this.isDeviceHd(), this.mDeviceConfigOverride.getImageRepository(), this.getUiResolutionType());
-        final int loadDeviceConfigOverrides = this.mDeviceConfigOverride.loadDeviceConfigOverrides(this.mEndpointRegistry.getDeviceConfigUrl());
-        if (loadDeviceConfigOverrides != 0) {
-            this.initCompleted(loadDeviceConfigOverrides);
+        final int loadConfigOverridesOnAppStart = this.loadConfigOverridesOnAppStart(this.mEndpointRegistry.getAppStartConfigUrl());
+        if (loadConfigOverridesOnAppStart != 0) {
+            this.initCompleted(loadConfigOverridesOnAppStart);
             return;
         }
         final DrmManager.DrmReadyCallback drmReadyCallback = new DrmManager.DrmReadyCallback() {
@@ -524,7 +563,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     
     @Override
     public String getStreamingQoe() {
-        return this.mAccountConfigOverride.getStreamingQoe();
+        return this.mStreamingConfigOverride.getStreamingQoe();
     }
     
     @Override

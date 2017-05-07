@@ -151,6 +151,22 @@ public class KidsUtils
         return ProfileSelectionActivity.createSwitchToKidsIntent(activity, uiViewCommandName);
     }
     
+    private static KidsOnPhoneConfiguration getConfigSafely(final NetflixActivity netflixActivity) {
+        if (netflixActivity == null) {
+            Log.w("KidsUtils", "Activity is null - can't get kop config");
+            return null;
+        }
+        if (netflixActivity.getServiceManager() == null) {
+            Log.w("KidsUtils", "Service man is null - can't get kop config");
+            return null;
+        }
+        if (netflixActivity.getServiceManager().getConfiguration() == null) {
+            Log.w("KidsUtils", "Config is null - can't get kop config");
+            return null;
+        }
+        return netflixActivity.getServiceManager().getConfiguration().getKidsOnPhoneConfiguration();
+    }
+    
     public static boolean isKidsProfile(final UserProfile userProfile) {
         return userProfile != null && userProfile.isKidsProfile();
     }
@@ -168,7 +184,8 @@ public class KidsUtils
     }
     
     public static boolean shouldShowBackNavigationAffordance(final NetflixActivity netflixActivity) {
-        return netflixActivity.isForKids() && netflixActivity.getServiceManager().getConfiguration().getKidsOnPhoneConfiguration().getActionBarNavType() == KidsOnPhoneConfiguration.ActionBarNavType.BACK;
+        final KidsOnPhoneConfiguration configSafely = getConfigSafely(netflixActivity);
+        return netflixActivity.isForKids() && configSafely != null && configSafely.getActionBarNavType() == KidsOnPhoneConfiguration.ActionBarNavType.BACK;
     }
     
     public static boolean shouldShowHorizontalImages(final NetflixActivity netflixActivity) {
@@ -176,15 +193,18 @@ public class KidsUtils
     }
     
     private static boolean shouldShowKidsEntryInActionBar(final NetflixActivity netflixActivity) {
-        return accountHasKidsProfile(netflixActivity) && netflixActivity.getServiceManager().getConfiguration().getKidsOnPhoneConfiguration().shouldShowKidsEntryInActionBar();
+        final KidsOnPhoneConfiguration configSafely = getConfigSafely(netflixActivity);
+        return accountHasKidsProfile(netflixActivity) && configSafely != null && configSafely.shouldShowKidsEntryInActionBar();
     }
     
     public static boolean shouldShowKidsEntryInGenreLomo(final NetflixActivity netflixActivity) {
-        return accountHasKidsProfile(netflixActivity) && netflixActivity.getServiceManager().getConfiguration().getKidsOnPhoneConfiguration().shouldShowKidsEntryInGenreLomo();
+        final KidsOnPhoneConfiguration configSafely = getConfigSafely(netflixActivity);
+        return accountHasKidsProfile(netflixActivity) && configSafely != null && configSafely.shouldShowKidsEntryInGenreLomo();
     }
     
     public static boolean shouldShowKidsEntryInMenu(final NetflixActivity netflixActivity) {
-        return accountHasKidsProfile(netflixActivity) && netflixActivity.getServiceManager().getConfiguration().getKidsOnPhoneConfiguration().shouldShowKidsEntryInMenu();
+        final KidsOnPhoneConfiguration configSafely = getConfigSafely(netflixActivity);
+        return accountHasKidsProfile(netflixActivity) && configSafely != null && configSafely.shouldShowKidsEntryInMenu();
     }
     
     public static boolean shouldShowKidsExperience(final NetflixActivity netflixActivity) {

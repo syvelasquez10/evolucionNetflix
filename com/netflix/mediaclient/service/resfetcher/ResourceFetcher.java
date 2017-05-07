@@ -17,9 +17,10 @@ import com.netflix.mediaclient.service.webclient.NetflixWebClientInitParameters;
 import com.android.volley.Network;
 import com.android.volley.Cache;
 import com.android.volley.toolbox.BasicNetwork;
-import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.util.gfx.BitmapLruCache;
+import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
+import android.content.Context;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.HttpStack;
 import com.netflix.mediaclient.Log;
@@ -63,7 +64,7 @@ public class ResourceFetcher extends ServiceAgent
         return new HurlStack();
     }
     
-    private ImageLoader createImageLoader() {
+    private ImageLoader createImageLoader(final Context context) {
         Log.d("nf_service_resourcefetcher", "ResourceFetcher creating ImageLoader");
         final ConfigurationAgentInterface configurationAgent = this.getConfigurationAgent();
         long imageCacheMinimumTtl = 1209600000L;
@@ -82,7 +83,7 @@ public class ResourceFetcher extends ServiceAgent
                 applicationPerformanceMetricsLogging = this.getService().getClientLogging().getApplicationPerformanceMetricsLogging();
             }
         }
-        return new ImageLoader(this.mRequestQueue, this.getImageCache(), resourceRequestTimeout, imageCacheMinimumTtl, applicationPerformanceMetricsLogging, configurationAgent);
+        return new ImageLoader(this.mRequestQueue, this.getImageCache(context), resourceRequestTimeout, imageCacheMinimumTtl, applicationPerformanceMetricsLogging, configurationAgent);
     }
     
     private static FalcorVolleyWebClient createWebClient() {
@@ -93,10 +94,10 @@ public class ResourceFetcher extends ServiceAgent
         throw new IllegalStateException("Webclient not implemented");
     }
     
-    private ImageLoader.ImageCache getImageCache() {
+    private ImageLoader.ImageCache getImageCache(final Context context) {
         synchronized (this) {
-            final NetflixApplication application = this.getApplication();
-            final BitmapLruCache imageCache = application.getImageCache();
+            final NetflixApplication netflixApplication = (NetflixApplication)context.getApplicationContext();
+            final BitmapLruCache imageCache = netflixApplication.getImageCache();
             ImageLoader.ImageCache imageCache2;
             if (imageCache != null && imageCache instanceof ImageLoader.ImageCache) {
                 imageCache2 = (ImageLoader.ImageCache)imageCache;
@@ -105,7 +106,7 @@ public class ResourceFetcher extends ServiceAgent
                 final int imageCacheSizeBytes = this.getConfigurationAgent().getImageCacheSizeBytes();
                 Log.i("nf_service_resourcefetcher", "Creating new BitmapLruCache of size " + imageCacheSizeBytes + " bytes");
                 imageCache2 = new VolleyImageCache(imageCacheSizeBytes);
-                application.setImageCache((BitmapLruCache)imageCache2);
+                netflixApplication.setImageCache((BitmapLruCache)imageCache2);
             }
             return imageCache2;
         }
@@ -171,14 +172,14 @@ public class ResourceFetcher extends ServiceAgent
         return this.mWebClient;
     }
     
-    public ImageLoader getImageLoader() {
-        Label_0026: {
+    public ImageLoader getImageLoader(final Context context) {
+        Label_0027: {
             if (this.mImageLoader != null) {
-                break Label_0026;
+                break Label_0027;
             }
             synchronized (this) {
                 if (this.mImageLoader == null) {
-                    this.mImageLoader = this.createImageLoader();
+                    this.mImageLoader = this.createImageLoader(context);
                 }
                 // monitorexit(this)
                 return this.mImageLoader;

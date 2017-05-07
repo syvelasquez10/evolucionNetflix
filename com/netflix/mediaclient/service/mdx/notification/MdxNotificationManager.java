@@ -4,156 +4,222 @@
 
 package com.netflix.mediaclient.service.mdx.notification;
 
+import android.app.Service;
 import android.graphics.Bitmap;
 import android.util.Pair;
-import android.annotation.TargetApi;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.NetflixService;
 import android.app.PendingIntent;
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
-import android.app.NotificationManager;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import android.app.Notification;
-import android.content.Context;
 import android.support.v4.app.NotificationCompat;
+import android.app.NotificationManager;
+import android.content.Context;
 
 public final class MdxNotificationManager
 {
     private static final String TAG = "nf_mdxnotification";
-    NotificationCompat.Builder mBuilder;
-    Context mContext;
-    private boolean mInTransition;
+    private boolean isPlaying;
+    private boolean isPostplay;
+    private Context mContext;
     private boolean mIsEpisode;
-    private boolean mIsInPostPlay;
-    private boolean mIsLegacy;
-    Notification mLegacyNotification;
-    MdxAgent mMdxAgent;
+    private MdxRemoteViews mMdxPlayerRemoteViews;
+    private MdxRemoteViews mMdxPostPlayerRemoteViews;
     private final int mNotificationId;
-    NotificationManager mNotificationManager;
-    private boolean mPaused;
-    MdxRemoteViewManager mRemoteViews;
+    private NotificationManager mNotificationManager;
+    private NotificationCompat.Builder mPlayerBuilder;
+    private NotificationCompat.Builder mPostPlayerBuilder;
     private boolean mSupportBigContent;
+    private Notification notificationPlayer;
+    private Notification notificationPostPlayer;
     
-    public MdxNotificationManager(final Context mContext, final boolean mIsEpisode, final MdxAgent mMdxAgent) {
+    public MdxNotificationManager(final Context mContext, final boolean mIsEpisode, final MdxAgent mdxAgent) {
         this.mNotificationId = 1;
         Log.d("nf_mdxnotification", "is episode " + mIsEpisode);
-        this.mContext = mContext;
         this.mIsEpisode = mIsEpisode;
-        this.mMdxAgent = mMdxAgent;
-        this.mNotificationManager = (NotificationManager)this.mContext.getSystemService("notification");
-        this.mSupportBigContent = false;
-        this.mIsLegacy = false;
-        final int androidVersion = AndroidUtils.getAndroidVersion();
-        if (androidVersion >= 16) {
-            this.mSupportBigContent = true;
-        }
-        else if (androidVersion < 11) {
-            this.mIsLegacy = true;
-        }
-        this.mRemoteViews = new MdxRemoteViewManager(this.mContext.getPackageName(), this.mIsEpisode, this.mIsLegacy, mMdxAgent);
-        if (this.mIsLegacy) {
-            this.mLegacyNotification = new Notification(2130837761, (CharSequence)"", System.currentTimeMillis());
-            this.mLegacyNotification.contentView = this.mRemoteViews.getRemoteView();
-            final Notification mLegacyNotification = this.mLegacyNotification;
-            mLegacyNotification.flags |= 0x2;
-            final Notification mLegacyNotification2 = this.mLegacyNotification;
-            mLegacyNotification2.flags |= 0x8;
-            this.mLegacyNotification.contentIntent = this.createNotificationPendingIntent();
-            return;
-        }
-        this.mBuilder = new NotificationCompat.Builder(this.mContext).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837761).setWhen(System.currentTimeMillis());
+        this.mContext = mContext;
+        this.init();
+        this.createRemoteViews(mdxAgent);
+        this.createBuilders();
+    }
+    
+    private void createBuilders() {
+        this.createPlayerBuilder();
+        this.createPostPlayerBuilder();
     }
     
     private PendingIntent createNotificationPendingIntent() {
+        if (this.mContext == null) {
+            return null;
+        }
         return PendingIntent.getBroadcast(this.mContext, 0, NetflixService.createShowMdxPlayerBroadcastIntent(), 134217728);
     }
     
-    @TargetApi(16)
-    private void updateNotification() {
-        if (this.mIsLegacy) {
-            this.mLegacyNotification.contentView = this.mRemoteViews.getRemoteView();
-            this.mNotificationManager.notify(1, this.mLegacyNotification);
+    private void createPlayerBuilder() {
+        this.mPlayerBuilder = new NotificationCompat.Builder(this.mContext).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837761).setWhen(System.currentTimeMillis());
+    }
+    
+    private void createPostPlayerBuilder() {
+        this.mPostPlayerBuilder = new NotificationCompat.Builder(this.mContext).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837761).setWhen(System.currentTimeMillis());
+    }
+    
+    private void createRemoteViews(final MdxAgent mdxAgent) {
+        this.mMdxPlayerRemoteViews = new MdxPlayerRemoteViews(this.mContext.getPackageName(), this.mIsEpisode, mdxAgent, this.mContext);
+        this.mMdxPostPlayerRemoteViews = new MdxPostPlayerRemoteViews(this.mContext.getPackageName(), this.mIsEpisode, mdxAgent, this.mContext);
+    }
+    
+    private void init() {
+        this.mNotificationManager = (NotificationManager)this.mContext.getSystemService("notification");
+        if (AndroidUtils.getAndroidVersion() >= 16) {
+            this.mSupportBigContent = true;
+        }
+    }
+    
+    private void setPlayerTitles(final String ticker, final String ticker2) {
+        if (this.mPlayerBuilder == null || this.mMdxPlayerRemoteViews == null) {
             return;
         }
-        this.mBuilder.setContent(this.mRemoteViews.getRemoteView());
-        final Notification build = this.mBuilder.build();
-        if (this.mSupportBigContent) {
-            build.bigContentView = this.mRemoteViews.getRemoteViewBigContetnt();
+        this.mPlayerBuilder.setContentIntent(this.createNotificationPendingIntent());
+        if (this.mIsEpisode) {
+            this.mPlayerBuilder.setTicker(ticker2);
         }
-        this.mNotificationManager.notify(1, build);
+        else {
+            this.mPlayerBuilder.setTicker(ticker);
+        }
+        this.mMdxPlayerRemoteViews.setTitles(this.mIsEpisode, ticker, ticker2);
+    }
+    
+    private void setPostPlayerTitles(final String ticker, final String ticker2) {
+        if (this.mPostPlayerBuilder == null || this.mMdxPostPlayerRemoteViews == null) {
+            return;
+        }
+        this.mPostPlayerBuilder.setContentIntent(this.createNotificationPendingIntent());
+        if (this.mIsEpisode) {
+            this.mPostPlayerBuilder.setTicker(ticker2);
+        }
+        else {
+            this.mPostPlayerBuilder.setTicker(ticker);
+        }
+        this.mMdxPostPlayerRemoteViews.setTitles(this.mIsEpisode, ticker, ticker2);
+    }
+    
+    private void updateNotification() {
+        if (this.isPostplay) {
+            this.updatePostPlayerNotification();
+            return;
+        }
+        this.updatePlayerNotification();
+    }
+    
+    private void updatePlayerNotification() {
+        if (this.mPlayerBuilder == null || this.mMdxPlayerRemoteViews == null || this.mNotificationManager == null || !this.isPlaying) {
+            return;
+        }
+        this.mPlayerBuilder.setContent(this.mMdxPlayerRemoteViews.getRemoteView());
+        this.notificationPlayer = this.mPlayerBuilder.build();
+        if (this.mSupportBigContent) {
+            this.notificationPlayer.bigContentView = this.mMdxPlayerRemoteViews.getRemoteViewBigContetnt();
+        }
+        this.mNotificationManager.notify(1, this.notificationPlayer);
+    }
+    
+    private void updatePostPlayerNotification() {
+        if (this.mPostPlayerBuilder == null || this.mMdxPostPlayerRemoteViews == null || this.mNotificationManager == null || !this.isPlaying) {
+            return;
+        }
+        this.mPostPlayerBuilder.setContent(this.mMdxPostPlayerRemoteViews.getRemoteView());
+        this.notificationPostPlayer = this.mPostPlayerBuilder.build();
+        if (this.mSupportBigContent) {
+            this.notificationPostPlayer.bigContentView = this.mMdxPostPlayerRemoteViews.getRemoteViewBigContetnt();
+        }
+        this.mNotificationManager.notify(1, this.notificationPostPlayer);
     }
     
     public void cancelNotification() {
+        if (this.mNotificationManager == null) {
+            return;
+        }
         this.mNotificationManager.cancel(1);
     }
     
-    public Pair<Integer, Notification> getNotification() {
-        if (this.mIsLegacy) {
-            return (Pair<Integer, Notification>)Pair.create((Object)1, (Object)this.mLegacyNotification);
+    public Pair<Integer, Notification> getNotification(final boolean b) {
+        if (b) {
+            if (this.mPostPlayerBuilder != null) {
+                this.notificationPostPlayer = this.mPostPlayerBuilder.build();
+            }
+            return (Pair<Integer, Notification>)Pair.create((Object)1, (Object)this.notificationPostPlayer);
         }
-        return (Pair<Integer, Notification>)Pair.create((Object)1, (Object)this.mBuilder.build());
+        if (this.mPlayerBuilder != null) {
+            this.notificationPlayer = this.mPlayerBuilder.build();
+        }
+        return (Pair<Integer, Notification>)Pair.create((Object)1, (Object)this.notificationPlayer);
     }
     
-    public void setBoxart(final Bitmap boxart) {
-        this.mRemoteViews.setBoxart(boxart);
+    public boolean isInPostPlay() {
+        return this.isPostplay;
+    }
+    
+    public void setBoxart(final Bitmap bitmap) {
+        if (bitmap == null || this.mMdxPlayerRemoteViews == null || this.mMdxPostPlayerRemoteViews == null) {
+            return;
+        }
+        this.mMdxPlayerRemoteViews.setBoxart(bitmap);
+        this.mMdxPostPlayerRemoteViews.setBoxart(bitmap);
     }
     
     public void setBoxartNotify(final Bitmap boxart) {
-        this.mRemoteViews.setBoxart(boxart);
+        if (boxart == null) {
+            return;
+        }
+        this.setBoxart(boxart);
         this.updateNotification();
     }
     
-    public void setPauseStateNotify(final boolean mPaused, final boolean mInTransition, final boolean mIsInPostPlay) {
-        this.mPaused = mPaused;
-        this.mInTransition = mInTransition;
-        this.mIsInPostPlay = mIsInPostPlay;
-        this.mRemoteViews.setPauseState(mPaused, mInTransition, mIsInPostPlay);
-        this.updateNotification();
+    public void setPlayerStateNotify(final boolean b, final boolean b2) {
+        if (this.mMdxPlayerRemoteViews == null) {
+            return;
+        }
+        this.mMdxPlayerRemoteViews.setState(b, b2);
+        this.updatePlayerNotification();
     }
     
-    public void setPlayNextState() {
-        this.mRemoteViews.setPlayNextState();
-    }
-    
-    public void setTitlesNotify(final boolean mIsEpisode, final String s, final String s2, final String s3) {
+    public void setTitlesNotify(final boolean mIsEpisode, final String s, final String s2) {
         if (Log.isLoggable("nf_mdxnotification", 3)) {
             Log.d("nf_mdxnotification", "is episode " + mIsEpisode + ",>" + s + ",>" + s2);
         }
         this.mIsEpisode = mIsEpisode;
-        if (this.mIsLegacy) {
-            this.mLegacyNotification.contentIntent = this.createNotificationPendingIntent();
-            if (this.mIsEpisode) {
-                this.mLegacyNotification.tickerText = s2;
-            }
-            else {
-                this.mLegacyNotification.tickerText = s;
-            }
-        }
-        else {
-            this.mBuilder.setContentIntent(this.createNotificationPendingIntent());
-            if (this.mIsEpisode) {
-                this.mBuilder.setTicker(s2);
-            }
-            else {
-                this.mBuilder.setTicker(s);
-            }
-        }
-        this.mRemoteViews.setTitles(this.mIsEpisode, s, s2, s3);
+        this.setPlayerTitles(s, s2);
+        this.setPostPlayerTitles(s, s2);
         this.updateNotification();
     }
     
-    public void setUpNextStateNotify(final boolean mPaused, final boolean mInTransition, final boolean mIsInPostPlay) {
-        if (mIsInPostPlay) {
-            this.mPaused = mPaused;
-            this.mInTransition = mInTransition;
-            this.mIsInPostPlay = mIsInPostPlay;
-            this.mRemoteViews.setPauseState(mPaused, mInTransition, mIsInPostPlay);
+    public void setUpNextStateNotify(final boolean b, final boolean b2, final boolean b3) {
+        if (b3 && this.mMdxPlayerRemoteViews != null && this.mMdxPostPlayerRemoteViews != null) {
+            this.mMdxPlayerRemoteViews.setState(b, b2);
+            this.mMdxPostPlayerRemoteViews.setState(b, b2);
             this.updateNotification();
         }
     }
     
-    public void showSkipBack(final boolean b) {
-        this.mRemoteViews.showSkipBack(b);
+    public void startNotification(final Notification notification, final Service service, final boolean isPostplay) {
+        this.stopNotification(service);
+        service.startForeground(1, notification);
+        this.isPostplay = isPostplay;
+        this.isPlaying = true;
+    }
+    
+    public void stopNotification(final Service service) {
+        this.cancelNotification();
+        service.stopForeground(true);
+        this.isPlaying = false;
+    }
+    
+    public void stopPostplayNotification(final Service service) {
+        if (this.isPostplay) {
+            service.stopForeground(true);
+            this.isPlaying = false;
+        }
     }
     
     public interface MdxNotificationIntentRetriever

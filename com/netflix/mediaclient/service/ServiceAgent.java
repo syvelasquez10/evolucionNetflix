@@ -188,6 +188,8 @@ public abstract class ServiceAgent
         
         void fetchMovieDetails(final String p0, final BrowseAgentCallback p1);
         
+        void fetchPostPlayVideos(final String p0, final BrowseAgentCallback p1);
+        
         void fetchSeasonDetails(final String p0, final BrowseAgentCallback p1);
         
         void fetchShowDetails(final String p0, final String p1, final BrowseAgentCallback p2);

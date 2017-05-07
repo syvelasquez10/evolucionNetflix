@@ -46,8 +46,6 @@ import com.netflix.mediaclient.util.ConnectivityUtils;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
-import android.util.Pair;
-import android.app.Notification;
 import com.netflix.mediaclient.ui.pin.PinVerifier;
 import android.content.Intent;
 import android.content.Context;
@@ -175,23 +173,15 @@ public final class NetflixService extends Service implements INetflixService
             }
             
             public void onReceive(final Context context, final Intent intent) {
-                boolean b = false;
-                final boolean b2 = false;
-                final boolean b3 = false;
+                final boolean b = false;
+                boolean pinProtected = false;
                 final String action = intent.getAction();
                 if ("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND".equals(action)) {
-                    final boolean inPostPlay = MdxAgent.Utils.isInPostPlay(intent);
-                    final NetflixService this$0 = NetflixService.this;
-                    if (!inPostPlay) {
-                        b = true;
-                    }
-                    this$0.stopForeground(b);
                     if (Log.isLoggable("NetflixService", 3)) {
                         Log.d("NetflixService", "mdx exit, stop service in 28800000ms");
                     }
                     NetflixService.this.handler.postDelayed(NetflixService.this.stopServiceRunnable, 28800000L);
                     final Asset mdxAgentVideoAsset = this.getMdxAgentVideoAsset();
-                    boolean pinProtected = b3;
                     if (mdxAgentVideoAsset != null) {
                         pinProtected = mdxAgentVideoAsset.isPinProtected();
                     }
@@ -206,8 +196,6 @@ public final class NetflixService extends Service implements INetflixService
                     }
                     Log.i("NetflixService", "start mdx notification");
                     NetflixService.this.handler.removeCallbacks(NetflixService.this.stopServiceRunnable);
-                    final Pair<Integer, Notification> mdxNotification = NetflixService.this.mMdxAgent.getMdxNotification(false);
-                    NetflixService.this.startForeground((int)mdxNotification.first, (Notification)mdxNotification.second);
                     final Asset mdxAgentVideoAsset2 = this.getMdxAgentVideoAsset();
                     if (mdxAgentVideoAsset2 != null) {
                         Log.d("NetflixService", "refreshing episodes data on play start");
@@ -218,7 +206,7 @@ public final class NetflixService extends Service implements INetflixService
                     final int intExtra = intent.getIntExtra("time", -1);
                     Log.v("NetflixService", "on MDX state update - received updated mdx position: " + intExtra);
                     final Asset mdxAgentVideoAsset3 = this.getMdxAgentVideoAsset();
-                    boolean pinProtected2 = b2;
+                    boolean pinProtected2 = b;
                     if (mdxAgentVideoAsset3 != null) {
                         mdxAgentVideoAsset3.setPlaybackBookmark(intExtra);
                         Log.v("NetflixService", "updating cached video position");
@@ -612,7 +600,7 @@ public final class NetflixService extends Service implements INetflixService
     }
     
     public ImageLoader getImageLoader() {
-        return this.mResourceFetcher.getImageLoader();
+        return this.mResourceFetcher.getImageLoader((Context)this);
     }
     
     public IMdx getMdx() {

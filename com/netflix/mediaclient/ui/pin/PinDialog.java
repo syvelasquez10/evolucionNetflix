@@ -140,7 +140,7 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     private static void showConnectivityErrorDialog(final NetflixActivity netflixActivity, final int n) {
-        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage((CharSequence)String.format("%s (%d)", netflixActivity.getString(2131493271), n)).setPositiveButton(2131492977, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage((CharSequence)String.format("%s (%d)", netflixActivity.getString(2131493273), n)).setPositiveButton(2131492977, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 dialogInterface.dismiss();
             }
@@ -189,7 +189,7 @@ public class PinDialog extends NetflixDialogFrag
         }
         mPinForgotView.setVisibility(visibility3);
         if (b) {
-            this.mPinMessage.setText(2131493325);
+            this.mPinMessage.setText(2131493327);
         }
     }
     
@@ -273,7 +273,7 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     public void retryOnPinFailure() {
-        this.mPinMessage.setText(2131493328);
+        this.mPinMessage.setText(2131493330);
         this.mPinEditText.getText().clear();
         this.showErrorIcon(true);
         this.showSoftKeyboard(this.getServiceManager(), this.mPinEditText);

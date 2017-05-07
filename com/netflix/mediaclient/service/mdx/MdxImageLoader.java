@@ -11,27 +11,26 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.StringUtils;
 import android.os.Handler;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
+import android.content.Context;
 import android.graphics.Bitmap;
 
 public final class MdxImageLoader
 {
     private static final String TAG = "nf_mdxImageLoader";
     private Bitmap mBitmap;
-    MdxImageLoaderInterface mCallback;
-    ResourceFetcher mResourceFetcher;
-    Handler mWorkerHandler;
+    private final MdxImageLoaderInterface mCallback;
+    private final Context mContext;
+    private final ResourceFetcher mResourceFetcher;
+    private final Handler mWorkerHandler;
     
-    public MdxImageLoader(final ResourceFetcher mResourceFetcher, final MdxImageLoaderInterface mCallback, final Handler mWorkerHandler) {
+    public MdxImageLoader(final Context mContext, final ResourceFetcher mResourceFetcher, final MdxImageLoaderInterface mCallback, final Handler mWorkerHandler) {
+        this.mContext = mContext;
         this.mResourceFetcher = mResourceFetcher;
         this.mCallback = mCallback;
-        if (this.mResourceFetcher == null) {
-            Log.e("nf_mdxImageLoader", "ResourceFetcher is null");
-            return;
-        }
         this.mWorkerHandler = mWorkerHandler;
     }
     
@@ -104,7 +103,7 @@ public final class MdxImageLoader
             Log.e("nf_mdxImageLoader", "Loader url empty");
             return;
         }
-        final com.netflix.mediaclient.service.resfetcher.volley.ImageLoader imageLoader = this.mResourceFetcher.getImageLoader();
+        final com.netflix.mediaclient.service.resfetcher.volley.ImageLoader imageLoader = this.mResourceFetcher.getImageLoader(this.mContext);
         if (imageLoader != null) {
             imageLoader.getImg(s, IClientLogging.AssetType.boxArt, 0, 0, (ImageLoader.ImageLoaderListener)new ImageLoader.ImageLoaderListener() {
                 @Override

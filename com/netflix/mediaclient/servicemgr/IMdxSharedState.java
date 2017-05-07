@@ -10,6 +10,8 @@ public interface IMdxSharedState
     
     long getPlaybackPositionInMs();
     
+    String getPostplayState();
+    
     int getRecentVolume();
     
     boolean hasActivePlayback();

@@ -259,16 +259,13 @@ public class dz extends WebView implements DownloadListener
     }
     
     protected void onMeasure(int n, int n2) {
-        int n3;
-        int mode;
-        int size = 0;
-        int mode2 = 0;
-        int size2 = 0;
-        Label_0102_Outer:Label_0080_Outer:
         while (true) {
-            n3 = Integer.MAX_VALUE;
+            final int n3 = Integer.MAX_VALUE;
             while (true) {
+                final int mode2;
+                final int size2;
                 Label_0250: {
+                    final int size;
                     Label_0248: {
                         Label_0241: {
                             synchronized (this.li) {
@@ -276,7 +273,7 @@ public class dz extends WebView implements DownloadListener
                                     super.onMeasure(n, n2);
                                     return;
                                 }
-                                mode = View$MeasureSpec.getMode(n);
+                                final int mode = View$MeasureSpec.getMode(n);
                                 size = View$MeasureSpec.getSize(n);
                                 mode2 = View$MeasureSpec.getMode(n2);
                                 size2 = View$MeasureSpec.getSize(n2);
@@ -284,21 +281,19 @@ public class dz extends WebView implements DownloadListener
                                     break Label_0241;
                                 }
                                 break Label_0248;
-                                // iftrue(Label_0188:, this.getVisibility() == 8)
+                                // iftrue(Label_0206:, this.nq.widthPixels <= n && this.nq.heightPixels <= n2)
                                 while (true) {
-                                Label_0188:
-                                    while (true) {
-                                        this.setVisibility(4);
-                                        break Label_0188;
-                                        dw.z("Not enough space to show ad. Needs " + this.nq.widthPixels + "x" + this.nq.heightPixels + " pixels, but only has " + size + "x" + size2 + " pixels.");
-                                        continue Label_0102_Outer;
+                                    Label_0102: {
+                                        break Label_0102;
+                                        this.setMeasuredDimension(0, 0);
+                                        return;
                                     }
-                                    this.setMeasuredDimension(0, 0);
-                                    return;
-                                    continue Label_0080_Outer;
+                                    dw.z("Not enough space to show ad. Needs " + this.nq.widthPixels + "x" + this.nq.heightPixels + " pixels, but only has " + size + "x" + size2 + " pixels.");
+                                    this.setVisibility(4);
+                                    continue;
                                 }
                             }
-                            // iftrue(Label_0206:, this.nq.widthPixels <= n && this.nq.heightPixels <= n2)
+                            // iftrue(Label_0188:, this.getVisibility() == 8)
                             Label_0206: {
                                 if (this.getVisibility() != 8) {
                                     this.setVisibility(0);

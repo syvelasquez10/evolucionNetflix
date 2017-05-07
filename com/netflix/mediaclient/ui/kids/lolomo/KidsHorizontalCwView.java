@@ -65,7 +65,7 @@ public class KidsHorizontalCwView extends RelativeLayout implements IVideoView<C
         final String format = String.format(this.getResources().getString(2131493187), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.title.setText((CharSequence)this.getContext().getString(2131493250, new Object[] { cwVideo.getTitle(), cwVideo.getCurrentSeasonNumber(), cwVideo.getCurrentEpisodeNumber() }));
+            this.title.setText((CharSequence)this.getContext().getString(2131493252, new Object[] { cwVideo.getTitle(), cwVideo.getCurrentSeasonNumber(), cwVideo.getCurrentEpisodeNumber() }));
         }
         else {
             this.title.setText((CharSequence)cwVideo.getTitle());

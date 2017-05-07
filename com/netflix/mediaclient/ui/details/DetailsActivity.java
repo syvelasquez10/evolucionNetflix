@@ -11,11 +11,7 @@ import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.VideoDetails;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
-import android.app.Activity;
-import android.os.Parcelable;
 import java.io.Serializable;
-import android.content.Context;
-import android.content.Intent;
 import com.netflix.mediaclient.ui.kids.details.KidsDetailsActivity;
 import com.netflix.mediaclient.servicemgr.Video;
 import com.netflix.mediaclient.servicemgr.VideoType;
@@ -23,6 +19,10 @@ import com.netflix.mediaclient.servicemgr.Playable;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 import android.app.Fragment;
+import android.os.Parcelable;
+import android.content.Context;
+import android.content.Intent;
+import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.VideoDetailsProvider;
@@ -44,6 +44,10 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     private PlayContext mPlayContext;
     private ServiceManager serviceMan;
     private String videoId;
+    
+    public static Intent getEpisodeDetailsIntent(final Activity activity, final String s, final String s2, final PlayContext playContext) {
+        return new Intent((Context)activity, (Class)ShowDetailsActivity.class).putExtra("extra_video_id", s).putExtra("extra_episode_id", s2).putExtra("extra_playcontext", (Parcelable)playContext);
+    }
     
     private void sendRetryRequest(final Fragment fragment) {
         if (fragment == null || !(fragment instanceof ErrorWrapper.Callback)) {

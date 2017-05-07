@@ -149,18 +149,36 @@ public final class StringUtils
         if (resources == null) {
             return "";
         }
-        return showDetails.getYear() + "   " + showDetails.getCertification() + "   " + resources.getQuantityString(2131623936, showDetails.getNumOfSeasons(), new Object[] { showDetails.getNumOfSeasons() });
+        final String quantityString = resources.getQuantityString(2131623937, showDetails.getNumOfSeasons(), new Object[] { showDetails.getNumOfSeasons() });
+        final StringBuilder sb = new StringBuilder();
+        if (showDetails.getYear() > 0) {
+            sb.append(showDetails.getYear()).append("   ");
+        }
+        if (isNotEmpty(showDetails.getCertification())) {
+            sb.append(showDetails.getCertification()).append("   ");
+        }
+        if (isNotEmpty(quantityString)) {
+            sb.append(quantityString);
+        }
+        return sb.toString();
     }
     
     public static CharSequence getBasicInfoString(final Context context, final VideoDetails videoDetails) {
+        if (context == null) {
+            return "";
+        }
+        final Resources resources = context.getResources();
+        if (resources == null) {
+            return "";
+        }
         final StringBuilder sb = new StringBuilder();
         if (videoDetails.getYear() > 0) {
             sb.append(videoDetails.getYear()).append("   ");
         }
-        if (videoDetails.getCertification() != null) {
+        if (isNotEmpty(videoDetails.getCertification())) {
             sb.append(videoDetails.getCertification()).append("   ");
         }
-        sb.append(String.format(context.getResources().getString(2131493179), TimeUtils.convertSecondsToMinutes(videoDetails.getRuntime())));
+        sb.append(String.format(resources.getString(2131493179), TimeUtils.convertSecondsToMinutes(videoDetails.getRuntime())));
         return sb.toString();
     }
     

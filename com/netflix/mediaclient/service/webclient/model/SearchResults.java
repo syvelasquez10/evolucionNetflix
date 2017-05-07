@@ -83,13 +83,13 @@ public class SearchResults implements com.netflix.mediaclient.servicemgr.SearchR
     public CharSequence getSectionTitle(final Context context, final int n) {
         final List<SearchSuggestion> value = this.sectionsList.get(n);
         if (value == this.videos) {
-            return context.getString(2131493281).toUpperCase(Locale.US);
+            return context.getString(2131493283).toUpperCase(Locale.US);
         }
         if (value == this.people) {
-            return context.getString(2131493282).toUpperCase(Locale.US);
+            return context.getString(2131493284).toUpperCase(Locale.US);
         }
         if (value == this.suggestions) {
-            return context.getString(2131493283).toUpperCase(Locale.US);
+            return context.getString(2131493285).toUpperCase(Locale.US);
         }
         throw new IllegalStateException("Unknown section type");
     }

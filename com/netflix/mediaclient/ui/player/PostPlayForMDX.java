@@ -4,12 +4,12 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.servicemgr.InterestingVideoDetails;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 import android.view.View;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.text.TextUtils;
+import com.netflix.mediaclient.servicemgr.InterestingVideoDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.Playable;
 import com.netflix.mediaclient.ui.Asset;
@@ -50,10 +50,20 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
                 if (this.mTargetNameView != null) {
                     this.mTargetNameView.setVisibility(0);
                 }
+                if (this.mInfoTitleView != null) {
+                    this.mInfoTitleView.setVisibility(0);
+                }
                 if (this.mBackground != null) {
                     this.mBackground.setVisibility(0);
                 }
             }
+        }
+    }
+    
+    private void stopAllNotifications() {
+        final ServiceManager serviceManager = this.mContext.getServiceManager();
+        if (serviceManager != null) {
+            ((MdxAgent)serviceManager.getMdx()).stopAllNotifications();
         }
     }
     
@@ -65,29 +75,47 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     
     public void handleInfoButtonPress() {
         if (this.hasVideos() && this.episodeDetails != null) {
-            DetailsActivity.showEpisodeDetails(this.mContext, this.episodeDetails.getParentId(), this.episodeDetails.getId(), PlayContext.NFLX_MDX_CONTEXT);
+            if (this.mContext != null) {
+                this.mContext.finish();
+            }
+            final Intent episodeDetailsIntent = DetailsActivity.getEpisodeDetailsIntent(this.mContext, this.episodeDetails.getParentId(), this.episodeDetails.getId(), PlayContext.NFLX_MDX_CONTEXT);
+            episodeDetailsIntent.addFlags(67108864);
+            this.mContext.startActivity(episodeDetailsIntent);
         }
     }
     
     @Override
     protected void handlePlayNow(final boolean b) {
         if (this.episodeDetails != null && this.mContext != null) {
-            MdxAgent.Utils.playVideo(this.mContext, Asset.create(this.episodeDetails, PlayContext.DFLT_MDX_CONTEXT, PlayerActivity.PIN_VERIFIED), true);
+            final Asset create = Asset.create(this.episodeDetails, PlayContext.DFLT_MDX_CONTEXT, PlayerActivity.PIN_VERIFIED);
+            this.stopAllNotifications();
+            MdxAgent.Utils.playVideo(this.mContext, create, true);
         }
         if (this.mContext != null) {
+            this.mContext.setResult(-1);
             this.mContext.finish();
         }
     }
     
     public void handleStop() {
         if (this.mContext != null) {
+            this.stopAllNotifications();
             this.mContext.startService(this.createIntent("com.netflix.mediaclient.intent.action.MDX_STOP"));
+            this.mContext.setResult(-1);
             this.mContext.finish();
         }
     }
     
     public boolean hasVideos() {
         return this.episodeDetails != null;
+    }
+    
+    public void init(final EpisodeDetails episodeDetails) {
+        this.mTimerValue = this.mContext.getResources().getInteger(2131427336);
+        this.mOffset = this.mTimerValue * 1000;
+        this.updateViews(this.episodeDetails = episodeDetails);
+        this.setMDXTargetName();
+        this.transitionToPostPlay();
     }
     
     @Override
@@ -115,7 +143,8 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void initInfoContainer() {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493311));
+            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493313));
+            this.mInfoTitleView.setVisibility(4);
         }
         if (this.mTimerView != null) {
             this.mTimerView.setVisibility(8);
@@ -132,6 +161,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
         this.mPlayButton.setEnabled(false);
         if (this.mContext != null) {
             this.mContext.finish();
+            this.stopAllNotifications();
         }
     }
     

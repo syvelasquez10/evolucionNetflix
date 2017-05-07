@@ -27,6 +27,8 @@ import android.content.Context;
 import com.netflix.mediaclient.android.app.UserInputManager;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.util.gfx.BitmapLruCache;
+import java.util.TimerTask;
+import java.util.Timer;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.BroadcastReceiver;
 import android.app.Application;
@@ -41,17 +43,23 @@ public class NetflixApplication extends Application
     private static final int SO_VERSION_MISMATCH = 2001;
     private static final String TAG = "NetflixApplication";
     private static final String TAG_LOCALE = "nf_locale";
+    private static boolean mAactivityVisible;
+    private final long MAX_ACTIVITY_TRANSITION_TIME_MS;
     private final BroadcastReceiver broadcastReceiver;
     private NetflixActivity currentActivity;
+    private Timer mActivityTransitionTimer;
+    private TimerTask mActivityTransitionTimerTask;
     private BitmapLruCache mBitmapCache;
     private final AtomicBoolean mIsNetflixServiceReady;
     private String mServiceLocale;
     private boolean mSignedUpOnce;
     private UserInputManager mUserInput;
+    private boolean wasInBackground;
     
     public NetflixApplication() {
         this.mSignedUpOnce = false;
         this.mUserInput = new UserInputManager();
+        this.MAX_ACTIVITY_TRANSITION_TIME_MS = 600L;
         this.mIsNetflixServiceReady = new AtomicBoolean(false);
         this.broadcastReceiver = new BroadcastReceiver() {
             public void onReceive(final Context context, final Intent intent) {
@@ -83,8 +91,20 @@ public class NetflixApplication extends Application
         };
     }
     
+    public static void activityPaused() {
+        NetflixApplication.mAactivityVisible = false;
+    }
+    
+    public static void activityResumed() {
+        NetflixApplication.mAactivityVisible = true;
+    }
+    
     public static Intent createShowApplicationIntent(final Context context) {
         return new Intent(context, (Class)LaunchActivity.class).setAction("android.intent.action.MAIN").addCategory("android.intent.category.LAUNCHER");
+    }
+    
+    public static boolean isActivityVisible() {
+        return NetflixApplication.mAactivityVisible;
     }
     
     private void loadAndVerifyNativeLibraries() {
@@ -292,7 +312,7 @@ public class NetflixApplication extends Application
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat.Builder setAutoCancel = new NotificationCompat.Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837726).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493280, new Object[] { n })).setContentTitle(this.getString(2131493278, new Object[] { n })).setContentText(this.getString(2131493279, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat.Builder setAutoCancel = new NotificationCompat.Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837726).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493282, new Object[] { n })).setContentTitle(this.getString(2131493280, new Object[] { n })).setContentText(this.getString(2131493281, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");
@@ -417,5 +437,32 @@ public class NetflixApplication extends Application
     
     public void setSignedInOnce() {
         this.mSignedUpOnce = true;
+    }
+    
+    public void startActivityTransitionTimer() {
+        this.mActivityTransitionTimer = new Timer();
+        this.mActivityTransitionTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                NetflixApplication.this.wasInBackground = true;
+            }
+        };
+        this.mActivityTransitionTimer.schedule(this.mActivityTransitionTimerTask, 600L);
+    }
+    
+    public void stopActivityTransitionTimer() {
+        if (this.mActivityTransitionTimerTask != null) {
+            this.mActivityTransitionTimerTask.cancel();
+        }
+        if (this.mActivityTransitionTimer != null) {
+            this.mActivityTransitionTimer.cancel();
+        }
+        this.wasInBackground = false;
+    }
+    
+    public boolean wasInBackground(final boolean b) {
+        final boolean wasInBackground = this.wasInBackground;
+        this.wasInBackground = false;
+        return wasInBackground;
     }
 }

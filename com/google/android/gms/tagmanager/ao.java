@@ -70,17 +70,17 @@ class ao extends aj
                             byte[] array = j.getBytes();
                             try {
                                 return dh.r(com.google.android.gms.tagmanager.j.d(this.c((String)i, array)));
-                                i = dh.j((d.a)i);
-                                continue Label_0073_Outer;
+                                Label_0135: {
+                                    bh.w("Hash: unknown input format: " + k);
+                                }
+                                return dh.lT();
                                 k = dh.j(a2);
                                 continue Block_6_Outer;
                                 while (true) {
                                     array = com.google.android.gms.tagmanager.j.bm(j);
                                     return dh.r(com.google.android.gms.tagmanager.j.d(this.c((String)i, array)));
-                                    Label_0135: {
-                                        bh.w("Hash: unknown input format: " + k);
-                                    }
-                                    return dh.lT();
+                                    i = dh.j((d.a)i);
+                                    continue Label_0073_Outer;
                                     continue;
                                 }
                             }

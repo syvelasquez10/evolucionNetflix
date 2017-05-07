@@ -57,7 +57,7 @@ public final class MdxUtils
         if (mdxTargetSelectionDialogInterface.getVideoDetails() != null) {
             format = format;
             if (StringUtils.isNotEmpty(mdxTargetSelectionDialogInterface.getVideoDetails().getTitle())) {
-                format = String.format(netflixActivity.getString(2131493242), mdxTargetSelectionDialogInterface.getVideoDetails().getTitle());
+                format = String.format(netflixActivity.getString(2131493244), mdxTargetSelectionDialogInterface.getVideoDetails().getTitle());
             }
         }
         builder.setSelection(devicePositionByUUID, format);
@@ -228,6 +228,15 @@ public final class MdxUtils
             return true;
         }
         Log.d("MdxUtils", "Video is not currently playing or different video, start play if play is not already pending...");
+        return false;
+    }
+    
+    public static boolean isTargetReadyToControl(final ServiceManager serviceManager) {
+        Log.d("MdxUtils", "isTargetReadyToControl");
+        if (isCurrentMdxTargetAvailable(serviceManager)) {
+            Log.d("MdxUtils", "isTargetReadyToControl check is launched");
+            return serviceManager.getMdx().isTargetLaunchingOrLaunched();
+        }
         return false;
     }
     

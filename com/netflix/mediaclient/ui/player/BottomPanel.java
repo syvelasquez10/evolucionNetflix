@@ -70,7 +70,7 @@ public final class BottomPanel extends PlayerSection
         builder.setCancelable(false);
         builder.setTitle(2131493150);
         builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerActivity));
-        builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131493242), playerActivity.getCurrentTitle()));
+        builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131493244), playerActivity.getCurrentTitle()));
         builder.setOnItemClickListener((AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
             public void onItemClick(final AdapterView<?> adapterView, final View view, final int target, final long n) {
                 Log.d("screen", "Mdx target clicked: item with id " + n + ", on position " + target);

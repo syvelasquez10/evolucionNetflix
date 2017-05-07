@@ -258,6 +258,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     }
     
     public void play(final Asset asset) {
+        this.resetLanguageData();
         if (!MdxAgent.Utils.playVideo(this.mActivity, asset, false)) {
             return;
         }
@@ -268,6 +269,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     public void requestAudioAndSubtitleData() {
         Log.d("mdx_remote_player", "Sending request for subtitle/audio data...");
         this.mActivity.startService(this.createIntent("com.netflix.mediaclient.intent.action.MDX_GETAUDIOSUB"));
+        this.mRequestForLanguageDataSent = true;
     }
     
     public void resume() {
@@ -388,7 +390,6 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
             }
             if (!this.mRequestForLanguageDataSent) {
                 this.requestAudioAndSubtitleData();
-                this.mRequestForLanguageDataSent = true;
             }
             else {
                 Log.d("mdx_remote_player", "Video is playing");
@@ -410,7 +411,6 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
             if ("preplay".equalsIgnoreCase(mState)) {
                 Log.d("mdx_remote_player", "PREPLAY: Start listening to play/pause from target again");
                 this.userDidPlayPause = false;
-                this.resetLanguageData();
                 return;
             }
             if ("preseek".equalsIgnoreCase(mState)) {

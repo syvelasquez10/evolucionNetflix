@@ -371,7 +371,7 @@ public abstract class PostPlay
         if (this.mBackground != null && !DeviceUtils.isLandscape((Context)this.mContext) && this.mBackground.getMeasuredWidth() == 0) {
             this.mBackground.getLayoutParams().height = (int)(DeviceUtils.getScreenHeightInPixels((Context)this.mContext) * 0.6);
             this.mBackground.getLayoutParams().width = (int)(this.mBackground.getLayoutParams().height * 1.77);
-            this.mBackground.animate().setDuration((long)this.mOffset).x((float)(this.mBackground.getLayoutParams().height - this.mBackground.getLayoutParams().width)).setInterpolator((TimeInterpolator)this.mPanAnimationInterpolator);
+            this.mBackground.animate().setStartDelay(1000L).setDuration((long)this.mOffset).x((float)(this.mBackground.getLayoutParams().height - this.mBackground.getLayoutParams().width)).setInterpolator((TimeInterpolator)this.mPanAnimationInterpolator);
         }
     }
     

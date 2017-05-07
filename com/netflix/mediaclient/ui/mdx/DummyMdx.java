@@ -70,6 +70,11 @@ public class DummyMdx implements IMdx
     }
     
     @Override
+    public boolean isTargetLaunchingOrLaunched() {
+        return false;
+    }
+    
+    @Override
     public void setCurrentTarget(final String s) {
     }
     

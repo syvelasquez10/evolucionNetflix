@@ -13,11 +13,13 @@ public class TargetStateManager
 {
     private static final int DEFAULT_RETRY_INTERNAL = 1000;
     private static final int LAUNCH_TIMEOUT = 40000;
+    private static final int MAX_STATEMACHINE_RESET_ON_ERROR = 3;
     private static final int PAIRING_RETRY_INTERVAL = 3000;
     private static final int PAIRING_TIMEOUT = 24000;
     private static final int REGPAIRING_RETRY_INTERVAL = 4000;
     private static final int REGPAIRING_TIMEOUT = 32000;
-    private static final int SESSION_RETRY_INTERVAL = 1000;
+    private static final int SESSION_MESSAGE_RETRY = 8;
+    private static final int SESSION_RETRY_INTERVAL = 100;
     private static final int STATE_TIMEOUT = 8000;
     private static final String TAG = "nf_mdx";
     private boolean mActivated;
@@ -33,10 +35,12 @@ public class TargetStateManager
     int mRetryCurrentAction;
     int mRetryCurrentInterval;
     private ArrayList<Runnable> mSessionRequested;
+    private int mStateMachineResetCountSince;
     
     TargetStateManager(final TargetStateManagerListener mListener, final TargetState mCurrentState, final boolean mIsTargetSelected) {
         this.mSessionRequested = new ArrayList<Runnable>();
         this.mDefaultAction = new HashMap<StateId, Runnable>();
+        this.mStateMachineResetCountSince = 0;
         if (Log.isLoggable("nf_mdx", 3)) {
             Log.d("nf_mdx", "StateMachine: init state " + mCurrentState.getName());
         }
@@ -45,6 +49,10 @@ public class TargetStateManager
         this.mCurrentState = mCurrentState;
         this.mRetryCurrentAction = mCurrentState.getRetry();
         this.mHasUiCommand = false;
+    }
+    
+    private void resetStateMachineResetCount() {
+        this.mStateMachineResetCountSince = 0;
     }
     
     private void scheduleRetry(final TargetContextEvent targetContextEvent) {
@@ -101,6 +109,10 @@ public class TargetStateManager
     public void addUiCommand(final Runnable runnable) {
         this.mHasUiCommand = true;
         this.mSessionRequested.add(runnable);
+    }
+    
+    public boolean canRestartState(final TargetState targetState) {
+        return this.mStateMachineResetCountSince < 3 && (TargetState.StateHasPair.equals(targetState) || TargetState.StateNeedHandShake.equals(targetState) || TargetState.StateSendingMessage.equals(targetState));
     }
     
     public boolean isSessionActive() {
@@ -177,6 +189,7 @@ public class TargetStateManager
                 case StateHasPair: {
                     if (TargetContextEvent.StartSessionSucceed.equals(targetContextEvent)) {
                         this.transitionStateTo(TargetState.StateNeedHandShake);
+                        this.resetStateMachineResetCount();
                         return;
                     }
                     if (TargetContextEvent.SendMessageFailedNeedRepair.equals(targetContextEvent)) {
@@ -291,6 +304,7 @@ public class TargetStateManager
                     }
                     if (TargetContextEvent.HandShakeSucceed.equals(targetContextEvent)) {
                         this.transitionStateTo(TargetState.StateSessionReady);
+                        this.resetStateMachineResetCount();
                         if (!this.mSessionRequested.isEmpty()) {
                             this.mListener.scheduleEvent(TargetContextEvent.SessionCommandReceived, 0);
                             return;
@@ -336,6 +350,7 @@ public class TargetStateManager
                     }
                     if (TargetContextEvent.SendMessageSucceed.equals(targetContextEvent)) {
                         this.transitionStateTo(TargetState.StateSessionReady);
+                        this.resetStateMachineResetCount();
                         if (!this.mSessionRequested.isEmpty()) {
                             this.mListener.scheduleEvent(TargetContextEvent.SessionCommandReceived, 0);
                             return;
@@ -389,6 +404,7 @@ public class TargetStateManager
                     }
                     if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mPreviousState != null) {
                         this.transitionStateTo(this.mPreviousState);
+                        this.mListener.scheduleEvent(TargetContextEvent.SessionCommandReceived, 0);
                         return;
                     }
                     break;
@@ -400,6 +416,7 @@ public class TargetStateManager
                     }
                     if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mPreviousState != null) {
                         this.transitionStateTo(this.mPreviousState);
+                        this.mListener.scheduleEvent(TargetContextEvent.SessionCommandReceived, 0);
                         return;
                     }
                     break;
@@ -411,12 +428,21 @@ public class TargetStateManager
                     }
                     if (TargetContextEvent.SessionCommandReceived.equals(targetContextEvent) && this.mPreviousState != null) {
                         this.transitionStateTo(this.mPreviousState);
+                        this.mListener.scheduleEvent(TargetContextEvent.SessionCommandReceived, 0);
                         return;
                     }
                     break;
                 }
             }
         }
+    }
+    
+    public void restart(final int n) {
+        this.mCurrentState = TargetState.StateLaunched;
+        this.mRetryCurrentAction = this.mCurrentState.getRetry();
+        this.mHasUiCommand = false;
+        this.start(this.mIsPreviouslyPaired, this.mRegistrationAcceptance, this.mActivated, n);
+        ++this.mStateMachineResetCountSince;
     }
     
     public void setDefaultAction(final StateId stateId, final Runnable runnable) {
@@ -503,16 +529,16 @@ public class TargetStateManager
     {
         StateBadPair(StateId.StateBadPair, "badpair", 0, 0, 1000), 
         StateHasError(StateId.StateHasError, "haserror", 0, 0, 1000), 
-        StateHasPair(StateId.StateHasPair, "haspair", 2, 8000, 1000), 
+        StateHasPair(StateId.StateHasPair, "haspair", 8, 8000, 100), 
         StateLaunched(StateId.StateLaunched, "launched", 0, 0, 1000), 
-        StateNeedHandShake(StateId.StateNeedHandShake, "needhandshake", 2, 8000, 1000), 
+        StateNeedHandShake(StateId.StateNeedHandShake, "needhandshake", 8, 8000, 100), 
         StateNeedLaunched(StateId.StateNeedLaunched, "needlaunch", 1, 40000, 7000), 
         StateNeedRegPair(StateId.StateNeedRegPair, "needregpair", 3, 32000, 4000), 
         StateNoPair(StateId.StateNoPair, "nopair", 3, 24000, 3000), 
         StateNoPairNeedRegPair(StateId.StateNoPairNeedRegPair, "nopairneedregpair", 0, 0, 1000), 
         StateNotLaunched(StateId.StateNotLaunched, "notlaunched", 0, 0, 1000), 
         StateRetryExhausted(StateId.StateRetryExhausted, "retryexhausted", 0, 0, 1000), 
-        StateSendingMessage(StateId.StateSendingMessage, "sendingmessage", 2, 8000, 1000), 
+        StateSendingMessage(StateId.StateSendingMessage, "sendingmessage", 8, 8000, 100), 
         StateSessionEnd(StateId.StateSessionEnd, "sessionend", 0, 8000, 1000), 
         StateSessionReady(StateId.StateSessionReady, "sessionready", 0, 0, 1000), 
         StateTimeout(StateId.StateTimeout, "timeout", 0, 0, 1000);

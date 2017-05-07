@@ -156,7 +156,7 @@ public class VideoDetailsViewGroup extends LinearLayout
             Log.v("VideoDetailsViewGroup", "No friends available for this detail view");
         }
         else {
-            this.socialTitle.setText((CharSequence)this.getResources().getQuantityString(2131623937, facebookFriends.size(), new Object[] { facebookFriends.size() }));
+            this.socialTitle.setText((CharSequence)this.getResources().getQuantityString(2131623938, facebookFriends.size(), new Object[] { facebookFriends.size() }));
             final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361877);
             final LinearLayout$LayoutParams linearLayout$LayoutParams = new LinearLayout$LayoutParams(dimensionPixelOffset, dimensionPixelOffset);
             final int dimensionPixelOffset2 = this.getResources().getDimensionPixelOffset(2131361878);

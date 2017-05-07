@@ -25,16 +25,19 @@ public class FetchConfigDataRequest extends FalcorVolleyWebClientRequest<ConfigD
     private static final String ACCOUNT_CONFIG = "accountConfig";
     private static final String DEVICE_CONFIG = "deviceConfig";
     private static final String STREAMING_CONFIG = "streamingqoe";
+    private static final String STREAMING_CONFIG_DEFAULT = "streamingqoeDefault";
     private static final String TAG = "nf_config_data";
     private static final String accountConfigPql;
     public static final String deviceConfigPql;
     private static final String streamingQoePql;
+    public static final String streamingQoePqlDefault;
     private final ConfigurationAgentWebCallback responseCallback;
     
     static {
         deviceConfigPql = String.format("['%s']", "deviceConfig");
         accountConfigPql = String.format("['%s']", "accountConfig");
         streamingQoePql = String.format("['%s']", "streamingqoe");
+        streamingQoePqlDefault = String.format("['%s']", "streamingqoeDefault");
     }
     
     public FetchConfigDataRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final ConfigurationAgentWebCallback responseCallback) {
@@ -68,6 +71,12 @@ public class FetchConfigDataRequest extends FalcorVolleyWebClientRequest<ConfigD
                 final JsonElement value = dataObj.get("streamingqoe");
                 if (value != null) {
                     configData.streamingqoeJson = value.toString();
+                }
+            }
+            if (dataObj.has("streamingqoeDefault")) {
+                final JsonElement value2 = dataObj.get("streamingqoeDefault");
+                if (value2 != null) {
+                    configData.streamingqoeJson = value2.toString();
                     return configData;
                 }
             }

@@ -64,6 +64,8 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     }
     
     public LoMoViewPagerAdapter(final LoMoViewPager pager, final ServiceManager serviceManager, final ViewRecycler viewRecycler, final View reloadView, final boolean b) {
+        this.state = Type.LOADING;
+        this.preErrorState = Type.LOADING;
         this.onReloadClickListener = (View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
                 LoMoViewPagerAdapter.this.reload();
@@ -152,7 +154,6 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         this.loading = new LoadingViewAdapter(this.pagerAdapterCallbacks, viewRecycler);
         this.error = new ErrorViewAdapter(this.pagerAdapterCallbacks);
         this.currentAdapter = this.loading;
-        this.state = Type.LOADING;
     }
     
     private View getView(final int n) {

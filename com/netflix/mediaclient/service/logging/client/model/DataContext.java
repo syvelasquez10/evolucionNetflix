@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.logging.client.model;
 import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.NumberUtils;
 import com.netflix.mediaclient.servicemgr.Trackable;
@@ -18,6 +19,7 @@ public class DataContext
     public static final String RANK = "rank";
     public static final String REQUEST_ID = "requestId";
     public static final String ROW = "row";
+    private static final String TAG = "DataContext";
     public static final String TRACK_ID = "trackId";
     public static final String VIDEO_ID = "videoId";
     public static final String XID = "xid";
@@ -58,7 +60,17 @@ public class DataContext
     }
     
     public DataContext(final PlayContext playContext, final String s) {
-        this(playContext, playContext.getVideoPos(), s);
+        int videoPos;
+        if (playContext == null) {
+            videoPos = 0;
+        }
+        else {
+            videoPos = playContext.getVideoPos();
+        }
+        this(playContext, videoPos, s);
+        if (Log.isLoggable("DataContext", 5) && playContext == null) {
+            Log.w("DataContext", "playContext is null!");
+        }
     }
     
     public static DataContext createInstance(final JSONObject jsonObject) throws JSONException {

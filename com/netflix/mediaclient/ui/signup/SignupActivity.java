@@ -126,7 +126,7 @@ public class SignupActivity extends AccountActivity
             this.clearCookies();
         }
         else {
-            this.provideDialog(this.getString(2131493274) + " (" + n + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131493276) + " (" + n + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 string = "javascript:" + this.mErrHandler + "('" + n + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -267,7 +267,7 @@ public class SignupActivity extends AccountActivity
             this.mWebView.goBack();
             return;
         }
-        this.provideTwoButtonDialog(this.getString(2131493275), new Runnable() {
+        this.provideTwoButtonDialog(this.getString(2131493277), new Runnable() {
             @Override
             public void run() {
                 SignupActivity.this.reloadSignUp(false);
@@ -443,7 +443,7 @@ public class SignupActivity extends AccountActivity
                 Log.e("SignupActivity", "Failed to LoginToApp");
                 ex.printStackTrace();
                 SignupActivity.this.mSignupOngoing = false;
-                SignupActivity.this.provideDialog(SignupActivity.this.getString(2131493274), SignupActivity.this.mHandleError);
+                SignupActivity.this.provideDialog(SignupActivity.this.getString(2131493276), SignupActivity.this.mHandleError);
                 return;
             }
             Log.d("SignupActivity", "loginToApp, invalid state to Login, bailing out");

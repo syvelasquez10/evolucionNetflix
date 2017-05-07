@@ -164,8 +164,9 @@ public class ProfileSelectionActivity extends NetflixActivity
                     this.showLoadingViews(false, this.shouldShowKidsLoadingScreen && this.isShowingKidsLoadingScreen);
                 }
             }
-            Log.v("ProfileSelectionActivity", String.format("shouldAutoSelectProfile: %s, shouldStartKids: %s, isInKoPEnabled: %s", b, this.shouldStartKids, this.manager.getConfiguration().getKidsOnPhoneConfiguration().isKidsOnPhoneEnabled()));
-            if (b && this.shouldStartKids && this.manager.getConfiguration().getKidsOnPhoneConfiguration().isKidsOnPhoneEnabled()) {
+            final boolean b2 = this.manager.getConfiguration() != null && this.manager.getConfiguration().getKidsOnPhoneConfiguration() != null && this.manager.getConfiguration().getKidsOnPhoneConfiguration().isKidsOnPhoneEnabled();
+            Log.v("ProfileSelectionActivity", String.format("shouldAutoSelectProfile: %s, shouldStartKids: %s, isInKoPEnabled: %s", b, this.shouldStartKids, b2));
+            if (b && this.shouldStartKids && b2) {
                 int n = 0;
                 UserProfile userProfile2 = null;
                 for (final UserProfile userProfile3 : this.manager.getAllProfiles()) {

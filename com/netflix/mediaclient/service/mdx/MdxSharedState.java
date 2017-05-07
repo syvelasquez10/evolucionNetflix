@@ -22,6 +22,7 @@ public class MdxSharedState implements IMdxSharedState
     private boolean mAllowVolume;
     private boolean mHasActivePlayback;
     private MdxPlaybackState mPlaybackState;
+    private String mPostplay;
     private long mReportedPlaybackPositionInMs;
     private long mTimePositionReorptedInMs;
     private String mUuid;
@@ -86,6 +87,11 @@ public class MdxSharedState implements IMdxSharedState
     }
     
     @Override
+    public String getPostplayState() {
+        return this.mPostplay;
+    }
+    
+    @Override
     public int getRecentVolume() {
         return this.mVolume;
     }
@@ -121,6 +127,7 @@ public class MdxSharedState implements IMdxSharedState
     void notifyPlaybackStart() {
         this.mHasActivePlayback = true;
         this.mPlaybackState = MdxPlaybackState.Playing;
+        this.resetPostplayState();
         Log.d(MdxSharedState.TAG, "state: " + MdxSharedState.MDX_PLAYBACK_STATE_NAME.get(this.mPlaybackState) + ", pos: " + this.mReportedPlaybackPositionInMs + ", volume: " + this.mVolume);
     }
     
@@ -130,12 +137,15 @@ public class MdxSharedState implements IMdxSharedState
         this.mVolume = mVolume;
         if ("prepause".equals(s) || "preplay".equals(s) || "preseek".equals(s)) {
             this.mPlaybackState = MdxPlaybackState.Transitioning;
+            this.resetPostplayState();
         }
-        else if ("PROGRESS".equals(s) || "AUTO_ADVANCE".equals(s) || "STALLED".equals(s)) {
+        else if ("PROGRESS".equals(s)) {
+            this.resetPostplayState();
             this.mPlaybackState = MdxPlaybackState.Transitioning;
         }
         else if ("PLAY".equals(s) || "PLAYING".equals(s)) {
             this.mPlaybackState = MdxPlaybackState.Playing;
+            this.resetPostplayState();
         }
         else if ("PAUSE".equals(s)) {
             this.mPlaybackState = MdxPlaybackState.Paused;
@@ -146,6 +156,10 @@ public class MdxSharedState implements IMdxSharedState
         Log.d(MdxSharedState.TAG, "state: " + MdxSharedState.MDX_PLAYBACK_STATE_NAME.get(this.mPlaybackState) + ", pos: " + this.mReportedPlaybackPositionInMs + ", volume: " + this.mVolume);
     }
     
+    void notifyPostplayState(final String mPostplay) {
+        this.mPostplay = mPostplay;
+    }
+    
     void notifyTargetCapability(final String s) {
         try {
             this.mAllowVolume = new MdxTargetCapabilities(s).isVolumeControl();
@@ -153,5 +167,9 @@ public class MdxSharedState implements IMdxSharedState
         catch (JSONException ex) {
             Log.w(MdxSharedState.TAG, "ignore capability data ", (Throwable)ex);
         }
+    }
+    
+    public void resetPostplayState() {
+        this.mPostplay = null;
     }
 }

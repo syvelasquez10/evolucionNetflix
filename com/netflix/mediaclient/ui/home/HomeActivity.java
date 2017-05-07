@@ -14,7 +14,6 @@ import com.netflix.mediaclient.ui.kids.lolomo.KidsSlidingMenuAdapter;
 import java.util.Collection;
 import android.os.Bundle;
 import android.content.res.Configuration;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
@@ -30,7 +29,6 @@ import java.io.Serializable;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsHomeActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.content.Context;
-import android.app.DialogFragment;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import android.os.SystemClock;
 import com.netflix.mediaclient.android.app.LoadingStatus;
@@ -56,6 +54,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     private static final String EXTRA_GENRE_ID = "genre_id";
     private static final String EXTRA_GENRE_PARCEL = "genre_parcel";
     public static final String REFRESH_HOME_LOLOMO = "com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO";
+    static final int REQUEST_RESOLVE_ERROR = 1001;
     private static final String TAG = "HomeActivity";
     private final LinkedList<Intent> backStackIntents;
     private DrawerLayout drawerLayout;
@@ -63,6 +62,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     private GenreList genre;
     private String genreId;
     private MenuItem kidsEntryItem;
+    private DialogManager mDialogManager;
     private long mStartedTimeMs;
     private ServiceManager manager;
     private final ManagerStatusListener managerStatusListener;
@@ -91,12 +91,8 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
                         HomeActivity.this.setLoadingStatusCallback(null);
                     }
                 });
-                if (HomeActivity.this.shouldDisplayOptInDialog()) {
-                    Log.d("HomeActivity", "Displaying opt-in dialog");
-                    final SocialOptInDialogFrag instance = SocialOptInDialogFrag.newInstance();
-                    instance.setCancelable(false);
-                    HomeActivity.this.showDialog(instance);
-                }
+                HomeActivity.this.mDialogManager = new DialogManager(HomeActivity.this);
+                HomeActivity.this.mDialogManager.displayDialogsIfNeeded();
             }
             
             @Override
@@ -204,19 +200,6 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     
     private void registerRefreshHomeReceiver() {
         this.registerReceiverWithAutoUnregister(this.refreshHomeReceiver, "com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO");
-    }
-    
-    private boolean shouldDisplayOptInDialog() {
-        if (this.manager.getPushNotification().wasNotificationOptInDisplayed()) {
-            Log.d("HomeActivity", "User was already prompted for opt-in to social");
-            return false;
-        }
-        if (this.isDialogFragmentVisible()) {
-            Log.w("HomeActivity", "Dialog fragment is already displayed. There should only be one visible at time. Do NOT display opt-in to social.");
-            return false;
-        }
-        Log.d("HomeActivity", "User was NOT prompted for opt-in to social and no dialogs are visible.");
-        return true;
     }
     
     public static void showGenreList(final NetflixActivity netflixActivity, final GenreList list) {
@@ -340,14 +323,9 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     
     @Override
     public void onAccept() {
-        if (this.destroyed()) {
-            return;
+        if (this.mDialogManager != null) {
+            this.mDialogManager.onAccept();
         }
-        Log.v("HomeActivity", "Sending PUSH_OPTIN...");
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTIN");
-        intent.addCategory("com.netflix.mediaclient.intent.category.PUSH");
-        LocalBroadcastManager.getInstance((Context)this).sendBroadcast(intent);
-        Log.v("HomeActivity", "Sending PUSH_OPTIN done.");
     }
     
     public void onConfigurationChanged(final Configuration configuration) {
@@ -409,14 +387,9 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     
     @Override
     public void onDecline() {
-        if (this.destroyed()) {
-            return;
+        if (this.mDialogManager != null) {
+            this.mDialogManager.onDecline();
         }
-        Log.v("HomeActivity", "Sending PUSH_OPTOUT...");
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_OPTOUT");
-        intent.addCategory("com.netflix.mediaclient.intent.category.PUSH");
-        LocalBroadcastManager.getInstance((Context)this).sendBroadcast(intent);
-        Log.v("HomeActivity", "Sending PUSH_OPTOUT done.");
     }
     
     protected void onNewIntent(final Intent intent) {

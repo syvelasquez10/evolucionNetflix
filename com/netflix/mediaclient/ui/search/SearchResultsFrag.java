@@ -123,7 +123,8 @@ public class SearchResultsFrag extends NetflixFrag
         }
         
         public int getNumHeaders() {
-            if (!SearchResultsFrag.this.getNetflixActivity().isForKids() && SearchResultsFrag.this.results != null) {
+            final NetflixActivity netflixActivity = SearchResultsFrag.this.getNetflixActivity();
+            if ((netflixActivity == null || !netflixActivity.isForKids()) && SearchResultsFrag.this.results != null) {
                 return SearchResultsFrag.this.results.getNumSections();
             }
             return 0;

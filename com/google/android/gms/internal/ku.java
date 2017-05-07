@@ -63,6 +63,7 @@ public final class ku
                             break Label_0409;
                         }
                         final String name2 = methods[n].getName();
+                    Block_18_Outer:
                         while (true) {
                             if (!name2.startsWith("set")) {
                                 break Label_0349;
@@ -76,33 +77,35 @@ public final class ku
                                         // iftrue(Label_0004:, s == null)
                                         // iftrue(Label_0511:, !o instanceof byte[])
                                         // iftrue(Label_0490:, !o instanceof String)
-                                        Label_0482: {
-                                            Block_18: {
-                                                Block_19: {
-                                                    Block_17: {
-                                                        break Block_17;
+                                        Block_17: {
+                                            break Block_17;
+                                            Label_0482: {
+                                                while (true) {
+                                                    while (true) {
+                                                        a((byte[])o, sb2);
+                                                        break Label_0482;
+                                                        s = ch((String)o);
+                                                        sb2.append("\"").append(s).append("\"");
+                                                        break Label_0482;
                                                         Label_0490: {
-                                                            break Block_19;
+                                                            continue Block_18_Outer;
                                                         }
-                                                        s = cg(s);
-                                                        sb2.append(sb).append(s).append(": ");
-                                                        break Block_18;
                                                     }
-                                                    sb.setLength(length);
-                                                    sb2.append(sb).append(">\n");
-                                                    return;
+                                                    Label_0511: {
+                                                        sb2.append(o);
+                                                    }
+                                                    break Label_0482;
+                                                    s = cg(s);
+                                                    sb2.append(sb).append(s).append(": ");
+                                                    continue;
                                                 }
-                                                a((byte[])o, sb2);
-                                                break Label_0482;
                                             }
-                                            s = ch((String)o);
-                                            sb2.append("\"").append(s).append("\"");
+                                            sb2.append("\n");
+                                            return;
                                         }
-                                        sb2.append("\n");
+                                        sb.setLength(length);
+                                        sb2.append(sb).append(">\n");
                                         return;
-                                        Label_0511: {
-                                            sb2.append(o);
-                                        }
                                     }
                                     catch (NoSuchMethodException ex) {}
                                 }
