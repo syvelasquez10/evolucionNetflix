@@ -177,35 +177,30 @@ class UserProfileMap
         if (this.mProfileMap != null) {
             boolean b = false;
             final Iterator keys = this.mProfileMap.keys();
-            String s;
-            Label_0131_Outer:Block_7_Outer:Block_6_Outer:
+        Block_6_Outer:
             while (true) {
                 Label_0090: {
                     if (!keys.hasNext()) {
                         break Label_0090;
                     }
-                    s = keys.next();
+                    final String s = keys.next();
                     if ("currentAcc".equals(s) || "primaryAcc".equals(s)) {
                         continue;
                     }
                     try {
                         this.mEsnMigrationFlags.putOpt(s, (Object)true);
                         b = true;
-                        continue Label_0131_Outer;
-                        // iftrue(Label_0131:, !Log.isLoggable("nf_service_useragentproilemap", 3))
+                        continue Block_6_Outer;
                         while (true) {
-                            while (true) {
-                                while (true) {
-                                    PreferenceUtils.putStringPref(this.mContext, "useragent_esnmigration_flags", this.mEsnMigrationFlags.toString());
-                                    return;
-                                    Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration " + this.mEsnMigrationFlags);
-                                    continue Block_7_Outer;
-                                }
-                                continue Block_6_Outer;
+                            Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration " + this.mEsnMigrationFlags);
+                            Label_0131: {
+                                PreferenceUtils.putStringPref(this.mContext, "useragent_esnmigration_flags", this.mEsnMigrationFlags.toString());
                             }
+                            return;
                             continue;
                         }
                     }
+                    // iftrue(Label_0131:, !Log.isLoggable("nf_service_useragentproilemap", 3))
                     // iftrue(Label_0024:, !b)
                     catch (JSONException ex) {}
                 }

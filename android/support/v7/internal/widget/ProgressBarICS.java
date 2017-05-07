@@ -109,8 +109,8 @@ public class ProgressBarICS extends View
     }
     
     private void doRefreshProgress(int level, final int n, final boolean b, final boolean b2) {
+    Label_0071_Outer:
         while (true) {
-        Label_0055_Outer:
             while (true) {
                 while (true) {
                     float n2 = 0.0f;
@@ -132,18 +132,19 @@ public class ProgressBarICS extends View
                                 ((LayerDrawable)mCurrentDrawable).findDrawableByLayerId(level);
                             }
                             break Label_0092;
-                            drawable = mCurrentDrawable;
                             drawable.setLevel(level);
                             return;
+                            drawable = mCurrentDrawable;
+                            continue Label_0071_Outer;
                         }
                     }
                     level = (int)(10000.0f * n2);
                     if (drawable != null) {
-                        continue;
+                        continue Label_0071_Outer;
                     }
                     break;
                 }
-                continue Label_0055_Outer;
+                continue;
             }
         }
     }

@@ -143,15 +143,11 @@ public class MediaMetadata
         array = (String[])(Object)new HashSet((Collection<? extends E>)Arrays.asList(array));
         try {
             final Iterator keys = jsonObject.keys();
-            String s;
-            String s2;
-            Object value;
-            Object value2 = null;
-            Block_16_Outer:Block_17_Outer:Block_15_Outer:
+        Block_15_Outer:
             while (keys.hasNext()) {
-                s = keys.next();
+                final String s = keys.next();
                 if (!"metadataType".equals(s)) {
-                    s2 = MediaMetadata.yq.S(s);
+                    final String s2 = MediaMetadata.yq.S(s);
                     Label_0249: {
                         if (s2 == null) {
                             break Label_0249;
@@ -160,67 +156,65 @@ public class MediaMetadata
                             continue;
                         }
                         try {
-                            value = jsonObject.get(s);
+                            final Object value = jsonObject.get(s);
                             if (value == null) {
-                                continue Block_16_Outer;
+                                continue;
                             }
                             switch (MediaMetadata.yq.T(s2)) {
                                 case 1: {
                                     if (value instanceof String) {
                                         this.yr.putString(s2, (String)value);
-                                        continue Block_16_Outer;
+                                        continue;
                                     }
-                                    continue Block_16_Outer;
+                                    continue;
                                 }
                                 case 4: {
                                     if (value instanceof String && ew.ac((String)value) != null) {
                                         this.yr.putString(s2, (String)value);
-                                        continue Block_16_Outer;
+                                        continue;
                                     }
-                                    continue Block_16_Outer;
+                                    continue;
                                 }
                                 case 2: {
                                     if (value instanceof Integer) {
                                         this.yr.putInt(s2, (int)value);
-                                        continue Block_16_Outer;
+                                        continue;
                                     }
-                                    continue Block_16_Outer;
+                                    continue;
                                 }
                                 case 3: {
                                     if (value instanceof Double) {
                                         this.yr.putDouble(s2, (double)value);
-                                        continue Block_16_Outer;
+                                        continue;
                                     }
-                                    continue Block_16_Outer;
+                                    continue;
                                 }
                                 default: {
-                                    continue Block_16_Outer;
+                                    continue;
                                 }
                             }
-                            // iftrue(Label_0310:, !value2 instanceof Integer)
                             // iftrue(Label_0018:, !value2 instanceof Double)
-                            while (true) {
+                            // iftrue(Label_0310:, !value2 instanceof Integer)
+                            // iftrue(Label_0282:, !value2 instanceof String)
+                            Object value2 = null;
+                            Block_16: {
                                 while (true) {
-                                    this.yr.putInt(s, (int)value2);
-                                    continue Block_16_Outer;
-                                    this.yr.putDouble(s, (double)value2);
-                                    continue Block_16_Outer;
-                                    Label_0282: {
-                                        continue Block_17_Outer;
+                                    Block_17: {
+                                        break Block_17;
+                                        Label_0282: {
+                                            break Block_16;
+                                        }
+                                        this.yr.putString(s, (String)value2);
+                                        continue Block_15_Outer;
                                     }
-                                }
-                                Label_0310: {
+                                    this.yr.putDouble(s, (double)value2);
                                     continue Block_15_Outer;
+                                    value2 = jsonObject.get(s);
+                                    continue;
                                 }
                             }
-                            while (true) {
-                                this.yr.putString(s, (String)value2);
-                                continue Block_16_Outer;
-                                value2 = jsonObject.get(s);
-                                continue;
-                            }
+                            this.yr.putInt(s, (int)value2);
                         }
-                        // iftrue(Label_0282:, !value2 instanceof String)
                         catch (JSONException ex) {}
                     }
                 }

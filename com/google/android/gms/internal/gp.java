@@ -93,7 +93,7 @@ public final class gp
             }
             final JSONObject jsonObject = (JSONObject)o;
             final JSONObject jsonObject2 = (JSONObject)o2;
-        Block_9_Outer:
+        Label_0135_Outer:
             while (true) {
                 final Iterator keys;
                 if (jsonObject.length() == jsonObject2.length()) {
@@ -114,41 +114,40 @@ public final class gp
                     if (!d(jsonObject.get(s), jsonObject2.get(s))) {
                         return false;
                     }
-                    continue Block_9_Outer;
+                    continue Label_0135_Outer;
+                    // iftrue(Label_0170:, !o instanceof JSONArray || !o2 instanceof JSONArray)
+                    // iftrue(Label_0168:, n >= jsonArray.length())
+                Label_0135:
                     while (true) {
-                        int n = 0;
                         Block_8: {
+                            break Block_8;
                             while (true) {
-                                Label_0135: {
-                                    break Label_0135;
-                                    break Block_8;
-                                    try {
-                                        final JSONArray jsonArray;
-                                        final JSONArray jsonArray2;
-                                        if (d(jsonArray.get(n), jsonArray2.get(n))) {
-                                            ++n;
-                                            break Label_0135;
-                                        }
-                                        return false;
-                                        Label_0170:
-                                        return o.equals(o2);
-                                        Label_0168:
-                                        return true;
+                                try {
+                                    final JSONArray jsonArray;
+                                    final int n;
+                                    final JSONArray jsonArray2;
+                                    if (d(jsonArray.get(n), jsonArray2.get(n))) {
+                                        ++n;
+                                        break Label_0135;
                                     }
-                                    catch (JSONException ex) {
-                                        return false;
-                                    }
+                                    return false;
+                                    Label_0168:
+                                    return true;
+                                    Label_0170:
+                                    return o.equals(o2);
                                 }
-                                continue;
+                                catch (JSONException ex) {
+                                    return false;
+                                }
+                                continue Label_0135_Outer;
                             }
                         }
                         final JSONArray jsonArray = (JSONArray)o;
                         final JSONArray jsonArray2 = (JSONArray)o2;
-                        continue;
+                        int n = 0;
+                        continue Label_0135;
                     }
                 }
-                // iftrue(Label_0170:, !o instanceof JSONArray || !o2 instanceof JSONArray)
-                // iftrue(Label_0168:, n >= jsonArray.length())
                 // iftrue(Label_0035:, jsonArray.length() != jsonArray2.length())
                 catch (JSONException ex2) {
                     return false;

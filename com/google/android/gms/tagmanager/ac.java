@@ -84,11 +84,11 @@ class ac extends aj
                                                     return dh.r(s);
                                                 }
                                                 break Label_0257;
+                                                i = dh.j(a2);
+                                                break Label_0055;
                                                 final d.a a3;
                                                 k = dh.j(a3);
                                                 break Label_0075;
-                                                i = dh.j(a2);
-                                                break Label_0055;
                                             }
                                             catch (IllegalArgumentException ex) {
                                                 bh.w("Encode: invalid input:");

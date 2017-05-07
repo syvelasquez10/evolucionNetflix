@@ -170,6 +170,10 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     }
     
     public boolean isLoadingData() {
+        if (this.adapter == null) {
+            Log.v("NflxLoading", "No adapter yet - not loading data");
+            return false;
+        }
         final boolean loadingData = this.adapter.isLoadingData();
         Log.v("NflxLoading", "Class: " + this.getClass().getSimpleName() + ", loading: " + loadingData);
         return loadingData;
