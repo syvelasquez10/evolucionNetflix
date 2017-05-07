@@ -54,11 +54,22 @@ public class JsonUtils
         return list;
     }
     
+    public static boolean getAsBoolSafe(final JsonElement jsonElement) {
+        return !jsonElement.isJsonNull() && jsonElement.getAsBoolean();
+    }
+    
     public static int getAsIntSafe(final JsonElement jsonElement) {
         if (!jsonElement.isJsonNull() && (!jsonElement.isJsonPrimitive() || !"null".equals(jsonElement.getAsString()))) {
             return jsonElement.getAsInt();
         }
         return 0;
+    }
+    
+    public static long getAsLongSafe(final JsonElement jsonElement) {
+        if (!jsonElement.isJsonNull() && (!jsonElement.isJsonPrimitive() || !"null".equals(jsonElement.getAsString()))) {
+            return jsonElement.getAsLong();
+        }
+        return 0L;
     }
     
     public static String getAsStringSafe(final JsonElement jsonElement) {
@@ -116,5 +127,9 @@ public class JsonUtils
             string = jsonObject.getString(s);
         }
         return string;
+    }
+    
+    public static boolean isNull(final JsonElement jsonElement) {
+        return jsonElement == null || jsonElement.isJsonNull();
     }
 }

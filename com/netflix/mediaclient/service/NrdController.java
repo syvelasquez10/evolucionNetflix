@@ -17,10 +17,10 @@ import com.netflix.mediaclient.repository.UserLocale;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.javabridge.ui.android.NrdpWrapper;
 import com.netflix.mediaclient.javabridge.Bridge;
 import com.netflix.mediaclient.javabridge.NrdProxyFactory;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
 import com.netflix.mediaclient.javabridge.NrdProxy;
 
@@ -32,15 +32,17 @@ public class NrdController extends ServiceAgent
     private NrdProxy nrd;
     private Nrdp nrdp;
     
+    public NrdController() {
+        this.nrd = NrdProxyFactory.createInstance(new NrdController$NrdBridge(this, null));
+        this.nrdp = new NrdpWrapper(this.nrd);
+    }
+    
     private void initializeNrdLib() {
         Log.d("nf_nrdcontroller", "Initialize NRD bridge first");
-        if (this.nrd != null) {
-            throw new IllegalStateException("nrd is already created.  This should not happen!");
-        }
-        (this.nrd = NrdProxyFactory.createInstance(new NrdController$NrdBridge(this, null))).init(null);
+        this.nrd.init(null);
         Log.d("nf_nrdcontroller", "NRD bridge initialization done");
         Log.d("nf_nrdcontroller", "Start listening for updates from NRDLIb");
-        (this.nrdp = new NrdpWrapper(this.nrd)).addEventListener("init", new NrdController$1(this));
+        this.nrdp.addEventListener("init", new NrdController$1(this));
         this.nrd.connect();
     }
     

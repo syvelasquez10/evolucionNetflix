@@ -26,42 +26,45 @@ public final class SuspendLoggingImpl implements SuspendLogging
     }
     
     @Override
-    public void endBackgroundSession() {
-        Log.d("nf_log", "Background session end started");
-        if (this.mSessionBackground == null) {
-            Log.w("nf_log", "Background session did not existed before! It should not happen!");
-            return;
+    public void endAllActiveSessions() {
+        synchronized (this) {
+            this.endBackgroundingSession();
+            this.endBackgroundSession();
+            this.endResumingSession();
         }
-        this.mEventHandler.removeSession(this.mSessionBackground);
-        this.mEventHandler.post(this.mSessionBackground.createEndedEvent());
-        this.mSessionBackground = null;
-        Log.d("nf_log", "Background session end done.");
+    }
+    
+    @Override
+    public void endBackgroundSession() {
+        if (this.mSessionBackground != null) {
+            Log.d("nf_log", "Background session end started");
+            this.mEventHandler.removeSession(this.mSessionBackground);
+            this.mEventHandler.post(this.mSessionBackground.createEndedEvent());
+            this.mSessionBackground = null;
+            Log.d("nf_log", "Background session end done.");
+        }
     }
     
     @Override
     public void endBackgroundingSession() {
-        Log.d("nf_log", "Backgrounding session end started");
-        if (this.mBackgroundingSession == null) {
-            Log.w("nf_log", "Backgrounding session did not existed before! It should not happen!");
-            return;
+        if (this.mBackgroundingSession != null) {
+            Log.d("nf_log", "Backgrounding session end started");
+            this.mEventHandler.removeSession(this.mBackgroundingSession);
+            this.mEventHandler.post(this.mBackgroundingSession.createEndedEvent());
+            this.mBackgroundingSession = null;
+            Log.d("nf_log", "Backgrounding session end done.");
         }
-        this.mEventHandler.removeSession(this.mBackgroundingSession);
-        this.mEventHandler.post(this.mBackgroundingSession.createEndedEvent());
-        this.mBackgroundingSession = null;
-        Log.d("nf_log", "Backgrounding session end done.");
     }
     
     @Override
     public void endResumingSession() {
-        Log.d("nf_log", "Resuming session end started");
-        if (this.mResumingSession == null) {
-            Log.w("nf_log", "Resuming session did not existed before! It should not happen!");
-            return;
+        if (this.mResumingSession != null) {
+            Log.d("nf_log", "Resuming session end started");
+            this.mEventHandler.removeSession(this.mResumingSession);
+            this.mEventHandler.post(this.mResumingSession.createEndedEvent());
+            this.mResumingSession = null;
+            Log.d("nf_log", "Resuming session end done.");
         }
-        this.mEventHandler.removeSession(this.mResumingSession);
-        this.mEventHandler.post(this.mResumingSession.createEndedEvent());
-        this.mResumingSession = null;
-        Log.d("nf_log", "Resuming session end done.");
     }
     
     public boolean handleIntent(final Intent intent) {

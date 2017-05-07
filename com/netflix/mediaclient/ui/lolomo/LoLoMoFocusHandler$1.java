@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import com.viewpagerindicator.android.osp.ViewPager;
 import android.view.ViewParent;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+import android.widget.ListView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.database.DataSetObserver;
 import com.netflix.mediaclient.Log;

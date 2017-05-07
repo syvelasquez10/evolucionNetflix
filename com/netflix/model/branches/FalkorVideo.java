@@ -7,8 +7,8 @@ package com.netflix.model.branches;
 import com.netflix.falkor.CachedModelProxy;
 import com.netflix.falkor.PQL;
 import com.netflix.mediaclient.servicemgr.model.details.PostPlayContext;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
 import com.netflix.mediaclient.service.falkor.Falkor$Creator;
+import com.netflix.mediaclient.service.browse.BrowseAgent;
 import java.util.HashSet;
 import java.util.Set;
 import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
@@ -143,6 +143,26 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
         return (TrackableListSummary)this.sims.get("summary");
     }
     
+    private boolean isPostPlayInvalid(final String s) {
+        if (this.getType() == null) {
+            this.logInvalidPostPlayMethod(s, "video type");
+            return true;
+        }
+        if (this.getId() == null) {
+            this.logInvalidPostPlayMethod(s, "video ID");
+            return true;
+        }
+        return false;
+    }
+    
+    private void logInvalidPostPlayMethod(String string, final String s) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("SPY-7478 - Can't get post play ").append(string).append(" because ").append(s).append(" is null - ").append("getType=").append(this.getType()).append(",getId=").append(this.getId()).append(",getCurrentEpisodeId=").append(this.getCurrentEpisodeId());
+        string = sb.toString();
+        Log.w("FalkorVideo", string);
+        this.proxy.getServiceProvider().getService().getClientLogging().getErrorLogging().logHandledException(string);
+    }
+    
     @Override
     public boolean canBeSharedOnFacebook() {
         return this.isCurrentProfileFacebookConnected() && this.socialEvidence != null && !this.socialEvidence.isVideoHidden();
@@ -211,6 +231,19 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     }
     
     @Override
+    public String getBaseUrl() {
+        final Episode$Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
+        if (currentEpisodeDetail != null) {
+            return currentEpisodeDetail.baseUrl;
+        }
+        final Video$Detail detail = this.getDetail();
+        if (detail != null) {
+            return detail.baseUrl;
+        }
+        return null;
+    }
+    
+    @Override
     public String getBifUrl() {
         final Video$Detail detail = this.getDetail();
         if (detail == null) {
@@ -224,11 +257,11 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     }
     
     @Override
-    public String getBoxshotURL() {
+    public String getBoxshotUrl() {
         if (this.summary == null) {
             return null;
         }
-        return this.summary.getBoxshotURL();
+        return this.summary.getBoxshotUrl();
     }
     
     @Override
@@ -507,6 +540,20 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     }
     
     @Override
+    public int getLogicalStart() {
+        final Video$Detail detail = this.getDetail();
+        if (detail == null) {
+            return 0;
+        }
+        return detail.logicalStart;
+    }
+    
+    @Override
+    public String getModifiedStillUrl() {
+        return BrowseAgent.buildStillUrlFromPos(this);
+    }
+    
+    @Override
     public String getNarrative() {
         final Video$Detail detail = this.getDetail();
         if (detail != null) {
@@ -652,12 +699,7 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     
     @Override
     public List<PostPlayContext> getPostPlayContexts() {
-        if (this.getType() == null) {
-            Log.w("FalkorVideo", "Can't get post play contexts because video type is null");
-            return null;
-        }
-        if (this.getId() == null) {
-            Log.w("FalkorVideo", "Can't get post play contexts because video ID is null");
+        if (this.isPostPlayInvalid("contexts")) {
             return null;
         }
         return this.proxy.getItemsAsList(PQL.create(this.getType().getValue(), this.getId(), "postplay", PQL.range(2), "postplayContext"));
@@ -665,12 +707,7 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     
     @Override
     public List<PostPlayVideo> getPostPlayVideos() {
-        if (this.getType() == null) {
-            Log.w("FalkorVideo", "Can't get post play videos because video type is null");
-            return null;
-        }
-        if (this.getId() == null) {
-            Log.w("FalkorVideo", "Can't get post play videos because video ID is null");
+        if (this.isPostPlayInvalid("videos")) {
             return null;
         }
         return this.proxy.getItemsAsList(PQL.create(this.getType().getValue(), this.getId(), "postplay", PQL.range(2), "videoRef", "summary"));
@@ -775,14 +812,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             return null;
         }
         return this.summary.getSquareUrl();
-    }
-    
-    @Override
-    public String getStillUrl() {
-        if (this.bookmarkStill == null) {
-            return null;
-        }
-        return this.bookmarkStill.stillUrl;
     }
     
     @Override

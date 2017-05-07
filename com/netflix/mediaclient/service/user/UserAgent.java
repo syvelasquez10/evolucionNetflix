@@ -9,7 +9,6 @@ import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRec
 import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -33,6 +32,7 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.service.NetflixService;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.player.subtitles.TextStyle;
@@ -576,8 +576,12 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     public void logoutUser(final UserAgent$UserAgentCallback mLogoutCallback) {
+        if (!this.isReady()) {
+            Log.w("nf_service_useragent", "Can't log user out because agent has not been initialized!");
+            return;
+        }
         this.mLogoutCallback = mLogoutCallback;
-        this.getService().getClientLogging().flush();
+        this.getService().getClientLogging().onUserLogout();
         if (!this.isUserLoggedIn()) {
             this.notifyLogoutComplete(StatusCode.OK);
             return;
@@ -682,7 +686,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     @Override
     public void switchWebUserProfile(final String s) {
         Log.d("nf_service_useragent", "switchWebUserProfile");
-        this.getService().getClientLogging().flush();
+        this.getService().getClientLogging().onProfileSwitch();
         this.launchWebTask(new UserAgent$SwitchWebUserProfilesTask(this, s));
     }
     

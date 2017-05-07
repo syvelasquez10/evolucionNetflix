@@ -30,6 +30,7 @@ import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Iterator;
 import android.widget.ListAdapter;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.ViewPropertyAnimator;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
@@ -88,13 +89,13 @@ class ProfileSelectionActivity$ProfileAvatarAdapter extends BaseAdapter
     public View getView(int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.getLayoutInflater().inflate(2130903175, viewGroup, false);
-            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131165299), inflate.findViewById(2131165630), (TextView)inflate.findViewById(2131165632), inflate.findViewById(2131165631)));
+            inflate = this.this$0.getLayoutInflater().inflate(2130903174, viewGroup, false);
+            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131165300), inflate.findViewById(2131165631), (TextView)inflate.findViewById(2131165633), inflate.findViewById(2131165632)));
         }
         final ProfileSelectionActivity$Holder profileSelectionActivity$Holder = (ProfileSelectionActivity$Holder)inflate.getTag();
         final UserProfile item = this.getItem(n);
         if (n == this.this$0.profiles.size()) {
-            profileSelectionActivity$Holder.img.setImageResource(2130837820);
+            profileSelectionActivity$Holder.img.setImageResource(2130837830);
             profileSelectionActivity$Holder.kidsBadge.setVisibility(8);
             profileSelectionActivity$Holder.title.setText(2131493295);
             profileSelectionActivity$Holder.topEditImg.setVisibility(8);

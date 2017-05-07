@@ -43,14 +43,6 @@ public class FalkorSeason extends BaseFalkorObject implements BasicVideo, Season
     }
     
     @Override
-    public int getCurrentEpisodeNumber() {
-        if (this.detail == null) {
-            return -1;
-        }
-        return this.detail.currentEpisodeNumber;
-    }
-    
-    @Override
     public String getId() {
         if (this.detail == null) {
             return null;
@@ -154,6 +146,6 @@ public class FalkorSeason extends BaseFalkorObject implements BasicVideo, Season
     
     @Override
     public String toString() {
-        return "FalkorSeason [getKeys()=" + this.getKeys() + ", getId()=" + this.getId() + ", getTitle()=" + this.getTitle() + ", getType()=" + this.getType() + ", getNumOfEpisodes()=" + this.getNumOfEpisodes() + ", getCurrentEpisodeNumber()=" + this.getCurrentEpisodeNumber() + ", getSeasonNumber()=" + this.getSeasonNumber() + ", getYear()=" + this.getYear() + "]";
+        return "FalkorSeason [getKeys()=" + this.getKeys() + ", getId()=" + this.getId() + ", getTitle()=" + this.getTitle() + ", getType()=" + this.getType() + ", getNumOfEpisodes()=" + this.getNumOfEpisodes() + ", getSeasonNumber()=" + this.getSeasonNumber() + ", getYear()=" + this.getYear() + "]";
     }
 }

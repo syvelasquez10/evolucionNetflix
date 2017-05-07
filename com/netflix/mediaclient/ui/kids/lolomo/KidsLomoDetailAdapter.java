@@ -9,8 +9,8 @@ import android.widget.AbsListView;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
-import java.util.Collections;
 import android.view.ViewGroup;
+import java.util.Collections;
 import android.widget.LinearLayout;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
@@ -123,8 +123,8 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements LoLoMoFrag$ILo
             linearLayout = new KidsLoMoViewGroup<Object>((Context)this.activity, false);
         }
         ((VideoViewGroup)linearLayout).init(1);
-        final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361974);
-        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361975);
+        final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361978);
+        final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361979);
         ((VideoViewGroup)linearLayout).setPadding(dimensionPixelSize, 0, dimensionPixelSize, dimensionPixelSize2);
         int n;
         if (b) {
@@ -139,18 +139,6 @@ public class KidsLomoDetailAdapter extends BaseAdapter implements LoLoMoFrag$ILo
     
     public int getCount() {
         return this.videoData.size();
-    }
-    
-    public long getHeaderId(final int n) {
-        return -1L;
-    }
-    
-    public View getHeaderView(final int n, final View view, final ViewGroup viewGroup) {
-        View dummyView = view;
-        if (view == null) {
-            dummyView = this.createDummyView();
-        }
-        return dummyView;
     }
     
     public List<Video> getItem(final int n) {

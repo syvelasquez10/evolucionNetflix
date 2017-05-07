@@ -5,15 +5,15 @@
 package com.netflix.mediaclient.ui.common;
 
 import android.os.Handler;
-import android.view.MenuItem$OnMenuItemClickListener;
+import android.os.Debug;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.content.Context;
-import android.widget.Toast;
-import com.netflix.mediaclient.Log;
-import android.os.Debug;
+import android.view.MenuItem;
+import android.view.MenuItem$OnMenuItemClickListener;
 
-class DebugMenuItems$10 implements Runnable
+class DebugMenuItems$10 implements MenuItem$OnMenuItemClickListener
 {
     final /* synthetic */ DebugMenuItems this$0;
     
@@ -21,10 +21,8 @@ class DebugMenuItems$10 implements Runnable
         this.this$0 = this$0;
     }
     
-    @Override
-    public void run() {
-        Debug.stopMethodTracing();
-        Log.i(this.this$0.logTag, "Trace complete.  Get with: adb pull /sdcard/nflx.trace");
-        Toast.makeText((Context)this.this$0.activity, (CharSequence)"Trace: /sdcard/nflx.trace", 1).show();
+    public boolean onMenuItemClick(final MenuItem menuItem) {
+        this.this$0.beginTraceview();
+        return true;
     }
 }

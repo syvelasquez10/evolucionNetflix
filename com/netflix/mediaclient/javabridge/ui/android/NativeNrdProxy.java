@@ -124,7 +124,11 @@ public final class NativeNrdProxy extends BaseNrdProxy
             Log.w(this.getLogTag(), "Command is nul, noop");
             return;
         }
-        this.transport.invokeMethod(invoke);
+        if (this.transport != null) {
+            this.transport.invokeMethod(invoke);
+            return;
+        }
+        Log.w("native_nrd_proxy", "NrdLIb not initialized, initTimeout most likely.");
     }
     
     @Override
@@ -132,7 +136,11 @@ public final class NativeNrdProxy extends BaseNrdProxy
         if (Log.isLoggable("native_nrd_proxy", 3)) {
             Log.d("native_nrd_proxy", "invokeMethod(SSS):: object: " + s + ", method: " + s2 + ", arguments: " + s3);
         }
-        this.transport.invokeMethod(s, s2, s3);
+        if (this.transport != null) {
+            this.transport.invokeMethod(s, s2, s3);
+            return;
+        }
+        Log.w("native_nrd_proxy", "NrdLIb not initialized, initTimeout most likely.");
     }
     
     @Override
@@ -168,6 +176,10 @@ public final class NativeNrdProxy extends BaseNrdProxy
         if (Log.isLoggable("native_nrd_proxy", 3)) {
             Log.d("native_nrd_proxy", "setProperty:: object: " + s + ", property: " + s2 + ", value: " + s3);
         }
-        this.transport.setProperty(s, s2, s3);
+        if (this.transport != null) {
+            this.transport.setProperty(s, s2, s3);
+            return;
+        }
+        Log.w("native_nrd_proxy", "NrdLIb not initialized, initTimeout most likely.");
     }
 }

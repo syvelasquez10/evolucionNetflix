@@ -100,7 +100,7 @@ class PresentationTrackingManager implements PresentationTracking
         }
     }
     
-    private void sendPresentationEvents(final List<PresentationEvent> list) {
+    private void sendPresentationEvents(final List<PresentationEvent> list, final boolean b) {
         if (Log.isLoggable("nf_presentation", 3)) {
             Log.d("nf_presentation", "Send events " + list.size());
         }
@@ -111,7 +111,11 @@ class PresentationTrackingManager implements PresentationTracking
             if (Log.isLoggable("nf_presentation", 2)) {
                 Log.d("nf_presentation", "Payload for presentation request " + string);
             }
-            this.mPresentationWebClient.sendPresentationEvents(this.saveEvents(string), presentationRequest, new PresentationTrackingManager$PresentationWebCallbackImpl(this, string));
+            if (b) {
+                this.mPresentationWebClient.sendPresentationEvents(this.saveEvents(string), presentationRequest, new PresentationTrackingManager$PresentationWebCallbackImpl(this, string));
+                return;
+            }
+            this.mPresentationWebClient.sendPresentationEvents(presentationRequest);
         }
         catch (Exception ex) {
             Log.e("nf_presentation", "Failed to create JSON object for presentation request", ex);
@@ -124,8 +128,8 @@ class PresentationTrackingManager implements PresentationTracking
         }
     }
     
-    void flush() {
-        this.mPresentationEventQueue.flushEvents();
+    void flush(final boolean b) {
+        this.mPresentationEventQueue.flushEvents(b);
     }
     
     void init(final ScheduledExecutorService mExecutor) {

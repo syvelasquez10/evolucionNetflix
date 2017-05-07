@@ -22,6 +22,7 @@ import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.LayoutInflater;
 import android.graphics.Rect;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.view.ViewGroup;

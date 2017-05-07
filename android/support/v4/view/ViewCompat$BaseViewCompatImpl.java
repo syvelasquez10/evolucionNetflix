@@ -28,6 +28,16 @@ class ViewCompat$BaseViewCompatImpl implements ViewCompat$ViewCompatImpl
     }
     
     @Override
+    public boolean canScrollVertically(final View view, final int n) {
+        return false;
+    }
+    
+    @Override
+    public float getAlpha(final View view) {
+        return 1.0f;
+    }
+    
+    @Override
     public boolean getFitsSystemWindows(final View view) {
         return false;
     }
@@ -57,13 +67,33 @@ class ViewCompat$BaseViewCompatImpl implements ViewCompat$ViewCompatImpl
     }
     
     @Override
+    public int getMinimumWidth(final View view) {
+        return 0;
+    }
+    
+    @Override
     public int getOverScrollMode(final View view) {
         return 2;
     }
     
     @Override
+    public int getPaddingEnd(final View view) {
+        return view.getPaddingRight();
+    }
+    
+    @Override
+    public int getPaddingStart(final View view) {
+        return view.getPaddingLeft();
+    }
+    
+    @Override
     public ViewParent getParentForAccessibility(final View view) {
         return view.getParent();
+    }
+    
+    @Override
+    public float getTranslationX(final View view) {
+        return 0.0f;
     }
     
     @Override
@@ -74,6 +104,16 @@ class ViewCompat$BaseViewCompatImpl implements ViewCompat$ViewCompatImpl
     @Override
     public int getWindowSystemUiVisibility(final View view) {
         return 0;
+    }
+    
+    @Override
+    public boolean hasAccessibilityDelegate(final View view) {
+        return false;
+    }
+    
+    @Override
+    public boolean hasTransientState(final View view) {
+        return false;
     }
     
     @Override

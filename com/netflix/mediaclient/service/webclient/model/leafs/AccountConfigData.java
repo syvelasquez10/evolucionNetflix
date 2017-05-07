@@ -53,6 +53,8 @@ public class AccountConfigData
     private String preAppWidgetExperience;
     @SerializedName("tabletSearchExperience")
     private int searchTest;
+    @SerializedName("shareSheetExperience")
+    private int shareSheetExperience;
     @SerializedName("useLegacyBrowse")
     private boolean useLegacyBrowse;
     @SerializedName("videoBufferSize")
@@ -230,6 +232,10 @@ public class AccountConfigData
     
     public int getSearchTest() {
         return this.searchTest;
+    }
+    
+    public int getShareSheetExperience() {
+        return this.shareSheetExperience;
     }
     
     public int getVideoBufferSize() {

@@ -26,7 +26,7 @@ public class PaginatedLoMoAdapter extends BasePaginatedAdapter<Video>
     }
     
     @Override
-    protected int computeNumVideosToFetchPerBatch() {
+    protected int computeNumVideosToFetchPerBatch(final int n) {
         return LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD);
     }
     

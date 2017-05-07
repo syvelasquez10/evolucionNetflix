@@ -16,12 +16,14 @@ public class SocialNotificationViewHolder
     private final Button leftButton;
     private final TextView middleText;
     private final AdvancedImageView movieArtImage;
+    private final AdvancedImageView nsaArtImage;
+    private final View nsaPlayButton;
     private final View playButton;
     private final Button rightButton;
     private final TextView timeStampView;
     private final TextView topText;
     
-    public SocialNotificationViewHolder(final AdvancedImageView friendImage, final AdvancedImageView movieArtImage, final TextView timeStampView, final TextView topText, final TextView middleText, final TextView bottomText, final Button leftButton, final Button rightButton, final View playButton) {
+    public SocialNotificationViewHolder(final AdvancedImageView friendImage, final AdvancedImageView movieArtImage, final TextView timeStampView, final TextView topText, final TextView middleText, final TextView bottomText, final Button leftButton, final Button rightButton, final View playButton, final View nsaPlayButton, final AdvancedImageView nsaArtImage) {
         this.friendImage = friendImage;
         this.movieArtImage = movieArtImage;
         this.timeStampView = timeStampView;
@@ -31,6 +33,8 @@ public class SocialNotificationViewHolder
         this.leftButton = leftButton;
         this.rightButton = rightButton;
         this.playButton = playButton;
+        this.nsaPlayButton = nsaPlayButton;
+        this.nsaArtImage = nsaArtImage;
     }
     
     public TextView getBottomTextView() {
@@ -51,6 +55,14 @@ public class SocialNotificationViewHolder
     
     public AdvancedImageView getMovieArtImage() {
         return this.movieArtImage;
+    }
+    
+    public AdvancedImageView getNSAArtImage() {
+        return this.nsaArtImage;
+    }
+    
+    public View getNSAPlayButton() {
+        return this.nsaPlayButton;
     }
     
     public View getPlayButton() {

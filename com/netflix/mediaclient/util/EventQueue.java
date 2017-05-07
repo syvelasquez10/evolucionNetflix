@@ -79,9 +79,9 @@ public abstract class EventQueue<T>
         this.mFlushCriteria.add(eventQueue$FlushCriterion);
     }
     
-    protected abstract void doFlush(final List<T> p0);
+    protected abstract void doFlush(final List<T> p0, final boolean p1);
     
-    public void flushEvents() {
+    public void flushEvents(final boolean b) {
         synchronized (this) {
             final ArrayList<Object> list = new ArrayList<Object>();
             synchronized (this.mEventQueue) {
@@ -89,18 +89,17 @@ public abstract class EventQueue<T>
                 this.mEventQueue.clear();
                 this.mLastTimeEventAddedInMs = 0L;
                 // monitorexit(this.mEventQueue)
-                this.doFlush((List<T>)list);
+                this.doFlush((List<T>)list, b);
             }
         }
     }
     
     public boolean flushIfCriteriaIsFulfilled() {
-        boolean b = false;
         if (this.shouldFlushQueue()) {
-            b = true;
-            this.flushEvents();
+            this.flushEvents(true);
+            return true;
         }
-        return b;
+        return false;
     }
     
     public void pauseDelivery() {
@@ -143,30 +142,31 @@ public abstract class EventQueue<T>
         //    49: invokevirtual   com/netflix/mediaclient/util/EventQueue.shouldFlushQueue:()Z
         //    52: ifeq            6
         //    55: aload_0        
-        //    56: invokevirtual   com/netflix/mediaclient/util/EventQueue.flushEvents:()V
-        //    59: goto            6
-        //    62: astore_1       
-        //    63: aload_0        
-        //    64: monitorexit    
-        //    65: aload_1        
-        //    66: athrow         
-        //    67: astore_1       
-        //    68: aload_2        
-        //    69: monitorexit    
-        //    70: aload_1        
-        //    71: athrow         
+        //    56: iconst_1       
+        //    57: invokevirtual   com/netflix/mediaclient/util/EventQueue.flushEvents:(Z)V
+        //    60: goto            6
+        //    63: astore_1       
+        //    64: aload_0        
+        //    65: monitorexit    
+        //    66: aload_1        
+        //    67: athrow         
+        //    68: astore_1       
+        //    69: aload_2        
+        //    70: monitorexit    
+        //    71: aload_1        
+        //    72: athrow         
         //    Signature:
         //  (TT;)V
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type
         //  -----  -----  -----  -----  ----
-        //  9      16     62     67     Any
-        //  16     35     67     72     Any
-        //  35     48     67     72     Any
-        //  48     59     62     67     Any
-        //  68     70     67     72     Any
-        //  70     72     62     67     Any
+        //  9      16     63     68     Any
+        //  16     35     68     73     Any
+        //  35     48     68     73     Any
+        //  48     60     63     68     Any
+        //  69     71     68     73     Any
+        //  71     73     63     68     Any
         // 
         // The error that occurred was:
         // 
@@ -200,7 +200,7 @@ public abstract class EventQueue<T>
     public void resumeDelivery(final boolean b) {
         this.mPaused.set(false);
         if (b) {
-            this.flushEvents();
+            this.flushEvents(true);
         }
     }
     

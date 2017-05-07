@@ -79,7 +79,14 @@ public class PostPlayMap implements BranchNode
                 this.postplayContext = (Video$PostPlayContext)o;
             }
             case "videoRef": {
-                this.videoRef = (Ref)o;
+                Ref videoRef;
+                if (o instanceof Ref) {
+                    videoRef = (Ref)o;
+                }
+                else {
+                    videoRef = null;
+                }
+                this.videoRef = videoRef;
             }
         }
     }

@@ -4,6 +4,11 @@
 
 package com.netflix.mediaclient.protocol.nflx;
 
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import android.content.Context;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import java.util.Locale;
@@ -47,6 +52,9 @@ public final class NflxHandlerFactory
     
     public static NflxHandler getHandler(final NetflixActivity netflixActivity, final Uri uri, final long n) {
         DataUtil.logVerboseUriInfo("NflxHandler", uri);
+        if ("http".equalsIgnoreCase(uri.getScheme()) && "movi.es".equalsIgnoreCase(uri.getHost())) {
+            return handleTinyUrlParams(netflixActivity, uri.toString(), n);
+        }
         if (!"nflx".equalsIgnoreCase(uri.getScheme())) {
             Log.v("NflxHandler", "unknown scheme");
             return new NotHandlingActionHandler();
@@ -179,5 +187,27 @@ public final class NflxHandlerFactory
         }
         NflxProtocolUtils.reportUiSessions(netflixActivity, nflxHandler$Response, b, clientLogging$ModalView, n);
         return nflxHandler;
+    }
+    
+    private static NflxHandler handleTinyUrlParams(final NetflixActivity netflixActivity, final String s, final long n) {
+        if (Log.isLoggable("NflxHandler", 2)) {
+            Log.v("NflxHandler", "handleTinyUrlParams() got path: " + s);
+        }
+        final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
+        Log.v("NflxHandler", "view details from tiny url starts...");
+        if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
+            clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking(s);
+        }
+        final boolean contains = s.contains("?s=a");
+        if (contains) {
+            UserActionLogUtils.reportShareSheetOpenActionStarted(s, (Context)netflixActivity, null, IClientLogging$ModalView.movieDetails);
+        }
+        final HashMap<String, String> hashMap = new HashMap<String, String>();
+        hashMap.put("u", s);
+        NflxProtocolUtils.reportUiSessions(netflixActivity, NflxHandler$Response.HANDLING, false, IClientLogging$ModalView.movieDetails, n);
+        if (contains) {
+            UserActionLogUtils.reportShareSheetOpenActionEnded((Context)netflixActivity, IClientLogging$CompletionReason.success, null);
+        }
+        return new ViewDetailsActionHandler(netflixActivity, hashMap);
     }
 }

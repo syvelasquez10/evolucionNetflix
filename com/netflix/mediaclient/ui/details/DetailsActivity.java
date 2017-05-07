@@ -4,10 +4,11 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import android.view.MenuItem;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.Menu;
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +17,7 @@ import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
@@ -24,9 +25,9 @@ import android.content.Context;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
-import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import android.view.MenuItem;
+import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.ui.common.VideoDetailsProvider;
@@ -46,13 +47,16 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     protected MessageData mMessageData;
     private boolean mNotificationOpenedReportAlreadySent;
     private PlayContext mPlayContext;
-    private MenuItem notificationsMenuItem;
+    private SocialUtils$NotificationsListStatus notificationsListStatus;
+    private final BroadcastReceiver reloadReceiver;
     private ServiceManager serviceMan;
     private final BroadcastReceiver socialNotificationsListUpdateReceiver;
     private String videoId;
     
     public DetailsActivity() {
+        this.notificationsListStatus = SocialUtils$NotificationsListStatus.NO_MESSAGES;
         this.socialNotificationsListUpdateReceiver = new DetailsActivity$1(this);
+        this.reloadReceiver = new DetailsActivity$2(this);
     }
     
     private void handleAction() {
@@ -91,6 +95,20 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     
     private void registerReceivers() {
         this.registerReceiverLocallyWithAutoUnregister(this.socialNotificationsListUpdateReceiver, "com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED");
+        this.registerReceiverLocallyWithAutoUnregister(this.reloadReceiver, "com.netflix.mediaclient.intent.action.DETAIL_PAGE_REFRESH");
+    }
+    
+    private void reloadData() {
+        this.sendReloadRequest(this.getPrimaryFrag());
+        this.sendReloadRequest(this.getSecondaryFrag());
+    }
+    
+    private void sendReloadRequest(final Fragment fragment) {
+        if (fragment == null || !(fragment instanceof DetailsActivity$Reloader)) {
+            return;
+        }
+        Log.v("DetailsActivity", "Found frag to execute reload request...");
+        ((DetailsActivity$Reloader)fragment).reload();
     }
     
     private void sendRetryRequest(final Fragment fragment) {
@@ -102,7 +120,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     private void updateSocialNotificationsState() {
-        if (this.serviceMan != null && SocialNotificationsUtils.isSocialNotificationsFeatureSupported(this.serviceMan)) {
+        if (this.serviceMan != null && SocialUtils.isNotificationsFeatureSupported(this.serviceMan)) {
             this.serviceMan.getBrowse().refreshSocialNotifications(false);
         }
     }
@@ -202,9 +220,10 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     
     @Override
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
+        SocialUtils.addShareIconIfNeeded(this, menu);
         MdxMenu.addSelectPlayTarget(this, menu);
         this.detailsMenu = new DetailsMenu(this, menu, this.videoId);
-        this.notificationsMenuItem = SocialNotificationsUtils.addSocialNotificationsIconIfNeeded(this, menu);
+        SocialUtils.addNotificationsIconIfNeeded(this, this.notificationsListStatus, menu);
         super.onCreateOptionsMenu(menu, menu2);
     }
     
@@ -240,7 +259,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     
     @Override
     public boolean onOptionsItemSelected(final MenuItem menuItem) {
-        return SocialNotificationsUtils.tryHandleMenuItemClick(menuItem, (Context)this) || super.onOptionsItemSelected(menuItem);
+        return SocialUtils.tryHandleMenuItemClick(menuItem, (Context)this) || super.onOptionsItemSelected(menuItem);
     }
     
     @Override
@@ -255,7 +274,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         super.onSaveInstanceState(bundle);
     }
     
-    void setAction(final DetailsActivity$Action mAction, final String mActionToken) {
+    protected void setAction(final DetailsActivity$Action mAction, final String mActionToken) {
         if (Log.isLoggable("DetailsActivity", 3)) {
             Log.d("DetailsActivity", "Action " + mAction + ", msg token: " + mActionToken);
         }

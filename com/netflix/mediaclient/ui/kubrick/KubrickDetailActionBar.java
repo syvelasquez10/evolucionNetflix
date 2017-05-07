@@ -16,7 +16,7 @@ public class KubrickDetailActionBar extends NetflixActionBar
     }
     
     private void setWidth() {
-        this.toolBar.getLayoutParams().width = KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity());
+        this.toolbar.getLayoutParams().width = KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity());
     }
     
     @Override

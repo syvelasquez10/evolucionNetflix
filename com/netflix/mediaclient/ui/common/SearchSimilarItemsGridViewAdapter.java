@@ -77,7 +77,7 @@ public class SearchSimilarItemsGridViewAdapter extends BaseAdapter
             isHorizontal = false;
         }
         videoView.setIsHorizontal(isHorizontal);
-        videoView.update(this.getItem(n), this.trackable, n, false);
+        videoView.update(this.getItem(n), this.trackable, n, false, false);
         return view;
     }
     

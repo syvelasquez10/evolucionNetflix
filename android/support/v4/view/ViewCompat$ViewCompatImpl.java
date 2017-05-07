@@ -14,6 +14,10 @@ interface ViewCompat$ViewCompatImpl
     
     boolean canScrollHorizontally(final View p0, final int p1);
     
+    boolean canScrollVertically(final View p0, final int p1);
+    
+    float getAlpha(final View p0);
+    
     boolean getFitsSystemWindows(final View p0);
     
     int getImportantForAccessibility(final View p0);
@@ -24,13 +28,25 @@ interface ViewCompat$ViewCompatImpl
     
     int getMinimumHeight(final View p0);
     
+    int getMinimumWidth(final View p0);
+    
     int getOverScrollMode(final View p0);
     
+    int getPaddingEnd(final View p0);
+    
+    int getPaddingStart(final View p0);
+    
     ViewParent getParentForAccessibility(final View p0);
+    
+    float getTranslationX(final View p0);
     
     float getTranslationY(final View p0);
     
     int getWindowSystemUiVisibility(final View p0);
+    
+    boolean hasAccessibilityDelegate(final View p0);
+    
+    boolean hasTransientState(final View p0);
     
     void jumpDrawablesToCurrentState(final View p0);
     

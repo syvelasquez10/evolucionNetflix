@@ -36,11 +36,12 @@ import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
 import com.netflix.mediaclient.service.NetflixService;
+import java.util.ArrayList;
 import android.os.Handler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
 import com.netflix.mediaclient.android.app.Status;
-import java.util.ArrayList;
+import java.util.List;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
@@ -74,7 +75,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     private static final String sMemLevel;
     private AccountConfiguration mAccountConfigOverride;
     private int mAppVersionCode;
-    private final ArrayList<ConfigurationAgent$ConfigAgentListener> mConfigAgentListeners;
+    private final List<ConfigurationAgent$ConfigAgentListener> mConfigAgentListeners;
     private Status mConfigRefreshStatus;
     private ConfigurationWebClient mConfigurationWebClient;
     private DeviceConfiguration mDeviceConfigOverride;
@@ -93,10 +94,10 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     private final Runnable refreshRunnable;
     
     static {
-        DUMMY_KUBRICK_CONFIG = new ConfigurationAgent$1();
-        DUMMY_KIDS_CONFIG = new ConfigurationAgent$2();
         DEFAULT_IMAGE_CACHE_SIZE_BYTES = (int)(Runtime.getRuntime().maxMemory() * 0.5f);
         sMemLevel = computeMemLevel();
+        DUMMY_KUBRICK_CONFIG = new ConfigurationAgent$6();
+        DUMMY_KIDS_CONFIG = new ConfigurationAgent$7();
     }
     
     public ConfigurationAgent() {
@@ -106,9 +107,9 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         this.mSoftwareVersion = null;
         this.mNeedLogout = false;
         this.mNeedEsMigration = false;
-        this.refreshRunnable = new ConfigurationAgent$5(this);
-        this.mMdxConfiguration = new ConfigurationAgent$6(this);
-        this.mPlaybackConfiguration = new ConfigurationAgent$7(this);
+        this.refreshRunnable = new ConfigurationAgent$3(this);
+        this.mMdxConfiguration = new ConfigurationAgent$4(this);
+        this.mPlaybackConfiguration = new ConfigurationAgent$5(this);
     }
     
     private ImageResolutionClass computeImageResolutionClass(final Context context) {
@@ -217,8 +218,8 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         return this.fetchConfigSynchronouslyOnAppStart(s);
     }
     
-    private void notifyConfigRefreshed() {
-        this.getMainHandler().post((Runnable)new ConfigurationAgent$4(this));
+    private void notifyConfigRefreshedAndClearListeners() {
+        this.getMainHandler().post((Runnable)new ConfigurationAgent$2(this));
     }
     
     private void persistConfigOverride(final ConfigData configData) {
@@ -313,9 +314,9 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             this.initCompleted(loadConfigOverridesOnAppStart);
             return;
         }
-        final ConfigurationAgent$3 configurationAgent$3 = new ConfigurationAgent$3(this);
+        final ConfigurationAgent$1 configurationAgent$1 = new ConfigurationAgent$1(this);
         NccpKeyStore.init(this.getContext());
-        this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), configurationAgent$3);
+        this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), configurationAgent$1);
         this.mESN = EsnProviderRegistry.createESN(this.getContext(), this.mDrmManager, this);
         Log.d("nf_configurationagent", "Inject ESN to PlayerTypeFactory");
         PlayerTypeFactory.initialize(this.mESN);
@@ -497,6 +498,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         return this.mAccountConfigOverride.getSearchTest();
     }
     
+    @Override
+    public int getShareSheetExperience() {
+        return this.mAccountConfigOverride.getShareSheetExperience();
+    }
+    
     public SignUpConfiguration getSignUpConfiguration() {
         return this.mDeviceConfigOverride.getSignUpConfiguration();
     }
@@ -521,11 +527,10 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         final int videoBufferSize = this.mAccountConfigOverride.getVideoBufferSize();
         int n;
         if (videoBufferSize < 4194304 || (n = videoBufferSize) > 33554432) {
-            final int n2 = n = 0;
             if (Log.isLoggable("nf_configurationagent", 3)) {
-                Log.d("nf_configurationagent", " Invalid VideoBufferSize " + 0);
-                n = n2;
+                Log.d("nf_configurationagent", "Invalid VideoBufferSize " + videoBufferSize);
             }
+            n = 0;
         }
         return n;
     }
@@ -622,9 +627,9 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     
     public void refreshConfig(final ConfigurationAgentWebCallback configurationAgentWebCallback, final ConfigurationAgent$ConfigAgentListener configurationAgent$ConfigAgentListener) {
         // monitorenter(this)
-        Label_0015: {
+        Label_0017: {
             if (configurationAgent$ConfigAgentListener == null) {
-                break Label_0015;
+                break Label_0017;
             }
             try {
                 this.mConfigAgentListeners.add(configurationAgent$ConfigAgentListener);
@@ -640,19 +645,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             }
             // monitorexit(this)
         }
-    }
-    
-    public void removeConfigAgentListener(final ConfigurationAgent$ConfigAgentListener configurationAgent$ConfigAgentListener) {
-        // monitorenter(this)
-        if (configurationAgent$ConfigAgentListener == null) {
-            return;
-        }
-        try {
-            this.mConfigAgentListeners.remove(configurationAgent$ConfigAgentListener);
-        }
-        finally {
-        }
-        // monitorexit(this)
     }
     
     public boolean shouldUseLegacyBrowseVolleyClient() {

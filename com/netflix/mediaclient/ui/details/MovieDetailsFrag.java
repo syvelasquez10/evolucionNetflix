@@ -4,38 +4,46 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.servicemgr.model.Video;
+import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.model.trackable.TrackableObject;
+import android.support.v7.widget.RecyclerView$Adapter;
+import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
-import android.widget.AbsListView$OnScrollListener;
-import android.widget.AbsListView;
+import android.support.v7.widget.RecyclerView$OnScrollListener;
 import com.netflix.mediaclient.ui.DetailsPageParallaxScrollListener;
-import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
+import com.netflix.mediaclient.ui.lomo.LomoConfig;
+import com.netflix.mediaclient.ui.common.SimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.android.app.Status;
-import android.widget.ListAdapter;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import android.content.Context;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
-import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView;
 import android.view.View;
+import android.support.v7.widget.RecyclerView$LayoutManager;
+import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
+import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView$ItemDecoration;
+import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.GridView;
-import com.netflix.mediaclient.ui.common.SimilarItemsGridViewAdapter;
+import android.support.v7.widget.RecyclerView;
+import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
 
 public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
 {
     protected static final String EXTRA_VIDEO_ID = "video_id";
     private static final String TAG = "MovieDetailsFrag";
-    protected SimilarItemsGridViewAdapter adapter;
-    protected GridView gridView;
+    protected RecyclerViewHeaderAdapter adapter;
     private boolean isLoading;
+    protected int numColumns;
+    protected RecyclerView recyclerView;
     private long requestId;
     private TextView similarShowsTitle;
     private int targetScrollYOffset;
@@ -68,22 +76,32 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     private void scrollTo(final int n) {
         if (this.primaryView != null) {
             Log.v("MovieDetailsFrag", "Posting scroll to mdp frag, offset: " + n);
-            this.primaryView.post((Runnable)new MovieDetailsFrag$2(this, n));
+            this.primaryView.post((Runnable)new MovieDetailsFrag$4(this, n));
         }
     }
     
+    private void setupRecyclerViewItemDecoration() {
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131361878), this.numColumns));
+    }
+    
+    private void setupRecyclerViewLayoutManager() {
+        final GridLayoutManager layoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns);
+        layoutManager.setSpanSizeLookup(new MovieDetailsFrag$2(this));
+        this.recyclerView.setLayoutManager(layoutManager);
+    }
+    
     protected void findViews(final View view) {
-        this.gridView = (StickyGridHeadersGridView)view.findViewById(16908298);
+        this.recyclerView = (RecyclerView)view.findViewById(16908298);
     }
     
     @Override
     protected VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final MovieDetails movieDetails) {
-        return new MovieDetailsFrag$1(this, movieDetails);
+        return new MovieDetailsFrag$3(this, movieDetails);
     }
     
     @Override
     protected int getLayoutId() {
-        return 2130903200;
+        return 2130903177;
     }
     
     public int getScrollYOffset() {
@@ -100,7 +118,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     
     @Override
     protected void initDetailsViewGroup(final View view) {
-        (this.detailsViewGroup = new MovieDetailsFrag$MovieDetailVideoDetailsViewGroup(this, (Context)this.getActivity())).removeActionBarDummyView();
+        (this.detailsViewGroup = new VideoDetailsViewGroup((Context)this.getActivity())).removeActionBarDummyView();
         this.detailsViewGroup.showRelatedTitle();
     }
     
@@ -118,11 +136,9 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
         this.findViews(onCreateView);
-        this.setupGridView();
+        this.numColumns = this.retrieveNumColumns();
         this.initDetailsViewGroup(onCreateView);
-        this.adapter = new MovieDetailsFrag$SimGridAdapter(this, this.getNetflixActivity(), this.gridView);
-        ((MovieDetailsFrag$SimGridAdapter)this.adapter).setDetailsHeaderView((ViewGroup)this.detailsViewGroup);
-        this.gridView.setAdapter((ListAdapter)this.adapter);
+        this.setupRecyclerView();
         this.setupDetailsPageParallaxScrollListener();
         return onCreateView;
     }
@@ -130,7 +146,6 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         super.onManagerReady(serviceManager, status);
-        serviceManager.registerAddToMyListListener(this.getVideoId(), new MovieDetailsFrag$MovieDetailaStateListener(this));
         this.fetchMovieData();
     }
     
@@ -141,7 +156,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     @Override
     public void onResume() {
         super.onResume();
-        this.adapter.refreshImagesIfNecessary();
+        ((SimilarItemsGridViewAdapter)this.adapter).refreshImagesIfNecessary();
     }
     
     @Override
@@ -149,29 +164,40 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         this.fetchMovieData();
     }
     
+    protected int retrieveNumColumns() {
+        return LomoConfig.computeStandardNumVideosPerPage(this.getNetflixActivity(), false);
+    }
+    
     public void setScrollYOffset(final int targetScrollYOffset) {
         this.targetScrollYOffset = targetScrollYOffset;
     }
     
     protected void setupDetailsPageParallaxScrollListener() {
-        if (this.getActivity() != null && this.gridView != null) {
+        if (this.getActivity() != null && this.recyclerView != null) {
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
                 final Drawable drawable = this.getActivity().getResources().getDrawable(2130837560);
                 drawable.setAlpha(0);
-                this.gridView.setOnScrollListener((AbsListView$OnScrollListener)new DetailsPageParallaxScrollListener(null, (AbsListView)this.gridView, (View)this.detailsViewGroup.getHeroImage(), null, drawable));
+                this.recyclerView.setOnScrollListener(new DetailsPageParallaxScrollListener(null, this.recyclerView, (View)this.detailsViewGroup.getHeroImage(), null, drawable));
             }
         }
     }
     
-    protected void setupGridView() {
-        if (this.gridView == null) {
+    protected void setupRecyclerView() {
+        if (this.recyclerView == null) {
             return;
         }
-        this.gridView.setFocusable(false);
-        this.gridView.setVisibility(4);
-        ((StickyGridHeadersGridView)this.gridView).setAreHeadersSticky(false);
+        this.recyclerView.setFocusable(false);
+        this.recyclerView.setVisibility(4);
+        this.setupRecyclerViewItemDecoration();
+        this.setupRecyclerViewLayoutManager();
+        this.setupRecyclerViewAdapter();
+    }
+    
+    protected void setupRecyclerViewAdapter() {
+        (this.adapter = new SimilarItemsGridViewAdapter(this.recyclerView, true, this.numColumns, new MovieDetailsFrag$1(this))).addHeaderView((View)this.detailsViewGroup);
+        this.recyclerView.setAdapter(this.adapter);
     }
     
     @Override
@@ -181,9 +207,10 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
             this.similarShowsTitle.setText((CharSequence)this.getString(2131493152, new Object[] { movieDetails.getTitle() }));
             this.similarShowsTitle.setVisibility(0);
         }
-        this.adapter.setData(movieDetails.getSimilars(), new TrackableObject(movieDetails.getSimilarsRequestId(), movieDetails.getSimilarsTrackId(), movieDetails.getSimilarsListPos()));
-        if (this.gridView != null) {
-            this.gridView.setVisibility(0);
+        this.adapter.setTrackable(new TrackableObject(movieDetails.getSimilarsRequestId(), movieDetails.getSimilarsTrackId(), movieDetails.getSimilarsListPos()));
+        this.adapter.setItems(movieDetails.getSimilars());
+        if (this.recyclerView != null) {
+            this.recyclerView.setVisibility(0);
         }
         this.scrollTo(this.targetScrollYOffset);
         this.targetScrollYOffset = 0;

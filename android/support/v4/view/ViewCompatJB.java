@@ -21,8 +21,16 @@ class ViewCompatJB
         return view.getMinimumHeight();
     }
     
+    public static int getMinimumWidth(final View view) {
+        return view.getMinimumWidth();
+    }
+    
     public static ViewParent getParentForAccessibility(final View view) {
         return view.getParentForAccessibility();
+    }
+    
+    public static boolean hasTransientState(final View view) {
+        return view.hasTransientState();
     }
     
     public static void postInvalidateOnAnimation(final View view) {

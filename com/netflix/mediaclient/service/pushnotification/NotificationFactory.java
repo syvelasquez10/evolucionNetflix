@@ -6,9 +6,10 @@ package com.netflix.mediaclient.service.pushnotification;
 
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
@@ -59,6 +60,10 @@ public final class NotificationFactory
                     InfoEventHandler.getInstance().handleEvent(netflixService, payload, intent);
                 }
                 else if (!handleSocialAction(netflixService, payload, intent)) {
+                    if (NetflixApplication.isActivityVisible()) {
+                        Log.i("nf_push_notificationFactory", "App is active - don't send a notification to Android status bar");
+                        return;
+                    }
                     final int androidVersion = AndroidUtils.getAndroidVersion();
                     if (androidVersion >= 16) {
                         NotificationBuilderJellyBean.createNotification(applicationContext, payload, imageLoader, n, errorLogging);
@@ -82,7 +87,7 @@ public final class NotificationFactory
             reportError(netflixService, String.format("currentProfile null dropping social event payload:%s", payload));
             return true;
         }
-        if (!SocialNotificationsUtils.isSocialNotificationsFeatureSupported(netflixService.getCurrentProfile(), netflixService.getApplicationContext())) {
+        if (!SocialUtils.isNotificationsFeatureSupported(netflixService.getCurrentProfile(), netflixService.getApplicationContext())) {
             Log.d("nf_push_notificationFactory", String.format("Skipping notification because social recommendation feature is not supported for current profile: %s or device.", netflixService.getCurrentProfile()));
             return true;
         }

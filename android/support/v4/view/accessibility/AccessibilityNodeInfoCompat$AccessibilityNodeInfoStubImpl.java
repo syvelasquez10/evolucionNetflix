@@ -121,6 +121,16 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoStubImpl implements Acces
     }
     
     @Override
+    public Object obtainCollectionInfo(final int n, final int n2, final boolean b, final int n3) {
+        return null;
+    }
+    
+    @Override
+    public Object obtainCollectionItemInfo(final int n, final int n2, final int n3, final int n4, final boolean b, final boolean b2) {
+        return null;
+    }
+    
+    @Override
     public void recycle(final Object o) {
     }
     
@@ -142,6 +152,14 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoStubImpl implements Acces
     
     @Override
     public void setClickable(final Object o, final boolean b) {
+    }
+    
+    @Override
+    public void setCollectionInfo(final Object o, final Object o2) {
+    }
+    
+    @Override
+    public void setCollectionItemInfo(final Object o, final Object o2) {
     }
     
     @Override

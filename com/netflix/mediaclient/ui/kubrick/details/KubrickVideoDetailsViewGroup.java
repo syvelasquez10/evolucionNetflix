@@ -153,7 +153,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             return;
         }
         if (this.evidence != null && this.evidenceText != null && StringUtils.isNotEmpty(evidenceDetails.getEvidenceText())) {
-            this.evidence.setToIcon(evidenceDetails.getEvidenceGlyph(), 2131361994);
+            this.evidence.setToIcon(evidenceDetails.getEvidenceGlyph(), 2131362002);
             this.evidenceText.setText((CharSequence)evidenceDetails.getEvidenceText());
             this.evidenceGroup.setVisibility(0);
             return;
@@ -211,7 +211,7 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
             n = 0.0f;
         }
         else {
-            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131361994);
+            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131362002);
         }
         final int n2 = (int)n;
         this.alignHeroImage();
@@ -227,28 +227,28 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
     @Override
     protected void findViews() {
         super.findViews();
-        this.dataSelectorEpisodes = (RadioButton)this.findViewById(2131165454);
-        this.dataSelectorRelated = (RadioButton)this.findViewById(2131165456);
-        this.dataSelectorEpisodesTop = this.findViewById(2131165453);
-        this.titleImg = (AdvancedImageView)this.findViewById(2131165432);
-        this.dataSelectorRelatedTop = this.findViewById(2131165455);
-        this.certification = (TextView)this.findViewById(2131165421);
-        this.evidenceGroup = (ViewGroup)this.findViewById(2131165457);
-        this.evidenceText = (TextView)this.findViewById(2131165459);
-        this.hdIcon = (IconFontTextView)this.findViewById(2131165423);
-        this.durationInfo = (TextView)this.findViewById(2131165422);
-        this.evidence = (IconFontTextView)this.findViewById(2131165458);
-        this.dataSelectorGroup = (RadioGroup)this.findViewById(2131165452);
-        this.myListLabel = (TextView)this.findViewById(2131165448);
-        this.shareLabel = (TextView)this.findViewById(2131165446);
-        this.myList = (TextView)this.findViewById(2131165443);
-        this.genres = (TextView)this.findViewById(2131165451);
-        this.year = (TextView)this.findViewById(2131165420);
-        this.share = (TextView)this.findViewById(2131165445);
-        this.leftGroup = this.findViewById(2131165464);
-        this.shadow = this.findViewById(2131165462);
-        this.credits = this.findViewById(2131165469);
-        this.rate = this.findViewById(2131165444);
+        this.dataSelectorEpisodes = (RadioButton)this.findViewById(2131165456);
+        this.dataSelectorRelated = (RadioButton)this.findViewById(2131165458);
+        this.dataSelectorEpisodesTop = this.findViewById(2131165455);
+        this.titleImg = (AdvancedImageView)this.findViewById(2131165434);
+        this.dataSelectorRelatedTop = this.findViewById(2131165457);
+        this.certification = (TextView)this.findViewById(2131165423);
+        this.evidenceGroup = (ViewGroup)this.findViewById(2131165459);
+        this.evidenceText = (TextView)this.findViewById(2131165461);
+        this.hdIcon = (IconFontTextView)this.findViewById(2131165425);
+        this.durationInfo = (TextView)this.findViewById(2131165424);
+        this.evidence = (IconFontTextView)this.findViewById(2131165460);
+        this.dataSelectorGroup = (RadioGroup)this.findViewById(2131165454);
+        this.myListLabel = (TextView)this.findViewById(2131165450);
+        this.shareLabel = (TextView)this.findViewById(2131165448);
+        this.myList = (TextView)this.findViewById(2131165445);
+        this.genres = (TextView)this.findViewById(2131165453);
+        this.year = (TextView)this.findViewById(2131165422);
+        this.share = (TextView)this.findViewById(2131165447);
+        this.leftGroup = this.findViewById(2131165466);
+        this.shadow = this.findViewById(2131165464);
+        this.credits = this.findViewById(2131165471);
+        this.rate = this.findViewById(2131165446);
     }
     
     @Override

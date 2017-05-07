@@ -35,7 +35,11 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Fe
     
     private void fetchMoreData() {
         this.requestId = System.nanoTime();
-        this.fetchMoreData(this.currDataIndex, this.currDataIndex + this.getNumVideosToFetchPerBatch() - 1);
+        this.fetchMoreData(this.currDataIndex, this.currDataIndex + this.getNumVideosToFetchPerBatch(this.currDataIndex) - 1);
+    }
+    
+    private int getNumVideosToFetchPerBatch(final int n) {
+        return this.paginatedAdapter.computeNumVideosToFetchPerBatch(n);
     }
     
     protected abstract BasePaginatedAdapter<T> createPaginatedAdapter(final NetflixActivity p0);
@@ -53,10 +57,6 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Fe
     
     protected ServiceManager getManager() {
         return this.manager;
-    }
-    
-    protected int getNumVideosToFetchPerBatch() {
-        return this.paginatedAdapter.computeNumVideosToFetchPerBatch();
     }
     
     @Override
@@ -147,11 +147,14 @@ public abstract class BaseProgressivePagerAdapter<T extends Video> implements Fe
     
     @Override
     public void updateDataSet(final List<T> list, final String s, final int n, final int n2) {
+        if (Log.isLoggable("BaseProgressivePagerAdapter", 2)) {
+            Log.v("BaseProgressivePagerAdapter", "Updating data set, videos size: " + list.size() + ", videos per batch: " + this.getNumVideosToFetchPerBatch(this.currDataIndex));
+        }
+        this.hasMoreData = (list.size() == this.getNumVideosToFetchPerBatch(this.currDataIndex));
         this.currDataIndex = n2 + 1;
         if (Log.isLoggable("BaseProgressivePagerAdapter", 2)) {
             Log.v("BaseProgressivePagerAdapter", s + ": updated start index to: " + this.currDataIndex);
         }
-        this.hasMoreData = (list.size() == this.getNumVideosToFetchPerBatch());
         this.paginatedAdapter.appendData(list, s, n, n2);
         this.adapterCallbacks.notifyParentOfDataSetChange();
     }

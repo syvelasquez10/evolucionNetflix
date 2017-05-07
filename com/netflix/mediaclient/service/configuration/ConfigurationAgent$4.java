@@ -32,21 +32,22 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.api.Api19Util;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
 import com.netflix.mediaclient.service.NetflixService;
+import java.util.ArrayList;
 import android.os.Handler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
 import com.netflix.mediaclient.android.app.Status;
-import java.util.ArrayList;
+import java.util.List;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
-import java.util.Iterator;
-import com.netflix.mediaclient.Log;
+import org.json.JSONArray;
 
-class ConfigurationAgent$4 implements Runnable
+class ConfigurationAgent$4 implements MdxConfiguration
 {
     final /* synthetic */ ConfigurationAgent this$0;
     
@@ -55,16 +56,37 @@ class ConfigurationAgent$4 implements Runnable
     }
     
     @Override
-    public void run() {
-        synchronized (this.this$0) {
-            Log.d("nf_configurationagent", "Invoking ConfigAgentListeners.");
-            this.this$0.mIsConfigRefreshInBackground = false;
-            final Iterator<ConfigurationAgent$ConfigAgentListener> iterator = this.this$0.mConfigAgentListeners.iterator();
-            while (iterator.hasNext()) {
-                iterator.next().onConfigRefreshed(this.this$0.mConfigRefreshStatus);
-            }
-        }
-        this.this$0.mConfigAgentListeners.clear();
+    public JSONArray getCastWhiteList() {
+        return this.this$0.mAccountConfigOverride.getCastWhitelist();
     }
-    // monitorexit(configurationAgent)
+    
+    @Override
+    public JSONArray getMdxBlackListTargets() {
+        return this.this$0.mAccountConfigOverride.getMdxBlacklist();
+    }
+    
+    @Override
+    public boolean isDisableMdx() {
+        return this.this$0.mDeviceConfigOverride.isDisableMdx();
+    }
+    
+    @Override
+    public boolean isDisableWebsocket() {
+        return this.this$0.mDeviceConfigOverride.isDisableWebsocket();
+    }
+    
+    @Override
+    public boolean isEnableCast() {
+        return this.this$0.mAccountConfigOverride.getCastEnabled();
+    }
+    
+    @Override
+    public boolean isRemoteControlLockScreenEnabled() {
+        return this.this$0.mDeviceConfigOverride.isMdxRemoteControlLockScreenEnabled();
+    }
+    
+    @Override
+    public boolean isRemoteControlNotificationEnabled() {
+        return this.this$0.mDeviceConfigOverride.isMdxRemoteControlNotificationEnabled();
+    }
 }

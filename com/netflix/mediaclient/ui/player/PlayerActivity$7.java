@@ -120,10 +120,10 @@ class PlayerActivity$7 implements ManagerStatusListener
         else {
             int contentView;
             if (DeviceUtils.isTabletByContext(this.this$0.getBaseContext())) {
-                contentView = 2130903164;
+                contentView = 2130903163;
             }
             else {
-                contentView = 2130903160;
+                contentView = 2130903159;
             }
             this.this$0.setContentView(contentView);
         }

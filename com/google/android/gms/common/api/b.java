@@ -232,14 +232,11 @@ final class b implements GoogleApiClient
                             final boolean b;
                             n.a(b, "GoogleApiClient is not connected yet.");
                             while (true) {
-                                Label_0033: {
-                                    break Label_0033;
-                                    try {
-                                        this.a(this.IS.remove());
-                                    }
-                                    catch (DeadObjectException ex) {
-                                        Log.w("GoogleApiClientImpl", "Service died while flushing queue", (Throwable)ex);
-                                    }
+                                try {
+                                    this.a(this.IS.remove());
+                                }
+                                catch (DeadObjectException ex) {
+                                    Log.w("GoogleApiClientImpl", "Service died while flushing queue", (Throwable)ex);
                                 }
                                 continue;
                             }

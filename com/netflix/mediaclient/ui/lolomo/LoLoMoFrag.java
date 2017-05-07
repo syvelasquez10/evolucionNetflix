@@ -11,15 +11,15 @@ import android.view.LayoutInflater;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.view.KeyEvent;
-import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickLoLoMoAdapter;
-import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickGenreLoLoMoAdapter;
 import com.netflix.mediaclient.ui.kids.lolomo.SkidmarkLoLoMoAdapter;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsLomoDetailAdapter;
+import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickLoLoMoAdapter;
+import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickGenreLoLoMoAdapter;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.widget.AbsListView$OnScrollListener;
-import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+import android.widget.ListAdapter;
 import android.database.DataSetObserver;
 import android.os.Parcelable;
 import android.os.Bundle;
@@ -32,7 +32,7 @@ import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import java.util.Map;
 import android.widget.AbsListView$RecyclerListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+import android.widget.ListView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.view.View;
@@ -55,7 +55,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     private View kidsEntryHeader;
     private final ErrorWrapper$Callback leCallback;
     private LoadingAndErrorWrapper leWrapper;
-    protected StickyListHeadersListView listView;
+    protected ListView listView;
     private ServiceManager manager;
     private final AbsListView$RecyclerListener recycleListener;
     private final Map<String, Object> stateMap;
@@ -67,14 +67,14 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         this.recycleListener = (AbsListView$RecyclerListener)new LoLoMoFrag$2(this);
     }
     
-    private void addKidsEntryHeaderIfNecessary(final StickyListHeadersListView stickyListHeadersListView) {
+    private void addKidsEntryHeaderIfNecessary(final ListView listView) {
         if (this.getActivity() instanceof HomeActivity) {
             final HomeActivity homeActivity = (HomeActivity)this.getActivity();
             Log.v("LoLoMoFrag", String.format("isForKids: %s, isKidsGenre: %s, shouldShowKidsEntryInGenreLomo: %s", homeActivity.isForKids(), homeActivity.isKidsGenre(), KidsUtils.shouldShowKidsEntryInGenreLomo(homeActivity)));
             if (!homeActivity.isForKids() && homeActivity.isKidsGenre() && KidsUtils.shouldShowKidsEntryInGenreLomo(homeActivity)) {
                 Log.v("LoLoMoFrag", "Adding Kids entry header to genre list view");
                 (this.kidsEntryHeader = (View)new KidsGenreEntryHeader(this.getNetflixActivity())).setVisibility(4);
-                stickyListHeadersListView.addHeaderView(this.kidsEntryHeader);
+                listView.addHeaderView(this.kidsEntryHeader);
             }
         }
     }
@@ -108,7 +108,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         if (this.focusHandler != null) {
             this.adapter.registerDataSetObserver((DataSetObserver)this.focusHandler);
         }
-        this.listView.setAdapter(this.adapter);
+        this.listView.setAdapter((ListAdapter)this.adapter);
         this.listView.setOnScrollListener((AbsListView$OnScrollListener)this.adapter);
         this.adapter.onManagerReady(this.manager, CommonStatus.OK);
     }
@@ -118,7 +118,21 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         if (netflixActivity == null) {
             Log.w("LoLoMoFrag", "createAdapter(): activity is null - should not happen");
         }
-        else if (netflixActivity.isForKids()) {
+        else if (netflixActivity.isKubrick()) {
+            if (netflixActivity.isForKids()) {
+                if (this.isGenreList) {
+                    return new KubrickGenreLoLoMoAdapter(this, this.genreId, false);
+                }
+                return new LoLoMoAdapter(this);
+            }
+            else {
+                if (this.isGenreList) {
+                    return new KubrickGenreLoLoMoAdapter(this, this.genreId, true);
+                }
+                return new KubrickLoLoMoAdapter(this);
+            }
+        }
+        else if (netflixActivity.isForKids() && !netflixActivity.isKubrick()) {
             if (this.isGenreList) {
                 KidsUtils.addListViewSpacerIfNoHeaders(this.listView);
                 return new KidsLomoDetailAdapter(this, this.genre);
@@ -126,12 +140,6 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
             if (KidsUtils.isKidsWithUpDownScrolling(netflixActivity)) {
                 return new SkidmarkLoLoMoAdapter(this);
             }
-        }
-        else if (netflixActivity.isKubrick()) {
-            if (this.isGenreList) {
-                return new KubrickGenreLoLoMoAdapter(this, this.genreId);
-            }
-            return new KubrickLoLoMoAdapter(this);
         }
         if (this.isGenreList) {
             return new GenreLoLoMoAdapter(this, this.genreId);
@@ -143,7 +151,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         return this.focusHandler != null && this.focusHandler.dispatchKeyEvent(keyEvent);
     }
     
-    StickyListHeadersListView getListView() {
+    ListView getListView() {
         return this.listView;
     }
     
@@ -189,7 +197,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("LoLoMoFrag", "Creating frag view");
         final View inflate = layoutInflater.inflate(2130903130, viewGroup, false);
-        (this.listView = (StickyListHeadersListView)inflate.findViewById(16908298)).setDivider(null);
+        (this.listView = (ListView)inflate.findViewById(16908298)).setDivider((Drawable)null);
         this.listView.setFocusable(false);
         this.listView.setRecyclerListener(this.recycleListener);
         KidsUtils.configureListViewForKids(this.getNetflixActivity(), this.listView);

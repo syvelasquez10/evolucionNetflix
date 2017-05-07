@@ -8,8 +8,9 @@ import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialPlaceh
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialConnectPlaceholder;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialFriendPlaceholder;
 import com.netflix.mediaclient.service.webclient.model.leafs.social.SocialGroupPlaceholder;
-import com.netflix.mediaclient.Log;
 import java.util.List;
+import com.netflix.mediaclient.Log;
+import android.view.View;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class LoMoUtils
@@ -21,6 +22,10 @@ public class LoMoUtils
     static {
         LoMoUtils.VIDEO_INJECT_COUNT = 1;
         LoMoUtils.INJECTED_PAGE_INDEX = 0;
+    }
+    
+    public static void applyContentOverlapPadding(final NetflixActivity netflixActivity, final View view, final LoMoUtils$LoMoWidthType loMoUtils$LoMoWidthType) {
+        view.setPadding(getLomoFragOffsetLeftPx(netflixActivity), 0, getLomoFragOffsetRightPx(netflixActivity, loMoUtils$LoMoWidthType), 0);
     }
     
     public static int getClientInjectedVideoCount(final BasicLoMo basicLoMo, final boolean b, final boolean b2, final int n) {
@@ -35,17 +40,33 @@ public class LoMoUtils
     }
     
     public static int getLomoFragOffsetLeftPx(final NetflixActivity netflixActivity) {
+        if (netflixActivity.isKubrick()) {
+            return netflixActivity.getResources().getDimensionPixelOffset(2131361991);
+        }
         if (netflixActivity.isForKids()) {
-            return (int)(0.667f * netflixActivity.getResources().getDimensionPixelOffset(2131361971));
+            return netflixActivity.getResources().getDimensionPixelOffset(2131361974);
         }
         return netflixActivity.getResources().getDimensionPixelOffset(2131361912);
     }
     
-    public static int getLomoFragOffsetRightPx(final NetflixActivity netflixActivity) {
-        if (netflixActivity.isForKids()) {
-            return (int)(1.333f * netflixActivity.getResources().getDimensionPixelOffset(2131361971));
+    public static int getLomoFragOffsetRightPx(final NetflixActivity netflixActivity, final LoMoUtils$LoMoWidthType loMoUtils$LoMoWidthType) {
+        if (Log.isLoggable("LoMoUtils", 2)) {
+            Log.v("LoMoUtils", "getLomoFragOffsetRightPx, activity: " + netflixActivity.getClass().getSimpleName() + ", widthType: " + loMoUtils$LoMoWidthType);
         }
-        return netflixActivity.getResources().getDimensionPixelOffset(2131361912);
+        switch (LoMoUtils$1.$SwitchMap$com$netflix$mediaclient$servicemgr$model$LoMoUtils$LoMoWidthType[loMoUtils$LoMoWidthType.ordinal()]) {
+            default: {
+                if (netflixActivity.isKubrick()) {
+                    return netflixActivity.getResources().getDimensionPixelOffset(2131361992);
+                }
+                if (netflixActivity.isForKids()) {
+                    return netflixActivity.getResources().getDimensionPixelOffset(2131361975);
+                }
+                return netflixActivity.getResources().getDimensionPixelOffset(2131361912);
+            }
+            case 1: {
+                return netflixActivity.getResources().getDimensionPixelOffset(2131362009);
+            }
+        }
     }
     
     public static void injectSocialData(final LoMo loMo, final List<Video> list) {

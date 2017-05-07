@@ -203,42 +203,182 @@ public class UserAgentStateManager implements Callback
     }
     
     private void init() {
-        while (true) {
-            Log.d("nf_service_useragentstate", "@init");
-            final DeviceAccount[] deviceAccounts;
-            synchronized (this.mState) {
-                this.mProfileId = null;
-                this.mCurrentDeviceAcc = null;
-                final DeviceAccount currentDeviceAccount = this.mRegistration.getCurrentDeviceAccount();
-                if (currentDeviceAccount != null) {
-                    Log.d("nf_service_useragentstate", "@init has currentDeviceAccount");
-                    this.mCurrentDeviceAcc = currentDeviceAccount;
-                    this.hasDeviceAccount();
-                    return;
-                }
-                this.mProfileId = (String)this.mProfileMap.getCurrentProfileIdAndKey().first;
-                final String s = (String)this.mProfileMap.getCurrentProfileIdAndKey().second;
-                if (Log.isLoggable("nf_service_useragentstate", 3)) {
-                    Log.d("nf_service_useragentstate", "@init get from map [" + this.mProfileId + "] with key[" + s + "]");
-                }
-                deviceAccounts = this.mRegistration.getDeviceAccounts();
-                if (deviceAccounts.length == 0) {
-                    if (StringUtils.isNotEmpty(s)) {
-                        Log.w("nf_service_useragentstate", "@init no device account but has current account key " + s);
-                    }
-                    this.transitionTo(UserAgentStateManager$STATES.NEED_CREATE_DEVACC);
-                    return;
-                }
-            }
-            final String s2;
-            if (StringUtils.isNotEmpty(s2)) {
-                this.mCurrentDeviceAcc = this.getAccountWithKey(deviceAccounts, s2);
-            }
-            if (this.mCurrentDeviceAcc == null) {
-                this.mCurrentDeviceAcc = deviceAccounts[0];
-            }
-            this.transitionTo(UserAgentStateManager$STATES.NEED_SELECT_DEVACC);
-        }
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: ldc             "nf_service_useragentstate"
+        //     2: ldc             "@init"
+        //     4: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //     7: pop            
+        //     8: aload_0        
+        //     9: getfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mState:Lcom/netflix/mediaclient/service/user/UserAgentStateManager$STATES;
+        //    12: astore_1       
+        //    13: aload_1        
+        //    14: monitorenter   
+        //    15: aload_0        
+        //    16: aconst_null    
+        //    17: putfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mProfileId:Ljava/lang/String;
+        //    20: aload_0        
+        //    21: aconst_null    
+        //    22: putfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mCurrentDeviceAcc:Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
+        //    25: aload_0        
+        //    26: getfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mRegistration:Lcom/netflix/mediaclient/javabridge/ui/Registration;
+        //    29: invokeinterface com/netflix/mediaclient/javabridge/ui/Registration.getCurrentDeviceAccount:()Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
+        //    34: astore_2       
+        //    35: aload_2        
+        //    36: ifnull          59
+        //    39: ldc             "nf_service_useragentstate"
+        //    41: ldc             "@init has currentDeviceAccount"
+        //    43: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    46: pop            
+        //    47: aload_0        
+        //    48: aload_2        
+        //    49: putfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mCurrentDeviceAcc:Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
+        //    52: aload_0        
+        //    53: invokespecial   com/netflix/mediaclient/service/user/UserAgentStateManager.hasDeviceAccount:()V
+        //    56: aload_1        
+        //    57: monitorexit    
+        //    58: return         
+        //    59: aload_0        
+        //    60: getfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mRegistration:Lcom/netflix/mediaclient/javabridge/ui/Registration;
+        //    63: invokeinterface com/netflix/mediaclient/javabridge/ui/Registration.getDeviceAccounts:()[Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
+        //    68: astore_2       
+        //    69: aload_2        
+        //    70: arraylength    
+        //    71: ifne            89
+        //    74: ldc             "nf_service_useragentstate"
+        //    76: ldc             "@init ProfileMap is being cleared"
+        //    78: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    81: pop            
+        //    82: aload_0        
+        //    83: getfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mProfileMap:Lcom/netflix/mediaclient/service/user/UserProfileMap;
+        //    86: invokevirtual   com/netflix/mediaclient/service/user/UserProfileMap.clear:()V
+        //    89: aload_0        
+        //    90: aload_0        
+        //    91: getfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mProfileMap:Lcom/netflix/mediaclient/service/user/UserProfileMap;
+        //    94: invokevirtual   com/netflix/mediaclient/service/user/UserProfileMap.getCurrentProfileIdAndKey:()Landroid/util/Pair;
+        //    97: getfield        android/util/Pair.first:Ljava/lang/Object;
+        //   100: checkcast       Ljava/lang/String;
+        //   103: putfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mProfileId:Ljava/lang/String;
+        //   106: aload_0        
+        //   107: getfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mProfileMap:Lcom/netflix/mediaclient/service/user/UserProfileMap;
+        //   110: invokevirtual   com/netflix/mediaclient/service/user/UserProfileMap.getCurrentProfileIdAndKey:()Landroid/util/Pair;
+        //   113: getfield        android/util/Pair.second:Ljava/lang/Object;
+        //   116: checkcast       Ljava/lang/String;
+        //   119: astore_3       
+        //   120: ldc             "nf_service_useragentstate"
+        //   122: iconst_3       
+        //   123: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
+        //   126: ifeq            171
+        //   129: ldc             "nf_service_useragentstate"
+        //   131: new             Ljava/lang/StringBuilder;
+        //   134: dup            
+        //   135: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   138: ldc             "@init get from map ["
+        //   140: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   143: aload_0        
+        //   144: getfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mProfileId:Ljava/lang/String;
+        //   147: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   150: ldc             "] with key["
+        //   152: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   155: aload_3        
+        //   156: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   159: ldc             "]"
+        //   161: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   164: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   167: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   170: pop            
+        //   171: aload_2        
+        //   172: arraylength    
+        //   173: ifne            223
+        //   176: aload_3        
+        //   177: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
+        //   180: ifeq            208
+        //   183: ldc             "nf_service_useragentstate"
+        //   185: new             Ljava/lang/StringBuilder;
+        //   188: dup            
+        //   189: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   192: ldc             "@init no device account but has current account key "
+        //   194: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   197: aload_3        
+        //   198: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   201: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   204: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   207: pop            
+        //   208: aload_0        
+        //   209: getstatic       com/netflix/mediaclient/service/user/UserAgentStateManager$STATES.NEED_CREATE_DEVACC:Lcom/netflix/mediaclient/service/user/UserAgentStateManager$STATES;
+        //   212: invokespecial   com/netflix/mediaclient/service/user/UserAgentStateManager.transitionTo:(Lcom/netflix/mediaclient/service/user/UserAgentStateManager$STATES;)V
+        //   215: aload_1        
+        //   216: monitorexit    
+        //   217: return         
+        //   218: astore_2       
+        //   219: aload_1        
+        //   220: monitorexit    
+        //   221: aload_2        
+        //   222: athrow         
+        //   223: aload_3        
+        //   224: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
+        //   227: ifeq            240
+        //   230: aload_0        
+        //   231: aload_0        
+        //   232: aload_2        
+        //   233: aload_3        
+        //   234: invokespecial   com/netflix/mediaclient/service/user/UserAgentStateManager.getAccountWithKey:([Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;Ljava/lang/String;)Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
+        //   237: putfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mCurrentDeviceAcc:Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
+        //   240: aload_0        
+        //   241: getfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mCurrentDeviceAcc:Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
+        //   244: ifnonnull       254
+        //   247: aload_0        
+        //   248: aload_2        
+        //   249: iconst_0       
+        //   250: aaload         
+        //   251: putfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mCurrentDeviceAcc:Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
+        //   254: aload_0        
+        //   255: getstatic       com/netflix/mediaclient/service/user/UserAgentStateManager$STATES.NEED_SELECT_DEVACC:Lcom/netflix/mediaclient/service/user/UserAgentStateManager$STATES;
+        //   258: invokespecial   com/netflix/mediaclient/service/user/UserAgentStateManager.transitionTo:(Lcom/netflix/mediaclient/service/user/UserAgentStateManager$STATES;)V
+        //   261: goto            56
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type
+        //  -----  -----  -----  -----  ----
+        //  15     35     218    223    Any
+        //  39     56     218    223    Any
+        //  56     58     218    223    Any
+        //  59     89     218    223    Any
+        //  89     171    218    223    Any
+        //  171    208    218    223    Any
+        //  208    217    218    223    Any
+        //  219    221    218    223    Any
+        //  223    240    218    223    Any
+        //  240    254    218    223    Any
+        //  254    261    218    223    Any
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.NullPointerException
+        //     at com.strobel.assembler.ir.StackMappingVisitor.push(StackMappingVisitor.java:290)
+        //     at com.strobel.assembler.ir.StackMappingVisitor$InstructionAnalyzer.execute(StackMappingVisitor.java:833)
+        //     at com.strobel.assembler.ir.StackMappingVisitor$InstructionAnalyzer.visit(StackMappingVisitor.java:398)
+        //     at com.strobel.decompiler.ast.AstBuilder.performStackAnalysis(AstBuilder.java:2030)
+        //     at com.strobel.decompiler.ast.AstBuilder.build(AstBuilder.java:108)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:210)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
     private boolean isCurrentProfileValid(final List<UserProfile> list) {

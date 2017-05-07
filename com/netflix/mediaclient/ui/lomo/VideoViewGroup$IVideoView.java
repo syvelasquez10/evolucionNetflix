@@ -11,5 +11,5 @@ public interface VideoViewGroup$IVideoView<T> extends PlayContextProvider
 {
     void hide();
     
-    void update(final T p0, final Trackable p1, final int p2, final boolean p3);
+    void update(final T p0, final Trackable p1, final int p2, final boolean p3, final boolean p4);
 }

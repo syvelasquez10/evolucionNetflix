@@ -6,19 +6,19 @@ package com.netflix.mediaclient;
 
 public final class R$color
 {
-    public static final int abc_background_cache_hint_selector_material_dark = 2131296434;
-    public static final int abc_background_cache_hint_selector_material_light = 2131296435;
+    public static final int abc_background_cache_hint_selector_material_dark = 2131296435;
+    public static final int abc_background_cache_hint_selector_material_light = 2131296436;
     public static final int abc_input_method_navigation_guard = 2131296259;
-    public static final int abc_primary_text_disable_only_material_dark = 2131296436;
-    public static final int abc_primary_text_disable_only_material_light = 2131296437;
-    public static final int abc_primary_text_material_dark = 2131296438;
-    public static final int abc_primary_text_material_light = 2131296439;
-    public static final int abc_search_url_text = 2131296440;
+    public static final int abc_primary_text_disable_only_material_dark = 2131296437;
+    public static final int abc_primary_text_disable_only_material_light = 2131296438;
+    public static final int abc_primary_text_material_dark = 2131296439;
+    public static final int abc_primary_text_material_light = 2131296440;
+    public static final int abc_search_url_text = 2131296441;
     public static final int abc_search_url_text_normal = 2131296256;
     public static final int abc_search_url_text_pressed = 2131296258;
     public static final int abc_search_url_text_selected = 2131296257;
-    public static final int abc_secondary_text_material_dark = 2131296441;
-    public static final int abc_secondary_text_material_light = 2131296442;
+    public static final int abc_secondary_text_material_dark = 2131296442;
+    public static final int abc_secondary_text_material_light = 2131296443;
     public static final int accent_material_dark = 2131296271;
     public static final int accent_material_light = 2131296270;
     public static final int action_bar_bg_gradient_end_color = 2131296394;
@@ -62,8 +62,8 @@ public final class R$color
     public static final int common_signin_btn_light_text_disabled = 2131296311;
     public static final int common_signin_btn_light_text_focused = 2131296312;
     public static final int common_signin_btn_light_text_pressed = 2131296310;
-    public static final int common_signin_btn_text_dark = 2131296443;
-    public static final int common_signin_btn_text_light = 2131296444;
+    public static final int common_signin_btn_text_dark = 2131296444;
+    public static final int common_signin_btn_text_light = 2131296445;
     public static final int dark_grey = 2131296358;
     public static final int default_circle_indicator_fill_color = 2131296336;
     public static final int default_circle_indicator_page_color = 2131296337;
@@ -106,14 +106,15 @@ public final class R$color
     public static final int kubrick_details_credits = 2131296426;
     public static final int kubrick_details_translucency = 2131296425;
     public static final int kubrick_hero_lolomo_row_title_background_color = 2131296424;
+    public static final int kubrick_kids_toolbar_background = 2131296431;
     public static final int kubrick_selected_text = 2131296427;
     public static final int kubrick_text_color_light = 2131296429;
     public static final int kubrick_text_color_lightest = 2131296428;
     public static final int kubrick_text_color_medium = 2131296430;
     public static final int language_selector_tab_indicator_selected_bg = 2131296391;
-    public static final int language_selector_tab_textcolor = 2131296445;
-    public static final int left_slider_selected_text = 2131296432;
-    public static final int left_slider_unselected_text = 2131296433;
+    public static final int language_selector_tab_textcolor = 2131296446;
+    public static final int left_slider_selected_text = 2131296433;
+    public static final int left_slider_unselected_text = 2131296434;
     public static final int link_text_material_dark = 2131296290;
     public static final int link_text_material_light = 2131296291;
     public static final int list_divider_color = 2131296390;
@@ -162,7 +163,7 @@ public final class R$color
     public static final int secondary_text_disabled_material_light = 2131296297;
     public static final int selectable_item_background_active = 2131296374;
     public static final int selectable_item_background_focused = 2131296375;
-    public static final int selectable_text_light_to_dark = 2131296446;
+    public static final int selectable_text_light_to_dark = 2131296447;
     public static final int selectable_video_background_active = 2131296376;
     public static final int social_notifications_unread_background = 2131296423;
     public static final int splash_bg = 2131296393;
@@ -173,7 +174,7 @@ public final class R$color
     public static final int translucent_black = 2131296362;
     public static final int translucent_black_70 = 2131296363;
     public static final int transparent = 2131296356;
-    public static final int volume_selector_color = 2131296431;
+    public static final int volume_selector_color = 2131296432;
     public static final int vpi__background_holo_dark = 2131296328;
     public static final int vpi__background_holo_light = 2131296329;
     public static final int vpi__bright_foreground_disabled_holo_dark = 2131296332;
@@ -182,8 +183,8 @@ public final class R$color
     public static final int vpi__bright_foreground_holo_light = 2131296331;
     public static final int vpi__bright_foreground_inverse_holo_dark = 2131296334;
     public static final int vpi__bright_foreground_inverse_holo_light = 2131296335;
-    public static final int vpi__dark_theme = 2131296447;
-    public static final int vpi__light_theme = 2131296448;
+    public static final int vpi__dark_theme = 2131296448;
+    public static final int vpi__light_theme = 2131296449;
     public static final int wallet_bright_foreground_disabled_holo_light = 2131296320;
     public static final int wallet_bright_foreground_holo_dark = 2131296315;
     public static final int wallet_bright_foreground_holo_light = 2131296321;
@@ -197,8 +198,8 @@ public final class R$color
     public static final int wallet_hint_foreground_holo_light = 2131296322;
     public static final int wallet_holo_blue_light = 2131296326;
     public static final int wallet_link_text_light = 2131296327;
-    public static final int wallet_primary_text_holo_light = 2131296449;
-    public static final int wallet_secondary_text_holo_dark = 2131296450;
+    public static final int wallet_primary_text_holo_light = 2131296450;
+    public static final int wallet_secondary_text_holo_dark = 2131296451;
     public static final int white = 2131296360;
     public static final int window_bg = 2131296392;
 }

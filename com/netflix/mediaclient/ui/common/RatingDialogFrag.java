@@ -66,15 +66,15 @@ public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnR
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903158, viewGroup, false);
-        int n = 2131165555;
+        final View inflate = layoutInflater.inflate(2130903157, viewGroup, false);
+        int n = 2131165556;
         if (this.mIsUserRating) {
-            n = 2131165556;
+            n = 2131165557;
         }
         (this.mRatingBar = (RatingBar)inflate.findViewById(n)).setOnRatingBarChangeListener((RatingBar$OnRatingBarChangeListener)this);
         this.mRatingBar.setRating(this.mRating);
         this.mRatingBar.setVisibility(0);
-        ((TextView)inflate.findViewById(2131165554)).setText((CharSequence)this.getString(2131493235, new Object[] { this.mVideoTitle }));
+        ((TextView)inflate.findViewById(2131165555)).setText((CharSequence)this.getString(2131493235, new Object[] { this.mVideoTitle }));
         return inflate;
     }
     

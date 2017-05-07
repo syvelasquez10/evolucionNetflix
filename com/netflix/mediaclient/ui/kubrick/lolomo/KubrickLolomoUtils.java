@@ -18,6 +18,7 @@ import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoDuplicat
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
 import java.util.ArrayList;
 import android.util.Log;
+import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import java.util.List;
 import com.netflix.mediaclient.ui.lolomo.BasePaginatedLoLoMoAdapter;
@@ -27,6 +28,7 @@ public class KubrickLolomoUtils
     private static final String TAG = "KubrickLolomoUtils";
     
     public static <T extends LoMo> List<T> createDuplicateRows(final BasePaginatedLoLoMoAdapter<?> basePaginatedLoLoMoAdapter, final List<? extends LoMo> list, int n) {
+        ThreadUtils.assertOnMain();
         List<T> list2 = (List<T>)list;
         if (basePaginatedLoLoMoAdapter.getCount() < n) {
             Log.v("KubrickLolomoUtils", "Manipulating lomo data to inject Kubrick duplicate rows");
@@ -47,9 +49,9 @@ public class KubrickLolomoUtils
     }
     
     public static BaseLoLoMoAdapter$RowHolder createHolder(final NetflixActivity netflixActivity, final View view, final LinearLayout linearLayout, final TextView textView, final BaseLoLoMoAdapter$LoMoRowContent baseLoLoMoAdapter$LoMoRowContent, final View view2) {
-        final TextView textView2 = (TextView)view.findViewById(2131165442);
+        final TextView textView2 = (TextView)view.findViewById(2131165444);
         ((FrameLayout$LayoutParams)textView2.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragImageOffsetLeftPx(netflixActivity);
-        return new KubrickLolomoUtils$KubrickRowHolder((View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, textView2, view.findViewById(2131165437));
+        return new KubrickLolomoUtils$KubrickRowHolder((View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, textView2, view.findViewById(2131165439));
     }
     
     public static boolean isDuplicateRow(final LoMo loMo) {

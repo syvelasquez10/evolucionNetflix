@@ -30,7 +30,7 @@ public class PaginatedBillboardAdapter extends BasePaginatedAdapter<Billboard>
     }
     
     @Override
-    protected int computeNumVideosToFetchPerBatch() {
+    protected int computeNumVideosToFetchPerBatch(final int n) {
         return LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.BILLBOARD);
     }
     
@@ -38,10 +38,10 @@ public class PaginatedBillboardAdapter extends BasePaginatedAdapter<Billboard>
     public int getRowHeightInPx() {
         int n;
         if (BillboardView.shouldShowArtworkOnly(this.activity)) {
-            n = (int)(BasePaginatedAdapter.computeViewPagerWidth(this.activity, false) * 0.5625f);
+            n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, false) * 0.5625f);
         }
         else {
-            final int computeViewPagerWidth = BasePaginatedAdapter.computeViewPagerWidth(this.activity, false);
+            final int computeViewPagerWidth = LoMoViewPager.computeViewPagerWidth(this.activity, false);
             int n2;
             if (DeviceUtils.isLandscape((Context)this.activity)) {
                 n2 = 3;

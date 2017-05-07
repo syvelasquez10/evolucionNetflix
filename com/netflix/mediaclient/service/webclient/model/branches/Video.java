@@ -19,11 +19,11 @@ public abstract class Video implements com.netflix.mediaclient.servicemgr.model.
     }
     
     @Override
-    public String getBoxshotURL() {
+    public String getBoxshotUrl() {
         if (this.summary == null) {
             return null;
         }
-        return this.summary.getBoxshotURL();
+        return this.summary.getBoxshotUrl();
     }
     
     @Override

@@ -53,11 +53,11 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
     }
     
     @Override
-    public String getBoxshotURL() {
+    public String getBoxshotUrl() {
         if (this.summary == null) {
             return null;
         }
-        return this.summary.getBoxshotURL();
+        return this.summary.getBoxshotUrl();
     }
     
     @Override
@@ -176,6 +176,19 @@ public class PostPlayVideo implements Playable, com.netflix.mediaclient.servicem
             return this.detail.intrUrl;
         }
         return null;
+    }
+    
+    @Override
+    public int getLogicalStart() {
+        if (VideoType.MOVIE.equals(this.getType())) {
+            if (this.detail != null) {
+                return this.detail.logicalStart;
+            }
+        }
+        else if (this.episodeDetail != null) {
+            return this.episodeDetail.logicalStart;
+        }
+        return 0;
     }
     
     @Override

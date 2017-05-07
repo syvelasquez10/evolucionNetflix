@@ -28,13 +28,15 @@ import android.app.Fragment;
 import android.os.Parcelable;
 import android.widget.Toast;
 import java.io.Serializable;
-import com.netflix.mediaclient.ui.kubrick.lomo.KubrickHomeActivity;
+import com.netflix.mediaclient.ui.kubrick_kids.lolomo.KubrickKidsHomeActivity;
+import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickHomeActivity;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsHomeActivity;
 import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
+import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
 import android.view.MenuItem;
 import android.content.DialogInterface$OnClickListener;
 import android.content.BroadcastReceiver;
@@ -46,7 +48,7 @@ import java.util.LinkedList;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.Log;
@@ -71,7 +73,7 @@ class HomeActivity$1 implements ManagerStatusListener
         this.this$0.getPrimaryFrag().onManagerReady(serviceManager, status);
         this.this$0.slidingMenuAdapter.onManagerReady(serviceManager, status);
         KidsUtils.updateKidsMenuItem(this.this$0, this.this$0.kidsEntryItem);
-        if (serviceManager != null && serviceManager.getBrowse() != null && SocialNotificationsUtils.isSocialNotificationsFeatureSupported(this.this$0)) {
+        if (serviceManager != null && serviceManager.getBrowse() != null && SocialUtils.isNotificationsFeatureSupported(this.this$0)) {
             serviceManager.getBrowse().refreshSocialNotifications(false);
         }
         this.this$0.setLoadingStatusCallback(new HomeActivity$1$1(this));

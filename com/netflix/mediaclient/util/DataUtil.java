@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.Collections;
 import com.netflix.mediaclient.Log;
 import android.net.Uri;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,18 @@ public class DataUtil
             list2.add(string);
         }
         return list2;
+    }
+    
+    public static <T> List<T> filter(final Collection<T> collection, final DataUtil$IFilter<T> dataUtil$IFilter) {
+        final Iterator<T> iterator = collection.iterator();
+        final ArrayList<T> list = new ArrayList<T>();
+        while (iterator.hasNext()) {
+            final T next = iterator.next();
+            if (dataUtil$IFilter.keepIt(next)) {
+                list.add(next);
+            }
+        }
+        return list;
     }
     
     public static String getFirstItemSafely(final List<?> list) {

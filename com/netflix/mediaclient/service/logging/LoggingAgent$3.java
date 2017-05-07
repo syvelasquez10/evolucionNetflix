@@ -39,6 +39,7 @@ import com.netflix.mediaclient.service.logging.ads.AdvertiserIdLoggingManager;
 import java.util.concurrent.ThreadFactory;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent$ConfigAgentListener;
+import com.netflix.mediaclient.javabridge.ui.Log$AppIdChangedListener;
 import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;

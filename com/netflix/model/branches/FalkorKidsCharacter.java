@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import com.netflix.falkor.CachedModelProxy;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
+import com.netflix.falkor.Undefined;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.model.leafs.Video$Detail;
 import com.netflix.model.leafs.Video$Bookmark;
@@ -140,6 +141,12 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
             case "detail": {
                 return this.kidsDetail;
             }
+            case "kubrick": {
+                return Undefined.getInstance();
+            }
+            case "rating": {
+                return Undefined.getInstance();
+            }
             case "watchNext": {
                 return this.watchNext;
             }
@@ -159,11 +166,11 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     }
     
     @Override
-    public String getBoxshotURL() {
+    public String getBoxshotUrl() {
         if (this.kidsSummary == null) {
             return null;
         }
-        return this.kidsSummary.getBoxshotURL();
+        return this.kidsSummary.getBoxshotUrl();
     }
     
     @Override
@@ -317,6 +324,15 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     }
     
     @Override
+    public int getLogicalStart() {
+        final Video$Detail watchNextDetails = this.getWatchNextDetails();
+        if (watchNextDetails == null) {
+            return 0;
+        }
+        return watchNextDetails.logicalStart;
+    }
+    
+    @Override
     public Object getOrCreate(final String s) {
         final Object value = this.get(s);
         if (value != null) {
@@ -334,6 +350,12 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
             }
             case "detail": {
                 return this.kidsDetail = new KidsCharacter$Detail();
+            }
+            case "kubrick": {
+                return Undefined.getInstance();
+            }
+            case "rating": {
+                return Undefined.getInstance();
             }
             case "watchNext": {
                 return this.watchNext = new Ref();

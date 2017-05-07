@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.ui.kubrick.details;
 
-import android.app.Activity;
+import android.content.Context;
 import android.view.View;
-import android.view.View$OnClickListener;
+import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 
-class KubrickShowDetailsFrag$3 implements View$OnClickListener
+class KubrickShowDetailsFrag$3 implements RecyclerViewHeaderAdapter$IViewCreator
 {
     final /* synthetic */ KubrickShowDetailsFrag this$0;
     
@@ -16,10 +16,8 @@ class KubrickShowDetailsFrag$3 implements View$OnClickListener
         this.this$0 = this$0;
     }
     
-    public void onClick(final View view) {
-        final Activity activity = this.this$0.getActivity();
-        if (activity != null) {
-            activity.onBackPressed();
-        }
+    @Override
+    public View createItemView() {
+        return (View)new KubrickShowDetailsFrag$KubrickEpisodeView(this.this$0, (Context)this.this$0.getActivity(), 2130903117);
     }
 }

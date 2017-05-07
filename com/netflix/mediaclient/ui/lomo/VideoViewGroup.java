@@ -9,7 +9,8 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import java.util.List;
 import android.widget.LinearLayout$LayoutParams;
-import com.netflix.mediaclient.android.fragment.CustomViewPager;
+import com.netflix.mediaclient.servicemgr.model.LoMoUtils$LoMoWidthType;
+import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
@@ -27,7 +28,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         this.setOrientation(0);
         if (b) {
-            CustomViewPager.applyContentOverlapPadding((NetflixActivity)this.getContext(), (View)this);
+            LoMoUtils.applyContentOverlapPadding((NetflixActivity)this.getContext(), (View)this, this.getLomoWidthType());
         }
     }
     
@@ -35,6 +36,10 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
     
     protected int getChildPaddingDimenResId() {
         return 2131361913;
+    }
+    
+    protected LoMoUtils$LoMoWidthType getLomoWidthType() {
+        return LoMoUtils$LoMoWidthType.STANDARD;
     }
     
     public void init(final int n) {
@@ -70,7 +75,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
             else {
                 this.updateViewIds((V)child, n3, n4, i);
                 if (list != null && i < list.size()) {
-                    ((VideoViewGroup$IVideoView<Object>)child).update(list.get(i), trackable, n4 + i, n2 == 0);
+                    ((VideoViewGroup$IVideoView<Object>)child).update(list.get(i), trackable, n4 + i, n2 == 0, false);
                 }
                 else {
                     ((VideoViewGroup$IVideoView<Object>)child).hide();

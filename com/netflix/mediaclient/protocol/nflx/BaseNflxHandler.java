@@ -5,8 +5,9 @@
 package com.netflix.mediaclient.protocol.nflx;
 
 import android.app.Activity;
+import com.netflix.mediaclient.util.SocialUtils$TinyTypes;
+import com.netflix.mediaclient.util.BaseConverter;
 import com.netflix.mediaclient.util.ThreadUtils;
-import org.json.JSONObject;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
@@ -17,9 +18,6 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 abstract class BaseNflxHandler implements NflxHandler
 {
-    protected static final String JSON_CATALOG_TITLE = "catalog_title";
-    protected static final String JSON_ID = "id";
-    protected static final String JSON_TITLE_SERIES = "title_series";
     protected static final String TAG = "NflxHandler";
     protected NetflixActivity mActivity;
     protected Map<String, String> mParamsMap;
@@ -63,40 +61,41 @@ abstract class BaseNflxHandler implements NflxHandler
         return NflxProtocolUtils$VideoInfo.DELAYED;
     }
     
-    protected abstract NflxHandler$Response handleEpisodeFromTinyUrl(final JSONObject p0, final String p1, final String p2);
+    protected abstract NflxHandler$Response handleEpisodeFromTinyUrl(final String p0, final String p1, final String p2);
     
     protected void handleHomeAction() {
         new HomeActionHandler(this.mActivity, this.mParamsMap).handle();
     }
     
-    protected abstract NflxHandler$Response handleMovieFromTinyUrl(final JSONObject p0, final String p1, final String p2);
+    protected abstract NflxHandler$Response handleMovieFromTinyUrl(final String p0, final String p1, final String p2);
     
-    protected void handleTinyUrl(String remoteDataAsString, final String s, final String s2) {
+    protected void handleTinyUrl(String value, final String s, final String s2) {
+        boolean b = true;
         ThreadUtils.assertNotOnMain();
         final NflxHandler$Response handling = NflxHandler$Response.HANDLING;
         while (true) {
             try {
-                remoteDataAsString = StringUtils.getRemoteDataAsString(NflxProtocolUtils.getExpandUrl(remoteDataAsString));
-                if (Log.isLoggable("NflxHandler", 3)) {
-                    Log.d("NflxHandler", "Received response " + remoteDataAsString);
+                value = String.valueOf(BaseConverter.convertFromBaseToInteger(NflxProtocolUtils.getExpandUrl(value), 62));
+                if (SocialUtils$TinyTypes.MOVIE_TYPE != SocialUtils$TinyTypes.ordinalToType(Integer.parseInt(value.substring(0, 1)))) {
+                    b = false;
                 }
-                final JSONObject jsonObject = new JSONObject(remoteDataAsString);
+                final String substring = value.substring(1);
+                if (Log.isLoggable("NflxHandler", 3)) {
+                    Log.d("NflxHandler", "Received decodedVideoUrl " + value);
+                }
                 NflxHandler$Response nflxHandler$Response;
-                if (!jsonObject.has("catalog_title")) {
+                if (StringUtils.isEmpty(substring)) {
                     Log.e("NflxHandler", "No catalog_title in JSON object! Go to LOLOMO.");
                     this.handleHomeAction();
                     nflxHandler$Response = handling;
                 }
+                else if (b) {
+                    Log.d("NflxHandler", "This was a movie url");
+                    nflxHandler$Response = this.handleMovieFromTinyUrl(substring, s, s2);
+                }
                 else {
-                    final JSONObject jsonObject2 = jsonObject.getJSONObject("catalog_title");
-                    if (!jsonObject2.has("title_series")) {
-                        Log.d("NflxHandler", "No title series in JSON object title. It must be movie. ");
-                        nflxHandler$Response = this.handleMovieFromTinyUrl(jsonObject2, s, s2);
-                    }
-                    else {
-                        Log.d("NflxHandler", "Title series in JSON object title. It must be episode. ");
-                        nflxHandler$Response = this.handleEpisodeFromTinyUrl(jsonObject2, s, s2);
-                    }
+                    Log.d("NflxHandler", "This was a TV Show url");
+                    nflxHandler$Response = this.handleEpisodeFromTinyUrl(substring, s, s2);
                 }
                 if (!NflxHandler$Response.HANDLING_WITH_DELAY.equals(nflxHandler$Response)) {
                     NflxProtocolUtils.reportDelayedResponseHandled(this.mActivity);

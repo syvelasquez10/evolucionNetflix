@@ -7,6 +7,7 @@ package com.netflix.model.branches;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.model.leafs.Video$Detail;
 import com.netflix.falkor.PQL;
+import android.util.Log;
 import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.model.leafs.Episode$Detail;
@@ -15,6 +16,7 @@ import com.netflix.mediaclient.servicemgr.model.Playable;
 
 public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetails, FalkorObject
 {
+    private static final String TAG = "FalkorEpisode";
     public Episode$Detail episodeDetail;
     
     public FalkorEpisode(final ModelProxy<? extends BranchNode> modelProxy) {
@@ -22,7 +24,12 @@ public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetai
     }
     
     private FalkorVideo getShow() {
-        return (FalkorVideo)this.getModelProxy().getValue(PQL.create("shows", this.getShowId(), "summary"));
+        final String showId = this.getShowId();
+        if (showId == null) {
+            Log.w("FalkorEpisode", "Can't get show because show ID is null");
+            return null;
+        }
+        return (FalkorVideo)this.getModelProxy().getValue(PQL.create("shows", showId, "summary"));
     }
     
     @Override
@@ -180,6 +187,11 @@ public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetai
     @Override
     public boolean isNextPlayableEpisode() {
         return this.episodeDetail != null && this.episodeDetail.isNextPlayableEpisode();
+    }
+    
+    @Override
+    public boolean isPinProtected() {
+        return this.episodeDetail != null && this.episodeDetail.isPinProtected();
     }
     
     @Override

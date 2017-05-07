@@ -547,7 +547,7 @@ class BifManager$1 implements Runnable
         //  1125: invokeinterface java/util/SortedMap.get:(Ljava/lang/Object;)Ljava/lang/Object;
         //  1130: checkcast       Ljava/lang/Integer;
         //  1133: invokevirtual   java/lang/Integer.intValue:()I
-        //  1136: istore_2       
+        //  1136: istore_3       
         //  1137: aload           12
         //  1139: astore          8
         //  1141: aload           11
@@ -562,7 +562,7 @@ class BifManager$1 implements Runnable
         //  1164: invokeinterface java/util/SortedMap.get:(Ljava/lang/Object;)Ljava/lang/Object;
         //  1169: checkcast       Ljava/lang/Integer;
         //  1172: invokevirtual   java/lang/Integer.intValue:()I
-        //  1175: istore_3       
+        //  1175: istore_2       
         //  1176: aload           12
         //  1178: astore          8
         //  1180: aload           11
@@ -581,11 +581,11 @@ class BifManager$1 implements Runnable
         //  1207: invokespecial   java/lang/StringBuilder.<init>:()V
         //  1210: ldc             "first offset "
         //  1212: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //  1215: iload_2        
+        //  1215: iload_3        
         //  1216: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
         //  1219: ldc             ", end @"
         //  1221: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //  1224: iload_3        
+        //  1224: iload_2        
         //  1225: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
         //  1228: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
         //  1231: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
@@ -594,7 +594,7 @@ class BifManager$1 implements Runnable
         //  1237: astore          8
         //  1239: aload           11
         //  1241: astore          9
-        //  1243: iload_2        
+        //  1243: iload_3        
         //  1244: aload_0        
         //  1245: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
         //  1248: invokestatic    com/netflix/mediaclient/media/BifManager.access$500:(Lcom/netflix/mediaclient/media/BifManager;)I
@@ -604,7 +604,7 @@ class BifManager$1 implements Runnable
         //  1258: aload           11
         //  1260: astore          9
         //  1262: aload           10
-        //  1264: iload_2        
+        //  1264: iload_3        
         //  1265: aload_0        
         //  1266: getfield        com/netflix/mediaclient/media/BifManager$1.this$0:Lcom/netflix/mediaclient/media/BifManager;
         //  1269: invokestatic    com/netflix/mediaclient/media/BifManager.access$500:(Lcom/netflix/mediaclient/media/BifManager;)I
@@ -635,8 +635,8 @@ class BifManager$1 implements Runnable
         //  1321: iconst_0       
         //  1322: istore_1       
         //  1323: iload_1        
-        //  1324: iload_3        
-        //  1325: iload_2        
+        //  1324: iload_2        
+        //  1325: iload_3        
         //  1326: isub           
         //  1327: if_icmpge       1519
         //  1330: aload           7

@@ -20,7 +20,7 @@ class ShowDetailsActivity$1 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        final NetflixDialogFrag create = EpisodeListFrag.create(this.this$0.getVideoId(), this.this$0.getEpisodeId(), false);
+        final NetflixDialogFrag create = EpisodesFrag.create(this.this$0.getVideoId(), this.this$0.getEpisodeId(), false);
         create.onManagerReady(this.this$0.getServiceManager(), CommonStatus.OK);
         create.setCancelable(true);
         this.this$0.showDialog(create);

@@ -16,6 +16,8 @@ interface LoMoViewPagerAdapter$IRowAdapterProvider
     
     RowAdapter getIqAdapter();
     
+    RowAdapter getKubrickGalleryAdapter();
+    
     RowAdapter getKubrickHeroAdapter();
     
     RowAdapter getLoadingAdapter();

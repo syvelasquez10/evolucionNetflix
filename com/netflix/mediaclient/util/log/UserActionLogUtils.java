@@ -392,6 +392,41 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
+    public static void reportRecommendSheetActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final Error error) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        ConsolidatedLoggingUtils.validateArgument(clientLogging$CompletionReason, "Reason can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_RECOMMEND_SHEET_ENDED");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("reason", clientLogging$CompletionReason.name());
+        while (true) {
+            if (error == null) {
+                break Label_0058;
+            }
+            try {
+                intent.putExtra("error", error.toJSONObject().toString());
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            }
+            catch (JSONException ex) {
+                Log.e("nf_log", "Failed to get JSON string from UIError", (Throwable)ex);
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public static void reportRecommendSheetActionStarted(final Context context, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_RECOMMEND_SHEET_START");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        if (clientLogging$ModalView != null) {
+            intent.putExtra("view", clientLogging$ModalView.name());
+        }
+        if (userActionLogging$CommandName != null) {
+            intent.putExtra("cmd", userActionLogging$CommandName.name());
+        }
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
     public static void reportRemoveFromQueueActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         ConsolidatedLoggingUtils.validateArgument(clientLogging$CompletionReason, "Reason can not be null!");
@@ -536,6 +571,78 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
         if (userActionLogging$RememberProfile != null) {
             intent.putExtra("remember_profile", userActionLogging$RememberProfile.name());
         }
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    public static void reportShareSheetActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final Error error) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        ConsolidatedLoggingUtils.validateArgument(clientLogging$CompletionReason, "Reason can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_ENDED");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("reason", clientLogging$CompletionReason.name());
+        while (true) {
+            if (error == null) {
+                break Label_0059;
+            }
+            try {
+                intent.putExtra("error", error.toJSONObject().toString());
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            }
+            catch (JSONException ex) {
+                Log.e("nf_log", "Failed to get JSON string from UIError", (Throwable)ex);
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public static void reportShareSheetActionStarted(final String s, final Context context, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_START");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        if (clientLogging$ModalView != null) {
+            intent.putExtra("view", clientLogging$ModalView.name());
+        }
+        if (userActionLogging$CommandName != null) {
+            intent.putExtra("cmd", userActionLogging$CommandName.name());
+        }
+        intent.putExtra("url", s);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    public static void reportShareSheetOpenActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final Error error) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        ConsolidatedLoggingUtils.validateArgument(clientLogging$CompletionReason, "Reason can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_OPEN_ENDED");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("reason", clientLogging$CompletionReason.name());
+        while (true) {
+            if (error == null) {
+                break Label_0059;
+            }
+            try {
+                intent.putExtra("error", error.toJSONObject().toString());
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            }
+            catch (JSONException ex) {
+                Log.e("nf_log", "Failed to get JSON string from UIError", (Throwable)ex);
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public static void reportShareSheetOpenActionStarted(final String s, final Context context, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_OPEN_START");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        if (clientLogging$ModalView != null) {
+            intent.putExtra("view", clientLogging$ModalView.name());
+        }
+        if (userActionLogging$CommandName != null) {
+            intent.putExtra("cmd", userActionLogging$CommandName.name());
+        }
+        intent.putExtra("url", s);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }

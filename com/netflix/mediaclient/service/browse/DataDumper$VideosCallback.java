@@ -4,20 +4,20 @@
 
 package com.netflix.mediaclient.service.browse;
 
-import java.util.Set;
-import com.netflix.mediaclient.util.FileUtils;
-import com.netflix.mediaclient.util.StringUtils;
 import java.util.Iterator;
-import com.netflix.mediaclient.service.browse.cache.SoftCache;
+import com.netflix.mediaclient.util.FileUtils;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import java.util.LinkedHashMap;
-import com.netflix.mediaclient.service.browse.cache.HardCache;
+import com.netflix.mediaclient.servicemgr.IBrowseManager;
+import com.netflix.mediaclient.servicemgr.model.Billboard;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
-class DataDumper$VideosCallback extends SimpleBrowseAgentCallback
+class DataDumper$VideosCallback extends SimpleManagerCallback
 {
     private final LoMo lomo;
     final /* synthetic */ DataDumper this$0;
@@ -29,14 +29,11 @@ class DataDumper$VideosCallback extends SimpleBrowseAgentCallback
         this.todo = todo;
     }
     
-    @Override
-    public void onVideosFetched(final List<Video> list, final Status status) {
-        if (this.this$0.dumpErrorOccurred) {
-            return;
-        }
-        super.onVideosFetched(list, status);
+    private void handleResponse(final List<? extends Video> list, final Status status) {
+        Log.v("DataDumper", "Got videos for lomo: " + this.lomo.getTitle());
         if (status.isError()) {
             Log.e("DataDumper", "Bummer!  Invalid status code during data dump :(");
+            Log.e("DataDumper", status.getMessage() + ", code: " + status.getStatusCode());
             this.this$0.dumpErrorOccurred = true;
             this.todo.clear();
         }
@@ -50,5 +47,23 @@ class DataDumper$VideosCallback extends SimpleBrowseAgentCallback
             return;
         }
         Log.v("DataDumper", "Remaining request count: " + this.todo.size());
+    }
+    
+    @Override
+    public void onBBVideosFetched(final List<Billboard> list, final Status status) {
+        if (this.this$0.dumpErrorOccurred) {
+            return;
+        }
+        super.onBBVideosFetched(list, status);
+        this.handleResponse(list, status);
+    }
+    
+    @Override
+    public void onVideosFetched(final List<Video> list, final Status status) {
+        if (this.this$0.dumpErrorOccurred) {
+            return;
+        }
+        super.onVideosFetched(list, status);
+        this.handleResponse(list, status);
     }
 }

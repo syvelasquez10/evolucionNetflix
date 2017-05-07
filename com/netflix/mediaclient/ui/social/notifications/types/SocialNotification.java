@@ -5,12 +5,12 @@
 package com.netflix.mediaclient.ui.social.notifications.types;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.text.format.DateUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import android.support.v4.app.NotificationCompat$BigPictureStyle;
 import android.content.Intent;
 import android.app.PendingIntent;
@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.ui.social.notifications.SocialNotificationViewHolder;
+import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import android.view.View;
 
 public abstract class SocialNotification
@@ -42,8 +43,8 @@ public abstract class SocialNotification
         return 2130903194;
     }
     
-    public static final SocialNotificationViewHolder getViewHolder(final View view) {
-        return new SocialNotificationViewHolder((AdvancedImageView)view.findViewById(2131165640), (AdvancedImageView)view.findViewById(2131165672), (TextView)view.findViewById(2131165669), (TextView)view.findViewById(2131165670), (TextView)view.findViewById(2131165671), (TextView)view.findViewById(2131165674), (Button)view.findViewById(2131165675), (Button)view.findViewById(2131165676), view.findViewById(2131165673));
+    public static final SocialNotificationViewHolder getViewHolder(final View view, final SocialNotificationSummary$NotificationTypes socialNotificationSummary$NotificationTypes) {
+        return new SocialNotificationViewHolder((AdvancedImageView)view.findViewById(2131165641), (AdvancedImageView)view.findViewById(2131165675), (TextView)view.findViewById(2131165672), (TextView)view.findViewById(2131165673), (TextView)view.findViewById(2131165674), (TextView)view.findViewById(2131165677), (Button)view.findViewById(2131165678), (Button)view.findViewById(2131165679), view.findViewById(2131165676), view.findViewById(2131165671), (AdvancedImageView)view.findViewById(2131165670));
     }
     
     public static void showSingleLineText(final SocialNotificationViewHolder socialNotificationViewHolder, final int text) {
@@ -55,6 +56,8 @@ public abstract class SocialNotification
         socialNotificationViewHolder.getLeftButton().setVisibility(8);
         socialNotificationViewHolder.getRightButton().setVisibility(8);
         socialNotificationViewHolder.getPlayButton().setVisibility(8);
+        socialNotificationViewHolder.getNSAPlayButton().setVisibility(8);
+        socialNotificationViewHolder.getNSAArtImage().setVisibility(8);
         socialNotificationViewHolder.getMiddleTextView().setText(text);
         socialNotificationViewHolder.getMiddleTextView().setSingleLine(false);
         socialNotificationViewHolder.getMiddleTextView().setGravity(17);
@@ -88,7 +91,7 @@ public abstract class SocialNotification
     public void initView(final View view, final SocialNotificationViewHolder socialNotificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         int backgroundResource;
         if (socialNotificationSummary.getWasRead()) {
-            backgroundResource = 2130837834;
+            backgroundResource = 2130837844;
         }
         else {
             backgroundResource = 2131296423;
@@ -96,8 +99,9 @@ public abstract class SocialNotification
         view.setBackgroundResource(backgroundResource);
         socialNotificationViewHolder.getFriendImage().setVisibility(0);
         NetflixActivity.getImageLoader(context).showImg(socialNotificationViewHolder.getFriendImage(), socialNotificationSummary.getFriendProfile().getBigImageUrl(), IClientLogging$AssetType.profileAvatar, socialNotificationSummary.getFriendProfile().getFullName(), true, true);
+        socialNotificationViewHolder.getNSAArtImage().setVisibility(8);
         socialNotificationViewHolder.getMovieArtImage().setVisibility(0);
-        NetflixActivity.getImageLoader(context).showImg(socialNotificationViewHolder.getMovieArtImage(), socialNotificationSummary.getVideo().getBoxshotURL(), IClientLogging$AssetType.boxArt, socialNotificationSummary.getVideo().getTitle(), true, true);
+        NetflixActivity.getImageLoader(context).showImg(socialNotificationViewHolder.getMovieArtImage(), socialNotificationSummary.getVideo().getBoxshotUrl(), IClientLogging$AssetType.boxArt, socialNotificationSummary.getVideo().getTitle(), true, true);
         socialNotificationViewHolder.getTopTextView().setVisibility(0);
         socialNotificationViewHolder.getTopTextView().setText((CharSequence)socialNotificationSummary.getFriendProfile().getFullName());
         socialNotificationViewHolder.getMiddleTextView().setGravity(3);
@@ -110,6 +114,7 @@ public abstract class SocialNotification
         }
         socialNotificationViewHolder.getTimeStampView().setVisibility(0);
         socialNotificationViewHolder.getTimeStampView().setText(DateUtils.getRelativeTimeSpanString(context, socialNotificationSummary.getTimestamp()));
+        socialNotificationViewHolder.getNSAPlayButton().setVisibility(8);
         socialNotificationViewHolder.getPlayButton().setVisibility(0);
         socialNotificationViewHolder.getLeftButton().setVisibility(8);
         socialNotificationViewHolder.getRightButton().setVisibility(8);
@@ -126,6 +131,14 @@ public abstract class SocialNotification
             Log.i(SocialNotification.TAG, "Notification with such id was swiped out by user - skipping...");
             return;
         }
-        imageLoader.getImg(socialNotificationSummary.getFriendProfile().getImageUrl(), IClientLogging$AssetType.profileAvatar, 0, 0, socialNotification$1);
+        String s;
+        if (StringUtils.isEmpty(s = socialNotificationSummary.getFriendProfile().getImageUrl())) {
+            s = socialNotificationSummary.getFriendProfile().getBigImageUrl();
+        }
+        imageLoader.getImg(s, IClientLogging$AssetType.profileAvatar, 0, 0, socialNotification$1);
+    }
+    
+    public boolean supportsStatusBar() {
+        return true;
     }
 }

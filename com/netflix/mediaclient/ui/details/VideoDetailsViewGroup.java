@@ -25,6 +25,7 @@ import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.LayoutInflater;
 import android.graphics.Rect;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.view.ViewGroup;
@@ -77,6 +78,9 @@ public class VideoDetailsViewGroup extends LinearLayout
             return null;
         }
         final Drawable drawable = this.getResources().getDrawable(2130837662);
+        if (drawable.getIntrinsicHeight() <= 0) {
+            ErrorLoggingManager.logHandledException("SPY-4745: buildHdDrawable() got weird height: " + drawable.getIntrinsicHeight());
+        }
         double n;
         if (drawable.getIntrinsicHeight() > 0) {
             n = this.basicInfo.getHeight() * drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
@@ -97,9 +101,6 @@ public class VideoDetailsViewGroup extends LinearLayout
         this.setOrientation(1);
         this.addView(this.actionBarDummyView = ViewUtils.createActionBarDummyView((NetflixActivity)this.getContext()), 0);
         this.findViews();
-        if (this.addToMyList != null) {
-            this.addToMyList.setEnabled(false);
-        }
         this.hdDrawablePadding = this.getHdDrawablePadding();
         this.setImgLayoutListener();
     }
@@ -201,19 +202,19 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     protected void findViews() {
-        this.ratingBar = (NetflixRatingBar)this.findViewById(2131165419);
-        this.socialGroup = (LinearLayout)this.findViewById(2131165690);
-        this.socialTitle = (TextView)this.findViewById(2131165689);
-        this.addToMyList = (Button)this.findViewById(2131165685);
-        this.basicInfo = (TextView)this.findViewById(2131165604);
-        this.recommend = (Button)this.findViewById(2131165684);
-        this.synopsis = (TextView)this.findViewById(2131165460);
-        this.starring = (TextView)this.findViewById(2131165449);
-        this.creators = (TextView)this.findViewById(2131165450);
-        this.horzDispImg = (AdvancedImageView)this.findViewById(2131165461);
-        this.title = (TextView)this.findViewById(2131165466);
-        this.imgGroup = (ViewGroup)this.findViewById(2131165691);
-        this.relatedTitle = (TextView)this.findViewById(2131165468);
+        this.ratingBar = (NetflixRatingBar)this.findViewById(2131165421);
+        this.socialGroup = (LinearLayout)this.findViewById(2131165692);
+        this.socialTitle = (TextView)this.findViewById(2131165691);
+        this.addToMyList = (Button)this.findViewById(2131165687);
+        this.basicInfo = (TextView)this.findViewById(2131165605);
+        this.recommend = (Button)this.findViewById(2131165686);
+        this.synopsis = (TextView)this.findViewById(2131165462);
+        this.starring = (TextView)this.findViewById(2131165451);
+        this.creators = (TextView)this.findViewById(2131165452);
+        this.horzDispImg = (AdvancedImageView)this.findViewById(2131165463);
+        this.title = (TextView)this.findViewById(2131165468);
+        this.imgGroup = (ViewGroup)this.findViewById(2131165693);
+        this.relatedTitle = (TextView)this.findViewById(2131165470);
     }
     
     public TextView getAddToMyListButton() {
@@ -237,7 +238,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     protected int getlayoutId() {
-        return 2130903209;
+        return 2130903208;
     }
     
     public void hideRelatedTitle() {
@@ -267,7 +268,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void setupImageClicks(final VideoDetails videoDetails, final NetflixActivity netflixActivity) {
         this.horzDispImg.requestFocus();
-        this.horzDispImg.setOnClickListener((View$OnClickListener)new VideoDetailsViewGroup$2(this, netflixActivity, videoDetails));
+        this.horzDispImg.setOnClickListener((View$OnClickListener)new VideoDetailsViewGroup$3(this, netflixActivity, videoDetails));
     }
     
     public void showRelatedTitle() {
@@ -306,10 +307,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void updateHD(final VideoDetails videoDetails, final NetflixActivity netflixActivity) {
         if (ViewUtils.shouldShowHdIcon(netflixActivity, videoDetails)) {
-            if (this.hdDrawable == null) {
-                this.hdDrawable = this.buildHdDrawable();
-            }
-            this.setHdIcon();
+            this.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new VideoDetailsViewGroup$2(this));
         }
     }
     

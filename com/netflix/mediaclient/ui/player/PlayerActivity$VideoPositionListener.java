@@ -108,7 +108,7 @@ public class PlayerActivity$VideoPositionListener implements SeekBar$OnSeekBarCh
     }
     
     private boolean inCancelProgressZone(final SeekBar seekBar, final float n) {
-        final float dimension = this.this$0.getResources().getDimension(2131362031);
+        final float dimension = this.this$0.getResources().getDimension(2131362042);
         int height;
         if (this.this$0.isTablet()) {
             height = (int)(2.0f * dimension);
@@ -213,82 +213,82 @@ public class PlayerActivity$VideoPositionListener implements SeekBar$OnSeekBarCh
     public void onStopTrackingTouch(final SeekBar seekBar) {
         boolean b;
         TimelineSeekBar timelineSeekBar;
-        boolean b2;
         PlayScreen access$700;
-        int access$701;
+        boolean b2;
         boolean b3;
-        Block_8_Outer:Label_0054_Outer:
+        int access$701;
+        Label_0188_Outer:Label_0054_Outer:
         while (true) {
             b = true;
             while (true) {
                 Label_0253: {
-                    Label_0248: {
-                        while (true) {
-                            synchronized (this) {
-                                this.this$0.mState.draggingInProgress = false;
-                                Log.d("PlayerActivity", "onStopTrackingTouch called");
-                                if (seekBar instanceof TimelineSeekBar) {
-                                    timelineSeekBar = (TimelineSeekBar)seekBar;
-                                }
-                                else {
-                                    Log.e("PlayerActivity", "Not a Netflix seekbar!");
-                                    timelineSeekBar = null;
-                                }
-                                if (!this.mIsInCancelZone && !this.skipSeek(timelineSeekBar)) {
-                                    break Label_0253;
-                                }
-                                break Label_0248;
-                                // iftrue(Label_0243:, b2)
-                                // iftrue(Label_0219:, b2)
-                                // iftrue(Label_0121:, PlayerActivity.access$700(this.this$0) == null)
+                    Label_0188:Block_6_Outer:
+                    while (true) {
+                        synchronized (this) {
+                            this.this$0.mState.draggingInProgress = false;
+                            Log.d("PlayerActivity", "onStopTrackingTouch called");
+                            if (seekBar instanceof TimelineSeekBar) {
+                                timelineSeekBar = (TimelineSeekBar)seekBar;
+                            }
+                            else {
+                                Log.e("PlayerActivity", "Not a Netflix seekbar!");
+                                timelineSeekBar = null;
+                            }
+                            if (!this.mIsInCancelZone && !this.skipSeek(timelineSeekBar)) {
+                                break Label_0253;
+                            }
+                            break Label_0188;
+                            Label_0219: {
+                                Log.d("PlayerActivity", "Do not seek!");
+                            }
+                            ((TimelineSeekBar)access$700).setProgress(((TimelineSeekBar)access$700).getProgress());
+                            // iftrue(Label_0243:, b3)
+                            // iftrue(Label_0121:, PlayerActivity.access$700(this.this$0) == null)
+                            // iftrue(Label_0173:, !Log.isLoggable("PlayerActivity", 3))
+                            while (true) {
                                 while (true) {
-                                    Label_0121: {
-                                    Block_9:
-                                        while (true) {
+                                Label_0121:
+                                    while (true) {
+                                        Label_0100: {
+                                            break Label_0100;
+                                            while (true) {
+                                                b2 = b;
+                                                break Label_0188;
+                                                Log.d("PlayerActivity", "Stop current time " + b3);
+                                                Label_0173:
+                                                access$700 = this.this$0.mScreen;
+                                                continue Label_0188_Outer;
+                                            }
+                                            access$701 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getBottomPanel().getCurrentProgress());
+                                            ((TimelineSeekBar)access$700).setProgress(access$701);
+                                            Log.d("PlayerActivity", "Seek!");
+                                            this.this$0.doSeek(access$701);
+                                            break Label_0100;
+                                            access$700.stopCurrentTime(b2);
+                                            this.this$0.mState.resetTimeline();
+                                            return;
                                             this.this$0.mScreen.setTopPanelVisibility(true);
                                             break Label_0121;
-                                            Log.d("PlayerActivity", "Stop current time " + b2);
-                                            Label_0173: {
-                                                access$700 = this.this$0.mScreen;
-                                            }
-                                            break Block_9;
-                                            Label_0219:
-                                            Log.d("PlayerActivity", "Do not seek!");
-                                            ((TimelineSeekBar)access$700).setProgress(((TimelineSeekBar)access$700).getProgress());
-                                            Label_0100: {
-                                                break Label_0100;
-                                                while (true) {
-                                                    access$701 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getBottomPanel().getCurrentProgress());
-                                                    ((TimelineSeekBar)access$700).setProgress(access$701);
-                                                    Log.d("PlayerActivity", "Seek!");
-                                                    this.this$0.doSeek(access$701);
-                                                    break Label_0100;
-                                                    continue Label_0054_Outer;
-                                                }
-                                            }
-                                            continue Block_8_Outer;
                                         }
-                                        b3 = b;
-                                        access$700.stopCurrentTime(b3);
-                                        this.this$0.mState.resetTimeline();
-                                        return;
+                                        continue Label_0054_Outer;
                                     }
                                     this.this$0.mSubtitleManager.setSubtitleVisibility(true);
                                     ((TimelineSeekBar)access$700).hideThumb(false);
-                                    continue Label_0054_Outer;
+                                    continue Block_6_Outer;
                                 }
+                                continue Label_0054_Outer;
                             }
-                            // iftrue(Label_0173:, !Log.isLoggable("PlayerActivity", 3))
-                            Label_0243: {
-                                b3 = false;
-                            }
-                            continue;
                         }
+                        // iftrue(Label_0219:, b3)
+                        Label_0243: {
+                            b2 = false;
+                        }
+                        continue Label_0188;
                     }
-                    b2 = true;
+                    b3 = true;
                     continue;
                 }
-                b2 = false;
+                b3 = false;
                 continue;
             }
         }

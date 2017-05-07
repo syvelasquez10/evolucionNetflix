@@ -8,6 +8,8 @@ import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataReque
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.AppStoreHelper;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils$KubrickExperience;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.util.UriUtil;
 import com.netflix.mediaclient.util.StringUtils;
@@ -20,7 +22,7 @@ import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 public class EndpointRegistryProvider implements ApiEndpointRegistry
 {
     private static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
-    private static final String ANDROID_ENDPOINT_FULL = "/android/3.10/api";
+    private static final String ANDROID_ENDPOINT_FULL = "/android/3.11/api";
     private static final boolean BROWSE_AUTO_REDIRECT_TRUE = true;
     private static final String BROWSE_RESP_AUTO_REDIRECT = "&routing=redirect";
     private static final String BROWSE_RESP_FORMAT = "responseFormat=json&progressive=false";
@@ -47,6 +49,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String PARAM_FORM_FACTOR = "ffbc";
     private static final String PARAM_IMG_TYPE_PREFERENCE = "imgpref";
     private static final String PARAM_KOP_EXPERIENCE = "kop";
+    private static final String PARAM_KUBRICK_KIDS_EXPERIENCE = "kk";
     private static final String PARAM_LANGUAGES = "languages";
     private static final String PARAM_MANUFACTURER = "mnf";
     private static final String PARAM_MODEL_ID = "mId";
@@ -86,7 +89,10 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         }
         if (this.mUserAgent != null && KidsUtils.isKidsProfile(this.mUserAgent.getCurrentProfile())) {
             sb.append(this.buildUrlParam("prfType", this.mUserAgent.getCurrentProfile().getProfileType().toString()));
-            if (KidsUtils.isKoPExperience(this.mConfigAgent, this.mUserAgent.getCurrentProfile())) {
+            if (KubrickUtils.computeKubrickExperience(this.mConfigAgent, this.mUserAgent.getCurrentProfile()) == KubrickUtils$KubrickExperience.KUBRICK_KIDS) {
+                sb.append(this.buildUrlParam("kk", Boolean.TRUE.toString()));
+            }
+            else if (KidsUtils.isKoPExperience(this.mConfigAgent, this.mUserAgent.getCurrentProfile())) {
                 sb.append(this.buildUrlParam("kop", Boolean.TRUE.toString()));
                 if (this.mConfigAgent.getKidsOnPhoneConfiguration().isKidsOnPhoneEnabled()) {
                     sb.append(this.buildUrlParam("bat", this.mConfigAgent.getKidsOnPhoneConfiguration().getLolomoImageType().toString()));
@@ -174,7 +180,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             sb.append("http://");
         }
         sb.append(this.mEndpointHost);
-        sb.append("/android/3.10/api");
+        sb.append("/android/3.11/api");
         sb.append("?");
         sb.append("responseFormat=json&progressive=false");
         sb.append("&routing=reject");

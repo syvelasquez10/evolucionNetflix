@@ -10,8 +10,6 @@ import com.netflix.mediaclient.servicemgr.model.HdEnabledProvider;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.View$OnLongClickListener;
-import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.text.Spannable;
@@ -48,7 +46,6 @@ import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import android.view.View;
 import android.widget.TextView;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ListView;
 import java.util.Comparator;
@@ -69,12 +66,6 @@ public class ViewUtils
     public static void addActionBarPaddingView(final ListView listView) {
         if (listView.getContext() instanceof NetflixActivity) {
             listView.addHeaderView(createActionBarDummyView((NetflixActivity)listView.getContext()));
-        }
-    }
-    
-    public static void addActionBarPaddingView(final StickyListHeadersListView stickyListHeadersListView) {
-        if (stickyListHeadersListView.getContext() instanceof NetflixActivity) {
-            stickyListHeadersListView.addHeaderView(createActionBarDummyView((NetflixActivity)stickyListHeadersListView.getContext()));
         }
     }
     
@@ -380,15 +371,6 @@ public class ViewUtils
             return;
         }
         Api16Util.removeOnGlobalLayoutListener(view.getViewTreeObserver(), viewTreeObserver$OnGlobalLayoutListener);
-    }
-    
-    @SuppressLint({ "NewApi" })
-    public static void setBackgroundDrawableCompat(final View view, final Drawable drawable) {
-        if (AndroidUtils.getAndroidVersion() >= 16) {
-            view.setBackground(drawable);
-            return;
-        }
-        view.setBackgroundDrawable(drawable);
     }
     
     public static void setLongTapListenersRecursivelyToShowContentDescriptionToast(final View view) {

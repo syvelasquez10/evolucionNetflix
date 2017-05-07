@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.logging;
 
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.javabridge.ui.Log$AppIdSetListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.SystemClock;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClientFactory;
@@ -26,14 +27,11 @@ import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLogging
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;
-import com.netflix.mediaclient.service.logging.apm.UserSession;
-import com.netflix.mediaclient.service.logging.apm.ApplicationSession;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$EndReason;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.util.data.DataRepository$Entry;
 import java.util.HashMap;
 import java.util.Collections;
@@ -53,19 +51,20 @@ import com.netflix.mediaclient.util.data.DataRepository;
 import android.content.Context;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClient;
 import com.netflix.mediaclient.android.app.ApplicationStateListener;
+import com.netflix.mediaclient.service.logging.client.model.Event;
 
 class IntegratedClientLoggingManager$2 implements Runnable
 {
     final /* synthetic */ IntegratedClientLoggingManager this$0;
-    final /* synthetic */ String val$deliveryRequestId;
+    final /* synthetic */ Event val$event;
     
-    IntegratedClientLoggingManager$2(final IntegratedClientLoggingManager this$0, final String val$deliveryRequestId) {
+    IntegratedClientLoggingManager$2(final IntegratedClientLoggingManager this$0, final Event val$event) {
         this.this$0 = this$0;
-        this.val$deliveryRequestId = val$deliveryRequestId;
+        this.val$event = val$event;
     }
     
     @Override
     public void run() {
-        this.this$0.loadAndSendEvent(this.val$deliveryRequestId);
+        this.this$0.mEventQueue.post(this.val$event);
     }
 }

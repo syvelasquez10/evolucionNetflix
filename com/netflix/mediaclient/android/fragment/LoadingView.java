@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.android.fragment;
 
 import android.view.ViewGroup;
-import android.app.Activity;
+import android.view.LayoutInflater;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.FrameLayout$LayoutParams;
 import android.util.AttributeSet;
@@ -31,6 +31,6 @@ public class LoadingView extends FrameLayout
     
     private void init() {
         this.setLayoutParams((ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1));
-        ((Activity)this.getContext()).getLayoutInflater().inflate(2130903133, (ViewGroup)this);
+        ((LayoutInflater)this.getContext().getSystemService("layout_inflater")).inflate(2130903132, (ViewGroup)this);
     }
 }

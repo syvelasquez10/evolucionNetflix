@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.service.logging.client.volley;
 
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClient;
 
@@ -21,6 +21,13 @@ public class ClientLoggingVolleyWebClient implements ClientLoggingWebClient
     @Override
     public boolean isSynchronous() {
         return this.mWebClient.isSynchronous();
+    }
+    
+    @Override
+    public void sendLoggingEvents(final String s) {
+        Log.d("nf_log", "sendLoggingEvents without callback starts...");
+        this.mWebClient.sendLoggingRequest(new LoggingEventsRequest(null, s, null));
+        Log.d("nf_log", "sendLoggingEvents without callback  done.");
     }
     
     @Override

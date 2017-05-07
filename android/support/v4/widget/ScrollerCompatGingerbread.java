@@ -45,6 +45,10 @@ class ScrollerCompatGingerbread
         return ((OverScroller)o).getFinalY();
     }
     
+    public static boolean isFinished(final Object o) {
+        return ((OverScroller)o).isFinished();
+    }
+    
     public static void startScroll(final Object o, final int n, final int n2, final int n3, final int n4, final int n5) {
         ((OverScroller)o).startScroll(n, n2, n3, n4, n5);
     }

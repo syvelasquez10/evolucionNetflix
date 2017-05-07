@@ -24,7 +24,7 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     
     public DiagnosisActivity$ResultsAdapter(final DiagnosisActivity this$0, final Context context) {
         this.this$0 = this$0;
-        super(context, 2130903090, 2131165355);
+        super(context, 2130903090, 2131165356);
         this.context = context;
     }
     
@@ -45,19 +45,19 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     
     public View getView(final int n, View inflate, final ViewGroup viewGroup) {
         inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903090, viewGroup, false);
-        final TextView textView = (TextView)inflate.findViewById(2131165357);
-        final TextView textView2 = (TextView)inflate.findViewById(2131165358);
-        final ImageView imageView = (ImageView)inflate.findViewById(2131165356);
-        imageView.setImageResource(2130837706);
+        final TextView textView = (TextView)inflate.findViewById(2131165358);
+        final TextView textView2 = (TextView)inflate.findViewById(2131165359);
+        final ImageView imageView = (ImageView)inflate.findViewById(2131165357);
+        imageView.setImageResource(2130837710);
         final UrlNetworkState urlNetworkState = this.this$0.mUrlList.get(n);
         this.setTitleText(textView, urlNetworkState.getUrl(), n);
         if (urlNetworkState.getStatus().equals(DiagnosisAgent$UrlStatus.COMPLETED)) {
             if (urlNetworkState.getResult() != 0) {
                 textView2.setText((CharSequence)("nw-" + urlNetworkState.getErrorGroup() + "-" + urlNetworkState.getErrorCode()));
-                imageView.setImageResource(2130837705);
+                imageView.setImageResource(2130837709);
                 return inflate;
             }
-            imageView.setImageResource(2130837706);
+            imageView.setImageResource(2130837710);
             textView2.setVisibility(4);
         }
         else {

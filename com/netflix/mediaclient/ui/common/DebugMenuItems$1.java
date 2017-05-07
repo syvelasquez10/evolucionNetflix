@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.common;
 import android.os.Handler;
 import android.os.Debug;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.ServiceManager;

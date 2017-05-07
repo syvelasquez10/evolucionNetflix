@@ -20,8 +20,6 @@ public interface IBrowseInterface
     
     void dumpCacheToDisk();
     
-    void dumpHomeLoLoMosAndVideos(final String p0, final String p1);
-    
     void fetchCWVideos(final int p0, final int p1, final int p2, final int p3);
     
     void fetchEpisodeDetails(final String p0, final int p1, final int p2);

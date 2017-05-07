@@ -21,6 +21,7 @@ public class Video$Detail
     public boolean isHdAvailable;
     public boolean isNextPlayableEpisode;
     public boolean isPinProtected;
+    public int logicalStart;
     public String mdxVertUrl;
     public float predictedRating;
     public String quality;

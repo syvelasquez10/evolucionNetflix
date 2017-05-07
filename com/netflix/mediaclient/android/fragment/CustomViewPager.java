@@ -8,9 +8,6 @@ import android.view.MotionEvent;
 import com.netflix.mediaclient.Log;
 import android.widget.ListView;
 import android.view.ViewParent;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
-import android.view.View;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.util.AttributeSet;
 import android.content.Context;
 import com.viewpagerindicator.android.osp.ViewPager$OnPageChangeListener;
@@ -18,30 +15,21 @@ import com.viewpagerindicator.android.osp.ViewPager;
 
 public class CustomViewPager extends ViewPager
 {
-    private static final boolean ALLOW_OVERLAPPED_PAGES = true;
     public static final boolean DO_NOT_OVERLAP_PAGES_CONST = false;
     public static final boolean OVERLAP_PAGES_CONST = true;
     private static final String TAG = "CustomViewPager";
     private final ViewPager$OnPageChangeListener onPageChangeListener;
-    private int pageMarginOffsetPx;
-    private final boolean shouldOverlapPagesByDefault;
     
     public CustomViewPager(final Context context) {
         super(context);
-        this.shouldOverlapPagesByDefault = true;
         this.onPageChangeListener = new CustomViewPager$1(this);
         this.init();
     }
     
     public CustomViewPager(final Context context, final AttributeSet set) {
         super(context, set);
-        this.shouldOverlapPagesByDefault = true;
         this.onPageChangeListener = new CustomViewPager$1(this);
         this.init();
-    }
-    
-    public static void applyContentOverlapPadding(final NetflixActivity netflixActivity, final View view) {
-        view.setPadding(LoMoUtils.getLomoFragOffsetLeftPx(netflixActivity), 0, LoMoUtils.getLomoFragOffsetRightPx(netflixActivity), 0);
     }
     
     private ViewParent getListViewParent() {
@@ -52,8 +40,6 @@ public class CustomViewPager extends ViewPager
     
     private void init() {
         Log.v("CustomViewPager", "Created view pager");
-        this.pageMarginOffsetPx = (LoMoUtils.getLomoFragOffsetRightPx((NetflixActivity)this.getContext()) + LoMoUtils.getLomoFragOffsetLeftPx((NetflixActivity)this.getContext())) * -1;
-        this.setPagesToOverlap(true);
     }
     
     public ViewPager$OnPageChangeListener getOnPageChangeListener() {
@@ -73,16 +59,5 @@ public class CustomViewPager extends ViewPager
     }
     
     protected void onPageSelected(final int n) {
-    }
-    
-    protected void setPagesToOverlap(final boolean b) {
-        int pageMarginOffsetPx;
-        if (b) {
-            pageMarginOffsetPx = this.pageMarginOffsetPx;
-        }
-        else {
-            pageMarginOffsetPx = 0;
-        }
-        this.setPageMargin(pageMarginOffsetPx);
     }
 }

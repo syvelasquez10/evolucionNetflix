@@ -28,9 +28,9 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.service.logging.error.CrittercismErrorLoggingImpl;
 import com.netflix.mediaclient.service.logging.breadcrumb.CrittercismBreadcrumbLoggingImpl;
-import com.netflix.mediaclient.Log;
 import android.os.HandlerThread;
 import android.os.Handler;
+import com.netflix.mediaclient.javabridge.ui.Log;
 import android.content.BroadcastReceiver;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ScheduledExecutorService;
@@ -42,9 +42,10 @@ import com.netflix.mediaclient.service.logging.ads.AdvertiserIdLoggingManager;
 import java.util.concurrent.ThreadFactory;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent$ConfigAgentListener;
+import com.netflix.mediaclient.javabridge.ui.Log$AppIdChangedListener;
 import com.netflix.mediaclient.service.ServiceAgent;
 
-public final class LoggingAgent extends ServiceAgent implements ConfigurationAgent$ConfigAgentListener, IClientLogging
+public final class LoggingAgent extends ServiceAgent implements Log$AppIdChangedListener, ConfigurationAgent$ConfigAgentListener, IClientLogging
 {
     private static final long EVENT_POST_TIMEOUT_MS = 60000L;
     static final String ICL_REPOSITORY_DIR = "iclevents";
@@ -62,6 +63,7 @@ public final class LoggingAgent extends ServiceAgent implements ConfigurationAge
     private AtomicInteger mFailureCounter;
     private IntegratedClientLoggingManager mIntegratedClientLoggingManager;
     private final BroadcastReceiver mLoggerReceiver;
+    private Log mNrdpLog;
     private PresentationTrackingManager mPresentationTrackingManager;
     private long mStartedTime;
     private final Handler mWorkerHandler;
@@ -76,12 +78,12 @@ public final class LoggingAgent extends ServiceAgent implements ConfigurationAge
         this.mFailureCounter = new AtomicInteger();
         this.mEventPostCheck = new LoggingAgent$2(this);
         this.mLoggerReceiver = new LoggingAgent$3(this);
-        Log.d("nf_log", "ClientLoggingAgent::");
+        com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent::");
         this.mBreadcrumbLogging = new CrittercismBreadcrumbLoggingImpl();
         this.mErrorLogging = new CrittercismErrorLoggingImpl();
         (this.mWorkerThread = new HandlerThread("ClientLoggingAgentWorker")).start();
         this.mWorkerHandler = new Handler(this.mWorkerThread.getLooper());
-        Log.d("nf_log", "ClientLoggingAgent:: done");
+        com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent:: done");
     }
     
     private void addConfigurationChangeListener() {
@@ -93,7 +95,7 @@ public final class LoggingAgent extends ServiceAgent implements ConfigurationAge
     
     private void registerReceiver() {
         final int n = 0;
-        Log.d("nf_log", "Register receiver");
+        com.netflix.mediaclient.Log.d("nf_log", "Register receiver");
         final IntentFilter intentFilter = new IntentFilter();
         final String[] actions = ApplicationPerformanceMetricsLogging.ACTIONS;
         for (int length = actions.length, i = 0; i < length; ++i) {
@@ -121,12 +123,17 @@ public final class LoggingAgent extends ServiceAgent implements ConfigurationAge
             LocalBroadcastManager.getInstance(this.getContext()).registerReceiver(this.mLoggerReceiver, intentFilter);
         }
         catch (Throwable t) {
-            Log.e("nf_log", "Failed to register ", t);
+            com.netflix.mediaclient.Log.e("nf_log", "Failed to register ", t);
         }
     }
     
-    private void unregisterReceiver() {
-        IntentUtils.unregisterSafelyLocalBroadcastReceiver(this.getContext(), this.mLoggerReceiver);
+    @Override
+    public void changed(final String s, final String s2) {
+        if (com.netflix.mediaclient.Log.isLoggable("nf_log", 3)) {
+            com.netflix.mediaclient.Log.d("nf_log", "App ID is changed to " + s);
+            com.netflix.mediaclient.Log.d("nf_log", "Session ID is changed to " + s2);
+        }
+        this.mIntegratedClientLoggingManager.recreateSessions(s, s2);
     }
     
     void clearFailureCounter() {
@@ -135,28 +142,32 @@ public final class LoggingAgent extends ServiceAgent implements ConfigurationAge
     
     @Override
     public void destroy() {
-        Log.d("nf_log", "PNA:: destroy and unregister receiver");
-        this.unregisterReceiver();
+        com.netflix.mediaclient.Log.d("nf_log", "PNA:: destroy and unregister receiver");
+        IntentUtils.unregisterSafelyLocalBroadcastReceiver(this.getContext(), this.mLoggerReceiver);
         if (this.mAdvertiserIdLoggingManager != null) {
             this.mAdvertiserIdLoggingManager.destroy();
         }
         if (this.mIntegratedClientLoggingManager != null) {
             this.mIntegratedClientLoggingManager.destroy();
         }
+        if (this.mNrdpLog != null) {
+            this.mNrdpLog.setAppIdChangedListener(null);
+            this.mNrdpLog = null;
+        }
         super.destroy();
     }
     
     @Override
     protected void doInit() {
-        Log.d("nf_log", "ClientLoggingAgent::init start ");
+        com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent::init start ");
         this.mCustomerEventLogging = new LegacyCustomerEventLoggingImpl(this, this.getContext(), this.mWorkerHandler);
         this.mCmpEventLogging = new LegacyCmpEventLoggingImpl(this, this.getContext());
         this.mIntegratedClientLoggingManager = new IntegratedClientLoggingManager(this.getContext(), this, this.getUser(), this.getService());
         this.mPresentationTrackingManager = new PresentationTrackingManager(this.getContext(), this, this.getUser());
         this.mAdvertiserIdLoggingManager = new AdvertiserIdLoggingManager(this.getContext(), this);
-        Log.d("nf_log", "ClientLoggingAgent::init create executor thread start ");
+        com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent::init create executor thread start ");
         this.mExecutor = Executors.newSingleThreadScheduledExecutor(LoggingAgent.sThreadFactory);
-        Log.d("nf_log", "ClientLoggingAgent::init create executor thread done ");
+        com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent::init create executor thread done ");
         this.mExecutor.scheduleAtFixedRate(this.mEventPostCheck, 60000L, 60000L, TimeUnit.MILLISECONDS);
         this.mIntegratedClientLoggingManager.init(this.mExecutor);
         this.mPresentationTrackingManager.init(this.mExecutor);
@@ -164,15 +175,9 @@ public final class LoggingAgent extends ServiceAgent implements ConfigurationAge
         this.registerReceiver();
         ErrorLoggingManager.onConfigurationChanged(this.getContext(), this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
         this.addConfigurationChangeListener();
+        (this.mNrdpLog = this.getNrdController().getNrdp().getLog()).setAppIdChangedListener(this);
         this.initCompleted(CommonStatus.OK);
-        Log.d("nf_log", "ClientLoggingAgent::init done ");
-    }
-    
-    @Override
-    public void flush() {
-        Log.d("nf_log", "Flush events");
-        this.mIntegratedClientLoggingManager.flush();
-        this.mPresentationTrackingManager.flush();
+        com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent::init done ");
     }
     
     public String getAccountOwnerToken() {
@@ -251,10 +256,10 @@ public final class LoggingAgent extends ServiceAgent implements ConfigurationAge
     
     public boolean handleCommand(final Intent intent) {
         if (intent == null) {
-            Log.w("nf_log", "Intent is null");
+            com.netflix.mediaclient.Log.w("nf_log", "Intent is null");
         }
-        else if (Log.isLoggable("nf_log", 3)) {
-            Log.d("nf_log", "Received command " + intent.getAction());
+        else if (com.netflix.mediaclient.Log.isLoggable("nf_log", 3)) {
+            com.netflix.mediaclient.Log.d("nf_log", "Received command " + intent.getAction());
             return false;
         }
         return false;
@@ -273,13 +278,35 @@ public final class LoggingAgent extends ServiceAgent implements ConfigurationAge
     
     @Override
     public void onConfigRefreshed(final Status status) {
-        if (Log.isLoggable("nf_log", 2)) {
-            Log.v("nf_log", "Configuration is refreshed with status code " + status.getStatusCode());
+        if (com.netflix.mediaclient.Log.isLoggable("nf_log", 2)) {
+            com.netflix.mediaclient.Log.v("nf_log", "Configuration is refreshed with status code " + status.getStatusCode());
         }
         if (status.isSucces()) {
-            Log.v("nf_log", "Refresh configuration for error and breadcrumb logging");
+            com.netflix.mediaclient.Log.v("nf_log", "Refresh configuration for error and breadcrumb logging");
             ErrorLoggingManager.onConfigurationChanged(this.getContext(), this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
         }
+    }
+    
+    @Override
+    public void onPlayEnd() {
+        com.netflix.mediaclient.Log.d("nf_log", "Flush events");
+        this.mPresentationTrackingManager.flush(true);
+    }
+    
+    @Override
+    public void onProfileSwitch() {
+        com.netflix.mediaclient.Log.d("nf_log", "Flush events");
+        this.mIntegratedClientLoggingManager.flush(true);
+        this.mPresentationTrackingManager.flush(true);
+    }
+    
+    @Override
+    public void onUserLogout() {
+        com.netflix.mediaclient.Log.d("nf_log", "onUserLogout");
+        this.mIntegratedClientLoggingManager.endAllActiveSessions();
+        this.mIntegratedClientLoggingManager.flush(false);
+        this.getNrdController().getNrdp().getLog().resetAppID();
+        this.mPresentationTrackingManager.flush(false);
     }
     
     @Override

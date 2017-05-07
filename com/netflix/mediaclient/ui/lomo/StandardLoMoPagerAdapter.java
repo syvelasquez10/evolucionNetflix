@@ -13,7 +13,7 @@ import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.model.Video;
 
-public class StandardLoMoPagerAdapter extends ProgressiveLoMoPagerAdapter<Video>
+public class StandardLoMoPagerAdapter<V extends Video> extends ProgressiveLoMoPagerAdapter<V>
 {
     public StandardLoMoPagerAdapter(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler) {
         super(serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);

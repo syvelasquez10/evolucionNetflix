@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging;
 
+import com.netflix.mediaclient.javabridge.ui.Log$AppIdSetListener;
 import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.javabridge.ui.Log$ResetSessionIdCallback;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
@@ -16,8 +17,6 @@ public interface EventHandler
     
     void createUserSession(final Log$ResetSessionIdCallback p0);
     
-    void executeInBackground(final Runnable p0);
-    
     String getApplicationId();
     
     String getUserSessionId();
@@ -25,4 +24,6 @@ public interface EventHandler
     void post(final Event p0);
     
     void removeSession(final LoggingSession p0);
+    
+    void setAppIdSetListener(final Log$AppIdSetListener p0);
 }

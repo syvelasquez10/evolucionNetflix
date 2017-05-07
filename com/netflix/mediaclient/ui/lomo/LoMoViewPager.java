@@ -9,6 +9,9 @@ import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.Log;
 import android.view.MotionEvent;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.servicemgr.model.LoMoUtils$LoMoWidthType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.support.v4.view.PagerAdapter;
 import com.netflix.mediaclient.util.ThreadUtils;
@@ -57,6 +60,17 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         if (loLoMoFrag.getNetflixActivity().isForKids()) {
             this.setTouchSlop((int)(this.getTouchSlop() * 0.75f));
         }
+    }
+    
+    public static int computeViewPagerWidth(final NetflixActivity netflixActivity, final boolean b) {
+        return computeViewPagerWidth(netflixActivity, b, LoMoUtils$LoMoWidthType.STANDARD);
+    }
+    
+    public static int computeViewPagerWidth(final NetflixActivity netflixActivity, final boolean b, final LoMoUtils$LoMoWidthType loMoUtils$LoMoWidthType) {
+        if (b) {
+            return DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) - (LoMoUtils.getLomoFragOffsetLeftPx(netflixActivity) + LoMoUtils.getLomoFragOffsetRightPx(netflixActivity, loMoUtils$LoMoWidthType));
+        }
+        return DeviceUtils.getScreenWidthInPixels((Context)netflixActivity);
     }
     
     private NetflixActivity getActivity() {
@@ -108,6 +122,7 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
             Log.v("LoMoViewPager", "Restoring state for key: " + this.stateKey + ", state: " + this.state);
         }
         this.adapter.restoreFromMemento(this.state.adapterMemento);
+        this.setPagesToOverlap(this.adapter.shouldOverlapPages(), basicLoMo.getType());
         this.adapter.notifyDataSetChanged();
         this.notifyDataSetChanged();
         this.setCurrentItem(this.state.currPage, false, false);
@@ -191,7 +206,7 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
     protected void onPageSelected(final int n) {
         super.onPageSelected(n);
         Log.v("LoMoViewPager", "onPageSelected: " + n);
-        this.saveStateAndTrack(n);
+        this.saveStateAndTrackPresentation(n);
     }
     
     public void onPause() {
@@ -230,14 +245,14 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         }
         else {
             this.adapter.refresh(basicLoMo, n);
+            this.setPagesToOverlap(this.adapter.shouldOverlapPages(), basicLoMo.getType());
             this.updatePageIndicatorVisibility();
         }
-        this.setPagesToOverlap(this.adapter.shouldOverlapPages());
-        this.setLayoutParams((ViewGroup$LayoutParams)this.adapter.getLayoutParams());
+        this.setLayoutParams((ViewGroup$LayoutParams)this.adapter.createLayoutParams());
         this.updateAutoPagination(this.shouldAutoPaginate = (basicLoMo.getType() == LoMoType.BILLBOARD));
     }
     
-    void saveStateAndTrack(final int n) {
+    void saveStateAndTrackPresentation(final int n) {
         this.saveState(n);
         this.adapter.trackPresentation(n);
     }
@@ -258,5 +273,25 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
     public void setCurrentItem(final int n, final boolean b, final boolean b2) {
         super.setCurrentItem(n, b, b2);
         this.onCurrentItemSet(n);
+    }
+    
+    protected void setPagesToOverlap(final boolean b, final LoMoType loMoType) {
+        final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
+        LoMoUtils$LoMoWidthType loMoUtils$LoMoWidthType2;
+        final LoMoUtils$LoMoWidthType loMoUtils$LoMoWidthType = loMoUtils$LoMoWidthType2 = LoMoUtils$LoMoWidthType.STANDARD;
+        if (netflixActivity.isForKids()) {
+            loMoUtils$LoMoWidthType2 = loMoUtils$LoMoWidthType;
+            if (netflixActivity.isKubrick()) {
+                loMoUtils$LoMoWidthType2 = loMoUtils$LoMoWidthType;
+                if (loMoType == LoMoType.CHARACTERS) {
+                    loMoUtils$LoMoWidthType2 = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW;
+                }
+            }
+        }
+        int pageMargin = -(LoMoUtils.getLomoFragOffsetRightPx(netflixActivity, loMoUtils$LoMoWidthType2) + LoMoUtils.getLomoFragOffsetLeftPx(netflixActivity));
+        if (!b) {
+            pageMargin = 0;
+        }
+        this.setPageMargin(pageMargin);
     }
 }

@@ -26,6 +26,8 @@ public interface ISearchLogging
     public static final String SEARCH_SESSION_END = "com.netflix.mediaclient.intent.action.LOG_SUS_SEARCH_SESSION_END";
     public static final String SEARCH_SESSION_START = "com.netflix.mediaclient.intent.action.LOG_SUS_SEARCH_SESSION_START";
     
+    void endAllActiveSessions();
+    
     void fireEditEvent(final Intent p0);
     
     void fireImpressionEvent(final Intent p0);

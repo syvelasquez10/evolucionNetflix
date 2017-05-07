@@ -26,6 +26,7 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
 {
     protected VideoDetailsClickListener clicker;
     protected PlayContext playContext;
+    private boolean showPlaceholderImg;
     
     public KubrickVideoView(final Context context) {
         super(context);
@@ -45,9 +46,13 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130837838);
+        this.setBackgroundResource(2130837848);
         this.setScaleType(ImageView$ScaleType.CENTER_CROP);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
+        this.showPlaceholderImg = true;
+        if (this.getContext() instanceof NetflixActivity) {
+            this.showPlaceholderImg = (!((NetflixActivity)this.getContext()).isKubrick() && ((NetflixActivity)this.getContext()).isForKids());
+        }
     }
     
     @Override
@@ -63,10 +68,16 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
     }
     
     @Override
-    public void update(final KubrickVideo kubrickVideo, final Trackable trackable, int visibility, final boolean b) {
+    public void update(final KubrickVideo kubrickVideo, final Trackable trackable, int visibility, final boolean b, final boolean b2) {
         this.playContext = new PlayContextImp(trackable, visibility);
-        final String kubrickHorzImgUrl = kubrickVideo.getKubrickHorzImgUrl();
-        if (StringUtils.isEmpty(kubrickHorzImgUrl)) {
+        String s;
+        if (b2) {
+            s = kubrickVideo.getHorzDispUrl();
+        }
+        else {
+            s = kubrickVideo.getKubrickHorzImgUrl();
+        }
+        if (StringUtils.isEmpty(s)) {
             visibility = 4;
         }
         else {
@@ -77,12 +88,13 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final IClientLogging$AssetType boxArt = IClientLogging$AssetType.boxArt;
         final String title = kubrickVideo.getTitle();
+        final boolean showPlaceholderImg = this.showPlaceholderImg;
         if (b) {
             visibility = 1;
         }
         else {
             visibility = 0;
         }
-        imageLoader.showImg(this, kubrickHorzImgUrl, boxArt, title, true, true, visibility);
+        imageLoader.showImg(this, s, boxArt, title, showPlaceholderImg, true, visibility);
     }
 }

@@ -13,6 +13,8 @@ public interface SuspendLogging
     public static final String RESUMING_ENDED = "com.netflix.mediaclient.intent.action.LOG_SUS_RESUMING_ENDED";
     public static final String RESUMING_START = "com.netflix.mediaclient.intent.action.LOG_SUS_RESUMING_START";
     
+    void endAllActiveSessions();
+    
     void endBackgroundSession();
     
     void endBackgroundingSession();

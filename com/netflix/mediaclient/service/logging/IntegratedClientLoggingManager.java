@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.logging;
 
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.javabridge.ui.Log$AppIdSetListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.SystemClock;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClientFactory;
@@ -26,8 +27,6 @@ import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLogging
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;
-import com.netflix.mediaclient.service.logging.apm.UserSession;
-import com.netflix.mediaclient.service.logging.apm.ApplicationSession;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
@@ -91,7 +90,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         this.mUserSessionEnabledStatusMap = new HashMap<String, Boolean>();
         this.mEventPerSessionRndGeneratorMap = new HashMap<String, Random>();
         this.mLocalPlaybackInProgress = new AtomicBoolean(false);
-        this.mPlayerReceiver = new IntegratedClientLoggingManager$4(this);
+        this.mPlayerReceiver = new IntegratedClientLoggingManager$6(this);
         this.mOwner = mOwner;
         this.mContext = mContext;
         this.mUser = mUser;
@@ -115,7 +114,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
                 this.mApmLogging.endUserSession(ApplicationPerformanceMetricsLogging$EndReason.timeout, System.currentTimeMillis() - timeSinceLastUserInteraction);
                 return;
             }
-            if (timeSinceLastUserInteraction < userSessionDurationInMs && !this.mApmLogging.isUserSessionExist()) {
+            if (timeSinceLastUserInteraction < userSessionDurationInMs && !this.mApmLogging.isLogoutInProgress() && !this.mApmLogging.isUserSessionExist()) {
                 Log.d("nf_log", "It is less than 30 minutes and user session does NOT exist. Start user session");
                 this.mApmLogging.startUserSession(ApplicationPerformanceMetricsLogging$Trigger.inputEvent);
             }
@@ -130,7 +129,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
             Log.d("nf_log", "Found " + array.length + " payloads waiting");
         }
         for (int length = array.length, i = 0; i < length; ++i) {
-            this.mExecutor.schedule(new IntegratedClientLoggingManager$2(this, array[i].getKey()), this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
+            this.mExecutor.schedule(new IntegratedClientLoggingManager$3(this, array[i].getKey()), this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
         }
     }
     
@@ -146,46 +145,6 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
             return 1800000L;
         }
         return configuration.getApmUserSessionDurationInSeconds() * 1000L;
-    }
-    
-    private void handleAppSessionMissing(final Event event) {
-        Log.e("nf_log", "Application session is missing!");
-        final ApplicationSession applicationSession = this.mApmLogging.getApplicationSession();
-        if (applicationSession != null) {
-            if (event.getTime() < applicationSession.getStarted()) {
-                final String string = event.getName() + " event is created BEFORE application session";
-                Log.e("nf_log", string);
-                this.mOwner.getErrorLogging().logHandledException(string);
-            }
-            event.addActiveSession(applicationSession.getKey());
-            return;
-        }
-        final String string2 = "Application session does NOT exist, can not be added to event " + event.getName();
-        Log.e("nf_log", string2);
-        this.mOwner.getErrorLogging().logHandledException(string2);
-    }
-    
-    private void handleUserSessionMissing(final Event event) {
-        Log.d("nf_log", "User session is missing! This may be legit");
-        final UserSession userSession = this.mApmLogging.getUserSession();
-        if (userSession == null) {
-            final String string = "User session does NOT exist, can not be added to event " + event.getName();
-            Log.e("nf_log", string);
-            this.mOwner.getErrorLogging().logHandledException(string);
-            return;
-        }
-        if (Log.isLoggable("nf_log", 3)) {
-            Log.d("nf_log", "Event created: " + event.getTime());
-            Log.d("nf_log", "User session created: " + userSession.getStarted());
-            Log.d("nf_log", "Diff: " + (event.getTime() - userSession.getStarted()));
-        }
-        if (event.getTime() + 2000L < userSession.getStarted()) {
-            final String string2 = event.getName() + " event is created BEFORE user session";
-            Log.e("nf_log", string2);
-            this.mOwner.getErrorLogging().logHandledException(string2);
-            return;
-        }
-        event.addActiveSession(userSession.getKey());
     }
     
     private void initDataRepository() {
@@ -265,7 +224,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         if (Log.isLoggable("nf_log", 3)) {
             Log.d("nf_log", "Load event " + s);
         }
-        this.mDataRepository.load(s, new IntegratedClientLoggingManager$3(this, s));
+        this.mDataRepository.load(s, new IntegratedClientLoggingManager$4(this, s));
     }
     
     private void registerReceivers() {
@@ -292,7 +251,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         }
     }
     
-    private void sendEvents(final List<Event> list) {
+    private void sendEvents(final List<Event> list, final boolean b) {
         if (Log.isLoggable("nf_log", 3)) {
             Log.d("nf_log", "Send events " + list.size());
         }
@@ -304,7 +263,11 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
                 Log.v("nf_log", "Payload for log request: ");
                 Log.dumpVerbose("nf_log", string);
             }
-            this.mClientLoggingWebClient.sendLoggingEvents(this.saveEvents(string), string, new IntegratedClientLoggingManager$ClientLoggingWebCallbackImpl(this, string));
+            if (b) {
+                this.mClientLoggingWebClient.sendLoggingEvents(this.saveEvents(string), string, new IntegratedClientLoggingManager$ClientLoggingWebCallbackImpl(this, string));
+                return;
+            }
+            this.mClientLoggingWebClient.sendLoggingEvents(null, string, new IntegratedClientLoggingManager$ClientLoggingWebCallbackImpl(this, string));
         }
         catch (Exception ex) {
             Log.e("nf_log", "Failed to create JSON object for logging request", ex);
@@ -353,12 +316,6 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         while (iterator2.hasNext()) {
             event.removeActiveSession(iterator2.next());
         }
-        if (n2 < 1) {
-            this.handleAppSessionMissing(event);
-        }
-        if (n < 1) {
-            this.handleUserSessionMissing(event);
-        }
         if (n2 < 1 || n < 1) {
             Log.w("nf_log", "validate session found error");
             return;
@@ -402,13 +359,20 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         this.unRegisterReceivers();
     }
     
-    @Override
-    public void executeInBackground(final Runnable runnable) {
-        this.mExecutor.execute(runnable);
+    public void endAllActiveSessions() {
+        this.pauseDelivery();
+        this.mSuspendLogging.endAllActiveSessions();
+        this.mSocialLogging.endAllActiveSessions();
+        this.mUIViewLogging.endAllActiveSessions();
+        this.mActionLogging.endAllActiveSessions();
+        this.mUIViewLogging.endAllActiveSessions();
+        this.mSearchLogging.endAllActiveSessions();
+        this.mApmLogging.endAllActiveSessions();
+        this.resumeDelivery(false);
     }
     
-    void flush() {
-        this.mEventQueue.flushEvents();
+    void flush(final boolean b) {
+        this.mExecutor.execute(new IntegratedClientLoggingManager$5(this, b));
     }
     
     public UserActionLogging getActionLogging() {
@@ -622,7 +586,22 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         if (Log.isLoggable("nf_log", 3)) {
             Log.d("nf_log", "Event received " + event);
         }
-        this.mEventQueue.post(event);
+        this.mExecutor.execute(new IntegratedClientLoggingManager$2(this, event));
+    }
+    
+    public void recreateSessions(final String s, final String s2) {
+        synchronized (this) {
+            if (Log.isLoggable("nf_log", 3)) {
+                Log.d("nf_log", "recreateSessions:: Received app id " + s);
+                Log.d("nf_log", "recreateSessions:: Received user session id " + s2);
+            }
+            this.pauseDelivery();
+            this.mApmLogging.logoutCompleted();
+            this.mApmLogging.startApplicationSession(true);
+            this.mApmLogging.startUserSession();
+            this.mApmLogging.handleConnectivityChange(this.mContext);
+            this.resumeDelivery(false);
+        }
     }
     
     @Override
@@ -641,6 +620,11 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
     
     void resumeDelivery(final boolean b) {
         this.mEventQueue.resumeDelivery(b);
+    }
+    
+    @Override
+    public void setAppIdSetListener(final Log$AppIdSetListener appIdSetListener) {
+        this.mOwner.getNrdController().getNrdp().getLog().setAppIdSetListener(appIdSetListener);
     }
     
     public void setDataContext(final DataContext dataContext) {

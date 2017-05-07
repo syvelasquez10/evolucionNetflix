@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.common;
 
 import android.os.Handler;
 import android.os.Debug;
+import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
@@ -21,8 +22,8 @@ class DebugMenuItems$6 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        Log.d(this.this$0.logTag, "Making refreshIq() call");
-        this.this$0.activity.getServiceManager().getBrowse().refreshIq();
+        Log.d(this.this$0.logTag, "Making refreshCw() call");
+        this.this$0.activity.getServiceManager().getBrowse().refreshCw();
         return true;
     }
 }

@@ -29,7 +29,7 @@ public class ShowDetailsActivity extends DetailsActivity implements EpisodeRowVi
     
     @Override
     protected Fragment createSecondaryFrag() {
-        return (Fragment)EpisodeListFrag.create(this.getVideoId(), this.getEpisodeId(), !this.shouldHideDetailsView());
+        return (Fragment)EpisodesFrag.create(this.getVideoId(), this.getEpisodeId(), !this.shouldHideDetailsView());
     }
     
     @Override
@@ -67,13 +67,13 @@ public class ShowDetailsActivity extends DetailsActivity implements EpisodeRowVi
     }
     
     protected void setupFrags() {
-        final EpisodeListFrag episodeListFrag = (EpisodeListFrag)this.getSecondaryFrag();
+        final EpisodesFrag episodesFrag = (EpisodesFrag)this.getSecondaryFrag();
         if (this.shouldHideDetailsView()) {
             this.getPrimaryFragContainer().setVisibility(0);
-            episodeListFrag.hideDetailViewHeader();
+            episodesFrag.setDetailViewGroupVisibility(8);
             return;
         }
         this.getPrimaryFragContainer().setVisibility(8);
-        episodeListFrag.showDetailViewHeader();
+        episodesFrag.setDetailViewGroupVisibility(0);
     }
 }

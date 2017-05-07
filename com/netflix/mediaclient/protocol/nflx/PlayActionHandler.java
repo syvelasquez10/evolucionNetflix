@@ -11,8 +11,6 @@ import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.model.Playable;
-import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
-import com.netflix.mediaclient.util.WebApiUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.util.NflxProtocolUtils$VideoInfo;
 import com.netflix.mediaclient.util.StringUtils;
@@ -65,50 +63,31 @@ class PlayActionHandler extends BaseNflxHandler
     }
     
     @Override
-    protected NflxHandler$Response handleEpisodeFromTinyUrl(final JSONObject jsonObject, final String s, final String s2) {
-        if (!jsonObject.has("id")) {
-            Log.e("NflxHandler", "It should be episode JSON, failed to get title series id! Default to LOLOMO!");
-            this.handleHomeAction();
-            return NflxHandler$Response.HANDLING;
+    protected NflxHandler$Response handleEpisodeFromTinyUrl(final String s, final String s2, final String s3) {
+        if (Log.isLoggable("NflxHandler", 2)) {
+            Log.v("NflxHandler", "Play episode for: " + s);
         }
-        final WebApiUtils$VideoIds ids = WebApiUtils.extractIds(null, jsonObject.getString("id"));
-        if (ids != null) {
-            if (Log.isLoggable("NflxHandler", 2)) {
-                Log.v("NflxHandler", "Play episode for: " + ids);
-            }
-            this.playVideo(String.valueOf(ids.episodeId), VideoType.EPISODE, s, s2);
+        this.playVideo(String.valueOf(s), VideoType.EPISODE, s2, s3);
+        return NflxHandler$Response.HANDLING;
+    }
+    
+    @Override
+    protected NflxHandler$Response handleMovieFromTinyUrl(final String s, final String s2, final String s3) {
+        if (Log.isLoggable("NflxHandler", 3)) {
+            Log.d("NflxHandler", "Handling movie from tiny URL. Extracted video id: " + s);
         }
-        else {
-            Log.e("NflxHandler", "Video ID not found, return to LOLOMO");
-            this.handleHomeAction();
+        if (s != null) {
+            this.playVideo(s, VideoType.MOVIE, s2, s3);
+            return NflxHandler$Response.HANDLING_WITH_DELAY;
         }
+        Log.e("NflxHandler", "Video ID not found, return to LOLOMO");
+        this.handleHomeAction();
         return NflxHandler$Response.HANDLING;
     }
     
     protected NflxHandler$Response handleMovieFromTinyUrl(final String s, final JSONObject jsonObject, final String s2, final String s3) {
         this.playVideo(s, VideoType.MOVIE, s2, s3);
         return NflxHandler$Response.HANDLING_WITH_DELAY;
-    }
-    
-    @Override
-    protected NflxHandler$Response handleMovieFromTinyUrl(final JSONObject jsonObject, final String s, final String s2) {
-        if (!jsonObject.has("id")) {
-            Log.e("NflxHandler", "It should be movie JSON, failed to get ID URL! Default to LOLOMO!");
-            this.handleHomeAction();
-            return NflxHandler$Response.HANDLING;
-        }
-        final String string = jsonObject.getString("id");
-        final String videoIdFromUri = NflxProtocolUtils.getVideoIdFromUri(string, "movies/");
-        if (Log.isLoggable("NflxHandler", 3)) {
-            Log.d("NflxHandler", "Handling movie from tiny URL. Expanded to: " + string + ". Extracted video id: " + videoIdFromUri);
-        }
-        if (videoIdFromUri != null) {
-            this.playVideo(videoIdFromUri, VideoType.MOVIE, s, s2);
-            return NflxHandler$Response.HANDLING_WITH_DELAY;
-        }
-        Log.e("NflxHandler", "Video ID not found, return to LOLOMO");
-        this.handleHomeAction();
-        return NflxHandler$Response.HANDLING;
     }
     
     protected void play(final Playable playable, final String dialUuidAsCurrentTarget, final PlayContext playContext) {

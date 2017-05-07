@@ -25,7 +25,7 @@ public class KidsCharacterLomoDetailAdapter extends KidsLomoDetailAdapter
     protected VideoViewGroup<?, ?> createVideoViewGroup() {
         final KidsCharacterViewGroup kidsCharacterViewGroup = new KidsCharacterViewGroup((Context)this.activity, false);
         kidsCharacterViewGroup.init(2);
-        kidsCharacterViewGroup.setPadding(this.activity.getResources().getDimensionPixelSize(2131361974), 0, 0, 0);
+        kidsCharacterViewGroup.setPadding(this.activity.getResources().getDimensionPixelSize(2131361978), 0, 0, 0);
         kidsCharacterViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeSkidmarkCharacterViewSize(this.activity)));
         return kidsCharacterViewGroup;
     }

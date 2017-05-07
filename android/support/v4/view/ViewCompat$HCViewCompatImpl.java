@@ -10,6 +10,11 @@ import android.view.View;
 class ViewCompat$HCViewCompatImpl extends ViewCompat$GBViewCompatImpl
 {
     @Override
+    public float getAlpha(final View view) {
+        return ViewCompatHC.getAlpha(view);
+    }
+    
+    @Override
     long getFrameTime() {
         return ViewCompatHC.getFrameTime();
     }
@@ -17,6 +22,11 @@ class ViewCompat$HCViewCompatImpl extends ViewCompat$GBViewCompatImpl
     @Override
     public int getMeasuredState(final View view) {
         return ViewCompatHC.getMeasuredState(view);
+    }
+    
+    @Override
+    public float getTranslationX(final View view) {
+        return ViewCompatHC.getTranslationX(view);
     }
     
     @Override

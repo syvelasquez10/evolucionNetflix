@@ -67,13 +67,13 @@ public class LaunchActivity extends NetflixActivity
     
     private void createContentView() {
         this.setContentView(2130903195);
-        final ImageView imageView = (ImageView)this.findViewById(2131165677);
+        final ImageView imageView = (ImageView)this.findViewById(2131165680);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837853;
+            imageResource = 2130837863;
         }
         else {
-            imageResource = 2130837852;
+            imageResource = 2130837862;
         }
         imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi((Context)this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
@@ -143,8 +143,8 @@ public class LaunchActivity extends NetflixActivity
     }
     
     private void manipulateSplashBackground() {
-        final ImageView imageView = (ImageView)this.findViewById(2131165677);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$2(this, imageView, (ImageView)this.findViewById(2131165403), (ProgressBar)this.findViewById(2131165404)));
+        final ImageView imageView = (ImageView)this.findViewById(2131165680);
+        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$2(this, imageView, (ImageView)this.findViewById(2131165405), (ProgressBar)this.findViewById(2131165406)));
     }
     
     private void registerNflxReceiver() {
@@ -203,7 +203,7 @@ public class LaunchActivity extends NetflixActivity
     
     @Override
     public IClientLogging$ModalView getUiScreen() {
-        return null;
+        return IClientLogging$ModalView.appLoading;
     }
     
     @Override

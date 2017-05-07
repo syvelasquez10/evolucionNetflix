@@ -36,7 +36,7 @@ public class KidsHorizontalVideoView extends RelativeLayout implements VideoView
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -1));
         this.playContext = PlayContext.EMPTY_CONTEXT;
         netflixActivity.getLayoutInflater().inflate(2130903106, (ViewGroup)this);
-        (this.img = (AdvancedImageView)this.findViewById(2131165401)).setCornerRadius(netflixActivity.getResources().getDimensionPixelSize(2131361965));
+        (this.img = (AdvancedImageView)this.findViewById(2131165403)).setCornerRadius(netflixActivity.getResources().getDimensionPixelSize(2131361968));
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
     }
     
@@ -50,7 +50,7 @@ public class KidsHorizontalVideoView extends RelativeLayout implements VideoView
         this.clicker.remove((View)this);
     }
     
-    public void update(final Video video, final Trackable trackable, int visibility, final boolean b) {
+    public void update(final Video video, final Trackable trackable, int visibility, final boolean b, final boolean b2) {
         this.playContext = new PlayContextImp(trackable, visibility);
         this.clicker.update((View)this, video);
         if (video.getHorzDispUrl() == null) {

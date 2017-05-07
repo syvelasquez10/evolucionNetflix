@@ -29,6 +29,7 @@ import java.util.Iterator;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.ui.settings.SettingsActivity;
 import com.netflix.mediaclient.ui.common.DebugMenuItems;
+import android.view.Window;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
@@ -58,7 +59,8 @@ import android.view.MotionEvent;
 import com.netflix.mediaclient.util.MdxUtils;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import com.netflix.mediaclient.ui.kids.NetflixKidsActionBar;
+import com.netflix.mediaclient.ui.kids.KidsActionBar;
+import com.netflix.mediaclient.ui.kubrick_kids.KubrickKidsActionBar;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.content.Intent;
 import android.content.Context;
@@ -192,7 +194,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     private String getMessage(final int n, final StatusCode statusCode) {
         String string;
         if (n == Integer.MAX_VALUE) {
-            string = this.getString(2131493368);
+            string = this.getString(2131493373);
         }
         else {
             String s;
@@ -204,7 +206,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             }
             string = s;
             if (s == null) {
-                return this.getString(2131493368);
+                return this.getString(2131493373);
             }
         }
         return string;
@@ -263,8 +265,11 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     }
     
     protected NetflixActionBar createActionBar() {
+        if (this.isForKids() && this.isKubrick()) {
+            return new KubrickKidsActionBar(this, this.hasUpAction());
+        }
         if (this.isForKids()) {
-            return new NetflixKidsActionBar(this, this.hasUpAction());
+            return new KidsActionBar(this, this.hasUpAction());
         }
         return new NetflixActionBar(this, this.hasUpAction());
     }
@@ -354,15 +359,20 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
                     }
                     this.displayDialog(dialog);
                     return;
+                    // iftrue(Label_0165:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
+                    // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
+                Label_0150:
                     while (true) {
-                        this.displayDialog(dialog);
-                        return;
-                        Log.d("NetflixActivity", "displayUserAgentDialog " + s);
+                        Block_9: {
+                            break Block_9;
+                            Log.d("NetflixActivity", "displayUserAgentDialog " + s);
+                            break Label_0150;
+                        }
                         continue;
                     }
+                    this.displayDialog(dialog);
+                    return;
                 }
-                // iftrue(Label_0165:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
-                // iftrue(Label_0150:, !Log.isLoggable("NetflixActivity", 3))
                 finally {
                 }
                 // monitorexit(visibleDialogLock)
@@ -649,23 +659,27 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     
     @Override
     protected void onCreate(final Bundle bundle) {
-        boolean shouldExpandMiniPlayer = true;
         super.onCreate(bundle);
         this.setInstanceStateSaved(false);
         this.actionBarHeight = ViewUtils.getDefaultActionBarHeight((Context)this);
         if (Log.isLoggable("NetflixActivity", 2)) {
             Log.v("NetflixActivity", "Creating activity: " + this.getClass().getSimpleName() + ", hash: " + this.hashCode());
         }
-        if (this.isForKids()) {
+        if (this.shouldLockOrientation()) {
             this.setRequestedOrientation(1);
         }
         if (this.shouldShowKidsBackground()) {
-            this.getWindow().setBackgroundDrawableResource(2130837714);
+            final Window window = this.getWindow();
+            int backgroundDrawableResource;
+            if (this.isKubrick()) {
+                backgroundDrawableResource = 2131296360;
+            }
+            else {
+                backgroundDrawableResource = 2130837718;
+            }
+            window.setBackgroundDrawableResource(backgroundDrawableResource);
         }
-        if (bundle == null || !bundle.getBoolean("mini_player_expanded", false)) {
-            shouldExpandMiniPlayer = false;
-        }
-        this.shouldExpandMiniPlayer = shouldExpandMiniPlayer;
+        this.shouldExpandMiniPlayer = (bundle != null && bundle.getBoolean("mini_player_expanded", false));
         if (Log.isLoggable("NetflixActivity", 2)) {
             Log.v("NetflixActivity", "Should expand mini player: " + this.shouldExpandMiniPlayer);
         }
@@ -678,10 +692,10 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         if (menu2 != null) {
-            new DebugMenuItems("NetflixActivity", this).addItems(menu2);
+            new DebugMenuItems("NetflixActivity", this).addItems(this, menu2);
         }
         if (this.showSettingsInMenu()) {
-            menu.add(2131493123).setIcon(2130837699).setIntent(SettingsActivity.createStartIntent(this));
+            menu.add(2131493123).setIcon(2130837702).setIntent(SettingsActivity.createStartIntent(this));
         }
         if (this.showAboutInMenu()) {
             this.addAboutMenu(menu);
@@ -821,12 +835,12 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     protected void onStart() {
         super.onStart();
         UserActionLogUtils.reportNavigationActionStarted((Context)this, null, this.getUiScreen());
-        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131165506);
-        this.slidingPanel = (SlidingUpPanelLayout)this.findViewById(2131165371);
+        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131165507);
+        this.slidingPanel = (SlidingUpPanelLayout)this.findViewById(2131165373);
         if (this.slidingPanel != null) {
             this.slidingPanel.setDragView(this.mdxFrag.getSlidingPanelDragView());
             this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131361888));
-            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837843));
+            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837853));
             this.slidingPanel.setPanelSlideListener(this.panelSlideListener);
             if (this.shouldApplyPaddingToSlidingPanel()) {
                 final View child = this.slidingPanel.getChildAt(0);
@@ -1008,6 +1022,10 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     
     protected boolean shouldFinishOnManagerError() {
         return true;
+    }
+    
+    protected boolean shouldLockOrientation() {
+        return this.isForKids() && !this.isKubrick();
     }
     
     protected boolean shouldReportNavigationActionEndedOnStop() {

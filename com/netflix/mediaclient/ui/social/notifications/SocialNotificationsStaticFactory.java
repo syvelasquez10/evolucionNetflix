@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.social.notifications;
 
 import java.util.Collections;
+import com.netflix.mediaclient.ui.social.notifications.types.NewSeasonAlert;
 import com.netflix.mediaclient.ui.social.notifications.types.SocialVideoThankedFeedback;
 import com.netflix.mediaclient.ui.social.notifications.types.SocialVideoAddedToPlaylist;
 import com.netflix.mediaclient.ui.social.notifications.types.SocialVideoImplicitFeedback;
@@ -24,6 +25,7 @@ public class SocialNotificationsStaticFactory
         hashMap.put(SocialNotificationSummary$NotificationTypes.IMPLICIT_FEEDBACK, new SocialVideoImplicitFeedback());
         hashMap.put(SocialNotificationSummary$NotificationTypes.ADDED_TO_VIDEO_PLAYLIST, new SocialVideoAddedToPlaylist());
         hashMap.put(SocialNotificationSummary$NotificationTypes.THANKS_SENT, new SocialVideoThankedFeedback());
+        hashMap.put(SocialNotificationSummary$NotificationTypes.NEW_SEASON_ALERT, new NewSeasonAlert());
         types = Collections.unmodifiableMap((Map<?, ?>)hashMap);
     }
     

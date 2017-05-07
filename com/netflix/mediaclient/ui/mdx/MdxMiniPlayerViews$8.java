@@ -40,7 +40,7 @@ import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.ui.details.EpisodeListFrag;
+import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import com.netflix.mediaclient.Log;
 import android.view.View;
@@ -68,9 +68,9 @@ class MdxMiniPlayerViews$8 implements View$OnClickListener
             return;
         }
         Log.v("MdxMiniPlayerViews", "Showing episodes dialog");
-        final NetflixDialogFrag create = EpisodeListFrag.create(currentVideo.getPlayable().getParentId(), null, false);
-        create.onManagerReady(this.this$0.callbacks.getManager(), CommonStatus.OK);
-        create.setCancelable(true);
-        this.this$0.activity.showDialog(create);
+        final NetflixDialogFrag episodes = EpisodesFrag.createEpisodes(currentVideo.getPlayable().getParentId(), null, false);
+        episodes.onManagerReady(this.this$0.callbacks.getManager(), CommonStatus.OK);
+        episodes.setCancelable(true);
+        this.this$0.activity.showDialog(episodes);
     }
 }

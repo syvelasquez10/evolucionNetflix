@@ -50,6 +50,10 @@ public class ScrollerCompat
         this.mImpl.fling(this.mScroller, n, n2, n3, n4, n5, n6, n7, n8);
     }
     
+    public float getCurrVelocity() {
+        return this.mImpl.getCurrVelocity(this.mScroller);
+    }
+    
     public int getCurrX() {
         return this.mImpl.getCurrX(this.mScroller);
     }
@@ -64,6 +68,10 @@ public class ScrollerCompat
     
     public int getFinalY() {
         return this.mImpl.getFinalY(this.mScroller);
+    }
+    
+    public boolean isFinished() {
+        return this.mImpl.isFinished(this.mScroller);
     }
     
     public void startScroll(final int n, final int n2, final int n3, final int n4, final int n5) {

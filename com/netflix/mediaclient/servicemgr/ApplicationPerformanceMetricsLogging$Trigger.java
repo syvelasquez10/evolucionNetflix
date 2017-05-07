@@ -8,5 +8,6 @@ public enum ApplicationPerformanceMetricsLogging$Trigger
 {
     appStart, 
     inputEvent, 
+    logout, 
     resumeFromBackground;
 }

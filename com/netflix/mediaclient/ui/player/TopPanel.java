@@ -62,7 +62,7 @@ public final class TopPanel extends PlayerSection
         this.mListeners = mListeners;
         this.mSocial = new Social(playerActivity, playerActivity.getSocialProviderCallback());
         (this.mActionBar = playerActivity.getSupportActionBar()).setTitle("");
-        this.mTitleLabel = (TextView)playerActivity.findViewById(2131165572);
+        this.mTitleLabel = (TextView)playerActivity.findViewById(2131165573);
         if (playerActivity.isForKids()) {
             this.mTitleLabel.setOnClickListener(this.mBackListener);
         }
@@ -115,14 +115,14 @@ public final class TopPanel extends PlayerSection
         this.mEpisodeSelector.setIcon(2130837660);
         this.mEpisodeSelector.setShowAsAction(2);
         this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$6(this));
-        this.mTopGradient = this.context.findViewById(2131165568);
-        this.mToolBar = (Toolbar)this.context.findViewById(2131165571);
+        this.mTopGradient = this.context.findViewById(2131165569);
+        this.mToolBar = (Toolbar)this.context.findViewById(2131165572);
     }
     
     private void initLanguages(final Menu menu) {
         this.mLanguageSelector = LanguageSelector.createInstance(this.context, this.context.isTablet(), new TopPanel$3(this));
         (this.mLanguage = menu.add(2131493144)).setVisible(this.showLanguageMenuItem());
-        this.mLanguage.setIcon(2130837703);
+        this.mLanguage.setIcon(2130837707);
         this.mLanguage.setShowAsAction(2);
         this.mLanguage.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$4(this));
     }
@@ -138,7 +138,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final Menu menu, final SeekBar$OnSeekBarChangeListener seekBar$OnSeekBarChangeListener) {
-        (this.mSound = menu.add(2131493174)).setIcon(2130837708);
+        (this.mSound = menu.add(2131493174)).setIcon(2130837712);
         this.mSound.setShowAsAction(2);
         this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
     }

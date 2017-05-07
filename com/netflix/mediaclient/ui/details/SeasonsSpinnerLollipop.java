@@ -11,6 +11,5 @@ public class SeasonsSpinnerLollipop extends SeasonsSpinner
 {
     public SeasonsSpinnerLollipop(final Context context) {
         super(context, null, 0, 16974035, 1);
-        this.init();
     }
 }

@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.kubrick.lomo.KubrickGalleryPagerAdapter;
 import com.netflix.mediaclient.ui.kubrick.lomo.KubrickHeroPagerAdapter;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsCharacterPagerAdapter;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
@@ -18,6 +18,7 @@ class RowAdapterProvider implements LoMoViewPagerAdapter$IRowAdapterProvider
     private final RowAdapter cw;
     private final RowAdapter error;
     private final RowAdapter iq;
+    private final RowAdapter kubrickGallery;
     private final RowAdapter kubrickHero;
     private final RowAdapter loading;
     private final RowAdapter standard;
@@ -32,19 +33,21 @@ class RowAdapterProvider implements LoMoViewPagerAdapter$IRowAdapterProvider
         }
         if (activity.isKubrick()) {
             this.kubrickHero = new KubrickHeroPagerAdapter(serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);
+            this.kubrickGallery = new KubrickGalleryPagerAdapter(serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);
         }
         else {
             this.kubrickHero = null;
+            this.kubrickGallery = null;
         }
         this.billboard = new BillboardPagerAdapter(serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);
         this.cw = new CwPagerAdapter(serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);
         this.iq = new IqPagerAdapter<Object>(serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);
-        ProgressiveLoMoPagerAdapter<Video> standard;
+        RowAdapter standard;
         if (b) {
             standard = new GenreLoMoPagerAdapter(serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);
         }
         else {
-            standard = new StandardLoMoPagerAdapter(serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);
+            standard = new StandardLoMoPagerAdapter<Object>(serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);
         }
         this.standard = standard;
         this.loading = new LoadingViewAdapter(rowAdapterCallbacks, objectRecycler$ViewRecycler);
@@ -78,6 +81,11 @@ class RowAdapterProvider implements LoMoViewPagerAdapter$IRowAdapterProvider
     @Override
     public RowAdapter getIqAdapter() {
         return this.iq;
+    }
+    
+    @Override
+    public RowAdapter getKubrickGalleryAdapter() {
+        return this.kubrickGallery;
     }
     
     @Override

@@ -4,18 +4,21 @@
 
 package com.netflix.mediaclient.ui.details;
 
-class MovieDetailsFrag$2 implements Runnable
+import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
+
+class MovieDetailsFrag$2 extends GridLayoutManager$SpanSizeLookup
 {
     final /* synthetic */ MovieDetailsFrag this$0;
-    final /* synthetic */ int val$scrollY;
     
-    MovieDetailsFrag$2(final MovieDetailsFrag this$0, final int val$scrollY) {
+    MovieDetailsFrag$2(final MovieDetailsFrag this$0) {
         this.this$0 = this$0;
-        this.val$scrollY = val$scrollY;
     }
     
     @Override
-    public void run() {
-        this.this$0.primaryView.scrollTo(0, this.val$scrollY);
+    public int getSpanSize(final int n) {
+        if (n == 0) {
+            return this.this$0.numColumns;
+        }
+        return 1;
     }
 }

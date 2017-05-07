@@ -111,7 +111,7 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
             }
         }
         else {
-            this.setRequestedOrientation(1);
+            this.setRequestedOrientation(7);
             this.setContentView(2130903089);
             if (Log.isLoggable("DiagnosisActivity", 3)) {
                 Log.d("DiagnosisActivity", "setting orientation to potrait");

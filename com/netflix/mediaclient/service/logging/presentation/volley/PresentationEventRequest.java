@@ -36,13 +36,17 @@ public class PresentationEventRequest extends PresentationVolleyWebClientRequest
         if (Log.isLoggable("nf_presentation", 2)) {
             Log.v("nf_presentation", "presentationEvent FAIL : " + status);
         }
-        this.mCallback.onEventsDeliveryFailed(this.mDeliveryRequestId);
+        if (this.mCallback != null) {
+            this.mCallback.onEventsDeliveryFailed(this.mDeliveryRequestId);
+        }
     }
     
     @Override
     protected void onSuccess(final String s) {
         Log.v("nf_presentation", "presentationEvent OK : ");
-        this.mCallback.onEventsDelivered(this.mDeliveryRequestId);
+        if (this.mCallback != null) {
+            this.mCallback.onEventsDelivered(this.mDeliveryRequestId);
+        }
     }
     
     @Override

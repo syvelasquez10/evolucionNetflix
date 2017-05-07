@@ -161,6 +161,14 @@ public class MovieDetails extends Movie implements Playable, com.netflix.mediacl
     }
     
     @Override
+    public int getLogicalStart() {
+        if (this.detail == null) {
+            return 0;
+        }
+        return this.detail.logicalStart;
+    }
+    
+    @Override
     public int getNumDirectors() {
         return StringUtils.getCsvCount(this.getDirectors());
     }

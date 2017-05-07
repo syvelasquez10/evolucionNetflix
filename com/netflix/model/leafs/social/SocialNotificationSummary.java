@@ -36,6 +36,14 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
     private String id;
     @SerializedName("msgString")
     private String messageString;
+    @SerializedName("nsaBoxartUrl")
+    private String nsaBoxartUrl;
+    @SerializedName("nsaSeasonIndex")
+    private int nsaSeasonIndex;
+    @SerializedName("nsaSeasonsCount")
+    private int nsaSeasonsCount;
+    @SerializedName("nsaTimestamp")
+    private long nsaTimestamp;
     @Deprecated
     private Video$InQueue obsoleteInQueue;
     @Deprecated
@@ -55,7 +63,7 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
     }
     
     protected SocialNotificationSummary(final Parcel parcel) {
-        final String[] array = new String[17];
+        final String[] array = new String[21];
         parcel.readStringArray(array);
         this.bWasRead = Boolean.valueOf(array[0]);
         this.bWasThanked = Boolean.valueOf(array[1]);
@@ -69,14 +77,18 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         this.type = SocialNotificationSummary$NotificationTypes.valueOf(array[8]);
         this.messageString = array[9];
         this.timestamp = Long.valueOf(array[10]);
+        this.nsaTimestamp = Long.valueOf(array[11]);
+        this.nsaSeasonIndex = Integer.valueOf(array[12]);
+        this.nsaSeasonsCount = Integer.valueOf(array[13]);
+        this.nsaBoxartUrl = array[14];
         this.obsoleteVideoSummary = new Video$Summary();
-        this.obsoleteVideoSummary.horzDispUrl = array[11];
-        this.obsoleteVideoSummary.id = array[12];
-        this.obsoleteVideoSummary.title = array[13];
-        this.obsoleteVideoSummary.type = array[14];
-        this.obsoleteVideoSummary.boxartUrl = array[15];
+        this.obsoleteVideoSummary.horzDispUrl = array[15];
+        this.obsoleteVideoSummary.id = array[16];
+        this.obsoleteVideoSummary.title = array[17];
+        this.obsoleteVideoSummary.type = array[18];
+        this.obsoleteVideoSummary.boxartUrl = array[19];
         this.obsoleteInQueue = new Video$InQueue();
-        this.obsoleteInQueue.inQueue = Boolean.parseBoolean(array[16]);
+        this.obsoleteInQueue.inQueue = Boolean.parseBoolean(array[20]);
     }
     
     public SocialNotificationSummary(final String id, final String storyId) {
@@ -103,6 +115,9 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
             }
             case "SendThanks": {
                 return SocialNotificationSummary$NotificationTypes.THANKS_SENT;
+            }
+            case "NewSeasonAlert": {
+                return SocialNotificationSummary$NotificationTypes.NEW_SEASON_ALERT;
             }
         }
     }
@@ -184,6 +199,22 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         return this.messageString;
     }
     
+    public String getNSABoxartUrl() {
+        return this.nsaBoxartUrl;
+    }
+    
+    public int getNSASeasonIndex() {
+        return this.nsaSeasonIndex;
+    }
+    
+    public int getNSASeasonsCount() {
+        return this.nsaSeasonsCount;
+    }
+    
+    public long getNSATimestamp() {
+        return this.nsaTimestamp;
+    }
+    
     public String getStoryId() {
         return this.storyId;
     }
@@ -216,118 +247,163 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
         return this.getId().hashCode();
     }
     
-    public void populate(JsonElement jsonElement) {
+    public void populate(final JsonElement jsonElement) {
         final JsonObject asJsonObject = jsonElement.getAsJsonObject();
         if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.v("SocialNotificationSummary", "Populating with: " + asJsonObject);
         }
         for (final Map.Entry<String, JsonElement> entry : asJsonObject.entrySet()) {
-            jsonElement = entry.getValue();
-            final String s = entry.getKey();
-            int n = 0;
-            Label_0174: {
-                switch (s.hashCode()) {
-                    case 3355: {
-                        if (s.equals("id")) {
-                            n = 0;
-                            break Label_0174;
-                        }
-                        break;
-                    }
-                    case -1884251920: {
-                        if (s.equals("storyId")) {
-                            n = 1;
-                            break Label_0174;
-                        }
-                        break;
-                    }
-                    case 1343750747: {
-                        if (s.equals("msgType")) {
-                            n = 2;
-                            break Label_0174;
-                        }
-                        break;
-                    }
-                    case -1473868046: {
-                        if (s.equals("msgString")) {
-                            n = 3;
-                            break Label_0174;
-                        }
-                        break;
-                    }
-                    case -1244622187: {
-                        if (s.equals("fromUser")) {
-                            n = 4;
-                            break Label_0174;
-                        }
-                        break;
-                    }
-                    case 55126294: {
-                        if (s.equals("timestamp")) {
-                            n = 5;
-                            break Label_0174;
-                        }
-                        break;
-                    }
-                    case -1180158496: {
-                        if (s.equals("isRead")) {
-                            n = 6;
-                            break Label_0174;
-                        }
-                        break;
-                    }
-                    case -1933137793: {
-                        if (s.equals("isThanked")) {
-                            n = 7;
-                            break Label_0174;
-                        }
-                        break;
-                    }
+            final JsonElement jsonElement2 = entry.getValue();
+            if (jsonElement2.isJsonNull()) {
+                if (!Log.isLoggable("SocialNotificationSummary", 5)) {
+                    continue;
                 }
-                n = -1;
+                Log.w("SocialNotificationSummary", "Skipping null value for: " + entry.getKey());
             }
-            switch (n) {
-                default: {
-                    continue;
-                }
-                case 0: {
-                    this.id = jsonElement.getAsString();
-                    continue;
-                }
-                case 1: {
-                    this.storyId = jsonElement.getAsString();
-                    continue;
-                }
-                case 2: {
-                    this.type = getNotificationType(jsonElement.getAsString());
-                    continue;
-                }
-                case 3: {
-                    String asString;
-                    if (jsonElement.isJsonNull()) {
-                        asString = null;
+            else {
+                final String s = entry.getKey();
+                int n = 0;
+                Label_0258: {
+                    switch (s.hashCode()) {
+                        case 3355: {
+                            if (s.equals("id")) {
+                                n = 0;
+                                break Label_0258;
+                            }
+                            break;
+                        }
+                        case -1884251920: {
+                            if (s.equals("storyId")) {
+                                n = 1;
+                                break Label_0258;
+                            }
+                            break;
+                        }
+                        case 1343750747: {
+                            if (s.equals("msgType")) {
+                                n = 2;
+                                break Label_0258;
+                            }
+                            break;
+                        }
+                        case -1473868046: {
+                            if (s.equals("msgString")) {
+                                n = 3;
+                                break Label_0258;
+                            }
+                            break;
+                        }
+                        case -1244622187: {
+                            if (s.equals("fromUser")) {
+                                n = 4;
+                                break Label_0258;
+                            }
+                            break;
+                        }
+                        case 55126294: {
+                            if (s.equals("timestamp")) {
+                                n = 5;
+                                break Label_0258;
+                            }
+                            break;
+                        }
+                        case 1000374586: {
+                            if (s.equals("nsaTimestamp")) {
+                                n = 6;
+                                break Label_0258;
+                            }
+                            break;
+                        }
+                        case 1265500883: {
+                            if (s.equals("nsaSeasonIndex")) {
+                                n = 7;
+                                break Label_0258;
+                            }
+                            break;
+                        }
+                        case 1738877531: {
+                            if (s.equals("nsaSeasonsCount")) {
+                                n = 8;
+                                break Label_0258;
+                            }
+                            break;
+                        }
+                        case 2098898363: {
+                            if (s.equals("nsaBoxartUrl")) {
+                                n = 9;
+                                break Label_0258;
+                            }
+                            break;
+                        }
+                        case -1180158496: {
+                            if (s.equals("isRead")) {
+                                n = 10;
+                                break Label_0258;
+                            }
+                            break;
+                        }
+                        case -1933137793: {
+                            if (s.equals("isThanked")) {
+                                n = 11;
+                                break Label_0258;
+                            }
+                            break;
+                        }
                     }
-                    else {
-                        asString = jsonElement.getAsString();
+                    n = -1;
+                }
+                switch (n) {
+                    default: {
+                        continue;
                     }
-                    this.messageString = asString;
-                    continue;
-                }
-                case 4: {
-                    (this.friendProfile = new FriendProfile()).populate(jsonElement.getAsJsonObject());
-                    continue;
-                }
-                case 5: {
-                    this.timestamp = jsonElement.getAsLong();
-                    continue;
-                }
-                case 6: {
-                    this.bWasRead = jsonElement.getAsBoolean();
-                    continue;
-                }
-                case 7: {
-                    this.bWasThanked = (!jsonElement.isJsonNull() && jsonElement.getAsBoolean());
-                    continue;
+                    case 0: {
+                        this.id = jsonElement2.getAsString();
+                        continue;
+                    }
+                    case 1: {
+                        this.storyId = jsonElement2.getAsString();
+                        continue;
+                    }
+                    case 2: {
+                        this.type = getNotificationType(jsonElement2.getAsString());
+                        continue;
+                    }
+                    case 3: {
+                        this.messageString = jsonElement2.getAsString();
+                        continue;
+                    }
+                    case 4: {
+                        (this.friendProfile = new FriendProfile()).populate(jsonElement2.getAsJsonObject());
+                        continue;
+                    }
+                    case 5: {
+                        this.timestamp = jsonElement2.getAsLong();
+                        continue;
+                    }
+                    case 6: {
+                        this.nsaTimestamp = jsonElement2.getAsLong();
+                        continue;
+                    }
+                    case 7: {
+                        this.nsaSeasonIndex = jsonElement2.getAsInt();
+                        continue;
+                    }
+                    case 8: {
+                        this.nsaSeasonsCount = jsonElement2.getAsInt();
+                        continue;
+                    }
+                    case 9: {
+                        this.nsaBoxartUrl = jsonElement2.getAsString();
+                        continue;
+                    }
+                    case 10: {
+                        this.bWasRead = jsonElement2.getAsBoolean();
+                        continue;
+                    }
+                    case 11: {
+                        this.bWasThanked = jsonElement2.getAsBoolean();
+                        continue;
+                    }
                 }
             }
         }
@@ -361,27 +437,44 @@ public class SocialNotificationSummary implements Parcelable, JsonPopulator
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        final String[] array = { String.valueOf(this.bWasRead), String.valueOf(this.bWasThanked), this.friendProfile.getId(), this.friendProfile.getFirstName(), this.friendProfile.getLastName(), this.friendProfile.getImageUrl(), this.id, this.storyId, this.type.name(), this.messageString, String.valueOf(this.timestamp), null, null, null, null, null, null };
+        final String[] array = new String[21];
+        array[0] = String.valueOf(this.bWasRead);
+        array[1] = String.valueOf(this.bWasThanked);
+        if (this.friendProfile != null) {
+            array[2] = this.friendProfile.getId();
+            array[3] = this.friendProfile.getFirstName();
+            array[4] = this.friendProfile.getLastName();
+            array[5] = this.friendProfile.getImageUrl();
+        }
+        array[6] = this.id;
+        array[7] = this.storyId;
+        array[8] = this.type.name();
+        array[9] = this.messageString;
+        array[10] = String.valueOf(this.timestamp);
+        array[11] = String.valueOf(this.nsaTimestamp);
+        array[12] = String.valueOf(this.nsaSeasonIndex);
+        array[13] = String.valueOf(this.nsaSeasonsCount);
+        array[14] = this.nsaBoxartUrl;
         if (this.obsoleteVideoSummary != null) {
-            array[11] = this.obsoleteVideoSummary.horzDispUrl;
-            array[12] = this.obsoleteVideoSummary.id;
-            array[13] = this.obsoleteVideoSummary.title;
-            array[14] = this.obsoleteVideoSummary.type;
-            array[15] = this.obsoleteVideoSummary.boxartUrl;
+            array[15] = this.obsoleteVideoSummary.horzDispUrl;
+            array[16] = this.obsoleteVideoSummary.id;
+            array[17] = this.obsoleteVideoSummary.title;
+            array[18] = this.obsoleteVideoSummary.type;
+            array[19] = this.obsoleteVideoSummary.boxartUrl;
         }
         else if (this.falkorVideo != null && this.falkorVideo.get("summary") != null) {
             final com.netflix.model.leafs.Video$Summary video$Summary = (com.netflix.model.leafs.Video$Summary)this.falkorVideo.get("summary");
-            array[11] = video$Summary.horzDispUrl;
-            array[12] = video$Summary.id;
-            array[13] = video$Summary.title;
-            array[14] = video$Summary.type;
-            array[15] = video$Summary.boxartUrl;
+            array[15] = video$Summary.horzDispUrl;
+            array[16] = video$Summary.id;
+            array[17] = video$Summary.title;
+            array[18] = video$Summary.type;
+            array[19] = video$Summary.boxartUrl;
         }
         if (this.obsoleteInQueue != null) {
-            array[16] = String.valueOf(this.obsoleteInQueue.inQueue);
+            array[20] = String.valueOf(this.obsoleteInQueue.inQueue);
         }
         else if (this.falkorVideo != null && this.falkorVideo.get("inQueue") != null) {
-            array[16] = String.valueOf(((com.netflix.model.leafs.Video$InQueue)this.falkorVideo.get("inQueue")).inQueue);
+            array[20] = String.valueOf(((com.netflix.model.leafs.Video$InQueue)this.falkorVideo.get("inQueue")).inQueue);
         }
         parcel.writeStringArray(array);
     }

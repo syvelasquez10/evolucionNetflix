@@ -22,12 +22,12 @@ public final class UserSession extends BaseApmSession
         mPendingEndEvent.setCategory(this.getCategory());
         mPendingEndEvent.setModalView(modalView);
         mPendingEndEvent.setDataContext(dataContext);
-        UserSessionEndedEvent userSessionEndedEvent = mPendingEndEvent;
         if (this.waitingOnSessionId) {
             this.mPendingEndEvent = mPendingEndEvent;
-            userSessionEndedEvent = null;
+            return null;
         }
-        return userSessionEndedEvent;
+        mPendingEndEvent.setSessionId(this.getId());
+        return mPendingEndEvent;
     }
     
     public UserSessionStartedEvent createStartEvent(final ApplicationPerformanceMetricsLogging$Trigger applicationPerformanceMetricsLogging$Trigger, final long n) {

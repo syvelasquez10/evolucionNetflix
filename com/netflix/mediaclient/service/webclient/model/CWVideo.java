@@ -15,7 +15,7 @@ public class CWVideo extends PlayableVideo implements com.netflix.mediaclient.se
     }
     
     @Override
-    public String getStillUrl() {
+    public String getModifiedStillUrl() {
         if (this.bookmarkStill == null) {
             return null;
         }

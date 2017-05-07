@@ -31,7 +31,6 @@ public final class NflxProtocolUtils
     public static final String INTENT_RESULT = "com.netflix.mediaclient.intent.action.HANDLER_RESULT";
     public static final String PARAM_STATUS = "status";
     private static final String TAG = "NflxHandler";
-    private static final String WEBAPI_EXPAND_SERVICE = "http://api.netflix.com/catalog/tiny/expand/";
     
     public static String extractId(final String s) {
         if (!StringUtils.isEmpty(s)) {
@@ -97,22 +96,26 @@ public final class NflxProtocolUtils
         }
     }
     
-    public static String getExpandUrl(String string) {
+    public static String getExpandUrl(String s) {
         if (Log.isLoggable("NflxHandler", 3)) {
-            Log.d("NflxHandler", "Gets expanded tiny URL " + string);
+            Log.d("NflxHandler", "Gets expanded tiny URL " + s);
         }
-        if (StringUtils.isEmpty(string)) {
+        if (StringUtils.isEmpty(s)) {
             throw new IllegalArgumentException("Tiny URL can not be empty!");
         }
-        final String[] split = string.split("/");
+        String substring = s;
+        if (s.contains("?s=a")) {
+            substring = s.substring(0, s.length() - "?s=a".length());
+        }
+        final String[] split = substring.split("/");
         if (split == null || split.length < 2) {
-            throw new IllegalArgumentException("Movie ID not found in tiny URL " + string);
+            throw new IllegalArgumentException("Movie ID not found in tiny URL " + substring);
         }
-        string = "http://api.netflix.com/catalog/tiny/expand/" + split[split.length - 1] + "?output=json";
+        s = split[split.length - 1];
         if (Log.isLoggable("NflxHandler", 3)) {
-            Log.d("NflxHandler", "Expanded tiny URL: " + string);
+            Log.d("NflxHandler", "Encoded ID in tiny URL: " + s);
         }
-        return string;
+        return s;
     }
     
     public static PlayContext getPlayContext(final String s) {

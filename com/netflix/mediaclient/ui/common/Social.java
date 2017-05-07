@@ -133,12 +133,12 @@ public class Social extends Section
     }
     
     public void initSocial(final Menu menu) {
-        (this.mShareButton = menu.add(0, 2, 0, 2131493146)).setIcon(2130837700);
+        (this.mShareButton = menu.add(0, 2, 0, 2131493146)).setIcon(2130837703);
         this.mShareButton.setVisible(false);
         this.mShareButton.setShowAsAction(2);
         this.mShareButton.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new Social$1(this));
-        this.mNotSharingButton = this.mContext.findViewById(2131165585);
-        this.mNotSharingLabel = this.mContext.findViewById(2131165586);
+        this.mNotSharingButton = this.mContext.findViewById(2131165586);
+        this.mNotSharingLabel = this.mContext.findViewById(2131165587);
         if (this.mNotSharingButton != null) {
             this.mNotSharingButton.setOnTouchListener((View$OnTouchListener)new Social$2(this));
             return;

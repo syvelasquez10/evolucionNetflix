@@ -22,7 +22,7 @@ public class Video$Summary implements Video
     public int videoYear;
     
     @Override
-    public String getBoxshotURL() {
+    public String getBoxshotUrl() {
         return this.boxartUrl;
     }
     

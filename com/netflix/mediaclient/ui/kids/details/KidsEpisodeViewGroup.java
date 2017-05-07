@@ -38,8 +38,8 @@ public class KidsEpisodeViewGroup extends RelativeLayout
     
     private void init() {
         LayoutInflater.from(this.getContext()).inflate(2130903103, (ViewGroup)this, true);
-        (this.img = (AdvancedImageView)this.findViewById(2131165395)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361965));
-        this.title = (TextView)this.findViewById(2131165396);
+        (this.img = (AdvancedImageView)this.findViewById(2131165397)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361968));
+        this.title = (TextView)this.findViewById(2131165398);
     }
     
     public void update(final EpisodeDetails episodeDetails) {

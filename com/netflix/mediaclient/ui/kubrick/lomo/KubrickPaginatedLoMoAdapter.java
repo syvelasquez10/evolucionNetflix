@@ -12,6 +12,7 @@ import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
 import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -36,13 +37,13 @@ public class KubrickPaginatedLoMoAdapter extends BasePaginatedAdapter<KubrickVid
     }
     
     @Override
-    protected int computeNumVideosToFetchPerBatch() {
+    protected int computeNumVideosToFetchPerBatch(final int n) {
         return LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD);
     }
     
     @Override
     public int getRowHeightInPx() {
-        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage() * 0.5625f);
+        final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage() * 0.5625f);
         if (Log.isLoggable("KubrickPaginatedLoMoAdapter", 2)) {
             Log.v("KubrickPaginatedLoMoAdapter", "Computed view height: " + n + " (px)");
         }

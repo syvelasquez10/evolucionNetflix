@@ -43,7 +43,7 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
-    public String getBoxshotURL() {
+    public String getBoxshotUrl() {
         return null;
     }
     

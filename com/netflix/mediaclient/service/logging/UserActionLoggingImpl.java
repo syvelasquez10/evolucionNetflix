@@ -4,14 +4,33 @@
 
 package com.netflix.mediaclient.service.logging;
 
-import org.json.JSONObject;
-import com.netflix.mediaclient.servicemgr.UserActionLogging$PaymentType;
+import com.netflix.mediaclient.service.logging.uiaction.model.UpgradeStreamsEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.SubmitPaymentEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.StartPlayEndedEvent;
+import com.netflix.mediaclient.service.logging.android.model.ShareSheetEndedEvent;
+import com.netflix.mediaclient.service.logging.android.model.ShareSheetOpenEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.SelectProfileEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.SayThanksEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.RemoveFromPlaylistEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.RegisterEndedEvent;
+import com.netflix.mediaclient.service.logging.android.model.RecommendSheetEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.RateTitleEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.NewLolomoEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.NavigationEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.LoginEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.EditProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.DeleteProfileEndedEvent;
+import java.util.Iterator;
+import java.util.Collection;
+import java.util.HashSet;
+import org.json.JSONObject;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$PaymentType;
+import com.netflix.mediaclient.service.logging.uiaction.model.AddToPlaylistEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.AddProfileEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.AcknowledgeSignupEndedEvent;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$Streams;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$RememberProfile;
@@ -19,22 +38,24 @@ import com.netflix.mediaclient.servicemgr.UserActionLogging$Profile;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import java.io.Serializable;
 import org.json.JSONException;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import android.content.Intent;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import com.netflix.mediaclient.service.logging.client.model.Event;
 import java.util.concurrent.ConcurrentHashMap;
 import com.netflix.mediaclient.service.logging.uiaction.UpgradeStreamsSession;
 import com.netflix.mediaclient.service.logging.uiaction.SubmitPaymentSession;
 import com.netflix.mediaclient.service.logging.uiaction.StartPlaySession;
+import com.netflix.mediaclient.service.logging.android.ShareSheetSession;
+import com.netflix.mediaclient.service.logging.android.ShareSheetOpenSession;
 import com.netflix.mediaclient.service.logging.uiaction.SelectProfileSession;
 import com.netflix.mediaclient.service.logging.uiaction.SearchSession;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.uiaction.SayThanksSession;
 import com.netflix.mediaclient.service.logging.uiaction.RemoveFromPlaylistSession;
 import com.netflix.mediaclient.service.logging.uiaction.RegisterSession;
+import com.netflix.mediaclient.service.logging.android.RecommendSheetSession;
 import com.netflix.mediaclient.service.logging.uiaction.RateTitleSession;
 import com.netflix.mediaclient.service.logging.uiaction.NewLolomoSession;
 import com.netflix.mediaclient.service.logging.uiaction.NavigationSession;
@@ -61,11 +82,14 @@ final class UserActionLoggingImpl implements UserActionLogging
     private NavigationSession mNavigationSession;
     private NewLolomoSession mNewLolomoSession;
     private RateTitleSession mRateTitleSession;
+    private RecommendSheetSession mRecommendSheetSession;
     private RegisterSession mRegisterSession;
     private RemoveFromPlaylistSession mRemoveFromPlaylistSession;
     private SayThanksSession mSayThanksSession;
     private Map<Long, SearchSession> mSearchSessions;
     private SelectProfileSession mSelectProfileSession;
+    private ShareSheetOpenSession mShareSheetOpenSession;
+    private ShareSheetSession mShareSheetSession;
     private StartPlaySession mStartPlaySession;
     private SubmitPaymentSession mSubmitPaymentSession;
     private UpgradeStreamsSession mUpgradeStreamsSession;
@@ -402,7 +426,7 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     private void handleNewLolomoEnded(final Intent intent) {
-    Label_0092_Outer:
+    Label_0087_Outer:
         while (true) {
             Serializable s = intent.getStringExtra("reason");
             final String stringExtra = intent.getStringExtra("error");
@@ -413,13 +437,13 @@ final class UserActionLoggingImpl implements UserActionLogging
             final String stringExtra4 = intent.getStringExtra("mercuryMessageGuid");
             final String stringExtra5 = intent.getStringExtra("mercuryEventGuid");
             while (true) {
-                Label_0138: {
+                Label_0133: {
                     while (true) {
                         while (true) {
                             try {
                                 final UIError instance = UIError.createInstance(stringExtra);
                                 if (!StringUtils.isNotEmpty((String)s)) {
-                                    break Label_0138;
+                                    break Label_0133;
                                 }
                                 s = IClientLogging$CompletionReason.valueOf((String)s);
                                 if (StringUtils.isNotEmpty((String)s2)) {
@@ -430,7 +454,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                             }
                             catch (JSONException ex) {
                                 final UIError instance = null;
-                                continue Label_0092_Outer;
+                                continue Label_0087_Outer;
                             }
                             break;
                         }
@@ -463,7 +487,7 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     private void handleRateTitleEnded(final Intent intent) {
-    Label_0060_Outer:
+    Label_0057_Outer:
         while (true) {
             Integer value = null;
             Serializable s = intent.getStringExtra("reason");
@@ -471,13 +495,13 @@ final class UserActionLoggingImpl implements UserActionLogging
             final int intExtra = intent.getIntExtra("rating", 0);
             final int intExtra2 = intent.getIntExtra("rank", Integer.MIN_VALUE);
             while (true) {
-                Label_0093: {
+                Label_0089: {
                     while (true) {
                         while (true) {
                             try {
                                 final UIError instance = UIError.createInstance(stringExtra);
                                 if (!StringUtils.isNotEmpty((String)s)) {
-                                    break Label_0093;
+                                    break Label_0089;
                                 }
                                 s = IClientLogging$CompletionReason.valueOf((String)s);
                                 if (intExtra2 == Integer.MIN_VALUE) {
@@ -487,7 +511,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                             }
                             catch (JSONException ex) {
                                 final UIError instance = null;
-                                continue Label_0060_Outer;
+                                continue Label_0057_Outer;
                             }
                             break;
                         }
@@ -517,6 +541,56 @@ final class UserActionLoggingImpl implements UserActionLogging
             value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
         this.startRateTitleSession(value, value2);
+    }
+    
+    private void handleRecommendSheetEnded(final Intent intent) {
+    Label_0043_Outer:
+        while (true) {
+            IClientLogging$ModalView value = null;
+            Serializable s = intent.getStringExtra("reason");
+            final String stringExtra = intent.getStringExtra("error");
+            final String stringExtra2 = intent.getStringExtra("view");
+            while (true) {
+                while (true) {
+                    try {
+                        final UIError instance = UIError.createInstance(stringExtra);
+                        if (StringUtils.isNotEmpty((String)s)) {
+                            s = IClientLogging$CompletionReason.valueOf((String)s);
+                            if (StringUtils.isNotEmpty(stringExtra2)) {
+                                value = IClientLogging$ModalView.valueOf(stringExtra2);
+                            }
+                            this.endRecommendSheetSession((IClientLogging$CompletionReason)s, value, instance);
+                            return;
+                        }
+                    }
+                    catch (JSONException ex) {
+                        final UIError instance = null;
+                        continue Label_0043_Outer;
+                    }
+                    break;
+                }
+                s = null;
+                continue;
+            }
+        }
+    }
+    
+    private void handleRecommendSheetStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
+        final String stringExtra = intent.getStringExtra("cmd");
+        UserActionLogging$CommandName value;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        this.startRecommendSheetSession(value, value2);
     }
     
     private void handleRegisterEnded(final Intent intent) {
@@ -746,21 +820,119 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.startSelectProfileSession(stringExtra3, value3, value, value2);
     }
     
+    private void handleShareSheetEnded(final Intent intent) {
+    Label_0043_Outer:
+        while (true) {
+            IClientLogging$ModalView value = null;
+            Serializable s = intent.getStringExtra("reason");
+            final String stringExtra = intent.getStringExtra("error");
+            final String stringExtra2 = intent.getStringExtra("view");
+            while (true) {
+                while (true) {
+                    try {
+                        final UIError instance = UIError.createInstance(stringExtra);
+                        if (StringUtils.isNotEmpty((String)s)) {
+                            s = IClientLogging$CompletionReason.valueOf((String)s);
+                            if (StringUtils.isNotEmpty(stringExtra2)) {
+                                value = IClientLogging$ModalView.valueOf(stringExtra2);
+                            }
+                            this.endShareSheetSession((IClientLogging$CompletionReason)s, value, instance);
+                            return;
+                        }
+                    }
+                    catch (JSONException ex) {
+                        final UIError instance = null;
+                        continue Label_0043_Outer;
+                    }
+                    break;
+                }
+                s = null;
+                continue;
+            }
+        }
+    }
+    
+    private void handleShareSheetOpenEnded(final Intent intent) {
+    Label_0043_Outer:
+        while (true) {
+            IClientLogging$ModalView value = null;
+            Serializable s = intent.getStringExtra("reason");
+            final String stringExtra = intent.getStringExtra("error");
+            final String stringExtra2 = intent.getStringExtra("view");
+            while (true) {
+                while (true) {
+                    try {
+                        final UIError instance = UIError.createInstance(stringExtra);
+                        if (StringUtils.isNotEmpty((String)s)) {
+                            s = IClientLogging$CompletionReason.valueOf((String)s);
+                            if (StringUtils.isNotEmpty(stringExtra2)) {
+                                value = IClientLogging$ModalView.valueOf(stringExtra2);
+                            }
+                            this.endShareSheetOpenSession((IClientLogging$CompletionReason)s, value, instance);
+                            return;
+                        }
+                    }
+                    catch (JSONException ex) {
+                        final UIError instance = null;
+                        continue Label_0043_Outer;
+                    }
+                    break;
+                }
+                s = null;
+                continue;
+            }
+        }
+    }
+    
+    private void handleShareSheetOpenStart(final Intent intent) {
+        IClientLogging$ModalView value = null;
+        final String stringExtra = intent.getStringExtra("cmd");
+        UserActionLogging$CommandName value2;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value2 = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value2 = null;
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        this.startShareSheetOpenSession(intent.getStringExtra("url"), value2, value);
+    }
+    
+    private void handleShareSheetStart(final Intent intent) {
+        IClientLogging$ModalView value = null;
+        final String stringExtra = intent.getStringExtra("cmd");
+        UserActionLogging$CommandName value2;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value2 = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value2 = null;
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        this.startShareSheetSession(intent.getStringExtra("url"), value2, value);
+    }
+    
     private void handleStartPlayEnded(final Intent intent) {
-    Label_0049_Outer:
+    Label_0047_Outer:
         while (true) {
             Integer value = null;
             Serializable s = intent.getStringExtra("reason");
             final String stringExtra = intent.getStringExtra("error");
             final int intExtra = intent.getIntExtra("rank", Integer.MIN_VALUE);
             while (true) {
-                Label_0092: {
+                Label_0089: {
                     while (true) {
                         while (true) {
                             try {
                                 final UIError instance = UIError.createInstance(stringExtra);
                                 if (!StringUtils.isNotEmpty((String)s)) {
-                                    break Label_0092;
+                                    break Label_0089;
                                 }
                                 s = IClientLogging$CompletionReason.valueOf((String)s);
                                 if (intExtra == Integer.MIN_VALUE) {
@@ -770,7 +942,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                             }
                             catch (JSONException ex) {
                                 final UIError instance = null;
-                                continue Label_0049_Outer;
+                                continue Label_0047_Outer;
                             }
                             break;
                         }
@@ -984,79 +1156,123 @@ final class UserActionLoggingImpl implements UserActionLogging
     
     @Override
     public void endAcknowledgeSignupSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final IClientLogging$ModalView clientLogging$ModalView) {
-        Log.d("nf_log", "AcknowledgeSignup session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$1(this, clientLogging$CompletionReason, uiError, clientLogging$ModalView, this.mDataContext));
-        Log.d("nf_log", "AcknowledgeSignup session end done.");
+        if (this.mAcknowledgeSignup == null) {
+            return;
+        }
+        Log.d("nf_log", "User session ended");
+        final AcknowledgeSignupEndedEvent endedEvent = this.mAcknowledgeSignup.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView);
+        if (endedEvent == null) {
+            Log.d("nf_log", "AcknowledgeSignup session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, clientLogging$ModalView);
+        this.mEventHandler.removeSession(this.mAcknowledgeSignup);
+        Log.d("nf_log", "AcknowledgeSignup session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mAcknowledgeSignup = null;
+        Log.d("nf_log", "AcknowledgeSignup session end event posted.");
     }
     
     @Override
     public void endAddProfileSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError, final UserActionLogging$Profile userActionLogging$Profile) {
-        Log.d("nf_log", "Add profile session ended and posted to executor");
-        final DataContext mDataContext = this.mDataContext;
-        Log.d("nf_log", "Add profile session ended");
         if (this.mAddProfileSession == null) {
-            Log.w("nf_log", "Add profile session does NOT exist!");
             return;
         }
+        Log.d("nf_log", "Add profile session ended");
         final AddProfileEndedEvent endedEvent = this.mAddProfileSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView, userActionLogging$Profile);
         if (endedEvent == null) {
             Log.d("nf_log", "Add profile session still waits on session id, do not post at this time.");
             return;
         }
-        this.populateEvent(endedEvent, mDataContext, this.mAddProfileSession.getView());
+        this.populateEvent(endedEvent, this.mDataContext, this.mAddProfileSession.getView());
         this.mEventHandler.removeSession(this.mAddProfileSession);
         Log.d("nf_log", "Add profile session end event posting...");
         this.mEventHandler.post(endedEvent);
         this.mAddProfileSession = null;
         Log.d("nf_log", "Add profile session end event posted.");
-        Log.d("nf_log", "Add profile session end done.");
     }
     
     @Override
     public void endAddToPlaylistSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final int n) {
-        Log.d("nf_log", "AddToPlaylist session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$2(this, clientLogging$CompletionReason, uiError, n, this.mDataContext));
-        Log.d("nf_log", "AddToPlaylist session end done.");
+        if (this.mAddToPlaylistSession == null) {
+            return;
+        }
+        Log.d("nf_log", "AddToPlaylist session ended");
+        final AddToPlaylistEndedEvent endedEvent = this.mAddToPlaylistSession.createEndedEvent(clientLogging$CompletionReason, uiError, n);
+        if (endedEvent == null) {
+            Log.d("nf_log", "AddToPlaylist session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mAddToPlaylistSession.getView());
+        this.mEventHandler.removeSession(this.mAddToPlaylistSession);
+        Log.d("nf_log", "AddToPlaylist session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mAddToPlaylistSession = null;
+        Log.d("nf_log", "AddToPlaylist session end event posted.");
     }
     
     @Override
+    public void endAllActiveSessions() {
+        synchronized (this) {
+            this.endAcknowledgeSignupSession(IClientLogging$CompletionReason.canceled, null, IClientLogging$ModalView.logout);
+            this.endAddProfileSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null, null);
+            this.endAddToPlaylistSession(IClientLogging$CompletionReason.canceled, null, 0);
+            this.endDeleteProfileSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
+            this.endEditProfileSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null, null);
+            this.endLoginSession(IClientLogging$CompletionReason.canceled, null);
+            this.endNavigationSession(IClientLogging$ModalView.logout, IClientLogging$CompletionReason.canceled, null);
+            this.endNewLolomoSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null, null, null, System.currentTimeMillis(), null, null);
+            this.endRateTitleSession(IClientLogging$CompletionReason.canceled, null, 0, 0);
+            this.endRegisterSession(IClientLogging$CompletionReason.canceled, null);
+            this.endRemoveFromPlaylistSession(IClientLogging$CompletionReason.canceled, null);
+            this.endSayThanksSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
+            this.endSelectProfileSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
+            this.endStartPlaySession(IClientLogging$CompletionReason.canceled, null, 0, null);
+            this.endSubmitPaymentSession(IClientLogging$CompletionReason.canceled, null, false, null, null);
+            this.endUpgradeStreamsSession(IClientLogging$CompletionReason.canceled, null, null);
+            this.endShareSheetOpenSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
+            this.endShareSheetSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
+            final HashSet<Long> set = new HashSet<Long>(this.mSearchSessions.size());
+            set.addAll((Collection<?>)this.mSearchSessions.keySet());
+            final Iterator<Object> iterator = set.iterator();
+            while (iterator.hasNext()) {
+                this.endSearchSession(iterator.next(), IClientLogging$CompletionReason.canceled, null);
+            }
+        }
+    }
+    // monitorexit(this)
+    
+    @Override
     public void endDeleteProfileSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError) {
-        Log.d("nf_log", "Delete profile session ended and posted to executor");
-        final DataContext mDataContext = this.mDataContext;
-        Log.d("nf_log", "Delete profile session ended");
         if (this.mDeleteProfileSession == null) {
-            Log.w("nf_log", "Delete profile session does NOT exist!");
             return;
         }
+        Log.d("nf_log", "Delete profile session ended");
         final DeleteProfileEndedEvent endedEvent = this.mDeleteProfileSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView);
         if (endedEvent == null) {
             Log.d("nf_log", "Delete profile session still waits on session id, do not post at this time.");
             return;
         }
-        this.populateEvent(endedEvent, mDataContext, this.mDeleteProfileSession.getView());
+        this.populateEvent(endedEvent, this.mDataContext, this.mDeleteProfileSession.getView());
         this.mEventHandler.removeSession(this.mDeleteProfileSession);
         Log.d("nf_log", "Delete profile session end event posting...");
         this.mEventHandler.post(endedEvent);
         this.mDeleteProfileSession = null;
         Log.d("nf_log", "Delete profile session end event posted.");
-        Log.d("nf_log", "Delete profile session end done.");
     }
     
     @Override
     public void endEditProfileSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError, final UserActionLogging$Profile userActionLogging$Profile) {
-        Log.d("nf_log", "Edit profile session ended and posted to executor");
-        final DataContext mDataContext = this.mDataContext;
-        Log.d("nf_log", "Edit profile session ended");
         if (this.mEditProfileSession == null) {
-            Log.w("nf_log", "Edit profile session does NOT exist!");
             return;
         }
+        Log.d("nf_log", "Edit profile session ended");
         final EditProfileEndedEvent endedEvent = this.mEditProfileSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView, userActionLogging$Profile);
         if (endedEvent == null) {
             Log.d("nf_log", "Edit profile session still waits on session id, do not post at this time.");
             return;
         }
-        this.populateEvent(endedEvent, mDataContext, this.mEditProfileSession.getView());
+        this.populateEvent(endedEvent, this.mDataContext, this.mEditProfileSession.getView());
         this.mEventHandler.removeSession(this.mEditProfileSession);
         Log.d("nf_log", "Edit profile session end event posting...");
         this.mEventHandler.post(endedEvent);
@@ -1067,102 +1283,283 @@ final class UserActionLoggingImpl implements UserActionLogging
     
     @Override
     public void endLoginSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
-        Log.d("nf_log", "Login session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$3(this, clientLogging$CompletionReason, uiError, this.mDataContext));
-        Log.d("nf_log", "Login session end done.");
+        if (this.mLoginSession == null) {
+            return;
+        }
+        Log.d("nf_log", "Login session ended");
+        final LoginEndedEvent endedEvent = this.mLoginSession.createEndedEvent(clientLogging$CompletionReason, uiError);
+        if (endedEvent == null) {
+            Log.d("nf_log", "Login session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mLoginSession.getView());
+        this.mEventHandler.removeSession(this.mLoginSession);
+        Log.d("nf_log", "Login session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mLoginSession = null;
+        Log.d("nf_log", "Login session end event posted.");
     }
     
     @Override
     public void endNavigationSession(final IClientLogging$ModalView clientLogging$ModalView, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
-        Log.d("nf_log", "Navigation session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$4(this, clientLogging$ModalView, clientLogging$CompletionReason, uiError, this.mDataContext));
-        Log.d("nf_log", "Navigation session end done.");
+        final NavigationSession mNavigationSession = this.mNavigationSession;
+        if (mNavigationSession == null) {
+            return;
+        }
+        Log.d("nf_log", "Navigation session ended");
+        final NavigationEndedEvent endedEvent = mNavigationSession.createEndedEvent(clientLogging$ModalView, clientLogging$CompletionReason, uiError);
+        if (endedEvent == null) {
+            Log.d("nf_log", "We stayed in same view, cancel session.");
+        }
+        else {
+            Log.d("nf_log", "Navigation session end event posting...");
+            this.populateEvent(endedEvent, this.mDataContext, this.mNavigationSession.getView());
+            this.mEventHandler.post(endedEvent);
+            Log.d("nf_log", "Navigation session end event posted.");
+        }
+        this.mEventHandler.removeSession(mNavigationSession);
+        this.mNavigationSession = null;
     }
     
     @Override
     public void endNewLolomoSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError, final String s, final String s2, final long n, final String s3, final String s4) {
-        Log.d("nf_log", "NewLolomoSession ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$13(this, clientLogging$CompletionReason, uiError, clientLogging$ModalView, s, s2, n, s3, s4, this.mDataContext));
-        Log.d("nf_log", "NewLolomoSession end done.");
+        if (this.mNewLolomoSession == null) {
+            return;
+        }
+        Log.d("nf_log", "NewLolomoSession ended");
+        final NewLolomoEndedEvent endedEvent = this.mNewLolomoSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView, s, s2, n, s3, s4);
+        if (endedEvent == null) {
+            Log.d("nf_log", "NewLolomoSession still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, clientLogging$ModalView);
+        this.mEventHandler.removeSession(this.mNewLolomoSession);
+        Log.d("nf_log", "NewLolomoSession end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mNewLolomoSession = null;
+        Log.d("nf_log", "NewLolomoSession end event posted.");
     }
     
     @Override
     public void endRateTitleSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final int n2) {
-        Log.d("nf_log", "RateTitle session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$5(this, clientLogging$CompletionReason, uiError, n, n2, this.mDataContext));
-        Log.d("nf_log", "RateTitle session end done.");
+        if (this.mRateTitleSession == null) {
+            return;
+        }
+        Log.d("nf_log", "RateTitle  session ended");
+        final RateTitleEndedEvent endedEvent = this.mRateTitleSession.createEndedEvent(clientLogging$CompletionReason, uiError, n, n2);
+        if (endedEvent == null) {
+            Log.d("nf_log", "RateTitle  session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mRateTitleSession.getView());
+        this.mEventHandler.removeSession(this.mRateTitleSession);
+        Log.d("nf_log", "RateTitle session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mRateTitleSession = null;
+        Log.d("nf_log", "RateTitle session end event posted.");
+    }
+    
+    @Override
+    public void endRecommendSheetSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError) {
+        if (this.mRecommendSheetSession == null) {
+            return;
+        }
+        final RecommendSheetEndedEvent endedEvent = this.mRecommendSheetSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView);
+        this.populateEvent(endedEvent, this.mDataContext, clientLogging$ModalView);
+        this.mEventHandler.removeSession(this.mRecommendSheetSession);
+        Log.d("nf_log", "RecommendSheetSession end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mRecommendSheetSession = null;
+        Log.d("nf_log", "RecommendSheetSession end event posted.");
     }
     
     @Override
     public void endRegisterSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
-        Log.d("nf_log", "Register session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$6(this, clientLogging$CompletionReason, uiError, this.mDataContext));
-        Log.d("nf_log", "Register session end done.");
+        if (this.mRegisterSession == null) {
+            return;
+        }
+        Log.d("nf_log", "Register session ended");
+        final RegisterEndedEvent endedEvent = this.mRegisterSession.createEndedEvent(clientLogging$CompletionReason, uiError);
+        if (endedEvent == null) {
+            Log.d("nf_log", "Register session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mRegisterSession.getView());
+        this.mEventHandler.removeSession(this.mRegisterSession);
+        Log.d("nf_log", "Register session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mRegisterSession = null;
+        Log.d("nf_log", "Register session end event posted.");
     }
     
     @Override
     public void endRemoveFromPlaylistSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
-        Log.d("nf_log", "RemoveFromPlaylist session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$7(this, clientLogging$CompletionReason, uiError, this.mDataContext));
-        Log.d("nf_log", "RemoveFromPlaylist session end done.");
+        if (this.mRemoveFromPlaylistSession == null) {
+            return;
+        }
+        Log.d("nf_log", "RemoveFromPlaylist session ended");
+        final RemoveFromPlaylistEndedEvent endedEvent = this.mRemoveFromPlaylistSession.createEndedEvent(clientLogging$CompletionReason, uiError);
+        if (endedEvent == null) {
+            Log.d("nf_log", "RemoveFromPlaylist session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mRemoveFromPlaylistSession.getView());
+        this.mEventHandler.removeSession(this.mRemoveFromPlaylistSession);
+        Log.d("nf_log", "RemoveFromPlaylist session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mRemoveFromPlaylistSession = null;
+        Log.d("nf_log", "RemoveFromPlaylist session end event posted.");
     }
     
     @Override
     public void endSayThanksSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError) {
+        if (this.mSayThanksSession == null) {
+            return;
+        }
         Log.d("nf_log", "SayThanks ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$12(this, clientLogging$CompletionReason, uiError, clientLogging$ModalView, this.mDataContext));
-        Log.d("nf_log", "SayThanks end done.");
+        final SayThanksEndedEvent endedEvent = this.mSayThanksSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView);
+        if (endedEvent == null) {
+            Log.d("nf_log", "SayThanks still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, clientLogging$ModalView);
+        this.mEventHandler.removeSession(this.mSayThanksSession);
+        Log.d("nf_log", "SayThanks end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mSayThanksSession = null;
+        Log.d("nf_log", "SayThanks end event posted.");
     }
     
     @Override
     public void endSearchSession(final long n, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
-        Log.d("nf_log", "Search session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$8(this, n, clientLogging$CompletionReason, uiError, this.mDataContext));
-        Log.d("nf_log", "Search session end done.");
+        while (true) {
+            final SearchSession searchSession;
+            Label_0067: {
+                synchronized (this) {
+                    searchSession = this.mSearchSessions.get(n);
+                    if (searchSession != null) {
+                        Log.d("nf_log", "Search session ended");
+                        if (searchSession.createEndedEvent(clientLogging$CompletionReason, uiError) != null) {
+                            break Label_0067;
+                        }
+                        Log.d("nf_log", "Search session still waits on session id, do not post at this time.");
+                    }
+                    return;
+                }
+            }
+            final Event event;
+            this.populateEvent(event, this.mDataContext, searchSession.getView());
+            this.mEventHandler.removeSession(searchSession);
+            Log.d("nf_log", "Search session end event posting...");
+            this.mEventHandler.post(event);
+            Log.d("nf_log", "Search session end event posted.");
+        }
     }
     
     @Override
     public void endSelectProfileSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError) {
-        Log.d("nf_log", "Select profile session ended and posted to executor");
-        final DataContext mDataContext = this.mDataContext;
-        Log.d("nf_log", "Select profile session ended");
         if (this.mSelectProfileSession == null) {
-            Log.w("nf_log", "Select profile session does NOT exist!");
             return;
         }
+        Log.d("nf_log", "Select profile session ended");
         final SelectProfileEndedEvent endedEvent = this.mSelectProfileSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView);
         if (endedEvent == null) {
             Log.d("nf_log", "Select profile session still waits on session id, do not post at this time.");
             return;
         }
-        this.populateEvent(endedEvent, mDataContext, this.mSelectProfileSession.getView());
+        this.populateEvent(endedEvent, this.mDataContext, this.mSelectProfileSession.getView());
         this.mEventHandler.removeSession(this.mSelectProfileSession);
         Log.d("nf_log", "Select profile session end event posting...");
         this.mEventHandler.post(endedEvent);
         this.mSelectProfileSession = null;
         Log.d("nf_log", "Select profile session end event posted.");
-        Log.d("nf_log", "Select profile session end done.");
+    }
+    
+    @Override
+    public void endShareSheetOpenSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError) {
+        if (this.mShareSheetOpenSession == null) {
+            return;
+        }
+        Log.d("nf_log", "ShareSheetOpenSession ended");
+        final ShareSheetOpenEndedEvent endedEvent = this.mShareSheetOpenSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView);
+        this.populateEvent(endedEvent, this.mDataContext, clientLogging$ModalView);
+        this.mEventHandler.removeSession(this.mShareSheetOpenSession);
+        Log.d("nf_log", "ShareSheetOpenSession end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mShareSheetOpenSession = null;
+        Log.d("nf_log", "ShareSheetOpenSession end event posted.");
+    }
+    
+    @Override
+    public void endShareSheetSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError) {
+        if (this.mShareSheetSession == null) {
+            return;
+        }
+        Log.d("nf_log", "ShareSheetSession ended and posted to executor");
+        final ShareSheetEndedEvent endedEvent = this.mShareSheetSession.createEndedEvent(clientLogging$CompletionReason, uiError, clientLogging$ModalView);
+        this.populateEvent(endedEvent, this.mDataContext, clientLogging$ModalView);
+        this.mEventHandler.removeSession(this.mShareSheetSession);
+        Log.d("nf_log", "ShareSheetSession end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mShareSheetSession = null;
+        Log.d("nf_log", "ShareSheetSession end event posted.");
     }
     
     @Override
     public void endStartPlaySession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final PlayerType playerType) {
-        Log.d("nf_log", "StartPlay session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$9(this, clientLogging$CompletionReason, uiError, n, playerType, this.mDataContext));
-        Log.d("nf_log", "StartPlay session end done.");
+        if (this.mStartPlaySession == null) {
+            return;
+        }
+        Log.d("nf_log", "StartPlay session ended");
+        final StartPlayEndedEvent endedEvent = this.mStartPlaySession.createEndedEvent(clientLogging$CompletionReason, uiError, n, playerType);
+        if (endedEvent == null) {
+            Log.d("nf_log", "StartPlay session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mStartPlaySession.getView());
+        this.mEventHandler.removeSession(this.mStartPlaySession);
+        Log.d("nf_log", "StartPlay session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mStartPlaySession = null;
+        Log.d("nf_log", "StartPlay session end event posted.");
     }
     
     @Override
     public void endSubmitPaymentSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final boolean b, final UserActionLogging$PaymentType userActionLogging$PaymentType, final JSONObject jsonObject) {
-        Log.d("nf_log", "SubmitPayment session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$10(this, clientLogging$CompletionReason, uiError, b, userActionLogging$PaymentType, jsonObject, this.mDataContext));
-        Log.d("nf_log", "SubmitPayment session end done.");
+        if (this.mSubmitPaymentSession == null) {
+            return;
+        }
+        Log.d("nf_log", "SubmitPayment session ended");
+        final SubmitPaymentEndedEvent endedEvent = this.mSubmitPaymentSession.createEndedEvent(clientLogging$CompletionReason, uiError, b, userActionLogging$PaymentType, jsonObject);
+        if (endedEvent == null) {
+            Log.d("nf_log", "SubmitPayment session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mSubmitPaymentSession.getView());
+        this.mEventHandler.removeSession(this.mSubmitPaymentSession);
+        Log.d("nf_log", "SubmitPayment session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mSubmitPaymentSession = null;
+        Log.d("nf_log", "SubmitPayment session end event posted.");
     }
     
     @Override
     public void endUpgradeStreamsSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final UserActionLogging$Streams userActionLogging$Streams) {
-        Log.d("nf_log", "UpgradeStreams session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UserActionLoggingImpl$11(this, clientLogging$CompletionReason, uiError, userActionLogging$Streams, this.mDataContext));
-        Log.d("nf_log", "UpgradeStreams session end done.");
+        if (this.mUpgradeStreamsSession == null) {
+            return;
+        }
+        Log.d("nf_log", "UpgradeStreams session ended");
+        final UpgradeStreamsEndedEvent endedEvent = this.mUpgradeStreamsSession.createEndedEvent(clientLogging$CompletionReason, uiError, userActionLogging$Streams);
+        if (endedEvent == null) {
+            Log.d("nf_log", "User session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mUpgradeStreamsSession.getView());
+        this.mEventHandler.removeSession(this.mUpgradeStreamsSession);
+        Log.d("nf_log", "UpgradeStreams session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mUpgradeStreamsSession = null;
+        Log.d("nf_log", "UpgradeStreams session end event posted.");
     }
     
     @Override
@@ -1328,6 +1725,36 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.handleSayThanksEnded(intent);
             return true;
         }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_RECOMMEND_SHEET_START".equals(action)) {
+            Log.d("nf_log", "RECOMMEND_SHEET_START");
+            this.handleRecommendSheetStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_RECOMMEND_SHEET_ENDED".equals(action)) {
+            Log.d("nf_log", "RECOMMEND_SHEET_ENDED");
+            this.handleRecommendSheetEnded(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_START".equals(action)) {
+            Log.d("nf_log", "SHARE_SHEET_START");
+            this.handleShareSheetStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_ENDED".equals(action)) {
+            Log.d("nf_log", "SHARE_SHEET_ENDED");
+            this.handleShareSheetEnded(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_OPEN_START".equals(action)) {
+            Log.d("nf_log", "SHARE_SHEET_OPEN_START");
+            this.handleShareSheetOpenStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_OPEN_ENDED".equals(action)) {
+            Log.d("nf_log", "SHARE_SHEET_OPEN_ENDED");
+            this.handleShareSheetOpenEnded(intent);
+            return true;
+        }
         if ("com.netflix.mediaclient.intent.action.LOG_UIA_NEW_LOLOMO_START".equals(action)) {
             Log.d("nf_log", "NEW_LOLOMO_START");
             this.handleNewLolomoStart(intent);
@@ -1468,6 +1895,18 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
+    public void startRecommendSheetSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (this.mRecommendSheetSession != null) {
+            Log.e("nf_log", "RecommendSheetSession session already started!");
+            return;
+        }
+        Log.d("nf_log", "RecommendSheetSession session starting...");
+        this.mRecommendSheetSession = new RecommendSheetSession(userActionLogging$CommandName, clientLogging$ModalView);
+        this.mEventHandler.addSession(this.mRecommendSheetSession);
+        Log.d("nf_log", "RecommendSheetSession session start done.");
+    }
+    
+    @Override
     public void startRegisterSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mRegisterSession != null) {
             Log.e("nf_log", "Register session already started!");
@@ -1507,11 +1946,13 @@ final class UserActionLoggingImpl implements UserActionLogging
     
     @Override
     public void startSearchSession(final long n, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView, final String s) {
-        Log.d("nf_log", "Search session starting...");
-        final SearchSession searchSession = new SearchSession(n, userActionLogging$CommandName, clientLogging$ModalView, s);
-        this.mEventHandler.addSession(searchSession);
-        this.mSearchSessions.put(n, searchSession);
-        Log.d("nf_log", "Search session start done.");
+        synchronized (this) {
+            Log.d("nf_log", "Search session starting...");
+            final SearchSession searchSession = new SearchSession(n, userActionLogging$CommandName, clientLogging$ModalView, s);
+            this.mEventHandler.addSession(searchSession);
+            this.mSearchSessions.put(n, searchSession);
+            Log.d("nf_log", "Search session start done.");
+        }
     }
     
     @Override
@@ -1525,6 +1966,30 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.addSession(mSelectProfileSession);
         this.mSelectProfileSession = mSelectProfileSession;
         Log.d("nf_log", "Select profile session start done.");
+    }
+    
+    @Override
+    public void startShareSheetOpenSession(final String s, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (this.mShareSheetOpenSession != null) {
+            Log.e("nf_log", "ShareSheetOpenSession session already started!");
+            return;
+        }
+        Log.d("nf_log", "ShareSheetOpenSession session starting...");
+        this.mShareSheetOpenSession = new ShareSheetOpenSession(s, userActionLogging$CommandName, clientLogging$ModalView);
+        this.mEventHandler.addSession(this.mShareSheetOpenSession);
+        Log.d("nf_log", "ShareSheetOpenSession  session start done.");
+    }
+    
+    @Override
+    public void startShareSheetSession(final String s, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (this.mShareSheetSession != null) {
+            Log.e("nf_log", "ShareSheetSession session already started!");
+            return;
+        }
+        Log.d("nf_log", "ShareSheetSession session starting...");
+        this.mShareSheetSession = new ShareSheetSession(s, userActionLogging$CommandName, clientLogging$ModalView);
+        this.mEventHandler.addSession(this.mShareSheetSession);
+        Log.d("nf_log", "ShareSheetSession  session start done.");
     }
     
     @Override

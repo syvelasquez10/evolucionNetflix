@@ -260,6 +260,14 @@ public class AccessibilityNodeInfoCompat
         AccessibilityNodeInfoCompat.IMPL.setClickable(this.mInfo, b);
     }
     
+    public void setCollectionInfo(final Object o) {
+        AccessibilityNodeInfoCompat.IMPL.setCollectionInfo(this.mInfo, ((AccessibilityNodeInfoCompat$CollectionInfoCompat)o).mInfo);
+    }
+    
+    public void setCollectionItemInfo(final Object o) {
+        AccessibilityNodeInfoCompat.IMPL.setCollectionItemInfo(this.mInfo, ((AccessibilityNodeInfoCompat$CollectionItemInfoCompat)o).mInfo);
+    }
+    
     public void setContentDescription(final CharSequence charSequence) {
         AccessibilityNodeInfoCompat.IMPL.setContentDescription(this.mInfo, charSequence);
     }

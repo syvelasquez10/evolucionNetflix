@@ -39,12 +39,12 @@ public class KidsCharacterView extends RelativeLayout implements VideoViewGroup$
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(2130903101, (ViewGroup)this);
-        (this.img = (AdvancedImageView)this.findViewById(2131165385)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361965));
+        (this.img = (AdvancedImageView)this.findViewById(2131165387)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361968));
         final boolean kidsWithUpDownScrolling = KidsUtils.isKidsWithUpDownScrolling(netflixActivity);
         Log.v("KidsCharacterView", "Setting padding, isSkidmark: " + kidsWithUpDownScrolling);
         if (kidsWithUpDownScrolling) {
             this.img.setPadding(AndroidUtils.dipToPixels((Context)netflixActivity, 0), AndroidUtils.dipToPixels((Context)netflixActivity, 2), AndroidUtils.dipToPixels((Context)netflixActivity, 4), AndroidUtils.dipToPixels((Context)netflixActivity, 6));
-            this.setPadding(0, 0, this.getResources().getDimensionPixelSize(2131361974), this.getResources().getDimensionPixelSize(2131361975));
+            this.setPadding(0, 0, this.getResources().getDimensionPixelSize(2131361978), this.getResources().getDimensionPixelSize(2131361979));
             return;
         }
         this.img.setPadding(AndroidUtils.dipToPixels((Context)netflixActivity, 0), AndroidUtils.dipToPixels((Context)netflixActivity, 2), AndroidUtils.dipToPixels((Context)netflixActivity, 1), AndroidUtils.dipToPixels((Context)netflixActivity, 6));
@@ -59,7 +59,7 @@ public class KidsCharacterView extends RelativeLayout implements VideoViewGroup$
         this.setVisibility(4);
     }
     
-    public void update(final Video video, final Trackable trackable, int n, final boolean b) {
+    public void update(final Video video, final Trackable trackable, int n, final boolean b, final boolean b2) {
         if (Log.isLoggable("KidsCharacterView", 2)) {
             Log.v("KidsCharacterView", "Updating for video: " + video.toString());
         }

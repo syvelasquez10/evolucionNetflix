@@ -40,6 +40,8 @@ public interface ApplicationPerformanceMetricsLogging
     public static final String SHARED_CONTEXT_SESSION_STARTED = "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_STARTED";
     public static final String UI_MODAL_VIEW_CHANGED = "com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_CHANGED";
     
+    void endAllActiveSessions();
+    
     void endApplicationSession();
     
     void endAssetRequestSession(final String p0, final IClientLogging$CompletionReason p1, final HttpResponse p2, final Error p3);

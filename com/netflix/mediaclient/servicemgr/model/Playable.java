@@ -12,6 +12,8 @@ public interface Playable
     
     int getEpisodeNumber();
     
+    int getLogicalStart();
+    
     String getParentId();
     
     String getParentTitle();

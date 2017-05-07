@@ -6,5 +6,5 @@ package com.viewpagerindicator;
 
 public final class R$attr
 {
-    public static final int vpiCirclePageIndicatorStyle = 2130772176;
+    public static final int vpiCirclePageIndicatorStyle = 2130772174;
 }

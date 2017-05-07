@@ -58,6 +58,14 @@ public class ViewCompat
         return ViewCompat.IMPL.canScrollHorizontally(view, n);
     }
     
+    public static boolean canScrollVertically(final View view, final int n) {
+        return ViewCompat.IMPL.canScrollVertically(view, n);
+    }
+    
+    public static float getAlpha(final View view) {
+        return ViewCompat.IMPL.getAlpha(view);
+    }
+    
     public static boolean getFitsSystemWindows(final View view) {
         return ViewCompat.IMPL.getFitsSystemWindows(view);
     }
@@ -78,12 +86,28 @@ public class ViewCompat
         return ViewCompat.IMPL.getMinimumHeight(view);
     }
     
+    public static int getMinimumWidth(final View view) {
+        return ViewCompat.IMPL.getMinimumWidth(view);
+    }
+    
     public static int getOverScrollMode(final View view) {
         return ViewCompat.IMPL.getOverScrollMode(view);
     }
     
+    public static int getPaddingEnd(final View view) {
+        return ViewCompat.IMPL.getPaddingEnd(view);
+    }
+    
+    public static int getPaddingStart(final View view) {
+        return ViewCompat.IMPL.getPaddingStart(view);
+    }
+    
     public static ViewParent getParentForAccessibility(final View view) {
         return ViewCompat.IMPL.getParentForAccessibility(view);
+    }
+    
+    public static float getTranslationX(final View view) {
+        return ViewCompat.IMPL.getTranslationX(view);
     }
     
     public static float getTranslationY(final View view) {
@@ -92,6 +116,14 @@ public class ViewCompat
     
     public static int getWindowSystemUiVisibility(final View view) {
         return ViewCompat.IMPL.getWindowSystemUiVisibility(view);
+    }
+    
+    public static boolean hasAccessibilityDelegate(final View view) {
+        return ViewCompat.IMPL.hasAccessibilityDelegate(view);
+    }
+    
+    public static boolean hasTransientState(final View view) {
+        return ViewCompat.IMPL.hasTransientState(view);
     }
     
     public static void jumpDrawablesToCurrentState(final View view) {

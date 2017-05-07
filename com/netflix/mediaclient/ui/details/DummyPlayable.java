@@ -24,6 +24,11 @@ public class DummyPlayable implements Playable
     }
     
     @Override
+    public int getLogicalStart() {
+        return 0;
+    }
+    
+    @Override
     public String getParentId() {
         return null;
     }

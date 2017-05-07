@@ -13,14 +13,6 @@ public class SeasonDetails implements com.netflix.mediaclient.servicemgr.model.d
     public Season$Detail detail;
     
     @Override
-    public int getCurrentEpisodeNumber() {
-        if (this.detail == null) {
-            return -1;
-        }
-        return this.detail.getCurrentEpisodeNumber();
-    }
-    
-    @Override
     public String getId() {
         if (this.detail == null) {
             return null;
@@ -72,6 +64,6 @@ public class SeasonDetails implements com.netflix.mediaclient.servicemgr.model.d
     
     @Override
     public String toString() {
-        return "SeasonDetails [getId()=" + this.getId() + ", getTitle()=" + this.getTitle() + ", getType()=" + this.getType() + ", getSeasonNumber()=" + this.getSeasonNumber() + ", getNumOfEpisodes()=" + this.getNumOfEpisodes() + ", getCurrentEpisodeNumber()=" + this.getCurrentEpisodeNumber() + ", getYear()=" + this.getYear() + "]";
+        return "SeasonDetails [getId()=" + this.getId() + ", getTitle()=" + this.getTitle() + ", getType()=" + this.getType() + ", getSeasonNumber()=" + this.getSeasonNumber() + ", getNumOfEpisodes()=" + this.getNumOfEpisodes() + ", getYear()=" + this.getYear() + "]";
     }
 }

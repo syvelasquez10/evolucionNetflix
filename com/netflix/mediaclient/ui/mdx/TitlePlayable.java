@@ -17,6 +17,7 @@ class TitlePlayable implements Playable
     private boolean mIsAutoPlayEnabled;
     private boolean mIsNextPlayableEpisode;
     private boolean mIsPinProtected;
+    private int mLogicalStart;
     private String mParentId;
     private String mParentTitle;
     private String mPlayableId;
@@ -55,6 +56,11 @@ class TitlePlayable implements Playable
     @Override
     public int getEpisodeNumber() {
         return this.mEpisodeNumber;
+    }
+    
+    @Override
+    public int getLogicalStart() {
+        return this.mLogicalStart;
     }
     
     @Override

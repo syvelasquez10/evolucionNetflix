@@ -204,29 +204,31 @@ public class SocialLoggingImpl implements SocialLogging
     }
     
     @Override
+    public void endAllActiveSessions() {
+        this.endSocialConnectSession();
+        this.endSocialImpressionSession(true, null);
+    }
+    
+    @Override
     public void endSocialConnectSession() {
-        Log.d("nf_log", "Social connect session end started");
-        if (this.mSocialConnectSession == null) {
-            Log.w("nf_log", "Social connect session did not existed before! It should not happen!");
-            return;
+        if (this.mSocialConnectSession != null) {
+            Log.d("nf_log", "Social connect session end started");
+            this.mEventHandler.removeSession(this.mSocialConnectSession);
+            this.mEventHandler.post(this.mSocialConnectSession.createEndedEvent());
+            this.mSocialConnectSession = null;
+            Log.d("nf_log", "Social connect session end done.");
         }
-        this.mEventHandler.removeSession(this.mSocialConnectSession);
-        this.mEventHandler.post(this.mSocialConnectSession.createEndedEvent());
-        this.mSocialConnectSession = null;
-        Log.d("nf_log", "Social connect session end done.");
     }
     
     @Override
     public void endSocialImpressionSession(final boolean b, final Error error) {
-        Log.d("nf_log", "Social Impression session end started");
-        if (this.mSocialImpressionSession == null) {
-            Log.w("nf_log", "Social Impression session did not existed before! It should not happen!");
-            return;
+        if (this.mSocialImpressionSession != null) {
+            Log.d("nf_log", "Social Impression session end started");
+            this.mEventHandler.removeSession(this.mSocialImpressionSession);
+            this.mEventHandler.post(this.mSocialImpressionSession.createEndEvent(b, error));
+            this.mSocialImpressionSession = null;
+            Log.d("nf_log", "Social Impression session end done.");
         }
-        this.mEventHandler.removeSession(this.mSocialImpressionSession);
-        this.mEventHandler.post(this.mSocialImpressionSession.createEndEvent(b, error));
-        this.mSocialImpressionSession = null;
-        Log.d("nf_log", "Social Impression session end done.");
     }
     
     @Override

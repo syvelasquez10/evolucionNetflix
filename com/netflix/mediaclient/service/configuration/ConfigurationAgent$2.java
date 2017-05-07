@@ -4,40 +4,68 @@
 
 package com.netflix.mediaclient.service.configuration;
 
-final class ConfigurationAgent$2 implements KidsOnPhoneConfiguration
+import android.view.Display;
+import android.util.DisplayMetrics;
+import android.hardware.display.DisplayManager;
+import com.netflix.mediaclient.media.VideoResolutionRange;
+import org.json.JSONObject;
+import com.netflix.mediaclient.net.IpConnectivityPolicy;
+import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
+import com.netflix.mediaclient.util.DeviceCategory;
+import com.netflix.mediaclient.media.PlayerType;
+import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
+import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
+import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
+import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
+import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
+import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
+import com.netflix.mediaclient.nccp.NccpKeyStore;
+import com.netflix.mediaclient.util.AndroidManifestUtils;
+import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
+import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import java.util.Locale;
+import java.io.IOException;
+import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.api.Api19Util;
+import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
+import android.content.Context;
+import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
+import com.netflix.mediaclient.service.NetflixService;
+import java.util.ArrayList;
+import android.os.Handler;
+import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
+import com.netflix.mediaclient.service.configuration.drm.DrmManager;
+import com.netflix.mediaclient.android.app.Status;
+import java.util.List;
+import android.annotation.SuppressLint;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.service.ServiceAgent;
+import java.util.Iterator;
+import com.netflix.mediaclient.Log;
+
+class ConfigurationAgent$2 implements Runnable
 {
-    @Override
-    public KidsOnPhoneConfiguration$ActionBarNavType getActionBarNavType() {
-        return KidsOnPhoneConfiguration$ActionBarNavType.UP;
+    final /* synthetic */ ConfigurationAgent this$0;
+    
+    ConfigurationAgent$2(final ConfigurationAgent this$0) {
+        this.this$0 = this$0;
     }
     
     @Override
-    public KidsOnPhoneConfiguration$LolomoImageType getLolomoImageType() {
-        return KidsOnPhoneConfiguration$LolomoImageType.HORIZONTAL;
+    public void run() {
+        synchronized (this.this$0) {
+            Log.d("nf_configurationagent", "Invoking ConfigAgentListeners.");
+            this.this$0.mIsConfigRefreshInBackground = false;
+            final Iterator<ConfigurationAgent$ConfigAgentListener> iterator = this.this$0.mConfigAgentListeners.iterator();
+            while (iterator.hasNext()) {
+                iterator.next().onConfigRefreshed(this.this$0.mConfigRefreshStatus);
+            }
+        }
+        this.this$0.mConfigAgentListeners.clear();
     }
-    
-    @Override
-    public KidsOnPhoneConfiguration$ScrollBehavior getScrollBehavior() {
-        return KidsOnPhoneConfiguration$ScrollBehavior.UP_DOWN;
-    }
-    
-    @Override
-    public boolean isKidsOnPhoneEnabled() {
-        return true;
-    }
-    
-    @Override
-    public boolean shouldShowKidsEntryInActionBar() {
-        return true;
-    }
-    
-    @Override
-    public boolean shouldShowKidsEntryInGenreLomo() {
-        return true;
-    }
-    
-    @Override
-    public boolean shouldShowKidsEntryInMenu() {
-        return true;
-    }
+    // monitorexit(configurationAgent)
 }

@@ -30,6 +30,11 @@ class ScrollerCompat$ScrollerCompatImplGingerbread implements ScrollerCompat$Scr
     }
     
     @Override
+    public float getCurrVelocity(final Object o) {
+        return 0.0f;
+    }
+    
+    @Override
     public int getCurrX(final Object o) {
         return ScrollerCompatGingerbread.getCurrX(o);
     }
@@ -47,6 +52,11 @@ class ScrollerCompat$ScrollerCompatImplGingerbread implements ScrollerCompat$Scr
     @Override
     public int getFinalY(final Object o) {
         return ScrollerCompatGingerbread.getFinalY(o);
+    }
+    
+    @Override
+    public boolean isFinished(final Object o) {
+        return ScrollerCompatGingerbread.isFinished(o);
     }
     
     @Override

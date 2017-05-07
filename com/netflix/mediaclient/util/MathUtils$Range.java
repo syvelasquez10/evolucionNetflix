@@ -13,7 +13,7 @@ public class MathUtils$Range
     public MathUtils$Range(final int start, final int end) {
         this.start = start;
         this.end = end;
-        this.midpoint = MathUtils.divideInts(start + end, 2);
+        this.midpoint = MathUtils.divideIntsWithRounding(start + end, 2);
     }
     
     public boolean contains(final int n) {

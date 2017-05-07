@@ -9,7 +9,7 @@ import com.netflix.mediaclient.service.logging.client.model.Error;
 import android.widget.ListAdapter;
 import android.text.TextWatcher;
 import android.widget.AbsListView$OnScrollListener;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.os.Parcelable;
 import android.os.Bundle;
 import java.util.Set;
@@ -23,10 +23,9 @@ import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.text.Html;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.Log;
-import android.app.Activity;
 import com.netflix.mediaclient.android.app.Status;
+import android.app.Activity;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -86,8 +85,8 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
     public View getView(int imageResource, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.mLayoutInflater.inflate(2130903177, viewGroup, false);
-            inflate.setTag((Object)new RecommendToFriendsFrag$FriendsListAdapter$Holder(this, (AdvancedImageView)inflate.findViewById(2131165640), (TextView)inflate.findViewById(2131165641), (ImageView)inflate.findViewById(2131165644), inflate.findViewById(2131165643), (TextView)inflate.findViewById(2131165642)));
+            inflate = this.this$0.mLayoutInflater.inflate(2130903176, viewGroup, false);
+            inflate.setTag((Object)new RecommendToFriendsFrag$FriendsListAdapter$Holder(this, (AdvancedImageView)inflate.findViewById(2131165641), (TextView)inflate.findViewById(2131165642), (ImageView)inflate.findViewById(2131165645), inflate.findViewById(2131165644), (TextView)inflate.findViewById(2131165643)));
         }
         final RecommendToFriendsFrag$FriendsListAdapter$Holder recommendToFriendsFrag$FriendsListAdapter$Holder = (RecommendToFriendsFrag$FriendsListAdapter$Holder)inflate.getTag();
         final FriendForRecommendation item = this.getItem(imageResource);
@@ -121,14 +120,14 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
                 else if (!item.isNetlflixConnected()) {
                     recommendToFriendsFrag$FriendsListAdapter$Holder.fbIcon.setVisibility(0);
                 }
-                final ImageView access$1700 = recommendToFriendsFrag$FriendsListAdapter$Holder.checkMark;
+                final ImageView access$1600 = recommendToFriendsFrag$FriendsListAdapter$Holder.checkMark;
                 if (this.this$0.mCheckedFriends.contains(item)) {
-                    imageResource = 2130837824;
+                    imageResource = 2130837834;
                 }
                 else {
-                    imageResource = 2130837823;
+                    imageResource = 2130837833;
                 }
-                access$1700.setImageResource(imageResource);
+                access$1600.setImageResource(imageResource);
                 inflate.setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$FriendsListAdapter$1(this, item, recommendToFriendsFrag$FriendsListAdapter$Holder));
                 return inflate;
             }

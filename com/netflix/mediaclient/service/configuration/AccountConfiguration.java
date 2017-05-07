@@ -94,6 +94,13 @@ public class AccountConfiguration
         return this.mAccountConfigData.getSearchTest();
     }
     
+    public int getShareSheetExperience() {
+        if (this.mAccountConfigData == null) {
+            return 1;
+        }
+        return this.mAccountConfigData.getShareSheetExperience();
+    }
+    
     public int getVideoBufferSize() {
         if (this.mAccountConfigData == null) {
             return 0;

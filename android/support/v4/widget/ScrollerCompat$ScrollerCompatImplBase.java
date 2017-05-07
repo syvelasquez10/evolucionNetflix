@@ -34,6 +34,11 @@ class ScrollerCompat$ScrollerCompatImplBase implements ScrollerCompat$ScrollerCo
     }
     
     @Override
+    public float getCurrVelocity(final Object o) {
+        return 0.0f;
+    }
+    
+    @Override
     public int getCurrX(final Object o) {
         return ((Scroller)o).getCurrX();
     }
@@ -51,6 +56,11 @@ class ScrollerCompat$ScrollerCompatImplBase implements ScrollerCompat$ScrollerCo
     @Override
     public int getFinalY(final Object o) {
         return ((Scroller)o).getFinalY();
+    }
+    
+    @Override
+    public boolean isFinished(final Object o) {
+        return ((Scroller)o).isFinished();
     }
     
     @Override

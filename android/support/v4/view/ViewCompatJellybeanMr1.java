@@ -12,6 +12,14 @@ class ViewCompatJellybeanMr1
         return view.getLayoutDirection();
     }
     
+    public static int getPaddingEnd(final View view) {
+        return view.getPaddingEnd();
+    }
+    
+    public static int getPaddingStart(final View view) {
+        return view.getPaddingStart();
+    }
+    
     public static int getWindowSystemUiVisibility(final View view) {
         return view.getWindowSystemUiVisibility();
     }

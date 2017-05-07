@@ -10,7 +10,7 @@ import com.netflix.mediaclient.servicemgr.model.Video;
 final class LaunchActivity$1 implements Video
 {
     @Override
-    public String getBoxshotURL() {
+    public String getBoxshotUrl() {
         return null;
     }
     

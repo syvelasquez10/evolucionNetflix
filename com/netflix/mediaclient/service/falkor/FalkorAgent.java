@@ -14,18 +14,16 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
+import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.NetflixApplication;
-import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
-import android.content.IntentFilter;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
-import android.support.v4.content.LocalBroadcastManager;
-import android.content.Intent;
 import java.util.Iterator;
 import java.util.List;
 import com.netflix.mediaclient.Log;
@@ -99,54 +97,13 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         FalkorAgent.isCurrentProfileActive.set(false);
     }
     
-    private void notifyOthersOfUnreadNotifications(final boolean b) {
-        if (Log.isLoggable("FalkorAgent", 4)) {
-            Log.i("FalkorAgent", "notifyOthersOfUnreadNotifications: " + b);
-        }
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED");
-        intent.putExtra("notifications_list_has_unread", b);
-        LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(intent);
-        if (!b) {
-            SocialNotificationsUtils.removeSocialNotificationsFromStatusBar(this.getContext());
-        }
-    }
-    
-    private void registerPlayReceiver() {
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_START");
-        intentFilter.addAction("com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP");
-        this.getContext().registerReceiver(this.playReceiver, intentFilter);
-    }
-    
-    private void registerUserAgentIntentReceiver() {
-        LocalBroadcastManager.getInstance(this.getContext()).registerReceiver(this.userAgentIntentReceiver, UserAgentBroadcastIntents.getNotificationIntentFilter());
-    }
-    
     private void rescheduleNotificationsRefresh() {
         this.getMainHandler().removeCallbacks(this.refreshNotificationsRunnable);
         this.getMainHandler().postDelayed(this.refreshNotificationsRunnable, 3600000L);
     }
     
     private boolean shouldBeNotificationSentToStatusBar(final SocialNotificationSummary socialNotificationSummary) {
-        return socialNotificationSummary != null && !NetflixApplication.isActivityVisible() && SocialNotificationsUtils.isSocialNotificationsFeatureSupported(this.getService().getCurrentProfile(), this.getContext()) && this.getService().getPushNotification().isOptIn();
-    }
-    
-    private void unregisterPlayReceiver() {
-        try {
-            this.getContext().unregisterReceiver(this.playReceiver);
-        }
-        catch (Exception ex) {
-            Log.handleException("FalkorAgent", ex);
-        }
-    }
-    
-    private void unregisterUserAgentIntentReceiver() {
-        try {
-            LocalBroadcastManager.getInstance(this.getContext()).unregisterReceiver(this.userAgentIntentReceiver);
-        }
-        catch (Exception ex) {
-            Log.handleException("FalkorAgent", ex);
-        }
+        return socialNotificationSummary != null && !NetflixApplication.isActivityVisible() && SocialUtils.isNotificationsFeatureSupported(this.getService().getCurrentProfile(), this.getContext()) && this.getService().getPushNotification().isOptIn();
     }
     
     public void addToQueue(final String s, final VideoType videoType, final int n, final boolean b, final String s2, final BrowseAgentCallback browseAgentCallback) {
@@ -158,8 +115,8 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     
     @Override
     public void destroy() {
-        this.unregisterUserAgentIntentReceiver();
-        this.unregisterPlayReceiver();
+        IntentUtils.unregisterSafelyLocalBroadcastReceiver(this.getContext(), this.userAgentIntentReceiver);
+        IntentUtils.unregisterSafelyLocalBroadcastReceiver(this.getContext(), this.playReceiver);
         super.destroy();
     }
     
@@ -167,8 +124,8 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cache = new Root();
         this.cmp = new CachedModelProxy<Root>(this, this.cache, (FalkorVolleyWebClient)this.getResourceFetcher().getApiNextWebClient());
         this.cache.setProxy(this.cmp);
-        this.registerUserAgentIntentReceiver();
-        this.registerPlayReceiver();
+        IntentUtils.registerSafelyLocalBroadcastReceiver(this.getContext(), this.userAgentIntentReceiver, UserAgentBroadcastIntents.getNotificationIntentFilter());
+        IntentUtils.registerSafelyBroadcastReceiver(this.getContext(), this.playReceiver, null, "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_START", "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP");
         this.initCompleted(CommonStatus.OK);
     }
     
@@ -177,13 +134,6 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
         this.cmp.dumpCacheToDisk();
-    }
-    
-    public void dumpHomeLoLoMosAndVideos(final String s, final String s2) {
-        if (Log.isLoggable("FalkorAgent", 2)) {
-            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
-        }
-        Log.i("FalkorAgent", "dumpHomeLoLoMosAndVideos not implemented");
     }
     
     @Override
@@ -464,7 +414,9 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
         this.cmp.fetchSocialNotifications(0, b, new FalkorAgent$6(this, b2, messageData));
-        this.rescheduleNotificationsRefresh();
+        if (this.getService() != null && this.getService().getCurrentProfile() != null && this.getService().getCurrentProfile().isSocialConnected()) {
+            this.rescheduleNotificationsRefresh();
+        }
     }
     
     public void removeFromQueue(final String s, final VideoType videoType, final String s2, final BrowseAgentCallback browseAgentCallback) {

@@ -25,5 +25,11 @@ public interface Log
     
     void removeEventListener(final String p0, final EventListener p1);
     
+    void resetAppID();
+    
     void resetSessionID(final Log$ResetSessionIdCallback p0);
+    
+    void setAppIdChangedListener(final Log$AppIdChangedListener p0);
+    
+    void setAppIdSetListener(final Log$AppIdSetListener p0);
 }

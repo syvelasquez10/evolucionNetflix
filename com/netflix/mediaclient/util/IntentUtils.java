@@ -41,11 +41,10 @@ public final class IntentUtils
         if (array == null || array.length < 1) {
             throw new IllegalArgumentException("No actions!");
         }
-        if (StringUtils.isEmpty(s)) {
-            throw new IllegalArgumentException("Category can not be null!");
-        }
         final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addCategory(s);
+        if (s != null) {
+            intentFilter.addCategory(s);
+        }
         for (int length = array.length, i = 0; i < length; ++i) {
             s = array[i];
             if (StringUtils.isNotEmpty(s)) {
@@ -67,28 +66,35 @@ public final class IntentUtils
         return registerSafelyBroadcastReceiver(context, broadcastReceiver, s, 999, array);
     }
     
-    public static boolean registerSafelyLocalBroadcastReceiver(final Context context, final BroadcastReceiver broadcastReceiver, String s, final int n, final String... array) {
+    public static boolean registerSafelyLocalBroadcastReceiver(final Context context, final BroadcastReceiver broadcastReceiver) {
+        if (context == null) {
+            Log.e(IntentUtils.TAG, "Context is null");
+            return false;
+        }
+        if (broadcastReceiver == null) {
+            Log.e(IntentUtils.TAG, "Receiver is null");
+            return false;
+        }
+        try {
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(broadcastReceiver);
+            return true;
+        }
+        catch (Throwable t) {
+            Log.e(IntentUtils.TAG, "Failed to unregister ", t);
+            return false;
+        }
+    }
+    
+    public static boolean registerSafelyLocalBroadcastReceiver(final Context context, final BroadcastReceiver broadcastReceiver, final IntentFilter intentFilter) {
         if (context == null) {
             throw new IllegalArgumentException("Context is null");
         }
         if (broadcastReceiver == null) {
             throw new IllegalArgumentException("Receiver is null");
         }
-        if (array == null || array.length < 1) {
-            throw new IllegalArgumentException("No actions!");
+        if (intentFilter == null) {
+            throw new IllegalArgumentException("No filter!");
         }
-        if (StringUtils.isEmpty(s)) {
-            throw new IllegalArgumentException("Category can not be null!");
-        }
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addCategory(s);
-        for (int length = array.length, i = 0; i < length; ++i) {
-            s = array[i];
-            if (StringUtils.isNotEmpty(s)) {
-                intentFilter.addAction(s);
-            }
-        }
-        intentFilter.setPriority(getSafePriority(n));
         try {
             LocalBroadcastManager.getInstance(context).registerReceiver(broadcastReceiver, intentFilter);
             return true;
@@ -97,6 +103,24 @@ public final class IntentUtils
             Log.e(IntentUtils.TAG, "Failed to register ", t);
             return false;
         }
+    }
+    
+    public static boolean registerSafelyLocalBroadcastReceiver(final Context context, final BroadcastReceiver broadcastReceiver, String s, int i, final String... array) {
+        if (array == null || array.length < 1) {
+            throw new IllegalArgumentException("No actions!");
+        }
+        final IntentFilter intentFilter = new IntentFilter();
+        if (s != null) {
+            intentFilter.addCategory(s);
+        }
+        int length;
+        for (length = array.length, i = 0; i < length; ++i) {
+            s = array[i];
+            if (StringUtils.isNotEmpty(s)) {
+                intentFilter.addAction(s);
+            }
+        }
+        return registerSafelyLocalBroadcastReceiver(context, broadcastReceiver, intentFilter);
     }
     
     public static boolean registerSafelyLocalBroadcastReceiver(final Context context, final BroadcastReceiver broadcastReceiver, final String s, final String... array) {

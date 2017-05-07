@@ -17,11 +17,14 @@ import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLogging
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
+import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
+import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import com.netflix.mediaclient.nccp.NccpKeyStore;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.Locale;
 import java.io.IOException;
 import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
@@ -32,20 +35,21 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
 import com.netflix.mediaclient.service.NetflixService;
+import java.util.ArrayList;
 import android.os.Handler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
-import java.util.ArrayList;
+import com.netflix.mediaclient.android.app.Status;
+import java.util.List;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
+import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
+import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging$EventType;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
 
-class ConfigurationAgent$3 implements DrmManager$DrmReadyCallback
+class ConfigurationAgent$3 implements Runnable
 {
     final /* synthetic */ ConfigurationAgent this$0;
     
@@ -54,19 +58,20 @@ class ConfigurationAgent$3 implements DrmManager$DrmReadyCallback
     }
     
     @Override
-    public void drmError(final Status status) {
-        if (Log.isLoggable("nf_configurationagent", 6)) {
-            Log.e("nf_configurationagent", "DRM failed to initialize, Error code: " + status.getStatusCode());
+    public void run() {
+        Log.i("nf_configurationagent", "Refreshing config via runnable");
+        this.this$0.fetchAccountConfigData(null);
+        Log.i("nf_configurationagent", "Check if we should report ad id via runnable");
+        final IClientLogging clientLogging = this.this$0.getService().getClientLogging();
+        if (clientLogging == null) {
+            Log.e("nf_configurationagent", "CL is not available!");
+            return;
         }
-        this.this$0.initCompleted(status);
-    }
-    
-    @Override
-    public void drmReady() {
-        Log.d("nf_configurationagent", "DRM manager is ready");
-        if (DrmManagerRegistry.isDrmSystemChanged()) {
-            this.this$0.mNeedEsMigration = true;
+        final AdvertiserIdLogging advertiserIdLogging = clientLogging.getAdvertiserIdLogging();
+        if (advertiserIdLogging == null) {
+            Log.e("nf_configurationagent", "AD logger is not available!");
+            return;
         }
-        this.this$0.initCompleted(CommonStatus.OK);
+        advertiserIdLogging.sendAdvertiserId(AdvertiserIdLogging$EventType.check_in);
     }
 }

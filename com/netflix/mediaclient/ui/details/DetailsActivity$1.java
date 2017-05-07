@@ -4,10 +4,11 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import android.view.MenuItem;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.Menu;
 import android.os.Bundle;
 import android.view.View;
@@ -22,14 +23,14 @@ import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import android.view.MenuItem;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.ui.common.VideoDetailsProvider;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;
@@ -43,6 +44,10 @@ class DetailsActivity$1 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        SocialNotificationsUtils.handleNotificationsUpdateReceiver(intent, this.this$0.notificationsMenuItem, "DetailsActivity");
+        final SocialUtils$NotificationsListStatus handleNotificationsUpdateReceiver = SocialUtils.handleNotificationsUpdateReceiver(intent, "DetailsActivity");
+        if (handleNotificationsUpdateReceiver != this.this$0.notificationsListStatus) {
+            this.this$0.notificationsListStatus = handleNotificationsUpdateReceiver;
+            this.this$0.invalidateOptionsMenu();
+        }
     }
 }

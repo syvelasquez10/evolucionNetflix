@@ -95,7 +95,7 @@ import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.ui.details.EpisodeListFrag;
+import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.view.View$OnClickListener;
@@ -122,7 +122,7 @@ class PlayerActivity$3 implements View$OnClickListener
         }
         Log.d("PlayerActivity", "Start episodes dialog");
         this.this$0.stopScreenUpdateTask();
-        final NetflixDialogFrag episodes = EpisodeListFrag.createEpisodes(this.this$0.mAsset.getParentId(), this.this$0.mAsset.getPlayableId(), false);
+        final NetflixDialogFrag episodes = EpisodesFrag.createEpisodes(this.this$0.mAsset.getParentId(), this.this$0.mAsset.getPlayableId(), false);
         episodes.onManagerReady(this.this$0.getServiceManager(), CommonStatus.OK);
         episodes.setCancelable(true);
         this.this$0.showDialog(episodes);

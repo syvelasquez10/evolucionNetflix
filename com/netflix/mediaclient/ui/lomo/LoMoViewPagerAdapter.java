@@ -4,10 +4,11 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import android.widget.LinearLayout$LayoutParams;
 import android.view.ViewGroup;
+import android.widget.LinearLayout$LayoutParams;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoDuplicate;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
@@ -60,10 +61,20 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     }
     
     private LoMoViewPagerAdapter$Type convertLomoTypeToAdapterType(final BasicLoMo basicLoMo) {
+        LoMoViewPagerAdapter$Type kubrick_HERO;
         if (basicLoMo instanceof KubrickLoMoHeroDuplicate) {
-            return LoMoViewPagerAdapter$Type.KUBRICK_HERO;
+            kubrick_HERO = LoMoViewPagerAdapter$Type.KUBRICK_HERO;
         }
-        return LoMoViewPagerAdapter.LOMO_TYPE_TABLE.get(basicLoMo.getType());
+        else {
+            if (basicLoMo instanceof KubrickLoMoDuplicate) {
+                return LoMoViewPagerAdapter$Type.STANDARD;
+            }
+            kubrick_HERO = LoMoViewPagerAdapter.LOMO_TYPE_TABLE.get(basicLoMo.getType());
+            if (this.activity.isKubrick() && (kubrick_HERO = kubrick_HERO) == LoMoViewPagerAdapter$Type.STANDARD) {
+                return LoMoViewPagerAdapter$Type.KUBRICK_GALLERY;
+            }
+        }
+        return kubrick_HERO;
     }
     
     private View getView(final int n) {
@@ -126,6 +137,9 @@ public class LoMoViewPagerAdapter extends PagerAdapter
             case 8: {
                 this.currentAdapter = this.adapters.getKubrickHeroAdapter();
             }
+            case 9: {
+                this.currentAdapter = this.adapters.getKubrickGalleryAdapter();
+            }
         }
     }
     
@@ -144,6 +158,12 @@ public class LoMoViewPagerAdapter extends PagerAdapter
             Log.v("LoMoViewPagerAdapter", "Unregistering browse notification receiver, " + this.browseReceiver.hashCode());
         }
         this.activity.unregisterReceiver(this.browseReceiver);
+    }
+    
+    public LinearLayout$LayoutParams createLayoutParams() {
+        final int rowHeightInPx = this.currentAdapter.getRowHeightInPx();
+        Log.v("LoMoViewPagerAdapter", "Creating layout params with height: " + rowHeightInPx);
+        return new LinearLayout$LayoutParams(-1, rowHeightInPx);
     }
     
     public void destroy() {
@@ -178,12 +198,6 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     @Override
     public int getItemPosition(final Object o) {
         return -2;
-    }
-    
-    public LinearLayout$LayoutParams getLayoutParams() {
-        final int rowHeightInPx = this.currentAdapter.getRowHeightInPx();
-        Log.v("LoMoViewPagerAdapter", "Creating layout params with height: " + rowHeightInPx);
-        return new LinearLayout$LayoutParams(-1, rowHeightInPx);
     }
     
     public boolean hasMoreData() {

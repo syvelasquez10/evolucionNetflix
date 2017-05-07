@@ -136,7 +136,7 @@ public class FalkorValidationActivity extends NetflixActivity
     
     @Override
     public IClientLogging$ModalView getUiScreen() {
-        return null;
+        return IClientLogging$ModalView.customerService;
     }
     
     @Override

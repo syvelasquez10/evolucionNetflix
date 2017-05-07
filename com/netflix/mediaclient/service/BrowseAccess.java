@@ -47,11 +47,6 @@ public class BrowseAccess implements IBrowseInterface
     }
     
     @Override
-    public void dumpHomeLoLoMosAndVideos(final String s, final String s2) {
-        this.mBrowseAgent.dumpHomeLoLoMosAndVideos(s, s2);
-    }
-    
-    @Override
     public void fetchCWVideos(final int n, final int n2, final int n3, final int n4) {
         this.mBrowseAgent.fetchCWVideos(n, n2, this.wrapCallback(new BrowseAccess$BrowseAgentClientCallback(this, n3, n4)));
     }

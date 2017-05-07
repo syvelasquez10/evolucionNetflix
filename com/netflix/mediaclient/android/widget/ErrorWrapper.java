@@ -28,9 +28,9 @@ public class ErrorWrapper
         this.showRetry = true;
         this.retryClickListener = (View$OnClickListener)new ErrorWrapper$1(this);
         this.callback = callback;
-        this.errorGroup = view.findViewById(2131165364);
-        this.errorMsg = (TextView)view.findViewById(2131165365);
-        (this.retryBtn = (Button)this.errorGroup.findViewById(2131165366)).setOnClickListener(this.retryClickListener);
+        this.errorGroup = view.findViewById(2131165366);
+        this.errorMsg = (TextView)view.findViewById(2131165367);
+        (this.retryBtn = (Button)this.errorGroup.findViewById(2131165368)).setOnClickListener(this.retryClickListener);
         if (view.getContext() instanceof NetflixActivity) {
             final NetflixActivity netflixActivity = (NetflixActivity)view.getContext();
             if (netflixActivity.isForKids()) {
@@ -46,9 +46,9 @@ public class ErrorWrapper
         ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131361882);
         ViewUtils.setTextViewToBold(this.errorMsg);
         final ViewGroup$LayoutParams layoutParams = this.retryBtn.getLayoutParams();
-        layoutParams.height = resources.getDimensionPixelSize(2131361970);
-        layoutParams.width = resources.getDimensionPixelSize(2131361969);
-        this.retryBtn.setBackgroundResource(2130837728);
+        layoutParams.height = resources.getDimensionPixelSize(2131361973);
+        layoutParams.width = resources.getDimensionPixelSize(2131361972);
+        this.retryBtn.setBackgroundResource(2130837732);
         this.retryBtn.setTextColor(resources.getColor(2131296360));
         ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131361887);
         ViewUtils.setTextViewToBold((TextView)this.retryBtn);

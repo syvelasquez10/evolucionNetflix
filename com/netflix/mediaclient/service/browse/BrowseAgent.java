@@ -13,23 +13,21 @@ import com.netflix.mediaclient.servicemgr.model.LoMoType;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import com.netflix.mediaclient.servicemgr.model.Billboard;
-import com.netflix.mediaclient.service.webclient.model.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.service.webclient.model.CWVideo;
+import android.content.Intent;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
+import android.support.v4.content.LocalBroadcastManager;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.service.webclient.model.ShowDetails;
 import com.netflix.mediaclient.service.webclient.model.MovieDetails;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
-import android.support.v4.content.LocalBroadcastManager;
-import android.content.Intent;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
-import java.util.Random;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
 import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.service.NetflixService;
@@ -38,7 +36,6 @@ import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import java.util.List;
 import com.netflix.model.leafs.social.SocialNotificationsList;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import android.content.Context;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.browse.cache.BrowseWebClientCache;
@@ -67,6 +64,7 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
     private static final int MARGIN_FOR_BOOKMARK_RESET_SECONDS = 30;
     private static final int PREFETCH_BILLBOARD_VIDEO_INDEX = 9;
     private static final int REFRESH_NOTIFICATIONS_INTERVAL = 3600000;
+    private static final int STILL_THRESH = 10;
     private static final String TAG = "nf_service_browseagent";
     private static final boolean USE_HARD_CACHE_CONST = false;
     private static final boolean USE_SOFT_CACHE_CONST = true;
@@ -77,7 +75,7 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
     private static int sPrefetchToLoMo;
     private static int sPrefetchToVideo;
     private static long sPrevEpisodeRefreshTime;
-    private DataDumper dataDumper;
+    private LegacyDataDumper dataDumper;
     private BrowseWebClient mBrowseWebClient;
     private BrowseWebClientCache mCache;
     private final BrowseAgent$PlayReceiver mPlayReceiver;
@@ -102,24 +100,28 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
     
     public BrowseAgent() {
         this.mPlayReceiver = new BrowseAgent$PlayReceiver(this);
-        this.refreshNotificationsRunnable = new BrowseAgent$4(this);
-        this.mUserAgentIntentReceiver = new BrowseAgent$5(this);
+        this.refreshNotificationsRunnable = new BrowseAgent$3(this);
+        this.mUserAgentIntentReceiver = new BrowseAgent$4(this);
     }
     
-    public static String buildStillUrlFromPos(final String s, final int n, final int n2) {
-        if (StringUtils.isEmpty(s)) {
-            return null;
+    public static String buildStillUrlFromPos(final CWVideo cwVideo) {
+        final String baseUrl = cwVideo.getBaseUrl();
+        final int playableBookmarkPosition = cwVideo.getPlayableBookmarkPosition();
+        if (StringUtils.isEmpty(baseUrl)) {
+            return cwVideo.getInterestingUrl();
         }
-        int nextInt;
-        if ((nextInt = n) < 10) {
-            nextInt = new Random().nextInt(n2);
+        if (playableBookmarkPosition < 10) {
+            if (Log.isLoggable("nf_bookmark", 2)) {
+                Log.v("nf_bookmark", String.format("%s bookmark < threshold(%d), using interesting url %s ", cwVideo.getId(), 10, cwVideo.getInterestingUrl()));
+            }
+            return cwVideo.getInterestingUrl();
         }
-        final String value = String.valueOf(nextInt / 10);
-        final StringBuilder append = new StringBuilder(s).append("/00000");
+        final String value = String.valueOf(playableBookmarkPosition / 10);
+        final StringBuilder append = new StringBuilder(baseUrl).append("/00000");
         append.replace(append.length() - value.length(), append.length(), value);
         append.append(".jpg");
-        if (Log.isLoggable("nf_service_browseagent", 3)) {
-            Log.d("nf_bookmark", "baseUrl:" + s + " stillPos:" + value + " stillUrl:" + append.toString());
+        if (Log.isLoggable("nf_service_browseagent", 2)) {
+            Log.v("nf_bookmark", String.format("%s stillId: %s, stillUrl: %s", cwVideo.getId(), value, append.toString()));
         }
         return append.toString();
     }
@@ -290,18 +292,6 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
         runnable.run();
     }
     
-    private void notifyOthersOfUnreadNotifications(final boolean b) {
-        if (Log.isLoggable("nf_service_browseagent", 4)) {
-            Log.i("nf_service_browseagent", "notifyOthersOfUnreadNotifications: " + b);
-        }
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED");
-        intent.putExtra("notifications_list_has_unread", b);
-        LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(intent);
-        if (!b) {
-            SocialNotificationsUtils.removeSocialNotificationsFromStatusBar(this.getContext());
-        }
-    }
-    
     private void refreshCacheWithLastPlayed(final Asset asset) {
         final int playbackBookmark = asset.getPlaybackBookmark();
         if (playbackBookmark > 0) {
@@ -329,7 +319,7 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
                     episodeDetails = null;
                 }
                 else {
-                    final com.netflix.mediaclient.service.webclient.model.ShowDetails showDetails = (com.netflix.mediaclient.service.webclient.model.ShowDetails)this.mCache.getFromCaches(BrowseWebClientCache.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_SDP, parentId, "0", "0"));
+                    final ShowDetails showDetails = (ShowDetails)this.mCache.getFromCaches(BrowseWebClientCache.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_SDP, parentId, "0", "0"));
                     if (showDetails == null) {
                         return;
                     }
@@ -359,7 +349,6 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
                             Log.d("nf_bookmark", String.format("next playable episode: %s - %s, S%d: E%d", nextPlayableEpisode.getId(), nextPlayableEpisode.getTitle(), nextPlayableEpisode.getSeasonNumber(), nextPlayableEpisode.getEpisodeNumber()));
                         }
                         updateShowOnEpisodePlay(showDetails, nextPlayableEpisode);
-                        updateSeasonsInformation(this.mCache, nextPlayableEpisode.getSeasonId(), nextPlayableEpisode.getEpisodeNumber());
                         episodeDetails = nextPlayableEpisode;
                         if (!this.shouldRateLimitEpisodeRefresh()) {
                             this.sendEpisodeRefreshBrodcast(this.getContext(), nextPlayableEpisode.getSeasonNumber(), nextPlayableEpisode.getEpisodeNumber());
@@ -467,7 +456,7 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
         this.refreshCw();
     }
     
-    private void updateCwForNewEpisode(final CWVideo cwVideo, final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails) {
+    private void updateCwForNewEpisode(final com.netflix.mediaclient.service.webclient.model.CWVideo cwVideo, final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails) {
         if (Log.isLoggable("nf_service_browseagent", 2)) {
             Log.v("nf_service_browseagent", "Updating CWVideo episode info with details: " + episodeDetails.detail);
         }
@@ -478,7 +467,7 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
     private void updateCwOnPlay(final String s, final int n, final long n2, final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails) {
         final List list = (List)this.mCache.getHardCache().get(BrowseWebClientCache.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_CW_VIDEOS, "continueWatching", String.valueOf(BrowseAgent.sPrefetchFromCWVideo), String.valueOf(BrowseAgent.sPrefetchToCWVideo)));
         if (list != null) {
-            for (final CWVideo cwVideo : list) {
+            for (final com.netflix.mediaclient.service.webclient.model.CWVideo cwVideo : list) {
                 final boolean b = false;
                 boolean b2;
                 if (cwVideo.getPlayableId().equals(s)) {
@@ -499,13 +488,13 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
                     }
                 }
                 if (b2 && cwVideo.bookmarkStill != null) {
-                    cwVideo.bookmarkStill.stillUrl = buildStillUrlFromPos(cwVideo.getBaseUrl(), cwVideo.getPlayableBookmarkPosition(), cwVideo.getEndtime());
+                    cwVideo.bookmarkStill.stillUrl = buildStillUrlFromPos(cwVideo);
                 }
             }
         }
     }
     
-    private void updateCwPlayable(final CWVideo cwVideo, final int n, final long n2, final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails) {
+    private void updateCwPlayable(final com.netflix.mediaclient.service.webclient.model.CWVideo cwVideo, final int n, final long n2, final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails) {
         if (VideoType.MOVIE.equals(cwVideo.getType())) {
             if (Log.isLoggable("nf_service_browseagent", 3)) {
                 Log.d("nf_bookmark", String.format("cw movie bookmarkPos  updated from %d to %d", cwVideo.getBookmarkPosition(), n));
@@ -530,7 +519,7 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
     
     private void updateEpisodesWithLatestShowInformation(final List<EpisodeDetails> list) {
         if (list.size() != 0) {
-            final com.netflix.mediaclient.service.webclient.model.ShowDetails showDetails = (com.netflix.mediaclient.service.webclient.model.ShowDetails)this.mCache.getFromCaches(BrowseWebClientCache.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_SDP, list.get(0).getShowId(), "0", "0"));
+            final ShowDetails showDetails = (ShowDetails)this.mCache.getFromCaches(BrowseWebClientCache.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_SDP, list.get(0).getShowId(), "0", "0"));
             if (showDetails != null && showDetails.socialEvidence != null) {
                 final Iterator<EpisodeDetails> iterator = list.iterator();
                 while (iterator.hasNext()) {
@@ -540,25 +529,7 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
         }
     }
     
-    private void updateSeasonWithSdp(final ShowDetails showDetails) {
-        if (showDetails == null) {
-            return;
-        }
-        this.fetchSeasons(showDetails.getId(), 0, showDetails.getNumOfSeasons() - 1, new BrowseAgent$1(this, showDetails));
-    }
-    
-    public static void updateSeasonsInformation(final BrowseWebClientCache browseWebClientCache, final String s, final int currentEpisodeNumber) {
-        final WeakReference weakReference = (WeakReference)browseWebClientCache.getWeakSeasonsCache().get(BrowseWebClientCache.buildSeasonDetailsCacheKey(s));
-        if (weakReference != null) {
-            final SeasonDetails seasonDetails = weakReference.get();
-            seasonDetails.detail.currentEpisodeNumber = currentEpisodeNumber;
-            if (Log.isLoggable("nf_service_browseagent", 3)) {
-                Log.d("nf_bookmark", "updateSeasonsInformation: seasonId:" + s + " currentEpisode:" + seasonDetails.getCurrentEpisodeNumber());
-            }
-        }
-    }
-    
-    private static void updateShowOnEpisodePlay(final com.netflix.mediaclient.service.webclient.model.ShowDetails showDetails, final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails) {
+    private static void updateShowOnEpisodePlay(final ShowDetails showDetails, final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails) {
         showDetails.currentEpisode.deepCopy(episodeDetails.detail);
         showDetails.currentEpisodeBookmark.deepCopy(episodeDetails.bookmark);
     }
@@ -579,12 +550,8 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
         BrowseAgent.isCurrentProfileActive = false;
         this.registerUserAgentIntentReceiver();
         this.registerPlayReceiver();
-        this.dataDumper = new DataDumper(this.mBrowseWebClient, this.mCache.getHardCache(), this.mCache.getSoftCache());
+        this.dataDumper = new LegacyDataDumper(this.mBrowseWebClient, this.mCache.getHardCache(), this.mCache.getSoftCache());
         this.initCompleted(CommonStatus.OK);
-    }
-    
-    public void dumpHomeLoLoMosAndVideos(final String s, final String s2) {
-        this.dataDumper.dumpHomeLoLoMosAndVideos(s, s2);
     }
     
     public void dumpHomeLoLoMosAndVideosToLog() {
@@ -705,9 +672,9 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
             }
             this.refreshAll();
         }
-        final BrowseAgent$2 browseAgent$2 = new BrowseAgent$2(this);
+        final BrowseAgent$1 browseAgent$1 = new BrowseAgent$1(this);
         --n2;
-        this.launchTask(new BrowseAgent$PrefetchLoLoMoTask(this, n - 1, n2, n2, n2, false, false, false, browseAgent$2));
+        this.launchTask(new BrowseAgent$PrefetchLoLoMoTask(this, n - 1, n2, n2, n2, false, false, false, browseAgent$1));
     }
     
     @Override
@@ -847,7 +814,7 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
             }
         }
         else {
-            final com.netflix.mediaclient.service.webclient.model.ShowDetails showDetails = (com.netflix.mediaclient.service.webclient.model.ShowDetails)this.mCache.getFromCaches(BrowseWebClientCache.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_SDP, parentId, "0", "0"));
+            final ShowDetails showDetails = (ShowDetails)this.mCache.getFromCaches(BrowseWebClientCache.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_SDP, parentId, "0", "0"));
             if (showDetails == null || showDetails.currentEpisode == null) {
                 Log.w("nf_bookmark", String.format("populate cache - parentId %s or videoId %s null - SDP missing skip!", parentId, playableId));
                 return;
@@ -859,7 +826,7 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
             if (Log.isLoggable("nf_service_browseagent", 3)) {
                 Log.d("nf_bookmark", String.format("populate cache - Show %s, ce %s seasonId %s ceNum %d, reqStart %d reqEnd %d", parentId, playableId, seasonId, currentEpisodeNumber, n, n2));
             }
-            this.fetchEpisodes(seasonId, VideoType.SEASON, n, n2, new BrowseAgent$6(this));
+            this.fetchEpisodes(seasonId, VideoType.SEASON, n, n2, new BrowseAgent$5(this));
         }
     }
     
@@ -869,7 +836,7 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
     }
     
     public void refreshSocialNotifications(final boolean b, final boolean b2, final MessageData messageData) {
-        this.fetchSocialNotificationsInternal(0, b, new BrowseAgent$3(this, b2, messageData));
+        this.fetchSocialNotificationsInternal(0, b, new BrowseAgent$2(this, b2, messageData));
         this.rescheduleNotificationsRefresh();
     }
     
@@ -905,7 +872,7 @@ public class BrowseAgent extends ServiceAgent implements ServiceAgent$BrowseAgen
     
     protected void updateEpisodeWithLatestShowInformation(final EpisodeDetails episodeDetails) {
         final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails2 = (com.netflix.mediaclient.service.webclient.model.EpisodeDetails)episodeDetails;
-        final com.netflix.mediaclient.service.webclient.model.ShowDetails showDetails = (com.netflix.mediaclient.service.webclient.model.ShowDetails)this.mCache.getFromCaches(BrowseWebClientCache.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_SDP, episodeDetails.getShowId(), "0", "0"));
+        final ShowDetails showDetails = (ShowDetails)this.mCache.getFromCaches(BrowseWebClientCache.buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_SDP, episodeDetails.getShowId(), "0", "0"));
         if (showDetails != null && episodeDetails2.detail != null) {
             if (showDetails.rating != null) {
                 episodeDetails2.rating = showDetails.rating;

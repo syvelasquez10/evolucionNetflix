@@ -28,12 +28,16 @@ public class LoggingEventsRequest extends ClientLoggingVolleyWebClientRequest<St
     
     @Override
     protected void onFailure(final Status status) {
-        this.mCallback.onEventsDeliveryFailed(this.mDeliveryRequestId);
+        if (this.mCallback != null) {
+            this.mCallback.onEventsDeliveryFailed(this.mDeliveryRequestId);
+        }
     }
     
     @Override
     protected void onSuccess(final String s) {
-        this.mCallback.onEventsDelivered(this.mDeliveryRequestId);
+        if (this.mCallback != null) {
+            this.mCallback.onEventsDelivered(this.mDeliveryRequestId);
+        }
     }
     
     @Override

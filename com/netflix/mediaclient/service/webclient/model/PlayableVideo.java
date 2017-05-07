@@ -123,6 +123,14 @@ public abstract class PlayableVideo extends Video implements Playable, com.netfl
         return this.detail.horzDispUrl;
     }
     
+    @Override
+    public int getLogicalStart() {
+        if (this.detail == null) {
+            return 0;
+        }
+        return this.detail.logicalStart;
+    }
+    
     public String getNextEpisodeId() {
         if (this.currentEpisode == null) {
             return null;

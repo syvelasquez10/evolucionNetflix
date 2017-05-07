@@ -19,16 +19,15 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+import android.widget.ListView;
 import android.widget.AbsListView$LayoutParams;
 import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
 import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import android.widget.AbsListView$OnScrollListener;
 import android.widget.BaseAdapter;
 
-public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$OnScrollListener, StickyListHeadersAdapter
+public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$OnScrollListener
 {
     private static final int NUM_EPISODES_TO_FETCH_PER_BATCH = 60;
     private static final String TAG = "KidsShowDetailsAdapter";
@@ -45,7 +44,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
     private boolean isLoading;
     private final int itemHeight;
     private final AbsListView$LayoutParams itemParams;
-    private final StickyListHeadersListView listView;
+    private final ListView listView;
     private final EpisodeDetails loadingEpisode;
     private final int lr;
     private final ServiceManager manager;
@@ -68,8 +67,8 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         for (int i = 0; i < this.getCount(); ++i) {
             this.episodes.add(this.loadingEpisode);
         }
-        this.lr = this.activity.getResources().getDimensionPixelSize(2131361974);
-        this.tb = this.activity.getResources().getDimensionPixelSize(2131361975);
+        this.lr = this.activity.getResources().getDimensionPixelSize(2131361978);
+        this.tb = this.activity.getResources().getDimensionPixelSize(2131361979);
         this.itemHeight = (int)((DeviceUtils.getScreenWidthInPixels((Context)this.activity) - this.lr - this.lr) * 0.75f) + this.tb;
         this.firstItemHeight = this.itemHeight + this.tb;
         this.itemParams = new AbsListView$LayoutParams(-1, this.itemHeight);
@@ -101,13 +100,6 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         this.manager.getBrowse().fetchEpisodes(id, VideoType.SHOW, max, min, new KidsShowDetailsAdapter$FetchEpisodesCallback(this, this.requestId, max, min));
     }
     
-    private void updateSeasonHeaderView(final boolean b) {
-        if (this.listView.getHeader() != null) {
-            Log.v("KidsShowDetailsAdapter", "Updating season header view, useSmoothScroll: " + b);
-            ((KidsSeasonSpinner)this.listView.getHeader()).setSeasonNumber(this.currSeasonNumber);
-        }
-    }
-    
     private boolean updateSeasonNumber() {
         if (this.currFocusIndex >= 0) {
             final EpisodeDetails item = this.getItem(this.currFocusIndex);
@@ -127,19 +119,6 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
     
     public int getCount() {
         return this.showDetails.getNumOfEpisodes();
-    }
-    
-    public long getHeaderId(final int n) {
-        return 0L;
-    }
-    
-    public View getHeaderView(final int n, View view, final ViewGroup viewGroup) {
-        Log.v("KidsShowDetailsAdapter", "Getting header view, convertView: " + view);
-        if (view == null) {
-            view = (View)new KidsSeasonSpinner(this.frag, this);
-        }
-        ((KidsSeasonSpinner)view).setSeasonNumber(this.currSeasonNumber);
-        return view;
     }
     
     public EpisodeDetails getItem(final int n) {
@@ -226,7 +205,6 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
         Log.v("KidsShowDetailsAdapter", "notifyDataSetChanged()");
         super.notifyDataSetChanged();
         this.updateSeasonNumber();
-        this.updateSeasonHeaderView(false);
     }
     
     public void onScroll(final AbsListView absListView, int currFocusIndex, final int n, final int n2) {
@@ -236,9 +214,7 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
             if (Log.isLoggable("KidsShowDetailsAdapter", 2)) {
                 Log.v("KidsShowDetailsAdapter", "New item focused in list view, index: " + currFocusIndex);
             }
-            if (this.updateSeasonNumber()) {
-                this.updateSeasonHeaderView(true);
-            }
+            if (this.updateSeasonNumber()) {}
         }
     }
     
@@ -253,7 +229,6 @@ public class KidsShowDetailsAdapter extends BaseAdapter implements AbsListView$O
             if (seasonDetails.getSeasonNumber() == currSeasonNumber) {
                 Log.v("KidsShowDetailsAdapter", "Scrolling to episode, position: " + n);
                 this.currSeasonNumber = currSeasonNumber;
-                this.updateSeasonHeaderView(true);
                 this.listView.setSelection(this.listView.getHeaderViewsCount() + n);
                 break;
             }

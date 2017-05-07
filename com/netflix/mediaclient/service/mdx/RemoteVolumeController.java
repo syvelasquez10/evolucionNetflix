@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.mdx;
 
 import android.media.session.PlaybackState$Builder;
+import android.media.session.MediaSession$Callback;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -36,12 +37,12 @@ public class RemoteVolumeController
     }
     
     private void initVolumeProvider() {
-        this.mVolumeProvider = new RemoteVolumeController$1(this, 2, 10, this.mVolume / 10);
+        this.mVolumeProvider = new RemoteVolumeController$2(this, 2, 10, this.mVolume / 10);
     }
     
     private void registerReceiver() {
         this.unregisterReceiver();
-        this.mCapabilitiesReceiver = new RemoteVolumeController$2(this);
+        this.mCapabilitiesReceiver = new RemoteVolumeController$3(this);
         final IntentFilter intentFilter = new IntentFilter("com.netflix.mediaclient.intent.action.MDXUPDATE_CAPABILITY");
         intentFilter.addCategory("com.netflix.mediaclient.intent.category.MDX");
         this.mContext.getApplicationContext().registerReceiver(this.mCapabilitiesReceiver, intentFilter);
@@ -95,6 +96,7 @@ public class RemoteVolumeController
                 this.initVolumeProvider();
             }
             this.mMediaSession.setPlaybackToRemote(this.mVolumeProvider);
+            this.mMediaSession.setCallback((MediaSession$Callback)new RemoteVolumeController$1(this));
             final PlaybackState$Builder playbackState$Builder = new PlaybackState$Builder();
             playbackState$Builder.setState(3, -1L, 1.0f);
             this.mMediaSession.setPlaybackState(playbackState$Builder.build());

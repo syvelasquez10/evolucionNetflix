@@ -30,10 +30,11 @@ import android.os.Parcelable;
 import android.widget.Toast;
 import java.io.Serializable;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.kubrick.lomo.KubrickHomeActivity;
+import com.netflix.mediaclient.ui.kubrick_kids.lolomo.KubrickKidsHomeActivity;
+import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickHomeActivity;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsHomeActivity;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
@@ -48,7 +49,8 @@ import android.support.v4.widget.DrawerLayout;
 import java.util.LinkedList;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;
@@ -62,6 +64,10 @@ class HomeActivity$4 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        SocialNotificationsUtils.handleNotificationsUpdateReceiver(intent, this.this$0.notificationsMenuItem, "HomeActivity");
+        final SocialUtils$NotificationsListStatus handleNotificationsUpdateReceiver = SocialUtils.handleNotificationsUpdateReceiver(intent, "HomeActivity");
+        if (handleNotificationsUpdateReceiver != this.this$0.notificationsListStatus) {
+            this.this$0.notificationsListStatus = handleNotificationsUpdateReceiver;
+            this.this$0.invalidateOptionsMenu();
+        }
     }
 }

@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.user.volley;
 
 import com.google.gson.JsonObject;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -77,13 +78,19 @@ public class SwitchUserProfileRequest extends FalkorVolleyWebClientRequest<UserB
         if (FalkorParseUtils.isEmpty(dataObj)) {
             throw new FalkorParseException("User empty!!!");
         }
+        UserBoundCookies userBoundCookies;
         try {
-            return FalkorParseUtils.getPropertyObject(dataObj.getAsJsonObject("profile").getAsJsonObject(this.guid), "userTokens", UserBoundCookies.class);
+            userBoundCookies = FalkorParseUtils.getPropertyObject(dataObj.getAsJsonObject("profile").getAsJsonObject(this.guid), "userTokens", UserBoundCookies.class);
+            if (userBoundCookies == null || StringUtils.isEmpty(userBoundCookies.getUserBoundNetflixId()) || StringUtils.isEmpty(userBoundCookies.getUserBoundSecureNetflixId())) {
+                Log.v("nf_service_user_switchuserprofilerequest", "String response  = " + s);
+                throw new FalkorParseException("SwitchProfile got empty userBoundCookies - failing");
+            }
         }
         catch (Exception ex) {
             Log.v("nf_service_user_switchuserprofilerequest", "String response to parse = " + s);
             throw new FalkorParseException("response missing user json objects", ex);
         }
+        return userBoundCookies;
     }
     
     @Override

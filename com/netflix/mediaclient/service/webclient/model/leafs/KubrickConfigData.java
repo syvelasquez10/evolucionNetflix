@@ -14,6 +14,6 @@ public class KubrickConfigData implements KubrickConfiguration
     
     @Override
     public boolean isKubrickEnabled() {
-        return false;
+        return this.isEnabled;
     }
 }

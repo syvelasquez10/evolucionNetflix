@@ -30,6 +30,11 @@ class DummyMdxVideoDetails$1 implements Playable
     }
     
     @Override
+    public int getLogicalStart() {
+        return 0;
+    }
+    
+    @Override
     public String getParentId() {
         return "70178217";
     }

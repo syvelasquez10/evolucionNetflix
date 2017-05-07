@@ -8,11 +8,12 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.widget.ImageView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ListAdapter;
 import android.text.TextWatcher;
 import android.widget.AbsListView$OnScrollListener;
 import android.view.ViewGroup;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.os.Parcelable;
 import android.os.Bundle;
 import java.util.Set;
@@ -22,16 +23,14 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import android.content.Context;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.text.Html;
 import com.netflix.mediaclient.StatusCode;
-import android.content.Context;
-import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.app.Activity;
 import com.netflix.mediaclient.android.app.Status;
+import android.app.Activity;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.widget.TextView;
@@ -63,11 +62,11 @@ class RecommendToFriendsFrag$FriendsListAdapter$1 implements View$OnClickListene
     
     public void onClick(final View view) {
         if (this.this$1.this$0.mCheckedFriends.contains(this.val$profile)) {
-            this.val$holder.checkMark.setImageResource(2130837823);
+            this.val$holder.checkMark.setImageResource(2130837833);
             this.this$1.this$0.mCheckedFriends.remove(this.val$profile);
         }
         else {
-            this.val$holder.checkMark.setImageResource(2130837824);
+            this.val$holder.checkMark.setImageResource(2130837834);
             this.this$1.this$0.mCheckedFriends.add(this.val$profile);
         }
         this.this$1.this$0.updateTotalSelectedStatus();

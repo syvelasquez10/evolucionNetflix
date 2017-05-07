@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui.social.notifications;
 import android.os.Parcelable;
 import android.widget.ListAdapter;
 import android.view.ViewGroup;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.os.Bundle;
 import android.app.Activity;
 import android.widget.TextView;

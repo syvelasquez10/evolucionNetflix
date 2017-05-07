@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui.social.notifications;
 import android.os.Parcelable;
 import android.widget.ListAdapter;
 import android.view.ViewGroup;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.os.Bundle;
 import android.app.Activity;
 import android.widget.TextView;
@@ -84,7 +84,7 @@ public class SocialNotificationsFrag extends NetflixFrag
                 this.mAdapter.notifyDataSetChanged();
             }
             if (this.leWrapper != null) {
-                this.leWrapper.showErrorView(2131493363, true, false);
+                this.leWrapper.showErrorView(2131493366, true, false);
             }
             return true;
         }
@@ -197,7 +197,7 @@ public class SocialNotificationsFrag extends NetflixFrag
         if (bundle != null && bundle.containsKey("notifications_list")) {
             this.mLoadMoreAvailable = bundle.getBoolean("has_load_more_list");
             this.mNotifications = (SocialNotificationsList)bundle.getParcelable("notifications_list");
-            SocialNotificationsUtils.castArrayToSet(bundle.getParcelableArray("notifications_list_to_be_read"), this.mNotificationsToBeRead);
+            SocialUtils.castArrayToSet(bundle.getParcelableArray("notifications_list_to_be_read"), this.mNotificationsToBeRead);
         }
     }
     
@@ -206,7 +206,7 @@ public class SocialNotificationsFrag extends NetflixFrag
         this.mLayoutInflater = mLayoutInflater;
         final View inflate = this.mLayoutInflater.inflate(2130903193, viewGroup, false);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        (this.mNotificationsList = (ListView)inflate.findViewById(2131165668)).setItemsCanFocus(true);
+        (this.mNotificationsList = (ListView)inflate.findViewById(2131165669)).setItemsCanFocus(true);
         this.mAdapter = new SocialNotificationsFrag$NotificationsListAdapter(this, null);
         this.mNotificationsList.setAdapter((ListAdapter)this.mAdapter);
         this.leWrapper.showLoadingView(false);

@@ -68,7 +68,7 @@ public class PVideo
     
     public PVideo(final Video video) {
         this.id = video.getId();
-        this.boxartUrl = video.getBoxshotURL();
+        this.boxartUrl = video.getBoxshotUrl();
         this.horzDispUrl = video.getHorzDispUrl();
         this.videoType = video.getType();
         this.title = video.getTitle();

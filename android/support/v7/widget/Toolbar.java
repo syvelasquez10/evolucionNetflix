@@ -545,6 +545,13 @@ public class Toolbar extends ViewGroup
         return this.mContentInsets.getStart();
     }
     
+    public Drawable getLogo() {
+        if (this.mLogoView != null) {
+            return this.mLogoView.getDrawable();
+        }
+        return null;
+    }
+    
     public Menu getMenu() {
         this.ensureMenu();
         return this.mMenuView.getMenu();

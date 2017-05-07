@@ -91,11 +91,11 @@ public class KidsCharacterDetails implements Playable, com.netflix.mediaclient.s
     }
     
     @Override
-    public String getBoxshotURL() {
+    public String getBoxshotUrl() {
         if (this.kidsSummary == null) {
             return null;
         }
-        return this.kidsSummary.getBoxshotURL();
+        return this.kidsSummary.getBoxshotUrl();
     }
     
     @Override
@@ -207,6 +207,15 @@ public class KidsCharacterDetails implements Playable, com.netflix.mediaclient.s
     @Override
     public String getId() {
         return this.getCharacterId();
+    }
+    
+    @Override
+    public int getLogicalStart() {
+        final Video$Detail watchNextDetails = this.getWatchNextDetails();
+        if (watchNextDetails == null) {
+            return 0;
+        }
+        return watchNextDetails.logicalStart;
     }
     
     @Override

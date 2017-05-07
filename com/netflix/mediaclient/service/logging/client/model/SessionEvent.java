@@ -59,4 +59,9 @@ public abstract class SessionEvent extends Event
         }
         return jsonObject;
     }
+    
+    @Override
+    public String toString() {
+        return "SessionEvent [sessionName=" + this.sessionName + ", sessionId=" + this.sessionId + ", type=" + this.type + ", category=" + this.category + ", name=" + this.name + ", activeSessions=" + this.activeSessions + ", time=" + this.time + ", sequence=" + this.sequence + ", uptime=" + this.uptime + ", modalView=" + this.modalView + ", dataContext=" + this.dataContext + ", kids=" + this.kids + "]";
+    }
 }

@@ -9,8 +9,6 @@ import com.netflix.mediaclient.servicemgr.model.BasicVideo;
 
 public interface SeasonDetails extends BasicVideo
 {
-    int getCurrentEpisodeNumber();
-    
     int getNumOfEpisodes();
     
     int getSeasonNumber();

@@ -56,7 +56,7 @@ public class EpisodeDetails extends Episode implements Playable, com.netflix.med
     }
     
     @Override
-    public String getBoxshotURL() {
+    public String getBoxshotUrl() {
         if (this.detail == null) {
             return null;
         }
@@ -157,6 +157,14 @@ public class EpisodeDetails extends Episode implements Playable, com.netflix.med
             return null;
         }
         return this.detail.getInterestingUrl();
+    }
+    
+    @Override
+    public int getLogicalStart() {
+        if (this.detail == null) {
+            return 0;
+        }
+        return this.detail.logicalStart;
     }
     
     @Override

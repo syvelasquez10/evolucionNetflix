@@ -77,8 +77,8 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void findViews() {
-        this.fragGroup = (ViewGroup)this.findViewById(2131165646);
-        this.loadingWrapper = this.findViewById(2131165645);
+        this.fragGroup = (ViewGroup)this.findViewById(2131165647);
+        this.loadingWrapper = this.findViewById(2131165646);
     }
     
     private void handleNewIntent(final Intent intent) {
@@ -137,7 +137,7 @@ public class SearchActivity extends NetflixActivity
     private void setupFragments(final Bundle bundle) {
         if (bundle == null) {
             (this.resultsFrag = SearchResultsFrag.create()).setServiceManager(this.serviceManager);
-            this.getFragmentManager().beginTransaction().add(2131165646, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131165647, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
             return;
         }

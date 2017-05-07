@@ -7,5 +7,6 @@ package com.netflix.mediaclient.servicemgr;
 public enum ApplicationPerformanceMetricsLogging$EndReason
 {
     appClose, 
+    logout, 
     timeout;
 }

@@ -92,10 +92,10 @@ final class EnhancedSubtitleManager implements SubtitleManager
             throw new IllegalArgumentException("Player screen is not initialized!");
         }
         if (this.mActivity.isTablet()) {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361962);
+            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361965);
         }
         else {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361961);
+            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361964);
         }
         Log.v("nf_subtitles_render", "Create handler.");
         this.mHandler = new Handler();
@@ -109,11 +109,11 @@ final class EnhancedSubtitleManager implements SubtitleManager
             n = 46;
         }
         this.mBottomPanelPadding = AndroidUtils.dipToPixels((Context)mActivity, n);
-        this.mBottomPanelHeight = mActivity.getResources().getDimensionPixelSize(2131362030);
+        this.mBottomPanelHeight = mActivity.getResources().getDimensionPixelSize(2131362041);
         this.mTopPanelPadding = AndroidUtils.dipToPixels((Context)mActivity, 5);
-        this.mTopPanel = mActivity.findViewById(2131165571);
+        this.mTopPanel = mActivity.findViewById(2131165572);
         this.mTransparent = mActivity.getResources().getColor(17170445);
-        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131165563);
+        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131165564);
         if (this.mDisplayArea.getWidth() == 0 || this.mDisplayArea.getHeight() == 0) {
             Log.w("nf_subtitles_render", "Display area w/h are 0, display area is not visible yet!");
         }

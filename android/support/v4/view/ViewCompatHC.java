@@ -5,17 +5,25 @@
 package android.support.v4.view;
 
 import android.graphics.Paint;
-import android.view.View;
 import android.animation.ValueAnimator;
+import android.view.View;
 
 class ViewCompatHC
 {
+    public static float getAlpha(final View view) {
+        return view.getAlpha();
+    }
+    
     static long getFrameTime() {
         return ValueAnimator.getFrameDelay();
     }
     
     public static int getMeasuredState(final View view) {
         return view.getMeasuredState();
+    }
+    
+    public static float getTranslationX(final View view) {
+        return view.getTranslationX();
     }
     
     public static float getTranslationY(final View view) {

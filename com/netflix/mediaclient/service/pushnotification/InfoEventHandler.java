@@ -93,12 +93,8 @@ public class InfoEventHandler
             return;
         }
         Log.d("nf_push_info", "handling EVENT_NOTIFICATION_LIST_CHANGED");
-        if (!netflixService.getPushNotification().isOptIn()) {
-            netflixService.getHandler().removeCallbacks(this.refreshSocialNotificationRunnable);
-            netflixService.getHandler().postDelayed(this.refreshSocialNotificationRunnable, this.getNListChangeEventRateLimit(netflixService));
-            return;
-        }
-        Log.d("nf_push_info", "dropping EVENT_NOTIFICATION_LIST_CHANGED invisible message - userOptedIn");
+        netflixService.getHandler().removeCallbacks(this.refreshSocialNotificationRunnable);
+        netflixService.getHandler().postDelayed(this.refreshSocialNotificationRunnable, this.getNListChangeEventRateLimit(netflixService));
     }
     
     private void handleNReadEvent(final NetflixService netflixService, final boolean b) {

@@ -47,27 +47,27 @@ public final class LomoConfig
     }
     
     public static int computeNumVideosToFetchPerBatch(final NetflixActivity netflixActivity, final LoMoType loMoType) {
-        final int n = 12;
-        int n2 = 0;
+        final int n = 6;
+        int n2;
         if (loMoType == LoMoType.BILLBOARD) {
             n2 = 10;
         }
         else {
             final int screenSizeCategory = DeviceUtils.getScreenSizeCategory((Context)netflixActivity);
-            if (netflixActivity.isForKids()) {
-                if (loMoType == LoMoType.CONTINUE_WATCHING) {
-                    return 3;
-                }
-                return 5;
-            }
-            else if (netflixActivity.isKubrick()) {
+            if (netflixActivity.isKubrick()) {
                 n2 = n;
                 if (loMoType != LoMoType.CONTINUE_WATCHING) {
                     n2 = n;
                     if (loMoType != LoMoType.INSTANT_QUEUE) {
-                        return 24;
+                        return 12;
                     }
                 }
+            }
+            else if (netflixActivity.isForKids()) {
+                if (loMoType == LoMoType.CONTINUE_WATCHING) {
+                    return 3;
+                }
+                return 5;
             }
             else {
                 switch (LomoConfig$1.$SwitchMap$com$netflix$mediaclient$servicemgr$model$LoMoType[loMoType.ordinal()]) {

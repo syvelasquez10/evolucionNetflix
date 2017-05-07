@@ -407,11 +407,14 @@ public class BrowseWebClientCache
                     Log.w("nf_browse_cache", "In queue is null!");
                     video$InQueue = null;
                     return video$InQueue;
-                    inQueueData = this.getInQueueData(s);
-                    // iftrue(Label_0045:, inQueueData != null)
-                    this.putInQueueData(s, video$InQueue);
-                    return video$InQueue;
+                    while (true) {
+                        this.putInQueueData(s, video$InQueue);
+                        return video$InQueue;
+                        inQueueData = this.getInQueueData(s);
+                        continue;
+                    }
                 }
+                // iftrue(Label_0045:, inQueueData != null)
                 finally {
                 }
                 // monitorexit(this)

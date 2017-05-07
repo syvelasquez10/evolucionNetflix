@@ -27,19 +27,21 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.app.Fragment;
 import android.os.Parcelable;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.widget.Toast;
 import java.io.Serializable;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.kubrick.lomo.KubrickHomeActivity;
+import com.netflix.mediaclient.ui.kubrick_kids.lolomo.KubrickKidsHomeActivity;
+import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickHomeActivity;
 import com.netflix.mediaclient.ui.kids.lolomo.KidsHomeActivity;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
+import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.MenuItem;
@@ -75,7 +77,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     private long mStartedTimeMs;
     private ServiceManager manager;
     private final ManagerStatusListener managerStatusListener;
-    private MenuItem notificationsMenuItem;
+    private SocialUtils$NotificationsListStatus notificationsListStatus;
     private long pauseTimeMs;
     private final BroadcastReceiver refreshHomeReceiver;
     private SlidingMenuAdapter slidingMenuAdapter;
@@ -84,6 +86,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     public HomeActivity() {
         this.backStackIntents = new LinkedList<Intent>();
+        this.notificationsListStatus = SocialUtils$NotificationsListStatus.NO_MESSAGES;
         this.managerStatusListener = new HomeActivity$1(this);
         this.refreshHomeReceiver = new HomeActivity$2(this);
         this.homeUpdatedReceiver = new HomeActivity$3(this);
@@ -117,17 +120,24 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private static Class<?> getHomeActivityClass(final NetflixActivity netflixActivity) {
-        final boolean shouldShowKidsExperience = KidsUtils.shouldShowKidsExperience(netflixActivity);
-        final boolean shouldShowKubrickExperience = KubrickUtils.shouldShowKubrickExperience(netflixActivity);
-        Serializable s;
-        if (shouldShowKidsExperience) {
-            s = KidsHomeActivity.class;
-        }
-        else if (shouldShowKubrickExperience) {
-            s = KubrickHomeActivity.class;
-        }
-        else {
-            s = HomeActivity.class;
+        Serializable s = null;
+        switch (HomeActivity$6.$SwitchMap$com$netflix$mediaclient$ui$kubrick$KubrickUtils$KubrickExperience[KubrickUtils.computeKubrickExperience(netflixActivity).ordinal()]) {
+            default: {
+                if (KidsUtils.shouldShowKidsOnPhoneExperience(netflixActivity)) {
+                    s = KidsHomeActivity.class;
+                    break;
+                }
+                s = HomeActivity.class;
+                break;
+            }
+            case 1: {
+                s = KubrickHomeActivity.class;
+                break;
+            }
+            case 2: {
+                s = KubrickKidsHomeActivity.class;
+                break;
+            }
         }
         if (Log.isLoggable("HomeActivity", 2)) {
             Log.v("HomeActivity", "Home activity class: " + s);
@@ -181,11 +191,11 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void refreshSocialNotificationsStateIfNeeded() {
-        final boolean b = this.notificationsMenuItem != null && true;
-        final boolean socialNotificationsFeatureSupported = SocialNotificationsUtils.isSocialNotificationsFeatureSupported(this);
-        if (b != socialNotificationsFeatureSupported) {
+        final boolean b = this.notificationsListStatus != SocialUtils$NotificationsListStatus.NO_MESSAGES && true;
+        final boolean notificationsFeatureSupported = SocialUtils.isNotificationsFeatureSupported(this);
+        if (b != notificationsFeatureSupported) {
             this.invalidateOptionsMenu();
-            if (socialNotificationsFeatureSupported && this.manager != null && this.manager.getBrowse() != null) {
+            if (notificationsFeatureSupported && this.manager != null && this.manager.getBrowse() != null) {
                 this.manager.getBrowse().refreshSocialNotifications(true);
             }
         }
@@ -205,7 +215,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131165373, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131165375, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
@@ -276,6 +286,14 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         return 2130903098;
     }
     
+    public GenreList getGenre() {
+        return this.genre;
+    }
+    
+    public String getGenreId() {
+        return this.genreId;
+    }
+    
     @Override
     public LoLoMoFrag getPrimaryFrag() {
         return (LoLoMoFrag)super.getPrimaryFrag();
@@ -335,7 +353,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.viewRecycler = new ObjectRecycler$ViewRecycler();
         super.onCreate(bundle);
         this.showFetchErrorsToast();
-        this.drawerLayout = (DrawerLayout)this.findViewById(2131165375);
+        this.drawerLayout = (DrawerLayout)this.findViewById(2131165377);
         this.unlockSlidingDrawerIfPossible();
         SlidingMenuAdapter slidingMenuAdapter;
         if (this.isForKids()) {
@@ -363,7 +381,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         }
         SearchMenu.addSearchNavigation(this, menu);
         this.kidsEntryItem = KidsUtils.createKidsMenuItem(this, menu);
-        this.notificationsMenuItem = SocialNotificationsUtils.addSocialNotificationsIconIfNeeded(this, menu);
+        SocialUtils.addNotificationsIconIfNeeded(this, this.notificationsListStatus, menu);
         super.onCreateOptionsMenu(menu, menu2);
     }
     
@@ -385,7 +403,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     @Override
     public boolean onOptionsItemSelected(final MenuItem menuItem) {
-        return this.drawerToggler.onOptionsItemSelected(menuItem) || SocialNotificationsUtils.tryHandleMenuItemClick(menuItem, (Context)this) || super.onOptionsItemSelected(menuItem);
+        return this.drawerToggler.onOptionsItemSelected(menuItem) || SocialUtils.tryHandleMenuItemClick(menuItem, (Context)this) || super.onOptionsItemSelected(menuItem);
     }
     
     @Override

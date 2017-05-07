@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.util;
 
+import java.util.Random;
+
 public class MathUtils
 {
     public static int ceiling(final int n, final int n2) {
@@ -20,11 +22,15 @@ public class MathUtils
         return n;
     }
     
-    public static int divideInts(final int n, final int n2) {
+    public static int divideIntsWithRounding(final int n, final int n2) {
         return (int)(n / n2 + 0.5f);
     }
     
     public static boolean isEven(final int n) {
         return (n & 0x1) == 0x0;
+    }
+    
+    public static int randomInRange(final long n, final int n2, final int n3) {
+        return new Random(n).nextInt(n3 - n2) + n2;
     }
 }

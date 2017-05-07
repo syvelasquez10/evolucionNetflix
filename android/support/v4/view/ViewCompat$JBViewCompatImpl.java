@@ -25,8 +25,18 @@ class ViewCompat$JBViewCompatImpl extends ViewCompat$ICSViewCompatImpl
     }
     
     @Override
+    public int getMinimumWidth(final View view) {
+        return ViewCompatJB.getMinimumWidth(view);
+    }
+    
+    @Override
     public ViewParent getParentForAccessibility(final View view) {
         return ViewCompatJB.getParentForAccessibility(view);
+    }
+    
+    @Override
+    public boolean hasTransientState(final View view) {
+        return ViewCompatJB.hasTransientState(view);
     }
     
     @Override

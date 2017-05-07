@@ -6,17 +6,18 @@ package com.netflix.mediaclient.ui;
 
 import android.view.animation.Animation$AnimationListener;
 import android.view.animation.AlphaAnimation;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable$Orientation;
+import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.ui.details.SeasonsSpinner;
 import android.view.View;
-import android.widget.AbsListView;
+import android.support.v7.widget.RecyclerView;
 import android.view.animation.Animation;
-import android.widget.AbsListView$OnScrollListener;
+import android.support.v7.widget.RecyclerView$OnScrollListener;
 import android.util.Log;
 
 class DetailsPageParallaxScrollListener$2 implements Runnable

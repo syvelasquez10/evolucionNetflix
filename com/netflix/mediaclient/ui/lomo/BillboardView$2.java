@@ -9,7 +9,7 @@ import com.netflix.mediaclient.servicemgr.model.VideoType;
 import android.text.Html;
 import com.netflix.mediaclient.util.api.Api17Util;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.netflix.mediaclient.service.logging.client.model.Error;

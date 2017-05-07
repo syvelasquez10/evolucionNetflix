@@ -8,7 +8,7 @@ import com.netflix.mediaclient.android.app.Status;
 import android.app.AlertDialog$Builder;
 import android.widget.CompoundButton$OnCheckedChangeListener;
 import android.app.Dialog;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.app.Activity;
 import android.text.Html;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;

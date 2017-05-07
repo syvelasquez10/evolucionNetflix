@@ -14,7 +14,6 @@ import com.google.gson.JsonElement;
 public final class Season$Detail extends Video$Summary
 {
     private static final String TAG = "Season.Detail";
-    public int currentEpisodeNumber;
     public int episodeCount;
     public int number;
     public int year;
@@ -30,33 +29,26 @@ public final class Season$Detail extends Video$Summary
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0142: {
+            Label_0134: {
                 switch (s.hashCode()) {
                     case -1034364087: {
                         if (s.equals("number")) {
                             n = 0;
-                            break Label_0142;
+                            break Label_0134;
                         }
                         break;
                     }
                     case 1590765524: {
                         if (s.equals("episodeCount")) {
                             n = 1;
-                            break Label_0142;
-                        }
-                        break;
-                    }
-                    case -1200833493: {
-                        if (s.equals("currentEpisodeNumber")) {
-                            n = 2;
-                            break Label_0142;
+                            break Label_0134;
                         }
                         break;
                     }
                     case 3704893: {
                         if (s.equals("year")) {
-                            n = 3;
-                            break Label_0142;
+                            n = 2;
+                            break Label_0134;
                         }
                         break;
                     }
@@ -76,10 +68,6 @@ public final class Season$Detail extends Video$Summary
                     continue;
                 }
                 case 2: {
-                    this.currentEpisodeNumber = jsonElement2.getAsInt();
-                    continue;
-                }
-                case 3: {
                     this.year = jsonElement2.getAsInt();
                     continue;
                 }

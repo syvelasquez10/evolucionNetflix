@@ -23,6 +23,11 @@ public class PresentationVolleyWebClient implements PresentationWebClient
     }
     
     @Override
+    public void sendPresentationEvents(final PresentationRequest presentationRequest) {
+        this.mWebClient.sendPresentationRequest(new PresentationEventRequest(null, presentationRequest, null));
+    }
+    
+    @Override
     public void sendPresentationEvents(final String s, final PresentationRequest presentationRequest, final PresentationWebCallback presentationWebCallback) {
         this.mWebClient.sendPresentationRequest(new PresentationEventRequest(s, presentationRequest, presentationWebCallback));
     }

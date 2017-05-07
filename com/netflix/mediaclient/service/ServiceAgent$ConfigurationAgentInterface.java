@@ -88,6 +88,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     int getSearchTest();
     
+    int getShareSheetExperience();
+    
     String getSoftwareVersion();
     
     String getStreamingQoe();

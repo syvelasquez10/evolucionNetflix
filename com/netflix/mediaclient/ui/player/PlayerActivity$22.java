@@ -93,7 +93,7 @@ import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 import android.os.SystemClock;
-import com.netflix.mediaclient.ui.details.EpisodeListFrag;
+import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListener;
 
@@ -107,7 +107,7 @@ class PlayerActivity$22 implements NetflixDialogFrag$DialogCanceledListener
     
     @Override
     public void onDialogCanceled(final NetflixDialogFrag netflixDialogFrag) {
-        if (netflixDialogFrag instanceof EpisodeListFrag && !this.this$0.destroyed()) {
+        if (netflixDialogFrag instanceof EpisodesFrag && !this.this$0.destroyed()) {
             this.this$0.mState.setLastActionTime(SystemClock.elapsedRealtime());
             this.this$0.mState.userInteraction();
             Log.d("PlayerActivity", "Episode selector was dismissed");

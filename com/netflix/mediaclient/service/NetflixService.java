@@ -183,6 +183,7 @@ public final class NetflixService extends Service implements INetflixService
         if (!ConnectivityUtils.isConnectedOrConnecting((Context)this)) {
             this.mInitStatusCode = CommonStatus.NO_CONNECTIVITY;
             this.initCompleted();
+            Log.i("NetflixService", "Stopping service due to lack of network connectivity...");
             this.stopSelf();
             return;
         }
@@ -530,7 +531,7 @@ public final class NetflixService extends Service implements INetflixService
         this.safeUnregisterReceiver(this.mNetworkChangeReceiver, "network receiver");
         this.safeUnregisterReceiver(this.mMdxShowPlayerIntent, "mdx show player receiver");
         this.mClientCallbacks.clear();
-        if (this.mMdxEnabled) {
+        if (this.mMdxEnabled && this.mMdxAgent != null) {
             this.mMdxAgent.destroy();
         }
         if (this.mBrowseAgent != null) {
@@ -539,13 +540,27 @@ public final class NetflixService extends Service implements INetflixService
         if (this.mFalkorAgent != null) {
             this.mFalkorAgent.destroy();
         }
-        this.mPlayerAgent.destroy();
-        this.mUserAgent.destroy();
-        this.mNrdController.destroy();
-        this.mConfigurationAgent.destroy();
-        this.mResourceFetcher.destroy();
-        this.mClientLoggingAgent.destroy();
-        this.mDiagnosisAgent.destroy();
+        if (this.mPlayerAgent != null) {
+            this.mPlayerAgent.destroy();
+        }
+        if (this.mUserAgent != null) {
+            this.mUserAgent.destroy();
+        }
+        if (this.mNrdController != null) {
+            this.mNrdController.destroy();
+        }
+        if (this.mConfigurationAgent != null) {
+            this.mConfigurationAgent.destroy();
+        }
+        if (this.mResourceFetcher != null) {
+            this.mResourceFetcher.destroy();
+        }
+        if (this.mClientLoggingAgent != null) {
+            this.mClientLoggingAgent.destroy();
+        }
+        if (this.mDiagnosisAgent != null) {
+            this.mDiagnosisAgent.destroy();
+        }
         NetflixService.isCreated = false;
         final int myPid = Process.myPid();
         Log.d("NetflixService", "Destroying app process " + myPid + "...");
@@ -576,7 +591,14 @@ public final class NetflixService extends Service implements INetflixService
             Log.i("NetflixService", "has active mdx session");
             return true;
         }
-        Log.i("NetflixService", "No callbacks left - stopping service after delay of: 28800 seconds");
+        if (this.mInitStatusCode == CommonStatus.NO_CONNECTIVITY) {
+            Log.i("NetflixService", "Service init failed due to no connectivity - calling stopSelf()");
+            this.stopSelf();
+            return true;
+        }
+        if (Log.isLoggable("NetflixService", 4)) {
+            Log.i("NetflixService", "No callbacks left - stopping service after delay of: 28800 seconds");
+        }
         this.stopSelfInMs(28800000L);
         return true;
     }

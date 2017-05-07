@@ -57,14 +57,14 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837838);
+        this.setBackgroundResource(2130837848);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(2130903086, (ViewGroup)this);
-        this.title = (TextView)this.findViewById(2131165344);
-        this.img = (AdvancedImageView)this.findViewById(2131165341);
-        this.progress = (ProgressBar)this.findViewById(2131165346);
-        this.info = (ImageView)this.findViewById(2131165345);
+        this.title = (TextView)this.findViewById(2131165345);
+        this.img = (AdvancedImageView)this.findViewById(2131165342);
+        this.progress = (ProgressBar)this.findViewById(2131165347);
+        this.info = (ImageView)this.findViewById(2131165346);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
     }
     
@@ -82,7 +82,7 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
         this.info.setId(id);
     }
     
-    public void update(final CWVideo cwVideo, final Trackable trackable, int progress, final boolean b) {
+    public void update(final CWVideo cwVideo, final Trackable trackable, int progress, final boolean b, final boolean b2) {
         if (Log.isLoggable("CwView", 2)) {
             Log.v("CwView", "Updating for video: " + cwVideo.toString());
         }
@@ -98,7 +98,7 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
         }
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView img = this.img;
-        final String stillUrl = cwVideo.getStillUrl();
+        final String modifiedStillUrl = cwVideo.getModifiedStillUrl();
         final IClientLogging$AssetType bif = IClientLogging$AssetType.bif;
         if (b) {
             progress = 1;
@@ -106,7 +106,7 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
         else {
             progress = 0;
         }
-        imageLoader.showImg(img, stillUrl, bif, format, true, true, progress);
+        imageLoader.showImg(img, modifiedStillUrl, bif, format, true, true, progress);
         if (cwVideo.getRuntime() > 0) {
             progress = cwVideo.getPlayableBookmarkPosition() * 100 / cwVideo.getRuntime();
         }

@@ -46,6 +46,6 @@ public class LoLoMoAdapter extends BasePaginatedLoLoMoAdapter<LoMo>
         }
         Log.v("LoLoMoAdapter", "Prefetching lolomo...");
         this.requestId = System.nanoTime();
-        serviceManager.getBrowse().prefetchLoLoMo(0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD) - 1, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.CONTINUE_WATCHING) - 1, this.activity.isForKids(), this.activity.isKubrick(), false, new LoLoMoAdapter$1(this, "LoLoMoAdapter", this.requestId));
+        serviceManager.getBrowse().prefetchLoLoMo(0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD) - 1, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.CONTINUE_WATCHING) - 1, this.activity.isForKids() && !this.activity.isKubrick(), this.activity.isKubrick(), false, new LoLoMoAdapter$1(this, "LoLoMoAdapter", this.requestId));
     }
 }

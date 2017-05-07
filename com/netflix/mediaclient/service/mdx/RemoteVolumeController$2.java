@@ -5,37 +5,49 @@
 package com.netflix.mediaclient.service.mdx;
 
 import android.media.session.PlaybackState$Builder;
+import android.media.session.MediaSession$Callback;
+import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.VolumeProvider;
 import android.media.session.MediaSession;
 import com.netflix.mediaclient.service.configuration.MdxConfiguration;
-import android.annotation.TargetApi;
-import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
-import com.netflix.mediaclient.Log;
-import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;
+import android.annotation.TargetApi;
+import com.netflix.mediaclient.Log;
+import android.media.VolumeProvider;
 
-class RemoteVolumeController$2 extends BroadcastReceiver
+class RemoteVolumeController$2 extends VolumeProvider
 {
     final /* synthetic */ RemoteVolumeController this$0;
     
-    RemoteVolumeController$2(final RemoteVolumeController this$0) {
+    RemoteVolumeController$2(final RemoteVolumeController this$0, final int n, final int n2, final int n3) {
         this.this$0 = this$0;
+        super(n, n2, n3);
     }
     
-    public void onReceive(final Context context, final Intent intent) {
-        Log.i("nf_remote_volume_controller", "Update capabilities: " + intent);
-        final String stringExtra = intent.getStringExtra("stringBlob");
-        this.this$0.mIsVolumeControlSupported = false;
-        try {
-            final MdxTargetCapabilities mdxTargetCapabilities = new MdxTargetCapabilities(stringExtra);
-            if (mdxTargetCapabilities != null) {
-                this.this$0.mIsVolumeControlSupported = mdxTargetCapabilities.isVolumeControl();
+    public void onAdjustVolume(final int n) {
+        if (Log.isLoggable("nf_remote_volume_controller", 4)) {
+            Log.i("nf_remote_volume_controller", "onAdjustVolume: " + n);
+        }
+        if (n == 1) {
+            RemoteVolumeController.access$012(this.this$0, 10);
+        }
+        else if (n == -1) {
+            RemoteVolumeController.access$020(this.this$0, 10);
+        }
+        else {
+            if (Log.isLoggable("nf_remote_volume_controller", 4)) {
+                Log.i("nf_remote_volume_controller", "onAdjustVolume strange direction, skipping: " + n);
             }
+            return;
         }
-        catch (Exception ex) {
-            Log.e("nf_remote_volume_controller", "Failed to extract capability data: ", ex);
+        this.this$0.updateCurrentVolume(this.this$0.mVolume, true);
+    }
+    
+    public void onSetVolumeTo(final int n) {
+        if (Log.isLoggable("nf_remote_volume_controller", 4)) {
+            Log.i("nf_remote_volume_controller", "onSetVolumeTo: " + n);
         }
+        this.this$0.updateCurrentVolume(n * 10, true);
     }
 }

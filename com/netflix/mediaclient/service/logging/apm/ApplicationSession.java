@@ -6,12 +6,10 @@ package com.netflix.mediaclient.service.logging.apm;
 
 import com.netflix.mediaclient.service.logging.apm.model.AppSessionStartedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.AppSessionEndedEvent;
-import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 
 public class ApplicationSession extends BaseApmSession
 {
     public static final String NAME = "appSession";
-    private DeviceUniqueId mId;
     
     public AppSessionEndedEvent createEndedEvent() {
         final AppSessionEndedEvent appSessionEndedEvent = new AppSessionEndedEvent(System.currentTimeMillis() - this.mStarted);

@@ -40,8 +40,8 @@ public class KidsHorizontalCwView extends RelativeLayout implements VideoViewGro
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, KidsUtils.computeHorizontalRowHeight((NetflixActivity)this.getContext(), b)));
         this.playContext = PlayContext.EMPTY_CONTEXT;
         ((Activity)this.getContext()).getLayoutInflater().inflate(2130903105, (ViewGroup)this);
-        this.title = (TextView)this.findViewById(2131165400);
-        (this.img = (AdvancedImageView)this.findViewById(2131165398)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361965));
+        this.title = (TextView)this.findViewById(2131165402);
+        (this.img = (AdvancedImageView)this.findViewById(2131165400)).setCornerRadius(this.getResources().getDimensionPixelSize(2131361968));
     }
     
     public PlayContext getPlayContext() {
@@ -53,7 +53,7 @@ public class KidsHorizontalCwView extends RelativeLayout implements VideoViewGro
         this.setVisibility(4);
     }
     
-    public void update(final CWVideo cwVideo, final Trackable trackable, int n, final boolean b) {
+    public void update(final CWVideo cwVideo, final Trackable trackable, int n, final boolean b, final boolean b2) {
         if (Log.isLoggable("KidsHorizontalCwView", 2)) {
             Log.v("KidsHorizontalCwView", "Updating for video: " + cwVideo.toString());
         }

@@ -37,9 +37,9 @@ public class KidsOneToOneVideoView extends RelativeLayout implements VideoViewGr
         super(context);
         ((Activity)context).getLayoutInflater().inflate(2130903108, (ViewGroup)this);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -1));
-        (this.mainImage = (AdvancedImageView)this.findViewById(2131165406)).setCornerRadius(context.getResources().getDimensionPixelSize(2131361965));
+        (this.mainImage = (AdvancedImageView)this.findViewById(2131165408)).setCornerRadius(context.getResources().getDimensionPixelSize(2131361968));
         this.mainImage.setScaleType(ImageView$ScaleType.CENTER_CROP);
-        (this.tvCard = (AdvancedImageView)this.findViewById(2131165408)).setPressedStateHandlerEnabled(false);
+        (this.tvCard = (AdvancedImageView)this.findViewById(2131165410)).setPressedStateHandlerEnabled(false);
         this.mainImage.setFocusable(true);
         this.tvCard.setFocusable(true);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
@@ -56,7 +56,7 @@ public class KidsOneToOneVideoView extends RelativeLayout implements VideoViewGr
         this.clicker.remove((View)this);
     }
     
-    public void update(final Video video, final Trackable trackable, int n, final boolean b) {
+    public void update(final Video video, final Trackable trackable, int n, final boolean b, final boolean b2) {
         this.playContext = new PlayContextImp(trackable, n);
         this.clicker.update((View)this, video);
         this.setVisibility(0);

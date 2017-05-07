@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.net.URLEncoder;
 import java.lang.reflect.Method;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import com.google.gson.JsonObject;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -43,10 +43,10 @@ public class RemotePathEvaluator extends BasePathEvaluator
         Class<?> clazz;
         String string;
         Class<?> clazz2;
-        Method method;
         Type genericReturnType2;
-        Class<?> returnType = null;
         Type type2 = null;
+        Method method;
+        Class<?> returnType = null;
         Class<?> clazz3;
         Class<?> clazz4;
         Type type3;
@@ -58,7 +58,7 @@ public class RemotePathEvaluator extends BasePathEvaluator
             }
             string = iterator.next().toString();
             while (true) {
-            Block_6_Outer:
+            Block_8_Outer:
                 while (true) {
                     Label_0230: {
                         if (genericReturnType == null) {
@@ -74,36 +74,35 @@ public class RemotePathEvaluator extends BasePathEvaluator
                                 }
                                 break Label_0230;
                                 // iftrue(Label_0204:, !genericReturnType2 instanceof ParameterizedType)
-                                // iftrue(Label_0154:, !List.class.isAssignableFrom((Class<?>)returnType))
-                                // iftrue(Label_0209:, !Map.class.isAssignableFrom((Class<?>)returnType))
                                 // iftrue(Label_0193:, !returnType instanceof Class)
-                            Block_7:
+                                // iftrue(Label_0209:, !Map.class.isAssignableFrom((Class<?>)returnType))
                                 while (true) {
+                                Block_6:
                                     while (true) {
-                                        genericReturnType2 = method.getGenericReturnType();
-                                        Block_9: {
-                                            break Block_9;
-                                            Label_0193: {
-                                                clazz = JsonObject.class;
-                                            }
-                                            return clazz;
-                                            break Block_7;
+                                        while (true) {
+                                            type2 = ((ParameterizedType)genericReturnType2).getActualTypeArguments()[1];
+                                            break Label_0241;
+                                            genericReturnType2 = method.getGenericReturnType();
+                                            continue Block_8_Outer;
                                         }
-                                        type2 = ((ParameterizedType)genericReturnType2).getActualTypeArguments()[1];
-                                        break Label_0241;
-                                        Label_0154: {
-                                            continue Block_6_Outer;
+                                        method = rootType.getMethod("get" + string.substring(0, 1).toUpperCase() + string.substring(1), (Class<?>[])new Class[0]);
+                                        returnType = method.getReturnType();
+                                        break Block_6;
+                                        Label_0193: {
+                                            clazz = JsonObject.class;
                                         }
+                                        return clazz;
+                                        genericReturnType = method.getGenericReturnType();
+                                        type = returnType;
+                                        clazz2 = null;
+                                        break Label_0219;
+                                        Label_0154:
+                                        continue Label_0069_Outer;
                                     }
-                                    method = rootType.getMethod("get" + string.substring(0, 1).toUpperCase() + string.substring(1), (Class<?>[])new Class[0]);
-                                    returnType = method.getReturnType();
-                                    continue Label_0069_Outer;
+                                    continue;
                                 }
-                                genericReturnType = method.getGenericReturnType();
-                                type = returnType;
-                                clazz2 = null;
-                                break Label_0219;
                             }
+                            // iftrue(Label_0154:, !List.class.isAssignableFrom((Class<?>)returnType))
                             catch (Exception ex) {
                                 return JsonObject.class;
                             }

@@ -25,6 +25,8 @@ public interface UIViewLogging
     
     void createImpressionEvent(final UIViewLogging$UIViewCommandName p0, final int p1);
     
+    void endAllActiveSessions();
+    
     void endCommandSession();
     
     void endImpressionSession(final boolean p0, final Error p1);

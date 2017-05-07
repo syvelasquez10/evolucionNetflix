@@ -29,11 +29,6 @@ public class DummySeasonDetails implements SeasonDetails
     }
     
     @Override
-    public int getCurrentEpisodeNumber() {
-        return 0;
-    }
-    
-    @Override
     public String getId() {
         return this.id;
     }

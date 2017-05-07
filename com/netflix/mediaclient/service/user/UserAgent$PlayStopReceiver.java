@@ -9,7 +9,6 @@ import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRec
 import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -30,6 +29,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.player.subtitles.TextStyle;
 import com.netflix.mediaclient.javabridge.ui.Registration;
@@ -63,6 +63,7 @@ public final class UserAgent$PlayStopReceiver extends BroadcastReceiver
                 if (this.this$0.getCurrentProfileGuid() != null && this.this$0.mCurrentUserProfile != null) {
                     Log.i("nf_service_useragent", "Starting userProfile fetch ");
                     this.this$0.fetchProfileData(this.this$0.getCurrentProfileGuid());
+                    this.this$0.getService().getClientLogging().onPlayEnd();
                     return;
                 }
                 Log.i("nf_service_useragent", "canDoDataFetches false - skipping fetchProfileData request");

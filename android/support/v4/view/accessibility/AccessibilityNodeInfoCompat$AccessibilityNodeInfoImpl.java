@@ -55,6 +55,10 @@ interface AccessibilityNodeInfoCompat$AccessibilityNodeInfoImpl
     
     Object obtain(final Object p0);
     
+    Object obtainCollectionInfo(final int p0, final int p1, final boolean p2, final int p3);
+    
+    Object obtainCollectionItemInfo(final int p0, final int p1, final int p2, final int p3, final boolean p4, final boolean p5);
+    
     void recycle(final Object p0);
     
     void setAccessibilityFocused(final Object p0, final boolean p1);
@@ -66,6 +70,10 @@ interface AccessibilityNodeInfoCompat$AccessibilityNodeInfoImpl
     void setClassName(final Object p0, final CharSequence p1);
     
     void setClickable(final Object p0, final boolean p1);
+    
+    void setCollectionInfo(final Object p0, final Object p1);
+    
+    void setCollectionItemInfo(final Object p0, final Object p1);
     
     void setContentDescription(final Object p0, final CharSequence p1);
     

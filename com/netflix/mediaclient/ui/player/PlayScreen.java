@@ -62,7 +62,7 @@ public class PlayScreen implements Screen
         this.listeners = listeners;
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165561);
+        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165562);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -71,18 +71,18 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)mController.findViewById(2131165368);
-        this.mBackground = (RelativeLayout)mController.findViewById(2131165367);
-        this.mBufferingOverlay = mController.findViewById(2131165583);
+        this.mFlipper = (ViewFlipper)mController.findViewById(2131165370);
+        this.mBackground = (RelativeLayout)mController.findViewById(2131165369);
+        this.mBufferingOverlay = mController.findViewById(2131165584);
         int n;
         if (mController.isTablet()) {
-            n = 2131165580;
+            n = 2131165581;
         }
         else {
-            n = 2131165562;
+            n = 2131165563;
         }
         this.mBif = (ImageView)mController.findViewById(n);
-        this.mTabletBifsLayout = mController.findViewById(2131165579);
+        this.mTabletBifsLayout = mController.findViewById(2131165580);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
     }
@@ -182,18 +182,18 @@ public class PlayScreen implements Screen
     static int resolveContentView(final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForPhone) {
             Log.d("screen", "playout_phone_episode");
-            return 2130903160;
+            return 2130903159;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForTablet) {
             Log.d("screen", "playout_tablet_episode");
-            return 2130903164;
+            return 2130903163;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.RecommendationForTablet) {
             Log.d("screen", "playout_tablet_movie");
-            return 2130903165;
+            return 2130903164;
         }
         Log.d("screen", "playout_phone_movie");
-        return 2130903161;
+        return 2130903160;
     }
     
     public boolean canExitPlaybackEndOfPlay() {

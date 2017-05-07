@@ -4,11 +4,12 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.kubrick_kids.details.KubrickKidsDetailsActivity;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsActivity;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickMovieDetailsActivity;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.kids.details.KidsDetailsActivity;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
@@ -95,32 +96,41 @@ public class DetailsActivityLauncher
     
     public static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3) {
         Class<?> clazz = null;
-        final boolean forKids = netflixActivity.isForKids();
         final boolean equals = VideoType.MOVIE.equals(videoType);
-        if (forKids) {
-            clazz = KidsDetailsActivity.class;
-        }
-        else if (equals) {
-            if (KubrickUtils.shouldShowKubrickExperience(netflixActivity)) {
-                clazz = KubrickMovieDetailsActivity.class;
+        switch (DetailsActivityLauncher$1.$SwitchMap$com$netflix$mediaclient$ui$kubrick$KubrickUtils$KubrickExperience[KubrickUtils.computeKubrickExperience(netflixActivity).ordinal()]) {
+            default: {
+                if (netflixActivity.isForKids()) {
+                    clazz = KidsDetailsActivity.class;
+                    break;
+                }
+                if (equals) {
+                    clazz = MovieDetailsActivity.class;
+                    break;
+                }
+                if (VideoType.SHOW.equals(videoType)) {
+                    clazz = ShowDetailsActivity.class;
+                    break;
+                }
+                if (videoType.isSocialVideoType()) {
+                    Log.w("DetailsActivityLauncher", "Asked to show details for a social video type - shouldn't happen");
+                    break;
+                }
+                netflixActivity.getServiceManager().getClientLogging().getErrorLogging().logHandledException(new IllegalStateException(String.format("Don't know how to handle %s type: %s, playContext:%s", s, videoType, playContext)));
+                break;
             }
-            else {
-                clazz = MovieDetailsActivity.class;
+            case 1: {
+                if (equals) {
+                    clazz = KubrickMovieDetailsActivity.class;
+                }
+                else {
+                    clazz = KubrickShowDetailsActivity.class;
+                }
+                break;
             }
-        }
-        else if (VideoType.SHOW.equals(videoType)) {
-            if (KubrickUtils.shouldShowKubrickExperience(netflixActivity)) {
-                clazz = KubrickShowDetailsActivity.class;
+            case 2: {
+                clazz = KubrickKidsDetailsActivity.class;
+                break;
             }
-            else {
-                clazz = ShowDetailsActivity.class;
-            }
-        }
-        else if (videoType.isSocialVideoType()) {
-            Log.w("DetailsActivityLauncher", "Asked to show details for a social video type - shouldn't happen");
-        }
-        else {
-            netflixActivity.getServiceManager().getClientLogging().getErrorLogging().logHandledException(new IllegalStateException(String.format("Don't know how to handle %s type: %s, playContext:%s", s, videoType, playContext)));
         }
         if (clazz != null) {
             netflixActivity.startActivity(getIntent((Context)netflixActivity, clazz, videoType, s, s2, playContext, detailsActivity$Action, s3));

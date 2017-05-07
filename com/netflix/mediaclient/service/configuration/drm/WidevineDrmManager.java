@@ -241,11 +241,11 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                             if (StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE != statusCode && StatusCode.DRM_FAILURE_MEDIADRM_KEYS_RESTORE_FAILED != statusCode) {
                                 break Label_0151;
                             }
-                            Log.d(WidevineDrmManager.TAG, "MediaDrm provide key update failed or restore keys failed, unregister device, logout user and kill app process after error is displayed");
+                            Log.d(WidevineDrmManager.TAG, "MediaDrm provide key update failed or restore keys failed. Unregister device, logout user, and kill app process after error is displayed.");
                             new BackgroundTask().execute(new WidevineDrmManager$3(this));
                             final Intent intent = new Intent("com.netflix.mediaclient.ui.error.ACTION_DISPLAY_ERROR");
                             intent.putExtra("status", statusCode.getValue());
-                            intent.putExtra("message_id", 2131493367);
+                            intent.putExtra("message_id", 2131493372);
                             LocalBroadcastManager.getInstance(this.mContext).sendBroadcast(intent);
                         }
                         return;
@@ -527,9 +527,9 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     }
     
     boolean updateNccpSessionKeyResponse(final byte[] array, final byte[] array2, final byte[] array3, final String s) {
-    Label_0046_Outer:
         while (true) {
             boolean b = false;
+        Label_0061_Outer:
             while (true) {
                 while (true) {
                     final byte[] array4;
@@ -539,6 +539,8 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                                 Log.d(WidevineDrmManager.TAG, "Update key response for account " + s);
                             }
                             break Label_0197;
+                            Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
+                            return b;
                             try {
                                 final byte[] pendingSessionId = this.nccpCryptoFactoryCryptoSession.pendingSessionId;
                                 if (pendingSessionId != null) {
@@ -560,16 +562,15 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                                 Log.e(WidevineDrmManager.TAG, "We failed to update key response...", t);
                                 this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE, t);
                             }
-                            Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
                             return b;
                         }
                     }
                     if (array4 != null && array2 != null && array3 != null) {
-                        continue Label_0046_Outer;
+                        continue;
                     }
                     break;
                 }
-                continue;
+                continue Label_0061_Outer;
             }
         }
     }

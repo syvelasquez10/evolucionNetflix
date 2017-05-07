@@ -77,22 +77,22 @@ public class KubrickHeroView extends RelativeLayout implements VideoViewGroup$IV
     }
     
     private void findViews() {
-        this.heroImg = (TopCropImageView)this.findViewById(2131165429);
-        this.title = (TextView)this.findViewById(2131165433);
-        this.titleImg = (AdvancedImageView)this.findViewById(2131165432);
-        this.rating = (NetflixRatingBar)this.findViewById(2131165419);
-        this.year = (TextView)this.findViewById(2131165420);
-        this.certification = (TextView)this.findViewById(2131165421);
-        this.durationInfo = (TextView)this.findViewById(2131165422);
-        this.hdIcon = this.findViewById(2131165423);
-        this.synopsis = (TextView)this.findViewById(2131165435);
-        this.infoGroup = this.findViewById(2131165431);
-        this.shadow = this.findViewById(2131165430);
+        this.heroImg = (TopCropImageView)this.findViewById(2131165431);
+        this.title = (TextView)this.findViewById(2131165435);
+        this.titleImg = (AdvancedImageView)this.findViewById(2131165434);
+        this.rating = (NetflixRatingBar)this.findViewById(2131165421);
+        this.year = (TextView)this.findViewById(2131165422);
+        this.certification = (TextView)this.findViewById(2131165423);
+        this.durationInfo = (TextView)this.findViewById(2131165424);
+        this.hdIcon = this.findViewById(2131165425);
+        this.synopsis = (TextView)this.findViewById(2131165437);
+        this.infoGroup = this.findViewById(2131165433);
+        this.shadow = this.findViewById(2131165432);
     }
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837838);
+        this.setBackgroundResource(2130837848);
         ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelOffset(2131361877));
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
@@ -215,7 +215,7 @@ public class KubrickHeroView extends RelativeLayout implements VideoViewGroup$IV
         LocalBroadcastManager.getInstance(this.getContext()).unregisterReceiver(this.ratingsUpdateBroadcastReceiver);
     }
     
-    public void update(final KubrickVideo kubrickVideo, final Trackable trackable, int visibility, final boolean b) {
+    public void update(final KubrickVideo kubrickVideo, final Trackable trackable, int visibility, final boolean b, final boolean b2) {
         this.playContext = new PlayContextImp(trackable, visibility);
         this.videoId = kubrickVideo.getId();
         this.updateBasicInfo(kubrickVideo);

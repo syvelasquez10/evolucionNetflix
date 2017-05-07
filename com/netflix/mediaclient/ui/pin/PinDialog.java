@@ -221,14 +221,14 @@ public class PinDialog extends NetflixDialogFrag
         super.onCreate(bundle);
         this.mVault = (PinDialogVault)this.getArguments().getParcelable(PinDialogVault.NAME);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903157, (ViewGroup)null);
-        this.mSpinner = (ProgressBar)inflate.findViewById(2131165553);
-        (this.mPinEditText = (EditText)inflate.findViewById(2131165550)).setOnEditorActionListener((TextView$OnEditorActionListener)new PinDialog$PinDialogOnDone(this, null));
+        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903156, (ViewGroup)null);
+        this.mSpinner = (ProgressBar)inflate.findViewById(2131165554);
+        (this.mPinEditText = (EditText)inflate.findViewById(2131165551)).setOnEditorActionListener((TextView$OnEditorActionListener)new PinDialog$PinDialogOnDone(this, null));
         this.mPinEditText.setOnKeyListener((View$OnKeyListener)new PinDialog$PinDialogOnKeyPress(this, null));
-        this.mPinMessage = (TextView)inflate.findViewById(2131165549);
-        (this.mPinForgotView = (TextView)inflate.findViewById(2131165552)).setMovementMethod((MovementMethod)new PinDialog$1(this));
+        this.mPinMessage = (TextView)inflate.findViewById(2131165550);
+        (this.mPinForgotView = (TextView)inflate.findViewById(2131165553)).setMovementMethod((MovementMethod)new PinDialog$1(this));
         this.mPinForgotView.setFocusable(false);
-        this.mErrorIcon = (ImageView)inflate.findViewById(2131165551);
+        this.mErrorIcon = (ImageView)inflate.findViewById(2131165552);
         this.showErrorIcon(false);
         int mDialogWidthInDp;
         if (DeviceUtils.isTabletByContext((Context)this.getActivity())) {

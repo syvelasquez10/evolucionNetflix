@@ -4,14 +4,12 @@
 
 package com.netflix.mediaclient.service.browse;
 
-import java.util.Set;
 import com.netflix.mediaclient.util.FileUtils;
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.service.browse.cache.SoftCache;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.LinkedHashMap;
-import com.netflix.mediaclient.service.browse.cache.HardCache;
+import com.netflix.mediaclient.servicemgr.IBrowseManager;
 import java.util.Iterator;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
 import java.util.ArrayList;
@@ -19,8 +17,9 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.model.genre.Genre;
 import java.util.List;
+import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
-class DataDumper$2 extends SimpleBrowseAgentCallback
+class DataDumper$2 extends SimpleManagerCallback
 {
     final /* synthetic */ DataDumper this$0;
     
@@ -34,8 +33,9 @@ class DataDumper$2 extends SimpleBrowseAgentCallback
         Log.v("DataDumper", "genres fetched, count: " + list.size());
         final ArrayList<LoMo> list2 = new ArrayList<LoMo>(list);
         for (final Genre genre : list) {
+            Log.v("DataDumper", "Fetching videos for lomo: " + genre.getTitle());
             this.this$0.lomoVideos.put(genre, null);
-            this.this$0.mBrowseWebClient.fetchGenreVideos(genre, 0, 250, false, new DataDumper$VideosCallback(genre, list2));
+            this.this$0.browseClient.fetchGenreVideos(genre, 0, 250, false, new DataDumper$VideosCallback(genre, list2));
         }
     }
 }

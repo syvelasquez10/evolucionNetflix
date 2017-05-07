@@ -10,6 +10,7 @@ public enum SocialNotificationSummary$NotificationTypes
 {
     ADDED_TO_VIDEO_PLAYLIST, 
     IMPLICIT_FEEDBACK, 
+    NEW_SEASON_ALERT, 
     THANKS_SENT, 
     VIDEO_RECOMMENDATION;
 }

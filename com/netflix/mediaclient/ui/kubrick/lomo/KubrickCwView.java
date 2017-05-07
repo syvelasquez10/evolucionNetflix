@@ -59,17 +59,17 @@ public class KubrickCwView extends RelativeLayout implements VideoViewGroup$IVid
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837838);
+        this.setBackgroundResource(2130837848);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(2130903116, (ViewGroup)this);
-        this.playViewGroup = this.findViewById(2131165426);
-        this.infoViewGroup = this.findViewById(2131165424);
-        this.title = (TextView)this.findViewById(2131165344);
-        this.subtitle = (TextView)this.findViewById(2131165425);
-        this.img = (AdvancedImageView)this.findViewById(2131165341);
-        this.progress = (ProgressBar)this.findViewById(2131165346);
-        this.infoIcon = this.findViewById(2131165345);
+        this.playViewGroup = this.findViewById(2131165428);
+        this.infoViewGroup = this.findViewById(2131165426);
+        this.title = (TextView)this.findViewById(2131165345);
+        this.subtitle = (TextView)this.findViewById(2131165427);
+        this.img = (AdvancedImageView)this.findViewById(2131165342);
+        this.progress = (ProgressBar)this.findViewById(2131165347);
+        this.infoIcon = this.findViewById(2131165346);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
     }
     
@@ -87,7 +87,7 @@ public class KubrickCwView extends RelativeLayout implements VideoViewGroup$IVid
         this.infoIcon.setId(id);
     }
     
-    public void update(final CWVideo cwVideo, final Trackable trackable, int progress, final boolean b) {
+    public void update(final CWVideo cwVideo, final Trackable trackable, int progress, final boolean b, final boolean b2) {
         if (Log.isLoggable("KubrickCwView", 2)) {
             Log.v("KubrickCwView", "Updating for video: " + cwVideo.getTitle());
         }
@@ -104,7 +104,7 @@ public class KubrickCwView extends RelativeLayout implements VideoViewGroup$IVid
         }
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView img = this.img;
-        final String stillUrl = cwVideo.getStillUrl();
+        final String modifiedStillUrl = cwVideo.getModifiedStillUrl();
         final IClientLogging$AssetType bif = IClientLogging$AssetType.bif;
         if (b) {
             progress = 1;
@@ -112,7 +112,7 @@ public class KubrickCwView extends RelativeLayout implements VideoViewGroup$IVid
         else {
             progress = 0;
         }
-        imageLoader.showImg(img, stillUrl, bif, format, true, true, progress);
+        imageLoader.showImg(img, modifiedStillUrl, bif, format, true, true, progress);
         if (cwVideo.getRuntime() > 0) {
             progress = cwVideo.getPlayableBookmarkPosition() * 100 / cwVideo.getRuntime();
         }

@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.kids.lolomo;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
 import android.view.ViewStub;
 import android.widget.TextView;
+import com.netflix.mediaclient.ui.kubrick_kids.KubrickKidsUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.home.SlidingMenuAdapter$Holder;

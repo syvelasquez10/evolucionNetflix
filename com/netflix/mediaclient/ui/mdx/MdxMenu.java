@@ -19,10 +19,12 @@ public final class MdxMenu
     private static final String TAG = "MdxMenu";
     private final NetflixActivity activity;
     private final MenuItem mdxItem;
+    private final boolean useDarkIcon;
     
     private MdxMenu(final NetflixActivity activity, final Menu menu) {
         Log.v("MdxMenu", "creating");
         this.activity = activity;
+        this.useDarkIcon = (activity.isKubrick() && activity.isForKids());
         final MdxMiniPlayerFrag mdxMiniPlayerFrag = this.activity.getMdxMiniPlayerFrag();
         if (mdxMiniPlayerFrag == null) {
             throw new IllegalArgumentException("Activity that uses MdxMenu must own a reference to mdxFrag!");
@@ -40,7 +42,10 @@ public final class MdxMenu
     
     private int getIcon() {
         if (MdxUtils.isTargetReadyToControl(this.activity.getServiceManager())) {
-            return 2130837775;
+            return 2130837785;
+        }
+        if (this.useDarkIcon) {
+            return 2130837667;
         }
         return 2130837666;
     }

@@ -727,7 +727,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
     private void updateUI() {
         final PostPlayFactory$PostPlayType postPlayType = PostPlay.getPostPlayType(this);
         this.setContentView(PlayScreen.resolveContentView(postPlayType));
-        this.setSupportActionBar((Toolbar)this.findViewById(2131165571));
+        this.setSupportActionBar((Toolbar)this.findViewById(2131165572));
         final ServiceManager serviceManager = this.getServiceManager();
         this.mPlayer = serviceManager.getPlayer();
         this.mConfig = serviceManager.getConfiguration();
@@ -758,7 +758,7 @@ public class PlayerActivity extends NetflixActivity implements AudioManager$OnAu
         this.mPlayerSuspendNotification = new PlayerSuspendNotification(this, serviceManager);
         this.registerReceiverWithAutoUnregister(this.mPlayerSuspendIntentReceiver, PlayerSuspendNotification.getNotificationIntentFilter());
         if (AndroidUtils.getAndroidVersion() >= 16 && (PlayerTypeFactory.isJPlayerBase(PlayerTypeFactory.getCurrentType((Context)this)) || PlayerTypeFactory.isJPlayer(PlayerTypeFactory.getCurrentType((Context)this)))) {
-            this.mSurface2 = new SecondSurface((TextureView)this.findViewById(2131165566));
+            this.mSurface2 = new SecondSurface((TextureView)this.findViewById(2131165567));
         }
         this.mState.activityState = PlayerActivity$PlayerActivityState.ACTIVITY_SRVCMNGR_READY;
     }

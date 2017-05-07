@@ -6,7 +6,7 @@ package com.netflix.mediaclient.servicemgr.model;
 
 public interface Video extends BasicVideo
 {
-    String getBoxshotURL();
+    String getBoxshotUrl();
     
     VideoType getErrorType();
     

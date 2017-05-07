@@ -36,7 +36,7 @@ class BrowseAccess$1SentThanksCallback extends BrowseAccess$BrowseAgentClientCal
             UserActionLogUtils.reportSayThanksActionEnded(applicationContext, clientLogging$CompletionReason, status.getError());
         }
         if (status.isSucces() && this.service != null) {
-            Toast.makeText(this.service.getApplicationContext(), 2131493366, 1).show();
+            Toast.makeText(this.service.getApplicationContext(), 2131493371, 1).show();
             if (this.service.getBrowse() != null) {
                 this.service.getBrowse().refreshSocialNotifications(true, false, null);
             }

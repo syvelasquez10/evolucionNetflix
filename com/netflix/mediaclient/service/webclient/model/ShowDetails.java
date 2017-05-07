@@ -227,6 +227,14 @@ public class ShowDetails extends Show implements Playable, KubrickShowDetails, c
     }
     
     @Override
+    public int getLogicalStart() {
+        if (this.currentEpisode == null) {
+            return 0;
+        }
+        return this.currentEpisode.logicalStart;
+    }
+    
+    @Override
     public String getNarrative() {
         if (this.kubrickSummary == null) {
             return null;

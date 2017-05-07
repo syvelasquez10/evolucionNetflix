@@ -4,10 +4,10 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.util.SocialUtils;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
-import android.widget.TextView;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
@@ -21,7 +21,7 @@ import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 
-public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag implements ErrorWrapper$Callback, VideoDetailsViewGroup$VideoDetailsViewGroupProvider
+public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag implements ErrorWrapper$Callback, DetailsActivity$Reloader, VideoDetailsViewGroup$VideoDetailsViewGroupProvider
 {
     private static final String TAG = "DetailsFrag";
     private AddToListData$StateListener addToListWrapper;
@@ -39,11 +39,18 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     protected abstract VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final T p0);
     
     protected int getLayoutId() {
-        return 2130903204;
+        return 2130903203;
     }
     
     protected ServiceManager getServiceManager() {
         return this.manager;
+    }
+    
+    public String getTitle() {
+        if (this.mVideoDetails == null) {
+            return null;
+        }
+        return this.mVideoDetails.getTitle();
     }
     
     @Override
@@ -60,7 +67,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         final View inflate = layoutInflater.inflate(this.getLayoutId(), (ViewGroup)null, false);
         this.initDetailsViewGroup(inflate);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        this.primaryView = inflate.findViewById(2131165686);
+        this.primaryView = inflate.findViewById(2131165688);
         if (this.primaryView != null) {
             this.primaryView.setVerticalScrollBarEnabled(false);
         }
@@ -79,13 +86,6 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     public void onManagerReady(final ServiceManager manager, final Status status) {
         super.onManagerReady(manager, status);
         this.manager = manager;
-        final TextView addToMyListButton = this.detailsViewGroup.getAddToMyListButton();
-        final TextView addToMyListButtonLabel = this.detailsViewGroup.getAddToMyListButtonLabel();
-        if (manager != null && this.getActivity() != null && addToMyListButton != null) {
-            this.addToListWrapper = manager.createAddToMyListWrapper((DetailsActivity)this.getActivity(), addToMyListButton, addToMyListButtonLabel, false);
-            manager.registerAddToMyListListener(this.getVideoId(), this.addToListWrapper);
-        }
-        RecommendToFriendsFrag.addRecommendButtonHandler((NetflixActivity)this.getActivity(), manager, this.detailsViewGroup.getRecommendButton(), this.getVideoId(), this.detailsViewGroup.getRecommendButtonLabel());
     }
     
     public void onResume() {
@@ -109,6 +109,12 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         this.reloadData();
     }
     
+    @Override
+    public void reload() {
+        Log.v("DetailsFrag", "reload()");
+        this.reloadData();
+    }
+    
     protected abstract void reloadData();
     
     protected void showDetailsView(final T mVideoDetails) {
@@ -120,6 +126,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         ((DetailsActivity)this.getActivity()).updateMenus(mVideoDetails);
         ServiceManagerUtils.cacheManifestIfEnabled(this.getServiceManager(), this.mVideoDetails.getPlayable());
         this.detailsViewGroup.updateDetails(mVideoDetails, this.getDetailsStringProvider(mVideoDetails));
+        this.addToListWrapper = SocialUtils.setupVideoDetailsButtons(this.detailsViewGroup, (NetflixActivity)this.getActivity(), this.manager, this.getVideoId(), this.mVideoDetails.getTitle(), this.mVideoDetails.getType());
     }
     
     protected void showErrorView() {

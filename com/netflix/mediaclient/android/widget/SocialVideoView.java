@@ -312,10 +312,10 @@ public class SocialVideoView extends VideoView
     }
     
     @Override
-    public void update(final Video video, final Trackable trackable, int size, final boolean b) {
+    public void update(final Video video, final Trackable trackable, int size, final boolean b, final boolean b2) {
         final int n = 0;
         if (!(this.isSocialView = video.getType().isSocialVideoType())) {
-            super.update(video, trackable, size, b);
+            super.update(video, trackable, size, b, b2);
             return;
         }
         Log.v("SocialVideoView", "Updating for social view: " + video.getTitle());

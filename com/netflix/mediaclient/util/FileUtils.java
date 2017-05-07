@@ -304,7 +304,7 @@ public final class FileUtils
             Log.v(s, "*****************************************************************");
         }
         catch (IOException ex) {
-            Log.handleException("FileUtils", ex);
+            Log.handleException(s, ex);
         }
     }
 }

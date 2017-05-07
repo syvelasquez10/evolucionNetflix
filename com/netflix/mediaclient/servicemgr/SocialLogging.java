@@ -49,6 +49,8 @@ public interface SocialLogging
     
     void createSocialConnectImpressionEvent(final IClientLogging$ModalView p0);
     
+    void endAllActiveSessions();
+    
     void endSocialConnectSession();
     
     void endSocialImpressionSession(final boolean p0, final Error p1);

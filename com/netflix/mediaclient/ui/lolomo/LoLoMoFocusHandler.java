@@ -13,7 +13,7 @@ import android.view.ViewParent;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 import android.view.View$OnTouchListener;
 import android.view.View;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+import android.widget.ListView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.database.DataSetObserver;
 
@@ -27,12 +27,12 @@ public class LoLoMoFocusHandler extends DataSetObserver
     private static boolean viewIdsValidated;
     private final NetflixActivity activity;
     private int col;
-    private final StickyListHeadersListView listView;
+    private final ListView listView;
     private View prevFocusView;
     private int row;
     private boolean touchEnabled;
     
-    LoLoMoFocusHandler(final NetflixActivity activity, final StickyListHeadersListView listView) {
+    LoLoMoFocusHandler(final NetflixActivity activity, final ListView listView) {
         this.touchEnabled = true;
         this.validateViewIdsIfNecessary();
         this.activity = activity;

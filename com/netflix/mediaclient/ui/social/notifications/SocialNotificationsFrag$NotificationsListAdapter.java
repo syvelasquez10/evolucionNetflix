@@ -6,12 +6,11 @@ package com.netflix.mediaclient.ui.social.notifications;
 
 import android.os.Parcelable;
 import android.widget.ListAdapter;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.os.Bundle;
 import android.app.Activity;
 import android.widget.TextView;
 import com.netflix.model.leafs.social.SocialNotificationsListSummary;
-import android.view.View$OnClickListener;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
 import java.util.Iterator;
@@ -38,6 +37,7 @@ import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationType
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
+import android.view.View$OnClickListener;
 import com.netflix.mediaclient.ui.social.notifications.types.SocialNotification;
 import android.view.ViewGroup;
 import android.view.View;
@@ -89,15 +89,17 @@ class SocialNotificationsFrag$NotificationsListAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             inflate = this.this$0.mLayoutInflater.inflate(SocialNotification.getLayoutResourceId(), viewGroup, false);
-            inflate.setTag((Object)SocialNotification.getViewHolder(inflate));
+            inflate.setTag((Object)SocialNotification.getViewHolder(inflate, type));
         }
         final SocialNotificationViewHolder socialNotificationViewHolder = (SocialNotificationViewHolder)inflate.getTag();
         if (!this.this$0.mLoadMoreAvailable && (this.this$0.mNotifications == null || this.this$0.mNotifications.getSocialNotifications() == null || this.this$0.mNotifications.getSocialNotifications().size() == 0)) {
-            SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493365);
+            SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493370);
+            inflate.setOnClickListener((View$OnClickListener)null);
         }
         else {
             if (this.this$0.mLoadMoreAvailable && n == this.getCount() - 1) {
                 SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493340);
+                inflate.setOnClickListener((View$OnClickListener)null);
                 this.this$0.loadMoreNotifications();
                 return inflate;
             }
@@ -105,7 +107,8 @@ class SocialNotificationsFrag$NotificationsListAdapter extends BaseAdapter
                 if (Log.isLoggable(SocialNotificationsFrag.TAG, 6)) {
                     Log.e(SocialNotificationsFrag.TAG, "Got null notification for type: " + item.getType());
                 }
-                SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493364);
+                SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493367);
+                inflate.setOnClickListener((View$OnClickListener)null);
                 return inflate;
             }
             if (this.this$0.getActivity() != null && NetflixActivity.getImageLoader((Context)this.this$0.getActivity()) != null) {

@@ -8,5 +8,7 @@ public interface PresentationWebClient
 {
     boolean isSynchronous();
     
+    void sendPresentationEvents(final PresentationRequest p0);
+    
     void sendPresentationEvents(final String p0, final PresentationRequest p1, final PresentationWebCallback p2);
 }

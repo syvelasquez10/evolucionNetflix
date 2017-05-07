@@ -209,15 +209,15 @@ public class LoginActivity extends AccountActivity
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         Log.d("LoginActivity", this.getIntent());
-        this.setContentView(2130903134);
+        this.setContentView(2130903133);
         UserActionLogUtils.reportLoginActionEnded((Context)this, IClientLogging$CompletionReason.success, null);
-        (this.emailView = (EditText)this.findViewById(2131165485)).requestFocus();
-        (this.passwordView = (EditText)this.findViewById(2131165486)).setOnEditorActionListener((TextView$OnEditorActionListener)new LoginActivity$1(this));
-        this.loginForm = this.findViewById(2131165484);
-        this.loginButton = this.findViewById(2131165482);
-        this.statusGroup = this.findViewById(2131165347);
-        this.statusMessageView = (TextView)this.findViewById(2131165488);
-        this.findViewById(2131165482).setOnClickListener((View$OnClickListener)new LoginActivity$2(this));
-        this.findViewById(2131165483).setOnClickListener((View$OnClickListener)new LoginActivity$3(this));
+        (this.emailView = (EditText)this.findViewById(2131165486)).requestFocus();
+        (this.passwordView = (EditText)this.findViewById(2131165487)).setOnEditorActionListener((TextView$OnEditorActionListener)new LoginActivity$1(this));
+        this.loginForm = this.findViewById(2131165485);
+        this.loginButton = this.findViewById(2131165483);
+        this.statusGroup = this.findViewById(2131165348);
+        this.statusMessageView = (TextView)this.findViewById(2131165489);
+        this.findViewById(2131165483).setOnClickListener((View$OnClickListener)new LoginActivity$2(this));
+        this.findViewById(2131165484).setOnClickListener((View$OnClickListener)new LoginActivity$3(this));
     }
 }

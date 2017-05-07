@@ -14,6 +14,16 @@ class ViewCompat$JbMr1ViewCompatImpl extends ViewCompat$JBViewCompatImpl
     }
     
     @Override
+    public int getPaddingEnd(final View view) {
+        return ViewCompatJellybeanMr1.getPaddingEnd(view);
+    }
+    
+    @Override
+    public int getPaddingStart(final View view) {
+        return ViewCompatJellybeanMr1.getPaddingStart(view);
+    }
+    
+    @Override
     public int getWindowSystemUiVisibility(final View view) {
         return ViewCompatJellybeanMr1.getWindowSystemUiVisibility(view);
     }

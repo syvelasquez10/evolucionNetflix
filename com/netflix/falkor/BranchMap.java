@@ -67,6 +67,9 @@ public class BranchMap<T> extends HashMap<String, T> implements BranchNode, Expi
     @Override
     public void remove(final String s) {
         super.remove(s);
+        if (this.errorsOrUndefineds != null) {
+            this.errorsOrUndefineds.remove(s);
+        }
     }
     
     @Override
@@ -77,7 +80,7 @@ public class BranchMap<T> extends HashMap<String, T> implements BranchNode, Expi
             }
             this.errorsOrUndefineds.put(s, o);
             if (this.containsKey(s)) {
-                this.remove(s);
+                super.remove(s);
             }
         }
         else {

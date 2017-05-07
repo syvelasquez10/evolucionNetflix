@@ -4,18 +4,19 @@
 
 package com.netflix.mediaclient.ui.social.notifications.types;
 
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.text.format.DateUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import com.netflix.mediaclient.util.NotificationUtils;
 import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsActivity;
 import android.widget.Button;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.ui.social.notifications.SocialNotificationViewHolder;
+import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import android.view.View;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -61,7 +62,7 @@ class SocialNotification$1onBoxArtFetched implements ImageLoader$ImageLoaderList
         if (bitmap != null) {
             final int color = this.val$context.getResources().getColor(2131296361);
             final NotificationCompat$BigPictureStyle bigPicture = new NotificationCompat$BigPictureStyle().bigPicture(bitmap);
-            final NotificationCompat$Builder setColor = new NotificationCompat$Builder(this.val$context).setSmallIcon(2130837776).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
+            final NotificationCompat$Builder setColor = new NotificationCompat$Builder(this.val$context).setSmallIcon(2130837786).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
             setColor.setGroup("social_notifications");
             setColor.setGroupSummary(true);
             setColor.setAutoCancel(true);

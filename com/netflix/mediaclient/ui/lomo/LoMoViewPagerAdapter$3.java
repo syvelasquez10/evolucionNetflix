@@ -4,9 +4,10 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import android.widget.LinearLayout$LayoutParams;
 import android.view.ViewGroup;
+import android.widget.LinearLayout$LayoutParams;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoDuplicate;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
@@ -44,7 +45,7 @@ class LoMoViewPagerAdapter$3 implements RowAdapterCallbacks
             if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
                 Log.v("LoMoViewPagerAdapter", "Data loaded for page 0 - saving state");
             }
-            this.this$0.pager.saveStateAndTrack(0);
+            this.this$0.pager.saveStateAndTrackPresentation(0);
         }
     }
     

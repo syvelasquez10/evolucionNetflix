@@ -19,6 +19,7 @@ import com.netflix.model.leafs.Video$InQueue;
 import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.util.JsonUtils;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;

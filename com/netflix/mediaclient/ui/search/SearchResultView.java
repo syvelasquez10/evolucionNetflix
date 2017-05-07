@@ -62,8 +62,8 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     }
     
     private void findViews() {
-        this.img = (AdvancedImageView)this.findViewById(2131165649);
-        this.title = (TextView)this.findViewById(2131165650);
+        this.img = (AdvancedImageView)this.findViewById(2131165650);
+        this.title = (TextView)this.findViewById(2131165651);
     }
     
     private CharSequence getFormattedYearSpannable(final String s, final String s2) {
@@ -82,7 +82,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(this.resId, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837837));
+        this.setForeground(this.getResources().getDrawable(2130837847));
         this.findViews();
         this.setupViews();
         this.videoClickListener = new VideoDetailsClickListener(netflixActivity, this);
@@ -231,7 +231,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         if (this.img != null && searchVideo != null) {
             this.img.setVisibility(0);
             if (SearchUtils.shouldShowVerticalBoxArt()) {
-                s = searchVideo.getBoxshotURL();
+                s = searchVideo.getBoxshotUrl();
             }
             else {
                 s = searchVideo.getHorzDispUrl();

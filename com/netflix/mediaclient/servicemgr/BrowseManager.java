@@ -10,6 +10,7 @@ import java.util.List;
 import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
 import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.service.browse.DataDumper;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
@@ -54,9 +55,8 @@ public final class BrowseManager implements IBrowseManager
     
     @Override
     public void dumpHomeLoLoMosAndVideos(final String s, final String s2) {
-        final INetflixService service = this.mgr.getService();
-        if (service != null) {
-            service.getBrowse().dumpHomeLoLoMosAndVideos(s, s2);
+        if (this.mgr.getService() != null) {
+            new DataDumper(this).dumpHomeLoLoMosAndVideosToHtml(s, s2);
             return;
         }
         Log.w("ServiceManagerBrowse", "dumpHomeLoLoMosAndVideos:: service is not available");

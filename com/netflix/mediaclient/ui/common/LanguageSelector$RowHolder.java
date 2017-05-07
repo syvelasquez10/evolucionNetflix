@@ -14,7 +14,7 @@ class LanguageSelector$RowHolder
     TextView name;
     
     LanguageSelector$RowHolder(final View view) {
-        this.name = (TextView)view.findViewById(2131165475);
-        this.choice = (RadioButton)view.findViewById(2131165474);
+        this.name = (TextView)view.findViewById(2131165477);
+        this.choice = (RadioButton)view.findViewById(2131165476);
     }
 }

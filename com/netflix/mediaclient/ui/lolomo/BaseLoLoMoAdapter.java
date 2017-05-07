@@ -6,13 +6,14 @@ package com.netflix.mediaclient.ui.lolomo;
 
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.graphics.drawable.Drawable;
+import com.netflix.mediaclient.util.api.Api16Util;
 import java.util.Collection;
 import com.netflix.mediaclient.ui.lomo.BillboardView;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.widget.AbsListView;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.ThreadUtils;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+import android.widget.ListView;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.view.ViewGroup;
 import android.app.Activity;
@@ -64,9 +65,9 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     private BaseLoLoMoAdapter$RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165441);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165443);
         linearLayout.setFocusable(false);
-        final TextView textView = (TextView)view.findViewById(2131165439);
+        final TextView textView = (TextView)view.findViewById(2131165441);
         final Resources resources = this.activity.getResources();
         int n;
         if (this.activity.isForKids()) {
@@ -77,17 +78,9 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         }
         textView.setTextColor(resources.getColor(n));
         final BaseLoLoMoAdapter$LoMoRowContent rowContent = this.createRowContent(linearLayout, (View)textView);
-        TextView textView2;
-        if (this.activity.isForKids()) {
-            view.findViewById(2131165440).setVisibility(8);
-            textView2 = (TextView)view.findViewById(2131165491);
-            textView2.setVisibility(0);
-        }
-        else {
-            textView2 = (TextView)view.findViewById(2131165440);
-        }
-        ((RelativeLayout$LayoutParams)textView2.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragImageOffsetLeftPx(this.activity);
-        return this.createHolder(view, linearLayout, textView2, rowContent, view.findViewById(2131165490));
+        final TextView initTitleView = this.initTitleView(view);
+        ((RelativeLayout$LayoutParams)initTitleView.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragImageOffsetLeftPx(this.activity);
+        return this.createHolder(view, linearLayout, initTitleView, rowContent, view.findViewById(2131165491));
     }
     
     private void fetchMoreData() {
@@ -163,18 +156,6 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         return this.lolomoId;
     }
     
-    public long getHeaderId(final int n) {
-        return -1L;
-    }
-    
-    public View getHeaderView(final int n, final View view, final ViewGroup viewGroup) {
-        View dummyView = view;
-        if (view == null) {
-            dummyView = this.createDummyView();
-        }
-        return dummyView;
-    }
-    
     public T getItem(final int n) {
         return this.lomos.get(n);
     }
@@ -212,8 +193,8 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
             else {
                 this.updateRowViews((BaseLoLoMoAdapter$RowHolder)inflate.getTag(), (T)item, n);
             }
-            if (!this.activity.isForKids()) {
-                final StickyListHeadersListView listView = this.frag.getListView();
+            if (!this.activity.isForKids() || this.activity.isKubrick()) {
+                final ListView listView = this.frag.getListView();
                 int headerViewsCount;
                 if (listView == null) {
                     headerViewsCount = 0;
@@ -245,7 +226,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     protected int getViewLayoutId() {
-        return 2130903135;
+        return 2130903134;
     }
     
     protected void initLoadingState() {
@@ -256,6 +237,18 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         this.hasMoreData = false;
         this.loMoStartIndex = 0;
         this.notifyDataSetChanged();
+    }
+    
+    protected TextView initTitleView(final View view) {
+        if (this.activity.isForKids()) {
+            view.findViewById(2131165442).setVisibility(8);
+            final TextView textView = (TextView)view.findViewById(2131165492);
+            if (textView != null) {
+                textView.setVisibility(0);
+            }
+            return textView;
+        }
+        return (TextView)view.findViewById(2131165442);
     }
     
     public boolean isEnabled(final int n) {
@@ -362,7 +355,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         baseLoLoMoAdapter$RowHolder.rowContent.refresh(t, dipToPixels);
         if (this.activity.isForKids()) {
             if (t.getType() != LoMoType.CONTINUE_WATCHING) {
-                ViewUtils.setBackgroundDrawableCompat(baseLoLoMoAdapter$RowHolder.contentGroup, null);
+                Api16Util.setBackgroundDrawableCompat(baseLoLoMoAdapter$RowHolder.contentGroup, null);
                 if (dipToPixels == this.getCount() - 1) {
                     dipToPixels = 1;
                 }
@@ -380,7 +373,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
                 baseLoLoMoAdapter$RowHolder.title.setTextColor(baseLoLoMoAdapter$RowHolder.defaultTitleColors);
                 return;
             }
-            baseLoLoMoAdapter$RowHolder.contentGroup.setBackgroundResource(2130837720);
+            baseLoLoMoAdapter$RowHolder.contentGroup.setBackgroundResource(2130837724);
             baseLoLoMoAdapter$RowHolder.contentGroup.setPadding(0, 0, 0, AndroidUtils.dipToPixels((Context)this.activity, 22));
             baseLoLoMoAdapter$RowHolder.title.setTextColor(this.activity.getResources().getColor(2131296360));
         }

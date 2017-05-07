@@ -4,23 +4,25 @@
 
 package com.netflix.mediaclient.service.logging;
 
+import com.netflix.mediaclient.service.logging.uiview.model.ImpressionSessionEndedEvent;
+import com.netflix.mediaclient.service.logging.uiview.model.CommandEndedEvent;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import com.netflix.mediaclient.service.logging.uiview.model.ImpressionEvent;
+import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.service.logging.uiview.ImpressionSession;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.service.logging.uiview.CommandSession;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
 
-public class UIViewLoggingImpl implements UIViewLogging
+public final class UIViewLoggingImpl implements UIViewLogging
 {
     private static final String TAG = "nf_log";
     private CommandSession mCommandSession;
@@ -128,17 +130,44 @@ public class UIViewLoggingImpl implements UIViewLogging
     }
     
     @Override
+    public void endAllActiveSessions() {
+        this.endCommandSession();
+        this.endImpressionSession(true, null);
+    }
+    
+    @Override
     public void endCommandSession() {
-        Log.d("nf_log", "uiView command session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UIViewLoggingImpl$1(this, this.mDataContext));
-        Log.d("nf_log", "uiView command session end done.");
+        if (this.mCommandSession == null) {
+            return;
+        }
+        Log.d("nf_log", "uiView command session ended");
+        final CommandEndedEvent endedEvent = this.mCommandSession.createEndedEvent();
+        if (endedEvent == null) {
+            Log.d("nf_log", "uiView command session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mCommandSession.getView());
+        this.mEventHandler.removeSession(this.mCommandSession);
+        Log.d("nf_log", "uiView command session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mCommandSession = null;
+        Log.d("nf_log", "uiView command session end event posted.");
     }
     
     @Override
     public void endImpressionSession(final boolean b, final Error error) {
-        Log.d("nf_log", "uiView impression session ended and posted to executor");
-        this.mEventHandler.executeInBackground(new UIViewLoggingImpl$2(this, b, error, this.mDataContext));
-        Log.d("nf_log", "uiView impression session end done.");
+        synchronized (this) {
+            if (this.mImpressionSession != null) {
+                Log.d("nf_log", "uiView impression session ended");
+                final ImpressionSessionEndedEvent endedEvent = this.mImpressionSession.createEndedEvent(b, error);
+                this.populateEvent(endedEvent, this.mDataContext, this.mImpressionSession.getView());
+                this.mEventHandler.removeSession(this.mImpressionSession);
+                Log.d("nf_log", "uiView impression session end event posting...");
+                this.mEventHandler.post(endedEvent);
+                this.mCommandSession = null;
+                Log.d("nf_log", "uiView impression session end event posted.");
+            }
+        }
     }
     
     public boolean handleIntent(final Intent intent, final boolean b) {
@@ -176,28 +205,34 @@ public class UIViewLoggingImpl implements UIViewLogging
     
     @Override
     public void startCommandSession(final UIViewLogging$UIViewCommandName uiViewLogging$UIViewCommandName, final IClientLogging$ModalView clientLogging$ModalView, final DataContext mDataContext) {
-        if (this.mCommandSession != null) {
-            Log.e("nf_log", "uiView command session already started!");
-            return;
+        synchronized (this) {
+            if (this.mCommandSession != null) {
+                Log.e("nf_log", "uiView command session already started!");
+            }
+            else {
+                Log.d("nf_log", "uiView command session starting...");
+                final CommandSession mCommandSession = new CommandSession(uiViewLogging$UIViewCommandName, clientLogging$ModalView);
+                this.mEventHandler.addSession(mCommandSession);
+                this.mCommandSession = mCommandSession;
+                this.mDataContext = mDataContext;
+                Log.d("nf_log", "uiView command session start done.");
+            }
         }
-        Log.d("nf_log", "uiView command session starting...");
-        final CommandSession mCommandSession = new CommandSession(uiViewLogging$UIViewCommandName, clientLogging$ModalView);
-        this.mEventHandler.addSession(mCommandSession);
-        this.mCommandSession = mCommandSession;
-        this.mDataContext = mDataContext;
-        Log.d("nf_log", "uiView command session start done.");
     }
     
     @Override
     public void startImpressionSession(final IClientLogging$ModalView clientLogging$ModalView, final String s) {
-        if (this.mImpressionSession != null) {
-            Log.e("nf_log", "uiView impression session already started!");
-            return;
+        synchronized (this) {
+            if (this.mImpressionSession != null) {
+                Log.e("nf_log", "uiView impression session already started!");
+            }
+            else {
+                Log.d("nf_log", "uiView impression session starting...");
+                final ImpressionSession mImpressionSession = new ImpressionSession(clientLogging$ModalView, s);
+                this.mEventHandler.addSession(mImpressionSession);
+                this.mImpressionSession = mImpressionSession;
+                Log.d("nf_log", "uiView impression session start done.");
+            }
         }
-        Log.d("nf_log", "uiView impression session starting...");
-        final ImpressionSession mImpressionSession = new ImpressionSession(clientLogging$ModalView, s);
-        this.mEventHandler.addSession(mImpressionSession);
-        this.mImpressionSession = mImpressionSession;
-        Log.d("nf_log", "uiView impression session start done.");
     }
 }

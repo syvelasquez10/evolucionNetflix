@@ -9,7 +9,6 @@ import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRec
 import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -31,6 +30,7 @@ import org.json.JSONTokener;
 import org.json.JSONArray;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.NetflixService;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.player.subtitles.TextStyle;
@@ -44,7 +44,7 @@ import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallba
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserBoundCookies;
@@ -66,7 +66,7 @@ class UserAgent$SwitchWebUserProfilesTask$1 extends SimpleUserAgentWebCallback
             if (this.this$1.this$0.mUserAgentStateManager != null) {
                 this.this$1.this$0.mUserAgentStateManager.profileSwitched(userBoundCookies);
             }
-            SocialNotificationsUtils.removeSocialNotificationsFromStatusBar(this.this$1.this$0.getContext());
+            SocialUtils.removeSocialNotificationsFromStatusBar(this.this$1.this$0.getContext());
         }
         else {
             if (Log.isLoggable("nf_service_useragent", 6)) {

@@ -6,7 +6,6 @@ package com.netflix.mediaclient.ui.kubrick.lolomo;
 
 import android.widget.TextView;
 import android.util.Log;
-import se.emilsjolander.stickylistheaders.WrapperView;
 import android.widget.AbsListView;
 import android.view.View;
 import android.content.res.Resources;
@@ -23,7 +22,7 @@ class KubrickLolomoUtils$HeroTitleScroller
     public KubrickLolomoUtils$HeroTitleScroller(final LoLoMoFrag frag) {
         this.frag = frag;
         final Resources resources = frag.getResources();
-        this.titleMarginTopPx = resources.getDimensionPixelSize(2131361988);
+        this.titleMarginTopPx = resources.getDimensionPixelSize(2131361994);
         this.textPadding = resources.getDimensionPixelOffset(2131361877);
     }
     
@@ -37,15 +36,14 @@ class KubrickLolomoUtils$HeroTitleScroller
     
     public void onScroll(final AbsListView absListView) {
         for (int i = 0; i < absListView.getChildCount(); ++i) {
-            final WrapperView wrapperView = (WrapperView)absListView.getChildAt(i);
-            final View item = wrapperView.getItem();
-            final KubrickLolomoUtils$KubrickRowHolder kubrickLolomoUtils$KubrickRowHolder = (KubrickLolomoUtils$KubrickRowHolder)item.getTag();
+            final View child = absListView.getChildAt(i);
+            final KubrickLolomoUtils$KubrickRowHolder kubrickLolomoUtils$KubrickRowHolder = (KubrickLolomoUtils$KubrickRowHolder)child.getTag();
             if (kubrickLolomoUtils$KubrickRowHolder != null && kubrickLolomoUtils$KubrickRowHolder.kubrickHeroTitle.getVisibility() == 0) {
                 final TextView kubrickHeroTitle = kubrickLolomoUtils$KubrickRowHolder.kubrickHeroTitle;
-                final int computeScrollingThreshPx = this.computeScrollingThreshPx(kubrickLolomoUtils$KubrickRowHolder, item);
-                if (i <= 1 && wrapperView.getTop() < computeScrollingThreshPx) {
-                    int n = computeScrollingThreshPx - wrapperView.getTop();
-                    final int computeTransYMax = this.computeTransYMax(kubrickLolomoUtils$KubrickRowHolder, item);
+                final int computeScrollingThreshPx = this.computeScrollingThreshPx(kubrickLolomoUtils$KubrickRowHolder, child);
+                if (i <= 1 && child.getTop() < computeScrollingThreshPx) {
+                    int n = computeScrollingThreshPx - child.getTop();
+                    final int computeTransYMax = this.computeTransYMax(kubrickLolomoUtils$KubrickRowHolder, child);
                     if (n > computeTransYMax) {
                         n = computeTransYMax;
                     }

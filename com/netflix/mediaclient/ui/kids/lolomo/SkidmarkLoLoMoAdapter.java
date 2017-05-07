@@ -14,11 +14,10 @@ import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
+import android.view.ViewGroup;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.model.CWVideo;
 import com.netflix.mediaclient.util.Triple;
-import android.widget.TextView;
-import android.view.ViewGroup;
 import com.netflix.mediaclient.util.MathUtils;
 import java.util.Map;
 import android.content.IntentFilter;
@@ -176,19 +175,6 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements LoLoMoFrag$ILo
         return n;
     }
     
-    public long getHeaderId(final int n) {
-        return this.getLomo(n).hashCode();
-    }
-    
-    public View getHeaderView(final int n, View inflate, final ViewGroup viewGroup) {
-        if (inflate == null) {
-            Log.v("SkidmarkLoLoMoAdapter", "Creating header view");
-            inflate = this.activity.getLayoutInflater().inflate(2130903113, (ViewGroup)null);
-        }
-        ((TextView)inflate).setText((CharSequence)this.getLomo(n).getTitle());
-        return inflate;
-    }
-    
     public Triple<LoMo, List<Video>, Integer> getItem(int n) {
         final Iterator<Map.Entry<LoMo, List<Video>>> iterator = this.lomoData.entrySet().iterator();
         int n2 = n;
@@ -253,8 +239,8 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements LoLoMoFrag$ILo
     
     public View getView(final int n, View view, final ViewGroup viewGroup) {
         if (!this.activity.destroyed()) {
-            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361975);
-            final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361974);
+            final int dimensionPixelSize = this.activity.getResources().getDimensionPixelSize(2131361979);
+            final int dimensionPixelSize2 = this.activity.getResources().getDimensionPixelSize(2131361978);
             final int itemViewType = this.getItemViewType(n);
             if (view == null) {
                 switch (itemViewType) {
@@ -293,7 +279,7 @@ public class SkidmarkLoLoMoAdapter extends BaseAdapter implements LoLoMoFrag$ILo
                     case 4: {
                         Log.v("SkidmarkLoLoMoAdapter", "Creating spacer view");
                         view = new View((Context)this.activity);
-                        view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361976)));
+                        view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361980)));
                         break;
                     }
                 }

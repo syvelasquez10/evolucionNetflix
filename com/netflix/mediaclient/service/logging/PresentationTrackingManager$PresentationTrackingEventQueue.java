@@ -35,7 +35,7 @@ class PresentationTrackingManager$PresentationTrackingEventQueue extends EventQu
     }
     
     @Override
-    protected void doFlush(final List<PresentationEvent> list) {
-        this.this$0.sendPresentationEvents(list);
+    protected void doFlush(final List<PresentationEvent> list, final boolean b) {
+        this.this$0.sendPresentationEvents(list, b);
     }
 }

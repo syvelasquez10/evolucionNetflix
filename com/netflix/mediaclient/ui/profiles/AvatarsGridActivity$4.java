@@ -12,7 +12,6 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.widget.AdapterView$OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.FrameLayout$LayoutParams;
-import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
@@ -28,6 +27,8 @@ import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.view.View;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 
 class AvatarsGridActivity$4 implements ViewTreeObserver$OnGlobalLayoutListener
@@ -39,6 +40,7 @@ class AvatarsGridActivity$4 implements ViewTreeObserver$OnGlobalLayoutListener
     }
     
     public void onGlobalLayout() {
+        ViewUtils.removeGlobalLayoutListener((View)this.this$0.mGridView, (ViewTreeObserver$OnGlobalLayoutListener)this);
         this.this$0.mAdapter.setupGridViewColumns();
     }
 }

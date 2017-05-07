@@ -14,17 +14,16 @@ import android.view.Menu;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import android.view.ViewConfiguration;
 import android.graphics.drawable.Drawable;
-import android.widget.ListView;
 import android.content.res.Resources;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration$LolomoImageType;
-import com.netflix.mediaclient.ui.lomo.BasePaginatedAdapter;
+import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import android.view.View;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+import android.widget.ListView;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
 import com.netflix.mediaclient.Log;
@@ -62,24 +61,24 @@ public class KidsUtils
         return false;
     }
     
-    public static void addListViewSpacerIfNoHeaders(final StickyListHeadersListView stickyListHeadersListView) {
-        if (stickyListHeadersListView.getHeaderViewsCount() == 0) {
-            final View view = new View(stickyListHeadersListView.getContext());
-            view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, stickyListHeadersListView.getResources().getDimensionPixelSize(2131361976)));
-            stickyListHeadersListView.addHeaderView(view);
+    public static void addListViewSpacerIfNoHeaders(final ListView listView) {
+        if (listView.getHeaderViewsCount() == 0) {
+            final View view = new View(listView.getContext());
+            view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, listView.getResources().getDimensionPixelSize(2131361980)));
+            listView.addHeaderView(view);
         }
     }
     
     public static int computeCharacterViewSize(final NetflixActivity netflixActivity, final boolean b) {
-        return BasePaginatedAdapter.computeViewPagerWidth(netflixActivity, b) / 2;
+        return LoMoViewPager.computeViewPagerWidth(netflixActivity, b) / 2;
     }
     
     public static int computeHorizontalRowHeight(final NetflixActivity netflixActivity, final boolean b) {
-        return (int)(BasePaginatedAdapter.computeViewPagerWidth(netflixActivity, b) * 0.5625f);
+        return (int)(LoMoViewPager.computeViewPagerWidth(netflixActivity, b) * 0.5625f);
     }
     
     public static int computeRowHeight(final NetflixActivity netflixActivity, final boolean b) {
-        final int computeViewPagerWidth = BasePaginatedAdapter.computeViewPagerWidth(netflixActivity, b);
+        final int computeViewPagerWidth = LoMoViewPager.computeViewPagerWidth(netflixActivity, b);
         final ServiceManager serviceManager = netflixActivity.getServiceManager();
         if (serviceManager == null) {
             Log.w("KidsUtils", "Null service manager in computeRowHeight()");
@@ -100,7 +99,7 @@ public class KidsUtils
     
     public static int computeSkidmarkCharacterViewSize(final NetflixActivity netflixActivity) {
         final Resources resources = netflixActivity.getResources();
-        return resources.getDimensionPixelSize(2131361975) + ((DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) - resources.getDimensionPixelSize(2131361974)) / 2 - resources.getDimensionPixelSize(2131361974));
+        return resources.getDimensionPixelSize(2131361979) + ((DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) - resources.getDimensionPixelSize(2131361978)) / 2 - resources.getDimensionPixelSize(2131361978));
     }
     
     public static int computeSkidmarkRowHeight(final NetflixActivity netflixActivity, int n, int n2, final int n3, final int n4, final boolean b) {
@@ -127,13 +126,6 @@ public class KidsUtils
             listView.setDivider((Drawable)null);
             listView.setFriction(ViewConfiguration.getScrollFriction() * 7.5f);
         }
-    }
-    
-    public static void configureListViewForKids(final NetflixActivity netflixActivity, final StickyListHeadersListView stickyListHeadersListView) {
-        if (netflixActivity.isForKids()) {
-            stickyListHeadersListView.setDivider(null);
-        }
-        configureListViewForKids(netflixActivity, stickyListHeadersListView.getWrappedList());
     }
     
     public static Intent createExitKidsIntent(final Activity activity, final UIViewLogging$UIViewCommandName uiViewLogging$UIViewCommandName) {
@@ -206,7 +198,7 @@ public class KidsUtils
         return accountHasKidsProfile(netflixActivity) && configSafely != null && configSafely.shouldShowKidsEntryInMenu();
     }
     
-    public static boolean shouldShowKidsExperience(final NetflixActivity netflixActivity) {
+    public static boolean shouldShowKidsOnPhoneExperience(final NetflixActivity netflixActivity) {
         if (netflixActivity == null) {
             Log.w("KidsUtils", "Activity is null - should not happen");
             return false;
@@ -254,6 +246,6 @@ public class KidsUtils
             menuItem.setTitle(2131492980).setIcon(2130837661).setIntent(createExitKidsIntent(netflixActivity, UIViewLogging$UIViewCommandName.actionBarKidsExit)).setShowAsAction(2);
             return;
         }
-        menuItem.setTitle(2131492962).setIcon(2130837704).setIntent(createSwitchToKidsIntent(netflixActivity, UIViewLogging$UIViewCommandName.actionBarKidsEntry)).setShowAsAction(2);
+        menuItem.setTitle(2131492962).setIcon(2130837708).setIntent(createSwitchToKidsIntent(netflixActivity, UIViewLogging$UIViewCommandName.actionBarKidsEntry)).setShowAsAction(2);
     }
 }

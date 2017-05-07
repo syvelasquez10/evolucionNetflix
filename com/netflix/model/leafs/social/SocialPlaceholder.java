@@ -20,7 +20,7 @@ public abstract class SocialPlaceholder implements FriendProfilesProvider, Video
     }
     
     @Override
-    public String getBoxshotURL() {
+    public String getBoxshotUrl() {
         return null;
     }
     

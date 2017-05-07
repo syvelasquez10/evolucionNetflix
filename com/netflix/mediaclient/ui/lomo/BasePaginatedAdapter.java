@@ -7,19 +7,18 @@ package com.netflix.mediaclient.ui.lomo;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.UiLocation;
+import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
 import com.netflix.mediaclient.servicemgr.model.VideoType;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.app.Activity;
+import com.netflix.mediaclient.util.MathUtils;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.DataUtil;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
-import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.util.MathUtils;
 import android.content.Context;
 import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -30,9 +29,9 @@ public abstract class BasePaginatedAdapter<T extends Video>
     private static final String TAG = "BasePaginatedAdapter";
     protected final NetflixActivity activity;
     private String currTitle;
-    private List<T> data;
+    protected List<T> data;
     private int listViewPos;
-    private final int numItemsPerPage;
+    protected final int numItemsPerPage;
     
     public BasePaginatedAdapter(final Context context) {
         this.activity = (NetflixActivity)context;
@@ -50,24 +49,6 @@ public abstract class BasePaginatedAdapter<T extends Video>
                 list.add((T)video);
             }
         }
-    }
-    
-    private int computeNumPages() {
-        return MathUtils.ceiling(this.data.size(), this.numItemsPerPage);
-    }
-    
-    public static int computeViewPagerWidth(final NetflixActivity netflixActivity, final boolean b) {
-        if (b) {
-            return DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) - (LoMoUtils.getLomoFragOffsetLeftPx(netflixActivity) + LoMoUtils.getLomoFragOffsetRightPx(netflixActivity));
-        }
-        return DeviceUtils.getScreenWidthInPixels((Context)netflixActivity);
-    }
-    
-    private String getCurrTitleFormatted() {
-        if (StringUtils.isEmpty(this.currTitle)) {
-            return "";
-        }
-        return this.currTitle + ": ";
     }
     
     public void appendData(final List<T> list, final String s, final int n, final int n2) {
@@ -109,7 +90,11 @@ public abstract class BasePaginatedAdapter<T extends Video>
     
     protected abstract int computeNumItemsPerPage();
     
-    protected abstract int computeNumVideosToFetchPerBatch();
+    protected int computeNumPages() {
+        return MathUtils.ceiling(this.data.size(), this.numItemsPerPage);
+    }
+    
+    protected abstract int computeNumVideosToFetchPerBatch(final int p0);
     
     protected Activity getActivity() {
         return this.activity;
@@ -117,6 +102,13 @@ public abstract class BasePaginatedAdapter<T extends Video>
     
     public int getCount() {
         return this.computeNumPages();
+    }
+    
+    protected String getCurrTitleFormatted() {
+        if (StringUtils.isEmpty(this.currTitle)) {
+            return "";
+        }
+        return this.currTitle + ": ";
     }
     
     public List<T> getDataForPage(int min) {
@@ -136,7 +128,7 @@ public abstract class BasePaginatedAdapter<T extends Video>
     }
     
     public int getRowHeightInPx() {
-        final int n = (int)(computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage() * 1.43f + 0.5f);
+        final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage() * 1.43f + 0.5f);
         if (Log.isLoggable("BasePaginatedAdapter", 2)) {
             Log.v("BasePaginatedAdapter", "Computed view height: " + n);
         }

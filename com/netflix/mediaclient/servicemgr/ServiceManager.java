@@ -31,9 +31,10 @@ public final class ServiceManager implements IServiceManagerAccess
     public static final String BROWSE_AGENT_IQ_REFRESH = "com.netflix.mediaclient.intent.action.BA_IQ_REFRESH";
     public static final String BROWSE_PARAM_CUR_EPISODE_NUMBER = "curEpisodeNumber";
     public static final String BROWSE_PARAM_CUR_SEASON_NUMBER = "curSeasonNumber";
+    public static final String DETAIL_PAGE_RELOAD = "com.netflix.mediaclient.intent.action.DETAIL_PAGE_REFRESH";
     public static final String LOCAL_PLAYER_PLAY_START = "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_START";
     public static final String LOCAL_PLAYER_PLAY_STOP = "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP";
-    public static final String SOCIAL_NOTIFICATIONS_LIST_HAS_UNREAD = "notifications_list_has_unread";
+    public static final String NOTIFICATIONS_LIST_STATUS = "notifications_list_status";
     public static final String SOCIAL_NOTIFICATIONS_LIST_UPDATED = "com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED";
     private static final String TAG = "ServiceManager";
     private AddToMyListWrapper addToMyListWrapper;

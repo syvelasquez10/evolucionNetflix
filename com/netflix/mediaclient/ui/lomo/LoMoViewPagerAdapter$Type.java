@@ -11,6 +11,7 @@ enum LoMoViewPagerAdapter$Type
     CW, 
     ERROR, 
     IQ, 
+    KUBRICK_GALLERY, 
     KUBRICK_HERO, 
     LOADING, 
     STANDARD;

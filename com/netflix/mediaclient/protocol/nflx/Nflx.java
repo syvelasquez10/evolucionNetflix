@@ -10,6 +10,8 @@ public interface Nflx
     public static final String HOST = "www.netflix.com";
     public static final String SCHEME = "nflx";
     public static final String SOURCE_VALUE_UKNOWN = "uknown";
+    public static final String TINY_URL_HOST = "movi.es";
+    public static final String TINY_URL_SCHEME = "http";
     public static final String URN_SUFFIX = "::urn";
     public static final String UUID_PREFIX = "uuid:";
 }

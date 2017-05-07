@@ -34,10 +34,11 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.service.NetflixService;
+import java.util.ArrayList;
 import android.os.Handler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
-import java.util.ArrayList;
+import java.util.List;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
@@ -64,7 +65,7 @@ class ConfigurationAgent$FetchConfigDataTask$1 extends SimpleConfigurationAgentW
         }
         this.this$1.this$0.mIsConfigRefreshInBackground = false;
         this.this$1.this$0.refreshHandler.postDelayed(this.this$1.this$0.refreshRunnable, 28800000L);
-        this.this$1.this$0.notifyConfigRefreshed();
+        this.this$1.this$0.notifyConfigRefreshedAndClearListeners();
         if (this.this$1.getCallback() != null) {
             this.this$1.getCallback().onConfigDataFetched(configData, this.this$1.this$0.mConfigRefreshStatus);
         }

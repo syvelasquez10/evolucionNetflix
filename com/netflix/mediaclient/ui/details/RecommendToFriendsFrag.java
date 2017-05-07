@@ -6,11 +6,13 @@ package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ListAdapter;
+import android.view.View$OnClickListener;
 import android.text.TextWatcher;
 import android.widget.AbsListView$OnScrollListener;
 import android.view.ViewGroup;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import android.os.Parcelable;
 import android.os.Bundle;
 import java.util.Set;
@@ -20,17 +22,14 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import android.content.Context;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.text.Html;
 import com.netflix.mediaclient.StatusCode;
-import android.view.View$OnClickListener;
-import android.content.Context;
-import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.app.Activity;
 import com.netflix.mediaclient.android.app.Status;
+import android.app.Activity;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.widget.TextView;
@@ -96,51 +95,36 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
         this.retryFetchFriendsCallback = new RecommendToFriendsFrag$1(this);
     }
     
-    public static void addRecommendButtonHandler(final NetflixActivity netflixActivity, final ServiceManager serviceManager, final TextView textView, final String s, final TextView textView2) {
-        if (netflixActivity == null) {
-            Log.w(RecommendToFriendsFrag.TAG, "Activity is null, bail out...");
+    private boolean checkForError(final Status status) {
+        if (!this.isAdded() || this.getActivity() == null || this.getActivity().isFinishing()) {
+            Log.w(RecommendToFriendsFrag.TAG, "Fragment is not attached already - no need to handle a request");
         }
         else {
-            if (textView == null) {
-                Log.i(RecommendToFriendsFrag.TAG, "We don't have recommend button on tablets yet...");
-                return;
-            }
-            if (isSocialRecommendationsFeatureSupported(serviceManager)) {
-                UIViewLogUtils.reportUIViewImpressionEvent((Context)netflixActivity, UIViewLogging$UIViewCommandName.socialRecommendButton, getTrackIdStatic(netflixActivity));
-                textView.setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$2(serviceManager, netflixActivity, s));
-                return;
-            }
-            textView.setVisibility(8);
-            if (textView2 != null) {
-                textView2.setVisibility(8);
-            }
-        }
-    }
-    
-    private boolean checkForNetworkError(final Status status) {
-        this.mErrorOccurred = false;
-        if (this.leWrapper != null) {
-            this.leWrapper.hide(false);
-        }
-        if (status.getStatusCode() == StatusCode.NETWORK_ERROR) {
-            this.mErrorOccurred = true;
+            this.mErrorOccurred = false;
             if (this.leWrapper != null) {
-                this.leWrapper.showErrorView(this.getString(2131493347), 2131492978, this.retryFetchFriendsCallback);
+                this.leWrapper.hide(false);
             }
-        }
-        else if (status.getStatusCode() == StatusCode.USER_NOT_AUTHORIZED) {
-            this.mErrorOccurred = true;
-            if (this.leWrapper != null) {
-                this.leWrapper.showErrorView((CharSequence)Html.fromHtml(this.getString(2131493348)), 2131493112, new RecommendToFriendsFrag$RetryConnectFacebookCallback(this, this.getActivity()));
+            if (status.getStatusCode() == StatusCode.NETWORK_ERROR) {
+                this.mErrorOccurred = true;
+                if (this.leWrapper != null) {
+                    this.leWrapper.showErrorView(this.getString(2131493347), 2131492978, this.retryFetchFriendsCallback);
+                }
             }
-        }
-        if (this.mErrorOccurred) {
+            else if (status.getStatusCode() == StatusCode.USER_NOT_AUTHORIZED) {
+                this.mErrorOccurred = true;
+                if (this.leWrapper != null) {
+                    this.leWrapper.showErrorView((CharSequence)Html.fromHtml(this.getString(2131493348)), 2131493112, new RecommendToFriendsFrag$RetryConnectFacebookCallback(this, this.getActivity()));
+                }
+            }
+            if (!this.mErrorOccurred) {
+                return false;
+            }
             if (this.mAdapter != null) {
                 this.mAdapter.notifyDataSetChanged();
+                return true;
             }
-            return true;
         }
-        return false;
+        return true;
     }
     
     private void fetchFriends() {
@@ -148,7 +132,7 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
             if (this.leWrapper != null) {
                 this.leWrapper.showLoadingView(false);
             }
-            this.mLastRequestId = this.mServiceManager.fetchFriendsForRecommendationList(this.getArguments().getString("video_id"), 0, this.mSearchTerm, new RecommendToFriendsFrag$8(this));
+            this.mLastRequestId = this.mServiceManager.fetchFriendsForRecommendationList(this.getArguments().getString("video_id"), 0, this.mSearchTerm, new RecommendToFriendsFrag$7(this));
         }
     }
     
@@ -166,7 +150,7 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
         return this.mTrackId;
     }
     
-    private static int getTrackIdStatic(final Activity activity) {
+    public static int getTrackIdStatic(final Activity activity) {
         final int missing_TRACK_ID = UIViewLogUtils.MISSING_TRACK_ID;
         if (activity instanceof DetailsActivity && ((DetailsActivity)activity).getPlayContext() != null) {
             return ((DetailsActivity)activity).getPlayContext().getTrackId();
@@ -262,7 +246,7 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
         this.mTotalSelectedLayoutAnim = (Animation)new TranslateAnimation(n3, n4, 0.0f, 0.0f);
         this.mSearchEditTextAnim.setInterpolator((Interpolator)new AccelerateDecelerateInterpolator());
         this.mSearchEditTextAnim.setDuration(300L);
-        this.mSearchEditTextAnim.setAnimationListener((Animation$AnimationListener)new RecommendToFriendsFrag$10(this, b, n));
+        this.mSearchEditTextAnim.setAnimationListener((Animation$AnimationListener)new RecommendToFriendsFrag$9(this, b, n));
         this.mTotalSelectedLayoutAnim.setInterpolator((Interpolator)new AccelerateDecelerateInterpolator());
         this.mTotalSelectedLayoutAnim.setDuration(300L);
         this.mSearchEditText.startAnimation(this.mSearchEditTextAnim);
@@ -271,7 +255,7 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
     
     private void loadMoreFriends() {
         if (this.mServiceManager != null && this.mFriends != null) {
-            this.mServiceManager.fetchFriendsForRecommendationList(this.getArguments().getString("video_id"), this.mFriends.size(), this.mSearchTerm, new RecommendToFriendsFrag$9(this));
+            this.mServiceManager.fetchFriendsForRecommendationList(this.getArguments().getString("video_id"), this.mFriends.size(), this.mSearchTerm, new RecommendToFriendsFrag$8(this));
         }
     }
     
@@ -334,10 +318,10 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
         if (bundle != null && bundle.containsKey("friends_list")) {
             this.mLoadMoreAvailable = bundle.getBoolean("has_load_more_list");
             this.mFriends = (ArrayList<FriendForRecommendation>)bundle.getParcelableArrayList("friends_list");
-            SocialNotificationsUtils.castArrayToSet(bundle.getParcelableArray("selected_friends_list"), this.mCheckedFriends);
+            SocialUtils.castArrayToSet(bundle.getParcelableArray("selected_friends_list"), this.mCheckedFriends);
         }
         else if (this.getArguments().containsKey("selected_set") && this.getArguments().containsKey("message") && this.getArguments().containsKey("guid")) {
-            SocialNotificationsUtils.castArrayToSet(this.getArguments().getParcelableArray("selected_set"), this.mCheckedFriends);
+            SocialUtils.castArrayToSet(this.getArguments().getParcelableArray("selected_set"), this.mCheckedFriends);
             this.mInputMessage = this.getArguments().getString("message");
             this.mGUID = this.getArguments().getString("guid");
             this.mFriends = (ArrayList<FriendForRecommendation>)this.getArguments().getParcelableArrayList("friends");
@@ -347,18 +331,18 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
     public View onCreateView(final LayoutInflater mLayoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v(RecommendToFriendsFrag.TAG, "Creating new frag view...");
         this.mLayoutInflater = mLayoutInflater;
-        final View inflate = this.mLayoutInflater.inflate(2130903176, viewGroup, false);
+        final View inflate = this.mLayoutInflater.inflate(2130903175, viewGroup, false);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.retryFetchFriendsCallback);
-        (this.mFriendsList = (ListView)inflate.findViewById(2131165637)).setOnScrollListener((AbsListView$OnScrollListener)new RecommendToFriendsFrag$3(this));
-        (this.mSearchEditText = (EditText)inflate.findViewById(2131165635)).addTextChangedListener((TextWatcher)new RecommendToFriendsFrag$4(this));
-        this.mEditMessage = (EditText)inflate.findViewById(2131165638);
+        (this.mFriendsList = (ListView)inflate.findViewById(2131165638)).setOnScrollListener((AbsListView$OnScrollListener)new RecommendToFriendsFrag$2(this));
+        (this.mSearchEditText = (EditText)inflate.findViewById(2131165636)).addTextChangedListener((TextWatcher)new RecommendToFriendsFrag$3(this));
+        this.mEditMessage = (EditText)inflate.findViewById(2131165639);
         if (this.mInputMessage != null) {
             this.mEditMessage.setText((CharSequence)this.mInputMessage);
         }
-        (this.mSendButton = (Button)inflate.findViewById(2131165639)).setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$5(this));
-        this.mTotalSelectedLayout = inflate.findViewById(2131165633);
-        (this.mTotalSelectedStatus = (TextView)inflate.findViewById(2131165634)).setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$6(this));
-        (this.mSearchClearButton = inflate.findViewById(2131165636)).setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$7(this));
+        (this.mSendButton = (Button)inflate.findViewById(2131165640)).setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$4(this));
+        this.mTotalSelectedLayout = inflate.findViewById(2131165634);
+        (this.mTotalSelectedStatus = (TextView)inflate.findViewById(2131165635)).setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$5(this));
+        (this.mSearchClearButton = inflate.findViewById(2131165637)).setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$6(this));
         this.mAdapter = new RecommendToFriendsFrag$FriendsListAdapter(this, null);
         this.mFriendsList.setAdapter((ListAdapter)this.mAdapter);
         this.leWrapper.showLoadingView(false);

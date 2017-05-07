@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.protocol.nflx;
 
 import com.netflix.mediaclient.Log;
-import org.json.JSONObject;
 import java.util.Map;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
@@ -16,14 +15,14 @@ abstract class BaseNflxHandlerWithoutDelayedActionSupport extends BaseNflxHandle
     }
     
     @Override
-    protected NflxHandler$Response handleEpisodeFromTinyUrl(final JSONObject jsonObject, final String s, final String s2) {
+    protected NflxHandler$Response handleEpisodeFromTinyUrl(final String s, final String s2, final String s3) {
         Log.d("NflxHandler", "handleEpisodeFromTinyUrl");
         return NflxHandler$Response.NOT_HANDLING;
     }
     
     @Override
-    protected NflxHandler$Response handleMovieFromTinyUrl(final JSONObject jsonObject, final String s, final String s2) {
-        Log.d("NflxHandler", "handleMovieFromTinyUrl NOOP");
+    protected NflxHandler$Response handleMovieFromTinyUrl(final String s, final String s2, final String s3) {
+        Log.d("NflxHandler", "handleMovieFromTinyUrl");
         return NflxHandler$Response.NOT_HANDLING;
     }
 }

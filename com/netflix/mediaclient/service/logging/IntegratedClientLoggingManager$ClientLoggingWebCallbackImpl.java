@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.logging;
 
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.javabridge.ui.Log$AppIdSetListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.SystemClock;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClientFactory;
@@ -25,8 +26,6 @@ import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLogging
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;
-import com.netflix.mediaclient.service.logging.apm.UserSession;
-import com.netflix.mediaclient.service.logging.apm.ApplicationSession;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$EndReason;

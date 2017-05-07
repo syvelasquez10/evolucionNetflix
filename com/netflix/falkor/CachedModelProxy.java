@@ -19,6 +19,7 @@ import com.netflix.model.leafs.Video$InQueue;
 import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.util.JsonUtils;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
@@ -474,76 +475,88 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     }
     
     private void merge(final JsonObject jsonObject, final BranchNode branchNode) {
+    Label_0145_Outer:
         while (true) {
             while (true) {
-                Map.Entry<String, V> entry = null;
-                String s = null;
-                Object orCreate = null;
-                Label_0138: {
-                    synchronized (this) {
-                        final Iterator<Map.Entry<String, JsonElement>> iterator = jsonObject.entrySet().iterator();
-                        while (iterator.hasNext()) {
-                            entry = (Map.Entry<String, V>)iterator.next();
-                            s = entry.getKey();
-                            orCreate = branchNode.getOrCreate(s);
+            Label_0536:
+                while (true) {
+                    Map.Entry<String, JsonElement> entry = null;
+                    String s = null;
+                    Object orCreate = null;
+                    Label_0230: {
+                        synchronized (this) {
+                            final Iterator<Map.Entry<String, JsonElement>> iterator = jsonObject.entrySet().iterator();
+                            while (iterator.hasNext()) {
+                                entry = (Map.Entry<String, JsonElement>)iterator.next();
+                                s = entry.getKey();
+                                if (!(branchNode.getOrCreate(s) instanceof Sentinel) || JsonUtils.isNull(entry.getValue())) {
+                                    break Label_0536;
+                                }
+                                if (Log.isLoggable("CachedModelProxy", 3)) {
+                                    Log.d("CachedModelProxy", "Found sentinel at key: " + s + ", will replace with json data: " + entry.getValue());
+                                }
+                                branchNode.remove(s);
+                                orCreate = branchNode.getOrCreate(s);
+                                if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                                    Log.v("CachedModelProxy", "Curr node: " + branchNode.getClass().getSimpleName() + ", merging: " + s);
+                                }
+                                if (!(orCreate instanceof BranchNode)) {
+                                    break Label_0230;
+                                }
+                                this.merge(entry.getValue().getAsJsonObject(), (BranchNode)orCreate);
+                            }
+                            break;
+                        }
+                    }
+                    if (orCreate instanceof Ref) {
+                        final Ref ref = (Ref)orCreate;
+                        final JsonElement jsonElement = entry.getValue();
+                        if (jsonElement.isJsonArray()) {
+                            ref.setRefPath(PQL.fromJsonArray(jsonElement.getAsJsonArray()));
+                            continue Label_0145_Outer;
+                        }
+                        if (!jsonElement.isJsonObject()) {
+                            continue Label_0145_Outer;
+                        }
+                        if (jsonElement.getAsJsonObject().has("_sentinel")) {
                             if (Falkor.ENABLE_VERBOSE_LOGGING) {
-                                Log.v("CachedModelProxy", "Curr node: " + branchNode.getClass().getSimpleName() + ", merging: " + s);
+                                Log.v("CachedModelProxy", "key points to sentinel: " + Undefined.getInstance());
                             }
-                            if (!(orCreate instanceof BranchNode)) {
-                                break Label_0138;
+                            branchNode.set(s, Undefined.getInstance());
+                            continue Label_0145_Outer;
+                        }
+                        if ("current".equals(s)) {
+                            if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                                Log.v("CachedModelProxy", "json ref points to an ignored 'current' object: " + entry);
+                                continue Label_0145_Outer;
                             }
-                            this.merge(((JsonElement)entry.getValue()).getAsJsonObject(), (BranchNode)orCreate);
+                            continue Label_0145_Outer;
                         }
-                        break;
-                    }
-                }
-                if (orCreate instanceof Ref) {
-                    orCreate = orCreate;
-                    final JsonElement jsonElement = (JsonElement)entry.getValue();
-                    if (jsonElement.isJsonArray()) {
-                        ((Ref)orCreate).setRefPath(PQL.fromJsonArray(jsonElement.getAsJsonArray()));
-                        continue;
-                    }
-                    if (!jsonElement.isJsonObject()) {
-                        continue;
-                    }
-                    if (jsonElement.getAsJsonObject().has("_sentinel")) {
-                        if (Falkor.ENABLE_VERBOSE_LOGGING) {
-                            Log.v("CachedModelProxy", "key points to sentinel: " + Undefined.getInstance());
+                        else {
+                            if (Log.isLoggable("CachedModelProxy", 5)) {
+                                Log.w("CachedModelProxy", "Don't know how to handle json: " + entry);
+                                continue Label_0145_Outer;
+                            }
+                            continue Label_0145_Outer;
                         }
-                        branchNode.set(s, Undefined.getInstance());
-                        continue;
-                    }
-                    if ("current".equals(s)) {
-                        if (Falkor.ENABLE_VERBOSE_LOGGING) {
-                            Log.v("CachedModelProxy", "json ref points to an ignored 'current' object: " + entry);
-                            continue;
-                        }
-                        continue;
                     }
                     else {
-                        if (Log.isLoggable("CachedModelProxy", 5)) {
-                            Log.w("CachedModelProxy", "Don't know how to handle json: " + entry);
-                            continue;
+                        if (orCreate == null) {
+                            continue Label_0145_Outer;
                         }
-                        continue;
+                        if (orCreate instanceof JsonPopulator) {
+                            ((JsonPopulator)orCreate).populate(entry.getValue());
+                            continue Label_0145_Outer;
+                        }
+                        if (Log.isLoggable("CachedModelProxy", 5)) {
+                            Log.w("CachedModelProxy", "Creating duplicate Leaf object. JsonPopulator should be implemented by: " + ((JsonPopulator)orCreate).getClass());
+                        }
+                        branchNode.set(s, FalkorParseUtils.createObjectFromJson("CachedModelProxy", entry.getValue(), ((JsonPopulator)orCreate).getClass()));
+                        continue Label_0145_Outer;
                     }
+                    break;
                 }
-                else {
-                    if (orCreate == null) {
-                        continue;
-                    }
-                    if (orCreate instanceof JsonPopulator) {
-                        ((JsonPopulator)orCreate).populate((JsonElement)entry.getValue());
-                        continue;
-                    }
-                    if (Log.isLoggable("CachedModelProxy", 5)) {
-                        Log.w("CachedModelProxy", "Creating duplicate Leaf object. JsonPopulator should be implemented by: " + ((JsonPopulator)orCreate).getClass());
-                    }
-                    branchNode.set(s, FalkorParseUtils.createObjectFromJson("CachedModelProxy", (JsonElement)entry.getValue(), ((JsonPopulator)orCreate).getClass()));
-                    continue;
-                }
-                break;
+                continue;
             }
         }
     }

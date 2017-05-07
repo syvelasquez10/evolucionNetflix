@@ -12,7 +12,7 @@ import com.netflix.mediaclient.service.logging.client.model.UIError;
 
 public interface UserActionLogging
 {
-    public static final String[] ACTIONS = { "com.netflix.mediaclient.intent.action.LOG_UIA_SIGNUP_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SIGNUP_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_TO_PLAYLIST_START", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_TO_PLAYLIST_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_LOGIN_START", "com.netflix.mediaclient.intent.action.LOG_UIA_LOGIN_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_REMOVE_FROM_PLAYLIST_START", "com.netflix.mediaclient.intent.action.LOG_UIA_REMOVE_FROM_PLAYLIST_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_NAVIGATION_START", "com.netflix.mediaclient.intent.action.LOG_UIA_NAVIGATION_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_RATE_TITLE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_RATE_TITLE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_REGISTER_START", "com.netflix.mediaclient.intent.action.LOG_UIA_REGISTER_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SEARCH_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SEARCH_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_START_PLAY_START", "com.netflix.mediaclient.intent.action.LOG_UIA_START_PLAY_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SUBMIT_PAYMENT_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SUBMIT_PAYMENT_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_UPGRADE_STREAMS_START", "com.netflix.mediaclient.intent.action.LOG_UIA_UPGRADE_STREAMS_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SELECT_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SELECT_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_EDIT_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_EDIT_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_DELETE_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_DELETE_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_NEW_LOLOMO_START", "com.netflix.mediaclient.intent.action.LOG_UIA_NEW_LOLOMO_ENDED" };
+    public static final String[] ACTIONS = { "com.netflix.mediaclient.intent.action.LOG_UIA_SIGNUP_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SIGNUP_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_TO_PLAYLIST_START", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_TO_PLAYLIST_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_LOGIN_START", "com.netflix.mediaclient.intent.action.LOG_UIA_LOGIN_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_REMOVE_FROM_PLAYLIST_START", "com.netflix.mediaclient.intent.action.LOG_UIA_REMOVE_FROM_PLAYLIST_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_NAVIGATION_START", "com.netflix.mediaclient.intent.action.LOG_UIA_NAVIGATION_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_RATE_TITLE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_RATE_TITLE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_REGISTER_START", "com.netflix.mediaclient.intent.action.LOG_UIA_REGISTER_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SEARCH_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SEARCH_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_START_PLAY_START", "com.netflix.mediaclient.intent.action.LOG_UIA_START_PLAY_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SUBMIT_PAYMENT_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SUBMIT_PAYMENT_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_UPGRADE_STREAMS_START", "com.netflix.mediaclient.intent.action.LOG_UIA_UPGRADE_STREAMS_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SELECT_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SELECT_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_EDIT_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_EDIT_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_DELETE_PROFILE_START", "com.netflix.mediaclient.intent.action.LOG_UIA_DELETE_PROFILE_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_NEW_LOLOMO_START", "com.netflix.mediaclient.intent.action.LOG_UIA_NEW_LOLOMO_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_START", "com.netflix.mediaclient.intent.action.LOG_UIA_RECOMMEND_SHEET_START", "com.netflix.mediaclient.intent.action.LOG_UIA_RECOMMEND_SHEET_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_ENDED", "com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_OPEN_START", "com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_OPEN_ENDED" };
     public static final String ADD_PROFILE_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_ENDED";
     public static final String ADD_PROFILE_START = "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_PROFILE_START";
     public static final String ADD_TO_PLAYLIST_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_ADD_TO_PLAYLIST_ENDED";
@@ -45,6 +45,7 @@ public interface UserActionLogging
     public static final String EXTRA_SUCCESS = "sucess";
     public static final String EXTRA_TERM = "term";
     public static final String EXTRA_TITLE_RANK = "title_rank";
+    public static final String EXTRA_URL = "url";
     public static final String EXTRA_VIEW = "view";
     public static final String LOGIN_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_LOGIN_ENDED";
     public static final String LOGIN_START = "com.netflix.mediaclient.intent.action.LOG_UIA_LOGIN_START";
@@ -54,6 +55,10 @@ public interface UserActionLogging
     public static final String NEW_LOLOMO_START = "com.netflix.mediaclient.intent.action.LOG_UIA_NEW_LOLOMO_START";
     public static final String RATE_TITLE_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_RATE_TITLE_ENDED";
     public static final String RATE_TITLE_START = "com.netflix.mediaclient.intent.action.LOG_UIA_RATE_TITLE_START";
+    public static final String RECOMMEND_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_ENDED";
+    public static final String RECOMMEND_SHEET_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_RECOMMEND_SHEET_ENDED";
+    public static final String RECOMMEND_SHEET_START = "com.netflix.mediaclient.intent.action.LOG_UIA_RECOMMEND_SHEET_START";
+    public static final String RECOMMEND_START = "com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_START";
     public static final String REGISTER_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_REGISTER_ENDED";
     public static final String REGISTER_START = "com.netflix.mediaclient.intent.action.LOG_UIA_REGISTER_START";
     public static final String REMOVE_FROM_PLAYLIST_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_REMOVE_FROM_PLAYLIST_ENDED";
@@ -64,6 +69,10 @@ public interface UserActionLogging
     public static final String SEARCH_START = "com.netflix.mediaclient.intent.action.LOG_UIA_SEARCH_START";
     public static final String SELECT_PROFILE_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_SELECT_PROFILE_ENDED";
     public static final String SELECT_PROFILE_START = "com.netflix.mediaclient.intent.action.LOG_UIA_SELECT_PROFILE_START";
+    public static final String SHARE_SHEET_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_ENDED";
+    public static final String SHARE_SHEET_OPEN_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_OPEN_ENDED";
+    public static final String SHARE_SHEET_OPEN_START = "com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_OPEN_START";
+    public static final String SHARE_SHEET_START = "com.netflix.mediaclient.intent.action.LOG_UIA_SHARE_SHEET_START";
     public static final String SIGNUP_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_SIGNUP_ENDED";
     public static final String SIGNUP_START = "com.netflix.mediaclient.intent.action.LOG_UIA_SIGNUP_START";
     public static final String START_PLAY_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_START_PLAY_ENDED";
@@ -79,6 +88,8 @@ public interface UserActionLogging
     
     void endAddToPlaylistSession(final IClientLogging$CompletionReason p0, final UIError p1, final int p2);
     
+    void endAllActiveSessions();
+    
     void endDeleteProfileSession(final IClientLogging$CompletionReason p0, final IClientLogging$ModalView p1, final UIError p2);
     
     void endEditProfileSession(final IClientLogging$CompletionReason p0, final IClientLogging$ModalView p1, final UIError p2, final UserActionLogging$Profile p3);
@@ -91,6 +102,8 @@ public interface UserActionLogging
     
     void endRateTitleSession(final IClientLogging$CompletionReason p0, final UIError p1, final Integer p2, final int p3);
     
+    void endRecommendSheetSession(final IClientLogging$CompletionReason p0, final IClientLogging$ModalView p1, final UIError p2);
+    
     void endRegisterSession(final IClientLogging$CompletionReason p0, final UIError p1);
     
     void endRemoveFromPlaylistSession(final IClientLogging$CompletionReason p0, final UIError p1);
@@ -100,6 +113,10 @@ public interface UserActionLogging
     void endSearchSession(final long p0, final IClientLogging$CompletionReason p1, final UIError p2);
     
     void endSelectProfileSession(final IClientLogging$CompletionReason p0, final IClientLogging$ModalView p1, final UIError p2);
+    
+    void endShareSheetOpenSession(final IClientLogging$CompletionReason p0, final IClientLogging$ModalView p1, final UIError p2);
+    
+    void endShareSheetSession(final IClientLogging$CompletionReason p0, final IClientLogging$ModalView p1, final UIError p2);
     
     void endStartPlaySession(final IClientLogging$CompletionReason p0, final UIError p1, final Integer p2, final PlayerType p3);
     
@@ -129,6 +146,8 @@ public interface UserActionLogging
     
     void startRateTitleSession(final UserActionLogging$CommandName p0, final IClientLogging$ModalView p1);
     
+    void startRecommendSheetSession(final UserActionLogging$CommandName p0, final IClientLogging$ModalView p1);
+    
     void startRegisterSession(final UserActionLogging$CommandName p0, final IClientLogging$ModalView p1);
     
     void startRemoveFromPlaylistSession(final UserActionLogging$CommandName p0, final IClientLogging$ModalView p1);
@@ -138,6 +157,10 @@ public interface UserActionLogging
     void startSearchSession(final long p0, final UserActionLogging$CommandName p1, final IClientLogging$ModalView p2, final String p3);
     
     void startSelectProfileSession(final String p0, final UserActionLogging$RememberProfile p1, final UserActionLogging$CommandName p2, final IClientLogging$ModalView p3);
+    
+    void startShareSheetOpenSession(final String p0, final UserActionLogging$CommandName p1, final IClientLogging$ModalView p2);
+    
+    void startShareSheetSession(final String p0, final UserActionLogging$CommandName p1, final IClientLogging$ModalView p2);
     
     void startStartPlaySession(final UserActionLogging$CommandName p0, final IClientLogging$ModalView p1);
     

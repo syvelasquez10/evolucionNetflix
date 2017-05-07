@@ -12,7 +12,7 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.IntentUtils;
 import android.net.Uri;
-import com.netflix.mediaclient.util.SocialNotificationsUtils;
+import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import com.netflix.mediaclient.android.app.BackgroundTask;
@@ -220,7 +220,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
                 }
                 this.saveSettings();
                 this.mCurrentUserSettings = null;
-                SocialNotificationsUtils.removeSocialNotificationsFromStatusBar(this.getContext());
+                SocialUtils.removeSocialNotificationsFromStatusBar(this.getContext());
             }
         }
     }
@@ -256,7 +256,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
     }
     
     private void onNotificationCanceled(final Intent intent) {
-        SocialNotificationsUtils.ifSocialNotificationWasCanceledUpdateItsStatus(this.getContext(), intent, "nf_push");
+        SocialUtils.ifSocialNotificationWasCanceledUpdateItsStatus(this.getContext(), intent, "nf_push");
         final MessageData instance = MessageData.createInstance(intent);
         if (instance == null) {
             Log.e("nf_push", "Unable to report canceled notification since message data are missing!");
