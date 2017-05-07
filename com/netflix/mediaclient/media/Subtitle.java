@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.media;
 
 import org.json.JSONException;
+import com.netflix.mediaclient.ui.player.NccpSubtitle;
 import com.netflix.mediaclient.ui.mdx.MdxSubtitle;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
@@ -13,7 +14,6 @@ public abstract class Subtitle implements Comparable<Subtitle>
 {
     protected static final String ATTR_CAN_DEVICE_RENDER = "canDeviceRender";
     protected static final String ATTR_ID = "id";
-    protected static final String ATTR_LABEL = "label";
     protected static final String ATTR_LANGUAGE = "language";
     protected static final String ATTR_LANGUAGE_DESCRIPTION = "languageDescription";
     protected static final String ATTR_ORDER = "order";

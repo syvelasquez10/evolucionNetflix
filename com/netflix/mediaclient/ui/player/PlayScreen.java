@@ -73,7 +73,7 @@ public class PlayScreen implements Screen
         this.listeners = listeners;
         this.mTopPanel = new TopPanel(mController, listeners.audioPositionListener);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        this.mSurface = (TappableSurfaceView)mController.findViewById(2131099882);
+        this.mSurface = (TappableSurfaceView)mController.findViewById(2131231021);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -82,10 +82,10 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)mController.findViewById(2131099883);
-        this.mBackground = (RelativeLayout)mController.findViewById(2131099881);
-        this.mBufferingOverlay = mController.findViewById(2131099868);
-        this.mBif = (ImageView)mController.findViewById(2131099833);
+        this.mFlipper = (ViewFlipper)mController.findViewById(2131231022);
+        this.mBackground = (RelativeLayout)mController.findViewById(2131231020);
+        this.mBufferingOverlay = mController.findViewById(2131231002);
+        this.mBif = (ImageView)mController.findViewById(2131230967);
         this.moveToState(0);
     }
     
@@ -121,7 +121,7 @@ public class PlayScreen implements Screen
     private void moveToLoaded() {
         Log.d("screen", "STATE_LOADED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131165206);
+        final int color = this.mController.getResources().getColor(2131165219);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -140,7 +140,7 @@ public class PlayScreen implements Screen
     private void moveToLoadedTapped() {
         Log.d("screen", "STATE_LOADED_TAPPED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131165206);
+        final int color = this.mController.getResources().getColor(2131165219);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -413,12 +413,6 @@ public class PlayScreen implements Screen
         final BottomPanel mBottomPanel = this.mBottomPanel;
         if (mBottomPanel != null && mBottomPanel.getLastTime() != null) {
             mBottomPanel.getLastTime().setLastTimeState(lastTimeState);
-        }
-    }
-    
-    void setMdxTargetSelector(final MdxTargetSelection mdxTargetSelector) {
-        synchronized (this) {
-            this.mBottomPanel.setMdxTargetSelector(mdxTargetSelector);
         }
     }
     

@@ -105,8 +105,8 @@ public final class PlaybackLauncher
         return isExisitingMdxTargetAvailable(mdx, currentTarget);
     }
     
-    public static boolean startPlayback(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext) {
-        return startPlayback(netflixActivity, Asset.create(playable, playContext));
+    public static void startPlayback(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext) {
+        startPlayback(netflixActivity, Asset.create(playable, playContext));
     }
     
     public static boolean startPlayback(final NetflixActivity netflixActivity, final Asset asset) {
@@ -114,21 +114,23 @@ public final class PlaybackLauncher
     }
     
     private static boolean startPlayback(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
-        if (b) {
-            Log.d("nf_play", "Starting MDX remote playback");
-            MdxAgent.Utils.playVideo(netflixActivity, asset);
-            new Handler(netflixActivity.getMainLooper()).postDelayed((Runnable)new Runnable() {
-                final /* synthetic */ Context val$context = netflixActivity.getApplication();
-                
-                @Override
-                public void run() {
-                    MdxMiniPlayerFrag.sendShowAndDisableIntent(this.val$context);
-                }
-            }, 250L);
+        if (!b) {
+            Log.d("nf_play", "Start local playback");
+            PlayerActivity.playVideo(netflixActivity, asset);
             return b;
         }
-        Log.d("nf_play", "Start local playback");
-        PlayerActivity.playVideo(netflixActivity, asset);
+        Log.d("nf_play", "Starting MDX remote playback");
+        if (!MdxAgent.Utils.playVideo(netflixActivity, asset)) {
+            return b;
+        }
+        new Handler(netflixActivity.getMainLooper()).postDelayed((Runnable)new Runnable() {
+            final /* synthetic */ Context val$context = netflixActivity.getApplication();
+            
+            @Override
+            public void run() {
+                MdxMiniPlayerFrag.sendShowAndDisableIntent(this.val$context);
+            }
+        }, 250L);
         return b;
     }
     
@@ -153,7 +155,7 @@ public final class PlaybackLauncher
             }
             if (n != 0 || videoDetails == null) {
                 Log.w("nf_play", "Error loading video details for MDX launch - hiding mini player");
-                Toast.makeText((Context)this.activity, 2131493054, 1).show();
+                Toast.makeText((Context)this.activity, 2131296491, 1).show();
                 this.activity.hideMdxMiniPlayer();
                 return;
             }

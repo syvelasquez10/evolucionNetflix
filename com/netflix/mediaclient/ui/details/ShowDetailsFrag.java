@@ -80,7 +80,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
-        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131099936);
+        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131231075);
         if (linearLayout != null) {
             linearLayout.setOrientation(1);
             for (int i = 0; i < linearLayout.getChildCount(); ++i) {
@@ -90,7 +90,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
                 child.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
             }
         }
-        final View viewById = onCreateView.findViewById(2131099922);
+        final View viewById = onCreateView.findViewById(2131231061);
         if (viewById != null && DeviceUtils.isTabletByContext((Context)this.getActivity())) {
             viewById.setVisibility(0);
         }
@@ -156,12 +156,12 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
         
         @Override
         public CharSequence getCreatorsText() {
-            return StringUtils.createBoldLabeledText(this.context, 2131493113, this.details.getCreators());
+            return StringUtils.createBoldLabeledText(this.context, 2131296550, this.details.getCreators());
         }
         
         @Override
         public CharSequence getStarringText() {
-            return StringUtils.createBoldLabeledText(this.context, 2131493112, this.details.getActors());
+            return StringUtils.createBoldLabeledText(this.context, 2131296549, this.details.getActors());
         }
     }
 }

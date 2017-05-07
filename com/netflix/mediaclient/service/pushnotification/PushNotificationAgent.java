@@ -208,7 +208,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             try {
                 // iftrue(Label_0170:, StringUtils.safeEquals(this.mCurrentUserSettings.currentProfileUserId, currentProfileUserId))
                 while (true) {
-                Label_0170:
+                Block_5:
                     while (true) {
                         Log.d("nf_push", "Checks if application is updated (only if app was registered before)...");
                         if (this.isApplicationUpdated()) {
@@ -225,15 +225,17 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
                         }
                         return;
                         this.mCurrentUserSettings.current = true;
-                        Log.d("nf_push", "currentProfile change detected");
-                        b = true;
-                        this.updateCurrentUserSettings(currentProfileUserId);
-                        break Label_0170;
+                        break Block_5;
                         Log.d("nf_push", "User was know from before and he opted in " + this.mCurrentUserSettings.optedIn);
                         b2 = b;
                         continue;
                     }
-                    b2 = b;
+                    Log.d("nf_push", "currentProfile change detected");
+                    b = true;
+                    this.updateCurrentUserSettings(currentProfileUserId);
+                    Label_0170: {
+                        b2 = b;
+                    }
                     continue;
                 }
             }

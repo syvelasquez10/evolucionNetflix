@@ -11,6 +11,7 @@ import com.netflix.mediaclient.media.Subtitle;
 
 public final class MdxSubtitle extends Subtitle
 {
+    protected static final String ATTR_LABEL = "label";
     public static final int IMPL_VALUE = 2;
     private final boolean mSelected;
     

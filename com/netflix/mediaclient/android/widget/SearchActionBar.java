@@ -36,8 +36,8 @@ public class SearchActionBar extends NetflixActionBar
                 }
             }
         };
-        this.progressSpinner = (ProgressBar)this.getContentView().findViewById(2131099668);
-        (this.searchView = (SearchView)this.getContentView().findViewById(2131099667)).setIconified(false);
+        this.progressSpinner = (ProgressBar)this.getContentView().findViewById(2131230801);
+        (this.searchView = (SearchView)this.getContentView().findViewById(2131230800)).setIconified(false);
         this.searchView.setIconifiedByDefault(false);
         this.searchView.setImeOptions(33554435);
         this.searchView.setInputType(8192);
@@ -53,14 +53,14 @@ public class SearchActionBar extends NetflixActionBar
     private void configureSearchViewIcon() {
         final ImageView imageView = (ImageView)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_mag_icon", (String)null, (String)null));
         if (imageView != null) {
-            imageView.setImageResource(2130837597);
+            imageView.setImageResource(2130837712);
         }
     }
     
     private void configureSearchViewTextView() {
         final TextView textView = (TextView)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_src_text", (String)null, (String)null));
         if (textView != null) {
-            textView.setHintTextColor(this.searchView.getResources().getColor(2131165216));
+            textView.setHintTextColor(this.searchView.getResources().getColor(2131165229));
             textView.setImeOptions(33554432);
         }
     }
@@ -75,8 +75,8 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     private void replaceBackgroundDrawables() {
-        this.replaceBackgroundDrawable("android:id/search_plate", 2130837684);
-        this.replaceBackgroundDrawable("android:id/submit_area", 2130837685);
+        this.replaceBackgroundDrawable("android:id/search_plate", 2130837816);
+        this.replaceBackgroundDrawable("android:id/submit_area", 2130837817);
     }
     
     public void clearFocus() {
@@ -89,7 +89,7 @@ public class SearchActionBar extends NetflixActionBar
     
     @Override
     protected int getLayoutId() {
-        return 2130903042;
+        return 2130903065;
     }
     
     public void hideProgressSpinner() {

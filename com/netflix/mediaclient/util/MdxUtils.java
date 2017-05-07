@@ -34,13 +34,13 @@ public final class MdxUtils
         targetSelection.setTarget(devicePositionByUUID);
         final MdxTargetSelectionDialog.Builder builder = new MdxTargetSelectionDialog.Builder(netflixActivity);
         builder.setCancelable(true);
-        builder.setTitle(2131493087);
+        builder.setTitle(2131296524);
         builder.setAdapterData(targetSelection.getTargets((Context)netflixActivity));
         String format = "";
         if (mdxTargetSelectionDialogInterface.getVideoDetails() != null) {
             format = format;
             if (StringUtils.isNotEmpty(mdxTargetSelectionDialogInterface.getVideoDetails().getTitle())) {
-                format = String.format(netflixActivity.getString(2131493178), mdxTargetSelectionDialogInterface.getVideoDetails().getTitle());
+                format = String.format(netflixActivity.getString(2131296615), mdxTargetSelectionDialogInterface.getVideoDetails().getTitle());
             }
         }
         builder.setSelection(devicePositionByUUID, format);

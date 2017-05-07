@@ -18,9 +18,9 @@ public interface Playable extends Video
     
     int getPlayableBookmarkPosition();
     
-    String getPlayableId();
+    long getPlayableBookmarkUpdateTime();
     
-    long getPlayableServerBookmarkUpdateTime();
+    String getPlayableId();
     
     String getPlayableTitle();
     

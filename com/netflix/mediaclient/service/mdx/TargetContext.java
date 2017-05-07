@@ -236,12 +236,17 @@ public class TargetContext implements TargetStateManagerListener
         return (StringUtils.isNotEmpty(this.mUuid) && this.mUuid.equals(s)) || (StringUtils.isNotEmpty(this.mDialUuid) && this.mDialUuid.equals(s));
     }
     
-    public void launchSucceed() {
+    public void launchResult(final boolean b) {
         final Message message = new Message();
         message.what = 1;
-        message.obj = TargetContextEvent.LaunchSucceed;
+        if (b) {
+            message.obj = TargetContextEvent.LaunchSucceed;
+        }
+        else {
+            message.obj = TargetContextEvent.LaunchFailed;
+        }
         this.mTargetContextHandler.sendMessage(message);
-        Log.d("nf_mdx", "TargetContext: send LaunchSucceed");
+        Log.d("nf_mdx", "TargetContext: send launchResult");
     }
     
     public void messageDelivered(final int n) {
@@ -680,7 +685,11 @@ public class TargetContext implements TargetStateManagerListener
             TargetContext.this.mController.getDiscovery().isRemoteDeviceReady(TargetContext.this.mDialUsn);
             final HashMap<String, String> hashMap = new HashMap<String, String>();
             hashMap.put("intent", "sync");
-            TargetContext.this.mController.getDiscovery().launchNetflix(TargetContext.this.mDialUsn, hashMap);
+            if (StringUtils.isNotEmpty(TargetContext.this.mDialUsn)) {
+                TargetContext.this.mController.getDiscovery().launchNetflix(TargetContext.this.mDialUsn, hashMap);
+                return;
+            }
+            TargetContext.this.mController.getDiscovery().launchNetflix(TargetContext.this.mUsn, hashMap);
         }
     }
     

@@ -25,18 +25,20 @@ import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import android.text.format.Formatter;
 import android.os.StatFs;
-import android.os.Environment;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import java.security.NoSuchAlgorithmException;
 import android.content.pm.PackageManager$NameNotFoundException;
 import android.util.Base64;
 import java.security.MessageDigest;
-import com.netflix.mediaclient.Log;
 import android.os.Build$VERSION;
 import android.os.StrictMode$VmPolicy$Builder;
 import android.os.StrictMode;
 import android.os.StrictMode$ThreadPolicy$Builder;
+import android.os.Debug;
+import com.netflix.mediaclient.Log;
+import java.io.File;
+import android.os.Environment;
 import java.io.IOException;
 import android.content.Context;
 import java.util.regex.Pattern;
@@ -54,6 +56,7 @@ public final class AndroidUtils
     private static final Pattern UID_PATTERN;
     public static final boolean debug = false;
     public static final boolean enableTestServer = false;
+    public static final boolean release = true;
     private static String rootShell;
     
     static {
@@ -283,6 +286,24 @@ public final class AndroidUtils
     
     private static String doRunCommand(final String s, final OUTPUT output) throws IOException {
         return doRunCommanByProcess("/system/bin/sh", s, output);
+    }
+    
+    public static void dumpHprofToDisk() {
+        final File externalStoragePublicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        externalStoragePublicDirectory.mkdirs();
+        final String absolutePath = new File(externalStoragePublicDirectory, "netflix.prof").getAbsolutePath();
+        try {
+            Log.v("nf_utils", "************************************************************");
+            Log.v("nf_utils", "Dumping HPROF profile to file...");
+            Log.v("nf_utils", "************************************************************");
+            Debug.dumpHprofData(absolutePath);
+            Log.v("nf_utils", "************************************************************");
+            Log.v("nf_utils", "Dump complete.  File: " + absolutePath);
+            Log.v("nf_utils", "************************************************************");
+        }
+        catch (IOException ex) {
+            Log.handleException("nf_utils", ex);
+        }
     }
     
     public static String dumpMemInfo(final String s) {

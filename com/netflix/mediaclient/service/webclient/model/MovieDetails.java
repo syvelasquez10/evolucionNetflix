@@ -168,21 +168,24 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     
     @Override
     public int getPlayableBookmarkPosition() {
-        Log.d("nf_service_browse_moviedetails", String.format("id %s bookmark %d playPos %d endtime %d runtime %d", this.getId(), this.getBookmarkPosition(), BrowseAgent.getPlayablePosition(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime()), this.getEndtime(), this.getRuntime()));
-        return BrowseAgent.getPlayablePosition(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime());
+        final int computePlayPos = BrowseAgent.computePlayPos(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime());
+        if (Log.isLoggable("nf_service_browse_moviedetails", 3)) {
+            Log.d("nf_service_browse_moviedetails", String.format("id %s bookmark %d playPos %d endtime %d runtime %d", this.getId(), this.getBookmarkPosition(), computePlayPos, this.getEndtime(), this.getRuntime()));
+        }
+        return computePlayPos;
+    }
+    
+    @Override
+    public long getPlayableBookmarkUpdateTime() {
+        if (this.bookmark == null) {
+            return -1L;
+        }
+        return this.bookmark.getLastModified();
     }
     
     @Override
     public String getPlayableId() {
         return this.getId();
-    }
-    
-    @Override
-    public long getPlayableServerBookmarkUpdateTime() {
-        if (this.bookmark == null) {
-            return -1L;
-        }
-        return this.bookmark.getLastModified();
     }
     
     @Override
@@ -335,5 +338,10 @@ public class MovieDetails extends Movie implements com.netflix.mediaclient.servi
     @Override
     public void setUserRating(final float userRating) {
         this.rating.userRating = userRating;
+    }
+    
+    @Override
+    public String toString() {
+        return "MovieDetails [similarListSummary=" + this.similarListSummary + ", userConnectedToFacebook=" + this.userConnectedToFacebook + ", summary=" + this.summary + ", detail=" + this.detail + ", bookmark=" + this.bookmark + ", inQueue=" + this.inQueue + ", rating=" + this.rating + ", bookmarkStill=" + this.bookmarkStill + ", similars=" + this.similars + ", socialEvidence=" + this.socialEvidence + "]";
     }
 }

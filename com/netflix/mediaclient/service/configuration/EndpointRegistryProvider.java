@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
 import com.netflix.mediaclient.util.AppStoreHelper;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.UriUtil;
@@ -178,7 +179,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     }
     
     public String getDeviceConfigUrl() {
-        return this.getConfigUrlFull() + this.buildUrlParam("path", UriUtil.urlEncodeParam("['deviceConfig']"));
+        return this.getConfigUrlFull() + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql));
     }
     
     @Override

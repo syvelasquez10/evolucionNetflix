@@ -84,10 +84,10 @@ final class EnhancedSubtitleManager implements SubtitleManager
             throw new IllegalArgumentException("Player screen is not initialized!");
         }
         if (this.mActivity.isTablet()) {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361884);
+            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131492973);
         }
         else {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361883);
+            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131492972);
         }
         this.createDefaults();
         this.mHorizontalRegionPadding = AndroidUtils.dipToPixels((Context)mActivity, 5);
@@ -194,7 +194,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
         }
         if (textStyleDefault == null) {
             Log.e("nf_subtitles_render", "Style does NOT exist, apply default! This should NEVER happen!");
-            textView.setTextColor(this.mActivity.getResources().getColor(2131165211));
+            textView.setTextColor(this.mActivity.getResources().getColor(2131165224));
             textView.setTextSize(0, this.mDefaultTextSize);
             return;
         }
@@ -262,7 +262,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
         Log.v("nf_subtitles_render", "Create handler.");
         this.mHandler = new Handler();
         Log.v("nf_subtitles_render", "Find root display area");
-        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131099887);
+        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131231026);
         if (this.mDisplayArea == null) {
             Log.e("nf_subtitles_render", "Display area NOT found! This should NOT happen!");
             return;
@@ -787,7 +787,20 @@ final class EnhancedSubtitleManager implements SubtitleManager
                 Log.v("nf_subtitles_render", "Display area: w " + this.mDisplayArea.getWidth() + ", h " + this.mDisplayArea.getHeight());
                 Log.v("nf_subtitles_render", "Region w/h " + width + "/" + height + " known, set them");
             }
-            relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(width, height);
+            if (this.mDisplayArea != null) {
+                if (height < this.mDisplayArea.getHeight() / 2) {
+                    Log.d("nf_subtitles_render", "Use wrap content for height");
+                    relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(width, -2);
+                }
+                else {
+                    Log.d("nf_subtitles_render", "Use region height");
+                    relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(width, height);
+                }
+            }
+            else {
+                Log.d("nf_subtitles_render", "Use wrap content for height");
+                relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(width, -2);
+            }
         }
         if (doubleLength2 != null && doubleLength2.isValid() && doubleLength != null && doubleLength.isValid()) {
             final int left = regionForRectangle.left;

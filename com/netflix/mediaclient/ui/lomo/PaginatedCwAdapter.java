@@ -45,7 +45,7 @@ public class PaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
     }
     
     public static int getViewHeightInPixels(final Context context) {
-        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth(context, true) / ((SparseIntArray)PaginatedCwAdapter.numVideosPerPageTable.get(DeviceUtils.getBasicScreenOrientation(context))).get(DeviceUtils.getScreenSizeCategory(context)) * 0.562f + 0.5f) + context.getResources().getDimensionPixelOffset(2131361859);
+        final int n = (int)(BasePaginatedAdapter.computeViewPagerWidth(context, true) / ((SparseIntArray)PaginatedCwAdapter.numVideosPerPageTable.get(DeviceUtils.getBasicScreenOrientation(context))).get(DeviceUtils.getScreenSizeCategory(context)) * 0.562f + 0.5f) + context.getResources().getDimensionPixelOffset(2131492948);
         Log.v("PaginatedCwAdapter", "Computed view height: " + n);
         return n;
     }

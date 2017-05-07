@@ -289,7 +289,7 @@ public class Payload
         }
         
         public int getIcon() {
-            return 2130837603;
+            return 2130837718;
         }
         
         public Uri getPayload() {

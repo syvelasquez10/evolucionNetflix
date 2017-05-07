@@ -99,7 +99,7 @@ public class Asset implements Parcelable, PlayContext
             asset.mTitle = playable.getPlayableTitle();
             asset.mParentTitle = playable.getParentTitle();
             asset.mPlaybackBookmark = playable.getPlayableBookmarkPosition();
-            asset.mWatchedDate = playable.getPlayableServerBookmarkUpdateTime();
+            asset.mWatchedDate = playable.getPlayableBookmarkUpdateTime();
             asset.mDuration = playable.getRuntime();
             asset.mEndtime = playable.getEndtime();
             asset.mSeasonNumber = playable.getSeasonNumber();

@@ -22,13 +22,13 @@ public final class HandshakeAccepted extends MdxMessage
     public HandshakeAccepted(final JSONObject mJson) throws JSONException {
         super("HANDSHAKE_ACCEPTED");
         this.mJson = mJson;
-        this.mContractVersion = mJson.getInt("contractVersion");
+        this.mContractVersion = mJson.optInt("contractVersion");
         this.mAccepted = mJson.getBoolean("accepted");
         if (mJson.has("volumeControl")) {
-            this.mVolumeControl = mJson.getBoolean("volumeControl");
+            this.mVolumeControl = mJson.optBoolean("volumeControl");
         }
         if (mJson.has("volumeStep")) {
-            this.mVolumeStep = mJson.getInt("volumeStep");
+            this.mVolumeStep = mJson.optInt("volumeStep");
         }
     }
     

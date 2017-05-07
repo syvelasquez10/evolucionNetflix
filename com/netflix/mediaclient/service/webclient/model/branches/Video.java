@@ -42,7 +42,6 @@ public class Video
     
     public static class BookmarkStill
     {
-        public String stillType;
         public String stillUrl;
     }
     
@@ -69,6 +68,11 @@ public class Video
         public String synopsis;
         public String tvCardUrl;
         public int year;
+        
+        @Override
+        public String toString() {
+            return "Detail [year=" + this.year + ", synopsis=" + this.synopsis + ", quality=" + this.quality + ", directors=" + this.directors + ", actors=" + this.actors + ", genres=" + this.genres + ", certification=" + this.certification + ", predictedRating=" + this.predictedRating + ", horzDispUrl=" + this.horzDispUrl + ", restUrl=" + this.restUrl + ", bifUrl=" + this.bifUrl + ", baseUrl=" + this.baseUrl + ", tvCardUrl=" + this.tvCardUrl + ", mdxHorzUrl=" + this.mdxHorzUrl + ", mdxVertUrl=" + this.mdxVertUrl + ", storyImgUrl=" + this.storyImgUrl + ", episodeCount=" + this.episodeCount + ", seasonCount=" + this.seasonCount + ", isHdAvailable=" + this.isHdAvailable + ", runtime=" + this.runtime + ", endtime=" + this.endtime + "]";
+        }
     }
     
     public static class InQueue

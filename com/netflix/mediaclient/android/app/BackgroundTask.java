@@ -31,7 +31,7 @@ public class BackgroundTask
             try {
                 for (int length = array.length, i = 0; i < length; ++i) {
                     final Runnable runnable = array[i];
-                    Thread.currentThread().setName(runnable.getClass().getName());
+                    Thread.currentThread().setName("BackgroundTask-" + runnable.getClass().getSimpleName());
                     runnable.run();
                 }
             }

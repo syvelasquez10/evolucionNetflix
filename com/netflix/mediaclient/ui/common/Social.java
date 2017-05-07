@@ -67,7 +67,7 @@ public class Social extends Section
     }
     
     private void initSocial() {
-        this.mShareButton = (ImageButton)this.mContext.findViewById(2131099841);
+        this.mShareButton = (ImageButton)this.mContext.findViewById(2131230975);
         if (this.mShareButton != null) {
             this.mShareButton.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
                 public void onClick(final View view) {
@@ -79,8 +79,8 @@ public class Social extends Section
         else {
             Log.e("playcard", "Social button not found!");
         }
-        this.mNotSharingButton = this.mContext.findViewById(2131099870);
-        this.mNotSharingLabel = this.mContext.findViewById(2131099871);
+        this.mNotSharingButton = this.mContext.findViewById(2131231004);
+        this.mNotSharingLabel = this.mContext.findViewById(2131231005);
         if (this.mNotSharingButton != null) {
             this.mNotSharingButton.setOnTouchListener((View$OnTouchListener)new View$OnTouchListener() {
                 public boolean onTouch(final View view, final MotionEvent motionEvent) {

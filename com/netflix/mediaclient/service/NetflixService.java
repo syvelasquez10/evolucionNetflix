@@ -72,6 +72,8 @@ import android.app.Service;
 
 public final class NetflixService extends Service implements INetflixService
 {
+    public static final String ACTION_EXPAND_MDX_MINI_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_EXPAND_MDX_MINI_PLAYER";
+    private static final String ACTION_SHOW_MDX_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER";
     private static final long SERVICE_INIT_TIMEOUT_MS = 90000L;
     private static final long SERVICE_KILL_DELAY_MS = 28800000L;
     private static final String TAG = "NetflixService";
@@ -90,6 +92,7 @@ public final class NetflixService extends Service implements INetflixService
     private MdxAgent mMdxAgent;
     private boolean mMdxEnabled;
     private final BroadcastReceiver mMdxReceiver;
+    private final BroadcastReceiver mMdxShowPlayerIntent;
     private final BroadcastReceiver mNetworkChangeReceiver;
     private NrdController mNrdController;
     private PlayerAgent mPlayerAgent;
@@ -205,6 +208,24 @@ public final class NetflixService extends Service implements INetflixService
                 }
             }
         };
+        this.mMdxShowPlayerIntent = new BroadcastReceiver() {
+            public void onReceive(final Context context, final Intent intent) {
+                if (intent == null || !"com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER".equals(intent.getAction())) {
+                    Log.v("NetflixService", "Invalid intent: ");
+                    AndroidUtils.logIntent("NetflixService", intent);
+                    return;
+                }
+                Log.v("NetflixService", "Sending show app intent");
+                NetflixService.this.startActivity(NetflixApplication.createShowApplicationIntent((Context)NetflixService.this).addFlags(268435456));
+                NetflixService.this.handler.postDelayed((Runnable)new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.v("NetflixService", "Sending show mini player intent");
+                        NetflixService.this.sendBroadcast(new Intent("com.netflix.mediaclient.service.ACTION_EXPAND_MDX_MINI_PLAYER"));
+                    }
+                }, 400L);
+            }
+        };
         this.mNetworkChangeReceiver = new BroadcastReceiver() {
             public void onReceive(final Context context, final Intent intent) {
                 NetflixService.this.mNrdController.setNetworkInterfaces();
@@ -215,6 +236,10 @@ public final class NetflixService extends Service implements INetflixService
     
     public static boolean areFetchErrorsEnabled() {
         return false;
+    }
+    
+    public static Intent createShowMdxPlayerBroadcastIntent() {
+        return new Intent("com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER");
     }
     
     private void doStartCommand(final Intent intent, final int n, final int n2) {
@@ -239,7 +264,7 @@ public final class NetflixService extends Service implements INetflixService
     }
     
     private void enableMdxAgentAndInit(final ServiceAgent.AgentContext agentContext, final ServiceAgent.InitCallback initCallback) {
-        this.mMdxEnabled = (AndroidUtils.getAndroidVersion() > 8 && !this.mConfigurationAgent.isDisableMdxFlagSet());
+        this.mMdxEnabled = (AndroidUtils.getAndroidVersion() > 8 && !this.mConfigurationAgent.isDisableMdx());
         if (this.mMdxEnabled) {
             this.mMdxAgent = new MdxAgent();
             this.registerMdxReceiver();
@@ -344,6 +369,7 @@ public final class NetflixService extends Service implements INetflixService
         this.mInitComplete = true;
         if (isServiceReady(this.mInitStatusCode)) {
             this.registerReceiver(this.mNetworkChangeReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+            this.registerReceiver(this.mMdxShowPlayerIntent, new IntentFilter("com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER"));
             this.mNrdController.setNetworkInterfaces();
             Log.d("NetflixService", "Send local intent that Netflix service is ready");
             final Intent intent = new Intent("com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_INIT_COMPLETE");
@@ -395,27 +421,24 @@ public final class NetflixService extends Service implements INetflixService
         this.registerReceiver(this.mMdxReceiver, intentFilter);
     }
     
+    private void safeUnregisterReceiver(final BroadcastReceiver broadcastReceiver, final String s) {
+        if (broadcastReceiver == null) {
+            Log.d("NetflixService", "Unable to unregister, receiver is null");
+            return;
+        }
+        try {
+            if (Log.isLoggable("NetflixService", 3)) {
+                Log.d("NetflixService", "Unregister " + s);
+            }
+            this.unregisterReceiver(broadcastReceiver);
+        }
+        catch (Throwable t) {
+            Log.e("NetflixService", "Unregister " + s + " failed.", t);
+        }
+    }
+    
     public static boolean toggleFetchErrorsEnabled() {
         return NetflixService.fetchErrorsEnabled = !NetflixService.fetchErrorsEnabled;
-    }
-    
-    private void unRegisterNtwkReceiver() {
-        try {
-            Log.d("NetflixService", "Unregister Network Receiver");
-            this.unregisterReceiver(this.mNetworkChangeReceiver);
-        }
-        catch (Exception ex) {
-            Log.i("NetflixService", "unregisterNtwkReceiver " + ex.getMessage());
-        }
-    }
-    
-    private void unregisterMdxReceiver() {
-        try {
-            this.unregisterReceiver(this.mMdxReceiver);
-        }
-        catch (Exception ex) {
-            Log.e("NetflixService", "error in unregisterMdxReceiver: " + ex.getMessage());
-        }
     }
     
     private BrowseAgentCallback wrapCallback(final BrowseAgentCallback browseAgentCallback) {
@@ -682,14 +705,15 @@ public final class NetflixService extends Service implements INetflixService
     public void onDestroy() {
         super.onDestroy();
         Log.i("NetflixService", "NetflixService.onDestroy.");
-        Log.d("NetflixService", "Send local intent that Netflix service is ready");
+        Log.d("NetflixService", "Send local intent that Netflix service is destroyed");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_DESTROYED");
         intent.addCategory("com.netflix.mediaclient.intent.category.NETFLIX_SERVICE");
         LocalBroadcastManager.getInstance((Context)this).sendBroadcast(intent);
         if (this.mMdxEnabled) {
-            this.unregisterMdxReceiver();
+            this.safeUnregisterReceiver(this.mMdxReceiver, "MDX receiver");
         }
-        this.unRegisterNtwkReceiver();
+        this.safeUnregisterReceiver(this.mNetworkChangeReceiver, "network receiver");
+        this.safeUnregisterReceiver(this.mMdxShowPlayerIntent, "mdx show player receiver");
         this.mClientCallbacks.clear();
         if (this.mMdxEnabled) {
             this.mMdxAgent.destroy();

@@ -7,6 +7,7 @@ package com.netflix.mediaclient.media;
 import android.view.SurfaceView;
 import com.netflix.mediaclient.media.JPlayer.JPlayer;
 import android.view.SurfaceHolder;
+import com.netflix.mediaclient.service.configuration.BitrateRangeFactory;
 import android.content.Context;
 import android.view.Surface;
 import com.netflix.mediaclient.javabridge.ui.IMedia;
@@ -45,7 +46,7 @@ public class JPlayer2Helper implements MediaPlayerHelper
         if (this.jp != null) {
             this.jp.release();
         }
-        this.jp = new JPlayer2(surface);
+        (this.jp = new JPlayer2(surface)).setMaxVideoBitrate(BitrateRangeFactory.getBitrateCap(context));
         media.setVOapi(0L, this.jp.getNativePlayer());
     }
     

@@ -7,7 +7,7 @@ package com.netflix.mediaclient.service.mdx.notification;
 import android.graphics.Bitmap;
 import android.util.Pair;
 import android.annotation.TargetApi;
-import com.netflix.mediaclient.NetflixApplication;
+import com.netflix.mediaclient.service.NetflixService;
 import android.app.PendingIntent;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
@@ -51,7 +51,7 @@ public final class MdxNotificationManager
         }
         this.mRemoteViews = new MdxRemoteViewManager(this.mContext.getPackageName(), this.mIsEpisode, this.mIsLegacy, mMdxAgent);
         if (this.mIsLegacy) {
-            this.mLegacyNotification = new Notification(2130837615, (CharSequence)"", System.currentTimeMillis());
+            this.mLegacyNotification = new Notification(2130837730, (CharSequence)"", System.currentTimeMillis());
             this.mLegacyNotification.contentView = this.mRemoteViews.getRemoteView();
             final Notification mLegacyNotification = this.mLegacyNotification;
             mLegacyNotification.flags |= 0x2;
@@ -60,11 +60,11 @@ public final class MdxNotificationManager
             this.mLegacyNotification.contentIntent = this.createNotificationPendingIntent();
             return;
         }
-        this.mBuilder = new NotificationCompat.Builder(this.mContext).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837615).setWhen(System.currentTimeMillis());
+        this.mBuilder = new NotificationCompat.Builder(this.mContext).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837730).setWhen(System.currentTimeMillis());
     }
     
     private PendingIntent createNotificationPendingIntent() {
-        return PendingIntent.getActivity(this.mContext, 0, NetflixApplication.createShowApplicationIntent(this.mContext), 134217728);
+        return PendingIntent.getBroadcast(this.mContext, 0, NetflixService.createShowMdxPlayerBroadcastIntent(), 134217728);
     }
     
     @TargetApi(16)

@@ -84,16 +84,16 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             }
         };
         this.activity = activity;
-        (this.content = drawerLayout.findViewById(2131099753)).setOnClickListener((View$OnClickListener)null);
+        (this.content = drawerLayout.findViewById(2131230886)).setOnClickListener((View$OnClickListener)null);
         this.leWrapper = new LoadingAndErrorWrapper(this.content, this.errorCallback);
-        (this.profilesGroup = this.content.findViewById(2131099754)).setOnClickListener(this.onSwitchProfileClickListener);
-        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131099755);
-        this.profileName = (TextView)this.content.findViewById(2131099757);
-        (this.profileImg = (AdvancedImageView)this.content.findViewById(2131099756)).setPressedStateHandlerEnabled(false);
-        final View inflate = activity.getLayoutInflater().inflate(2130903068, (ViewGroup)null);
-        (this.home = (TextView)inflate.findViewById(2131099759)).setText(2131493118);
+        (this.profilesGroup = this.content.findViewById(2131230887)).setOnClickListener(this.onSwitchProfileClickListener);
+        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131230888);
+        this.profileName = (TextView)this.content.findViewById(2131230890);
+        (this.profileImg = (AdvancedImageView)this.content.findViewById(2131230889)).setPressedStateHandlerEnabled(false);
+        final View inflate = activity.getLayoutInflater().inflate(2130903091, (ViewGroup)null);
+        (this.home = (TextView)inflate.findViewById(2131230892)).setText(2131296555);
         this.home.setOnClickListener(this.onHomeClickListener);
-        (this.list = (ListView)this.content.findViewById(2131099758)).setFocusable(false);
+        (this.list = (ListView)this.content.findViewById(2131230891)).setFocusable(false);
         this.list.addHeaderView(inflate, (Object)null, false);
         this.drawerLayout = drawerLayout;
         this.fetchGenresDataIfReady();
@@ -181,7 +181,7 @@ public class SlidingMenuAdapter implements ManagerStatusListener
             imageResource = 17301535;
         }
         else {
-            imageResource = 2130837576;
+            imageResource = 2130837687;
         }
         switchProfilesIcon.setImageResource(imageResource);
     }
@@ -261,8 +261,8 @@ public class SlidingMenuAdapter implements ManagerStatusListener
         public View getView(final int n, View inflate, final ViewGroup viewGroup) {
             Holder tag;
             if (inflate == null) {
-                inflate = SlidingMenuAdapter.this.activity.getLayoutInflater().inflate(2130903068, (ViewGroup)null);
-                tag = new Holder((TextView)inflate.findViewById(2131099759));
+                inflate = SlidingMenuAdapter.this.activity.getLayoutInflater().inflate(2130903091, (ViewGroup)null);
+                tag = new Holder((TextView)inflate.findViewById(2131230892));
                 inflate.setTag((Object)tag);
             }
             else {

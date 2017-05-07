@@ -25,8 +25,8 @@ public class LastTime extends PlaycardSection
     
     public LastTime(final MdxPlaycardActivity mdxPlaycardActivity) {
         super(mdxPlaycardActivity);
-        this.lastTime = (LinearLayout)mdxPlaycardActivity.findViewById(2131099866);
-        this.lastTimeLabel = (TextView)mdxPlaycardActivity.findViewById(2131099867);
+        this.lastTime = (LinearLayout)mdxPlaycardActivity.findViewById(2131231000);
+        this.lastTimeLabel = (TextView)mdxPlaycardActivity.findViewById(2131231001);
     }
     
     private float calculateAlpha(final Rect rect, final Rect rect2) {

@@ -19,12 +19,14 @@ public interface PreferenceKeys
     public static final String PREFERENCE_DISABLE_MDX = "disable_mdx";
     public static final String PREFERENCE_DISABLE_WEBSOCKET = "disable_websocket";
     public static final String PREFERENCE_DISABLE_WIDEVINE = "disable_widevine";
+    public static final String PREFERENCE_DRM_ACCKEYMAP = "nf_drm_acckeymap";
     public static final String PREFERENCE_DRM_CDM_KEYSET_ID = "nf_drm_cdm_keyset_id";
     public static final String PREFERENCE_DRM_KCE_KEY_ID = "nf_drm_kce_key_id";
     public static final String PREFERENCE_DRM_KCH_KEY_ID = "nf_drm_kch_key_id";
     public static final String PREFERENCE_DRM_SYSTEM_ID = "nf_drm_system_id";
     public static final String PREFERENCE_HARDWARE_ACCELERATION = "nflx_hardwarer_acc";
     public static final String PREFERENCE_IMAGE_PREF = "image_pref";
+    public static final String PREFERENCE_IP_CONNECTIVITY_POLICY_OVERIDE = "ip_connectivity_policy_overide";
     public static final String PREFERENCE_MDX_ELECTED_DIALUUID = "mdx_selected_dialuuid";
     public static final String PREFERENCE_MDX_ELECTED_FNAME = "mdx_selected_fname";
     public static final String PREFERENCE_MDX_SELECTED_UUID = "mdx_selected_uuid";

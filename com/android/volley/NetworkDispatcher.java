@@ -4,11 +4,13 @@
 
 package com.android.volley;
 
+import android.util.Log;
 import android.os.Process;
 import java.util.concurrent.BlockingQueue;
 
 public class NetworkDispatcher extends Thread
 {
+    private static final String NETWORK_REQUEST_BLOCKED_TAG = "RequestQueue_Blocked";
     private final Cache mCache;
     private final ResponseDelivery mDelivery;
     private final Network mNetwork;
@@ -16,6 +18,7 @@ public class NetworkDispatcher extends Thread
     private volatile boolean mQuit;
     
     public NetworkDispatcher(final BlockingQueue<Request> mQueue, final Network mNetwork, final Cache mCache, final ResponseDelivery mDelivery) {
+        super("NetworkDispatcher");
         this.mQuit = false;
         this.mQueue = mQueue;
         this.mNetwork = mNetwork;
@@ -42,10 +45,13 @@ public class NetworkDispatcher extends Thread
                 try {
                     while (true) {
                         request = this.mQueue.take();
+                        if (Log.isLoggable("RequestQueue_Blocked", 4) && this.mQueue.size() > 0) {
+                            Log.i("RequestQueue_Blocked", "Http request is blocked - queue size: " + this.mQueue.size());
+                        }
                         try {
                             request.addMarker("network-queue-take");
                             if (!request.isCanceled()) {
-                                goto Label_0059;
+                                goto Label_0113;
                             }
                             request.finish("network-discard-cancelled");
                         }

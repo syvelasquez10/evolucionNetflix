@@ -9,8 +9,6 @@ public interface DrmManager
     public static final int DRM_TYPE_NONE = 0;
     public static final int DRM_TYPE_WIDEVINE = 1;
     
-    boolean canExecuteRegistration(final DelayedRegistrationCallback p0);
-    
     void destroy();
     
     byte[] getDeviceId();
@@ -20,17 +18,6 @@ public interface DrmManager
     int getDrmType();
     
     void init();
-    
-    boolean isNccpCryptoFactoryReady();
-    
-    void resetCryptoFactory();
-    
-    public interface DelayedRegistrationCallback
-    {
-        void error();
-        
-        void execute();
-    }
     
     public interface DrmReadyCallback
     {

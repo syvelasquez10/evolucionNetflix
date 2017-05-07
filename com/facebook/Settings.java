@@ -200,23 +200,20 @@ public final class Settings
                         return Response.createResponsesFromString("true", null, new RequestBatch(new Request[] { o }), true).get(0);
                     }
                     return new Response(null, null, (GraphObject)create2, true);
-                    // iftrue(Label_0356:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
+                    Label_0270: {
+                        throw new FacebookException("Install attribution has been disabled on the server.");
+                    }
                     // iftrue(Label_0288:, Utility.queryAppAttributionSupportAndWait(executeAndWait))
+                    Label_0288: {
+                        executeAndWait = (String)((Request)o).executeAndWait();
+                    }
+                    o = sharedPreferences.edit();
+                    ((SharedPreferences$Editor)o).putLong(string, System.currentTimeMillis());
+                    // iftrue(Label_0356:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
+                    ((SharedPreferences$Editor)o).putString(string2, ((Response)executeAndWait).getGraphObject().getInnerJSONObject().toString());
                     // iftrue(Label_0270:, attributionId != null)
                     Label_0356: {
-                        while (true) {
-                            ((SharedPreferences$Editor)o).putString(string2, ((Response)executeAndWait).getGraphObject().getInnerJSONObject().toString());
-                            break Label_0356;
-                            Label_0288: {
-                                executeAndWait = (String)((Request)o).executeAndWait();
-                            }
-                            o = sharedPreferences.edit();
-                            ((SharedPreferences$Editor)o).putLong(string, System.currentTimeMillis());
-                            continue;
-                        }
-                        Label_0270: {
-                            throw new FacebookException("Install attribution has been disabled on the server.");
-                        }
+                        break Label_0356;
                         throw new FacebookException("No attribution id returned from the Facebook application");
                     }
                     ((SharedPreferences$Editor)o).commit();

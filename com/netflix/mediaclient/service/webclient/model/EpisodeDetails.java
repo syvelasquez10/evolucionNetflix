@@ -15,7 +15,7 @@ import com.netflix.mediaclient.service.webclient.model.branches.Episode;
 
 public class EpisodeDetails extends Episode implements com.netflix.mediaclient.servicemgr.EpisodeDetails
 {
-    private static final String TAG = "nf_service_browse_episodedetails";
+    private static final String TAG = "EpisodeDetails";
     public Rating rating;
     public SocialEvidence showSocialEvidence;
     public boolean userConnectedToFacebook;
@@ -41,13 +41,6 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
             return null;
         }
         return this.detail.bifUrl;
-    }
-    
-    public long getBookmarkCreationTime() {
-        if (this.bookmark == null) {
-            return -1L;
-        }
-        return this.bookmark.getLastModified();
     }
     
     @Override
@@ -200,18 +193,24 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
     
     @Override
     public int getPlayableBookmarkPosition() {
-        Log.d("nf_service_browse_episodedetails", String.format("id %s bookmark %d playPos %d endtime %d runtime %d", this.getId(), this.getBookmarkPosition(), BrowseAgent.getPlayablePosition(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime()), this.getEndtime(), this.getRuntime()));
-        return BrowseAgent.getPlayablePosition(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime());
+        final int computePlayPos = BrowseAgent.computePlayPos(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime());
+        if (Log.isLoggable("EpisodeDetails", 3)) {
+            Log.d("EpisodeDetails", String.format("id %s bookmark %d playPos %d endtime %d runtime %d", this.getId(), this.getBookmarkPosition(), computePlayPos, this.getEndtime(), this.getRuntime()));
+        }
+        return computePlayPos;
+    }
+    
+    @Override
+    public long getPlayableBookmarkUpdateTime() {
+        if (this.bookmark == null) {
+            return -1L;
+        }
+        return this.bookmark.getLastModified();
     }
     
     @Override
     public String getPlayableId() {
         return this.getId();
-    }
-    
-    @Override
-    public long getPlayableServerBookmarkUpdateTime() {
-        return this.getBookmarkCreationTime();
     }
     
     @Override
@@ -321,6 +320,19 @@ public class EpisodeDetails extends Episode implements com.netflix.mediaclient.s
             return 0;
         }
         return this.detail.year;
+    }
+    
+    public boolean hasSameSeasonAndEpisodeNumbers(final EpisodeDetails episodeDetails) {
+        if (this.getSeasonNumber() != episodeDetails.getSeasonNumber()) {
+            Log.v("EpisodeDetails", String.format("Season number does not match: %d, %d", this.getSeasonNumber(), episodeDetails.getSeasonNumber()));
+            return false;
+        }
+        if (this.getEpisodeNumber() != episodeDetails.getEpisodeNumber()) {
+            Log.v("EpisodeDetails", String.format("Episode number does not match: %d, %d", this.getEpisodeNumber(), episodeDetails.getEpisodeNumber()));
+            return false;
+        }
+        Log.v("EpisodeDetails", String.format("Episode and season numbers match: s%d, e%d", this.getSeasonNumber(), this.getEpisodeNumber()));
+        return true;
     }
     
     @Override

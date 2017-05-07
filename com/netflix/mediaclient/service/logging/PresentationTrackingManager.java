@@ -9,7 +9,6 @@ import com.netflix.mediaclient.servicemgr.UiLocation;
 import com.netflix.mediaclient.servicemgr.Trackable;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebClientFactory;
 import com.netflix.mediaclient.service.logging.presentation.PresentationRequest;
-import com.netflix.mediaclient.service.configuration.DeviceConfiguration;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;
 import com.netflix.mediaclient.service.logging.presentation.PresentationEvent;
@@ -114,11 +113,12 @@ class PresentationTrackingManager implements PresentationTracking
     }
     
     private void initPresentationQueue() {
-        int ptAggregationSize = 50;
-        if (DeviceConfiguration.getPTAggregationSize(this.mContext) != -1) {
-            ptAggregationSize = DeviceConfiguration.getPTAggregationSize(this.mContext);
+        int n = 50;
+        final int presentationTrackingAggregationSize = this.mOwner.getConfigurationAgent().getPresentationTrackingAggregationSize();
+        if (presentationTrackingAggregationSize != -1) {
+            n = presentationTrackingAggregationSize;
         }
-        this.mPresentationEventQueue = new PresentationTrackingEventQueue(ptAggregationSize);
+        this.mPresentationEventQueue = new PresentationTrackingEventQueue(n);
     }
     
     private void loadAndSendEvent(final String s) {

@@ -4,13 +4,14 @@
 
 package com.netflix.mediaclient.service.configuration;
 
-import org.json.JSONArray;
+import com.netflix.mediaclient.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.javabridge.transport.NativeTransport;
 import com.netflix.mediaclient.media.bitrate.VideoBitrateRange;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
+import org.json.JSONArray;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.nccp.NccpKeyStore;
@@ -19,6 +20,7 @@ import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import java.util.Iterator;
 import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.util.api.Api19Util;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
 import com.netflix.mediaclient.Log;
@@ -50,7 +52,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     private static final String VIDEO_PLAYREADY_H264_BPL30_DASH = "playready-h264bpl30-dash";
     private static final String VIDEO_PLAYREADY_H264_MPL30_DASH = "playready-h264mpl30-dash";
     private static final String VIDEO_PLAYREADY_H264_MPL31_DASH = "playready-h264mpl31-dash";
-    private static String mMemLevel;
+    private static final String sMemLevel;
     private final Runnable configRefreshRunnable;
     private AccountConfiguration mAccountConfigOverride;
     private int mAppVersionCode;
@@ -67,8 +69,11 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     private boolean mNeedEsMigration;
     private boolean mNeedLogout;
     private String mSoftwareVersion;
-    private boolean mUseLowMemConfig;
     private Handler refreshHandler;
+    
+    static {
+        sMemLevel = getMemLevel();
+    }
     
     public ConfigurationAgent() {
         this.mConfigAgentListeners = new ArrayList<ConfigAgentListener>();
@@ -100,28 +105,27 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     public static String getMemLevel() {
-        String s;
-        if (AndroidUtils.getAndroidVersion() < 9) {
-            Log.i("nf_configurationagent", "OS < GB, getMemLevel = LEVEL_LOW");
+        String s = "high";
+        final long maxMemory = Runtime.getRuntime().maxMemory();
+        if (maxMemory <= 33554432L) {
             s = "low";
         }
-        else {
-            String s2 = "high";
-            final long maxMemory = Runtime.getRuntime().maxMemory();
-            if (maxMemory <= 33554432L) {
+        String s2 = s;
+        if (AndroidUtils.getAndroidVersion() >= 19) {
+            s2 = s;
+            if (Api19Util.isLowRamDevice()) {
+                Log.v("nf_configurationagent", "isLowRamDevice() is true");
                 s2 = "low";
             }
-            s = s2;
-            if (Log.isLoggable("nf_configurationagent", 4)) {
-                Log.i("nf_configurationagent", String.format("maxMemoryAllocated = %d getMemLevel = %s", maxMemory, s2));
-                return s2;
-            }
         }
-        return s;
+        if (Log.isLoggable("nf_configurationagent", 4)) {
+            Log.i("nf_configurationagent", String.format("maxMemoryAllocated: %d, memLevel: %s", maxMemory, s2));
+        }
+        return s2;
     }
     
     private String getUiResolutionType() {
-        return ConfigurationAgent.mMemLevel;
+        return ConfigurationAgent.sMemLevel;
     }
     
     private void launchTask(final FetchTask fetchTask) {
@@ -154,7 +158,9 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     private void persistConfigOverride(final ConfigData configData) {
-        Log.d("nf_configurationagent", String.format("persistConfigOverride configData %s", configData.toString()));
+        if (Log.isLoggable("nf_configurationagent", 3)) {
+            Log.d("nf_configurationagent", String.format("persistConfigOverride configData %s", configData.toString()));
+        }
         this.mDeviceConfigOverride.persistDeviceConfigOverride(configData.getDeviceConfig());
         this.mAccountConfigOverride.persistStreamingOverride(configData.getStreamingConfig());
         this.mAccountConfigOverride.persistAccountConfigOverride(configData.getAccountConfig());
@@ -168,7 +174,7 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     public static boolean shouldUseLowMemConfig() {
-        return "low".equals(ConfigurationAgent.mMemLevel);
+        return "low".equals(ConfigurationAgent.sMemLevel);
     }
     
     public void addConfigAgentListener(final ConfigAgentListener configAgentListener) {
@@ -213,10 +219,8 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     protected void doInit() {
         this.mNeedLogout = false;
         this.mNeedEsMigration = false;
-        ConfigurationAgent.mMemLevel = getMemLevel();
-        this.mUseLowMemConfig = shouldUseLowMemConfig();
         this.mImageCacheSizeBytes = Math.round(Runtime.getRuntime().maxMemory() * 0.5f);
-        Log.i("nf_configurationagent", "Use low mem config: " + this.mUseLowMemConfig);
+        Log.i("nf_configurationagent", "Use low mem config: " + shouldUseLowMemConfig());
         this.mDiskCacheSizeBytes = PreferenceUtils.getIntPref(this.getContext(), "disk_cache_size", 0);
         if (this.mDiskCacheSizeBytes == 0) {
             final long availableInternalMemory = AndroidUtils.getAvailableInternalMemory();
@@ -296,6 +300,11 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     @Override
     public int getBitrateCap() {
         return BitrateRangeFactory.getBitrateCap(this.getContext());
+    }
+    
+    @Override
+    public JSONArray getCastBlackList() {
+        return this.mAccountConfigOverride.getCastBlacklist();
     }
     
     @Override
@@ -435,13 +444,23 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     @Override
+    public IpConnectivityPolicy getIpConnectivityPolicy() {
+        return this.mDeviceConfigOverride.getIpConnectivityPolicy();
+    }
+    
+    @Override
     public JSONArray getMdxBlackListTargets() {
         return this.mAccountConfigOverride.getMdxBlacklist();
     }
     
     @Override
+    public int getPresentationTrackingAggregationSize() {
+        return this.mDeviceConfigOverride.getPTAggregationSize();
+    }
+    
+    @Override
     public int getResFetcherThreadPoolSize() {
-        if (this.mUseLowMemConfig) {
+        if (shouldUseLowMemConfig()) {
             return 2;
         }
         return 4;
@@ -538,18 +557,23 @@ public class ConfigurationAgent extends ServiceAgent implements ConfigurationAge
     }
     
     @Override
-    public boolean isDisableMdxFlagSet() {
-        return this.mDeviceConfigOverride.isDisableMdxFlagSet();
+    public boolean isDisableMdx() {
+        return this.mDeviceConfigOverride.isDisableMdx();
     }
     
     @Override
-    public boolean isDisableWebsocketFlagSet() {
-        return this.mDeviceConfigOverride.isDisableWebsocketFlagSet();
+    public boolean isDisableWebsocket() {
+        return this.mDeviceConfigOverride.isDisableWebsocket();
     }
     
     @Override
-    public boolean isDisableWidevineFlagSet() {
-        return !DrmManagerRegistry.isDevicePredeterminedToUseWV();
+    public boolean isDisableWidevine() {
+        return this.mDeviceConfigOverride.isDisableWidevine();
+    }
+    
+    @Override
+    public boolean isEnableCast() {
+        return this.mAccountConfigOverride.getCastEnabled();
     }
     
     @Override

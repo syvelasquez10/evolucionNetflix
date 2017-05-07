@@ -127,13 +127,13 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
-    public String getPlayableId() {
-        return "70178217";
+    public long getPlayableBookmarkUpdateTime() {
+        return 0L;
     }
     
     @Override
-    public long getPlayableServerBookmarkUpdateTime() {
-        return 0L;
+    public String getPlayableId() {
+        return "70178217";
     }
     
     @Override

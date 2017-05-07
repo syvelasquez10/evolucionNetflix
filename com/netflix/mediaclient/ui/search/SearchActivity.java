@@ -125,19 +125,19 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void showEmpty() {
-        this.leWrapper.showErrorView(2131493160, false, false);
+        this.leWrapper.showErrorView(2131296597, false, false);
         this.fragGroup.setVisibility(4);
         this.searchBar.hideProgressSpinner();
     }
     
     private void showError() {
-        this.leWrapper.showErrorView(2131493159, true, false);
+        this.leWrapper.showErrorView(2131296596, true, false);
         this.fragGroup.setVisibility(4);
         this.searchBar.hideProgressSpinner();
     }
     
     private void showInitState() {
-        this.leWrapper.showErrorView(2131493142, false, false);
+        this.leWrapper.showErrorView(2131296579, false, false);
         this.fragGroup.setVisibility(4);
         this.searchBar.hideProgressSpinner();
     }
@@ -186,12 +186,12 @@ public class SearchActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.searchBar.hideProgressSpinner();
-        this.setContentView(2130903109);
-        (this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131099904), this.errorsCallback)).hide(false);
-        this.fragGroup = (ViewGroup)this.findViewById(2131099905);
+        this.setContentView(2130903135);
+        (this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131231043), this.errorsCallback)).hide(false);
+        this.fragGroup = (ViewGroup)this.findViewById(2131231044);
         if (bundle == null) {
             this.resultsFrag = SearchResultsFrag.create();
-            this.getFragmentManager().beginTransaction().add(2131099905, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131231044, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
         }
         else {

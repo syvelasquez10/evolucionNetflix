@@ -10,6 +10,10 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.EpisodeDetails;
+import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
+import android.app.DialogFragment;
+import android.view.MenuItem;
+import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -50,8 +54,19 @@ public class ShowDetailsActivity extends DetailsActivity implements EpisodeRowLi
     }
     
     @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+    protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
+        if (menu2 != null) {
+            menu2.add((CharSequence)"Display episodes dialog").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
+                public boolean onMenuItemClick(final MenuItem menuItem) {
+                    final NetflixDialogFrag create = EpisodeListFrag.create(ShowDetailsActivity.this.getVideoId(), ShowDetailsActivity.this.getEpisodeId(), false);
+                    create.onManagerReady(ShowDetailsActivity.this.getServiceManager(), 0);
+                    create.setCancelable(true);
+                    ShowDetailsActivity.this.showDialog(create);
+                    return true;
+                }
+            });
+        }
+        super.onCreateOptionsMenu(menu, menu2);
     }
     
     @Override

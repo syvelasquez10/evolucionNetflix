@@ -122,12 +122,12 @@ public abstract class SocialPlaceholder implements VideoDetails
     }
     
     @Override
-    public String getPlayableId() {
+    public long getPlayableBookmarkUpdateTime() {
         throw new RuntimeException("Not implemented");
     }
     
     @Override
-    public long getPlayableServerBookmarkUpdateTime() {
+    public String getPlayableId() {
         throw new RuntimeException("Not implemented");
     }
     

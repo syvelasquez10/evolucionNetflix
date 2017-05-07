@@ -83,13 +83,13 @@ class TitlePlayable implements Playable
     }
     
     @Override
-    public String getPlayableId() {
-        return this.mPlayableId;
+    public long getPlayableBookmarkUpdateTime() {
+        return this.mWatchedDate;
     }
     
     @Override
-    public long getPlayableServerBookmarkUpdateTime() {
-        return this.mWatchedDate;
+    public String getPlayableId() {
+        return this.mPlayableId;
     }
     
     @Override

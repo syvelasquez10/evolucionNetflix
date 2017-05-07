@@ -869,12 +869,12 @@ public class MdxPlaycardActivity extends NetflixActivity implements EpisodeRowLi
             final TextView deviceTextView = this.mScreen.getDeviceTextView();
             final TextView titleTextView = this.mScreen.getTitleTextView();
             titleTextView.setVisibility(0);
-            deviceTextView.setText((CharSequence)this.getString(2131493174, new Object[] { ServiceManagerUtils.getCurrentDeviceFriendlyName(this.mServiceManager) }));
+            deviceTextView.setText((CharSequence)this.getString(2131296611, new Object[] { ServiceManagerUtils.getCurrentDeviceFriendlyName(this.mServiceManager) }));
             final TextView subtitleTextView = this.mScreen.getSubtitleTextView();
             if (playable.isPlayableEpisode()) {
                 titleTextView.setText((CharSequence)playable.getParentTitle());
                 subtitleTextView.setVisibility(0);
-                subtitleTextView.setText((CharSequence)this.getString(2131493185, new Object[] { playable.getSeasonNumber(), playable.getEpisodeNumber(), playable.getTitle() }));
+                subtitleTextView.setText((CharSequence)this.getString(2131296622, new Object[] { playable.getSeasonNumber(), playable.getEpisodeNumber(), playable.getTitle() }));
                 Log.d("mdxui", "Subitle: " + (Object)subtitleTextView.getText());
             }
             else {
@@ -1075,11 +1075,11 @@ public class MdxPlaycardActivity extends NetflixActivity implements EpisodeRowLi
                 MdxPlaycardActivity.this.mResources = PlayerScreenResourceHelper.newInstance(MdxPlaycardActivity.this.mIsTablet);
                 if (MdxPlaycardActivity.this.mIsTablet) {
                     Log.d("mdxui", "Loading tablet layout");
-                    MdxPlaycardActivity.this.setContentView(2130903095);
+                    MdxPlaycardActivity.this.setContentView(2130903118);
                 }
                 else {
                     Log.d("mdxui", "Loading phone layout");
-                    MdxPlaycardActivity.this.setContentView(2130903094);
+                    MdxPlaycardActivity.this.setContentView(2130903117);
                 }
                 MdxPlaycardActivity.this.mServiceManager = serviceManager;
                 if (!ServiceManagerUtils.isMdxAgentAvailable(MdxPlaycardActivity.this.mServiceManager)) {
@@ -1093,7 +1093,7 @@ public class MdxPlaycardActivity extends NetflixActivity implements EpisodeRowLi
                 MdxPlaycardActivity.this.mScreen = MdxPlaycardActivity.this.createScreen();
                 this.restoreLanguage();
                 MdxPlaycardActivity.this.setTargetSelection();
-                MdxPlaycardActivity.this.mScreen.getDeviceTextView().setText((CharSequence)MdxPlaycardActivity.this.getString(2131493174, new Object[] { ServiceManagerUtils.getCurrentDeviceFriendlyName(MdxPlaycardActivity.this.mServiceManager) }));
+                MdxPlaycardActivity.this.mScreen.getDeviceTextView().setText((CharSequence)MdxPlaycardActivity.this.getString(2131296611, new Object[] { ServiceManagerUtils.getCurrentDeviceFriendlyName(MdxPlaycardActivity.this.mServiceManager) }));
                 MdxPlaycardActivity.this.mScreen.setBufferingVisibility(true);
                 MdxPlaycardActivity.this.mScreen.changeActionState(false, false);
                 Log.d("mdxui", "Synchronize playcard UI with MDX agent");
@@ -1528,14 +1528,14 @@ public class MdxPlaycardActivity extends NetflixActivity implements EpisodeRowLi
             }
             if (n != 0) {
                 Log.w("mdxui", "Invalid status code failed");
-                Toast.makeText((Context)this.activity, 2131493137, 1).show();
+                Toast.makeText((Context)this.activity, 2131296574, 1).show();
                 Log.d("mdxui", "Report rate action ended");
                 final LogUtils.LogReportErrorArgs logReportErrorArgs = new LogUtils.LogReportErrorArgs(n, ActionOnUIError.displayedError, "", null);
                 LogUtils.reportRateActionEnded((Context)this.activity, logReportErrorArgs.getReason(), logReportErrorArgs.getError(), null, (int)this.rating);
                 return;
             }
             Log.v("mdxui", "Rating has been updated ok");
-            Toast.makeText((Context)this.activity, 2131493138, 1).show();
+            Toast.makeText((Context)this.activity, 2131296575, 1).show();
             LogUtils.reportRateActionEnded((Context)this.activity, IClientLogging.CompletionReason.success, null, null, (int)this.rating);
         }
     }

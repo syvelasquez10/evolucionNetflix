@@ -21,8 +21,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.preference.Preference$OnPreferenceClickListener;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference$OnPreferenceChangeListener;
+import com.netflix.mediaclient.service.configuration.CastConfiguration;
 import android.net.Uri;
 import android.content.Intent;
 import android.app.Fragment;
@@ -64,7 +66,7 @@ public class SettingsFragment extends PreferenceFragment
     private void changePlayer(final PlayerType playerType) {
         if (playerType == null) {
             Log.w("SettingsFragment", "Invalid player type choosen! This should not happen, report it.");
-            new AlertDialog$Builder((Context)this.activity).setTitle((CharSequence)"").setMessage(2131493051).setPositiveButton(2131492910, (DialogInterface$OnClickListener)null).show();
+            new AlertDialog$Builder((Context)this.activity).setTitle((CharSequence)"").setMessage(2131296488).setPositiveButton(2131296347, (DialogInterface$OnClickListener)null).show();
             return;
         }
         new BackgroundTask().execute(new Runnable() {
@@ -87,6 +89,30 @@ public class SettingsFragment extends PreferenceFragment
     
     private Intent createViewPrivacyPolicyIntent() {
         return new Intent("android.intent.action.VIEW").setData(Uri.parse("https://signup.netflix.com/PrivacyPolicy"));
+    }
+    
+    private void handleCastAppIdSettings() {
+        final Preference preference = this.findPreference((CharSequence)"ui.castAppId");
+        if (preference != null) {
+            preference.setSummary((CharSequence)((Object)this.getText(2131296680) + CastConfiguration.getCastApplicationId((Context)this.activity)));
+            preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new Preference$OnPreferenceChangeListener() {
+                public boolean onPreferenceChange(final Preference preference, final Object o) {
+                    Log.d("SettingsFragment", "onPreferenceChange " + o);
+                    if (preference instanceof EditTextPreference) {
+                        final String string = ((EditTextPreference)preference).getEditText().getText().toString();
+                        Log.d("SettingsFragment", "EditText.getText(): " + string);
+                        new BackgroundTask().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                CastConfiguration.setNewCastApplicationId((Context)SettingsFragment.this.activity, string);
+                            }
+                        });
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        }
     }
     
     private void handlePlayerType() {
@@ -269,7 +295,7 @@ public class SettingsFragment extends PreferenceFragment
         final PlayerType currentType = PlayerTypeFactory.getCurrentType((Context)this.activity);
         final boolean default1 = PlayerTypeFactory.isDefault((Context)this.activity);
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.getString(2131493047)).append(" ");
+        sb.append(this.getString(2131296484)).append(" ");
         PlayerType playerType;
         if ((playerType = PlayerTypeFactory.findDefaultPlayerType((Context)this.activity)) == null) {
             Log.e("SettingsFragment", "Default player not found! It should never happen!");
@@ -281,7 +307,7 @@ public class SettingsFragment extends PreferenceFragment
         list.add(sb.toString());
         list2.add("DEFAULT");
         if (PlayerTypeFactory.getOmxPlayer() != null) {
-            list.add((String)this.getText(2131493048));
+            list.add((String)this.getText(2131296485));
             list2.add("OMX");
             if (PlayerTypeFactory.isOmxPlayer(currentType) && !default1) {
                 listPreference.setDefaultValue((Object)"OMX");
@@ -289,7 +315,7 @@ public class SettingsFragment extends PreferenceFragment
             listPreference.setValue("OMX");
         }
         if (AndroidUtils.isDrmPlaySupported()) {
-            list.add((String)this.getText(2131493049));
+            list.add((String)this.getText(2131296486));
             list2.add("DRM.PLAY");
             if (PlayerTypeFactory.isDrmPlayPlayer(currentType)) {
                 if (!default1) {
@@ -298,7 +324,7 @@ public class SettingsFragment extends PreferenceFragment
                 listPreference.setValue("DRM.PLAY");
             }
         }
-        list.add((String)this.getText(2131493050));
+        list.add((String)this.getText(2131296487));
         list2.add("SOFT");
         if (PlayerTypeFactory.isSoftwarePlayer(currentType)) {
             if (!default1) {
@@ -307,7 +333,7 @@ public class SettingsFragment extends PreferenceFragment
             listPreference.setValue("SOFT");
         }
         if (AndroidUtils.isOpenMaxALSupported()) {
-            list.add((String)this.getText(2131493082));
+            list.add((String)this.getText(2131296519));
             list2.add("XAL");
             if (PlayerTypeFactory.isXalPlayer(currentType)) {
                 if (!default1) {
@@ -315,7 +341,7 @@ public class SettingsFragment extends PreferenceFragment
                 }
                 listPreference.setValue("XAL");
             }
-            list.add((String)this.getText(2131493083));
+            list.add((String)this.getText(2131296520));
             list2.add("XALAMP");
             if (PlayerTypeFactory.isXalmpPlayer(currentType)) {
                 if (!default1) {
@@ -325,7 +351,7 @@ public class SettingsFragment extends PreferenceFragment
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device9)) {
-            list.add((String)this.getText(2131493084));
+            list.add((String)this.getText(2131296521));
             list2.add("NFAMP");
             if (PlayerTypeFactory.isNfampPlayer(currentType)) {
                 if (!default1) {
@@ -335,7 +361,7 @@ public class SettingsFragment extends PreferenceFragment
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device10)) {
-            list.add((String)this.getText(2131493089));
+            list.add((String)this.getText(2131296526));
             list2.add("JPLAYER");
             if (PlayerTypeFactory.isJPlayer(currentType)) {
                 if (!default1) {
@@ -345,7 +371,7 @@ public class SettingsFragment extends PreferenceFragment
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device11)) {
-            list.add((String)this.getText(2131493090));
+            list.add((String)this.getText(2131296527));
             list2.add("JPLAYERBASE");
             if (PlayerTypeFactory.isJPlayerBase(currentType)) {
                 if (!default1) {
@@ -355,7 +381,7 @@ public class SettingsFragment extends PreferenceFragment
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device12)) {
-            list.add((String)this.getText(2131493091));
+            list.add((String)this.getText(2131296528));
             list2.add("JPLAYER2");
             if (PlayerTypeFactory.isJPlayer2(currentType)) {
                 if (!default1) {
@@ -372,13 +398,13 @@ public class SettingsFragment extends PreferenceFragment
         final SubtitleConfiguration loadQaLocalOverride = SubtitleConfiguration.loadQaLocalOverride((Context)this.activity);
         final ArrayList<CharSequence> list = new ArrayList<CharSequence>();
         final ArrayList<String> list2 = new ArrayList<String>();
-        list.add(this.getText(2131493225));
+        list.add(this.getText(2131296662));
         list2.add("DEFAULT");
-        list.add(this.getText(2131493226));
+        list.add(this.getText(2131296663));
         list2.add("ENHANCED_XML");
-        list.add(this.getText(2131493227));
+        list.add(this.getText(2131296664));
         list2.add("SIMPLE_XML");
-        list.add(this.getText(2131493228));
+        list.add(this.getText(2131296665));
         list2.add("SIMPLE_EVENTS");
         listPreference.setDefaultValue((Object)"DEFAULT");
         if (loadQaLocalOverride == SubtitleConfiguration.SIMPLE_EVENTS) {
@@ -410,7 +436,7 @@ public class SettingsFragment extends PreferenceFragment
     }
     
     private void updateAboutDevice() {
-        final String string = this.getString(2131493111);
+        final String string = this.getString(2131296548);
         int n = 0;
         Serializable s = string;
         while (true) {
@@ -450,8 +476,8 @@ public class SettingsFragment extends PreferenceFragment
         this.activity = this.getActivity();
         this.getPreferenceManager().setSharedPreferencesMode(0);
         this.getPreferenceManager().setSharedPreferencesName("nfxpref");
-        this.addPreferencesFromResource(2130968577);
-        this.findPreference((CharSequence)this.getString(2131492895)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
+        this.addPreferencesFromResource(2131034113);
+        this.findPreference((CharSequence)this.getString(2131296332)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
         final Preference preference = this.findPreference((CharSequence)"pref.privacy");
         preference.setIntent(this.createViewPrivacyPolicyIntent());
         preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new Preference$OnPreferenceClickListener() {

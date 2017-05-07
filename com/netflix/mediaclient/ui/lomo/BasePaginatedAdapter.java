@@ -64,7 +64,7 @@ public abstract class BasePaginatedAdapter<T extends Video>
     
     protected static int computeViewPagerWidth(final Context context, final boolean b) {
         if (b) {
-            return DeviceUtils.getScreenWidthInPixels(context) - context.getResources().getDimensionPixelOffset(2131361849) * 2;
+            return DeviceUtils.getScreenWidthInPixels(context) - context.getResources().getDimensionPixelOffset(2131492938) * 2;
         }
         return DeviceUtils.getScreenWidthInPixels(context);
     }

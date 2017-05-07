@@ -145,7 +145,7 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
     
     public static NetflixDialogFrag create(final String s, final String s2, final boolean b) {
         final EpisodeListFrag episodeListFrag = new EpisodeListFrag();
-        episodeListFrag.setStyle(1, 2131427387);
+        episodeListFrag.setStyle(1, 2131558594);
         return applyCreateArgs(episodeListFrag, s, s2, b);
     }
     
@@ -153,7 +153,11 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
         (this.spinner = new SeasonsSpinner((Context)this.getActivity())).setOnItemSelectedListener((AdapterView$OnItemSelectedListener)new AdapterView$OnItemSelectedListener() {
             public void onItemSelected(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
                 Log.v("EpisodeListFrag", "Season spinner selected position: " + n);
-                EpisodeListFrag.this.adapter.updateSeasonDetails((SeasonDetails)EpisodeListFrag.this.spinner.getItemAtPosition(n));
+                final SeasonDetails seasonDetails = (SeasonDetails)EpisodeListFrag.this.spinner.getItemAtPosition(n);
+                if (seasonDetails == null) {
+                    Log.w("EpisodeListFrag", "null season details retrieved for position: " + n);
+                }
+                EpisodeListFrag.this.adapter.updateSeasonDetails(seasonDetails);
                 EpisodeListFrag.this.currEpisodeIndex = -1;
                 EpisodeListFrag.this.updateEpisodeSelection();
             }
@@ -162,7 +166,7 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
                 Log.v("EpisodeListFrag", "Season spinner - Nothing selected");
             }
         });
-        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131165242);
+        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131165255);
         this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         this.spinnerViewGroup.addView((View)this.spinner, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2));
         return this.spinnerViewGroup;
@@ -295,8 +299,8 @@ public class EpisodeListFrag extends NetflixDialogFrag implements ErrorWrapper.C
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("EpisodeListFrag", "onCreateView called");
-        final View inflate = layoutInflater.inflate(2130903073, (ViewGroup)null, false);
-        inflate.findViewById(2131099768).setVisibility(0);
+        final View inflate = layoutInflater.inflate(2130903096, (ViewGroup)null, false);
+        inflate.findViewById(2131230901).setVisibility(0);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
         (this.listView = (ListView)inflate.findViewById(16908298)).setChoiceMode(1);
         this.listView.setDivider((Drawable)null);

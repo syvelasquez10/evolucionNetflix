@@ -68,9 +68,9 @@ public final class BottomPanel extends PlayerSection
         this.mdxTargetSelector.setTarget(localDevicePosition);
         final MdxTargetSelectionDialog.Builder builder = new MdxTargetSelectionDialog.Builder(playerActivity);
         builder.setCancelable(false);
-        builder.setTitle(2131493087);
+        builder.setTitle(2131296524);
         builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerActivity));
-        builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131493178), playerActivity.getCurrentTitle()));
+        builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131296615), playerActivity.getCurrentTitle()));
         builder.setOnItemClickListener((AdapterView$OnItemClickListener)new AdapterView$OnItemClickListener() {
             public void onItemClick(final AdapterView<?> adapterView, final View view, final int target, final long n) {
                 Log.d("screen", "Mdx target clicked: item with id " + n + ", on position " + target);
@@ -137,12 +137,12 @@ public final class BottomPanel extends PlayerSection
     }
     
     private void init(final PlayScreen.Listeners listeners) {
-        this.durationLabel = (TextView)this.context.findViewById(2131099855);
-        this.bottomPanel = this.context.findViewById(2131099847);
+        this.durationLabel = (TextView)this.context.findViewById(2131230989);
+        this.bottomPanel = this.context.findViewById(2131230981);
         if (this.bottomPanel == null) {
             Log.e("screen", "========>bottom null!");
         }
-        this.timeline = (NetflixSeekBar)this.context.findViewById(2131099854);
+        this.timeline = (NetflixSeekBar)this.context.findViewById(2131230988);
         if (this.timeline != null) {
             this.timeline.setOnSeekBarChangeListener(listeners.videoPositionListener);
             this.timeline.setDentVisible(false);
@@ -150,12 +150,12 @@ public final class BottomPanel extends PlayerSection
             this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineThumbOffsetInDip));
             this.timeline.setProgressBarPadding(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineHeightPaddingInDip));
         }
-        this.media = (ImageButton)this.context.findViewById(2131099891);
+        this.media = (ImageButton)this.context.findViewById(2131231030);
         if (this.media != null) {
             this.media.setOnClickListener(listeners.playPauseListener);
             this.media.setBackgroundColor(this.transpColor);
         }
-        this.skipBack = (IconFontTextView)this.context.findViewById(2131099853);
+        this.skipBack = (IconFontTextView)this.context.findViewById(2131230987);
         if (this.skipBack != null) {
             this.skipBack.setOnClickListener(listeners.skipBackListener);
             this.skipBack.setBackgroundColor(this.transpColor);
@@ -169,13 +169,13 @@ public final class BottomPanel extends PlayerSection
                 BottomPanel.this.displayMdxTargets();
             }
         };
-        this.mdxTarget = (ImageButton)this.context.findViewById(2131099839);
+        this.mdxTarget = (ImageButton)this.context.findViewById(2131230973);
         if (this.mdxTarget != null) {
             this.mdxTarget.setOnClickListener((View$OnClickListener)onClickListener);
             this.mdxTarget.setBackgroundColor(this.transpColor);
         }
-        this.zoomDivider = this.context.findViewById(2131099892);
-        this.zoom = (ImageButton)this.context.findViewById(2131099893);
+        this.zoomDivider = this.context.findViewById(2131231031);
+        this.zoom = (ImageButton)this.context.findViewById(2131231032);
         if (this.zoom != null) {
             this.zoom.setOnClickListener(listeners.zoomListener);
             this.zoom.setBackgroundColor(this.transpColor);
@@ -327,71 +327,34 @@ public final class BottomPanel extends PlayerSection
     
     public void setMdxTargetSelector(final MdxTargetSelection mdxTargetSelector) {
         while (true) {
-            Label_0234: {
-                final boolean mdxTargetSelectionVisible2;
-                final NetflixActivity netflixActivity;
-                Label_0194: {
-                    Label_0170: {
-                        synchronized (this) {
-                            final MdxTargetSelection mdxTargetSelector2 = this.mdxTargetSelector;
-                            this.mdxTargetSelector = mdxTargetSelector;
-                            final boolean mdxTargetSelectionVisible = this.isMdxTargetSelectionVisible(mdxTargetSelector2);
-                            mdxTargetSelectionVisible2 = this.isMdxTargetSelectionVisible();
-                            final boolean visible = this.isVisible();
-                            if (Log.isLoggable("screen", 3)) {
-                                Log.d("screen", "Bottom panel is visible: " + visible);
-                                Log.d("screen", "MDX target is currently visible: " + mdxTargetSelectionVisible);
-                                Log.d("screen", "MDX target whould be visible: " + mdxTargetSelectionVisible2);
+            Label_0128: {
+                synchronized (this) {
+                    this.mdxTargetSelector = mdxTargetSelector;
+                    final boolean mdxTargetSelectionVisible = this.isMdxTargetSelectionVisible();
+                    final boolean visible = this.isVisible();
+                    if (Log.isLoggable("screen", 3)) {
+                        Log.d("screen", "Bottom panel is visible: " + visible);
+                        Log.d("screen", "MDX target whould be visible: " + mdxTargetSelectionVisible);
+                    }
+                    if (visible) {
+                        if (this.context == null) {
+                            Log.w("screen", "Player activity was destroyed, do nothing");
+                        }
+                        else {
+                            if (!mdxTargetSelectionVisible) {
+                                break Label_0128;
                             }
-                            if (visible) {
-                                if (this.context == null) {
-                                    Log.w("screen", "Player activity was destroyed, do nothing");
-                                }
-                                else {
-                                    if (!mdxTargetSelectionVisible) {
-                                        break Label_0194;
-                                    }
-                                    if (!mdxTargetSelectionVisible2) {
-                                        break Label_0170;
-                                    }
-                                    Log.d("screen", "Panel is visible. MDX target was visible and it should be visible. Do nothing.");
-                                }
-                                return;
+                            if (this.mdxTarget != null) {
+                                this.mdxTarget.setVisibility(0);
                             }
-                            break Label_0234;
                         }
                     }
-                    Log.d("screen", "Panel is visible. MDX target was visible and it should NOT be visible. Remove it!");
-                    netflixActivity.runInUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            synchronized (BottomPanel.this) {
-                                if (BottomPanel.this.mdxTarget != null) {
-                                    BottomPanel.this.mdxTarget.setVisibility(8);
-                                }
-                            }
-                        }
-                    });
                     return;
                 }
-                if (mdxTargetSelectionVisible2) {
-                    Log.d("screen", "Panel is visible. MDX target was NOT visible and it should be visible. Add it!");
-                    netflixActivity.runInUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            synchronized (BottomPanel.this) {
-                                if (BottomPanel.this.mdxTarget != null) {
-                                    BottomPanel.this.mdxTarget.setVisibility(0);
-                                }
-                            }
-                        }
-                    });
-                    return;
-                }
-                Log.d("screen", "Panel is visible. MDX target was NOT visible and it should NOT be visible. Do nothing.");
-                return;
             }
-            Log.d("screen", "Panel is NOT visible. Do nothing.");
+            if (this.mdxTarget != null) {
+                this.mdxTarget.setVisibility(8);
+            }
         }
     }
     

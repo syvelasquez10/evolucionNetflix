@@ -73,7 +73,7 @@ class SignUpWebViewClient extends WebViewClient
                     this.mSecurityFailure = true;
                     this.mUi.showToast("Loading insecure resource, ERROR:" + string);
                     Log.e("SignupActivity", "Trying to load from unsecure location in release build. Prevent loading, security breach! URL: " + string);
-                    string = this.mUi.getString(2131493209);
+                    string = this.mUi.getString(2131296646);
                     this.mUi.provideDialog(string, this.mUi.mHandleError);
                 }
             }

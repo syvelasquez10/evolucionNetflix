@@ -27,30 +27,29 @@ import com.netflix.mediaclient.Log;
 import java.util.Locale;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.android.volley.VolleyError;
+import java.util.UUID;
 import android.content.Context;
 import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
-import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientRequest<T>
 {
-    public static final String SERVER_EXECUTION_TIME_HEADER = "X-Netflix.api-script-execution-time";
+    public static final String ENDPOINT_REVISION = "X-Netflix.api-script-revision";
+    public static final String NETFLIX_API_SCRIPT_EXECUTION_TIME_HEADER = "X-Netflix.api-script-execution-time";
+    public static final String NETFLIX_SERVER_EXECUTION_TIME_HEADER = "X-Netflix.execution-time";
     private static final String TAG = "nf_volleyrequest";
-    private static AtomicLong sFalcorRequestCount;
     protected ApiEndpointRegistry mApiEndpointRegistry;
+    protected long mApiScriptExecTimeInMs;
     protected ServiceAgent.ConfigurationAgentInterface mConfig;
     protected Context mContext;
+    protected String mEndpointRevision;
     protected long mParseTimeInMs;
     protected long mServerExecTimeInMs;
-    protected long mUuid;
-    
-    static {
-        FalcorVolleyWebClientRequest.sFalcorRequestCount = new AtomicLong(1L);
-    }
+    protected UUID mUuid;
     
     protected FalcorVolleyWebClientRequest(final Context mContext, final ServiceAgent.ConfigurationAgentInterface mConfig) {
         super(0);
-        this.mUuid = FalcorVolleyWebClientRequest.sFalcorRequestCount.getAndIncrement();
+        this.mUuid = UUID.randomUUID();
         this.mConfig = mConfig;
         this.mContext = mContext;
     }
@@ -165,6 +164,8 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
             httpResponse.setMimeType("text/x-json");
             httpResponse.setServerExecutionTime((int)this.mServerExecTimeInMs);
             httpResponse.setContentLength(this.mResponseSizeInBytes);
+            httpResponse.setApiScriptExecutionTime((int)this.mApiScriptExecTimeInMs);
+            httpResponse.setEndpointRevision(this.mEndpointRevision);
             final String[] pqlQueries = this.getPQLQueries();
             int length = 0;
             if (pqlQueries != null) {
@@ -220,8 +221,8 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
         return sb.toString();
     }
     
-    public long getRequestId() {
-        return this.mUuid;
+    public String getRequestId() {
+        return this.mUuid.toString();
     }
     
     @Override
@@ -245,28 +246,129 @@ public abstract class FalcorVolleyWebClientRequest<T> extends VolleyWebClientReq
     protected abstract T parseFalcorResponse(final String p0) throws FalcorParseException, FalcorServerException;
     
     @Override
-    protected Response<T> parseNetworkResponse(final NetworkResponse networkResponse) {
-        while (true) {
-            Label_0089: {
-                if (networkResponse == null || networkResponse.headers == null) {
-                    break Label_0089;
-                }
-                final String s = networkResponse.headers.get("X-Netflix.api-script-execution-time");
-                if (Log.isLoggable("nf_volleyrequest", 3)) {
-                    Log.d("nf_volleyrequest", "execTime: " + s);
-                }
-                try {
-                    this.mServerExecTimeInMs = Long.parseLong(s);
-                    return super.parseNetworkResponse(networkResponse);
-                }
-                catch (Throwable t) {
-                    Log.e("nf_volleyrequest", "Failed to parse server execution time!", t);
-                    return super.parseNetworkResponse(networkResponse);
-                }
-            }
-            Log.w("nf_volleyrequest", "execTime not found!");
-            continue;
-        }
+    protected Response<T> parseNetworkResponse(final NetworkResponse p0) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_1        
+        //     1: ifnull          181
+        //     4: aload_1        
+        //     5: getfield        com/android/volley/NetworkResponse.headers:Ljava/util/Map;
+        //     8: ifnull          181
+        //    11: aload_1        
+        //    12: getfield        com/android/volley/NetworkResponse.headers:Ljava/util/Map;
+        //    15: ldc             "X-Netflix.api-script-execution-time"
+        //    17: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+        //    22: checkcast       Ljava/lang/String;
+        //    25: astore_2       
+        //    26: aload_1        
+        //    27: getfield        com/android/volley/NetworkResponse.headers:Ljava/util/Map;
+        //    30: ldc             "X-Netflix.execution-time"
+        //    32: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+        //    37: checkcast       Ljava/lang/String;
+        //    40: astore_3       
+        //    41: aload_0        
+        //    42: aload_1        
+        //    43: getfield        com/android/volley/NetworkResponse.headers:Ljava/util/Map;
+        //    46: ldc             "X-Netflix.api-script-revision"
+        //    48: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+        //    53: checkcast       Ljava/lang/String;
+        //    56: putfield        com/netflix/mediaclient/service/webclient/volley/FalcorVolleyWebClientRequest.mEndpointRevision:Ljava/lang/String;
+        //    59: ldc             "nf_volleyrequest"
+        //    61: iconst_3       
+        //    62: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
+        //    65: ifeq            117
+        //    68: ldc             "nf_volleyrequest"
+        //    70: new             Ljava/lang/StringBuilder;
+        //    73: dup            
+        //    74: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    77: ldc_w           "execTime: "
+        //    80: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    83: aload_2        
+        //    84: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    87: ldc_w           ", total server time "
+        //    90: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    93: aload_3        
+        //    94: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    97: ldc_w           ", revision: "
+        //   100: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   103: aload_0        
+        //   104: getfield        com/netflix/mediaclient/service/webclient/volley/FalcorVolleyWebClientRequest.mEndpointRevision:Ljava/lang/String;
+        //   107: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   110: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   113: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   116: pop            
+        //   117: aload_3        
+        //   118: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
+        //   121: ifeq            132
+        //   124: aload_0        
+        //   125: aload_3        
+        //   126: invokestatic    java/lang/Long.parseLong:(Ljava/lang/String;)J
+        //   129: putfield        com/netflix/mediaclient/service/webclient/volley/FalcorVolleyWebClientRequest.mServerExecTimeInMs:J
+        //   132: aload_2        
+        //   133: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
+        //   136: ifeq            147
+        //   139: aload_0        
+        //   140: aload_2        
+        //   141: invokestatic    java/lang/Long.parseLong:(Ljava/lang/String;)J
+        //   144: putfield        com/netflix/mediaclient/service/webclient/volley/FalcorVolleyWebClientRequest.mApiScriptExecTimeInMs:J
+        //   147: aload_0        
+        //   148: aload_1        
+        //   149: invokespecial   com/netflix/mediaclient/service/webclient/volley/VolleyWebClientRequest.parseNetworkResponse:(Lcom/android/volley/NetworkResponse;)Lcom/android/volley/Response;
+        //   152: areturn        
+        //   153: astore_3       
+        //   154: ldc             "nf_volleyrequest"
+        //   156: ldc_w           "Failed to parse server execution time!"
+        //   159: aload_3        
+        //   160: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   163: pop            
+        //   164: goto            132
+        //   167: astore_2       
+        //   168: ldc             "nf_volleyrequest"
+        //   170: ldc_w           "Failed to parse api script execution time!"
+        //   173: aload_2        
+        //   174: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   177: pop            
+        //   178: goto            147
+        //   181: ldc             "nf_volleyrequest"
+        //   183: ldc_w           "execTime not found!"
+        //   186: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   189: pop            
+        //   190: goto            147
+        //    Signature:
+        //  (Lcom/android/volley/NetworkResponse;)Lcom/android/volley/Response<TT;>;
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type                 
+        //  -----  -----  -----  -----  ---------------------
+        //  124    132    153    167    Ljava/lang/Throwable;
+        //  139    147    167    181    Ljava/lang/Throwable;
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0147:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
     @Override

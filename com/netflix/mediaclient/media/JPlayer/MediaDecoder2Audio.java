@@ -59,7 +59,7 @@ public class MediaDecoder2Audio extends MediaDecoderPipe2
     void createRenderer() {
         this.createAudioTrack();
         this.mRenderState.onPaused();
-        (this.mHandlerThread = new HandlerThread("RenderThreadAudeo")).start();
+        (this.mHandlerThread = new HandlerThread("RenderThreadAudeo", -2)).start();
         this.mHandler = new Handler(this.mHandlerThread.getLooper()) {
             public void handleMessage(final Message p0) {
                 // 

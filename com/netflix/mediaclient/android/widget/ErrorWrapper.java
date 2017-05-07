@@ -32,9 +32,9 @@ public class ErrorWrapper
             }
         };
         this.callback = callback;
-        this.errorGroup = view.findViewById(2131099717);
-        this.errorMsg = (TextView)view.findViewById(2131099718);
-        (this.retryBtn = (Button)this.errorGroup.findViewById(2131099719)).setOnClickListener(this.retryClickListener);
+        this.errorGroup = view.findViewById(2131230850);
+        this.errorMsg = (TextView)view.findViewById(2131230851);
+        (this.retryBtn = (Button)this.errorGroup.findViewById(2131230852)).setOnClickListener(this.retryClickListener);
         this.setRetryVisibility();
     }
     

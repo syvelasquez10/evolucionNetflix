@@ -57,7 +57,7 @@ public class VideoDecoderPipe extends MediaDecoderPipe
     }
     
     private void makeHandler() {
-        (this.mHandlerThread = new HandlerThread("RenderThread")).start();
+        (this.mHandlerThread = new HandlerThread("RenderThread", -2)).start();
         this.mHandler = new Handler(this.mHandlerThread.getLooper()) {
             public void handleMessage(final Message p0) {
                 // 

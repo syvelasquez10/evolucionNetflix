@@ -67,7 +67,7 @@ public final class StringUtils
         spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, string.length(), 0);
         String string2 = s;
         if (isEmpty(s)) {
-            string2 = context.getString(2131493111);
+            string2 = context.getString(2131296548);
         }
         spannableStringBuilder.append((CharSequence)" ");
         spannableStringBuilder.append((CharSequence)string2);
@@ -139,11 +139,11 @@ public final class StringUtils
     }
     
     public static CharSequence getBasicInfoString(final Context context, final MovieDetails movieDetails) {
-        return movieDetails.getYear() + "   " + movieDetails.getCertification() + "   " + String.format(context.getResources().getString(2131493116), TimeUtils.convertSecondsToMinutes(movieDetails.getRuntime()));
+        return movieDetails.getYear() + "   " + movieDetails.getCertification() + "   " + String.format(context.getResources().getString(2131296553), TimeUtils.convertSecondsToMinutes(movieDetails.getRuntime()));
     }
     
     public static CharSequence getBasicInfoString(final Context context, final ShowDetails showDetails) {
-        return showDetails.getYear() + "   " + showDetails.getCertification() + "   " + context.getResources().getQuantityString(2131558400, showDetails.getNumOfSeasons(), new Object[] { showDetails.getNumOfSeasons() });
+        return showDetails.getYear() + "   " + showDetails.getCertification() + "   " + context.getResources().getQuantityString(2131623936, showDetails.getNumOfSeasons(), new Object[] { showDetails.getNumOfSeasons() });
     }
     
     public static String getFileAsString(final File p0) throws Exception {

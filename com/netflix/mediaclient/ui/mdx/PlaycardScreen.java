@@ -47,15 +47,15 @@ class PlaycardScreen implements Screen
         this.mController = mController;
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        (this.mMainImage = (AdvancedImageView)mController.findViewById(2131099832)).setPressedStateHandlerEnabled(false);
+        (this.mMainImage = (AdvancedImageView)mController.findViewById(2131230966)).setPressedStateHandlerEnabled(false);
         this.mMainImage.setVisibility(0);
-        this.mBufferingOverlay = mController.findViewById(2131099868);
-        this.mBif = (ImageView)mController.findViewById(2131099833);
-        this.mDevice = (TextView)mController.findViewById(2131099849);
-        this.mTitle = (TextView)mController.findViewById(2131099850);
-        this.mSubtitle = (TextView)mController.findViewById(2131099851);
-        this.mVideoMetadata = mController.findViewById(2131099848);
-        this.mPlayPauseButton = (ImageButton)mController.findViewById(2131099845);
+        this.mBufferingOverlay = mController.findViewById(2131231002);
+        this.mBif = (ImageView)mController.findViewById(2131230967);
+        this.mDevice = (TextView)mController.findViewById(2131230983);
+        this.mTitle = (TextView)mController.findViewById(2131230984);
+        this.mSubtitle = (TextView)mController.findViewById(2131230985);
+        this.mVideoMetadata = mController.findViewById(2131230982);
+        this.mPlayPauseButton = (ImageButton)mController.findViewById(2131230979);
         if (this.mPlayPauseButton != null) {
             Log.d("playcard", "Play/pause button found, sets listener, disable");
             this.mPlayPauseButton.setOnClickListener(listeners.playPauseListener);
@@ -194,11 +194,11 @@ class PlaycardScreen implements Screen
     public void setPausePlayButtonState(final boolean b) {
         if (b) {
             Log.d("playcard", "State is now PAUSED, change Play/Pause button to PLAY");
-            this.mPlayPauseButton.setImageResource(2130837672);
+            this.mPlayPauseButton.setImageResource(2130837804);
             return;
         }
         Log.d("playcard", "State is now PLAYING, change Play/Pause button to PAUSE");
-        this.mPlayPauseButton.setImageResource(2130837671);
+        this.mPlayPauseButton.setImageResource(2130837803);
     }
     
     int setProgress(final int n, final int n2, final boolean b) {

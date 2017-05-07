@@ -96,11 +96,11 @@ public class NetflixActionBar
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayUseLogoEnabled(true);
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(2131165206);
+        actionBar.setLogo(2131165219);
         actionBar.setTitle((CharSequence)"");
         this.content = actionBar.getCustomView();
-        this.logo = (ImageView)this.content.findViewById(2131099665);
-        this.title = (TextView)this.content.findViewById(2131099666);
+        this.logo = (ImageView)this.content.findViewById(2131230798);
+        this.title = (TextView)this.content.findViewById(2131230799);
         this.fixBackgroundRepeat(this.content);
         this.setupFocusability();
         if (runnable != null) {
@@ -149,7 +149,7 @@ public class NetflixActionBar
     }
     
     protected int getLayoutId() {
-        return 2130903041;
+        return 2130903064;
     }
     
     protected View getLogo() {

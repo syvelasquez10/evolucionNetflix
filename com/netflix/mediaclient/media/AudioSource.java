@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.media;
 
 import org.json.JSONException;
+import com.netflix.mediaclient.ui.player.NccpAudioSource;
 import com.netflix.mediaclient.ui.mdx.MdxAudioSource;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
@@ -12,10 +13,9 @@ import com.netflix.mediaclient.Log;
 public abstract class AudioSource implements Comparable<AudioSource>
 {
     public static final int ASSISTIVE_AUDIO = 2;
-    protected static final String ATTR_DISSALOWED_TIMED_TEXT_TRACK = "disallowed_timed_text_track";
+    protected static final String ATTR_DISSALOWED_TIMED_TEXT_TRACK = "disallowedSubtitleTracks";
     protected static final String ATTR_ID = "id";
     protected static final String ATTR_IS_NATIVE = "isNative";
-    protected static final String ATTR_LABEL = "label";
     protected static final String ATTR_LANGUAGE = "language";
     protected static final String ATTR_LANGUAGE_DESCRIPTION = "languageDescription";
     protected static final String ATTR_NUM_CHANNELS = "channels";

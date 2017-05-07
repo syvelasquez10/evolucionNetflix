@@ -8,6 +8,7 @@ import java.util.Collection;
 import android.widget.TextView;
 import android.view.ViewGroup;
 import android.view.View;
+import com.netflix.mediaclient.Log;
 import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.SeasonDetails;
 import java.util.List;
@@ -17,6 +18,7 @@ import android.widget.BaseAdapter;
 
 public class SeasonsSpinnerAdapter extends BaseAdapter
 {
+    private static final String TAG = "SeasonsSpinnerAdapter";
     private final Context context;
     private final LayoutInflater inflater;
     private final List<SeasonDetails> seasons;
@@ -32,6 +34,10 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
     }
     
     public SeasonDetails getItem(final int n) {
+        if (n < 0 || n >= this.getCount()) {
+            Log.w("SeasonsSpinnerAdapter", "Position requested (" + n + ") is outside of count: " + this.getCount());
+            return null;
+        }
         return this.seasons.get(n);
     }
     
@@ -51,14 +57,14 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
     public View getView(int backgroundResource, final View view, final ViewGroup viewGroup) {
         TextView textView;
         if ((textView = (TextView)view) == null) {
-            textView = (TextView)this.inflater.inflate(2130903115, (ViewGroup)null, false);
+            textView = (TextView)this.inflater.inflate(2130903141, (ViewGroup)null, false);
         }
         textView.setText((CharSequence)this.getItem(backgroundResource).getSeasonNumberTitle(this.context));
         if (viewGroup instanceof SeasonsSpinner) {
-            backgroundResource = 2131165206;
+            backgroundResource = 2131165219;
         }
         else {
-            backgroundResource = 2130837690;
+            backgroundResource = 2130837822;
         }
         textView.setBackgroundResource(backgroundResource);
         return (View)textView;

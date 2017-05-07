@@ -15,6 +15,7 @@ import com.netflix.mediaclient.media.AudioSource;
 
 public final class MdxAudioSource extends AudioSource
 {
+    protected static final String ATTR_LABEL = "label";
     public static final int IMPL_VALUE = 2;
     private boolean mAvailable;
     private final boolean mSelected;
@@ -27,7 +28,7 @@ public final class MdxAudioSource extends AudioSource
         this.nccpOrderNumber = i;
         this.isNative = true;
         this.trackType = 0;
-        final JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "disallowed_timed_text_track");
+        final JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "disallowedSubtitleTracks");
         if (jsonArray != null) {
             if (Log.isLoggable("nf_audio_source", 3)) {
                 Log.d("nf_audio_source", "DisallowedSubtitleTracks found: " + jsonArray.length());
@@ -74,7 +75,7 @@ public final class MdxAudioSource extends AudioSource
         jsonObject.put("selected", this.mSelected);
         if (this.disallowedSubtitles != null && this.disallowedSubtitles.length > 0) {
             final JSONArray jsonArray = new JSONArray();
-            jsonObject.put("disallowed_timed_text_track", (Object)jsonArray);
+            jsonObject.put("disallowedSubtitleTracks", (Object)jsonArray);
             for (int i = 0; i < this.disallowedSubtitles.length; ++i) {
                 jsonArray.put((Object)this.disallowedSubtitles[i]);
             }

@@ -37,7 +37,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
     }
     
     private void init() {
-        this.setId(2131099660);
+        this.setId(2131230759);
         this.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, -2));
         this.setOrientation(0);
         if (this.shouldOverlapPages()) {
@@ -52,7 +52,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
         for (int i = 0; i < n; ++i) {
             final View childView = this.createChildView(this.getContext());
             if (this.shouldApplyPaddingToChildren()) {
-                final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131361850);
+                final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(2131492939);
                 childView.setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
             }
             this.addView(childView, (ViewGroup$LayoutParams)linearLayout$LayoutParams);

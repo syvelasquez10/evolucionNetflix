@@ -67,30 +67,30 @@ public final class TopPanel extends PlaycardSection
                 return true;
             }
         };
-        this.mBackArrow = this.context.findViewById(2131099836);
+        this.mBackArrow = this.context.findViewById(2131230970);
         if (this.mBackArrow != null) {
             this.mBackArrow.setOnTouchListener((View$OnTouchListener)onTouchListener);
         }
-        this.mBackIcon = this.context.findViewById(2131099837);
+        this.mBackIcon = this.context.findViewById(2131230971);
         if (this.mBackIcon != null) {
             this.mBackIcon.setOnTouchListener((View$OnTouchListener)onTouchListener);
         }
-        this.mBackPadding = this.context.findViewById(2131099838);
+        this.mBackPadding = this.context.findViewById(2131230972);
         if (this.mBackPadding != null) {
             this.mBackPadding.setOnTouchListener((View$OnTouchListener)onTouchListener);
         }
     }
     
     private void initGeneric(final PlaycardScreen.Listeners listeners) {
-        this.mTopPanel = this.context.findViewById(2131099835);
+        this.mTopPanel = this.context.findViewById(2131230969);
         if (this.mTopPanel == null) {
             Log.e("playcard", "========>top null!");
         }
-        this.mEpisodeSelector = (ImageButton)this.context.findViewById(2131099860);
+        this.mEpisodeSelector = (ImageButton)this.context.findViewById(2131230994);
         if (this.mEpisodeSelector != null) {
             this.mEpisodeSelector.setOnClickListener(listeners.episodeSelectorListener);
         }
-        this.mRatings = (ImageButton)this.context.findViewById(2131099840);
+        this.mRatings = (ImageButton)this.context.findViewById(2131230974);
         if (this.mRatings != null) {
             this.mRatings.setOnClickListener(listeners.ratingListener);
         }
@@ -104,14 +104,14 @@ public final class TopPanel extends PlaycardSection
                 TopPanel.this.context.displayDialog((Dialog)MdxUtils.createMdxTargetSelectionDialog(TopPanel.this.context, (MdxUtils.MdxTargetSelectionDialogInterface)TopPanel.this.context));
             }
         };
-        this.mdxTarget = (ImageButton)this.context.findViewById(2131099839);
+        this.mdxTarget = (ImageButton)this.context.findViewById(2131230973);
         if (this.mdxTarget != null) {
             this.mdxTarget.setOnClickListener((View$OnClickListener)onClickListener);
         }
-        this.mEpisodeContainer = this.context.findViewById(2131099859);
-        this.mEpisodeDivider = this.context.findViewById(2131099858);
-        this.mLanguageContainer = this.context.findViewById(2131099862);
-        this.mLanguageDivider = this.context.findViewById(2131099861);
+        this.mEpisodeContainer = this.context.findViewById(2131230993);
+        this.mEpisodeDivider = this.context.findViewById(2131230992);
+        this.mLanguageContainer = this.context.findViewById(2131230996);
+        this.mLanguageDivider = this.context.findViewById(2131230995);
     }
     
     private void initLanguages() {
@@ -153,7 +153,7 @@ public final class TopPanel extends PlaycardSection
                 }
             }
         };
-        final View viewById = this.context.findViewById(2131099863);
+        final View viewById = this.context.findViewById(2131230997);
         if (viewById instanceof ImageView) {
             Log.d("playcard", "Add language button");
             (this.mLanguage = (ImageButton)viewById).setOnClickListener((View$OnClickListener)onClickListener);
@@ -161,8 +161,8 @@ public final class TopPanel extends PlaycardSection
     }
     
     private void initSound(final SeekBar$OnSeekBarChangeListener onSeekBarChangeListener) {
-        this.mSound = (SeekBar)this.context.findViewById(2131099843);
-        this.mSoundPanel = this.context.findViewById(2131099842);
+        this.mSound = (SeekBar)this.context.findViewById(2131230977);
+        this.mSoundPanel = this.context.findViewById(2131230976);
         if (this.mSound != null) {
             this.mSound.setOnSeekBarChangeListener(onSeekBarChangeListener);
             this.mSound.setMax(100);

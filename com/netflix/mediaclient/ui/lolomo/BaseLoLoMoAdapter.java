@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
 import com.viewpagerindicator.android.osp.ViewPager;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.viewpagerindicator.CirclePageIndicator;
 import android.widget.LinearLayout;
 import android.content.Context;
@@ -71,14 +72,14 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     private RowHolder createViewsAndHolder(final View view) {
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131099781);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131230914);
         linearLayout.setFocusable(false);
         final CirclePageIndicator circlePageIndicator = new CirclePageIndicator((Context)this.activity);
-        final LoMoViewPager viewPager = new LoMoViewPager(this.frag, this.manager, circlePageIndicator, this.viewRecycler, view.findViewById(2131099783), this.isGenreList());
+        final LoMoViewPager viewPager = new LoMoViewPager(this.frag, this.manager, circlePageIndicator, this.viewRecycler, view.findViewById(2131230916), this.isGenreList());
         this.pagerSet.add(viewPager);
         viewPager.setFocusable(false);
         linearLayout.addView((View)viewPager);
-        circlePageIndicator.setRadius(4.0f * this.activity.getResources().getDisplayMetrics().density);
+        circlePageIndicator.setRadius(AndroidUtils.dipToPixels((Context)this.activity, 4));
         circlePageIndicator.setPageColor(1627389951);
         circlePageIndicator.setStrokeColor(0);
         circlePageIndicator.setStrokeWidth(0.0f);
@@ -88,12 +89,12 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         final LinearLayout$LayoutParams linearLayout$LayoutParams = new LinearLayout$LayoutParams(-1, -2);
         linearLayout$LayoutParams.topMargin = (int)(2.0f * circlePageIndicator.getRadius() + circlePageIndicator.getPaddingTop() + circlePageIndicator.getPaddingBottom() + 1.0f) * -2;
         linearLayout.addView((View)circlePageIndicator, (ViewGroup$LayoutParams)linearLayout$LayoutParams);
-        final TextView textView = (TextView)view.findViewById(2131099784);
+        final TextView textView = (TextView)view.findViewById(2131230917);
         final Resources resources = this.activity.getResources();
         final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)textView.getLayoutParams();
-        layoutParams.leftMargin = resources.getDimensionPixelOffset(2131361849) + resources.getDimensionPixelOffset(2131361850);
+        layoutParams.leftMargin = resources.getDimensionPixelOffset(2131492938) + resources.getDimensionPixelOffset(2131492939);
         textView.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
-        return new RowHolder(textView, viewPager, view.findViewById(2131099780));
+        return new RowHolder(textView, viewPager, view.findViewById(2131230913));
     }
     
     private void fetchMoreData() {
@@ -185,7 +186,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         }
         View inflate;
         if ((inflate = view) == null) {
-            inflate = this.activity.getLayoutInflater().inflate(2130903077, (ViewGroup)null);
+            inflate = this.activity.getLayoutInflater().inflate(2130903100, (ViewGroup)null);
             inflate.setTag((Object)this.createViewsAndHolder(inflate));
         }
         this.updateRowViews((RowHolder)inflate.getTag(), n);
@@ -281,13 +282,17 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     protected void updateRowViews(final RowHolder rowHolder, final int n) {
         final boolean b = false;
         final BasicLoMo item = this.getItem(n);
+        if (item == null) {
+            Log.w("LoLoMoAdapter", "Trying to show data for null lomo! Position: " + n);
+            return;
+        }
         if (Log.isLoggable("LoLoMoAdapter", 2)) {
             Log.v("LoLoMoAdapter", "Updating LoMo row content: " + item.getTitle() + ", type: " + item.getType() + ", pos: " + n);
         }
         final TextView title = rowHolder.title;
         String text;
         if (item.getType() == LoMoType.BILLBOARD) {
-            text = this.activity.getString(2131493237);
+            text = this.activity.getString(2131296674);
         }
         else {
             text = item.getTitle();

@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.service.logging.ads.AdvertisingIdProvider;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import java.util.List;
 
@@ -16,6 +17,8 @@ public interface IClientLogging
     public static final String RESUME_EVENTS_DELIVERY = "com.netflix.mediaclient.intent.action.LOG_RESUME_EVENTS_DELIVERY";
     
     List<SessionKey> getActiveLoggingSessions();
+    
+    AdvertisingIdProvider getAdvertisingIdProvider();
     
     ApplicationPerformanceMetricsLogging getApplicationPerformanceMetricsLogging();
     

@@ -31,14 +31,14 @@ public class LogoutActivity extends AccountActivity
     
     private void handleLogoutComplete() {
         Log.i("LogoutActivity", "Handling logout completion...");
-        Toast.makeText(this.getApplicationContext(), 2131493152, 1).show();
+        Toast.makeText(this.getApplicationContext(), 2131296589, 1).show();
         this.getServiceManager().flushCaches();
         NetflixActivity.finishAllActivities((Context)this);
         this.startActivity(LaunchActivity.createStartIntent(this, "handleLogoutComplete()"));
     }
     
     public static void showLogoutDialog(final Activity activity) {
-        new AlertDialog$Builder((Context)activity).setMessage(2131493150).setNegativeButton(2131493057, (DialogInterface$OnClickListener)null).setPositiveButton(2131493122, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
+        new AlertDialog$Builder((Context)activity).setMessage(2131296587).setNegativeButton(2131296494, (DialogInterface$OnClickListener)null).setPositiveButton(2131296559, (DialogInterface$OnClickListener)new DialogInterface$OnClickListener() {
             public void onClick(final DialogInterface dialogInterface, final int n) {
                 activity.startActivity(LogoutActivity.create((Context)activity));
                 activity.finish();
@@ -84,7 +84,7 @@ public class LogoutActivity extends AccountActivity
                 return;
             }
             Log.e("LogoutActivity", "Could not log user out - status code: " + n);
-            Toast.makeText(LogoutActivity.this.getApplicationContext(), 2131493151, 1).show();
+            Toast.makeText(LogoutActivity.this.getApplicationContext(), 2131296588, 1).show();
             LogoutActivity.this.finish();
         }
     }

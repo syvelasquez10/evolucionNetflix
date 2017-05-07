@@ -29,16 +29,20 @@ public final class DrmManagerRegistry
     private static WidevineMediaDrmEngine mWidevineMediaDrmEngine;
     private static String previousDrmSystem;
     
+    private static void clearKeys(final String s) {
+        getWidevineDrmManager().clearKeys(s);
+    }
+    
     private static void clearLicense(final byte[] array) {
         getWidevineMediaDrmEngine().clearLicense(array);
     }
     
     public static DrmManager createDrmManager(Context instance, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final ServiceAgent.UserAgentInterface userAgentInterface, final ErrorLogging errorLogging, final DrmManager.DrmReadyCallback drmReadyCallback) {
         int androidVersion;
-        Label_0102_Outer:Label_0112_Outer:
+        Label_0101_Outer:Label_0111_Outer:
         while (true) {
             while (true) {
-                Label_0257: {
+                Label_0256: {
                     while (true) {
                         synchronized (DrmManagerRegistry.class) {
                             androidVersion = AndroidUtils.getAndroidVersion();
@@ -50,9 +54,9 @@ public final class DrmManagerRegistry
                             while (true) {
                                 while (true) {
                                     try {
-                                        DrmManagerRegistry.disableWidevine = configurationAgentInterface.isDisableWidevineFlagSet();
+                                        DrmManagerRegistry.disableWidevine = configurationAgentInterface.isDisableWidevine();
                                         if (androidVersion >= 18 && isWidevineDrmAllowed()) {
-                                            DrmManagerRegistry.instance = new WidevineDrmManager(instance, configurationAgentInterface, userAgentInterface, errorLogging, drmReadyCallback);
+                                            DrmManagerRegistry.instance = new WidevineDrmManager(instance, userAgentInterface, errorLogging, drmReadyCallback);
                                         }
                                         else {
                                             if (Log.isLoggable("nf_drm", 3)) {
@@ -61,7 +65,7 @@ public final class DrmManagerRegistry
                                             DrmManagerRegistry.instance = new LegacyDrmManager(drmReadyCallback);
                                         }
                                         if (DrmManagerRegistry.instance.getDrmType() != 0) {
-                                            break Label_0257;
+                                            break Label_0256;
                                         }
                                         if (DrmManagerRegistry.disableWidevine) {
                                             DrmManagerRegistry.currentDrmSystem = "FORCE_LEGACY";
@@ -77,14 +81,14 @@ public final class DrmManagerRegistry
                                     catch (Throwable t) {
                                         Log.e("nf_drm", "Unable to create WidevineDrmManager, default to LegacyDrmManager", t);
                                         DrmManagerRegistry.instance = new LegacyDrmManager(drmReadyCallback);
-                                        continue Label_0102_Outer;
+                                        continue Label_0101_Outer;
                                     }
-                                    continue Label_0102_Outer;
+                                    continue Label_0101_Outer;
                                 }
                             }
                         }
                         DrmManagerRegistry.currentDrmSystem = "LEGACY";
-                        continue Label_0112_Outer;
+                        continue Label_0111_Outer;
                     }
                 }
                 DrmManagerRegistry.currentDrmSystem = PreferenceUtils.getStringPref(instance, "nf_drm_system_id", null);
@@ -152,10 +156,6 @@ public final class DrmManagerRegistry
         return isDrmSystemChanged() && "FORCE_LEGACY".equals(DrmManagerRegistry.previousDrmSystem);
     }
     
-    private static boolean isCryptoReady() {
-        return getWidevineDrmManager().isNccpCryptoFactoryReady();
-    }
-    
     public static boolean isCurrentDrmWidevine() {
         return DrmManagerRegistry.instance != null && DrmManagerRegistry.instance.getDrmType() == 1;
     }
@@ -215,6 +215,10 @@ public final class DrmManagerRegistry
         getWidevineMediaDrmEngine().releaseSecureStops(array);
     }
     
+    private static boolean restoreKeys(final String s, final String s2, final String s3) {
+        return getWidevineDrmManager().restoreKeys(s, s2, s3);
+    }
+    
     private static byte[] sign(final byte[] array) {
         return getWidevineDrmManager().sign(array);
     }
@@ -223,8 +227,8 @@ public final class DrmManagerRegistry
         return getWidevineMediaDrmEngine().storeLicense(array);
     }
     
-    private static boolean updateKeyResponse(final byte[] array, final byte[] array2, final byte[] array3) {
-        return getWidevineDrmManager().updateNccpSessionKeyResponse(array, array2, array3);
+    private static boolean updateKeyResponse(final byte[] array, final byte[] array2, final byte[] array3, final String s) {
+        return getWidevineDrmManager().updateNccpSessionKeyResponse(array, array2, array3, s);
     }
     
     private static boolean verify(final byte[] array, final byte[] array2) {

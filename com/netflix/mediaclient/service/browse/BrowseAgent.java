@@ -220,6 +220,21 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
         return BrowseAgent.isCurrentProfileActive;
     }
     
+    public static int computePlayPos(final int n, int n2, final int n3) {
+        if (n2 > 0 && n >= n2) {
+            n2 = 0;
+        }
+        else {
+            if (n3 > 0 && n >= n3 - 30) {
+                return 0;
+            }
+            if ((n2 = n) < 0) {
+                return 0;
+            }
+        }
+        return n2;
+    }
+    
     public static String getCWLoMoId(final HardCache hardCache) {
         return (String)hardCache.get("continueWatching_list_id");
     }
@@ -265,7 +280,7 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
     }
     
     private com.netflix.mediaclient.service.webclient.model.EpisodeDetails getNextPlayableEpisode(com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails, final long lastModified) {
-        if (episodeDetails.getBookmarkPosition() < episodeDetails.getEndtime()) {
+        if (computePlayPos(episodeDetails.getBookmarkPosition(), episodeDetails.getEndtime(), episodeDetails.getRuntime()) == episodeDetails.getBookmarkPosition()) {
             return episodeDetails;
         }
         final String buildEpisodeCacheKey = buildEpisodeCacheKey(episodeDetails.getNextEpisodeId());
@@ -289,21 +304,6 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
             episodeDetails.bookmark.setLastModified(0L);
         }
         return episodeDetails;
-    }
-    
-    public static int getPlayablePosition(final int n, int n2, final int n3) {
-        if (n2 > 0 && n >= n2) {
-            n2 = 0;
-        }
-        else {
-            if (n3 > 0 && n >= n3 - 30) {
-                return 0;
-            }
-            if ((n2 = n) < 0) {
-                return 0;
-            }
-        }
-        return n2;
     }
     
     private void handleProfileActive() {
@@ -401,22 +401,22 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                 }
                 com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails = null;
                 final com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails2 = null;
-                com.netflix.mediaclient.service.webclient.model.EpisodeDetails nextPlayableEpisode;
+                com.netflix.mediaclient.service.webclient.model.EpisodeDetails episodeDetails3;
                 if (!episode) {
                     final MovieDetails movieDetails = (MovieDetails)getFromCaches(this.hardCache, this.softCache, buildBrowseCacheKey(BrowseAgent.CACHE_KEY_PREFIX_MDP, playableId, "0", "0"));
-                    nextPlayableEpisode = episodeDetails2;
+                    episodeDetails3 = episodeDetails2;
                     if (movieDetails != null) {
-                        nextPlayableEpisode = episodeDetails2;
+                        episodeDetails3 = episodeDetails2;
                         if (movieDetails.bookmark != null) {
                             if (Log.isLoggable("nf_service_browseagent", 3)) {
                                 Log.d("nf_bookmark", String.format("%s movie bookmarkPos %d to newPos %d, oldtime %d to newTime %d", playableId, movieDetails.getBookmarkPosition(), playbackBookmark, movieDetails.bookmark.getLastModified(), currentTimeMillis));
                             }
                             movieDetails.setBookmarkPosition(playbackBookmark);
                             movieDetails.bookmark.setLastModified(currentTimeMillis);
-                            nextPlayableEpisode = episodeDetails2;
+                            episodeDetails3 = episodeDetails2;
                             if (Log.isLoggable("nf_service_browseagent", 3)) {
-                                Log.d("nf_bookmark", String.format("%s, bookmarkpos %d playpos %d endtime %d runtime %d", playableId, playbackBookmark, getPlayablePosition(playbackBookmark, movieDetails.getEndtime(), movieDetails.getRuntime()), movieDetails.getEndtime(), movieDetails.getRuntime()));
-                                nextPlayableEpisode = episodeDetails2;
+                                Log.d("nf_bookmark", String.format("%s, bookmarkpos %d playpos %d endtime %d runtime %d", playableId, playbackBookmark, computePlayPos(playbackBookmark, movieDetails.getEndtime(), movieDetails.getRuntime()), movieDetails.getEndtime(), movieDetails.getRuntime()));
+                                episodeDetails3 = episodeDetails2;
                             }
                         }
                     }
@@ -441,15 +441,19 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                         episodeDetails.bookmark.setBookmarkPosition(playbackBookmark);
                         episodeDetails.bookmark.setLastModified(currentTimeMillis);
                         if (Log.isLoggable("nf_service_browseagent", 3)) {
-                            Log.d("nf_bookmark", String.format("id %s, bookmarkpos %d playpos %d endtime %d runtime %d", playableId, playbackBookmark, getPlayablePosition(playbackBookmark, episodeDetails.getEndtime(), episodeDetails.getRuntime()), episodeDetails.getEndtime(), episodeDetails.getRuntime()));
+                            Log.d("nf_bookmark", String.format("id %s, bookmarkpos %d playpos %d endtime %d runtime %d", playableId, playbackBookmark, computePlayPos(playbackBookmark, episodeDetails.getEndtime(), episodeDetails.getRuntime()), episodeDetails.getEndtime(), episodeDetails.getRuntime()));
                         }
-                        nextPlayableEpisode = this.getNextPlayableEpisode(episodeDetails, currentTimeMillis);
+                        final com.netflix.mediaclient.service.webclient.model.EpisodeDetails nextPlayableEpisode = this.getNextPlayableEpisode(episodeDetails, currentTimeMillis);
                         if (Log.isLoggable("nf_service_browseagent", 3)) {
                             Log.d("nf_bookmark", String.format("next playable episode: %s - %s, S%d: E%d", nextPlayableEpisode.getId(), nextPlayableEpisode.getTitle(), nextPlayableEpisode.getSeasonNumber(), nextPlayableEpisode.getEpisodeNumber()));
                         }
                         updateShowOnEpisodePlay(showDetails, nextPlayableEpisode);
                         updateSeasonsInformation(this.weakSeasonsCache, nextPlayableEpisode.getSeasonId(), nextPlayableEpisode.getEpisodeNumber());
-                        this.sendEpisodeRefreshBrodcast(nextPlayableEpisode.getSeasonNumber(), nextPlayableEpisode.getEpisodeNumber());
+                        episodeDetails3 = nextPlayableEpisode;
+                        if (!episodeDetails.hasSameSeasonAndEpisodeNumbers(nextPlayableEpisode)) {
+                            this.sendEpisodeRefreshBrodcast(nextPlayableEpisode.getSeasonNumber(), nextPlayableEpisode.getEpisodeNumber());
+                            episodeDetails3 = nextPlayableEpisode;
+                        }
                     }
                     else {
                         if (!StringUtils.safeEquals(playableId, showDetails.getCurrentEpisodeId())) {
@@ -457,14 +461,14 @@ public class BrowseAgent extends ServiceAgent implements BrowseAgentInterface
                         }
                         showDetails.currentEpisodeBookmark.setBookmarkPosition(playbackBookmark);
                         showDetails.currentEpisodeBookmark.setLastModified(currentTimeMillis);
-                        nextPlayableEpisode = episodeDetails2;
+                        episodeDetails3 = episodeDetails2;
                         if (Log.isLoggable("nf_service_browseagent", 3)) {
                             Log.d("nf_bookmark", "Episode details don't exist; updated sdp currentEpisode");
-                            nextPlayableEpisode = episodeDetails2;
+                            episodeDetails3 = episodeDetails2;
                         }
                     }
                 }
-                this.updateCwOnPlay(playableId, playbackBookmark, currentTimeMillis, nextPlayableEpisode);
+                this.updateCwOnPlay(playableId, playbackBookmark, currentTimeMillis, episodeDetails3);
             }
         }
     }

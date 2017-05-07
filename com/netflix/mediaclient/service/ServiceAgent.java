@@ -10,12 +10,13 @@ import com.netflix.mediaclient.servicemgr.UserProfile;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.media.bitrate.VideoBitrateRange;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
-import org.json.JSONArray;
+import com.netflix.mediaclient.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
+import org.json.JSONArray;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
@@ -204,6 +205,8 @@ public abstract class ServiceAgent
         
         int getBitrateCap();
         
+        JSONArray getCastBlackList();
+        
         ConsolidatedLoggingSessionSpecification getConsolidatedLoggingSessionSpecification(final String p0);
         
         PlayerType getCurrentPlayerType();
@@ -222,7 +225,11 @@ public abstract class ServiceAgent
         
         int getImageCacheSizeBytes();
         
+        IpConnectivityPolicy getIpConnectivityPolicy();
+        
         JSONArray getMdxBlackListTargets();
+        
+        int getPresentationTrackingAggregationSize();
         
         int getResFetcherThreadPoolSize();
         
@@ -240,11 +247,13 @@ public abstract class ServiceAgent
         
         boolean isDeviceLowMem();
         
-        boolean isDisableMdxFlagSet();
+        boolean isDisableMdx();
         
-        boolean isDisableWebsocketFlagSet();
+        boolean isDisableWebsocket();
         
-        boolean isDisableWidevineFlagSet();
+        boolean isDisableWidevine();
+        
+        boolean isEnableCast();
         
         boolean isEsnMigrationRequired();
         

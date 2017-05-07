@@ -9,7 +9,6 @@ import android.media.MediaCodecList;
 import android.media.MediaCodec$CryptoInfo;
 import android.os.Message;
 import android.os.Looper;
-import android.os.Process;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import android.media.MediaCrypto;
@@ -128,315 +127,309 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
     }
     
     private void createInputThread() {
-        this.mInputThread = new HandlerThread("inputthread");
-        while (true) {
-            try {
-                Process.setThreadPriority(-2);
-                this.mInputThread.start();
-                this.mInputHandler = new Handler(this.mInputThread.getLooper()) {
-                    long frameReceived = 0L;
-                    
-                    public void handleMessage(final Message message) {
-                        switch (message.what) {
-                            default: {
-                                Log.d(MediaDecoderPipe2.this.mTag, "outputthread handler had unknown message");
-                                break;
+        final StringBuilder append = new StringBuilder().append("Inputthread");
+        String s;
+        if (this.mIsAudio) {
+            s = "Audio";
+        }
+        else {
+            s = "Video";
+        }
+        (this.mInputThread = new HandlerThread(append.append(s).toString(), -2)).start();
+        this.mInputHandler = new Handler(this.mInputThread.getLooper()) {
+            long frameReceived = 0L;
+            
+            public void handleMessage(final Message message) {
+                switch (message.what) {
+                    default: {
+                        Log.d(MediaDecoderPipe2.this.mTag, "outputthread handler had unknown message");
+                        break;
+                    }
+                    case 1: {
+                        int dequeueInputBuffer = -1;
+                    Label_0121:
+                        while (true) {
+                            if (!MediaDecoderPipe2.this.mInputBuffersQ.isEmpty() || MediaDecoderPipe2.this.mDecoderPause) {
+                                break Label_0121;
                             }
-                            case 1: {
-                                int dequeueInputBuffer = -1;
-                            Label_0121:
+                            while (true) {
                                 while (true) {
-                                    if (!MediaDecoderPipe2.this.mInputBuffersQ.isEmpty() || MediaDecoderPipe2.this.mDecoderPause) {
-                                        break Label_0121;
-                                    }
-                                    while (true) {
-                                        while (true) {
-                                            try {
-                                                dequeueInputBuffer = MediaDecoderPipe2.this.mDecoder.dequeueInputBuffer(-1L);
-                                                if (dequeueInputBuffer >= 0 && dequeueInputBuffer < MediaDecoderPipe2.this.mInputBufferCnt) {
-                                                    MediaDecoderPipe2.this.mInputBuffersQ.add(dequeueInputBuffer);
-                                                    if (MediaDecoderPipe2.this.mDecoderPause) {
-                                                        Log.d(MediaDecoderPipe2.this.mTag, "inputthread pause");
-                                                        return;
-                                                    }
-                                                    break;
-                                                }
-                                            }
-                                            catch (Exception ex) {
-                                                Log.d(MediaDecoderPipe2.this.mTag, "get un-documented exception as a result of dequeueInputBuffer() " + ex.getMessage());
-                                                continue;
+                                    try {
+                                        dequeueInputBuffer = MediaDecoderPipe2.this.mDecoder.dequeueInputBuffer(-1L);
+                                        if (dequeueInputBuffer >= 0 && dequeueInputBuffer < MediaDecoderPipe2.this.mInputBufferCnt) {
+                                            MediaDecoderPipe2.this.mInputBuffersQ.add(dequeueInputBuffer);
+                                            if (MediaDecoderPipe2.this.mDecoderPause) {
+                                                Log.d(MediaDecoderPipe2.this.mTag, "inputthread pause");
+                                                return;
                                             }
                                             break;
                                         }
-                                        Log.d(MediaDecoderPipe2.this.mTag, "get invlaid buffer index " + dequeueInputBuffer + " as a result of dequeueInputBuffer()");
-                                        continue Label_0121;
+                                    }
+                                    catch (Exception ex) {
+                                        Log.d(MediaDecoderPipe2.this.mTag, "get un-documented exception as a result of dequeueInputBuffer() " + ex.getMessage());
+                                        continue;
                                     }
                                     break;
                                 }
-                                if (MediaDecoderPipe2.this.mInputBuffersQ.isEmpty()) {
-                                    MediaDecoderPipe2.this.mInputHandler.removeMessages(1);
-                                    MediaDecoderPipe2.this.mInputHandler.sendEmptyMessageDelayed(1, 20L);
-                                    return;
-                                }
-                                final int intValue = MediaDecoderPipe2.this.mInputBuffersQ.peekFirst();
-                                final InputDataSource.BufferMeta onRequestData = MediaDecoderPipe2.this.mDataSource.onRequestData(MediaDecoderPipe2.this.mInputBuffers[intValue]);
-                                if (onRequestData.size <= 0 && onRequestData.flags == 0) {
-                                    MediaDecoderPipe2.this.mInputHandler.removeMessages(1);
-                                    MediaDecoderPipe2.this.mInputHandler.sendEmptyMessageDelayed(1, 20L);
-                                    return;
-                                }
-                                if (this.frameReceived <= 0L && Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
-                                    Log.d(MediaDecoderPipe2.this.mTag, "QueueInput " + intValue + " from " + onRequestData.offset + " size= " + onRequestData.size + " @" + onRequestData.timestamp + " ms" + " flags " + onRequestData.flags);
-                                }
-                                if (MediaDecoderPipe2.this.mRefClock != null && onRequestData.timestamp < MediaDecoderPipe2.this.mRefClock.get() && Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
-                                    Log.d(MediaDecoderPipe2.this.mTag, "STAT:DEC input late " + this.frameReceived + " at " + MediaDecoderPipe2.this.mRefClock.get() + " by " + (onRequestData.timestamp - MediaDecoderPipe2.this.mRefClock.get()) + " ms");
-                                }
-                                if ((onRequestData.flags & 0x4) != 0x0) {
-                                    Log.d(MediaDecoderPipe2.this.mTag, "got decoder input BUFFER_FLAG_END_OF_STREAM");
-                                }
-                                while (true) {
-                                    while (true) {
-                                        try {
-                                            if (MediaDecoderPipe2.this.mEncrypted) {
-                                                final MediaCodec$CryptoInfo mediaCodec$CryptoInfo = new MediaCodec$CryptoInfo();
-                                                mediaCodec$CryptoInfo.mode = 1;
-                                                if (onRequestData.nByteEncrypted.length == 0) {
-                                                    final byte[] array = new byte[16];
-                                                    for (int i = 0; i < array.length; ++i) {
-                                                        array[i] = 0;
-                                                    }
-                                                    mediaCodec$CryptoInfo.iv = array;
-                                                    mediaCodec$CryptoInfo.key = array;
-                                                    mediaCodec$CryptoInfo.numBytesOfClearData = new int[] { onRequestData.size };
-                                                    mediaCodec$CryptoInfo.numBytesOfEncryptedData = new int[] { 0 };
-                                                    mediaCodec$CryptoInfo.numSubSamples = 1;
-                                                }
-                                                else {
-                                                    mediaCodec$CryptoInfo.iv = onRequestData.iv;
-                                                    mediaCodec$CryptoInfo.key = onRequestData.key;
-                                                    mediaCodec$CryptoInfo.numBytesOfClearData = onRequestData.nByteInClear;
-                                                    mediaCodec$CryptoInfo.numBytesOfEncryptedData = onRequestData.nByteEncrypted;
-                                                    mediaCodec$CryptoInfo.numSubSamples = onRequestData.nSubsample;
-                                                }
-                                                MediaDecoderPipe2.this.mDecoder.queueSecureInputBuffer(intValue, onRequestData.offset, mediaCodec$CryptoInfo, onRequestData.timestamp * 1000L, onRequestData.flags);
-                                                MediaDecoderPipe2.this.mInputBuffersQ.removeFirst();
-                                                ++this.frameReceived;
-                                                MediaDecoderPipe2.this.mInputHandler.removeMessages(1);
-                                                MediaDecoderPipe2.this.mInputHandler.sendEmptyMessage(1);
-                                                return;
+                                Log.d(MediaDecoderPipe2.this.mTag, "get invlaid buffer index " + dequeueInputBuffer + " as a result of dequeueInputBuffer()");
+                                continue Label_0121;
+                            }
+                            break;
+                        }
+                        if (MediaDecoderPipe2.this.mInputBuffersQ.isEmpty()) {
+                            MediaDecoderPipe2.this.mInputHandler.removeMessages(1);
+                            MediaDecoderPipe2.this.mInputHandler.sendEmptyMessageDelayed(1, 20L);
+                            return;
+                        }
+                        final int intValue = MediaDecoderPipe2.this.mInputBuffersQ.peekFirst();
+                        final InputDataSource.BufferMeta onRequestData = MediaDecoderPipe2.this.mDataSource.onRequestData(MediaDecoderPipe2.this.mInputBuffers[intValue]);
+                        if (onRequestData.size <= 0 && onRequestData.flags == 0) {
+                            MediaDecoderPipe2.this.mInputHandler.removeMessages(1);
+                            MediaDecoderPipe2.this.mInputHandler.sendEmptyMessageDelayed(1, 20L);
+                            return;
+                        }
+                        if (this.frameReceived <= 0L && Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
+                            Log.d(MediaDecoderPipe2.this.mTag, "QueueInput " + intValue + " from " + onRequestData.offset + " size= " + onRequestData.size + " @" + onRequestData.timestamp + " ms" + " flags " + onRequestData.flags);
+                        }
+                        if (MediaDecoderPipe2.this.mRefClock != null && onRequestData.timestamp < MediaDecoderPipe2.this.mRefClock.get() && Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
+                            Log.d(MediaDecoderPipe2.this.mTag, "STAT:DEC input late " + this.frameReceived + " at " + MediaDecoderPipe2.this.mRefClock.get() + " by " + (onRequestData.timestamp - MediaDecoderPipe2.this.mRefClock.get()) + " ms");
+                        }
+                        if ((onRequestData.flags & 0x4) != 0x0) {
+                            Log.d(MediaDecoderPipe2.this.mTag, "got decoder input BUFFER_FLAG_END_OF_STREAM");
+                        }
+                        while (true) {
+                            while (true) {
+                                try {
+                                    if (MediaDecoderPipe2.this.mEncrypted) {
+                                        final MediaCodec$CryptoInfo mediaCodec$CryptoInfo = new MediaCodec$CryptoInfo();
+                                        mediaCodec$CryptoInfo.mode = 1;
+                                        if (onRequestData.nByteEncrypted.length == 0) {
+                                            final byte[] array = new byte[16];
+                                            for (int i = 0; i < array.length; ++i) {
+                                                array[i] = 0;
                                             }
+                                            mediaCodec$CryptoInfo.iv = array;
+                                            mediaCodec$CryptoInfo.key = array;
+                                            mediaCodec$CryptoInfo.numBytesOfClearData = new int[] { onRequestData.size };
+                                            mediaCodec$CryptoInfo.numBytesOfEncryptedData = new int[] { 0 };
+                                            mediaCodec$CryptoInfo.numSubSamples = 1;
                                         }
-                                        catch (Exception ex2) {
-                                            Log.d(MediaDecoderPipe2.this.mTag, "get un-documented exception as a result of queueInputBuffer() " + ex2);
-                                            return;
+                                        else {
+                                            mediaCodec$CryptoInfo.iv = onRequestData.iv;
+                                            mediaCodec$CryptoInfo.key = onRequestData.key;
+                                            mediaCodec$CryptoInfo.numBytesOfClearData = onRequestData.nByteInClear;
+                                            mediaCodec$CryptoInfo.numBytesOfEncryptedData = onRequestData.nByteEncrypted;
+                                            mediaCodec$CryptoInfo.numSubSamples = onRequestData.nSubsample;
                                         }
-                                        MediaDecoderPipe2.this.mDecoder.queueInputBuffer(intValue, onRequestData.offset, onRequestData.size, onRequestData.timestamp * 1000L, onRequestData.flags);
-                                        continue;
+                                        MediaDecoderPipe2.this.mDecoder.queueSecureInputBuffer(intValue, onRequestData.offset, mediaCodec$CryptoInfo, onRequestData.timestamp * 1000L, onRequestData.flags);
+                                        MediaDecoderPipe2.this.mInputBuffersQ.removeFirst();
+                                        ++this.frameReceived;
+                                        MediaDecoderPipe2.this.mInputHandler.removeMessages(1);
+                                        MediaDecoderPipe2.this.mInputHandler.sendEmptyMessage(1);
+                                        return;
                                     }
                                 }
-                                break;
-                            }
-                            case 2: {
-                                MediaDecoderPipe2.this.mInputBuffersQ.clear();
-                                synchronized (MediaDecoderPipe2.this.mInputState) {
-                                    MediaDecoderPipe2.this.mInputState.notify();
-                                    // monitorexit(MediaDecoderPipe2.access$800(this.this$0))
-                                    Log.d(MediaDecoderPipe2.this.mTag, "flush input done");
-                                }
-                            }
-                            case 3: {
-                                Log.d(MediaDecoderPipe2.this.mTag, "input is initialized");
-                                if (MediaDecoderPipe2.this.mEventListener != null) {
-                                    MediaDecoderPipe2.this.mEventListener.onDecoderReady(MediaDecoderPipe2.this.mIsAudio);
+                                catch (Exception ex2) {
+                                    Log.d(MediaDecoderPipe2.this.mTag, "get un-documented exception as a result of queueInputBuffer() " + ex2);
                                     return;
                                 }
-                                break;
-                            }
-                            case 4: {
-                                Log.d(MediaDecoderPipe2.this.mTag, "input is stopped");
+                                MediaDecoderPipe2.this.mDecoder.queueInputBuffer(intValue, onRequestData.offset, onRequestData.size, onRequestData.timestamp * 1000L, onRequestData.flags);
+                                continue;
                             }
                         }
+                        break;
                     }
-                };
+                    case 2: {
+                        MediaDecoderPipe2.this.mInputBuffersQ.clear();
+                        synchronized (MediaDecoderPipe2.this.mInputState) {
+                            MediaDecoderPipe2.this.mInputState.notify();
+                            // monitorexit(MediaDecoderPipe2.access$800(this.this$0))
+                            Log.d(MediaDecoderPipe2.this.mTag, "flush input done");
+                        }
+                    }
+                    case 3: {
+                        Log.d(MediaDecoderPipe2.this.mTag, "input is initialized");
+                        if (MediaDecoderPipe2.this.mEventListener != null) {
+                            MediaDecoderPipe2.this.mEventListener.onDecoderReady(MediaDecoderPipe2.this.mIsAudio);
+                            return;
+                        }
+                        break;
+                    }
+                    case 4: {
+                        Log.d(MediaDecoderPipe2.this.mTag, "input is stopped");
+                    }
+                }
             }
-            catch (SecurityException ex) {
-                Log.e("MediaDecoder2", "fail to setPriority " + ex);
-                continue;
-            }
-            break;
-        }
+        };
     }
     
     private void createOutputThread() {
-        this.mOutputThread = new HandlerThread("outputthread");
-        while (true) {
-            try {
-                Process.setThreadPriority(-2);
-                this.mOutputThread.start();
-                this.mOutputHandler = new Handler(this.mOutputThread.getLooper()) {
-                    long frameDecoded = 0L;
-                    final /* synthetic */ MediaDecoderPipe2 this$0;
-                    
-                    public void handleMessage(Message access$1300) {
-                        switch (((Message)access$1300).what) {
-                            default: {
-                                Log.d(MediaDecoderPipe2.this.mTag, "outputthread handler had unknown message");
-                            }
-                            case 1: {
-                                if (MediaDecoderPipe2.this.mDecoderPause) {
-                                    Log.d(MediaDecoderPipe2.this.mTag, "outputthread pause");
-                                    return;
-                                }
-                                while (true) {
-                                    final MediaCodec$BufferInfo mediaCodec$BufferInfo = new MediaCodec$BufferInfo();
-                                Label_0104:
-                                    while (true) {
-                                        int dequeueOutputBuffer;
-                                        try {
-                                            dequeueOutputBuffer = MediaDecoderPipe2.this.mDecoder.dequeueOutputBuffer(mediaCodec$BufferInfo, -1L);
-                                            if (dequeueOutputBuffer == -1) {
-                                                MediaDecoderPipe2.this.mOutputHandler.removeMessages(1);
-                                                MediaDecoderPipe2.this.mOutputHandler.sendEmptyMessage(1);
-                                                return;
-                                            }
-                                        }
-                                        catch (Exception ex) {
-                                            Log.d(MediaDecoderPipe2.this.mTag, "get un-documented exception as a result of dequeueOutputBuffer() " + ex.getMessage());
-                                            return;
-                                        }
-                                        if (dequeueOutputBuffer == -3) {
-                                            Log.d(MediaDecoderPipe2.this.mTag, "OUTPUT_BUFFERS_CHANGED");
-                                            MediaDecoderPipe2.this.configureOutputBuffers();
-                                            continue Label_0104;
-                                        }
-                                        if (dequeueOutputBuffer == -2) {
-                                            final MediaFormat outputFormat = MediaDecoderPipe2.this.mDecoder.getOutputFormat();
-                                            if (Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
-                                                Log.d(MediaDecoderPipe2.this.mTag, "OUTPUT_FORMAT_CHANGED " + outputFormat);
-                                                continue Label_0104;
-                                            }
-                                            continue Label_0104;
-                                        }
-                                        else {
-                                            if (dequeueOutputBuffer < 0 || dequeueOutputBuffer >= MediaDecoderPipe2.this.mOutputBufferCnt) {
-                                                Log.e(MediaDecoderPipe2.this.mTag, dequeueOutputBuffer + " is not valid");
-                                                continue Label_0104;
-                                            }
-                                        Label_0587_Outer:
-                                            while (true) {
-                                                while (true) {
-                                                Label_0641:
-                                                    while (true) {
-                                                        synchronized (MediaDecoderPipe2.this.mOutputBuffersQ) {
-                                                            MediaDecoderPipe2.this.mOutputBuffersQ.add(dequeueOutputBuffer);
-                                                            MediaDecoderPipe2.this.mOutputBufferInfo[dequeueOutputBuffer] = mediaCodec$BufferInfo;
-                                                            // monitorexit(this.this$0.mOutputBuffersQ)
-                                                            if ((mediaCodec$BufferInfo.flags & 0x4) != 0x0) {
-                                                                Log.d(MediaDecoderPipe2.this.mTag, "got decoder output BUFFER_FLAG_END_OF_STREAM");
-                                                            }
-                                                            if (this.frameDecoded <= 0L && Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
-                                                                Log.d(MediaDecoderPipe2.this.mTag, "DequeueOutputBuffer " + dequeueOutputBuffer + " size= " + mediaCodec$BufferInfo.size + " @" + mediaCodec$BufferInfo.presentationTimeUs / 1000L + " ms");
-                                                            }
-                                                            if (MediaDecoderPipe2.this.mRefClock != null && mediaCodec$BufferInfo.presentationTimeUs / 1000L <= MediaDecoderPipe2.this.mRefClock.get() && Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
-                                                                Log.d(MediaDecoderPipe2.this.mTag, "STAT:DEC output late " + this.frameDecoded + " at " + MediaDecoderPipe2.this.mRefClock.get() + " by " + (mediaCodec$BufferInfo.presentationTimeUs / 1000L - MediaDecoderPipe2.this.mRefClock.get()) + " ms");
-                                                            }
-                                                            ++this.frameDecoded;
-                                                            if (MediaDecoderPipe2.this.mIsAudio) {
-                                                                dequeueOutputBuffer = MediaDecoderPipe2.this.mOutputBufferCnt - 1;
-                                                                if (dequeueOutputBuffer > 0) {
-                                                                    break Label_0641;
-                                                                }
-                                                                final int n = 1;
-                                                                if (this.frameDecoded == n && MediaDecoderPipe2.this.mEventListener != null) {
-                                                                    MediaDecoderPipe2.this.mEventListener.onDecoderStarted(MediaDecoderPipe2.this.mIsAudio);
-                                                                    continue Label_0104;
-                                                                }
-                                                                continue Label_0104;
-                                                            }
-                                                        }
-                                                        dequeueOutputBuffer = 1;
-                                                        continue Label_0587_Outer;
-                                                    }
-                                                    int n;
-                                                    if ((n = dequeueOutputBuffer) >= 4) {
-                                                        n = 4;
-                                                        continue;
-                                                    }
-                                                    continue;
-                                                }
-                                            }
-                                        }
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-                            case 2: {
-                                synchronized (MediaDecoderPipe2.this.mOutputState) {
-                                    MediaDecoderPipe2.this.mOutputState.notify();
-                                    // monitorexit(MediaDecoderPipe2.access$1300(this.this$0))
-                                    this.frameDecoded = 0L;
-                                    Log.d(MediaDecoderPipe2.this.mTag, "flush output done");
-                                }
-                            }
-                            case 3: {
-                                Log.d(MediaDecoderPipe2.this.mTag, "output is initialized");
-                            }
-                            case 4: {
-                                Log.d(MediaDecoderPipe2.this.mTag, "output stopping...");
-                                while (true) {
-                                    try {
-                                        MediaDecoderPipe2.this.mDecoder.stop();
-                                        access$1300 = (Exception)MediaDecoderPipe2.this.mOutputState;
-                                        // monitorenter(access$1300)
-                                        final Handler handler = this;
-                                        final MediaDecoderPipe2 mediaDecoderPipe2 = handler.this$0;
-                                        final LocalStateNotifier localStateNotifier = mediaDecoderPipe2.mOutputState;
-                                        localStateNotifier.notify();
-                                        final Exception ex2 = access$1300;
-                                        // monitorexit(ex2)
-                                        final Handler handler2 = this;
-                                        final MediaDecoderPipe2 mediaDecoderPipe3 = handler2.this$0;
-                                        final String s = mediaDecoderPipe3.mTag;
-                                        final String s2 = "output is stopped";
-                                        Log.d(s, s2);
+        final StringBuilder append = new StringBuilder().append("Outputthread");
+        String s;
+        if (this.mIsAudio) {
+            s = "Audio";
+        }
+        else {
+            s = "Video";
+        }
+        (this.mOutputThread = new HandlerThread(append.append(s).toString(), -2)).start();
+        this.mOutputHandler = new Handler(this.mOutputThread.getLooper()) {
+            long frameDecoded = 0L;
+            final /* synthetic */ MediaDecoderPipe2 this$0;
+            
+            public void handleMessage(Message access$1300) {
+                switch (((Message)access$1300).what) {
+                    default: {
+                        Log.d(MediaDecoderPipe2.this.mTag, "outputthread handler had unknown message");
+                    }
+                    case 1: {
+                        if (MediaDecoderPipe2.this.mDecoderPause) {
+                            Log.d(MediaDecoderPipe2.this.mTag, "outputthread pause");
+                            return;
+                        }
+                        while (true) {
+                            final MediaCodec$BufferInfo mediaCodec$BufferInfo = new MediaCodec$BufferInfo();
+                        Label_0104:
+                            while (true) {
+                                int dequeueOutputBuffer;
+                                try {
+                                    dequeueOutputBuffer = MediaDecoderPipe2.this.mDecoder.dequeueOutputBuffer(mediaCodec$BufferInfo, -1L);
+                                    if (dequeueOutputBuffer == -1) {
+                                        MediaDecoderPipe2.this.mOutputHandler.removeMessages(1);
+                                        MediaDecoderPipe2.this.mOutputHandler.sendEmptyMessage(1);
                                         return;
                                     }
-                                    catch (Exception access$1300) {
-                                        Log.d(MediaDecoderPipe2.this.mTag, "get un-documented exception as a result of stop() " + access$1300.getMessage());
-                                        continue;
-                                    }
-                                    break;
                                 }
-                                try {
-                                    final Handler handler = this;
-                                    final MediaDecoderPipe2 mediaDecoderPipe2 = handler.this$0;
-                                    final LocalStateNotifier localStateNotifier = mediaDecoderPipe2.mOutputState;
-                                    localStateNotifier.notify();
-                                    final Exception ex2 = access$1300;
-                                    // monitorexit(ex2)
-                                    final Handler handler2 = this;
-                                    final MediaDecoderPipe2 mediaDecoderPipe3 = handler2.this$0;
-                                    final String s = mediaDecoderPipe3.mTag;
-                                    final String s2 = "output is stopped";
-                                    Log.d(s, s2);
+                                catch (Exception ex) {
+                                    Log.d(MediaDecoderPipe2.this.mTag, "get un-documented exception as a result of dequeueOutputBuffer() " + ex.getMessage());
                                     return;
                                 }
-                                finally {
+                                if (dequeueOutputBuffer == -3) {
+                                    Log.d(MediaDecoderPipe2.this.mTag, "OUTPUT_BUFFERS_CHANGED");
+                                    MediaDecoderPipe2.this.configureOutputBuffers();
+                                    continue Label_0104;
                                 }
-                                // monitorexit(access$1300)
+                                if (dequeueOutputBuffer == -2) {
+                                    final MediaFormat outputFormat = MediaDecoderPipe2.this.mDecoder.getOutputFormat();
+                                    if (Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
+                                        Log.d(MediaDecoderPipe2.this.mTag, "OUTPUT_FORMAT_CHANGED " + outputFormat);
+                                        continue Label_0104;
+                                    }
+                                    continue Label_0104;
+                                }
+                                else {
+                                    if (dequeueOutputBuffer < 0 || dequeueOutputBuffer >= MediaDecoderPipe2.this.mOutputBufferCnt) {
+                                        Log.e(MediaDecoderPipe2.this.mTag, dequeueOutputBuffer + " is not valid");
+                                        continue Label_0104;
+                                    }
+                                Label_0587_Outer:
+                                    while (true) {
+                                        while (true) {
+                                        Label_0641:
+                                            while (true) {
+                                                synchronized (MediaDecoderPipe2.this.mOutputBuffersQ) {
+                                                    MediaDecoderPipe2.this.mOutputBuffersQ.add(dequeueOutputBuffer);
+                                                    MediaDecoderPipe2.this.mOutputBufferInfo[dequeueOutputBuffer] = mediaCodec$BufferInfo;
+                                                    // monitorexit(this.this$0.mOutputBuffersQ)
+                                                    if ((mediaCodec$BufferInfo.flags & 0x4) != 0x0) {
+                                                        Log.d(MediaDecoderPipe2.this.mTag, "got decoder output BUFFER_FLAG_END_OF_STREAM");
+                                                    }
+                                                    if (this.frameDecoded <= 0L && Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
+                                                        Log.d(MediaDecoderPipe2.this.mTag, "DequeueOutputBuffer " + dequeueOutputBuffer + " size= " + mediaCodec$BufferInfo.size + " @" + mediaCodec$BufferInfo.presentationTimeUs / 1000L + " ms");
+                                                    }
+                                                    if (MediaDecoderPipe2.this.mRefClock != null && mediaCodec$BufferInfo.presentationTimeUs / 1000L <= MediaDecoderPipe2.this.mRefClock.get() && Log.isLoggable(MediaDecoderPipe2.this.mTag, 3)) {
+                                                        Log.d(MediaDecoderPipe2.this.mTag, "STAT:DEC output late " + this.frameDecoded + " at " + MediaDecoderPipe2.this.mRefClock.get() + " by " + (mediaCodec$BufferInfo.presentationTimeUs / 1000L - MediaDecoderPipe2.this.mRefClock.get()) + " ms");
+                                                    }
+                                                    ++this.frameDecoded;
+                                                    if (MediaDecoderPipe2.this.mIsAudio) {
+                                                        dequeueOutputBuffer = MediaDecoderPipe2.this.mOutputBufferCnt - 1;
+                                                        if (dequeueOutputBuffer > 0) {
+                                                            break Label_0641;
+                                                        }
+                                                        final int n = 1;
+                                                        if (this.frameDecoded == n && MediaDecoderPipe2.this.mEventListener != null) {
+                                                            MediaDecoderPipe2.this.mEventListener.onDecoderStarted(MediaDecoderPipe2.this.mIsAudio);
+                                                            continue Label_0104;
+                                                        }
+                                                        continue Label_0104;
+                                                    }
+                                                }
+                                                dequeueOutputBuffer = 1;
+                                                continue Label_0587_Outer;
+                                            }
+                                            int n;
+                                            if ((n = dequeueOutputBuffer) >= 4) {
+                                                n = 4;
+                                                continue;
+                                            }
+                                            continue;
+                                        }
+                                    }
+                                }
                                 break;
                             }
                         }
+                        break;
                     }
-                };
+                    case 2: {
+                        synchronized (MediaDecoderPipe2.this.mOutputState) {
+                            MediaDecoderPipe2.this.mOutputState.notify();
+                            // monitorexit(MediaDecoderPipe2.access$1300(this.this$0))
+                            this.frameDecoded = 0L;
+                            Log.d(MediaDecoderPipe2.this.mTag, "flush output done");
+                        }
+                    }
+                    case 3: {
+                        Log.d(MediaDecoderPipe2.this.mTag, "output is initialized");
+                    }
+                    case 4: {
+                        Log.d(MediaDecoderPipe2.this.mTag, "output stopping...");
+                        while (true) {
+                            try {
+                                MediaDecoderPipe2.this.mDecoder.stop();
+                                access$1300 = (Exception)MediaDecoderPipe2.this.mOutputState;
+                                // monitorenter(access$1300)
+                                final Handler handler = this;
+                                final MediaDecoderPipe2 mediaDecoderPipe2 = handler.this$0;
+                                final LocalStateNotifier localStateNotifier = mediaDecoderPipe2.mOutputState;
+                                localStateNotifier.notify();
+                                final Exception ex2 = access$1300;
+                                // monitorexit(ex2)
+                                final Handler handler2 = this;
+                                final MediaDecoderPipe2 mediaDecoderPipe3 = handler2.this$0;
+                                final String s = mediaDecoderPipe3.mTag;
+                                final String s2 = "output is stopped";
+                                Log.d(s, s2);
+                                return;
+                            }
+                            catch (Exception access$1300) {
+                                Log.d(MediaDecoderPipe2.this.mTag, "get un-documented exception as a result of stop() " + access$1300.getMessage());
+                                continue;
+                            }
+                            break;
+                        }
+                        try {
+                            final Handler handler = this;
+                            final MediaDecoderPipe2 mediaDecoderPipe2 = handler.this$0;
+                            final LocalStateNotifier localStateNotifier = mediaDecoderPipe2.mOutputState;
+                            localStateNotifier.notify();
+                            final Exception ex2 = access$1300;
+                            // monitorexit(ex2)
+                            final Handler handler2 = this;
+                            final MediaDecoderPipe2 mediaDecoderPipe3 = handler2.this$0;
+                            final String s = mediaDecoderPipe3.mTag;
+                            final String s2 = "output is stopped";
+                            Log.d(s, s2);
+                            return;
+                        }
+                        finally {
+                        }
+                        // monitorexit(access$1300)
+                        break;
+                    }
+                }
             }
-            catch (SecurityException ex) {
-                Log.e("MediaDecoder2", "fail to setPriority " + ex);
-                continue;
-            }
-            break;
-        }
+        };
     }
     
     private void createVideoDecoderForK(final String s, final boolean b) {

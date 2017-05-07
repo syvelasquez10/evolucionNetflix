@@ -20,25 +20,28 @@ import com.netflix.mediaclient.service.webclient.volley.FalcorVolleyWebClientReq
 
 public class FetchConfigDataRequest extends FalcorVolleyWebClientRequest<ConfigData>
 {
-    private static final String FIELD_ACCOUNT_CONFIG = "accountConfig";
-    private static final String FIELD_DEVICE_CONFIG = "deviceConfig";
-    private static final String FIELD_STREAMING_CONFIG = "streamingqoe";
+    private static final String ACCOUNT_CONFIG = "accountConfig";
+    private static final String DEVICE_CONFIG = "deviceConfig";
+    private static final String STREAMING_CONFIG = "streamingqoe";
     private static final String TAG = "nf_config_data";
-    private final String pqlQuery1;
-    private final String pqlQuery2;
-    private final String pqlQuery3;
+    private static final String accountConfigPql;
+    public static final String deviceConfigPql;
+    private static final String steamingqoePql;
     private final ConfigurationAgentWebCallback responseCallback;
+    
+    static {
+        deviceConfigPql = String.format("['%s']", "deviceConfig");
+        accountConfigPql = String.format("['%s']", "accountConfig");
+        steamingqoePql = String.format("['%s']", "streamingqoe");
+    }
     
     public FetchConfigDataRequest(final Context context, final ServiceAgent.ConfigurationAgentInterface configurationAgentInterface, final ConfigurationAgentWebCallback responseCallback) {
         super(context, configurationAgentInterface);
         this.responseCallback = responseCallback;
-        this.pqlQuery1 = new StringBuilder("['deviceConfig']").toString();
-        this.pqlQuery2 = new StringBuilder("['accountConfig']").toString();
-        this.pqlQuery3 = new StringBuilder("['streamingqoe']").toString();
         if (Log.isLoggable("nf_config_data", 2)) {
-            Log.v("nf_config_data", "PQL1 = " + this.pqlQuery1);
-            Log.v("nf_config_data", "PQL2 = " + this.pqlQuery2);
-            Log.v("nf_config_data", "PQL3 = " + this.pqlQuery3);
+            Log.v("nf_config_data", "deviceConfigPql = " + FetchConfigDataRequest.deviceConfigPql);
+            Log.v("nf_config_data", "accountConfigPql = " + FetchConfigDataRequest.accountConfigPql);
+            Log.v("nf_config_data", "steamingqoePql = " + FetchConfigDataRequest.steamingqoePql);
         }
     }
     
@@ -72,7 +75,7 @@ public class FetchConfigDataRequest extends FalcorVolleyWebClientRequest<ConfigD
     
     @Override
     protected String[] getPQLQueries() {
-        return new String[] { this.pqlQuery1, this.pqlQuery2, this.pqlQuery3 };
+        return new String[] { FetchConfigDataRequest.deviceConfigPql, FetchConfigDataRequest.accountConfigPql, FetchConfigDataRequest.steamingqoePql };
     }
     
     @Override

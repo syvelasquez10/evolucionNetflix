@@ -6,16 +6,26 @@ package com.netflix.mediaclient.service.mdx;
 
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
+import java.util.HashMap;
+import java.util.Map;
 import android.content.Context;
 
 public final class ClientNotifier implements NotifierInterface
 {
     private static final String TAG = "nf_mdx";
-    private Context mContext;
+    private final Context mContext;
+    private final Map<String, MdxSharedState> mSharedStateMap;
     
     ClientNotifier(final Context mContext) {
+        this.mSharedStateMap = new HashMap<String, MdxSharedState>();
         this.mContext = mContext;
         Log.v("nf_mdx", "Creating client notifier");
+    }
+    
+    private void addSharedState(final String s) {
+        if (!this.mSharedStateMap.containsKey(s)) {
+            this.mSharedStateMap.put(s, new MdxSharedState(s));
+        }
     }
     
     @Override
@@ -28,6 +38,13 @@ public final class ClientNotifier implements NotifierInterface
     public void capability(final String s, final String s2) {
         this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_CAPABILITY").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s).putExtra("stringBlob", s2));
         Log.v("nf_mdx", "Intent MDXUPDATE_CAPABILITY sent");
+    }
+    
+    public void commandPlayReceived(final String s) {
+        synchronized (this.mSharedStateMap) {
+            this.addSharedState(s);
+            this.mSharedStateMap.get(s).notifyPlayCommandReceived();
+        }
     }
     
     @Override
@@ -46,6 +63,12 @@ public final class ClientNotifier implements NotifierInterface
     public void error(final String s, final int n, final String s2) {
         this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_ERROR").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s).putExtra("errorCode", n).putExtra("errorDesc", s2));
         Log.v("nf_mdx", "Intent MDXUPDATE_ERROR sent");
+    }
+    
+    public MdxSharedState getSharedState(final String s) {
+        synchronized (this.mSharedStateMap) {
+            return this.mSharedStateMap.get(s);
+        }
     }
     
     @Override
@@ -74,14 +97,26 @@ public final class ClientNotifier implements NotifierInterface
     
     @Override
     public void playbackEnd(final String s) {
-        this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s));
-        Log.v("nf_mdx", "Intent MDXUPDATE_PLAYBACKEND sent");
+        synchronized (this.mSharedStateMap) {
+            if (this.mSharedStateMap.get(s) != null) {
+                this.mSharedStateMap.get(s).notifyPlaybackEnd();
+                this.mSharedStateMap.remove(s);
+            }
+            // monitorexit(this.mSharedStateMap)
+            this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s));
+            Log.v("nf_mdx", "Intent MDXUPDATE_PLAYBACKEND sent");
+        }
     }
     
     @Override
     public void playbackStart(final String s) {
-        this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s));
-        Log.v("nf_mdx", "Intent MDXUPDATE_PLAYBACKSTART sent");
+        synchronized (this.mSharedStateMap) {
+            this.addSharedState(s);
+            this.mSharedStateMap.get(s).notifyPlaybackStart();
+            // monitorexit(this.mSharedStateMap)
+            this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s));
+            Log.v("nf_mdx", "Intent MDXUPDATE_PLAYBACKSTART sent");
+        }
     }
     
     @Override
@@ -97,8 +132,14 @@ public final class ClientNotifier implements NotifierInterface
     
     @Override
     public void state(final String s, final String s2, final int n, final int n2) {
-        this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_STATE").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s).putExtra("currentState", s2).putExtra("time", n).putExtra("volume", n2));
-        Log.v("nf_mdx", "Intent MDXUPDATE_STATE sent");
+        synchronized (this.mSharedStateMap) {
+            if (this.mSharedStateMap.get(s) != null) {
+                this.mSharedStateMap.get(s).notifyPlaybackState(s2, n, n2);
+            }
+            // monitorexit(this.mSharedStateMap)
+            this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_STATE").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s).putExtra("currentState", s2).putExtra("time", n).putExtra("volume", n2));
+            Log.v("nf_mdx", "Intent MDXUPDATE_STATE sent");
+        }
     }
     
     @Override

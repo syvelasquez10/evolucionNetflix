@@ -176,8 +176,16 @@ public class CWVideo implements com.netflix.mediaclient.servicemgr.CWVideo
     
     @Override
     public int getPlayableBookmarkPosition() {
-        Log.d("nf_service_browse_cwvideo", String.format("id %s bookmark %d playPos %d endtime %d runtime %d", this.getId(), this.getBookmarkPosition(), BrowseAgent.getPlayablePosition(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime()), this.getEndtime(), this.getRuntime()));
-        return BrowseAgent.getPlayablePosition(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime());
+        final int computePlayPos = BrowseAgent.computePlayPos(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime());
+        if (Log.isLoggable("nf_service_browse_cwvideo", 3)) {
+            Log.d("nf_service_browse_cwvideo", String.format("id %s bookmark %d playPos %d endtime %d runtime %d", this.getId(), this.getBookmarkPosition(), computePlayPos, this.getEndtime(), this.getRuntime()));
+        }
+        return computePlayPos;
+    }
+    
+    @Override
+    public long getPlayableBookmarkUpdateTime() {
+        return this.getBookmarkLastUpdateTime();
     }
     
     @Override
@@ -186,11 +194,6 @@ public class CWVideo implements com.netflix.mediaclient.servicemgr.CWVideo
             return this.getId();
         }
         return this.getCurrentEpisodeId();
-    }
-    
-    @Override
-    public long getPlayableServerBookmarkUpdateTime() {
-        return this.getBookmarkLastUpdateTime();
     }
     
     @Override
@@ -253,6 +256,6 @@ public class CWVideo implements com.netflix.mediaclient.servicemgr.CWVideo
     
     @Override
     public String toString() {
-        return "CWVideo [summary=" + this.summary + ", bookmark=" + this.bookmark + ", currentEpisode=" + this.currentEpisode + ", currentEpisodeBookmark=" + this.currentEpisodeBookmark + ", inQueue=" + this.inQueue + ", rating=" + this.rating + ", " + super.toString() + "]";
+        return "CWVideo [summary=" + this.summary + ", bookmark=" + this.bookmark + ", currentEpisode=" + this.currentEpisode + ", currentEpisodeBookmark=" + this.currentEpisodeBookmark + ", inQueue=" + this.inQueue + ", rating=" + this.rating + ", stillUrl=" + this.getStillUrl() + ", " + super.toString() + "]";
     }
 }

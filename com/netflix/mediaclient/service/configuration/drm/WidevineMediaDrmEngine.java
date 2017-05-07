@@ -53,7 +53,9 @@ public class WidevineMediaDrmEngine
     }
     
     public void clearLicense(final byte[] array) {
-        this.mDrm.removeKeys(this.mSessionId);
+        if (this.mSessionId != null) {
+            this.mDrm.removeKeys(this.mSessionId);
+        }
     }
     
     public byte[] getChallenge(final byte[] p0) {

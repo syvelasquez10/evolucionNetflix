@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.event.nrdp;
 
 import java.net.URLDecoder;
+import org.json.JSONArray;
 import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
@@ -31,6 +32,10 @@ public abstract class BaseNccpEvent implements UIEvent
     
     protected static JSONObject getJSONObject(final JSONObject jsonObject, final String s, final JSONObject jsonObject2) throws JSONException {
         return JsonUtils.getJSONObject(jsonObject, s, jsonObject2);
+    }
+    
+    protected static JSONArray getJsonArray(final JSONObject jsonObject, final String s) throws JSONException {
+        return JsonUtils.getJSONArray(jsonObject, s);
     }
     
     protected static String getString(final JSONObject jsonObject, final String s, final String s2) throws JSONException {

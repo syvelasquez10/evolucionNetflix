@@ -5,31 +5,41 @@
 package com.netflix.mediaclient.service.configuration;
 
 import com.netflix.mediaclient.service.webclient.model.leafs.DeviceConfigData;
-import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import com.netflix.mediaclient.util.DeviceCategory;
 import java.util.Iterator;
 import java.lang.reflect.Type;
 import com.netflix.mediaclient.service.webclient.volley.FalcorParseUtils;
 import java.util.List;
 import com.google.gson.reflect.TypeToken;
-import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
 import java.io.IOException;
 import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import java.util.HashMap;
+import com.netflix.mediaclient.net.IpConnectivityPolicy;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import java.util.Map;
 
 public class DeviceConfiguration
 {
+    private static final boolean DISABLE_MDX_DEF = false;
+    private static final boolean DISABLE_WEBSOCKET_DEF = true;
     private static String TAG;
+    private int mAppMinimalVersion;
+    private int mAppRecommendedVersion;
     private Map<String, ConsolidatedLoggingSessionSpecification> mConsolidatedLoggingSpecification;
     private Context mContext;
     private DeviceRepository mDeviceRepository;
     private ImagePrefRepository mImagePrefRepository;
+    private IpConnectivityPolicy mIpConnectivityPolicy;
+    private boolean mIsDisableMdx;
+    private boolean mIsDisableWebsocket;
+    private boolean mIsDisableWidevine;
+    private int mPTAggregationSize;
     private SignUpConfiguration mSignUpConfig;
     private SubtitleConfiguration mSubtitleConfiguration;
     
@@ -37,15 +47,27 @@ public class DeviceConfiguration
         DeviceConfiguration.TAG = "nf_configuration_device";
     }
     
-    public DeviceConfiguration(final Context mContext) {
+    public DeviceConfiguration(Context mContext) {
+        boolean b = true;
         this.mSubtitleConfiguration = SubtitleConfiguration.ENHANCED_XML;
         this.mConsolidatedLoggingSpecification = new HashMap<String, ConsolidatedLoggingSessionSpecification>();
         this.mContext = mContext;
-        this.mDeviceRepository = new DeviceRepository(mContext);
-        this.mImagePrefRepository = new ImagePrefRepository(mContext);
-        this.mSignUpConfig = new SignUpConfiguration(mContext);
-        this.mSubtitleConfiguration = SubtitleConfiguration.load(mContext);
+        this.mDeviceRepository = new DeviceRepository(this.mContext);
+        this.mImagePrefRepository = new ImagePrefRepository(this.mContext);
+        this.mSignUpConfig = new SignUpConfiguration(this.mContext);
+        this.mSubtitleConfiguration = SubtitleConfiguration.load(this.mContext);
         this.mConsolidatedLoggingSpecification = this.loadConsolidateLoggingSpecification();
+        this.mIpConnectivityPolicy = this.loadIpConnectivityPolicy();
+        this.mPTAggregationSize = PreferenceUtils.getIntPref(this.mContext, "pt_aggregation_size", -1);
+        this.mAppRecommendedVersion = PreferenceUtils.getIntPref(this.mContext, "config_recommended_version", -1);
+        this.mAppMinimalVersion = PreferenceUtils.getIntPref(this.mContext, "config_min_version", -1);
+        this.mIsDisableMdx = PreferenceUtils.getBooleanPref(this.mContext, "disable_mdx", false);
+        this.mIsDisableWebsocket = PreferenceUtils.getBooleanPref(this.mContext, "disable_websocket", true);
+        mContext = this.mContext;
+        if (DrmManagerRegistry.isDevicePredeterminedToUseWV()) {
+            b = false;
+        }
+        this.mIsDisableWidevine = PreferenceUtils.getBooleanPref(mContext, "disable_widevine", b);
     }
     
     private int fetchDeviceConfigSynchronously(String remoteDataAsString) {
@@ -66,10 +88,6 @@ public class DeviceConfiguration
         }
         this.persistDeviceConfigOverride(configString.getDeviceConfig());
         return 0;
-    }
-    
-    public static int getPTAggregationSize(final Context context) {
-        return PreferenceUtils.getIntPref(context, "pt_aggregation_size", -1);
     }
     
     private boolean isDeviceConfigInCache() {
@@ -96,6 +114,10 @@ public class DeviceConfiguration
             Log.e(DeviceConfiguration.TAG, "Failed to load CL specification from file system", t);
             return toMap(list2);
         }
+    }
+    
+    private IpConnectivityPolicy loadIpConnectivityPolicy() {
+        return IpConnectivityPolicy.from(PreferenceUtils.getIntPref(this.mContext, "ip_connectivity_policy_overide", Integer.MIN_VALUE));
     }
     
     private static Map<String, ConsolidatedLoggingSessionSpecification> toMap(final List<ConsolidatedLoggingSessionSpecification> list) {
@@ -125,15 +147,27 @@ public class DeviceConfiguration
     }
     
     private void updateDisableMdxFlag(final String s) {
-        PreferenceUtils.putBooleanPref(this.mContext, "disable_mdx", Boolean.valueOf(StringUtils.isNotEmpty(s) && Boolean.parseBoolean(s)));
+        final boolean mIsDisableMdx = StringUtils.isNotEmpty(s) && Boolean.parseBoolean(s);
+        PreferenceUtils.putBooleanPref(this.mContext, "disable_mdx", mIsDisableMdx);
+        this.mIsDisableMdx = mIsDisableMdx;
     }
     
     private void updateDisableWebsocketFlag(final String s) {
-        PreferenceUtils.putBooleanPref(this.mContext, "disable_websocket", Boolean.valueOf(StringUtils.isNotEmpty(s) && Boolean.parseBoolean(s)));
+        final boolean mIsDisableWebsocket = !StringUtils.isNotEmpty(s) || Boolean.parseBoolean(s);
+        PreferenceUtils.putBooleanPref(this.mContext, "disable_websocket", mIsDisableWebsocket);
+        this.mIsDisableWebsocket = mIsDisableWebsocket;
     }
     
     private void updateDisableWidevineFlag(final String s) {
-        PreferenceUtils.putBooleanPref(this.mContext, "disable_widevine", Boolean.valueOf(StringUtils.isNotEmpty(s) && Boolean.parseBoolean(s)));
+        boolean boolean1;
+        if (StringUtils.isNotEmpty(s)) {
+            boolean1 = Boolean.parseBoolean(s);
+        }
+        else {
+            boolean1 = !DrmManagerRegistry.isDevicePredeterminedToUseWV();
+        }
+        PreferenceUtils.putBooleanPref(this.mContext, "disable_widevine", boolean1);
+        this.mIsDisableWidevine = boolean1;
     }
     
     public void clear() {
@@ -143,11 +177,11 @@ public class DeviceConfiguration
     }
     
     public int getAppMinimalVersion() {
-        return PreferenceUtils.getIntPref(this.mContext, "config_min_version", -1);
+        return this.mAppMinimalVersion;
     }
     
     public int getAppRecommendedVersion() {
-        return PreferenceUtils.getIntPref(this.mContext, "config_recommended_version", -1);
+        return this.mAppRecommendedVersion;
     }
     
     public DeviceCategory getCategory() {
@@ -165,6 +199,14 @@ public class DeviceConfiguration
         return this.mImagePrefRepository;
     }
     
+    public IpConnectivityPolicy getIpConnectivityPolicy() {
+        return this.mIpConnectivityPolicy;
+    }
+    
+    public int getPTAggregationSize() {
+        return this.mPTAggregationSize;
+    }
+    
     public SignUpConfiguration getSignUpConfiguration() {
         return this.mSignUpConfig;
     }
@@ -173,16 +215,16 @@ public class DeviceConfiguration
         return this.mSubtitleConfiguration;
     }
     
-    public boolean isDisableMdxFlagSet() {
-        return PreferenceUtils.getBooleanPref(this.mContext, "disable_mdx", false);
+    public boolean isDisableMdx() {
+        return this.mIsDisableMdx;
     }
     
-    public boolean isDisableWebsocketFlagSet() {
-        return PreferenceUtils.getBooleanPref(this.mContext, "disable_websocket", false);
+    public boolean isDisableWebsocket() {
+        return this.mIsDisableWebsocket;
     }
     
-    public boolean isDisableWidevineFlagSet() {
-        return PreferenceUtils.getBooleanPref(this.mContext, "disable_widevine", !DrmManagerRegistry.isDevicePredeterminedToUseWV());
+    public boolean isDisableWidevine() {
+        return this.mIsDisableWidevine;
     }
     
     public int loadDeviceConfigOverrides(final String s) {
@@ -194,10 +236,13 @@ public class DeviceConfiguration
     }
     
     public void persistDeviceConfigOverride(final DeviceConfigData deviceConfigData) {
+        final int n = -1;
         if (deviceConfigData != null) {
-            Log.d(DeviceConfiguration.TAG, String.format("writing configData to storage %s", deviceConfigData.toString()));
+            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+                Log.d(DeviceConfiguration.TAG, String.format("writing configData to storage %s", deviceConfigData.toString()));
+            }
             PlayerTypeFactory.updateDevicePlayerType(this.mContext, deviceConfigData.getPlayerType());
-            this.mDeviceRepository.update(this.mContext, deviceConfigData.getDeviceCatgory());
+            this.mDeviceRepository.update(this.mContext, deviceConfigData.getDeviceCategory());
             BitrateRangeFactory.updateDeviceBitrateCap(this.mContext, deviceConfigData.getBitrateCap());
             this.mImagePrefRepository.update(this.mContext, deviceConfigData.getImagePref());
             this.mSignUpConfig.update(this.mContext, deviceConfigData.getSignUpEnabled(), deviceConfigData.getSignUpTimeout());
@@ -213,7 +258,8 @@ public class DeviceConfiguration
             else {
                 int1 = -1;
             }
-            PreferenceUtils.putIntPref(this.mContext, "config_min_version", int1);
+            this.mAppMinimalVersion = int1;
+            PreferenceUtils.putIntPref(this.mContext, "config_min_version", this.mAppMinimalVersion);
             int int2;
             if (deviceConfigData.getAppRecommendedVresion() != null) {
                 int2 = Integer.parseInt(deviceConfigData.getAppRecommendedVresion());
@@ -221,15 +267,17 @@ public class DeviceConfiguration
             else {
                 int2 = -1;
             }
-            PreferenceUtils.putIntPref(this.mContext, "config_recommended_version", int2);
-            int int3;
+            this.mAppRecommendedVersion = int2;
+            PreferenceUtils.putIntPref(this.mContext, "config_recommended_version", this.mAppRecommendedVersion);
+            int int3 = n;
             if (StringUtils.isNotEmpty(deviceConfigData.getPTAggregationSize())) {
                 int3 = Integer.parseInt(deviceConfigData.getPTAggregationSize());
             }
-            else {
-                int3 = -1;
-            }
-            PreferenceUtils.putIntPref(this.mContext, "pt_aggregation_size", int3);
+            this.mPTAggregationSize = int3;
+            PreferenceUtils.putIntPref(this.mContext, "pt_aggregation_size", this.mPTAggregationSize);
+            final int ipConnectivityPolicy = deviceConfigData.getIpConnectivityPolicy();
+            this.mIpConnectivityPolicy = IpConnectivityPolicy.from(ipConnectivityPolicy);
+            PreferenceUtils.putIntPref(this.mContext, "ip_connectivity_policy_overide", ipConnectivityPolicy);
             if (!this.isDeviceConfigInCache()) {
                 this.updateDeviceConfigFlag(true);
             }

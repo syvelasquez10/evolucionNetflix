@@ -141,10 +141,10 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
+    protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         MdxMenu.addSelectPlayTarget(this.getMdxMiniPlayerFrag(), menu);
         this.detailsMenu = new DetailsMenu(this, menu, this.videoId);
-        return super.onCreateOptionsMenu(menu);
+        super.onCreateOptionsMenu(menu, menu2);
     }
     
     @Override

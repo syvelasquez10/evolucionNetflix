@@ -24,6 +24,17 @@ public class AccountConfiguration
         PreferenceUtils.putStringPref(this.mContext, "accountConfig", null);
     }
     
+    public JSONArray getCastBlacklist() {
+        if (this.mAccountConfigData == null) {
+            return null;
+        }
+        return this.mAccountConfigData.getCastBlacklistAsJsonArray();
+    }
+    
+    public boolean getCastEnabled() {
+        return this.mAccountConfigData != null && this.mAccountConfigData.getCastEnabled();
+    }
+    
     public JSONArray getMdxBlacklist() {
         if (this.mAccountConfigData == null) {
             return null;

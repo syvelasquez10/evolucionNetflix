@@ -10,24 +10,20 @@ import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.os.Bundle;
-import com.netflix.mediaclient.ui.ServiceErrorsHandler;
+import com.netflix.mediaclient.ui.LaunchActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.android.widget.AccessibilityRunnable;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import com.netflix.mediaclient.android.widget.UpdateDialog;
-import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
-import com.netflix.mediaclient.ui.LaunchActivity;
 import java.util.Iterator;
 import android.widget.ListAdapter;
 import android.content.Intent;
 import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.StringUtils;
-import android.widget.AdapterView;
-import android.content.Context;
-import com.netflix.mediaclient.ui.login.LogoutActivity;
 import com.netflix.mediaclient.Log;
+import android.widget.AdapterView;
 import com.netflix.mediaclient.servicemgr.UserProfile;
 import java.util.List;
 import android.widget.AdapterView$OnItemClickListener;
@@ -53,7 +49,6 @@ public class ProfileSelectionActivity extends NetflixActivity
     private StaticGridView gridView;
     private boolean isLoading;
     private LoadingAndErrorWrapper leWrapper;
-    private final Runnable logoutUser;
     private ServiceManager manager;
     private int numCols;
     private final AdapterView$OnItemClickListener onAvatarClickListener;
@@ -76,14 +71,6 @@ public class ProfileSelectionActivity extends NetflixActivity
     }
     
     public ProfileSelectionActivity() {
-        this.logoutUser = new Runnable() {
-            @Override
-            public void run() {
-                Log.d("ProfileSelectionActivity", "Restarting app, time: " + System.nanoTime());
-                ProfileSelectionActivity.this.finish();
-                ProfileSelectionActivity.this.startActivity(LogoutActivity.create((Context)ProfileSelectionActivity.this));
-            }
-        };
         this.errorCallback = new ErrorWrapper.Callback() {
             @Override
             public void onRetryRequested() {
@@ -165,17 +152,6 @@ public class ProfileSelectionActivity extends NetflixActivity
         }
     }
     
-    private void handleNetwotkErrorDialog() {
-        if (this.profiles != null && this.profiles.size() > 1) {
-            Log.d("ProfileSelectionActivity", "relaunch onhandleProfileSelectionResult failed");
-            NetflixActivity.finishAllActivities((Context)this);
-            this.startActivity(LaunchActivity.createStartIntent(this, "handleNetwotkErrorDialog()"));
-            return;
-        }
-        Log.d("ProfileSelectionActivity", "finish onhandleProfileSelectionResult failed");
-        NetflixActivity.finishAllActivities((Context)this);
-    }
-    
     private void setupGridViewColumns() {
         final int value = ((SparseIntArray)ProfileSelectionActivity.maxNumGridColumns.get(DeviceUtils.getBasicScreenOrientation((Context)this))).get(DeviceUtils.getScreenSizeCategory((Context)this));
         int count = this.adapter.getCount();
@@ -201,16 +177,6 @@ public class ProfileSelectionActivity extends NetflixActivity
             return;
         }
         AnimationUtils.showView(this.content, false);
-    }
-    
-    private void showDialog(final String s, final Runnable runnable, final boolean b) {
-        final UpdateDialog.Builder dialog = AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, s, this.getString(17039370), runnable));
-        if (!b) {
-            this.displayDialog(dialog);
-        }
-        else if (!this.destroyed()) {
-            dialog.show();
-        }
     }
     
     private void showLoadingView(final boolean b) {
@@ -251,6 +217,18 @@ public class ProfileSelectionActivity extends NetflixActivity
     }
     
     @Override
+    protected void handleNetwotkErrorDialog() {
+        if (this.profiles != null && this.profiles.size() > 1) {
+            Log.d("ProfileSelectionActivity", "relaunch onhandleProfileSelectionResult failed");
+            NetflixActivity.finishAllActivities((Context)this);
+            this.startActivity(LaunchActivity.createStartIntent(this, "handleNetwotkErrorDialog()"));
+            return;
+        }
+        Log.d("ProfileSelectionActivity", "finish onhandleProfileSelectionResult failed");
+        NetflixActivity.finishAllActivities((Context)this);
+    }
+    
+    @Override
     protected void handleProfileActivated() {
         final long nanoTime = System.nanoTime();
         Log.d("ProfileSelectionActivity", "Restarting app, time: " + nanoTime);
@@ -265,48 +243,13 @@ public class ProfileSelectionActivity extends NetflixActivity
     }
     
     @Override
-    protected void handleProfileSelectionResult(final int n, String s) {
+    protected void handleProfileSelectionResult(final int n, final String s) {
         if (n == 0) {
             Log.v("ProfileSelectionActivity", "Profile selection was successful.  Parent class should finish this activity in a moment...");
             this.isLoading = false;
             return;
         }
-        if (s == null) {
-            s = "";
-        }
-        switch (n) {
-            default: {
-                this.showDialog(String.format("%s ( %d )", this.getString(2131493207), n), null, false);
-            }
-            case -202: {
-                this.showDialog(s, null, false);
-            }
-            case -207:
-            case -203: {
-                this.showDialog(String.format("%s ( %d )", this.getString(2131493211), n), this.logoutUser, true);
-            }
-            case -208: {
-                ServiceErrorsHandler.handleManagerResponse(this, -5);
-            }
-            case -211:
-            case -210:
-            case -209:
-            case -206:
-            case -205:
-            case -204:
-            case -201:
-            case -200: {
-                this.showDialog(String.format("%s ( %d )", this.getString(2131493203), n), null, false);
-            }
-            case -3: {
-                this.showDialog(this.getString(2131493207) + " (" + n + ")", new Runnable() {
-                    @Override
-                    public void run() {
-                        ProfileSelectionActivity.this.handleNetwotkErrorDialog();
-                    }
-                }, true);
-            }
-        }
+        this.handleUserAgentErrors(this, n, s);
     }
     
     public boolean isLoadingData() {
@@ -316,11 +259,11 @@ public class ProfileSelectionActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.columnWidth = this.getResources().getDimensionPixelSize(2131361845);
-        this.setContentView(2130903107);
-        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131099897), this.errorCallback);
-        this.content = this.findViewById(2131099898);
-        (this.gridView = (StaticGridView)this.findViewById(2131099900)).setOnItemClickListener(this.onAvatarClickListener);
+        this.columnWidth = this.getResources().getDimensionPixelSize(2131492934);
+        this.setContentView(2130903133);
+        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131231036), this.errorCallback);
+        this.content = this.findViewById(2131231037);
+        (this.gridView = (StaticGridView)this.findViewById(2131231039)).setOnItemClickListener(this.onAvatarClickListener);
         this.gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ViewTreeObserver$OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 ProfileSelectionActivity.this.adjustGridViewMargins();
@@ -368,8 +311,8 @@ public class ProfileSelectionActivity extends NetflixActivity
         public View getView(final int n, final View view, final ViewGroup viewGroup) {
             View inflate = view;
             if (view == null) {
-                inflate = ProfileSelectionActivity.this.getLayoutInflater().inflate(2130903108, (ViewGroup)null, false);
-                inflate.setTag((Object)new Holder((AdvancedImageView)inflate.findViewById(2131099902), (TextView)inflate.findViewById(2131099903)));
+                inflate = ProfileSelectionActivity.this.getLayoutInflater().inflate(2130903134, (ViewGroup)null, false);
+                inflate.setTag((Object)new Holder((AdvancedImageView)inflate.findViewById(2131231041), (TextView)inflate.findViewById(2131231042)));
             }
             final Holder holder = (Holder)inflate.getTag();
             final UserProfile item = this.getItem(n);

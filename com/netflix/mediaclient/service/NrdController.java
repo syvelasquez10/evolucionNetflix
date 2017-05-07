@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service;
 import android.os.Bundle;
 import android.content.Intent;
 import android.content.Context;
+import com.netflix.mediaclient.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.util.AppStoreHelper;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import android.view.WindowManager;
@@ -194,6 +195,11 @@ public class NrdController extends ServiceAgent
         @Override
         public String getInstallationSource() {
             return AppStoreHelper.getInstallationSource(NrdController.this.getContext());
+        }
+        
+        @Override
+        public IpConnectivityPolicy getIpConnectivityPolicy() {
+            return NrdController.this.getConfigurationAgent().getIpConnectivityPolicy();
         }
         
         @Override

@@ -664,7 +664,15 @@ public class UserAgent extends ServiceAgent implements UserAgentInterface, UserC
     public void userAccountActivated(final DeviceAccount mCurrentUserAccount) {
         this.mCurrentUserAccount = mCurrentUserAccount;
         UserAgentBroadcastIntents.signalUserAccountActive(this.getContext());
-        this.doLoginComplete();
+    }
+    
+    @Override
+    public void userAccountDataResult(final int n) {
+        if (n == 0) {
+            this.doLoginComplete();
+            return;
+        }
+        this.notifyLoginComplete(n, null);
     }
     
     @Override

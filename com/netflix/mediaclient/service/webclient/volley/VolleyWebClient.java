@@ -4,9 +4,6 @@
 
 package com.netflix.mediaclient.service.webclient.volley;
 
-import com.android.volley.Request;
-import com.netflix.mediaclient.service.webclient.NetflixWebClientInitParameters;
-import com.netflix.mediaclient.service.webclient.WebClientInitParameters;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RetryPolicy;
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
@@ -14,9 +11,9 @@ import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import com.android.volley.RequestQueue;
 import com.netflix.mediaclient.service.webclient.WebClient;
 
-public class VolleyWebClient implements WebClient
+public abstract class VolleyWebClient implements WebClient
 {
-    protected static RequestQueue mRequestQueue;
+    protected static RequestQueue sRequestQueue;
     protected ErrorLogging mErrorLogger;
     protected int mTimeoutInMs;
     protected UserCredentialRegistry mUserCredentialRegistry;
@@ -33,27 +30,8 @@ public class VolleyWebClient implements WebClient
     }
     
     @Override
-    public void init(final WebClientInitParameters webClientInitParameters) {
-        if (webClientInitParameters instanceof NetflixWebClientInitParameters) {
-            final NetflixWebClientInitParameters netflixWebClientInitParameters = (NetflixWebClientInitParameters)webClientInitParameters;
-            this.mUserCredentialRegistry = netflixWebClientInitParameters.getUserCredentialRegistry();
-            VolleyWebClient.mRequestQueue = (RequestQueue)netflixWebClientInitParameters.getConnectionObject();
-            this.mErrorLogger = netflixWebClientInitParameters.getErrorLogger();
-            return;
-        }
-        throw new IllegalArgumentException("Expecting NetflixWebClientInitParameters and receiving " + webClientInitParameters);
-    }
-    
-    @Override
     public final boolean isSynchronous() {
         return false;
-    }
-    
-    protected void sendRequest(final VolleyWebClientRequest<?> volleyWebClientRequest, final String s) {
-        volleyWebClientRequest.setUserCredentialRegistry(this.mUserCredentialRegistry);
-        volleyWebClientRequest.setRetryPolicy(this.createRetryPolicy());
-        volleyWebClientRequest.initUrl(s);
-        VolleyWebClient.mRequestQueue.add(volleyWebClientRequest);
     }
     
     @Override

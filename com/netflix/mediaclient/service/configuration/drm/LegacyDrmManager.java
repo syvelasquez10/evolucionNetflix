@@ -13,11 +13,6 @@ public final class LegacyDrmManager implements DrmManager
     }
     
     @Override
-    public boolean canExecuteRegistration(final DelayedRegistrationCallback delayedRegistrationCallback) {
-        return true;
-    }
-    
-    @Override
     public void destroy() {
     }
     
@@ -39,14 +34,5 @@ public final class LegacyDrmManager implements DrmManager
     @Override
     public void init() {
         this.mCallback.drmReady();
-    }
-    
-    @Override
-    public boolean isNccpCryptoFactoryReady() {
-        return false;
-    }
-    
-    @Override
-    public void resetCryptoFactory() {
     }
 }

@@ -14,14 +14,13 @@ import org.json.JSONException;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
 import java.util.List;
-import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
+import com.netflix.mediaclient.service.configuration.drm.DrmManager;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.javabridge.ui.Registration;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
-import com.netflix.mediaclient.service.configuration.drm.DrmManager;
 import com.netflix.mediaclient.javabridge.ui.DeviceAccount;
 import com.netflix.mediaclient.javabridge.ui.Callback;
 
@@ -29,7 +28,6 @@ public class UserAgentStateManager implements Callback
 {
     private static final String TAG = "nf_service_useragentstate";
     private DeviceAccount mCurrentDeviceAcc;
-    private final DrmManager mDrmManager;
     private String mEmail;
     private ErrorLogging mErrorLogger;
     private boolean mInitilizationCompleted;
@@ -43,11 +41,10 @@ public class UserAgentStateManager implements Callback
     private ActivationTokens mToken;
     private final StateManagerCallback mUserAgent;
     
-    UserAgentStateManager(final Registration mRegistration, final DrmManager mDrmManager, final StateManagerCallback mUserAgent, final Context context, final ErrorLogging mErrorLogger) {
+    UserAgentStateManager(final Registration mRegistration, final DrmManager drmManager, final StateManagerCallback mUserAgent, final Context context, final ErrorLogging mErrorLogger) {
         this.mState = STATES.INIT;
         this.mPrimaryAccountIndex = 0;
         this.mRegistration = mRegistration;
-        this.mDrmManager = mDrmManager;
         this.mUserAgent = mUserAgent;
         this.mProfileMap = new UserProfileMap(context);
         this.mErrorLogger = mErrorLogger;
@@ -119,26 +116,6 @@ public class UserAgentStateManager implements Callback
             }
             this.transitionTo(STATES.FATAL_ERROR);
         }
-    }
-    
-    private void doRegistration(final Runnable runnable, final String s) {
-        if (this.mDrmManager.canExecuteRegistration((DrmManager.DelayedRegistrationCallback)new DrmManager.DelayedRegistrationCallback() {
-            @Override
-            public void error() {
-                Log.d("nf_service_useragentstate", "Delayed registration invoke failed ");
-            }
-            
-            @Override
-            public void execute() {
-                Log.d("nf_service_useragentstate", "Delayed registration invoke ");
-                runnable.run();
-            }
-        })) {
-            Log.d("nf_service_useragentstate", "Proceed with normal registration invoke ");
-            runnable.run();
-            return;
-        }
-        Log.d("nf_service_useragentstate", "Proceed with delayed registration invoke, wait for callback ");
     }
     
     private boolean fallbackToPrimaryAccount() {
@@ -215,10 +192,6 @@ public class UserAgentStateManager implements Callback
             }
             if (!this.isProfileIdValid()) {
                 this.transitionTo(STATES.NEED_FETCH_PROFILE_DATA);
-                return;
-            }
-            if (this.mToken != null && DrmManagerRegistry.isCurrentDrmWidevine()) {
-                this.transitionTo(STATES.NEED_ACTIVATE_PROFILE);
                 return;
             }
             this.transitionTo(STATES.NEED_VALIDATE_PROFILE_DATA);
@@ -314,6 +287,7 @@ public class UserAgentStateManager implements Callback
         switch (mState) {
             default: {
                 Log.d("nf_service_useragentstate", "@state default");
+                break;
             }
             case INIT: {
                 Log.d("nf_service_useragentstate", "@state INIT");
@@ -321,14 +295,9 @@ public class UserAgentStateManager implements Callback
             }
             case NEED_ACTIVATE_PROFILE: {
                 Log.d("nf_service_useragentstate", "@state NEED_ACTIVATE_PROFILE");
-                this.doRegistration(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (UserAgentStateManager.this.mRegistration != null) {
-                            UserAgentStateManager.this.mRegistration.tokenActivate(UserAgentStateManager.this.mToken);
-                        }
-                    }
-                }, "tokenActivate");
+                if (this.mRegistration != null) {
+                    this.mRegistration.tokenActivate(this.mToken);
+                }
                 this.mToken = null;
             }
             case NEED_CHANGE_PROFILE_FROM_PRIMARY: {
@@ -360,25 +329,19 @@ public class UserAgentStateManager implements Callback
             }
             case NEED_EMAIL_ACTIVATE: {
                 Log.d("nf_service_useragentstate", "@state NEED_EMAIL_ACTIVATE");
-                this.doRegistration(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (UserAgentStateManager.this.mRegistration != null) {
-                            UserAgentStateManager.this.mRegistration.emailActivate(UserAgentStateManager.this.mEmail, UserAgentStateManager.this.mPassword);
-                        }
-                    }
-                }, "emailActivate");
+                if (this.mRegistration != null) {
+                    this.mRegistration.emailActivate(this.mEmail, this.mPassword);
+                    return;
+                }
+                break;
             }
             case NEED_ESN_MIGRATION: {
                 Log.d("nf_service_useragentstate", "@state NEED_ESN_MIGRATION");
-                this.doRegistration(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (UserAgentStateManager.this.mRegistration != null) {
-                            UserAgentStateManager.this.mRegistration.esnMigration();
-                        }
-                    }
-                }, "esnMigration");
+                if (this.mRegistration != null) {
+                    this.mRegistration.esnMigration();
+                    return;
+                }
+                break;
             }
             case NEED_FETCH_PROFILE_DATA: {
                 Log.d("nf_service_useragentstate", "@state NEED_FETCH_PROFILE_DATA");
@@ -392,14 +355,9 @@ public class UserAgentStateManager implements Callback
             }
             case NEED_TOKEN_ACTIVATE: {
                 Log.d("nf_service_useragentstate", "@state NEED_TOKEN_ACTIVATE");
-                this.doRegistration(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (UserAgentStateManager.this.mRegistration != null) {
-                            UserAgentStateManager.this.mRegistration.tokenActivate(UserAgentStateManager.this.mToken);
-                        }
-                    }
-                }, "tokenActivate");
+                if (this.mRegistration != null) {
+                    this.mRegistration.tokenActivate(this.mToken);
+                }
                 this.mToken = null;
             }
             case NEED_VALIDATE_PROFILE_DATA: {
@@ -440,53 +398,47 @@ public class UserAgentStateManager implements Callback
     }
     
     void accountDataFetchFailed(final int n, final boolean b) {
-        Log.d("nf_service_useragentstate", "@event profileDataFetchFailed");
-        final STATES mState = this.mState;
-        // monitorenter(mState)
-        Label_0046: {
-            if (n != -61) {
-                break Label_0046;
-            }
-            while (true) {
-                try {
+        while (true) {
+            Log.d("nf_service_useragentstate", "@event profileDataFetchFailed");
+            synchronized (this.mState) {
+                if (this.validateState(STATES.NEED_FETCH_PROFILE_DATA, "accountDataFetchFailed") && !b) {
+                    this.mUserAgent.userAccountDataResult(n);
+                }
+                else {
+                    this.mUserAgent.userAccountDataResult(0);
+                }
+                if (n == -61) {
                     if (!this.isProfileIdValid() || !this.fallbackToPrimaryAccount()) {
                         this.transitionTo(STATES.FATAL_ERROR);
                     }
                     return;
-                    while (true) {
-                        this.transitionTo(STATES.WAIT_SELECT_PROFILE);
-                        return;
-                        continue;
-                    }
                 }
-                // iftrue(Label_0090:, !this.validateState(STATES.NEED_FETCH_PROFILE_DATA, "accountDataFetchFailed"))
-                // iftrue(Label_0080:, !b)
-                finally {
+            }
+            if (this.validateState(STATES.NEED_FETCH_PROFILE_DATA, "accountDataFetchFailed")) {
+                if (b) {
+                    this.transitionTo(STATES.WAIT_SELECT_PROFILE);
+                    return;
                 }
-                // monitorexit(mState)
-                Label_0080: {
-                    this.transitionTo(STATES.FATAL_ERROR);
-                }
-                return;
-                Label_0090:
-                if (this.validateState(STATES.NEED_VALIDATE_PROFILE_DATA, "accountDataFetchFailed")) {
-                    this.transitionTo(STATES.PROFILE_ACTIVATED);
-                }
+                this.transitionTo(STATES.FATAL_ERROR);
+            }
+            else if (this.validateState(STATES.NEED_VALIDATE_PROFILE_DATA, "accountDataFetchFailed")) {
+                this.transitionTo(STATES.PROFILE_ACTIVATED);
             }
         }
     }
     
     void accountDataFetched(final AccountData accountData) {
         while (true) {
-            Log.d("nf_service_useragentstate", "@event profileDataFetched");
-            Label_0078: {
+            Log.d("nf_service_useragentstate", "@event accountDataFetched");
+            Label_0088: {
                 synchronized (this.mState) {
-                    if (this.validateState(STATES.NEED_FETCH_PROFILE_DATA, "profileDataFetched")) {
+                    this.mUserAgent.userAccountDataResult(0);
+                    if (this.validateState(STATES.NEED_FETCH_PROFILE_DATA, "accountDataFetched")) {
                         this.transitionTo(STATES.WAIT_SELECT_PROFILE);
                     }
-                    else if (this.validateState(STATES.NEED_VALIDATE_PROFILE_DATA, "profileDataFetched")) {
+                    else if (this.validateState(STATES.NEED_VALIDATE_PROFILE_DATA, "accountDataFetched")) {
                         if (!this.isCurrentProfileValid(accountData.getUserProfiles())) {
-                            break Label_0078;
+                            break Label_0088;
                         }
                         this.transitionTo(STATES.PROFILE_ACTIVATED);
                     }
@@ -581,21 +533,37 @@ public class UserAgentStateManager implements Callback
     @Override
     public void done(final CallbackEvent callbackEvent) {
         Log.d("nf_service_useragentstate", "account related callback " + callbackEvent.toString());
-        if (callbackEvent instanceof CreateAccountCompleteCommand) {
+        Label_0111: {
+            if (!(callbackEvent instanceof CreateAccountCompleteCommand)) {
+                break Label_0111;
+            }
             Log.d("nf_service_useragentstate", "Received CreateAccountComplete callback");
-            final CreateAccountCompleteCommand createAccountCompleteCommand = (CreateAccountCompleteCommand)callbackEvent;
-            this.deviceAccountCreated(createAccountCompleteCommand.isCreatedSuccess(), String.valueOf(createAccountCompleteCommand.getKey()));
-        }
-        else {
-            if (callbackEvent instanceof SelectedAccountCompleteCommand) {
-                Log.d("nf_service_useragentstate", "Received SelectedAccount callback");
-                this.deviceAccountSelected(((SelectedAccountCompleteCommand)callbackEvent).isSelectedSuccess());
+            try {
+                final CreateAccountCompleteCommand createAccountCompleteCommand = new CreateAccountCompleteCommand(callbackEvent.getData());
+                this.deviceAccountCreated(createAccountCompleteCommand.isCreatedSuccess(), String.valueOf(createAccountCompleteCommand.getKey()));
                 return;
             }
-            if (callbackEvent instanceof DeactivateCompleteCommand) {
-                Log.d("nf_service_useragentstate", "Received deactivate complete cmd");
-                this.deviceAccountDeactivated(true);
+            catch (JSONException ex) {
+                Log.e("nf_service_useragentstate", "CreateAccount error " + ex);
+                this.deviceAccountCreated(false, "");
+                return;
             }
+        }
+        if (callbackEvent instanceof SelectedAccountCompleteCommand) {
+            Log.d("nf_service_useragentstate", "Received SelectedAccount callback");
+            try {
+                this.deviceAccountSelected(new SelectedAccountCompleteCommand(callbackEvent.getData()).isSelectedSuccess());
+                return;
+            }
+            catch (JSONException ex2) {
+                Log.e("nf_service_useragentstate", "SelectedAccount error " + ex2);
+                this.deviceAccountSelected(false);
+                return;
+            }
+        }
+        if (callbackEvent instanceof DeactivateCompleteCommand) {
+            Log.d("nf_service_useragentstate", "Received deactivate complete cmd");
+            this.deviceAccountDeactivated(true);
         }
     }
     
@@ -746,6 +714,8 @@ public class UserAgentStateManager implements Callback
         void switchWebUserProfile(final String p0);
         
         void userAccountActivated(final DeviceAccount p0);
+        
+        void userAccountDataResult(final int p0);
         
         void userAccountDeactivated();
         

@@ -25,8 +25,8 @@ public class LastTime extends PlayerSection
     
     public LastTime(final PlayerActivity playerActivity) {
         super(playerActivity);
-        this.lastTime = (LinearLayout)playerActivity.findViewById(2131099866);
-        this.lastTimeLabel = (TextView)playerActivity.findViewById(2131099867);
+        this.lastTime = (LinearLayout)playerActivity.findViewById(2131231000);
+        this.lastTimeLabel = (TextView)playerActivity.findViewById(2131231001);
     }
     
     private float calculateAlpha(final Rect rect, final Rect rect2) {

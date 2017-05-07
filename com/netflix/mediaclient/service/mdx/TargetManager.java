@@ -275,12 +275,12 @@ public class TargetManager implements EventListener, CommandInterface
         }
     }
     
-    public void targetLaunched(final String s) {
+    public void targetLaunched(final String s, final boolean b) {
         if (this.mTarget == null) {
             Log.e("nf_mdx", "no active target for targetLaunched");
             return;
         }
-        this.mTarget.launchSucceed();
+        this.mTarget.launchResult(b);
     }
     
     public void targetSelected(final RemoteDevice remoteDevice) {

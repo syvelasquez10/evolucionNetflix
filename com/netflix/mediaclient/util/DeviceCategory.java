@@ -6,11 +6,11 @@ package com.netflix.mediaclient.util;
 
 public enum DeviceCategory
 {
-    ANDROID_TV("android-tv", 2130903106), 
-    GOOGLE_TV("google-tv", 2130903106), 
-    PHONE("phone", 2130903101), 
-    TABLET("tablet", 2130903106), 
-    UNKNOWN("unknown", 2130903101);
+    ANDROID_TV("android-tv", 2130903132), 
+    GOOGLE_TV("google-tv", 2130903132), 
+    PHONE("phone", 2130903127), 
+    TABLET("tablet", 2130903132), 
+    UNKNOWN("unknown", 2130903127);
     
     private int playerUi;
     private String value;

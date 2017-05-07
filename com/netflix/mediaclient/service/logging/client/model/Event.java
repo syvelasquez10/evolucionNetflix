@@ -21,6 +21,7 @@ public abstract class Event implements JsonSerializer
 {
     public static final String ACTIVE_SESSIONS = "activeSessions";
     public static final String CATEGORY = "category";
+    public static final String CUSTOM = "custom";
     public static final String DATA = "data";
     public static final String DATA_CONTEXT = "dataContex";
     public static final String MODAL_VIEW = "modalView";
@@ -121,8 +122,17 @@ public abstract class Event implements JsonSerializer
         return this.category;
     }
     
-    protected JSONObject getData() throws JSONException {
+    protected JSONObject getCustomData() throws JSONException {
         return null;
+    }
+    
+    protected JSONObject getData() throws JSONException {
+        JSONObject jsonObject = null;
+        if (this.getCustomData() != null) {
+            jsonObject = new JSONObject();
+            jsonObject.put("custom", (Object)this.getCustomData());
+        }
+        return jsonObject;
     }
     
     public DataContext getDataContext() {

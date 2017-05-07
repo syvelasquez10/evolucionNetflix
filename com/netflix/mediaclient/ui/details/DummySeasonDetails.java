@@ -50,7 +50,7 @@ public class DummySeasonDetails implements SeasonDetails
     
     @Override
     public String getSeasonNumberTitle(final Context context) {
-        return context.getString(2131493114, new Object[] { this.seasonNumber });
+        return context.getString(2131296551, new Object[] { this.seasonNumber });
     }
     
     @Override

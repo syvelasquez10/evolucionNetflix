@@ -4,32 +4,33 @@
 
 package com.netflix.mediaclient.service.webclient;
 
+import com.android.volley.RequestQueue;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
 
 public class NetflixWebClientInitParameters implements WebClientInitParameters
 {
-    private ApiEndpointRegistry apiEndpointRegistry;
-    private Object connectionObject;
-    private ErrorLogging errorLogger;
-    private UserCredentialRegistry userCredentialRegistry;
+    private final ApiEndpointRegistry apiEndpointRegistry;
+    private final ErrorLogging errorLogger;
+    private final RequestQueue requestQueue;
+    private final UserCredentialRegistry userCredentialRegistry;
     
-    public NetflixWebClientInitParameters(final ApiEndpointRegistry apiEndpointRegistry, final UserCredentialRegistry userCredentialRegistry, final ErrorLogging errorLogger, final Object connectionObject) {
+    public NetflixWebClientInitParameters(final ApiEndpointRegistry apiEndpointRegistry, final UserCredentialRegistry userCredentialRegistry, final ErrorLogging errorLogger, final RequestQueue requestQueue) {
         this.apiEndpointRegistry = apiEndpointRegistry;
         this.userCredentialRegistry = userCredentialRegistry;
         this.errorLogger = errorLogger;
-        this.connectionObject = connectionObject;
+        this.requestQueue = requestQueue;
     }
     
     public ApiEndpointRegistry getApiEndpointRegistry() {
         return this.apiEndpointRegistry;
     }
     
-    public Object getConnectionObject() {
-        return this.connectionObject;
-    }
-    
     public ErrorLogging getErrorLogger() {
         return this.errorLogger;
+    }
+    
+    public RequestQueue getRequestQueue() {
+        return this.requestQueue;
     }
     
     public UserCredentialRegistry getUserCredentialRegistry() {

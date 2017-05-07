@@ -22,6 +22,7 @@ import com.netflix.mediaclient.util.DeviceCategory;
 import java.lang.ref.WeakReference;
 import android.os.HandlerThread;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.javabridge.NrdProxy;
 import com.netflix.mediaclient.media.PlayerType;
@@ -45,6 +46,7 @@ public class NativeTransport implements Transport
     private String mEsn;
     private final TransportEventHandler mEventHandler;
     private String mFesn;
+    private int mIpConnectivityPolicy;
     private String mRootFileSystem;
     private Surface mSurface;
     private int mVideoBufferSize;
@@ -62,6 +64,7 @@ public class NativeTransport implements Transport
     public NativeTransport(final Bridge bridge, final NrdProxy proxy) {
         this.mVideoBufferSize = 0;
         this.mBitrateCap = -1;
+        this.mIpConnectivityPolicy = IpConnectivityPolicy.IP_V6_V4.getValue();
         Log.d("nf-NativeTransport", "NativeTransport constructor start");
         this.bridge = bridge;
         this.proxy = proxy;
@@ -194,6 +197,7 @@ public class NativeTransport implements Transport
         }
         final String fileSystemRoot = this.bridge.getFileSystemRoot();
         final EsnProvider esnProvider = this.bridge.getEsnProvider();
+        final IpConnectivityPolicy ipConnectivityPolicy = this.bridge.getIpConnectivityPolicy();
         this.mRootFileSystem = StringUtils.notNull("rootFileSystemn", fileSystemRoot);
         this.mEsn = StringUtils.notNull("esn", esnProvider.getEsn());
         this.mFesn = StringUtils.notNull("esn", esnProvider.getFesn());
@@ -201,6 +205,9 @@ public class NativeTransport implements Transport
         this.mDeviceModel = StringUtils.notNull("modelId", esnProvider.getDeviceModel());
         this.mDeviceLowMem = this.bridge.isDeviceLowMem();
         this.mVideoBufferSize = this.bridge.getConfigVideoBufferSize();
+        if (ipConnectivityPolicy != null) {
+            this.mIpConnectivityPolicy = ipConnectivityPolicy.getValue();
+        }
         if (Log.isLoggable("nf-NativeTransport", 3)) {
             Log.d("nf-NativeTransport", "rootFileSystem: " + this.mRootFileSystem);
             Log.d("nf-NativeTransport", "esn: " + this.mEsn);
@@ -208,6 +215,7 @@ public class NativeTransport implements Transport
             Log.d("nf-NativeTransport", "deviceModel: " + this.mDeviceModel);
             Log.d("nf-NativeTransport", "LowMemDevice: " + this.mDeviceLowMem);
             Log.d("nf-NativeTransport", "VideoBufferSize: " + this.mVideoBufferSize);
+            Log.d("nf-NativeTransport", "IP connectivity policy: " + this.mIpConnectivityPolicy);
         }
         this.playerType = this.bridge.getCurrentPlayerType();
         if (this.playerType == null) {
@@ -290,7 +298,6 @@ public class NativeTransport implements Transport
                 break Label_0120;
             }
             string = "nrdp";
-        Block_6_Outer:
             while (true) {
                 String s3 = s2;
                 if (s2 == null) {
@@ -307,14 +314,11 @@ public class NativeTransport implements Transport
                     Label_0142: {
                         string = "nrdp." + string;
                     }
-                    continue Block_6_Outer;
-                    while (true) {
-                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                        continue Block_6_Outer;
-                        continue;
-                    }
+                    continue;
+                    // iftrue(Label_0142:, !string.startsWith("nrdp"))
+                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                    continue;
                 }
-                // iftrue(Label_0142:, !string.startsWith("nrdp"))
                 catch (Throwable t) {
                     Log.w("nf-NativeTransport", "Failure in JNI. It may happend than NRDApp is null!", t);
                 }
@@ -335,18 +339,19 @@ public class NativeTransport implements Transport
             string = "nrdp";
             try {
                 // iftrue(Label_0093:, !string.startsWith("nrdp"))
+            Block_4_Outer:
                 while (true) {
+                    this.native_setProperty(string, s, s2);
+                    return;
                     while (true) {
-                        this.native_setProperty(string, s, s2);
-                        return;
                         Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                        continue;
-                        Label_0093: {
-                            string = "nrdp." + string;
-                        }
+                        continue Block_4_Outer;
                         continue;
                     }
-                    continue;
+                    Label_0093: {
+                        string = "nrdp." + string;
+                    }
+                    continue Block_4_Outer;
                 }
             }
             catch (Throwable t) {

@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.javabridge;
 
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
+import com.netflix.mediaclient.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import android.view.Display;
 import java.util.Locale;
@@ -30,6 +31,8 @@ public interface Bridge
     String getFileSystemRoot();
     
     String getInstallationSource();
+    
+    IpConnectivityPolicy getIpConnectivityPolicy();
     
     NrdProxy getNrdProxy();
     

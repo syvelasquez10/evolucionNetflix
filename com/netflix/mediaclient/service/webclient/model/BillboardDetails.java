@@ -181,16 +181,16 @@ public class BillboardDetails extends Billboard implements ShowDetails, MovieDet
     }
     
     @Override
+    public long getPlayableBookmarkUpdateTime() {
+        return 0L;
+    }
+    
+    @Override
     public String getPlayableId() {
         if (this.getType() == VideoType.SHOW) {
             return this.getCurrentEpisodeId();
         }
         return this.getId();
-    }
-    
-    @Override
-    public long getPlayableServerBookmarkUpdateTime() {
-        return 0L;
     }
     
     @Override

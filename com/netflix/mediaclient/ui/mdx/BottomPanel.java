@@ -60,12 +60,12 @@ public final class BottomPanel extends PlaycardSection
     }
     
     private void init(final PlaycardScreen.Listeners listeners) {
-        this.durationLabel = (TextView)this.context.findViewById(2131099855);
-        this.bottomPanel = this.context.findViewById(2131099847);
+        this.durationLabel = (TextView)this.context.findViewById(2131230989);
+        this.bottomPanel = this.context.findViewById(2131230981);
         if (this.bottomPanel == null) {
             Log.e("playcard", "========>bottom null!");
         }
-        this.timeline = (NetflixSeekBar)this.context.findViewById(2131099854);
+        this.timeline = (NetflixSeekBar)this.context.findViewById(2131230988);
         if (this.timeline != null) {
             this.timeline.setOnSeekBarChangeListener(listeners.videoPositionListener);
             this.timeline.setDentVisible(false);
@@ -73,11 +73,11 @@ public final class BottomPanel extends PlaycardSection
             this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineThumbOffsetInDip));
             this.timeline.setProgressBarPadding(AndroidUtils.dipToPixels((Context)this.context, this.context.getUiResources().timelineHeightPaddingInDip));
         }
-        this.stopButton = (ImageButton)this.context.findViewById(2131099857);
+        this.stopButton = (ImageButton)this.context.findViewById(2131230991);
         if (this.stopButton != null) {
             this.stopButton.setOnClickListener(listeners.stopListener);
         }
-        this.skipBack = (ImageButton)this.context.findViewById(2131099853);
+        this.skipBack = (ImageButton)this.context.findViewById(2131230987);
         if (this.skipBack != null) {
             this.skipBack.setOnClickListener(listeners.skipBackListener);
             this.skipBack.setBackgroundColor(this.transpColor);

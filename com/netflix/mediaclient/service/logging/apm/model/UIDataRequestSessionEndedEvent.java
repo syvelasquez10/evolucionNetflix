@@ -143,4 +143,9 @@ public final class UIDataRequestSessionEndedEvent extends SessionEndedEvent
     public void setUrl(final String url) {
         this.url = url;
     }
+    
+    @Override
+    public String toString() {
+        return "UIDataRequestSessionEndedEvent [url=" + this.url + ", requestId=" + this.requestId + ", error=" + this.error + ", response=" + this.response + ", falcorPathResults=" + this.falcorPathResults + ", reason=" + this.reason + "]";
+    }
 }

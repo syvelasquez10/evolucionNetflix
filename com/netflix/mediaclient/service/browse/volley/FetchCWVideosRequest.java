@@ -197,10 +197,10 @@ public class FetchCWVideosRequest extends FalcorVolleyWebClientRequest<List<CWVi
                 if (fromCaches != null) {
                     final MovieDetails movieDetails = (MovieDetails)fromCaches;
                     if (movieDetails.bookmark != null) {
-                        Log.d("nf_bookmark", String.format("mergeWithMDP: %s - server bookmarkTime %d, bookmark %d : local bookmarkTime %d bookmark %d", cwVideo.getId(), cwVideo.getBookmarkLastUpdateTime(), cwVideo.getBookmarkPosition(), movieDetails.getPlayableServerBookmarkUpdateTime(), movieDetails.getBookmarkPosition()));
+                        Log.d("nf_bookmark", String.format("mergeWithMDP: %s - server bookmarkTime %d, bookmark %d : local bookmarkTime %d bookmark %d", cwVideo.getId(), cwVideo.getBookmarkLastUpdateTime(), cwVideo.getBookmarkPosition(), movieDetails.getPlayableBookmarkUpdateTime(), movieDetails.getBookmarkPosition()));
                         if (useLocalMdpBookmark(cwVideo, movieDetails)) {
                             cwVideo.bookmark.setBookmarkPosition(movieDetails.getBookmarkPosition());
-                            cwVideo.bookmark.setLastModified(movieDetails.getPlayableServerBookmarkUpdateTime());
+                            cwVideo.bookmark.setLastModified(movieDetails.getPlayableBookmarkUpdateTime());
                             if (cwVideo.bookmarkStill != null) {
                                 cwVideo.bookmarkStill.stillUrl = BrowseAgent.buildStillUrlFromPos(cwVideo.getBaseUrl(), cwVideo.getPlayableBookmarkPosition(), cwVideo.getEndtime());
                             }
@@ -209,7 +209,7 @@ public class FetchCWVideosRequest extends FalcorVolleyWebClientRequest<List<CWVi
                         else if (cwVideo.getBookmarkPosition() != movieDetails.getBookmarkPosition()) {
                             movieDetails.bookmark.setBookmarkPosition(cwVideo.getBookmarkPosition());
                             movieDetails.bookmark.setLastModified(cwVideo.getBookmarkLastUpdateTime());
-                            Log.d("nf_bookmark", String.format("mergeWithMDP: %s using CW bookmark; new bookmarkTime %d, bookmark %d  ", movieDetails.getId(), movieDetails.getPlayableServerBookmarkUpdateTime(), movieDetails.getBookmarkPosition()));
+                            Log.d("nf_bookmark", String.format("mergeWithMDP: %s using CW bookmark; new bookmarkTime %d, bookmark %d  ", movieDetails.getId(), movieDetails.getPlayableBookmarkUpdateTime(), movieDetails.getBookmarkPosition()));
                         }
                         movieDetails.userConnectedToFacebook = cwVideo.userConnectedToFacebook;
                     }
@@ -263,7 +263,7 @@ public class FetchCWVideosRequest extends FalcorVolleyWebClientRequest<List<CWVi
     }
     
     private static boolean useLocalMdpBookmark(final com.netflix.mediaclient.service.webclient.model.CWVideo cwVideo, final MovieDetails movieDetails) {
-        return movieDetails.getPlayableServerBookmarkUpdateTime() != 0L && cwVideo.getBookmarkPosition() != movieDetails.getBookmarkPosition() && cwVideo.getBookmarkLastUpdateTime() < movieDetails.getPlayableServerBookmarkUpdateTime() + 90000L;
+        return movieDetails.getPlayableBookmarkUpdateTime() != 0L && cwVideo.getBookmarkPosition() != movieDetails.getBookmarkPosition() && cwVideo.getBookmarkLastUpdateTime() < movieDetails.getPlayableBookmarkUpdateTime() + 90000L;
     }
     
     private static boolean useLocalSdpBookmark(final com.netflix.mediaclient.service.webclient.model.CWVideo cwVideo, final ShowDetails showDetails) {

@@ -56,7 +56,7 @@ public class EpisodeListAdapter extends BaseAdapter implements LoadingStatus, Ad
         this.activity = activity;
         this.episodeListFrag = episodeListFrag;
         this.leViewGroup = (ViewGroup)new FrameLayout((Context)activity);
-        activity.getLayoutInflater().inflate(2130903074, this.leViewGroup);
+        activity.getLayoutInflater().inflate(2130903097, this.leViewGroup);
         (this.leWrapper = new LoadingAndErrorWrapper((View)this.leViewGroup, new ErrorWrapper.Callback() {
             @Override
             public void onRetryRequested() {

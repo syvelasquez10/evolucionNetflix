@@ -101,7 +101,7 @@ public class AddToMyListWrapper
             }
             addToListData.revertState();
             if (b) {
-                Toast.makeText(this.serviceMan.getContext(), 2131493136, 1).show();
+                Toast.makeText(this.serviceMan.getContext(), 2131296573, 1).show();
             }
         }
     }
@@ -128,8 +128,8 @@ public class AddToMyListWrapper
         public void update(final AddToListState addToListState) {
             switch (addToListState) {
                 case IN_LIST: {
-                    this.textView.setContentDescription((CharSequence)this.activity.getString(2131492904));
-                    this.textView.setCompoundDrawablesWithIntrinsicBounds(2130837683, 0, 0, 0);
+                    this.textView.setContentDescription((CharSequence)this.activity.getString(2131296341));
+                    this.textView.setCompoundDrawablesWithIntrinsicBounds(2130837815, 0, 0, 0);
                     this.textView.setEnabled(true);
                     this.textView.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
                         public void onClick(final View view) {
@@ -140,8 +140,8 @@ public class AddToMyListWrapper
                     break;
                 }
                 case NOT_IN_LIST: {
-                    this.textView.setContentDescription((CharSequence)this.activity.getString(2131492903));
-                    this.textView.setCompoundDrawablesWithIntrinsicBounds(2130837511, 0, 0, 0);
+                    this.textView.setContentDescription((CharSequence)this.activity.getString(2131296340));
+                    this.textView.setCompoundDrawablesWithIntrinsicBounds(2130837598, 0, 0, 0);
                     this.textView.setEnabled(true);
                     this.textView.setOnClickListener((View$OnClickListener)new View$OnClickListener() {
                         public void onClick(final View view) {

@@ -50,8 +50,9 @@ import com.netflix.mediaclient.android.fragment.NetflixFrag;
 public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener, Callback, MdxTargetSelectionDialogInterface
 {
     private static final boolean DISABLED = false;
+    private static final String EXTRA_SAVED_POSITION_SECONDS = "saved_position_seconds";
     public static final boolean FORCE_SHOW_WITH_DUMMY_DATA = false;
-    private static final String NOTIFY_SHOW_AND_DISABLE_INTENT = "NOTIFY_SHOW_AND_DISABLE_INTENT";
+    private static final String NOTIFY_SHOW_AND_DISABLE_INTENT = "com.netflix.mediaclient.ui.mdx.NOTIFY_SHOW_AND_DISABLE_INTENT";
     private static final long SEEKBAR_UPDATE_DELAY_MS = 1000L;
     private static final String TAG = "MdxMiniPlayerFrag";
     private static final Set<String> dontShareIdSet;
@@ -75,6 +76,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
     private String parentActivityClass;
     private RemotePlayer remotePlayer;
     private final RemotePlayer.RemoteTargetUiListener remoteTargetUiListener;
+    private int savedPositionSeconds;
     private long simulatedCurrentTimelinePositionMs;
     private long simulatedVideoPositionTimeFiredMs;
     private final Runnable updateSeekBarRunnable;
@@ -98,9 +100,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
                 final long n = System.currentTimeMillis() - MdxMiniPlayerFrag.this.simulatedVideoPositionTimeFiredMs;
                 if (MdxMiniPlayerFrag.this.simulatedVideoPositionTimeFiredMs > 0L && n > 0L) {
                     MdxMiniPlayerFrag.access$914(MdxMiniPlayerFrag.this, n);
-                    final int progress = (int)MdxMiniPlayerFrag.this.simulatedCurrentTimelinePositionMs / 1000;
-                    MdxMiniPlayerFrag.this.views.setProgress(progress);
-                    MdxMiniPlayerFrag.this.log("Faked update to position " + progress + " in sec for simulated " + MdxMiniPlayerFrag.this.simulatedCurrentTimelinePositionMs + " in ms.");
+                    MdxMiniPlayerFrag.this.views.setProgress((int)MdxMiniPlayerFrag.this.simulatedCurrentTimelinePositionMs / 1000);
                 }
                 MdxMiniPlayerFrag.this.simulatedVideoPositionTimeFiredMs = System.currentTimeMillis();
                 MdxMiniPlayerFrag.this.handler.postDelayed(MdxMiniPlayerFrag.this.updateSeekBarRunnable, 1000L);
@@ -150,6 +150,10 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
                 }
             }
             
+            private boolean isErrorRequireDisableControl(final int n) {
+                return n >= 100 && n < 300;
+            }
+            
             @Override
             public void cancelDialog() {
                 if (MdxMiniPlayerFrag.this.activity.destroyed()) {
@@ -182,8 +186,11 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
                 if (MdxMiniPlayerFrag.this.isShowing()) {
                     MdxMiniPlayerFrag.this.mdxErrorHandler.handleMdxError(n, s);
                 }
-                MdxMiniPlayerFrag.this.views.setControlsEnabled(false);
-                MdxMiniPlayerFrag.this.activity.notifyMdxEndOfPlayback();
+                if (this.isErrorRequireDisableControl(n)) {
+                    MdxMiniPlayerFrag.this.views.setControlsEnabled(false);
+                    MdxMiniPlayerFrag.this.views.enableMdxMenu();
+                    MdxMiniPlayerFrag.this.activity.notifyMdxEndOfPlayback();
+                }
             }
             
             @Override
@@ -235,6 +242,18 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
             
             @Override
             public void updateTargetCapabilities(final MdxTargetCapabilities mdxTargetCapabilities) {
+                if (MdxMiniPlayerFrag.this.activity.destroyed()) {
+                    return;
+                }
+                if (mdxTargetCapabilities == null) {
+                    Log.w("MdxMiniPlayerFrag", "Capabilities is null!");
+                    MdxMiniPlayerFrag.this.updateVolumeState(false);
+                    return;
+                }
+                if (Log.isLoggable("MdxMiniPlayerFrag", 2)) {
+                    MdxMiniPlayerFrag.this.log("updateTargetCapabilities, " + mdxTargetCapabilities.toString());
+                }
+                MdxMiniPlayerFrag.this.updateVolumeState(mdxTargetCapabilities.isVolumeControl());
             }
             
             @Override
@@ -280,6 +299,8 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
             }
         };
         this.mdxMiniPlayerViewCallbacks = new MdxMiniPlayerViews.MdxMiniPlayerViewCallbacks() {
+            private long startTrackingTouchTime;
+            
             @Override
             public float getCurrentRating() {
                 return MdxMiniPlayerFrag.state.currRating;
@@ -381,6 +402,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
             public void onStartTrackingTouch(final SeekBar seekBar) {
                 Log.v("MdxMiniPlayerFrag", "onStartTrackingTouch");
                 MdxMiniPlayerFrag.this.draggingInProgress = true;
+                this.startTrackingTouchTime = System.nanoTime();
                 MdxMiniPlayerFrag.this.stopSimulatedVideoPositionUpdate();
             }
             
@@ -396,7 +418,13 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
                 Log.v("MdxMiniPlayerFrag", "onStopTrackingTouch, pos: " + progressByBif.getProgress());
                 MdxMiniPlayerFrag.this.draggingInProgress = false;
                 if (b) {
-                    MdxMiniPlayerFrag.this.startSimulatedVideoPositionUpdate(progressByBif.getProgress());
+                    final int n = (int)((System.nanoTime() - this.startTrackingTouchTime) / 1000000000L);
+                    final int progress = progressByBif.getProgress() + n;
+                    if (Log.isLoggable("MdxMiniPlayerFrag", 2)) {
+                        Log.v("MdxMiniPlayerFrag", "Seconds elapsed during seek (back to snap position): " + n + ", new time: " + progress);
+                    }
+                    MdxMiniPlayerFrag.this.views.setProgress(progress);
+                    MdxMiniPlayerFrag.this.startSimulatedVideoPositionUpdate(progress);
                     return;
                 }
                 Log.v("MdxMiniPlayerFrag", "Seeking...");
@@ -493,7 +521,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
     }
     
     public static void sendShowAndDisableIntent(final Context context) {
-        context.sendBroadcast(new Intent("NOTIFY_SHOW_AND_DISABLE_INTENT"));
+        context.sendBroadcast(new Intent("com.netflix.mediaclient.ui.mdx.NOTIFY_SHOW_AND_DISABLE_INTENT"));
     }
     
     private void showAndDisable() {
@@ -551,7 +579,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
         this.log("Updating metadata: " + this.currentVideo + ", hash: " + this.currentVideo.hashCode());
         if (this.currentVideo.getType() == VideoType.EPISODE) {
             this.views.updateTitleText(this.currentVideo.getParentTitle());
-            this.views.updateSubtitleText(this.activity.getString(2131493185, new Object[] { this.currentVideo.getSeasonNumber(), this.currentVideo.getEpisodeNumber(), this.currentVideo.getTitle() }));
+            this.views.updateSubtitleText(this.activity.getString(2131296622, new Object[] { this.currentVideo.getSeasonNumber(), this.currentVideo.getEpisodeNumber(), this.currentVideo.getTitle() }));
         }
         else {
             this.views.updateTitleText(this.currentVideo.getTitle());
@@ -568,20 +596,25 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
         else {
             positionInSeconds = this.remotePlayer.getPositionInSeconds();
         }
-        this.log(String.format("updating seek pos - remote pos: %d, playable bookmark pos: %d, simulated pos: %d", positionInSeconds, this.currentVideo.getPlayableBookmarkPosition(), this.simulatedCurrentTimelinePositionMs));
-        int positionInSeconds2;
-        if (this.remotePlayer == null) {
-            positionInSeconds2 = 0;
-        }
-        else {
-            positionInSeconds2 = this.remotePlayer.getPositionInSeconds();
-        }
-        int playableBookmarkPosition = positionInSeconds2;
-        if (positionInSeconds2 <= 0) {
-            playableBookmarkPosition = this.currentVideo.getPlayableBookmarkPosition();
+        this.log(String.format("updating seek pos - remote pos: %d, playable bookmark pos: %d, saved pos: %d", positionInSeconds, this.currentVideo.getPlayableBookmarkPosition(), this.savedPositionSeconds));
+        final int savedPositionSeconds = this.savedPositionSeconds;
+        this.savedPositionSeconds = -1;
+        int playableBookmarkPosition = savedPositionSeconds;
+        if (savedPositionSeconds <= 0) {
+            int positionInSeconds2;
+            if (this.remotePlayer == null) {
+                positionInSeconds2 = 0;
+            }
+            else {
+                positionInSeconds2 = this.remotePlayer.getPositionInSeconds();
+            }
+            playableBookmarkPosition = positionInSeconds2;
+            if (positionInSeconds2 <= 0) {
+                playableBookmarkPosition = this.currentVideo.getPlayableBookmarkPosition();
+            }
         }
         if (playableBookmarkPosition > 0) {
-            this.log("Setting seek progress from metadata: " + playableBookmarkPosition);
+            this.log("Setting seek progress: " + playableBookmarkPosition);
             this.views.setProgress(playableBookmarkPosition);
         }
         this.views.updateImage(this.currentVideo);
@@ -611,6 +644,12 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
             }
         }
         this.views.updatePlayPauseButton(b2);
+        this.views.setVolumeButtonVisibility(MdxMiniPlayerFrag.state.isVolumeEnabled);
+    }
+    
+    private void updateVolumeState(final boolean b) {
+        MdxMiniPlayerFrag.state.isVolumeEnabled = b;
+        this.views.setVolumeButtonVisibility(b);
     }
     
     public void attachMenuItem(final MdxMenu mdxMenu) {
@@ -730,11 +769,19 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
         this.parentActivityClass = this.getActivity().getClass().getSimpleName();
         this.activity = (NetflixActivity)this.getActivity();
         this.log("onCreate()");
+        int int1;
+        if (bundle == null) {
+            int1 = -1;
+        }
+        else {
+            int1 = bundle.getInt("saved_position_seconds", -1);
+        }
+        this.savedPositionSeconds = int1;
         this.activity.registerReceiverWithAutoUnregister(new BroadcastReceiver() {
             public void onReceive(final Context context, final Intent intent) {
                 MdxMiniPlayerFrag.this.showAndDisable();
             }
-        }, "NOTIFY_SHOW_AND_DISABLE_INTENT");
+        }, "com.netflix.mediaclient.ui.mdx.NOTIFY_SHOW_AND_DISABLE_INTENT");
         this.mdxKeyEventHandler = new MdxKeyEventHandler(this.mdxKeyEventCallbacks);
         this.mdxErrorHandler = new MdxErrorHandler("MdxMiniPlayerFrag", this.activity, (MdxErrorHandler.ErrorHandlerCallbacks)new MdxErrorHandler.ErrorHandlerCallbacks() {
             @Override
@@ -829,6 +876,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
     public void onSaveInstanceState(final Bundle bundle) {
         synchronized (this) {
             super.onSaveInstanceState(bundle);
+            bundle.putInt("saved_position_seconds", this.views.getProgress());
             this.isInBackground = true;
         }
     }
@@ -917,6 +965,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
         float currRating;
         boolean isEpisodeReady;
         boolean isVideoUnshared;
+        boolean isVolumeEnabled;
         int mostRecentVolume;
         boolean shouldShowSelf;
         
@@ -926,6 +975,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements EpisodeRowListener
             this.controlsEnabled = false;
             this.isEpisodeReady = false;
             this.isVideoUnshared = false;
+            this.isVolumeEnabled = false;
             this.currRating = -1.0f;
         }
     }

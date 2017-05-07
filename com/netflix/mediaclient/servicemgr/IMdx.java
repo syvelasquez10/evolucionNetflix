@@ -37,9 +37,9 @@ public interface IMdx
     @SuppressLint({ "UseSparseArrays" })
     public static final Map<Integer, Integer> MDX_ERROR_MAP = new HashMap<Integer, Integer>() {
         {
-            this.put(100, 2131493170);
-            this.put(104, 2131493171);
-            this.put(105, 2131493172);
+            this.put(100, 2131296607);
+            this.put(104, 2131296608);
+            this.put(105, 2131296609);
         }
     };
     public static final int MDX_ERROR_PAIR_ERROR = 104;
@@ -98,6 +98,8 @@ public interface IMdx
     ByteBuffer getBifFrame(final int p0);
     
     String getCurrentTarget();
+    
+    IMdxSharedState getSharedState();
     
     Pair<String, String>[] getTargetList();
     

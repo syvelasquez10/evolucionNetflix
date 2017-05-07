@@ -27,10 +27,10 @@ public abstract class CurrentTime extends PlaycardSection
     CurrentTime(final MdxPlaycardActivity mdxPlaycardActivity) {
         super(mdxPlaycardActivity);
         this.mBifDownloaded = new AtomicBoolean(false);
-        this.currentTime = mdxPlaycardActivity.findViewById(2131099864);
-        this.currentTimeExp = mdxPlaycardActivity.findViewById(2131099872);
-        this.currentTimeLabel = (TextView)mdxPlaycardActivity.findViewById(2131099865);
-        this.bifs = (ImageView)mdxPlaycardActivity.findViewById(2131099833);
+        this.currentTime = mdxPlaycardActivity.findViewById(2131230998);
+        this.currentTimeExp = mdxPlaycardActivity.findViewById(2131231006);
+        this.currentTimeLabel = (TextView)mdxPlaycardActivity.findViewById(2131230999);
+        this.bifs = (ImageView)mdxPlaycardActivity.findViewById(2131230967);
     }
     
     static CurrentTime newInstance(final MdxPlaycardActivity mdxPlaycardActivity) {

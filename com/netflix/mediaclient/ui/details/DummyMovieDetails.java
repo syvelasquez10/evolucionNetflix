@@ -115,13 +115,13 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
-    public String getPlayableId() {
-        return null;
+    public long getPlayableBookmarkUpdateTime() {
+        return 0L;
     }
     
     @Override
-    public long getPlayableServerBookmarkUpdateTime() {
-        return 0L;
+    public String getPlayableId() {
+        return null;
     }
     
     @Override

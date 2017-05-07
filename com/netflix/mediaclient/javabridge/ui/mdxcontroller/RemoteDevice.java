@@ -55,7 +55,7 @@ public class RemoteDevice
         remoteDevice.uuid = JsonUtils.getString(jsonObject, "uuid", JsonUtils.getString(jsonObject, "UUID", null));
         remoteDevice.dialUuid = JsonUtils.getString(jsonObject, "dialUuid", null);
         remoteDevice.pairingContext = JsonUtils.getString(jsonObject, "pairingContext", null);
-        remoteDevice.activated = JsonUtils.getBoolean(jsonObject, "activated", false);
+        remoteDevice.activated = JsonUtils.getBoolean(jsonObject, "activated", true);
         remoteDevice.location = JsonUtils.getString(jsonObject, "location", null);
         remoteDevice.friendlyName = JsonUtils.getString(jsonObject, "friendlyName", null);
         remoteDevice.serviceType = JsonUtils.getString(jsonObject, "serviceType", null);

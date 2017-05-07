@@ -66,26 +66,26 @@ public final class TopPanel extends PlayerSection
                 return true;
             }
         };
-        this.mBackArrow = this.context.findViewById(2131099836);
+        this.mBackArrow = this.context.findViewById(2131230970);
         if (this.mBackArrow != null) {
             this.mBackArrow.setOnTouchListener((View$OnTouchListener)onTouchListener);
         }
-        this.mBackIcon = this.context.findViewById(2131099837);
+        this.mBackIcon = this.context.findViewById(2131230971);
         if (this.mBackIcon != null) {
             this.mBackIcon.setOnTouchListener((View$OnTouchListener)onTouchListener);
         }
-        this.mBackPadding = this.context.findViewById(2131099838);
+        this.mBackPadding = this.context.findViewById(2131230972);
         if (this.mBackPadding != null) {
             this.mBackPadding.setOnTouchListener((View$OnTouchListener)onTouchListener);
         }
     }
     
     private void initGeneric() {
-        this.mTopPanel = this.context.findViewById(2131099835);
+        this.mTopPanel = this.context.findViewById(2131230969);
         if (this.mTopPanel == null) {
             Log.e("screen", "========>top null!");
         }
-        this.mTitleLabel = (TextView)this.context.findViewById(2131099888);
+        this.mTitleLabel = (TextView)this.context.findViewById(2131231027);
     }
     
     private void initLanguages() {
@@ -130,7 +130,7 @@ public final class TopPanel extends PlayerSection
                 TopPanel.this.mDialogLanguageId = TopPanel.this.context.reportUiModelessViewSessionStart(IClientLogging.ModalView.audioSubtitlesSelector);
             }
         };
-        final View viewById = this.context.findViewById(2131099863);
+        final View viewById = this.context.findViewById(2131230997);
         if (viewById instanceof ImageView) {
             Log.d("screen", "Add language button");
             (this.mLanguage = (ImageButton)viewById).setOnClickListener((View$OnClickListener)onClickListener);
@@ -142,7 +142,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final SeekBar$OnSeekBarChangeListener onSeekBarChangeListener) {
-        this.mSound = (SeekBar)this.context.findViewById(2131099843);
+        this.mSound = (SeekBar)this.context.findViewById(2131230977);
         if (this.mSound == null) {
             Log.e("screen", "Sound seekbar was NOT found!");
             return;

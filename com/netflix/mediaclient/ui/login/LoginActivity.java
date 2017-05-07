@@ -16,7 +16,6 @@ import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import android.app.Activity;
-import com.netflix.mediaclient.ui.ServiceErrorsHandler;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -65,12 +64,12 @@ public class LoginActivity extends AccountActivity
         boolean b = false;
         Object o = null;
         if (this.passwordIsInvalid(string2)) {
-            this.passwordView.setError((CharSequence)this.getString(2131493148));
+            this.passwordView.setError((CharSequence)this.getString(2131296585));
             o = this.passwordView;
             b = true;
         }
         if (this.emailIsInvalid(string)) {
-            this.emailView.setError((CharSequence)this.getString(2131493147));
+            this.emailView.setError((CharSequence)this.getString(2131296584));
             o = this.emailView;
             b = true;
         }
@@ -87,7 +86,7 @@ public class LoginActivity extends AccountActivity
         final int screenSensorOrientation = DeviceUtils.getScreenSensorOrientation((Context)this);
         Log.i("LoginActivity", "Locking orientation to: " + screenSensorOrientation);
         this.setRequestedOrientation(screenSensorOrientation);
-        this.statusMessageView.setText(2131493146);
+        this.statusMessageView.setText(2131296583);
         this.showProgress(true);
         serviceManager.loginUser(string, string2, this.loginQueryCallback);
     }
@@ -100,78 +99,28 @@ public class LoginActivity extends AccountActivity
         return StringUtils.isEmpty(s);
     }
     
-    private void handleAccountActivateFailures(final int n, String string) {
-        if (string == null) {
-            string = "";
-        }
-        switch (n) {
-            default: {
-                string = this.getString(2131493207) + " (" + n + ")";
-                this.showDebugToast(2131493158);
-                this.provideDialog(string);
-                break;
-            }
-            case -201: {
-                this.provideDialog(this.getString(2131493204) + " (" + n + ")");
-                break;
-            }
-            case -202: {
-                this.provideDialog(string);
-                break;
-            }
-            case -207:
-            case -203: {
-                this.passwordView.setError((CharSequence)this.getString(2131493149));
-                break;
-            }
-            case -208: {
-                this.showDebugToast(this.getString(2131493156) + ": " + n + " " + string);
-                ServiceErrorsHandler.handleManagerResponse(this, -5);
-                break;
-            }
-            case -211:
-            case -210:
-            case -209:
-            case -206:
-            case -205:
-            case -204:
-            case -200: {
-                this.provideDialog(this.getString(2131493203) + " (" + n + ")");
-                break;
-            }
-            case -3: {
-                this.provideDialog(this.getString(2131493206) + " (" + n + ")");
-                break;
-            }
-        }
-        this.showProgress(false);
-    }
-    
     private void handleLoginComplete(final int n, final String s) {
         Log.d("LoginActivity", "Login Complete - Status: " + n + " msg:" + s);
         this.setRequestedOrientation(-1);
         if (n == 0 || n == -41) {
-            this.showDebugToast(2131493153);
+            this.showDebugToast(2131296590);
             return;
         }
-        this.handleAccountActivateFailures(n, s);
+        this.handleUserAgentErrors(this, n, s);
+        this.showProgress(false);
     }
     
     private void noConnectivityWarning() {
         this.runOnUiThread((Runnable)new Runnable() {
             @Override
             public void run() {
-                LoginActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)LoginActivity.this, LoginActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, LoginActivity.this.getString(2131493202), LoginActivity.this.getString(17039370), null)));
+                LoginActivity.this.displayDialog(AlertDialogFactory.createDialog((Context)LoginActivity.this, LoginActivity.this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, LoginActivity.this.getString(2131296639), LoginActivity.this.getString(17039370), null)));
             }
         });
     }
     
     private boolean passwordIsInvalid(final String s) {
         return StringUtils.isEmpty(s) || s.length() < 4;
-    }
-    
-    private void provideDialog(final String s) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory.AlertDialogDescriptor(null, s, this.getString(17039370), null)));
     }
     
     private void showDebugToast(final int n) {
@@ -215,21 +164,43 @@ public class LoginActivity extends AccountActivity
     }
     
     @Override
+    protected void handleAccountDeactivated() {
+        Log.i("LoginActivity", "Account deactivated ...");
+    }
+    
+    @Override
     protected void handleProfileReadyToSelect() {
         Log.i("LoginActivity", "New profile requested - starting profile selection activity...");
         this.startActivity(ProfileSelectionActivity.createStartIntent(this));
         AccountActivity.finishAllAccountActivities((Context)this);
     }
     
+    @Override
+    protected void handleUserAgentErrors(final Activity activity, final int n, final String s) {
+        if (n == -203 || n == -207) {
+            this.passwordView.setError((CharSequence)this.getString(2131296586));
+            return;
+        }
+        if (n == -201) {
+            this.displayUserAgentDialog(this.getString(2131296641) + " (" + n + ")", null, false);
+            return;
+        }
+        if (n == -3) {
+            this.displayUserAgentDialog(this.getString(2131296643) + " (" + n + ")", null, true);
+            return;
+        }
+        super.handleUserAgentErrors(activity, n, s);
+    }
+    
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         AndroidUtils.logIntent("LoginActivity", this.getIntent());
-        this.setContentView(2130903076);
+        this.setContentView(2130903099);
         LogUtils.reportLoginActionEnded((Context)this, IClientLogging.CompletionReason.success, null);
-        (this.emailView = (EditText)this.findViewById(2131099774)).requestFocus();
-        (this.passwordView = (EditText)this.findViewById(2131099775)).setOnEditorActionListener((TextView$OnEditorActionListener)new TextView$OnEditorActionListener() {
+        (this.emailView = (EditText)this.findViewById(2131230907)).requestFocus();
+        (this.passwordView = (EditText)this.findViewById(2131230908)).setOnEditorActionListener((TextView$OnEditorActionListener)new TextView$OnEditorActionListener() {
             private boolean isLoginId(final int n) {
-                return n == 2131099776 || n == 0 || n == 6;
+                return n == 2131230909 || n == 0 || n == 6;
             }
             
             public boolean onEditorAction(final TextView textView, final int n, final KeyEvent keyEvent) {
@@ -241,16 +212,16 @@ public class LoginActivity extends AccountActivity
                 return false;
             }
         });
-        this.loginForm = this.findViewById(2131099773);
-        this.loginButton = this.findViewById(2131099771);
-        this.statusGroup = this.findViewById(2131099777);
-        this.statusMessageView = (TextView)this.findViewById(2131099778);
-        this.findViewById(2131099771).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
+        this.loginForm = this.findViewById(2131230906);
+        this.loginButton = this.findViewById(2131230904);
+        this.statusGroup = this.findViewById(2131230910);
+        this.statusMessageView = (TextView)this.findViewById(2131230911);
+        this.findViewById(2131230904).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
                 LoginActivity.this.attemptLogin();
             }
         });
-        this.findViewById(2131099772).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
+        this.findViewById(2131230905).setOnClickListener((View$OnClickListener)new View$OnClickListener() {
             public void onClick(final View view) {
                 LoginActivity.this.startActivity(new Intent("android.intent.action.VIEW").setData(Uri.parse("http://signup.netflix.com/loginhelp")));
             }

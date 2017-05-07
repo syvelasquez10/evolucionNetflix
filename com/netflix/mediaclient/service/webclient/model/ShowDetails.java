@@ -219,18 +219,21 @@ public class ShowDetails extends Show implements com.netflix.mediaclient.service
     
     @Override
     public int getPlayableBookmarkPosition() {
-        Log.d("nf_service_browse_showdetails", String.format("id %s bookmark %d playPos %d endtime %d runtime %d", this.getId(), this.getBookmarkPosition(), BrowseAgent.getPlayablePosition(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime()), this.getEndtime(), this.getRuntime()));
-        return BrowseAgent.getPlayablePosition(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime());
+        final int computePlayPos = BrowseAgent.computePlayPos(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime());
+        if (Log.isLoggable("nf_service_browse_showdetails", 3)) {
+            Log.d("nf_service_browse_showdetails", String.format("id %s bookmark %d playPos %d endtime %d runtime %d", this.getId(), this.getBookmarkPosition(), computePlayPos, this.getEndtime(), this.getRuntime()));
+        }
+        return computePlayPos;
+    }
+    
+    @Override
+    public long getPlayableBookmarkUpdateTime() {
+        return this.getBookmarkCreationTime();
     }
     
     @Override
     public String getPlayableId() {
         return this.getCurrentEpisodeId();
-    }
-    
-    @Override
-    public long getPlayableServerBookmarkUpdateTime() {
-        return this.getBookmarkCreationTime();
     }
     
     @Override

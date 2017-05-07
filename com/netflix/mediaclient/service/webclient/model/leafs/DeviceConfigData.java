@@ -19,6 +19,8 @@ public class DeviceConfigData
     private String disable_websocket;
     private String disable_widevine;
     private String image_pref;
+    @SerializedName("ip_connectivity_policy")
+    private int ip_connectivity_policy;
     private String min_version;
     private String pt_aggregation_size;
     private String signup_enabled;
@@ -28,6 +30,7 @@ public class DeviceConfigData
     
     public DeviceConfigData() {
         this.consolidated_logging_specification = new ArrayList<ConsolidatedLoggingSessionSpecification>();
+        this.ip_connectivity_policy = -1;
     }
     
     public String getAppMinVresion() {
@@ -46,12 +49,16 @@ public class DeviceConfigData
         return this.consolidated_logging_specification;
     }
     
-    public String getDeviceCatgory() {
+    public String getDeviceCategory() {
         return this.device_category;
     }
     
     public String getImagePref() {
         return this.image_pref;
+    }
+    
+    public int getIpConnectivityPolicy() {
+        return this.ip_connectivity_policy;
     }
     
     public String getMdxDisabled() {

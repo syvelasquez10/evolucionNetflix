@@ -111,7 +111,7 @@ public class TargetStateManager
                     this.transitionStateTo(TargetState.StateNeedLaunched);
                     return;
                 }
-                if (!TargetContextEvent.TargetUpdate.equals(targetContextEvent) || !this.mLaunched) {
+                if ((!TargetContextEvent.TargetUpdate.equals(targetContextEvent) || !this.mLaunched) && !TargetContextEvent.LaunchSucceed.equals(targetContextEvent)) {
                     this.transitionStateTo(TargetState.StateNotLaunched);
                     return;
                 }
@@ -136,6 +136,10 @@ public class TargetStateManager
                 }
                 else {
                     if (TargetContextEvent.LaunchFailed.equals(targetContextEvent)) {
+                        this.scheduleRetry(TargetContextEvent.LaunchRetry);
+                        return;
+                    }
+                    if (TargetContextEvent.LaunchRetry.equals(targetContextEvent)) {
                         this.transitionStateTo(TargetState.StateNeedLaunched);
                         return;
                     }
@@ -207,7 +211,8 @@ public class TargetStateManager
                         this.transitionStateTo(TargetState.StateNoPairNeedRegPair);
                         return;
                     }
-                    this.scheduleRetry(TargetContextEvent.PairingRetry);
+                    this.transitionStateTo(TargetState.StateHasError);
+                    this.mListener.stateHasError(this.mPreviousState);
                     return;
                 }
                 else {
@@ -443,6 +448,7 @@ public class TargetStateManager
         HandShakeFailed, 
         HandShakeSucceed, 
         LaunchFailed, 
+        LaunchRetry, 
         LaunchSucceed, 
         PairFailed, 
         PairFailedExistedPair, 
@@ -470,7 +476,7 @@ public class TargetStateManager
         StateHasPair(StateId.StateHasPair, "haspair", 2, 8000, 1000), 
         StateLaunched(StateId.StateLaunched, "launched", 0, 0, 1000), 
         StateNeedHandShake(StateId.StateNeedHandShake, "needhandshake", 2, 8000, 1000), 
-        StateNeedLaunched(StateId.StateNeedLaunched, "needlaunch", 1, 40000, 1000), 
+        StateNeedLaunched(StateId.StateNeedLaunched, "needlaunch", 1, 40000, 7000), 
         StateNeedRegPair(StateId.StateNeedRegPair, "needregpair", 3, 32000, 4000), 
         StateNoPair(StateId.StateNoPair, "nopair", 3, 24000, 3000), 
         StateNoPairNeedRegPair(StateId.StateNoPairNeedRegPair, "nopairneedregpair", 0, 0, 1000), 

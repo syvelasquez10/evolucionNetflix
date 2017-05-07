@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.mdx;
 
 import com.netflix.mediaclient.util.WebApiUtils;
 import android.util.Pair;
+import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import java.nio.ByteBuffer;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -31,6 +32,11 @@ public class DummyMdx implements IMdx
     @Override
     public String getCurrentTarget() {
         return "Dummy_UUID";
+    }
+    
+    @Override
+    public IMdxSharedState getSharedState() {
+        return null;
     }
     
     @Override

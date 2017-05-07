@@ -4,18 +4,19 @@
 
 package com.netflix.mediaclient.media.JPlayer;
 
-import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
+import android.util.Pair;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import android.media.MediaFormat;
-import android.util.Log;
+import com.netflix.mediaclient.Log;
 import java.nio.ByteBuffer;
 import android.view.Surface;
 import android.media.MediaCrypto;
+import android.annotation.SuppressLint;
 
+@SuppressLint({ "InlinedApi" })
 public class JPlayer2
 {
-    static final int HD_HEIGHT = 1080;
-    static final int HD_WIDTH = 1920;
     static final int INIT_ERROR = -1;
     static final int STATE_FLUSHED = 3;
     static final int STATE_INIT = -1;
@@ -26,6 +27,7 @@ public class JPlayer2
     private MediaDecoderBase mAudioPipe;
     private MediaCrypto mCrypto;
     private DecoderListener mDecoderListener;
+    private int mMaxVideoBitrate;
     private long mNativePlayer;
     private volatile int mState;
     private Surface mSurface;
@@ -33,6 +35,7 @@ public class JPlayer2
     
     public JPlayer2(final Surface mSurface) {
         this.mState = -1;
+        this.mMaxVideoBitrate = -1;
         this.mDecoderListener = new DecoderListener();
         this.mSurface = mSurface;
     }
@@ -55,21 +58,25 @@ public class JPlayer2
     
     private void configureVideoPipe() throws Exception {
         Log.d("NF_JPlayer2", "configureVideoPipe");
+        if (DrmManagerRegistry.isWidevineDrmAllowed()) {
+            this.mCrypto = DrmManagerRegistry.getWidevineMediaDrmEngine().getMediaCrypto();
+        }
         final MediaFormat mediaFormat = new MediaFormat();
         mediaFormat.setString("mime", "video/avc");
         if (AndroidUtils.getAndroidVersion() > 18) {
-            mediaFormat.setInteger("max-width", 1920);
-            mediaFormat.setInteger("max-height", 1080);
-            mediaFormat.setInteger("width", 1920);
-            mediaFormat.setInteger("height", 1080);
+            final Pair<Integer, Integer> requiredMaximumResolution = AdaptiveMediaDecoderHelper.getRequiredMaximumResolution(this.mMaxVideoBitrate, this.mCrypto != null);
+            if (Log.isLoggable("NF_JPlayer2", 3)) {
+                Log.d("NF_JPlayer2", "video max resolution is " + requiredMaximumResolution.first + " x " + requiredMaximumResolution.second);
+            }
+            mediaFormat.setInteger("max-width", (int)requiredMaximumResolution.first);
+            mediaFormat.setInteger("max-height", (int)requiredMaximumResolution.second);
+            mediaFormat.setInteger("width", (int)requiredMaximumResolution.first);
+            mediaFormat.setInteger("height", (int)requiredMaximumResolution.second);
         }
         else {
             mediaFormat.setInteger("max-input-size", 1048576);
             mediaFormat.setInteger("width", 1920);
             mediaFormat.setInteger("height", 1080);
-        }
-        if (DrmManagerRegistry.isWidevineDrmAllowed()) {
-            this.mCrypto = DrmManagerRegistry.getWidevineMediaDrmEngine().getMediaCrypto();
         }
         if (this.mVideoPipe == null) {
             (this.mVideoPipe = new MediaDecoder2Video(new MediaDataSource(false), "video/avc", mediaFormat, this.mSurface, this.mCrypto)).setEventListener((MediaDecoderBase.EventListener)this.mDecoderListener);
@@ -223,7 +230,7 @@ public class JPlayer2
             }
             catch (Exception ex) {
                 ex.printStackTrace();
-                this.nativeNotifyError(-1, Log.getStackTraceString((Throwable)ex));
+                this.nativeNotifyError(-1, android.util.Log.getStackTraceString((Throwable)ex));
                 continue;
             }
             break;
@@ -253,6 +260,10 @@ public class JPlayer2
     
     public void release() {
         this.nativeReleasePlayer(this.mNativePlayer);
+    }
+    
+    public void setMaxVideoBitrate(final int mMaxVideoBitrate) {
+        this.mMaxVideoBitrate = mMaxVideoBitrate;
     }
     
     public class DecoderListener implements EventListener

@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.home;
 
 import java.io.Serializable;
 import android.view.MenuItem;
+import android.view.MenuItem$OnMenuItemClickListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.search.SearchMenu;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
@@ -193,7 +194,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131493167, 1).show();
+        Toast.makeText((Context)this, 2131296604, 1).show();
         this.clearHomeLoLoMoState();
     }
     
@@ -225,7 +226,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     private void showNewGenresFrag() {
         this.updateActionBar();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131099750, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131230883, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, 0);
     }
@@ -248,7 +249,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
                 logo = 2130837505;
             }
             else {
-                logo = 2130837627;
+                logo = 2130837759;
             }
             netflixActionBar.setLogo(logo);
         }
@@ -271,7 +272,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
             public void run() {
                 HomeActivity.this.toggleDrawer();
             }
-        }, this.getString(2131493128));
+        }, this.getString(2131296565));
     }
     
     @Override
@@ -281,7 +282,7 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903066;
+        return 2130903089;
     }
     
     public BaseLoLoMoAdapter<?> getLoLoMoAdapter() {
@@ -349,9 +350,9 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
         this.viewRecycler = new ViewRecycler();
         super.onCreate(bundle);
         this.showFetchErrorsToast();
-        (this.drawerLayout = (DrawerLayout)this.findViewById(2131099752)).setDrawerLockMode(0);
+        (this.drawerLayout = (DrawerLayout)this.findViewById(2131230885)).setDrawerLockMode(0);
         this.slidingMenuAdapter = new SlidingMenuAdapter(this, this.drawerLayout);
-        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2130837578, 2131493128, 2131493128);
+        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2130837689, 2131296565, 2131296565);
         this.drawerLayout.setDrawerListener(this.createDrawerListenerWrapper(this.drawerToggler));
         this.drawerLayout.setFocusable(false);
         this.updateActionBar();
@@ -359,10 +360,18 @@ public class HomeActivity extends FragmentHostActivity implements OptInResponseH
     }
     
     @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
+    protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         MdxMenu.addSelectPlayTarget(this.getMdxMiniPlayerFrag(), menu);
         SearchMenu.addSearchNavigation(this, menu);
-        return super.onCreateOptionsMenu(menu);
+        if (menu2 != null) {
+            menu2.add((CharSequence)"Dump LoLoMo Data").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MenuItem$OnMenuItemClickListener() {
+                public boolean onMenuItemClick(final MenuItem menuItem) {
+                    HomeActivity.this.manager.dumpHomeLoLoMosAndVideos(HomeActivity.this.genreId, HomeActivity.this.title);
+                    return false;
+                }
+            });
+        }
+        super.onCreateOptionsMenu(menu, menu2);
     }
     
     @Override

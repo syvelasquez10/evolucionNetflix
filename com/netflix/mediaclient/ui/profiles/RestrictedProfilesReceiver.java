@@ -32,7 +32,7 @@ public class RestrictedProfilesReceiver extends BroadcastReceiver
         }
         Log.i("RestrictedProfilesReceiver", "Adding restriction to disable profile switching");
         final RestrictionEntry restrictionEntry = new RestrictionEntry("key_disable_profile_switching", intent.getBundleExtra("android.intent.extra.restrictions_bundle").getBoolean("key_disable_profile_switching", false));
-        restrictionEntry.setTitle(context.getString(2131493222));
+        restrictionEntry.setTitle(context.getString(2131296659));
         final ArrayList<RestrictionEntry> list = new ArrayList<RestrictionEntry>();
         list.add(restrictionEntry);
         final Bundle bundle = new Bundle();

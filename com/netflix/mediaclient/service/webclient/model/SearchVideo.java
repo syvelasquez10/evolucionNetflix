@@ -66,6 +66,6 @@ public class SearchVideo extends Video implements com.netflix.mediaclient.servic
     
     @Override
     public String toString() {
-        return this.getTitle();
+        return "SearchVideo [getTitle()=" + this.getTitle() + ", getType()=" + this.getType() + "]";
     }
 }
