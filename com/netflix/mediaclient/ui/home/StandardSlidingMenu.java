@@ -73,14 +73,14 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
         this.drawerLayout = drawerLayout;
         this.canLoadNotifications = canLoadNotifications;
         final View inflate = activity.getLayoutInflater().inflate(2130903204, (ViewGroup)drawerLayout);
-        final View viewById = drawerLayout.findViewById(2131427838);
+        final View viewById = drawerLayout.findViewById(2131427837);
         viewById.setOnClickListener((View$OnClickListener)null);
-        this.genresLeWrapper = new LoadingAndErrorWrapper(drawerLayout.findViewById(2131427841), this.genresErrorCallback);
-        this.notificationsStub = (ViewStub)inflate.findViewById(2131427839);
+        this.genresLeWrapper = new LoadingAndErrorWrapper(drawerLayout.findViewById(2131427840), this.genresErrorCallback);
+        this.notificationsStub = (ViewStub)inflate.findViewById(2131427838);
         if (this.canLoadNotifications) {
             Log.v("StandardSlidingMenu", "Inflating notifications into layout");
             this.notificationsStub.inflate();
-            (this.notificationsFrag = (KubrickSlidingMenuNotificationsFrag)activity.getFragmentManager().findFragmentById(2131427580)).setNotificationsListStatusListener(new StandardSlidingMenu$1(this));
+            (this.notificationsFrag = (KubrickSlidingMenuNotificationsFrag)activity.getFragmentManager().findFragmentById(2131427579)).setNotificationsListStatusListener(new StandardSlidingMenu$1(this));
             if (Log.isLoggable()) {
                 Log.v("StandardSlidingMenu", "Notifications frag: " + this.notificationsFrag);
             }
@@ -94,11 +94,11 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
             }
             notificationsStub.setVisibility(visibility);
         }
-        (this.profilesGroup = inflate.findViewById(2131427834)).setOnClickListener(this.onSwitchProfileClickListener);
-        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131427835);
-        this.profileName = (TextView)this.profilesGroup.findViewById(2131427837);
-        (this.profileImg = (AdvancedImageView)this.profilesGroup.findViewById(2131427836)).setPressedStateHandlerEnabled(false);
-        (this.genresList = (StaticListView)viewById.findViewById(2131427842)).setFocusable(false);
+        (this.profilesGroup = inflate.findViewById(2131427833)).setOnClickListener(this.onSwitchProfileClickListener);
+        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131427834);
+        this.profileName = (TextView)this.profilesGroup.findViewById(2131427836);
+        (this.profileImg = (AdvancedImageView)this.profilesGroup.findViewById(2131427835)).setPressedStateHandlerEnabled(false);
+        (this.genresList = (StaticListView)viewById.findViewById(2131427841)).setFocusable(false);
         this.homeGenreRow = this.createHomeRow();
         this.genresList.addHeaderView(this.homeGenreRow, (Object)null, false);
         this.setSelectedGenre(StandardSlidingMenu.HOME_LOLOMO);
@@ -127,11 +127,11 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     
     private View createHomeRow() {
         final View inflate = this.activity.getLayoutInflater().inflate(2130903205, (ViewGroup)null);
-        final TextView textView = (TextView)inflate.findViewById(2131427690);
+        final TextView textView = (TextView)inflate.findViewById(2131427689);
         textView.setText(2131493170);
-        inflate.setBackgroundResource(2130837891);
+        inflate.setBackgroundResource(2130837895);
         inflate.setOnClickListener(this.onHomeClickListener);
-        inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder(textView, inflate.findViewById(2131427691)));
+        inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder(textView, inflate.findViewById(2131427690)));
         return inflate;
     }
     
@@ -240,6 +240,10 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     @Override
     public boolean canLoadNotifications() {
         return this.canLoadNotifications;
+    }
+    
+    public void markNotificationsAsRead() {
+        this.notificationsFrag.markNotificationsAsRead();
     }
     
     @Override

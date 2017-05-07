@@ -87,7 +87,7 @@ public class KubrickKidsShowDetailsFrag extends KubrickShowDetailsFrag
     protected void setSpinnerBackground(final int n) {
         final Drawable drawable = this.getResources().getDrawable(2130837582);
         drawable.setColorFilter(n, PorterDuff$Mode.MULTIPLY);
-        final LayerDrawable layerDrawable = (LayerDrawable)this.getResources().getDrawable(2130837771);
+        final LayerDrawable layerDrawable = (LayerDrawable)this.getResources().getDrawable(2130837775);
         final Drawable drawable2 = layerDrawable.getDrawable(1);
         if (drawable2 != null) {
             drawable2.setColorFilter(n, PorterDuff$Mode.MULTIPLY);

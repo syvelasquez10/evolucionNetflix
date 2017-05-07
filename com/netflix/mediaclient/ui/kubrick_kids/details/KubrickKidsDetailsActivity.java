@@ -29,7 +29,7 @@ public class KubrickKidsDetailsActivity extends DetailsActivity implements PlayC
         kubrickDetailActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
         kubrickDetailActionBar.setTitle("");
         kubrickDetailActionBar.setAlpha(0.0f);
-        final View viewById = this.findViewById(2131427430);
+        final View viewById = this.findViewById(2131427429);
         if (viewById != null) {
             viewById.setBackgroundColor(0);
         }

@@ -155,20 +155,14 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
                         return;
                     }
                     // iftrue(Label_0015:, !this.saveCredentials)
-                    while (true) {
-                        Block_3: {
-                            break Block_3;
-                            Log.w("LoginActivity", "Credential is empty, do not save it.");
-                            return;
-                        }
-                        Log.d("LoginActivity", "Trying to save credentials to GPS");
-                        this.saveCredentials = false;
-                        o = this.emailView.getText().toString();
-                        string = this.passwordView.getText().toString();
-                        continue;
-                    }
+                    Log.d("LoginActivity", "Trying to save credentials to GPS");
+                    this.saveCredentials = false;
+                    o = this.emailView.getText().toString();
+                    string = this.passwordView.getText().toString();
+                    // iftrue(Label_0092:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
+                    Log.w("LoginActivity", "Credential is empty, do not save it.");
+                    return;
                 }
-                // iftrue(Label_0092:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
                 finally {
                 }
                 // monitorexit(this)
@@ -454,16 +448,16 @@ public class LoginActivity extends AccountActivity implements GoogleApiClient$Co
         if (this.shouldUseAutoLogin()) {
             (this.credentialsApiClient = new GoogleApiClient$Builder((Context)this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(Auth.CREDENTIALS_API).build()).connect();
         }
-        (this.emailView = (EditText)this.findViewById(2131427622)).requestFocus();
-        this.passwordView = (EditText)this.findViewById(2131427623);
+        (this.emailView = (EditText)this.findViewById(2131427621)).requestFocus();
+        this.passwordView = (EditText)this.findViewById(2131427622);
         this.getCredentialAndState(this.getIntent());
         this.passwordView.setOnEditorActionListener((TextView$OnEditorActionListener)new LoginActivity$1(this));
-        this.loginForm = this.findViewById(2131427621);
-        this.loginButton = this.findViewById(2131427619);
-        this.statusGroup = this.findViewById(2131427499);
-        this.statusMessageView = (TextView)this.findViewById(2131427625);
-        this.findViewById(2131427619).setOnClickListener((View$OnClickListener)new LoginActivity$2(this));
-        this.findViewById(2131427620).setOnClickListener((View$OnClickListener)new LoginActivity$3(this));
+        this.loginForm = this.findViewById(2131427620);
+        this.loginButton = this.findViewById(2131427618);
+        this.statusGroup = this.findViewById(2131427498);
+        this.statusMessageView = (TextView)this.findViewById(2131427624);
+        this.findViewById(2131427618).setOnClickListener((View$OnClickListener)new LoginActivity$2(this));
+        this.findViewById(2131427619).setOnClickListener((View$OnClickListener)new LoginActivity$3(this));
     }
     
     @Override

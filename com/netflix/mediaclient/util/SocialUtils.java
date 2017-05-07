@@ -6,7 +6,6 @@ package com.netflix.mediaclient.util;
 
 import android.app.Fragment;
 import com.netflix.mediaclient.ui.details.DetailsFrag;
-import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsActivity;
 import android.view.MenuItem;
 import java.math.BigInteger;
 import com.netflix.mediaclient.service.logging.client.model.Error;
@@ -57,7 +56,7 @@ public class SocialUtils
     
     public static void addShareIconIfNeeded(final NetflixActivity netflixActivity, final Menu menu) {
         if (getShareSheetType() == SocialUtils$ShareSheetType.SHARE_IN_HEADER || getShareSheetType() == SocialUtils$ShareSheetType.RECOMMEND_PLUS_SHARE) {
-            menu.add(0, 2131427347, 65536, 2131493357).setIcon(2130837696).setShowAsAction(2);
+            menu.add(0, 2131427346, 65536, 2131493357).setIcon(2130837698).setShowAsAction(2);
         }
     }
     
@@ -205,7 +204,7 @@ public class SocialUtils
                 }
                 case 3: {
                     textView.setText(2131493357);
-                    textView.setCompoundDrawablesWithIntrinsicBounds(2130837731, 0, 0, 0);
+                    textView.setCompoundDrawablesWithIntrinsicBounds(2130837735, 0, 0, 0);
                 }
                 case 4: {
                     textView.setOnClickListener((View$OnClickListener)new SocialUtils$1(netflixActivity, s, s2, videoType));
@@ -265,11 +264,7 @@ public class SocialUtils
     }
     
     public static boolean tryHandleMenuItemClick(final MenuItem menuItem, final Context context) {
-        if (menuItem.getItemId() == 2131427346) {
-            context.startActivity(new Intent(context, (Class)SocialNotificationsActivity.class));
-            return true;
-        }
-        if (context instanceof DetailsActivity && menuItem.getItemId() == 2131427347) {
+        if (context instanceof DetailsActivity && menuItem.getItemId() == 2131427346) {
             final DetailsActivity detailsActivity = (DetailsActivity)context;
             final String videoId = detailsActivity.getVideoId();
             final VideoType videoType = detailsActivity.getVideoType();

@@ -420,7 +420,6 @@ public class ToolbarWidgetWrapper implements DecorToolbar
         this.updateHomeAccessibility();
     }
     
-    @Override
     public void setNavigationIcon(final Drawable mNavIcon) {
         this.mNavIcon = mNavIcon;
         this.updateNavigationIcon();

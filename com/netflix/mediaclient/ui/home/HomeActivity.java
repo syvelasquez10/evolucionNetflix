@@ -6,15 +6,12 @@ package com.netflix.mediaclient.ui.home;
 
 import android.view.View;
 import java.io.Serializable;
-import com.netflix.mediaclient.util.SocialUtils;
-import android.view.MenuItem;
 import com.netflix.mediaclient.ui.search.SearchMenu;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import android.view.Menu;
 import java.util.Collection;
 import android.os.SystemClock;
 import android.os.Bundle;
-import android.content.res.Configuration;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
@@ -29,7 +26,6 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import android.app.Fragment;
 import android.os.Parcelable;
 import android.support.v4.widget.DrawerLayout$DrawerListener;
-import android.app.Activity;
 import android.widget.Toast;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.Log;
@@ -38,12 +34,13 @@ import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
+import android.os.Handler;
 import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;
 import java.util.LinkedList;
@@ -53,6 +50,7 @@ import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 public class HomeActivity extends FragmentHostActivity implements ObjectRecycler$ViewRecyclerProvider, SocialOptInDialogFrag$OptInResponseHandler
 {
     private static final long ACTIVITY_RESUME_TIMEOUT_MS = 28800000L;
+    private static final long DELAY_BEFORE_NOTIFICATIONS_READ = 3000L;
     private static final String EXTRA_BACK_STACK_INTENTS = "extra_back_stack_intents";
     private static final String EXTRA_GENRE_ID = "genre_id";
     private static final String EXTRA_GENRE_PARCEL = "genre_parcel";
@@ -61,7 +59,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     private static final String TAG = "HomeActivity";
     private final LinkedList<Intent> backStackIntents;
     private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle drawerToggler;
     private GenreList genre;
     private String genreId;
     protected final DialogInterface$OnClickListener invalidCountryDialogListener;
@@ -70,22 +67,35 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     private long mStartedTimeMs;
     private ServiceManager manager;
     private final ManagerStatusListener managerStatusListener;
+    private SocialUtils$NotificationsListStatus notificationsListStatus;
+    private final BroadcastReceiver notificationsListUpdateReceiver;
     private long pauseTimeMs;
+    private Runnable readRunnable;
+    private Handler readRunnableHandler;
     private final BroadcastReceiver refreshHomeReceiver;
     private SlidingMenuAdapter slidingMenuAdapter;
     private ObjectRecycler$ViewRecycler viewRecycler;
     
     public HomeActivity() {
         this.backStackIntents = new LinkedList<Intent>();
-        this.managerStatusListener = new HomeActivity$1(this);
-        this.refreshHomeReceiver = new HomeActivity$2(this);
-        this.invalidCountryDialogListener = (DialogInterface$OnClickListener)new HomeActivity$3(this);
+        this.notificationsListStatus = SocialUtils$NotificationsListStatus.NO_MESSAGES;
+        this.managerStatusListener = new HomeActivity$2(this);
+        this.refreshHomeReceiver = new HomeActivity$3(this);
+        this.notificationsListUpdateReceiver = new HomeActivity$4(this);
+        this.invalidCountryDialogListener = (DialogInterface$OnClickListener)new HomeActivity$5(this);
+    }
+    
+    private void cancelMarkingNotificationsAsRead() {
+        if (this.notificationsListStatus == SocialUtils$NotificationsListStatus.HAS_UNREAD_MESSAGES && this.readRunnableHandler != null && this.readRunnable != null) {
+            this.readRunnableHandler.removeCallbacks(this.readRunnable);
+        }
     }
     
     private void clearAllStateAndRefresh() {
         this.getServiceManager().getBrowse().flushCaches();
         this.getPrimaryFrag().refresh();
         this.slidingMenuAdapter.refresh();
+        this.refreshSocialNotificationsStateIfNeeded();
     }
     
     public static Intent createShowIntent(final NetflixActivity netflixActivity) {
@@ -165,19 +175,26 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.clearAllStateAndRefresh();
     }
     
+    private void refreshSocialNotificationsStateIfNeeded() {
+        if (this.manager != null && this.manager.getBrowse() != null) {
+            this.manager.getBrowse().refreshSocialNotifications(true);
+        }
+    }
+    
     private void registerReceivers() {
         this.registerReceiverWithAutoUnregister(this.refreshHomeReceiver, "com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO");
+        if (this.slidingMenuAdapter.canLoadNotifications()) {
+            this.registerReceiverLocallyWithAutoUnregister(this.notificationsListUpdateReceiver, "com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED");
+        }
     }
     
     private void setupViews() {
-        this.drawerLayout = (DrawerLayout)this.findViewById(2131427529);
+        (this.drawerLayout = (DrawerLayout)this.findViewById(2131427528)).setDrawerListener(new HomeActivity$1(this));
         this.unlockSlidingDrawerIfPossible();
         this.slidingMenuAdapter = BrowseExperience.get().createSlidingMenuAdapter(this, this.drawerLayout);
         if (Log.isLoggable()) {
             Log.v("HomeActivity", "Created sliding menu adapter of type: " + this.slidingMenuAdapter.getClass());
         }
-        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2131493176, 2131493176);
-        this.drawerLayout.setDrawerListener(this.drawerToggler);
         this.drawerLayout.setFocusable(false);
         this.drawerLayout.setScrimColor(this.getResources().getColor(2131230866));
         this.updateActionBar();
@@ -192,7 +209,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131427527, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131427526, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
@@ -237,6 +254,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
             }
             netflixActionBar.setLogoType(logoType);
         }
+        netflixActionBar.setSandwichIcon(false);
     }
     
     private void updateSlidingDrawer() {
@@ -274,7 +292,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     @Override
     public int getActionBarParentViewId() {
         if (!BrowseExperience.isKubrickKids()) {
-            return 2131427524;
+            return 2131427523;
         }
         return super.getActionBarParentViewId();
     }
@@ -331,23 +349,17 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         }
     }
     
-    @Override
-    public void onConfigurationChanged(final Configuration configuration) {
-        super.onConfigurationChanged(configuration);
-        this.drawerToggler.onConfigurationChanged(configuration);
-    }
-    
     public void onCreate(final Bundle bundle) {
         this.isFirstLaunch = (bundle == null);
         this.mStartedTimeMs = SystemClock.elapsedRealtime();
         if (bundle != null) {
             this.backStackIntents.addAll((Collection<? extends Intent>)bundle.getSerializable("extra_back_stack_intents"));
         }
-        this.registerReceivers();
         this.handleNewIntent(this.getIntent());
         this.viewRecycler = new ObjectRecycler$ViewRecycler();
         super.onCreate(bundle);
         this.setupViews();
+        this.registerReceivers();
         this.showFetchErrorsToast();
         this.pauseTimeMs = SystemClock.elapsedRealtime();
     }
@@ -381,23 +393,13 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     @Override
-    public boolean onOptionsItemSelected(final MenuItem menuItem) {
-        return this.drawerToggler.onOptionsItemSelected(menuItem) || SocialUtils.tryHandleMenuItemClick(menuItem, (Context)this) || super.onOptionsItemSelected(menuItem);
-    }
-    
-    @Override
     protected void onPause() {
         super.onPause();
         if (Log.isLoggable()) {
             Log.d("HomeActivity", "onResumedAfterTimeout() will fire if activity not resumed within: 28800 seconds");
         }
         this.pauseTimeMs = SystemClock.elapsedRealtime();
-    }
-    
-    @Override
-    protected void onPostCreate(final Bundle bundle) {
-        super.onPostCreate(bundle);
-        this.drawerToggler.syncState();
+        this.cancelMarkingNotificationsAsRead();
     }
     
     @Override

@@ -91,16 +91,16 @@ public final class PlayerSuspendNotification
             remoteViews = new RemoteViews(packageName, 2130903202);
         }
         if (bitmap != null) {
-            remoteViews.setImageViewBitmap(2131427829, bitmap);
+            remoteViews.setImageViewBitmap(2131427828, bitmap);
         }
         if (StringUtils.isNotEmpty(s)) {
-            remoteViews.setTextViewText(2131427830, (CharSequence)s);
+            remoteViews.setTextViewText(2131427829, (CharSequence)s);
         }
         else {
-            remoteViews.setTextViewText(2131427830, (CharSequence)"");
+            remoteViews.setTextViewText(2131427829, (CharSequence)"");
         }
         if (notEmpty) {
-            remoteViews.setTextViewText(2131427831, (CharSequence)s2);
+            remoteViews.setTextViewText(2131427830, (CharSequence)s2);
         }
         return remoteViews;
     }
@@ -121,7 +121,7 @@ public final class PlayerSuspendNotification
         }
         Notification notification2;
         if (AndroidUtils.getAndroidVersion() < 21) {
-            final Notification notification = notification2 = new NotificationCompat$Builder((Context)this.mPlayerActivity).setOngoing(0 != 0).setOnlyAlertOnce(1 != 0).setSmallIcon(2130837826).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, largeIcon, (boolean)(0 != 0))).setWhen(System.currentTimeMillis()).build();
+            final Notification notification = notification2 = new NotificationCompat$Builder((Context)this.mPlayerActivity).setOngoing(0 != 0).setOnlyAlertOnce(1 != 0).setSmallIcon(2130837830).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, largeIcon, (boolean)(0 != 0))).setWhen(System.currentTimeMillis()).build();
             if (AndroidUtils.getAndroidVersion() >= 16) {
                 notification.bigContentView = this.getContentView(this.mTitle, this.mSecondaryTitle, largeIcon, true);
                 notification2 = notification;
@@ -130,7 +130,7 @@ public final class PlayerSuspendNotification
         else {
             final int color = this.mPlayerActivity.getResources().getColor(2131230827);
             final String string = this.mPlayerActivity.getResources().getString(2131493321);
-            final Notification$Builder setVisibility = new Notification$Builder((Context)this.mPlayerActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837826).setLargeIcon(largeIcon).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
+            final Notification$Builder setVisibility = new Notification$Builder((Context)this.mPlayerActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837830).setLargeIcon(largeIcon).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
             if (TextUtils.isEmpty((CharSequence)this.mSecondaryTitle)) {
                 setVisibility.setContentText((CharSequence)string);
             }

@@ -59,14 +59,14 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837895);
+        this.setBackgroundResource(2130837899);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(2130903086, (ViewGroup)this);
-        this.title = (TextView)this.findViewById(2131427496);
-        this.img = (AdvancedImageView)this.findViewById(2131427494);
-        this.progress = (ProgressBar)this.findViewById(2131427498);
-        this.info = (ImageView)this.findViewById(2131427497);
+        this.title = (TextView)this.findViewById(2131427495);
+        this.img = (AdvancedImageView)this.findViewById(2131427493);
+        this.progress = (ProgressBar)this.findViewById(2131427497);
+        this.info = (ImageView)this.findViewById(2131427496);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
     }
     

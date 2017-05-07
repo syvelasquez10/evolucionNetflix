@@ -56,7 +56,7 @@ public class KubrickLolomoUtils
     }
     
     public static BaseLoLoMoAdapter$RowHolder createHolder(final NetflixActivity netflixActivity, final View view, final LinearLayout linearLayout, final TextView textView, final BaseLoLoMoAdapter$LoMoRowContent baseLoLoMoAdapter$LoMoRowContent, final View view2) {
-        return new KubrickLolomoUtils$KubrickRowHolder(netflixActivity, (View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, view.findViewById(2131427576));
+        return new KubrickLolomoUtils$KubrickRowHolder(netflixActivity, (View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, view.findViewById(2131427575));
     }
     
     public static boolean isDuplicateRow(final BasicLoMo basicLoMo) {

@@ -45,9 +45,9 @@ class CopyrightView
     
     private void init() {
         if (this.details != null && this.copyrightViewGroup != null) {
-            this.copyrightTextView = (TextView)this.copyrightViewGroup.findViewById(2131427846);
+            this.copyrightTextView = (TextView)this.copyrightViewGroup.findViewById(2131427845);
             if (this.copyrightTextView != null && this.details != null) {
-                this.copyrightTextView.setText((CharSequence)this.copyrightTextView.getContext().getResources().getString(2131493393, new Object[] { this.details.getCopyright() }));
+                this.copyrightTextView.setText((CharSequence)this.details.getCopyright());
                 this.copyrightTextView.setVisibility(0);
                 this.setLayoutAsCentered();
                 this.addExpandedCopyright(this.copyrightTextView.getContext());
@@ -56,9 +56,9 @@ class CopyrightView
     }
     
     private void setExpandedText(final VideoDetails videoDetails, final Context context, final View view) {
-        final TextView textView = (TextView)view.findViewById(2131427847);
+        final TextView textView = (TextView)view.findViewById(2131427846);
         if (textView != null) {
-            textView.setText((CharSequence)context.getResources().getString(2131493393, new Object[] { videoDetails.getCopyright() }));
+            textView.setText((CharSequence)videoDetails.getCopyright());
         }
     }
     

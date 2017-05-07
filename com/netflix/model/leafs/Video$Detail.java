@@ -324,7 +324,7 @@ public class Video$Detail implements JsonPopulator
                     continue;
                 }
                 case 2: {
-                    this.synopsis = jsonElement2.getAsString();
+                    this.copyright = jsonElement2.getAsString();
                     continue;
                 }
                 case 3: {

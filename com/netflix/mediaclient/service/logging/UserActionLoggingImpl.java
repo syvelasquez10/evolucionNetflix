@@ -30,7 +30,6 @@ import com.netflix.mediaclient.service.logging.uiaction.model.AddToPlaylistEnded
 import com.netflix.mediaclient.service.logging.uiaction.model.AddProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.AcknowledgeSignupEndedEvent;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$Streams;
 import com.netflix.mediaclient.media.PlayerType;
@@ -39,12 +38,14 @@ import com.netflix.mediaclient.servicemgr.UserActionLogging$Profile;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import java.io.Serializable;
 import org.json.JSONException;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import android.content.Intent;
 import java.util.concurrent.ConcurrentHashMap;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.logging.uiaction.UpgradeStreamsSession;
 import com.netflix.mediaclient.service.logging.uiaction.SubmitPaymentSession;
 import com.netflix.mediaclient.service.logging.uiaction.StartPlaySession;
@@ -96,10 +97,12 @@ final class UserActionLoggingImpl implements UserActionLogging
     private StartPlaySession mStartPlaySession;
     private SubmitPaymentSession mSubmitPaymentSession;
     private UpgradeStreamsSession mUpgradeStreamsSession;
+    private ServiceAgent$UserAgentInterface mUserAgent;
     
-    UserActionLoggingImpl(final EventHandler mEventHandler) {
+    UserActionLoggingImpl(final EventHandler mEventHandler, final ServiceAgent$UserAgentInterface mUserAgent) {
         this.mSearchSessions = new ConcurrentHashMap<Long, SearchSession>(5);
         this.mEventHandler = mEventHandler;
+        this.mUserAgent = mUserAgent;
     }
     
     private void handleAcknowledgeSignupEnded(final Intent intent) {
@@ -123,6 +126,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                         }
                     }
                     catch (JSONException ex) {
+                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
                         final UIError instance = null;
                         continue Label_0043_Outer;
                     }
@@ -158,9 +162,9 @@ final class UserActionLoggingImpl implements UserActionLogging
         final String stringExtra2 = intent.getStringExtra("error");
         final String stringExtra3 = intent.getStringExtra("view");
         while (true) {
-            Label_0108: {
+            Label_0117: {
                 if (!StringUtils.isNotEmpty(stringExtra3)) {
-                    break Label_0108;
+                    break Label_0117;
                 }
                 final IClientLogging$ModalView value2 = IClientLogging$ModalView.valueOf(stringExtra3);
                 while (true) {
@@ -173,6 +177,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                         return;
                     }
                     catch (JSONException ex) {
+                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
                         final UIError instance = null;
                         continue;
                     }
@@ -216,6 +221,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                 this.endAddToPlaylistSession(value, instance, intExtra);
             }
             catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
                 final UIError instance = null;
                 continue;
             }
@@ -247,9 +253,9 @@ final class UserActionLoggingImpl implements UserActionLogging
         final String stringExtra2 = value.getStringExtra("error");
         final String stringExtra3 = value.getStringExtra("view");
         while (true) {
-            Label_0069: {
+            Label_0078: {
                 if (!StringUtils.isNotEmpty(stringExtra3)) {
-                    break Label_0069;
+                    break Label_0078;
                 }
                 value = (Intent)IClientLogging$ModalView.valueOf(stringExtra3);
                 while (true) {
@@ -262,6 +268,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                         return;
                     }
                     catch (JSONException ex) {
+                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
                         final UIError instance = null;
                         continue;
                     }
@@ -296,9 +303,9 @@ final class UserActionLoggingImpl implements UserActionLogging
         final String stringExtra2 = intent.getStringExtra("error");
         final String stringExtra3 = intent.getStringExtra("view");
         while (true) {
-            Label_0108: {
+            Label_0117: {
                 if (!StringUtils.isNotEmpty(stringExtra3)) {
-                    break Label_0108;
+                    break Label_0117;
                 }
                 final IClientLogging$ModalView value2 = IClientLogging$ModalView.valueOf(stringExtra3);
                 while (true) {
@@ -311,6 +318,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                         return;
                     }
                     catch (JSONException ex) {
+                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
                         final UIError instance = null;
                         continue;
                     }
@@ -353,6 +361,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                 this.endLoginSession(value, instance);
             }
             catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
                 final UIError instance = null;
                 continue;
             }
@@ -384,9 +393,9 @@ final class UserActionLoggingImpl implements UserActionLogging
         final String stringExtra2 = value.getStringExtra("error");
         final String stringExtra3 = value.getStringExtra("view");
         while (true) {
-            Label_0069: {
+            Label_0078: {
                 if (!StringUtils.isNotEmpty(stringExtra3)) {
-                    break Label_0069;
+                    break Label_0078;
                 }
                 value = (Intent)IClientLogging$ModalView.valueOf(stringExtra3);
                 while (true) {
@@ -399,6 +408,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                         return;
                     }
                     catch (JSONException ex) {
+                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
                         final UIError instance = null;
                         continue;
                     }
@@ -440,13 +450,13 @@ final class UserActionLoggingImpl implements UserActionLogging
             final String stringExtra4 = intent.getStringExtra("mercuryMessageGuid");
             final String stringExtra5 = intent.getStringExtra("mercuryEventGuid");
             while (true) {
-                Label_0133: {
+                Label_0142: {
                     while (true) {
                         while (true) {
                             try {
                                 final UIError instance = UIError.createInstance(stringExtra);
                                 if (!StringUtils.isNotEmpty((String)s)) {
-                                    break Label_0133;
+                                    break Label_0142;
                                 }
                                 s = IClientLogging$CompletionReason.valueOf((String)s);
                                 if (StringUtils.isNotEmpty((String)s2)) {
@@ -456,6 +466,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                                 }
                             }
                             catch (JSONException ex) {
+                                Log.e("nf_log", "Failed JSON", (Throwable)ex);
                                 final UIError instance = null;
                                 continue Label_0087_Outer;
                             }
@@ -502,6 +513,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                 this.endPreAppWidgetActionSession(value, instance);
             }
             catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
                 final UIError instance = null;
                 continue;
             }
@@ -527,13 +539,13 @@ final class UserActionLoggingImpl implements UserActionLogging
             final int intExtra = intent.getIntExtra("rating", 0);
             final int intExtra2 = intent.getIntExtra("rank", Integer.MIN_VALUE);
             while (true) {
-                Label_0093: {
+                Label_0102: {
                     while (true) {
                         while (true) {
                             try {
                                 final UIError instance = UIError.createInstance(stringExtra);
                                 if (!StringUtils.isNotEmpty((String)s)) {
-                                    break Label_0093;
+                                    break Label_0102;
                                 }
                                 s = IClientLogging$CompletionReason.valueOf((String)s);
                                 if (intExtra2 == Integer.MIN_VALUE) {
@@ -542,6 +554,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                                 }
                             }
                             catch (JSONException ex) {
+                                Log.e("nf_log", "Failed JSON", (Throwable)ex);
                                 final UIError instance = null;
                                 continue Label_0060_Outer;
                             }
@@ -596,6 +609,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                         }
                     }
                     catch (JSONException ex) {
+                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
                         final UIError instance = null;
                         continue Label_0043_Outer;
                     }
@@ -638,6 +652,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                 this.endRegisterSession(value, instance);
             }
             catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
                 final UIError instance = null;
                 continue;
             }
@@ -676,6 +691,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                 this.endRemoveFromPlaylistSession(value, instance);
             }
             catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
                 final UIError instance = null;
                 continue;
             }
@@ -722,6 +738,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                         }
                     }
                     catch (JSONException ex) {
+                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
                         final UIError instance = null;
                         continue Label_0043_Outer;
                     }
@@ -765,6 +782,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                 this.endSearchSession(longExtra, value, instance);
             }
             catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
                 final UIError instance = null;
                 continue;
             }
@@ -799,9 +817,9 @@ final class UserActionLoggingImpl implements UserActionLogging
         final String stringExtra2 = value.getStringExtra("error");
         final String stringExtra3 = value.getStringExtra("view");
         while (true) {
-            Label_0069: {
+            Label_0078: {
                 if (!StringUtils.isNotEmpty(stringExtra3)) {
-                    break Label_0069;
+                    break Label_0078;
                 }
                 value = (Intent)IClientLogging$ModalView.valueOf(stringExtra3);
                 while (true) {
@@ -814,6 +832,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                         return;
                     }
                     catch (JSONException ex) {
+                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
                         final UIError instance = null;
                         continue;
                     }
@@ -873,6 +892,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                         }
                     }
                     catch (JSONException ex) {
+                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
                         final UIError instance = null;
                         continue Label_0043_Outer;
                     }
@@ -905,6 +925,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                         }
                     }
                     catch (JSONException ex) {
+                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
                         final UIError instance = null;
                         continue Label_0043_Outer;
                     }
@@ -958,13 +979,13 @@ final class UserActionLoggingImpl implements UserActionLogging
             final String stringExtra = intent.getStringExtra("error");
             final int intExtra = intent.getIntExtra("rank", Integer.MIN_VALUE);
             while (true) {
-                Label_0092: {
+                Label_0101: {
                     while (true) {
                         while (true) {
                             try {
                                 final UIError instance = UIError.createInstance(stringExtra);
                                 if (!StringUtils.isNotEmpty((String)s)) {
-                                    break Label_0092;
+                                    break Label_0101;
                                 }
                                 s = IClientLogging$CompletionReason.valueOf((String)s);
                                 if (intExtra == Integer.MIN_VALUE) {
@@ -973,6 +994,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                                 }
                             }
                             catch (JSONException ex) {
+                                Log.e("nf_log", "Failed JSON", (Throwable)ex);
                                 final UIError instance = null;
                                 continue Label_0049_Outer;
                             }
@@ -1015,82 +1037,89 @@ final class UserActionLoggingImpl implements UserActionLogging
         //     0: aload_1        
         //     1: ldc             "reason"
         //     3: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //     6: astore          4
-        //     8: aload_1        
-        //     9: ldc_w           "sucess"
-        //    12: iconst_0       
-        //    13: invokevirtual   android/content/Intent.getBooleanExtra:(Ljava/lang/String;Z)Z
-        //    16: istore_2       
-        //    17: aload_1        
-        //    18: ldc_w           "error_code"
-        //    21: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    24: astore          6
-        //    26: aload_1        
-        //    27: ldc_w           "payment_type"
-        //    30: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    33: astore          5
-        //    35: aload_1        
-        //    36: ldc             "error"
-        //    38: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    41: astore_1       
-        //    42: aload_1        
-        //    43: invokestatic    com/netflix/mediaclient/service/logging/client/model/UIError.createInstance:(Ljava/lang/String;)Lcom/netflix/mediaclient/service/logging/client/model/UIError;
-        //    46: astore_3       
-        //    47: aload           4
-        //    49: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
-        //    52: ifne            130
-        //    55: aload           4
-        //    57: invokestatic    com/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;
-        //    60: astore          4
-        //    62: aload           5
-        //    64: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
-        //    67: ifne            124
-        //    70: aload           5
-        //    72: invokestatic    com/netflix/mediaclient/servicemgr/UserActionLogging$PaymentType.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/UserActionLogging$PaymentType;
-        //    75: astore          5
-        //    77: aload           6
-        //    79: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
-        //    82: ifeq            119
-        //    85: new             Lorg/json/JSONObject;
-        //    88: dup            
-        //    89: aload           6
-        //    91: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
-        //    94: astore_1       
-        //    95: aload_0        
+        //     6: astore_3       
+        //     7: aload_1        
+        //     8: ldc_w           "sucess"
+        //    11: iconst_0       
+        //    12: invokevirtual   android/content/Intent.getBooleanExtra:(Ljava/lang/String;Z)Z
+        //    15: istore_2       
+        //    16: aload_1        
+        //    17: ldc_w           "error_code"
+        //    20: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //    23: astore          5
+        //    25: aload_1        
+        //    26: ldc_w           "payment_type"
+        //    29: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //    32: astore          4
+        //    34: aload_1        
+        //    35: ldc             "error"
+        //    37: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //    40: astore_1       
+        //    41: aload_1        
+        //    42: invokestatic    com/netflix/mediaclient/service/logging/client/model/UIError.createInstance:(Ljava/lang/String;)Lcom/netflix/mediaclient/service/logging/client/model/UIError;
+        //    45: astore_1       
+        //    46: aload_3        
+        //    47: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
+        //    50: ifne            143
+        //    53: aload_3        
+        //    54: invokestatic    com/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;
+        //    57: astore_3       
+        //    58: aload           4
+        //    60: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
+        //    63: ifne            137
+        //    66: aload           4
+        //    68: invokestatic    com/netflix/mediaclient/servicemgr/UserActionLogging$PaymentType.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/UserActionLogging$PaymentType;
+        //    71: astore          4
+        //    73: aload           5
+        //    75: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
+        //    78: ifeq            131
+        //    81: new             Lorg/json/JSONObject;
+        //    84: dup            
+        //    85: aload           5
+        //    87: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
+        //    90: astore          5
+        //    92: aload_0        
+        //    93: aload_3        
+        //    94: aload_1        
+        //    95: iload_2        
         //    96: aload           4
-        //    98: aload_3        
-        //    99: iload_2        
-        //   100: aload           5
-        //   102: aload_1        
-        //   103: invokevirtual   com/netflix/mediaclient/service/logging/UserActionLoggingImpl.endSubmitPaymentSession:(Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;Lcom/netflix/mediaclient/service/logging/client/model/UIError;ZLcom/netflix/mediaclient/servicemgr/UserActionLogging$PaymentType;Lorg/json/JSONObject;)V
-        //   106: return         
-        //   107: astore_1       
-        //   108: aconst_null    
-        //   109: astore_3       
-        //   110: goto            47
-        //   113: astore_1       
+        //    98: aload           5
+        //   100: invokevirtual   com/netflix/mediaclient/service/logging/UserActionLoggingImpl.endSubmitPaymentSession:(Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;Lcom/netflix/mediaclient/service/logging/client/model/UIError;ZLcom/netflix/mediaclient/servicemgr/UserActionLogging$PaymentType;Lorg/json/JSONObject;)V
+        //   103: return         
+        //   104: astore_1       
+        //   105: ldc             "nf_log"
+        //   107: ldc             "Failed JSON"
+        //   109: aload_1        
+        //   110: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   113: pop            
         //   114: aconst_null    
         //   115: astore_1       
-        //   116: goto            95
-        //   119: aconst_null    
-        //   120: astore_1       
-        //   121: goto            95
-        //   124: aconst_null    
-        //   125: astore          5
-        //   127: goto            77
-        //   130: aconst_null    
-        //   131: astore          4
-        //   133: goto            62
+        //   116: goto            46
+        //   119: astore          5
+        //   121: ldc             "nf_log"
+        //   123: ldc             "Failed JSON"
+        //   125: aload           5
+        //   127: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   130: pop            
+        //   131: aconst_null    
+        //   132: astore          5
+        //   134: goto            92
+        //   137: aconst_null    
+        //   138: astore          4
+        //   140: goto            73
+        //   143: aconst_null    
+        //   144: astore_3       
+        //   145: goto            58
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                    
         //  -----  -----  -----  -----  ------------------------
-        //  42     47     107    113    Lorg/json/JSONException;
-        //  85     95     113    119    Lorg/json/JSONException;
+        //  41     46     104    119    Lorg/json/JSONException;
+        //  81     92     119    131    Lorg/json/JSONException;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0095:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0092:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -1145,6 +1174,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                 this.endUpgradeStreamsSession(value, instance, find);
             }
             catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
                 final UIError instance = null;
                 continue;
             }
@@ -1184,6 +1214,23 @@ final class UserActionLoggingImpl implements UserActionLogging
         }
         event.setDataContext(dataContext);
         event.setModalView(modalView);
+    }
+    
+    private String validateTermForPrivacy(final String s) {
+        if (StringUtils.isEmpty(s)) {
+            Log.w("nf_log", "Query is empty, skip privacy check");
+        }
+        else {
+            if (this.mUserAgent == null) {
+                Log.e("nf_log", "User agent is NULL, this should NOT happen, we can not check for privacy violation!");
+                return null;
+            }
+            if (this.mUserAgent.isPotentialPrivacyViolationFoundForLogging(s)) {
+                Log.w("nf_log", "Security violation found, do NOT log query");
+                return "PRIVACY_VIOLATION";
+            }
+        }
+        return s;
     }
     
     @Override
@@ -2021,7 +2068,7 @@ final class UserActionLoggingImpl implements UserActionLogging
     public void startSearchSession(final long n, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView, final String s) {
         synchronized (this) {
             Log.d("nf_log", "Search session starting...");
-            final SearchSession searchSession = new SearchSession(n, userActionLogging$CommandName, clientLogging$ModalView, s);
+            final SearchSession searchSession = new SearchSession(n, userActionLogging$CommandName, clientLogging$ModalView, this.validateTermForPrivacy(s));
             this.mEventHandler.addSession(searchSession);
             this.mSearchSessions.put(n, searchSession);
             Log.d("nf_log", "Search session start done.");

@@ -88,8 +88,8 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131427565);
-        this.fragBackground = view.findViewById(2131427566);
+        this.rootContainer = view.findViewById(2131427564);
+        this.fragBackground = view.findViewById(2131427565);
     }
     
     @Override

@@ -8,6 +8,7 @@ import android.content.Intent;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.servicemgr.Asset;
+import java.util.List;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
@@ -182,6 +183,11 @@ public class FalkorAccess implements IBrowseInterface
     @Override
     public void markNotificationAsRead(final SocialNotificationSummary socialNotificationSummary) {
         this.mBrowseAgent.markNotificationAsRead(socialNotificationSummary);
+    }
+    
+    @Override
+    public void markNotificationsAsRead(final List<SocialNotificationSummary> list) {
+        this.mBrowseAgent.markNotificationsAsRead(list);
     }
     
     @Override

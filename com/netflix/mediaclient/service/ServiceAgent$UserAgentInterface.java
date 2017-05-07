@@ -39,6 +39,8 @@ public interface ServiceAgent$UserAgentInterface
     
     boolean isCurrentProfileIQEnabled();
     
+    boolean isPotentialPrivacyViolationFoundForLogging(final String p0);
+    
     boolean isProfileSwitchingDisabled();
     
     boolean isUserLoggedIn();

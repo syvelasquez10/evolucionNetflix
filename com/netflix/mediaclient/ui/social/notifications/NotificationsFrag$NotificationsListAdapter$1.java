@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import com.netflix.mediaclient.util.SocialUtils;
 import android.os.Bundle;
 import android.app.Activity;
+import java.util.List;
+import java.util.ArrayList;
 import android.content.IntentFilter;
 import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;

@@ -11,6 +11,7 @@ import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
+import com.netflix.mediaclient.util.PrivacyUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.repository.UserLocale;
 import android.content.BroadcastReceiver;

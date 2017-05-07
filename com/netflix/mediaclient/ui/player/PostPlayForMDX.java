@@ -86,8 +86,8 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     
     @Override
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mContext.findViewById(2131427737);
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131427735);
+        this.mTargetNameView = (TextView)this.mContext.findViewById(2131427736);
+        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131427734);
     }
     
     public void handleBack() {

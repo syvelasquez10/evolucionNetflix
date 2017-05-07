@@ -6,7 +6,6 @@ package com.netflix.mediaclient.util;
 
 import android.app.Fragment;
 import com.netflix.mediaclient.ui.details.DetailsFrag;
-import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsActivity;
 import android.view.MenuItem;
 import java.math.BigInteger;
 import com.netflix.mediaclient.service.logging.client.model.Error;

@@ -68,8 +68,6 @@ public interface DecorToolbar
     
     void setNavigationContentDescription(final int p0);
     
-    void setNavigationIcon(final Drawable p0);
-    
     void setTitle(final CharSequence p0);
     
     void setWindowCallback(final WindowCallback p0);

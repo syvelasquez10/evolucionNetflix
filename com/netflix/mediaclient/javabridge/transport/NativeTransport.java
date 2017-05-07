@@ -43,6 +43,7 @@ public class NativeTransport implements Transport
     private String mEsn;
     private final NativeTransport$TransportEventHandler mEventHandler;
     private String mFesn;
+    private String mFesn2;
     private int mGmsPkgVersion;
     private int mGoogleApiClientVersion;
     private int mIpConnectivityPolicy;
@@ -199,7 +200,8 @@ public class NativeTransport implements Transport
         final IpConnectivityPolicy ipConnectivityPolicy = this.bridge.getIpConnectivityPolicy();
         this.mRootFileSystem = StringUtils.notNull("rootFileSystemn", fileSystemRoot);
         this.mEsn = StringUtils.notNull("esn", esnProvider.getEsn());
-        this.mFesn = StringUtils.notNull("esn", esnProvider.getFesn());
+        this.mFesn = StringUtils.notNull("fesn", esnProvider.getFesn());
+        this.mFesn2 = StringUtils.notNull("fesn2", esnProvider.getFesn2());
         this.mDeviceId = StringUtils.notNull("deviceId", esnProvider.getDeviceId());
         this.mDeviceModel = StringUtils.notNull("modelId", esnProvider.getDeviceModel());
         this.mDeviceLowMem = this.bridge.isDeviceLowMem();
@@ -302,12 +304,12 @@ public class NativeTransport implements Transport
                 try {
                     this.native_invokeMethod(string, s, s3);
                     return;
-                    Label_0103: {
-                        string = "nrdp." + string;
-                    }
-                    continue Block_5_Outer;
                     while (true) {
                         Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                        continue Block_5_Outer;
+                        Label_0103: {
+                            string = "nrdp." + string;
+                        }
                         continue Block_5_Outer;
                         continue;
                     }

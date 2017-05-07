@@ -147,25 +147,25 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
     private void initUI() {
         this.setContentView(2130903173);
         this.getSupportActionBar().hide();
-        this.mContentView = this.findViewById(2131427765);
-        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131427764), this.errorCallback);
-        (this.mCancelButton = this.findViewById(2131427773)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$4(this));
-        this.mDeleteSection = this.findViewById(2131427771);
-        (this.mDeleteButton = this.findViewById(2131427772)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$5(this));
-        (this.mKidsSection = this.findViewById(2131427767)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$6(this));
-        this.mKidsCheckBox = (CheckBox)this.findViewById(2131427768);
-        this.mSaveButtonText = this.findViewById(2131427775);
-        (this.mSaveButton = this.findViewById(2131427774)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$7(this));
-        (this.mName = (EditText)this.findViewById(2131427766)).addTextChangedListener((TextWatcher)new ProfileDetailsActivity$8(this));
-        this.mProfilePictureView = (AdvancedImageView)this.findViewById(2131427452);
+        this.mContentView = this.findViewById(2131427764);
+        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131427763), this.errorCallback);
+        (this.mCancelButton = this.findViewById(2131427772)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$4(this));
+        this.mDeleteSection = this.findViewById(2131427770);
+        (this.mDeleteButton = this.findViewById(2131427771)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$5(this));
+        (this.mKidsSection = this.findViewById(2131427766)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$6(this));
+        this.mKidsCheckBox = (CheckBox)this.findViewById(2131427767);
+        this.mSaveButtonText = this.findViewById(2131427774);
+        (this.mSaveButton = this.findViewById(2131427773)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$7(this));
+        (this.mName = (EditText)this.findViewById(2131427765)).addTextChangedListener((TextWatcher)new ProfileDetailsActivity$8(this));
+        this.mProfilePictureView = (AdvancedImageView)this.findViewById(2131427451);
         final ProfileDetailsActivity$9 profileDetailsActivity$9 = new ProfileDetailsActivity$9(this);
         this.mProfilePictureView.setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
-        (this.mProfilePictureSection = this.findViewById(2131427769)).setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
-        this.mPictureSelectorHint = this.findViewById(2131427770);
+        (this.mProfilePictureSection = this.findViewById(2131427768)).setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
+        this.mPictureSelectorHint = this.findViewById(2131427769);
         if (this.mNewProfileCreation) {
             this.mName.requestFocus();
         }
-        final TextView textView = (TextView)this.findViewById(2131427776);
+        final TextView textView = (TextView)this.findViewById(2131427775);
         if (textView != null) {
             int text;
             if (this.mNewProfileCreation) {

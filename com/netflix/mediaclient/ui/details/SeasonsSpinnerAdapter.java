@@ -38,7 +38,7 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         if (viewGroup == null) {
             return;
         }
-        viewGroup.setId(2131427349);
+        viewGroup.setId(2131427348);
     }
     
     public int getCount() {

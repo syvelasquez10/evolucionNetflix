@@ -37,9 +37,9 @@ public final class MdxUtils
             return null;
         }
         final View inflate = netflixActivity.getLayoutInflater().inflate(2130903135, (ViewGroup)null);
-        ((TextView)inflate.findViewById(2131427630)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
-        final TextView textView = (TextView)inflate.findViewById(2131427631);
-        final TextView textView2 = (TextView)inflate.findViewById(2131427632);
+        ((TextView)inflate.findViewById(2131427629)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
+        final TextView textView = (TextView)inflate.findViewById(2131427630);
+        final TextView textView2 = (TextView)inflate.findViewById(2131427631);
         final Playable playable = mdxUtils$MdxTargetSelectionDialogInterface.getPlayable();
         String string2;
         if (mdxUtils$MdxTargetSelectionDialogInterface.isPlayingRemotely() && playable != null) {

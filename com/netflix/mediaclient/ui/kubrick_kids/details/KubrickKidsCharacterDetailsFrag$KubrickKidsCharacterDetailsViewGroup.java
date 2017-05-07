@@ -156,8 +156,8 @@ class KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup exten
     @Override
     protected void findViews() {
         super.findViews();
-        this.characterView = (AdvancedImageView)this.findViewById(2131427531);
-        this.playView = (ImageView)this.findViewById(2131427535);
+        this.characterView = (AdvancedImageView)this.findViewById(2131427530);
+        this.playView = (ImageView)this.findViewById(2131427534);
     }
     
     @Override

@@ -91,16 +91,16 @@ public abstract class FragmentHostActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.setContentView(this.getContentLayoutId());
-        this.contentHost = (LinearLayout)this.findViewById(2131427526);
-        this.primaryFragContainer = (ViewGroup)this.findViewById(2131427527);
-        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131427528);
+        this.contentHost = (LinearLayout)this.findViewById(2131427525);
+        this.primaryFragContainer = (ViewGroup)this.findViewById(2131427526);
+        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131427527);
         if (bundle == null) {
             this.primaryFrag = this.createPrimaryFrag();
             this.secondaryFrag = this.createSecondaryFrag();
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
-            beginTransaction.add(2131427527, this.primaryFrag, "primary");
+            beginTransaction.add(2131427526, this.primaryFrag, "primary");
             if (this.secondaryFrag != null) {
-                beginTransaction.add(2131427528, this.secondaryFrag, "secondary");
+                beginTransaction.add(2131427527, this.secondaryFrag, "secondary");
             }
             beginTransaction.commit();
         }

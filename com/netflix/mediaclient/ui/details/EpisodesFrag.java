@@ -19,6 +19,7 @@ import android.support.v7.widget.RecyclerView$OnScrollListener;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.LayoutInflater;
@@ -182,18 +183,19 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     }
     
     private void setSpinnerSelection() {
-        int nonTouchSelection;
-        if ((nonTouchSelection = this.currSeasonIndex) == -1) {
-            nonTouchSelection = this.spinner.tryGetSeasonIndexBySeasonNumber(this.showDetails.getCurrentSeasonNumber());
+        int n;
+        if ((n = this.currSeasonIndex) == -1) {
+            n = this.spinner.tryGetSeasonIndexBySeasonNumber(this.showDetails.getCurrentSeasonNumber());
+            this.currSeasonIndex = n;
         }
-        if (nonTouchSelection < 0) {
+        if (n < 0) {
             Log.v("EpisodesFrag", "No valid season index found");
             return;
         }
         if (Log.isLoggable()) {
-            Log.v("EpisodesFrag", "Setting current season to: " + nonTouchSelection);
+            Log.v("EpisodesFrag", "Setting current season to: " + n);
         }
-        this.spinner.setNonTouchSelection(nonTouchSelection);
+        this.spinner.setNonTouchSelection(n);
     }
     
     private void setupSeasonsSpinnerListener() {
@@ -387,7 +389,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     @Override
     public void onRetryRequested() {
         Log.v("EpisodesFrag", "Retry requested");
-        if (this.manager != null) {
+        if (this.manager != null && ConnectivityUtils.isConnected((Context)this.getActivity())) {
             this.showLoadingView();
             this.fetchShowDetailsAndSeasons();
         }
@@ -471,7 +473,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new EpisodesFrag$4(this));
-        adapter.setItemBackgroundColor(2130837893);
+        adapter.setItemBackgroundColor(2130837897);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     

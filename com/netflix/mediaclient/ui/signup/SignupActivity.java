@@ -115,16 +115,13 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
                     Label_0014: {
                         return;
                     }
-                    while (true) {
-                        Log.d("SignupActivity", "Trying to save credentials to GPS");
-                        this.saveCredentials = false;
-                        Log.w("SignupActivity", "Credential is empty, do not save it.");
-                        return;
-                        continue;
-                    }
+                    // iftrue(Label_0014:, !this.saveCredentials)
+                    Log.d("SignupActivity", "Trying to save credentials to GPS");
+                    this.saveCredentials = false;
+                    // iftrue(Label_0073:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
+                    Log.w("SignupActivity", "Credential is empty, do not save it.");
+                    return;
                 }
-                // iftrue(Label_0073:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
-                // iftrue(Label_0014:, !this.saveCredentials)
                 finally {
                 }
                 // monitorexit(this)
@@ -232,8 +229,8 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     
     private void setUpSignInView(final ServiceManager serviceManager) {
         this.setContentView(2130903195);
-        this.mWebView = (WebView)this.findViewById(2131427820);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131427521);
+        this.mWebView = (WebView)this.findViewById(2131427819);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131427520);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();

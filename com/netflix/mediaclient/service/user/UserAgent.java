@@ -12,6 +12,7 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
+import com.netflix.mediaclient.util.PrivacyUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.repository.UserLocale;
 import android.content.BroadcastReceiver;
@@ -611,6 +612,26 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         }
         Log.d("nf_service_useragent", String.format("isCurrentProfileIQEnabled %s called: %b ", this.mCurrentUserProfile.getFirstName(), this.mCurrentUserProfile.isIQEnabled()));
         return this.mCurrentUserProfile.isIQEnabled();
+    }
+    
+    @Override
+    public boolean isPotentialPrivacyViolationFoundForLogging(final String s) {
+        if (PrivacyUtils.isPotentialPrivacyViolationFound(s, this.mUser)) {
+            if (Log.isLoggable()) {
+                Log.w("nf_service_useragent", "Privacy violation for " + s + " found with current user " + this.mUser);
+            }
+            return true;
+        }
+        for (final UserProfile userProfile : this.mListOfUserProfiles) {
+            if (PrivacyUtils.isPotentialPrivacyViolationFound(s, userProfile)) {
+                if (Log.isLoggable()) {
+                    Log.w("nf_service_useragent", "Privacy violation for " + s + " found with profile " + userProfile);
+                }
+                return true;
+            }
+        }
+        Log.d("nf_service_useragent", "Privacy violatoon NOT found, value can be logged safely.");
+        return false;
     }
     
     @Override

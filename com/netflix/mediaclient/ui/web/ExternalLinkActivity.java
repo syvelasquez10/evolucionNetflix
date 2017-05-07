@@ -91,8 +91,8 @@ public class ExternalLinkActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.setContentView(2130903095);
-        this.mWebView = (WebView)this.findViewById(2131427523);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131427521);
+        this.mWebView = (WebView)this.findViewById(2131427522);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131427520);
     }
     
     @Override

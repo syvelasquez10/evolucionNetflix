@@ -25,9 +25,9 @@ public class MdxPostPlayerRemoteViews extends MdxRemoteViews
     
     private void setPlayNextButton(final RemoteViews remoteViews) {
         if (this.mIntentRetriever != null && remoteViews != null) {
-            remoteViews.setImageViewResource(2131427672, 2130837835);
+            remoteViews.setImageViewResource(2131427671, 2130837839);
             if (this.mIntentRetriever.getPlayNextIntent() != null) {
-                remoteViews.setOnClickPendingIntent(2131427672, this.mIntentRetriever.getPlayNextIntent());
+                remoteViews.setOnClickPendingIntent(2131427671, this.mIntentRetriever.getPlayNextIntent());
             }
         }
     }
@@ -44,8 +44,8 @@ public class MdxPostPlayerRemoteViews extends MdxRemoteViews
         if (this.mIntentRetriever == null || remoteViews == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131427673, 2130837837);
-        remoteViews.setOnClickPendingIntent(2131427673, this.mIntentRetriever.getStopIntent());
+        remoteViews.setImageViewResource(2131427672, 2130837841);
+        remoteViews.setOnClickPendingIntent(2131427672, this.mIntentRetriever.getStopIntent());
     }
     
     @Override

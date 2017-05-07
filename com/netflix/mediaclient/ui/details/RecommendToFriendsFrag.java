@@ -13,6 +13,7 @@ import android.text.TextWatcher;
 import android.widget.AbsListView$OnScrollListener;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.util.SocialUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.os.Parcelable;
 import android.os.Bundle;
 import java.util.Set;
@@ -20,7 +21,6 @@ import android.view.animation.Animation$AnimationListener;
 import android.view.animation.Interpolator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.content.Context;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
@@ -210,7 +210,7 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
     }
     
     public static boolean isSocialRecommendationsFeatureSupported(final UserProfile userProfile, final Context context) {
-        return userProfile != null && DeviceUtils.isNotTabletByContext(context);
+        return userProfile != null;
     }
     
     private void launchAnimation(final boolean b) {
@@ -333,16 +333,16 @@ public class RecommendToFriendsFrag extends NetflixDialogFrag
         this.mLayoutInflater = mLayoutInflater;
         final View inflate = this.mLayoutInflater.inflate(2130903179, viewGroup, false);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.retryFetchFriendsCallback);
-        (this.mFriendsList = (ListView)inflate.findViewById(2131427791)).setOnScrollListener((AbsListView$OnScrollListener)new RecommendToFriendsFrag$2(this));
-        (this.mSearchEditText = (EditText)inflate.findViewById(2131427789)).addTextChangedListener((TextWatcher)new RecommendToFriendsFrag$3(this));
-        this.mEditMessage = (EditText)inflate.findViewById(2131427792);
+        (this.mFriendsList = (ListView)inflate.findViewById(2131427790)).setOnScrollListener((AbsListView$OnScrollListener)new RecommendToFriendsFrag$2(this));
+        (this.mSearchEditText = (EditText)inflate.findViewById(2131427788)).addTextChangedListener((TextWatcher)new RecommendToFriendsFrag$3(this));
+        this.mEditMessage = (EditText)inflate.findViewById(2131427791);
         if (this.mInputMessage != null) {
             this.mEditMessage.setText((CharSequence)this.mInputMessage);
         }
-        (this.mSendButton = (Button)inflate.findViewById(2131427793)).setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$4(this));
-        this.mTotalSelectedLayout = inflate.findViewById(2131427787);
-        (this.mTotalSelectedStatus = (TextView)inflate.findViewById(2131427788)).setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$5(this));
-        (this.mSearchClearButton = inflate.findViewById(2131427790)).setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$6(this));
+        (this.mSendButton = (Button)inflate.findViewById(2131427792)).setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$4(this));
+        this.mTotalSelectedLayout = inflate.findViewById(2131427786);
+        (this.mTotalSelectedStatus = (TextView)inflate.findViewById(2131427787)).setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$5(this));
+        (this.mSearchClearButton = inflate.findViewById(2131427789)).setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$6(this));
         this.mAdapter = new RecommendToFriendsFrag$FriendsListAdapter(this, null);
         this.mFriendsList.setAdapter((ListAdapter)this.mAdapter);
         this.leWrapper.showLoadingView(false);

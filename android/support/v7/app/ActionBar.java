@@ -73,9 +73,6 @@ public abstract class ActionBar
     public void setHomeActionContentDescription(final int n) {
     }
     
-    public void setHomeAsUpIndicator(final Drawable drawable) {
-    }
-    
     public void setHomeButtonEnabled(final boolean b) {
     }
     

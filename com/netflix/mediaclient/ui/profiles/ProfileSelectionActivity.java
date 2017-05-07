@@ -248,7 +248,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                 Log.e("ProfileSelectionActivity", "Something wierd happened: null grid child view!");
             }
             else if (i < this.profiles.size()) {
-                final View viewById = child.findViewById(2131427782);
+                final View viewById = child.findViewById(2131427781);
                 int visibility;
                 if (this.isProfileEditMode) {
                     visibility = 0;
@@ -257,7 +257,7 @@ public class ProfileSelectionActivity extends NetflixActivity
                     visibility = 8;
                 }
                 viewById.setVisibility(visibility);
-                this.findViewAndAnimate(child, 2131427452);
+                this.findViewAndAnimate(child, 2131427451);
             }
         }
         this.invalidateOptionsMenu();
@@ -320,7 +320,7 @@ public class ProfileSelectionActivity extends NetflixActivity
     }
     
     private void showPromoViewIfNeeded(final int n) {
-        final View viewById = this.findViewById(2131427781);
+        final View viewById = this.findViewById(2131427780);
         if (PreferenceUtils.getBooleanPref((Context)this, "user_profile_was_selected", false) || this.profiles == null || this.profiles.size() > 1) {
             viewById.setVisibility(8);
             return;
@@ -428,12 +428,12 @@ public class ProfileSelectionActivity extends NetflixActivity
         super.onCreate(bundle);
         this.columnWidth = this.getResources().getDimensionPixelSize(2131296419);
         this.setContentView(2130903175);
-        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131427777), this.errorCallback);
-        this.content = this.findViewById(2131427778);
-        this.topTextHeader = (TextView)this.findViewById(2131427779);
-        (this.gridView = (StaticGridView)this.findViewById(2131427780)).setOnItemClickListener(this.onAvatarClickListener);
+        this.leWrapper = new LoadingAndErrorWrapper(this.findViewById(2131427776), this.errorCallback);
+        this.content = this.findViewById(2131427777);
+        this.topTextHeader = (TextView)this.findViewById(2131427778);
+        (this.gridView = (StaticGridView)this.findViewById(2131427779)).setOnItemClickListener(this.onAvatarClickListener);
         this.gridView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new ProfileSelectionActivity$1(this));
-        this.kidsLoadingScreen = this.findViewById(2131427540);
+        this.kidsLoadingScreen = this.findViewById(2131427539);
         this.mDestination = this.getIntent().getStringExtra("extra_destination");
         if (bundle == null) {
             this.logKidsEntryExit();
@@ -457,7 +457,7 @@ public class ProfileSelectionActivity extends NetflixActivity
         super.onCreateOptionsMenu(menu, menu2);
         final MenuItem add = menu.add(0, 2131427344, 0, (CharSequence)this.getString(2131493308));
         add.setShowAsAction(1);
-        add.setIcon(2130837707);
+        add.setIcon(2130837711);
         add.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new ProfileSelectionActivity$3(this));
     }
     

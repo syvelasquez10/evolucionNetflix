@@ -86,10 +86,10 @@ public class SearchQueryDetailsActivity extends NetflixActivity
     }
     
     private void findViews() {
-        this.titleView = (TextView)this.findViewById(2131427539);
-        this.gridView = (StaticGridView)this.findViewById(2131427821);
-        this.loadingWrapper = this.findViewById(2131427801);
-        this.content = (LoggingScrollView)this.findViewById(2131427802);
+        this.titleView = (TextView)this.findViewById(2131427538);
+        this.gridView = (StaticGridView)this.findViewById(2131427820);
+        this.loadingWrapper = this.findViewById(2131427800);
+        this.content = (LoggingScrollView)this.findViewById(2131427801);
     }
     
     private String getTitleForType(final SearchQueryDetailsActivity$SearchQueryDetailsType searchQueryDetailsActivity$SearchQueryDetailsType, final String s) {

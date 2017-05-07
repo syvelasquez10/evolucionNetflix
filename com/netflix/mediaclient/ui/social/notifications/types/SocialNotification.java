@@ -41,7 +41,7 @@ public abstract class SocialNotification
     }
     
     public static final NotificationViewHolder getViewHolder(final View view, final SocialNotificationSummary$NotificationTypes socialNotificationSummary$NotificationTypes) {
-        return new NotificationViewHolder((AdvancedImageView)view.findViewById(2131427794), (AdvancedImageView)view.findViewById(2131427586), (TextView)view.findViewById(2131427585), (TextView)view.findViewById(2131427583), (TextView)view.findViewById(2131427584), (TextView)view.findViewById(2131427825), (Button)view.findViewById(2131427826), (Button)view.findViewById(2131427827), view.findViewById(2131427824), view.findViewById(2131427823), (AdvancedImageView)view.findViewById(2131427582), view.findViewById(2131427581));
+        return new NotificationViewHolder((AdvancedImageView)view.findViewById(2131427793), (AdvancedImageView)view.findViewById(2131427585), (TextView)view.findViewById(2131427584), (TextView)view.findViewById(2131427582), (TextView)view.findViewById(2131427583), (TextView)view.findViewById(2131427824), (Button)view.findViewById(2131427825), (Button)view.findViewById(2131427826), view.findViewById(2131427823), view.findViewById(2131427822), (AdvancedImageView)view.findViewById(2131427581), view.findViewById(2131427580));
     }
     
     public static void showSingleLineText(final NotificationViewHolder notificationViewHolder, final int text) {

@@ -62,7 +62,7 @@ public class PlayScreen implements Screen
         this.listeners = listeners;
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        this.mSurface = (TappableSurfaceView)mController.findViewById(2131427704);
+        this.mSurface = (TappableSurfaceView)mController.findViewById(2131427703);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -71,18 +71,18 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)mController.findViewById(2131427521);
-        this.mBackground = (RelativeLayout)mController.findViewById(2131427520);
-        this.mBufferingOverlay = mController.findViewById(2131427726);
+        this.mFlipper = (ViewFlipper)mController.findViewById(2131427520);
+        this.mBackground = (RelativeLayout)mController.findViewById(2131427519);
+        this.mBufferingOverlay = mController.findViewById(2131427725);
         int n;
         if (mController.isTablet()) {
-            n = 2131427723;
+            n = 2131427722;
         }
         else {
-            n = 2131427705;
+            n = 2131427704;
         }
         this.mBif = (ImageView)mController.findViewById(n);
-        this.mTabletBifsLayout = mController.findViewById(2131427722);
+        this.mTabletBifsLayout = mController.findViewById(2131427721);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
     }

@@ -76,8 +76,6 @@ abstract class ActionBarActivityDelegate
         return new ActionBarActivityDelegate$ActionBarDrawableToggleImpl(this, null);
     }
     
-    abstract int getHomeAsUpIndicatorAttrId();
-    
     MenuInflater getMenuInflater() {
         if (this.mMenuInflater == null) {
             this.mMenuInflater = new SupportMenuInflater(this.getActionBarThemedContext());

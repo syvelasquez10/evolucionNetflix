@@ -38,10 +38,10 @@ public class SocialVideoRecommendation extends SocialNotification
         notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837688, context.getString(2131493378), PendingIntent.getBroadcast(context.getApplicationContext(), n, intentForBroadcastReceiver, 134217728)));
         final Intent sayThanksIntent = SendThanksToSocialNotificationActionHandler.getSayThanksIntent(context, socialNotificationSummary.getId(), socialNotificationSummary.getStoryId(), true, messageData);
         NotificationUtils.addNotificationSourceToIntent(sayThanksIntent);
-        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837738, context.getString(2131493379), PendingIntent.getBroadcast(context.getApplicationContext(), n, sayThanksIntent, 134217728)));
+        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837742, context.getString(2131493379), PendingIntent.getBroadcast(context.getApplicationContext(), n, sayThanksIntent, 134217728)));
         final Intent coldStartIntent = PlayerActivity.createColdStartIntent(socialNotificationSummary.getId(), socialNotificationSummary.getVideoId(), socialNotificationSummary.getVideoType(), new PlayContextImp(socialNotificationsListSummary.getRequestId(), socialNotificationsListSummary.getPlayerTrackId(), 0, 0), messageData);
         NotificationUtils.addNotificationSourceToIntent(coldStartIntent);
-        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837697, context.getString(2131493380), PendingIntent.getBroadcast(context.getApplicationContext(), n, coldStartIntent, 134217728)));
+        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837701, context.getString(2131493380), PendingIntent.getBroadcast(context.getApplicationContext(), n, coldStartIntent, 134217728)));
     }
     
     @Override

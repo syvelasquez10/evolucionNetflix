@@ -365,17 +365,17 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
                     }
                     this.displayDialog(dialog);
                     return;
+                    // iftrue(Label_0144:, !Log.isLoggable())
+                    // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
+                Label_0144:
                     while (true) {
                         Log.d("NetflixActivity", "displayUserAgentDialog " + s);
-                        Label_0144: {
-                            this.displayDialog(dialog);
-                        }
-                        return;
+                        break Label_0144;
                         continue;
                     }
+                    this.displayDialog(dialog);
+                    return;
                 }
-                // iftrue(Label_0144:, !Log.isLoggable())
-                // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
                 finally {
                 }
                 // monitorexit(visibleDialogLock)
@@ -695,7 +695,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             new DebugMenuItems("NetflixActivity", this).addItems(this, menu2);
         }
         if (this.showSettingsInMenu()) {
-            menu.add(2131493135).setIcon(2130837729).setIntent(SettingsActivity.createStartIntent(this));
+            menu.add(2131493135).setIcon(2130837733).setIntent(SettingsActivity.createStartIntent(this));
         }
         if (this.showAboutInMenu()) {
             this.addAboutMenu(menu);
@@ -835,12 +835,12 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     protected void onStart() {
         super.onStart();
         UserActionLogUtils.reportNavigationActionStarted((Context)this, null, this.getUiScreen());
-        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131427644);
-        this.slidingPanel = (SlidingUpPanelLayout)this.findViewById(2131427525);
+        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131427643);
+        this.slidingPanel = (SlidingUpPanelLayout)this.findViewById(2131427524);
         if (this.slidingPanel != null) {
             this.slidingPanel.setDragView(this.mdxFrag.getSlidingPanelDragView());
             this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131296357));
-            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837900));
+            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837904));
             this.slidingPanel.setPanelSlideListener(this.panelSlideListener);
             if (this.shouldApplyPaddingToSlidingPanel()) {
                 final View child = this.slidingPanel.getChildAt(0);

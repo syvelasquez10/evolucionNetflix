@@ -130,6 +130,7 @@ public final class MdxReceiver extends BroadcastReceiver
                 }
                 if ("com.netflix.mediaclient.intent.action.MDXUPDATE_POSTPLAY".equals(action)) {
                     this.showMdxController(intent, context);
+                    this.abortBroadcast();
                     return;
                 }
                 if ("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART".equals(action)) {

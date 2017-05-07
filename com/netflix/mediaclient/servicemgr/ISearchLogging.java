@@ -19,6 +19,7 @@ public interface ISearchLogging
     public static final String EXTRA_SESSION_ID = "session_id";
     public static final String EXTRA_TO = "to";
     public static final String EXTRA_VIEW = "view";
+    public static final String PRIVACY_VIOLATION_PLACEHOLDER = "PRIVACY_VIOLATION";
     public static final String SEARCH_EDIT = "com.netflix.mediaclient.intent.action.LOG_SUS_FOCUS_SEARCH_EDIT";
     public static final String SEARCH_FOCUS_SESSION_END = "com.netflix.mediaclient.intent.action.LOG_SUS_FOCUS_SEARCH_SESSION_END";
     public static final String SEARCH_FOCUS_SESSION_START = "com.netflix.mediaclient.intent.action.LOG_SUS_FOCUS_SEARCH_SESSION_START";

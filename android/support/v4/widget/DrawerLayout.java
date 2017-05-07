@@ -492,11 +492,6 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
         return (GravityCompat.getAbsoluteGravity(((DrawerLayout$LayoutParams)view.getLayoutParams()).gravity, ViewCompat.getLayoutDirection(view)) & 0x7) != 0x0;
     }
     
-    public boolean isDrawerVisible(final int n) {
-        final View drawerWithGravity = this.findDrawerWithGravity(n);
-        return drawerWithGravity != null && this.isDrawerVisible(drawerWithGravity);
-    }
-    
     public boolean isDrawerVisible(final View view) {
         if (!this.isDrawerView(view)) {
             throw new IllegalArgumentException("View " + view + " is not a drawer");

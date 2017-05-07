@@ -84,9 +84,9 @@ public class PostPlayForEpisodes extends PostPlay
     }
     
     protected void findViews() {
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131427735);
-        this.mAutoPlayView = this.mContext.findViewById(2131427734);
-        this.mTimerView = (TextView)this.mContext.findViewById(2131427736);
+        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131427734);
+        this.mAutoPlayView = this.mContext.findViewById(2131427733);
+        this.mTimerView = (TextView)this.mContext.findViewById(2131427735);
     }
     
     @Override

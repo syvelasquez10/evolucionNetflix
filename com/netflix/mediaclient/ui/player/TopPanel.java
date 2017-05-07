@@ -58,7 +58,7 @@ public final class TopPanel extends PlayerSection
         this.mBackListener = (View$OnClickListener)new TopPanel$1(this);
         this.mListeners = mListeners;
         (this.mActionBar = playerActivity.getSupportActionBar()).setTitle("");
-        this.mTitleLabel = (TextView)playerActivity.findViewById(2131427715);
+        this.mTitleLabel = (TextView)playerActivity.findViewById(2131427714);
     }
     
     private void changeControlsVisibility(final boolean b) {
@@ -108,14 +108,14 @@ public final class TopPanel extends PlayerSection
         this.mEpisodeSelector.setIcon(2130837690);
         this.mEpisodeSelector.setShowAsAction(2);
         this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$6(this));
-        this.mTopGradient = this.context.findViewById(2131427711);
-        this.mToolBar = (Toolbar)this.context.findViewById(2131427714);
+        this.mTopGradient = this.context.findViewById(2131427710);
+        this.mToolBar = (Toolbar)this.context.findViewById(2131427713);
     }
     
     private void initLanguages(final Menu menu) {
         this.mLanguageSelector = LanguageSelector.createInstance(this.context, this.context.isTablet(), new TopPanel$3(this));
         (this.mLanguage = menu.add(2131493150)).setVisible(this.showLanguageMenuItem());
-        this.mLanguage.setIcon(2130837734);
+        this.mLanguage.setIcon(2130837738);
         this.mLanguage.setShowAsAction(2);
         this.mLanguage.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$4(this));
     }
@@ -131,7 +131,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final Menu menu) {
-        (this.mSound = menu.add(2131493182)).setIcon(2130837739);
+        (this.mSound = menu.add(2131493182)).setIcon(2130837743);
         this.mSound.setShowAsAction(2);
         this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
     }

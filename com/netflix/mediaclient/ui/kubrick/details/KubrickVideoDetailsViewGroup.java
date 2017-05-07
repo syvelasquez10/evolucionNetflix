@@ -264,33 +264,33 @@ public class KubrickVideoDetailsViewGroup extends VideoDetailsViewGroup
     @Override
     protected void findViews() {
         super.findViews();
-        this.dataSelectorEpisodes = (RadioButton)this.findViewById(2131427601);
-        this.dataSelectorRelated = (RadioButton)this.findViewById(2131427603);
-        this.dataSelectorEpisodesTop = this.findViewById(2131427602);
-        this.titleImg = (AdvancedImageView)this.findViewById(2131427536);
-        this.dataSelectorRelatedTop = this.findViewById(2131427604);
-        this.certification = (TextView)this.findViewById(2131427545);
-        this.evidenceGroup = (ViewGroup)this.findViewById(2131427605);
-        this.evidenceText = (TextView)this.findViewById(2131427607);
-        this.hdIcon = (IconFontTextView)this.findViewById(2131427547);
-        this.durationInfo = (TextView)this.findViewById(2131427546);
-        this.evidence = (IconFontTextView)this.findViewById(2131427606);
-        this.dataSelectorGroup = (RadioGroup)this.findViewById(2131427600);
-        this.myListLabel = (TextView)this.findViewById(2131427590);
-        this.shareLabel = (TextView)this.findViewById(2131427587);
-        this.horzDispImg2 = (AdvancedImageView)this.findViewById(2131427534);
-        this.myList = (TextView)this.findViewById(2131427589);
-        this.genres = (TextView)this.findViewById(2131427599);
-        this.year = (TextView)this.findViewById(2131427544);
-        this.share = (TextView)this.findViewById(2131427588);
-        this.leftGroup = this.findViewById(2131427611);
-        this.shadow = this.findViewById(2131427609);
-        this.rate = this.findViewById(2131427591);
-        this.bookMarkTitle = (TextView)this.findViewById(2131427593);
-        this.bookmarkGroup = (ViewGroup)this.findViewById(2131427612);
-        this.bookmarkDuration = (TextView)this.findViewById(2131427595);
-        this.bookmarkValue = (TextView)this.findViewById(2131427594);
-        this.bookmarkProgressBar = (ProgressBar)this.findViewById(2131427596);
+        this.dataSelectorEpisodes = (RadioButton)this.findViewById(2131427600);
+        this.dataSelectorRelated = (RadioButton)this.findViewById(2131427602);
+        this.dataSelectorEpisodesTop = this.findViewById(2131427601);
+        this.titleImg = (AdvancedImageView)this.findViewById(2131427535);
+        this.dataSelectorRelatedTop = this.findViewById(2131427603);
+        this.certification = (TextView)this.findViewById(2131427544);
+        this.evidenceGroup = (ViewGroup)this.findViewById(2131427604);
+        this.evidenceText = (TextView)this.findViewById(2131427606);
+        this.hdIcon = (IconFontTextView)this.findViewById(2131427546);
+        this.durationInfo = (TextView)this.findViewById(2131427545);
+        this.evidence = (IconFontTextView)this.findViewById(2131427605);
+        this.dataSelectorGroup = (RadioGroup)this.findViewById(2131427599);
+        this.myListLabel = (TextView)this.findViewById(2131427589);
+        this.shareLabel = (TextView)this.findViewById(2131427586);
+        this.horzDispImg2 = (AdvancedImageView)this.findViewById(2131427533);
+        this.myList = (TextView)this.findViewById(2131427588);
+        this.genres = (TextView)this.findViewById(2131427598);
+        this.year = (TextView)this.findViewById(2131427543);
+        this.share = (TextView)this.findViewById(2131427587);
+        this.leftGroup = this.findViewById(2131427610);
+        this.shadow = this.findViewById(2131427608);
+        this.rate = this.findViewById(2131427590);
+        this.bookMarkTitle = (TextView)this.findViewById(2131427592);
+        this.bookmarkGroup = (ViewGroup)this.findViewById(2131427611);
+        this.bookmarkDuration = (TextView)this.findViewById(2131427594);
+        this.bookmarkValue = (TextView)this.findViewById(2131427593);
+        this.bookmarkProgressBar = (ProgressBar)this.findViewById(2131427595);
     }
     
     @Override

@@ -812,11 +812,6 @@ class ActionBarActivityDelegateBase extends ActionBarActivityDelegate implements
         }
     }
     
-    @Override
-    int getHomeAsUpIndicatorAttrId() {
-        return R$attr.homeAsUpIndicator;
-    }
-    
     public boolean onBackPressed() {
         if (this.mActionMode != null) {
             this.mActionMode.finish();

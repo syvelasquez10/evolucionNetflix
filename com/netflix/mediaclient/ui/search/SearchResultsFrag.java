@@ -169,18 +169,18 @@ public class SearchResultsFrag extends NetflixFrag
     }
     
     private void findViews(final View view) {
-        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131427811);
-        this.layoutSuggestions = (FlowLayout)view.findViewById(2131427812);
-        this.gridViewVideos = (StaticGridView)view.findViewById(2131427807);
-        this.gridViewPeople = (StaticGridView)view.findViewById(2131427809);
-        this.labelSuggestions = (TextView)view.findViewById(2131427810);
-        this.scrollView2 = (LoggingScrollView)view.findViewById(2131427814);
-        this.layoutPeople = (FlowLayout)view.findViewById(2131427813);
-        this.scrollView = (LoggingScrollView)view.findViewById(2131427805);
-        this.relatedlabel = (TextView)view.findViewById(2131427539);
-        this.labelVideos = (TextView)view.findViewById(2131427806);
-        this.labelPeople = (TextView)view.findViewById(2131427808);
-        this.progressBar = (ProgressBar)view.findViewById(2131427522);
+        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131427810);
+        this.layoutSuggestions = (FlowLayout)view.findViewById(2131427811);
+        this.gridViewVideos = (StaticGridView)view.findViewById(2131427806);
+        this.gridViewPeople = (StaticGridView)view.findViewById(2131427808);
+        this.labelSuggestions = (TextView)view.findViewById(2131427809);
+        this.scrollView2 = (LoggingScrollView)view.findViewById(2131427813);
+        this.layoutPeople = (FlowLayout)view.findViewById(2131427812);
+        this.scrollView = (LoggingScrollView)view.findViewById(2131427804);
+        this.relatedlabel = (TextView)view.findViewById(2131427538);
+        this.labelVideos = (TextView)view.findViewById(2131427805);
+        this.labelPeople = (TextView)view.findViewById(2131427807);
+        this.progressBar = (ProgressBar)view.findViewById(2131427521);
     }
     
     public static Object getItem(final ISearchResults searchResults, final SearchResultsFrag$SearchCategory searchResultsFrag$SearchCategory, final int n) {

@@ -41,14 +41,6 @@ public final class R$styleable
     public static final int[] CompatTextView;
     public static final int CompatTextView_textAllCaps = 0;
     public static final int[] DrawerArrowToggle;
-    public static final int DrawerArrowToggle_barSize = 6;
-    public static final int DrawerArrowToggle_color = 0;
-    public static final int DrawerArrowToggle_drawableSize = 2;
-    public static final int DrawerArrowToggle_gapBetweenBars = 3;
-    public static final int DrawerArrowToggle_middleBarArrowSize = 5;
-    public static final int DrawerArrowToggle_spinBars = 1;
-    public static final int DrawerArrowToggle_thickness = 7;
-    public static final int DrawerArrowToggle_topBottomBarArrowSize = 4;
     public static final int[] LinearLayoutCompat;
     public static final int[] LinearLayoutCompat_Layout;
     public static final int LinearLayoutCompat_Layout_android_layout_gravity = 0;

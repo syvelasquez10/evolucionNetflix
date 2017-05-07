@@ -85,13 +85,13 @@ class AvatarsGridActivity$ProfileAvatarAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             inflate = this.this$0.getLayoutInflater().inflate(2130903069, viewGroup, false);
-            inflate.setTag((Object)new AvatarsGridActivity$ViewHolder((AdvancedImageView)inflate.findViewById(2131427452), (ImageView)inflate.findViewById(2131427453)));
+            inflate.setTag((Object)new AvatarsGridActivity$ViewHolder((AdvancedImageView)inflate.findViewById(2131427451), (ImageView)inflate.findViewById(2131427452)));
         }
         final AvatarsGridActivity$ViewHolder avatarsGridActivity$ViewHolder = (AvatarsGridActivity$ViewHolder)inflate.getTag();
         final String item = this.getItem(n);
         if (this.this$0.mSelectedIconPos == n) {
             avatarsGridActivity$ViewHolder.topEditImg.setVisibility(0);
-            avatarsGridActivity$ViewHolder.topEditImg.setBackgroundResource(2130837872);
+            avatarsGridActivity$ViewHolder.topEditImg.setBackgroundResource(2130837876);
         }
         else {
             avatarsGridActivity$ViewHolder.topEditImg.setVisibility(8);

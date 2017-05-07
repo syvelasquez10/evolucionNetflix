@@ -26,6 +26,7 @@ import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.NetflixApplication;
 import java.util.Iterator;
 import java.util.List;
+import com.netflix.mediaclient.ui.social.notifications.KubrickSlidingMenuNotificationsFrag;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.falkor.CachedModelProxy;

@@ -116,9 +116,9 @@ class KidsParallax extends DetailsPageParallaxScrollListener
     
     @Override
     protected void setInitialToolbarColor() {
-        this.toolbarView = this.recyclerView.getRootView().findViewById(2131427430);
-        this.shadow = this.recyclerView.getRootView().findViewById(2131427444);
-        final Drawable drawable = this.toolbarView.getResources().getDrawable(2130837772);
+        this.toolbarView = this.recyclerView.getRootView().findViewById(2131427429);
+        this.shadow = this.recyclerView.getRootView().findViewById(2131427443);
+        final Drawable drawable = this.toolbarView.getResources().getDrawable(2130837776);
         if (drawable != null && this.toolbarView != null) {
             this.toolbarView.setBackground(drawable);
         }

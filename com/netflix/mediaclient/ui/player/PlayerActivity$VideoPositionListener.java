@@ -218,22 +218,17 @@ public class PlayerActivity$VideoPositionListener implements SeekBar$OnSeekBarCh
     }
     
     public void onStopTrackingTouch(final SeekBar seekBar) {
-    Label_0054_Outer:
         while (true) {
             final boolean b = true;
         Label_0183_Outer:
             while (true) {
                 Label_0248: {
-                    TimelineSeekBar timelineSeekBar;
-                    int access$1100;
-                    PlayScreen access$1101;
-                    final boolean b2;
-                    boolean b3;
-                    Label_0183:Label_0121_Outer:
+                Label_0183:
                     while (true) {
                         synchronized (this) {
                             this.this$0.mState.draggingInProgress = false;
                             Log.d("PlayerActivity", "onStopTrackingTouch called");
+                            TimelineSeekBar timelineSeekBar;
                             if (seekBar instanceof TimelineSeekBar) {
                                 timelineSeekBar = (TimelineSeekBar)seekBar;
                             }
@@ -246,55 +241,53 @@ public class PlayerActivity$VideoPositionListener implements SeekBar$OnSeekBarCh
                             }
                             break Label_0183;
                             // iftrue(Label_0214:, b2)
+                            final int access$1100 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getBottomPanel().getCurrentProgress());
+                            PlayScreen access$1101 = null;
+                            ((TimelineSeekBar)access$1101).setProgress(access$1100);
+                            Log.d("PlayerActivity", "Seek!");
+                            this.this$0.doSeek(access$1100);
                             // iftrue(Label_0238:, b2)
                             // iftrue(Label_0121:, PlayerActivity.access$700(this.this$0) == null)
                             // iftrue(Label_0168:, !Log.isLoggable())
+                            boolean b3 = false;
+                        Label_0168_Outer:
                             while (true) {
-                                Block_7: {
+                                break Label_0100;
+                                while (true) {
+                                Label_0121:
                                     while (true) {
-                                        while (true) {
-                                            Label_0100: {
-                                                while (true) {
-                                                    access$1100 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getBottomPanel().getCurrentProgress());
-                                                    ((TimelineSeekBar)access$1101).setProgress(access$1100);
-                                                    Log.d("PlayerActivity", "Seek!");
-                                                    this.this$0.doSeek(access$1100);
-                                                    break Label_0100;
-                                                    continue Label_0054_Outer;
-                                                }
-                                                access$1101 = this.this$0.mScreen;
-                                                b3 = b;
-                                                break Label_0183;
-                                                Label_0214: {
-                                                    Log.d("PlayerActivity", "Do not seek!");
-                                                }
-                                                ((TimelineSeekBar)access$1101).setProgress(((TimelineSeekBar)access$1101).getProgress());
-                                            }
-                                            break Block_7;
-                                            Log.d("PlayerActivity", "Stop current time " + b2);
-                                            continue Label_0183_Outer;
-                                        }
-                                        this.this$0.mSubtitleManager.setSubtitleVisibility(true);
-                                        ((TimelineSeekBar)access$1101).hideThumb(false);
-                                        continue Label_0121_Outer;
+                                        access$1101 = this.this$0.mScreen;
+                                        b3 = b;
+                                        break Label_0183;
+                                        this.this$0.mScreen.setTopPanelVisibility(true);
+                                        break Label_0121;
+                                        final boolean b2;
+                                        Log.d("PlayerActivity", "Stop current time " + b2);
+                                        continue Label_0183_Outer;
                                     }
-                                    access$1101.stopCurrentTime(b3);
-                                    this.this$0.mState.resetTimeline();
-                                    return;
+                                    this.this$0.mSubtitleManager.setSubtitleVisibility(true);
+                                    ((TimelineSeekBar)access$1101).hideThumb(false);
+                                    continue;
                                 }
-                                this.this$0.mScreen.setTopPanelVisibility(true);
-                                continue;
+                                Label_0214: {
+                                    Log.d("PlayerActivity", "Do not seek!");
+                                }
+                                ((TimelineSeekBar)access$1101).setProgress(((TimelineSeekBar)access$1101).getProgress());
+                                continue Label_0168_Outer;
                             }
+                            access$1101.stopCurrentTime(b3);
+                            this.this$0.mState.resetTimeline();
+                            return;
                         }
                         Label_0238: {
-                            b3 = false;
+                            final boolean b3 = false;
                         }
                         continue Label_0183;
                     }
-                    b2 = true;
+                    final boolean b2 = true;
                     continue;
                 }
-                boolean b2 = false;
+                final boolean b2 = false;
                 continue;
             }
         }

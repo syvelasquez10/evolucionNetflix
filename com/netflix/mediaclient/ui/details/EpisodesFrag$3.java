@@ -19,6 +19,7 @@ import android.support.v7.widget.RecyclerView$OnScrollListener;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.LayoutInflater;
@@ -72,6 +73,7 @@ class EpisodesFrag$3 implements AdapterView$OnItemSelectedListener
         }
         this.this$0.invalidateCachedEpisodesIfDAB();
         this.this$0.currSeasonDetails = (SeasonDetails)this.this$0.spinner.getItemAtPosition(n);
+        this.this$0.currSeasonIndex = n;
         if (this.this$0.currSeasonDetails == null && Log.isLoggable()) {
             Log.w("EpisodesFrag", "null season details retrieved for position: " + n);
         }

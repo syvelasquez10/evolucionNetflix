@@ -61,16 +61,16 @@ public class KubrickCwGalleryView extends FrameLayout implements VideoViewGroup$
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837895);
+        this.setBackgroundResource(2130837899);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(2130903102, (ViewGroup)this);
-        this.title = (TextView)this.findViewById(2131427496);
-        this.seasonInfo = (TextView)this.findViewById(2131427549);
-        this.img = (AdvancedImageView)this.findViewById(2131427494);
-        this.progress = (ProgressBar)this.findViewById(2131427498);
-        this.infoIcon = this.findViewById(2131427497);
-        this.playIcon = this.findViewById(2131427548);
+        this.title = (TextView)this.findViewById(2131427495);
+        this.seasonInfo = (TextView)this.findViewById(2131427548);
+        this.img = (AdvancedImageView)this.findViewById(2131427493);
+        this.progress = (ProgressBar)this.findViewById(2131427497);
+        this.infoIcon = this.findViewById(2131427496);
+        this.playIcon = this.findViewById(2131427547);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
     }
     

@@ -18,6 +18,10 @@ public class KubrickSlidingMenuNotificationsFrag extends NotificationsFrag
         KubrickSlidingMenuNotificationsFrag.MAX_NUM_NOTIFICATIONS = 3;
     }
     
+    public static int getCurrentMaxNotificationsNum() {
+        return KubrickSlidingMenuNotificationsFrag.MAX_NUM_NOTIFICATIONS;
+    }
+    
     @Override
     protected boolean canLoadMultiplePages() {
         return false;

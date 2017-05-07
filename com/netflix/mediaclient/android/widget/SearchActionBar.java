@@ -75,9 +75,9 @@ public class SearchActionBar extends NetflixActionBar
     private void initViews() {
         final View inflate = LayoutInflater.from((Context)this.activity).inflate(2130903066, (ViewGroup)null);
         if (inflate != null) {
-            this.searchView = (SearchView)inflate.findViewById(2131427445);
+            this.searchView = (SearchView)inflate.findViewById(2131427444);
             final ActionBar$LayoutParams actionBar$LayoutParams = new ActionBar$LayoutParams(-1, -2, 8388613);
-            this.progressSpinner = (ProgressBar)inflate.findViewById(2131427446);
+            this.progressSpinner = (ProgressBar)inflate.findViewById(2131427445);
             this.systemActionBar.setCustomView(inflate, actionBar$LayoutParams);
         }
     }
@@ -136,7 +136,7 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getActiveSearchIconResId() {
-        return 2130837727;
+        return 2130837731;
     }
     
     protected Integer getSearchCloseButtonTint() {
@@ -144,11 +144,11 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getSearchViewBgResId() {
-        return 2130837885;
+        return 2130837889;
     }
     
     protected int getSearchViewRightBgResId() {
-        return 2130837887;
+        return 2130837891;
     }
     
     protected int getSearchViewTextColorResId() {

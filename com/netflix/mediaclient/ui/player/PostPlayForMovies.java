@@ -96,12 +96,12 @@ public final class PostPlayForMovies extends PostPlay
     
     private void init() {
         this.mVideoWindow = VideoWindowForPostplayFactory.createVideoWindow(this.mContext);
-        this.addBoxArt(2131427748, 0);
-        this.addBoxArt(2131427750, 1);
-        this.addBoxArt(2131427752, 2);
-        this.addPlayButton(2131427749, 0);
-        this.addPlayButton(2131427751, 1);
-        this.addPlayButton(2131427753, 2);
+        this.addBoxArt(2131427747, 0);
+        this.addBoxArt(2131427749, 1);
+        this.addBoxArt(2131427751, 2);
+        this.addPlayButton(2131427748, 0);
+        this.addPlayButton(2131427750, 1);
+        this.addPlayButton(2131427752, 2);
     }
     
     private void updateUi(final PostPlayVideo postPlayVideo, final int n) {
@@ -188,10 +188,10 @@ public final class PostPlayForMovies extends PostPlay
     
     @Override
     void findViews() {
-        this.mRatingBar = (NetflixRatingBar)this.mContext.findViewById(2131427543);
-        this.mVideoDetails = (TextView)this.mContext.findViewById(2131427747);
-        this.mBackgroundContainer = this.mContext.findViewById(2131427754);
-        this.mMetadata = this.mContext.findViewById(2131427746);
+        this.mRatingBar = (NetflixRatingBar)this.mContext.findViewById(2131427542);
+        this.mVideoDetails = (TextView)this.mContext.findViewById(2131427746);
+        this.mBackgroundContainer = this.mContext.findViewById(2131427753);
+        this.mMetadata = this.mContext.findViewById(2131427745);
     }
     
     @Override

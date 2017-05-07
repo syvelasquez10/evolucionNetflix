@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.experience;
 
 import java.util.HashMap;
 import java.io.Serializable;
-import com.crittercism.app.Crittercism;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.content.Context;
@@ -346,7 +346,7 @@ public enum BrowseExperience implements IExperience
         if (Log.isLoggable()) {
             Log.i("BrowseExperience", "Setting Crittercism username: " + String.valueOf(BrowseExperience.currExperience));
         }
-        Crittercism.setUsername(String.valueOf(BrowseExperience.currExperience));
+        ErrorLoggingManager.setUsername(String.valueOf(BrowseExperience.currExperience));
     }
     
     public static boolean shouldLoadExtraCharacterLeaves() {

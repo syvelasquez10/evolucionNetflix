@@ -134,7 +134,7 @@ public final class ClientNotifier implements NotifierInterface
         if (this.mSharedStateMap.get(s) != null) {
             this.mSharedStateMap.get(s).notifyPostplayState(s2);
         }
-        this.mContext.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_POSTPLAY").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s).putExtra("postplayState", s2));
+        this.mContext.sendOrderedBroadcast(new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_POSTPLAY").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s).putExtra("postplayState", s2), (String)null);
     }
     
     @Override

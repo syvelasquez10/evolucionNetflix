@@ -246,11 +246,6 @@ public class ToolbarActionBar extends ActionBar
     }
     
     @Override
-    public void setHomeAsUpIndicator(final Drawable navigationIcon) {
-        this.mToolbar.setNavigationIcon(navigationIcon);
-    }
-    
-    @Override
     public void setHomeButtonEnabled(final boolean b) {
     }
     

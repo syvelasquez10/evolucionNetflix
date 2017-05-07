@@ -41,16 +41,16 @@ public final class MdxPlayerRemoteViews extends MdxRemoteViews
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131427671, 2130837831);
-        remoteViews.setOnClickPendingIntent(2131427671, this.mIntentRetriever.getSkipbackIntent(-30));
+        remoteViews.setImageViewResource(2131427670, 2130837835);
+        remoteViews.setOnClickPendingIntent(2131427670, this.mIntentRetriever.getSkipbackIntent(-30));
     }
     
     protected void setSkipInactive(final RemoteViews remoteViews) {
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131427671, 2130837832);
-        remoteViews.setOnClickPendingIntent(2131427671, this.mIntentRetriever.getNoActionIntent());
+        remoteViews.setImageViewResource(2131427670, 2130837836);
+        remoteViews.setOnClickPendingIntent(2131427670, this.mIntentRetriever.getNoActionIntent());
     }
     
     @Override

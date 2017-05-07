@@ -21,9 +21,7 @@ public final class R$attr
     public static final int colorControlActivated = 2130772049;
     public static final int colorControlNormal = 2130772048;
     public static final int colorSwitchThumbNormal = 2130772052;
-    public static final int drawerArrowStyle = 2130772129;
     public static final int dropDownListViewStyle = 2130772037;
-    public static final int homeAsUpIndicator = 2130772012;
     public static final int panelMenuListTheme = 2130772043;
     public static final int popupMenuStyle = 2130772023;
     public static final int textColorSearchUrl = 2130772030;

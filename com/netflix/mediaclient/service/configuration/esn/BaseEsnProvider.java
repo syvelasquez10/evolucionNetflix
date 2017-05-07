@@ -31,9 +31,11 @@ public abstract class BaseEsnProvider implements EsnProvider
     protected static final String TAG = "ESN";
     protected static final String UKNOWN = "unknown";
     protected static String hashedDeviceId;
+    protected static String hashedDeviceId2;
     protected String deviceId;
     protected String esn;
     protected String fesn;
+    protected String fesn2;
     protected String fesnModelId;
     protected String modelId;
     protected String nrdpDeviceModel;
@@ -141,6 +143,22 @@ public abstract class BaseEsnProvider implements EsnProvider
         return StringUtils.replaceWhiteSpace(androidId, BaseEsnProvider.DELIM);
     }
     
+    private static String findFutureDeviceId2(final Context context) {
+        String s;
+        if ((s = getMacAddressAndSerial(context)) == null) {
+            s = getAndroidId(context);
+        }
+        if (s == null) {
+            Log.w("ESN", "Device ID not found, use and save random id");
+            return getRandom(context);
+        }
+        if ("000000000000000".equalsIgnoreCase(s)) {
+            Log.w("ESN", "Emulator");
+            return "1012UAR71QB0A91";
+        }
+        return StringUtils.replaceWhiteSpace(s, BaseEsnProvider.DELIM);
+    }
+    
     protected static String getAndroidId(final Context context) {
         final String string = Settings$Secure.getString(context.getContentResolver(), "android_id");
         if (Log.isLoggable()) {
@@ -172,6 +190,32 @@ public abstract class BaseEsnProvider implements EsnProvider
                 }
             }
             return (String)hashedDeviceId;
+        }
+    }
+    
+    public static String getHashedDeviceId2(Context hashedDeviceId2) {
+        synchronized (BaseEsnProvider.class) {
+            if (BaseEsnProvider.hashedDeviceId2 != null) {
+                hashedDeviceId2 = (Context)BaseEsnProvider.hashedDeviceId2;
+            }
+            else {
+                hashedDeviceId2 = (Context)findFutureDeviceId2(hashedDeviceId2);
+                if (Log.isLoggable()) {
+                    Log.d("ESN", "===> Future Device ID2: " + (String)hashedDeviceId2);
+                }
+                try {
+                    BaseEsnProvider.hashedDeviceId2 = CryptoUtils.hashSHA256((String)hashedDeviceId2, SecurityRepository.getDeviceIdToken());
+                    if (Log.isLoggable()) {
+                        Log.d("ESN", "===> Hashed Device ID2: " + BaseEsnProvider.hashedDeviceId2);
+                    }
+                    hashedDeviceId2 = (Context)validateChars(BaseEsnProvider.hashedDeviceId2);
+                }
+                catch (NoSuchAlgorithmException ex) {
+                    Log.e("ESN", "===> Failed to hash device id2. Use plain and report this", ex);
+                    BaseEsnProvider.hashedDeviceId2 = (String)hashedDeviceId2;
+                }
+            }
+            return (String)hashedDeviceId2;
         }
     }
     
@@ -300,7 +344,19 @@ public abstract class BaseEsnProvider implements EsnProvider
         sb.append(this.fesnModelId).append(BaseEsnProvider.ESN_DELIM).append(BaseEsnProvider.hashedDeviceId);
         this.fesn = sb.toString();
         if (Log.isLoggable()) {
-            Log.d("ESN", "===> Future ESN: " + this.fesn);
+            Log.d("ESN", "===> fESN: " + this.fesn);
+        }
+    }
+    
+    private void initFutureEsn2(final Context context) {
+        this.fesnModelId = validateChars(findBaseModelId());
+        BaseEsnProvider.hashedDeviceId2 = getHashedDeviceId2(context);
+        final StringBuilder sb = new StringBuilder();
+        sb.append(BaseEsnProvider.ESN_PREFIX);
+        sb.append(this.fesnModelId).append(BaseEsnProvider.ESN_DELIM).append(BaseEsnProvider.hashedDeviceId2);
+        this.fesn2 = sb.toString();
+        if (Log.isLoggable()) {
+            Log.d("ESN", "===> fEsn2: " + this.fesn2);
         }
     }
     
@@ -355,6 +411,11 @@ public abstract class BaseEsnProvider implements EsnProvider
     }
     
     @Override
+    public String getFesn2() {
+        return this.fesn2;
+    }
+    
+    @Override
     public String getFesnModelId() {
         return this.fesnModelId;
     }
@@ -375,5 +436,6 @@ public abstract class BaseEsnProvider implements EsnProvider
         }
         this.init(context);
         this.initFutureEsn(context);
+        this.initFutureEsn2(context);
     }
 }

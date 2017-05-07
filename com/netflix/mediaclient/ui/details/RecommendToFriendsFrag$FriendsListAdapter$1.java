@@ -14,6 +14,7 @@ import android.text.TextWatcher;
 import android.widget.AbsListView$OnScrollListener;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.util.SocialUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.os.Parcelable;
 import android.os.Bundle;
 import java.util.Set;
@@ -21,7 +22,6 @@ import android.view.animation.Animation$AnimationListener;
 import android.view.animation.Interpolator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.content.Context;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
@@ -62,11 +62,11 @@ class RecommendToFriendsFrag$FriendsListAdapter$1 implements View$OnClickListene
     
     public void onClick(final View view) {
         if (this.this$1.this$0.mCheckedFriends.contains(this.val$profile)) {
-            this.val$holder.checkMark.setImageResource(2130837878);
+            this.val$holder.checkMark.setImageResource(2130837882);
             this.this$1.this$0.mCheckedFriends.remove(this.val$profile);
         }
         else {
-            this.val$holder.checkMark.setImageResource(2130837879);
+            this.val$holder.checkMark.setImageResource(2130837883);
             this.this$1.this$0.mCheckedFriends.add(this.val$profile);
         }
         this.this$1.this$0.updateTotalSelectedStatus();

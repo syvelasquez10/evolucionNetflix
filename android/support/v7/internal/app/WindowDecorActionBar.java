@@ -578,11 +578,6 @@ public class WindowDecorActionBar extends ActionBar implements ActionBarOverlayL
     }
     
     @Override
-    public void setHomeAsUpIndicator(final Drawable navigationIcon) {
-        this.mDecorToolbar.setNavigationIcon(navigationIcon);
-    }
-    
-    @Override
     public void setHomeButtonEnabled(final boolean homeButtonEnabled) {
         this.mDecorToolbar.setHomeButtonEnabled(homeButtonEnabled);
     }

@@ -11,10 +11,10 @@ public final class ResourceHelperPhone extends ResourceHelper
     protected static final int TIMELINE_THUMB_OFFSET_IN_DIP = 12;
     
     ResourceHelperPhone() {
-        this.pause = 2130837698;
-        this.play = 2130837699;
-        this.zoomIn = 2130837740;
-        this.zoomOut = 2130837741;
+        this.pause = 2130837702;
+        this.play = 2130837703;
+        this.zoomIn = 2130837744;
+        this.zoomOut = 2130837745;
         this.timelineHeightInDip = 20;
         this.timelineHeightPaddingInDip = 1;
         this.timelineThumbOffsetInDip = 12;

@@ -26,7 +26,7 @@ import android.view.View;
 import android.support.v4.app.TaskStackBuilder$SupportParentable;
 import android.support.v4.app.FragmentActivity;
 
-public class ActionBarActivity extends FragmentActivity implements TaskStackBuilder$SupportParentable, ActionBarDrawerToggle$TmpDelegateProvider
+public class ActionBarActivity extends FragmentActivity implements TaskStackBuilder$SupportParentable
 {
     private ActionBarActivityDelegate mDelegate;
     
@@ -58,7 +58,6 @@ public class ActionBarActivity extends FragmentActivity implements TaskStackBuil
         return NavUtils.getParentActivityIntent(this);
     }
     
-    @Override
     public android.support.v7.app.ActionBarDrawerToggle$Delegate getV7DrawerToggleDelegate() {
         return this.getDelegate().getV7DrawerToggleDelegate();
     }

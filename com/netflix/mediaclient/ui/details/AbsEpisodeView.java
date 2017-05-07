@@ -65,10 +65,10 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     }
     
     protected void findViews() {
-        this.title = (TextView)this.findViewById(2131427514);
-        this.synopsis = (TextView)this.findViewById(2131427516);
-        this.playButton = (ImageView)this.findViewById(2131427512);
-        this.progressBar = (ProgressBar)this.findViewById(2131427515);
+        this.title = (TextView)this.findViewById(2131427513);
+        this.synopsis = (TextView)this.findViewById(2131427515);
+        this.playButton = (ImageView)this.findViewById(2131427511);
+        this.progressBar = (ProgressBar)this.findViewById(2131427514);
     }
     
     protected int getDefaultSynopsisVisibility() {

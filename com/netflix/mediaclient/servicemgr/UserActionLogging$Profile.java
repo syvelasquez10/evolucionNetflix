@@ -13,7 +13,6 @@ public class UserActionLogging$Profile
     public static final String PROFILE_AGE = "age";
     public static final String PROFILE_ID = "profileId";
     public static final String PROFILE_IS_KIDS = "kids";
-    public static final String PROFILE_NAME = "name";
     private Integer age;
     private String id;
     private boolean isKids;
@@ -28,7 +27,6 @@ public class UserActionLogging$Profile
     
     public UserActionLogging$Profile(final JSONObject jsonObject) {
         this.id = JsonUtils.getString(jsonObject, "profileId", null);
-        this.name = JsonUtils.getString(jsonObject, "name", null);
         this.isKids = JsonUtils.getBoolean(jsonObject, "kids", false);
         final int int1 = JsonUtils.getInt(jsonObject, "age", -1);
         if (int1 < 0) {
@@ -56,9 +54,6 @@ public class UserActionLogging$Profile
         final JSONObject jsonObject = new JSONObject();
         if (this.id != null) {
             jsonObject.put("profileId", (Object)this.id);
-        }
-        if (this.name != null) {
-            jsonObject.put("name", (Object)this.name);
         }
         if (this.age != null) {
             jsonObject.put("age", (int)this.age);

@@ -8,12 +8,12 @@ import com.netflix.mediaclient.service.logging.search.model.SearchSessionStarted
 import com.netflix.mediaclient.service.logging.search.model.SearchFocusSessionStartedEvent;
 import com.netflix.mediaclient.service.logging.search.model.SearchImpressionEvent;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.search.model.SearchEditEvent;
 import android.content.Intent;
 import java.util.Iterator;
 import java.util.Collection;
 import java.util.HashSet;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.search.model.SearchSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.search.SearchSession;
 import com.netflix.mediaclient.service.logging.search.model.SearchFocusSessionEndedEvent;
@@ -23,6 +23,7 @@ import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import com.netflix.mediaclient.service.logging.search.SearchFocusSession;
 import java.util.Hashtable;
+import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.logging.apm.BaseApmSession;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.ISearchLogging;
@@ -32,12 +33,14 @@ public class SearchLogging implements ISearchLogging
     private static final String TAG = "nf_log_search";
     private Map<Long, BaseApmSession> focusFocusSessions;
     private EventHandler mEventHandler;
+    private ServiceAgent$UserAgentInterface mUserAgent;
     private Map<Long, BaseApmSession> searchSessions;
     
-    SearchLogging(final EventHandler mEventHandler) {
+    SearchLogging(final EventHandler mEventHandler, final ServiceAgent$UserAgentInterface mUserAgent) {
         this.focusFocusSessions = new Hashtable<Long, BaseApmSession>();
         this.searchSessions = new Hashtable<Long, BaseApmSession>();
         this.mEventHandler = mEventHandler;
+        this.mUserAgent = mUserAgent;
     }
     
     private void stopFocusSession(final long n) {
@@ -78,6 +81,23 @@ public class SearchLogging implements ISearchLogging
         }
     }
     
+    private String validateSearchQueryForPrivacy(final String s) {
+        if (StringUtils.isEmpty(s)) {
+            Log.w("nf_log_search", "Query is empty, skip privacy check");
+        }
+        else {
+            if (this.mUserAgent == null) {
+                Log.e("nf_log_search", "User agent is NULL, this should NOT happen, we can not check for privacy violation!");
+                return null;
+            }
+            if (this.mUserAgent.isPotentialPrivacyViolationFoundForLogging(s)) {
+                Log.w("nf_log_search", "Security violation found, do NOT log query");
+                return "PRIVACY_VIOLATION";
+            }
+        }
+        return s;
+    }
+    
     @Override
     public void endAllActiveSessions() {
         synchronized (this) {
@@ -102,7 +122,7 @@ public class SearchLogging implements ISearchLogging
     @Override
     public void fireEditEvent(final Intent intent) {
         if (this.mEventHandler != null) {
-            final SearchEditEvent searchEditEvent = new SearchEditEvent(intent.getStringExtra("query"));
+            final SearchEditEvent searchEditEvent = new SearchEditEvent(this.validateSearchQueryForPrivacy(intent.getStringExtra("query")));
             this.mEventHandler.post(searchEditEvent);
             if (Log.isLoggable()) {
                 try {
@@ -201,7 +221,7 @@ public class SearchLogging implements ISearchLogging
                     final SearchFocusSession searchFocusSession = new SearchFocusSession(longExtra);
                     this.focusFocusSessions.put(longExtra, searchFocusSession);
                     this.mEventHandler.addSession(searchFocusSession);
-                    final SearchFocusSessionStartedEvent startEvent = searchFocusSession.createStartEvent(intent.getStringExtra("term"));
+                    final SearchFocusSessionStartedEvent startEvent = searchFocusSession.createStartEvent(this.validateSearchQueryForPrivacy(intent.getStringExtra("term")));
                     this.mEventHandler.post(startEvent);
                     if (Log.isLoggable()) {
                         try {

@@ -113,10 +113,10 @@ public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$Epis
     @Override
     protected void findViews() {
         super.findViews();
-        this.image = (AdvancedImageView)this.findViewById(2131427552);
-        this.runtime = (TextView)this.findViewById(2131427555);
-        this.progressBarBackground = this.findViewById(2131427553);
-        this.unavailable = this.findViewById(2131427554);
+        this.image = (AdvancedImageView)this.findViewById(2131427551);
+        this.runtime = (TextView)this.findViewById(2131427554);
+        this.progressBarBackground = this.findViewById(2131427552);
+        this.unavailable = this.findViewById(2131427553);
     }
     
     @Override

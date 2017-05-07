@@ -178,21 +178,21 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     protected void findViews() {
-        this.ratingBar = (NetflixRatingBar)this.findViewById(2131427543);
-        this.addToMyList = (Button)this.findViewById(2131427844);
-        this.basicInfo = (TextView)this.findViewById(2131427747);
-        this.recommend = (Button)this.findViewById(2131427843);
-        this.synopsis = (TextView)this.findViewById(2131427608);
-        this.starring = (TextView)this.findViewById(2131427597);
-        this.creators = (TextView)this.findViewById(2131427598);
-        this.horzDispImg = (AdvancedImageView)this.findViewById(2131427533);
-        this.title = (TextView)this.findViewById(2131427537);
-        this.imgGroup = (ViewGroup)this.findViewById(2131427852);
-        this.backgroundImg = (ImageView)this.findViewById(2131427530);
-        this.relatedTitle = (TextView)this.findViewById(2131427539);
-        this.basicInfoBadges = (TextView)this.findViewById(2131427851);
-        this.footerViewGroup = (ViewGroup)this.findViewById(2131427538);
-        this.copyright = (ViewGroup)this.findViewById(2131427845);
+        this.ratingBar = (NetflixRatingBar)this.findViewById(2131427542);
+        this.addToMyList = (Button)this.findViewById(2131427843);
+        this.basicInfo = (TextView)this.findViewById(2131427746);
+        this.recommend = (Button)this.findViewById(2131427842);
+        this.synopsis = (TextView)this.findViewById(2131427607);
+        this.starring = (TextView)this.findViewById(2131427596);
+        this.creators = (TextView)this.findViewById(2131427597);
+        this.horzDispImg = (AdvancedImageView)this.findViewById(2131427532);
+        this.title = (TextView)this.findViewById(2131427536);
+        this.imgGroup = (ViewGroup)this.findViewById(2131427851);
+        this.backgroundImg = (ImageView)this.findViewById(2131427529);
+        this.relatedTitle = (TextView)this.findViewById(2131427538);
+        this.basicInfoBadges = (TextView)this.findViewById(2131427850);
+        this.footerViewGroup = (ViewGroup)this.findViewById(2131427537);
+        this.copyright = (ViewGroup)this.findViewById(2131427844);
     }
     
     public TextView getAddToMyListButton() {

@@ -100,15 +100,15 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         if (Log.isLoggable()) {
             Log.v("BillboardView", "isTablet: " + this.isTablet + ", showArtworkOnly: " + this.showArtworkOnly);
         }
-        this.infoViewGroup = this.findViewById(2131427458);
-        this.label = (TextView)this.findViewById(2131427459);
-        this.info = (TextView)this.findViewById(2131427461);
-        this.synopsis = (TextView)this.findViewById(2131427462);
-        this.tvCard = (AdvancedImageView)this.findViewById(2131427460);
-        this.friendAvatar = (AdvancedImageView)this.findViewById(2131427464);
-        this.friendRecommendationText = (TextView)this.findViewById(2131427465);
-        this.postcardShadowOverlayGradient = this.findViewById(2131427457);
-        this.storyArt = (AdvancedImageView)this.findViewById(2131427454);
+        this.infoViewGroup = this.findViewById(2131427457);
+        this.label = (TextView)this.findViewById(2131427458);
+        this.info = (TextView)this.findViewById(2131427460);
+        this.synopsis = (TextView)this.findViewById(2131427461);
+        this.tvCard = (AdvancedImageView)this.findViewById(2131427459);
+        this.friendAvatar = (AdvancedImageView)this.findViewById(2131427463);
+        this.friendRecommendationText = (TextView)this.findViewById(2131427464);
+        this.postcardShadowOverlayGradient = this.findViewById(2131427456);
+        this.storyArt = (AdvancedImageView)this.findViewById(2131427453);
         int n;
         if (this.showArtworkOnly) {
             n = 0;
@@ -117,12 +117,12 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             n = DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) / 3;
         }
         this.storyArt.setPadding(n, 0, 0, 0);
-        this.shadowOverlay = this.findViewById(2131427455);
+        this.shadowOverlay = this.findViewById(2131427454);
         ((RelativeLayout$LayoutParams)this.shadowOverlay.getLayoutParams()).width = n;
-        this.shadowOverlayGradient = this.findViewById(2131427456);
+        this.shadowOverlayGradient = this.findViewById(2131427455);
         ((RelativeLayout$LayoutParams)this.shadowOverlayGradient.getLayoutParams()).leftMargin = n;
-        this.playButton = this.findViewById(2131427466);
-        this.infoButton = this.findViewById(2131427467);
+        this.playButton = this.findViewById(2131427465);
+        this.infoButton = this.findViewById(2131427466);
         this.updateViewVisibility();
         this.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new BillboardView$1(this));
     }

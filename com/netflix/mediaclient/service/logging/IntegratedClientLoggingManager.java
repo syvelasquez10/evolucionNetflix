@@ -466,13 +466,13 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         this.mClientLoggingWebClient = ClientLoggingWebClientFactory.create(this.mOwner.getResourceFetcher().getApiNextWebClient());
         Log.d("nf_log", "ClientLoggingAgent::init web client done ");
         this.mApmLogging = new ApmLoggingImpl(this);
-        this.mActionLogging = new UserActionLoggingImpl(this);
+        this.mActionLogging = new UserActionLoggingImpl(this, this.mOwner.getUser());
         this.mUIViewLogging = new UIViewLoggingImpl(this);
         Log.d("nf_log", "Add ICL manager as listener on user input...");
         this.mInputManager.addListener(this);
         Log.d("nf_log", "Add ICL manager as listener on user input done.");
         this.mSuspendLogging = new SuspendLoggingImpl(this);
-        this.mSearchLogging = new SearchLogging(this);
+        this.mSearchLogging = new SearchLogging(this, this.mOwner.getUser());
         this.mSocialLogging = new SocialLoggingImpl(this);
         this.initDataRepository();
         this.registerReceivers();

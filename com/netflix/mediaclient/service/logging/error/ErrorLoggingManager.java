@@ -21,7 +21,7 @@ import android.annotation.TargetApi;
 @TargetApi(4)
 public final class ErrorLoggingManager
 {
-    private static final String CRITTER_VERSION_NAME = "3.14.2";
+    private static final String CRITTER_VERSION_NAME = "3.14.3";
     private static final boolean ENABLE_CRITTERCISM = true;
     private static final String TAG = "nf_log_crit";
     private static boolean sBreadcrumbLoggingEnabled;
@@ -99,7 +99,7 @@ public final class ErrorLoggingManager
                 crittercismConfig.setNdkCrashReportingEnabled(false);
                 crittercismConfig.setServiceMonitoringEnabled(false);
                 crittercismConfig.setLogcatReportingEnabled(false);
-                crittercismConfig.setCustomVersionName("3.14.2");
+                crittercismConfig.setCustomVersionName("3.14.3");
                 try {
                     final Context context2;
                     Crittercism.initialize(context2, SecurityRepository.getCrittercismAppId(), crittercismConfig);
@@ -178,6 +178,18 @@ public final class ErrorLoggingManager
             return;
         }
         jsonObject.put(s, (Object)"N/A");
+    }
+    
+    public static void setUsername(final String username) {
+        if (username != null) {
+            if (isEnabledAndReady()) {
+                Crittercism.setUsername(username);
+                return;
+            }
+            if (Log.isLoggable()) {
+                Log.d("nf_log_crit", "Should log: " + isEnabledAndReady() + ", username: " + username);
+            }
+        }
     }
     
     private static boolean shouldInitializeCrittercism() {

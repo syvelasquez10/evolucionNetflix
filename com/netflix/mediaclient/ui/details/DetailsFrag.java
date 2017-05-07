@@ -69,7 +69,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         final View inflate = layoutInflater.inflate(this.getLayoutId(), (ViewGroup)null, false);
         this.initDetailsViewGroup(inflate);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        this.primaryView = inflate.findViewById(2131427848);
+        this.primaryView = inflate.findViewById(2131427847);
         if (this.primaryView != null) {
             this.primaryView.setVerticalScrollBarEnabled(false);
         }

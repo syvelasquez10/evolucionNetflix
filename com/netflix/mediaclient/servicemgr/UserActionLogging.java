@@ -55,6 +55,7 @@ public interface UserActionLogging
     public static final String NEW_LOLOMO_START = "com.netflix.mediaclient.intent.action.LOG_UIA_NEW_LOLOMO_START";
     public static final String PREAPP_WIDGET_ACTION_ENDED = "com.netflix.mediaclient.intent.action.PREAPP_WIDGET_ACTION_ENDED";
     public static final String PREAPP_WIDGET_ACTION_START = "com.netflix.mediaclient.intent.action.PREAPP_WIDGET_ACTION_START";
+    public static final String PRIVACY_VIOLATION_PLACEHOLDER = "PRIVACY_VIOLATION";
     public static final String RATE_TITLE_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_RATE_TITLE_ENDED";
     public static final String RATE_TITLE_START = "com.netflix.mediaclient.intent.action.LOG_UIA_RATE_TITLE_START";
     public static final String RECOMMEND_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_SAY_THANKS_ENDED";

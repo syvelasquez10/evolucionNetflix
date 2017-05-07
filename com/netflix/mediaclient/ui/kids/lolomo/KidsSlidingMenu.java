@@ -46,10 +46,10 @@ public class KidsSlidingMenu extends OldSlidingMenu
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         super.onManagerReady(serviceManager, status);
         if (KubrickUtils.shouldShowKidsEntryInMenu(this.activity)) {
-            final TextView textViewToBold = (TextView)((ViewStub)this.content.findViewById(2131427688)).inflate().findViewById(2131427690);
+            final TextView textViewToBold = (TextView)((ViewStub)this.content.findViewById(2131427687)).inflate().findViewById(2131427689);
             textViewToBold.setText(2131492976);
             textViewToBold.setTextColor(this.activity.getResources().getColor(2131230822));
-            textViewToBold.setBackgroundResource(2130837753);
+            textViewToBold.setBackgroundResource(2130837757);
             ViewUtils.setTextViewToBold(textViewToBold);
             ViewUtils.removeShadow(textViewToBold);
             textViewToBold.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131296439)));

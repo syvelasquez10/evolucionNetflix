@@ -126,9 +126,9 @@ public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRating
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View inflate = layoutInflater.inflate(this.mLayoutId, viewGroup, false);
-        this.mRatingBar = (NetflixRatingBar)inflate.findViewById(2131427785);
-        this.mTitle = (TextView)inflate.findViewById(2131427784);
-        this.mRatingGroup = (ViewGroup)inflate.findViewById(2131427786);
+        this.mRatingBar = (NetflixRatingBar)inflate.findViewById(2131427784);
+        this.mTitle = (TextView)inflate.findViewById(2131427783);
+        this.mRatingGroup = (ViewGroup)inflate.findViewById(2131427785);
         this.mRatingBar.setOnNetflixRatingBarChangeListener(this);
         if (this.mTitle != null) {
             this.mTitle.setText((CharSequence)this.getString(2131493245, new Object[] { this.mVideoTitle }));

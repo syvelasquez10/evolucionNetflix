@@ -45,7 +45,7 @@ class KubrickKidsShowDetailsFrag$KubrickKidsEpisodeView extends KubrickShowDetai
             this.title.setTextColor(this.getResources().getColor(2131230897));
             final View view = (View)this.getParent();
             if (view != null) {
-                view.setTag(2131427348, (Object)episodeDetails.getSeasonNumber());
+                view.setTag(2131427347, (Object)episodeDetails.getSeasonNumber());
             }
         }
     }

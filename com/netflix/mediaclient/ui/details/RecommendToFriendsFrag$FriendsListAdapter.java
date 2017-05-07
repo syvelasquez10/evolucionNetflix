@@ -10,6 +10,7 @@ import android.widget.ListAdapter;
 import android.text.TextWatcher;
 import android.widget.AbsListView$OnScrollListener;
 import com.netflix.mediaclient.util.SocialUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.os.Parcelable;
 import android.os.Bundle;
 import java.util.Set;
@@ -17,7 +18,6 @@ import android.view.animation.Animation$AnimationListener;
 import android.view.animation.Interpolator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -87,7 +87,7 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             inflate = this.this$0.mLayoutInflater.inflate(2130903180, viewGroup, false);
-            inflate.setTag((Object)new RecommendToFriendsFrag$FriendsListAdapter$Holder(this, (AdvancedImageView)inflate.findViewById(2131427794), (TextView)inflate.findViewById(2131427795), (ImageView)inflate.findViewById(2131427798), inflate.findViewById(2131427797), (TextView)inflate.findViewById(2131427796)));
+            inflate.setTag((Object)new RecommendToFriendsFrag$FriendsListAdapter$Holder(this, (AdvancedImageView)inflate.findViewById(2131427793), (TextView)inflate.findViewById(2131427794), (ImageView)inflate.findViewById(2131427797), inflate.findViewById(2131427796), (TextView)inflate.findViewById(2131427795)));
         }
         final RecommendToFriendsFrag$FriendsListAdapter$Holder recommendToFriendsFrag$FriendsListAdapter$Holder = (RecommendToFriendsFrag$FriendsListAdapter$Holder)inflate.getTag();
         final FriendForRecommendation item = this.getItem(imageResource);
@@ -123,10 +123,10 @@ class RecommendToFriendsFrag$FriendsListAdapter extends BaseAdapter
                 }
                 final ImageView access$1600 = recommendToFriendsFrag$FriendsListAdapter$Holder.checkMark;
                 if (this.this$0.mCheckedFriends.contains(item)) {
-                    imageResource = 2130837879;
+                    imageResource = 2130837883;
                 }
                 else {
-                    imageResource = 2130837878;
+                    imageResource = 2130837882;
                 }
                 access$1600.setImageResource(imageResource);
                 inflate.setOnClickListener((View$OnClickListener)new RecommendToFriendsFrag$FriendsListAdapter$1(this, item, recommendToFriendsFrag$FriendsListAdapter$Holder));

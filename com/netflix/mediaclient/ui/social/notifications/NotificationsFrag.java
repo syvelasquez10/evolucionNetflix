@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import com.netflix.mediaclient.util.SocialUtils;
 import android.os.Bundle;
 import android.app.Activity;
+import java.util.List;
+import java.util.ArrayList;
 import android.content.IntentFilter;
 import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
@@ -191,6 +193,28 @@ public class NotificationsFrag extends NetflixFrag
         return this.mIsLoadingData;
     }
     
+    public void markNotificationsAsRead() {
+        if (this.mNotifications != null && this.mNotifications.getSocialNotifications() != null && this.mNotifications.getSocialNotifications().size() > 0) {
+            final ArrayList<SocialNotificationSummary> list = new ArrayList<SocialNotificationSummary>();
+            int n;
+            if (this.getNumNotificationsPerPage() < this.mNotifications.getSocialNotifications().size()) {
+                n = this.getNumNotificationsPerPage();
+            }
+            else {
+                n = this.mNotifications.getSocialNotifications().size();
+            }
+            for (int i = 0; i < n; ++i) {
+                final SocialNotificationSummary socialNotificationSummary = this.mNotifications.getSocialNotifications().get(i);
+                if (!socialNotificationSummary.getWasRead()) {
+                    list.add(socialNotificationSummary);
+                }
+            }
+            if (list.size() > 0) {
+                this.mServiceManager.getBrowse().markNotificationsAsRead(list);
+            }
+        }
+    }
+    
     @Override
     public void onAttach(final Activity activity) {
         super.onAttach(activity);
@@ -214,7 +238,7 @@ public class NotificationsFrag extends NetflixFrag
         Log.v(NotificationsFrag.TAG, "Creating new frag view...");
         this.mAreViewsCreated = true;
         final View inflate = layoutInflater.inflate(2130903197, viewGroup, false);
-        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131427822)).setItemsCanFocus(true);
+        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131427821)).setItemsCanFocus(true);
         this.mNotificationsList.setAsStatic(this.isListViewStatic());
         this.mAdapter = new NotificationsFrag$NotificationsListAdapter(this);
         this.mNotificationsList.setAdapter((ListAdapter)this.mAdapter);

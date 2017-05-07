@@ -28,6 +28,7 @@ import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.NetflixApplication;
 import java.util.Iterator;
 import java.util.List;
+import com.netflix.mediaclient.ui.social.notifications.KubrickSlidingMenuNotificationsFrag;
 import com.netflix.mediaclient.Log;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
 import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
@@ -65,7 +66,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     public FalkorAgent() {
         this.playReceiver = new FalkorAgent$1(this);
         this.userAgentIntentReceiver = new FalkorAgent$2(this);
-        this.refreshNotificationsRunnable = new FalkorAgent$7(this);
+        this.refreshNotificationsRunnable = new FalkorAgent$8(this);
     }
     
     private static boolean canDoDataFetches() {
@@ -77,13 +78,19 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     
     private SocialNotificationSummary getFirstUnreadNotification(final SocialNotificationsList list) {
         final List<SocialNotificationSummary> socialNotifications = list.getSocialNotifications();
-        if (socialNotifications == null) {
-            return null;
-        }
-        for (final SocialNotificationSummary socialNotificationSummary : socialNotifications) {
-            if (!socialNotificationSummary.getWasRead()) {
-                return socialNotificationSummary;
+        if (socialNotifications != null) {
+            int currentMaxNotificationsNum = KubrickSlidingMenuNotificationsFrag.getCurrentMaxNotificationsNum();
+            for (final SocialNotificationSummary socialNotificationSummary : socialNotifications) {
+                if (currentMaxNotificationsNum == 0) {
+                    return null;
+                }
+                final SocialNotificationSummary socialNotificationSummary2 = socialNotificationSummary;
+                if (!socialNotificationSummary.getWasRead()) {
+                    return socialNotificationSummary2;
+                }
+                --currentMaxNotificationsNum;
             }
+            return null;
         }
         return null;
     }
@@ -279,9 +286,9 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     }
     
     public void fetchPreAppData(final int n, int n2) {
-        final FalkorAgent$8 falkorAgent$8 = new FalkorAgent$8(this);
+        final FalkorAgent$9 falkorAgent$9 = new FalkorAgent$9(this);
         --n2;
-        this.prefetchLoLoMo(0, n - 1, 0, n2, 0, n2, false, false, false, falkorAgent$8);
+        this.prefetchLoLoMo(0, n - 1, 0, n2, 0, n2, false, false, false, falkorAgent$9);
     }
     
     @Override
@@ -289,7 +296,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchLoMos(0, 10, new FalkorAgent$9(this, n, n2, browseAgentCallback));
+        this.cmp.fetchLoMos(0, 10, new FalkorAgent$10(this, n, n2, browseAgentCallback));
     }
     
     public void fetchSeasonDetails(final String s, final BrowseAgentCallback browseAgentCallback) {
@@ -387,7 +394,14 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.markSocialNotificationAsRead(socialNotificationSummary, new FalkorAgent$5(this));
+        this.cmp.markNotificationAsRead(socialNotificationSummary, new FalkorAgent$5(this));
+    }
+    
+    public void markNotificationsAsRead(final List<SocialNotificationSummary> list) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.markNotificationsAsRead(list, new FalkorAgent$6(this));
     }
     
     public void prefetchGenreLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final boolean b, final boolean b2, final BrowseAgentCallback browseAgentCallback) {
@@ -441,7 +455,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchNotifications(0, 19, b, new FalkorAgent$6(this, b2, messageData));
+        this.cmp.fetchNotifications(0, 19, b, new FalkorAgent$7(this, b2, messageData));
         if (this.getService() != null && this.getService().getCurrentProfile() != null && this.getService().getCurrentProfile().isSocialConnected()) {
             this.rescheduleNotificationsRefresh();
         }

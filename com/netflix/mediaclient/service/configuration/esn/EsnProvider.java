@@ -26,6 +26,8 @@ public interface EsnProvider
     
     String getFesn();
     
+    String getFesn2();
+    
     String getFesnModelId();
     
     String getManufacturer();

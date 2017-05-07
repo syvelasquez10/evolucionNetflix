@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import com.netflix.mediaclient.util.SocialUtils;
 import android.os.Bundle;
 import android.app.Activity;
+import java.util.List;
+import java.util.ArrayList;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
@@ -30,10 +32,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.netflix.model.leafs.social.SocialNotificationsListSummary;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
@@ -53,7 +55,7 @@ public class NotificationsFrag$NotificationsListAdapter extends BaseAdapter
             Log.e(NotificationsFrag.TAG, "Got null notifications list data");
         }
         else {
-            final NetflixActivity netflixActivity = (NetflixActivity)this.this$0.getActivity();
+            final NetflixActivity netflixActivity = this.this$0.getNetflixActivity();
             final String videoId = socialNotificationSummary.getVideoId();
             final VideoType videoType = socialNotificationSummary.getVideoType();
             final SocialNotificationsListSummary socialNotificationsListSummary = this.this$0.mNotifications.getSocialNotificationsListSummary();

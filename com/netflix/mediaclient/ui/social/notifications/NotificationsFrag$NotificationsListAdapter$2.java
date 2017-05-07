@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import com.netflix.mediaclient.util.SocialUtils;
 import android.os.Bundle;
 import android.app.Activity;
+import java.util.List;
+import java.util.ArrayList;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
@@ -61,7 +63,9 @@ class NotificationsFrag$NotificationsListAdapter$2 implements View$OnClickListen
     
     public void onClick(final View view) {
         if (this.this$1.this$0.mServiceManager != null && this.this$1.this$0.mServiceManager.getBrowse() != null && this.val$summary != null && this.this$1.this$0.mNotifications != null) {
-            this.this$1.this$0.mServiceManager.getBrowse().markNotificationAsRead(this.val$summary);
+            if (!this.val$summary.getWasRead()) {
+                this.this$1.this$0.mServiceManager.getBrowse().markNotificationAsRead(this.val$summary);
+            }
             SocialLoggingUtils.reportRecommendImplicitFeedbackReadEvent((Context)this.this$1.this$0.getActivity(), this.val$summary.getId(), this.val$summary.getVideoId(), this.this$1.this$0.mNotifications.getSocialNotificationsListSummary().getBaseTrackId());
             DetailsActivityLauncher.show(this.val$activity, this.val$videoType, this.val$videoId, this.val$summary.getVideoTitle(), new PlayContextImp(this.val$requestId, this.val$listSummary.getMDPTrackId(), 0, 0), "SocialNotif");
             return;

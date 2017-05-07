@@ -45,7 +45,7 @@ public class SeasonsSpinner extends Spinner
     }
     
     private void init() {
-        this.drawableMultipleSeasons = this.getResources().getDrawable(2130837903);
+        this.drawableMultipleSeasons = this.getResources().getDrawable(2130837907);
         this.drawableOneSeason = this.getResources().getDrawable(2131230820);
         Api16Util.setBackgroundDrawableCompat((View)this, this.drawableMultipleSeasons);
     }

@@ -64,8 +64,8 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     }
     
     private void findViews() {
-        this.img = (AdvancedImageView)this.findViewById(2131427803);
-        this.title = (TextView)this.findViewById(2131427804);
+        this.img = (AdvancedImageView)this.findViewById(2131427802);
+        this.title = (TextView)this.findViewById(2131427803);
     }
     
     private CharSequence getFormattedYearSpannable(final String s, final String s2) {
@@ -84,7 +84,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(this.resId, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837894));
+        this.setForeground(this.getResources().getDrawable(2130837898));
         this.findViews();
         this.setupViews();
         this.videoClickListener = new VideoDetailsClickListener(netflixActivity, this);

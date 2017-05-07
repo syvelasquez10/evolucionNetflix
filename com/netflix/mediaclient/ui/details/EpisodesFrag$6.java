@@ -19,6 +19,7 @@ import android.support.v7.widget.RecyclerView$OnScrollListener;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.LayoutInflater;
