@@ -6,8 +6,6 @@ package com.netflix.mediaclient.servicemgr.interface_;
 
 public interface Playable
 {
-    boolean canBeSharedOnFacebook();
-    
     int getEndtime();
     
     int getEpisodeNumber();
@@ -29,6 +27,8 @@ public interface Playable
     int getRuntime();
     
     int getSeasonNumber();
+    
+    boolean isAgeProtected();
     
     boolean isAutoPlayEnabled();
     

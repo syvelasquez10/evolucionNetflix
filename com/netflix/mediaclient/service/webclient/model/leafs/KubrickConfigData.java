@@ -9,11 +9,19 @@ import com.netflix.mediaclient.service.configuration.KubrickConfiguration;
 
 public class KubrickConfigData implements KubrickConfiguration
 {
-    @SerializedName("isEnabled")
-    private boolean isEnabled;
+    private KubrickConfigData$KubrickCell cellEnum;
+    @SerializedName("cell")
+    private int cellInt;
+    
+    public KubrickConfigData() {
+        this.cellInt = 1;
+    }
     
     @Override
-    public boolean isKubrickEnabled() {
-        return this.isEnabled;
+    public KubrickConfigData$KubrickCell getCell() {
+        if (this.cellEnum == null) {
+            this.cellEnum = fromInt(this.cellInt);
+        }
+        return this.cellEnum;
     }
 }

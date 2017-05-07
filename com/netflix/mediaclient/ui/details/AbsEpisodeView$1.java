@@ -5,20 +5,20 @@
 package com.netflix.mediaclient.ui.details;
 
 import android.view.View;
-import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import android.view.View$OnClickListener;
 
 class AbsEpisodeView$1 implements View$OnClickListener
 {
     final /* synthetic */ AbsEpisodeView this$0;
-    final /* synthetic */ ErrorWrapper$Callback val$callback;
+    final /* synthetic */ EpisodeDetails val$episode;
     
-    AbsEpisodeView$1(final AbsEpisodeView this$0, final ErrorWrapper$Callback val$callback) {
+    AbsEpisodeView$1(final AbsEpisodeView this$0, final EpisodeDetails val$episode) {
         this.this$0 = this$0;
-        this.val$callback = val$callback;
+        this.val$episode = val$episode;
     }
     
     public void onClick(final View view) {
-        this.val$callback.onRetryRequested();
+        this.this$0.playEpisode(this.val$episode);
     }
 }

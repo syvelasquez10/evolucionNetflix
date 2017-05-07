@@ -39,6 +39,7 @@ public class DeviceConfiguration
     private boolean mIsDisableMdx;
     private boolean mIsDisableWebsocket;
     private boolean mIsDisableWidevine;
+    private int mJPlayerErrorRestartCount;
     private boolean mLocalPlaybackEnabled;
     private boolean mMdxRemoteControlLockScreenEnabled;
     private boolean mMdxRemoteControlNotificationEnabled;
@@ -84,6 +85,7 @@ public class DeviceConfiguration
         this.mLocalPlaybackEnabled = PreferenceUtils.getBooleanPref(this.mContext, "playback_configuration_local_playback_enabled", DeviceUtils.isLocalPlaybackEnabled());
         this.mMdxRemoteControlLockScreenEnabled = PreferenceUtils.getBooleanPref(this.mContext, "mdx_configuration_remote_lockscreen_enabled", DeviceUtils.isRemoteControlEnabled());
         this.mMdxRemoteControlNotificationEnabled = PreferenceUtils.getBooleanPref(this.mContext, "mdx_configuration_remote_notification_enabled", DeviceUtils.isRemoteControlEnabled());
+        this.mJPlayerErrorRestartCount = PreferenceUtils.getIntPref(this.mContext, "jplayer_restart_count", 2);
     }
     
     private Map<String, ConsolidatedLoggingSessionSpecification> loadConsolidateLoggingSpecification() {
@@ -332,6 +334,10 @@ public class DeviceConfiguration
         return this.mIpConnectivityPolicy;
     }
     
+    public int getJPlayerStreamErrorRestartCount() {
+        return this.mJPlayerErrorRestartCount;
+    }
+    
     public int getPTAggregationSize() {
         return this.mPTAggregationSize;
     }
@@ -440,6 +446,7 @@ public class DeviceConfiguration
             PreferenceUtils.putIntPref(this.mContext, "gcm_browse_rate_limit", deviceConfigData.getRateLimitForGcmBrowseEvents());
             this.mRateLimitForNListChangeEvents = deviceConfigData.getRateLimitForGcmNListChangeEvents();
             PreferenceUtils.putIntPref(this.mContext, "gcm_tray_change_rate_limit", deviceConfigData.getRateLimitForGcmNListChangeEvents());
+            PreferenceUtils.putIntPref(this.mContext, "jplayer_restart_count", deviceConfigData.getJPlayerStreamErrorRestartCount());
             this.updateLocalPlaybackStatus(deviceConfigData.getEnableLocalPlayback());
             this.updateMdxRemoteControlLockScreenStatus(deviceConfigData.getEnableMdxRemoteControlLockScreen());
             this.updateMdxRemoteControlNotificationStatus(deviceConfigData.getEnableMdxRemoteControlNotification());

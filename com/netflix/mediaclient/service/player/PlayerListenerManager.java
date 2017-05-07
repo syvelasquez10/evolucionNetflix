@@ -26,8 +26,6 @@ class PlayerListenerManager
     private PlayerListenerManager$PlayerListenerOnStartedHandler mPlayerListenerOnStartedHandler;
     private PlayerListenerManager$PlayerListenerOnSubtitleChangeHandler mPlayerListenerOnSubtitleChangeHandler;
     private PlayerListenerManager$PlayerListenerOnSubtitleFailedHandler mPlayerListenerOnSubtitleFailedHandler;
-    private PlayerListenerManager$PlayerListenerOnSubtitleRemoveHandler mPlayerListenerOnSubtitleRemoveHandler;
-    private PlayerListenerManager$PlayerListenerOnSubtitleShowHandler mPlayerListenerOnSubtitleShowHandler;
     private PlayerListenerManager$PlayerListenerOnUpdatePtsHandler mPlayerListenerOnUpdatePtsHandler;
     private PlayerListenerManager$PlayerListenerPlaybackClosedHandler mPlayerListenerPlaybackClosedHandler;
     private PlayerListenerManager$PlayerListenerPrepareHandler mPlayerListenerPrepareHandler;
@@ -55,8 +53,6 @@ class PlayerListenerManager
         this.mPlayerListenerOnStartedHandler = new PlayerListenerManager$PlayerListenerOnStartedHandler(this, null);
         this.mPlayerListenerOnSubtitleChangeHandler = new PlayerListenerManager$PlayerListenerOnSubtitleChangeHandler(this, null);
         this.mPlayerListenerOnSubtitleFailedHandler = new PlayerListenerManager$PlayerListenerOnSubtitleFailedHandler(this, null);
-        this.mPlayerListenerOnSubtitleRemoveHandler = new PlayerListenerManager$PlayerListenerOnSubtitleRemoveHandler(this, null);
-        this.mPlayerListenerOnSubtitleShowHandler = new PlayerListenerManager$PlayerListenerOnSubtitleShowHandler(this, null);
         this.mPlayerListenerPlaybackClosedHandler = new PlayerListenerManager$PlayerListenerPlaybackClosedHandler(this, null);
         this.mPlayerListenerRestartPlaybackHandler = new PlayerListenerManager$PlayerListenerRestartPlaybackHandler(this, null);
         this.mPlayer = mPlayer;
@@ -131,14 +127,6 @@ class PlayerListenerManager
         return this.mPlayerListenerOnSubtitleFailedHandler;
     }
     
-    PlayerListenerManager$PlayerListenerOnSubtitleRemoveHandler getPlayerListenerOnSubtitleRemoveHandler() {
-        return this.mPlayerListenerOnSubtitleRemoveHandler;
-    }
-    
-    PlayerListenerManager$PlayerListenerOnSubtitleShowHandler getPlayerListenerOnSubtitleShowHandler() {
-        return this.mPlayerListenerOnSubtitleShowHandler;
-    }
-    
     PlayerListenerManager$PlayerListenerOnUpdatePtsHandler getPlayerListenerOnUpdatePtsHandler() {
         return this.mPlayerListenerOnUpdatePtsHandler;
     }
@@ -211,14 +199,6 @@ class PlayerListenerManager
     
     void setPlayerListenerOnSubtitleFailedHandler(final PlayerListenerManager$PlayerListenerOnSubtitleFailedHandler mPlayerListenerOnSubtitleFailedHandler) {
         this.mPlayerListenerOnSubtitleFailedHandler = mPlayerListenerOnSubtitleFailedHandler;
-    }
-    
-    void setPlayerListenerOnSubtitleRemoveHandler(final PlayerListenerManager$PlayerListenerOnSubtitleRemoveHandler mPlayerListenerOnSubtitleRemoveHandler) {
-        this.mPlayerListenerOnSubtitleRemoveHandler = mPlayerListenerOnSubtitleRemoveHandler;
-    }
-    
-    void setPlayerListenerOnSubtitleShowHandler(final PlayerListenerManager$PlayerListenerOnSubtitleShowHandler mPlayerListenerOnSubtitleShowHandler) {
-        this.mPlayerListenerOnSubtitleShowHandler = mPlayerListenerOnSubtitleShowHandler;
     }
     
     void setPlayerListenerOnUpdatePtsHandler(final PlayerListenerManager$PlayerListenerOnUpdatePtsHandler mPlayerListenerOnUpdatePtsHandler) {

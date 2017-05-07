@@ -165,6 +165,10 @@ public final class NetflixService extends Service implements INetflixService
                 Log.d("NetflixService", "Client logging command intent ");
                 this.mClientLoggingAgent.handleCommand(intent);
             }
+            if (intent.hasCategory("com.netflix.mediaclient.intent.category.USER")) {
+                Log.d("NetflixService", "User agent command intent ");
+                this.mUserAgent.handleCommand(intent);
+            }
         }
     }
     
@@ -319,6 +323,10 @@ public final class NetflixService extends Service implements INetflixService
         this.mResourceFetcher.fetchResource(s, clientLogging$AssetType, new NetflixService$ResourceFetcherClientCallback(this, n, n2));
     }
     
+    public void fetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final long n, final long n2, final int n3, final int n4) {
+        this.mResourceFetcher.fetchResource(s, clientLogging$AssetType, n, n2, new NetflixService$ResourceFetcherClientCallback(this, n3, n4));
+    }
+    
     public String getAccountOwnerToken() {
         return this.mUserAgent.getAccountOwnerToken();
     }
@@ -446,6 +454,10 @@ public final class NetflixService extends Service implements INetflixService
     
     public boolean isTablet() {
         return this.mConfigurationAgent.isTablet();
+    }
+    
+    public boolean isUserAgeVerified() {
+        return this.mUserAgent.isAgeVerified();
     }
     
     public boolean isUserLoggedIn() {
@@ -634,6 +646,10 @@ public final class NetflixService extends Service implements INetflixService
             return;
         }
         Log.i("NetflixService", "unregisterCallback, client: " + remove.hashCode());
+    }
+    
+    public void verifyAge(final int n, final int n2) {
+        this.mUserAgent.verifyAge(new NetflixService$UserAgentClientCallback(this, n, n2));
     }
     
     public void verifyPin(final String s, final int n, final int n2) {

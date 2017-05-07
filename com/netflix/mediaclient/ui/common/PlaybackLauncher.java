@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import com.netflix.mediaclient.ui.pin.PinDialogVault;
-import com.netflix.mediaclient.ui.pin.PinDialogVault$PinInvokedFrom;
-import com.netflix.mediaclient.ui.pin.PinVerifier;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifier;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$PlayInvokedFrom;
 import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
@@ -85,16 +85,16 @@ public final class PlaybackLauncher
         switch (PlaybackLauncher$2.$SwitchMap$com$netflix$mediaclient$ui$common$PlaybackLauncher$PlaybackTarget[whereToPlay(netflixActivity.getServiceManager()).ordinal()]) {
             default: {}
             case 1: {
-                verifyPinAndPlay(netflixActivity, asset, false);
+                verifyAgeAndPinToPlay(netflixActivity, asset, false);
             }
             case 2: {
-                verifyPinAndPlay(netflixActivity, asset, true);
+                verifyAgeAndPinToPlay(netflixActivity, asset, true);
             }
             case 3: {
-                displayErrorDialog(netflixActivity, 2131493394);
+                displayErrorDialog(netflixActivity, 2131493399);
             }
             case 4: {
-                displayErrorDialog(netflixActivity, 2131493395);
+                displayErrorDialog(netflixActivity, 2131493400);
             }
         }
     }
@@ -104,11 +104,11 @@ public final class PlaybackLauncher
     }
     
     public static void startPlaybackForceLocal(final NetflixActivity netflixActivity, final Asset asset) {
-        verifyPinAndPlay(netflixActivity, asset, false);
+        verifyAgeAndPinToPlay(netflixActivity, asset, false);
     }
     
     public static void startPlaybackForceRemote(final NetflixActivity netflixActivity, final Asset asset) {
-        verifyPinAndPlay(netflixActivity, asset, true);
+        verifyAgeAndPinToPlay(netflixActivity, asset, true);
     }
     
     public static void startPlaybackOnPINSuccess(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
@@ -126,13 +126,13 @@ public final class PlaybackLauncher
                 return;
             }
             Log.w("nf_play", "Local playback is disabled, we can not start playback!");
-            displayErrorDialog(netflixActivity, 2131493394);
+            displayErrorDialog(netflixActivity, 2131493399);
         }
     }
     
-    private static void verifyPinAndPlay(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
-        Log.d("nf_play", String.format("nf_pin verifyPinAndPlay - %s protected:%b", asset.getPlayableId(), asset.isPinProtected()));
-        PinVerifier.getInstance().verify(netflixActivity, asset.isPinProtected(), new PinDialogVault(PinDialogVault$PinInvokedFrom.PLAY_LAUNCHER.getValue(), asset, b));
+    private static void verifyAgeAndPinToPlay(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
+        Log.d("nf_play", String.format("nf_pin verifyPinAndPlay - %s ageProtected: %b, pinProtected:%b", asset.getPlayableId(), asset.isAgeProtected(), asset.isPinProtected()));
+        PlayVerifier.verify(netflixActivity, asset.isAgeProtected(), asset.isPinProtected(), new PlayVerifierVault(PlayVerifierVault$PlayInvokedFrom.PLAY_LAUNCHER.getValue(), asset, b));
     }
     
     public static PlaybackLauncher$PlaybackTarget whereToPlay(final ServiceManager serviceManager) {

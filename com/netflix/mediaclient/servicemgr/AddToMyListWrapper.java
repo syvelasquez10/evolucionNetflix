@@ -38,7 +38,7 @@ public class AddToMyListWrapper
     }
     
     void addVideoToMyList(final String s, final VideoType videoType, final int n, final String s2) {
-        this.serviceMan.getBrowse().addToQueue(s, videoType, n, BrowseExperience.shouldLoadKubrickLeaves(), s2, new LoggingManagerCallback("AddToMyListWrapper"));
+        this.serviceMan.getBrowse().addToQueue(s, videoType, n, BrowseExperience.shouldLoadKubrickLeavesInDetails(), s2, new LoggingManagerCallback("AddToMyListWrapper"));
     }
     
     public TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final TextView textView2, final String s, final VideoType videoType, final int n, final boolean b) {

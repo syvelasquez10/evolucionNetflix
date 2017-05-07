@@ -7,7 +7,6 @@ package com.netflix.mediaclient.service.falkor;
 public class Falkor$Leafs
 {
     public static final String BOOKMARK = "bookmark";
-    public static final String BOOKMARK_STILL = "bookmarkStill";
     public static final String DETAIL = "detail";
     public static final String EVIDENCE = "evidence";
     public static final String HERO_IMGS = "heroImgs";

@@ -9,6 +9,7 @@ import com.netflix.mediaclient.util.StringUtils;
 public enum IMedia$SubtitleProfile
 {
     ENHANCED(1, "dfxp-ls-sdh"), 
+    IMAGE(2, "nflx-cmisc"), 
     SIMPLE(0, "simplesdh");
     
     private final String mNccpCode;

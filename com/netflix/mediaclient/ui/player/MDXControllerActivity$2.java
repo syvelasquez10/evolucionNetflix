@@ -16,6 +16,7 @@ import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.text.TextUtils;
 import android.content.IntentFilter;
 import android.content.Context;

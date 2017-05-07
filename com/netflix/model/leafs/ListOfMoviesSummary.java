@@ -12,9 +12,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
 import android.os.Parcel;
-import com.netflix.model.leafs.social.SocialEvidence;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.os.Parcelable$Creator;
@@ -30,7 +28,6 @@ public class ListOfMoviesSummary extends TrackableListSummary implements JsonPop
     private LoMoType enumType;
     private String id;
     private List<String> moreImgs;
-    private SocialEvidence socialEvidence;
     private String type;
     
     static {
@@ -49,13 +46,6 @@ public class ListOfMoviesSummary extends TrackableListSummary implements JsonPop
     
     public int describeContents() {
         return 0;
-    }
-    
-    public List<FriendProfile> getFacebookFriends() {
-        if (this.socialEvidence != null) {
-            return this.socialEvidence.getFacebookFriends();
-        }
-        return null;
     }
     
     public String getId() {
@@ -99,40 +89,33 @@ public class ListOfMoviesSummary extends TrackableListSummary implements JsonPop
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0150: {
+            Label_0142: {
                 switch (s.hashCode()) {
                     case 3355: {
                         if (s.equals("id")) {
                             n = 0;
-                            break Label_0150;
+                            break Label_0142;
                         }
                         break;
                     }
                     case 1714148973: {
                         if (s.equals("displayName")) {
                             n = 1;
-                            break Label_0150;
+                            break Label_0142;
                         }
                         break;
                     }
                     case 3575610: {
                         if (s.equals("type")) {
                             n = 2;
-                            break Label_0150;
-                        }
-                        break;
-                    }
-                    case 609377508: {
-                        if (s.equals("socialEvidence")) {
-                            n = 3;
-                            break Label_0150;
+                            break Label_0142;
                         }
                         break;
                     }
                     case -219259387: {
                         if (s.equals("moreImgs")) {
-                            n = 4;
-                            break Label_0150;
+                            n = 3;
+                            break Label_0142;
                         }
                         break;
                     }
@@ -156,10 +139,6 @@ public class ListOfMoviesSummary extends TrackableListSummary implements JsonPop
                     continue;
                 }
                 case 3: {
-                    (this.socialEvidence = new SocialEvidence()).populate(entry.getValue().getAsJsonObject());
-                    continue;
-                }
-                case 4: {
                     this.moreImgs = JsonUtils.createStringArray(entry.getValue().getAsJsonArray());
                     continue;
                 }

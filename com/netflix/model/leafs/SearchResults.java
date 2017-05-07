@@ -5,8 +5,6 @@
 package com.netflix.model.leafs;
 
 import java.util.Iterator;
-import java.util.Collection;
-import com.netflix.model.branches.FalkorObject;
 import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchSuggestion;
@@ -39,21 +37,6 @@ public class SearchResults implements ISearchResults
     
     private boolean hasVideos() {
         return this.videos != null && this.videos.size() > 0;
-    }
-    
-    @Override
-    public List<FalkorObject> getAllResults() {
-        final ArrayList<Object> list = (ArrayList<Object>)new ArrayList<FalkorObject>();
-        if (this.videos != null) {
-            list.addAll(this.videos);
-        }
-        if (this.people != null) {
-            list.addAll(this.people);
-        }
-        if (this.suggestions != null) {
-            list.addAll(this.suggestions);
-        }
-        return (List<FalkorObject>)list;
     }
     
     @Override

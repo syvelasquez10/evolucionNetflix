@@ -20,6 +20,12 @@ public class Toolbar$LayoutParams extends ActionBar$LayoutParams
         this.gravity = 8388627;
     }
     
+    public Toolbar$LayoutParams(final int n, final int n2, final int gravity) {
+        super(n, n2);
+        this.mViewType = 0;
+        this.gravity = gravity;
+    }
+    
     public Toolbar$LayoutParams(final Context context, final AttributeSet set) {
         super(context, set);
         this.mViewType = 0;

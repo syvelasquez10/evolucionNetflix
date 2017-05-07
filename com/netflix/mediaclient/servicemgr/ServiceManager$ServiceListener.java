@@ -23,11 +23,11 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.model.leafs.Video$Summary;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -342,17 +342,17 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     }
     
     @Override
-    public void onPinVerified(final int n, final boolean b, final Status status) {
+    public void onNotificationsListFetched(final int n, final SocialNotificationsList list, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onPinVerified requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
+            Log.d("ServiceManager", "onNotificationsListFetched requestId=" + n + " erroCode=" + status.getStatusCode());
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
-            Log.d("ServiceManager", "No callback for onPinVerified requestId " + n);
+            Log.d("ServiceManager", "No callback for onNotificationsListFetched requestId " + n);
             return;
         }
-        access$400.onPinVerified(b, status);
+        access$400.onNotificationsListFetched(list, status);
     }
     
     @Override
@@ -424,6 +424,19 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             return;
         }
         demuxCallback.onResourceFetched(s, s2, status);
+    }
+    
+    @Override
+    public void onResourceRawFetched(final int n, final String s, final byte[] array, final Status status) {
+        if (Log.isLoggable() && array != null) {
+            Log.v("ServiceManager", "onResourceRawFetched requestId=" + n + " requestedUrl=" + s + " byte size=" + array.length + " res.getStatusCode()=" + status.getStatusCode());
+        }
+        final ManagerCallback demuxCallback = this.this$0.mCallbackMuxer.demuxCallback(n);
+        if (demuxCallback == null) {
+            Log.d("ServiceManager", "No callback for onResourceRawFetched requestId " + n);
+            return;
+        }
+        demuxCallback.onResourceRawFetched(s, array, status);
     }
     
     @Override
@@ -553,17 +566,17 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     }
     
     @Override
-    public void onSocialNotificationsListFetched(final int n, final SocialNotificationsList list, final Status status) {
+    public void onVerified(final int n, final boolean b, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
-            Log.d("ServiceManager", "onSocialNotificationsListFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onVerified requestId=" + n + " res.getStatusCode()=" + status.getStatusCode());
         }
         final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
         if (access$400 == null) {
-            Log.d("ServiceManager", "No callback for onSocialNotificationsListFetched requestId " + n);
+            Log.d("ServiceManager", "No callback for onVerified requestId " + n);
             return;
         }
-        access$400.onSocialNotificationsListFetched(list, status);
+        access$400.onVerified(b, status);
     }
     
     @Override

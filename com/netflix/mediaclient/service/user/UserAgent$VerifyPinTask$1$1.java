@@ -20,6 +20,6 @@ class UserAgent$VerifyPinTask$1$1 implements Runnable
     
     @Override
     public void run() {
-        this.this$2.this$1.getCallback().onPinVerified(this.val$isPinValid, this.val$res);
+        this.this$2.this$1.getCallback().onVerified(this.val$isPinValid, this.val$res);
     }
 }

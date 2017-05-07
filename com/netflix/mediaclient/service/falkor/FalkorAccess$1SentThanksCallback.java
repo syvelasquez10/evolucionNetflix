@@ -23,7 +23,7 @@ class FalkorAccess$1SentThanksCallback extends FalkorAccess$BrowseAgentClientCal
     @Override
     public void onSocialNotificationWasThanked(final Status status) {
         if (status.isSucces() && this.service != null) {
-            Toast.makeText(this.service.getApplicationContext(), 2131493386, 1).show();
+            Toast.makeText(this.service.getApplicationContext(), 2131493391, 1).show();
             if (this.service.getBrowse() != null) {
                 this.service.getBrowse().refreshSocialNotifications(true, false, null);
             }

@@ -81,6 +81,12 @@ public class Ref implements Expires, PathBound, ReferenceTarget
             }
         }
         else {
+            if (this.refPath == null || this.refPath.isEmpty()) {
+                if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                    Log.v("Ref", "refPath is empty - getValue() returns null");
+                }
+                return null;
+            }
             final Object value2 = modelProxy.getValue(this.refPath);
             if (value2 instanceof ReferenceTarget) {
                 if (Falkor.ENABLE_VERBOSE_LOGGING) {

@@ -7,13 +7,13 @@ package com.netflix.mediaclient.servicemgr;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.model.leafs.Video$Summary;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
-import java.io.Serializable;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
+import java.io.Serializable;
+import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -237,9 +237,22 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
-    public void onPinVerified(final boolean b, final Status status) {
+    public void onNotificationsListFetched(final SocialNotificationsList list, final Status status) {
         if (Log.isLoggable()) {
-            Log.v(this.tag, String.format("onPinVerified, status: %d, isPinValid: %s", status.getStatusCode().getValue(), b));
+            Log.v(this.tag, String.format("onNotificationsListFetched, status: %d", status.getStatusCode().getValue()));
+            final String tag = this.tag;
+            final StringBuilder append = new StringBuilder().append("Notifications count: ");
+            Serializable value;
+            if (list == null) {
+                value = "null";
+            }
+            else if (list.getSocialNotifications() == null) {
+                value = "null";
+            }
+            else {
+                value = list.getSocialNotifications().size();
+            }
+            Log.v(tag, append.append(value).toString());
         }
     }
     
@@ -275,6 +288,13 @@ public class LoggingManagerCallback implements ManagerCallback
     public void onResourceFetched(final String s, final String s2, final Status status) {
         if (Log.isLoggable()) {
             Log.v(this.tag, String.format("onResourceFetched, remoteUrl: %s, status: %d", s, status.getStatusCode().getValue()));
+        }
+    }
+    
+    @Override
+    public void onResourceRawFetched(final String s, final byte[] array, final Status status) {
+        if (Log.isLoggable()) {
+            Log.v(this.tag, String.format("onResourceRawFetched, remoteUrl: %s, status: %d", s, status.getStatusCode().getValue()));
         }
     }
     
@@ -389,9 +409,9 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
-    public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+    public void onVerified(final boolean b, final Status status) {
         if (Log.isLoggable()) {
-            Log.v(this.tag, String.format("onSocialNotificationsListFetched, status: %d", status.getStatusCode().getValue()));
+            Log.v(this.tag, String.format("onVerified, status: %d, isValid: %s", status.getStatusCode().getValue(), b));
         }
     }
     

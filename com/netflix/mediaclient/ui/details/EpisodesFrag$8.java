@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.details;
 
 import android.app.Activity;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 
 class EpisodesFrag$8 implements ErrorWrapper$Callback
@@ -20,6 +21,8 @@ class EpisodesFrag$8 implements ErrorWrapper$Callback
         final Activity activity = this.this$0.getActivity();
         if (activity instanceof ErrorWrapper$Callback) {
             ((ErrorWrapper$Callback)activity).onRetryRequested();
+            return;
         }
+        Log.w("EpisodesFrag", "onRetryRequested but activity doesn't implement Errors callback: " + this.this$0.getActivity());
     }
 }

@@ -5,10 +5,10 @@
 package com.netflix.mediaclient.ui.details;
 
 import java.util.Collection;
-import android.widget.TextView;
-import android.view.ViewGroup;
-import android.view.View;
 import com.netflix.mediaclient.Log;
+import android.widget.TextView;
+import android.view.View;
+import android.view.ViewGroup;
 import java.util.ArrayList;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
@@ -20,18 +20,45 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
 {
     private static final String TAG = "SeasonsSpinnerAdapter";
     private final Context context;
+    private int dropDownBackgroundColor;
+    private int dropDownTextColor;
     private int itemBackgroundResource;
     private final List<SeasonDetails> seasons;
     private SeasonsSpinnerAdapter$IViewCreator viewCreator;
     
     public SeasonsSpinnerAdapter(final NetflixActivity context, final SeasonsSpinnerAdapter$IViewCreator viewCreator) {
         this.seasons = new ArrayList<SeasonDetails>();
+        this.dropDownTextColor = -1;
+        this.dropDownBackgroundColor = -1;
         this.context = (Context)context;
         this.viewCreator = viewCreator;
     }
     
+    private void setIdForTest(final ViewGroup viewGroup) {
+        if (viewGroup == null) {
+            return;
+        }
+        viewGroup.setId(2131427349);
+    }
+    
     public int getCount() {
         return this.seasons.size();
+    }
+    
+    public View getDropDownView(final int n, final View view, final ViewGroup idForTest) {
+        TextView textView = (TextView)view;
+        if (textView == null) {
+            textView = (TextView)this.viewCreator.createItemView();
+        }
+        this.setIdForTest(idForTest);
+        if (this.dropDownBackgroundColor != -1) {
+            textView.setBackgroundResource(this.dropDownBackgroundColor);
+        }
+        if (this.dropDownTextColor != -1) {
+            textView.setTextColor(idForTest.getResources().getColor(this.dropDownTextColor));
+        }
+        textView.setText((CharSequence)this.getItem(n).getSeasonNumberTitle(this.context));
+        return (View)textView;
     }
     
     public SeasonDetails getItem(final int n) {
@@ -68,8 +95,37 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         return (View)textView;
     }
     
+    public void setDropDownBackgroundColor(final int dropDownBackgroundColor) {
+        this.dropDownBackgroundColor = dropDownBackgroundColor;
+    }
+    
+    public void setDropDownTextColor(final int dropDownTextColor) {
+        this.dropDownTextColor = dropDownTextColor;
+    }
+    
     public void setItemBackgroundColor(final int itemBackgroundResource) {
         this.itemBackgroundResource = itemBackgroundResource;
+    }
+    
+    public int tryGetEpisodeIndexBySeasonNumber(int n) {
+        final int n2 = 0;
+        int i = 0;
+        int n3 = 0;
+        while (i < this.getCount()) {
+            if (i == n) {
+                Log.v("SeasonsSpinnerAdapter", "Found season index: " + i);
+                return n3;
+            }
+            n3 += this.getItem(i).getNumOfEpisodes();
+            ++i;
+        }
+        if (this.getCount() > 0) {
+            n = n2;
+        }
+        else {
+            n = -1;
+        }
+        return n;
     }
     
     public int tryGetSeasonIndexBySeasonNumber(int n) {

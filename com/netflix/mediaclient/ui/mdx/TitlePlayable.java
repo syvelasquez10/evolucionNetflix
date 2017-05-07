@@ -9,11 +9,11 @@ import com.netflix.mediaclient.servicemgr.interface_.Playable;
 
 class TitlePlayable implements Playable
 {
-    private boolean mCanBeSharedOnFacebook;
     private int mDuration;
     private int mEndtime;
     private boolean mEpisode;
     private int mEpisodeNumber;
+    private boolean mIsAgeProtected;
     private boolean mIsAutoPlayEnabled;
     private boolean mIsNextPlayableEpisode;
     private boolean mIsPinProtected;
@@ -34,18 +34,13 @@ class TitlePlayable implements Playable
         this.mParentTitle = asset.getParentTitle();
         this.mWatchedDate = asset.getWatchedDate();
         this.mPlaybackBookmark = asset.getPlaybackBookmark();
-        this.mCanBeSharedOnFacebook = asset.canBeSharedOnFacebook();
         this.mSeasonNumber = asset.getSeasonNumber();
         this.mEpisodeNumber = asset.getEpisodeNumber();
         this.mDuration = asset.getDuration();
         this.mIsAutoPlayEnabled = asset.isAutoPlayEnabled();
         this.mIsNextPlayableEpisode = asset.isNextPlayableEpisode();
+        this.mIsAgeProtected = asset.isAgeProtected();
         this.mIsPinProtected = asset.isPinProtected();
-    }
-    
-    @Override
-    public boolean canBeSharedOnFacebook() {
-        return this.mCanBeSharedOnFacebook;
     }
     
     @Override
@@ -101,6 +96,11 @@ class TitlePlayable implements Playable
     @Override
     public int getSeasonNumber() {
         return this.mSeasonNumber;
+    }
+    
+    @Override
+    public boolean isAgeProtected() {
+        return this.mIsAgeProtected;
     }
     
     @Override

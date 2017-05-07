@@ -15,7 +15,7 @@ class UserAgent$VerifyPinTask$1 extends SimpleUserAgentWebCallback
     }
     
     @Override
-    public void onPinVerified(final boolean b, final Status status) {
+    public void onVerified(final boolean b, final Status status) {
         this.this$1.this$0.getMainHandler().post((Runnable)new UserAgent$VerifyPinTask$1$1(this, b, status));
     }
 }

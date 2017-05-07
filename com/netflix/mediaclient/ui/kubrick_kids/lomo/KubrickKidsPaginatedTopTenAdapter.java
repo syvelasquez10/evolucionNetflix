@@ -30,7 +30,7 @@ public class KubrickKidsPaginatedTopTenAdapter extends KubrickPaginatedLoMoAdapt
     
     @Override
     public int getRowHeightInPx() {
-        return (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true, LoMoUtils$LoMoWidthType.KUBRICK_KIDS_TOP_TEN_ROW) / this.computeNumItemsPerPage() * 0.5625f);
+        return (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true, LoMoUtils$LoMoWidthType.KUBRICK_KIDS_TOP_TEN_ROW) / this.numItemsPerPage * 0.5625f);
     }
     
     @Override

@@ -9,7 +9,7 @@ import android.text.Html;
 import android.view.View;
 import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import android.widget.TextView;
-import com.netflix.mediaclient.ui.social.notifications.SocialNotificationViewHolder;
+import com.netflix.mediaclient.ui.social.notifications.NotificationViewHolder;
 import com.netflix.mediaclient.util.StringUtils;
 import android.support.v4.app.NotificationCompat$BigPictureStyle;
 import android.content.Intent;
@@ -35,20 +35,20 @@ public class SocialVideoRecommendation extends SocialNotification
         final int n = (int)System.currentTimeMillis();
         final Intent intentForBroadcastReceiver = DetailsActivityLauncher.getIntentForBroadcastReceiver(socialNotificationSummary.getVideo().getType(), socialNotificationSummary.getId(), socialNotificationSummary.getVideo().getId(), socialNotificationSummary.getVideo().getTitle(), new PlayContextImp(socialNotificationsListSummary.getRequestId(), socialNotificationsListSummary.getMDPTrackId(), 0, 0), null, messageData);
         NotificationUtils.addNotificationSourceToIntent(intentForBroadcastReceiver);
-        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837686, context.getString(2131493389), PendingIntent.getBroadcast(context.getApplicationContext(), n, intentForBroadcastReceiver, 134217728)));
+        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837688, context.getString(2131493394), PendingIntent.getBroadcast(context.getApplicationContext(), n, intentForBroadcastReceiver, 134217728)));
         final Intent sayThanksIntent = SendThanksToSocialNotificationActionHandler.getSayThanksIntent(context, socialNotificationSummary.getId(), socialNotificationSummary.getStoryId(), true, messageData);
         NotificationUtils.addNotificationSourceToIntent(sayThanksIntent);
-        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837738, context.getString(2131493390), PendingIntent.getBroadcast(context.getApplicationContext(), n, sayThanksIntent, 134217728)));
+        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837740, context.getString(2131493395), PendingIntent.getBroadcast(context.getApplicationContext(), n, sayThanksIntent, 134217728)));
         final Intent coldStartIntent = PlayerActivity.createColdStartIntent(socialNotificationSummary.getId(), socialNotificationSummary.getVideo().getId(), socialNotificationSummary.getVideo().getType(), new PlayContextImp(socialNotificationsListSummary.getRequestId(), socialNotificationsListSummary.getPlayerTrackId(), 0, 0), messageData);
         NotificationUtils.addNotificationSourceToIntent(coldStartIntent);
-        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837697, context.getString(2131493391), PendingIntent.getBroadcast(context.getApplicationContext(), n, coldStartIntent, 134217728)));
+        notificationCompat$Builder.addAction(new NotificationCompat$Action(2130837699, context.getString(2131493396), PendingIntent.getBroadcast(context.getApplicationContext(), n, coldStartIntent, 134217728)));
     }
     
     @Override
     protected void addNotificationText(final NotificationCompat$Builder notificationCompat$Builder, final NotificationCompat$BigPictureStyle notificationCompat$BigPictureStyle, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         String s;
         if (StringUtils.isEmpty(socialNotificationSummary.getMessageString())) {
-            s = context.getResources().getString(2131493372);
+            s = context.getResources().getString(2131493377);
         }
         else {
             s = "\"" + socialNotificationSummary.getMessageString() + "\"";
@@ -58,8 +58,8 @@ public class SocialVideoRecommendation extends SocialNotification
     }
     
     @Override
-    public TextView getAddToMyListButton(final SocialNotificationViewHolder socialNotificationViewHolder) {
-        return (TextView)socialNotificationViewHolder.getRightButton();
+    public TextView getAddToMyListButton(final NotificationViewHolder notificationViewHolder) {
+        return (TextView)notificationViewHolder.getRightButton();
     }
     
     @Override
@@ -68,30 +68,34 @@ public class SocialVideoRecommendation extends SocialNotification
     }
     
     @Override
-    public View getSayThanksButton(final SocialNotificationViewHolder socialNotificationViewHolder) {
-        return (View)socialNotificationViewHolder.getLeftButton();
+    public View getSayThanksButton(final NotificationViewHolder notificationViewHolder) {
+        return (View)notificationViewHolder.getLeftButton();
     }
     
     @Override
-    public void initView(final View view, final SocialNotificationViewHolder socialNotificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
+    public void initView(final View view, final NotificationViewHolder notificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         boolean enabled = true;
-        super.initView(view, socialNotificationViewHolder, socialNotificationSummary, context);
-        socialNotificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493376, new Object[] { socialNotificationSummary.getVideo().getTitle() })));
-        socialNotificationViewHolder.getLeftButton().setVisibility(0);
-        final Button leftButton = socialNotificationViewHolder.getLeftButton();
-        if (socialNotificationSummary.getWasThanked()) {
-            enabled = false;
+        super.initView(view, notificationViewHolder, socialNotificationSummary, context);
+        notificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493381, new Object[] { socialNotificationSummary.getVideo().getTitle() })));
+        if (notificationViewHolder.getLeftButton() != null) {
+            notificationViewHolder.getLeftButton().setVisibility(0);
+            final Button leftButton = notificationViewHolder.getLeftButton();
+            if (socialNotificationSummary.getWasThanked()) {
+                enabled = false;
+            }
+            leftButton.setEnabled(enabled);
+            final Button leftButton2 = notificationViewHolder.getLeftButton();
+            int text;
+            if (socialNotificationSummary.getWasThanked()) {
+                text = 2131493387;
+            }
+            else {
+                text = 2131493386;
+            }
+            leftButton2.setText(text);
         }
-        leftButton.setEnabled(enabled);
-        final Button leftButton2 = socialNotificationViewHolder.getLeftButton();
-        int text;
-        if (socialNotificationSummary.getWasThanked()) {
-            text = 2131493382;
+        if (notificationViewHolder.getRightButton() != null) {
+            notificationViewHolder.getRightButton().setVisibility(0);
         }
-        else {
-            text = 2131493381;
-        }
-        leftButton2.setText(text);
-        socialNotificationViewHolder.getRightButton().setVisibility(0);
     }
 }

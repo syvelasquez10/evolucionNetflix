@@ -4,14 +4,16 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
-import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import android.view.ViewGroup;
 import android.util.AttributeSet;

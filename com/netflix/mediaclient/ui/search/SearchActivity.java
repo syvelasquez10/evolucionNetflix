@@ -71,8 +71,8 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void findViews() {
-        this.fragGroup = (ViewGroup)this.findViewById(2131427810);
-        this.loadingWrapper = this.findViewById(2131427809);
+        this.fragGroup = (ViewGroup)this.findViewById(2131427797);
+        this.loadingWrapper = this.findViewById(2131427796);
     }
     
     private void handleNewIntent(final Intent intent) {
@@ -131,7 +131,7 @@ public class SearchActivity extends NetflixActivity
     private void setupFragments(final Bundle bundle) {
         if (bundle == null) {
             (this.resultsFrag = SearchResultsFrag.create()).setServiceManager(this.serviceManager);
-            this.getFragmentManager().beginTransaction().add(2131427810, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131427797, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
             return;
         }
@@ -209,7 +209,7 @@ public class SearchActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         SearchUtils.setSearchExperience(BrowseExperience.getSearchExperience());
-        this.setContentView(2130903185);
+        this.setContentView(2130903179);
         this.setupActionBar();
         this.findViews();
         this.setupLoadingWrapper();
@@ -221,7 +221,7 @@ public class SearchActivity extends NetflixActivity
         this.handleNewIntent(this.getIntent());
         if (BrowseExperience.isKubrickKids()) {
             this.leWrapper.getErrorMessageTextView().setTextColor(this.getResources().getColor(2131230822));
-            ViewUtils.clearShadow(this.leWrapper.getErrorMessageTextView());
+            ViewUtils.removeShadow(this.leWrapper.getErrorMessageTextView());
         }
     }
     

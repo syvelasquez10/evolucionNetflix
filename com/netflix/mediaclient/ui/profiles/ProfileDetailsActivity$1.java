@@ -12,6 +12,7 @@ import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import android.content.DialogInterface;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.view.ViewPropertyAnimator;
 import com.netflix.mediaclient.util.DeviceUtils;

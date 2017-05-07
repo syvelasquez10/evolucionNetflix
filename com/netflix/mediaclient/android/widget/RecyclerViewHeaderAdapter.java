@@ -4,13 +4,17 @@
 
 package com.netflix.mediaclient.android.widget;
 
-import com.netflix.mediaclient.ui.details.DummyEpisodeDetails;
+import java.io.Serializable;
 import java.util.Collection;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewParent;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup$IVideoView;
 import com.netflix.mediaclient.ui.details.IEpisodeView;
 import android.view.ViewGroup;
+import com.netflix.mediaclient.Log;
+import android.view.ViewGroup$LayoutParams;
+import android.widget.FrameLayout;
+import android.content.Context;
 import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.widget.Checkable;
@@ -22,6 +26,7 @@ import android.support.v7.widget.RecyclerView$Adapter;
 
 public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<RecyclerView$ViewHolder>
 {
+    private static final String TAG = "RecyclerViewHeaderAdapter";
     private static final int TYPE_HEADER = 0;
     public static final int TYPE_ITEM_ONE = 1;
     public static final int TYPE_ITEM_TWO = 2;
@@ -29,9 +34,10 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     private final List<View> headerViews;
     private boolean isSingleChoiceMode;
     private int itemCheckedPosition;
-    private RecyclerViewHeaderAdapter$OnItemClickListener itemClickListener;
     private int itemContentType;
     private Checkable lastCheckedView;
+    private int prevCount;
+    private int prevHeaderCount;
     private Trackable trackable;
     private RecyclerViewHeaderAdapter$IViewCreator viewCreator;
     
@@ -42,7 +48,15 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         this.lastCheckedView = null;
         this.isSingleChoiceMode = true;
         this.itemCheckedPosition = -1;
+        this.prevCount = -1;
+        this.prevHeaderCount = -1;
         this.viewCreator = viewCreator;
+    }
+    
+    private static View createFrameView(final Context context) {
+        final FrameLayout frameLayout = new FrameLayout(context);
+        ((View)frameLayout).setLayoutParams(new ViewGroup$LayoutParams(-1, -2));
+        return (View)frameLayout;
     }
     
     private boolean isPositionHeader(final int n) {
@@ -50,24 +64,31 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     }
     
     private void onBindHeaderView(final RecyclerView$ViewHolder recyclerView$ViewHolder, final int n) {
+        if (Log.isLoggable()) {
+            Log.v("RecyclerViewHeaderAdapter", "onBindHeaderView - re-adding header view");
+        }
         this.removeViewHolderFromViewHierarchy(recyclerView$ViewHolder, n);
         ((ViewGroup)recyclerView$ViewHolder.itemView).addView((View)this.headerViews.get(n));
     }
     
     private void onBindItemView(final RecyclerView$ViewHolder recyclerView$ViewHolder, final int n) {
+        if (Log.isLoggable()) {
+            Log.v("RecyclerViewHeaderAdapter", "onBindItemView - position: " + n);
+        }
         final Video item = this.getItem(n);
         if (item != null) {
-            if (this.getActiveLoadingView(n) != null) {
-                ((RecyclerViewHeaderAdapter$VideoViewHolder)recyclerView$ViewHolder).setLoadingViewVisibility(0);
-                return;
-            }
-            ((RecyclerViewHeaderAdapter$VideoViewHolder)recyclerView$ViewHolder).setLoadingViewVisibility(8);
             final View child = ((ViewGroup)recyclerView$ViewHolder.itemView).getChildAt(0);
             if (child instanceof IEpisodeView) {
+                if (Log.isLoggable()) {
+                    Log.v("RecyclerViewHeaderAdapter", "onBindItemView - updating for episode, position: " + n);
+                }
                 ((IEpisodeView<Video>)child).update(item);
                 return;
             }
             if (child instanceof VideoViewGroup$IVideoView) {
+                if (Log.isLoggable()) {
+                    Log.v("RecyclerViewHeaderAdapter", "onBindItemView - updating for video view, position: " + n);
+                }
                 ((VideoViewGroup$IVideoView<Video>)child).update(item, this.getTrackable(), n, false, false);
             }
         }
@@ -83,27 +104,29 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     
     public void addHeaderView(final View view) {
         if (!this.headerViews.contains(view)) {
+            if (Log.isLoggable()) {
+                Log.v("RecyclerViewHeaderAdapter", "Adding header view: " + view);
+            }
             this.headerViews.add(view);
         }
     }
     
-    protected View getActiveLoadingView(final int n) {
-        return null;
+    public void clearData() {
+        this.data.clear();
+        this.notifyDataSetChanged();
     }
     
     public int getCheckedItemPosition() {
         return this.itemCheckedPosition;
     }
     
-    public int getDataSetCount() {
-        if (this.data == null) {
-            return 0;
-        }
-        return this.data.size() - this.getHeaderViewsCount();
-    }
-    
     public int getHeaderViewsCount() {
-        return this.headerViews.size();
+        final int size = this.headerViews.size();
+        if (Log.isLoggable() && this.prevHeaderCount != size) {
+            this.prevHeaderCount = size;
+            Log.v("RecyclerViewHeaderAdapter", "getHeaderViewsCount changed to: " + size);
+        }
+        return size;
     }
     
     public Video getItem(final int n) {
@@ -115,9 +138,15 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     
     @Override
     public int getItemCount() {
-        if (this.data == null) {
-            return 0;
+        final int prevCount = this.data.size() + this.getHeaderViewsCount();
+        if (Log.isLoggable() && this.prevCount != prevCount) {
+            this.prevCount = prevCount;
+            Log.v("RecyclerViewHeaderAdapter", "getItemCount() result changed to: " + prevCount);
         }
+        return prevCount;
+    }
+    
+    protected int getItemCountExcludingHeaders() {
         return this.data.size();
     }
     
@@ -139,17 +168,24 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     
     @Override
     public void onBindViewHolder(final RecyclerView$ViewHolder recyclerView$ViewHolder, final int n) {
-        if (this.getItemViewType(n) == 0) {
+        final int itemViewType = this.getItemViewType(n);
+        if (Log.isLoggable()) {
+            Log.v("RecyclerViewHeaderAdapter", "onBindViewHolder, viewType: " + itemViewType);
+        }
+        if (itemViewType == 0) {
             this.onBindHeaderView(recyclerView$ViewHolder, n);
         }
-        else if (this.getItemViewType(n) == this.itemContentType) {
-            this.onBindItemView(recyclerView$ViewHolder, n);
+        else if (itemViewType == this.itemContentType) {
+            this.onBindItemView(recyclerView$ViewHolder, n - this.getHeaderViewsCount());
         }
         this.onPostItemViewBind(n);
     }
     
     @Override
     public RecyclerView$ViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int n) {
+        if (Log.isLoggable()) {
+            Log.v("RecyclerViewHeaderAdapter", "onCreateViewHolder, viewType: " + n);
+        }
         if (n == this.itemContentType) {
             return new RecyclerViewHeaderAdapter$VideoViewHolder(this, this.viewCreator.createItemView(), viewGroup.getContext());
         }
@@ -160,10 +196,6 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     }
     
     protected void onPostItemViewBind(final int n) {
-    }
-    
-    public boolean removeHeaderView(final View view) {
-        return this.headerViews.remove(view);
     }
     
     public void setItemChecked(final int n, final RecyclerView recyclerView) {
@@ -183,10 +215,18 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     }
     
     public void setItems(final Collection<? extends Video> collection) {
-        this.data.clear();
-        for (int i = 0; i < this.getHeaderViewsCount(); ++i) {
-            this.data.add(new DummyEpisodeDetails(i));
+        if (Log.isLoggable()) {
+            final StringBuilder append = new StringBuilder().append("setItems, newItems: ");
+            Serializable value;
+            if (collection == null) {
+                value = "null";
+            }
+            else {
+                value = collection.size();
+            }
+            Log.v("RecyclerViewHeaderAdapter", append.append(value).toString());
         }
+        this.data.clear();
         this.data.addAll(collection);
         this.notifyDataSetChanged();
     }
@@ -195,10 +235,6 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         this.setViewCreator(viewCreator);
         this.setItemContentType(itemContentType);
         this.setItems(items);
-    }
-    
-    public void setOnItemClickListener(final RecyclerViewHeaderAdapter$OnItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
     }
     
     public void setSingleChoiceMode(final boolean isSingleChoiceMode) {
@@ -232,14 +268,20 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         this.viewCreator = viewCreator;
     }
     
-    public void updateItems(final Collection<? extends Video> collection, int i, final int n) {
-        if (i == 0) {
-            this.data.clear();
-        }
-        if (this.data.size() == 0) {
-            for (i = 0; i < this.getHeaderViewsCount(); ++i) {
-                this.data.add(new DummyEpisodeDetails(i));
+    protected void updateItems(final Collection<? extends Video> collection, final int n) {
+        if (Log.isLoggable()) {
+            final StringBuilder append = new StringBuilder().append("updateItems, newItems: ");
+            Serializable value;
+            if (collection == null) {
+                value = "null";
             }
+            else {
+                value = collection.size();
+            }
+            Log.v("RecyclerViewHeaderAdapter", append.append(value).append(", start index: ").append(n).toString());
+        }
+        if (n == 0) {
+            this.data.clear();
         }
         this.data.addAll(collection);
         this.notifyDataSetChanged();

@@ -19,6 +19,6 @@ class KubrickKidsShowDetailsFrag$3 implements SeasonsSpinnerAdapter$IViewCreator
     
     @Override
     public View createItemView() {
-        return ((LayoutInflater)this.this$0.getActivity().getSystemService("layout_inflater")).inflate(2130903120, (ViewGroup)null, false);
+        return ((LayoutInflater)this.this$0.getActivity().getSystemService("layout_inflater")).inflate(2130903108, (ViewGroup)null, false);
     }
 }

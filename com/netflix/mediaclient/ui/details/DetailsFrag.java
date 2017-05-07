@@ -4,9 +4,11 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
+import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.Log;
@@ -39,7 +41,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     protected abstract VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final T p0);
     
     protected int getLayoutId() {
-        return 2130903210;
+        return 2130903206;
     }
     
     protected ServiceManager getServiceManager() {
@@ -67,7 +69,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         final View inflate = layoutInflater.inflate(this.getLayoutId(), (ViewGroup)null, false);
         this.initDetailsViewGroup(inflate);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        this.primaryView = inflate.findViewById(2131427851);
+        this.primaryView = inflate.findViewById(2131427842);
         if (this.primaryView != null) {
             this.primaryView.setVerticalScrollBarEnabled(false);
         }
@@ -123,8 +125,11 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         if (this.primaryView != null) {
             AnimationUtils.showView(this.primaryView, true);
         }
-        ((DetailsActivity)this.getActivity()).updateMenus(mVideoDetails);
-        ServiceManagerUtils.cacheManifestIfEnabled(this.getServiceManager(), this.mVideoDetails.getPlayable());
+        PlayContext playContext = null;
+        if (this.getActivity() instanceof PlayContextProvider) {
+            playContext = ((PlayContextProvider)this.getActivity()).getPlayContext();
+        }
+        ServiceManagerUtils.cacheManifestIfEnabled(this.getServiceManager(), this.mVideoDetails.getPlayable(), playContext);
         this.detailsViewGroup.updateDetails(mVideoDetails, this.getDetailsStringProvider(mVideoDetails));
         this.addToListWrapper = SocialUtils.setupVideoDetailsButtons(this.detailsViewGroup, (NetflixActivity)this.getActivity(), this.manager, this.getVideoId(), this.mVideoDetails.getTitle(), this.mVideoDetails.getType());
     }

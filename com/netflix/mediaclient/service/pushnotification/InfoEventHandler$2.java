@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.service.pushnotification;
 
 import com.netflix.mediaclient.util.ParcelUtils;
-import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;

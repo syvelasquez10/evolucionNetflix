@@ -14,9 +14,11 @@ import java.util.LinkedHashSet;
 import java.io.IOException;
 import java.io.Flushable;
 import com.netflix.mediaclient.service.falkor.Falkor$SimilarRequestType;
-import com.netflix.mediaclient.util.FileUtils;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.model.leafs.Video$InQueue;
 import com.netflix.model.branches.FalkorVideo;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 import com.netflix.mediaclient.util.JsonUtils;
 import com.google.gson.JsonElement;
@@ -26,6 +28,7 @@ import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.util.Map;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry$ResponsePathFormat;
+import com.netflix.mediaclient.util.FileUtils;
 import java.util.Comparator;
 import java.util.Collections;
 import com.netflix.mediaclient.util.AlphanumComparator;
@@ -40,11 +43,13 @@ import android.os.Handler;
 import com.google.gson.JsonParser;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.util.UriUtil;
-import java.util.Collection;
-import java.util.ArrayList;
+import com.netflix.mediaclient.android.app.NetflixStatus;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.LogUtils;
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import java.util.Collection;
+import java.util.ArrayList;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
@@ -59,7 +64,7 @@ import com.netflix.mediaclient.util.DataUtil$StringPair;
 import java.util.List;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
-class CachedModelProxy$CmpTask$1 extends FalkorVolleyWebClientRequest
+class CachedModelProxy$CmpTask$1 extends FalkorVolleyWebClientRequest<Void>
 {
     private final boolean notOnMain;
     private final List<DataUtil$StringPair> optionalRequestParams;
@@ -121,7 +126,7 @@ class CachedModelProxy$CmpTask$1 extends FalkorVolleyWebClientRequest
     }
     
     @Override
-    protected void onSuccess(final Object o) {
+    protected void onSuccess(final Void void1) {
         ThreadUtils.assertOnMain();
     }
     
@@ -131,10 +136,12 @@ class CachedModelProxy$CmpTask$1 extends FalkorVolleyWebClientRequest
         if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.d("CachedModelProxy", "Response: " + s);
         }
+        System.currentTimeMillis();
         final JsonObject asJsonObject = this.this$1.this$0.jsonParser.parse(s).getAsJsonObject();
         if (FalkorParseUtils.hasErrors(asJsonObject)) {
             if (Log.isLoggable()) {
                 Log.d("CachedModelProxy", "Found errors in json response: " + asJsonObject);
+                Log.d("CachedModelProxy", "Error msg: " + FalkorParseUtils.getErrorMessage(asJsonObject));
             }
             throw this.this$1.handleJsonError(asJsonObject);
         }

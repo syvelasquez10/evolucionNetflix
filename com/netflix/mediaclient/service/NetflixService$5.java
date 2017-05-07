@@ -57,7 +57,7 @@ import android.os.IBinder;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;
 import android.app.Service;
-import com.netflix.mediaclient.ui.pin.PinVerifier;
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;

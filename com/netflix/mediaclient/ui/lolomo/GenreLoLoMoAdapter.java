@@ -42,6 +42,6 @@ public class GenreLoLoMoAdapter extends BaseLoLoMoAdapter<Genre>
             return;
         }
         Log.v("GenreLoLoMoAdapter", "Prefetching genre lolomo...");
-        serviceManager.getBrowse().prefetchGenreLoLoMo(this.getGenreId(), 0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD) - 1, BrowseExperience.shouldLoadKubrickLeaves(), false, new GenreLoLoMoAdapter$1(this, "GenreLoLoMoAdapter"));
+        serviceManager.getBrowse().prefetchGenreLoLoMo(this.getGenreId(), 0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD) - 1, BrowseExperience.shouldLoadKubrickLeavesInLolomo(), false, new GenreLoLoMoAdapter$1(this, "GenreLoLoMoAdapter"));
     }
 }

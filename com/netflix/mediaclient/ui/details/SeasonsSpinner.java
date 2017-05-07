@@ -6,19 +6,23 @@ package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
-import android.view.View;
 import android.widget.AdapterView;
 import com.netflix.mediaclient.Log;
+import android.view.View;
+import com.netflix.mediaclient.util.api.Api16Util;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.AdapterView$OnItemSelectedListener;
+import android.graphics.drawable.Drawable;
 import android.widget.Spinner;
 
 public class SeasonsSpinner extends Spinner
 {
-    private static final int STANDARD_BG_RES_ID = 2130837890;
     private static final String TAG = "SeasonsSpinner";
+    private Drawable drawableMultipleSeasons;
+    private Drawable drawableOneSeason;
     private AdapterView$OnItemSelectedListener itemSelectedListener;
+    private AdapterView$OnItemSelectedListener touchListener;
     
     public SeasonsSpinner(final Context context) {
         super(context, (AttributeSet)null);
@@ -41,15 +45,30 @@ public class SeasonsSpinner extends Spinner
     }
     
     private void init() {
-        this.setBackgroundResource(2130837890);
+        this.drawableMultipleSeasons = this.getResources().getDrawable(2130837900);
+        this.drawableOneSeason = this.getResources().getDrawable(2131230820);
+        Api16Util.setBackgroundDrawableCompat((View)this, this.drawableMultipleSeasons);
     }
     
-    public int getSeasonNumberForPosition(final int n) {
-        return ((SeasonsSpinnerAdapter)this.getAdapter()).getSeasonNumberForPosition(n);
+    public void setBackground(final Drawable drawableMultipleSeasons, final Drawable drawableOneSeason) {
+        this.drawableMultipleSeasons = drawableMultipleSeasons;
+        this.drawableOneSeason = drawableOneSeason;
+    }
+    
+    public void setNonTouchSelection(final int selection) {
+        Log.v("SeasonsSpinner", "Setting selection to position: " + selection);
+        super.setSelection(selection);
+        if (this.itemSelectedListener != null) {
+            this.itemSelectedListener.onItemSelected((AdapterView)this, (View)this, selection, this.getSelectedItemId());
+        }
     }
     
     public void setOnItemSelectedListener(final AdapterView$OnItemSelectedListener itemSelectedListener) {
         this.itemSelectedListener = itemSelectedListener;
+    }
+    
+    public void setOnItemTouchListener(final AdapterView$OnItemSelectedListener touchListener) {
+        this.touchListener = touchListener;
     }
     
     public void setSelection(final int selection) {
@@ -58,11 +77,9 @@ public class SeasonsSpinner extends Spinner
         if (this.itemSelectedListener != null) {
             this.itemSelectedListener.onItemSelected((AdapterView)this, (View)this, selection, this.getSelectedItemId());
         }
-    }
-    
-    public void setSelectionWithoutCallback(final int selection) {
-        Log.v("SeasonsSpinner", "Setting selection (no callback) to position: " + selection);
-        super.setSelection(selection);
+        if (this.touchListener != null) {
+            this.touchListener.onItemSelected((AdapterView)this, (View)this, selection, this.getSelectedItemId());
+        }
     }
     
     public int tryGetSeasonIndexBySeasonNumber(final int n) {
@@ -73,13 +90,10 @@ public class SeasonsSpinner extends Spinner
         ((SeasonsSpinnerAdapter)this.getAdapter()).updateSeasonData(list);
         final boolean enabled = ((SeasonsSpinnerAdapter)this.getAdapter()).getCount() > 1;
         this.setEnabled(enabled);
-        int backgroundResource;
         if (enabled) {
-            backgroundResource = 2130837890;
+            Api16Util.setBackgroundDrawableCompat((View)this, this.drawableMultipleSeasons);
+            return;
         }
-        else {
-            backgroundResource = 2131230820;
-        }
-        this.setBackgroundResource(backgroundResource);
+        Api16Util.setBackgroundDrawableCompat((View)this, this.drawableOneSeason);
     }
 }

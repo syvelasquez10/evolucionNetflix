@@ -22,9 +22,9 @@ public interface UserAgent$UserAgentCallback
     
     void onLogoutComplete(final Status p0);
     
-    void onPinVerified(final boolean p0, final Status p1);
-    
     void onProfilesListUpdateResult(final Status p0);
     
     void onSocialNotificationsListFetched(final SocialNotificationsList p0, final Status p1);
+    
+    void onVerified(final boolean p0, final Status p1);
 }

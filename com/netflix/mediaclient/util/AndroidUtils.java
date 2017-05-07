@@ -56,6 +56,10 @@ public final class AndroidUtils
     public static final boolean enableTestServer = false;
     public static final boolean isReleaseForConfigServer = true;
     
+    public static boolean canDisplayTransparentWebpImages() {
+        return getAndroidVersion() >= 18;
+    }
+    
     public static void clearApplicationData(final Context context) {
         final File file = new File(context.getCacheDir().getParent());
         if (file.exists()) {

@@ -50,7 +50,7 @@ public class ServiceErrorsHandler
         Log.v("ServiceErrorsHandler", "Handling manager response, code: " + statusCode + " [" + activity.getClass().toString() + "]");
         switch (ServiceErrorsHandler$4.$SwitchMap$com$netflix$mediaclient$StatusCode[statusCode.ordinal()]) {
             default: {
-                provideDialog(activity, activity.getString(2131493265) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131493266) + " (" + statusCode.getValue() + ")");
                 b = true;
                 return b;
             }
@@ -75,7 +75,7 @@ public class ServiceErrorsHandler
             case 7:
             case 8:
             case 9: {
-                provideDialog(activity, activity.getString(2131493264) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131493265) + " (" + statusCode.getValue() + ")");
                 return true;
             }
         }

@@ -14,13 +14,14 @@ import com.netflix.mediaclient.javabridge.invoke.BaseInvoke;
 public class CacheSchedule extends BaseInvoke
 {
     private static final String METHOD = "cacheSchedule";
+    private static final String PARAMS = "params";
     private static final String PROPERTY_IDS = "ids";
     private static final String PROPERTY_MOVIEID = "movieId";
     private static final String PROPERTY_PRIORITY = "priority";
     private static final String PROPERTY_TRACKID = "trackId";
     private static final String TARGET = "media";
     
-    public CacheSchedule(final IManifestCache$CacheScheduleRequest[] array) {
+    public CacheSchedule(final IManifestCache$CacheScheduleRequest[] array, final AuthorizationParams authorizationParams) {
         super("media", "cacheSchedule");
         final JSONArray jsonArray = new JSONArray();
         try {
@@ -34,6 +35,10 @@ public class CacheSchedule extends BaseInvoke
             }
             final JSONObject jsonObject2 = new JSONObject();
             jsonObject2.put("ids", (Object)jsonArray);
+            final JSONObject params = authorizationParams.getParams();
+            if (params != null) {
+                jsonObject2.put("params", (Object)params);
+            }
             this.arguments = jsonObject2.toString();
         }
         catch (JSONException ex) {

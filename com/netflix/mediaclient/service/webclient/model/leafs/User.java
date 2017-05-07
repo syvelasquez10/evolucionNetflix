@@ -13,6 +13,7 @@ import com.netflix.mediaclient.util.StringUtils;
 
 public class User implements com.netflix.mediaclient.servicemgr.interface_.user.User
 {
+    private static final String FIELD_AGE_VERIFIED = "ageVerified";
     private static final String FIELD_EMAIL = "email";
     private static final String FIELD_FIRST_NAME = "firstName";
     private static final String FIELD_LAST_NAME = "lastName";
@@ -43,6 +44,7 @@ public class User implements com.netflix.mediaclient.servicemgr.interface_.user.
                     this.summary.email = JsonUtils.getString(jsonObject, "email", null);
                     this.summary.firstName = JsonUtils.getString(jsonObject, "firstName", null);
                     this.summary.lastName = JsonUtils.getString(jsonObject, "lastName", null);
+                    this.summary.isAgeVerified = JsonUtils.getBoolean(jsonObject, "ageVerified", false);
                     string = JsonUtils.getString(jsonObject, "subtitleOverride", null);
                     if (StringUtils.isEmpty(string)) {
                         final SubtitlePreference subtitleDefaults = subtitlePreference;
@@ -97,6 +99,11 @@ public class User implements com.netflix.mediaclient.servicemgr.interface_.user.
     }
     
     @Override
+    public boolean isAgeVerified() {
+        return this.summary != null && this.summary.isAgeVerified;
+    }
+    
+    @Override
     public String toString() {
         final JSONObject jsonObject = new JSONObject();
         while (true) {
@@ -105,6 +112,7 @@ public class User implements com.netflix.mediaclient.servicemgr.interface_.user.
                 jsonObject.put("email", (Object)this.getEmail());
                 jsonObject.put("firstName", (Object)this.getFirstName());
                 jsonObject.put("lastName", (Object)this.getLastName());
+                jsonObject.put("ageVerified", this.isAgeVerified());
                 if (this.subtitleDefaults != null) {
                     jsonObject.put("subtitleOverride", (Object)this.subtitleDefaults.toString());
                 }

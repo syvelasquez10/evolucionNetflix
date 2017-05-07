@@ -5,18 +5,20 @@
 package com.netflix.mediaclient.service.resfetcher.volley;
 
 import java.util.LinkedList;
-import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import com.netflix.mediaclient.android.widget.AdvancedImageView$ImageLoaderInfo;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
+import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.StringUtils;
 import com.android.volley.Request;
 import com.android.volley.Response$ErrorListener;
 import com.android.volley.Response$Listener;
-import android.graphics.Bitmap$Config;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.UriUtil;
+import android.graphics.Bitmap$Config;
 import com.android.volley.Request$Priority;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.android.volley.VolleyError;
@@ -76,7 +78,7 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         }
     }
     
-    private ImageLoader$ImageContainer get(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ImageLoader$ImageListener imageLoader$ImageListener, final int n, final int n2, final Request$Priority request$Priority) {
+    private ImageLoader$ImageContainer get(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ImageLoader$ImageListener imageLoader$ImageListener, final int n, final int n2, final Request$Priority request$Priority, final Bitmap$Config bitmap$Config) {
         this.throwIfNotOnMainThread();
         if (!UriUtil.isValidUri(s) || this.mRequestQueue == null) {
             String string;
@@ -112,7 +114,7 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
                 imageLoader$BatchedImageRequest.addContainer(imageLoader$ImageContainer3);
                 return imageLoader$ImageContainer3;
             }
-            final ImageRequest imageRequest = new ImageRequest(s, new ImageLoader$2(this, s, cacheKey), n, n2, Bitmap$Config.RGB_565, new ImageLoader$3(this, s, cacheKey), request$Priority, this.mRequestSocketTimeout, this.mMinimumCacheTtl);
+            final ImageRequest imageRequest = new ImageRequest(s, new ImageLoader$2(this, s, cacheKey), n, n2, bitmap$Config, new ImageLoader$3(this, s, cacheKey), request$Priority, this.mRequestSocketTimeout, this.mMinimumCacheTtl);
             imageRequest.setTag(this.mRequestTag);
             ApmLogUtils.reportAssetRequest(s, null, this.mApmLogger);
             this.mRequestQueue.add(imageRequest);
@@ -129,9 +131,7 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         this.throwIfNotOnMainThread();
         final ImageLoader$BatchedImageRequest imageLoader$BatchedImageRequest = this.mInFlightRequests.remove(s);
         imageLoader$BatchedImageRequest.setError(error);
-        if (imageLoader$BatchedImageRequest != null) {
-            this.batchResponse(s, imageLoader$BatchedImageRequest);
-        }
+        this.batchResponse(s, imageLoader$BatchedImageRequest);
     }
     
     private void onGetImageSuccess(final String s, final Bitmap bitmap) {
@@ -156,6 +156,27 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         imageView.setImageDrawable((Drawable)null);
     }
     
+    private void showImgInternal(final AdvancedImageView advancedImageView, final String s, final IClientLogging$AssetType clientLogging$AssetType, final ImageLoader$StaticImgConfig imageLoader$StaticImgConfig, final boolean b, final int n, final Bitmap$Config bitmap$Config) {
+        ImageLoader$ValidatingListener imageLoader$ValidatingListener;
+        if (imageLoader$StaticImgConfig.shouldShowPlaceholder()) {
+            imageLoader$ValidatingListener = new ImageLoader$ValidatingListenerWithPlaceholder(this, advancedImageView, s, imageLoader$StaticImgConfig);
+        }
+        else if (b) {
+            imageLoader$ValidatingListener = new ImageLoader$ValidatingListenerWithAnimation(this, advancedImageView, s, imageLoader$StaticImgConfig);
+        }
+        else {
+            imageLoader$ValidatingListener = new ImageLoader$ValidatingListener(this, advancedImageView, s, imageLoader$StaticImgConfig);
+        }
+        Request$Priority request$Priority;
+        if (n > 0) {
+            request$Priority = Request$Priority.NORMAL;
+        }
+        else {
+            request$Priority = Request$Priority.LOW;
+        }
+        this.get(s, clientLogging$AssetType, imageLoader$ValidatingListener, 0, 0, request$Priority, bitmap$Config);
+    }
+    
     private void throwIfNotOnMainThread() {
         if (Looper.myLooper() != Looper.getMainLooper()) {
             throw new IllegalStateException("ImageLoader must be invoked from the main thread.");
@@ -177,8 +198,14 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
     }
     
     @Override
+    public void clear(final AdvancedImageView advancedImageView) {
+        advancedImageView.setContentDescription((CharSequence)null);
+        advancedImageView.setImageLoaderInfo(null);
+    }
+    
+    @Override
     public void getImg(final String s, final IClientLogging$AssetType clientLogging$AssetType, final int n, final int n2, final ImageLoader$ImageLoaderListener imageLoader$ImageLoaderListener) {
-        this.get(s, clientLogging$AssetType, this.wrapPrivateListener(imageLoader$ImageLoaderListener), n, n2, Request$Priority.LOW);
+        this.get(s, clientLogging$AssetType, this.wrapPrivateListener(imageLoader$ImageLoaderListener), n, n2, Request$Priority.LOW, Bitmap$Config.RGB_565);
     }
     
     public boolean isCached(String cacheKey) {
@@ -194,52 +221,52 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
             Log.v("ImageLoader", "refreshImgIfNecessary: null imageView");
             return;
         }
-        final String urlTag = advancedImageView.getUrlTag();
-        if (StringUtils.isEmpty(urlTag)) {
+        final AdvancedImageView$ImageLoaderInfo imageLoaderInfo = advancedImageView.getImageLoaderInfo();
+        if (imageLoaderInfo == null) {
+            Log.v("ImageLoader", "refreshImgIfNecessary: null image loader info object");
+            return;
+        }
+        final String imageUrl = imageLoaderInfo.imageUrl;
+        if (StringUtils.isEmpty(imageUrl)) {
             Log.v("ImageLoader", "refreshImgIfNecessary: empty url");
             return;
         }
-        this.showImgInternal(advancedImageView, urlTag, clientLogging$AssetType, false, false, 1);
-    }
-    
-    @Override
-    public void showImg(final AdvancedImageView advancedImageView, final String s, final IClientLogging$AssetType clientLogging$AssetType, final String s2, final boolean b, final boolean b2) {
-        this.showImg(advancedImageView, s, clientLogging$AssetType, s2, b, b2, 0);
-    }
-    
-    @Override
-    public void showImg(final AdvancedImageView drawableToNull, final String urlTag, final IClientLogging$AssetType clientLogging$AssetType, String urlTag2, final boolean b, final boolean b2, final int n) {
-        if (urlTag2 != null) {
-            drawableToNull.setContentDescription((CharSequence)urlTag2);
+        ImageLoader$StaticImgConfig imageLoader$StaticImgConfig;
+        if ((imageLoader$StaticImgConfig = imageLoaderInfo.imgViewConfig) == null) {
+            Log.w("ImageLoader", "Couldn't get StaticImgConfig from image view - falling back to default");
+            imageLoader$StaticImgConfig = ImageLoader$StaticImgConfig.DARK;
         }
-        urlTag2 = drawableToNull.getUrlTag();
-        drawableToNull.setUrlTag(urlTag);
-        if (urlTag == null) {
+        this.showImgInternal(advancedImageView, imageUrl, clientLogging$AssetType, imageLoader$StaticImgConfig, false, 1, imageLoaderInfo.bitmapConfig);
+    }
+    
+    @Override
+    public void showImg(final AdvancedImageView advancedImageView, final String s, final IClientLogging$AssetType clientLogging$AssetType, final String s2, final ImageLoader$StaticImgConfig imageLoader$StaticImgConfig, final boolean b) {
+        this.showImg(advancedImageView, s, clientLogging$AssetType, s2, imageLoader$StaticImgConfig, b, 0, Bitmap$Config.RGB_565);
+    }
+    
+    @Override
+    public void showImg(final AdvancedImageView advancedImageView, final String s, final IClientLogging$AssetType clientLogging$AssetType, final String s2, final ImageLoader$StaticImgConfig imageLoader$StaticImgConfig, final boolean b, final int n) {
+        this.showImg(advancedImageView, s, clientLogging$AssetType, s2, imageLoader$StaticImgConfig, b, n, Bitmap$Config.RGB_565);
+    }
+    
+    @Override
+    public void showImg(final AdvancedImageView drawableToNull, final String s, final IClientLogging$AssetType clientLogging$AssetType, String imageUrl, final ImageLoader$StaticImgConfig imageLoader$StaticImgConfig, final boolean b, final int n, final Bitmap$Config bitmap$Config) {
+        if (imageUrl != null) {
+            drawableToNull.setContentDescription((CharSequence)imageUrl);
+        }
+        final AdvancedImageView$ImageLoaderInfo imageLoaderInfo = drawableToNull.getImageLoaderInfo();
+        if (imageLoaderInfo == null) {
+            imageUrl = null;
+        }
+        else {
+            imageUrl = imageLoaderInfo.imageUrl;
+        }
+        drawableToNull.setImageLoaderInfo(new AdvancedImageView$ImageLoaderInfo(s, imageLoader$StaticImgConfig, bitmap$Config));
+        if (s == null) {
             this.setDrawableToNull(drawableToNull);
         }
-        else if (!urlTag.equals(urlTag2)) {
-            this.showImgInternal(drawableToNull, urlTag, clientLogging$AssetType, b, b2, n);
+        else if (!s.equals(imageUrl)) {
+            this.showImgInternal(drawableToNull, s, clientLogging$AssetType, imageLoader$StaticImgConfig, b, n, bitmap$Config);
         }
-    }
-    
-    public void showImgInternal(final AdvancedImageView advancedImageView, final String s, final IClientLogging$AssetType clientLogging$AssetType, final boolean b, final boolean b2, final int n) {
-        ImageLoader$ValidatingListener imageLoader$ValidatingListener;
-        if (b) {
-            imageLoader$ValidatingListener = new ImageLoader$ValidatingListenerWithPlaceholder(this, advancedImageView, s);
-        }
-        else if (b2) {
-            imageLoader$ValidatingListener = new ImageLoader$ValidatingListenerWithAnimation(this, advancedImageView, s);
-        }
-        else {
-            imageLoader$ValidatingListener = new ImageLoader$ValidatingListener(this, advancedImageView, s);
-        }
-        Request$Priority request$Priority;
-        if (n > 0) {
-            request$Priority = Request$Priority.NORMAL;
-        }
-        else {
-            request$Priority = Request$Priority.LOW;
-        }
-        this.get(s, clientLogging$AssetType, imageLoader$ValidatingListener, 0, 0, request$Priority);
     }
 }

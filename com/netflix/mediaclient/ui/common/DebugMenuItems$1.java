@@ -4,29 +4,25 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import android.os.Handler;
-import android.os.Debug;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.home.HomeActivity;
-import android.view.Menu;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
+import android.content.Context;
+import android.content.Intent;
+import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsActivity;
 import android.view.MenuItem;
+import android.app.Activity;
 import android.view.MenuItem$OnMenuItemClickListener;
 
 class DebugMenuItems$1 implements MenuItem$OnMenuItemClickListener
 {
     final /* synthetic */ DebugMenuItems this$0;
+    final /* synthetic */ Activity val$activity;
     
-    DebugMenuItems$1(final DebugMenuItems this$0) {
+    DebugMenuItems$1(final DebugMenuItems this$0, final Activity val$activity) {
         this.this$0 = this$0;
+        this.val$activity = val$activity;
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        final ServiceManager serviceManager = this.this$0.activity.getServiceManager();
-        if (serviceManager != null) {
-            serviceManager.getBrowse().dumpCacheToDisk();
-        }
+        this.val$activity.startActivity(new Intent((Context)this.val$activity, (Class)SocialNotificationsActivity.class));
         return true;
     }
 }

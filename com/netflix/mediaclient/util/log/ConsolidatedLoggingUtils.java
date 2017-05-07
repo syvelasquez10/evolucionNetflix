@@ -5,9 +5,9 @@
 package com.netflix.mediaclient.util.log;
 
 import java.util.Iterator;
-import com.netflix.mediaclient.service.webclient.volley.FalkorServerException;
 import com.android.volley.NetworkError;
 import com.android.volley.TimeoutError;
+import com.netflix.mediaclient.service.webclient.volley.FalkorServerException;
 import com.android.volley.ServerError;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseException;
 import com.netflix.mediaclient.service.logging.client.model.Error;
@@ -253,6 +253,7 @@ public abstract class ConsolidatedLoggingUtils
                         break Label_0241;
                         while (true) {
                             final JSONObject message = new JSONObject();
+                        Block_12_Outer:
                             while (true) {
                                 DeepErrorElement deepErrorElement = null;
                                 Label_0324: {
@@ -270,30 +271,28 @@ public abstract class ConsolidatedLoggingUtils
                                         }
                                         break Label_0324;
                                         // iftrue(Label_0275:, !volleyError instanceof ServerError)
-                                        // iftrue(Label_0292:, !volleyError instanceof TimeoutError)
-                                        // iftrue(Label_0109:, !volleyError instanceof NetworkError)
                                         // iftrue(Label_0258:, !volleyError instanceof FalkorServerException)
-                                        Block_10: {
-                                            Block_11: {
-                                                break Block_11;
-                                                while (true) {
-                                                    error.setRootCause(RootCause.tcpConnectionTimeout);
-                                                    break;
-                                                    Label_0275: {
-                                                        continue;
-                                                    }
-                                                }
-                                                Block_13: {
-                                                    break Block_13;
-                                                    break Block_10;
-                                                }
-                                                error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
+                                        // iftrue(Label_0292:, !volleyError instanceof TimeoutError)
+                                        while (true) {
+                                            while (true) {
+                                                error.setRootCause(RootCause.serverFailure);
                                                 break;
+                                                error.setRootCause(RootCause.tcpConnectionTimeout);
+                                                break;
+                                                Label_0258: {
+                                                    error.setRootCause(RootCause.serverFailure);
+                                                }
+                                                break;
+                                                continue Block_12_Outer;
                                             }
-                                            error.setRootCause(RootCause.serverFailure);
-                                            break;
+                                            Label_0275: {
+                                                continue;
+                                            }
                                         }
-                                        error.setRootCause(RootCause.serverFailure);
+                                        Label_0292: {
+                                            error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
+                                        }
+                                        // iftrue(Label_0109:, !volleyError instanceof NetworkError)
                                         break;
                                     }
                                     catch (Throwable t) {

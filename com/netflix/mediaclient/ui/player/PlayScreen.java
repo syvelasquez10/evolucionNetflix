@@ -12,6 +12,7 @@ import android.widget.RelativeLayout$LayoutParams;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.nio.ByteBuffer;
+import com.netflix.mediaclient.ui.player.subtitles.SubtitleManager;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
 import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
@@ -61,7 +62,7 @@ public class PlayScreen implements Screen
         this.listeners = listeners;
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        this.mSurface = (TappableSurfaceView)mController.findViewById(2131427716);
+        this.mSurface = (TappableSurfaceView)mController.findViewById(2131427700);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -70,18 +71,18 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)mController.findViewById(2131427520);
-        this.mBackground = (RelativeLayout)mController.findViewById(2131427519);
-        this.mBufferingOverlay = mController.findViewById(2131427738);
+        this.mFlipper = (ViewFlipper)mController.findViewById(2131427521);
+        this.mBackground = (RelativeLayout)mController.findViewById(2131427520);
+        this.mBufferingOverlay = mController.findViewById(2131427722);
         int n;
         if (mController.isTablet()) {
-            n = 2131427735;
+            n = 2131427719;
         }
         else {
-            n = 2131427717;
+            n = 2131427701;
         }
         this.mBif = (ImageView)mController.findViewById(n);
-        this.mTabletBifsLayout = mController.findViewById(2131427734);
+        this.mTabletBifsLayout = mController.findViewById(2131427718);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
     }
@@ -181,18 +182,18 @@ public class PlayScreen implements Screen
     static int resolveContentView(final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForPhone) {
             Log.d("screen", "playout_phone_episode");
-            return 2130903164;
+            return 2130903156;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForTablet) {
             Log.d("screen", "playout_tablet_episode");
-            return 2130903168;
+            return 2130903160;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.RecommendationForTablet) {
             Log.d("screen", "playout_tablet_movie");
-            return 2130903169;
+            return 2130903161;
         }
         Log.d("screen", "playout_phone_movie");
-        return 2130903165;
+        return 2130903157;
     }
     
     public boolean canExitPlaybackEndOfPlay() {
@@ -446,11 +447,6 @@ public class PlayScreen implements Screen
             }
             this.moveToState(PlayerUiState.PlayingWithTrickPlayOverlay);
         }
-    }
-    
-    public void resetToLoadingState() {
-        this.moveToState(PlayerUiState.Loading);
-        this.showSplashScreen();
     }
     
     void setBufferingOverlayVisibility(final boolean b) {

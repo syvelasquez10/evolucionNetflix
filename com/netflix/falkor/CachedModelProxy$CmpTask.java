@@ -14,9 +14,11 @@ import java.util.LinkedHashSet;
 import java.io.IOException;
 import java.io.Flushable;
 import com.netflix.mediaclient.service.falkor.Falkor$SimilarRequestType;
-import com.netflix.mediaclient.util.FileUtils;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.model.leafs.Video$InQueue;
 import com.netflix.model.branches.FalkorVideo;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 import com.netflix.mediaclient.util.JsonUtils;
@@ -27,6 +29,7 @@ import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.util.Map;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry$ResponsePathFormat;
+import com.netflix.mediaclient.util.FileUtils;
 import java.util.Iterator;
 import java.util.Comparator;
 import java.util.Collections;
@@ -42,15 +45,17 @@ import android.os.Handler;
 import com.google.gson.JsonParser;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.util.UriUtil;
-import java.util.Collection;
-import java.util.ArrayList;
+import com.netflix.mediaclient.android.app.NetflixStatus;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.LogUtils;
-import com.netflix.mediaclient.service.falkor.Falkor;
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.util.DataUtil$StringPair;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.ThreadUtils;
+import java.util.Collection;
+import com.netflix.mediaclient.service.falkor.Falkor;
+import java.util.ArrayList;
 import android.content.Context;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
@@ -79,6 +84,35 @@ abstract class CachedModelProxy$CmpTask implements Runnable
         return new CachedModelProxy$CmpTask$1(this, (Context)this.this$0.getService(), list);
     }
     
+    private void doTask() {
+        final ArrayList<PQL> list = new ArrayList<PQL>();
+        this.buildPqlList(list);
+        if (this.shouldSkipCache() || this.shouldUseCallMethod() || this.shouldCustomHandleResponse()) {
+            if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                Log.v("CachedModelProxy", "Short-cutting to remote execution...");
+            }
+            this.this$0.executeRequest(this.createRequest(list));
+            return;
+        }
+        (this.getResult = this.this$0.get(list)).printPaths("CachedModelProxy");
+        if (this.getResult.hasMissingPaths() && !this.shouldUseCacheOnly() && !CachedModelProxy.FORCE_CMP_TO_LOCAL_CACHE) {
+            final ArrayList<PQL> list2 = new ArrayList<PQL>(this.getResult.missingPqls);
+            if (this.shouldCollapseMissingPql()) {
+                PQL.collapse(list2);
+                if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                    Log.v("CachedModelProxy", "Collapsed paths to: " + list2);
+                }
+            }
+            this.this$0.executeRequest(this.createRequest(list2));
+            return;
+        }
+        if (Log.isLoggable()) {
+            Log.v("CachedModelProxy", String.format("%s: No missing paths found - all data is local to cache. shouldUseCacheOnly(): %b, FORCE_CMP_TO_LOCAL_CACHE: %b", this.getClass().getSimpleName(), this.shouldUseCacheOnly(), CachedModelProxy.FORCE_CMP_TO_LOCAL_CACHE));
+        }
+        this.isAllDataLocalToCache = true;
+        this.handleSuccess();
+    }
+    
     private void handleFailure(final BrowseAgentCallback browseAgentCallback, final Status status) {
         this.callbackForFailure(browseAgentCallback, status);
         if (Log.isLoggable()) {
@@ -88,13 +122,13 @@ abstract class CachedModelProxy$CmpTask implements Runnable
     
     private void handleSuccess() {
         ThreadUtils.assertNotOnMain();
-        final BrowseAgentCallback access$800 = this.this$0.createHandlerWrapper(this.callback);
+        final BrowseAgentCallback access$000 = this.this$0.createHandlerWrapper(this.callback);
         if (this.getResult == null && !this.shouldUseCallMethod() && !this.shouldCustomHandleResponse() && !this.shouldSkipCache()) {
             Log.w("CachedModelProxy", "GetResult is null - shouldn't happen - forcing failure");
-            this.handleFailure(access$800, CommonStatus.INTERNAL_ERROR);
+            this.handleFailure(access$000, CommonStatus.INTERNAL_ERROR);
         }
         else {
-            this.fetchResultsAndCallbackForSuccess(access$800, this.getResult);
+            this.fetchResultsAndCallbackForSuccess(access$000, this.getResult);
             if (Log.isLoggable()) {
                 Log.v("CachedModelProxy", "Results fetched - called back for success: " + this.getClass().getSimpleName());
             }
@@ -128,32 +162,16 @@ abstract class CachedModelProxy$CmpTask implements Runnable
         if (Falkor.ENABLE_VERBOSE_LOGGING) {
             LogUtils.logCurrentThreadName("CachedModelProxy", "running " + this.getClass().getSimpleName());
         }
-        final ArrayList<PQL> list = new ArrayList<PQL>();
-        this.buildPqlList(list);
-        if (this.shouldSkipCache() || this.shouldUseCallMethod() || this.shouldCustomHandleResponse()) {
-            if (Falkor.ENABLE_VERBOSE_LOGGING) {
-                Log.v("CachedModelProxy", "Short-cutting to remote execution...");
-            }
-            this.this$0.executeRequest(this.createRequest(list));
-            return;
+        try {
+            this.doTask();
         }
-        (this.getResult = this.this$0.get(list)).printPaths("CachedModelProxy");
-        if (this.getResult.hasMissingPaths() && !this.shouldUseCacheOnly() && !CachedModelProxy.FORCE_CMP_TO_LOCAL_CACHE) {
-            final ArrayList<PQL> list2 = new ArrayList<PQL>(this.getResult.missingPqls);
-            if (this.shouldCollapseMissingPql()) {
-                PQL.collapse(list2);
-                if (Falkor.ENABLE_VERBOSE_LOGGING) {
-                    Log.v("CachedModelProxy", "Collapsed paths to: " + list2);
-                }
-            }
-            this.this$0.executeRequest(this.createRequest(list2));
-            return;
+        catch (Exception ex) {
+            Log.handleException("CachedModelProxy", ex);
+            final NetflixStatus netflixStatus = new NetflixStatus(StatusCode.INTERNAL_ERROR);
+            netflixStatus.setDisplayMessage(false);
+            netflixStatus.setMessage(ex.getMessage());
+            this.handleFailure(this.this$0.createHandlerWrapper(this.callback), netflixStatus);
         }
-        if (Log.isLoggable()) {
-            Log.v("CachedModelProxy", String.format("%s: No missing paths found - all data is local to cache. shouldUseCacheOnly(): %b, FORCE_CMP_TO_LOCAL_CACHE: %b", this.getClass().getSimpleName(), this.shouldUseCacheOnly(), CachedModelProxy.FORCE_CMP_TO_LOCAL_CACHE));
-        }
-        this.isAllDataLocalToCache = true;
-        this.handleSuccess();
     }
     
     protected boolean shouldCollapseMissingPql() {
@@ -161,6 +179,14 @@ abstract class CachedModelProxy$CmpTask implements Runnable
     }
     
     protected boolean shouldCustomHandleResponse() {
+        return false;
+    }
+    
+    protected boolean shouldDumpCacheToDiskUponMerge() {
+        return false;
+    }
+    
+    protected boolean shouldDumpHttpResponseToDisk() {
         return false;
     }
     

@@ -12,14 +12,14 @@ import android.content.Context;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 
-class RowAdapterProvider$StandardRowAdapterProvider extends RowAdapterProvider$DefaultRowAdapterProvider
+public class RowAdapterProvider$StandardRowAdapterProvider extends RowAdapterProvider$DefaultRowAdapterProvider
 {
     private final RowAdapter billboard;
     private final RowAdapter cw;
     private final RowAdapter iq;
     private final RowAdapter standard;
     
-    protected RowAdapterProvider$StandardRowAdapterProvider(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final boolean b) {
+    public RowAdapterProvider$StandardRowAdapterProvider(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final boolean b) {
         super(rowAdapterCallbacks, objectRecycler$ViewRecycler);
         final NetflixActivity activity = serviceManager.getActivity();
         this.billboard = new ProgressiveBillboardAdapter(new PaginatedBillboardAdapter((Context)activity), serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);

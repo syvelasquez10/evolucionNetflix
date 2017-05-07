@@ -101,6 +101,11 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
+    public void fetchNotifications(final int n, final int n2, final int n3, final int n4) {
+        this.mBrowseAgent.fetchNotificationsList(n, n2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n3, n4)));
+    }
+    
+    @Override
     public void fetchPostPlayVideos(final String s, final VideoType videoType, final int n, final int n2) {
         this.mBrowseAgent.fetchPostPlayVideos(s, videoType, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
@@ -141,11 +146,6 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void fetchSocialNotifications(final int n, final int n2, final int n3) {
-        this.mBrowseAgent.fetchSocialNotificationsList(n, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n2, n3)));
-    }
-    
-    @Override
     public void fetchVideoSummary(final String s, final int n, final int n2) {
         this.mBrowseAgent.fetchVideoSummary(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
@@ -168,11 +168,6 @@ public class FalkorAccess implements IBrowseInterface
     @Override
     public ModelProxy<?> getModelProxy() {
         return this.mBrowseAgent.getModelProxy();
-    }
-    
-    @Override
-    public void hideVideo(final String s, final int n, final int n2) {
-        this.mBrowseAgent.hideVideo(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override

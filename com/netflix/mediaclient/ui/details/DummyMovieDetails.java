@@ -6,10 +6,9 @@ package com.netflix.mediaclient.ui.details;
 
 import java.util.Collections;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
-import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.IconFontGlyph;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
@@ -68,11 +67,6 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
-    public List<FriendProfile> getFacebookFriends() {
-        return null;
-    }
-    
-    @Override
     public String getGenres() {
         return null;
     }
@@ -84,6 +78,11 @@ public class DummyMovieDetails implements MovieDetails
     
     @Override
     public String getHighResolutionPortraitBoxArtUrl() {
+        return null;
+    }
+    
+    @Override
+    public String getHorzDispSmallUrl() {
         return null;
     }
     

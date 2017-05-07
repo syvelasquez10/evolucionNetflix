@@ -24,7 +24,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.view.View;
-import com.netflix.mediaclient.ui.pin.PinDialogVault;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
 import android.view.MenuItem;
 import com.netflix.mediaclient.util.DeviceUtils;
 import java.util.Iterator;
@@ -62,13 +62,13 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.ui.kubrick_kids.KubrickKidsActionBar;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import com.netflix.mediaclient.ui.mdx.MdxReceiver;
 import com.netflix.mediaclient.Log;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
+import android.content.Intent;
 import android.net.Uri;
 import com.netflix.mediaclient.StatusCode;
 import java.util.HashSet;
@@ -85,14 +85,14 @@ import android.os.Handler;
 import android.content.BroadcastReceiver;
 import java.util.Set;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.ui.pin.PinVerifier$PinVerificationCallback;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifier$PlayVerifyCallback;
 import com.netflix.mediaclient.ui.mdx.ShowMessageDialogFrag$MessageResponseProvider;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListenerProvider;
 import com.netflix.mediaclient.android.app.LoadingStatus;
 import android.support.v7.app.ActionBarActivity;
 
 @SuppressLint({ "DefaultLocale" })
-public abstract class NetflixActivity extends ActionBarActivity implements LoadingStatus, AbsEpisodeView$EpisodeRowListenerProvider, ShowMessageDialogFrag$MessageResponseProvider, PinVerifier$PinVerificationCallback
+public abstract class NetflixActivity extends ActionBarActivity implements LoadingStatus, AbsEpisodeView$EpisodeRowListenerProvider, ShowMessageDialogFrag$MessageResponseProvider, PlayVerifier$PlayVerifyCallback
 {
     private static final long ACTION_BAR_VISIBILITY_CHECK_DELAY_MS = 1000L;
     public static final String ACTION_DISPLAY_ERROR = "com.netflix.mediaclient.ui.error.ACTION_DISPLAY_ERROR";
@@ -104,7 +104,6 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     private static final String EXTRA_SHOULD_EXPAND_MINI_PLAYER = "mini_player_expanded";
     public static final String FRAG_DIALOG_TAG = "frag_dialog";
     private static final String INSTANCE_STATE_SAVED_TAG = "NetflixActivity_instanceState";
-    public static final String INTENT_CATEGORY_UI = "LocalIntentNflxUi";
     private static final boolean PRINT_LOADING_STATUS = false;
     private static final String TAG = "NetflixActivity";
     private int actionBarHeight;
@@ -196,7 +195,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     private String getMessage(final int n, final StatusCode statusCode) {
         String string;
         if (n == Integer.MAX_VALUE) {
-            string = this.getString(2131493388);
+            string = this.getString(2131493393);
         }
         else {
             String s;
@@ -208,7 +207,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             }
             string = s;
             if (s == null) {
-                return this.getString(2131493388);
+                return this.getString(2131493393);
             }
         }
         return string;
@@ -219,6 +218,9 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             return null;
         }
         return Uri.parse(s);
+    }
+    
+    private void handleDisplayToken(final Intent intent) {
     }
     
     private void onFromBackground() {
@@ -356,6 +358,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             if (!b) {
                 break Label_0095;
             }
+        Block_9_Outer:
             while (true) {
                 try {
                     if (Log.isLoggable()) {
@@ -363,15 +366,20 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
                     }
                     this.displayDialog(dialog);
                     return;
+                    // iftrue(Label_0144:, !Log.isLoggable())
                     while (true) {
-                        this.displayDialog(dialog);
-                        return;
-                        Log.d("NetflixActivity", "displayUserAgentDialog " + s);
+                        while (true) {
+                            Log.d("NetflixActivity", "displayUserAgentDialog " + s);
+                            Label_0144: {
+                                this.displayDialog(dialog);
+                            }
+                            return;
+                            continue Block_9_Outer;
+                        }
                         continue;
                     }
                 }
                 // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
-                // iftrue(Label_0144:, !Log.isLoggable())
                 finally {
                 }
                 // monitorexit(visibleDialogLock)
@@ -432,6 +440,10 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     
     public int getActionBarHeight() {
         return this.actionBarHeight;
+    }
+    
+    public int getActionBarParentViewId() {
+        return 16908290;
     }
     
     protected ApplicationPerformanceMetricsLogging getApmSafely() {
@@ -529,21 +541,21 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
         }
         switch (NetflixActivity$14.$SwitchMap$com$netflix$mediaclient$StatusCode[status.getStatusCode().ordinal()]) {
             default: {
-                final String string = this.getString(2131493265);
-                this.displayErrorDialog(this.getString(2131493265), status.getStatusCode().getValue());
+                final String string = this.getString(2131493266);
+                this.displayErrorDialog(this.getString(2131493266), status.getStatusCode().getValue());
                 return string;
             }
             case 1: {
                 String format = message;
                 if (message.isEmpty()) {
-                    format = String.format("%s ( %d )", this.getString(2131493262), status.getStatusCode().getValue());
+                    format = String.format("%s ( %d )", this.getString(2131493263), status.getStatusCode().getValue());
                 }
                 this.displayUserAgentDialog(format, null, false);
                 return format;
             }
             case 2:
             case 3: {
-                final String format2 = String.format("%s ( %d )", this.getString(2131493269), status.getStatusCode().getValue());
+                final String format2 = String.format("%s ( %d )", this.getString(2131493270), status.getStatusCode().getValue());
                 this.displayUserAgentDialog(format2, new NetflixActivity$11(this), true);
                 return format2;
             }
@@ -559,14 +571,14 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             case 10:
             case 11:
             case 12: {
-                final String format3 = String.format("%s ( %d )", this.getString(2131493262), status.getStatusCode().getValue());
+                final String format3 = String.format("%s ( %d )", this.getString(2131493263), status.getStatusCode().getValue());
                 this.displayUserAgentDialog(format3, null, false);
                 return format3;
             }
             case 13:
             case 14:
             case 15: {
-                final String string2 = this.getString(2131493264);
+                final String string2 = this.getString(2131493265);
                 this.displayErrorDialog(string2, status.getStatusCode().getValue());
                 return string2;
             }
@@ -662,7 +674,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             Log.v("NetflixActivity", "Creating activity: " + this.getClass().getSimpleName() + ", hash: " + this.hashCode());
         }
         if (this.shouldShowKidsBackground()) {
-            this.getWindow().setBackgroundDrawableResource(2131230824);
+            this.getWindow().setBackgroundDrawableResource(2131230826);
         }
         boolean shouldExpandMiniPlayer = b;
         if (bundle != null) {
@@ -687,7 +699,7 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
             new DebugMenuItems("NetflixActivity", this).addItems(this, menu2);
         }
         if (this.showSettingsInMenu()) {
-            menu.add(2131493138).setIcon(2130837729).setIntent(SettingsActivity.createStartIntent(this));
+            menu.add(2131493138).setIcon(2130837731).setIntent(SettingsActivity.createStartIntent(this));
         }
         if (this.showAboutInMenu()) {
             this.addAboutMenu(menu);
@@ -762,8 +774,8 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     }
     
     @Override
-    public void onPinVerified(final PinDialogVault pinDialogVault) {
-        throw new IllegalStateException(String.format("onPinVerified vault: %s", pinDialogVault));
+    public void onPlayVerified(final boolean b, final PlayVerifierVault playVerifierVault) {
+        throw new IllegalStateException(String.format("onPlayVerified vault: %s", playVerifierVault));
     }
     
     protected void onPostCreate(final Bundle bundle) {
@@ -827,12 +839,12 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     protected void onStart() {
         super.onStart();
         UserActionLogUtils.reportNavigationActionStarted((Context)this, null, this.getUiScreen());
-        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131427664);
-        this.slidingPanel = (SlidingUpPanelLayout)this.findViewById(2131427523);
+        this.mdxFrag = (MdxMiniPlayerFrag)this.getFragmentManager().findFragmentById(2131427640);
+        this.slidingPanel = (SlidingUpPanelLayout)this.findViewById(2131427525);
         if (this.slidingPanel != null) {
             this.slidingPanel.setDragView(this.mdxFrag.getSlidingPanelDragView());
-            this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131296352));
-            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837886));
+            this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131296357));
+            this.slidingPanel.setShadowDrawable(this.getResources().getDrawable(2130837897));
             this.slidingPanel.setPanelSlideListener(this.panelSlideListener);
             if (this.shouldApplyPaddingToSlidingPanel()) {
                 final View child = this.slidingPanel.getChildAt(0);
@@ -1075,19 +1087,19 @@ public abstract class NetflixActivity extends ActionBarActivity implements Loadi
     
     protected void showMDXPostPlayOnResume() {
         while (true) {
-            Label_0078: {
+            Label_0085: {
                 if (!ServiceManagerUtils.isMdxAgentAvailable(this.serviceManager)) {
-                    break Label_0078;
+                    break Label_0085;
                 }
                 final IMdxSharedState sharedState = this.getSharedState();
                 if (sharedState == null || TextUtils.isEmpty((CharSequence)sharedState.getPostplayState())) {
-                    break Label_0078;
+                    break Label_0085;
                 }
                 final WebApiUtils$VideoIds videoIdsPostplay = ((MdxAgent)this.serviceManager.getMdx()).getVideoIdsPostplay();
                 if (videoIdsPostplay == null || videoIdsPostplay.episodeId <= 0) {
-                    break Label_0078;
+                    break Label_0085;
                 }
-                MDXControllerActivity.showMDXController(this, videoIdsPostplay.episodeId, PlayContext.DFLT_MDX_CONTEXT);
+                MDXControllerActivity.showMDXController(this, String.valueOf(videoIdsPostplay.episodeId), videoIdsPostplay.isEpisode, PlayContext.DFLT_MDX_CONTEXT);
                 final int n = 1;
                 if (n == 0) {
                     MDXControllerActivity.finishMDXController((Context)this);

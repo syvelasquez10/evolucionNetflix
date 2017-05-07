@@ -8,7 +8,6 @@ import android.app.Dialog;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.Log;
-import android.widget.SeekBar$OnSeekBarChangeListener;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.MenuItem$OnMenuItemClickListener;
@@ -17,12 +16,12 @@ import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.content.DialogInterface$OnCancelListener;
 import android.widget.AdapterView$OnItemClickListener;
 import android.content.Context;
+import android.app.Activity;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog$Builder;
 import android.app.AlertDialog;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.media.Language;
-import android.app.Activity;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
@@ -48,7 +47,6 @@ public final class TopPanel extends PlayerSection
     private final PlayScreen$Listeners mListeners;
     private boolean mMDXSelectorEnabled;
     protected MenuItem mMdxTarget;
-    private final Social mSocial;
     private MenuItem mSound;
     private final TextView mTitleLabel;
     private Toolbar mToolBar;
@@ -59,9 +57,8 @@ public final class TopPanel extends PlayerSection
         super(playerActivity);
         this.mBackListener = (View$OnClickListener)new TopPanel$1(this);
         this.mListeners = mListeners;
-        this.mSocial = new Social(playerActivity, playerActivity.getSocialProviderCallback());
         (this.mActionBar = playerActivity.getSupportActionBar()).setTitle("");
-        this.mTitleLabel = (TextView)playerActivity.findViewById(2131427727);
+        this.mTitleLabel = (TextView)playerActivity.findViewById(2131427711);
     }
     
     private void changeControlsVisibility(final boolean b) {
@@ -108,23 +105,23 @@ public final class TopPanel extends PlayerSection
     
     private void initGeneric(final Menu menu) {
         (this.mEpisodeSelector = menu.add(2131493236)).setVisible(this.mEpisodeSelectorEnabled);
-        this.mEpisodeSelector.setIcon(2130837688);
+        this.mEpisodeSelector.setIcon(2130837690);
         this.mEpisodeSelector.setShowAsAction(2);
         this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$6(this));
-        this.mTopGradient = this.context.findViewById(2131427723);
-        this.mToolBar = (Toolbar)this.context.findViewById(2131427726);
+        this.mTopGradient = this.context.findViewById(2131427707);
+        this.mToolBar = (Toolbar)this.context.findViewById(2131427710);
     }
     
     private void initLanguages(final Menu menu) {
         this.mLanguageSelector = LanguageSelector.createInstance(this.context, this.context.isTablet(), new TopPanel$3(this));
         (this.mLanguage = menu.add(2131493159)).setVisible(this.showLanguageMenuItem());
-        this.mLanguage.setIcon(2130837734);
+        this.mLanguage.setIcon(2130837736);
         this.mLanguage.setShowAsAction(2);
         this.mLanguage.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$4(this));
     }
     
     private void initMDX(final Menu menu) {
-        (this.mMdxTarget = menu.add(2131493157)).setIcon(2130837679);
+        (this.mMdxTarget = menu.add(2131493157)).setIcon(2130837681);
         this.mMdxTarget.setVisible(this.mMDXSelectorEnabled);
         this.mMdxTarget.setShowAsAction(2);
         this.mMdxTarget.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$7(this));
@@ -133,8 +130,8 @@ public final class TopPanel extends PlayerSection
     private void initQa(final Menu menu) {
     }
     
-    private void initSound(final Menu menu, final SeekBar$OnSeekBarChangeListener seekBar$OnSeekBarChangeListener) {
-        (this.mSound = menu.add(2131493190)).setIcon(2130837739);
+    private void initSound(final Menu menu) {
+        (this.mSound = menu.add(2131493190)).setIcon(2130837741);
         this.mSound.setShowAsAction(2);
         this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
     }
@@ -225,14 +222,12 @@ public final class TopPanel extends PlayerSection
             this.enableButton(this.mEpisodeSelector, b);
             this.enableButton(this.mMdxTarget, b);
             this.enableButton(this.mSound, b);
-            this.mSocial.changeActionState(b);
         }
     }
     
     @Override
     public void destroy() {
         synchronized (this) {
-            this.mSocial.destroy();
             if (this.mEpisodeSelector != null) {
                 this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)null);
             }
@@ -263,26 +258,20 @@ public final class TopPanel extends PlayerSection
         return this.mdxTargetSelector;
     }
     
-    Social getSocial() {
-        return this.mSocial;
-    }
-    
     @Override
     public void hide() {
         synchronized (this) {
-            this.mSocial.hide();
             this.changeControlsVisibility(false);
         }
     }
     
     public void onCreateOptionsMenu(final Menu menu) {
         this.initMDX(menu);
-        this.mSocial.initSocial(menu);
         this.initGeneric(menu);
         this.initBack();
         this.initQa(menu);
         this.initLanguages(menu);
-        this.initSound(menu, this.mListeners.audioPositionListener);
+        this.initSound(menu);
     }
     
     public boolean onOptionsItemSelected(final MenuItem menuItem) {
@@ -337,7 +326,6 @@ public final class TopPanel extends PlayerSection
     @Override
     public void show() {
         synchronized (this) {
-            this.mSocial.show();
             this.changeControlsVisibility(true);
         }
     }

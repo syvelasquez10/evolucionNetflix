@@ -78,29 +78,29 @@ public final class PlayerSuspendNotification
         RemoteViews remoteViews;
         if (b) {
             if (notEmpty) {
-                remoteViews = new RemoteViews(packageName, 2130903204);
+                remoteViews = new RemoteViews(packageName, 2130903198);
             }
             else {
-                remoteViews = new RemoteViews(packageName, 2130903206);
+                remoteViews = new RemoteViews(packageName, 2130903200);
             }
         }
         else if (notEmpty) {
-            remoteViews = new RemoteViews(packageName, 2130903203);
+            remoteViews = new RemoteViews(packageName, 2130903197);
         }
         else {
-            remoteViews = new RemoteViews(packageName, 2130903205);
+            remoteViews = new RemoteViews(packageName, 2130903199);
         }
         if (bitmap != null) {
-            remoteViews.setImageViewBitmap(2131427844, bitmap);
+            remoteViews.setImageViewBitmap(2131427826, bitmap);
         }
         if (StringUtils.isNotEmpty(s)) {
-            remoteViews.setTextViewText(2131427845, (CharSequence)s);
+            remoteViews.setTextViewText(2131427827, (CharSequence)s);
         }
         else {
-            remoteViews.setTextViewText(2131427845, (CharSequence)"");
+            remoteViews.setTextViewText(2131427827, (CharSequence)"");
         }
         if (notEmpty) {
-            remoteViews.setTextViewText(2131427846, (CharSequence)s2);
+            remoteViews.setTextViewText(2131427828, (CharSequence)s2);
         }
         return remoteViews;
     }
@@ -121,16 +121,16 @@ public final class PlayerSuspendNotification
         }
         Notification notification2;
         if (AndroidUtils.getAndroidVersion() < 21) {
-            final Notification notification = notification2 = new NotificationCompat$Builder((Context)this.mPlayerActivity).setOngoing(0 != 0).setOnlyAlertOnce(1 != 0).setSmallIcon(2130837812).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, largeIcon, (boolean)(0 != 0))).setWhen(System.currentTimeMillis()).build();
+            final Notification notification = notification2 = new NotificationCompat$Builder((Context)this.mPlayerActivity).setOngoing(0 != 0).setOnlyAlertOnce(1 != 0).setSmallIcon(2130837824).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, largeIcon, (boolean)(0 != 0))).setWhen(System.currentTimeMillis()).build();
             if (AndroidUtils.getAndroidVersion() >= 16) {
                 notification.bigContentView = this.getContentView(this.mTitle, this.mSecondaryTitle, largeIcon, true);
                 notification2 = notification;
             }
         }
         else {
-            final int color = this.mPlayerActivity.getResources().getColor(2131230825);
-            final String string = this.mPlayerActivity.getResources().getString(2131493333);
-            final Notification$Builder setVisibility = new Notification$Builder((Context)this.mPlayerActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837812).setLargeIcon(largeIcon).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
+            final int color = this.mPlayerActivity.getResources().getColor(2131230827);
+            final String string = this.mPlayerActivity.getResources().getString(2131493338);
+            final Notification$Builder setVisibility = new Notification$Builder((Context)this.mPlayerActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837824).setLargeIcon(largeIcon).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
             if (TextUtils.isEmpty((CharSequence)this.mSecondaryTitle)) {
                 setVisibility.setContentText((CharSequence)string);
             }

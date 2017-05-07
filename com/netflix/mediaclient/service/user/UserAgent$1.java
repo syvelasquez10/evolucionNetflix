@@ -34,7 +34,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
-import com.netflix.mediaclient.service.player.subtitles.TextStyle;
+import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
 import com.netflix.mediaclient.javabridge.ui.Registration;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
 import java.util.List;

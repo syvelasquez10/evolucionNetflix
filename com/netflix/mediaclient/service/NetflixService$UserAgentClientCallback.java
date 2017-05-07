@@ -133,17 +133,6 @@ class NetflixService$UserAgentClientCallback implements UserAgent$UserAgentCallb
     }
     
     @Override
-    public void onPinVerified(final boolean b, final Status status) {
-        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
-        if (netflixServiceCallback == null) {
-            Log.w("NetflixService", "No client callback found for onPinVerified");
-            return;
-        }
-        Log.d("NetflixService", "Notified onPinVerified");
-        netflixServiceCallback.onPinVerified(this.requestId, b, status);
-    }
-    
-    @Override
     public void onProfilesListUpdateResult(final Status status) {
         final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
         if (netflixServiceCallback == null) {
@@ -158,10 +147,21 @@ class NetflixService$UserAgentClientCallback implements UserAgent$UserAgentCallb
     public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
         final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
         if (netflixServiceCallback == null) {
-            Log.w("NetflixService", "No client callback found for onSocialNotificationsListFetched");
+            Log.w("NetflixService", "No client callback found for onNotificationsListFetched");
             return;
         }
-        Log.d("NetflixService", "Notified onSocialNotificationsListFetched");
-        netflixServiceCallback.onSocialNotificationsListFetched(this.requestId, list, status);
+        Log.d("NetflixService", "Notified onNotificationsListFetched");
+        netflixServiceCallback.onNotificationsListFetched(this.requestId, list, status);
+    }
+    
+    @Override
+    public void onVerified(final boolean b, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("NetflixService", "No client callback found for onVerified");
+            return;
+        }
+        Log.d("NetflixService", "Notified onVerified");
+        netflixServiceCallback.onVerified(this.requestId, b, status);
     }
 }

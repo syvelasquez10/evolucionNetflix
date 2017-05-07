@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
+import android.view.View;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
@@ -30,7 +31,6 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.ListView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
-import android.view.View;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 
@@ -45,7 +45,6 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     private LoLoMoFocusHandler focusHandler;
     private String genreId;
     private boolean isGenreList;
-    private View kidsEntryHeader;
     private final ErrorWrapper$Callback leCallback;
     private LoadingAndErrorWrapper leWrapper;
     protected ListView listView;
@@ -117,7 +116,6 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         Log.v("LoLoMoFrag", "Hiding loading and error views");
         this.leWrapper.hide(false);
         AnimationUtils.showViewIfHidden((View)this.listView, true);
-        AnimationUtils.showViewIfHidden(this.kidsEntryHeader, true);
     }
     
     public boolean isLoadingData() {
@@ -145,7 +143,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("LoLoMoFrag", "Creating frag view");
-        final View inflate = layoutInflater.inflate(2130903134, viewGroup, false);
+        final View inflate = layoutInflater.inflate(2130903125, viewGroup, false);
         (this.listView = (ListView)inflate.findViewById(16908298)).setDivider((Drawable)null);
         this.listView.setFocusable(false);
         this.listView.setRecyclerListener(this.recycleListener);
@@ -155,9 +153,6 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         this.focusHandler = new LoLoMoFocusHandler(this.getNetflixActivity(), this.listView);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.leCallback);
         return inflate;
-    }
-    
-    public void onDataLoadSuccess() {
     }
     
     public void onDestroyView() {
@@ -199,6 +194,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     
     public void refresh() {
         this.showLoadingView();
+        this.stateMap.clear();
         this.adapter.refreshData();
     }
     
@@ -212,18 +208,12 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     public void showErrorView() {
         Log.v("LoLoMoFrag", "Showing error view");
         AnimationUtils.hideView((View)this.listView, true);
-        if (this.kidsEntryHeader != null) {
-            this.kidsEntryHeader.setVisibility(4);
-        }
         this.leWrapper.showErrorView(true);
     }
     
     public void showLoadingView() {
         Log.v("LoLoMoFrag", "Showing loading view");
         AnimationUtils.hideView((View)this.listView, true);
-        if (this.kidsEntryHeader != null) {
-            this.kidsEntryHeader.setVisibility(4);
-        }
         this.leWrapper.showLoadingView(true);
     }
 }

@@ -125,11 +125,6 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     }
     
     @Override
-    public boolean canBeSharedOnFacebook() {
-        return false;
-    }
-    
-    @Override
     public Object get(final String s) {
         switch (s) {
             default: {
@@ -289,6 +284,14 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
             return null;
         }
         return watchNextDetails.mdxVertUrl;
+    }
+    
+    @Override
+    public String getHorzDispSmallUrl() {
+        if (this.kidsSummary == null) {
+            return null;
+        }
+        return this.kidsSummary.getHorzDispSmallUrl();
     }
     
     @Override
@@ -501,6 +504,12 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
             return this.getCharacterSquareUrl();
         }
         return this.getWatchNextSquareUrl();
+    }
+    
+    @Override
+    public boolean isAgeProtected() {
+        final Video$Detail watchNextDetails = this.getWatchNextDetails();
+        return watchNextDetails != null && watchNextDetails.isAgeProtected;
     }
     
     @Override

@@ -6,10 +6,6 @@ package com.netflix.mediaclient.ui.details;
 
 public interface DetailsPageParallaxScrollListener$IScrollStateChanged
 {
-    void onHeaderShown();
-    
-    void onItemsShown();
-    
     void onScrollMaxReached();
     
     void onScrollMinReached();

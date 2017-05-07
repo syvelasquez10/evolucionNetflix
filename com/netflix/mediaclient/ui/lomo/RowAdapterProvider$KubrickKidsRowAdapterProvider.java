@@ -14,14 +14,14 @@ import com.netflix.mediaclient.ui.kubrick_kids.lolomo.KubrickKidsPaginatedCharac
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 
-class RowAdapterProvider$KubrickKidsRowAdapterProvider extends RowAdapterProvider$DefaultRowAdapterProvider
+public class RowAdapterProvider$KubrickKidsRowAdapterProvider extends RowAdapterProvider$DefaultRowAdapterProvider
 {
     private final RowAdapter character;
     private final RowAdapter kubrickGallery;
     private final RowAdapter kubrickKidsPopular;
     private final RowAdapter kubrickKidsTopTen;
     
-    protected RowAdapterProvider$KubrickKidsRowAdapterProvider(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final boolean b) {
+    public RowAdapterProvider$KubrickKidsRowAdapterProvider(final ServiceManager serviceManager, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final boolean b) {
         super(rowAdapterCallbacks, objectRecycler$ViewRecycler);
         final NetflixActivity activity = serviceManager.getActivity();
         this.character = new ProgressiveStandardAdapter<Object>(new KubrickKidsPaginatedCharacterAdapter((Context)activity), serviceManager, rowAdapterCallbacks, objectRecycler$ViewRecycler);

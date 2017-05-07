@@ -4,12 +4,14 @@
 
 package com.netflix.mediaclient.android.widget;
 
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.util.AttributeSet;
@@ -42,7 +44,7 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130837881);
+        this.setBackgroundResource(2130837892);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
     }
     
@@ -53,9 +55,13 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
     
     @Override
     public void hide() {
-        NetflixActivity.getImageLoader(this.getContext()).showImg(this, null, null, null, false, false);
+        NetflixActivity.getImageLoader(this.getContext()).clear(this);
         this.setVisibility(4);
         this.clicker.remove((View)this);
+    }
+    
+    public void setClickListener(final VideoDetailsClickListener clicker) {
+        this.clicker = clicker;
     }
     
     public void setIsHorizontal(final boolean isHorizontal) {
@@ -81,16 +87,17 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
             visibility = 0;
         }
         this.setVisibility(visibility);
-        this.clicker.update((View)this, video);
+        this.clicker.update((View)this, video, this.pressedHandler);
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final IClientLogging$AssetType boxArt = IClientLogging$AssetType.boxArt;
         final String title = video.getTitle();
+        final ImageLoader$StaticImgConfig imageLoaderConfig = BrowseExperience.getImageLoaderConfig();
         if (b) {
             visibility = 1;
         }
         else {
             visibility = 0;
         }
-        imageLoader.showImg(this, s, boxArt, title, true, true, visibility);
+        imageLoader.showImg(this, s, boxArt, title, imageLoaderConfig, true, visibility);
     }
 }

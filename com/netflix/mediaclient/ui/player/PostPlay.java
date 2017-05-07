@@ -11,9 +11,9 @@ import android.view.View$OnClickListener;
 import android.view.View$OnTouchListener;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.text.TextUtils;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.util.DeviceCategory;
@@ -174,23 +174,23 @@ public abstract class PostPlay
         this.mContext.getSubtitleManager().clear();
     }
     
-    public void fetchPostPlayVideos(final String s) {
+    public void fetchPostPlayVideos(final String s, final VideoType videoType) {
         if (!TextUtils.isEmpty((CharSequence)s) && this.mContext != null && this.mContext.getServiceManager() != null) {
             Log.d("nf_postplay", "Fetch postplay videos...");
-            this.mContext.getServiceManager().getBrowse().fetchPostPlayVideos(s, this.getVideoType(), new PostPlay$FetchPostPlayForPlaybackCallback(this));
+            this.mContext.getServiceManager().getBrowse().fetchPostPlayVideos(s, videoType, new PostPlay$FetchPostPlayForPlaybackCallback(this));
             return;
         }
         Log.e("nf_postplay", "Unable to fetch postplay videos!");
     }
     
-    public void fetchPostPlayVideosIfNeeded(final String s) {
+    public void fetchPostPlayVideosIfNeeded(final String s, final VideoType videoType) {
         if (this.mPostPlayDataFetchStatus == PostPlay$PostPlayDataFetchStatus.started) {
             Log.d("nf_postplay", "Fetch of postplay data already in progress, do nothing.");
             return;
         }
         if (this.mPostPlayDataFetchStatus != PostPlay$PostPlayDataFetchStatus.notStarted) {
             Log.d("nf_postplay", "Fetching postplay was postponed, go and fetch it...");
-            this.fetchPostPlayVideos(s);
+            this.fetchPostPlayVideos(s, videoType);
             return;
         }
         Log.d("nf_postplay", "First time, postplaydata not fetched, check if we need to postpone data retrieval...");
@@ -200,27 +200,25 @@ public abstract class PostPlay
             return;
         }
         Log.d("nf_postplay", "Fetching postplay data now, too close to start of postplay...");
-        this.fetchPostPlayVideos(s);
+        this.fetchPostPlayVideos(s, videoType);
     }
     
     abstract void findViews();
     
     protected void findViewsCommon() {
-        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131427714);
-        this.mInterrupterContinue = this.mContext.findViewById(2131427713);
-        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131427757);
-        this.mSynopsis = (TextView)this.mContext.findViewById(2131427755);
-        this.mInterrupterStop = this.mContext.findViewById(2131427715);
-        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131427753);
-        this.mMoreButton = this.mContext.findViewById(2131427745);
-        this.mPlayButton = this.mContext.findViewById(2131427743);
-        this.mStopButton = this.mContext.findViewById(2131427744);
-        this.mTitle = (TextView)this.mContext.findViewById(2131427754);
-        this.mInterrupter = this.mContext.findViewById(2131427712);
-        this.mPostPlay = this.mContext.findViewById(2131427750);
+        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131427698);
+        this.mInterrupterContinue = this.mContext.findViewById(2131427697);
+        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131427741);
+        this.mSynopsis = (TextView)this.mContext.findViewById(2131427739);
+        this.mInterrupterStop = this.mContext.findViewById(2131427699);
+        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131427737);
+        this.mMoreButton = this.mContext.findViewById(2131427729);
+        this.mPlayButton = this.mContext.findViewById(2131427727);
+        this.mStopButton = this.mContext.findViewById(2131427728);
+        this.mTitle = (TextView)this.mContext.findViewById(2131427738);
+        this.mInterrupter = this.mContext.findViewById(2131427696);
+        this.mPostPlay = this.mContext.findViewById(2131427734);
     }
-    
-    protected abstract VideoType getVideoType();
     
     protected abstract void handlePlayNow(final boolean p0);
     

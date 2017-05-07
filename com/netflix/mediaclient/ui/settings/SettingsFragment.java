@@ -45,7 +45,6 @@ public class SettingsFragment extends PreferenceFragment
     private static final String PREFS_NAME = "nfxpref";
     private static final String SUBTITLE_CONFIG_DEFAULT = "DEFAULT";
     private static final String SUBTITLE_CONFIG_ENHANCED_XML = "ENHANCED_XML";
-    private static final String SUBTITLE_CONFIG_SIMPLE_EVENTS = "SIMPLE_EVENTS";
     private static final String SUBTITLE_CONFIG_SIMPLE_XML = "SIMPLE_XML";
     private static final String TAG = "SettingsFragment";
     private Activity activity;
@@ -66,7 +65,7 @@ public class SettingsFragment extends PreferenceFragment
     private void handleCastAppIdSettings() {
         final Preference preference = this.findPreference((CharSequence)"ui.castAppId");
         if (preference != null) {
-            preference.setSummary((CharSequence)((Object)this.getText(2131493296) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
+            preference.setSummary((CharSequence)((Object)this.getText(2131493298) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
             preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$5(this));
         }
     }
@@ -203,19 +202,14 @@ public class SettingsFragment extends PreferenceFragment
         final SubtitleConfiguration loadQaLocalOverride = SubtitleConfiguration.loadQaLocalOverride((Context)this.activity);
         final ArrayList<CharSequence> list = new ArrayList<CharSequence>();
         final ArrayList<String> list2 = new ArrayList<String>();
-        list.add(this.getText(2131493281));
-        list2.add("DEFAULT");
         list.add(this.getText(2131493282));
-        list2.add("ENHANCED_XML");
+        list2.add("DEFAULT");
         list.add(this.getText(2131493283));
-        list2.add("SIMPLE_XML");
+        list2.add("ENHANCED_XML");
         list.add(this.getText(2131493284));
-        list2.add("SIMPLE_EVENTS");
+        list2.add("SIMPLE_XML");
         listPreference.setDefaultValue((Object)"DEFAULT");
-        if (loadQaLocalOverride == SubtitleConfiguration.SIMPLE_EVENTS) {
-            listPreference.setValue("SIMPLE_EVENTS");
-        }
-        else if (loadQaLocalOverride == SubtitleConfiguration.SIMPLE_XML) {
+        if (loadQaLocalOverride == SubtitleConfiguration.SIMPLE_XML) {
             listPreference.setValue("SIMPLE_XML");
         }
         else if (loadQaLocalOverride == SubtitleConfiguration.ENHANCED_XML) {

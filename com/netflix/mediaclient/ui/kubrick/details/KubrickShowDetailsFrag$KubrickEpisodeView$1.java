@@ -4,11 +4,13 @@
 
 package com.netflix.mediaclient.ui.kubrick.details;
 
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.android.widget.PressedStateHandler$DelayedOnClickListener;
 import com.netflix.mediaclient.util.TimeUtils;
-import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import android.content.Context;
 import android.widget.TextView;

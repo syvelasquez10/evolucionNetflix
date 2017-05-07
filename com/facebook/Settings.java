@@ -235,14 +235,16 @@ public final class Settings
                     edit.putLong(string, System.currentTimeMillis());
                     // iftrue(Label_0417:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
                     edit.putString(string2, executeAndWait.getGraphObject().getInnerJSONObject().toString());
-                    Label_0417:
+                    // iftrue(Label_0351:, Utility.queryAppSettings(s, false).supportsAttribution())
+                    // iftrue(Label_0329:, attributionIdentifiers != null && attributionIdentifiers.getAndroidAdvertiserId() != null || attributionIdentifiers.getAttributionId() != null)
+                    Label_0417: {
+                        break Label_0417;
+                        Label_0329:
+                        throw new FacebookException("Install attribution has been disabled on the server.");
+                        throw new FacebookException("No attribution id available to send to server.");
+                    }
                     edit.apply();
                     return executeAndWait;
-                    // iftrue(Label_0329:, attributionIdentifiers != null && attributionIdentifiers.getAndroidAdvertiserId() != null || attributionIdentifiers.getAttributionId() != null)
-                    throw new FacebookException("No attribution id available to send to server.");
-                    Label_0329:
-                    // iftrue(Label_0351:, Utility.queryAppSettings(s, false).supportsAttribution())
-                    throw new FacebookException("Install attribution has been disabled on the server.");
                 }
                 catch (JSONException ex2) {
                     create2 = null;

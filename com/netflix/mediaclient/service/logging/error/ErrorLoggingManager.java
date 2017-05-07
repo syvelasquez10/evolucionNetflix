@@ -21,7 +21,7 @@ import android.annotation.TargetApi;
 @TargetApi(4)
 public final class ErrorLoggingManager
 {
-    private static final String CRITTER_VERSION_NAME = "3.12.2";
+    private static final String CRITTER_VERSION_NAME = "3.13.0";
     private static final boolean ENABLE_CRITTERCISM = true;
     private static final String TAG = "nf_log_crit";
     private static boolean sBreadcrumbLoggingEnabled;
@@ -96,10 +96,10 @@ public final class ErrorLoggingManager
             if (shouldInitializeCrittercism()) {
                 Log.d("nf_log_crit", "This device is approved for sampling, initialize Crittercism");
                 final CrittercismConfig crittercismConfig = new CrittercismConfig();
-                crittercismConfig.setNdkCrashReportingEnabled(true);
+                crittercismConfig.setNdkCrashReportingEnabled(false);
                 crittercismConfig.setServiceMonitoringEnabled(false);
                 crittercismConfig.setLogcatReportingEnabled(false);
-                crittercismConfig.setCustomVersionName("3.12.2");
+                crittercismConfig.setCustomVersionName("3.13.0");
                 try {
                     final Context context2;
                     Crittercism.initialize(context2, SecurityRepository.getCrittercismAppId(), crittercismConfig);
@@ -135,7 +135,7 @@ public final class ErrorLoggingManager
                 return;
             }
             if (Log.isLoggable()) {
-                Log.d("nf_log_crit", "Should log: " + isEnabledAndReady() + ", breadcrumb logging enabled " + ErrorLoggingManager.sBreadcrumbLoggingEnabled);
+                Log.d("nf_log_crit", "Should log: " + isEnabledAndReady() + ", breadcrumb logging enabled: " + ErrorLoggingManager.sBreadcrumbLoggingEnabled + ", breadcrumb: " + s);
             }
         }
     }

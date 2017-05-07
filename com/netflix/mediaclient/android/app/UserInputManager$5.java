@@ -7,7 +7,7 @@ package com.netflix.mediaclient.android.app;
 import android.os.Bundle;
 import android.app.Activity;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.pin.PinVerifier;
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import android.app.ActivityManager$RunningTaskInfo;
 import android.app.ActivityManager;
 import android.content.Context;

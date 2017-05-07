@@ -4,14 +4,16 @@
 
 package com.netflix.mediaclient.ui.kubrick.lomo;
 
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ImageView$ScaleType;
@@ -25,9 +27,9 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 
 public class KubrickVideoView extends AdvancedImageView implements VideoViewGroup$IVideoView<KubrickVideo>
 {
+    private static final String TAG = "KubrickVideoView";
     protected VideoDetailsClickListener clicker;
     protected PlayContext playContext;
-    private boolean showPlaceholderImg;
     
     public KubrickVideoView(final Context context) {
         super(context);
@@ -47,10 +49,9 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130837881);
+        this.setBackgroundResource(2130837892);
         this.setScaleType(ImageView$ScaleType.CENTER_CROP);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
-        this.showPlaceholderImg = !BrowseExperience.isKubrickKids();
     }
     
     @Override
@@ -60,21 +61,24 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
     
     @Override
     public void hide() {
-        NetflixActivity.getImageLoader(this.getContext()).showImg(this, null, null, null, false, false);
+        NetflixActivity.getImageLoader(this.getContext()).clear(this);
         this.setVisibility(4);
         this.clicker.remove((View)this);
     }
     
     @Override
-    public void update(final KubrickVideo kubrickVideo, final Trackable trackable, int visibility, final boolean b, final boolean b2) {
-        this.playContext = new PlayContextImp(trackable, visibility);
+    public void update(final KubrickVideo kubrickVideo, final Trackable trackable, int n, final boolean b, final boolean b2) {
         String s;
         if (b2) {
             s = kubrickVideo.getHorzDispUrl();
         }
         else {
-            s = kubrickVideo.getKubrickHorzImgUrl();
+            s = kubrickVideo.getHorzDispSmallUrl();
         }
+        if (Log.isLoggable()) {
+            Log.v("KubrickVideoView", "Updating for video: " + kubrickVideo + ", imgUrl: " + s);
+        }
+        int visibility;
         if (StringUtils.isEmpty(s)) {
             visibility = 4;
         }
@@ -82,17 +86,18 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
             visibility = 0;
         }
         this.setVisibility(visibility);
-        this.clicker.update((View)this, kubrickVideo);
+        this.playContext = new PlayContextImp(trackable, n);
+        this.clicker.update((View)this, kubrickVideo, this.pressedHandler);
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final IClientLogging$AssetType boxArt = IClientLogging$AssetType.boxArt;
         final String title = kubrickVideo.getTitle();
-        final boolean showPlaceholderImg = this.showPlaceholderImg;
+        final ImageLoader$StaticImgConfig imageLoaderConfig = BrowseExperience.getImageLoaderConfig();
         if (b) {
-            visibility = 1;
+            n = 1;
         }
         else {
-            visibility = 0;
+            n = 0;
         }
-        imageLoader.showImg(this, s, boxArt, title, showPlaceholderImg, true, visibility);
+        imageLoader.showImg(this, s, boxArt, title, imageLoaderConfig, true, n);
     }
 }

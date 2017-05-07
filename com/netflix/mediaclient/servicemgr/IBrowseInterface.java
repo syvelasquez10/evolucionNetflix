@@ -41,6 +41,8 @@ public interface IBrowseInterface
     
     void fetchMovieDetails(final String p0, final int p1, final int p2);
     
+    void fetchNotifications(final int p0, final int p1, final int p2, final int p3);
+    
     void fetchPostPlayVideos(final String p0, final VideoType p1, final int p2, final int p3);
     
     void fetchPreAppData(final int p0, final int p1);
@@ -57,8 +59,6 @@ public interface IBrowseInterface
     
     void fetchSimilarVideosForQuerySuggestion(final String p0, final int p1, final int p2, final int p3, final String p4);
     
-    void fetchSocialNotifications(final int p0, final int p1, final int p2);
-    
     void fetchVideoSummary(final String p0, final int p1, final int p2);
     
     void fetchVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final boolean p4, final boolean p5, final int p6, final int p7);
@@ -68,8 +68,6 @@ public interface IBrowseInterface
     void forceFetchFromLocalCache(final boolean p0);
     
     ModelProxy<?> getModelProxy();
-    
-    void hideVideo(final String p0, final int p1, final int p2);
     
     void logBillboardActivity(final Video p0, final BillboardInteractionType p1);
     

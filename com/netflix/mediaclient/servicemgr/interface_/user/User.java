@@ -13,4 +13,6 @@ public interface User
     String getLastName();
     
     String getUserToken();
+    
+    boolean isAgeVerified();
 }

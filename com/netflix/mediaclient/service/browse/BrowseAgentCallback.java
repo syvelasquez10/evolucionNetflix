@@ -7,12 +7,12 @@ package com.netflix.mediaclient.service.browse;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.model.leafs.Video$Summary;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -51,6 +51,8 @@ public interface BrowseAgentCallback
     
     void onMovieDetailsFetched(final MovieDetails p0, final Status p1);
     
+    void onNotificationsListFetched(final SocialNotificationsList p0, final Status p1);
+    
     void onPostPlayVideosFetched(final PostPlayVideosProvider p0, final Status p1);
     
     void onQueueAdd(final Status p0);
@@ -70,8 +72,6 @@ public interface BrowseAgentCallback
     void onSimilarVideosFetched(final SearchVideoListProvider p0, final Status p1);
     
     void onSocialNotificationWasThanked(final Status p0);
-    
-    void onSocialNotificationsListFetched(final SocialNotificationsList p0, final Status p1);
     
     void onSocialNotificationsMarkedAsRead(final Status p0);
     

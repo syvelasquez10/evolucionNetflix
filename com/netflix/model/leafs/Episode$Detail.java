@@ -99,6 +99,10 @@ public final class Episode$Detail extends Video$Detail
         return this.enumType;
     }
     
+    public boolean isAgeProtected() {
+        return this.isAgeProtected;
+    }
+    
     public boolean isAutoPlayEnabled() {
         return this.isAutoPlayEnabled;
     }
@@ -291,6 +295,6 @@ public final class Episode$Detail extends Video$Detail
     
     @Override
     public String toString() {
-        return "Detail [id=" + this.id + ", type=" + this.type + ", seasonId=" + this.seasonId + ", showId=" + this.showId + ", showTitle=" + this.showTitle + ", showRestUrl=" + this.showRestUrl + ", title=" + this.title + ", boxartUrl=" + this.boxartUrl + ", nextEpisodeId=" + this.nextEpisodeId + ", nextEpisodeTitle=" + this.nextEpisodeTitle + ", availabilityDateMsg=" + this.availabilityDateMsg + ", episodeNumber=" + this.episodeNumber + ", seasonNumber=" + this.seasonNumber + ", errorType=" + this.errorType + ", enumType=" + this.enumType + ", toString()=" + super.toString() + "]";
+        return "Detail [id=" + this.id + ", type=" + this.type + ", seasonId=" + this.seasonId + ", showId=" + this.showId + ", showTitle=" + this.showTitle + ", showRestUrl=" + this.showRestUrl + ", title=" + this.title + ", boxartUrl=" + this.boxartUrl + ", nextEpisodeId=" + this.nextEpisodeId + ", nextEpisodeTitle=" + this.nextEpisodeTitle + ", availabilityDateMsg=" + this.availabilityDateMsg + ", episodeNumber=" + this.episodeNumber + ", seasonNumber=" + this.seasonNumber + ", errorType=" + this.errorType + ", enumType=" + this.enumType + "]";
     }
 }

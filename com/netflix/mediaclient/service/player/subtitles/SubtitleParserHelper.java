@@ -6,7 +6,7 @@ package com.netflix.mediaclient.service.player.subtitles;
 
 import org.w3c.dom.Element;
 
-final class SubtitleParserHelper
+public final class SubtitleParserHelper
 {
     public static final String BR = "br";
     public static final String SPAN = "span";

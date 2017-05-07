@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging.client.model;
 
+import org.json.JSONException;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.util.StringUtils;
@@ -62,6 +63,13 @@ public abstract class SessionEvent extends Event
     
     @Override
     public String toString() {
-        return "SessionEvent [sessionName=" + this.sessionName + ", sessionId=" + this.sessionId + ", type=" + this.type + ", category=" + this.category + ", name=" + this.name + ", activeSessions=" + this.activeSessions + ", time=" + this.time + ", sequence=" + this.sequence + ", uptime=" + this.uptime + ", modalView=" + this.modalView + ", dataContext=" + this.dataContext + ", kids=" + this.kids + "]";
+        Object customData = null;
+        try {
+            customData = this.getCustomData();
+            return "SessionEvent [sessionName=" + this.sessionName + ", sessionId=" + this.sessionId + ", type=" + this.type + ", category=" + this.category + ", name=" + this.name + ", activeSessions=" + this.activeSessions + ", time=" + this.time + ", sequence=" + this.sequence + ", uptime=" + this.uptime + ", modalView=" + this.modalView + ", dataContext=" + this.dataContext + ", kids=" + this.kids + ", getCustomData()=" + customData + "]";
+        }
+        catch (JSONException ex) {
+            return "SessionEvent [sessionName=" + this.sessionName + ", sessionId=" + this.sessionId + ", type=" + this.type + ", category=" + this.category + ", name=" + this.name + ", activeSessions=" + this.activeSessions + ", time=" + this.time + ", sequence=" + this.sequence + ", uptime=" + this.uptime + ", modalView=" + this.modalView + ", dataContext=" + this.dataContext + ", kids=" + this.kids + ", getCustomData()=" + customData + "]";
+        }
     }
 }

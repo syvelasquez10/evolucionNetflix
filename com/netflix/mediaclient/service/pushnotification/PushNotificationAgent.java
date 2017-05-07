@@ -465,7 +465,9 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
     @Override
     public void reportAndKillService() {
         Log.d("nf_push", "Telling back-end to stop sending gcm info events");
-        this.report(this.mCurrentUserSettings.optedIn);
+        if (this.mCurrentUserSettings != null) {
+            this.report(this.mCurrentUserSettings.optedIn);
+        }
         Log.d("nf_push", "Stopping NetflixService in 30000");
         this.getService().requestServiceShutdownAfterDelay(30000L);
     }

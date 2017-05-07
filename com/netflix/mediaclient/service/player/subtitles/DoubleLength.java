@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.player.subtitles;
 
 import com.netflix.mediaclient.util.SubtitleUtils;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.player.subtitles.text.CellResolution;
 
 public class DoubleLength
 {

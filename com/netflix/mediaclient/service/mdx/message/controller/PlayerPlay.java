@@ -6,7 +6,7 @@ package com.netflix.mediaclient.service.mdx.message.controller;
 
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.pin.PinVerifier;
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.service.mdx.message.MdxMessage;
 
 public final class PlayerPlay extends MdxMessage

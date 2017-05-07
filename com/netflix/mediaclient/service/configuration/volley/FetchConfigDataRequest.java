@@ -49,12 +49,12 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
         }
     }
     
-    public static ConfigData parseConfigString(final String s) {
+    public static ConfigData parseConfigString(String jsonString) {
         final ConfigData configData = new ConfigData();
         if (Log.isLoggable()) {
-            Log.v("nf_config_data", "String response to parse = " + s);
+            Log.v("nf_config_data", "String response to parse = " + jsonString);
         }
-        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_config_data", s);
+        final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_config_data", jsonString);
         if (FalkorParseUtils.isEmpty(dataObj)) {
             Log.d("nf_config_data", "No config overrides for device");
             configData.deviceConfig = new DeviceConfigData();
@@ -65,9 +65,19 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
         }
         if (dataObj.has("accountConfig")) {
             if (Log.isLoggable()) {
-                Log.v("nf_config_data", "Accnt config: " + dataObj.get("accountConfig"));
+                Log.v("nf_config_data", "Accnt config json: " + dataObj.get("accountConfig"));
             }
             configData.accountConfig = FalkorParseUtils.getPropertyObject(dataObj, "accountConfig", AccountConfigData.class);
+            if (Log.isLoggable()) {
+                final StringBuilder append = new StringBuilder().append("Parsed accnt config: ");
+                if (configData.accountConfig == null) {
+                    jsonString = "null";
+                }
+                else {
+                    jsonString = configData.accountConfig.toJsonString();
+                }
+                Log.v("nf_config_data", append.append(jsonString).toString());
+            }
         }
         if (dataObj.has("streamingqoe")) {
             final JsonElement value = dataObj.get("streamingqoe");

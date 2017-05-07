@@ -10,6 +10,7 @@ import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import android.content.DialogInterface;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.view.ViewPropertyAnimator;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -66,7 +67,7 @@ class ProfileDetailsActivity$5 implements View$OnClickListener
             return;
         }
         if (this.this$0.mServiceManager.getCurrentProfile() != null && this.this$0.mInputProfile.getProfileGuid().equals(this.this$0.mServiceManager.getCurrentProfile().getProfileGuid())) {
-            this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131493328), this.this$0.getString(2131493003), null)));
+            this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131493333), this.this$0.getString(2131493003), null)));
             return;
         }
         UserActionLogUtils.reportEditProfileActionEnded((Context)this.this$0, IClientLogging$CompletionReason.canceled, this.this$0.getUiScreen(), null, this.this$0.getProfileForLogging());

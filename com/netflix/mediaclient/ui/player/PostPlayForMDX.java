@@ -6,14 +6,14 @@ package com.netflix.mediaclient.ui.player;
 
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.Asset;
-import android.app.Activity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
 import android.text.TextUtils;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.Context;
@@ -70,7 +70,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     }
     
     @Override
-    public void fetchPostPlayVideos(final String s) {
+    public void fetchPostPlayVideos(final String s, final VideoType videoType) {
         if (!TextUtils.isEmpty((CharSequence)s) && this.mContext != null && this.mContext.getServiceManager() != null) {
             Log.d("nf_postplay", "Fetch postplay videos...");
             this.mContext.getServiceManager().getBrowse().fetchEpisodeDetails(s, new PostPlayForMDX$FetchPostPlayForPlaybackCallback(this));
@@ -80,14 +80,14 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     }
     
     @Override
-    public void fetchPostPlayVideosIfNeeded(final String s) {
-        this.fetchPostPlayVideos(s);
+    public void fetchPostPlayVideosIfNeeded(final String s, final VideoType videoType) {
+        this.fetchPostPlayVideos(s, videoType);
     }
     
     @Override
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mContext.findViewById(2131427749);
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131427747);
+        this.mTargetNameView = (TextView)this.mContext.findViewById(2131427733);
+        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131427731);
     }
     
     public void handleBack() {
@@ -102,8 +102,12 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
                 this.mContext.finish();
             }
             final Intent episodeDetailsIntent = DetailsActivityLauncher.getEpisodeDetailsIntent(this.mContext, this.episodeDetails.getPlayable().getParentId(), this.episodeDetails.getId(), PlayContext.NFLX_MDX_CONTEXT);
-            episodeDetailsIntent.addFlags(67108864);
-            this.mContext.startActivity(episodeDetailsIntent);
+            if (episodeDetailsIntent != null) {
+                episodeDetailsIntent.addFlags(67108864);
+                this.mContext.startActivity(episodeDetailsIntent);
+                return;
+            }
+            Log.w("nf_postplay", "Can't start activity - intent is null");
         }
     }
     
@@ -155,7 +159,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void initInfoContainer() {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493298));
+            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493300));
             this.mInfoTitleView.setVisibility(4);
         }
         if (this.mTimerView != null) {

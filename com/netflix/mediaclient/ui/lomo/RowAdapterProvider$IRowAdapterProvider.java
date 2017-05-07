@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-interface RowAdapterProvider$IRowAdapterProvider
+public interface RowAdapterProvider$IRowAdapterProvider
 {
     RowAdapter getBillboardAdapter();
     

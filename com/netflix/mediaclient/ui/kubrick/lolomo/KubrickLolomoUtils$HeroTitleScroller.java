@@ -4,11 +4,14 @@
 
 package com.netflix.mediaclient.ui.kubrick.lolomo;
 
+import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter$LoMoRowContent;
 import android.widget.TextView;
-import android.util.Log;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter$RowHolder;
+import com.netflix.mediaclient.Log;
 import android.widget.AbsListView;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.view.View;
-import android.content.res.Resources;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 
 class KubrickLolomoUtils$HeroTitleScroller
@@ -16,30 +19,24 @@ class KubrickLolomoUtils$HeroTitleScroller
     private static final boolean LOG_VERBOSE = false;
     private static final String TAG = "HeroTitleScroller";
     private final LoLoMoFrag frag;
-    private final int textPadding;
-    private final int titleMarginTopPx;
     
     public KubrickLolomoUtils$HeroTitleScroller(final LoLoMoFrag frag) {
         this.frag = frag;
-        final Resources resources = frag.getResources();
-        this.titleMarginTopPx = resources.getDimensionPixelSize(2131296457);
-        this.textPadding = resources.getDimensionPixelOffset(2131296341);
     }
     
     private int computeScrollingThreshPx(final KubrickLolomoUtils$KubrickRowHolder kubrickLolomoUtils$KubrickRowHolder, final View view) {
-        return this.frag.getNetflixActivity().getActionBarHeight() - view.getPaddingTop() - kubrickLolomoUtils$KubrickRowHolder.topSpacer.getHeight();
+        return this.frag.getNetflixActivity().getActionBarHeight() - view.getPaddingTop() - ViewUtils.getHeightIfVisible(kubrickLolomoUtils$KubrickRowHolder.topSpacer);
     }
     
     private int computeTransYMax(final KubrickLolomoUtils$KubrickRowHolder kubrickLolomoUtils$KubrickRowHolder, final View view) {
-        return view.getHeight() - view.getPaddingTop() - kubrickLolomoUtils$KubrickRowHolder.kubrickHeroTitle.getHeight() - kubrickLolomoUtils$KubrickRowHolder.topSpacer.getHeight() - this.titleMarginTopPx - this.textPadding;
+        return view.getHeight() - view.getPaddingTop() - kubrickLolomoUtils$KubrickRowHolder.title.getHeight() - ViewUtils.getHeightIfVisible(kubrickLolomoUtils$KubrickRowHolder.topSpacer);
     }
     
     public void onScroll(final AbsListView absListView) {
         for (int i = 0; i < absListView.getChildCount(); ++i) {
             final View child = absListView.getChildAt(i);
             final KubrickLolomoUtils$KubrickRowHolder kubrickLolomoUtils$KubrickRowHolder = (KubrickLolomoUtils$KubrickRowHolder)child.getTag();
-            if (kubrickLolomoUtils$KubrickRowHolder != null && kubrickLolomoUtils$KubrickRowHolder.kubrickHeroTitle.getVisibility() == 0) {
-                final TextView kubrickHeroTitle = kubrickLolomoUtils$KubrickRowHolder.kubrickHeroTitle;
+            if (kubrickLolomoUtils$KubrickRowHolder != null && kubrickLolomoUtils$KubrickRowHolder.title.getVisibility() == 0) {
                 final int computeScrollingThreshPx = this.computeScrollingThreshPx(kubrickLolomoUtils$KubrickRowHolder, child);
                 if (i <= 1 && child.getTop() < computeScrollingThreshPx) {
                     int n = computeScrollingThreshPx - child.getTop();
@@ -47,13 +44,13 @@ class KubrickLolomoUtils$HeroTitleScroller
                     if (n > computeTransYMax) {
                         n = computeTransYMax;
                     }
-                    kubrickHeroTitle.setTranslationY((float)n);
+                    kubrickLolomoUtils$KubrickRowHolder.title.setTranslationY((float)n);
                 }
                 else {
-                    kubrickHeroTitle.setTranslationY(0.0f);
+                    kubrickLolomoUtils$KubrickRowHolder.title.setTranslationY(0.0f);
                 }
             }
-            else if (kubrickLolomoUtils$KubrickRowHolder == null && Log.isLoggable("HeroTitleScroller", 3)) {
+            else if (kubrickLolomoUtils$KubrickRowHolder == null && Log.isLoggable()) {
                 Log.d("HeroTitleScroller", "No row holder available for view at row: " + i);
             }
         }

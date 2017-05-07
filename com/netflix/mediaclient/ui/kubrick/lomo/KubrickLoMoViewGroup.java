@@ -6,6 +6,8 @@ package com.netflix.mediaclient.ui.kubrick.lomo;
 
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFocusHandler;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.View;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.KubrickVideo;
@@ -20,6 +22,14 @@ public class KubrickLoMoViewGroup extends VideoViewGroup<KubrickVideo, KubrickVi
     @Override
     protected KubrickVideoView createChildView(final Context context) {
         return new KubrickVideoView(context);
+    }
+    
+    @Override
+    public void init(final int n) {
+        super.init(n);
+        if (BrowseExperience.isKubrickKids()) {
+            ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelSize(2131296480));
+        }
     }
     
     @Override

@@ -48,6 +48,7 @@ import com.netflix.mediaclient.android.widget.StaticGridView;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.util.SparseIntArray;
 import android.util.SparseArray;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -89,20 +90,20 @@ class ProfileSelectionActivity$ProfileAvatarAdapter extends BaseAdapter
     public View getView(int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.getLayoutInflater().inflate(2130903181, viewGroup, false);
-            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131427450), inflate.findViewById(2131427794), (TextView)inflate.findViewById(2131427796), inflate.findViewById(2131427795)));
+            inflate = this.this$0.getLayoutInflater().inflate(2130903173, viewGroup, false);
+            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131427452), inflate.findViewById(2131427778), (TextView)inflate.findViewById(2131427780), inflate.findViewById(2131427779)));
         }
         final ProfileSelectionActivity$Holder profileSelectionActivity$Holder = (ProfileSelectionActivity$Holder)inflate.getTag();
         final UserProfile item = this.getItem(n);
         if (n == this.this$0.profiles.size()) {
-            profileSelectionActivity$Holder.img.setImageResource(2130837861);
+            profileSelectionActivity$Holder.img.setImageResource(2130837873);
             profileSelectionActivity$Holder.kidsBadge.setVisibility(8);
-            profileSelectionActivity$Holder.title.setText(2131493312);
+            profileSelectionActivity$Holder.title.setText(2131493317);
             profileSelectionActivity$Holder.topEditImg.setVisibility(8);
             return inflate;
         }
         profileSelectionActivity$Holder.title.setText((CharSequence)item.getProfileName());
-        NetflixActivity.getImageLoader((Context)this.this$0).showImg(profileSelectionActivity$Holder.img, item.getAvatarUrl(), IClientLogging$AssetType.profileAvatar, item.getFirstName(), true, true);
+        NetflixActivity.getImageLoader((Context)this.this$0).showImg(profileSelectionActivity$Holder.img, item.getAvatarUrl(), IClientLogging$AssetType.profileAvatar, item.getFirstName(), ImageLoader$StaticImgConfig.DARK, true);
         final View access$1100 = profileSelectionActivity$Holder.topEditImg;
         if (this.this$0.isProfileEditMode) {
             n = 0;

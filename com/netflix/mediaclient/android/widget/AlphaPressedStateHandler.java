@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.android.widget;
 
+import android.animation.Animator$AnimatorListener;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.view.View;
 
@@ -20,7 +21,7 @@ public class AlphaPressedStateHandler extends PressedStateHandler
     
     @Override
     protected void handlePressComplete(final View view) {
-        AnimationUtils.startPressedStateCompleteAnimation(view);
+        AnimationUtils.startPressedStateCompleteAnimation(view, (Animator$AnimatorListener)new AlphaPressedStateHandler$1(this));
     }
     
     @Override

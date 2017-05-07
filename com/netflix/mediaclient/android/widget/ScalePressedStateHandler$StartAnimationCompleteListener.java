@@ -4,10 +4,11 @@
 
 package com.netflix.mediaclient.android.widget;
 
-import android.animation.TimeInterpolator;
 import android.animation.Animator$AnimatorListener;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import com.netflix.mediaclient.Log;
+import android.animation.TimeInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.animation.Animator;
 import android.view.View;
 import com.netflix.mediaclient.util.OnAnimationEndListener;
@@ -23,7 +24,6 @@ class ScalePressedStateHandler$StartAnimationCompleteListener extends OnAnimatio
     }
     
     public void onAnimationEnd(final Animator animator) {
-        Log.v("PressedStateHandler", "Animation complete");
         if (this.this$0.shouldPerformCompleteAnimation) {
             this.this$0.performResetAnimation(this.view);
             return;

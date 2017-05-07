@@ -9,6 +9,8 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.interface_.KubrickVideo;
 import java.util.List;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.View;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils$LoMoWidthType;
@@ -23,8 +25,8 @@ import android.support.v7.widget.RecyclerView;
 
 public class KubrickGalleryViewGroup extends RecyclerView
 {
-    public static final int NUM_REMOVED_VIDEOS = 3;
-    public static final int NUM_ROWS = 2;
+    static final int NUM_REMOVED_VIDEOS = 3;
+    static final int NUM_ROWS = 2;
     private static final String TAG = "KubrickGalleryViewGroup";
     private final KubrickGalleryViewGroup$GridAdapter adapter;
     private int page;
@@ -38,6 +40,9 @@ public class KubrickGalleryViewGroup extends RecyclerView
         this.setLayoutManager(layoutManager);
         this.setAdapter(this.adapter = new KubrickGalleryViewGroup$GridAdapter(this, n));
         LoMoUtils.applyContentOverlapPadding((NetflixActivity)this.getContext(), (View)this, LoMoUtils$LoMoWidthType.STANDARD);
+        if (BrowseExperience.isKubrickKids()) {
+            ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelSize(2131296480));
+        }
     }
     
     public void updateDataThenViews(final List<KubrickVideo> list, final int n, final int page, final int n2, final Trackable trackable) {

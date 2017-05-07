@@ -8,8 +8,6 @@ public interface KubrickVideo extends FeatureEnabledProvider, Ratable, Video
 {
     String getCertification();
     
-    String getKubrickHorzImgUrl();
-    
     String getKubrickStoryImgUrl();
     
     String getNarrative();

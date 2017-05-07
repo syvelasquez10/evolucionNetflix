@@ -5,14 +5,14 @@
 package com.netflix.mediaclient.ui.player;
 
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.Asset;
-import android.app.Activity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
 import android.text.TextUtils;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.Context;

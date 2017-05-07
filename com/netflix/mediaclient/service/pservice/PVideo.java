@@ -19,6 +19,8 @@ public class PVideo
     public String horzDispUrl;
     @SerializedName("id")
     public String id;
+    @SerializedName("isAgeProtected")
+    public boolean isAgeProtected;
     @SerializedName("isAutoPlayEnabled")
     public boolean isAutoPlayEnabled;
     @SerializedName("isEpisode")
@@ -82,6 +84,7 @@ public class PVideo
         pVideo.isPlayableEpisode = playable.isPlayableEpisode();
         pVideo.isNextPlayableEpisode = playable.isNextPlayableEpisode();
         pVideo.isAutoPlayEnabled = playable.isAutoPlayEnabled();
+        pVideo.isAgeProtected = playable.isAgeProtected();
         pVideo.isPinProtected = playable.isPinProtected();
         pVideo.plyableBookmarkPos = playable.getPlayableBookmarkPosition();
         pVideo.playableRuntime = playable.getRuntime();

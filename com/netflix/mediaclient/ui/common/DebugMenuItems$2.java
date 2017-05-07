@@ -4,34 +4,27 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import com.netflix.mediaclient.servicemgr.IBrowseManager;
-import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.service.NetflixService;
+import android.content.Intent;
 import android.view.MenuItem;
-import com.netflix.mediaclient.ui.home.HomeActivity;
+import android.content.Context;
 import android.view.MenuItem$OnMenuItemClickListener;
 
 class DebugMenuItems$2 implements MenuItem$OnMenuItemClickListener
 {
     final /* synthetic */ DebugMenuItems this$0;
-    final /* synthetic */ HomeActivity val$homeActivity;
+    final /* synthetic */ Context val$context;
     
-    DebugMenuItems$2(final DebugMenuItems this$0, final HomeActivity val$homeActivity) {
+    DebugMenuItems$2(final DebugMenuItems this$0, final Context val$context) {
         this.this$0 = this$0;
-        this.val$homeActivity = val$homeActivity;
+        this.val$context = val$context;
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        final GenreList genre = this.val$homeActivity.getGenre();
-        final IBrowseManager browse = this.val$homeActivity.getServiceManager().getBrowse();
-        final String genreId = this.val$homeActivity.getGenreId();
-        String title;
-        if (genre == null) {
-            title = "Home Lolomo";
-        }
-        else {
-            title = genre.getTitle();
-        }
-        browse.dumpHomeLoLoMosAndVideos(genreId, title);
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.USER_CREATE_AUTOLOGIN_TOKEN");
+        intent.setClass(this.val$context, (Class)NetflixService.class);
+        intent.addCategory("com.netflix.mediaclient.intent.category.USER");
+        this.val$context.startService(intent);
         return true;
     }
 }

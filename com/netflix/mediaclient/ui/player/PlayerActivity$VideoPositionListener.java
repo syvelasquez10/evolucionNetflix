@@ -20,6 +20,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import java.io.Serializable;
 import android.media.AudioManager;
 import android.widget.Toast;
+import android.app.DialogFragment;
 import android.view.MenuItem;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
@@ -28,14 +29,15 @@ import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.res.Configuration;
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.service.net.LogMobileType;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.view.Surface;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import com.netflix.mediaclient.ui.pin.PinDialogVault;
-import com.netflix.mediaclient.ui.pin.PinDialogVault$PinInvokedFrom;
-import com.netflix.mediaclient.ui.pin.PinVerifier;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifier;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$PlayInvokedFrom;
 import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
@@ -44,8 +46,10 @@ import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayoutMetadata;
-import com.netflix.mediaclient.util.AndroidManifestUtils;
+import com.netflix.mediaclient.ui.player.subtitles.SubtitleManager;
+import com.netflix.mediaclient.ui.player.subtitles.SubtitleManagerFactory;
 import android.os.Debug;
+import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.os.SystemClock;
 import android.util.Pair;
@@ -74,6 +78,7 @@ import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
 import android.view.SurfaceHolder$Callback;
 import com.netflix.mediaclient.media.JPlayer.SecondSurface;
+import com.netflix.mediaclient.service.player.subtitles.SafeSubtitleManager;
 import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.content.BroadcastReceiver;
@@ -85,8 +90,10 @@ import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.media.Language;
 import android.view.View$OnClickListener;
 import android.annotation.TargetApi;
+import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -106,7 +113,7 @@ public class PlayerActivity$VideoPositionListener implements SeekBar$OnSeekBarCh
     }
     
     private boolean inCancelProgressZone(final SeekBar seekBar, final float n) {
-        final float dimension = this.this$0.getResources().getDimension(2131296509);
+        final float dimension = this.this$0.getResources().getDimension(2131296513);
         int height;
         if (this.this$0.isTablet()) {
             height = (int)(2.0f * dimension);
@@ -209,18 +216,16 @@ public class PlayerActivity$VideoPositionListener implements SeekBar$OnSeekBarCh
     }
     
     public void onStopTrackingTouch(final SeekBar seekBar) {
-        boolean b;
-        TimelineSeekBar timelineSeekBar;
-        int access$1100;
-        PlayScreen access$1101;
-        boolean b2;
-        boolean b3;
-        Label_0185_Outer:Label_0054_Outer:
         while (true) {
-            b = true;
+            final boolean b = true;
             while (true) {
-                Label_0250: {
-                Label_0185:
+                Label_0248: {
+                    TimelineSeekBar timelineSeekBar;
+                    PlayScreen access$700;
+                    final boolean b2;
+                    int access$701;
+                    boolean b3;
+                    Block_8_Outer:Block_9_Outer:Label_0121_Outer:Block_7_Outer:
                     while (true) {
                         synchronized (this) {
                             this.this$0.mState.draggingInProgress = false;
@@ -233,63 +238,59 @@ public class PlayerActivity$VideoPositionListener implements SeekBar$OnSeekBarCh
                                 timelineSeekBar = null;
                             }
                             if (!this.mIsInCancelZone && !this.skipSeek(timelineSeekBar)) {
-                                break Label_0250;
+                                break Label_0248;
                             }
-                            break Label_0185;
-                        Label_0170_Outer:
+                            break Block_8_Outer;
+                            Label_0214: {
+                                Log.d("PlayerActivity", "Do not seek!");
+                            }
+                            ((TimelineSeekBar)access$700).setProgress(((TimelineSeekBar)access$700).getProgress());
+                            // iftrue(Label_0214:, b2)
+                            // iftrue(Label_0168:, !Log.isLoggable())
+                            // iftrue(Label_0238:, b2)
                             while (true) {
-                                access$1100 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getBottomPanel().getCurrentProgress());
-                                ((TimelineSeekBar)access$1101).setProgress(access$1100);
-                                Log.d("PlayerActivity", "Seek!");
-                                this.this$0.doSeek(access$1100);
-                                while (true) {
-                                Block_8:
+                                Label_0100: {
+                                    break Label_0100;
+                                    access$701 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getBottomPanel().getCurrentProgress());
+                                    ((TimelineSeekBar)access$700).setProgress(access$701);
+                                    Log.d("PlayerActivity", "Seek!");
+                                    this.this$0.doSeek(access$701);
+                                    break Label_0100;
+                                    access$700.stopCurrentTime(b3);
+                                    this.this$0.mState.resetTimeline();
+                                    return;
                                     while (true) {
-                                        Block_7: {
-                                            Block_9: {
-                                                Label_0100: {
-                                                    break Label_0100;
-                                                    Label_0216: {
-                                                        Log.d("PlayerActivity", "Do not seek!");
-                                                    }
-                                                    ((TimelineSeekBar)access$1101).setProgress(((TimelineSeekBar)access$1101).getProgress());
-                                                    break Label_0100;
-                                                    access$1101 = this.this$0.mScreen;
-                                                    break Block_9;
-                                                    access$1101.stopCurrentTime(b3);
-                                                    this.this$0.mState.resetTimeline();
-                                                    return;
-                                                }
-                                                break Block_7;
+                                        while (true) {
+                                        Label_0168:
+                                            while (true) {
+                                                Log.d("PlayerActivity", "Stop current time " + b2);
+                                                break Label_0168;
+                                                b3 = b;
+                                                continue Block_8_Outer;
                                                 this.this$0.mSubtitleManager.setSubtitleVisibility(true);
-                                                ((TimelineSeekBar)access$1101).hideThumb(false);
-                                                break Block_8;
+                                                ((TimelineSeekBar)access$700).hideThumb(false);
+                                                continue Block_9_Outer;
                                             }
-                                            b3 = b;
-                                            continue Label_0185;
+                                            access$700 = this.this$0.mScreen;
+                                            continue Label_0121_Outer;
                                         }
                                         this.this$0.mScreen.setTopPanelVisibility(true);
-                                        continue Label_0054_Outer;
+                                        continue Block_7_Outer;
                                     }
-                                    Log.d("PlayerActivity", "Stop current time " + b2);
-                                    continue Label_0185_Outer;
                                 }
-                                continue Label_0170_Outer;
+                                continue;
                             }
                         }
-                        // iftrue(Label_0240:, b2)
                         // iftrue(Label_0121:, PlayerActivity.access$700(this.this$0) == null)
-                        // iftrue(Label_0170:, !Log.isLoggable())
-                        // iftrue(Label_0216:, b2)
-                        Label_0240: {
+                        Label_0238: {
                             b3 = false;
                         }
-                        continue Label_0185;
+                        continue;
                     }
                     b2 = true;
                     continue;
                 }
-                b2 = false;
+                boolean b2 = false;
                 continue;
             }
         }

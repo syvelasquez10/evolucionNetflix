@@ -10,34 +10,32 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.Menu;
+import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.os.Bundle;
 import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.util.SocialUtils;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
-import android.content.Context;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
-import android.content.Intent;
 import com.netflix.mediaclient.Log;
+import android.content.Intent;
+import android.content.Context;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
-import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.ui.common.VideoDetailsProvider;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 
-public abstract class DetailsActivity extends FragmentHostActivity implements ErrorWrapper$Callback, ManagerStatusListener, VideoDetailsProvider
+public abstract class DetailsActivity extends FragmentHostActivity implements ErrorWrapper$Callback, ManagerStatusListener, NetflixRatingBar$RatingBarDataProvider
 {
+    private static final String ACTION_FINISH_DETAILS_ACTIVITIES = "com.netflix.mediaclient.ui.login.ACTION_FINISH_DETAILS_ACTIVITIES";
     private static final String NOTIFICATION_BEACON_SENT = "notification_beacon_sent";
     private static final String TAG = "DetailsActivity";
     public static final boolean USE_DUMMY_DATA = false;
@@ -45,7 +43,6 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     private String episodeId;
     private DetailsActivity$Action mAction;
     private String mActionToken;
-    protected MessageData mMessageData;
     private boolean mNotificationOpenedReportAlreadySent;
     private SocialUtils$NotificationsListStatus notificationsListStatus;
     protected PlayContext playContext;
@@ -58,6 +55,10 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         this.notificationsListStatus = SocialUtils$NotificationsListStatus.NO_MESSAGES;
         this.socialNotificationsListUpdateReceiver = new DetailsActivity$1(this);
         this.reloadReceiver = new DetailsActivity$2(this);
+    }
+    
+    public static void finishAllDetailsActivities(final Context context) {
+        context.sendBroadcast(new Intent("com.netflix.mediaclient.ui.login.ACTION_FINISH_DETAILS_ACTIVITIES"));
     }
     
     private void handleAction() {
@@ -86,7 +87,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
             Log.d("DetailsActivity", "handleAddToMyList:: msg token " + this.mActionToken);
         }
         UserActionLogUtils.reportAddToQueueActionStarted((Context)this, null, this.getUiScreen());
-        this.serviceMan.getBrowse().addToQueue(this.videoId, this.getVideoType(), this.getTrackId(), BrowseExperience.shouldLoadKubrickLeaves(), this.mActionToken, new DetailsActivity$MyListCallback(this, "DetailsActivity"));
+        this.serviceMan.getBrowse().addToQueue(this.videoId, this.getVideoType(), this.getTrackId(), BrowseExperience.shouldLoadKubrickLeavesInDetails(), this.mActionToken, new DetailsActivity$MyListCallback(this, "DetailsActivity"));
     }
     
     private void handleRemoveFromMyList() {
@@ -97,6 +98,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     private void registerReceivers() {
         this.registerReceiverLocallyWithAutoUnregister(this.socialNotificationsListUpdateReceiver, "com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED");
         this.registerReceiverLocallyWithAutoUnregister(this.reloadReceiver, "com.netflix.mediaclient.intent.action.DETAIL_PAGE_REFRESH");
+        this.registerFinishReceiverWithAutoUnregister("com.netflix.mediaclient.ui.login.ACTION_FINISH_DETAILS_ACTIVITIES");
     }
     
     private void reloadData() {
@@ -159,9 +161,9 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     public int getTrackId() {
-        if (this.playContext instanceof PlayContext) {
+        if (this.playContext != null) {
             Log.d("DetailsActivity", "TrackId found in PlayContextImpl");
-            return ((PlayContextImp)this.playContext).getTrackId();
+            return this.playContext.getTrackId();
         }
         Log.d("DetailsActivity", "TrackId not found!");
         return -1;
@@ -170,11 +172,6 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     @Override
     public IClientLogging$ModalView getUiScreen() {
         return IClientLogging$ModalView.movieDetails;
-    }
-    
-    @Override
-    public VideoDetails getVideoDetails() {
-        return null;
     }
     
     public VideoDetailsViewGroup getVideoDetailsViewGroup() {
@@ -197,10 +194,6 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     @Override
     public String getVideoId() {
         return this.videoId;
-    }
-    
-    @Override
-    public void onActionExecuted() {
     }
     
     @Override
@@ -227,8 +220,8 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     @Override
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         SocialUtils.addShareIconIfNeeded(this, menu);
-        MdxMenu.addSelectPlayTarget(this, menu);
-        this.detailsMenu = new DetailsMenu(this, menu, this.videoId);
+        MdxMenu.addSelectPlayTarget(this, menu, false);
+        this.detailsMenu = new DetailsMenu(this, menu, false);
         SocialUtils.addNotificationsIconIfNeeded(this, this.notificationsListStatus, menu);
         super.onCreateOptionsMenu(menu, menu2);
     }
@@ -299,11 +292,5 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     @Override
     public boolean shouldApplyPaddingToSlidingPanel() {
         return false;
-    }
-    
-    public void updateMenus(final VideoDetails videoDetails) {
-        if (this.detailsMenu != null) {
-            this.detailsMenu.updateShareItem(this.serviceMan, videoDetails);
-        }
     }
 }

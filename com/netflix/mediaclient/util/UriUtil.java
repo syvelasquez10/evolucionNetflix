@@ -19,10 +19,16 @@ public final class UriUtil
     private static final int FIRST_STILL_THRESHOLD_SECONDS = 10;
     private static final String TAG = "UriUtils";
     
-    public static String buildStillUrlFromPos(final CWVideo cwVideo) {
-        final String baseUrl = cwVideo.getBaseUrl();
+    public static String buildStillUrlFromPos(final CWVideo cwVideo, final boolean b) {
+        String s;
+        if (b) {
+            s = cwVideo.getTrickplayBigImgBaseUrl();
+        }
+        else {
+            s = cwVideo.getTrickplayImgBaseUrl();
+        }
         final int playableBookmarkPosition = cwVideo.getPlayableBookmarkPosition();
-        if (StringUtils.isEmpty(baseUrl)) {
+        if (StringUtils.isEmpty(s)) {
             return cwVideo.getInterestingUrl();
         }
         if (playableBookmarkPosition < 10) {
@@ -32,7 +38,7 @@ public final class UriUtil
             return cwVideo.getInterestingUrl();
         }
         final String value = String.valueOf(playableBookmarkPosition / 10);
-        final StringBuilder append = new StringBuilder(baseUrl).append("/00000");
+        final StringBuilder append = new StringBuilder(s).append("/00000");
         append.replace(append.length() - value.length(), append.length(), value);
         append.append(".jpg");
         if (Log.isLoggable()) {

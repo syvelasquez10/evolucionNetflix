@@ -10,6 +10,7 @@ public class User$Summary
 {
     private String email;
     private String firstName;
+    private boolean isAgeVerified;
     private String lastName;
     final /* synthetic */ User this$0;
     @SerializedName("userId")

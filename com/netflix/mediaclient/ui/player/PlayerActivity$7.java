@@ -20,6 +20,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import java.io.Serializable;
 import android.media.AudioManager;
 import android.widget.Toast;
+import android.app.DialogFragment;
 import android.view.MenuItem;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
@@ -28,13 +29,14 @@ import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.res.Configuration;
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.service.net.LogMobileType;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.view.Surface;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
-import com.netflix.mediaclient.ui.pin.PinDialogVault;
-import com.netflix.mediaclient.ui.pin.PinDialogVault$PinInvokedFrom;
-import com.netflix.mediaclient.ui.pin.PinVerifier;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifier;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$PlayInvokedFrom;
 import android.view.TextureView;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -42,8 +44,10 @@ import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayoutMetadata;
-import com.netflix.mediaclient.util.AndroidManifestUtils;
+import com.netflix.mediaclient.ui.player.subtitles.SubtitleManager;
+import com.netflix.mediaclient.ui.player.subtitles.SubtitleManagerFactory;
 import android.os.Debug;
+import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.os.SystemClock;
 import android.util.Pair;
@@ -70,6 +74,7 @@ import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
 import android.view.SurfaceHolder$Callback;
 import com.netflix.mediaclient.media.JPlayer.SecondSurface;
+import com.netflix.mediaclient.service.player.subtitles.SafeSubtitleManager;
 import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.content.BroadcastReceiver;
@@ -82,8 +87,10 @@ import com.netflix.mediaclient.media.Language;
 import android.view.View$OnClickListener;
 import android.widget.SeekBar$OnSeekBarChangeListener;
 import android.annotation.TargetApi;
+import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -118,10 +125,10 @@ class PlayerActivity$7 implements ManagerStatusListener
         else {
             int contentView;
             if (DeviceUtils.isTabletByContext(this.this$0.getBaseContext())) {
-                contentView = 2130903168;
+                contentView = 2130903160;
             }
             else {
-                contentView = 2130903164;
+                contentView = 2130903156;
             }
             this.this$0.setContentView(contentView);
         }

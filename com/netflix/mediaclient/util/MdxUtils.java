@@ -5,10 +5,8 @@
 package com.netflix.mediaclient.util;
 
 import android.widget.SeekBar;
-import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import android.util.Pair;
-import com.netflix.mediaclient.ui.common.RatingDialogFrag$Rating;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
@@ -38,31 +36,31 @@ public final class MdxUtils
             Log.w("MdxUtils", "Activity is not valid or MdxFrag is null. Skipping MDX disconnect dialog");
             return null;
         }
-        final View inflate = netflixActivity.getLayoutInflater().inflate(2130903141, (ViewGroup)null);
-        ((TextView)inflate.findViewById(2131427649)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
-        final TextView textView = (TextView)inflate.findViewById(2131427650);
-        final TextView textView2 = (TextView)inflate.findViewById(2131427651);
-        final Playable videoDetails = mdxUtils$MdxTargetSelectionDialogInterface.getVideoDetails();
+        final View inflate = netflixActivity.getLayoutInflater().inflate(2130903132, (ViewGroup)null);
+        ((TextView)inflate.findViewById(2131427626)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
+        final TextView textView = (TextView)inflate.findViewById(2131427627);
+        final TextView textView2 = (TextView)inflate.findViewById(2131427628);
+        final Playable playable = mdxUtils$MdxTargetSelectionDialogInterface.getPlayable();
         String string2;
-        if (mdxUtils$MdxTargetSelectionDialogInterface.isPlayingRemotely() && videoDetails != null) {
+        if (mdxUtils$MdxTargetSelectionDialogInterface.isPlayingRemotely() && playable != null) {
             final String string = netflixActivity.getResources().getString(2131493239, new Object[] { "" });
             textView2.setVisibility(0);
             String text;
-            if (videoDetails.isPlayableEpisode()) {
-                text = netflixActivity.getResources().getString(2131493401, new Object[] { videoDetails.getParentTitle(), videoDetails.getSeasonNumber(), videoDetails.getEpisodeNumber(), videoDetails.getPlayableTitle() });
+            if (playable.isPlayableEpisode()) {
+                text = netflixActivity.getResources().getString(2131493406, new Object[] { playable.getParentTitle(), playable.getSeasonNumber(), playable.getEpisodeNumber(), playable.getPlayableTitle() });
             }
             else {
-                text = videoDetails.getPlayableTitle();
+                text = playable.getPlayableTitle();
             }
             textView2.setText((CharSequence)text);
             string2 = string;
         }
         else {
-            string2 = netflixActivity.getResources().getString(2131493399);
+            string2 = netflixActivity.getResources().getString(2131493404);
             textView2.setVisibility(8);
         }
         textView.setText((CharSequence)string2);
-        final AlertDialog create = new AlertDialog$Builder((Context)netflixActivity).setPositiveButton(2131493400, (DialogInterface$OnClickListener)new MdxUtils$2(netflixActivity)).setView(inflate).setCancelable(true).create();
+        final AlertDialog create = new AlertDialog$Builder((Context)netflixActivity).setPositiveButton(2131493405, (DialogInterface$OnClickListener)new MdxUtils$2(netflixActivity)).setView(inflate).setCancelable(true).create();
         create.setCanceledOnTouchOutside(true);
         return create;
     }
@@ -92,10 +90,10 @@ public final class MdxUtils
         mdxTargetSelectionDialog$Builder.setTitle(2131493151);
         mdxTargetSelectionDialog$Builder.setAdapterData(targetSelection.getTargets((Context)netflixActivity));
         String format = "";
-        if (mdxUtils$MdxTargetSelectionDialogInterface.getVideoDetails() != null) {
+        if (mdxUtils$MdxTargetSelectionDialogInterface.getPlayable() != null) {
             format = format;
-            if (StringUtils.isNotEmpty(mdxUtils$MdxTargetSelectionDialogInterface.getVideoDetails().getPlayableTitle())) {
-                format = String.format(netflixActivity.getString(2131493239), mdxUtils$MdxTargetSelectionDialogInterface.getVideoDetails().getPlayableTitle());
+            if (StringUtils.isNotEmpty(mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle())) {
+                format = String.format(netflixActivity.getString(2131493239), mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle());
             }
         }
         mdxTargetSelectionDialog$Builder.setSelection(devicePositionByUUID, format);
@@ -110,40 +108,6 @@ public final class MdxUtils
         }
         Log.d("MdxUtils", "Movie, use movie ID as video ID");
         return videoDetails.getId();
-    }
-    
-    public static RatingDialogFrag$Rating getRating(final VideoDetails videoDetails, float value) {
-        final float n = 0.0f;
-        final float n2 = 0.0f;
-        final RatingDialogFrag$Rating ratingDialogFrag$Rating = new RatingDialogFrag$Rating();
-        if (videoDetails.getUserRating() <= 0.0f && value <= 0.0f) {
-            Log.d("MdxUtils", "User did not changed ratings before, use predicted rating");
-            if (videoDetails.getPredictedRating() < 0.0f) {
-                value = n2;
-            }
-            else {
-                value = videoDetails.getPredictedRating();
-            }
-            ratingDialogFrag$Rating.value = value;
-            ratingDialogFrag$Rating.user = false;
-            return ratingDialogFrag$Rating;
-        }
-        if (value > 0.0f && videoDetails.getUserRating() != value) {
-            Log.d("MdxUtils", "User changed ratings, but video object is not updated on callback from web api, use user set rating");
-            ratingDialogFrag$Rating.value = value;
-            ratingDialogFrag$Rating.user = true;
-            return ratingDialogFrag$Rating;
-        }
-        Log.d("MdxUtils", "User changed rating before, use user rating");
-        if (videoDetails.getUserRating() < 0.0f) {
-            value = n;
-        }
-        else {
-            value = videoDetails.getUserRating();
-        }
-        ratingDialogFrag$Rating.value = value;
-        ratingDialogFrag$Rating.user = true;
-        return ratingDialogFrag$Rating;
     }
     
     public static boolean isCurrentMdxTargetAvailable(final ServiceManager serviceManager) {
@@ -226,11 +190,6 @@ public final class MdxUtils
         return false;
     }
     
-    public static void registerReceiver(final Activity activity, final BroadcastReceiver broadcastReceiver) {
-        Log.d("MdxUtils", "Register receiver");
-        IntentUtils.registerSafelyLocalBroadcastReceiver((Context)activity, broadcastReceiver, "LocalIntentNflxUi", "ui_rating");
-    }
-    
     public static int setProgressByBif(final SeekBar seekBar) {
         final int progress = seekBar.getProgress();
         final int n = progress / 10 * 10;
@@ -254,9 +213,5 @@ public final class MdxUtils
         }
         seekBar.setProgress(progress2);
         return progress2;
-    }
-    
-    public static void unregisterReceiver(final Activity activity, final BroadcastReceiver broadcastReceiver) {
-        IntentUtils.unregisterSafelyLocalBroadcastReceiver((Context)activity, broadcastReceiver);
     }
 }

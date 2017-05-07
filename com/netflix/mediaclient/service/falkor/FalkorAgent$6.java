@@ -35,7 +35,7 @@ import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.ui.social.notifications.types.SocialNotification;
 import android.content.Context;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsStaticFactory;
+import com.netflix.mediaclient.ui.social.notifications.NotificationsStaticFactory;
 import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
@@ -56,7 +56,7 @@ class FalkorAgent$6 extends SimpleBrowseAgentCallback
     }
     
     @Override
-    public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+    public void onNotificationsListFetched(final SocialNotificationsList list, final Status status) {
         boolean b = true;
         if (list != null && status.getStatusCode() == StatusCode.OK) {
             final SocialNotificationSummary access$400 = this.this$0.getFirstUnreadNotification(list);
@@ -67,7 +67,7 @@ class FalkorAgent$6 extends SimpleBrowseAgentCallback
             }
             SocialUtils.notifyOthersOfUnreadNotifications(context, b2, b);
             if (this.val$sendNotificationToStatusbar && this.this$0.shouldBeNotificationSentToStatusBar(access$400)) {
-                final SocialNotification notificationByType = SocialNotificationsStaticFactory.getNotificationByType(access$400.getType());
+                final SocialNotification notificationByType = NotificationsStaticFactory.getNotificationByType(access$400.getType());
                 if (notificationByType.supportsStatusBar()) {
                     notificationByType.sendNotificationToStatusbar(access$400, list.getSocialNotificationsListSummary(), this.this$0.getService().getImageLoader(), this.val$msg, this.this$0.getContext());
                 }

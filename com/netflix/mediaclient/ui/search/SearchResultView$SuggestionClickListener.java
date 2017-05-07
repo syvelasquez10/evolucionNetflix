@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchSuggestion;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchPerson;
 import android.annotation.SuppressLint;

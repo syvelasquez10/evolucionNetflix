@@ -31,6 +31,8 @@ public interface INetflixService
     
     void fetchResource(final String p0, final IClientLogging$AssetType p1, final int p2, final int p3);
     
+    void fetchResource(final String p0, final IClientLogging$AssetType p1, final long p2, final long p3, final int p4, final int p5);
+    
     String getAccountOwnerToken();
     
     List<? extends UserProfile> getAllProfiles();
@@ -87,6 +89,8 @@ public interface INetflixService
     
     boolean isTablet();
     
+    boolean isUserAgeVerified();
+    
     boolean isUserLoggedIn();
     
     void loginUser(final String p0, final String p1, final int p2, final int p3);
@@ -110,6 +114,8 @@ public interface INetflixService
     void uiComingFromBackground();
     
     void unregisterCallback(final INetflixServiceCallback p0);
+    
+    void verifyAge(final int p0, final int p1);
     
     void verifyPin(final String p0, final int p1, final int p2);
 }

@@ -54,7 +54,7 @@ public class NetflixActionBar
                 Log.e("NetflixActionBar", "toolBar is null");
                 return;
             }
-            final ViewGroup viewGroup = (ViewGroup)this.activity.findViewById(16908290);
+            final ViewGroup viewGroup = (ViewGroup)this.activity.findViewById(this.activity.getActionBarParentViewId());
             if (viewGroup != null) {
                 viewGroup.addView((View)this.actionBarGroup, new ViewGroup$LayoutParams(-1, -2));
             }
@@ -139,6 +139,10 @@ public class NetflixActionBar
         return 2130903063;
     }
     
+    public View getToolbar() {
+        return (View)this.toolbar;
+    }
+    
     public boolean handleHomeButtonSelected(final MenuItem menuItem) {
         Log.v("NetflixActionBar", "handleHomeButtonSelected, id: " + menuItem.getItemId());
         return menuItem.getItemId() == 16908332 && this.performUpAction();
@@ -162,6 +166,18 @@ public class NetflixActionBar
     }
     
     public void onManagerReady() {
+    }
+    
+    public void setAlpha(final float alpha) {
+        if (this.toolbar != null) {
+            this.toolbar.setAlpha(alpha);
+        }
+    }
+    
+    public void setAlphaWithAnimation(final float n, final int n2) {
+        if (this.toolbar != null) {
+            this.toolbar.animate().alpha(n).setDuration((long)n2);
+        }
     }
     
     public void setDisplayHomeAsUpEnabled(final boolean b) {
@@ -206,5 +222,12 @@ public class NetflixActionBar
             this.toolbar.startAnimation((Animation)translateAnimation);
         }
         this.systemActionBar.show();
+    }
+    
+    protected void showDropShadowIfAvailable() {
+        final View viewById = this.actionBarGroup.findViewById(2131427444);
+        if (viewById != null) {
+            viewById.setVisibility(0);
+        }
     }
 }

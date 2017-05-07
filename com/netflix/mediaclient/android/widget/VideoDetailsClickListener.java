@@ -6,13 +6,14 @@ package com.netflix.mediaclient.android.widget;
 
 import android.content.Context;
 import android.widget.Toast;
-import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.ui.social.FacebookLoginActivity;
 import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.Log;
 import android.view.View;
+import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
+import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View$OnLongClickListener;
@@ -29,6 +30,10 @@ public class VideoDetailsClickListener implements View$OnClickListener, View$OnL
         this.playContextProvider = playContextProvider;
     }
     
+    protected void launchDetailsActivity(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext) {
+        DetailsActivityLauncher.show(netflixActivity, video, playContext, "DeetsClickListener");
+    }
+    
     public void onClick(final View view) {
         final Object tag = view.getTag(2131427339);
         if (tag == null) {
@@ -41,7 +46,7 @@ public class VideoDetailsClickListener implements View$OnClickListener, View$OnL
             FacebookLoginActivity.show((Activity)view.getContext());
             return;
         }
-        DetailsActivityLauncher.show(this.activity, video, this.playContextProvider.getPlayContext(), "DeetsClickListener");
+        this.launchDetailsActivity(this.activity, video, this.playContextProvider.getPlayContext());
     }
     
     public boolean onLongClick(final View view) {
@@ -60,11 +65,8 @@ public class VideoDetailsClickListener implements View$OnClickListener, View$OnL
         view.setTag(2131427339, (Object)null);
     }
     
-    public void update(final View view, final Video video) {
-        if (Log.isLoggable()) {
-            Log.v("VideoDetailsClickListener", "Adding click listeners for: " + video.getTitle() + ", trackId: " + this.playContextProvider.getPlayContext().getTrackId());
-        }
-        view.setOnClickListener((View$OnClickListener)this);
+    public void update(final View view, final Video video, final PressedStateHandler pressedStateHandler) {
+        view.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(pressedStateHandler, (View$OnClickListener)this));
         view.setOnLongClickListener((View$OnLongClickListener)this);
         view.setTag(2131427339, (Object)video);
     }

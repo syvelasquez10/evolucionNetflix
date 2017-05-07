@@ -6,27 +6,21 @@ package com.netflix.mediaclient.service.resfetcher;
 
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.Log;
-import com.android.volley.VolleyError;
-import com.android.volley.Response$ErrorListener;
 
-class ResourceFetcher$3 implements Response$ErrorListener
+class ResourceFetcher$3 implements Runnable
 {
     final /* synthetic */ ResourceFetcher this$0;
-    final /* synthetic */ ResourceFetcherCallback val$realCallback;
+    final /* synthetic */ ResourceFetcherCallback val$callback;
     final /* synthetic */ String val$resourceUrl;
     
-    ResourceFetcher$3(final ResourceFetcher this$0, final ResourceFetcherCallback val$realCallback, final String val$resourceUrl) {
+    ResourceFetcher$3(final ResourceFetcher this$0, final ResourceFetcherCallback val$callback, final String val$resourceUrl) {
         this.this$0 = this$0;
-        this.val$realCallback = val$realCallback;
+        this.val$callback = val$callback;
         this.val$resourceUrl = val$resourceUrl;
     }
     
     @Override
-    public void onErrorResponse(final VolleyError volleyError) {
-        Log.e("nf_service_resourcefetcher", "PrefetchRequest failed: ", volleyError);
-        if (this.val$realCallback != null) {
-            this.val$realCallback.onResourcePrefetched(this.val$resourceUrl, 0, CommonStatus.NETWORK_ERROR);
-        }
+    public void run() {
+        this.val$callback.onResourcePrefetched(this.val$resourceUrl, 0, CommonStatus.INTERNAL_ERROR);
     }
 }

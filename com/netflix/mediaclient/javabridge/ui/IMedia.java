@@ -8,7 +8,7 @@ import android.content.Context;
 import com.netflix.mediaclient.media.VideoResolutionRange;
 import android.view.Surface;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
-import com.netflix.mediaclient.javabridge.invoke.media.Open$NetType;
+import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.media.TrickplayUrl;
 import com.netflix.mediaclient.media.PlayoutMetadata;
@@ -16,6 +16,7 @@ import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.media.PlayerType;
+import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams;
 import com.netflix.mediaclient.servicemgr.IManifestCache$CacheScheduleRequest;
 
 public interface IMedia
@@ -36,7 +37,7 @@ public interface IMedia
     
     void cacheResume();
     
-    void cacheSchedule(final IManifestCache$CacheScheduleRequest[] p0);
+    void cacheSchedule(final IManifestCache$CacheScheduleRequest[] p0, final AuthorizationParams p1);
     
     void changePlayer(final PlayerType p0);
     
@@ -74,7 +75,7 @@ public interface IMedia
     
     int getVideoWidth();
     
-    void open(final long p0, final PlayContext p1, final Open$NetType p2, final long p3);
+    void open(final long p0, final PlayContext p1, final AuthorizationParams$NetType p2, final long p3);
     
     void pause();
     

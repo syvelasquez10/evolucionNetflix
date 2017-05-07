@@ -23,24 +23,18 @@ import com.netflix.mediaclient.media.JPlayer2Helper;
 import android.media.AudioManager;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.media.PlayoutMetadata;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
-import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleParserFactory;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import com.netflix.mediaclient.javabridge.ui.IMedia$MediaEventEnum;
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
-import android.net.NetworkInfo;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
-import com.netflix.mediaclient.service.NetflixService;
-import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.event.nrdp.media.Warning;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.event.nrdp.media.BufferRange;
 import com.netflix.mediaclient.event.nrdp.media.Statechanged;
 import com.netflix.mediaclient.event.nrdp.media.AudioTrackChanged;
 import com.netflix.mediaclient.event.nrdp.media.SubtitleData;
-import com.netflix.mediaclient.event.nrdp.media.ShowSubtitle;
-import com.netflix.mediaclient.event.nrdp.media.RemoveSubtitle;
 import com.netflix.mediaclient.event.nrdp.media.Buffering;
 import com.netflix.mediaclient.event.nrdp.media.GenericMediaEvent;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
@@ -51,6 +45,7 @@ import android.view.Surface;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayerType;
+import com.netflix.mediaclient.servicemgr.IPlayerFileCache;
 import java.util.concurrent.ExecutorService;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
@@ -63,8 +58,8 @@ import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent$ConfigAgentListener;
 import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetType;
 import com.netflix.mediaclient.util.ConnectivityUtils;
-import com.netflix.mediaclient.javabridge.invoke.media.Open$NetType;
 import com.netflix.mediaclient.Log;
 import java.util.TimerTask;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
@@ -79,11 +74,12 @@ class PlayerAgent$1 implements Runnable
     
     @Override
     public void run() {
-    Label_0517_Outer:
+    Label_0519_Outer:
         while (true) {
-            Label_0607: {
+            Label_0609: {
                 while (true) {
-                Label_0582:
+                    String value = null;
+                Label_0584:
                     while (true) {
                         synchronized (this.this$0) {
                             this.this$0.mMedia.reset();
@@ -104,7 +100,7 @@ class PlayerAgent$1 implements Runnable
                                 Log.d(PlayerAgent.TAG, "Player state is " + this.this$0.mState);
                             }
                             if (this.this$0.mState != 4 && this.this$0.mState != -1) {
-                                break Label_0607;
+                                break Label_0609;
                             }
                             Log.d(PlayerAgent.TAG, "Player state was CLOSED or CREATED, cancel timeout task!");
                             this.this$0.mState = 5;
@@ -124,11 +120,12 @@ class PlayerAgent$1 implements Runnable
                                     Log.d(PlayerAgent.TAG, "Canceled tasks: " + purge);
                                 }
                                 this.this$0.reloadPlayer();
+                                final AuthorizationParams$NetType currentNetType = ConnectivityUtils.getCurrentNetType(this.this$0.getContext());
                                 this.this$0.mMedia.setStreamingQoe(this.this$0.getConfigurationAgent().getStreamingQoe(), this.this$0.getConfigurationAgent().enableHTTPSAuth(), this.this$0.isMPPlayerType());
-                                this.this$0.mMedia.open(this.this$0.mMovieId, this.this$0.mPlayContext, this.this$0.getCurrentNetType(), this.this$0.mBookmark);
+                                this.this$0.mMedia.open(this.this$0.mMovieId, this.this$0.mPlayContext, currentNetType, this.this$0.mBookmark);
                                 this.this$0.toOpenAfterClose = false;
-                                final String value = this.this$0.getConfigurationAgent().getDeviceCategory().getValue();
-                                if (Open$NetType.wifi.equals(this.this$0.getCurrentNetType())) {
+                                value = this.this$0.getConfigurationAgent().getDeviceCategory().getValue();
+                                if (AuthorizationParams$NetType.wifi.equals(currentNetType)) {
                                     Log.i(PlayerAgent.TAG, "Setting WifiApInfo");
                                     this.this$0.mMedia.setWifiApsInfo(this.this$0.getContext(), value, true);
                                     this.this$0.sessionInitRxBytes = ConnectivityUtils.getApplicationRx();
@@ -136,14 +133,13 @@ class PlayerAgent$1 implements Runnable
                                     this.this$0.ptsTicker = -1;
                                     return;
                                 }
-                                break Label_0582;
+                                break Label_0584;
                             }
                         }
                         Log.w(PlayerAgent.TAG, "Timer was null!!!");
-                        continue Label_0517_Outer;
+                        continue Label_0519_Outer;
                     }
-                    final String s;
-                    this.this$0.mMedia.setWifiApsInfo(this.this$0.getContext(), s, false);
+                    this.this$0.mMedia.setWifiApsInfo(this.this$0.getContext(), value, false);
                     continue;
                 }
             }

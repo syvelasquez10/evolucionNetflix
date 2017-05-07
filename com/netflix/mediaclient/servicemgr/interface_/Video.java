@@ -10,6 +10,8 @@ public interface Video extends BasicVideo
     
     VideoType getErrorType();
     
+    String getHorzDispSmallUrl();
+    
     String getHorzDispUrl();
     
     String getSquareUrl();

@@ -30,6 +30,6 @@ public class ProgressiveIqAdapter<V extends Video> extends BaseProgressiveRowAda
             Log.v("BaseProgressiveRowAdapter", "fetching for instant queue, start: " + n + ", end: " + n2);
         }
         final LoMo loMo = (LoMo)this.getLoMo();
-        this.getManager().getBrowse().fetchIQVideos(loMo, n, n2, BrowseExperience.shouldLoadKubrickLeaves(), new FetchVideosHandler<Object>("BaseProgressiveRowAdapter", (FetchVideosHandler$FetchCallback<Video>)this, loMo.getTitle(), n, n2));
+        this.getManager().getBrowse().fetchIQVideos(loMo, n, n2, BrowseExperience.shouldLoadKubrickLeavesInLolomo(), new FetchVideosHandler<Object>("BaseProgressiveRowAdapter", (FetchVideosHandler$FetchCallback<Video>)this, loMo.getTitle(), n, n2));
     }
 }

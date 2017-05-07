@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import android.content.Context;
 
@@ -17,6 +18,6 @@ public class EpisodesFrag$EpisodeView extends AbsEpisodeView
     }
     
     public void update(final EpisodeDetails episodeDetails) {
-        this.update(episodeDetails, this.this$0.showDetails.getCurrentEpisodeId() == episodeDetails.getId());
+        this.update(episodeDetails, !StringUtils.safeEquals(this.this$0.showDetails.getCurrentEpisodeId(), episodeDetails.getId()));
     }
 }

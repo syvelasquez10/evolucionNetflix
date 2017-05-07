@@ -7,6 +7,7 @@ package com.netflix.mediaclient.util;
 import android.content.pm.PackageManager;
 import com.amazon.drm.AmazonLicenseVerificationCallback;
 import com.netflix.mediaclient.Log;
+import java.net.URLEncoder;
 import android.content.Context;
 import android.net.Uri;
 import android.content.Intent;
@@ -22,7 +23,9 @@ public final class AppStoreHelper
     private static final String NOOK_APP_STORE_ACTION = "com.bn.sdk.shop.details";
     private static final String NOOK_APP_STORE_NETFLIX_EAN = "2940043872739";
     private static final String PACKAGE_NAME = "com.netflix.mediaclient";
+    private static final String PLAY_STORE_HTTPS_LINK = "https://market.android.com/details?id=com.netflix.mediaclient";
     private static final String PLAY_STORE_URI = "market://details?id=com.netflix.mediaclient";
+    private static final String REFERRER = "referrer";
     private static final String TAG = "nf_appstorehelper";
     
     public static final Intent getAmazonStoreIntent() {
@@ -52,6 +55,15 @@ public final class AppStoreHelper
         final Intent intent = new Intent("android.intent.action.VIEW");
         intent.setData(Uri.parse("market://details?id=com.netflix.mediaclient"));
         return intent;
+    }
+    
+    public static String getPlayStoreLinkForInstallation(final String s) {
+        final String encode = URLEncoder.encode("token=" + s);
+        final StringBuilder sb = new StringBuilder("https://market.android.com/details?id=com.netflix.mediaclient");
+        if (StringUtils.isNotEmpty(s)) {
+            sb.append('&').append("referrer").append('=').append(encode);
+        }
+        return sb.toString();
     }
     
     public static final Intent getUpdateSourceIntent(final Context context) {

@@ -13,6 +13,7 @@ import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import android.content.DialogInterface;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.view.ViewPropertyAnimator;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -65,7 +66,7 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
     private AvatarInfo mDefaultAvatar;
     private View mDeleteButton;
     private View mDeleteSection;
-    private ManagerCallback mErrorHandlerCallback;
+    private final ManagerCallback mErrorHandlerCallback;
     private UserProfile mInputProfile;
     private String mInputProfileId;
     private CheckBox mKidsCheckBox;
@@ -97,10 +98,10 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         if (!this.mProfileChangeRequestWasSent) {
             int n;
             if (this.mNewProfileCreation) {
-                n = 2131493323;
+                n = 2131493328;
             }
             else {
-                n = 2131493324;
+                n = 2131493329;
             }
             Toast.makeText((Context)this, n, 1).show();
         }
@@ -119,12 +120,12 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         }
         final String string = this.mName.getText().toString();
         if (string.contains("\"") || string.contains("<") || string.contains(">")) {
-            this.mName.setError((CharSequence)this.getString(2131493332));
+            this.mName.setError((CharSequence)this.getString(2131493337));
             return true;
         }
         for (final UserProfile userProfile : this.mServiceManager.getAllProfiles()) {
             if (string.equalsIgnoreCase(userProfile.getProfileName()) && !userProfile.getProfileGuid().equals(this.mInputProfileId)) {
-                this.mName.setError((CharSequence)this.getString(2131493329));
+                this.mName.setError((CharSequence)this.getString(2131493334));
                 return true;
             }
         }
@@ -144,34 +145,34 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
     }
     
     private void initUI() {
-        this.setContentView(2130903178);
+        this.setContentView(2130903170);
         this.getSupportActionBar().hide();
-        this.mContentView = this.findViewById(2131427777);
-        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131427776), this.errorCallback);
-        (this.mCancelButton = this.findViewById(2131427785)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$4(this));
-        this.mDeleteSection = this.findViewById(2131427783);
-        (this.mDeleteButton = this.findViewById(2131427784)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$5(this));
-        (this.mKidsSection = this.findViewById(2131427779)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$6(this));
-        this.mKidsCheckBox = (CheckBox)this.findViewById(2131427780);
-        this.mSaveButtonText = this.findViewById(2131427787);
-        (this.mSaveButton = this.findViewById(2131427786)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$7(this));
-        (this.mName = (EditText)this.findViewById(2131427778)).addTextChangedListener((TextWatcher)new ProfileDetailsActivity$8(this));
-        this.mProfilePictureView = (AdvancedImageView)this.findViewById(2131427450);
+        this.mContentView = this.findViewById(2131427761);
+        this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131427760), this.errorCallback);
+        (this.mCancelButton = this.findViewById(2131427769)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$4(this));
+        this.mDeleteSection = this.findViewById(2131427767);
+        (this.mDeleteButton = this.findViewById(2131427768)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$5(this));
+        (this.mKidsSection = this.findViewById(2131427763)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$6(this));
+        this.mKidsCheckBox = (CheckBox)this.findViewById(2131427764);
+        this.mSaveButtonText = this.findViewById(2131427771);
+        (this.mSaveButton = this.findViewById(2131427770)).setOnClickListener((View$OnClickListener)new ProfileDetailsActivity$7(this));
+        (this.mName = (EditText)this.findViewById(2131427762)).addTextChangedListener((TextWatcher)new ProfileDetailsActivity$8(this));
+        this.mProfilePictureView = (AdvancedImageView)this.findViewById(2131427452);
         final ProfileDetailsActivity$9 profileDetailsActivity$9 = new ProfileDetailsActivity$9(this);
         this.mProfilePictureView.setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
-        (this.mProfilePictureSection = this.findViewById(2131427781)).setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
-        this.mPictureSelectorHint = this.findViewById(2131427782);
+        (this.mProfilePictureSection = this.findViewById(2131427765)).setOnClickListener((View$OnClickListener)profileDetailsActivity$9);
+        this.mPictureSelectorHint = this.findViewById(2131427766);
         if (this.mNewProfileCreation) {
             this.mName.requestFocus();
         }
-        final TextView textView = (TextView)this.findViewById(2131427788);
+        final TextView textView = (TextView)this.findViewById(2131427772);
         if (textView != null) {
             int text;
             if (this.mNewProfileCreation) {
-                text = 2131493312;
+                text = 2131493317;
             }
             else {
-                text = 2131493313;
+                text = 2131493318;
             }
             textView.setText(text);
         }
@@ -302,7 +303,7 @@ public class ProfileDetailsActivity extends NetflixActivity implements DialogInt
         else {
             this.showLoading(false, true);
             if (this.isCurrentAvatarDataValid()) {
-                NetflixActivity.getImageLoader((Context)this).showImg(this.mProfilePictureView, this.mCurrentAvatar.getUrl(), IClientLogging$AssetType.profileAvatar, this.mCurrentAvatar.getName(), true, true);
+                NetflixActivity.getImageLoader((Context)this).showImg(this.mProfilePictureView, this.mCurrentAvatar.getUrl(), IClientLogging$AssetType.profileAvatar, this.mCurrentAvatar.getName(), ImageLoader$StaticImgConfig.DARK, true);
             }
         }
     }

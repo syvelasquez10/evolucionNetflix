@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.kubrick_kids.details;
 
+import android.view.View;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag;
 import android.content.Context;
@@ -39,10 +40,13 @@ class KubrickKidsShowDetailsFrag$KubrickKidsEpisodeView extends KubrickShowDetai
     
     @Override
     protected void updateTitle(final EpisodeDetails episodeDetails) {
-        if (this.title == null) {
-            return;
+        if (this.title != null) {
+            super.updateTitle(episodeDetails);
+            this.title.setTextColor(this.getResources().getColor(2131230899));
+            final View view = (View)this.getParent();
+            if (view != null) {
+                view.setTag(2131427348, (Object)episodeDetails.getSeasonNumber());
+            }
         }
-        super.updateTitle(episodeDetails);
-        this.title.setTextColor(this.getResources().getColor(2131230898));
     }
 }

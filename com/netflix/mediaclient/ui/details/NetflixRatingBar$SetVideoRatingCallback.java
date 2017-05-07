@@ -4,10 +4,12 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import android.annotation.SuppressLint;
-import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import android.view.View;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.view.MotionEvent;
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.Shader;
@@ -21,13 +23,15 @@ import java.lang.reflect.Field;
 import android.widget.AbsSeekBar;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.falkor.PQL;
+import com.netflix.model.branches.FalkorEpisode;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.graphics.RectF;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.graphics.drawable.shapes.Shape;
 import android.util.AttributeSet;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.Ratable;
-import com.netflix.mediaclient.ui.common.VideoDetailsProvider;
 import android.graphics.drawable.Drawable;
 import android.widget.RatingBar$OnRatingBarChangeListener;
 import android.widget.RatingBar;

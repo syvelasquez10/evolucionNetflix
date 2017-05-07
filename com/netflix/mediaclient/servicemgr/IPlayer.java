@@ -40,6 +40,8 @@ public interface IPlayer
     
     AudioSource getCurrentAudioTrack();
     
+    long getCurrentPlayableId();
+    
     int getCurrentPositionMs();
     
     int getCurrentProgress();
@@ -49,6 +51,8 @@ public interface IPlayer
     int getDuration();
     
     IManifestCache getManifestCache();
+    
+    IPlayerFileCache getPlayerFileCache();
     
     PlayoutMetadata getPlayoutMetadata();
     

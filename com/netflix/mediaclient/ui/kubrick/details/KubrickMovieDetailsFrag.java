@@ -4,31 +4,31 @@
 
 package com.netflix.mediaclient.ui.kubrick.details;
 
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.support.v7.widget.RecyclerView$Adapter;
-import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.util.MdxUtils;
+import android.view.ViewGroup;
+import android.view.LayoutInflater;
 import android.content.Context;
-import android.view.View;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.util.MdxUtils$SetVideoRatingCallback;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.Log;
+import android.view.View$OnClickListener;
 import android.os.Bundle;
-import com.netflix.mediaclient.ui.mdx.DialogMessageReceiver;
-import com.netflix.mediaclient.ui.mdx.DialogMessageReceiver$Callback;
+import android.graphics.drawable.Drawable;
+import com.netflix.mediaclient.util.api.Api16Util;
+import android.view.View;
 import com.netflix.mediaclient.ui.details.MovieDetailsFrag;
 
-public class KubrickMovieDetailsFrag extends MovieDetailsFrag implements DialogMessageReceiver$Callback
+public class KubrickMovieDetailsFrag extends MovieDetailsFrag
 {
-    private static final String TAG = "KubrickMovieDetailsFrag";
-    private final DialogMessageReceiver dialogMessageReceiver;
+    private static final int ANIMATE_IN_DURATION_MS = 500;
+    private View rootContainer;
     
-    public KubrickMovieDetailsFrag() {
-        this.dialogMessageReceiver = new DialogMessageReceiver(this);
+    private void adjustBackroundForNestedActivities(final View view) {
+        if (view != null && this.getActivity().getIntent().getBooleanExtra("extra_same_activity_type", false)) {
+            Api16Util.setBackgroundDrawableCompat(view, null);
+        }
     }
     
     public static KubrickMovieDetailsFrag create(final String s) {
@@ -39,25 +39,24 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag implements DialogM
         return kubrickMovieDetailsFrag;
     }
     
+    private void setupDismissClick() {
+        if (this.rootContainer != null) {
+            this.rootContainer.setOnClickListener((View$OnClickListener)new KubrickMovieDetailsFrag$1(this));
+        }
+    }
+    
+    protected void animateIn() {
+        if (this.recyclerView == null || this.rootContainer == null) {
+            return;
+        }
+        this.recyclerView.animate().alpha(1.0f).setDuration(500L);
+        this.getNetflixActivity().getNetflixActionBar().setAlphaWithAnimation(1.0f, 500);
+    }
+    
     @Override
-    public void handleUserRatingChange(final String s, final float n) {
-        if (Log.isLoggable()) {
-            Log.v("KubrickMovieDetailsFrag", "Change user settings for received video id: " + s + " to rating: " + n);
-        }
-        if (s == null) {
-            if (Log.isLoggable()) {
-                Log.v("KubrickMovieDetailsFrag", "Can't set rating receivedVideoId is null");
-            }
-        }
-        else {
-            if (this.getServiceManager() != null) {
-                this.getServiceManager().getBrowse().setVideoRating(s, VideoType.MOVIE, (int)n, PlayContext.EMPTY_CONTEXT.getTrackId(), new MdxUtils$SetVideoRatingCallback((NetflixActivity)this.getActivity(), n));
-                return;
-            }
-            if (Log.isLoggable()) {
-                Log.v("KubrickMovieDetailsFrag", "Can't set rating because service man is null");
-            }
-        }
+    protected void findViews(final View view) {
+        super.findViews(view);
+        this.rootContainer = view.findViewById(2131427613);
     }
     
     @Override
@@ -67,14 +66,11 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag implements DialogM
         ((KubrickVideoDetailsViewGroup)this.detailsViewGroup).hideDataSelector();
     }
     
-    public void onStart() {
-        super.onStart();
-        MdxUtils.registerReceiver(this.getActivity(), this.dialogMessageReceiver);
-    }
-    
-    public void onStop() {
-        super.onStop();
-        MdxUtils.unregisterReceiver(this.getActivity(), this.dialogMessageReceiver);
+    @Override
+    public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
+        final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
+        this.adjustBackroundForNestedActivities(onCreateView);
+        return onCreateView;
     }
     
     @Override
@@ -90,6 +86,31 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag implements DialogM
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296461), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296452), this.numColumns));
+    }
+    
+    @Override
+    protected void setupRecyclerViewLayoutManager() {
+        super.setupRecyclerViewLayoutManager();
+        this.recyclerView.getLayoutParams().width = KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity());
+        this.recyclerView.setAlpha(0.0f);
+    }
+    
+    @Override
+    protected void showDetailsView(final MovieDetails movieDetails) {
+        super.showDetailsView(movieDetails);
+        this.animateIn();
+        this.setupDismissClick();
+        this.updateBookmark(movieDetails);
+    }
+    
+    protected void updateBookmark(final MovieDetails movieDetails) {
+        final KubrickVideoDetailsViewGroup kubrickVideoDetailsViewGroup = (KubrickVideoDetailsViewGroup)this.detailsViewGroup;
+        if (movieDetails.getPlayable().getPlayableBookmarkPosition() > 0) {
+            kubrickVideoDetailsViewGroup.setBookmarkVisibility(0);
+            kubrickVideoDetailsViewGroup.updateBookmark(movieDetails.getPlayable());
+            return;
+        }
+        kubrickVideoDetailsViewGroup.setBookmarkVisibility(8);
     }
 }

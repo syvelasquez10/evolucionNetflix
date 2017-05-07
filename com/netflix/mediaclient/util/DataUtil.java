@@ -15,6 +15,8 @@ import java.util.List;
 
 public class DataUtil
 {
+    public static final float ASPECT_RATIO_16_10 = 1.6f;
+    public static final float ASPECT_RATIO_16_10_INVERTED = 0.625f;
     public static final float ASPECT_RATIO_16_9 = 1.778f;
     public static final float ASPECT_RATIO_16_9_INVERTED = 0.5625f;
     public static final float ASPECT_RATIO_4_3 = 1.333f;

@@ -9,10 +9,10 @@ import android.graphics.drawable.Drawable;
 import com.android.volley.Request;
 import com.android.volley.Response$ErrorListener;
 import com.android.volley.Response$Listener;
-import android.graphics.Bitmap$Config;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.util.UriUtil;
+import android.graphics.Bitmap$Config;
 import com.android.volley.Request$Priority;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.os.Looper;
@@ -25,23 +25,35 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 import com.netflix.mediaclient.Log;
 import com.android.volley.VolleyError;
+import com.netflix.mediaclient.android.widget.AdvancedImageView$ImageLoaderInfo;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 
 class ImageLoader$ValidatingListener implements ImageLoader$ImageListener
 {
     protected final String imgUrl;
+    protected final ImageLoader$StaticImgConfig staticImgConfig;
     final /* synthetic */ ImageLoader this$0;
     protected final AdvancedImageView view;
     
-    public ImageLoader$ValidatingListener(final ImageLoader this$0, final AdvancedImageView view, final String imgUrl) {
+    public ImageLoader$ValidatingListener(final ImageLoader this$0, final AdvancedImageView view, final String imgUrl, final ImageLoader$StaticImgConfig staticImgConfig) {
         this.this$0 = this$0;
         this.view = view;
         this.imgUrl = imgUrl;
+        this.staticImgConfig = staticImgConfig;
     }
     
     private boolean responseIsOutdated() {
-        final boolean b = !StringUtils.safeEquals(this.view.getUrlTag(), this.imgUrl);
+        final AdvancedImageView$ImageLoaderInfo imageLoaderInfo = this.view.getImageLoaderInfo();
+        String imageUrl;
+        if (imageLoaderInfo == null) {
+            imageUrl = null;
+        }
+        else {
+            imageUrl = imageLoaderInfo.imageUrl;
+        }
+        final boolean b = !StringUtils.safeEquals(imageUrl, this.imgUrl);
         if (b) {}
         return b;
     }
@@ -52,7 +64,7 @@ class ImageLoader$ValidatingListener implements ImageLoader$ImageListener
             return;
         }
         Log.w("ImageLoader", "Error loading bitmap for url: " + this.imgUrl);
-        this.this$0.setDrawableResource(this.view, 2130837574);
+        this.this$0.setDrawableResource(this.view, this.staticImgConfig.getOnFailResId());
     }
     
     @Override

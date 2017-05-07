@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.service.pushnotification;
 
 import com.netflix.mediaclient.util.ParcelUtils;
-import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.client.model.Error;
@@ -138,17 +137,6 @@ public class InfoEventHandler
             return;
         }
         InfoEventHandler.mService = mService;
-        final String profileGuid = mService.getCurrentProfile().getProfileGuid();
-        Log.d("nf_push_info", String.format("rcvd payload: %s", payload));
-        if (StringUtils.isNotEmpty(payload.profileGuid)) {
-            if (!StringUtils.safeEquals(profileGuid, payload.profileGuid)) {
-                Log.d("nf_push_info", String.format("drop push event - !currentProfile :%s", profileGuid));
-                return;
-            }
-        }
-        else {
-            Log.d("nf_push_info", "msg missing profileGuid... processing");
-        }
         final boolean boolean1 = ParcelUtils.readBoolean(intent, "isRunning");
         final boolean widgetInstalled = mService.isWidgetInstalled();
         if (!boolean1 && !widgetInstalled) {

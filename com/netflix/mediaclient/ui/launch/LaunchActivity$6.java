@@ -20,6 +20,11 @@ final class LaunchActivity$6 implements Video
     }
     
     @Override
+    public String getHorzDispSmallUrl() {
+        return null;
+    }
+    
+    @Override
     public String getHorzDispUrl() {
         return null;
     }

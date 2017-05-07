@@ -74,15 +74,15 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
             n2 = n4;
         }
         if (n2 != 0 && n != 0) {
-            return this.getString(2131493346);
+            return this.getString(2131493351);
         }
         if (n != 0) {
-            return this.getString(2131493348);
+            return this.getString(2131493353);
         }
         if (n2 != 0) {
-            return this.getString(2131493347);
+            return this.getString(2131493352);
         }
-        return this.getString(2131493343);
+        return this.getString(2131493348);
     }
     
     @Override
@@ -105,14 +105,14 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
         super.onCreate(bundle);
         if (DeviceUtils.isTabletByContext((Context)this)) {
             this.setRequestedOrientation(6);
-            this.setContentView(2130903087);
+            this.setContentView(2130903088);
             if (Log.isLoggable("DiagnosisActivity", 3)) {
                 Log.d("DiagnosisActivity", "Setting orientation to landscape");
             }
         }
         else {
             this.setRequestedOrientation(7);
-            this.setContentView(2130903088);
+            this.setContentView(2130903089);
             if (Log.isLoggable("DiagnosisActivity", 3)) {
                 Log.d("DiagnosisActivity", "setting orientation to potrait");
             }
@@ -165,24 +165,24 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
         switch (DiagnosisActivity$4.$SwitchMap$com$netflix$mediaclient$ui$diagnosis$DiagnosisActivity$InfoGroupState[diagnosisActivity$InfoGroupState.ordinal()]) {
             default: {}
             case 1: {
-                this.mNetworkStatus.setText(2131493337);
-                this.mTestInfo.setText(2131493338);
-                this.mTestButton.setText(2131493339);
+                this.mNetworkStatus.setText(2131493342);
+                this.mTestInfo.setText(2131493343);
+                this.mTestButton.setText(2131493344);
                 this.mTestButton.setVisibility(0);
                 this.mProgressBar.setVisibility(4);
             }
             case 2: {
-                this.mNetworkStatus.setText(2131493341);
+                this.mNetworkStatus.setText(2131493346);
                 this.mTestInfo.setVisibility(0);
                 this.mTestInfo.setText((CharSequence)this.getStringForFailure());
                 this.mTestButton.setVisibility(0);
-                this.mTestButton.setText(2131493342);
+                this.mTestButton.setText(2131493347);
                 this.mProgressBar.setVisibility(4);
             }
             case 3: {
-                this.mNetworkStatus.setText(2131493343);
+                this.mNetworkStatus.setText(2131493348);
                 this.mTestButton.setVisibility(0);
-                this.mTestButton.setText(2131493342);
+                this.mTestButton.setText(2131493347);
                 this.mProgressBar.setVisibility(4);
             }
             case 4: {
@@ -190,7 +190,7 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
                 this.mStatutListView.setVisibility(0);
                 this.mTestButton.setVisibility(4);
                 this.mProgressBar.setVisibility(0);
-                this.mNetworkStatus.setText(2131493340);
+                this.mNetworkStatus.setText(2131493345);
                 this.mTestInfo.setVisibility(4);
             }
         }

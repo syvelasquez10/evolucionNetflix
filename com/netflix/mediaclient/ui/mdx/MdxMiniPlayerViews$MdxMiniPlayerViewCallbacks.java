@@ -27,8 +27,6 @@ interface MdxMiniPlayerViews$MdxMiniPlayerViewCallbacks extends SnappableSeekBar
     
     boolean isRemotePlayerReady();
     
-    boolean isVideoUnshared();
-    
     void notifyControlsEnabled(final boolean p0);
     
     void onPauseClicked();

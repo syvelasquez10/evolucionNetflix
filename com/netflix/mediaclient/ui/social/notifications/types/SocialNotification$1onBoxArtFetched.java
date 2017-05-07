@@ -8,6 +8,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.text.format.DateUtils;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.NotificationUtils;
@@ -15,7 +16,7 @@ import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsActivi
 import android.widget.Button;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
-import com.netflix.mediaclient.ui.social.notifications.SocialNotificationViewHolder;
+import com.netflix.mediaclient.ui.social.notifications.NotificationViewHolder;
 import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import android.view.View;
 import android.app.NotificationManager;
@@ -34,7 +35,7 @@ import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 
 class SocialNotification$1onBoxArtFetched implements ImageLoader$ImageLoaderListener
 {
-    private Bitmap mSocialProfile;
+    private final Bitmap mSocialProfile;
     final /* synthetic */ SocialNotification this$0;
     final /* synthetic */ Context val$context;
     final /* synthetic */ SocialNotificationsListSummary val$listSummary;
@@ -60,9 +61,9 @@ class SocialNotification$1onBoxArtFetched implements ImageLoader$ImageLoaderList
     @Override
     public void onResponse(final Bitmap bitmap, final String s) {
         if (bitmap != null) {
-            final int color = this.val$context.getResources().getColor(2131230825);
+            final int color = this.val$context.getResources().getColor(2131230827);
             final NotificationCompat$BigPictureStyle bigPicture = new NotificationCompat$BigPictureStyle().bigPicture(bitmap);
-            final NotificationCompat$Builder setColor = new NotificationCompat$Builder(this.val$context).setSmallIcon(2130837812).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
+            final NotificationCompat$Builder setColor = new NotificationCompat$Builder(this.val$context).setSmallIcon(2130837824).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
             setColor.setGroup("social_notifications");
             setColor.setGroupSummary(true);
             setColor.setAutoCancel(true);

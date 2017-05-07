@@ -9,6 +9,10 @@ public enum IClientLogging$AssetType
     bif, 
     boxArt, 
     heroImage, 
+    imageSubtitlesMasterIndex, 
+    imageSubtitlesSegment, 
+    imageSubtitlesSegmentIndex, 
     merchStill, 
-    profileAvatar;
+    profileAvatar, 
+    subtitles;
 }

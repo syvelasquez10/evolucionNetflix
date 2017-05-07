@@ -7,10 +7,11 @@ package com.netflix.mediaclient.ui.common;
 import android.os.Handler;
 import android.os.Debug;
 import com.netflix.mediaclient.Log;
+import android.app.Activity;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.Menu;
+import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.service.NetflixService;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -23,8 +24,7 @@ class DebugMenuItems$11 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        NetflixService.toggleFetchErrorsEnabled();
-        this.this$0.activity.showFetchErrorsToast();
+        this.this$0.beginTraceview();
         return true;
     }
 }

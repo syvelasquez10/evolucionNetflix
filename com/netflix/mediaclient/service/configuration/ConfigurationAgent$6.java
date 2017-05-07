@@ -4,10 +4,12 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.KubrickConfigData$KubrickCell;
+
 final class ConfigurationAgent$6 implements KubrickConfiguration
 {
     @Override
-    public boolean isKubrickEnabled() {
-        return true;
+    public KubrickConfigData$KubrickCell getCell() {
+        return KubrickConfigData$KubrickCell.KUBRICK_HERO_IMAGES;
     }
 }

@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.util.Pair;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.graphics.drawable.AnimationDrawable;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.Log;
 import android.view.Menu;
 import android.os.Handler;

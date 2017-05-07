@@ -56,11 +56,6 @@ class SettingsFragment$2 implements Preference$OnPreferenceChangeListener
                 SubtitleConfiguration.updateQaLocalOverride((Context)this.this$0.activity, SubtitleConfiguration.SIMPLE_XML.getLookupType());
                 this.this$0.updateSubtitleConfig(SubtitleConfiguration.SIMPLE_XML);
             }
-            else if ("SIMPLE_EVENTS".equals(s)) {
-                Log.d("SettingsFragment", "Sets SIMPLE EVENTS subtitle configuration (legacy)");
-                SubtitleConfiguration.updateQaLocalOverride((Context)this.this$0.activity, SubtitleConfiguration.SIMPLE_EVENTS.getLookupType());
-                this.this$0.updateSubtitleConfig(SubtitleConfiguration.SIMPLE_EVENTS);
-            }
             else {
                 Log.e("SettingsFragment", "Received unexpected value for player type " + s);
             }

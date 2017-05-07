@@ -11,6 +11,7 @@ import android.app.Dialog;
 import com.netflix.mediaclient.util.SocialUtils;
 import android.app.Activity;
 import android.text.Html;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;

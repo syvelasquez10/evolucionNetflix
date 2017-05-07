@@ -34,6 +34,8 @@ public class DeviceConfigData
     private String image_pref;
     @SerializedName("ip_connectivity_policy")
     private int ip_connectivity_policy;
+    @SerializedName("jPlayerRestartOnStreamErrors")
+    private int jPlayerRestartOnStreamErrors;
     private String min_version;
     private String pt_aggregation_size;
     private String signup_enabled;
@@ -49,6 +51,7 @@ public class DeviceConfigData
         this.consolidated_logging_specification = new ArrayList<ConsolidatedLoggingSessionSpecification>();
         this.ip_connectivity_policy = -1;
         this.user_session_timeout_duration = -1;
+        this.jPlayerRestartOnStreamErrors = 2;
     }
     
     public String getAppMinVresion() {
@@ -93,6 +96,10 @@ public class DeviceConfigData
     
     public int getIpConnectivityPolicy() {
         return this.ip_connectivity_policy;
+    }
+    
+    public int getJPlayerStreamErrorRestartCount() {
+        return this.jPlayerRestartOnStreamErrors;
     }
     
     public String getMdxDisabled() {

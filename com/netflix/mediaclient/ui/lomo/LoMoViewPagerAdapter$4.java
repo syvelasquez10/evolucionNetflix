@@ -4,21 +4,22 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import com.netflix.mediaclient.util.ViewUtils;
 import android.view.ViewGroup;
 import android.widget.LinearLayout$LayoutParams;
 import android.content.IntentFilter;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoDuplicate;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.view.View;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.EnumMap;
 import android.support.v4.view.PagerAdapter;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
@@ -52,6 +53,11 @@ class LoMoViewPagerAdapter$4 extends BroadcastReceiver
                 this.this$0.pager.invalidateIqCache();
                 if (LoMoViewPagerAdapter$Type.IQ.equals(this.this$0.state)) {
                     Log.v("LoMoViewPagerAdapter", "Reloading iq row");
+                    this.this$0.refresh(this.this$0.loMo, this.this$0.listViewPos);
+                    return;
+                }
+                if (this.this$0.loMo != null && this.this$0.loMo.getType().equals(LoMoType.INSTANT_QUEUE)) {
+                    Log.v("LoMoViewPagerAdapter", "Reloading iq row because lomo types match");
                     this.this$0.refresh(this.this$0.loMo, this.this$0.listViewPos);
                 }
             }

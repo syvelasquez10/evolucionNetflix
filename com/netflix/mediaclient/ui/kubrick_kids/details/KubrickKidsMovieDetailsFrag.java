@@ -5,8 +5,9 @@
 package com.netflix.mediaclient.ui.kubrick_kids.details;
 
 import android.support.v7.widget.RecyclerView$ItemDecoration;
-import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
-import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
+import com.netflix.mediaclient.util.ItemDecorationEdgePadding;
+import android.support.v7.widget.RecyclerView$OnScrollListener;
+import com.netflix.mediaclient.ui.details.SeasonsSpinner;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickVideoDetailsViewGroup;
 import android.content.Context;
@@ -26,21 +27,16 @@ public class KubrickKidsMovieDetailsFrag extends KubrickMovieDetailsFrag
     
     @Override
     protected void initDetailsViewGroup(final View view) {
-        (this.detailsViewGroup = new KubrickKidsMovieDetailsFrag$KubrickKidsVideoDetailsViewGroup(this, (Context)this.getActivity())).removeActionBarDummyView();
+        (this.detailsViewGroup = new KubrickKidsMovieDetailsFrag$KubrickKidsMovieDetailsViewGroup(this, (Context)this.getActivity())).removeActionBarDummyView();
         this.detailsViewGroup.showRelatedTitle();
         ((KubrickVideoDetailsViewGroup)this.detailsViewGroup).hideDataSelector();
     }
     
     @Override
     protected DetailsPageParallaxScrollListener setupDetailsPageParallaxScrollListener() {
-        final DetailsPageParallaxScrollListener setupDetailsPageParallaxScrollListener = super.setupDetailsPageParallaxScrollListener();
-        final View viewById = this.getActivity().findViewById(2131427444);
-        if (setupDetailsPageParallaxScrollListener != null) {
-            setupDetailsPageParallaxScrollListener.setInitialBottomColor(this.recyclerView.getResources().getColor(2131230829));
-            setupDetailsPageParallaxScrollListener.setInitialTopColor(this.recyclerView.getResources().getColor(2131230828));
-            setupDetailsPageParallaxScrollListener.setOnScrollStateChangedListener(new KubrickKidsMovieDetailsFrag$1(this, viewById));
-        }
-        return setupDetailsPageParallaxScrollListener;
+        final KidsParallax onScrollListener = new KidsParallax(null, null, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage(), ((KubrickVideoDetailsViewGroup)this.detailsViewGroup).getHeroImage2() }, null, null);
+        this.recyclerView.setOnScrollListener(onScrollListener);
+        return onScrollListener;
     }
     
     @Override
@@ -53,6 +49,6 @@ public class KubrickKidsMovieDetailsFrag extends KubrickMovieDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296475), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296477), this.numColumns, 3));
     }
 }

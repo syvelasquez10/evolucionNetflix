@@ -93,6 +93,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
+    public String getHorzDispSmallUrl() {
+        return null;
+    }
+    
+    @Override
     public String getHorzDispUrl() {
         return null;
     }

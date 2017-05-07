@@ -24,8 +24,8 @@ public abstract class CurrentTime extends PlayerSection
     CurrentTime(final PlayerActivity playerActivity) {
         super(playerActivity);
         this.mBifDownloaded = new AtomicBoolean(false);
-        this.currentTime = playerActivity.findViewById(2131427736);
-        this.currentTimeLabel = (TextView)playerActivity.findViewById(2131427737);
+        this.currentTime = playerActivity.findViewById(2131427720);
+        this.currentTimeLabel = (TextView)playerActivity.findViewById(2131427721);
     }
     
     static CurrentTime newInstance(final PlayerActivity playerActivity) {

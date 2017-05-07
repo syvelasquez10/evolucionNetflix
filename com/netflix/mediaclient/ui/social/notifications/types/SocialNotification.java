@@ -9,6 +9,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.text.format.DateUtils;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.support.v4.app.NotificationCompat$BigPictureStyle;
@@ -25,7 +26,7 @@ import android.support.v4.app.NotificationCompat$Builder;
 import android.widget.Button;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
-import com.netflix.mediaclient.ui.social.notifications.SocialNotificationViewHolder;
+import com.netflix.mediaclient.ui.social.notifications.NotificationViewHolder;
 import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import android.view.View;
 
@@ -39,28 +40,38 @@ public abstract class SocialNotification
         TAG = SocialNotification.class.getSimpleName();
     }
     
-    public static final int getLayoutResourceId() {
-        return 2130903201;
+    public static final NotificationViewHolder getViewHolder(final View view, final SocialNotificationSummary$NotificationTypes socialNotificationSummary$NotificationTypes) {
+        return new NotificationViewHolder((AdvancedImageView)view.findViewById(2131427791), (AdvancedImageView)view.findViewById(2131427575), (TextView)view.findViewById(2131427574), (TextView)view.findViewById(2131427572), (TextView)view.findViewById(2131427573), (TextView)view.findViewById(2131427822), (Button)view.findViewById(2131427823), (Button)view.findViewById(2131427824), view.findViewById(2131427821), view.findViewById(2131427820), (AdvancedImageView)view.findViewById(2131427571));
     }
     
-    public static final SocialNotificationViewHolder getViewHolder(final View view, final SocialNotificationSummary$NotificationTypes socialNotificationSummary$NotificationTypes) {
-        return new SocialNotificationViewHolder((AdvancedImageView)view.findViewById(2131427804), (AdvancedImageView)view.findViewById(2131427838), (TextView)view.findViewById(2131427835), (TextView)view.findViewById(2131427836), (TextView)view.findViewById(2131427837), (TextView)view.findViewById(2131427840), (Button)view.findViewById(2131427841), (Button)view.findViewById(2131427842), view.findViewById(2131427839), view.findViewById(2131427834), (AdvancedImageView)view.findViewById(2131427833));
-    }
-    
-    public static void showSingleLineText(final SocialNotificationViewHolder socialNotificationViewHolder, final int text) {
-        socialNotificationViewHolder.getFriendImage().setVisibility(8);
-        socialNotificationViewHolder.getMovieArtImage().setVisibility(8);
-        socialNotificationViewHolder.getBottomTextView().setVisibility(8);
-        socialNotificationViewHolder.getTopTextView().setVisibility(8);
-        socialNotificationViewHolder.getTimeStampView().setVisibility(8);
-        socialNotificationViewHolder.getLeftButton().setVisibility(8);
-        socialNotificationViewHolder.getRightButton().setVisibility(8);
-        socialNotificationViewHolder.getPlayButton().setVisibility(8);
-        socialNotificationViewHolder.getNSAPlayButton().setVisibility(8);
-        socialNotificationViewHolder.getNSAArtImage().setVisibility(8);
-        socialNotificationViewHolder.getMiddleTextView().setText(text);
-        socialNotificationViewHolder.getMiddleTextView().setSingleLine(false);
-        socialNotificationViewHolder.getMiddleTextView().setGravity(17);
+    public static void showSingleLineText(final NotificationViewHolder notificationViewHolder, final int text) {
+        notificationViewHolder.getMovieArtImage().setVisibility(8);
+        notificationViewHolder.getTopTextView().setVisibility(8);
+        if (notificationViewHolder.getFriendImage() != null) {
+            notificationViewHolder.getFriendImage().setVisibility(8);
+        }
+        if (notificationViewHolder.getBottomTextView() != null) {
+            notificationViewHolder.getBottomTextView().setVisibility(8);
+        }
+        if (notificationViewHolder.getTimeStampView() != null) {
+            notificationViewHolder.getTimeStampView().setVisibility(8);
+        }
+        if (notificationViewHolder.getLeftButton() != null) {
+            notificationViewHolder.getLeftButton().setVisibility(8);
+        }
+        if (notificationViewHolder.getRightButton() != null) {
+            notificationViewHolder.getRightButton().setVisibility(8);
+        }
+        if (notificationViewHolder.getNSAPlayButton() != null) {
+            notificationViewHolder.getNSAPlayButton().setVisibility(8);
+        }
+        if (notificationViewHolder.getPlayButton() != null) {
+            notificationViewHolder.getPlayButton().setVisibility(8);
+        }
+        notificationViewHolder.getNSAArtImage().setVisibility(8);
+        notificationViewHolder.getMiddleTextView().setText(text);
+        notificationViewHolder.getMiddleTextView().setSingleLine(false);
+        notificationViewHolder.getMiddleTextView().setGravity(17);
     }
     
     protected void addNotificationActions(final NotificationCompat$Builder notificationCompat$Builder, final SocialNotificationSummary socialNotificationSummary, final SocialNotificationsListSummary socialNotificationsListSummary, final MessageData messageData, final Context context) {
@@ -74,50 +85,64 @@ public abstract class SocialNotification
     
     protected abstract void addNotificationText(final NotificationCompat$Builder p0, final NotificationCompat$BigPictureStyle p1, final SocialNotificationSummary p2, final Context p3);
     
-    public TextView getAddToMyListButton(final SocialNotificationViewHolder socialNotificationViewHolder) {
+    public TextView getAddToMyListButton(final NotificationViewHolder notificationViewHolder) {
         return null;
     }
     
     public abstract SocialNotificationSummary$NotificationTypes getNotificationType();
     
-    public View getPlayMovieButton(final SocialNotificationViewHolder socialNotificationViewHolder) {
-        return (View)socialNotificationViewHolder.getMovieArtImage();
+    public View getPlayMovieButton(final NotificationViewHolder notificationViewHolder) {
+        return (View)notificationViewHolder.getMovieArtImage();
     }
     
-    public View getSayThanksButton(final SocialNotificationViewHolder socialNotificationViewHolder) {
+    public View getSayThanksButton(final NotificationViewHolder notificationViewHolder) {
         return null;
     }
     
-    public void initView(final View view, final SocialNotificationViewHolder socialNotificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
+    public void initView(final View view, final NotificationViewHolder notificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         int backgroundResource;
         if (socialNotificationSummary.getWasRead()) {
-            backgroundResource = 2130837877;
+            backgroundResource = 2130837888;
         }
         else {
-            backgroundResource = 2131230889;
+            backgroundResource = 2131230883;
         }
         view.setBackgroundResource(backgroundResource);
-        socialNotificationViewHolder.getFriendImage().setVisibility(0);
-        NetflixActivity.getImageLoader(context).showImg(socialNotificationViewHolder.getFriendImage(), socialNotificationSummary.getFriendProfile().getBigImageUrl(), IClientLogging$AssetType.profileAvatar, socialNotificationSummary.getFriendProfile().getFullName(), true, true);
-        socialNotificationViewHolder.getNSAArtImage().setVisibility(8);
-        socialNotificationViewHolder.getMovieArtImage().setVisibility(0);
-        NetflixActivity.getImageLoader(context).showImg(socialNotificationViewHolder.getMovieArtImage(), socialNotificationSummary.getVideo().getBoxshotUrl(), IClientLogging$AssetType.boxArt, socialNotificationSummary.getVideo().getTitle(), true, true);
-        socialNotificationViewHolder.getTopTextView().setVisibility(0);
-        socialNotificationViewHolder.getTopTextView().setText((CharSequence)socialNotificationSummary.getFriendProfile().getFullName());
-        socialNotificationViewHolder.getMiddleTextView().setGravity(3);
-        if (socialNotificationSummary.getMessageString() == null || socialNotificationSummary.getMessageString().length() == 0) {
-            socialNotificationViewHolder.getBottomTextView().setVisibility(8);
+        if (notificationViewHolder.getFriendImage() != null) {
+            notificationViewHolder.getFriendImage().setVisibility(0);
+            NetflixActivity.getImageLoader(context).showImg(notificationViewHolder.getFriendImage(), socialNotificationSummary.getFriendProfile().getBigImageUrl(), IClientLogging$AssetType.profileAvatar, socialNotificationSummary.getFriendProfile().getFullName(), ImageLoader$StaticImgConfig.DARK, true);
         }
-        else {
-            socialNotificationViewHolder.getBottomTextView().setVisibility(0);
-            socialNotificationViewHolder.getBottomTextView().setText((CharSequence)String.format("\"%s\"", socialNotificationSummary.getMessageString()));
+        notificationViewHolder.getNSAArtImage().setVisibility(8);
+        notificationViewHolder.getMovieArtImage().setVisibility(0);
+        NetflixActivity.getImageLoader(context).showImg(notificationViewHolder.getMovieArtImage(), socialNotificationSummary.getVideo().getBoxshotUrl(), IClientLogging$AssetType.boxArt, socialNotificationSummary.getVideo().getTitle(), ImageLoader$StaticImgConfig.DARK, true);
+        notificationViewHolder.getTopTextView().setVisibility(0);
+        notificationViewHolder.getTopTextView().setText((CharSequence)socialNotificationSummary.getFriendProfile().getFullName());
+        notificationViewHolder.getMiddleTextView().setGravity(3);
+        if (notificationViewHolder.getBottomTextView() != null) {
+            if (socialNotificationSummary.getMessageString() == null || socialNotificationSummary.getMessageString().length() == 0) {
+                notificationViewHolder.getBottomTextView().setVisibility(8);
+            }
+            else {
+                notificationViewHolder.getBottomTextView().setVisibility(0);
+                notificationViewHolder.getBottomTextView().setText((CharSequence)String.format("\"%s\"", socialNotificationSummary.getMessageString()));
+            }
         }
-        socialNotificationViewHolder.getTimeStampView().setVisibility(0);
-        socialNotificationViewHolder.getTimeStampView().setText(DateUtils.getRelativeTimeSpanString(context, socialNotificationSummary.getTimestamp()));
-        socialNotificationViewHolder.getNSAPlayButton().setVisibility(8);
-        socialNotificationViewHolder.getPlayButton().setVisibility(0);
-        socialNotificationViewHolder.getLeftButton().setVisibility(8);
-        socialNotificationViewHolder.getRightButton().setVisibility(8);
+        if (notificationViewHolder.getTimeStampView() != null) {
+            notificationViewHolder.getTimeStampView().setVisibility(0);
+            notificationViewHolder.getTimeStampView().setText(DateUtils.getRelativeTimeSpanString(context, socialNotificationSummary.getTimestamp()));
+        }
+        if (notificationViewHolder.getNSAPlayButton() != null) {
+            notificationViewHolder.getNSAPlayButton().setVisibility(8);
+        }
+        if (notificationViewHolder.getPlayButton() != null) {
+            notificationViewHolder.getPlayButton().setVisibility(0);
+        }
+        if (notificationViewHolder.getLeftButton() != null) {
+            notificationViewHolder.getLeftButton().setVisibility(8);
+        }
+        if (notificationViewHolder.getRightButton() != null) {
+            notificationViewHolder.getRightButton().setVisibility(8);
+        }
     }
     
     public final void sendNotificationToStatusbar(final SocialNotificationSummary socialNotificationSummary, final SocialNotificationsListSummary socialNotificationsListSummary, final ImageLoader imageLoader, final MessageData messageData, final Context context) {

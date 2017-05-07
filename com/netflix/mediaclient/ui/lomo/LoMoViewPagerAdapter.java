@@ -4,13 +4,14 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import com.netflix.mediaclient.util.ViewUtils;
 import android.view.ViewGroup;
 import android.widget.LinearLayout$LayoutParams;
 import android.content.IntentFilter;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoDuplicate;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.view.View;
@@ -55,7 +56,10 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         this.viewRecycler = viewRecycler;
         this.activity = (NetflixActivity)pager.getContext();
         this.reloadView = reloadView;
-        this.adapters = RowAdapterProvider.create(serviceManager, this.pagerAdapterCallbacks, viewRecycler, b);
+        this.adapters = BrowseExperience.get().createRowAdapterProvider(serviceManager, this.pagerAdapterCallbacks, viewRecycler, b);
+        if (Log.isLoggable()) {
+            Log.v("LoMoViewPagerAdapter", "Created row adapter provider of type: " + this.adapters.getClass());
+        }
         this.registerBrowseNotificationReceiver();
         reloadView.setOnClickListener(this.onReloadClickListener);
         this.currentAdapter = this.adapters.getLoadingAdapter();
@@ -191,8 +195,9 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         if (Log.isLoggable()) {
             Log.v("LoMoViewPagerAdapter", "destroying item: " + o.getClass().getSimpleName() + ", pos: " + n);
         }
-        viewGroup.removeView((View)o);
-        this.viewRecycler.push((View)o);
+        final View view = (View)o;
+        viewGroup.removeView(view);
+        this.viewRecycler.push(view);
     }
     
     @Override
@@ -246,6 +251,27 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     @Override
     public boolean isViewFromObject(final View view, final Object o) {
         return view == o;
+    }
+    
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        boolean b2;
+        final boolean b = b2 = true;
+        if (this.loMo instanceof KubrickLoMoHeroDuplicate) {
+            b2 = b;
+            if (this.loMo.getType() == LoMoType.INSTANT_QUEUE) {
+                b2 = b;
+                if (this.getCount() == 0) {
+                    Log.i("LoMoViewPagerAdapter", "Found duplicate IQ row with no items - hiding view pager");
+                    b2 = false;
+                }
+            }
+        }
+        ViewUtils.setVisibleOrGone((View)this.pager, b2);
+        if (Log.isLoggable()) {
+            Log.v("LoMoViewPagerAdapter", "notifyDataSetChanged() - getCount(): " + this.getCount() + ", isPagerVisible: " + b2);
+        }
     }
     
     public void refresh(final BasicLoMo loMo, final int listViewPos) {

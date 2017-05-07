@@ -176,6 +176,10 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
         this.mDefaultTrafficStatsTag = host.hashCode();
     }
     
+    protected boolean isAuthorizationRequired() {
+        return true;
+    }
+    
     protected boolean isResponseValid() {
         final boolean safeEquals = StringUtils.safeEquals(this.mReqNetflixId, this.getCurrentNetflixId());
         if (!safeEquals) {
@@ -194,18 +198,18 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
             this.mResponseSizeInBytes = networkResponse.data.length;
         }
         T response = null;
-        Label_0382: {
-            Label_0301: {
-                if (!this.shouldSkipProcessingOnInvalidUser()) {
-                    break Label_0301;
+        Label_0389: {
+            Label_0308: {
+                if (!this.isAuthorizationRequired() || !this.shouldSkipProcessingOnInvalidUser()) {
+                    break Label_0308;
                 }
                 boolean responseValid = this.isResponseValid();
-            Label_0109_Outer:
+            Label_0116_Outer:
                 while (true) {
                     final String s = networkResponse.headers.get("Set-Cookie");
-                    Label_0243: {
+                    Label_0250: {
                         if (s == null) {
-                            break Label_0243;
+                            break Label_0250;
                         }
                         if (Log.isLoggable()) {
                             Log.v("nf_volleyrequest", "Received Volley response with Set-Cookie = " + s);
@@ -215,27 +219,27 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                         int n = 0;
                         String s2 = null;
                         String s3 = null;
-                    Label_0172_Outer:
+                    Label_0179_Outer:
                         while (true) {
                             if (n >= length) {
-                                break Label_0243;
+                                break Label_0250;
                             }
                             final String[] split2 = split[n].split("=");
                             String s4 = s2;
                             String s5 = s3;
-                            Label_0307: {
+                            Label_0314: {
                                 if (split2.length >= 2) {
                                     if (!this.mUserCredentialRegistry.getNetflixIdName().equalsIgnoreCase(split2[0].trim())) {
-                                        break Label_0307;
+                                        break Label_0314;
                                     }
                                     s5 = split2[1];
                                     s4 = s2;
                                 }
-                            Label_0266_Outer:
+                            Label_0273_Outer:
                                 while (true) {
-                                    Label_0350: {
+                                    Label_0357: {
                                         if (!StringUtils.isNotEmpty(s5) || !StringUtils.isNotEmpty(s4)) {
-                                            break Label_0350;
+                                            break Label_0357;
                                         }
                                         Log.d("nf_volleyrequest", String.format("update cookies ? %b - currentNetflixId %s, newId %s", responseValid, this.getCurrentNetflixId(), s5));
                                         if (responseValid) {
@@ -249,23 +253,23 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                                                     Log.d("nf_volleyrequest", (String)networkResponse);
                                                     return Response.error(new ParseException((String)networkResponse));
                                                 }
-                                                break Label_0382;
-                                                responseValid = true;
-                                                continue Label_0109_Outer;
-                                                // iftrue(Label_0172:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
+                                                break Label_0389;
                                                 while (true) {
                                                     s4 = split2[1];
                                                     s5 = s3;
-                                                    continue Label_0266_Outer;
+                                                    continue Label_0273_Outer;
+                                                    ++n;
+                                                    s2 = s4;
+                                                    s3 = s5;
+                                                    continue Label_0179_Outer;
+                                                    responseValid = true;
+                                                    continue Label_0116_Outer;
                                                     s4 = s2;
                                                     s5 = s3;
                                                     continue;
                                                 }
-                                                ++n;
-                                                s2 = s4;
-                                                s3 = s5;
-                                                continue Label_0172_Outer;
                                             }
+                                            // iftrue(Label_0179:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
                                             catch (UnsupportedEncodingException ex2) {
                                                 networkResponse = (NetworkResponse)new String(networkResponse.data);
                                                 continue;

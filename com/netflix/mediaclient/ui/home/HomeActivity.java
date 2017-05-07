@@ -10,9 +10,6 @@ import android.view.MenuItem;
 import com.netflix.mediaclient.ui.search.SearchMenu;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import android.view.Menu;
-import android.support.v4.widget.DrawerLayout$DrawerListener;
-import android.app.Activity;
-import com.netflix.mediaclient.ui.kids.lolomo.KidsSlidingMenuAdapter;
 import java.util.Collection;
 import android.os.SystemClock;
 import android.os.Bundle;
@@ -20,9 +17,9 @@ import android.content.res.Configuration;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
+import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickHomeActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
@@ -30,19 +27,22 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.app.Fragment;
 import android.os.Parcelable;
+import android.support.v4.widget.DrawerLayout$DrawerListener;
+import android.app.Activity;
 import com.netflix.mediaclient.util.SocialUtils;
 import android.widget.Toast;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
+import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.DialogInterface$OnClickListener;
-import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -57,7 +57,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     private static final String EXTRA_BACK_STACK_INTENTS = "extra_back_stack_intents";
     private static final String EXTRA_GENRE_ID = "genre_id";
     private static final String EXTRA_GENRE_PARCEL = "genre_parcel";
-    public static final String HOME_LOLOMO_UPDATED = "com.netflix.mediaclient.intent.action.HOME_LOLOMO_UPDATED";
     public static final String REFRESH_HOME_LOLOMO = "com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO";
     static final int REQUEST_RESOLVE_ERROR = 1001;
     private static final String TAG = "HomeActivity";
@@ -66,8 +65,8 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     private ActionBarDrawerToggle drawerToggler;
     private GenreList genre;
     private String genreId;
-    private final BroadcastReceiver homeUpdatedReceiver;
     protected final DialogInterface$OnClickListener invalidCountryDialogListener;
+    private boolean isFirstLaunch;
     private DialogManager mDialogManager;
     private long mStartedTimeMs;
     private ServiceManager manager;
@@ -84,9 +83,8 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.notificationsListStatus = SocialUtils$NotificationsListStatus.NO_MESSAGES;
         this.managerStatusListener = new HomeActivity$1(this);
         this.refreshHomeReceiver = new HomeActivity$2(this);
-        this.homeUpdatedReceiver = new HomeActivity$3(this);
-        this.socialNotificationsListUpdateReceiver = new HomeActivity$4(this);
-        this.invalidCountryDialogListener = (DialogInterface$OnClickListener)new HomeActivity$5(this);
+        this.socialNotificationsListUpdateReceiver = new HomeActivity$3(this);
+        this.invalidCountryDialogListener = (DialogInterface$OnClickListener)new HomeActivity$4(this);
     }
     
     private void clearAllStateAndRefresh() {
@@ -154,6 +152,16 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         return b2;
     }
     
+    private void leaveExperienceBreadcrumb() {
+        if (this.isFirstLaunch) {
+            final String string = "experience=" + String.valueOf(BrowseExperience.get());
+            this.manager.getClientLogging().getBreadcrumbLogging().leaveBreadcrumb(string);
+            if (Log.isLoggable()) {
+                Log.v("HomeActivity", "Left breadcrumb: " + string);
+            }
+        }
+    }
+    
     private void lockSlidingDrawer() {
         this.drawerLayout.setDrawerLockMode(1);
     }
@@ -176,8 +184,22 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     private void registerReceivers() {
         this.registerReceiverWithAutoUnregister(this.refreshHomeReceiver, "com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO");
-        this.registerReceiverWithAutoUnregister(this.homeUpdatedReceiver, "com.netflix.mediaclient.intent.action.HOME_LOLOMO_UPDATED");
         this.registerReceiverLocallyWithAutoUnregister(this.socialNotificationsListUpdateReceiver, "com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED");
+    }
+    
+    private void setupViews() {
+        this.drawerLayout = (DrawerLayout)this.findViewById(2131427529);
+        this.unlockSlidingDrawerIfPossible();
+        this.slidingMenuAdapter = BrowseExperience.get().createSlidingMenuAdapter(this, this.drawerLayout);
+        if (Log.isLoggable()) {
+            Log.v("HomeActivity", "Created sliding menu adapter of type: " + this.slidingMenuAdapter.getClass());
+        }
+        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2131493184, 2131493184);
+        this.drawerLayout.setDrawerListener(this.drawerToggler);
+        this.drawerLayout.setFocusable(false);
+        this.drawerLayout.setScrimColor(this.getResources().getColor(2131230866));
+        this.updateActionBar();
+        this.updateSlidingDrawer();
     }
     
     public static void showGenreList(final NetflixActivity netflixActivity, final GenreList list) {
@@ -188,7 +210,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131427525, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131427527, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
@@ -245,6 +267,14 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     @Override
+    protected NetflixActionBar createActionBar() {
+        if (BrowseExperience.isKubrick()) {
+            return new KubrickHomeActionBar(this, this.hasUpAction());
+        }
+        return super.createActionBar();
+    }
+    
+    @Override
     protected ManagerStatusListener createManagerStatusListener() {
         return this.managerStatusListener;
     }
@@ -260,8 +290,16 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     @Override
+    public int getActionBarParentViewId() {
+        if (!BrowseExperience.isKubrickKids()) {
+            return 2131427524;
+        }
+        return super.getActionBarParentViewId();
+    }
+    
+    @Override
     protected int getContentLayoutId() {
-        return 2130903097;
+        return 2130903098;
     }
     
     public GenreList getGenre() {
@@ -304,10 +342,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         return false;
     }
     
-    public boolean isKidsGenre() {
-        return this.genre != null && this.genre.isKidsGenre();
-    }
-    
     @Override
     public void onAccept() {
         if (this.mDialogManager != null) {
@@ -322,6 +356,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     public void onCreate(final Bundle bundle) {
+        this.isFirstLaunch = (bundle == null);
         this.mStartedTimeMs = SystemClock.elapsedRealtime();
         if (bundle != null) {
             this.backStackIntents.addAll((Collection<? extends Intent>)bundle.getSerializable("extra_back_stack_intents"));
@@ -330,34 +365,20 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.handleNewIntent(this.getIntent());
         this.viewRecycler = new ObjectRecycler$ViewRecycler();
         super.onCreate(bundle);
+        this.setupViews();
         this.showFetchErrorsToast();
-        this.drawerLayout = (DrawerLayout)this.findViewById(2131427527);
-        this.unlockSlidingDrawerIfPossible();
-        SlidingMenuAdapter slidingMenuAdapter;
-        if (BrowseExperience.isKubrickKids()) {
-            slidingMenuAdapter = new KidsSlidingMenuAdapter(this, this.drawerLayout);
-        }
-        else {
-            slidingMenuAdapter = new SlidingMenuAdapter(this, this.drawerLayout);
-        }
-        this.slidingMenuAdapter = slidingMenuAdapter;
-        this.drawerToggler = new ActionBarDrawerToggle(this, this.drawerLayout, 2131493184, 2131493184);
-        this.drawerLayout.setDrawerListener(this.drawerToggler);
-        this.drawerLayout.setFocusable(false);
-        this.updateActionBar();
-        this.updateSlidingDrawer();
         this.pauseTimeMs = SystemClock.elapsedRealtime();
     }
     
     @Override
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         if (this.getMdxMiniPlayerFrag() != null) {
-            MdxMenu.addSelectPlayTarget(this, menu);
+            MdxMenu.addSelectPlayTarget(this, menu, BrowseExperience.isKubrickKids());
         }
         else {
             Log.e("HomeActivity", "onCreateOptionsMenu got null MdxMiniPlayerFrag");
         }
-        SearchMenu.addSearchNavigation(this, menu);
+        SearchMenu.addSearchNavigation(this, menu, BrowseExperience.isKubrickKids());
         SocialUtils.addNotificationsIconIfNeeded(this, this.notificationsListStatus, menu);
         super.onCreateOptionsMenu(menu, menu2);
     }

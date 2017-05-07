@@ -20,6 +20,7 @@ public class Video$Summary implements JsonPopulator, Video
     public String boxartUrl;
     public VideoType enumType;
     public VideoType errorType;
+    public String horzDispSmallUrl;
     public String horzDispUrl;
     public String id;
     public boolean isEpisode;
@@ -38,6 +39,11 @@ public class Video$Summary implements JsonPopulator, Video
     @Override
     public VideoType getErrorType() {
         return this.errorType;
+    }
+    
+    @Override
+    public String getHorzDispSmallUrl() {
+        return this.horzDispSmallUrl;
     }
     
     @Override
@@ -92,82 +98,89 @@ public class Video$Summary implements JsonPopulator, Video
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0194: {
+            Label_0202: {
                 switch (s.hashCode()) {
                     case 3355: {
                         if (s.equals("id")) {
                             n = 0;
-                            break Label_0194;
+                            break Label_0202;
                         }
                         break;
                     }
                     case 1153650071: {
                         if (s.equals("boxartUrl")) {
                             n = 1;
-                            break Label_0194;
+                            break Label_0202;
                         }
                         break;
                     }
                     case 3575610: {
                         if (s.equals("type")) {
                             n = 2;
-                            break Label_0194;
+                            break Label_0202;
                         }
                         break;
                     }
                     case 110371416: {
                         if (s.equals("title")) {
                             n = 3;
-                            break Label_0194;
+                            break Label_0202;
                         }
                         break;
                     }
                     case -2124216975: {
                         if (s.equals("isEpisode")) {
                             n = 4;
-                            break Label_0194;
+                            break Label_0202;
                         }
                         break;
                     }
                     case 329552226: {
                         if (s.equals("errorType")) {
                             n = 5;
-                            break Label_0194;
+                            break Label_0202;
                         }
                         break;
                     }
                     case -1794520227: {
                         if (s.equals("tvCardUrl")) {
                             n = 6;
-                            break Label_0194;
+                            break Label_0202;
                         }
                         break;
                     }
                     case -1217996834: {
                         if (s.equals("horzDispUrl")) {
                             n = 7;
-                            break Label_0194;
+                            break Label_0202;
+                        }
+                        break;
+                    }
+                    case 1882776025: {
+                        if (s.equals("horzDispSmallUrl")) {
+                            n = 8;
+                            break Label_0202;
                         }
                         break;
                     }
                     case 1251932671: {
                         if (s.equals("storyImgDispUrl")) {
-                            n = 8;
-                            break Label_0194;
+                            n = 9;
+                            break Label_0202;
                         }
                         break;
                     }
                     case 1314358034: {
                         if (s.equals("squareUrl")) {
-                            n = 9;
-                            break Label_0194;
+                            n = 10;
+                            break Label_0202;
                         }
                         break;
                     }
                     case 1333091160: {
                         if (s.equals("videoYear")) {
-                            n = 10;
-                            break Label_0194;
+                            n = 11;
+                            break Label_0202;
                         }
                         break;
                     }
@@ -211,14 +224,18 @@ public class Video$Summary implements JsonPopulator, Video
                     continue;
                 }
                 case 8: {
-                    this.storyImgDispUrl = jsonElement2.getAsString();
+                    this.horzDispSmallUrl = jsonElement2.getAsString();
                     continue;
                 }
                 case 9: {
-                    this.squareUrl = jsonElement2.getAsString();
+                    this.storyImgDispUrl = jsonElement2.getAsString();
                     continue;
                 }
                 case 10: {
+                    this.squareUrl = jsonElement2.getAsString();
+                    continue;
+                }
+                case 11: {
                     this.videoYear = entry.getValue().getAsInt();
                     continue;
                 }

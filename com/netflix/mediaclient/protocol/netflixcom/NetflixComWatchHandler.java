@@ -71,7 +71,7 @@ public class NetflixComWatchHandler implements NetflixComHandler
                 return;
             }
             if (VideoType.SHOW.equals(videoType)) {
-                netflixActivity.getServiceManager().getBrowse().fetchShowDetails(s, null, BrowseExperience.shouldLoadKubrickLeaves(), new NetflixComWatchHandler$1FetchPlayableCallback(s2));
+                netflixActivity.getServiceManager().getBrowse().fetchShowDetails(s, null, BrowseExperience.shouldLoadKubrickLeavesInDetails(), new NetflixComWatchHandler$1FetchPlayableCallback(s2));
             }
         }
     }

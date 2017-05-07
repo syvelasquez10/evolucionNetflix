@@ -10,9 +10,6 @@ import android.view.MenuItem;
 import com.netflix.mediaclient.ui.search.SearchMenu;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
 import android.view.Menu;
-import android.support.v4.widget.DrawerLayout$DrawerListener;
-import android.app.Activity;
-import com.netflix.mediaclient.ui.kids.lolomo.KidsSlidingMenuAdapter;
 import java.util.Collection;
 import android.os.SystemClock;
 import android.os.Bundle;
@@ -20,9 +17,9 @@ import android.content.res.Configuration;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
+import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickHomeActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
@@ -30,13 +27,14 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.app.Fragment;
 import android.os.Parcelable;
-import com.netflix.mediaclient.util.SocialUtils;
+import android.support.v4.widget.DrawerLayout$DrawerListener;
+import android.app.Activity;
 import android.widget.Toast;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
-import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.DialogInterface$OnClickListener;
@@ -46,6 +44,8 @@ import android.support.v4.widget.DrawerLayout;
 import java.util.LinkedList;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
+import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
+import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
@@ -60,15 +60,16 @@ class HomeActivity$3 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (intent == null) {
-            Log.w("HomeActivity", "Received null intent");
+        if (Log.isLoggable()) {
+            Log.v("HomeActivity", "socialNotificationsListUpdateReceiver, onReceive");
         }
-        else {
-            final String action = intent.getAction();
-            Log.i("HomeActivity", "homeUpdatedReceiver invoked and received Intent with Action " + action);
-            if ("com.netflix.mediaclient.intent.action.HOME_LOLOMO_UPDATED".equals(action) && this.this$0.drawerLayout != null) {
-                this.this$0.drawerLayout.closeDrawers();
+        final SocialUtils$NotificationsListStatus handleNotificationsUpdateReceiver = SocialUtils.handleNotificationsUpdateReceiver(intent, "HomeActivity");
+        if (handleNotificationsUpdateReceiver != this.this$0.notificationsListStatus) {
+            this.this$0.notificationsListStatus = handleNotificationsUpdateReceiver;
+            if (Log.isLoggable()) {
+                Log.v("HomeActivity", "Invalidating options menu");
             }
+            this.this$0.invalidateOptionsMenu();
         }
     }
 }

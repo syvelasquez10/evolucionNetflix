@@ -33,7 +33,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
     protected abstract V createChildView(final Context p0);
     
     protected int getChildPaddingDimenResId() {
-        return 2131296377;
+        return 2131296381;
     }
     
     protected LoMoUtils$LoMoWidthType getLomoWidthType() {

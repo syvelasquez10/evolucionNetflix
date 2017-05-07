@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.kubrick_kids.lolomo;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
@@ -32,7 +33,7 @@ public class KubrickKidsPaginatedCharacterAdapter extends PaginatedLoMoAdapter
     
     @Override
     public int getRowHeightInPx() {
-        return MathUtils.divideIntsWithRounding(LoMoViewPager.computeViewPagerWidth(this.activity, true, LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW), this.computeNumItemsPerPage());
+        return this.getActivity().getResources().getDimensionPixelSize(2131296479) + MathUtils.divideIntsWithRounding(LoMoViewPager.computeViewPagerWidth(this.activity, true, LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW), this.numItemsPerPage);
     }
     
     @Override
@@ -40,6 +41,7 @@ public class KubrickKidsPaginatedCharacterAdapter extends PaginatedLoMoAdapter
         KubrickKidsCharacterViewGroup kubrickKidsCharacterViewGroup;
         if ((kubrickKidsCharacterViewGroup = ((ObjectRecycler<KubrickKidsCharacterViewGroup>)objectRecycler$ViewRecycler).pop(KubrickKidsCharacterViewGroup.class)) == null) {
             kubrickKidsCharacterViewGroup = new KubrickKidsCharacterViewGroup((Context)this.getActivity());
+            ViewUtils.setPaddingTop((View)kubrickKidsCharacterViewGroup, this.getActivity().getResources().getDimensionPixelSize(2131296479));
             kubrickKidsCharacterViewGroup.init(n);
         }
         ((VideoViewGroup<Video, V>)kubrickKidsCharacterViewGroup).updateDataThenViews(list, n, n2, this.getListViewPos(), basicLoMo);

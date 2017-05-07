@@ -28,7 +28,7 @@ public class NotificationBuilderHoneycomb extends NotificationBuilder
         notification$Builder.setAutoCancel(true);
         notification$Builder.setContentTitle((CharSequence)title);
         notification$Builder.setContentText((CharSequence)payload.text);
-        notification$Builder.setSmallIcon(2130837812);
+        notification$Builder.setSmallIcon(2130837824);
         notification$Builder.setWhen(when);
         while (true) {
             if (StringUtils.isNotEmpty(payload.sound) && NotificationBuilder.isSoundEnabled(context)) {

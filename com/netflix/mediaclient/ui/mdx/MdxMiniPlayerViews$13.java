@@ -6,11 +6,11 @@ package com.netflix.mediaclient.ui.mdx;
 
 import android.view.ViewGroup$MarginLayoutParams;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.animation.TimeInterpolator;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.gfx.AnimationUtils$HideViewOnAnimatorEnd;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -19,15 +19,14 @@ import android.view.LayoutInflater;
 import android.content.res.Resources;
 import java.util.ArrayList;
 import java.util.Collection;
-import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import com.netflix.mediaclient.android.widget.SnappableSeekBar;
 import com.netflix.mediaclient.android.widget.SnappableSeekBar$OnSnappableSeekBarChangeListener;
 import com.netflix.mediaclient.android.widget.IconFontTextView;
+import android.view.View$OnClickListener;
 import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
 import android.view.ViewGroup;
 import java.util.List;
@@ -37,12 +36,13 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.view.animation.Interpolator;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.TimeFormatterHelper;
-import android.app.Dialog;
-import com.netflix.mediaclient.util.MdxUtils;
+import android.graphics.Rect;
 import android.view.View;
-import android.view.View$OnClickListener;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.Log;
+import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 
-class MdxMiniPlayerViews$13 implements View$OnClickListener
+class MdxMiniPlayerViews$13 implements ViewTreeObserver$OnGlobalLayoutListener
 {
     final /* synthetic */ MdxMiniPlayerViews this$0;
     
@@ -50,7 +50,14 @@ class MdxMiniPlayerViews$13 implements View$OnClickListener
         this.this$0 = this$0;
     }
     
-    public void onClick(final View view) {
-        this.this$0.activity.displayDialog((Dialog)MdxUtils.createMdxMenuDialog(this.this$0.activity, this.this$0.dialogCallbacks));
+    public void onGlobalLayout() {
+        if (this.this$0.seekBar.getHeight() <= 0) {
+            return;
+        }
+        final Rect bounds = this.this$0.seekBar.getCachedThumb().getBounds();
+        final int thumbOffset = (bounds.right - bounds.left) / 2;
+        Log.v("MdxMiniPlayerViews", "Setting thumb offset: " + thumbOffset);
+        this.this$0.seekBar.setThumbOffset(thumbOffset);
+        ViewUtils.removeGlobalLayoutListener((View)this.this$0.seekBar, (ViewTreeObserver$OnGlobalLayoutListener)this);
     }
 }

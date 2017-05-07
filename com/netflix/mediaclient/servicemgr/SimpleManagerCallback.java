@@ -7,12 +7,12 @@ package com.netflix.mediaclient.servicemgr;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.model.leafs.Video$Summary;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -98,7 +98,7 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     }
     
     @Override
-    public void onPinVerified(final boolean b, final Status status) {
+    public void onNotificationsListFetched(final SocialNotificationsList list, final Status status) {
     }
     
     @Override
@@ -119,6 +119,10 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     
     @Override
     public void onResourceFetched(final String s, final String s2, final Status status) {
+    }
+    
+    @Override
+    public void onResourceRawFetched(final String s, final byte[] array, final Status status) {
     }
     
     @Override
@@ -150,7 +154,7 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     }
     
     @Override
-    public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+    public void onVerified(final boolean b, final Status status) {
     }
     
     @Override

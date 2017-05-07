@@ -9,11 +9,6 @@ import com.netflix.mediaclient.servicemgr.interface_.Playable;
 public class DummyPlayable implements Playable
 {
     @Override
-    public boolean canBeSharedOnFacebook() {
-        return true;
-    }
-    
-    @Override
     public int getEndtime() {
         return 0;
     }
@@ -66,6 +61,11 @@ public class DummyPlayable implements Playable
     @Override
     public int getSeasonNumber() {
         return 0;
+    }
+    
+    @Override
+    public boolean isAgeProtected() {
+        return false;
     }
     
     @Override

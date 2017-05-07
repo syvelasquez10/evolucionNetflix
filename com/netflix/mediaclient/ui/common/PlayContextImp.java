@@ -29,7 +29,15 @@ public class PlayContextImp implements PlayContext
     }
     
     public PlayContextImp(final Trackable trackable, final int n) {
-        this(trackable.getRequestId(), trackable.getTrackId(), trackable.getListPos(), n);
+        final String requestId = trackable.getRequestId();
+        int n2;
+        if (trackable.isHero()) {
+            n2 = trackable.getHeroTrackId();
+        }
+        else {
+            n2 = trackable.getTrackId();
+        }
+        this(requestId, n2, trackable.getListPos(), n);
     }
     
     public PlayContextImp(final String requestId, final int trackId, final int listPos, final int videoPos) {

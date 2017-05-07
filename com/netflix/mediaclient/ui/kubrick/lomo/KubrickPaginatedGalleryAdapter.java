@@ -9,6 +9,7 @@ import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
 import java.util.List;
 import com.netflix.mediaclient.Log;
@@ -22,6 +23,8 @@ import com.netflix.mediaclient.ui.lomo.BasePaginatedAdapter;
 
 public class KubrickPaginatedGalleryAdapter extends BasePaginatedAdapter<KubrickVideo>
 {
+    private static final int NUM_GALLERY_VIDEOS_LANDSCAPE = 8;
+    private static final int NUM_GALLERY_VIDEOS_PORTRAIT = 6;
     private static final String TAG = "KubrickPaginatedGalleryAdapter";
     
     public KubrickPaginatedGalleryAdapter(final Context context) {
@@ -74,11 +77,15 @@ public class KubrickPaginatedGalleryAdapter extends BasePaginatedAdapter<Kubrick
     
     @Override
     public int getRowHeightInPx() {
-        final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage() * 0.5625f) * 4;
-        if (Log.isLoggable()) {
-            Log.v("KubrickPaginatedGalleryAdapter", "Computed view height: " + n + " (px)");
+        int n2;
+        final int n = n2 = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, 1 != 0) / this.numItemsPerPage * 0.5625f) * 4;
+        if (BrowseExperience.isKubrickKids()) {
+            n2 = n + this.activity.getResources().getDimensionPixelSize(2131296480);
         }
-        return n;
+        if (Log.isLoggable()) {
+            Log.v("KubrickPaginatedGalleryAdapter", "Computed view height: " + n2 + " (px)");
+        }
+        return n2;
     }
     
     @Override

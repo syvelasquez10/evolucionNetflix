@@ -22,10 +22,6 @@ public class KubrickLoMoDuplicate implements LoMo, Genre
         return this.lomo.describeContents();
     }
     
-    public List<FriendProfile> getFacebookFriends() {
-        return this.lomo.getFacebookFriends();
-    }
-    
     public int getHeroTrackId() {
         return this.lomo.getHeroTrackId();
     }

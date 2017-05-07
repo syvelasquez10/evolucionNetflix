@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.kubrick_kids.lomo;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
@@ -43,16 +44,17 @@ public class KubrickKidsTopTenVideoView extends KubrickVideoView
             visibility = 0;
         }
         this.setVisibility(visibility);
-        this.clicker.update((View)this, kubrickVideo);
+        this.clicker.update((View)this, kubrickVideo, this.pressedHandler);
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final IClientLogging$AssetType boxArt = IClientLogging$AssetType.boxArt;
         final String title = kubrickVideo.getTitle();
+        final ImageLoader$StaticImgConfig light = ImageLoader$StaticImgConfig.LIGHT;
         if (b) {
             visibility = 1;
         }
         else {
             visibility = 0;
         }
-        imageLoader.showImg(this, horzDispUrl, boxArt, title, false, true, visibility);
+        imageLoader.showImg(this, horzDispUrl, boxArt, title, light, true, visibility);
     }
 }

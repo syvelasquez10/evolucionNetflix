@@ -95,14 +95,14 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void createContentView() {
-        this.setContentView(2130903202);
-        final ImageView imageView = (ImageView)this.findViewById(2131427843);
+        this.setContentView(2130903196);
+        final ImageView imageView = (ImageView)this.findViewById(2131427825);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837896;
+            imageResource = 2130837906;
         }
         else {
-            imageResource = 2130837895;
+            imageResource = 2130837905;
         }
         imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi((Context)this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
@@ -249,8 +249,8 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void manipulateSplashBackground() {
-        final ImageView imageView = (ImageView)this.findViewById(2131427843);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$1(this, imageView, (ImageView)this.findViewById(2131427558), (ProgressBar)this.findViewById(2131427559)));
+        final ImageView imageView = (ImageView)this.findViewById(2131427825);
+        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$1(this, imageView, (ImageView)this.findViewById(2131427540), (ProgressBar)this.findViewById(2131427541)));
     }
     
     private void onCredentialRetrieved(final Credential credential) {

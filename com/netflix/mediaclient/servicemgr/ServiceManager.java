@@ -422,6 +422,15 @@ public final class ServiceManager implements IServiceManagerAccess
         return false;
     }
     
+    public boolean isUserAgeVerified() {
+        final INetflixService mService = this.mService;
+        if (mService != null) {
+            return mService.isUserAgeVerified();
+        }
+        Log.w("ServiceManager", "isUserAgeVerified:: service is not available");
+        return false;
+    }
+    
     public boolean isUserLoggedIn() {
         final INetflixService mService = this.mService;
         if (mService != null) {
@@ -553,6 +562,16 @@ public final class ServiceManager implements IServiceManagerAccess
         if (this.addToMyListWrapper != null) {
             this.addToMyListWrapper.updateState(s, b);
         }
+    }
+    
+    public boolean verifyAge(final ManagerCallback managerCallback) {
+        final INetflixService mService = this.mService;
+        if (mService != null) {
+            mService.verifyAge(this.mClientId, this.addCallback(managerCallback));
+            return true;
+        }
+        Log.w("ServiceManager", "verifyAge:: service is not available");
+        return false;
     }
     
     public boolean verifyPin(final String s, final ManagerCallback managerCallback) {

@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.service.pushnotification;
 
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.SocialUtils;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.NetflixApplication;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.Log;
@@ -45,6 +45,16 @@ public final class NotificationFactory
             if (applicationContext != null) {
                 final Payload payload = new Payload(intent);
                 if (isValid(payload)) {
+                    if (netflixService.getCurrentProfile() != null && StringUtils.isNotEmpty(payload.profileGuid)) {
+                        final String profileGuid = netflixService.getCurrentProfile().getProfileGuid();
+                        if (!StringUtils.safeEquals(profileGuid, payload.profileGuid)) {
+                            Log.d("nf_push_notificationFactory", String.format("drop push event - currentProfile :%s != profileGuid:%s", profileGuid, payload.profileGuid));
+                            return;
+                        }
+                    }
+                    else {
+                        Log.w("nf_push_notificationFactory", "processing gcm message, payload has no profileId or currentProfile is null ");
+                    }
                     if ("INFO".equals(payload.defaultActionKey)) {
                         if (netflixService.getCurrentProfile() == null) {
                             Log.d("nf_push_notificationFactory", String.format("currentProfile null dropping gcm event payload:%s", payload));

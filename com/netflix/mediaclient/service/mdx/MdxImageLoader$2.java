@@ -42,4 +42,11 @@ class MdxImageLoader$2 implements ResourceFetcherCallback
             Log.d("nf_mdxImageLoader", "ERROR resource prefetched from " + s);
         }
     }
+    
+    @Override
+    public void onResourceRawFetched(final String s, final byte[] array, final Status status) {
+        if (Log.isLoggable()) {
+            Log.d("nf_mdxImageLoader", "ERROR resource raw fetched from " + s);
+        }
+    }
 }

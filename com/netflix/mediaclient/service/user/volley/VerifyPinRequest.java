@@ -44,14 +44,14 @@ public class VerifyPinRequest extends FalkorVolleyWebClientRequest<Boolean>
     @Override
     protected void onFailure(final Status status) {
         if (this.responseCallback != null) {
-            this.responseCallback.onPinVerified(false, status);
+            this.responseCallback.onVerified(false, status);
         }
     }
     
     @Override
     protected void onSuccess(final Boolean b) {
         if (this.responseCallback != null) {
-            this.responseCallback.onPinVerified(b, CommonStatus.OK);
+            this.responseCallback.onVerified(b, CommonStatus.OK);
         }
     }
     

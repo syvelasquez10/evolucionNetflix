@@ -7,9 +7,11 @@ package com.netflix.mediaclient.ui.common;
 import android.os.Handler;
 import android.os.Debug;
 import com.netflix.mediaclient.Log;
+import android.app.Activity;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
+import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class DebugMenuItems
@@ -22,51 +24,59 @@ public class DebugMenuItems
         this.activity = activity;
     }
     
+    private void addCreateAutoLoginToken(final Context context, final Menu menu) {
+        menu.add((CharSequence)"Create AutoLogin Token").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$2(this, context));
+    }
+    
     private void addDumpCacheToDiskItem(final Menu menu) {
-        menu.add((CharSequence)"Dump Cache to Disk").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$1(this));
+        menu.add((CharSequence)"Dump Cache to Disk").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$3(this));
     }
     
     private void addDumpHomeLolomoToHtmlItem(final NetflixActivity netflixActivity, final Menu menu) {
         if (!(netflixActivity instanceof HomeActivity)) {
             return;
         }
-        menu.add((CharSequence)"Dump Lolomo to Html").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$2(this, (HomeActivity)netflixActivity));
+        menu.add((CharSequence)"Dump Lolomo to Html").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$4(this, (HomeActivity)netflixActivity));
     }
     
     private void addFlushDataCacheItem(final Menu menu) {
-        menu.add((CharSequence)"Flush Data Cache").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$12(this));
+        menu.add((CharSequence)"Flush Data Cache").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$14(this));
     }
     
     private void addHprofDumpItem(final Menu menu) {
-        menu.add((CharSequence)"Dump hprof profile").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$8(this));
+        menu.add((CharSequence)"Dump hprof profile").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$10(this));
+    }
+    
+    private void addLaunchNotificationsActivity(final Activity activity, final Menu menu) {
+        menu.add((CharSequence)"Launch Notifications Activity").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$1(this, activity));
     }
     
     private void addMakeRefreshAllRemoteCall(final Menu menu) {
-        menu.add((CharSequence)"Make refreshAll Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$7(this));
+        menu.add((CharSequence)"Make refreshAll Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$9(this));
     }
     
     private void addMakeRefreshCwRemoteCall(final Menu menu) {
-        menu.add((CharSequence)"Make refreshCw Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$5(this));
+        menu.add((CharSequence)"Make refreshCw Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$7(this));
     }
     
     private void addMakeRefreshIqRemoteCall(final Menu menu) {
-        menu.add((CharSequence)"Make refreshIq Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$6(this));
+        menu.add((CharSequence)"Make refreshIq Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$8(this));
     }
     
     private void addSendCwRefreshBroadcast(final Menu menu) {
-        menu.add((CharSequence)"Send Cw Refresh Broadcast").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$4(this));
+        menu.add((CharSequence)"Send Cw Refresh Broadcast").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$6(this));
     }
     
     private void addSendHomeRefreshBroadcast(final Menu menu) {
-        menu.add((CharSequence)"Send Home Refresh").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$3(this));
+        menu.add((CharSequence)"Send Home Refresh").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$5(this));
     }
     
     private void addToggleFetchErrorsItem(final Menu menu) {
-        menu.add((CharSequence)"Toggle Fetch Errors").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$11(this));
+        menu.add((CharSequence)"Toggle Fetch Errors").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$13(this));
     }
     
     private void addTraceviewItem(final Menu menu) {
-        menu.add((CharSequence)"5s Traceview").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$9(this));
+        menu.add((CharSequence)"5s Traceview").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$11(this));
     }
     
     private void beginTraceview() {
@@ -74,10 +84,11 @@ public class DebugMenuItems
         Log.i(this.logTag, "Starting method trace...");
         Log.i(this.logTag, "**********************************************************************");
         Debug.startMethodTracing("nflx");
-        new Handler().postDelayed((Runnable)new DebugMenuItems$10(this), 5000L);
+        new Handler().postDelayed((Runnable)new DebugMenuItems$12(this), 5000L);
     }
     
     public void addItems(final NetflixActivity netflixActivity, final Menu menu) {
+        this.addLaunchNotificationsActivity(netflixActivity, menu);
         this.addDumpCacheToDiskItem(menu);
         this.addDumpHomeLolomoToHtmlItem(netflixActivity, menu);
         this.addHprofDumpItem(menu);
@@ -89,5 +100,6 @@ public class DebugMenuItems
         this.addMakeRefreshCwRemoteCall(menu);
         this.addMakeRefreshIqRemoteCall(menu);
         this.addMakeRefreshAllRemoteCall(menu);
+        this.addCreateAutoLoginToken((Context)netflixActivity, menu);
     }
 }

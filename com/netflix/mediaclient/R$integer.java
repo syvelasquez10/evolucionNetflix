@@ -17,5 +17,5 @@ public final class R$integer
     public static final int postplay_mdx_timer_value = 2131361800;
     public static final int postplay_timer_value = 2131361799;
     public static final int profile_name_max_length = 2131361801;
-    public static final int rippleAnimTime = 2131361803;
+    public static final int ripple_anim_time_ms = 2131361803;
 }

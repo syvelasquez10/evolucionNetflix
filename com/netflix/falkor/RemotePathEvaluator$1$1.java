@@ -6,9 +6,9 @@ package com.netflix.falkor;
 
 import java.net.URLEncoder;
 import java.lang.reflect.Method;
+import java.util.Map;
 import com.google.gson.JsonObject;
 import java.lang.reflect.ParameterizedType;
-import java.util.Map;
 import com.google.gson.GsonBuilder;
 import java.net.URI;
 import com.google.gson.Gson;

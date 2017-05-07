@@ -23,18 +23,14 @@ import com.netflix.mediaclient.media.JPlayer2Helper;
 import android.media.AudioManager;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.media.PlayoutMetadata;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
-import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetType;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleParserFactory;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import com.netflix.mediaclient.javabridge.ui.IMedia$MediaEventEnum;
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
-import android.net.NetworkInfo;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.util.ConnectivityUtils;
-import com.netflix.mediaclient.service.NetflixService;
-import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
-import com.netflix.mediaclient.javabridge.invoke.media.Open$NetType;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import android.os.PowerManager$WakeLock;
 import android.content.BroadcastReceiver;
@@ -43,6 +39,7 @@ import android.view.Surface;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayerType;
+import com.netflix.mediaclient.servicemgr.IPlayerFileCache;
 import java.util.concurrent.ExecutorService;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
@@ -99,11 +96,11 @@ class PlayerAgent$GenericMediaEventListener implements EventListener
             return;
         }
         if (uiEvent instanceof RemoveSubtitle) {
-            this.this$0.handleRemoveSubtitle((RemoveSubtitle)uiEvent);
+            Log.w(PlayerAgent.TAG, "RemoveSubtitle NOT supported since 4.0");
             return;
         }
         if (uiEvent instanceof ShowSubtitle) {
-            this.this$0.handleShowSubtitle((ShowSubtitle)uiEvent);
+            Log.e(PlayerAgent.TAG, "ShowSubtitle NOT supported since 4.0");
             return;
         }
         if (uiEvent instanceof SubtitleData) {

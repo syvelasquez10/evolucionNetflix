@@ -76,7 +76,7 @@ public final class UserLocaleRepository
     
     private void initSupportedLocales() {
         int i = 0;
-        this.supportedLocales = new UserLocale[15];
+        this.supportedLocales = new UserLocale[16];
         this.defaultAppLocale = new UserLocale(Locale.ENGLISH.getLanguage(), null, "English");
         this.supportedLocales[0] = this.defaultAppLocale;
         this.supportedLocales[1] = new UserLocale(Locale.FRENCH.getLanguage(), null, "Fran\u00e7ais");
@@ -93,6 +93,7 @@ public final class UserLocaleRepository
         this.supportedLocales[12] = new UserLocale(Locale.GERMAN.getLanguage(), null, "Deutsch");
         this.supportedLocales[13] = new UserLocale(Locale.ENGLISH.getLanguage(), "AU", "English-AU");
         this.supportedLocales[14] = new UserLocale(Locale.ENGLISH.getLanguage(), "NZ", "English-NZ");
+        this.supportedLocales[15] = new UserLocale(Locale.JAPAN.getLanguage(), Locale.JAPAN.getCountry(), "\u65e5\u672c\u8a9e");
         for (UserLocale[] supportedLocales = this.supportedLocales; i < supportedLocales.length; ++i) {
             Log.d("nf_loc", "" + supportedLocales[i]);
         }

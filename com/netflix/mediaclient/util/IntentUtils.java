@@ -12,6 +12,7 @@ import android.content.Context;
 
 public final class IntentUtils
 {
+    public static final String INTENT_CATEGORY_UI = "LocalIntentNflxUi";
     private static final String TAG;
     public static final int USER_HIGH_PRIORITY = 999;
     public static final int USER_LOW_PRIORITY = -999;

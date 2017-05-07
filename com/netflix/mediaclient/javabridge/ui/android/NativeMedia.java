@@ -27,13 +27,14 @@ import com.netflix.mediaclient.javabridge.invoke.media.Swim;
 import com.netflix.mediaclient.javabridge.invoke.media.Play;
 import com.netflix.mediaclient.javabridge.invoke.media.Pause;
 import com.netflix.mediaclient.javabridge.invoke.media.Open;
-import com.netflix.mediaclient.javabridge.invoke.media.Open$NetType;
+import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.javabridge.invoke.media.Close;
 import com.netflix.mediaclient.javabridge.invoke.android.ChangePlayer;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.javabridge.invoke.media.CacheSchedule;
+import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams;
 import com.netflix.mediaclient.servicemgr.IManifestCache$CacheScheduleRequest;
 import com.netflix.mediaclient.javabridge.invoke.media.CacheResume;
 import com.netflix.mediaclient.javabridge.invoke.media.CachePause;
@@ -546,8 +547,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void cacheSchedule(final IManifestCache$CacheScheduleRequest[] array) {
-        this.bridge.getNrdProxy().invokeMethod(new CacheSchedule(array));
+    public void cacheSchedule(final IManifestCache$CacheScheduleRequest[] array, final AuthorizationParams authorizationParams) {
+        this.bridge.getNrdProxy().invokeMethod(new CacheSchedule(array, authorizationParams));
     }
     
     @Override
@@ -736,8 +737,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void open(final long n, final PlayContext playContext, final Open$NetType open$NetType, final long n2) {
-        this.bridge.getNrdProxy().invokeMethod(new Open(n, playContext, open$NetType, n2));
+    public void open(final long n, final PlayContext playContext, final AuthorizationParams$NetType authorizationParams$NetType, final long n2) {
+        this.bridge.getNrdProxy().invokeMethod(new Open(n, new AuthorizationParams(playContext, authorizationParams$NetType), n2));
         Log.d("nf-bridge", "invokeMethod just called...");
     }
     

@@ -5,13 +5,9 @@
 package com.netflix.mediaclient.servicemgr.interface_.search;
 
 import com.netflix.mediaclient.servicemgr.interface_.trackable.SearchTrackable;
-import com.netflix.model.branches.FalkorObject;
-import java.util.List;
 
 public interface ISearchResults
 {
-    List<FalkorObject> getAllResults();
-    
     int getNumResults();
     
     int getNumResultsPeople();

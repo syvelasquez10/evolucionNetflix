@@ -7,12 +7,12 @@ package com.netflix.mediaclient.service.browse;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.model.leafs.Video$Summary;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
-import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -76,6 +76,10 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     }
     
     @Override
+    public void onNotificationsListFetched(final SocialNotificationsList list, final Status status) {
+    }
+    
+    @Override
     public void onPostPlayVideosFetched(final PostPlayVideosProvider postPlayVideosProvider, final Status status) {
     }
     
@@ -113,10 +117,6 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     
     @Override
     public void onSocialNotificationWasThanked(final Status status) {
-    }
-    
-    @Override
-    public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
     }
     
     @Override

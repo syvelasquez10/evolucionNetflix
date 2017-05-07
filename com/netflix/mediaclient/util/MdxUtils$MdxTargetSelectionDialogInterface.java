@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.util;
 
-import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
 import com.netflix.mediaclient.ui.mdx.RemotePlayer;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.ui.common.PlayContext;
 
 public interface MdxUtils$MdxTargetSelectionDialogInterface
@@ -15,11 +15,11 @@ public interface MdxUtils$MdxTargetSelectionDialogInterface
     
     PlayContext getPlayContext();
     
+    Playable getPlayable();
+    
     RemotePlayer getPlayer();
     
     MdxTargetSelection getTargetSelection();
-    
-    Playable getVideoDetails();
     
     boolean isPlayingLocally();
     

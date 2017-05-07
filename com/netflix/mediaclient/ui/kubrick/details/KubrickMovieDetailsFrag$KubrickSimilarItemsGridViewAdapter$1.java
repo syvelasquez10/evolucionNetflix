@@ -7,10 +7,12 @@ package com.netflix.mediaclient.ui.kubrick.details;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import android.widget.ImageView$ScaleType;
+import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
+import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.widget.VideoView;
 import android.view.View;
 import android.content.Context;
-import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 
@@ -27,13 +29,14 @@ class KubrickMovieDetailsFrag$KubrickSimilarItemsGridViewAdapter$1 implements Re
     }
     
     private int getImageHeight() {
-        return (int)((DeviceUtils.getScreenWidthInPixels((Context)this.val$this$0.getActivity()) - this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131296461) * (this.val$numColumns + 1.0f)) / this.val$numColumns * 0.5625f);
+        return (int)((KubrickUtils.getDetailsPageContentWidth((Context)this.val$this$0.getActivity()) - this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131296452) * (this.val$numColumns + 1.0f)) / this.val$numColumns * 0.5625f);
     }
     
     @Override
     public View createItemView() {
         final VideoView videoView = new VideoView(this.val$recyclerView.getContext());
         videoView.setAdjustViewBounds(true);
+        videoView.setClickListener(new KubrickVideoDetailsClickListener(this.val$this$0.getNetflixActivity(), videoView));
         videoView.setScaleType(ImageView$ScaleType.FIT_XY);
         videoView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.getImageHeight()));
         videoView.setIsHorizontal(true);

@@ -4,25 +4,18 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.ui.kubrick_kids.details.KubrickKidsDetailsActivity;
-import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsActivity;
-import com.netflix.mediaclient.ui.kubrick.details.KubrickMovieDetailsActivity;
+import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import java.io.Serializable;
 import android.os.Parcelable;
 import android.content.Context;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.content.Intent;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import android.app.Activity;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Arrays;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import java.util.Set;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class DetailsActivityLauncher
 {
@@ -30,28 +23,25 @@ public class DetailsActivityLauncher
     static final String EXTRA_ACTION_TOKEN = "extra_action_token";
     static final String EXTRA_EPISODE_ID = "extra_episode_id";
     public static final String EXTRA_PLAY_CONTEXT = "extra_playcontext";
+    public static final String EXTRA_SAME_ACTIVITY_TYPE = "extra_same_activity_type";
     public static final String EXTRA_VIDEO_ID = "extra_video_id";
     public static final String EXTRA_VIDEO_TITLE = "extra_video_title";
     public static final String EXTRA_VIDEO_TYPE = "extra_video_type";
     public static final String INTENT_MDP = "com.netflix.mediaclient.intent.action.NOTIFICATION_MOVIE_DETAILS";
     public static final String INTENT_SDP = "com.netflix.mediaclient.intent.action.NOTIFICATION_SHOW_DETAILS";
     private static final String TAG = "DetailsActivityLauncher";
-    private static final Set<VideoType> VALID_KUBRICK_KIDS_TYPES;
-    private static final Set<VideoType> VALID_KUBRICK_TYPES;
-    private static final Set<VideoType> VALID_NON_KUBRICK_TYPES;
     
-    static {
-        VALID_NON_KUBRICK_TYPES = new HashSet<VideoType>(Arrays.asList(VideoType.MOVIE, VideoType.SHOW));
-        VALID_KUBRICK_TYPES = DetailsActivityLauncher.VALID_NON_KUBRICK_TYPES;
-        VALID_KUBRICK_KIDS_TYPES = new HashSet<VideoType>(Arrays.asList(VideoType.MOVIE, VideoType.SHOW, VideoType.CHARACTERS));
+    public static Intent getEpisodeDetailsIntent(final NetflixActivity netflixActivity, final String s, final String s2, final PlayContext playContext) {
+        return getEpisodeDetailsIntent(netflixActivity, s, s2, playContext, null, null);
     }
     
-    public static Intent getEpisodeDetailsIntent(final Activity activity, final String s, final String s2, final PlayContext playContext) {
-        return getEpisodeDetailsIntent(activity, s, s2, playContext, null, null);
-    }
-    
-    public static Intent getEpisodeDetailsIntent(final Activity activity, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3) {
-        final Intent putExtra = new Intent((Context)activity, (Class)ShowDetailsActivity.class).putExtra("extra_video_id", s).putExtra("extra_episode_id", s2).putExtra("extra_playcontext", (Parcelable)playContext);
+    private static Intent getEpisodeDetailsIntent(final NetflixActivity netflixActivity, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3) {
+        final Class<? extends DetailsActivity> detailsClassTypeForVideo = BrowseExperience.get().getDetailsClassTypeForVideo(VideoType.SHOW);
+        if (detailsClassTypeForVideo == null) {
+            logInvalidVideoType(netflixActivity, BrowseExperience.get(), s, s2, VideoType.SHOW, playContext, "getEpisodeDetailsIntent");
+            return null;
+        }
+        final Intent putExtra = new Intent((Context)netflixActivity, (Class)detailsClassTypeForVideo).putExtra("extra_video_id", s).putExtra("extra_episode_id", s2).putExtra("extra_playcontext", (Parcelable)playContext);
         if (detailsActivity$Action != null) {
             putExtra.putExtra("extra_action", (Serializable)detailsActivity$Action);
         }
@@ -62,7 +52,7 @@ public class DetailsActivityLauncher
         return putExtra;
     }
     
-    public static Intent getIntent(final Context context, final Class<?> clazz, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3) {
+    private static Intent getIntent(final Context context, final Class<?> clazz, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4) {
         final Intent intent = new Intent(context, (Class)clazz);
         intent.putExtra("extra_video_id", s);
         intent.putExtra("extra_video_title", s2);
@@ -73,6 +63,9 @@ public class DetailsActivityLauncher
         }
         if (s3 != null) {
             intent.putExtra("extra_action_token", s3);
+        }
+        if (clazz == context.getClass()) {
+            intent.putExtra("extra_same_activity_type", true);
         }
         return intent;
     }
@@ -98,7 +91,7 @@ public class DetailsActivityLauncher
         return intent;
     }
     
-    private static void logInvalidVideoType(final NetflixActivity netflixActivity, final BrowseExperience browseExperience, final String s, final VideoType videoType, final PlayContext playContext, final String s2) {
+    private static void logInvalidVideoType(final NetflixActivity netflixActivity, final BrowseExperience browseExperience, final String s, final String s2, final VideoType videoType, final PlayContext playContext, final String s3) {
         Object value;
         if (playContext == null) {
             value = null;
@@ -106,81 +99,57 @@ public class DetailsActivityLauncher
         else {
             value = playContext.getTrackId();
         }
-        final String format = String.format("DetailsActivityLauncher - Don't know how to handle video ID %s, type: %s, trackId: %s, source: %s, experience: %s", s, videoType, value, s2, browseExperience);
+        final String format = String.format("DetailsActivityLauncher - Don't know how to handle parent ID: %s, ep ID: %s, type: %s, trackId: %s, source: %s, experience: %s", s, s2, videoType, value, s3, browseExperience);
         Log.w("DetailsActivityLauncher", format);
         netflixActivity.getServiceManager().getClientLogging().getErrorLogging().logHandledException(format);
     }
     
     public static void show(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext, final String s) {
-        show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, null, null, s);
+        show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, null, null, s, null, 0);
+    }
+    
+    public static void show(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext, final String s, final Bundle bundle) {
+        show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, null, null, s, bundle, 0);
+    }
+    
+    public static void show(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext, final String s, final Bundle bundle, final int n) {
+        show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, null, null, s, null, n);
     }
     
     public static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4) {
-        final boolean equals = VideoType.MOVIE.equals(videoType);
+        show(netflixActivity, videoType, s, s2, playContext, detailsActivity$Action, s3, s4, null, 0);
+    }
+    
+    public static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4, final Bundle bundle, final int n) {
         final BrowseExperience value = BrowseExperience.get();
-        while (true) {
-            Label_0197: {
-                Serializable s5 = null;
-                switch (DetailsActivityLauncher$1.$SwitchMap$com$netflix$mediaclient$ui$experience$BrowseExperience[value.ordinal()]) {
-                    default: {
-                        if (!DetailsActivityLauncher.VALID_NON_KUBRICK_TYPES.contains(videoType)) {
-                            break Label_0197;
-                        }
-                        if (equals) {
-                            s5 = MovieDetailsActivity.class;
-                            break;
-                        }
-                        s5 = ShowDetailsActivity.class;
-                        break;
-                    }
-                    case 1: {
-                        if (DetailsActivityLauncher.VALID_KUBRICK_TYPES.contains(videoType)) {
-                            if (equals) {
-                                s5 = KubrickMovieDetailsActivity.class;
-                            }
-                            else {
-                                s5 = KubrickShowDetailsActivity.class;
-                            }
-                            break;
-                        }
-                        break Label_0197;
-                    }
-                    case 2: {
-                        if (DetailsActivityLauncher.VALID_KUBRICK_KIDS_TYPES.contains(videoType)) {
-                            s5 = KubrickKidsDetailsActivity.class;
-                            break;
-                        }
-                        break Label_0197;
-                    }
-                }
-                if (s5 == null) {
-                    logInvalidVideoType(netflixActivity, value, s, videoType, playContext, s4);
-                    return;
-                }
-                if (Log.isLoggable()) {
-                    Log.v("DetailsActivityLauncher", String.format("Creating details class: %s, videoType: %s, video ID: %s", ((Class)s5).getSimpleName(), videoType, s));
-                }
-                netflixActivity.startActivity(getIntent((Context)netflixActivity, (Class<?>)s5, videoType, s, s2, playContext, detailsActivity$Action, s3));
-                return;
-            }
-            Serializable s5 = null;
-            continue;
+        final Class<? extends DetailsActivity> detailsClassTypeForVideo = value.getDetailsClassTypeForVideo(videoType);
+        if (detailsClassTypeForVideo == null) {
+            logInvalidVideoType(netflixActivity, value, s, null, videoType, playContext, s4);
+            return;
         }
+        if (Log.isLoggable()) {
+            Log.v("DetailsActivityLauncher", String.format("Creating details class: %s, videoType: %s, video ID: %s", detailsClassTypeForVideo.getSimpleName(), videoType, s));
+        }
+        final Intent intent = getIntent((Context)netflixActivity, detailsClassTypeForVideo, videoType, s, s2, playContext, detailsActivity$Action, s3, s4);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+        if (n > 0) {
+            intent.addFlags(n);
+        }
+        netflixActivity.startActivity(intent);
     }
     
     public static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final String s3) {
-        show(netflixActivity, videoType, s, s2, playContext, null, null, s3);
+        show(netflixActivity, videoType, s, s2, playContext, null, null, s3, null, 0);
     }
     
-    public static void showEpisodeDetails(final Activity activity, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3) {
-        final Intent putExtra = new Intent((Context)activity, (Class)ShowDetailsActivity.class).putExtra("extra_video_id", s).putExtra("extra_episode_id", s2).putExtra("extra_playcontext", (Parcelable)playContext);
-        if (detailsActivity$Action != null) {
-            putExtra.putExtra("extra_action", (Serializable)detailsActivity$Action);
+    public static void showEpisodeDetails(final NetflixActivity netflixActivity, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3) {
+        final Intent episodeDetailsIntent = getEpisodeDetailsIntent(netflixActivity, s, s2, playContext, detailsActivity$Action, s3);
+        if (episodeDetailsIntent == null) {
+            Log.w("DetailsActivityLauncher", "Can't start activity - intent is null");
+            return;
         }
-        if (s3 != null) {
-            putExtra.putExtra("extra_action_token", s3);
-        }
-        putExtra.putExtra("extra_video_type", (Serializable)VideoType.SHOW);
-        activity.startActivity(putExtra);
+        netflixActivity.startActivity(episodeDetailsIntent);
     }
 }

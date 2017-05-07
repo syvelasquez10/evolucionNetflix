@@ -13,6 +13,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class NetflixComVideoDetailsHandler implements NetflixComHandler
 {
+    public static final String DEEP_LINK = "DeepLink";
     public static final String HANDLER_DETAILS_URL;
     private static final String TAG = "NetflixComVideoDetailsHandler";
     

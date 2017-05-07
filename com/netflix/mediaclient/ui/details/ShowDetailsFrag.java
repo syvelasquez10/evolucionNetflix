@@ -52,7 +52,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
         this.isLoading = true;
         this.requestId = System.nanoTime();
         Log.v("ShowDetailsFrag", "Fetching data for show ID: " + this.videoId);
-        serviceManager.getBrowse().fetchShowDetails(this.videoId, this.episodeId, BrowseExperience.shouldLoadKubrickLeaves(), new ShowDetailsFrag$FetchShowDetailsCallback(this, this.requestId));
+        serviceManager.getBrowse().fetchShowDetails(this.videoId, this.episodeId, BrowseExperience.shouldLoadKubrickLeavesInDetails(), new ShowDetailsFrag$FetchShowDetailsCallback(this, this.requestId));
     }
     
     @Override
@@ -67,7 +67,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     
     @Override
     protected void initDetailsViewGroup(final View view) {
-        this.detailsViewGroup = (VideoDetailsViewGroup)view.findViewById(2131427852);
+        this.detailsViewGroup = (VideoDetailsViewGroup)view.findViewById(2131427843);
     }
     
     public boolean isLoadingData() {
@@ -84,7 +84,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
-        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131427858);
+        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131427847);
         if (linearLayout != null) {
             linearLayout.setOrientation(1);
             for (int i = 0; i < linearLayout.getChildCount(); ++i) {

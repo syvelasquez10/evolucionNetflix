@@ -16,6 +16,8 @@ import android.annotation.SuppressLint;
 import android.content.pm.ApplicationInfo;
 import com.netflix.mediaclient.ui.details.DeviceCapabilityProvider;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.google.android.gms.common.GoogleApiAvailability;
+import android.content.pm.PackageInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.app.Activity;
@@ -111,6 +113,24 @@ public final class DeviceUtils
         // monitorexit(DeviceUtils.class)
     }
     
+    public static int getGMSPkgVersion(final Context context) {
+        try {
+            final PackageInfo packageInfo = context.getPackageManager().getPackageInfo("com.google.android.gms", 0);
+            if (Log.isLoggable()) {
+                Log.d("nf_device_utils", "Package versionCode:" + packageInfo.versionCode + " versionName: " + packageInfo.versionName);
+            }
+            return packageInfo.versionCode;
+        }
+        catch (Throwable t) {
+            Log.d("nf_device_utils", "gms package not available");
+            return 0;
+        }
+    }
+    
+    public static int getGooglePlayClientSDKVersion(final Context context) {
+        return GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE;
+    }
+    
     public static DeviceCapabilityProvider getLocalCapabilities(final ServiceManager serviceManager) {
         return new DeviceUtils$1(serviceManager);
     }
@@ -121,6 +141,10 @@ public final class DeviceUtils
             return applicationInfo.nativeLibraryDir;
         }
         return null;
+    }
+    
+    public static float getScreenAspectRatio(final Context context) {
+        return getScreenWidthInPixels(context) / getScreenHeightInPixels(context);
     }
     
     public static int getScreenHeightInDPs(final Context context) {
@@ -400,14 +424,15 @@ public final class DeviceUtils
                     }
                     System.load(string);
                     return true;
+                    // iftrue(Label_0173:, !Log.isLoggable())
+                Label_0173:
                     while (true) {
-                        System.loadLibrary(s);
-                        return true;
                         Log.d("nf_device_utils", "Loading library " + s + " leaving to android to find mapping. Preloaded app.");
+                        break Label_0173;
                         continue;
                     }
+                    System.loadLibrary(s);
                 }
-                // iftrue(Label_0173:, !Log.isLoggable())
                 catch (Throwable t) {
                     Log.e("nf_device_utils", "Failed to load library from assumed location", t);
                     ErrorLoggingManager.logHandledException(t);
@@ -440,6 +465,6 @@ public final class DeviceUtils
     }
     
     public static void showSoftKeyboard(final Activity activity) {
-        activity.getWindow().setSoftInputMode(36);
+        activity.getWindow().setSoftInputMode(20);
     }
 }

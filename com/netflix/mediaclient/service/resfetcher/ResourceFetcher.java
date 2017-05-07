@@ -6,9 +6,10 @@ package com.netflix.mediaclient.service.resfetcher;
 
 import com.netflix.mediaclient.service.resfetcher.volley.PrefetchResourceRequest;
 import com.netflix.mediaclient.service.webclient.WebClient;
+import com.netflix.mediaclient.service.resfetcher.volley.FileDownloadRequest;
 import com.android.volley.Request;
 import com.android.volley.Response$ErrorListener;
-import com.netflix.mediaclient.service.resfetcher.volley.FileDownloadRequest;
+import com.netflix.mediaclient.service.resfetcher.volley.HttpRangeRequest;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.app.Status;
@@ -177,6 +178,15 @@ public class ResourceFetcher extends ServiceAgent
         this.initCompleted(CommonStatus.OK);
     }
     
+    public void fetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final long n, final long n2, final ResourceFetcherCallback resourceFetcherCallback) {
+        if (Log.isLoggable()) {
+            Log.i("nf_service_resourcefetcher", "Received request to fetch resource at " + s);
+        }
+        ApmLogUtils.reportAssetRequest(s, clientLogging$AssetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
+        final ResourceFetcherCallback resourceFetcherCallback2 = this.getResourceFetcherCallback(resourceFetcherCallback);
+        this.mRequestQueue.add(new HttpRangeRequest(s, n, n2, resourceFetcherCallback2, new ResourceFetcher$2(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout()));
+    }
+    
     public void fetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ResourceFetcherCallback resourceFetcherCallback) {
         if (Log.isLoggable()) {
             Log.i("nf_service_resourcefetcher", "Received request to fetch resource at " + s);
@@ -208,7 +218,7 @@ public class ResourceFetcher extends ServiceAgent
     public void prefetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ResourceFetcherCallback resourceFetcherCallback) {
         if (s == null) {
             Log.w("nf_service_resourcefetcher", String.format("Request to prefetch resource with null URL", new Object[0]));
-            this.getMainHandler().post((Runnable)new ResourceFetcher$2(this, resourceFetcherCallback, s));
+            this.getMainHandler().post((Runnable)new ResourceFetcher$3(this, resourceFetcherCallback, s));
             return;
         }
         if (Log.isLoggable()) {
@@ -216,6 +226,6 @@ public class ResourceFetcher extends ServiceAgent
         }
         ApmLogUtils.reportAssetRequest(s, clientLogging$AssetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
         final ResourceFetcherCallback resourceFetcherCallback2 = this.getResourceFetcherCallback(resourceFetcherCallback);
-        this.mRequestQueue.add(new PrefetchResourceRequest(s, resourceFetcherCallback2, new ResourceFetcher$3(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout()));
+        this.mRequestQueue.add(new PrefetchResourceRequest(s, resourceFetcherCallback2, new ResourceFetcher$4(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout()));
     }
 }

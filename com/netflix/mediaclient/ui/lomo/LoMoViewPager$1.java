@@ -4,8 +4,9 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.view.ViewGroup$LayoutParams;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.view.MotionEvent;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;

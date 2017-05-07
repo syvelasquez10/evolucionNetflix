@@ -26,7 +26,7 @@ class MdxReceiver$FetchPostPlayForPlaybackCallback extends LoggingManagerCallbac
     public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
         super.onEpisodeDetailsFetched(episodeDetails, status);
         if (status.isSucces() && episodeDetails != null && !this.processed) {
-            MDXControllerActivity.showMDXController(this.mActivity, episodeDetails.getId(), PlayContext.DFLT_MDX_CONTEXT);
+            MDXControllerActivity.showMDXController(this.mActivity, episodeDetails.getId(), true, PlayContext.DFLT_MDX_CONTEXT);
             this.processed = true;
         }
     }

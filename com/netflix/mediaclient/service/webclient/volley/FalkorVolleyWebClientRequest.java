@@ -126,7 +126,7 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
     
     @Override
     public Map<String, String> getHeaders() {
-        if (this.areNetflixCookiesNull()) {
+        if (this.isAuthorizationRequired() && this.areNetflixCookiesNull()) {
             throw new AuthFailureError("Can't build valid headers. Cookies are null. url=" + this.getUrl());
         }
         Map<String, String> headers;

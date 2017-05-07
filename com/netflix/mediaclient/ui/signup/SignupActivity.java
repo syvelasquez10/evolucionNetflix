@@ -109,7 +109,7 @@ public class SignupActivity extends AccountActivity
             this.clearCookies();
         }
         else {
-            this.provideDialog(this.getString(2131493267) + " (" + statusCode.getValue() + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131493268) + " (" + statusCode.getValue() + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 final String string = "javascript:" + this.mErrHandler + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -132,9 +132,9 @@ public class SignupActivity extends AccountActivity
     }
     
     private void setUpSignInView(final ServiceManager serviceManager) {
-        this.setContentView(2130903198);
-        this.mWebView = (WebView)this.findViewById(2131427830);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131427520);
+        this.setContentView(2130903192);
+        this.mWebView = (WebView)this.findViewById(2131427817);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131427521);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();
@@ -206,7 +206,7 @@ public class SignupActivity extends AccountActivity
             this.mWebView.goBack();
         }
         else {
-            this.provideTwoButtonDialog(this.getString(2131493268), new SignupActivity$10(this));
+            this.provideTwoButtonDialog(this.getString(2131493269), new SignupActivity$10(this));
         }
         return true;
     }

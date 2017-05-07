@@ -65,6 +65,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     JSONObject getJPlayerConfig();
     
+    int getJPlayerStreamErrorRestartCount();
+    
     KubrickConfiguration getKubrickConfiguration();
     
     MdxConfiguration getMdxConfiguration();

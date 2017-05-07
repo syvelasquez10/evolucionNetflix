@@ -76,6 +76,11 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
+    public String getHorzDispSmallUrl() {
+        return "http://dummyimage.com/332x187/bb0000/884444.png&text=Horz+Disp+Img+Small";
+    }
+    
+    @Override
     public String getHorzDispUrl() {
         return "http://dummyimage.com/665x375/bb0000/884444.png&text=Horz+Disp+Img";
     }

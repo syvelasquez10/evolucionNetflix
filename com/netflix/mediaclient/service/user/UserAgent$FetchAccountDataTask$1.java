@@ -43,7 +43,7 @@ import com.netflix.mediaclient.service.ServiceAgent;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
-import com.netflix.mediaclient.service.player.subtitles.TextStyle;
+import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
 import java.util.List;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.webclient.model.leafs.AccountData;

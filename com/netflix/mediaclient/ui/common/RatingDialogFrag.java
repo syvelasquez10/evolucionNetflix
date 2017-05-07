@@ -4,100 +4,101 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
-import android.support.v4.content.LocalBroadcastManager;
-import android.content.Intent;
+import com.netflix.mediaclient.android.app.Status;
 import android.view.LayoutInflater;
+import java.io.Serializable;
+import android.os.Bundle;
+import android.view.View;
+import com.netflix.falkor.PQL;
+import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import com.netflix.mediaclient.Log;
 import android.annotation.SuppressLint;
-import android.os.Bundle;
 import android.view.WindowManager$LayoutParams;
 import android.view.Window;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.widget.TextView;
 import android.view.ViewGroup;
-import android.widget.RatingBar;
-import android.view.View;
+import com.netflix.mediaclient.ui.details.NetflixRatingBar;
+import com.netflix.mediaclient.ui.details.NetflixRatingBar$RatingBarDataProvider;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
-import android.widget.RatingBar$OnRatingBarChangeListener;
+import com.netflix.mediaclient.ui.details.NetflixRatingBar$OnNetflixRatingBarChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 
-public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnRatingBarChangeListener, MdxMiniPlayerFrag$MdxMiniPlayerDialog
+public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRatingBar$OnNetflixRatingBarChangeListener, MdxMiniPlayerFrag$MdxMiniPlayerDialog
 {
-    public static final String INTENT_NAME = "ui_rating";
-    public static final String PARAM_RATING = "rating";
-    public static final String PARAM_RATING_USER = "rating_user";
-    public static final String PARAM_VIDEO_ID = "videoId";
-    public static final String PARAM_VIDEO_TITLE = "videoTitle";
+    private static final String PARAM_AUTO_DISMISS = "autoDismiss";
+    private static final String PARAM_LAYOUT_ID = "layoutId";
+    private static final String PARAM_PARENT_X = "parentX";
+    private static final String PARAM_PARENT_Y = "parentY";
+    private static final String PARAM_VIDEO_ID = "videoId";
+    private static final String PARAM_VIDEO_TITLE = "videoTitle";
+    private static final String PARAM_VIDEO_TYPE = "videoType";
     private static final String TAG = "RatingDialogFrag";
-    private final View anchor;
-    private boolean autoDismiss;
-    private boolean mIsUserRating;
-    private float mRating;
-    private RatingBar mRatingBar;
+    private boolean mAutoDismiss;
+    private int mLayoutId;
+    private ServiceManager mManager;
+    private int mParentXLoc;
+    private int mParentYLoc;
+    private NetflixRatingBar$RatingBarDataProvider mProvider;
+    private NetflixRatingBar mRatingBar;
     private ViewGroup mRatingGroup;
     private TextView mTitle;
     private String mVideoId;
     private String mVideoTitle;
-    private final int resId;
+    private VideoType mVideoType;
     
-    RatingDialogFrag(final View anchor, final int resId) {
-        this.autoDismiss = true;
-        this.resId = resId;
-        this.anchor = anchor;
-    }
-    
+    @SuppressLint({ "RtlHardcoded" })
     private void alignViewsToAnchor() {
-        if (this.anchor != null && this.mRatingGroup != null) {
+        if (this.mRatingGroup != null) {
             final Window window = this.getDialog().getWindow();
             window.setGravity(51);
             final WindowManager$LayoutParams attributes = window.getAttributes();
-            final int[] array = new int[2];
-            this.anchor.getLocationOnScreen(array);
-            attributes.x = array[0];
-            attributes.y = (int)(array[1] - this.anchor.getResources().getDimension(2131296468));
+            attributes.x = this.mParentXLoc;
+            attributes.y = (int)(this.mParentYLoc - this.getResources().getDimension(2131296464));
             window.setAttributes(attributes);
         }
     }
     
-    private void findViews(final View view, final int n) {
-        this.mRatingBar = (RatingBar)view.findViewById(n);
-        this.mTitle = (TextView)view.findViewById(2131427711);
-        this.mRatingGroup = (ViewGroup)view.findViewById(2131427600);
+    private void completeInitIfPossible() {
+        if (this.mManager == null) {
+            Log.v("RatingDialogFrag", "Can't complete init - service manager is null");
+            return;
+        }
+        if (this.mRatingBar == null) {
+            Log.v("RatingDialogFrag", "Can't complete init - rating bar is null");
+            return;
+        }
+        Log.v("RatingDialogFrag", "Updating ratings bar with ratable");
+        this.mRatingBar.update(this.mProvider, (Ratable)this.mManager.getBrowse().getModelProxy().getValue(PQL.create(this.mVideoType.getValue(), this.mVideoId, "summary")));
     }
     
     @SuppressLint({ "InlinedApi" })
-    public static RatingDialogFrag newInstance(final RatingDialogFrag$Rating ratingDialogFrag$Rating, final String s, final String s2, final View view, int n) {
+    public static RatingDialogFrag create(final String s, final VideoType videoType, final String s2, final View view, final int n, final boolean b) {
         if (s == null) {
             throw new IllegalArgumentException("Playable ID can not be null!");
         }
-        if (n <= 0) {
-            n = 2130903162;
+        if (videoType != VideoType.MOVIE && videoType != VideoType.SHOW) {
+            throw new IllegalArgumentException("VideoType must be a show or a movie to set rating!");
         }
-        final RatingDialogFrag ratingDialogFrag = new RatingDialogFrag(view, n);
+        final RatingDialogFrag ratingDialogFrag = new RatingDialogFrag();
         ratingDialogFrag.setStyle(1, 0);
         final Bundle arguments = new Bundle();
         ratingDialogFrag.setArguments(arguments);
-        arguments.putFloat("rating", ratingDialogFrag$Rating.value);
-        arguments.putBoolean("rating_user", ratingDialogFrag$Rating.user);
         arguments.putString("videoId", s);
+        arguments.putSerializable("videoType", (Serializable)videoType);
         arguments.putString("videoTitle", s2);
+        arguments.putInt("layoutId", n);
+        arguments.putBoolean("autoDismiss", b);
+        if (view != null) {
+            final int[] array = new int[2];
+            view.getLocationOnScreen(array);
+            arguments.putInt("parentX", array[0]);
+            arguments.putInt("parentY", array[1]);
+        }
         return ratingDialogFrag;
-    }
-    
-    private void setupRatingsBar() {
-        if (this.mRatingBar != null) {
-            this.mRatingBar.setOnRatingBarChangeListener((RatingBar$OnRatingBarChangeListener)this);
-            this.mRatingBar.setRating(this.mRating);
-            this.mRatingBar.setVisibility(0);
-        }
-    }
-    
-    private void setupTitle() {
-        if (this.mTitle != null) {
-            this.mTitle.setText((CharSequence)this.getString(2131493252, new Object[] { this.mVideoTitle }));
-        }
     }
     
     @Override
@@ -106,53 +107,52 @@ public class RatingDialogFrag extends NetflixDialogFrag implements RatingBar$OnR
     }
     
     @Override
-    public void onCreate(final Bundle bundle) {
-        super.onCreate(bundle);
-        this.mRating = this.getArguments().getFloat("rating");
-        this.mIsUserRating = this.getArguments().getBoolean("rating_user");
-        this.mVideoId = this.getArguments().getString("videoId");
-        this.mVideoTitle = this.getArguments().getString("videoTitle");
+    public void onCreate(Bundle arguments) {
+        super.onCreate(arguments);
+        arguments = this.getArguments();
+        this.mVideoId = arguments.getString("videoId");
+        this.mVideoType = (VideoType)arguments.getSerializable("videoType");
+        this.mVideoTitle = arguments.getString("videoTitle");
+        this.mAutoDismiss = arguments.getBoolean("autoDismiss");
+        this.mLayoutId = arguments.getInt("layoutId");
+        this.mParentXLoc = arguments.getInt("parentX");
+        this.mParentYLoc = arguments.getInt("parentY");
+        this.mProvider = new RatingDialogFrag$1(this);
         if (Log.isLoggable()) {
-            Log.v("RatingDialogFrag", String.format("mVideoId: %s, mVideoTitle: %s, mRating: %f, mIsUserRating: %b", this.mVideoId, this.mVideoTitle, this.mRating, this.mIsUserRating));
+            Log.v("RatingDialogFrag", String.format("onCreate - mVideoId: %s, mVideoType: %s, mVideoTitle: %s", this.mVideoId, this.mVideoType, this.mVideoTitle));
+            Log.v("RatingDialogFrag", String.format("onCreate - mLayoutId: %d, mParentXLoc: %d, mParentYLoc: %d", this.mLayoutId, this.mParentXLoc, this.mParentYLoc));
         }
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(this.resId, viewGroup, false);
-        int n = 2131427601;
-        if (this.mIsUserRating) {
-            n = 2131427602;
+        final View inflate = layoutInflater.inflate(this.mLayoutId, viewGroup, false);
+        this.mRatingBar = (NetflixRatingBar)inflate.findViewById(2131427782);
+        this.mTitle = (TextView)inflate.findViewById(2131427781);
+        this.mRatingGroup = (ViewGroup)inflate.findViewById(2131427783);
+        this.mRatingBar.setOnNetflixRatingBarChangeListener(this);
+        if (this.mTitle != null) {
+            this.mTitle.setText((CharSequence)this.getString(2131493253, new Object[] { this.mVideoTitle }));
         }
-        this.findViews(inflate, n);
-        this.setupRatingsBar();
-        this.setupTitle();
         this.alignViewsToAnchor();
+        this.completeInitIfPossible();
         return inflate;
     }
     
-    public void onRatingChanged(final RatingBar ratingBar, final float n, final boolean b) {
-        if (Log.isLoggable()) {
-            Log.d("RatingDialogFrag", "User changed rating: " + b + ", new rating: " + n);
-        }
-        if (b) {
-            final Activity activity = this.getActivity();
-            if (activity == null) {
-                Log.e("RatingDialogFrag", "Activity is NULL, we can update rating!");
-                return;
-            }
-            final Intent intent = new Intent("ui_rating");
-            intent.addCategory("LocalIntentNflxUi");
-            intent.putExtra("rating", n);
-            intent.putExtra("videoId", this.mVideoId);
-            LocalBroadcastManager.getInstance((Context)activity).sendBroadcast(intent);
-            if (this.autoDismiss) {
-                this.dismissAllowingStateLoss();
-                this.getFragmentManager().beginTransaction().remove((Fragment)this).commit();
-            }
-        }
+    @Override
+    public void onManagerReady(final ServiceManager mManager, final Status status) {
+        super.onManagerReady(mManager, status);
+        this.mManager = mManager;
+        this.completeInitIfPossible();
     }
     
-    public void setAutoDismiss(final boolean autoDismiss) {
-        this.autoDismiss = autoDismiss;
+    @Override
+    public void onRatingChanged(final NetflixRatingBar netflixRatingBar, final float n, final boolean b) {
+        if (Log.isLoggable()) {
+            Log.d("RatingDialogFrag", "User changed rating: " + b + ", new rating: " + n + ", auto dismiss: " + this.mAutoDismiss);
+        }
+        if (b && this.mAutoDismiss) {
+            this.dismissAllowingStateLoss();
+            this.getFragmentManager().beginTransaction().remove((Fragment)this).commit();
+        }
     }
 }

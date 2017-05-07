@@ -129,7 +129,7 @@ class PlayActionHandler extends BaseNflxHandler
                 return;
             }
             if (VideoType.SHOW.equals(videoType)) {
-                this.mActivity.getServiceManager().getBrowse().fetchShowDetails(s, null, BrowseExperience.shouldLoadKubrickLeaves(), new PlayActionHandler$1FetchPlayableCallback(s2));
+                this.mActivity.getServiceManager().getBrowse().fetchShowDetails(s, null, BrowseExperience.shouldLoadKubrickLeavesInDetails(), new PlayActionHandler$1FetchPlayableCallback(s2));
             }
         }
     }

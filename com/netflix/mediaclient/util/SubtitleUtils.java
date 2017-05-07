@@ -5,18 +5,21 @@
 package com.netflix.mediaclient.util;
 
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.service.player.subtitles.Region;
-import com.netflix.mediaclient.service.player.subtitles.VerticalAlignment;
-import com.netflix.mediaclient.service.player.subtitles.HorizontalAlignment;
+import com.netflix.mediaclient.service.player.subtitles.text.Region;
+import com.netflix.mediaclient.service.player.subtitles.text.VerticalAlignment;
+import com.netflix.mediaclient.service.player.subtitles.text.HorizontalAlignment;
 import java.util.regex.Matcher;
 import java.util.Locale;
-import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
-import com.netflix.mediaclient.service.player.subtitles.SubtitleTextNode;
+import com.netflix.mediaclient.service.player.subtitles.text.TextSubtitleBlock;
+import android.widget.LinearLayout;
+import com.netflix.mediaclient.service.player.subtitles.text.SubtitleTextNode;
 import java.util.List;
-import com.netflix.mediaclient.service.player.subtitles.ColorMapping;
+import android.util.DisplayMetrics;
+import android.content.Context;
+import com.netflix.mediaclient.service.player.subtitles.text.ColorMapping;
 import com.netflix.mediaclient.service.player.subtitles.DoubleLength;
 import com.netflix.mediaclient.android.widget.StrokeTextView;
-import com.netflix.mediaclient.service.player.subtitles.Outline$Shadow;
+import com.netflix.mediaclient.service.player.subtitles.text.Outline$Shadow;
 import android.widget.TextView;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -24,14 +27,13 @@ import android.view.ViewGroup$LayoutParams;
 import android.widget.RelativeLayout$LayoutParams;
 import com.netflix.mediaclient.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import java.util.HashMap;
-import com.netflix.mediaclient.service.player.subtitles.FontWeight;
-import com.netflix.mediaclient.service.player.subtitles.FontFamilyMapping;
-import com.netflix.mediaclient.service.player.subtitles.Outline;
+import com.netflix.mediaclient.service.player.subtitles.text.FontWeight;
+import com.netflix.mediaclient.service.player.subtitles.text.FontFamilyMapping;
+import com.netflix.mediaclient.service.player.subtitles.text.Outline;
 import android.graphics.Typeface;
 import java.util.Map;
-import com.netflix.mediaclient.service.player.subtitles.TextStyle;
+import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
 import java.util.regex.Pattern;
 
 public final class SubtitleUtils
@@ -45,6 +47,12 @@ public final class SubtitleUtils
     private static final String DEFAULT_TEXT_STLE_ID = "<%NF_DEFAULT_TEXT_STYLE%>";
     private static final int MILLISECONDS_PER_SECOND = 1000;
     private static final Pattern PERCENT_PATTERN;
+    public static final int SUBTITITLE_IMAGE_1080P_HEIGHT = 1080;
+    public static final int SUBTITITLE_IMAGE_1080P_WIDTH = 1920;
+    public static final int SUBTITITLE_IMAGE_480P_HEIGHT = 480;
+    public static final int SUBTITITLE_IMAGE_480P_WIDTH = 640;
+    public static final int SUBTITITLE_IMAGE_720P_HEIGHT = 720;
+    public static final int SUBTITITLE_IMAGE_720P_WIDTH = 1280;
     private static final String TAG = "nf_subtitles_render";
     private static final Pattern TICK_MS_PATTERN;
     private static final Pattern TICK_SEC_PATTERN;
@@ -65,10 +73,10 @@ public final class SubtitleUtils
         initTypeFaceMap();
     }
     
-    public static int adjustIfIntersectByMovingFirstUp(final LinearLayout linearLayout, final LinearLayout linearLayout2) {
+    public static int adjustIfIntersectByMovingFirstUp(final View view, final View view2) {
         int n = 1;
-        final Rect rect = ViewUtils.getRect((View)linearLayout, true);
-        final Rect rect2 = ViewUtils.getRect((View)linearLayout2, true);
+        final Rect rect = ViewUtils.getRect(view, true);
+        final Rect rect2 = ViewUtils.getRect(view2, true);
         if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Block 1  left: " + rect.left + ", top: " + rect.top + ", right: " + rect.right + ", bottom: " + rect.bottom);
             Log.d("nf_subtitles_render", "Block 2  left: " + rect2.left + ", top: " + rect2.top + ", right: " + rect2.right + ", bottom: " + rect2.bottom);
@@ -94,15 +102,15 @@ public final class SubtitleUtils
         if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "After move: Block 1 left: " + rect.left + ", top: " + rect.top + ", right: " + rect.right + ", bottom: " + rect.bottom);
         }
-        final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)linearLayout.getLayoutParams();
+        final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)view.getLayoutParams();
         layoutParams.setMargins(rect.left, rect.top, 0, 0);
-        linearLayout.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
+        view.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
         return n;
     }
     
-    public static boolean adjustIfIntersectByMovingSecondDown(final LinearLayout linearLayout, final LinearLayout linearLayout2, final int n) {
-        final Rect rect = ViewUtils.getRect((View)linearLayout, true);
-        final Rect rect2 = ViewUtils.getRect((View)linearLayout2, true);
+    public static boolean adjustIfIntersectByMovingSecondDown(final View view, final View view2, final int n) {
+        final Rect rect = ViewUtils.getRect(view, true);
+        final Rect rect2 = ViewUtils.getRect(view2, true);
         if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Block 1  left: " + rect.left + ", top: " + rect.top + ", right: " + rect.right + ", bottom: " + rect.bottom);
             Log.d("nf_subtitles_render", "Block 2  left: " + rect2.left + ", top: " + rect2.top + ", right: " + rect2.right + ", bottom: " + rect2.bottom);
@@ -127,9 +135,9 @@ public final class SubtitleUtils
         if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "After move: Block 2 left: " + rect2.left + ", top: " + rect2.top + ", right: " + rect2.right + ", bottom: " + rect2.bottom);
         }
-        final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)linearLayout2.getLayoutParams();
+        final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)view2.getLayoutParams();
         layoutParams.setMargins(rect2.left, rect2.top, 0, 0);
-        linearLayout2.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
+        view2.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
         return true;
     }
     
@@ -390,6 +398,18 @@ public final class SubtitleUtils
         return point;
     }
     
+    public static int getSubtitleImageMaxHeight(final Context context) {
+        return 720;
+    }
+    
+    public static int getSubtitleImageMaxWidth(final Context context) {
+        final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        if (Log.isLoggable()) {
+            Log.d("nf_subtitles_render", "Display w/h: " + displayMetrics.widthPixels + "/" + displayMetrics.heightPixels);
+        }
+        return 1280;
+    }
+    
     public static Integer getTextColor(final TextStyle textStyle) {
         return ColorMapping.resolveColor(textStyle.getOpacity(), textStyle.getColor());
     }
@@ -482,26 +502,26 @@ public final class SubtitleUtils
         return false;
     }
     
-    public static boolean isPositionDefinedInBlock(final LinearLayout linearLayout, final SubtitleBlock subtitleBlock) {
-        if (linearLayout == null || subtitleBlock == null) {
+    public static boolean isPositionDefinedInBlock(final LinearLayout linearLayout, final TextSubtitleBlock textSubtitleBlock) {
+        if (linearLayout == null || textSubtitleBlock == null) {
             throw new IllegalArgumentException("region or block is null!");
         }
         Log.d("nf_subtitles_render", "isPositionDefinedInBlock start");
-        if (subtitleBlock.getRegion() == null) {
+        if (textSubtitleBlock.getRegion() == null) {
             Log.d("nf_subtitles_render", "isPositionDefinedInBlock no region, no need for wrapper");
             return false;
         }
-        if (subtitleBlock.getTextNodes().size() < 1) {
+        if (textSubtitleBlock.getTextNodes().size() < 1) {
             Log.w("nf_subtitles_render", "isPositionDefinedInBlock no text blocks!");
             return false;
         }
-        final SubtitleTextNode subtitleTextNode = subtitleBlock.getTextNodes().get(0);
+        final SubtitleTextNode subtitleTextNode = textSubtitleBlock.getTextNodes().get(0);
         if (subtitleTextNode == null || subtitleTextNode.getStyle() == null) {
             Log.w("nf_subtitles_render", "isPositionDefinedInBlock p missing");
             return false;
         }
-        final DoubleLength extent = subtitleBlock.getStyle().getExtent();
-        final DoubleLength origin = subtitleBlock.getStyle().getOrigin();
+        final DoubleLength extent = textSubtitleBlock.getStyle().getExtent();
+        final DoubleLength origin = textSubtitleBlock.getStyle().getOrigin();
         if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "isPositionDefinedInBlock extent " + extent);
             Log.d("nf_subtitles_render", "isPositionDefinedInBlock origin " + origin);
@@ -590,11 +610,11 @@ public final class SubtitleUtils
         }
     }
     
-    public static void setAlignmentToRegion(final LinearLayout linearLayout, final SubtitleBlock subtitleBlock) {
-        if (linearLayout == null || subtitleBlock == null) {
+    public static void setAlignmentToRegion(final LinearLayout linearLayout, final TextSubtitleBlock textSubtitleBlock) {
+        if (linearLayout == null || textSubtitleBlock == null) {
             throw new IllegalArgumentException("region or block is null!");
         }
-        final Region region = subtitleBlock.getRegion();
+        final Region region = textSubtitleBlock.getRegion();
         HorizontalAlignment horizontalAlignment = HorizontalAlignment.center;
         if (region != null && region.getHorizontalAlignment() != null) {
             Log.d("nf_subtitles_render", "Horizontal alignment from region");
@@ -607,8 +627,8 @@ public final class SubtitleUtils
         }
         HorizontalAlignment horizontalAlignment2 = horizontalAlignment;
         VerticalAlignment verticalAlignment2 = verticalAlignment;
-        if (subtitleBlock.getTextNodes().size() > 1) {
-            final SubtitleTextNode subtitleTextNode = subtitleBlock.getTextNodes().get(0);
+        if (textSubtitleBlock.getTextNodes().size() > 1) {
+            final SubtitleTextNode subtitleTextNode = textSubtitleBlock.getTextNodes().get(0);
             horizontalAlignment2 = horizontalAlignment;
             verticalAlignment2 = verticalAlignment;
             if (subtitleTextNode != null) {

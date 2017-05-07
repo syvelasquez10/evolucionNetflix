@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.service.user;
 
+import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 import android.content.Context;
 import java.util.Iterator;
 import android.content.IntentFilter;
@@ -14,8 +14,10 @@ import java.util.Set;
 
 public final class UserAgentBroadcastIntents
 {
+    public static final String EXTRA_TOKEN = "token";
     public static final String EXTRA_USER_PROFILE_SELECTION_RESULT_INT = "com.netflix.mediaclient.intent.action.EXTRA_USER_PROFILE_SELECTION_RESULT_INT";
     public static final String EXTRA_USER_PROFILE_SELECTION_RESULT_STRING = "com.netflix.mediaclient.intent.action.EXTRA_USER_PROFILE_SELECTION_RESULT_STRING";
+    public static final String NOTIFY_AUTOLOGIN_TOKEN_CREATED = "com.netflix.mediaclient.intent.action.NOTIFY_AUTOLOGIN_TOKEN_CREATED";
     public static final String NOTIFY_CURRENT_PROFILE_INVALID = "com.netflix.mediaclient.intent.action.NOTIFY_CURRENT_PROFILE_INVALID";
     public static final String NOTIFY_PROFILES_LIST_UPDATED = "com.netflix.mediaclient.intent.action.NOTIFY_PROFILES_LIST_UPDATED";
     public static final String NOTIFY_USER_ACCOUNT_ACTIVE = "com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_ACTIVE";
@@ -37,6 +39,14 @@ public final class UserAgentBroadcastIntents
             intentFilter.addAction((String)iterator.next());
         }
         return intentFilter;
+    }
+    
+    static void signalAutoLoginTokenCreated(final String s, final Context context) {
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.NOTIFY_AUTOLOGIN_TOKEN_CREATED");
+        if (StringUtils.isNotEmpty(s)) {
+            intent.putExtra("token", s);
+        }
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
     static void signalProfileActive(final Context context) {

@@ -4,30 +4,22 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.List;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.app.Status;
+import android.view.View;
 import android.widget.AdapterView;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
-import android.view.ViewGroup$LayoutParams;
-import android.widget.AbsListView$LayoutParams;
-import android.content.Context;
-import com.netflix.mediaclient.android.fragment.LoadingView;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
-import android.view.View;
-import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
-import android.view.ViewGroup;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.LoadingStatus;
@@ -36,57 +28,28 @@ import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 
 public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements AdapterView$OnItemClickListener, LoadingStatus
 {
-    private static final String TAG = "EpisodeListAdapter";
+    private static final String TAG = "EpisodesAdapter";
     private final NetflixActivity activity;
     protected SeasonDetails currSeasonDetails;
     protected final EpisodesFrag episodeListFrag;
     protected int episodeStartIndex;
-    private boolean hasError;
-    private boolean hasMoreData;
-    private boolean isLoading;
-    private ViewGroup leViewGroup;
-    private LoadingAndErrorWrapper leWrapper;
-    private final View loadingRow;
+    protected boolean hasMoreData;
+    protected boolean isLoading;
     protected LoadingStatus$LoadingStatusCallback mLoadingStatusCallback;
-    private int prevCount;
     protected long requestId;
     
     public EpisodesAdapter(final NetflixActivity activity, final EpisodesFrag episodeListFrag, final RecyclerViewHeaderAdapter$IViewCreator recyclerViewHeaderAdapter$IViewCreator) {
         super(recyclerViewHeaderAdapter$IViewCreator);
-        this.prevCount = -1;
         ThreadUtils.assertOnMain();
         this.activity = activity;
         this.episodeListFrag = episodeListFrag;
-        (this.loadingRow = (View)new LoadingView((Context)activity)).setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         this.initToLoadingState();
     }
     
-    private int getCount() {
-        int n = 1;
-        final int n2 = 1;
-        int prevCount;
-        if (this.hasError) {
-            prevCount = n2;
-        }
-        else {
-            final int size = this.data.size();
-            if (!this.hasMoreData) {
-                n = 0;
-            }
-            prevCount = n + size;
-        }
-        if (Log.isLoggable() && this.prevCount != prevCount) {
-            this.prevCount = prevCount;
-            Log.v("EpisodeListAdapter", "getCount() result changed to: " + prevCount);
-        }
-        return prevCount;
-    }
-    
     private void initToLoadingState() {
-        Log.v("EpisodeListAdapter", "initToLoadingState");
+        Log.v("EpisodesAdapter", "initToLoadingState");
         this.isLoading = true;
         this.hasMoreData = true;
-        this.hasError = false;
         this.requestId = -1L;
         this.episodeStartIndex = 0;
         this.fetchMoreData();
@@ -94,67 +57,45 @@ public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements Adapte
     
     private void logEmptySeasonId(final SeasonDetails seasonDetails) {
         if (seasonDetails == null) {
-            Log.v("EpisodeListAdapter", "No season details");
+            Log.v("EpisodesAdapter", "No season details");
             return;
         }
         this.activity.getServiceManager().getClientLogging().getErrorLogging().logHandledException(String.format("For Show Id %s, the Current Season Details Id is empty - %s, see SPY-7455", this.episodeListFrag.getShowId(), seasonDetails.toString()));
     }
     
     private void onFetchError() {
-        Log.d("EpisodeListAdapter", "Fetch error");
-        this.hasError = true;
-        this.leWrapper.showErrorView(false);
+        Log.d("EpisodesAdapter", "onFetchError()");
         this.notifyDataSetChanged();
+        this.episodeListFrag.showErrorView();
     }
     
     protected void fetchMoreData() {
         ServiceManager serviceManager = null;
-        if (this.episodeListFrag instanceof ServiceManagerProvider) {
+        if (this.episodeListFrag != null) {
             serviceManager = this.episodeListFrag.getServiceManager();
         }
         if (serviceManager == null || !serviceManager.isReady()) {
-            Log.d("EpisodeListAdapter", "Manager is not ready");
+            Log.d("EpisodesAdapter", "Manager is not ready");
             return;
         }
         if (this.currSeasonDetails == null) {
-            Log.v("EpisodeListAdapter", "No season details yet");
+            Log.v("EpisodesAdapter", "No season details yet");
             return;
         }
         if (Log.isLoggable()) {
-            Log.v("EpisodeListAdapter", "curr season number of episodes: " + this.currSeasonDetails.getNumOfEpisodes());
+            Log.v("EpisodesAdapter", "curr season number of episodes: " + this.currSeasonDetails.getNumOfEpisodes());
         }
         this.requestId = System.nanoTime();
         final int n = this.episodeStartIndex + 40 - 1;
         final String id = this.currSeasonDetails.getId();
         if (Log.isLoggable()) {
-            Log.v("EpisodeListAdapter", "Fetching data for: " + id + ", start: " + this.episodeStartIndex + ", end: " + n);
+            Log.v("EpisodesAdapter", "Fetching data for: " + id + ", start: " + this.episodeStartIndex + ", end: " + n);
         }
         if (StringUtils.isEmpty(id)) {
             this.logEmptySeasonId(this.currSeasonDetails);
             return;
         }
         serviceManager.getBrowse().fetchEpisodes(id, VideoType.SEASON, this.episodeStartIndex, n, new EpisodesAdapter$FetchEpisodesCallback(this, this.requestId, this.episodeStartIndex, n));
-    }
-    
-    public View getActiveLoadingView(final int n) {
-        final View view = null;
-        View loadingRow;
-        if (this.activity.destroyed()) {
-            loadingRow = this.loadingRow;
-        }
-        else {
-            if (Log.isLoggable()) {
-                Log.v("EpisodeListAdapter", "getting View, hasError: " + this.hasError + ", hasMoreData: " + this.hasMoreData + ", eps: " + this.data.size());
-            }
-            loadingRow = view;
-            if (this.hasMoreData) {
-                loadingRow = view;
-                if (n == this.getCount() - 1) {
-                    return this.loadingRow;
-                }
-            }
-        }
-        return loadingRow;
     }
     
     public long getItemId(final int n) {
@@ -176,13 +117,12 @@ public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements Adapte
     
     @Override
     protected void onPostItemViewBind(final int n) {
-        if (this.hasMoreData && n == this.getCount() - 20) {
+        if (this.hasMoreData && n == this.getItemCount() - 20) {
+            if (Log.isLoggable()) {
+                Log.v("EpisodesAdapter", "Fetching more episodes data, at position: " + n);
+            }
             this.fetchMoreData();
         }
-    }
-    
-    public void setLoadingAndError(final LoadingAndErrorWrapper leWrapper) {
-        (this.leWrapper = leWrapper).setCallback(new EpisodesAdapter$1(this));
     }
     
     public void setLoadingStatusCallback(final LoadingStatus$LoadingStatusCallback mLoadingStatusCallback) {
@@ -193,14 +133,13 @@ public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements Adapte
         this.mLoadingStatusCallback = mLoadingStatusCallback;
     }
     
-    protected void updateEpisodesData(final List<EpisodeDetails> list, final int n, final int n2) {
-        Log.v("EpisodeListAdapter", "Adding episodes, count: " + list.size());
-        this.hasError = false;
-        this.updateItems(list, n, n2);
+    protected void updateEpisodesData(final List<EpisodeDetails> list, final int n) {
+        Log.v("EpisodesAdapter", "Adding episodes, count: " + list.size());
+        this.updateItems(list, n);
         this.episodeStartIndex += list.size();
     }
     
-    public void updateShowAndSeasonDetails(final ShowDetails showDetails, final SeasonDetails currSeasonDetails) {
+    public void updateSeasonDetails(final SeasonDetails currSeasonDetails) {
         if (Log.isLoggable()) {
             final StringBuilder append = new StringBuilder().append("Updating season details: ");
             String title;
@@ -210,7 +149,7 @@ public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements Adapte
             else {
                 title = currSeasonDetails.getTitle();
             }
-            Log.v("EpisodeListAdapter", append.append(title).toString());
+            Log.v("EpisodesAdapter", append.append(title).toString());
         }
         if (currSeasonDetails == null) {
             return;

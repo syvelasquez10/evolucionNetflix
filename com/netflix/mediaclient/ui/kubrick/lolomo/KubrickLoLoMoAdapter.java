@@ -39,17 +39,12 @@ public class KubrickLoLoMoAdapter extends LoLoMoAdapter
     
     @Override
     protected int getViewLayoutId() {
-        return 2130903122;
+        return 2130903110;
     }
     
     @Override
     public void onScroll(final AbsListView absListView, final int n, final int n2, final int n3) {
         this.heroTitleScroller.onScroll(absListView);
-    }
-    
-    @Override
-    protected boolean shouldShowRowTitle(final LoMo loMo) {
-        return super.shouldShowRowTitle(loMo) && !KubrickLolomoUtils.isDuplicateRow(loMo);
     }
     
     @Override

@@ -7,6 +7,8 @@ package com.netflix.mediaclient.javabridge.transport;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
+import com.netflix.mediaclient.util.SubtitleUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.javabridge.error.CrashReport;
 import android.os.Process;
@@ -41,8 +43,13 @@ public class NativeTransport implements Transport
     private String mEsn;
     private final NativeTransport$TransportEventHandler mEventHandler;
     private String mFesn;
+    private int mGmsPkgVersion;
+    private int mGoogleApiClientVersion;
     private int mIpConnectivityPolicy;
+    private String mMdxJsVersion;
     private String mRootFileSystem;
+    private int mScreenHeight;
+    private int mScreenWidth;
     private Surface mSurface;
     private int mVideoBufferSize;
     private final Object mWeakThis;
@@ -58,6 +65,8 @@ public class NativeTransport implements Transport
     public NativeTransport(final Bridge bridge, final NrdProxy proxy) {
         this.mVideoBufferSize = 0;
         this.mDalvikVMHeapSize = 0;
+        this.mGoogleApiClientVersion = 0;
+        this.mGmsPkgVersion = 0;
         this.mIpConnectivityPolicy = IpConnectivityPolicy.IP_V6_V4.getValue();
         Log.d("nf-NativeTransport", "NativeTransport constructor start");
         this.bridge = bridge;
@@ -197,6 +206,11 @@ public class NativeTransport implements Transport
         this.mVideoBufferSize = this.bridge.getConfigVideoBufferSize();
         this.mEnableLowBitrateStreams = this.bridge.enableLowBitrateStreams();
         this.mDalvikVMHeapSize = (int)(Runtime.getRuntime().maxMemory() / 1048576L);
+        this.mGoogleApiClientVersion = DeviceUtils.getGooglePlayClientSDKVersion(this.bridge.getContext());
+        this.mGmsPkgVersion = DeviceUtils.getGMSPkgVersion(this.bridge.getContext());
+        this.mMdxJsVersion = "1.1.6-android";
+        this.mScreenWidth = SubtitleUtils.getSubtitleImageMaxWidth(this.bridge.getContext());
+        this.mScreenHeight = SubtitleUtils.getSubtitleImageMaxHeight(this.bridge.getContext());
         if (ipConnectivityPolicy != null) {
             this.mIpConnectivityPolicy = ipConnectivityPolicy.getValue();
         }
@@ -210,6 +224,12 @@ public class NativeTransport implements Transport
             Log.d("nf-NativeTransport", "IP connectivity policy: " + this.mIpConnectivityPolicy);
             Log.d("nf-NativeTransport", "Enable Low bitratestreams:" + this.mEnableLowBitrateStreams);
             Log.d("nf-NativeTransport", "Dalvik VM HeapSize in MB: " + this.mDalvikVMHeapSize);
+            Log.d("nf-NativeTransport", "Embedded screen width in px: " + this.mScreenWidth);
+            Log.d("nf-NativeTransport", "Embedded screen height in px: " + this.mScreenHeight);
+            Log.d("nf-NativeTransport", "Google API client version:" + this.mGoogleApiClientVersion);
+            Log.d("nf-NativeTransport", "GMS pkg version:" + this.mGmsPkgVersion);
+            Log.d("nf-NativeTransport", "MdxJS version:" + this.mMdxJsVersion);
+            Log.d("nf-NativeTransport", "MDX Version:2013.3");
         }
         this.playerType = this.bridge.getCurrentPlayerType();
         if (this.playerType == null) {
@@ -313,19 +333,18 @@ public class NativeTransport implements Transport
             string = "nrdp";
             try {
                 // iftrue(Label_0090:, !string.startsWith("nrdp"))
-            Block_4_Outer:
                 while (true) {
-                    this.native_setProperty(string, s, s2);
-                    return;
                     while (true) {
+                        this.native_setProperty(string, s, s2);
+                        return;
+                        Label_0090: {
+                            string = "nrdp." + string;
+                        }
+                        continue;
                         Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                        continue Block_4_Outer;
                         continue;
                     }
-                    Label_0090: {
-                        string = "nrdp." + string;
-                    }
-                    continue Block_4_Outer;
+                    continue;
                 }
             }
             catch (Throwable t) {

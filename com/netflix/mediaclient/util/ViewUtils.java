@@ -18,6 +18,8 @@ import android.widget.ScrollView;
 import com.netflix.mediaclient.android.widget.StaticGridView;
 import java.util.ArrayList;
 import java.util.List;
+import com.netflix.mediaclient.ui.details.NetflixRatingBar$RatingBarDataProvider;
+import android.view.ContextThemeWrapper;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import com.netflix.mediaclient.Log;
@@ -32,7 +34,6 @@ import android.graphics.Bitmap$Config;
 import android.graphics.Bitmap;
 import android.view.View$OnClickListener;
 import android.view.MenuItem$OnMenuItemClickListener;
-import android.app.Activity;
 import android.view.ViewParent;
 import android.widget.LinearLayout$LayoutParams;
 import android.widget.LinearLayout;
@@ -40,13 +41,14 @@ import android.widget.RelativeLayout$LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.FrameLayout$LayoutParams;
 import android.widget.FrameLayout;
-import android.content.Context;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
-import android.view.View;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ListView;
+import android.content.Context;
+import android.app.Activity;
+import android.view.View;
 import java.util.Comparator;
 
 public class ViewUtils
@@ -60,6 +62,11 @@ public class ViewUtils
     
     static {
         REVERSE_SORT_BY_BOTTOM = new ViewUtils$4();
+    }
+    
+    public static boolean activityIsDead(final View view) {
+        final Context context = view.getContext();
+        return context instanceof Activity && AndroidUtils.isActivityFinishedOrDestroyed((Activity)context);
     }
     
     public static void addActionBarPaddingView(final ListView listView) {
@@ -104,10 +111,6 @@ public class ViewUtils
             return;
         }
         view.setPadding(n / 2, n / 2, n / 2, n / 2);
-    }
-    
-    public static void clearShadow(final TextView textView) {
-        textView.setShadowLayer(0.0f, 0.0f, 0.0f, 0);
     }
     
     public static View createActionBarDummyView(final NetflixActivity netflixActivity) {
@@ -203,6 +206,13 @@ public class ViewUtils
         return measureText;
     }
     
+    public static int getHeightIfVisible(final View view) {
+        if (isVisible(view)) {
+            return view.getHeight();
+        }
+        return 0;
+    }
+    
     public static void getHitRect(final View view, final Rect rect) {
         rect.left = (int)view.getX();
         rect.top = (int)view.getY();
@@ -231,6 +241,40 @@ public class ViewUtils
         }
         Log.e("ViewUtils", "Nav bar height uknown!");
         return 0;
+    }
+    
+    public static NetflixActivity getNetflixActivitySafely(final View view) {
+        if (view == null) {
+            return null;
+        }
+        final Context context = view.getContext();
+        if (context instanceof NetflixActivity) {
+            return (NetflixActivity)context;
+        }
+        if (context instanceof ContextThemeWrapper) {
+            final Context baseContext = ((ContextThemeWrapper)context).getBaseContext();
+            if (baseContext instanceof NetflixActivity) {
+                return (NetflixActivity)baseContext;
+            }
+        }
+        return null;
+    }
+    
+    public static NetflixRatingBar$RatingBarDataProvider getRatingBarDataProviderSafely(final View view) {
+        if (view == null) {
+            return null;
+        }
+        final Context context = view.getContext();
+        if (context instanceof NetflixRatingBar$RatingBarDataProvider) {
+            return (NetflixRatingBar$RatingBarDataProvider)context;
+        }
+        if (context instanceof ContextThemeWrapper) {
+            final Context baseContext = ((ContextThemeWrapper)context).getBaseContext();
+            if (baseContext instanceof NetflixRatingBar$RatingBarDataProvider) {
+                return (NetflixRatingBar$RatingBarDataProvider)baseContext;
+            }
+        }
+        return null;
     }
     
     public static Rect getRect(final View view, final boolean b) {
@@ -275,33 +319,35 @@ public class ViewUtils
         return list;
     }
     
+    public static String getVisibilityAsString(final int n) {
+        switch (n) {
+            default: {
+                return "UNKNOWN [" + n + "]";
+            }
+            case 8: {
+                return "GONE";
+            }
+            case 4: {
+                return "INVISIBLE";
+            }
+            case 0: {
+                return "VISIBLE";
+            }
+        }
+    }
+    
+    public static String getVisibilityAsString(final View view) {
+        if (view == null) {
+            return "null view";
+        }
+        return getVisibilityAsString(view.getVisibility());
+    }
+    
     public static Pair<Integer, Integer> getVisiblePositions(final StaticGridView staticGridView, final ScrollView scrollView) {
-        final boolean b = true;
-        boolean b2;
-        if (staticGridView == null) {
-            b2 = true;
-        }
-        else {
-            b2 = false;
-        }
-        boolean b3;
-        if (staticGridView.getCount() > 0) {
-            b3 = true;
-        }
-        else {
-            b3 = false;
-        }
-        if (b2 & b3) {
+        if (staticGridView == null || staticGridView.getChildCount() == 0) {
             return null;
         }
-        boolean b4;
-        if (scrollView == null) {
-            b4 = true;
-        }
-        else {
-            b4 = false;
-        }
-        if (b4 & (scrollView.getChildCount() > 0 && b)) {
+        if (scrollView == null || scrollView.getChildCount() == 0) {
             return null;
         }
         final Rect rect = new Rect();
@@ -372,6 +418,10 @@ public class ViewUtils
         Api16Util.removeOnGlobalLayoutListener(view.getViewTreeObserver(), viewTreeObserver$OnGlobalLayoutListener);
     }
     
+    public static void removeShadow(final TextView textView) {
+        textView.setShadowLayer(0.0f, 0.0f, 0.0f, 0);
+    }
+    
     public static void setLongTapListenersRecursivelyToShowContentDescriptionToast(final View view) {
         final CharSequence contentDescription = view.getContentDescription();
         if (StringUtils.isNotEmpty(contentDescription)) {
@@ -407,6 +457,10 @@ public class ViewUtils
     
     public static void setTextOpacityToUnselected(final TextView textView) {
         textView.setAlpha(0.7f);
+    }
+    
+    public static void setTextViewColor(final TextView textView, final int n) {
+        textView.setTextColor(textView.getResources().getColor(n));
     }
     
     public static void setTextViewSizeByRes(final TextView textView, final int n) {

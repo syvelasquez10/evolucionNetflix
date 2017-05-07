@@ -11,7 +11,11 @@ public interface UserWebClient
 {
     void addWebUserProfile(final String p0, final boolean p1, final String p2, final UserAgentWebCallback p3);
     
+    void autoLogin(final String p0, final UserAgentWebCallback p1);
+    
     void connectWithFacebook(final String p0, final UserAgentWebCallback p1);
+    
+    void createAutoLoginToken(final long p0, final UserAgentWebCallback p1);
     
     void disconnectFromFacebook(final UserAgentWebCallback p0);
     
@@ -26,6 +30,8 @@ public interface UserWebClient
     void fetchFriendsForRecommendations(final String p0, final int p1, final String p2, final UserAgentWebCallback p3);
     
     void fetchProfileData(final String p0, final UserAgentWebCallback p1);
+    
+    void fetchUserData(final UserAgentWebCallback p0);
     
     boolean isSynchronous();
     

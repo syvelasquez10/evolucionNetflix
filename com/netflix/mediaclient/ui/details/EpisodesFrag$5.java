@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.Log;
+
 class EpisodesFrag$5 implements Runnable
 {
     final /* synthetic */ EpisodesFrag this$0;
@@ -16,6 +18,9 @@ class EpisodesFrag$5 implements Runnable
     
     @Override
     public void run() {
+        if (Log.isLoggable()) {
+            Log.v("EpisodesFrag", "Setting item checked, position: " + this.val$position);
+        }
         this.this$0.episodesAdapter.setItemChecked(this.val$position, this.this$0.recyclerView);
     }
 }

@@ -11,4 +11,6 @@ public interface ResourceFetcherCallback
     void onResourceFetched(final String p0, final String p1, final Status p2);
     
     void onResourcePrefetched(final String p0, final int p1, final Status p2);
+    
+    void onResourceRawFetched(final String p0, final byte[] p1, final Status p2);
 }

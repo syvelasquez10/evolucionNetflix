@@ -6,9 +6,8 @@ package com.netflix.mediaclient.servicemgr.interface_.details;
 
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.interface_.FriendProfilesProvider;
 
-public interface MovieDetails extends FriendProfilesProvider, EvidenceDetails, VideoDetails
+public interface MovieDetails extends EvidenceDetails, VideoDetails
 {
     String getDirectors();
     

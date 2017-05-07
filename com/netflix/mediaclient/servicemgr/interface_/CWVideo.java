@@ -6,11 +6,15 @@ package com.netflix.mediaclient.servicemgr.interface_;
 
 public interface CWVideo extends Playable, Video
 {
-    String getBaseUrl();
+    String createModifiedBigStillUrl();
+    
+    String createModifiedStillUrl();
     
     String getCurrentEpisodeTitle();
     
     String getInterestingUrl();
     
-    String getModifiedStillUrl();
+    String getTrickplayBigImgBaseUrl();
+    
+    String getTrickplayImgBaseUrl();
 }

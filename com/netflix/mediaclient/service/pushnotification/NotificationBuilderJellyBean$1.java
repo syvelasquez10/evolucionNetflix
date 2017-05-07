@@ -54,7 +54,7 @@ final class NotificationBuilderJellyBean$1 implements ImageLoader$ImageLoaderLis
             if (AndroidUtils.getAndroidVersion() >= 21) {
                 squaredBitmap = ViewUtils.createSquaredBitmap(squaredBitmap);
                 this.val$builder.setLargeIcon(squaredBitmap);
-                this.val$builder.setColor(this.val$context.getResources().getColor(2131230825));
+                this.val$builder.setColor(this.val$context.getResources().getColor(2131230827));
             }
             else {
                 this.val$builder.setLargeIcon(squaredBitmap);

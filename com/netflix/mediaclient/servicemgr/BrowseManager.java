@@ -338,6 +338,21 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
+    public boolean fetchNotificationsList(final int n, final int n2, final ManagerCallback managerCallback) {
+        final int requestId = this.mgr.getRequestId(managerCallback);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManagerBrowse", "fetchNotificationsList requestId=" + requestId);
+        }
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().fetchNotifications(n, n2, this.mgr.getClientId(), requestId);
+            return true;
+        }
+        Log.w("ServiceManagerBrowse", "fetchNotificationsList:: service is not available");
+        return false;
+    }
+    
+    @Override
     public boolean fetchPostPlayVideos(final String s, final VideoType videoType, final ManagerCallback managerCallback) {
         synchronized (this) {
             final int requestId = this.mgr.getRequestId(managerCallback);
@@ -499,21 +514,6 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public boolean fetchSocialNotificationsList(final int n, final ManagerCallback managerCallback) {
-        final int requestId = this.mgr.getRequestId(managerCallback);
-        if (Log.isLoggable()) {
-            Log.d("ServiceManagerBrowse", "fetchSocialNotificationsList requestId=" + requestId);
-        }
-        final INetflixService service = this.mgr.getService();
-        if (service != null) {
-            service.getBrowse().fetchSocialNotifications(n, this.mgr.getClientId(), requestId);
-            return true;
-        }
-        Log.w("ServiceManagerBrowse", "fetchSocialNotificationsList:: service is not available");
-        return false;
-    }
-    
-    @Override
     public boolean fetchVideoSummary(final String s, final ManagerCallback managerCallback) {
         if (StringUtils.isEmpty(s)) {
             throw new IllegalArgumentException("Parameter cannot be null");
@@ -585,24 +585,6 @@ public final class BrowseManager implements IBrowseManager
         }
         Log.w("ServiceManagerBrowse", "getModelProxy:: service is not available");
         return null;
-    }
-    
-    @Override
-    public boolean hideVideo(final String s, final ManagerCallback managerCallback) {
-        if (StringUtils.isEmpty(s)) {
-            throw new IllegalArgumentException("Parameter cannot be null");
-        }
-        final int requestId = this.mgr.getRequestId(managerCallback);
-        if (Log.isLoggable()) {
-            Log.d("ServiceManagerBrowse", "hideVideo requestId=" + requestId + " id=" + s);
-        }
-        final INetflixService service = this.mgr.getService();
-        if (service != null) {
-            service.getBrowse().hideVideo(s, this.mgr.getClientId(), requestId);
-            return true;
-        }
-        Log.w("ServiceManagerBrowse", "hideVideo:: service is not available");
-        return false;
     }
     
     @Override

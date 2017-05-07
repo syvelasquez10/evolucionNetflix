@@ -53,19 +53,15 @@ public class Crittercism
                 break Label_0061;
             }
             while (true) {
-            Block_8_Outer:
                 while (true) {
                     try {
                         a(String.class.getCanonicalName());
                         // monitorexit(Crittercism.class)
                         return;
-                        while (true) {
-                            a(Context.class.getCanonicalName());
-                            continue Block_8_Outer;
-                            continue;
-                        }
+                        // iftrue(Label_0079:, context2 != null)
+                        a(Context.class.getCanonicalName());
+                        continue;
                     }
-                    // iftrue(Label_0079:, context2 != null)
                     catch (ThreadDeath threadDeath) {
                         throw threadDeath;
                     }

@@ -7,6 +7,8 @@ package com.netflix.mediaclient.javabridge.transport;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
+import com.netflix.mediaclient.util.SubtitleUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.javabridge.error.CrashReport;
 import android.os.Process;

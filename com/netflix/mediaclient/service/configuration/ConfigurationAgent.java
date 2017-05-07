@@ -439,6 +439,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public int getJPlayerStreamErrorRestartCount() {
+        return this.mDeviceConfigOverride.getJPlayerStreamErrorRestartCount();
+    }
+    
+    @Override
     public KubrickConfiguration getKubrickConfiguration() {
         return this.mAccountConfigOverride.getKubrickConfig();
     }

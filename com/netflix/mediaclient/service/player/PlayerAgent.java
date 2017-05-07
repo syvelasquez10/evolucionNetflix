@@ -24,29 +24,23 @@ import com.netflix.mediaclient.media.JPlayer2Helper;
 import android.media.AudioManager;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.media.PlayoutMetadata;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
-import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetType;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleParserFactory;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import com.netflix.mediaclient.javabridge.ui.IMedia$MediaEventEnum;
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
-import android.net.NetworkInfo;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.NetflixService;
-import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.event.nrdp.media.Warning;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.event.nrdp.media.BufferRange;
 import com.netflix.mediaclient.event.nrdp.media.Statechanged;
 import com.netflix.mediaclient.event.nrdp.media.AudioTrackChanged;
 import com.netflix.mediaclient.event.nrdp.media.SubtitleData;
-import com.netflix.mediaclient.event.nrdp.media.ShowSubtitle;
-import com.netflix.mediaclient.event.nrdp.media.RemoveSubtitle;
 import com.netflix.mediaclient.event.nrdp.media.Buffering;
 import com.netflix.mediaclient.event.nrdp.media.GenericMediaEvent;
-import com.netflix.mediaclient.javabridge.invoke.media.Open$NetType;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import android.os.PowerManager$WakeLock;
 import android.content.BroadcastReceiver;
@@ -55,6 +49,7 @@ import android.view.Surface;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayerType;
+import com.netflix.mediaclient.servicemgr.IPlayerFileCache;
 import java.util.concurrent.ExecutorService;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
@@ -75,7 +70,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private static final int DELAY_SEEKCOMPLETE_MS = 300;
     private static final int EOS_DELTA = 10000;
     private static final int IntialLowBRThreshold = 200;
-    private static final int MAX_CELLULAR_DOWNLOAD_LIMIT = 90000;
+    private static final int MAX_CELLULAR_DOWNLOAD_LIMIT = 150000;
     private static final int MAX_WIFI_DOWNLOAD_LIMIT = 300000;
     private static final int MaxBRThreshold = 20000;
     private static final int NETWORK_CHECK_INTERVAL = 1000;
@@ -92,7 +87,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private static final int STATE_PRESTOP = 7;
     private static final int STATE_STOPPED = 3;
     private static final String TAG;
-    private static final int TimeToWaitBeforeLowBRStreamsEnabled = 5000;
+    private static final int TimeToWaitBeforeLowBRStreamsEnabled = 15000;
     private static final int TimeToWaitBeforeShutdown = 30000;
     private static final int TimeToWaitBeforeUnmute = 10000;
     private boolean ignoreErrorsWhileActionId12IsProcessed;
@@ -119,6 +114,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private PlayContext mPlayContext;
     private PlayParamsReceiver mPlayParamsRecvr;
     private ExecutorService mPlayerExecutor;
+    private IPlayerFileCache mPlayerFileManager;
     private PlayerListenerManager mPlayerListenerManager;
     private PlayerType mPlayerType;
     private int mRelativeSeekPosition;
@@ -177,10 +173,10 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.onPlayRunnable = new PlayerAgent$2(this);
         this.onSeekRunnable = new PlayerAgent$3(this);
         this.onCloseRunnable = new PlayerAgent$4(this);
-        this.webClientCallback = new PlayerAgent$6(this);
+        this.webClientCallback = new PlayerAgent$5(this);
         this.muted = false;
-        this.playerChangesReceiver = new PlayerAgent$7(this);
-        this.mUserAgentReceiver = new PlayerAgent$10(this);
+        this.playerChangesReceiver = new PlayerAgent$6(this);
+        this.mUserAgentReceiver = new PlayerAgent$9(this);
     }
     
     private void clearBifs() {
@@ -217,24 +213,6 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             default1 = SubtitleConfiguration.DEFAULT;
         }
         return default1;
-    }
-    
-    private Open$NetType getCurrentNetType() {
-        final NetworkInfo activeNetworkInfo = ConnectivityUtils.getActiveNetworkInfo(this.getContext());
-        if (activeNetworkInfo == null) {
-            return null;
-        }
-        switch (activeNetworkInfo.getType()) {
-            default: {
-                return Open$NetType.mobile;
-            }
-            case 9: {
-                return Open$NetType.wired;
-            }
-            case 1: {
-                return Open$NetType.wifi;
-            }
-        }
     }
     
     private void handleAudioTrackChanged(final AudioTrackChanged audioTrackChanged) {
@@ -375,7 +353,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         synchronized (this.mPlayerListenerManager) {
             for (final IPlayer$PlayerListener player$PlayerListener : this.mPlayerListenerManager.getListeners()) {
                 if (player$PlayerListener != null && player$PlayerListener.isListening()) {
-                    this.getMainHandler().post((Runnable)new PlayerAgent$8(this, playerListenerManager$PlayerListenerHandler, player$PlayerListener, array));
+                    this.getMainHandler().post((Runnable)new PlayerAgent$7(this, playerListenerManager$PlayerListenerHandler, player$PlayerListener, array));
                 }
             }
         }
@@ -386,7 +364,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         synchronized (this.mPlayerListenerManager) {
             for (final IPlayer$PlayerListener player$PlayerListener : this.mPlayerListenerManager.getListeners()) {
                 if (player$PlayerListener != null && player$PlayerListener.isListening()) {
-                    this.getMainHandler().postDelayed((Runnable)new PlayerAgent$9(this, playerListenerManager$PlayerListenerHandler, player$PlayerListener, array), n);
+                    this.getMainHandler().postDelayed((Runnable)new PlayerAgent$8(this, playerListenerManager$PlayerListenerHandler, player$PlayerListener, array), n);
                 }
             }
         }
@@ -411,20 +389,6 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 }
             }
         }
-    }
-    
-    private void handleRemoveSubtitle(final RemoveSubtitle removeSubtitle) {
-        Log.d(PlayerAgent.TAG, "MEDIA_SUBTITLE_REMOVE 52");
-        this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleRemoveHandler(), new Object[0]);
-    }
-    
-    private void handleShowSubtitle(final ShowSubtitle showSubtitle) {
-        Log.d(PlayerAgent.TAG, "MEDIA_SUBTITLE_SHOW 51");
-        String text;
-        if ((text = showSubtitle.getText()) == null) {
-            text = "";
-        }
-        this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleShowHandler(), text);
     }
     
     private void handleStatechanged(final Statechanged statechanged) {
@@ -491,35 +455,33 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     private void handleSubtitleData(final SubtitleData subtitleData) {
         Log.d(PlayerAgent.TAG, "MEDIA_SUBTITLE_DATA 100");
-        new BackgroundTask().execute(new PlayerAgent$5(this, subtitleData));
+        if (Log.isLoggable()) {
+            Log.d(PlayerAgent.TAG, "Subtitles download started from URL " + subtitleData.getUrl() + ", content type " + subtitleData.getProfile().getNccpCode());
+        }
+        (this.mSubtitles = SubtitleParserFactory.createParser(this, subtitleData, this.getUserAgent().getUserSubtitlePreferences(), this.getUserAgent().getSubtitleDefaults(), this.mMedia.getDisplayAspectRatio(), this.mBookmark)).load();
     }
     
     private void handleSubtitleUpdate(final int n) {
         while (true) {
-            Label_0104: {
+            Label_0087: {
                 synchronized (this) {
-                    if (IMedia$SubtitleOutputMode.EVENTS.equals(this.mSubtitleConfiguration.getMode())) {
-                        Log.d(PlayerAgent.TAG, "Subtitle output mode Events, do nothing");
+                    if (Log.isLoggable()) {
+                        Log.d(PlayerAgent.TAG, "Update PTS received " + n);
+                    }
+                    if (this.mMedia.getCurrentSubtitleTrack() == null) {
+                        Log.d(PlayerAgent.TAG, "Subtitles are not visible, do not send any update");
                     }
                     else {
-                        if (Log.isLoggable()) {
-                            Log.d(PlayerAgent.TAG, "Subtitle output mode XML, send data");
-                            Log.d(PlayerAgent.TAG, "Update PTS received " + n);
+                        if (this.mSubtitles != null) {
+                            break Label_0087;
                         }
-                        if (this.mMedia.getCurrentSubtitleTrack() != null) {
-                            break Label_0104;
-                        }
-                        Log.d(PlayerAgent.TAG, "Subtitles are not visible, do not send any update");
+                        Log.d(PlayerAgent.TAG, "Subtitle data is not available.");
                     }
                     return;
                 }
             }
-            final SubtitleParser mSubtitles = this.mSubtitles;
-            if (mSubtitles == null) {
-                Log.d(PlayerAgent.TAG, "Subtitle data is not available.");
-                return;
-            }
-            if (!mSubtitles.isReady()) {
+            final SubtitleParser subtitleParser;
+            if (!subtitleParser.isReady()) {
                 Log.d(PlayerAgent.TAG, "Subtitle data is not ready yet!");
                 return;
             }
@@ -531,7 +493,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 Log.d(PlayerAgent.TAG, "Can not update position, do NOT send subtitle screen update");
                 return;
             }
-            this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleChangeHandler(), mSubtitles.getSubtitlesForPosition(n));
+            this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleChangeHandler(), subtitleParser.getSubtitlesForPosition(n));
         }
     }
     
@@ -559,7 +521,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         if (this.isPlaying()) {
             final int ptsTicker = this.ptsTicker + 1;
             this.ptsTicker = ptsTicker;
-            if (ptsTicker % 60 == 0 && Open$NetType.wifi.equals(this.getCurrentNetType())) {
+            if (ptsTicker % 60 == 0 && AuthorizationParams$NetType.wifi.equals(ConnectivityUtils.getCurrentNetType(this.getContext()))) {
                 this.mMedia.setWifiLinkSpeed(this.getContext());
                 this.ptsTicker = 0;
             }
@@ -698,7 +660,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             this.reloadPlayer();
             this.clearBifs();
             this.mMedia.setStreamingQoe(this.getConfigurationAgent().getStreamingQoe(), this.getConfigurationAgent().enableHTTPSAuth(), this.isMPPlayerType());
-            this.mMedia.open(this.mMovieId, this.mPlayContext, this.getCurrentNetType(), this.mBookmark);
+            this.mMedia.open(this.mMovieId, this.mPlayContext, ConnectivityUtils.getCurrentNetType(this.getContext()), this.mBookmark);
             return;
         }
         this.release();
@@ -721,7 +683,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 this.mMedia.setVideoBitrateRange(200, 20000);
                 if (this.mTimer != null) {
                     this.mInitVBRTimeoutTask = new PlayerAgent$InitialVideoBitrateRangeTimeoutTask(this, null);
-                    this.mTimer.schedule(this.mInitVBRTimeoutTask, 5000L);
+                    this.mTimer.schedule(this.mInitVBRTimeoutTask, 15000L);
                 }
             }
             this.mMedia.setVideoResolutionRange(this.getConfigurationAgent().getVideoResolutionRange());
@@ -885,6 +847,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.registerReceivers();
         this.registerUserAgentReceiver();
         this.mPlayerExecutor = Executors.newSingleThreadExecutor();
+        this.mPlayerFileManager = new PlayerFileManager(this.getContext());
         this.initCompleted(CommonStatus.OK);
     }
     
@@ -913,6 +876,11 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     @Override
     public AudioSource getCurrentAudioTrack() {
         return this.mMedia.getCurrentAudioTrack();
+    }
+    
+    @Override
+    public long getCurrentPlayableId() {
+        return this.mMovieId;
     }
     
     @Override
@@ -959,6 +927,11 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     }
     
     @Override
+    public IPlayerFileCache getPlayerFileCache() {
+        return this.mPlayerFileManager;
+    }
+    
+    @Override
     public PlayoutMetadata getPlayoutMetadata() {
         return this.mMedia.getPlayoutMetadata();
     }
@@ -994,7 +967,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     public void handleConnectivityChange(final Intent intent) {
         if (ConnectivityUtils.isNetworkTypeCellular(this.getContext())) {
-            this.setVideoStreamingBufferSize(90000);
+            this.setVideoStreamingBufferSize(150000);
         }
         else {
             this.setVideoStreamingBufferSize(300000);
@@ -1222,6 +1195,15 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.mPlayerListenerManager.removePlayerListener(player$PlayerListener);
     }
     
+    public void reportFailedToDownloadSubtitleMetadata() {
+        this.getService().getClientLogging().getErrorLogging().logHandledException("Failed to download subtitle metadata");
+        this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleFailedHandler(), new Object[0]);
+    }
+    
+    public void reportHandledException(final Exception ex) {
+        this.getService().getClientLogging().getErrorLogging().logHandledException(ex);
+    }
+    
     @Override
     public void seekTo(final int seekedToPosition, final boolean mForcedRebuffer) {
         this.seekedToPosition = seekedToPosition;
@@ -1230,7 +1212,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.mFuzz = 0;
         this.mPlayerExecutor.execute(this.onSeekRunnable);
         if (this.mSubtitles != null) {
-            this.mSubtitles.seeked();
+            this.mSubtitles.seeked(this.seekedToPosition);
         }
     }
     
@@ -1242,7 +1224,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.mFuzz = mFuzz;
         this.mPlayerExecutor.execute(this.onSeekRunnable);
         if (this.mSubtitles != null) {
-            this.mSubtitles.seeked();
+            this.mSubtitles.seeked(this.seekedToPosition);
         }
     }
     

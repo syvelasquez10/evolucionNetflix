@@ -263,6 +263,13 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.fetchMovieDetails(s, browseAgentCallback);
     }
     
+    public void fetchNotificationsList(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.fetchNotifications(n, n2, false, browseAgentCallback);
+    }
+    
     @Override
     public void fetchPostPlayVideos(final String s, final VideoType videoType, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
@@ -327,13 +334,6 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.fetchSimilarVideos(Falkor$SimilarRequestType.QUERY_SUGGESTION, s, n, s2, browseAgentCallback);
     }
     
-    public void fetchSocialNotificationsList(final int n, final BrowseAgentCallback browseAgentCallback) {
-        if (Log.isLoggable()) {
-            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
-        }
-        this.cmp.fetchSocialNotifications(n, false, browseAgentCallback);
-    }
-    
     @Override
     public void fetchVideoSummary(final String s, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
@@ -367,13 +367,6 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     @Override
     public NetflixService getService() {
         return super.getService();
-    }
-    
-    public void hideVideo(final String s, final BrowseAgentCallback browseAgentCallback) {
-        if (Log.isLoggable()) {
-            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
-        }
-        this.cmp.hideVideo(s, browseAgentCallback);
     }
     
     public void logBillboardActivity(final Video video, final BillboardInteractionType billboardInteractionType) {
@@ -423,7 +416,11 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
             this.cmp.refreshPopularTitlesLomo();
             return;
         }
-        this.cmp.refreshCw();
+        if (this.cmp.doesCwExist()) {
+            this.cmp.refreshCw();
+            return;
+        }
+        this.refreshAll();
     }
     
     public void refreshIq() {
@@ -437,7 +434,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchSocialNotifications(0, b, new FalkorAgent$6(this, b2, messageData));
+        this.cmp.fetchNotifications(0, 19, b, new FalkorAgent$6(this, b2, messageData));
         if (this.getService() != null && this.getService().getCurrentProfile() != null && this.getService().getCurrentProfile().isSocialConnected()) {
             this.rescheduleNotificationsRefresh();
         }

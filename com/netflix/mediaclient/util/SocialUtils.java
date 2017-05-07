@@ -60,13 +60,13 @@ public class SocialUtils
             Log.w("SocialUtils", "Got null notificationsListStatus value!");
         }
         else if (socialUtils$NotificationsListStatus != SocialUtils$NotificationsListStatus.NO_MESSAGES && isNotificationsFeatureSupported(netflixActivity)) {
-            final MenuItem add = menu.add(0, 2131427347, 0, 2131493201);
+            final MenuItem add = menu.add(0, 2131427346, 0, 2131493201);
             int icon;
             if (socialUtils$NotificationsListStatus == SocialUtils$NotificationsListStatus.HAS_UNREAD_MESSAGES) {
-                icon = 2130837696;
+                icon = 2130837698;
             }
             else {
-                icon = 2130837695;
+                icon = 2130837697;
             }
             add.setIcon(icon).setShowAsAction(1);
         }
@@ -74,7 +74,7 @@ public class SocialUtils
     
     public static void addShareIconIfNeeded(final NetflixActivity netflixActivity, final Menu menu) {
         if (getShareSheetType() == SocialUtils$ShareSheetType.SHARE_IN_HEADER || getShareSheetType() == SocialUtils$ShareSheetType.RECOMMEND_PLUS_SHARE) {
-            menu.add(0, 2131427348, 65536, 2131493369).setIcon(2130837694).setShowAsAction(2);
+            menu.add(0, 2131427347, 65536, 2131493374).setIcon(2130837696).setShowAsAction(2);
         }
     }
     
@@ -105,7 +105,7 @@ public class SocialUtils
     }
     
     private static String getShareText(final Resources resources, final String s, final String s2) {
-        return resources.getString(2131493371, new Object[] { s, s2 });
+        return resources.getString(2131493376, new Object[] { s, s2 });
     }
     
     private static String getShareUrl(final String s, final VideoType videoType) {
@@ -221,8 +221,8 @@ public class SocialUtils
                     return addToMyListWrapper(netflixActivity, serviceManager, textView3, textView4, s);
                 }
                 case 3: {
-                    textView.setText(2131493369);
-                    textView.setCompoundDrawablesWithIntrinsicBounds(2130837731, 0, 0, 0);
+                    textView.setText(2131493374);
+                    textView.setCompoundDrawablesWithIntrinsicBounds(2130837733, 0, 0, 0);
                 }
                 case 4: {
                     textView.setOnClickListener((View$OnClickListener)new SocialUtils$1(netflixActivity, s, s2, videoType));
@@ -273,7 +273,7 @@ public class SocialUtils
         intent.setFlags(268435456);
         intent.setType("text/plain");
         intent.putExtra("android.intent.extra.TEXT", getShareText(resources, s, shareUrl));
-        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131493370)));
+        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131493375)));
         UserActionLogUtils.reportShareSheetActionEnded(context, IClientLogging$CompletionReason.success, null);
     }
     
@@ -282,11 +282,11 @@ public class SocialUtils
     }
     
     public static boolean tryHandleMenuItemClick(final MenuItem menuItem, final Context context) {
-        if (menuItem.getItemId() == 2131427347) {
+        if (menuItem.getItemId() == 2131427346) {
             context.startActivity(new Intent(context, (Class)SocialNotificationsActivity.class));
             return true;
         }
-        if (context instanceof DetailsActivity && menuItem.getItemId() == 2131427348) {
+        if (context instanceof DetailsActivity && menuItem.getItemId() == 2131427347) {
             final DetailsActivity detailsActivity = (DetailsActivity)context;
             final String videoId = detailsActivity.getVideoId();
             final VideoType videoType = detailsActivity.getVideoType();

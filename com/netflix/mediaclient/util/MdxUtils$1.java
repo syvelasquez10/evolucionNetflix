@@ -53,7 +53,7 @@ final class MdxUtils$1 implements AdapterView$OnItemClickListener
             if (this.val$callbacks.isPlayingRemotely()) {
                 Log.d("MdxUtils", "We were playing remotely - switching to playback locally");
                 this.val$serviceManager.getMdx().switchPlaybackFromTarget(null, 0);
-                final Asset create = Asset.create(this.val$callbacks.getVideoDetails(), this.val$callbacks.getPlayContext(), PlayerActivity.PIN_VERIFIED);
+                final Asset create = Asset.create(this.val$callbacks.getPlayable(), this.val$callbacks.getPlayContext(), PlayerActivity.PIN_VERIFIED);
                 create.setPlaybackBookmark((int)(this.val$callbacks.getCurrentPositionMs() / 1000L));
                 PlaybackLauncher.startPlaybackForceLocal(this.val$activity, create);
                 this.val$callbacks.notifyPlayingBackLocal();

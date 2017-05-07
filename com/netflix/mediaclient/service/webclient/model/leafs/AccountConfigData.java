@@ -150,7 +150,7 @@ public class AccountConfigData
     }
     
     public KubrickConfiguration getKubrickConfig() {
-        return AccountConfigData.DEFAULT_KUBRICK_CONFIG;
+        return this.kubrickConfig;
     }
     
     public String getMdxBlacklist() {

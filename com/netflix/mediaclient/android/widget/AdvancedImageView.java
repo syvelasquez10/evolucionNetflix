@@ -15,7 +15,7 @@ import android.content.Context;
 public class AdvancedImageView extends LoggingImageView
 {
     private static final String TAG = "AdvancedImageView";
-    private PressedStateHandler pressedHandler;
+    protected PressedStateHandler pressedHandler;
     
     public AdvancedImageView(final Context context) {
         super(context);
@@ -50,13 +50,17 @@ public class AdvancedImageView extends LoggingImageView
         super.dispatchSetPressed(b);
     }
     
+    public AdvancedImageView$ImageLoaderInfo getImageLoaderInfo() {
+        return (AdvancedImageView$ImageLoaderInfo)this.getTag(2131427338);
+    }
+    
     @Override
     protected String getLogTag() {
         return "AdvancedImageView";
     }
     
-    public String getUrlTag() {
-        return (String)this.getTag(2131427338);
+    public PressedStateHandler getPressedStateHandler() {
+        return this.pressedHandler;
     }
     
     public void refreshImageIfNecessary() {
@@ -66,12 +70,12 @@ public class AdvancedImageView extends LoggingImageView
         }
     }
     
-    public void setPressedStateHandlerEnabled(final boolean enabled) {
-        this.pressedHandler.setEnabled(enabled);
+    public void setImageLoaderInfo(final AdvancedImageView$ImageLoaderInfo advancedImageView$ImageLoaderInfo) {
+        this.setTag(2131427338, (Object)advancedImageView$ImageLoaderInfo);
     }
     
-    public void setUrlTag(final String s) {
-        this.setTag(2131427338, (Object)s);
+    public void setPressedStateHandlerEnabled(final boolean enabled) {
+        this.pressedHandler.setEnabled(enabled);
     }
     
     protected boolean shouldDispatchToPressHandler() {

@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.social.notifications.types;
 
 import android.text.Html;
-import com.netflix.mediaclient.ui.social.notifications.SocialNotificationViewHolder;
+import com.netflix.mediaclient.ui.social.notifications.NotificationViewHolder;
 import android.view.View;
 import com.netflix.model.leafs.social.SocialNotificationSummary$NotificationTypes;
 import android.content.Context;
@@ -17,7 +17,7 @@ public class SocialVideoAddedToPlaylist extends SocialNotification
 {
     @Override
     protected void addNotificationText(final NotificationCompat$Builder notificationCompat$Builder, final NotificationCompat$BigPictureStyle notificationCompat$BigPictureStyle, final SocialNotificationSummary socialNotificationSummary, final Context context) {
-        final String string = context.getResources().getString(2131493374);
+        final String string = context.getResources().getString(2131493379);
         notificationCompat$BigPictureStyle.setSummaryText(string);
         notificationCompat$Builder.setContentText(string);
     }
@@ -28,8 +28,8 @@ public class SocialVideoAddedToPlaylist extends SocialNotification
     }
     
     @Override
-    public void initView(final View view, final SocialNotificationViewHolder socialNotificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
-        super.initView(view, socialNotificationViewHolder, socialNotificationSummary, context);
-        socialNotificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493378, new Object[] { socialNotificationSummary.getVideo().getTitle() })));
+    public void initView(final View view, final NotificationViewHolder notificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
+        super.initView(view, notificationViewHolder, socialNotificationSummary, context);
+        notificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493383, new Object[] { socialNotificationSummary.getVideo().getTitle() })));
     }
 }

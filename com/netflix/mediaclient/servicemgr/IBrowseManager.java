@@ -41,6 +41,8 @@ public interface IBrowseManager
     
     boolean fetchMovieDetails(final String p0, final ManagerCallback p1);
     
+    boolean fetchNotificationsList(final int p0, final int p1, final ManagerCallback p2);
+    
     boolean fetchPostPlayVideos(final String p0, final VideoType p1, final ManagerCallback p2);
     
     boolean fetchSeasonDetails(final String p0, final ManagerCallback p1);
@@ -55,8 +57,6 @@ public interface IBrowseManager
     
     boolean fetchSimilarVideosForQuerySuggestion(final String p0, final int p1, final ManagerCallback p2, final String p3);
     
-    boolean fetchSocialNotificationsList(final int p0, final ManagerCallback p1);
-    
     boolean fetchVideoSummary(final String p0, final ManagerCallback p1);
     
     boolean fetchVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final boolean p4, final boolean p5, final ManagerCallback p6);
@@ -64,8 +64,6 @@ public interface IBrowseManager
     boolean flushCaches();
     
     ModelProxy<?> getModelProxy();
-    
-    boolean hideVideo(final String p0, final ManagerCallback p1);
     
     void logBillboardActivity(final Video p0, final BillboardInteractionType p1);
     

@@ -9,8 +9,8 @@ import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 public enum SocialNotificationSummary$ShowTypes
 {
     BOOK("Book", 2131623945), 
+    CHAPTER("Chapter", 2131623948), 
     COLLECTION("Collection", 2131623942), 
-    Chapter("Chapter", 2131623948), 
     PART("Part", 2131623946), 
     SEASON("Season", 2131623940), 
     SERIES("Series", 2131623947), 

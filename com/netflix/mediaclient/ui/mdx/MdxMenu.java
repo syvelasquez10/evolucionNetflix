@@ -10,7 +10,6 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.util.MdxUtils;
 import android.graphics.drawable.AnimationDrawable;
 import android.view.MenuItem$OnMenuItemClickListener;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,24 +24,24 @@ public final class MdxMenu
     private final MenuItem mdxItem;
     private final boolean useDarkIcon;
     
-    private MdxMenu(final NetflixActivity activity, final Menu menu) {
+    private MdxMenu(final NetflixActivity activity, final Menu menu, final boolean useDarkIcon) {
         Log.v("MdxMenu", "creating");
         this.activity = activity;
-        this.useDarkIcon = BrowseExperience.isKubrickKids();
+        this.useDarkIcon = useDarkIcon;
         final MdxMiniPlayerFrag mdxMiniPlayerFrag = this.activity.getMdxMiniPlayerFrag();
         this.handler = new Handler();
         if (mdxMiniPlayerFrag == null) {
             throw new IllegalArgumentException("Activity that uses MdxMenu must own a reference to mdxFrag!");
         }
         mdxMiniPlayerFrag.attachMenuItem(this);
-        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131493251))).setShowAsAction(1);
+        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131493252))).setShowAsAction(1);
         this.mdxItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MdxMenu$1(this));
         this.setEnabled(mdxMiniPlayerFrag.isMdxMenuEnabled());
         this.update();
     }
     
-    public static void addSelectPlayTarget(final NetflixActivity netflixActivity, final Menu menu) {
-        new MdxMenu(netflixActivity, menu);
+    public static void addSelectPlayTarget(final NetflixActivity netflixActivity, final Menu menu, final boolean b) {
+        new MdxMenu(netflixActivity, menu, b);
     }
     
     private void animateMdxIcon(final AnimationDrawable animationDrawable) {
@@ -51,15 +50,15 @@ public final class MdxMenu
     
     private int getIcon() {
         if (this.activity.isConnectingToTarget()) {
-            return 2130837681;
+            return 2130837683;
         }
         if (MdxUtils.isTargetReadyToControl(this.activity.getServiceManager())) {
-            return 2130837680;
+            return 2130837682;
         }
         if (this.useDarkIcon) {
-            return 2130837693;
+            return 2130837695;
         }
-        return 2130837679;
+        return 2130837681;
     }
     
     private boolean isAnyMdxTargetAvailable() {

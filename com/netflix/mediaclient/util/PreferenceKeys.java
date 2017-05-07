@@ -36,6 +36,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_HARDWARE_ACCELERATION = "nflx_hardwarer_acc";
     public static final String PREFERENCE_IMAGE_PREF = "image_pref";
     public static final String PREFERENCE_IP_CONNECTIVITY_POLICY_OVERRIDE = "ip_connectivity_policy_overide";
+    public static final String PREFERENCE_JPLAYER_STREAM_ERROR_RESTART_COUNT = "jplayer_restart_count";
     public static final String PREFERENCE_MDX_CONFIGURATION_REMOTE_LOCK_SCREEN_ENABLED = "mdx_configuration_remote_lockscreen_enabled";
     public static final String PREFERENCE_MDX_CONFIGURATION_REMOTE_NOTIFICATION_ENABLED = "mdx_configuration_remote_notification_enabled";
     public static final String PREFERENCE_MDX_ELECTED_DIALUUID = "mdx_selected_dialuuid";

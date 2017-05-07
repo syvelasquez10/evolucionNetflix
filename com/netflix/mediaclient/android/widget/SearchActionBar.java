@@ -136,7 +136,7 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getActiveSearchIconResId() {
-        return 2130837727;
+        return 2130837729;
     }
     
     protected Integer getSearchCloseButtonTint() {
@@ -144,15 +144,15 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getSearchViewBgResId() {
-        return 2130837870;
+        return 2130837882;
     }
     
     protected int getSearchViewRightBgResId() {
-        return 2130837872;
+        return 2130837884;
     }
     
     protected int getSearchViewTextColorResId() {
-        return 2131230835;
+        return 2131230840;
     }
     
     protected Integer getSearchVoiceButtonTint() {

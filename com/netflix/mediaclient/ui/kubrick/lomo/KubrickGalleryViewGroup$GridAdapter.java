@@ -42,7 +42,7 @@ class KubrickGalleryViewGroup$GridAdapter extends RecyclerView$Adapter<KubrickGa
         }
         this.params = new RecyclerView$LayoutParams(numVideosPerPage, -1);
         this.expandedParams = new RecyclerView$LayoutParams(numVideosPerPage * 2, -1);
-        this.padding = kubrickGalleryViewGroup.getResources().getDimensionPixelOffset(2131296377);
+        this.padding = kubrickGalleryViewGroup.getResources().getDimensionPixelOffset(2131296381);
     }
     
     @Override

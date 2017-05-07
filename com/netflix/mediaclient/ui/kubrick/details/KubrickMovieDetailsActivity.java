@@ -5,19 +5,23 @@
 package com.netflix.mediaclient.ui.kubrick.details;
 
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
+import com.netflix.mediaclient.ui.common.DebugMenuItems;
 import android.view.Menu;
 import android.os.Bundle;
 import android.app.Fragment;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.ui.kubrick.KubrickDetailActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.MovieDetailsActivity;
 
 public class KubrickMovieDetailsActivity extends MovieDetailsActivity
 {
+    private static final String TAG = "KubrickMovieDetailsActivity";
+    
     @Override
     protected NetflixActionBar createActionBar() {
-        return new KubrickDetailActionBar(this, this.hasUpAction());
+        final KubrickDetailActionBar kubrickDetailActionBar = new KubrickDetailActionBar(this, this.hasUpAction());
+        kubrickDetailActionBar.setAlpha(0.0f);
+        return kubrickDetailActionBar;
     }
     
     @Override
@@ -33,6 +37,9 @@ public class KubrickMovieDetailsActivity extends MovieDetailsActivity
     
     @Override
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
-        MdxMenu.addSelectPlayTarget(this, menu);
+        if (menu2 != null) {
+            new DebugMenuItems("KubrickMovieDetailsActivity", this).addItems(this, menu2);
+        }
+        MdxMenu.addSelectPlayTarget(this, menu, false);
     }
 }

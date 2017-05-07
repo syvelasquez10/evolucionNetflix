@@ -29,9 +29,9 @@ public class ErrorWrapper
         this.showRetry = true;
         this.retryClickListener = (View$OnClickListener)new ErrorWrapper$1(this);
         this.callback = callback;
-        this.errorGroup = view.findViewById(2131427516);
-        this.errorMsg = (TextView)view.findViewById(2131427517);
-        (this.retryBtn = (Button)this.errorGroup.findViewById(2131427518)).setOnClickListener(this.retryClickListener);
+        this.errorGroup = view.findViewById(2131427517);
+        this.errorMsg = (TextView)view.findViewById(2131427518);
+        (this.retryBtn = (Button)this.errorGroup.findViewById(2131427519)).setOnClickListener(this.retryClickListener);
         if (view.getContext() instanceof NetflixActivity) {
             final NetflixActivity netflixActivity = (NetflixActivity)view.getContext();
             if (BrowseExperience.isKubrickKids()) {
@@ -47,12 +47,12 @@ public class ErrorWrapper
         ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131296346);
         ViewUtils.setTextViewToBold(this.errorMsg);
         final ViewGroup$LayoutParams layoutParams = this.retryBtn.getLayoutParams();
-        layoutParams.height = resources.getDimensionPixelSize(2131296438);
-        layoutParams.width = resources.getDimensionPixelSize(2131296437);
-        this.retryBtn.setBackgroundResource(2130837757);
-        this.retryBtn.setTextColor(resources.getColor(2131230824));
-        ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131296351);
-        ViewUtils.setTextViewToBold((TextView)this.retryBtn);
+        layoutParams.height = resources.getDimensionPixelSize(2131296440);
+        layoutParams.width = resources.getDimensionPixelSize(2131296439);
+        this.retryBtn.setAllCaps(false);
+        this.retryBtn.setBackgroundResource(2130837752);
+        this.retryBtn.setTextColor(resources.getColor(2131230826));
+        ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131296348);
     }
     
     private void setRetryVisibility() {
@@ -73,10 +73,6 @@ public class ErrorWrapper
     
     public void hide(final boolean b) {
         AnimationUtils.hideView(this.errorGroup, b);
-    }
-    
-    public void setCallback(final ErrorWrapper$Callback callback) {
-        this.callback = callback;
     }
     
     public void showErrorView(final int text, final boolean showRetry, final boolean b) {

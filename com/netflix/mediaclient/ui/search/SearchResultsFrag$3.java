@@ -25,7 +25,6 @@ import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.EditText;
@@ -71,7 +70,7 @@ class SearchResultsFrag$3 implements ViewTreeObserver$OnGlobalLayoutListener
         final int numPeopleGridCols = SearchUtils.getNumPeopleGridCols((Context)this.this$0.getActivity());
         if (numPeopleGridCols > 0) {
             this.this$0.imgHeightPeople = (int)(n / numPeopleGridCols * SearchUtils.getPeopleImageAspectRatio() + 0.5);
-            SearchResultsFrag.access$316(this.this$0, this.this$0.getActivity().getResources().getDimension(2131296381));
+            SearchResultsFrag.access$316(this.this$0, this.this$0.getActivity().getResources().getDimension(2131296385));
             Log.v("SearchResultsFrag", "imgHeightPeople: " + this.this$0.imgHeightPeople);
         }
         this.this$0.fireImpressionEvents();

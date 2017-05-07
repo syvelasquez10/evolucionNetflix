@@ -4,8 +4,9 @@
 
 package com.netflix.mediaclient.ui.kubrick.lolomo;
 
-import com.netflix.mediaclient.ui.lomo.LoMoUtils;
-import android.widget.FrameLayout$LayoutParams;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter$RowHolder;
 import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter$LoMoRowContent;
 import android.widget.TextView;
@@ -16,7 +17,7 @@ import java.util.Iterator;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoDuplicate;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
 import java.util.ArrayList;
-import android.util.Log;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.util.List;
@@ -55,36 +56,68 @@ public class KubrickLolomoUtils
     }
     
     public static BaseLoLoMoAdapter$RowHolder createHolder(final NetflixActivity netflixActivity, final View view, final LinearLayout linearLayout, final TextView textView, final BaseLoLoMoAdapter$LoMoRowContent baseLoLoMoAdapter$LoMoRowContent, final View view2) {
-        final TextView textView2 = (TextView)view.findViewById(2131427599);
-        ((FrameLayout$LayoutParams)textView2.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragImageOffsetLeftPx(netflixActivity);
-        return new KubrickLolomoUtils$KubrickRowHolder((View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, textView2, view.findViewById(2131427594));
+        return new KubrickLolomoUtils$KubrickRowHolder(netflixActivity, (View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, view.findViewById(2131427566));
     }
     
-    public static boolean isDuplicateRow(final LoMo loMo) {
-        return loMo instanceof KubrickLoMoDuplicate || loMo instanceof KubrickLoMoHeroDuplicate;
+    public static boolean isDuplicateRow(final BasicLoMo basicLoMo) {
+        return basicLoMo instanceof KubrickLoMoDuplicate;
     }
     
     public static boolean shouldDuplicateLomo(final LoMo loMo) {
         return KubrickLolomoUtils.duplicateRowTypes.contains(loMo.getType());
     }
     
-    public static void updateRowViews(final BaseLoLoMoAdapter$RowHolder baseLoLoMoAdapter$RowHolder, final LoMo loMo, int visibility) {
-        final int n = 0;
-        final KubrickLolomoUtils$KubrickRowHolder kubrickLolomoUtils$KubrickRowHolder = (KubrickLolomoUtils$KubrickRowHolder)baseLoLoMoAdapter$RowHolder;
-        if (loMo instanceof KubrickLoMoHeroDuplicate) {
-            kubrickLolomoUtils$KubrickRowHolder.kubrickHeroTitle.setText((CharSequence)loMo.getTitle());
-            kubrickLolomoUtils$KubrickRowHolder.kubrickHeroTitle.setVisibility(0);
-            final View topSpacer = kubrickLolomoUtils$KubrickRowHolder.topSpacer;
-            if (visibility > 0) {
-                visibility = n;
-            }
-            else {
-                visibility = 8;
-            }
-            topSpacer.setVisibility(visibility);
-            return;
+    public static boolean shouldFetchByLomoType(final String s, final LoMo loMo) {
+        boolean b = true;
+        boolean b2;
+        if (BrowseExperience.isKubrickKids() && loMo.getType() == LoMoType.POPULAR_TITLES) {
+            b2 = true;
         }
-        kubrickLolomoUtils$KubrickRowHolder.kubrickHeroTitle.setVisibility(8);
-        kubrickLolomoUtils$KubrickRowHolder.topSpacer.setVisibility(8);
+        else {
+            b2 = false;
+        }
+        if (b2) {
+            Log.v(s, "For Kubrick Kids POPULAR_TITLES row, doing fetchVideos via lomo type");
+        }
+        if (!BrowseExperience.isKubrick() || loMo.getType() != LoMoType.INSTANT_QUEUE) {
+            b = false;
+        }
+        final boolean b3 = b | b2;
+        if (b3) {
+            Log.v(s, "For Kubrick INSTANT_QUEUE row, doing fetchVideos via lomo type");
+        }
+        return b3;
+    }
+    
+    public static void updateRowViews(final BaseLoLoMoAdapter$RowHolder baseLoLoMoAdapter$RowHolder, final LoMo loMo, int n) {
+        final boolean b = false;
+        int visibility;
+        if (n == 0) {
+            visibility = 8;
+        }
+        else if (loMo instanceof KubrickLoMoHeroDuplicate) {
+            visibility = 0;
+        }
+        else if (loMo instanceof KubrickLoMoDuplicate) {
+            visibility = 8;
+        }
+        else {
+            visibility = 0;
+        }
+        if (Log.isLoggable()) {
+            Log.v("KubrickLolomoUtils", "updateRowViews, spacerVisibility: " + ViewUtils.getVisibilityAsString(visibility) + ", position: " + n);
+        }
+        ((KubrickLolomoUtils$KubrickRowHolder)baseLoLoMoAdapter$RowHolder).topSpacer.setVisibility(visibility);
+        if (baseLoLoMoAdapter$RowHolder.title.getVisibility() == 0) {
+            n = 1;
+        }
+        else {
+            n = 0;
+        }
+        int dimensionPixelSize = b ? 1 : 0;
+        if (n != 0) {
+            dimensionPixelSize = baseLoLoMoAdapter$RowHolder.contentGroup.getResources().getDimensionPixelSize(2131296451);
+        }
+        ViewUtils.setPaddingTop(baseLoLoMoAdapter$RowHolder.contentGroup, dimensionPixelSize);
     }
 }

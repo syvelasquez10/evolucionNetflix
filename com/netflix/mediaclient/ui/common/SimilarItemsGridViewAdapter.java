@@ -12,7 +12,6 @@ import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 
 public class SimilarItemsGridViewAdapter extends RecyclerViewHeaderAdapter
 {
-    private static final String TAG = "SimilarItemsGridViewAdapter";
     private final boolean clipToCompleteRows;
     private int numColumns;
     private RecyclerView recyclerView;
@@ -25,7 +24,7 @@ public class SimilarItemsGridViewAdapter extends RecyclerViewHeaderAdapter
     }
     
     private int clipCountToCompleteRows() {
-        return this.data.size() / this.numColumns * this.numColumns + this.getHeaderViewsCount();
+        return this.getItemCountExcludingHeaders() / this.numColumns * this.numColumns + this.getHeaderViewsCount();
     }
     
     @Override

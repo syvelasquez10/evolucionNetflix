@@ -10,7 +10,6 @@ class MdxMiniPlayerFrag$SharedState
 {
     boolean controlsEnabled;
     boolean isEpisodeReady;
-    boolean isVideoUnshared;
     boolean isVolumeEnabled;
     int mostRecentVolume;
     boolean shouldShowSelf;
@@ -20,7 +19,6 @@ class MdxMiniPlayerFrag$SharedState
         this.shouldShowSelf = false;
         this.controlsEnabled = false;
         this.isEpisodeReady = false;
-        this.isVideoUnshared = false;
         this.isVolumeEnabled = false;
     }
 }

@@ -27,6 +27,7 @@ import android.widget.GridView;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.content.res.Resources;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -83,19 +84,19 @@ class AvatarsGridActivity$ProfileAvatarAdapter extends BaseAdapter
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.getLayoutInflater().inflate(2130903068, viewGroup, false);
-            inflate.setTag((Object)new AvatarsGridActivity$ViewHolder((AdvancedImageView)inflate.findViewById(2131427450), (ImageView)inflate.findViewById(2131427451)));
+            inflate = this.this$0.getLayoutInflater().inflate(2130903069, viewGroup, false);
+            inflate.setTag((Object)new AvatarsGridActivity$ViewHolder((AdvancedImageView)inflate.findViewById(2131427452), (ImageView)inflate.findViewById(2131427453)));
         }
         final AvatarsGridActivity$ViewHolder avatarsGridActivity$ViewHolder = (AvatarsGridActivity$ViewHolder)inflate.getTag();
         final String item = this.getItem(n);
         if (this.this$0.mSelectedIconPos == n) {
             avatarsGridActivity$ViewHolder.topEditImg.setVisibility(0);
-            avatarsGridActivity$ViewHolder.topEditImg.setBackgroundResource(2130837858);
+            avatarsGridActivity$ViewHolder.topEditImg.setBackgroundResource(2130837870);
         }
         else {
             avatarsGridActivity$ViewHolder.topEditImg.setVisibility(8);
         }
-        NetflixActivity.getImageLoader((Context)this.this$0).showImg(avatarsGridActivity$ViewHolder.img, item, IClientLogging$AssetType.profileAvatar, this.getItemName(n), true, false);
+        NetflixActivity.getImageLoader((Context)this.this$0).showImg(avatarsGridActivity$ViewHolder.img, item, IClientLogging$AssetType.profileAvatar, this.getItemName(n), ImageLoader$StaticImgConfig.DARK, false);
         return inflate;
     }
     
@@ -108,8 +109,8 @@ class AvatarsGridActivity$ProfileAvatarAdapter extends BaseAdapter
         final int width = this.this$0.mGridView.getWidth();
         if (width > 0) {
             final Resources resources = this.this$0.getResources();
-            final float dimension = resources.getDimension(2131296418);
-            final float n = resources.getDimension(2131296417) + dimension;
+            final float dimension = resources.getDimension(2131296424);
+            final float n = resources.getDimension(2131296423) + dimension;
             final int numColumns = (int)(width / n);
             this.this$0.mGridView.setNumColumns(numColumns);
             this.adjustGridViewPaddings(width, numColumns, n, dimension);

@@ -10,10 +10,10 @@ import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
-import android.net.Uri;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
+import android.net.Uri;
 import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
@@ -38,17 +38,25 @@ public class NetflixComHandlerFactory
     
     public static boolean finishMeAndLaunchBrowserIfNeeded(final Activity activity, final Intent intent) {
         final boolean b = true;
-        final List pathSegments = intent.getData().getPathSegments();
-        final NetflixComHandler handler = getHandler(pathSegments);
+        final List<String> actionParts = getActionParts(intent.getData());
+        final NetflixComHandler handler = getHandler(actionParts);
         boolean b2 = b;
         if (handler != null) {
-            b2 = (!handler.canHandle(pathSegments) && b);
+            b2 = (!handler.canHandle(actionParts) && b);
         }
         if (b2) {
             NetflixComUtils.launchBrowser(activity, intent.getData());
             activity.finish();
         }
         return b2;
+    }
+    
+    private static List<String> getActionParts(final Uri uri) {
+        final List pathSegments = uri.getPathSegments();
+        if (pathSegments.size() > 1 && pathSegments.get(0).length() == 2) {
+            return pathSegments.subList(1, pathSegments.size());
+        }
+        return (List<String>)pathSegments;
     }
     
     private static NetflixComHandler getHandler(final List<String> list) {
@@ -145,13 +153,13 @@ public class NetflixComHandlerFactory
     }
     
     public static NflxHandler$Response handle(final NetflixActivity netflixActivity, final Uri uri) {
-        final List pathSegments = uri.getPathSegments();
-        final NetflixComHandler handler = getHandler(pathSegments);
+        final List<String> actionParts = getActionParts(uri);
+        final NetflixComHandler handler = getHandler(actionParts);
         if (handler == null) {
             Log.w("NetflixComHandlerFactory", "Got null creator for data: " + uri.toString() + ". Redirecting user to browser.");
         }
         else {
-            final NflxHandler$Response tryHandle = handler.tryHandle(netflixActivity, pathSegments, NetflixComUtils.getTrackId(uri));
+            final NflxHandler$Response tryHandle = handler.tryHandle(netflixActivity, actionParts, NetflixComUtils.getTrackId(uri));
             if (tryHandle != NflxHandler$Response.NOT_HANDLING) {
                 UIViewLogUtils.reportUIViewCommand((Context)netflixActivity, UIViewLogging$UIViewCommandName.deepLink, IClientLogging$ModalView.homeScreen, null, uri.toString());
                 return tryHandle;

@@ -24,7 +24,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.view.View;
-import com.netflix.mediaclient.ui.pin.PinDialogVault;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
 import android.view.MenuItem;
 import com.netflix.mediaclient.util.DeviceUtils;
 import java.util.Iterator;
@@ -77,7 +77,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import android.os.Handler;
 import java.util.Set;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.ui.pin.PinVerifier$PinVerificationCallback;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifier$PlayVerifyCallback;
 import com.netflix.mediaclient.ui.mdx.ShowMessageDialogFrag$MessageResponseProvider;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListenerProvider;
 import com.netflix.mediaclient.android.app.LoadingStatus;
@@ -113,15 +113,15 @@ class NetflixActivity$13 extends BroadcastReceiver
             else if (Log.isLoggable()) {
                 Log.d("NetflixActivity", "Required to display error dialog with status code " + statusCodeByValue.name() + ", " + statusCodeByValue.getValue());
             }
-            final String access$1000 = this.this$0.getMessage(intExtra, statusCodeByValue);
-            final Uri access$1001 = this.this$0.getUri(stringExtra);
+            final String access$1100 = this.this$0.getMessage(intExtra, statusCodeByValue);
+            final Uri access$1101 = this.this$0.getUri(stringExtra);
             final NetflixActivity$13$1 netflixActivity$13$1 = new NetflixActivity$13$1(this);
             AlertDialogFactory$AlertDialogDescriptor alertDialogFactory$AlertDialogDescriptor;
-            if (access$1001 != null) {
-                alertDialogFactory$AlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", access$1000, null, netflixActivity$13$1, this.this$0.getString(2131493349), new LaunchBrowser((Context)this.this$0, access$1001));
+            if (access$1101 != null) {
+                alertDialogFactory$AlertDialogDescriptor = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", access$1100, null, netflixActivity$13$1, this.this$0.getString(2131493354), new LaunchBrowser((Context)this.this$0, access$1101));
             }
             else {
-                alertDialogFactory$AlertDialogDescriptor = new AlertDialogFactory$AlertDialogDescriptor("", access$1000, null, netflixActivity$13$1);
+                alertDialogFactory$AlertDialogDescriptor = new AlertDialogFactory$AlertDialogDescriptor("", access$1100, null, netflixActivity$13$1);
             }
             this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, alertDialogFactory$AlertDialogDescriptor));
             return;

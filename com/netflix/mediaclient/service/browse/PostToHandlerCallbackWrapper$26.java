@@ -40,6 +40,6 @@ class PostToHandlerCallbackWrapper$26 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.callback.onSocialNotificationsListFetched(this.val$notifications, this.val$res);
+        this.this$0.callback.onNotificationsListFetched(this.val$notifications, this.val$res);
     }
 }

@@ -27,4 +27,11 @@ public class LoggingResourceFetcherCallback implements ResourceFetcherCallback
             Log.w("nf_service_resfetcher_callback", String.format("Resource %s could not be prefetched, status %d", s, status.getStatusCode().getValue()));
         }
     }
+    
+    @Override
+    public void onResourceRawFetched(final String s, final byte[] array, final Status status) {
+        if (Log.isLoggable()) {
+            Log.i("nf_service_resfetcher_callback", String.format("Resource %s fetched and response returned raw, status %d", s, status.getStatusCode().getValue()));
+        }
+    }
 }

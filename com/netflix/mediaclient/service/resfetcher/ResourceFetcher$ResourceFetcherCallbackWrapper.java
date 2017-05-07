@@ -6,9 +6,10 @@ package com.netflix.mediaclient.service.resfetcher;
 
 import com.netflix.mediaclient.service.resfetcher.volley.PrefetchResourceRequest;
 import com.netflix.mediaclient.service.webclient.WebClient;
+import com.netflix.mediaclient.service.resfetcher.volley.FileDownloadRequest;
 import com.android.volley.Request;
 import com.android.volley.Response$ErrorListener;
-import com.netflix.mediaclient.service.resfetcher.volley.FileDownloadRequest;
+import com.netflix.mediaclient.service.resfetcher.volley.HttpRangeRequest;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.WebClientInitParameters;
@@ -60,5 +61,11 @@ class ResourceFetcher$ResourceFetcherCallbackWrapper implements ResourceFetcherC
     public void onResourcePrefetched(final String s, final int n, final Status status) {
         ApmLogUtils.reportAssetRequestResult(s, status.getStatusCode(), this.this$0.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
         this.mCallback.onResourcePrefetched(s, n, status);
+    }
+    
+    @Override
+    public void onResourceRawFetched(final String s, final byte[] array, final Status status) {
+        ApmLogUtils.reportAssetRequestResult(s, status.getStatusCode(), this.this$0.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
+        this.mCallback.onResourceRawFetched(s, array, status);
     }
 }

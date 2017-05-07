@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.player;
 
+import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams;
 import com.netflix.mediaclient.servicemgr.IManifestCache$CacheScheduleRequest;
 import com.netflix.mediaclient.javabridge.ui.IMedia;
 import com.netflix.mediaclient.servicemgr.IManifestCache;
@@ -32,8 +33,8 @@ public class ManifestCache implements IManifestCache
     }
     
     @Override
-    public void cacheSchedule(final IManifestCache$CacheScheduleRequest[] array) {
-        this.mMediaBridgeApi.cacheSchedule(array);
+    public void cacheSchedule(final IManifestCache$CacheScheduleRequest[] array, final AuthorizationParams authorizationParams) {
+        this.mMediaBridgeApi.cacheSchedule(array, authorizationParams);
     }
     
     @Override

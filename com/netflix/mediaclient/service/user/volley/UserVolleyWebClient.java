@@ -30,8 +30,18 @@ public final class UserVolleyWebClient implements UserWebClient
     }
     
     @Override
+    public void autoLogin(final String s, final UserAgentWebCallback userAgentWebCallback) {
+        this.webclient.sendRequest(new AutoLoginRequest(this.service.getApplicationContext(), s, userAgentWebCallback));
+    }
+    
+    @Override
     public void connectWithFacebook(final String s, final UserAgentWebCallback userAgentWebCallback) {
         this.webclient.sendRequest(new FetchConnectWithFacebookRequest(this.service.getApplicationContext(), s, userAgentWebCallback));
+    }
+    
+    @Override
+    public void createAutoLoginToken(final long n, final UserAgentWebCallback userAgentWebCallback) {
+        this.webclient.sendRequest(new CreateAutoLoginTokenRequest(this.service.getApplicationContext(), n, userAgentWebCallback));
     }
     
     @Override
@@ -69,6 +79,11 @@ public final class UserVolleyWebClient implements UserWebClient
     @Override
     public void fetchProfileData(final String s, final UserAgentWebCallback userAgentWebCallback) {
         this.webclient.sendRequest(new FetchProfileDataRequest(this.service.getApplicationContext(), s, userAgentWebCallback));
+    }
+    
+    @Override
+    public void fetchUserData(final UserAgentWebCallback userAgentWebCallback) {
+        this.webclient.sendRequest(new FetchUserDataRequest(this.service.getApplicationContext(), userAgentWebCallback));
     }
     
     @Override

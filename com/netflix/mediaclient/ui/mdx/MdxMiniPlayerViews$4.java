@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.mdx;
 
 import android.view.ViewGroup$MarginLayoutParams;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.animation.TimeInterpolator;
@@ -36,8 +37,10 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.TimeFormatterHelper;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.ui.details.DetailsActivity$Action;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
@@ -65,7 +68,12 @@ class MdxMiniPlayerViews$4 implements View$OnClickListener
                 return;
             }
         }
-        Log.v("MdxMiniPlayerViews", "showing details actiivty");
+        if (currentVideo.getType() == VideoType.EPISODE) {
+            Log.v("MdxMiniPlayerViews", "showing details activity from episode for: " + currentVideo);
+            DetailsActivityLauncher.showEpisodeDetails(this.this$0.activity, currentVideo.getPlayable().getParentId(), currentVideo.getId(), PlayContext.EMPTY_CONTEXT, null, null);
+            return;
+        }
+        Log.v("MdxMiniPlayerViews", "showing details activity for: " + currentVideo);
         DetailsActivityLauncher.show(this.this$0.activity, currentVideo, PlayContext.EMPTY_CONTEXT, "MdxMiniPlayer");
     }
 }

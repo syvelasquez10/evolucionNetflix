@@ -127,7 +127,7 @@ public abstract class BasePaginatedAdapter<T extends Video>
     }
     
     public int getRowHeightInPx() {
-        final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage() * 1.43f + 0.5f);
+        final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.numItemsPerPage * 1.43f + 0.5f);
         if (Log.isLoggable()) {
             Log.v("BasePaginatedAdapter", "Computed view height: " + n);
         }

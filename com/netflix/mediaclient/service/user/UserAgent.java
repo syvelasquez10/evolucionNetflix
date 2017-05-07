@@ -35,7 +35,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
-import com.netflix.mediaclient.service.player.subtitles.TextStyle;
+import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
 import com.netflix.mediaclient.javabridge.ui.Registration;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
 import java.util.List;
@@ -157,6 +157,25 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             }
         }
         return null;
+    }
+    
+    private void handleAutoLogin(final Intent intent) {
+        Log.d("nf_service_useragent", "Handle autologin");
+        final String stringExtra = intent.getStringExtra("token");
+        if (StringUtils.isEmpty(stringExtra)) {
+            Log.e("nf_service_useragent", "Token not found, autologin is not possible");
+            return;
+        }
+        Log.d("nf_service_useragent", "Execute autologin with token: " + stringExtra);
+        if (this.mUser != null) {
+            Log.e("nf_service_useragent", "User is already logged in, autologin is NOT possible!");
+            return;
+        }
+        this.mUserWebClient.autoLogin(stringExtra, new UserAgent$6(this));
+    }
+    
+    private void handleCreateAutoLoginToken(final Intent intent) {
+        Log.e("nf_service_useragent", "You can not create auto login token in production!");
     }
     
     private boolean isAccountDataAvailable() {
@@ -523,9 +542,36 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         return this.mSubtitleSettings;
     }
     
+    public boolean handleCommand(final Intent intent) {
+        if (intent == null) {
+            Log.w("nf_service_useragent", "Intent is null");
+            return false;
+        }
+        final String action = intent.getAction();
+        if (Log.isLoggable()) {
+            Log.d("nf_service_useragent", "Received command " + action);
+        }
+        if ("com.netflix.mediaclient.intent.action.USER_AUTOLOGIN".equals(action)) {
+            this.handleAutoLogin(intent);
+        }
+        else {
+            if (!"com.netflix.mediaclient.intent.action.USER_CREATE_AUTOLOGIN_TOKEN".equals(action)) {
+                Log.e("nf_service_useragent", "Uknown command!");
+                return false;
+            }
+            this.handleCreateAutoLoginToken(intent);
+        }
+        return true;
+    }
+    
     @Override
     public void initialized(final Status status) {
         this.initCompleted(status);
+    }
+    
+    @Override
+    public boolean isAgeVerified() {
+        return this.mUser != null && this.mUser.isAgeVerified();
     }
     
     public boolean isCurrentProfileFacebookConnected() {
@@ -730,6 +776,10 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     @Override
     public void userAccountInactive() {
         this.mCurrentUserAccount = null;
+    }
+    
+    public void verifyAge(final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
+        this.launchTask(new UserAgent$VerifyAgeTask(this, userAgent$UserAgentCallback));
     }
     
     public void verifyPin(final String s, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {

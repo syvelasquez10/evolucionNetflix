@@ -4,7 +4,9 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.KubrickConfigData$KubrickCell;
+
 public interface KubrickConfiguration
 {
-    boolean isKubrickEnabled();
+    KubrickConfigData$KubrickCell getCell();
 }

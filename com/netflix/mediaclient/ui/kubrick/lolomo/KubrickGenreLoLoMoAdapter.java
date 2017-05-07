@@ -4,14 +4,12 @@
 
 package com.netflix.mediaclient.ui.kubrick.lolomo;
 
-import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter;
-import java.util.List;
-import com.netflix.mediaclient.servicemgr.interface_.LoMo;
-import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
+import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter;
+import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
+import java.util.List;
 import android.widget.AbsListView;
-import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter$RowHolder;
 import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter$LoMoRowContent;
 import android.widget.TextView;
@@ -39,28 +37,12 @@ public class KubrickGenreLoLoMoAdapter extends GenreLoLoMoAdapter
     
     @Override
     protected int getViewLayoutId() {
-        return 2130903122;
-    }
-    
-    @Override
-    protected TextView initTitleView(final View view) {
-        final TextView textViewToBold = (TextView)view.findViewById(2131427597);
-        if (BrowseExperience.isKubrickKids()) {
-            textViewToBold.setTextColor(this.activity.getResources().getColor(2131230864));
-            textViewToBold.setTextSize(0, (float)this.activity.getResources().getDimensionPixelSize(2131296349));
-            ViewUtils.setTextViewToBold(textViewToBold);
-        }
-        return textViewToBold;
+        return 2130903110;
     }
     
     @Override
     public void onScroll(final AbsListView absListView, final int n, final int n2, final int n3) {
         this.heroTitleScroller.onScroll(absListView);
-    }
-    
-    @Override
-    protected boolean shouldShowRowTitle(final Genre genre) {
-        return super.shouldShowRowTitle(genre) && !KubrickLolomoUtils.isDuplicateRow(genre);
     }
     
     @Override

@@ -4,16 +4,15 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
+import com.netflix.mediaclient.util.ThreadUtils;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.IBrowseManager;
-import com.netflix.mediaclient.util.MdxUtils$SetVideoRatingCallback;
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.view.View;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -28,199 +27,153 @@ import android.app.FragmentManager;
 import android.app.Fragment;
 import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
-import java.util.HashSet;
+import android.app.DialogFragment;
 import com.netflix.mediaclient.service.mdx.MdxKeyEventHandler;
 import com.netflix.mediaclient.service.mdx.MdxKeyEventHandler$MdxKeyEventCallbacks;
 import com.netflix.mediaclient.service.mdx.MdxErrorHandler;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
 import com.netflix.mediaclient.ui.common.LanguageSelector;
 import android.os.Handler;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import java.util.Set;
 import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
+import com.netflix.mediaclient.ui.details.NetflixRatingBar$RatingBarDataProvider;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.util.MdxUtils;
-import com.netflix.mediaclient.util.ThreadUtils;
-import com.netflix.mediaclient.media.Language;
-import android.app.DialogFragment;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.Log;
+import android.widget.SeekBar;
+import com.netflix.mediaclient.media.Language;
+import com.netflix.mediaclient.servicemgr.IMdx;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 
-class MdxMiniPlayerFrag$6 implements RemotePlayer$RemoteTargetUiListener
+class MdxMiniPlayerFrag$6 implements MdxMiniPlayerViews$MdxMiniPlayerViewCallbacks
 {
+    private long startTrackingTouchTime;
     final /* synthetic */ MdxMiniPlayerFrag this$0;
     
     MdxMiniPlayerFrag$6(final MdxMiniPlayerFrag this$0) {
         this.this$0 = this$0;
     }
     
-    private void handleSeekbarUpdate(final RemotePlayer$RemoteTargetState remotePlayer$RemoteTargetState) {
-        if (!this.this$0.draggingInProgress && MdxMiniPlayerFrag.state.controlsEnabled) {
-            if (this.this$0.remotePlayer.getPositionInSeconds() >= 0) {
-                this.this$0.log("Update video seekbar - pos: " + remotePlayer$RemoteTargetState.positionInSeconds);
-                this.this$0.views.setProgress(remotePlayer$RemoteTargetState.positionInSeconds);
-            }
-            if (remotePlayer$RemoteTargetState.buffering || remotePlayer$RemoteTargetState.paused) {
-                this.this$0.stopSimulatedVideoPositionUpdate();
-                return;
-            }
-            if (!remotePlayer$RemoteTargetState.paused && this.this$0.isShowing()) {
-                this.this$0.startSimulatedVideoPositionUpdate(remotePlayer$RemoteTargetState.positionInSeconds);
-            }
-        }
-    }
-    
-    private boolean isErrorRequireDisableControl(final int n) {
-        return n >= 100 && n < 300;
+    @Override
+    public VideoDetails getCurrentVideo() {
+        return this.this$0.currentVideo;
     }
     
     @Override
-    public void cancelDialog() {
-        if (this.this$0.activity.destroyed()) {
+    public ServiceManager getManager() {
+        return this.this$0.manager;
+    }
+    
+    @Override
+    public IMdx getMdx() {
+        return this.this$0.manager.getMdx();
+    }
+    
+    @Override
+    public boolean isEpisodeReady() {
+        return MdxMiniPlayerFrag.state.isEpisodeReady;
+    }
+    
+    @Override
+    public boolean isLanguageReady() {
+        Language language;
+        if (this.this$0.remotePlayer == null) {
+            language = null;
+        }
+        else {
+            language = this.this$0.remotePlayer.getLanguage();
+        }
+        return language != null && language.isLanguageSwitchEnabled();
+    }
+    
+    @Override
+    public boolean isPanelExpanded() {
+        return this.this$0.activity.isPanelExpanded();
+    }
+    
+    @Override
+    public boolean isPlayingRemotely() {
+        return this.this$0.isPlayingRemotely();
+    }
+    
+    @Override
+    public boolean isRemotePlayerReady() {
+        return this.this$0.remotePlayer != null;
+    }
+    
+    @Override
+    public void notifyControlsEnabled(final boolean controlsEnabled) {
+        MdxMiniPlayerFrag.state.controlsEnabled = controlsEnabled;
+    }
+    
+    @Override
+    public void onPauseClicked() {
+        if (this.this$0.remotePlayer != null) {
+            this.this$0.remotePlayer.pause();
+        }
+    }
+    
+    @Override
+    public void onProgressChanged(final SeekBar seekBar, final int n, final boolean b) {
+    }
+    
+    @Override
+    public void onResumeClicked() {
+        if (this.this$0.remotePlayer != null) {
+            this.this$0.remotePlayer.resume();
+        }
+    }
+    
+    @Override
+    public void onShowLanguageSelectorDialog() {
+        if (this.this$0.remotePlayer != null) {
+            final Language language = this.this$0.remotePlayer.getLanguage();
+            this.this$0.log("Displaying language dialog, language: " + language);
+            this.this$0.languageSelector.display(language);
+        }
+    }
+    
+    @Override
+    public void onSkipBackClicked() {
+        if (this.this$0.remotePlayer != null) {
+            this.this$0.remotePlayer.skipBackThirtySeconds();
+            this.this$0.stopSimulatedVideoPositionUpdate();
+        }
+    }
+    
+    @Override
+    public void onStartTrackingTouch(final SeekBar seekBar) {
+        Log.v("MdxMiniPlayerFrag", "onStartTrackingTouch");
+        this.this$0.draggingInProgress = true;
+        this.startTrackingTouchTime = System.nanoTime();
+        this.this$0.stopSimulatedVideoPositionUpdate();
+    }
+    
+    @Override
+    public void onStopClicked() {
+        if (this.this$0.remotePlayer != null) {
+            this.this$0.remotePlayer.stop(false);
+        }
+    }
+    
+    @Override
+    public void onStopTrackingTouch(final SeekBar progressByBif, final boolean b) {
+        Log.v("MdxMiniPlayerFrag", "onStopTrackingTouch, pos: " + progressByBif.getProgress());
+        this.this$0.draggingInProgress = false;
+        if (b) {
+            final int n = (int)((System.nanoTime() - this.startTrackingTouchTime) / 1000000000L);
+            final int progress = progressByBif.getProgress() + n;
+            if (Log.isLoggable()) {
+                Log.v("MdxMiniPlayerFrag", "Seconds elapsed during seek (back to snap position): " + n + ", new time: " + progress);
+            }
+            this.this$0.views.setProgress(progress);
+            this.this$0.startSimulatedVideoPositionUpdate(progress);
             return;
         }
-        if (Log.isLoggable()) {
-            this.this$0.log("cancelDialog");
-        }
-        this.this$0.activity.removeVisibleDialog();
-    }
-    
-    @Override
-    public void endOfPlayback() {
-        if (Log.isLoggable()) {
-            this.this$0.log("endOfPlayback");
-        }
-        this.this$0.isEndOfPlayback = true;
+        Log.v("MdxMiniPlayerFrag", "Seeking...");
         this.this$0.views.setControlsEnabled(false);
-        this.this$0.activity.notifyMdxEndOfPlayback();
-        MdxMiniPlayerFrag.state.reset();
-        this.this$0.currentVideo = null;
-    }
-    
-    @Override
-    public void error(final int n, final String s) {
-        if (Log.isLoggable()) {
-            this.this$0.log("error - code: " + n + ", descrip: " + s);
-        }
-        this.this$0.isEndOfPlayback = true;
-        if (!this.this$0.isInBackground) {
-            this.this$0.mdxErrorHandler.handleMdxError(n, s);
-        }
-        if (this.isErrorRequireDisableControl(n)) {
-            this.this$0.views.setControlsEnabled(false);
-            this.this$0.views.enableMdxMenu();
-            this.this$0.activity.notifyMdxEndOfPlayback();
-        }
-        this.this$0.views.updateMdxMenu();
-    }
-    
-    @Override
-    public void mdxStateChanged(final boolean b) {
-        if (Log.isLoggable()) {
-            this.this$0.log("mdxStateChanged, ready: " + b);
-        }
-    }
-    
-    @Override
-    public void showDialog(final RemoteDialog remoteDialog) {
-        if (this.this$0.activity.destroyed()) {
-            return;
-        }
-        if (Log.isLoggable()) {
-            this.this$0.log("showDialog, " + remoteDialog.toString());
-        }
-        final ShowMessageDialogFrag instance = ShowMessageDialogFrag.newInstance(remoteDialog);
-        instance.onManagerReady(this.this$0.manager, CommonStatus.OK);
-        instance.setCancelable(true);
-        this.this$0.activity.showDialog(instance);
-    }
-    
-    @Override
-    public void targetListChanged() {
-        this.this$0.log("targetListChanged");
-    }
-    
-    @Override
-    public void updateDuration(final int progressMax) {
-        if (this.this$0.activity.destroyed()) {
-            return;
-        }
-        this.this$0.log("updateDuration, " + progressMax);
-        if (progressMax > 0) {
-            this.this$0.views.setProgressMax(progressMax);
-            return;
-        }
-        Log.w("MdxMiniPlayerFrag", "We received an invalid duration - ignoring");
-    }
-    
-    @Override
-    public void updateLanguage(final Language language) {
-        if (Log.isLoggable()) {
-            this.this$0.log("updateLanguage from remote player: " + language);
-        }
-        this.this$0.updateLanguage();
-    }
-    
-    @Override
-    public void updateTargetCapabilities(final MdxTargetCapabilities mdxTargetCapabilities) {
-        if (this.this$0.activity.destroyed()) {
-            return;
-        }
-        if (mdxTargetCapabilities == null) {
-            Log.w("MdxMiniPlayerFrag", "Capabilities is null!");
-            this.this$0.updateVolumeState(false);
-            return;
-        }
-        if (Log.isLoggable()) {
-            this.this$0.log("updateTargetCapabilities, " + mdxTargetCapabilities.toString());
-        }
-        this.this$0.updateVolumeState(mdxTargetCapabilities.isVolumeControl());
-    }
-    
-    @Override
-    public void updateUi(final RemotePlayer$RemoteTargetState remotePlayer$RemoteTargetState) {
-        final boolean b = false;
-        ThreadUtils.assertOnMain();
-        if (Log.isLoggable()) {
-            this.this$0.log("updateUi, " + remotePlayer$RemoteTargetState.toString());
-        }
-        this.this$0.isEndOfPlayback = false;
-        MdxMiniPlayerFrag.state.mostRecentVolume = remotePlayer$RemoteTargetState.volume;
-        this.this$0.updateVisibility(remotePlayer$RemoteTargetState.showMiniPlayer, remotePlayer$RemoteTargetState.paused);
-        final MdxMiniPlayerViews access$300 = this.this$0.views;
-        boolean controlsEnabled = b;
-        if (!remotePlayer$RemoteTargetState.buffering) {
-            controlsEnabled = b;
-            if (remotePlayer$RemoteTargetState.showMiniPlayer) {
-                controlsEnabled = true;
-            }
-        }
-        access$300.setControlsEnabled(controlsEnabled);
-        this.handleSeekbarUpdate(remotePlayer$RemoteTargetState);
-    }
-    
-    @Override
-    public void updateVideoMetadata() {
-        this.this$0.log("updateVideoMetadata");
-        if (this.this$0.manager == null) {
-            return;
-        }
-        final IMdx mdx = this.this$0.mdxMiniPlayerViewCallbacks.getMdx();
-        final VideoDetails videoDetail = mdx.getVideoDetail();
-        if (this.this$0.currentVideo != null && MdxUtils.isSameVideoPlaying(mdx, this.this$0.currentVideo.getPlayable().getPlayableId())) {
-            this.this$0.log("Same video is already playing, doing nothing");
-            return;
-        }
-        if (videoDetail == null) {
-            Log.w("MdxMiniPlayerFrag", "null video details provided by mdx agent");
-            return;
-        }
-        this.this$0.log("Different video, updating to: " + videoDetail.getTitle());
-        this.this$0.updateVideoMetadata(videoDetail);
+        this.this$0.remotePlayer.seek(MdxUtils.setProgressByBif(progressByBif));
     }
 }

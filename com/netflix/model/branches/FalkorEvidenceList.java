@@ -7,9 +7,8 @@ package com.netflix.model.branches;
 import android.os.Parcel;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.service.falkor.Falkor$Creator;
-import java.util.Set;
-import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
 import java.util.List;
+import java.util.Set;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.netflix.falkor.Func;
@@ -21,7 +20,7 @@ import com.netflix.falkor.BranchMap;
 public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorObject
 {
     private static final String TAG = "FalkorEvidenceList";
-    private UnsummarizedList<FalkorSocialBadge> socialEvidence;
+    private UnsummarizedList<FalkorSocialBadge> socialEvidenceList;
     private ListOfMoviesSummary summary;
     private UnsummarizedList<Ref> videoEvidence;
     
@@ -47,19 +46,12 @@ public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorO
                 return this.summary;
             }
             case "socialEvidence": {
-                return this.socialEvidence;
+                return this.socialEvidenceList;
             }
             case "videoEvidence": {
                 return this.videoEvidence;
             }
         }
-    }
-    
-    public List<FriendProfile> getFacebookFriends() {
-        if (this.summary == null) {
-            return null;
-        }
-        return this.summary.getFacebookFriends();
     }
     
     public int getHeroTrackId() {
@@ -79,7 +71,7 @@ public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorO
         if (this.summary != null) {
             keys.add("summary");
         }
-        if (this.socialEvidence != null) {
+        if (this.socialEvidenceList != null) {
             keys.add("socialEvidence");
         }
         if (this.videoEvidence != null) {
@@ -129,7 +121,7 @@ public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorO
                 return this.summary = new ListOfMoviesSummary();
             }
             case "socialEvidence": {
-                return this.socialEvidence = new UnsummarizedList<FalkorSocialBadge>(Falkor$Creator.FalkorSocialBadge());
+                return this.socialEvidenceList = new UnsummarizedList<FalkorSocialBadge>(Falkor$Creator.FalkorSocialBadge());
             }
             case "videoEvidence": {
                 return this.videoEvidence = new UnsummarizedList<Ref>(Falkor$Creator.Ref);
@@ -190,7 +182,7 @@ public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorO
                 this.summary = (ListOfMoviesSummary)o;
             }
             case "socialEvidence": {
-                this.socialEvidence = (UnsummarizedList<FalkorSocialBadge>)o;
+                this.socialEvidenceList = (UnsummarizedList<FalkorSocialBadge>)o;
             }
             case "videoEvidence": {
                 this.videoEvidence = (UnsummarizedList<Ref>)o;

@@ -6,9 +6,9 @@ package com.netflix.mediaclient.javabridge.ui;
 
 public enum IMedia$SubtitleOutputMode
 {
+    BINARY_IMAGE(3), 
     DATA_JSON(2), 
-    DATA_XML(1), 
-    EVENTS(0);
+    DATA_XML(1);
     
     protected int mValue;
     

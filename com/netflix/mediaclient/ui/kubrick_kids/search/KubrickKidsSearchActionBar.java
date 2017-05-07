@@ -15,7 +15,7 @@ public class KubrickKidsSearchActionBar extends SearchActionBar
     
     @Override
     protected int getActiveSearchIconResId() {
-        return 2130837728;
+        return 2130837730;
     }
     
     @Override
@@ -25,17 +25,17 @@ public class KubrickKidsSearchActionBar extends SearchActionBar
     
     @Override
     protected Integer getSearchCloseButtonTint() {
-        return -16777216;
+        return this.activity.getResources().getColor(2131230824);
     }
     
     @Override
     protected int getSearchViewBgResId() {
-        return 2130837871;
+        return 2130837883;
     }
     
     @Override
     protected int getSearchViewRightBgResId() {
-        return 2130837873;
+        return 2130837885;
     }
     
     @Override
@@ -45,6 +45,6 @@ public class KubrickKidsSearchActionBar extends SearchActionBar
     
     @Override
     protected Integer getSearchVoiceButtonTint() {
-        return -16777216;
+        return this.activity.getResources().getColor(2131230824);
     }
 }

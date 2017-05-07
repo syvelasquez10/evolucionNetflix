@@ -4,24 +4,55 @@
 
 package com.netflix.mediaclient.util;
 
-import java.io.InputStream;
 import java.net.URLConnection;
-import java.io.IOException;
 import java.io.FileWriter;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
+import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.Log;
-import java.io.File;
 import android.os.Environment;
 import java.io.FileOutputStream;
-import java.io.Closeable;
 import java.net.URL;
+import java.io.File;
 import android.content.Context;
+import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.Closeable;
 
 public final class FileUtils
 {
     public static final int BYTES_PER_KB = 1024;
     public static final int BYTES_PER_MB = 1048576;
+    private static final int DEFAULT_BUFFER_SIZE = 4096;
+    public static final int EOF = -1;
     private static final String TAG = "FileUtils";
+    
+    public static void closeQuietly(final Closeable closeable) {
+        if (closeable == null) {
+            return;
+        }
+        try {
+            closeable.close();
+        }
+        catch (IOException ex) {}
+    }
+    
+    public static long copy(final InputStream inputStream, final OutputStream outputStream) {
+        long n = 0L;
+        final byte[] array = new byte[4096];
+        while (true) {
+            final int read = inputStream.read(array);
+            if (-1 == read) {
+                break;
+            }
+            outputStream.write(array, 0, read);
+            n += read;
+        }
+        return n;
+    }
     
     public static boolean copyFileFromAssetToFS(final Context p0, final String p1, final String p2, final boolean p3) {
         // 
@@ -227,6 +258,16 @@ public final class FileUtils
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
+    public static boolean deleteRecursive(final File file) {
+        if (file.isDirectory()) {
+            final File[] listFiles = file.listFiles();
+            for (int length = listFiles.length, i = 0; i < length; ++i) {
+                deleteRecursive(listFiles[i]);
+            }
+        }
+        return file.delete();
+    }
+    
     public static String download(final Context context, String openConnection) {
         final Closeable closeable = null;
         final String substring = openConnection.substring(openConnection.lastIndexOf(47) + 1);
@@ -264,6 +305,13 @@ public final class FileUtils
         return "file://" + context2.getFilesDir().getAbsolutePath() + "/" + substring;
     }
     
+    public static String extractFileName(final String s) {
+        if (StringUtils.isEmpty(s)) {
+            return "";
+        }
+        return s.substring("file://".length());
+    }
+    
     @SuppressLint({ "WorldReadableFiles" })
     public static FileOutputStream getOutputStream(final Context context, final String s, final boolean b) {
         if (b) {
@@ -275,6 +323,46 @@ public final class FileUtils
             file.createNewFile();
         }
         return new FileOutputStream(file);
+    }
+    
+    public static boolean moveFile(final String s, final String s2) {
+        return new File(s).renameTo(new File(s2));
+    }
+    
+    public static FileInputStream openInputStream(final File file) {
+        if (!file.exists()) {
+            throw new FileNotFoundException("File '" + file + "' does not exist");
+        }
+        if (file.isDirectory()) {
+            throw new IOException("File '" + file + "' exists but is a directory");
+        }
+        if (!file.canRead()) {
+            throw new IOException("File '" + file + "' cannot be read");
+        }
+        return new FileInputStream(file);
+    }
+    
+    public static String readFile(final String s, final Charset charset) {
+        final File file = new File(s);
+        final FileInputStream fileInputStream = new FileInputStream(file);
+        final byte[] array = new byte[(int)file.length()];
+        fileInputStream.read(array);
+        fileInputStream.close();
+        return new String(array, charset);
+    }
+    
+    public static byte[] readFileToByteArray(final File file) {
+        Closeable openInputStream = null;
+        try {
+            return toByteArray((InputStream)(openInputStream = openInputStream(file)));
+        }
+        finally {
+            closeQuietly(openInputStream);
+        }
+    }
+    
+    public static String readFileWithUTF8Encoding(final String s) {
+        return readFile(s, Charset.forName("UTF-8"));
     }
     
     public static void removeFilesFromFS(final Context context, final String[] array) {
@@ -290,6 +378,12 @@ public final class FileUtils
                 }
             }
         }
+    }
+    
+    public static byte[] toByteArray(final InputStream inputStream) {
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        copy(inputStream, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
     }
     
     public static void writeStringToFile(final String s, final String s2, final String s3) {

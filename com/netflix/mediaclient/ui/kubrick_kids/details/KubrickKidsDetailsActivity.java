@@ -11,6 +11,8 @@ import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.kubrick.details.KubrickDetailActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
@@ -23,14 +25,14 @@ public class KubrickKidsDetailsActivity extends DetailsActivity implements PlayC
     
     @Override
     protected NetflixActionBar createActionBar() {
-        final NetflixActionBar actionBar = super.createActionBar();
-        final View viewById = this.findViewById(2131427444);
+        final KubrickDetailActionBar kubrickDetailActionBar = new KubrickDetailActionBar(this, this.hasUpAction());
+        kubrickDetailActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
+        kubrickDetailActionBar.setTitle("");
+        final View viewById = this.findViewById(2131427430);
         if (viewById != null) {
-            viewById.setVisibility(8);
+            viewById.setBackgroundColor(0);
         }
-        actionBar.setLogoType(NetflixActionBar$LogoType.GONE);
-        actionBar.setTitle("");
-        return actionBar;
+        return kubrickDetailActionBar;
     }
     
     @Override
@@ -51,7 +53,7 @@ public class KubrickKidsDetailsActivity extends DetailsActivity implements PlayC
                 return KubrickKidsShowDetailsFrag.create(this.videoId);
             }
             case 3: {
-                return KubrickKidsCharacterDetailsFrag.create(this.videoId);
+                return KubrickKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color", 2131230901));
             }
         }
     }

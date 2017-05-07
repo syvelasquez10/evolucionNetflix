@@ -9,14 +9,13 @@ import com.netflix.falkor.PQL;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayContext;
 import com.netflix.mediaclient.util.TimeUtils;
 import com.netflix.mediaclient.service.falkor.Falkor$Creator;
-import com.netflix.mediaclient.util.UriUtil;
 import java.util.HashSet;
 import java.util.Set;
-import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.IconFontGlyph;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.UriUtil;
 import com.netflix.model.leafs.Episode$Detail;
 import com.netflix.falkor.Sentinel;
 import com.netflix.mediaclient.Log;
@@ -25,7 +24,6 @@ import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.model.leafs.Video$Evidence;
 import com.netflix.model.leafs.Video$Summary;
-import com.netflix.model.leafs.social.SocialEvidence;
 import com.netflix.model.leafs.SocialBadge;
 import com.netflix.model.leafs.TrackableListSummary;
 import com.netflix.model.leafs.Video$SearchTitle;
@@ -36,7 +34,6 @@ import com.netflix.model.leafs.Video$HeroImages;
 import com.netflix.falkor.Ref;
 import com.netflix.falkor.BranchMap;
 import com.netflix.model.leafs.Video$Detail;
-import com.netflix.model.leafs.Video$BookmarkStill;
 import com.netflix.model.leafs.Video$Bookmark;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
@@ -57,7 +54,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
 {
     private static final String TAG = "FalkorVideo";
     protected Video$Bookmark bookmark;
-    private Video$BookmarkStill bookmarkStill;
     private Video$Detail detail;
     private BranchMap<Ref> episodes;
     private Video$HeroImages heroImages;
@@ -69,7 +65,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     private BranchMap<Ref> seasons;
     private SummarizedList<Ref, TrackableListSummary> sims;
     private SocialBadge socialBadge;
-    private SocialEvidence socialEvidence;
     private Video$Summary summary;
     private Video$Evidence videoEvidence;
     
@@ -165,8 +160,13 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     }
     
     @Override
-    public boolean canBeSharedOnFacebook() {
-        return this.isCurrentProfileFacebookConnected() && this.socialEvidence != null && !this.socialEvidence.isVideoHidden();
+    public String createModifiedBigStillUrl() {
+        return UriUtil.buildStillUrlFromPos(this, true);
+    }
+    
+    @Override
+    public String createModifiedStillUrl() {
+        return UriUtil.buildStillUrlFromPos(this, false);
     }
     
     @Override
@@ -192,12 +192,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             }
             case "bookmark": {
                 return this.bookmark;
-            }
-            case "bookmarkStill": {
-                return this.bookmarkStill;
-            }
-            case "socialEvidence": {
-                return this.socialEvidence;
             }
             case "searchTitle": {
                 return this.searchTitle;
@@ -229,19 +223,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             return null;
         }
         return this.detail.actors;
-    }
-    
-    @Override
-    public String getBaseUrl() {
-        final Episode$Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
-        if (currentEpisodeDetail != null) {
-            return currentEpisodeDetail.baseUrl;
-        }
-        final Video$Detail detail = this.getDetail();
-        if (detail != null) {
-            return detail.baseUrl;
-        }
-        return null;
     }
     
     @Override
@@ -403,14 +384,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     }
     
     @Override
-    public List<FriendProfile> getFacebookFriends() {
-        if (this.socialEvidence == null) {
-            return null;
-        }
-        return this.socialEvidence.getFacebookFriends();
-    }
-    
-    @Override
     public String getGenres() {
         if (this.detail == null) {
             return null;
@@ -442,6 +415,14 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             return null;
         }
         return detail.mdxVertUrl;
+    }
+    
+    @Override
+    public String getHorzDispSmallUrl() {
+        if (this.summary == null) {
+            return null;
+        }
+        return this.summary.getHorzDispSmallUrl();
     }
     
     @Override
@@ -494,12 +475,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
         if (this.bookmark != null) {
             set.add("bookmark");
         }
-        if (this.bookmarkStill != null) {
-            set.add("bookmarkStill");
-        }
-        if (this.socialEvidence != null) {
-            set.add("socialEvidence");
-        }
         if (this.searchTitle != null) {
             set.add("searchTitle");
         }
@@ -525,14 +500,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     }
     
     @Override
-    public String getKubrickHorzImgUrl() {
-        if (this.kubrick == null) {
-            return null;
-        }
-        return this.kubrick.horzDispUrl;
-    }
-    
-    @Override
     public String getKubrickStoryImgUrl() {
         if (this.kubrick == null) {
             return null;
@@ -547,11 +514,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             return 0;
         }
         return detail.logicalStart;
-    }
-    
-    @Override
-    public String getModifiedStillUrl() {
-        return UriUtil.buildStillUrlFromPos(this);
     }
     
     @Override
@@ -619,12 +581,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             }
             case "bookmark": {
                 return this.bookmark = new Video$Bookmark();
-            }
-            case "bookmarkStill": {
-                return this.bookmarkStill = new Video$BookmarkStill();
-            }
-            case "socialEvidence": {
-                return this.socialEvidence = new SocialEvidence();
             }
             case "searchTitle": {
                 return this.searchTitle = new Video$SearchTitle();
@@ -866,6 +822,24 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     }
     
     @Override
+    public String getTrickplayBigImgBaseUrl() {
+        final Video$Detail detail = this.getDetail();
+        if (detail == null) {
+            return null;
+        }
+        return detail.baseUrlBig;
+    }
+    
+    @Override
+    public String getTrickplayImgBaseUrl() {
+        final Video$Detail detail = this.getDetail();
+        if (detail == null) {
+            return null;
+        }
+        return detail.baseUrl;
+    }
+    
+    @Override
     public String getTvCardUrl() {
         final Video$Detail detail = this.getDetail();
         if (detail != null) {
@@ -928,6 +902,12 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             return 0;
         }
         return this.kubrick.year;
+    }
+    
+    @Override
+    public boolean isAgeProtected() {
+        final Video$Detail detail = this.getDetail();
+        return detail != null && detail.isAgeProtected;
     }
     
     @Override
@@ -1056,12 +1036,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             case "bookmark": {
                 this.bookmark = (Video$Bookmark)o;
             }
-            case "bookmarkStill": {
-                this.bookmarkStill = (Video$BookmarkStill)o;
-            }
-            case "socialEvidence": {
-                this.socialEvidence = (SocialEvidence)o;
-            }
             case "socialBadge": {
                 this.socialBadge = (SocialBadge)o;
             }
@@ -1096,6 +1070,6 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     
     @Override
     public String toString() {
-        return "FalkorVideo [getId()=" + this.getId() + ", getTitle()=" + this.getTitle() + "]";
+        return "FalkorVideo [getId()=" + this.getId() + ", getTitle()=" + this.getTitle() + ", getType()=" + this.getType() + "]";
     }
 }

@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.protocol.nflx;
 
 import com.netflix.mediaclient.util.NflxProtocolUtils$VideoInfo;
-import android.app.Activity;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.NflxProtocolUtils;

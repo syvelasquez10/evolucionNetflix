@@ -43,8 +43,8 @@ public class KubrickPaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
     
     @Override
     public int getRowHeightInPx() {
-        final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage() * 0.5625f);
-        final int n2 = this.activity.getResources().getDimensionPixelSize(2131296451) + n;
+        final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.numItemsPerPage * 0.5625f);
+        final int n2 = this.activity.getResources().getDimensionPixelSize(2131296442) + n;
         if (Log.isLoggable()) {
             Log.v("KubrickPaginatedCwAdapter", "Computed view height: " + n + ", height with footer: " + n2 + " (px)");
         }
@@ -53,12 +53,12 @@ public class KubrickPaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
     
     @Override
     protected View getView(final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final List<CWVideo> list, final int n, final int n2, final BasicLoMo basicLoMo) {
-        KubrickCwViewGroup kubrickCwViewGroup;
-        if ((kubrickCwViewGroup = ((ObjectRecycler<KubrickCwViewGroup>)objectRecycler$ViewRecycler).pop(KubrickCwViewGroup.class)) == null) {
-            kubrickCwViewGroup = new KubrickCwViewGroup((Context)this.getActivity());
-            kubrickCwViewGroup.init(n);
+        KubrickHighDensityCwViewGroup kubrickHighDensityCwViewGroup;
+        if ((kubrickHighDensityCwViewGroup = ((ObjectRecycler<KubrickHighDensityCwViewGroup>)objectRecycler$ViewRecycler).pop(KubrickHighDensityCwViewGroup.class)) == null) {
+            kubrickHighDensityCwViewGroup = new KubrickHighDensityCwViewGroup((Context)this.getActivity());
+            kubrickHighDensityCwViewGroup.init(n);
         }
-        ((VideoViewGroup<CWVideo, V>)kubrickCwViewGroup).updateDataThenViews(list, n, n2, this.getListViewPos(), basicLoMo);
-        return (View)kubrickCwViewGroup;
+        ((VideoViewGroup<CWVideo, V>)kubrickHighDensityCwViewGroup).updateDataThenViews(list, n, n2, this.getListViewPos(), basicLoMo);
+        return (View)kubrickHighDensityCwViewGroup;
     }
 }

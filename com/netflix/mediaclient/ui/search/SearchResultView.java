@@ -11,6 +11,7 @@ import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchSuggestion;
 import android.view.View$OnClickListener;
 import android.view.View;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchPerson;
 import android.annotation.SuppressLint;
@@ -49,7 +50,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public SearchResultView(final Context context, final int resId) {
         super(context);
-        this.resId = 2130903187;
+        this.resId = 2130903181;
         this.ignoreClicks = false;
         this.resId = resId;
         this.init();
@@ -57,14 +58,14 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
     
     public SearchResultView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.resId = 2130903187;
+        this.resId = 2130903181;
         this.ignoreClicks = false;
         this.init();
     }
     
     private void findViews() {
-        this.img = (AdvancedImageView)this.findViewById(2131427813);
-        this.title = (TextView)this.findViewById(2131427814);
+        this.img = (AdvancedImageView)this.findViewById(2131427800);
+        this.title = (TextView)this.findViewById(2131427801);
     }
     
     private CharSequence getFormattedYearSpannable(final String s, final String s2) {
@@ -75,7 +76,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final int length = spannableString.length();
         final int n = length - s2.length() - 4;
         spannableString.setSpan((Object)new AbsoluteSizeSpan(this.getResources().getDimensionPixelSize(2131296345)), n, length, 0);
-        spannableString.setSpan((Object)new ForegroundColorSpan(this.getResources().getColor(2131230836)), n, length, 0);
+        spannableString.setSpan((Object)new ForegroundColorSpan(this.getResources().getColor(2131230841)), n, length, 0);
         return (CharSequence)spannableString;
     }
     
@@ -83,7 +84,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(this.resId, (ViewGroup)this);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        this.setForeground(this.getResources().getDrawable(2130837880));
+        this.setForeground(this.getResources().getDrawable(2130837891));
         this.findViews();
         this.setupViews();
         this.videoClickListener = new VideoDetailsClickListener(netflixActivity, this);
@@ -104,7 +105,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
             n = text.length() - 1;
         }
         final SpannableString text2 = new SpannableString((CharSequence)text);
-        ((Spannable)text2).setSpan((Object)new ForegroundColorSpan(this.getContext().getResources().getColor(2131230887)), index, n, 33);
+        ((Spannable)text2).setSpan((Object)new ForegroundColorSpan(this.getContext().getResources().getColor(2131230881)), index, n, 33);
         this.title.setText((CharSequence)text2);
     }
     
@@ -129,7 +130,7 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
             this.img.setVisibility(0);
             final String imgUrl = searchPerson.getImgUrl();
             if (StringUtils.isNotEmpty(imgUrl)) {
-                NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, imgUrl, IClientLogging$AssetType.heroImage, name, false, false);
+                NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, imgUrl, IClientLogging$AssetType.heroImage, name, BrowseExperience.getImageLoaderConfigNoPlaceholder(), false);
             }
             else {
                 this.img.setImageResource(2130837573);
@@ -173,9 +174,9 @@ public class SearchResultView extends FrameLayout implements PlayContextProvider
             else {
                 s = searchVideo.getHorzDispUrl();
             }
-            NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, s, IClientLogging$AssetType.boxArt, searchVideo.getTitle(), true, true);
+            NetflixActivity.getImageLoader(this.getContext()).showImg(this.img, s, IClientLogging$AssetType.boxArt, searchVideo.getTitle(), BrowseExperience.getImageLoaderConfig(), true);
         }
-        this.videoClickListener.update((View)this, searchVideo);
+        this.videoClickListener.update((View)this, searchVideo, this.img.getPressedStateHandler());
     }
     
     public void clearTitleTextHighlighting() {

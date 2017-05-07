@@ -64,6 +64,8 @@ public class AnimationUtils
             alphaAnimateView(view, 0.0f, 1.0f, 150, (Animator$AnimatorListener)new AnimationUtils$ShowViewOnAnimatorStart(view));
             return;
         }
+        view.animate().cancel();
+        view.setAlpha(1.0f);
         view.setVisibility(0);
     }
     
@@ -73,8 +75,8 @@ public class AnimationUtils
         }
     }
     
-    public static void startPressedStateCompleteAnimation(final View view) {
-        alphaAnimateView(view, 0.7f, 1.0f, 150, null);
+    public static void startPressedStateCompleteAnimation(final View view, final Animator$AnimatorListener animator$AnimatorListener) {
+        alphaAnimateView(view, 0.7f, 1.0f, 150, animator$AnimatorListener);
     }
     
     @TargetApi(18)

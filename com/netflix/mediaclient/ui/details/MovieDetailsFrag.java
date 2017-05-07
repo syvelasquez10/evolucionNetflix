@@ -8,6 +8,9 @@ import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableObject;
+import android.support.v7.widget.RecyclerView$LayoutManager;
+import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.support.v7.widget.RecyclerView$Adapter;
@@ -17,19 +20,16 @@ import android.support.v7.widget.RecyclerView$OnScrollListener;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
 import com.netflix.mediaclient.ui.common.SimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.android.app.Status;
+import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.View;
-import android.support.v7.widget.RecyclerView$LayoutManager;
-import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
-import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
-import android.widget.TextView;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
@@ -43,7 +43,6 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     protected int numColumns;
     protected RecyclerView recyclerView;
     private long requestId;
-    private TextView similarShowsTitle;
     private int targetScrollYOffset;
     private String videoId;
     
@@ -74,14 +73,8 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     private void scrollTo(final int n) {
         if (this.primaryView != null) {
             Log.v("MovieDetailsFrag", "Posting scroll to mdp frag, offset: " + n);
-            this.primaryView.post((Runnable)new MovieDetailsFrag$4(this, n));
+            this.primaryView.post((Runnable)new MovieDetailsFrag$5(this, n));
         }
-    }
-    
-    private void setupRecyclerViewLayoutManager() {
-        final GridLayoutManager layoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns);
-        layoutManager.setSpanSizeLookup(new MovieDetailsFrag$2(this));
-        this.recyclerView.setLayoutManager(layoutManager);
     }
     
     protected void findViews(final View view) {
@@ -90,12 +83,12 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     
     @Override
     protected VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final MovieDetails movieDetails) {
-        return new MovieDetailsFrag$3(this, movieDetails);
+        return new MovieDetailsFrag$4(this, movieDetails);
     }
     
     @Override
     protected int getLayoutId() {
-        return 2130903184;
+        return 2130903178;
     }
     
     public int getScrollYOffset() {
@@ -133,7 +126,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         this.numColumns = this.retrieveNumColumns();
         this.initDetailsViewGroup(onCreateView);
         this.setupRecyclerView();
-        this.setupDetailsPageParallaxScrollListener();
+        this.detailsViewGroup.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new MovieDetailsFrag$1(this));
         return onCreateView;
     }
     
@@ -171,7 +164,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(null, this.recyclerView, (View)this.detailsViewGroup.getHeroImage(), null, this.recyclerView.getResources().getColor(2131230827), 0, null);
+                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(null, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, this.recyclerView.getResources().getColor(2131230830), 0, null);
                 this.recyclerView.setOnScrollListener(onScrollListener);
                 return onScrollListener;
             }
@@ -191,7 +184,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     }
     
     protected void setupRecyclerViewAdapter() {
-        (this.adapter = new SimilarItemsGridViewAdapter(this.recyclerView, true, this.numColumns, new MovieDetailsFrag$1(this))).addHeaderView((View)this.detailsViewGroup);
+        (this.adapter = new SimilarItemsGridViewAdapter(this.recyclerView, true, this.numColumns, new MovieDetailsFrag$2(this))).addHeaderView((View)this.detailsViewGroup);
         this.recyclerView.setAdapter(this.adapter);
     }
     
@@ -199,13 +192,15 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296342), this.numColumns));
     }
     
+    protected void setupRecyclerViewLayoutManager() {
+        final GridLayoutManager layoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns);
+        layoutManager.setSpanSizeLookup(new MovieDetailsFrag$3(this));
+        this.recyclerView.setLayoutManager(layoutManager);
+    }
+    
     @Override
     protected void showDetailsView(final MovieDetails movieDetails) {
         super.showDetailsView(movieDetails);
-        if (this.similarShowsTitle != null) {
-            this.similarShowsTitle.setText((CharSequence)this.getString(2131493167, new Object[] { movieDetails.getTitle() }));
-            this.similarShowsTitle.setVisibility(0);
-        }
         this.adapter.setTrackable(new TrackableObject(movieDetails.getSimilarsRequestId(), movieDetails.getSimilarsTrackId(), movieDetails.getSimilarsListPos()));
         this.adapter.setItems(movieDetails.getSimilars());
         if (this.recyclerView != null) {

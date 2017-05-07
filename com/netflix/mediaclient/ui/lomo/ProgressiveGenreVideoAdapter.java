@@ -27,7 +27,9 @@ public class ProgressiveGenreVideoAdapter extends BaseProgressiveRowAdapter<Vide
             return;
         }
         final LoMo loMo = (LoMo)this.getLoMo();
-        Log.v("BaseProgressiveRowAdapter", String.format("fetching genre videos for: Title: %s, Total Vids: %d, Id: %s, start: %d, end: %d", loMo.getTitle(), loMo.getNumVideos(), loMo.getId(), n, n2));
-        this.getManager().getBrowse().fetchGenreVideos(loMo, n, n2, BrowseExperience.shouldLoadKubrickLeaves(), new FetchVideosHandler<Object>("BaseProgressiveRowAdapter", this, loMo.getTitle(), n, n2));
+        if (Log.isLoggable()) {
+            Log.v("BaseProgressiveRowAdapter", String.format("fetching genre videos for: Title: %s, Total Vids: %d, Id: %s, start: %d, end: %d", loMo.getTitle(), loMo.getNumVideos(), loMo.getId(), n, n2));
+        }
+        this.getManager().getBrowse().fetchGenreVideos(loMo, n, n2, BrowseExperience.shouldLoadKubrickLeavesInLolomo(), new FetchVideosHandler<Object>("BaseProgressiveRowAdapter", this, loMo.getTitle(), n, n2));
     }
 }

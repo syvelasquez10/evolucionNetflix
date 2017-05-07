@@ -21,7 +21,6 @@ import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchSuggestion;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchPerson;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.EditText;
@@ -118,7 +117,7 @@ class SearchResultsFrag$SearchResultsAdapter extends BaseAdapter implements Adap
     private void setResid() {
         switch (SearchResultsFrag$7.$SwitchMap$com$netflix$mediaclient$ui$search$SearchResultsFrag$SearchCategory[this.searchCategory.ordinal()]) {
             default: {
-                this.resId = 2130903187;
+                this.resId = 2130903181;
             }
             case 2: {
                 this.resId = SearchUtils.getSearchViewLayoutPeople();

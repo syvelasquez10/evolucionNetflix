@@ -14,6 +14,7 @@ public final class UIBrowseStartupSessionEndedEvent extends SessionEndedEvent
 {
     public static final String ERROR = "error";
     public static final String SUCCESS = "success";
+    private static final String TAG = "UIBrowseStartupSessionEndedEvent";
     public static final String TIME_TO_BROWSE_INTERACTIVE = "timeToBrowseInteractive";
     private static final String UI_BROWSE_STARTUP_SESSION_NAME = "uiBrowseStartup";
     private UIError error;
