@@ -52,7 +52,7 @@ public class LaunchedFromDeepLink extends BaseCustomerEvent implements Runnable
             Log.d("nf_rest", "Executing LaunchedFromDeepLink WebAPI call start");
             final String execute = customerEventCommand.execute();
             Log.d("nf_rest", "Executing LaunchedFromDeepLink WebAPI call done");
-            if (Log.isLoggable("nf_rest", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_rest", "LaunchedFromDeepLink response: " + execute);
             }
         }

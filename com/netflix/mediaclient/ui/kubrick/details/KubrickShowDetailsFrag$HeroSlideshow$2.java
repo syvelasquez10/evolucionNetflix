@@ -4,6 +4,15 @@
 
 package com.netflix.mediaclient.ui.kubrick.details;
 
+import android.text.TextUtils;
+import java.util.Collection;
+import com.netflix.mediaclient.servicemgr.interface_.details.KubrickShowDetails;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import android.content.Context;
+import java.util.ArrayList;
+import java.util.List;
+import android.os.Handler;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ImageView;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.graphics.Bitmap;
@@ -23,16 +32,20 @@ class KubrickShowDetailsFrag$HeroSlideshow$2 implements ImageLoader$ImageLoaderL
     
     @Override
     public void onErrorResponse(final String s) {
-        if (Log.isLoggable("KubrickShowDetailsFrag", 6)) {
+        this.this$1.currentSlideshowIndex = 0;
+        if (Log.isLoggable()) {
             Log.e("KubrickShowDetailsFrag", "HeroSlideshow: " + s);
         }
     }
     
     @Override
-    public void onResponse(final Bitmap imageBitmap, final String s) {
-        if (imageBitmap != null) {
-            this.val$horzDispImg.setImageBitmap(imageBitmap);
-            AnimationUtils.setImageBitmapWithPropertyFade(this.val$horzDispImg, imageBitmap);
+    public void onResponse(final Bitmap bitmap, final String tag) {
+        if (bitmap != null && !this.this$1.stopRequested) {
+            final Object tag2 = this.val$horzDispImg.getTag();
+            if (tag2 == null || tag2 != tag) {
+                AnimationUtils.setImageBitmapWithPropertyFade(this.val$horzDispImg, bitmap);
+                this.val$horzDispImg.setTag((Object)tag);
+            }
         }
     }
 }

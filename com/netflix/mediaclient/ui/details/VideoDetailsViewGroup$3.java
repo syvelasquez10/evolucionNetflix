@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui.details;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View$OnClickListener;
 

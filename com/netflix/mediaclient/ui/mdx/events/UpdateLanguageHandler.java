@@ -31,7 +31,7 @@ public class UpdateLanguageHandler extends EventHandler
         MdxAudioSource[] array;
         for (array = new MdxAudioSource[jsonArray.length()]; i < array.length; ++i) {
             array[i] = MdxAudioSource.newInstance(jsonArray.getJSONObject(i), i);
-            if (Log.isLoggable("mdxui", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("mdxui", "" + i + ": " + array[i]);
             }
         }
@@ -67,7 +67,7 @@ public class UpdateLanguageHandler extends EventHandler
         MdxSubtitle[] array;
         for (array = new MdxSubtitle[jsonArray.length()]; i < array.length; ++i) {
             array[i] = MdxSubtitle.newInstance(jsonArray.getJSONObject(i), i);
-            if (Log.isLoggable("mdxui", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("mdxui", "" + i + ": " + array[i]);
             }
         }
@@ -78,16 +78,16 @@ public class UpdateLanguageHandler extends EventHandler
     public void handle(final RemotePlaybackListener remotePlaybackListener, final Intent intent) {
         Log.d("mdxui", "Update audio/subtitles...");
         final String stringExtra = intent.getStringExtra("stringBlob");
-        if (Log.isLoggable("mdxui", 3)) {
+        if (Log.isLoggable()) {
             Log.d("mdxui", "Blob: " + stringExtra);
         }
         while (true) {
-        Label_0137_Outer:
+        Label_0131_Outer:
             while (true) {
-            Label_0249:
+            Label_0243:
                 while (true) {
                     JSONArray jsonArray2 = null;
-                    Label_0218: {
+                    Label_0212: {
                         try {
                             final JSONObject jsonObject = new JSONObject(stringExtra);
                             JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "timed_text_tracks");
@@ -96,7 +96,7 @@ public class UpdateLanguageHandler extends EventHandler
                                 if ((jsonArray2 = JsonUtils.getJSONArray(jsonObject, "audio_tracks")) == null) {
                                     jsonArray2 = JsonUtils.getJSONArray(jsonObject, "audio_track");
                                 }
-                                if (Log.isLoggable("mdxui", 3)) {
+                                if (Log.isLoggable()) {
                                     if (jsonArray == null) {
                                         Log.d("mdxui", "subtitleTrackListJsonArray is null");
                                     }
@@ -104,7 +104,7 @@ public class UpdateLanguageHandler extends EventHandler
                                         Log.d("mdxui", "subtitleTrackListJsonArray.lenght: " + jsonArray.length());
                                     }
                                     if (jsonArray2 != null) {
-                                        break Label_0218;
+                                        break Label_0212;
                                     }
                                     Log.d("mdxui", "audioTrackListJsonArray is null");
                                 }
@@ -113,7 +113,7 @@ public class UpdateLanguageHandler extends EventHandler
                                 remotePlaybackListener.updateLanguage(new Language(audioSources, this.getCurrentAudioIndex(audioSources), subtitles, this.getCurrentSubtitleIndex(subtitles), true));
                                 return;
                             }
-                            break Label_0249;
+                            break Label_0243;
                         }
                         catch (Exception ex) {
                             Log.e("mdxui", "Failed to extract capability data ", ex);
@@ -123,7 +123,7 @@ public class UpdateLanguageHandler extends EventHandler
                     Log.d("mdxui", "audioTrackListJsonArray.lenght: " + jsonArray2.length());
                     continue;
                 }
-                continue Label_0137_Outer;
+                continue Label_0131_Outer;
             }
         }
     }

@@ -30,7 +30,7 @@ class NetflixSSO$1 implements ResponseListener
             Log.e("nf_partner", "getExternalSsoService did not set component name!");
             return;
         }
-        if (Log.isLoggable("nf_partner", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_partner", "getExternalSsoService sets component name " + responder);
         }
         this.this$0.owner.setComponentName(responder);

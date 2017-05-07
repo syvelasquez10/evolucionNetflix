@@ -69,7 +69,7 @@ public final class SubtitleUtils
         int n = 1;
         final Rect rect = ViewUtils.getRect((View)linearLayout, true);
         final Rect rect2 = ViewUtils.getRect((View)linearLayout2, true);
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Block 1  left: " + rect.left + ", top: " + rect.top + ", right: " + rect.right + ", bottom: " + rect.bottom);
             Log.d("nf_subtitles_render", "Block 2  left: " + rect2.left + ", top: " + rect2.top + ", right: " + rect2.right + ", bottom: " + rect2.bottom);
         }
@@ -78,7 +78,7 @@ public final class SubtitleUtils
             Log.d("nf_subtitles_render", "===> No intersection found");
             return 0;
         }
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "===> intersection found, move by: " + overlap);
         }
         final int y = overlap.y;
@@ -91,7 +91,7 @@ public final class SubtitleUtils
         }
         rect.top -= n3;
         rect.bottom -= n3;
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "After move: Block 1 left: " + rect.left + ", top: " + rect.top + ", right: " + rect.right + ", bottom: " + rect.bottom);
         }
         final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)linearLayout.getLayoutParams();
@@ -103,7 +103,7 @@ public final class SubtitleUtils
     public static boolean adjustIfIntersectByMovingSecondDown(final LinearLayout linearLayout, final LinearLayout linearLayout2, final int n) {
         final Rect rect = ViewUtils.getRect((View)linearLayout, true);
         final Rect rect2 = ViewUtils.getRect((View)linearLayout2, true);
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Block 1  left: " + rect.left + ", top: " + rect.top + ", right: " + rect.right + ", bottom: " + rect.bottom);
             Log.d("nf_subtitles_render", "Block 2  left: " + rect2.left + ", top: " + rect2.top + ", right: " + rect2.right + ", bottom: " + rect2.bottom);
         }
@@ -112,7 +112,7 @@ public final class SubtitleUtils
             Log.d("nf_subtitles_render", "===> No intersection found");
             return false;
         }
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "===> intersection found, move by: " + overlap);
         }
         final int y = overlap.y;
@@ -124,7 +124,7 @@ public final class SubtitleUtils
         }
         rect2.top += n3;
         rect2.bottom += n3;
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "After move: Block 2 left: " + rect2.left + ", top: " + rect2.top + ", right: " + rect2.right + ", bottom: " + rect2.bottom);
         }
         final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)linearLayout2.getLayoutParams();
@@ -149,7 +149,7 @@ public final class SubtitleUtils
             Log.w("nf_subtitles_render", "Shadow is null, not setting anything!");
             return;
         }
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Sets text shadow with color " + edgeColor + ", radius " + shadow.radius + ", dx " + shadow.dx + ", dy " + shadow.dy);
         }
         textView.setShadowLayer(shadow.radius, (float)shadow.dx, (float)shadow.dy, (int)edgeColor);
@@ -191,20 +191,20 @@ public final class SubtitleUtils
             Log.e("nf_subtitles_render", "apply style parameters are null, do nothing!");
             return;
         }
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Apply style " + textStyle);
         }
         final float fontSizeMultiplier = getFontSizeMultiplier(textStyle);
         n *= fontSizeMultiplier;
         textView.setTextSize(0, n);
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Text size " + n + ", scale " + fontSizeMultiplier);
         }
         textView.setTypeface(toTypeFace(textStyle, false), toTypeFaceStyle(textStyle));
         setLetterSpacing(textView, textStyle);
         final Integer textColor = getTextColor(textStyle);
         if (textColor != null) {
-            if (Log.isLoggable("nf_subtitles_render", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "Sets text color to " + textColor);
             }
             textView.setTextColor((int)textColor);
@@ -214,7 +214,7 @@ public final class SubtitleUtils
         }
         final Integer backgroundColor = getBackgroundColor(textStyle);
         if (backgroundColor != null) {
-            if (Log.isLoggable("nf_subtitles_render", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "Sets text view background color to " + backgroundColor);
             }
             textView.setBackgroundColor((int)backgroundColor);
@@ -240,7 +240,7 @@ public final class SubtitleUtils
             Log.w("nf_subtitles_render", "Extent is null!");
             n2 = 0;
         }
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Display area: w " + view.getWidth() + ", h " + view.getHeight());
             Log.d("nf_subtitles_render", "Region w/h " + n2 + "/" + n);
             Log.d("nf_subtitles_render", "Extent " + doubleLength);
@@ -261,7 +261,7 @@ public final class SubtitleUtils
         else {
             Log.w("nf_subtitles_render", "Origin is null!");
         }
-        if (Log.isLoggable("nf_subtitles_render", 2)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Rectangle, left: " + rect.left + ", top: " + rect.top + ", right: " + rect.right + ", bottom: " + rect.bottom);
         }
         return rect;
@@ -358,7 +358,7 @@ public final class SubtitleUtils
             Log.w("nf_subtitles_render", "Extent is null!");
             n2 = 0;
         }
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Display area: w " + view.getWidth() + ", h " + view.getHeight());
             Log.d("nf_subtitles_render", "Region w/h " + n2 + "/" + n);
             Log.d("nf_subtitles_render", "Extent " + doubleLength);
@@ -373,7 +373,7 @@ public final class SubtitleUtils
         else {
             Log.w("nf_subtitles_render", "Origin is null!");
         }
-        if (Log.isLoggable("nf_subtitles_render", 2)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Margins, left: " + subtitleUtils$Margins.left + ", top: " + subtitleUtils$Margins.top + ", right: " + subtitleUtils$Margins.right + ", bottom: " + subtitleUtils$Margins.bottom);
         }
         return subtitleUtils$Margins;
@@ -401,7 +401,7 @@ public final class SubtitleUtils
         }
         final Typeface typeface = SubtitleUtils.sTypeFaceWeightMapForProportional.get(fontWeight.name());
         if (typeface == null) {
-            if (Log.isLoggable("nf_subtitles_render", 6)) {
+            if (Log.isLoggable()) {
                 Log.e("nf_subtitles_render", "Typeface for proportional font not found for font weight " + fontWeight.name());
             }
             return Typeface.SANS_SERIF;
@@ -502,7 +502,7 @@ public final class SubtitleUtils
         }
         final DoubleLength extent = subtitleBlock.getStyle().getExtent();
         final DoubleLength origin = subtitleBlock.getStyle().getOrigin();
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "isPositionDefinedInBlock extent " + extent);
             Log.d("nf_subtitles_render", "isPositionDefinedInBlock origin " + origin);
         }
@@ -565,12 +565,12 @@ public final class SubtitleUtils
                         if (safeSplit.length >= 3) {
                             return (safeParseLong(safeSplit[0]) * 3600L + safeParseLong(safeSplit[1]) * 60L + safeParseLong(safeSplit[2])) * 1000L;
                         }
-                        if (Log.isLoggable("nf_subtitles_render", 6)) {
+                        if (Log.isLoggable()) {
                             Log.e("nf_subtitles_render", "dfxp-badtime: Tick time pattern matched, but we do not have 3 groups! This should NOT happen! " + s);
                             return -1L;
                         }
                     }
-                    else if (Log.isLoggable("nf_subtitles_render", 6)) {
+                    else if (Log.isLoggable()) {
                         Log.e("nf_subtitles_render", "dfxp-badtime: Unknown format " + s);
                         return -1L;
                     }
@@ -652,13 +652,13 @@ public final class SubtitleUtils
         }
         else {
             if (horizontalAlignment == null) {
-                if (Log.isLoggable("nf_subtitles_render", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_subtitles_render", "toGravity vert " + verticalAlignment.getValue());
                 }
                 return verticalAlignment.getGravity();
             }
             if (verticalAlignment == null) {
-                if (Log.isLoggable("nf_subtitles_render", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_subtitles_render", "toGravity hor " + horizontalAlignment.getValue());
                 }
                 return horizontalAlignment.getGravity();
@@ -666,7 +666,7 @@ public final class SubtitleUtils
             final int gravity = horizontalAlignment.getGravity();
             final int gravity2 = verticalAlignment.getGravity();
             final int n2 = n = (horizontalAlignment.getGravity() | verticalAlignment.getGravity());
-            if (Log.isLoggable("nf_subtitles_render", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "toGravity " + n2 + ", hor " + horizontalAlignment.getValue() + ", vert " + verticalAlignment.getValue() + ", plus " + (gravity2 + gravity));
                 return n2;
             }

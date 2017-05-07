@@ -61,7 +61,7 @@ public final class NativeLog extends NativeNrdObject implements Log
         if (jsonObject.has("appid")) {
             this.mAppId = this.getString(jsonObject, "appid", null);
             if (this.mAppIdSetListener != null) {
-                if (com.netflix.mediaclient.Log.isLoggable("nf_object", 3)) {
+                if (com.netflix.mediaclient.Log.isLoggable()) {
                     com.netflix.mediaclient.Log.d("nf_object", "App ID listener existed, alerted to first app id received " + this.mAppId + " and it is removed.");
                 }
                 this.mAppIdSetListener.onSet(this.mAppId);
@@ -82,14 +82,14 @@ public final class NativeLog extends NativeNrdObject implements Log
         final String mSessionId2 = this.mSessionId;
         final String string = this.getString(jsonObject, "sessionid", null);
         final String string2 = this.getString(jsonObject, "appid", null);
-        if (com.netflix.mediaclient.Log.isLoggable("nf_object", 3)) {
+        if (com.netflix.mediaclient.Log.isLoggable()) {
             com.netflix.mediaclient.Log.d("nf_object", "Log.handleResetAppId:: Old app id: " + mSessionId + ", new app id " + string2);
             com.netflix.mediaclient.Log.d("nf_object", "Log.handleResetAppId:: Old session id: " + mSessionId2 + ", new session id " + string);
         }
         this.mAppId = string2;
         this.mSessionId = string;
         if (this.mAppIdSetListener != null) {
-            if (com.netflix.mediaclient.Log.isLoggable("nf_object", 3)) {
+            if (com.netflix.mediaclient.Log.isLoggable()) {
                 com.netflix.mediaclient.Log.d("nf_object", "App ID listener existed, alerted to first app id received " + this.mAppId + " and it is removed.");
             }
             this.mAppIdSetListener.onSet(this.mAppId);
@@ -108,7 +108,7 @@ public final class NativeLog extends NativeNrdObject implements Log
     private int handleResetSessionId(final JSONObject jsonObject) {
         final String mSessionId = this.mSessionId;
         final String string = this.getString(jsonObject, "sessionid", null);
-        if (com.netflix.mediaclient.Log.isLoggable("nf_object", 3)) {
+        if (com.netflix.mediaclient.Log.isLoggable()) {
             com.netflix.mediaclient.Log.d("nf_object", "Log.handleResetSessionId:: Old session id: " + mSessionId + ", new session id " + string);
         }
         this.mSessionId = string;
@@ -172,12 +172,12 @@ public final class NativeLog extends NativeNrdObject implements Log
         synchronized (this) {
             try {
                 final String string = this.getString(jsonObject, "type", null);
-                if (com.netflix.mediaclient.Log.isLoggable("nf_object", 3)) {
+                if (com.netflix.mediaclient.Log.isLoggable()) {
                     com.netflix.mediaclient.Log.d("nf_object", "processUpdate: handle type " + string);
                 }
                 int n;
                 if ("PropertyUpdate".equalsIgnoreCase(string)) {
-                    if (jsonObject != null && com.netflix.mediaclient.Log.isLoggable("nf_object", 3)) {
+                    if (jsonObject != null && com.netflix.mediaclient.Log.isLoggable()) {
                         com.netflix.mediaclient.Log.d("nf_object", "processUpdate: handle prop update " + jsonObject.toString());
                     }
                     n = this.handlePropertyUpdate(jsonObject);

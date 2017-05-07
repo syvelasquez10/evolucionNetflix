@@ -37,9 +37,4 @@ public final class Session$OpenRequest extends Session$AuthorizationRequest
         super.setPermissions(permissions);
         return this;
     }
-    
-    public final Session$OpenRequest setRequestCode(final int requestCode) {
-        super.setRequestCode(requestCode);
-        return this;
-    }
 }

@@ -4,15 +4,16 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.Log;
 import android.view.MotionEvent;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
+import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils$LoMoWidthType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.support.v4.view.PagerAdapter;
 import com.netflix.mediaclient.util.ThreadUtils;
 import android.content.Context;
@@ -34,6 +35,8 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
     private static final String CW_CACHE_KEY = "cw";
     private static final String IQ_CACHE_KEY = "iq";
     private static final float KIDS_TOUCH_SLOP_SCALE_FACTOR = 0.75f;
+    private static final String POPULAR_TITLES_CACHE_KEY = "pt";
+    private static final String POPULAR_TITLES_DUPLICATE_CACHE_KEY = "ptd";
     private static final long ROTATE_TO_NEXT_VIEW_DELAY_MS;
     private static final String TAG = "LoMoViewPager";
     private final LoMoViewPagerAdapter adapter;
@@ -57,7 +60,7 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         this.handler = new Handler();
         this.pageIndicator = pageIndicator;
         this.setAdapter(this.adapter = new LoMoViewPagerAdapter(this, serviceManager, objectRecycler$ViewRecycler, view, b));
-        if (loLoMoFrag.getNetflixActivity().isForKids()) {
+        if (BrowseExperience.isKubrickKids()) {
             this.setTouchSlop((int)(this.getTouchSlop() * 0.75f));
         }
     }
@@ -78,7 +81,7 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
     }
     
     private String getStateKeyForLomo(final BasicLoMo basicLoMo) {
-        switch (LoMoViewPager$2.$SwitchMap$com$netflix$mediaclient$servicemgr$model$LoMoType[basicLoMo.getType().ordinal()]) {
+        switch (LoMoViewPager$2.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$LoMoType[basicLoMo.getType().ordinal()]) {
             default: {
                 return String.valueOf(basicLoMo.hashCode());
             }
@@ -87,6 +90,12 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
             }
             case 2: {
                 return "iq";
+            }
+            case 3: {
+                if (basicLoMo instanceof KubrickLoMoHeroDuplicate) {
+                    return "ptd";
+                }
+                return "pt";
             }
         }
     }
@@ -118,11 +127,11 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
             Log.v("LoMoViewPager", "No state found for key: " + this.stateKey);
             return false;
         }
-        if (Log.isLoggable("LoMoViewPager", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPager", "Restoring state for key: " + this.stateKey + ", state: " + this.state);
         }
         this.adapter.restoreFromMemento(this.state.adapterMemento);
-        this.setPagesToOverlap(this.adapter.shouldOverlapPages(), basicLoMo.getType());
+        this.setPagesToOverlap(this.adapter.shouldOverlapPages(), basicLoMo.getType(), this.adapter.getState());
         this.adapter.notifyDataSetChanged();
         this.notifyDataSetChanged();
         this.setCurrentItem(this.state.currPage, false, false);
@@ -133,14 +142,14 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         this.state = new LoMoViewPager$State();
         this.state.currPage = currPage;
         this.state.adapterMemento = this.adapter.saveToMemento();
-        if (Log.isLoggable("LoMoViewPager", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPager", "Saving state: " + this.stateKey + ": " + this.state);
         }
         this.stateMap.put(this.stateKey, this.state);
     }
     
     private void updateAutoPagination(final boolean b) {
-        if (Log.isLoggable("LoMoViewPager", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPager", "updateAutoPagination, enabled: " + b);
         }
         this.handler.removeCallbacks(this.rotateToNextViewRunnable);
@@ -155,7 +164,7 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         if (!this.adapter.isShowingBillboard() || this.adapter.getCount() <= 1) {
             b = false;
         }
-        if (Log.isLoggable("LoMoViewPager", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPager", "hasBillboardData: " + b);
         }
         if (this.pageIndicator != null) {
@@ -181,8 +190,14 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         this.stateMap.remove("iq");
     }
     
+    public void invalidatePopularTitlesCache() {
+        Log.v("LoMoViewPager", "Invalidating popular titles cache");
+        this.stateMap.remove("pt");
+        this.stateMap.remove("ptd");
+    }
+    
     public boolean isLoading() {
-        if (Log.isLoggable("NflxLoading", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NflxLoading", "Class: " + this.getClass().getSimpleName() + ", loading: " + this.adapter.isLoading());
         }
         return this.adapter.isLoading();
@@ -237,7 +252,7 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
     @Override
     public void refresh(final BasicLoMo basicLoMo, final int n) {
         ThreadUtils.assertOnMain();
-        if (Log.isLoggable("LoMoViewPager", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPager", "Setting layout params for: " + basicLoMo.getType() + ", listViewPos: " + n);
         }
         if (this.restoreState(basicLoMo)) {
@@ -245,7 +260,7 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         }
         else {
             this.adapter.refresh(basicLoMo, n);
-            this.setPagesToOverlap(this.adapter.shouldOverlapPages(), basicLoMo.getType());
+            this.setPagesToOverlap(this.adapter.shouldOverlapPages(), basicLoMo.getType(), this.adapter.getState());
             this.updatePageIndicatorVisibility();
         }
         this.setLayoutParams((ViewGroup$LayoutParams)this.adapter.createLayoutParams());
@@ -275,20 +290,23 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         this.onCurrentItemSet(n);
     }
     
-    protected void setPagesToOverlap(final boolean b, final LoMoType loMoType) {
+    protected void setPagesToOverlap(final boolean b, final LoMoType loMoType, final LoMoViewPagerAdapter$Type loMoViewPagerAdapter$Type) {
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        LoMoUtils$LoMoWidthType loMoUtils$LoMoWidthType2;
-        final LoMoUtils$LoMoWidthType loMoUtils$LoMoWidthType = loMoUtils$LoMoWidthType2 = LoMoUtils$LoMoWidthType.STANDARD;
-        if (netflixActivity.isForKids()) {
-            loMoUtils$LoMoWidthType2 = loMoUtils$LoMoWidthType;
-            if (netflixActivity.isKubrick()) {
-                loMoUtils$LoMoWidthType2 = loMoUtils$LoMoWidthType;
+        final LoMoUtils$LoMoWidthType standard = LoMoUtils$LoMoWidthType.STANDARD;
+        LoMoUtils$LoMoWidthType loMoUtils$LoMoWidthType;
+        if (loMoViewPagerAdapter$Type == LoMoViewPagerAdapter$Type.KUBRICK_KIDS_TOP_TEN) {
+            loMoUtils$LoMoWidthType = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_TOP_TEN_ROW;
+        }
+        else {
+            loMoUtils$LoMoWidthType = standard;
+            if (BrowseExperience.isKubrickKids()) {
+                loMoUtils$LoMoWidthType = standard;
                 if (loMoType == LoMoType.CHARACTERS) {
-                    loMoUtils$LoMoWidthType2 = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW;
+                    loMoUtils$LoMoWidthType = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW;
                 }
             }
         }
-        int pageMargin = -(LoMoUtils.getLomoFragOffsetRightPx(netflixActivity, loMoUtils$LoMoWidthType2) + LoMoUtils.getLomoFragOffsetLeftPx(netflixActivity));
+        int pageMargin = -(LoMoUtils.getLomoFragOffsetRightPx(netflixActivity, loMoUtils$LoMoWidthType) + LoMoUtils.getLomoFragOffsetLeftPx(netflixActivity));
         if (!b) {
             pageMargin = 0;
         }

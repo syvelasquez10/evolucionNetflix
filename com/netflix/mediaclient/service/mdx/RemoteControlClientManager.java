@@ -15,7 +15,7 @@ import android.content.BroadcastReceiver;
 import android.media.RemoteControlClient;
 import android.content.ComponentName;
 import com.netflix.mediaclient.service.configuration.MdxConfiguration;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
@@ -106,11 +106,11 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
     
     public void onAudioFocusChange(final int n) {
         if (n == 1 || n == 2 || n == 3) {
-            if (Log.isLoggable("RemoteControlClientManager", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("RemoteControlClientManager", "onAudioFocusChange gained " + n);
             }
         }
-        else if (Log.isLoggable("RemoteControlClientManager", 3)) {
+        else if (Log.isLoggable()) {
             Log.d("RemoteControlClientManager", "onAudioFocusChange lost " + n);
         }
     }
@@ -126,7 +126,7 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
     
     public void setState(final boolean mPaused, final boolean mInTransition, final boolean mIsPostPlay) {
         if (!this.shouldNotBeExecuted()) {
-            if (Log.isLoggable("RemoteControlClientManager", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("RemoteControlClientManager", "setState, paused: " + mPaused + ", transitioning: " + mInTransition + ", inPostPlay: " + mIsPostPlay);
             }
             this.mPaused = mPaused;
@@ -146,7 +146,7 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
         if (this.shouldNotBeExecuted()) {
             return;
         }
-        if (Log.isLoggable("RemoteControlClientManager", 3)) {
+        if (Log.isLoggable()) {
             Log.d("RemoteControlClientManager", "setTitles - title: " + mTitle + ", album: " + mAlbumTitle);
         }
         this.mTitle = mTitle;
@@ -155,7 +155,7 @@ public final class RemoteControlClientManager implements AudioManager$OnAudioFoc
     }
     
     public void start(final boolean mIsPostPlay, final VideoDetails mEpisodeDetails, final String mTargetUUID) {
-        if (Log.isLoggable("RemoteControlClientManager", 3)) {
+        if (Log.isLoggable()) {
             Log.d("RemoteControlClientManager", "start, isPostPlay: " + mIsPostPlay + ", episodeDetails: " + mEpisodeDetails + ", uuid: " + mTargetUUID);
         }
         if (!this.mMdxConfiguration.isRemoteControlLockScreenEnabled()) {

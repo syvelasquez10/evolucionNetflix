@@ -21,7 +21,7 @@ public class ImagePrefRepository
         if (StringUtils.isEmpty(this.mImagePref)) {
             Log.d("nf_service_configuration_imagepref", "Image preference override not found.");
         }
-        else if (Log.isLoggable("nf_service_configuration_imagepref", 3)) {
+        else if (Log.isLoggable()) {
             Log.d("nf_service_configuration_imagepref", "Image preference override found:" + this.mImagePref);
         }
     }

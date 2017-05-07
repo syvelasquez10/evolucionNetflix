@@ -4,28 +4,34 @@
 
 package com.netflix.mediaclient.ui.kubrick_kids.details;
 
-import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import com.netflix.mediaclient.service.logging.client.model.DataContext;
-import com.netflix.mediaclient.ui.kids.details.KidsCharacterDetailsFrag;
-import com.netflix.mediaclient.ui.kids.details.KidsShowDetailsFrag;
-import com.netflix.mediaclient.ui.kids.details.KidsMovieDetailsFrag;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.ui.common.PlayContext;
+import android.view.View;
+import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
+import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
-import com.netflix.mediaclient.android.activity.FragmentHostActivity;
+import com.netflix.mediaclient.ui.details.DetailsActivity;
 
-public class KubrickKidsDetailsActivity extends FragmentHostActivity implements PlayContextProvider
+public class KubrickKidsDetailsActivity extends DetailsActivity implements PlayContextProvider
 {
     private static final String TAG = "KidsShowDetailsActivity";
-    private PlayContext playContext;
-    private String videoId;
     private VideoType videoType;
+    
+    @Override
+    protected NetflixActionBar createActionBar() {
+        final NetflixActionBar actionBar = super.createActionBar();
+        final View viewById = this.findViewById(2131165294);
+        if (viewById != null) {
+            viewById.setVisibility(8);
+        }
+        actionBar.setLogoType(NetflixActionBar$LogoType.GONE);
+        actionBar.setTitle("");
+        return actionBar;
+    }
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
@@ -34,30 +40,20 @@ public class KubrickKidsDetailsActivity extends FragmentHostActivity implements 
     
     @Override
     protected Fragment createPrimaryFrag() {
-        switch (KubrickKidsDetailsActivity$2.$SwitchMap$com$netflix$mediaclient$servicemgr$model$VideoType[this.videoType.ordinal()]) {
+        switch (KubrickKidsDetailsActivity$2.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$VideoType[this.videoType.ordinal()]) {
             default: {
                 throw new IllegalStateException("Don't know how to handle type: " + this.videoType);
             }
             case 1: {
-                return KidsMovieDetailsFrag.create(this.videoId);
+                return KubrickKidsMovieDetailsFrag.create(this.videoId);
             }
             case 2: {
-                return KidsShowDetailsFrag.create(this.videoId);
+                return KubrickKidsShowDetailsFrag.create(this.videoId);
             }
             case 3: {
-                return KidsCharacterDetailsFrag.create(this.videoId);
+                return KubrickKidsCharacterDetailsFrag.create(this.videoId);
             }
         }
-    }
-    
-    @Override
-    public DataContext getDataContext() {
-        return new DataContext(this.playContext, this.videoId);
-    }
-    
-    @Override
-    public PlayContext getPlayContext() {
-        return this.playContext;
     }
     
     @Override
@@ -69,13 +65,8 @@ public class KubrickKidsDetailsActivity extends FragmentHostActivity implements 
     }
     
     @Override
-    public boolean isForKids() {
-        return true;
-    }
-    
-    @Override
-    public boolean isKubrick() {
-        return true;
+    public VideoType getVideoType() {
+        return this.videoType;
     }
     
     @Override
@@ -84,13 +75,9 @@ public class KubrickKidsDetailsActivity extends FragmentHostActivity implements 
             throw new IllegalStateException("Start intent must provide extra value: extra_video_type");
         }
         this.videoType = (VideoType)this.getIntent().getSerializableExtra("extra_video_type");
-        this.videoId = this.getIntent().getStringExtra("extra_video_id");
-        this.playContext = (PlayContextImp)this.getIntent().getParcelableExtra("extra_playcontext");
-        if (Log.isLoggable("KidsShowDetailsActivity", 2)) {
+        super.onCreate(bundle);
+        if (Log.isLoggable()) {
             Log.v("KidsShowDetailsActivity", "TRACK_ID: " + this.playContext.getTrackId());
         }
-        super.onCreate(bundle);
-        this.getNetflixActionBar().setLogoType(NetflixActionBar$LogoType.GONE);
-        this.getNetflixActionBar().setTitle(this.getIntent().getStringExtra("extra_video_title"));
     }
 }

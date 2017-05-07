@@ -281,11 +281,11 @@ public final class FileUtils
         for (int i = 0; i < array.length; ++i) {
             final File dir = context.getDir(array[i], 0);
             if (dir.exists()) {
-                if (Log.isLoggable("FileUtils", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("FileUtils", "File for removal found: " + dir.getAbsolutePath());
                 }
                 final boolean deleteFile = context.deleteFile(array[i]);
-                if (Log.isLoggable("FileUtils", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("FileUtils", "File " + array[i] + " is deleted " + deleteFile);
                 }
             }

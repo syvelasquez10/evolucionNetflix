@@ -11,9 +11,9 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayContext;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayContext;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 
 public class Video$PostPlayContext implements JsonPopulator, PostPlayContext, Trackable
 {

@@ -6,13 +6,12 @@ package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.ui.Asset;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
-import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.falkor.ModelProxy;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 
 public interface IBrowseInterface
 {
@@ -60,13 +59,19 @@ public interface IBrowseInterface
     
     void fetchSocialNotifications(final int p0, final int p1, final int p2);
     
-    void fetchVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final boolean p4, final int p5, final int p6);
+    void fetchVideoSummary(final String p0, final int p1, final int p2);
+    
+    void fetchVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final boolean p4, final boolean p5, final int p6, final int p7);
     
     void flushCaches();
     
+    void forceFetchFromLocalCache(final boolean p0);
+    
+    ModelProxy<?> getModelProxy();
+    
     void hideVideo(final String p0, final int p1, final int p2);
     
-    void logBillboardActivity(final Video p0, final BrowseAgent$BillboardActivityType p1);
+    void logBillboardActivity(final Video p0, final BillboardInteractionType p1);
     
     void markSocialNotificationsAsRead(final List<SocialNotificationSummary> p0);
     

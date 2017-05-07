@@ -20,7 +20,7 @@ import android.support.v4.app.NotificationCompat$Builder;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.repository.SecurityRepository;
-import com.netflix.mediaclient.ui.LaunchActivity;
+import com.netflix.mediaclient.ui.launch.LaunchActivity;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.android.app.UserInputManager;

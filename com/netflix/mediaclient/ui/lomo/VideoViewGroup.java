@@ -6,17 +6,15 @@ package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.util.DataUtil;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import java.util.List;
 import android.widget.LinearLayout$LayoutParams;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils$LoMoWidthType;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import android.content.Context;
 import android.widget.LinearLayout;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 
 public abstract class VideoViewGroup<T extends Video, V extends View> extends LinearLayout
 {
@@ -44,17 +42,11 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
     
     public void init(final int n) {
         final LinearLayout$LayoutParams linearLayout$LayoutParams = new LinearLayout$LayoutParams(-1, -1, 1.0f);
-        final boolean forKids = ((NetflixActivity)this.getContext()).isForKids();
         final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(this.getChildPaddingDimenResId());
         for (int i = 0; i < n; ++i) {
             final View childView = this.createChildView(this.getContext());
             if (this.shouldApplyPaddingToChildren()) {
-                if (forKids) {
-                    childView.setPadding(dimensionPixelOffset, dimensionPixelOffset / 2, dimensionPixelOffset, dimensionPixelOffset / 2);
-                }
-                else {
-                    childView.setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
-                }
+                childView.setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
             }
             this.addView(childView, (ViewGroup$LayoutParams)linearLayout$LayoutParams);
         }
@@ -63,7 +55,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
     protected abstract boolean shouldApplyPaddingToChildren();
     
     public void updateDataThenViews(final List<T> list, final int n, final int n2, final int n3, final Trackable trackable) {
-        if (Log.isLoggable("VideoViewGroup", 2)) {
+        if (Log.isLoggable()) {
             Log.v("VideoViewGroup", "Setting data, first: " + DataUtil.getFirstItemSafely(list) + ", hash: " + this.hashCode() + ", num per page: " + n + ", page: " + n2 + ", listViewPos: " + n3);
         }
         final int n4 = n2 * n;

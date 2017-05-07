@@ -5,10 +5,10 @@
 package com.netflix.mediaclient.service.pservice;
 
 import android.os.IBinder;
-import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.ThreadUtils;
+import android.content.Context;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
@@ -24,6 +24,11 @@ class PService$2 implements PServiceAgent$AgentContext
     }
     
     @Override
+    public PServiceAgent$PServiceFetchAgentInterface getFetchAgent() {
+        return this.this$0.mFetchAgent;
+    }
+    
+    @Override
     public PServiceAgent$PServicePartnerFetchInterface getPartnerFetch() {
         return this.this$0.mFetchAgent;
     }
@@ -31,5 +36,10 @@ class PService$2 implements PServiceAgent$AgentContext
     @Override
     public PService getService() {
         return this.this$0;
+    }
+    
+    @Override
+    public PServiceAgent$PServiceWidgetAgentInterface getWidgetAgent() {
+        return this.this$0.mWidgetAgent;
     }
 }

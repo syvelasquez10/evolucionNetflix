@@ -4,48 +4,11 @@
 
 package com.netflix.mediaclient.service.user;
 
-import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
-import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
-import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.util.StatusUtils;
-import com.netflix.mediaclient.service.logging.client.model.RootCause;
-import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.repository.UserLocale;
-import android.content.BroadcastReceiver;
-import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
-import com.netflix.mediaclient.android.app.BackgroundTask;
-import com.netflix.mediaclient.util.PreferenceUtils;
-import com.netflix.mediaclient.android.app.NetflixStatus;
-import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
-import com.netflix.mediaclient.NetflixApplication;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.content.Intent;
-import org.json.JSONException;
-import org.json.JSONTokener;
-import org.json.JSONArray;
-import java.util.ArrayList;
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.service.NetflixService;
-import android.content.Context;
-import com.netflix.mediaclient.service.webclient.model.leafs.User;
-import com.netflix.mediaclient.service.player.subtitles.TextStyle;
-import com.netflix.mediaclient.javabridge.ui.Registration;
-import com.netflix.mediaclient.javabridge.ui.Nrdp;
-import java.util.List;
-import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
-import com.netflix.mediaclient.javabridge.ui.DeviceAccount;
-import com.netflix.mediaclient.javabridge.ui.EventListener;
-import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
-import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
-import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
-import com.netflix.mediaclient.service.ServiceAgent;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import android.widget.Toast;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 
 class UserAgent$SendRecommendationsTask$1 extends SimpleUserAgentWebCallback
@@ -81,7 +44,7 @@ class UserAgent$SendRecommendationsTask$1 extends SimpleUserAgentWebCallback
             }
             String s;
             if (n == 0) {
-                s = this.this$1.this$0.getContext().getString(2131493346, new Object[] { firstName });
+                s = this.this$1.this$0.getContext().getString(2131493354, new Object[] { firstName });
             }
             else {
                 s = this.this$1.this$0.getContext().getResources().getQuantityString(2131623938, n, new Object[] { n, firstName });
@@ -89,7 +52,7 @@ class UserAgent$SendRecommendationsTask$1 extends SimpleUserAgentWebCallback
             Toast.makeText(this.this$1.this$0.getContext(), (CharSequence)s, 1).show();
             return;
         }
-        if (Log.isLoggable("nf_service_useragent", 6)) {
+        if (Log.isLoggable()) {
             Log.e("nf_service_useragent", "Problem occured trying to send recommendations! Result: " + status + "; Friends: " + set);
         }
     }

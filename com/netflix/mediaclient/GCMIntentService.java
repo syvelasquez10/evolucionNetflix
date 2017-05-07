@@ -59,7 +59,7 @@ public class GCMIntentService extends GCMBaseIntentService
     @Override
     protected void onRegistered(final Context context, final String s) {
         synchronized (this) {
-            if (Log.isLoggable("nf_push_service", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push_service", "onRegistered:: Device registered: regId = " + s);
             }
             final Intent intent = this.createIntent("com.netflix.mediaclient.intent.action.PUSH_NOTIFICATION_GCM_ONREGISTERED");

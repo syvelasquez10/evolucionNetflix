@@ -90,7 +90,7 @@ public class ExternalLinkActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903095);
+        this.setContentView(2130903094);
         this.mWebView = (WebView)this.findViewById(2131165372);
         this.mFlipper = (ViewFlipper)this.findViewById(2131165370);
     }
@@ -133,7 +133,7 @@ public class ExternalLinkActivity extends NetflixActivity
     
     void setWebViewVisibility(final boolean b) {
         if (b != this.mWebViewVisibility) {
-            if (Log.isLoggable("ExternalWeb", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("ExternalWeb", "WebView visibility:" + this.mWebViewVisibility);
             }
             this.mFlipper.showNext();

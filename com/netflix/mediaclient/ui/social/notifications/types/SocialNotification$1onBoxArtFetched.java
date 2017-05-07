@@ -52,7 +52,7 @@ class SocialNotification$1onBoxArtFetched implements ImageLoader$ImageLoaderList
     
     @Override
     public void onErrorResponse(final String s) {
-        if (Log.isLoggable(SocialNotification.TAG, 6)) {
+        if (Log.isLoggable()) {
             Log.e(SocialNotification.TAG, "Failed to download: " + s);
         }
     }
@@ -62,7 +62,7 @@ class SocialNotification$1onBoxArtFetched implements ImageLoader$ImageLoaderList
         if (bitmap != null) {
             final int color = this.val$context.getResources().getColor(2131296361);
             final NotificationCompat$BigPictureStyle bigPicture = new NotificationCompat$BigPictureStyle().bigPicture(bitmap);
-            final NotificationCompat$Builder setColor = new NotificationCompat$Builder(this.val$context).setSmallIcon(2130837786).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
+            final NotificationCompat$Builder setColor = new NotificationCompat$Builder(this.val$context).setSmallIcon(2130837807).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
             setColor.setGroup("social_notifications");
             setColor.setGroupSummary(true);
             setColor.setAutoCancel(true);

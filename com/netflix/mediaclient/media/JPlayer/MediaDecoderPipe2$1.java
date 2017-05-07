@@ -83,10 +83,10 @@ class MediaDecoderPipe2$1 extends Handler
                     this.this$0.mInputHandler.sendEmptyMessageDelayed(1, 20L);
                     return;
                 }
-                if (this.frameReceived <= 0L && Log.isLoggable(this.this$0.mTag, 3)) {
+                if (this.frameReceived <= 0L && Log.isLoggable()) {
                     Log.d(this.this$0.mTag, "QueueInput " + intValue + " from " + onRequestData.offset + " size= " + onRequestData.size + " @" + onRequestData.timestamp + " ms" + " flags " + onRequestData.flags);
                 }
-                if (this.this$0.mRefClock != null && onRequestData.timestamp < this.this$0.mRefClock.get() && Log.isLoggable(this.this$0.mTag, 3)) {
+                if (this.this$0.mRefClock != null && onRequestData.timestamp < this.this$0.mRefClock.get() && Log.isLoggable()) {
                     Log.d(this.this$0.mTag, "STAT:DEC input late " + this.frameReceived + " at " + this.this$0.mRefClock.get() + " by " + (onRequestData.timestamp - this.this$0.mRefClock.get()) + " ms");
                 }
                 if ((onRequestData.flags & 0x4) != 0x0) {

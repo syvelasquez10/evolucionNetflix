@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import android.content.Context;
 
 public class ShowDetailsFrag$ShowDetailsStringProvider implements VideoDetailsViewGroup$DetailsStringProvider
@@ -28,7 +28,7 @@ public class ShowDetailsFrag$ShowDetailsStringProvider implements VideoDetailsVi
         if (StringUtils.isEmpty(this.details.getCreators())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText(this.context, 2131493155, this.details.getCreators());
+        return StringUtils.createBoldLabeledText(this.context, 2131493162, this.details.getCreators());
     }
     
     @Override
@@ -36,11 +36,11 @@ public class ShowDetailsFrag$ShowDetailsStringProvider implements VideoDetailsVi
         if (StringUtils.isEmpty(this.details.getGenres())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText(this.context, 2131493156, this.details.getGenres());
+        return StringUtils.createBoldLabeledText(this.context, 2131493163, this.details.getGenres());
     }
     
     @Override
     public CharSequence getStarringText() {
-        return StringUtils.createBoldLabeledText(this.context, 2131493154, this.details.getActors());
+        return StringUtils.createBoldLabeledText(this.context, 2131493161, this.details.getActors());
     }
 }

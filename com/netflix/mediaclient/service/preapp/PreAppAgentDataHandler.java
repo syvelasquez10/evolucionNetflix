@@ -21,11 +21,11 @@ import java.util.Iterator;
 import com.netflix.mediaclient.service.pservice.PVideo;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.servicemgr.model.CWVideo;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.service.pservice.PDiskData$ListName;
 import java.util.Set;
-import com.netflix.mediaclient.servicemgr.model.Billboard;
+import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import java.util.List;
 import com.netflix.mediaclient.service.pservice.PDiskData;
 import com.netflix.mediaclient.service.ServiceAgent;
@@ -57,6 +57,9 @@ public class PreAppAgentDataHandler
         if (PreAppAgentEventType.isFirstStandardListUpdated(preAppAgentEventType)) {
             set.add(PDiskData$ListName.STANDARD_FIRST);
         }
+        if (PreAppAgentEventType.isSecondStandardListUpdated(preAppAgentEventType)) {
+            set.add(PDiskData$ListName.STANDARD_SECOND);
+        }
     }
     
     private void clearOldImage(final String s) {
@@ -80,9 +83,10 @@ public class PreAppAgentDataHandler
     
     private void clearOldImages(final PDiskData pDiskData, final PreAppAgentEventType preAppAgentEventType) {
         if (pDiskData != null) {
-            switch (PreAppAgentDataHandler$9.$SwitchMap$com$netflix$mediaclient$service$preapp$PreAppAgentEventType[preAppAgentEventType.ordinal()]) {
+            switch (PreAppAgentDataHandler$11.$SwitchMap$com$netflix$mediaclient$service$preapp$PreAppAgentEventType[preAppAgentEventType.ordinal()]) {
                 default: {}
-                case 1: {
+                case 1:
+                case 4: {
                     final Iterator<String> iterator = pDiskData.urlMap.values().iterator();
                     while (iterator.hasNext()) {
                         this.clearOldImage(iterator.next());
@@ -92,14 +96,14 @@ public class PreAppAgentDataHandler
                 case 2: {
                     final Iterator<PVideo> iterator2 = pDiskData.cwList.iterator();
                     while (iterator2.hasNext()) {
-                        this.clearOldImage(pDiskData.urlMap.get(iterator2.next().horzDispUrl));
+                        this.clearOldImage(pDiskData.urlMap.get(iterator2.next().storyImgDispUrl));
                     }
                     break;
                 }
                 case 3: {
                     final Iterator<PVideo> iterator3 = pDiskData.iqList.iterator();
                     while (iterator3.hasNext()) {
-                        this.clearOldImage(pDiskData.urlMap.get(iterator3.next().horzDispUrl));
+                        this.clearOldImage(pDiskData.urlMap.get(iterator3.next().storyImgDispUrl));
                     }
                     break;
                 }
@@ -133,6 +137,9 @@ public class PreAppAgentDataHandler
         else if (PDiskData$ListName.STANDARD_FIRST.equals(pDiskData$ListName)) {
             list2 = pDiskData.standardFirstList;
         }
+        else if (PDiskData$ListName.STANDARD_SECOND.equals(pDiskData$ListName)) {
+            list2 = pDiskData.standardSecondList;
+        }
         else {
             list2 = null;
         }
@@ -144,7 +151,7 @@ public class PreAppAgentDataHandler
         }
     }
     
-    private void fetchLists(final PreAppAgentEventType preAppAgentEventType, final SimpleBrowseAgentCallback simpleBrowseAgentCallback, final SimpleBrowseAgentCallback simpleBrowseAgentCallback2, final SimpleBrowseAgentCallback simpleBrowseAgentCallback3) {
+    private void fetchLists(final PreAppAgentEventType preAppAgentEventType, final SimpleBrowseAgentCallback simpleBrowseAgentCallback, final SimpleBrowseAgentCallback simpleBrowseAgentCallback2, final SimpleBrowseAgentCallback simpleBrowseAgentCallback3, final SimpleBrowseAgentCallback simpleBrowseAgentCallback4) {
         final ServiceAgent$BrowseAgentInterface browseAgent = PreAppAgentDataHandler.mServiceAgent.getBrowseAgent();
         if (PreAppAgentEventType.isBBUpdated(preAppAgentEventType)) {
             browseAgent.fetchBillboardsFromCache(5, simpleBrowseAgentCallback);
@@ -156,7 +163,10 @@ public class PreAppAgentDataHandler
             browseAgent.fetchIQFromCache(5, simpleBrowseAgentCallback2);
         }
         if (PreAppAgentEventType.isFirstStandardListUpdated(preAppAgentEventType)) {
-            browseAgent.fetchRecommendedListFromCache(5, simpleBrowseAgentCallback3);
+            browseAgent.fetchRecommendedListFromCache(0, 5, simpleBrowseAgentCallback3);
+        }
+        if (PreAppAgentEventType.isSecondStandardListUpdated(preAppAgentEventType)) {
+            browseAgent.fetchRecommendedListFromCache(1, 5, simpleBrowseAgentCallback4);
         }
     }
     
@@ -171,7 +181,7 @@ public class PreAppAgentDataHandler
     private void fetchUrlsOfList(final List<PVideo> list, final LoggingResourceFetcherCallback loggingResourceFetcherCallback) {
         if (list != null) {
             for (final PVideo pVideo : list) {
-                this.fetchUrl(pVideo.id, pVideo.horzDispUrl, loggingResourceFetcherCallback);
+                this.fetchUrl(pVideo.id, pVideo.storyImgDispUrl, loggingResourceFetcherCallback);
             }
         }
     }
@@ -183,7 +193,7 @@ public class PreAppAgentDataHandler
         final Iterator<PVideo> iterator = list.iterator();
         int n = 0;
         while (iterator.hasNext()) {
-            if (iterator.next().horzDispUrl != null) {
+            if (iterator.next().storyImgDispUrl != null) {
                 ++n;
             }
         }
@@ -207,20 +217,24 @@ public class PreAppAgentDataHandler
         if (PreAppAgentEventType.isFirstStandardListUpdated(preAppAgentEventType)) {
             n4 = n3 + this.getListUrlFetchCount(pDiskData.standardFirstList);
         }
-        return n4;
+        int n5 = n4;
+        if (PreAppAgentEventType.isSecondStandardListUpdated(preAppAgentEventType)) {
+            n5 = n4 + this.getListUrlFetchCount(pDiskData.standardSecondList);
+        }
+        return n5;
     }
     
     private void loadFromDisk(final PDiskDataRepository$LoadCallback pDiskDataRepository$LoadCallback) {
-        new BackgroundTask().execute(new PreAppAgentDataHandler$8(this, pDiskDataRepository$LoadCallback));
+        new BackgroundTask().execute(new PreAppAgentDataHandler$9(this, pDiskDataRepository$LoadCallback));
     }
     
     private PDiskData mergeData(PDiskData pDiskData, final PDiskData pDiskData2, final PreAppAgentEventType preAppAgentEventType) {
         if (pDiskData2 == null) {
             return pDiskData;
         }
-        switch (PreAppAgentDataHandler$9.$SwitchMap$com$netflix$mediaclient$service$preapp$PreAppAgentEventType[preAppAgentEventType.ordinal()]) {
+        switch (PreAppAgentDataHandler$11.$SwitchMap$com$netflix$mediaclient$service$preapp$PreAppAgentEventType[preAppAgentEventType.ordinal()]) {
             default: {
-                if (Log.isLoggable("nf_preappagentdatahandler", 3)) {
+                if (Log.isLoggable()) {
                     Log.w("nf_preappagentdatahandler", "called merge data for unexpected update type: " + preAppAgentEventType);
                 }
                 pDiskData = new PDiskData(pDiskData);
@@ -235,7 +249,7 @@ public class PreAppAgentDataHandler
                 pDiskData3.cwList = pDiskData.cwList;
                 final Iterator<PVideo> iterator = pDiskData2.cwList.iterator();
                 while (iterator.hasNext()) {
-                    pDiskData3.urlMap.remove(iterator.next().horzDispUrl);
+                    pDiskData3.urlMap.remove(iterator.next().storyImgDispUrl);
                 }
                 pDiskData3.urlMap.putAll(pDiskData.urlMap);
                 pDiskData = pDiskData3;
@@ -246,7 +260,7 @@ public class PreAppAgentDataHandler
                 pDiskData4.iqList = pDiskData.iqList;
                 final Iterator<PVideo> iterator2 = pDiskData2.iqList.iterator();
                 while (iterator2.hasNext()) {
-                    pDiskData4.urlMap.remove(iterator2.next().horzDispUrl);
+                    pDiskData4.urlMap.remove(iterator2.next().storyImgDispUrl);
                 }
                 pDiskData4.urlMap.putAll(pDiskData.urlMap);
                 pDiskData = pDiskData4;
@@ -264,34 +278,34 @@ public class PreAppAgentDataHandler
         else {
             final String s = null;
             String s2 = null;
-            switch (PreAppAgentDataHandler$9.$SwitchMap$com$netflix$mediaclient$service$preapp$PreAppAgentEventType[preAppAgentEventType.ordinal()]) {
+            switch (PreAppAgentDataHandler$11.$SwitchMap$com$netflix$mediaclient$service$preapp$PreAppAgentEventType[preAppAgentEventType.ordinal()]) {
                 default: {
                     Log.d("nf_preappagentdatahandler", "unknown event type received");
                     s2 = s;
                     break;
                 }
                 case 1: {
-                    s2 = "com.netflix.mediaclient.intent.action.PREAPP_AGENT_FROM_ALL_UPDATED";
+                    s2 = "com.netflix.mediaclient.intent.action.ALL_UPDATED_FROM_PREAPP_AGENT";
                     break;
                 }
                 case 2: {
-                    s2 = "com.netflix.mediaclient.intent.action.PREAPP_AGENT_FROM_CW_UPDATED";
+                    s2 = "com.netflix.mediaclient.intent.action.CW_UPDATED_FROM_PREAPP_AGENT";
                     break;
                 }
                 case 3: {
-                    s2 = "com.netflix.mediaclient.intent.action.PREAPP_AGENT_FROM_IQ_UPDATED";
+                    s2 = "com.netflix.mediaclient.intent.action.IQ_UPDATED_FROM_PREAPP_AGENT";
                     break;
                 }
                 case 4: {
-                    s2 = "com.netflix.mediaclient.intent.action.PREAPP_AGENT_FROM_ACTIVE_DISK_WRITE";
+                    s2 = "com.netflix.mediaclient.intent.action.ACTION_ACCOUNT_DEACTIVATED_FROM_PREAPP_AGENT";
                     break;
                 }
             }
             if (!StringUtils.isEmpty(s2)) {
                 final Intent intent = new Intent(s2);
-                intent.addCategory("com.netflix.mediaclient.intent.category.PREAPP_AGENT_FROM_CATEGORY");
+                intent.addCategory("com.netflix.mediaclient.intent.category.CATEGORY_FROM_PREAPP_AGENT");
                 intent.setClass(context, (Class)PService.class);
-                if (Log.isLoggable("nf_preappagentdatahandler", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_preappagentdatahandler", String.format("sending intent: %s", intent));
                 }
                 context.startService(intent);
@@ -301,22 +315,26 @@ public class PreAppAgentDataHandler
     
     private void proceedAfterFetchOfImages(final PDiskData pDiskData, final PreAppAgentEventType preAppAgentEventType) {
         final int urlFetchCount = this.getUrlFetchCount(pDiskData, preAppAgentEventType);
-        final PreAppAgentDataHandler$5 preAppAgentDataHandler$5 = new PreAppAgentDataHandler$5(this, urlFetchCount, pDiskData, preAppAgentEventType);
+        final PreAppAgentDataHandler$6 preAppAgentDataHandler$6 = new PreAppAgentDataHandler$6(this, urlFetchCount, pDiskData, preAppAgentEventType);
+        Log.d("nf_preappagentdatahandler", String.format("urlFetchCount=%d", urlFetchCount));
         if (urlFetchCount <= 0) {
             this.storeAndNotify(pDiskData, preAppAgentEventType);
         }
         else {
             if (PreAppAgentEventType.isBBUpdated(preAppAgentEventType)) {
-                this.fetchUrlsOfList(pDiskData.billboardList, preAppAgentDataHandler$5);
+                this.fetchUrlsOfList(pDiskData.billboardList, preAppAgentDataHandler$6);
             }
             if (PreAppAgentEventType.isCWUpdated(preAppAgentEventType)) {
-                this.fetchUrlsOfList(pDiskData.cwList, preAppAgentDataHandler$5);
+                this.fetchUrlsOfList(pDiskData.cwList, preAppAgentDataHandler$6);
             }
             if (PreAppAgentEventType.isIQUpdated(preAppAgentEventType)) {
-                this.fetchUrlsOfList(pDiskData.iqList, preAppAgentDataHandler$5);
+                this.fetchUrlsOfList(pDiskData.iqList, preAppAgentDataHandler$6);
             }
             if (PreAppAgentEventType.isFirstStandardListUpdated(preAppAgentEventType)) {
-                this.fetchUrlsOfList(pDiskData.standardFirstList, preAppAgentDataHandler$5);
+                this.fetchUrlsOfList(pDiskData.standardFirstList, preAppAgentDataHandler$6);
+            }
+            if (PreAppAgentEventType.isSecondStandardListUpdated(preAppAgentEventType)) {
+                this.fetchUrlsOfList(pDiskData.standardSecondList, preAppAgentDataHandler$6);
             }
         }
     }
@@ -326,11 +344,12 @@ public class PreAppAgentDataHandler
             Log.d("nf_preappagentdatahandler", String.format("waiting for %s", set));
             return;
         }
+        Log.d("nf_preappagentdatahandler", "lists/videos fetched");
         this.proceedAfterLoadFromDisk(pDiskData, preAppAgentEventType);
     }
     
     private void proceedAfterLoadFromDisk(final PDiskData pDiskData, final PreAppAgentEventType preAppAgentEventType) {
-        this.loadFromDisk(new PreAppAgentDataHandler$4(this, preAppAgentEventType, pDiskData));
+        this.loadFromDisk(new PreAppAgentDataHandler$5(this, preAppAgentEventType, pDiskData));
     }
     
     private void setExperienceType(final PDiskData pDiskData) {
@@ -345,7 +364,15 @@ public class PreAppAgentDataHandler
     }
     
     private void storeAndNotify(final PDiskData pDiskData, final PreAppAgentEventType preAppAgentEventType) {
-        new BackgroundTask().execute(new PreAppAgentDataHandler$7(this, pDiskData, new PreAppAgentDataHandler$6(this, preAppAgentEventType)));
+        new BackgroundTask().execute(new PreAppAgentDataHandler$8(this, pDiskData, new PreAppAgentDataHandler$7(this, preAppAgentEventType)));
+    }
+    
+    public void clear(final PreAppAgentEventType preAppAgentEventType) {
+        if (!PreAppAgentEventType.shouldClearData(preAppAgentEventType)) {
+            Log.w("nf_preappagentdatahandler", String.format("skip clearing data - invalid updateType= %s", preAppAgentEventType));
+            return;
+        }
+        this.loadFromDisk(new PreAppAgentDataHandler$10(this, preAppAgentEventType));
     }
     
     public void update(final PreAppAgentEventType preAppAgentEventType) {
@@ -353,6 +380,6 @@ public class PreAppAgentDataHandler
         final HashSet<PDiskData$ListName> set = new HashSet<PDiskData$ListName>();
         this.setExperienceType(experienceType);
         this.addListsToFetch(set, preAppAgentEventType);
-        this.fetchLists(preAppAgentEventType, new PreAppAgentDataHandler$1(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$2(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$3(this, experienceType, set, preAppAgentEventType));
+        this.fetchLists(preAppAgentEventType, new PreAppAgentDataHandler$1(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$2(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$3(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$4(this, experienceType, set, preAppAgentEventType));
     }
 }

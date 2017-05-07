@@ -51,7 +51,7 @@ public final class UserLocale
     
     public static Locale getDeviceLocale(final Context context) {
         final Locale locale = context.getApplicationContext().getResources().getConfiguration().locale;
-        if (Log.isLoggable("nf_user_locale", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_user_locale", "Current device locale is " + locale);
         }
         return locale;

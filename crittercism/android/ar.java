@@ -4,18 +4,54 @@
 
 package crittercism.android;
 
-public final class ar implements t
+import org.apache.http.util.CharArrayBuffer;
+
+public final class ar extends af
 {
-    int a;
+    private af d;
     
-    private ar(final int a) {
-        this.a = a;
+    public ar(final af d) {
+        super(d);
+        this.d = d;
     }
     
-    public final boolean a(final h h, final String s, final String s2) {
-        synchronized (this) {
-            h.a(s, s2, Integer.valueOf(this.a));
+    @Override
+    public final boolean a(final int n) {
+        if (n == -1) {
+            super.a.a(as.d);
             return true;
         }
+        ++this.c;
+        if ((char)n == '\n') {
+            this.d.b(this.a());
+            super.a.a(this.d);
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
+    public final boolean a(final CharArrayBuffer charArrayBuffer) {
+        return true;
+    }
+    
+    @Override
+    public final af b() {
+        return this;
+    }
+    
+    @Override
+    public final af c() {
+        return this;
+    }
+    
+    @Override
+    protected final int d() {
+        return 0;
+    }
+    
+    @Override
+    protected final int e() {
+        return 0;
     }
 }

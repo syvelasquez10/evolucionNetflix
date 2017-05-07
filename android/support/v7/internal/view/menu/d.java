@@ -139,15 +139,15 @@ public abstract class d implements x
                     final m m = i.get(n);
                     if (this.shouldIncludeItem(n2, m)) {
                         final View child = viewGroup.getChildAt(n2);
-                        m a;
+                        m itemData;
                         if (child instanceof aa) {
-                            a = ((aa)child).a();
+                            itemData = ((aa)child).getItemData();
                         }
                         else {
-                            a = null;
+                            itemData = null;
                         }
                         final View itemView = this.getItemView(m, child, viewGroup);
-                        if (m != a) {
+                        if (m != itemData) {
                             itemView.setPressed(false);
                             ViewCompat.jumpDrawablesToCurrentState(itemView);
                         }

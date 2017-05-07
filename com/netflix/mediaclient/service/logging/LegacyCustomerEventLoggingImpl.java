@@ -44,7 +44,7 @@ public final class LegacyCustomerEventLoggingImpl implements CustomerEventLoggin
         userData.accountCountry = this.mOwner.getUser().getReqCountry();
         userData.accountCountry = this.mOwner.getUser().getGeoCountry();
         userData.languages = this.mOwner.getUser().getLanguagesInCsv();
-        if (Log.isLoggable("nf_log", 3)) {}
+        if (Log.isLoggable()) {}
         return userData;
     }
     

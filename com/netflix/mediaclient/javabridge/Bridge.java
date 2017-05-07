@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.javabridge;
 
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
-import com.netflix.mediaclient.net.IpConnectivityPolicy;
+import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import android.view.Display;
 import java.util.Locale;
@@ -15,6 +15,8 @@ import android.content.Context;
 
 public interface Bridge
 {
+    boolean enableLowBitrateStreams();
+    
     int getConfigVideoBufferSize();
     
     Context getContext();

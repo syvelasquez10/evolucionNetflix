@@ -4,28 +4,26 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
-import com.netflix.mediaclient.servicemgr.model.trackable.TrackableObject;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import com.netflix.mediaclient.service.webclient.model.leafs.TrackableObject;
+import android.support.v7.widget.RecyclerView$ItemDecoration;
+import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
-import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.mediaclient.ui.DetailsPageParallaxScrollListener;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
 import com.netflix.mediaclient.ui.common.SimilarItemsGridViewAdapter;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.View;
 import android.support.v7.widget.RecyclerView$LayoutManager;
 import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView$ItemDecoration;
-import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.os.Bundle;
@@ -34,7 +32,7 @@ import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 
 class MovieDetailsFrag$FetchMovieDetailsCallback extends LoggingManagerCallback
@@ -66,7 +64,7 @@ class MovieDetailsFrag$FetchMovieDetailsCallback extends LoggingManagerCallback
             this.this$0.showErrorView();
             return;
         }
-        if (Log.isLoggable("MovieDetailsFrag", 2)) {
+        if (Log.isLoggable()) {
             Log.v("MovieDetailsFrag", "evidence glyph: " + movieDetails.getEvidenceGlyph() + ", evidence text: " + movieDetails.getEvidenceText());
         }
         this.this$0.showDetailsView(movieDetails);

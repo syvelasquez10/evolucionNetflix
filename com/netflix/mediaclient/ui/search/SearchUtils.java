@@ -13,7 +13,7 @@ import android.util.SparseArray;
 public class SearchUtils
 {
     private static final String TAG = "SearchUtils";
-    private static SearchUtils$TestCell currentTest;
+    private static SearchUtils$SearchExperience currentExperience;
     private static final SparseArray<SparseIntArray> numPeopleColumnsTable;
     private static final SparseArray<SparseIntArray> numRelatedColumnsTable;
     private static final SparseArray<SparseIntArray> numVideoColumnsTable;
@@ -22,7 +22,7 @@ public class SearchUtils
         numRelatedColumnsTable = new SparseArray(2);
         numPeopleColumnsTable = new SparseArray(2);
         numVideoColumnsTable = new SparseArray(2);
-        setTestCell(1);
+        setSearchExperience(SearchUtils$SearchExperience.STANDARD);
     }
     
     private static int computeMaxResultsForPeople(final Context context) {
@@ -63,7 +63,7 @@ public class SearchUtils
         }
         final int basicScreenOrientation = DeviceUtils.getBasicScreenOrientation(context);
         final int screenSizeCategory = DeviceUtils.getScreenSizeCategory(context);
-        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
                 return computeMaxResultsForPeople(context);
             }
@@ -118,7 +118,7 @@ public class SearchUtils
     }
     
     public static double getPeopleImageAspectRatio() {
-        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
                 return 1.0;
             }
@@ -126,45 +126,44 @@ public class SearchUtils
     }
     
     public static int getSearchFragLayout() {
-        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                return 2130903184;
+                return 2130903191;
             }
             case 1: {
-                return 2130903185;
+                return 2130903192;
             }
         }
     }
     
     public static int getSearchViewLayoutPeople() {
-        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                return 2130903181;
+                return 2130903188;
             }
             case 1: {
-                return 2130903183;
+                return 2130903190;
             }
         }
     }
     
     public static int getSearchViewLayoutRelated() {
-        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                return 2130903182;
+                return 2130903189;
             }
             case 1: {
-                return 2130903183;
+                return 2130903190;
             }
         }
     }
     
     public static double getVideoImageAspectRatio() {
-        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
                 return 1.4299999475479126;
             }
-            case 1:
-            case 2: {
+            case 1: {
                 return 0.5625;
             }
         }
@@ -172,67 +171,21 @@ public class SearchUtils
     
     private static void initColumnsTable() {
         if (Log.isLoggable("SearchUtils", 2)) {
-            Log.v("SearchUtils", "init'ing columns table for test cell: " + SearchUtils.currentTest);
+            Log.v("SearchUtils", "init'ing columns table for seach experience: " + SearchUtils.currentExperience);
         }
-        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
-                intColumnTableTestONELandscape();
-                intColumnTableTestONEPortrait();
-            }
-            case 2: {
-                intColumnTableTestTWOLandscape();
-                intColumnTableTestTWOPortrait();
+                intColumnTableStandardLandscape();
+                intColumnTableStandardPortrait();
             }
             case 1: {
-                intColumnTableTestTHREELandscape();
-                intColumnTableTestTHREEPortrait();
+                intColumnTableKubrickLandscape();
+                intColumnTableKubrickPortrait();
             }
         }
     }
     
-    private static void intColumnTableTestONELandscape() {
-        final SparseIntArray sparseIntArray = new SparseIntArray();
-        final SparseIntArray sparseIntArray2 = new SparseIntArray();
-        final SparseIntArray sparseIntArray3 = new SparseIntArray();
-        sparseIntArray.put(1, 3);
-        sparseIntArray2.put(1, 3);
-        sparseIntArray3.put(1, 1);
-        sparseIntArray.put(2, 4);
-        sparseIntArray2.put(2, 4);
-        sparseIntArray3.put(2, 1);
-        sparseIntArray.put(3, 5);
-        sparseIntArray2.put(3, 5);
-        sparseIntArray3.put(3, 1);
-        sparseIntArray.put(4, 6);
-        sparseIntArray2.put(4, 6);
-        sparseIntArray3.put(4, 1);
-        SearchUtils.numVideoColumnsTable.put(2, (Object)sparseIntArray);
-        SearchUtils.numPeopleColumnsTable.put(2, (Object)sparseIntArray2);
-        SearchUtils.numRelatedColumnsTable.put(2, (Object)sparseIntArray3);
-    }
-    
-    private static void intColumnTableTestONEPortrait() {
-        final SparseIntArray sparseIntArray = new SparseIntArray();
-        final SparseIntArray sparseIntArray2 = new SparseIntArray();
-        final SparseIntArray sparseIntArray3 = new SparseIntArray();
-        sparseIntArray.put(1, 2);
-        sparseIntArray2.put(1, 2);
-        sparseIntArray3.put(1, 1);
-        sparseIntArray.put(2, 3);
-        sparseIntArray2.put(2, 3);
-        sparseIntArray3.put(2, 1);
-        sparseIntArray.put(3, 4);
-        sparseIntArray2.put(3, 4);
-        sparseIntArray3.put(3, 1);
-        sparseIntArray.put(4, 4);
-        sparseIntArray2.put(4, 4);
-        sparseIntArray3.put(4, 1);
-        SearchUtils.numVideoColumnsTable.put(1, (Object)sparseIntArray);
-        SearchUtils.numPeopleColumnsTable.put(1, (Object)sparseIntArray2);
-        SearchUtils.numRelatedColumnsTable.put(1, (Object)sparseIntArray3);
-    }
-    
-    private static void intColumnTableTestTHREELandscape() {
+    private static void intColumnTableKubrickLandscape() {
         final SparseIntArray sparseIntArray = new SparseIntArray();
         final SparseIntArray sparseIntArray2 = new SparseIntArray();
         final SparseIntArray sparseIntArray3 = new SparseIntArray();
@@ -253,7 +206,7 @@ public class SearchUtils
         SearchUtils.numRelatedColumnsTable.put(2, (Object)sparseIntArray3);
     }
     
-    private static void intColumnTableTestTHREEPortrait() {
+    private static void intColumnTableKubrickPortrait() {
         final SparseIntArray sparseIntArray = new SparseIntArray();
         final SparseIntArray sparseIntArray2 = new SparseIntArray();
         final SparseIntArray sparseIntArray3 = new SparseIntArray();
@@ -274,42 +227,42 @@ public class SearchUtils
         SearchUtils.numRelatedColumnsTable.put(1, (Object)sparseIntArray3);
     }
     
-    private static void intColumnTableTestTWOLandscape() {
+    private static void intColumnTableStandardLandscape() {
         final SparseIntArray sparseIntArray = new SparseIntArray();
         final SparseIntArray sparseIntArray2 = new SparseIntArray();
         final SparseIntArray sparseIntArray3 = new SparseIntArray();
-        sparseIntArray.put(1, 2);
-        sparseIntArray2.put(1, 4);
+        sparseIntArray.put(1, 3);
+        sparseIntArray2.put(1, 3);
         sparseIntArray3.put(1, 1);
-        sparseIntArray.put(2, 3);
-        sparseIntArray2.put(2, 6);
+        sparseIntArray.put(2, 4);
+        sparseIntArray2.put(2, 4);
         sparseIntArray3.put(2, 1);
-        sparseIntArray.put(3, 3);
-        sparseIntArray2.put(3, 6);
+        sparseIntArray.put(3, 5);
+        sparseIntArray2.put(3, 5);
         sparseIntArray3.put(3, 1);
-        sparseIntArray.put(4, 4);
-        sparseIntArray2.put(4, 8);
+        sparseIntArray.put(4, 6);
+        sparseIntArray2.put(4, 6);
         sparseIntArray3.put(4, 1);
         SearchUtils.numVideoColumnsTable.put(2, (Object)sparseIntArray);
         SearchUtils.numPeopleColumnsTable.put(2, (Object)sparseIntArray2);
         SearchUtils.numRelatedColumnsTable.put(2, (Object)sparseIntArray3);
     }
     
-    private static void intColumnTableTestTWOPortrait() {
+    private static void intColumnTableStandardPortrait() {
         final SparseIntArray sparseIntArray = new SparseIntArray();
         final SparseIntArray sparseIntArray2 = new SparseIntArray();
         final SparseIntArray sparseIntArray3 = new SparseIntArray();
         sparseIntArray.put(1, 2);
-        sparseIntArray2.put(1, 4);
+        sparseIntArray2.put(1, 2);
         sparseIntArray3.put(1, 1);
-        sparseIntArray.put(2, 2);
-        sparseIntArray2.put(2, 4);
+        sparseIntArray.put(2, 3);
+        sparseIntArray2.put(2, 3);
         sparseIntArray3.put(2, 1);
-        sparseIntArray.put(3, 2);
+        sparseIntArray.put(3, 4);
         sparseIntArray2.put(3, 4);
         sparseIntArray3.put(3, 1);
-        sparseIntArray.put(4, 3);
-        sparseIntArray2.put(4, 6);
+        sparseIntArray.put(4, 4);
+        sparseIntArray2.put(4, 4);
         sparseIntArray3.put(4, 1);
         SearchUtils.numVideoColumnsTable.put(1, (Object)sparseIntArray);
         SearchUtils.numPeopleColumnsTable.put(1, (Object)sparseIntArray2);
@@ -324,30 +277,15 @@ public class SearchUtils
         return replaceAll;
     }
     
-    public static void setTestCell(final int n) {
-        SearchUtils$TestCell currentTest = null;
-        switch (n) {
-            default: {
-                currentTest = SearchUtils$TestCell.ONE;
-                break;
-            }
-            case 2: {
-                currentTest = SearchUtils$TestCell.TWO;
-                break;
-            }
-            case 3: {
-                currentTest = SearchUtils$TestCell.THREE;
-                break;
-            }
-        }
-        if (currentTest != SearchUtils.currentTest) {
-            SearchUtils.currentTest = currentTest;
+    public static void setSearchExperience(final SearchUtils$SearchExperience currentExperience) {
+        if (currentExperience != SearchUtils.currentExperience) {
+            SearchUtils.currentExperience = currentExperience;
             initColumnsTable();
         }
     }
     
     public static boolean shouldHandleBackPress() {
-        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
                 return false;
             }
@@ -358,7 +296,7 @@ public class SearchUtils
     }
     
     public static boolean shouldOpenNewActivityForRelated() {
-        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
                 return true;
             }
@@ -369,30 +307,29 @@ public class SearchUtils
     }
     
     public static boolean shouldResetQueryOnTouch() {
-        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
                 return true;
             }
-            case 3: {
-                return false;
-            }
-        }
-    }
-    
-    public static boolean shouldShowVerticalBoxArt() {
-        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
-            default: {
-                return true;
-            }
-            case 1:
             case 2: {
                 return false;
             }
         }
     }
     
+    public static boolean shouldShowVerticalBoxArt() {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
+            default: {
+                return true;
+            }
+            case 1: {
+                return false;
+            }
+        }
+    }
+    
     public static boolean shouldUpperCaseTitleLabels() {
-        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$TestCell[SearchUtils.currentTest.ordinal()]) {
+        switch (SearchUtils$1.$SwitchMap$com$netflix$mediaclient$ui$search$SearchUtils$SearchExperience[SearchUtils.currentExperience.ordinal()]) {
             default: {
                 return true;
             }

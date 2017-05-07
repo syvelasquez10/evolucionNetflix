@@ -49,7 +49,7 @@ public final class WidevineCDMProvisionRequestTask extends AsyncTask<String, Voi
         final HttpParams params = ((HttpClient)defaultHttpClient).getParams();
         HttpConnectionParams.setConnectionTimeout(params, this.connectionTimeout);
         HttpConnectionParams.setSoTimeout(params, this.socketTimeout);
-        if (Log.isLoggable("nf_net", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_net", "PostRequest:" + httpPost.getRequestLine());
         }
         try {
@@ -61,7 +61,7 @@ public final class WidevineCDMProvisionRequestTask extends AsyncTask<String, Voi
             if (statusCode == 200) {
                 return EntityUtils.toByteArray(execute.getEntity());
             }
-            if (Log.isLoggable("nf_net", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_net", "Server returned HTTP error code " + statusCode);
                 return null;
             }

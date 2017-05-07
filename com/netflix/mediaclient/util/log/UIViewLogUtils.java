@@ -7,6 +7,7 @@ package com.netflix.mediaclient.util.log;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.StringUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
@@ -25,7 +26,11 @@ public final class UIViewLogUtils extends ConsolidatedLoggingUtils
     }
     
     public static void reportUIViewCommand(final Context context, final UIViewLogging$UIViewCommandName uiViewLogging$UIViewCommandName, final IClientLogging$ModalView clientLogging$ModalView, final DataContext dataContext) {
-        reportUIViewCommandStarted(context, uiViewLogging$UIViewCommandName, clientLogging$ModalView, dataContext);
+        reportUIViewCommand(context, uiViewLogging$UIViewCommandName, clientLogging$ModalView, dataContext, null);
+    }
+    
+    public static void reportUIViewCommand(final Context context, final UIViewLogging$UIViewCommandName uiViewLogging$UIViewCommandName, final IClientLogging$ModalView clientLogging$ModalView, final DataContext dataContext, final String s) {
+        reportUIViewCommandStarted(context, uiViewLogging$UIViewCommandName, clientLogging$ModalView, dataContext, s);
         reportUIViewCommandEnded(context);
     }
     
@@ -36,7 +41,7 @@ public final class UIViewLogUtils extends ConsolidatedLoggingUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
-    public static void reportUIViewCommandStarted(final Context context, UIViewLogging$UIViewCommandName string, final IClientLogging$ModalView clientLogging$ModalView, final DataContext dataContext) {
+    public static void reportUIViewCommandStarted(final Context context, UIViewLogging$UIViewCommandName string, final IClientLogging$ModalView clientLogging$ModalView, final DataContext dataContext, final String s) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIVIEW_CMD_START");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
@@ -55,6 +60,9 @@ public final class UIViewLogUtils extends ConsolidatedLoggingUtils
                 try {
                     string = (UIViewLogging$UIViewCommandName)dataContext.toJSONObject().toString();
                     intent.putExtra("dataContext", (String)string);
+                    if (StringUtils.isNotEmpty(s)) {
+                        intent.putExtra("url", s);
+                    }
                     LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                 }
                 catch (JSONException ex) {

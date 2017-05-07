@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 
 public interface VideoViewGroup$IVideoView<T> extends PlayContextProvider

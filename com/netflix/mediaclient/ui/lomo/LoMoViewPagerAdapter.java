@@ -7,17 +7,18 @@ package com.netflix.mediaclient.ui.lomo;
 import android.view.ViewGroup;
 import android.widget.LinearLayout$LayoutParams;
 import android.content.IntentFilter;
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoDuplicate;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.view.View;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.EnumMap;
 import android.support.v4.view.PagerAdapter;
 
@@ -26,7 +27,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     private static final EnumMap<LoMoType, LoMoViewPagerAdapter$Type> LOMO_TYPE_TABLE;
     private static final String TAG = "LoMoViewPagerAdapter";
     private final NetflixActivity activity;
-    private final LoMoViewPagerAdapter$IRowAdapterProvider adapters;
+    private final RowAdapterProvider$IRowAdapterProvider adapters;
     private final BroadcastReceiver browseReceiver;
     private RowAdapter currentAdapter;
     private boolean isDestroyed;
@@ -61,24 +62,28 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     }
     
     private LoMoViewPagerAdapter$Type convertLomoTypeToAdapterType(final BasicLoMo basicLoMo) {
-        LoMoViewPagerAdapter$Type kubrick_HERO;
+        if (Log.isLoggable()) {
+            Log.v("LoMoViewPagerAdapter", "Converting lomo: " + basicLoMo.getClass().getSimpleName() + ", type: " + basicLoMo.getType());
+        }
         if (basicLoMo instanceof KubrickLoMoHeroDuplicate) {
-            kubrick_HERO = LoMoViewPagerAdapter$Type.KUBRICK_HERO;
+            return LoMoViewPagerAdapter$Type.KUBRICK_HERO;
         }
-        else {
-            if (basicLoMo instanceof KubrickLoMoDuplicate) {
-                return LoMoViewPagerAdapter$Type.STANDARD;
+        if (basicLoMo instanceof KubrickLoMoDuplicate) {
+            return LoMoViewPagerAdapter$Type.KUBRICK_HERO_DUPLICATE;
+        }
+        if (BrowseExperience.isKubrickKids()) {
+            if (basicLoMo.getType() == LoMoType.TOP_TEN) {
+                return LoMoViewPagerAdapter$Type.KUBRICK_KIDS_TOP_TEN;
             }
-            kubrick_HERO = LoMoViewPagerAdapter.LOMO_TYPE_TABLE.get(basicLoMo.getType());
-            if (this.activity.isKubrick() && (kubrick_HERO = kubrick_HERO) == LoMoViewPagerAdapter$Type.STANDARD) {
-                return LoMoViewPagerAdapter$Type.KUBRICK_GALLERY;
+            if (basicLoMo.getType() == LoMoType.POPULAR_TITLES) {
+                return LoMoViewPagerAdapter$Type.KUBRICK_KIDS_POPULAR;
             }
         }
-        return kubrick_HERO;
+        return LoMoViewPagerAdapter.LOMO_TYPE_TABLE.get(basicLoMo.getType());
     }
     
     private View getView(final int n) {
-        if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPagerAdapter", "getView pos: " + n);
         }
         if (this.currentAdapter.hasMoreData() && this.isLastItem(n)) {
@@ -96,22 +101,24 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     }
     
     private void registerBrowseNotificationReceiver() {
-        if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPagerAdapter", "Registering browse notification receiver, " + this.browseReceiver.hashCode());
         }
-        final IntentFilter intentFilter = new IntentFilter("com.netflix.mediaclient.intent.action.BA_IQ_REFRESH");
+        final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.netflix.mediaclient.intent.action.BA_CW_REFRESH");
+        intentFilter.addAction("com.netflix.mediaclient.intent.action.BA_IQ_REFRESH");
+        intentFilter.addAction("com.netflix.mediaclient.intent.action.BA_POPULAR_TITLES_REFRESH");
         this.activity.registerReceiver(this.browseReceiver, intentFilter);
     }
     
     private void setState(final LoMoViewPagerAdapter$Type state) {
-        if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPagerAdapter", "new state: " + state);
         }
         this.state = state;
         switch (LoMoViewPagerAdapter$5.$SwitchMap$com$netflix$mediaclient$ui$lomo$LoMoViewPagerAdapter$Type[state.ordinal()]) {
             default: {
-                throw new IllegalStateException("Bad state");
+                throw new IllegalStateException("Requested invalid new state: " + state);
             }
             case 1: {
                 this.currentAdapter = this.adapters.getStandardAdapter();
@@ -138,7 +145,13 @@ public class LoMoViewPagerAdapter extends PagerAdapter
                 this.currentAdapter = this.adapters.getKubrickHeroAdapter();
             }
             case 9: {
-                this.currentAdapter = this.adapters.getKubrickGalleryAdapter();
+                this.currentAdapter = this.adapters.getKubrickHeroDuplicateAdapter();
+            }
+            case 10: {
+                this.currentAdapter = this.adapters.getKubrickKidsTopTenAdapter();
+            }
+            case 11: {
+                this.currentAdapter = this.adapters.getKubrickKidsPopularAdapter();
             }
         }
     }
@@ -154,7 +167,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     }
     
     private void unregisterBrowseNotificationReceiver() {
-        if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPagerAdapter", "Unregistering browse notification receiver, " + this.browseReceiver.hashCode());
         }
         this.activity.unregisterReceiver(this.browseReceiver);
@@ -175,7 +188,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     
     @Override
     public void destroyItem(final ViewGroup viewGroup, final int n, final Object o) {
-        if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPagerAdapter", "destroying item: " + o.getClass().getSimpleName() + ", pos: " + n);
         }
         viewGroup.removeView((View)o);
@@ -200,13 +213,17 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         return -2;
     }
     
+    public LoMoViewPagerAdapter$Type getState() {
+        return this.state;
+    }
+    
     public boolean hasMoreData() {
         return this.currentAdapter.hasMoreData();
     }
     
     @Override
     public Object instantiateItem(final ViewGroup viewGroup, final int n) {
-        if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPagerAdapter", "instantiateItem, pos: " + n);
         }
         final View view = this.getView(n);
@@ -233,7 +250,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     
     public void refresh(final BasicLoMo loMo, final int listViewPos) {
         final LoMoViewPagerAdapter$Type convertLomoTypeToAdapterType = this.convertLomoTypeToAdapterType(loMo);
-        if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
+        if (Log.isLoggable()) {
             final StringBuilder append = new StringBuilder().append("refreshing: ").append(listViewPos).append(", ");
             String title;
             if (loMo == null) {
@@ -253,7 +270,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     }
     
     public void reload() {
-        if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
+        if (Log.isLoggable()) {
             final StringBuilder append = new StringBuilder().append("Reloading data, ").append(this.listViewPos).append(", ");
             String title;
             if (this.loMo == null) {
@@ -282,7 +299,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         }
         reloadView.setVisibility(visibility);
         if (state == LoMoViewPagerAdapter$Type.ERROR || state == LoMoViewPagerAdapter$Type.LOADING) {
-            if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("LoMoViewPagerAdapter", "Page was in error or loading state - ignoring restoration");
             }
             return;

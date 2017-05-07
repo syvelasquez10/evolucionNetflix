@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.mdx;
 
+import com.netflix.mediaclient.service.mdx.message.controller.PlayerGetCapabilities;
+import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
 import com.netflix.mediaclient.service.mdx.message.target.PlayerState;
 import com.netflix.mediaclient.service.mdx.message.target.PinNotRequired;
 import com.netflix.mediaclient.service.mdx.message.target.PinRequired;

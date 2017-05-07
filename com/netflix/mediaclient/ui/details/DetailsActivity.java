@@ -13,13 +13,14 @@ import android.view.Menu;
 import android.os.Bundle;
 import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.util.SocialUtils;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import android.content.Context;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
@@ -27,8 +28,8 @@ import android.content.Intent;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.util.SocialUtils$NotificationsListStatus;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.ui.common.VideoDetailsProvider;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -46,12 +47,12 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     private String mActionToken;
     protected MessageData mMessageData;
     private boolean mNotificationOpenedReportAlreadySent;
-    private PlayContext mPlayContext;
     private SocialUtils$NotificationsListStatus notificationsListStatus;
+    protected PlayContext playContext;
     private final BroadcastReceiver reloadReceiver;
     private ServiceManager serviceMan;
     private final BroadcastReceiver socialNotificationsListUpdateReceiver;
-    private String videoId;
+    protected String videoId;
     
     public DetailsActivity() {
         this.notificationsListStatus = SocialUtils$NotificationsListStatus.NO_MESSAGES;
@@ -72,7 +73,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
             Log.d("DetailsActivity", "Action remove from my list started");
             this.handleRemoveFromMyList();
         }
-        else if (Log.isLoggable("DetailsActivity", 5)) {
+        else if (Log.isLoggable()) {
             Log.w("DetailsActivity", "Not supported action " + this.getAction());
         }
         this.mAction = null;
@@ -81,11 +82,11 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     private void handleAddToMyList() {
-        if (Log.isLoggable("DetailsActivity", 3)) {
+        if (Log.isLoggable()) {
             Log.d("DetailsActivity", "handleAddToMyList:: msg token " + this.mActionToken);
         }
         UserActionLogUtils.reportAddToQueueActionStarted((Context)this, null, this.getUiScreen());
-        this.serviceMan.getBrowse().addToQueue(this.videoId, this.getVideoType(), this.getTrackId(), this.isKubrick(), this.mActionToken, new DetailsActivity$MyListCallback(this, "DetailsActivity"));
+        this.serviceMan.getBrowse().addToQueue(this.videoId, this.getVideoType(), this.getTrackId(), BrowseExperience.shouldLoadKubrickLeaves(), this.mActionToken, new DetailsActivity$MyListCallback(this, "DetailsActivity"));
     }
     
     private void handleRemoveFromMyList() {
@@ -126,6 +127,11 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     @Override
+    protected boolean canApplyBrowseExperience() {
+        return true;
+    }
+    
+    @Override
     protected ManagerStatusListener createManagerStatusListener() {
         return this;
     }
@@ -140,7 +146,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     
     @Override
     public DataContext getDataContext() {
-        return new DataContext(this.mPlayContext, this.videoId);
+        return new DataContext(this.playContext, this.videoId);
     }
     
     public String getEpisodeId() {
@@ -149,13 +155,13 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     
     @Override
     public PlayContext getPlayContext() {
-        return this.mPlayContext;
+        return this.playContext;
     }
     
     public int getTrackId() {
-        if (this.mPlayContext instanceof PlayContext) {
+        if (this.playContext instanceof PlayContext) {
             Log.d("DetailsActivity", "TrackId found in PlayContextImpl");
-            return ((PlayContextImp)this.mPlayContext).getTrackId();
+            return ((PlayContextImp)this.playContext).getTrackId();
         }
         Log.d("DetailsActivity", "TrackId not found!");
         return -1;
@@ -211,7 +217,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         this.mActionToken = this.getIntent().getStringExtra("extra_action_token");
         final PlayContextImp playContext = (PlayContextImp)this.getIntent().getParcelableExtra("extra_playcontext");
         this.setPlayContext(playContext);
-        if (Log.isLoggable("DetailsActivity", 2)) {
+        if (Log.isLoggable()) {
             Log.v("DetailsActivity", "TRACK_ID: " + playContext.getTrackId());
         }
         super.onCreate(bundle);
@@ -275,15 +281,15 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     protected void setAction(final DetailsActivity$Action mAction, final String mActionToken) {
-        if (Log.isLoggable("DetailsActivity", 3)) {
+        if (Log.isLoggable()) {
             Log.d("DetailsActivity", "Action " + mAction + ", msg token: " + mActionToken);
         }
         this.mAction = mAction;
         this.mActionToken = mActionToken;
     }
     
-    protected void setPlayContext(final PlayContext mPlayContext) {
-        this.mPlayContext = mPlayContext;
+    protected void setPlayContext(final PlayContext playContext) {
+        this.playContext = playContext;
     }
     
     protected void setVideoId(final String videoId) {

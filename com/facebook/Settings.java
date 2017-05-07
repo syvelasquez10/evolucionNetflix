@@ -229,26 +229,24 @@ public final class Settings
                     return new Response(null, null, null, create2, true);
                     // iftrue(Label_0329:, attributionIdentifiers != null && attributionIdentifiers.getAndroidAdvertiserId() != null || attributionIdentifiers.getAttributionId() != null)
                     throw new FacebookException("No attribution id available to send to server.");
-                    Label_0329: {
+                    final Response executeAndWait;
+                    Label_0351: {
+                        executeAndWait = postRequest.executeAndWait();
+                    }
+                    final SharedPreferences$Editor edit = sharedPreferences.edit();
+                    edit.putLong(string, System.currentTimeMillis());
+                    // iftrue(Label_0417:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
+                    // iftrue(Label_0351:, Utility.queryAppSettings(s, false).supportsAttribution())
+                    Block_13: {
+                        break Block_13;
+                        Label_0329:
                         throw new FacebookException("Install attribution has been disabled on the server.");
                     }
-                    // iftrue(Label_0351:, Utility.queryAppSettings(s, false).supportsAttribution())
-                    while (true) {
-                        final SharedPreferences$Editor edit;
-                        final Response executeAndWait;
-                        edit.putString(string2, executeAndWait.getGraphObject().getInnerJSONObject().toString());
-                        Label_0417: {
-                            edit.apply();
-                        }
-                        return executeAndWait;
-                        Label_0351:
-                        executeAndWait = postRequest.executeAndWait();
-                        edit = sharedPreferences.edit();
-                        edit.putLong(string, System.currentTimeMillis());
-                        continue;
-                    }
+                    edit.putString(string2, executeAndWait.getGraphObject().getInnerJSONObject().toString());
+                    Label_0417:
+                    edit.apply();
+                    return executeAndWait;
                 }
-                // iftrue(Label_0417:, executeAndWait.getGraphObject() == null || executeAndWait.getGraphObject().getInnerJSONObject() == null)
                 catch (JSONException ex2) {
                     create2 = null;
                     continue;

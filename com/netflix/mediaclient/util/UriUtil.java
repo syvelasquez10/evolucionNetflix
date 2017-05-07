@@ -4,14 +4,42 @@
 
 package com.netflix.mediaclient.util;
 
+import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import com.netflix.mediaclient.Log;
 import java.net.URLEncoder;
 import android.net.Uri;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 
 public final class UriUtil
 {
+    private static final int FIRST_STILL_THRESHOLD_SECONDS = 10;
     private static final String TAG = "UriUtils";
+    
+    public static String buildStillUrlFromPos(final CWVideo cwVideo) {
+        final String baseUrl = cwVideo.getBaseUrl();
+        final int playableBookmarkPosition = cwVideo.getPlayableBookmarkPosition();
+        if (StringUtils.isEmpty(baseUrl)) {
+            return cwVideo.getInterestingUrl();
+        }
+        if (playableBookmarkPosition < 10) {
+            if (Log.isLoggable()) {
+                Log.v("UriUtils", String.format("%s bookmark < threshold(%d), using interesting url %s ", cwVideo.getId(), 10, cwVideo.getInterestingUrl()));
+            }
+            return cwVideo.getInterestingUrl();
+        }
+        final String value = String.valueOf(playableBookmarkPosition / 10);
+        final StringBuilder append = new StringBuilder(baseUrl).append("/00000");
+        append.replace(append.length() - value.length(), append.length(), value);
+        append.append(".jpg");
+        if (Log.isLoggable()) {
+            Log.v("UriUtils", String.format("%s stillId: %s, stillUrl: %s", cwVideo.getId(), value, append.toString()));
+        }
+        return append.toString();
+    }
     
     public static String buildUrlParam(final String s, final String s2) {
         final StringBuilder sb = new StringBuilder("&");

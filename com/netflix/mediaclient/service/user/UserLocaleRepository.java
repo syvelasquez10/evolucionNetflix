@@ -33,12 +33,12 @@ public final class UserLocaleRepository
             int i = 0;
             UserLocale userLocale3 = userLocale;
             while (i < userLocales.length) {
-                if (Log.isLoggable("nf_loc", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_loc", "Choice #" + i + ": " + userLocales[i]);
                 }
                 UserLocale userLocale4;
                 for (int j = 0; j < this.supportedLocales.length; ++j, userLocale3 = userLocale4) {
-                    if (Log.isLoggable("nf_loc", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_loc", "Try to match by locale with #" + j + ": " + this.supportedLocales[j]);
                     }
                     userLocale4 = userLocale3;
@@ -49,11 +49,11 @@ public final class UserLocaleRepository
                                 continue;
                             }
                         }
-                        if (Log.isLoggable("nf_loc", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("nf_loc", "Match by locale with #" + j + ": " + this.supportedLocales[j]);
                         }
                         if (userLocales[i].equals(this.supportedLocales[j])) {
-                            if (Log.isLoggable("nf_loc", 3)) {
+                            if (Log.isLoggable()) {
                                 Log.d("nf_loc", "Perfect Match by locale with #" + j + ": " + this.supportedLocales[j]);
                             }
                             return this.supportedLocales[j];
@@ -66,7 +66,7 @@ public final class UserLocaleRepository
                 ++i;
             }
             userLocale2 = userLocale3;
-            if (Log.isLoggable("nf_loc", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_loc", "findBestMatch: " + userLocale3);
                 return userLocale3;
             }
@@ -123,7 +123,7 @@ public final class UserLocaleRepository
             final UserLocale userLocale = new UserLocale(stringTokenizer.nextToken());
             final int n2 = n + 1;
             array[n] = userLocale;
-            if (Log.isLoggable("nf_loc", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_loc", "Preffered locale " + n2 + ":" + userLocale);
             }
             n = n2;
@@ -168,12 +168,12 @@ public final class UserLocaleRepository
     
     public void setApplicationLanguage(final UserLocale currentAppLocale) {
         if (this.currentAppLocale != null && this.currentAppLocale.equals(currentAppLocale)) {
-            if (Log.isLoggable("nf_loc", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_loc", "Keeping same application locale " + this.currentAppLocale.getRaw());
             }
             return;
         }
-        if (Log.isLoggable("nf_loc", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_loc", "Change locale from " + this.currentAppLocale + " to " + currentAppLocale);
         }
         this.currentAppLocale = currentAppLocale;

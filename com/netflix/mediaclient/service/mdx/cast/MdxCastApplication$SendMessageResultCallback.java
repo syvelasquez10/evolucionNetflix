@@ -10,7 +10,6 @@ import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
 import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.Cast$ApplicationConnectionResult;
-import com.netflix.mediaclient.util.StringUtils;
 import com.google.android.gms.cast.Cast$CastOptions$Builder;
 import com.google.android.gms.cast.Cast;
 import com.google.android.gms.common.api.GoogleApiClient$Builder;
@@ -43,7 +42,7 @@ final class MdxCastApplication$SendMessageResultCallback implements ResultCallba
             this.this$0.mCallback.onMessageSent();
             return;
         }
-        if (Log.isLoggable(MdxCastApplication.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(MdxCastApplication.TAG, "SendMessage(), failure with result " + status);
         }
         if (status.getStatus().getStatusCode() == 15) {

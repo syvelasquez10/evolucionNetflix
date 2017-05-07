@@ -13,7 +13,7 @@ import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.app.Activity;
-import com.netflix.mediaclient.ui.RelaunchActivity;
+import com.netflix.mediaclient.ui.launch.RelaunchActivity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
@@ -41,11 +41,11 @@ class LogoutActivity$LogoutHandler extends LoggingManagerCallback
             this.this$0.handleLogoutComplete();
             return;
         }
-        if (Log.isLoggable("LogoutActivity", 6)) {
+        if (Log.isLoggable()) {
             Log.e("LogoutActivity", "Could not log user out - status code: " + status.getStatusCode());
         }
-        this.this$0.reportError(status, this.this$0.getString(2131493193));
-        Toast.makeText(this.this$0.getApplicationContext(), 2131493193, 1).show();
+        this.this$0.reportError(status, this.this$0.getString(2131493200));
+        Toast.makeText(this.this$0.getApplicationContext(), 2131493200, 1).show();
         this.this$0.finish();
     }
 }

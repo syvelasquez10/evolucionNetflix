@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.search;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
 import android.app.Activity;
 import android.util.Pair;
 import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
@@ -14,12 +14,14 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.widget.ScrollView;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.android.widget.LoggingScrollView$OnScrollStopListener;
+import android.annotation.SuppressLint;
 import android.view.View$OnTouchListener;
 import java.util.Locale;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
-import com.netflix.mediaclient.servicemgr.model.search.SearchSuggestion;
-import com.netflix.mediaclient.servicemgr.model.search.SearchPerson;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchSuggestion;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchPerson;
 import android.view.View$OnClickListener;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.EditText;
@@ -29,7 +31,7 @@ import android.widget.GridView;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.common.SearchSimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.android.widget.LoggingScrollView;
-import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
+import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import android.widget.ProgressBar;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.FlowLayout;
@@ -39,12 +41,11 @@ import java.util.Stack;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import android.widget.AdapterView;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.view.ViewGroup;
-import com.netflix.mediaclient.servicemgr.model.trackable.SearchTrackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.SearchTrackable;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kids.search.KidsSearchResultView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
 import android.view.ViewGroup$LayoutParams;
@@ -89,14 +90,7 @@ class SearchResultsFrag$SearchResultsAdapter extends BaseAdapter implements Adap
     }
     
     private View createView() {
-        final NetflixActivity netflixActivity = (NetflixActivity)this.this$0.getActivity();
-        SearchResultView searchResultView;
-        if (netflixActivity.isForKids()) {
-            searchResultView = new KidsSearchResultView((Context)netflixActivity, this.resId);
-        }
-        else {
-            searchResultView = new SearchResultView((Context)netflixActivity, this.resId);
-        }
+        final SearchResultView searchResultView = new SearchResultView((Context)this.this$0.getActivity(), this.resId);
         this.adjustHeight(searchResultView);
         if (this.ignoreClicks) {
             searchResultView.setIgnoreClicks();
@@ -124,7 +118,7 @@ class SearchResultsFrag$SearchResultsAdapter extends BaseAdapter implements Adap
     private void setResid() {
         switch (SearchResultsFrag$7.$SwitchMap$com$netflix$mediaclient$ui$search$SearchResultsFrag$SearchCategory[this.searchCategory.ordinal()]) {
             default: {
-                this.resId = 2130903180;
+                this.resId = 2130903187;
             }
             case 2: {
                 this.resId = SearchUtils.getSearchViewLayoutPeople();

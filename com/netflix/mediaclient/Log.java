@@ -41,7 +41,7 @@ public final class Log
     }
     
     public static void d(final String s, final Intent intent) {
-        if (isLoggable(s, 3)) {
+        if (isLoggable()) {
             d(s, "intent.getAction(): " + intent.getAction());
             if (intent.getCategories() == null) {
                 d(s, "intent.getCategories(): null");
@@ -123,7 +123,7 @@ public final class Log
         return 0;
     }
     
-    public static boolean isLoggable(final String s, final int n) {
+    public static boolean isLoggable() {
         return Log.debug;
     }
     
@@ -173,19 +173,19 @@ public final class Log
     }
     
     public static void v(final String s, final Intent intent) {
-        if (!isLoggable(s, 2)) {
+        if (!isLoggable()) {
             return;
         }
         String decode;
         String string;
         String string2;
-        Label_0031_Outer:Label_0042_Outer:
+        Label_0029_Outer:Label_0040_Outer:
         while (true) {
             decode = "n/a";
             while (true) {
-            Label_0141:
+            Label_0139:
                 while (true) {
-                Label_0130:
+                Label_0128:
                     while (true) {
                         try {
                             if (intent.getDataString() == null) {
@@ -195,7 +195,7 @@ public final class Log
                                 decode = URLDecoder.decode(intent.getDataString(), "utf-8");
                             }
                             if (intent.getCategories() != null) {
-                                break Label_0130;
+                                break Label_0128;
                             }
                             string = "n/a";
                             if (intent.getExtras() == null) {
@@ -203,16 +203,16 @@ public final class Log
                                 v(s, String.format("Handling intent\n   action: %s\n   uri: %s\n   decodedUri: %s\n   categories: %s\n   extras: %s", intent.getAction(), intent.getDataString(), decode, string, string2));
                                 return;
                             }
-                            break Label_0141;
+                            break Label_0139;
                         }
                         catch (UnsupportedEncodingException ex) {
                             w(s, "Couldn't decode url: " + intent.getDataString());
-                            continue Label_0031_Outer;
+                            continue Label_0029_Outer;
                         }
-                        continue Label_0031_Outer;
+                        continue Label_0029_Outer;
                     }
                     string = intent.getCategories().toString();
-                    continue Label_0042_Outer;
+                    continue Label_0040_Outer;
                 }
                 string2 = intent.getExtras().toString();
                 continue;

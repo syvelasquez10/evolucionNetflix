@@ -58,7 +58,7 @@ public class ResourceFetcher extends ServiceAgent
     private DiskBasedCache createDiskCache() {
         final File file = new File(this.getContext().getCacheDir(), "volley");
         final int diskCacheSizeBytes = this.getConfigurationAgent().getDiskCacheSizeBytes();
-        if (Log.isLoggable("nf_service_resourcefetcher", 4)) {
+        if (Log.isLoggable()) {
             Log.i("nf_service_resourcefetcher", String.format("Creating new Volley DiskBasedCache, location: %s,  max size: %d bytes", file.getAbsolutePath(), diskCacheSizeBytes));
         }
         return new DiskBasedCache(file, diskCacheSizeBytes);
@@ -78,7 +78,7 @@ public class ResourceFetcher extends ServiceAgent
             resourceRequestTimeout = configurationAgent.getResourceRequestTimeout();
             imageCacheMinimumTtl = configurationAgent.getImageCacheMinimumTtl();
         }
-        if (Log.isLoggable("nf_service_resourcefetcher", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_resourcefetcher", "Received request to create new ImageLoader with socketTimeout = " + resourceRequestTimeout + " and minimumTtl = " + imageCacheMinimumTtl + "ms");
         }
         ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = null;
@@ -160,7 +160,7 @@ public class ResourceFetcher extends ServiceAgent
     protected void doInit() {
         Log.d("nf_service_resourcefetcher", "ResourceFetcher starting doInit.");
         final int resFetcherThreadPoolSize = this.getConfigurationAgent().getResFetcherThreadPoolSize();
-        if (Log.isLoggable("nf_service_resourcefetcher", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_resourcefetcher", String.format("Creating Volley RequestQueue with threadPoolsize of %d", resFetcherThreadPoolSize));
         }
         (this.mRequestQueue = new RequestQueue(this.createDiskCache(), new BasicNetwork(this.createHttpStack()), resFetcherThreadPoolSize)).start();
@@ -170,7 +170,7 @@ public class ResourceFetcher extends ServiceAgent
         }
         this.mWebClient.init(new NetflixWebClientInitParameters(this.getConfigurationAgent().getApiEndpointRegistry(), this.getUserAgent().getUserCredentialRegistry(), this.getService().getClientLogging().getErrorLogging(), this.mRequestQueue));
         final int dataRequestTimeout = this.getConfigurationAgent().getDataRequestTimeout();
-        if (Log.isLoggable("nf_service_resourcefetcher", 4)) {
+        if (Log.isLoggable()) {
             Log.i("nf_service_resourcefetcher", "Setting default timeout value for data request to " + dataRequestTimeout + "ms");
         }
         this.mWebClient.setTimeout(dataRequestTimeout);
@@ -178,7 +178,7 @@ public class ResourceFetcher extends ServiceAgent
     }
     
     public void fetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ResourceFetcherCallback resourceFetcherCallback) {
-        if (Log.isLoggable("nf_service_resourcefetcher", 4)) {
+        if (Log.isLoggable()) {
             Log.i("nf_service_resourcefetcher", "Received request to fetch resource at " + s);
         }
         ApmLogUtils.reportAssetRequest(s, clientLogging$AssetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
@@ -211,7 +211,7 @@ public class ResourceFetcher extends ServiceAgent
             this.getMainHandler().post((Runnable)new ResourceFetcher$2(this, resourceFetcherCallback, s));
             return;
         }
-        if (Log.isLoggable("nf_service_resourcefetcher", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_resourcefetcher", "Request to prefetch resource at URL " + s);
         }
         ApmLogUtils.reportAssetRequest(s, clientLogging$AssetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());

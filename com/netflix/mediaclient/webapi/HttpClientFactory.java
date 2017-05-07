@@ -38,7 +38,7 @@ public final class HttpClientFactory
         HttpClientFactory.webApiEndPoint = "api-global.netflix.com";
         HttpClientFactory.customerEventBeaconApiEndPoint = "customerevents.netflix.com";
         HttpClientFactory.cmsBeaconApiEndPoint = "ichnaea.netflix.com";
-        if (Log.isLoggable("nf-rest", 3)) {
+        if (Log.isLoggable()) {
             Logger.getLogger("org.apache.http.wire").setLevel(Level.FINEST);
             Logger.getLogger("org.apache.http.headers").setLevel(Level.FINEST);
             System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
@@ -82,7 +82,7 @@ public final class HttpClientFactory
         ((CookieStore)cookieStore).addCookie((Cookie)basicClientCookie);
         ((CookieStore)cookieStore).addCookie((Cookie)basicClientCookie2);
         final List cookies = ((CookieStore)cookieStore).getCookies();
-        if (Log.isLoggable("nf-rest", 3)) {
+        if (Log.isLoggable()) {
             if (cookies.isEmpty()) {
                 Log.d("nf-rest", "No cookies");
             }

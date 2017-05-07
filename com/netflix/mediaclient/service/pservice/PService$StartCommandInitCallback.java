@@ -5,10 +5,10 @@
 package com.netflix.mediaclient.service.pservice;
 
 import android.os.IBinder;
-import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.ThreadUtils;
+import android.content.Context;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import java.util.ArrayList;

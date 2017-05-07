@@ -28,7 +28,6 @@ class MovieDetailsFrag$1 implements RecyclerViewHeaderAdapter$IViewCreator
         final VideoView videoView = new VideoView(this.this$0.recyclerView.getContext());
         videoView.setAdjustViewBounds(true);
         videoView.setScaleType(ImageView$ScaleType.CENTER_CROP);
-        videoView.setTag(2131165257, (Object)true);
         videoView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.getImageHeight()));
         return (View)videoView;
     }

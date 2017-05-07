@@ -49,7 +49,7 @@ public class EsnCdmProvider extends BaseEsnProvider
         else {
             sb.append("T-");
         }
-        if (Log.isLoggable("ESN", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ESN", "MANUFACTURER " + Build.MANUFACTURER);
             Log.d("ESN", "Model " + Build.MODEL);
         }
@@ -57,13 +57,13 @@ public class EsnCdmProvider extends BaseEsnProvider
         final String s = s2 = Build.MODEL;
         if (s.length() > 45) {
             final String s3 = s2 = s.substring(0, 45);
-            if (Log.isLoggable("ESN", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("ESN", "Model was bigger than: 45. Using first 45 characters: " + s3);
                 s2 = s3;
             }
         }
         final String string = BaseEsnProvider.getManufactorer() + StringUtils.replaceWhiteSpace(s2, EsnCdmProvider.DELIM);
-        if (Log.isLoggable("ESN", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ESN", "Model ID: " + string);
         }
         sb.append(BaseEsnProvider.validateChars(string));

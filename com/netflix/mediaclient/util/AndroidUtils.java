@@ -8,7 +8,7 @@ import android.media.AudioManager;
 import android.content.pm.ResolveInfo;
 import android.content.Intent;
 import android.content.ComponentName;
-import com.netflix.mediaclient.ui.homescreen.NetflixAppWidgetProvider;
+import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
 import android.appwidget.AppWidgetManager;
 import android.util.DisplayMetrics;
 import com.netflix.mediaclient.javabridge.transport.NativeTransport;
@@ -64,7 +64,7 @@ public final class AndroidUtils
                 final String s = list[i];
                 if (!s.equals("lib")) {
                     deleteDir(new File(file, s));
-                    if (Log.isLoggable("nf_utils", 3)) {
+                    if (Log.isLoggable()) {
                         Log.i("TAG", "File /data/data/com.netflix.mediaclient/" + s + " DELETED");
                     }
                 }
@@ -121,11 +121,11 @@ public final class AndroidUtils
     public static void forceStop(final Context context) {
         unmuteAudio(context);
         final int myPid = Process.myPid();
-        if (Log.isLoggable("nf_utils", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_utils", "Destroying app proces " + myPid + "...");
         }
         Process.killProcess(myPid);
-        if (Log.isLoggable("nf_utils", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_utils", "Destroying app proces " + myPid + " done.");
         }
     }
@@ -155,7 +155,7 @@ public final class AndroidUtils
                 array6 = array;
                 array7 = array2;
                 array8 = array3;
-                if (Log.isLoggable("nf_utils", 3)) {
+                if (Log.isLoggable()) {
                     array6 = array;
                     array7 = array2;
                     array8 = array3;
@@ -188,7 +188,7 @@ public final class AndroidUtils
                     array6 = array9;
                     array7 = array9;
                     array8 = array9;
-                    if (Log.isLoggable("nf_utils", 3)) {
+                    if (Log.isLoggable()) {
                         array6 = array9;
                         array7 = array9;
                         array8 = array9;
@@ -327,7 +327,7 @@ public final class AndroidUtils
             if ((packageInfo.applicationInfo.flags & 0x1) != 0x0 || (packageInfo.applicationInfo.flags & 0x80) != 0x0) {
                 b = true;
             }
-            if (Log.isLoggable("nf_utils", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_utils", "Netflix Stub/App present in the system folder ?=" + b + " ApplicationInfo.flags=" + packageInfo.applicationInfo.flags);
             }
             return b;
@@ -356,7 +356,7 @@ public final class AndroidUtils
         else {
             final DisplayMetrics displayMetrics = new DisplayMetrics();
             activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-            if (Log.isLoggable("nf_utils", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_utils", "Given size (w,h): " + n + ", " + n2);
                 Log.d("nf_utils", "Screen size (w,h): " + displayMetrics.widthPixels + ", " + displayMetrics.heightPixels);
             }
@@ -368,15 +368,15 @@ public final class AndroidUtils
     }
     
     public static boolean isWidgetInstalled(final Context context) {
-        final int[] appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, (Class)NetflixAppWidgetProvider.class));
-        if (Log.isLoggable("nf_utils", 3)) {
+        final int[] appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, (Class)PServiceWidgetProvider.class));
+        if (Log.isLoggable()) {
             Log.d("nf_utils", String.format("found widget: %b, num widgets installed: %d", appWidgetIds.length > 0, appWidgetIds.length));
         }
         return appWidgetIds.length > 0;
     }
     
     public static void logDeviceDensity(final Activity activity) {
-        if (!Log.isLoggable("nf_utils", 3) || activity == null) {
+        if (!Log.isLoggable() || activity == null) {
             return;
         }
         final DisplayMetrics displayMetrics = new DisplayMetrics();

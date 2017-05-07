@@ -134,9 +134,9 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
         while (true) {
             String id = null;
             boolean b = false;
-        Label_0135:
+        Label_0132:
             while (true) {
-                Label_0130: {
+                Label_0127: {
                     synchronized (this) {
                         if (this.mAdvertisingIdProvider == null) {
                             Log.d("nf_adv_id", "User is logged in, but ADV ID provider is not readu, postpone sending ID");
@@ -147,14 +147,14 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
                             Log.d("nf_adv_id", "Ad ID provider is ready and request to send AD ID exist, execute.");
                             id = this.mAdvertisingIdProvider.getId();
                             if (this.mAdvertisingIdProvider.isLimitAdTrackingEnabled()) {
-                                break Label_0130;
+                                break Label_0127;
                             }
                             b = true;
-                            if (Log.isLoggable("nf_adv_id", 3)) {
+                            if (Log.isLoggable()) {
                                 Log.d("nf_adv_id", "Ad ID provider exist, if we need to send ID " + id + ", opted in " + b);
                             }
                             if (id != null) {
-                                break Label_0135;
+                                break Label_0132;
                             }
                             Log.e("nf_adv_id", "Ad id can not be null!");
                         }

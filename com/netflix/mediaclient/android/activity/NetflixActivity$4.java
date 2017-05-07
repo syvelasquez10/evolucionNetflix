@@ -18,7 +18,7 @@ class NetflixActivity$4 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable("NetflixActivity", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixActivity", "Finishing activity " + this.this$0.getClass().getSimpleName() + " from intent: " + intent.getAction());
         }
         this.this$0.finish();

@@ -7,11 +7,14 @@ package com.netflix.mediaclient.service.mdx.notification;
 import android.app.Service;
 import android.util.Pair;
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.service.NetflixService;
 import android.app.PendingIntent;
+import android.app.Notification$MediaStyle;
 import com.netflix.mediaclient.Log;
 import android.app.NotificationManager;
 import android.app.Notification;
+import com.netflix.mediaclient.service.mdx.MediaSessionController;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import android.content.Context;
 import android.app.Notification$Builder;
@@ -32,17 +35,20 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
     private final int mNotificationId;
     private String mainTitle;
     private MdxAgent mdxAgent;
+    private MediaSessionController mediaSessionController;
     private Notification notification;
     private NotificationManager notificationManager;
+    private int runningServiceNotificationId;
     private String secondTitle;
     
-    public MdxNotificationManagerLollipop(final Context context, final boolean isEpisode, final MdxAgent mdxAgent) {
+    public MdxNotificationManagerLollipop(final Context context, final boolean isEpisode, final MdxAgent mdxAgent, final MediaSessionController mediaSessionController) {
         this.mNotificationId = 1;
         this.builderFactory = new MdxNotificationManagerLollipop$BuilderFactory(this, null);
         Log.d("nf_mdxnotification", "is episode " + isEpisode);
         this.isEpisode = isEpisode;
         this.context = context;
         this.mdxAgent = mdxAgent;
+        this.mediaSessionController = mediaSessionController;
         this.init();
         this.createInitialBuilder();
     }
@@ -58,6 +64,16 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
         return PendingIntent.getBroadcast(this.context, 0, NetflixService.createShowMdxPlayerBroadcastIntent(), 134217728);
     }
     
+    private Notification$MediaStyle getStyle() {
+        final Notification$MediaStyle setShowActionsInCompactView = new Notification$MediaStyle().setShowActionsInCompactView(new int[] { 0, 1 });
+        if (this.mediaSessionController != null && this.mediaSessionController.getMediaSessionToken() != null) {
+            setShowActionsInCompactView.setMediaSession(this.mediaSessionController.getMediaSessionToken());
+            return setShowActionsInCompactView;
+        }
+        ErrorLoggingManager.logHandledException(new Throwable("SPY-7597 - Got null mediaSessionController for MdxNotificationManagerLollipop"));
+        return setShowActionsInCompactView;
+    }
+    
     private void init() {
         this.notificationManager = (NotificationManager)this.context.getSystemService("notification");
     }
@@ -68,7 +84,6 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
         }
         if (this.boxart != null) {
             this.builder.setLargeIcon(ViewUtils.createSquaredBitmap(this.boxart));
-            this.builder.setColor(this.context.getResources().getColor(2131296361));
         }
         if (this.mainTitle != null) {
             this.builder.setContentText((CharSequence)this.mainTitle);
@@ -77,12 +92,12 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
             this.builder.setSubText((CharSequence)this.secondTitle);
         }
         if (this.isPostplay) {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493221));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493229));
         }
         else {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493220));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131493228));
         }
-        this.builder.setSmallIcon(2130837786);
+        this.builder.setSmallIcon(2130837807);
         this.notification = this.builder.build();
         this.notificationManager.notify(1, this.notification);
     }
@@ -160,7 +175,7 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
     
     @Override
     public void setTitlesNotify(final boolean isEpisode, final String s, final String s2) {
-        if (Log.isLoggable("nf_mdxnotification", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_mdxnotification", "is episode " + isEpisode + ",>" + s + ",>" + s2);
         }
         this.isEpisode = isEpisode;
@@ -177,11 +192,13 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
     
     @Override
     public void startNotification(final Notification notification, final Service service, final boolean isPostplay) {
-        this.stopNotification(service);
         if (notification == null) {
             return;
         }
-        service.startForeground(1, notification);
+        if (1 != this.runningServiceNotificationId) {
+            service.startForeground(1, notification);
+            this.runningServiceNotificationId = 1;
+        }
         this.isPostplay = isPostplay;
         this.isPlaying = true;
     }
@@ -190,6 +207,7 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
     public void stopNotification(final Service service) {
         this.cancelNotification();
         service.stopForeground(true);
+        this.runningServiceNotificationId = 0;
         this.isPlaying = false;
     }
     
@@ -197,6 +215,7 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
     public void stopPostplayNotification(final Service service) {
         if (this.isPostplay) {
             service.stopForeground(true);
+            this.runningServiceNotificationId = 0;
             this.isPlaying = false;
         }
     }

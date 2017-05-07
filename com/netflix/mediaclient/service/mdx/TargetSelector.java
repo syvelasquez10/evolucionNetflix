@@ -42,7 +42,7 @@ public class TargetSelector
             this.startCountDown(12600000L - n);
         }
         this.mCallback.onTargetSelectorLoaded(this.mCurrentTarget, this.mTaregtUuid, this.mTargetDialUuid, this.mTargetFriendlyName);
-        if (Log.isLoggable("nf_mdxTargetSelector", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_mdxTargetSelector", "TragetSelector: init complete.  mCurrentTarget is " + this.mCurrentTarget + " : " + this.mTaregtUuid + " : " + this.mTargetDialUuid + " : " + this.mTargetFriendlyName);
         }
     }

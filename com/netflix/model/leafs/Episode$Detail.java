@@ -6,15 +6,17 @@ package com.netflix.model.leafs;
 
 import java.util.Iterator;
 import com.google.gson.JsonObject;
+import com.netflix.mediaclient.util.JsonUtils;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 
 public final class Episode$Detail extends Video$Detail
 {
     private static final String TAG = "Episode.Detail";
+    private String availabilityDateMsg;
     private String boxartUrl;
     private VideoType enumType;
     private int episodeNumber;
@@ -29,6 +31,10 @@ public final class Episode$Detail extends Video$Detail
     private String showTitle;
     private String title;
     private String type;
+    
+    public String getAvailabilityDateMessage() {
+        return this.availabilityDateMsg;
+    }
     
     public String getBaseUrl() {
         return this.baseUrl;
@@ -116,96 +122,103 @@ public final class Episode$Detail extends Video$Detail
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0214: {
+            Label_0222: {
                 switch (s.hashCode()) {
                     case 3355: {
                         if (s.equals("id")) {
                             n = 0;
-                            break Label_0214;
+                            break Label_0222;
                         }
                         break;
                     }
                     case 3575610: {
                         if (s.equals("type")) {
                             n = 1;
-                            break Label_0214;
+                            break Label_0222;
                         }
                         break;
                     }
                     case 889931614: {
                         if (s.equals("seasonId")) {
                             n = 2;
-                            break Label_0214;
+                            break Label_0222;
                         }
                         break;
                     }
                     case -903145224: {
                         if (s.equals("showId")) {
                             n = 3;
-                            break Label_0214;
+                            break Label_0222;
                         }
                         break;
                     }
                     case -1913803429: {
                         if (s.equals("showTitle")) {
                             n = 4;
-                            break Label_0214;
+                            break Label_0222;
                         }
                         break;
                     }
                     case 1485653822: {
                         if (s.equals("showRestUrl")) {
                             n = 5;
-                            break Label_0214;
+                            break Label_0222;
                         }
                         break;
                     }
                     case 110371416: {
                         if (s.equals("title")) {
                             n = 6;
-                            break Label_0214;
+                            break Label_0222;
                         }
                         break;
                     }
                     case 1153650071: {
                         if (s.equals("boxartUrl")) {
                             n = 7;
-                            break Label_0214;
+                            break Label_0222;
                         }
                         break;
                     }
                     case -406164797: {
                         if (s.equals("nextEpisodeId")) {
                             n = 8;
-                            break Label_0214;
+                            break Label_0222;
                         }
                         break;
                     }
                     case -1122171984: {
                         if (s.equals("nextEpisodeTitle")) {
                             n = 9;
-                            break Label_0214;
+                            break Label_0222;
                         }
                         break;
                     }
                     case -1905664732: {
                         if (s.equals("episodeNumber")) {
                             n = 10;
-                            break Label_0214;
+                            break Label_0222;
                         }
                         break;
                     }
                     case -1360577524: {
                         if (s.equals("seasonNumber")) {
                             n = 11;
-                            break Label_0214;
+                            break Label_0222;
+                        }
+                        break;
+                    }
+                    case -1779904744: {
+                        if (s.equals("availabilityDateMsg")) {
+                            n = 12;
+                            break Label_0222;
                         }
                         break;
                     }
                     case 329552226: {
                         if (s.equals("errorType")) {
-                            n = 12;
-                            break Label_0214;
+                            n = 13;
+                            break Label_0222;
                         }
                         break;
                     }
@@ -265,6 +278,10 @@ public final class Episode$Detail extends Video$Detail
                     continue;
                 }
                 case 12: {
+                    this.availabilityDateMsg = JsonUtils.getAsStringSafe(jsonElement2);
+                    continue;
+                }
+                case 13: {
                     this.errorType = VideoType.create(jsonElement2.getAsString());
                     continue;
                 }
@@ -274,6 +291,6 @@ public final class Episode$Detail extends Video$Detail
     
     @Override
     public String toString() {
-        return "Detail [super=" + super.toString() + ", id=" + this.id + ", seasonNumber=" + this.seasonNumber + ", episodeNumber=" + this.episodeNumber + ", showTitle=" + this.showTitle + ", title=" + this.title + ", nextEpisodeId=" + this.nextEpisodeId + ", nextEpisodeTitle=" + this.nextEpisodeTitle + "]";
+        return "Detail [id=" + this.id + ", type=" + this.type + ", seasonId=" + this.seasonId + ", showId=" + this.showId + ", showTitle=" + this.showTitle + ", showRestUrl=" + this.showRestUrl + ", title=" + this.title + ", boxartUrl=" + this.boxartUrl + ", nextEpisodeId=" + this.nextEpisodeId + ", nextEpisodeTitle=" + this.nextEpisodeTitle + ", availabilityDateMsg=" + this.availabilityDateMsg + ", episodeNumber=" + this.episodeNumber + ", seasonNumber=" + this.seasonNumber + ", errorType=" + this.errorType + ", enumType=" + this.enumType + ", toString()=" + super.toString() + "]";
     }
 }

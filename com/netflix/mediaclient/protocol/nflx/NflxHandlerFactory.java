@@ -4,16 +4,18 @@
 
 package com.netflix.mediaclient.protocol.nflx;
 
+import com.netflix.mediaclient.service.pservice.logging.PreAppWidgetLogActionData;
+import com.netflix.mediaclient.service.pservice.logging.PreAppWidgetLogData;
+import com.netflix.mediaclient.service.pservice.logging.PServiceLogging;
 import com.netflix.mediaclient.service.logging.client.model.Error;
-import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
-import android.content.Context;
-import com.netflix.mediaclient.util.log.UserActionLogUtils;
+import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import java.util.Locale;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
-import android.content.Intent;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DataUtil;
 import android.net.Uri;
@@ -21,13 +23,24 @@ import java.util.Map;
 import java.util.HashMap;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.service.logging.client.model.UIError;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import android.content.Intent;
+import android.content.Context;
 
 public final class NflxHandlerFactory
 {
     private static final String TAG = "NflxHandler";
     
+    public static void endCommandSessions(final Context context, final Intent intent) {
+        if (isIntentFromPreappWidget(intent)) {
+            UserActionLogUtils.reportPreAppWidgetActionEnded(context, IClientLogging$CompletionReason.success, null);
+        }
+    }
+    
     private static NflxHandler findHandleForUriParams(final NetflixActivity netflixActivity, final String s, final long n) {
-        if (Log.isLoggable("NflxHandler", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NflxHandler", "nflx params string: " + s);
         }
         final String[] split = s.split("[?&]");
@@ -41,7 +54,7 @@ public final class NflxHandlerFactory
             else {
                 final String substring = s2.substring(0, index);
                 final String substring2 = s2.substring(index + 1);
-                if (Log.isLoggable("NflxHandler", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("NflxHandler", "Param name: " + substring + ", value: " + substring2);
                 }
                 hashMap.put(substring, substring2);
@@ -77,6 +90,7 @@ public final class NflxHandlerFactory
     
     public static NflxHandler getHandlerForIntent(final NetflixActivity netflixActivity, final Intent intent, final long n) {
         NflxProtocolUtils.reportUserOpenedNotification(netflixActivity.getServiceManager(), intent);
+        reportPreappEventsOnNflxAction(netflixActivity.getApplicationContext(), intent, netflixActivity.getServiceManager().isUserLoggedIn());
         Log.d("NflxHandler", "Handle NFLX intent starts...");
         if (intent == null) {
             Log.v("NflxHandler", "null intent");
@@ -96,7 +110,7 @@ public final class NflxHandlerFactory
     
     private static NflxHandler handleNflxParams(final NetflixActivity netflixActivity, final Map<String, String> map, final long n) {
         boolean b = true;
-        if (Log.isLoggable("NflxHandler", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NflxHandler", "Params map: " + map.toString());
         }
         if (map.size() <= 0) {
@@ -190,7 +204,7 @@ public final class NflxHandlerFactory
     }
     
     private static NflxHandler handleTinyUrlParams(final NetflixActivity netflixActivity, final String s, final long n) {
-        if (Log.isLoggable("NflxHandler", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NflxHandler", "handleTinyUrlParams() got path: " + s);
         }
         final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
@@ -200,7 +214,9 @@ public final class NflxHandlerFactory
         }
         final boolean contains = s.contains("?s=a");
         if (contains) {
+            UIViewLogUtils.reportUIViewCommandStarted((Context)netflixActivity, UIViewLogging$UIViewCommandName.shareOpenSheet, IClientLogging$ModalView.movieDetails, null, null);
             UserActionLogUtils.reportShareSheetOpenActionStarted(s, (Context)netflixActivity, null, IClientLogging$ModalView.movieDetails);
+            UIViewLogUtils.reportUIViewCommandEnded((Context)netflixActivity);
         }
         final HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("u", s);
@@ -209,5 +225,18 @@ public final class NflxHandlerFactory
             UserActionLogUtils.reportShareSheetOpenActionEnded((Context)netflixActivity, IClientLogging$CompletionReason.success, null);
         }
         return new ViewDetailsActionHandler(netflixActivity, hashMap);
+    }
+    
+    private static boolean isIntentFromPreappWidget(final Intent intent) {
+        return intent != null && "NetflixWidget".equals(intent.getStringExtra("FROM_PREAPP_WIDGET"));
+    }
+    
+    private static void reportPreappEventsOnNflxAction(final Context context, final Intent intent, final boolean b) {
+        if (!isIntentFromPreappWidget(intent)) {
+            return;
+        }
+        Log.d("NflxHandler", String.format("Nflx action from PreappWidget, log events. Intent=%s", intent));
+        PServiceLogging.reportStoredLogEvents(context, b);
+        UserActionLogUtils.reportPreAppWidgetActionStarted(context, UserActionLogging$CommandName.androidWidgetCommand, PreAppWidgetLogData.createInstance(context, intent.getIntExtra("widgetId", 0), b), PreAppWidgetLogActionData.createInstance(intent.getStringExtra("actionName")));
     }
 }

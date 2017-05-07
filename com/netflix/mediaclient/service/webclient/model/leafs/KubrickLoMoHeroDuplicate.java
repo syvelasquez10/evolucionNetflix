@@ -5,11 +5,10 @@
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
 import android.os.Parcel;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
-import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.genre.Genre;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 
 public class KubrickLoMoHeroDuplicate implements LoMo, Genre
 {

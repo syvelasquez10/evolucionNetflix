@@ -44,7 +44,7 @@ class MdxImageLoader$2$1 implements Runnable
                     bufferedInputStream.close();
                 }
                 if (this.this$1.this$0.mBitmap != null) {
-                    if (Log.isLoggable("nf_mdxImageLoader", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_mdxImageLoader", "mBitmap decoded, " + this.this$1.this$0.mBitmap.getWidth() + " X " + this.this$1.this$0.mBitmap.getHeight());
                     }
                     this.this$1.this$0.mCallback.onBitmapReady(this.this$1.this$0.mBitmap);

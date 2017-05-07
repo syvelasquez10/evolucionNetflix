@@ -16,7 +16,7 @@ import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.service.webclient.model.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import android.text.TextUtils;
 import android.content.IntentFilter;
 import android.content.Context;
@@ -49,7 +49,7 @@ public class MDXControllerActivity extends PlayerActivity
     }
     
     private void setupPostplayViews() {
-        this.postPlayViewGroup = this.findViewById(2131165596);
+        this.postPlayViewGroup = this.findViewById(2131165600);
         this.postPlayController = PostPlayFactory.create(this, PostPlayFactory$PostPlayType.EpisodesForMDX);
     }
     
@@ -67,7 +67,7 @@ public class MDXControllerActivity extends PlayerActivity
             if (this.getIntent().hasExtra("extra_get_details_video_id")) {
                 this.videoId = this.getIntent().getExtras().getString("extra_get_details_video_id");
                 if (!TextUtils.isEmpty((CharSequence)this.videoId) && this.postPlayController != null) {
-                    this.postPlayController.init(this.videoId);
+                    this.postPlayController.fetchPostPlayVideos(this.videoId);
                 }
             }
             else if (this.getIntent().hasExtra("extra_get_details_EPISODE_DETAILS")) {
@@ -115,6 +115,9 @@ public class MDXControllerActivity extends PlayerActivity
     }
     
     public boolean handleBackPressed() {
+        if (this.postPlayController != null) {
+            ((PostPlayForMDX)this.postPlayController).handleBack();
+        }
         this.setResult(-1);
         return true;
     }
@@ -127,7 +130,7 @@ public class MDXControllerActivity extends PlayerActivity
     @Override
     public void onConfigurationChanged(final Configuration configuration) {
         super.onConfigurationChanged(configuration);
-        this.setContentView(2130903135);
+        this.setContentView(2130903139);
         this.setupPostplayViews();
         this.showEpisodesData();
         if (this.getSupportActionBar() != null) {
@@ -138,7 +141,7 @@ public class MDXControllerActivity extends PlayerActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903135);
+        this.setContentView(2130903139);
         if (this.getSupportActionBar() != null) {
             this.getSupportActionBar().hide();
         }

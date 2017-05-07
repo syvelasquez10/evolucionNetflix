@@ -11,7 +11,7 @@ import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.util.StringUtils;
 
-public class User implements com.netflix.mediaclient.servicemgr.model.user.User
+public class User implements com.netflix.mediaclient.servicemgr.interface_.user.User
 {
     private static final String FIELD_EMAIL = "email";
     private static final String FIELD_FIRST_NAME = "firstName";

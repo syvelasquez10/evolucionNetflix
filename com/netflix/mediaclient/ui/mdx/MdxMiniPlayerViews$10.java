@@ -33,7 +33,8 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.view.animation.Interpolator;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.TimeFormatterHelper;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.ui.common.RatingDialogFrag;
 import com.netflix.mediaclient.util.MdxUtils;
@@ -41,6 +42,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import android.content.Context;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
+import com.netflix.mediaclient.service.falkor.Falkor$Utils;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.view.View$OnClickListener;
@@ -63,10 +65,16 @@ class MdxMiniPlayerViews$10 implements View$OnClickListener
             Log.e("MdxMiniPlayerViews", "Video is NULL. This should NOT happen!");
             return;
         }
-        final float currentRating = this.this$0.callbacks.getCurrentRating();
-        if (Log.isLoggable("MdxMiniPlayerViews", 2)) {
-            this.this$0.log("User set rating " + currentRating);
-            this.this$0.log("User rating from VideoDetails " + currentVideo.getUserRating());
+        final UserRating userRating = Falkor$Utils.getUserRating("MdxMiniPlayerViews", this.this$0.callbacks.getManager(), currentVideo);
+        float userRating2;
+        if (userRating == null) {
+            userRating2 = -1.0f;
+        }
+        else {
+            userRating2 = userRating.getUserRating();
+        }
+        if (Log.isLoggable()) {
+            this.this$0.log("Curr user rating: " + userRating2);
         }
         Log.d("MdxMiniPlayerViews", "Report rate action started");
         UserActionLogUtils.reportRateActionStarted((Context)this.this$0.activity, null, this.this$0.activity.getUiScreen());
@@ -74,7 +82,7 @@ class MdxMiniPlayerViews$10 implements View$OnClickListener
         if (StringUtils.isEmpty(s = currentVideo.getPlayable().getParentTitle())) {
             s = currentVideo.getTitle();
         }
-        final RatingDialogFrag instance = RatingDialogFrag.newInstance(MdxUtils.getRating(currentVideo, currentRating), MdxUtils.getVideoId(currentVideo), s);
+        final RatingDialogFrag instance = RatingDialogFrag.newInstance(MdxUtils.getRating(currentVideo, userRating2), MdxUtils.getPlayableVideoId(currentVideo), s, null, 0);
         instance.setCancelable(true);
         this.this$0.activity.showDialog(instance);
     }

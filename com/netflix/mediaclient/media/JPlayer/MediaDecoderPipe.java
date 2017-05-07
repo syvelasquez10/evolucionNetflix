@@ -80,7 +80,7 @@ abstract class MediaDecoderPipe
             sb.append(s2);
             this.mTag = sb.toString();
         }
-        else if (Log.isLoggable(this.mTag, 6)) {
+        else if (Log.isLoggable()) {
             Log.e(this.mTag, s + " is not valid");
             assert false;
         }
@@ -89,14 +89,14 @@ abstract class MediaDecoderPipe
         this.mDataSource = mDataSource;
         this.mDecoder = MediaCodec.createDecoderByType(s);
         assert this.mDecoder != null;
-        if (Log.isLoggable(this.mTag, 3)) {
+        if (Log.isLoggable()) {
             Log.d(this.mTag, "configuring with input format " + mediaFormat);
         }
         this.mDecoder.configure(mediaFormat, surface, (MediaCrypto)null, 0);
         this.mDecoder.start();
         this.mInputBuffers = this.mDecoder.getInputBuffers();
         this.mInputBufferCnt = this.mInputBuffers.length;
-        if (Log.isLoggable(this.mTag, 3)) {
+        if (Log.isLoggable()) {
             Log.d(this.mTag, "has " + this.mInputBufferCnt + " input buffers");
         }
         assert this.mInputBufferCnt > 0;
@@ -110,7 +110,7 @@ abstract class MediaDecoderPipe
     private void configureOutputBuffers() {
         this.mOutputBuffers = this.mDecoder.getOutputBuffers();
         this.mOutputBufferCnt = this.mOutputBuffers.length;
-        if (Log.isLoggable(this.mTag, 3)) {
+        if (Log.isLoggable()) {
             Log.d(this.mTag, "has " + this.mOutputBufferCnt + " output buffers");
         }
         assert this.mOutputBufferCnt > 0;
@@ -154,9 +154,9 @@ abstract class MediaDecoderPipe
     
     protected int getThreadPriority(final String s) {
         while (true) {
-            Label_0105: {
+            Label_0100: {
                 if (this.mJPlayerConfig == null) {
-                    break Label_0105;
+                    break Label_0100;
                 }
                 while (true) {
                     try {
@@ -165,7 +165,7 @@ abstract class MediaDecoderPipe
                         if (int1 < -19 || (n = int1) > 19) {
                             n = 0;
                         }
-                        if (Log.isLoggable(this.mTag, 3)) {
+                        if (Log.isLoggable()) {
                             Log.d(this.mTag, "ThreadPriority " + n);
                         }
                         return n;
@@ -197,7 +197,7 @@ abstract class MediaDecoderPipe
             try {
                 boolean1 = this.mJPlayerConfig.getBoolean("JPlayerThreadConfig");
                 b = boolean1;
-                if (Log.isLoggable(this.mTag, 3)) {
+                if (Log.isLoggable()) {
                     Log.d(this.mTag, "JPlayerThreadConfig " + boolean1);
                     b = boolean1;
                 }

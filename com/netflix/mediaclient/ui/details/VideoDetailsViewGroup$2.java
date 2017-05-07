@@ -6,32 +6,38 @@ package com.netflix.mediaclient.ui.details;
 
 import android.text.Html;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import com.netflix.mediaclient.servicemgr.model.HdEnabledProvider;
-import com.netflix.mediaclient.servicemgr.model.Ratable;
-import com.netflix.mediaclient.util.StringUtils;
+import java.util.Iterator;
+import java.util.Map;
 import android.view.View$OnClickListener;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.ImageView$ScaleType;
-import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
-import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
 import android.widget.LinearLayout$LayoutParams;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.model.FriendProfilesProvider;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.interface_.FriendProfilesProvider;
+import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import android.view.LayoutInflater;
-import android.graphics.Rect;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
+import com.netflix.mediaclient.servicemgr.interface_.FeatureEnabledProvider;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.util.MdxUtils;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.util.StringUtils;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.view.ViewGroup;
+import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
-import android.graphics.drawable.Drawable;
+import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Button;
+import java.util.EnumMap;
 import android.widget.LinearLayout;
+import com.netflix.mediaclient.Log;
 import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
@@ -46,9 +52,9 @@ class VideoDetailsViewGroup$2 implements ViewTreeObserver$OnGlobalLayoutListener
     
     public void onGlobalLayout() {
         ViewUtils.removeGlobalLayoutListener((View)this.this$0, (ViewTreeObserver$OnGlobalLayoutListener)this);
-        if (this.this$0.hdDrawable == null) {
-            this.this$0.hdDrawable = this.this$0.buildHdDrawable();
+        if (Log.isLoggable() && this.this$0.imgGroup != null) {
+            Log.v("VideoDetailsViewGroup", "img group width: " + this.this$0.imgGroup.getWidth() + ", height: " + this.this$0.imgGroup.getHeight());
         }
-        this.this$0.setHdIcon();
+        this.this$0.alignViews();
     }
 }

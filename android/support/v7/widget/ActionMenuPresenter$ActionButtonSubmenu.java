@@ -43,7 +43,7 @@ class ActionMenuPresenter$ActionButtonSubmenu extends v
         this.this$0 = this$0;
         super(context, mSubMenu, null, false, R$attr.actionOverflowMenuStyle);
         this.mSubMenu = mSubMenu;
-        if (!((m)mSubMenu.getItem()).h()) {
+        if (!((m)mSubMenu.getItem()).i()) {
             View access$500;
             if (this$0.mOverflowButton == null) {
                 access$500 = (View)this$0.mMenuView;

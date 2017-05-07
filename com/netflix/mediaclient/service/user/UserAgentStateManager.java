@@ -20,11 +20,11 @@ import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
 import java.util.List;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import android.content.Context;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.javabridge.ui.Registration;
-import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import com.netflix.mediaclient.javabridge.ui.DeviceAccount;
 import com.netflix.mediaclient.javabridge.ui.Callback;
 
@@ -33,7 +33,6 @@ public class UserAgentStateManager implements Callback
     private static final String TAG = "nf_service_useragentstate";
     private DeviceAccount mCurrentDeviceAcc;
     private String mEmail;
-    private ErrorLogging mErrorLogger;
     private boolean mInitilizationCompleted;
     private boolean mNeedLogout;
     private String mPassword;
@@ -45,13 +44,12 @@ public class UserAgentStateManager implements Callback
     private ActivationTokens mToken;
     private final UserAgentStateManager$StateManagerCallback mUserAgent;
     
-    UserAgentStateManager(final Registration mRegistration, final DrmManager drmManager, final UserAgentStateManager$StateManagerCallback mUserAgent, final Context context, final ErrorLogging mErrorLogger) {
+    UserAgentStateManager(final Registration mRegistration, final DrmManager drmManager, final UserAgentStateManager$StateManagerCallback mUserAgent, final Context context, final ErrorLogging errorLogging) {
         this.mState = UserAgentStateManager$STATES.INIT;
         this.mPrimaryAccountIndex = 0;
         this.mRegistration = mRegistration;
         this.mUserAgent = mUserAgent;
         this.mProfileMap = new UserProfileMap(context);
-        this.mErrorLogger = mErrorLogger;
         this.mInitilizationCompleted = false;
     }
     
@@ -268,92 +266,90 @@ public class UserAgentStateManager implements Callback
         //   113: getfield        android/util/Pair.second:Ljava/lang/Object;
         //   116: checkcast       Ljava/lang/String;
         //   119: astore_3       
-        //   120: ldc             "nf_service_useragentstate"
-        //   122: iconst_3       
-        //   123: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //   126: ifeq            171
-        //   129: ldc             "nf_service_useragentstate"
-        //   131: new             Ljava/lang/StringBuilder;
-        //   134: dup            
-        //   135: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   138: ldc             "@init get from map ["
-        //   140: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   143: aload_0        
-        //   144: getfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mProfileId:Ljava/lang/String;
-        //   147: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   150: ldc             "] with key["
-        //   152: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   155: aload_3        
-        //   156: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   159: ldc             "]"
-        //   161: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   164: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   167: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   170: pop            
-        //   171: aload_2        
-        //   172: arraylength    
-        //   173: ifne            223
-        //   176: aload_3        
-        //   177: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
-        //   180: ifeq            208
-        //   183: ldc             "nf_service_useragentstate"
-        //   185: new             Ljava/lang/StringBuilder;
-        //   188: dup            
-        //   189: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   192: ldc             "@init no device account but has current account key "
-        //   194: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   197: aload_3        
-        //   198: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   201: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   204: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
-        //   207: pop            
-        //   208: aload_0        
-        //   209: getstatic       com/netflix/mediaclient/service/user/UserAgentStateManager$STATES.NEED_CREATE_DEVACC:Lcom/netflix/mediaclient/service/user/UserAgentStateManager$STATES;
-        //   212: invokespecial   com/netflix/mediaclient/service/user/UserAgentStateManager.transitionTo:(Lcom/netflix/mediaclient/service/user/UserAgentStateManager$STATES;)V
-        //   215: aload_1        
-        //   216: monitorexit    
-        //   217: return         
-        //   218: astore_2       
-        //   219: aload_1        
-        //   220: monitorexit    
-        //   221: aload_2        
-        //   222: athrow         
-        //   223: aload_3        
-        //   224: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
-        //   227: ifeq            240
-        //   230: aload_0        
-        //   231: aload_0        
-        //   232: aload_2        
-        //   233: aload_3        
-        //   234: invokespecial   com/netflix/mediaclient/service/user/UserAgentStateManager.getAccountWithKey:([Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;Ljava/lang/String;)Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
-        //   237: putfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mCurrentDeviceAcc:Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
-        //   240: aload_0        
-        //   241: getfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mCurrentDeviceAcc:Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
-        //   244: ifnonnull       254
-        //   247: aload_0        
-        //   248: aload_2        
-        //   249: iconst_0       
-        //   250: aaload         
-        //   251: putfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mCurrentDeviceAcc:Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
-        //   254: aload_0        
-        //   255: getstatic       com/netflix/mediaclient/service/user/UserAgentStateManager$STATES.NEED_SELECT_DEVACC:Lcom/netflix/mediaclient/service/user/UserAgentStateManager$STATES;
-        //   258: invokespecial   com/netflix/mediaclient/service/user/UserAgentStateManager.transitionTo:(Lcom/netflix/mediaclient/service/user/UserAgentStateManager$STATES;)V
-        //   261: goto            56
+        //   120: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   123: ifeq            168
+        //   126: ldc             "nf_service_useragentstate"
+        //   128: new             Ljava/lang/StringBuilder;
+        //   131: dup            
+        //   132: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   135: ldc             "@init get from map ["
+        //   137: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   140: aload_0        
+        //   141: getfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mProfileId:Ljava/lang/String;
+        //   144: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   147: ldc             "] with key["
+        //   149: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   152: aload_3        
+        //   153: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   156: ldc             "]"
+        //   158: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   161: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   164: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   167: pop            
+        //   168: aload_2        
+        //   169: arraylength    
+        //   170: ifne            220
+        //   173: aload_3        
+        //   174: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
+        //   177: ifeq            205
+        //   180: ldc             "nf_service_useragentstate"
+        //   182: new             Ljava/lang/StringBuilder;
+        //   185: dup            
+        //   186: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   189: ldc             "@init no device account but has current account key "
+        //   191: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   194: aload_3        
+        //   195: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   198: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   201: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   204: pop            
+        //   205: aload_0        
+        //   206: getstatic       com/netflix/mediaclient/service/user/UserAgentStateManager$STATES.NEED_CREATE_DEVACC:Lcom/netflix/mediaclient/service/user/UserAgentStateManager$STATES;
+        //   209: invokespecial   com/netflix/mediaclient/service/user/UserAgentStateManager.transitionTo:(Lcom/netflix/mediaclient/service/user/UserAgentStateManager$STATES;)V
+        //   212: aload_1        
+        //   213: monitorexit    
+        //   214: return         
+        //   215: astore_2       
+        //   216: aload_1        
+        //   217: monitorexit    
+        //   218: aload_2        
+        //   219: athrow         
+        //   220: aload_3        
+        //   221: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
+        //   224: ifeq            237
+        //   227: aload_0        
+        //   228: aload_0        
+        //   229: aload_2        
+        //   230: aload_3        
+        //   231: invokespecial   com/netflix/mediaclient/service/user/UserAgentStateManager.getAccountWithKey:([Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;Ljava/lang/String;)Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
+        //   234: putfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mCurrentDeviceAcc:Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
+        //   237: aload_0        
+        //   238: getfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mCurrentDeviceAcc:Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
+        //   241: ifnonnull       251
+        //   244: aload_0        
+        //   245: aload_2        
+        //   246: iconst_0       
+        //   247: aaload         
+        //   248: putfield        com/netflix/mediaclient/service/user/UserAgentStateManager.mCurrentDeviceAcc:Lcom/netflix/mediaclient/javabridge/ui/DeviceAccount;
+        //   251: aload_0        
+        //   252: getstatic       com/netflix/mediaclient/service/user/UserAgentStateManager$STATES.NEED_SELECT_DEVACC:Lcom/netflix/mediaclient/service/user/UserAgentStateManager$STATES;
+        //   255: invokespecial   com/netflix/mediaclient/service/user/UserAgentStateManager.transitionTo:(Lcom/netflix/mediaclient/service/user/UserAgentStateManager$STATES;)V
+        //   258: goto            56
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type
         //  -----  -----  -----  -----  ----
-        //  15     35     218    223    Any
-        //  39     56     218    223    Any
-        //  56     58     218    223    Any
-        //  59     89     218    223    Any
-        //  89     171    218    223    Any
-        //  171    208    218    223    Any
-        //  208    217    218    223    Any
-        //  219    221    218    223    Any
-        //  223    240    218    223    Any
-        //  240    254    218    223    Any
-        //  254    261    218    223    Any
+        //  15     35     215    220    Any
+        //  39     56     215    220    Any
+        //  56     58     215    220    Any
+        //  59     89     215    220    Any
+        //  89     168    215    220    Any
+        //  168    205    215    220    Any
+        //  205    214    215    220    Any
+        //  216    218    215    220    Any
+        //  220    237    215    220    Any
+        //  237    251    215    220    Any
+        //  251    258    215    220    Any
         // 
         // The error that occurred was:
         // 
@@ -426,7 +422,6 @@ public class UserAgentStateManager implements Callback
     }
     
     private void transitionTo(final UserAgentStateManager$STATES mState) {
-        final UserAgentStateManager$STATES mState2 = this.mState;
         this.mState = mState;
         switch (UserAgentStateManager$1.$SwitchMap$com$netflix$mediaclient$service$user$UserAgentStateManager$STATES[mState.ordinal()]) {
             default: {
@@ -525,7 +520,6 @@ public class UserAgentStateManager implements Callback
             }
             case 16: {
                 Log.d("nf_service_useragentstate", "@state FATAL_ERROR");
-                this.mErrorLogger.logHandledException("FATAL_ERROR in user agent state - prev state: " + mState2);
                 this.transitionTo(UserAgentStateManager$STATES.NEED_DEACTIVATE_ACC);
             }
         }
@@ -533,7 +527,7 @@ public class UserAgentStateManager implements Callback
     
     private boolean validateState(final UserAgentStateManager$STATES userAgentStateManager$STATES, final String s) {
         if (this.mState == userAgentStateManager$STATES) {
-            if (Log.isLoggable("nf_service_useragentstate", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_service_useragentstate", s + " in expected state");
             }
             return true;
@@ -543,7 +537,7 @@ public class UserAgentStateManager implements Callback
     
     void accountDataFetchFailed(final Status status, final boolean b) {
         Log.d("nf_service_useragentstate", "@event profileDataFetchFailed");
-        if (Log.isLoggable("nf_service_useragentstate", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_useragentstate", String.format("res:%s, isAccountDataAvailable:%b", status.getStatusCode(), b));
         }
         while (true) {
@@ -764,10 +758,10 @@ public class UserAgentStateManager implements Callback
     
     void profileSwitchedFailed(final Status status) {
         while (true) {
-            Label_0118: {
+            Label_0115: {
                 synchronized (this.mState) {
                     final StatusCode statusCode = status.getStatusCode();
-                    if (Log.isLoggable("nf_service_useragentstate", 2)) {
+                    if (Log.isLoggable()) {
                         Log.v("nf_service_useragentstate", "profileSwitchFailed, status: " + statusCode + ", state: " + this.mState);
                     }
                     this.mUserAgent.selectProfileResult(status);
@@ -778,7 +772,7 @@ public class UserAgentStateManager implements Callback
                     }
                     else {
                         if (statusCode != StatusCode.NETWORK_ERROR) {
-                            break Label_0118;
+                            break Label_0115;
                         }
                         this.transitionTo(UserAgentStateManager$STATES.WAIT_SELECT_PROFILE);
                     }

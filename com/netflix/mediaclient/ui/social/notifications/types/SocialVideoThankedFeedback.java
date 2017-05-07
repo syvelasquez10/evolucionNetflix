@@ -17,7 +17,7 @@ public class SocialVideoThankedFeedback extends SocialNotification
 {
     @Override
     protected void addNotificationText(final NotificationCompat$Builder notificationCompat$Builder, final NotificationCompat$BigPictureStyle notificationCompat$BigPictureStyle, final SocialNotificationSummary socialNotificationSummary, final Context context) {
-        final String string = context.getResources().getString(2131493356);
+        final String string = context.getResources().getString(2131493364);
         notificationCompat$BigPictureStyle.setSummaryText(string);
         notificationCompat$Builder.setContentText(string);
     }
@@ -30,6 +30,6 @@ public class SocialVideoThankedFeedback extends SocialNotification
     @Override
     public void initView(final View view, final SocialNotificationViewHolder socialNotificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         super.initView(view, socialNotificationViewHolder, socialNotificationSummary, context);
-        socialNotificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493360, new Object[] { socialNotificationSummary.getVideo().getTitle() })));
+        socialNotificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493368, new Object[] { socialNotificationSummary.getVideo().getTitle() })));
     }
 }

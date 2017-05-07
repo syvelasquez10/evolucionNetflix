@@ -4,13 +4,11 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
 import android.view.View;
 import android.widget.AdapterView;
 import com.netflix.mediaclient.Log;
-import android.widget.SpinnerAdapter;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.AdapterView$OnItemSelectedListener;
@@ -18,10 +16,9 @@ import android.widget.Spinner;
 
 public class SeasonsSpinner extends Spinner
 {
-    private static final int STANDARD_BG_RES_ID = 2130837857;
+    private static final int STANDARD_BG_RES_ID = 2130837885;
     private static final String TAG = "SeasonsSpinner";
     private AdapterView$OnItemSelectedListener itemSelectedListener;
-    private SeasonsSpinnerAdapter spinnerAdapter;
     
     public SeasonsSpinner(final Context context) {
         super(context, (AttributeSet)null);
@@ -44,12 +41,11 @@ public class SeasonsSpinner extends Spinner
     }
     
     private void init() {
-        this.setBackgroundResource(2130837857);
-        this.setAdapter((SpinnerAdapter)(this.spinnerAdapter = new SeasonsSpinnerAdapter((NetflixActivity)this.getContext())));
+        this.setBackgroundResource(2130837885);
     }
     
     public int getSeasonNumberForPosition(final int n) {
-        return this.spinnerAdapter.getSeasonNumberForPosition(n);
+        return ((SeasonsSpinnerAdapter)this.getAdapter()).getSeasonNumberForPosition(n);
     }
     
     public void setOnItemSelectedListener(final AdapterView$OnItemSelectedListener itemSelectedListener) {
@@ -70,19 +66,16 @@ public class SeasonsSpinner extends Spinner
     }
     
     public int tryGetSeasonIndexBySeasonNumber(final int n) {
-        return this.spinnerAdapter.tryGetSeasonIndexBySeasonNumber(n);
+        return ((SeasonsSpinnerAdapter)this.getAdapter()).tryGetSeasonIndexBySeasonNumber(n);
     }
     
     public void updateSeasonData(final List<SeasonDetails> list) {
-        boolean enabled = true;
-        this.spinnerAdapter.updateSeasonData(list);
-        if (this.spinnerAdapter.getCount() <= 1) {
-            enabled = false;
-        }
+        ((SeasonsSpinnerAdapter)this.getAdapter()).updateSeasonData(list);
+        final boolean enabled = ((SeasonsSpinnerAdapter)this.getAdapter()).getCount() > 1;
         this.setEnabled(enabled);
         int backgroundResource;
         if (enabled) {
-            backgroundResource = 2130837857;
+            backgroundResource = 2130837885;
         }
         else {
             backgroundResource = 2131296356;

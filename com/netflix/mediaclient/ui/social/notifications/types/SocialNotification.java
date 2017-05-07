@@ -40,11 +40,11 @@ public abstract class SocialNotification
     }
     
     public static final int getLayoutResourceId() {
-        return 2130903194;
+        return 2130903201;
     }
     
     public static final SocialNotificationViewHolder getViewHolder(final View view, final SocialNotificationSummary$NotificationTypes socialNotificationSummary$NotificationTypes) {
-        return new SocialNotificationViewHolder((AdvancedImageView)view.findViewById(2131165641), (AdvancedImageView)view.findViewById(2131165675), (TextView)view.findViewById(2131165672), (TextView)view.findViewById(2131165673), (TextView)view.findViewById(2131165674), (TextView)view.findViewById(2131165677), (Button)view.findViewById(2131165678), (Button)view.findViewById(2131165679), view.findViewById(2131165676), view.findViewById(2131165671), (AdvancedImageView)view.findViewById(2131165670));
+        return new SocialNotificationViewHolder((AdvancedImageView)view.findViewById(2131165654), (AdvancedImageView)view.findViewById(2131165688), (TextView)view.findViewById(2131165685), (TextView)view.findViewById(2131165686), (TextView)view.findViewById(2131165687), (TextView)view.findViewById(2131165690), (Button)view.findViewById(2131165691), (Button)view.findViewById(2131165692), view.findViewById(2131165689), view.findViewById(2131165684), (AdvancedImageView)view.findViewById(2131165683));
     }
     
     public static void showSingleLineText(final SocialNotificationViewHolder socialNotificationViewHolder, final int text) {
@@ -64,7 +64,7 @@ public abstract class SocialNotification
     }
     
     protected void addNotificationActions(final NotificationCompat$Builder notificationCompat$Builder, final SocialNotificationSummary socialNotificationSummary, final SocialNotificationsListSummary socialNotificationsListSummary, final MessageData messageData, final Context context) {
-        if (Log.isLoggable(SocialNotification.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(SocialNotification.TAG, "SocialNotification::addNotificationActions " + messageData);
         }
         final Intent intent = SocialNotificationsActivity.getIntent(messageData);
@@ -91,10 +91,10 @@ public abstract class SocialNotification
     public void initView(final View view, final SocialNotificationViewHolder socialNotificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         int backgroundResource;
         if (socialNotificationSummary.getWasRead()) {
-            backgroundResource = 2130837844;
+            backgroundResource = 2130837872;
         }
         else {
-            backgroundResource = 2131296423;
+            backgroundResource = 2131296425;
         }
         view.setBackgroundResource(backgroundResource);
         socialNotificationViewHolder.getFriendImage().setVisibility(0);

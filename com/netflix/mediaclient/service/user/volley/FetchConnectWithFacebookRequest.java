@@ -31,7 +31,7 @@ public class FetchConnectWithFacebookRequest extends FalkorVolleyWebClientReques
         this.mAccessToken = mAccessToken;
         this.responseCallback = responseCallback;
         this.pqlQuery = "['connectWithFacebook', '" + this.mAccessToken + "']";
-        if (Log.isLoggable("nf_service_user_fetchwebuserrequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_fetchwebuserrequest", "PQL = " + this.pqlQuery);
         }
     }
@@ -84,7 +84,7 @@ public class FetchConnectWithFacebookRequest extends FalkorVolleyWebClientReques
     
     @Override
     protected String parseFalkorResponse(String s) {
-        if (Log.isLoggable("nf_service_user_fetchwebuserrequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_fetchwebuserrequest", "String response to parse = " + s);
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchwebuserrequest", s);

@@ -5,8 +5,9 @@
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
 import android.os.Parcel;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 
+@Deprecated
 public class TrackableListSummary extends ListSummary implements Trackable
 {
     private int heroTrackId;

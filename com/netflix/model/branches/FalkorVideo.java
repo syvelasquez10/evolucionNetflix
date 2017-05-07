@@ -6,15 +6,16 @@ package com.netflix.model.branches;
 
 import com.netflix.falkor.CachedModelProxy;
 import com.netflix.falkor.PQL;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayContext;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayContext;
+import com.netflix.mediaclient.util.TimeUtils;
 import com.netflix.mediaclient.service.falkor.Falkor$Creator;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
+import com.netflix.mediaclient.util.UriUtil;
 import java.util.HashSet;
 import java.util.Set;
-import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
+import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.IconFontGlyph;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.IconFontGlyph;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.model.leafs.Episode$Detail;
 import com.netflix.falkor.Sentinel;
@@ -37,19 +38,19 @@ import com.netflix.falkor.BranchMap;
 import com.netflix.model.leafs.Video$Detail;
 import com.netflix.model.leafs.Video$BookmarkStill;
 import com.netflix.model.leafs.Video$Bookmark;
-import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
-import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
-import com.netflix.mediaclient.servicemgr.model.details.KubrickShowDetails;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.servicemgr.model.UserRating;
-import com.netflix.mediaclient.servicemgr.model.Playable;
-import com.netflix.mediaclient.servicemgr.model.KubrickVideo;
-import com.netflix.mediaclient.servicemgr.model.CWVideo;
-import com.netflix.mediaclient.servicemgr.model.Billboard;
-import com.netflix.mediaclient.servicemgr.model.BasicVideo;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
+import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.KubrickShowDetails;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.KubrickVideo;
+import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
+import com.netflix.mediaclient.servicemgr.interface_.Billboard;
+import com.netflix.mediaclient.servicemgr.interface_.BasicVideo;
 import com.netflix.model.BaseFalkorObject;
 
 public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboard, CWVideo, KubrickVideo, Playable, UserRating, Video, KubrickShowDetails, MovieDetails, PostPlayVideo, PostPlayVideosProvider, ShowDetails, SearchVideo, FalkorObject
@@ -144,12 +145,12 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     }
     
     private boolean isPostPlayInvalid(final String s) {
-        if (this.getType() == null) {
-            this.logInvalidPostPlayMethod(s, "video type");
-            return true;
-        }
         if (this.getId() == null) {
             this.logInvalidPostPlayMethod(s, "video ID");
+            return true;
+        }
+        if (this.getType() == null) {
+            this.logInvalidPostPlayMethod(s, "video type");
             return true;
         }
         return false;
@@ -550,7 +551,7 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     
     @Override
     public String getModifiedStillUrl() {
-        return BrowseAgent.buildStillUrlFromPos(this);
+        return UriUtil.buildStillUrlFromPos(this);
     }
     
     @Override
@@ -669,8 +670,8 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     
     @Override
     public int getPlayableBookmarkPosition() {
-        final int computePlayPos = BrowseAgent.computePlayPos(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime());
-        if (Log.isLoggable("FalkorVideo", 3)) {
+        final int computePlayPos = TimeUtils.computePlayPos(this.getBookmarkPosition(), this.getEndtime(), this.getRuntime());
+        if (Log.isLoggable()) {
             Log.d("FalkorVideo", String.format("id %s bookmark %d playPos %d endtime %d runtime %d", this.getId(), this.getBookmarkPosition(), computePlayPos, this.getEndtime(), this.getRuntime()));
         }
         return computePlayPos;
@@ -816,11 +817,11 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     
     @Override
     public String getStoryDispUrl() {
-        final Video$Detail detail = this.getDetail();
-        if (detail == null) {
+        final Video$Summary summary = this.getSummary();
+        if (summary == null) {
             return null;
         }
-        return detail.storyImgDispUrl;
+        return summary.storyImgDispUrl;
     }
     
     @Override
@@ -832,7 +833,7 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
         return detail.storyImgUrl;
     }
     
-    protected Video$Summary getSummary() {
+    public Video$Summary getSummary() {
         return this.summary;
     }
     
@@ -946,6 +947,12 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
         return false;
     }
     
+    @Override
+    public boolean isAvailableToStream() {
+        final Video$Detail detail = this.getDetail();
+        return detail == null || detail.isAvailableToStream;
+    }
+    
     protected boolean isEpisode() {
         Boolean value;
         if (this.summary == null) {
@@ -996,12 +1003,30 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     }
     
     @Override
+    public boolean isVideo3D() {
+        final Video$Detail detail = this.getDetail();
+        return detail != null && detail.is3DAvailable;
+    }
+    
+    @Override
+    public boolean isVideo5dot1() {
+        final Video$Detail detail = this.getDetail();
+        return detail != null && detail.is5dot1Available;
+    }
+    
+    @Override
     public boolean isVideoHd() {
         if (this.kubrick != null) {
             return this.kubrick.isHd;
         }
         final Video$Detail detail = this.getDetail();
         return detail != null && detail.isHdAvailable;
+    }
+    
+    @Override
+    public boolean isVideoUhd() {
+        final Video$Detail detail = this.getDetail();
+        return detail != null && detail.isUhdAvailable;
     }
     
     @Override

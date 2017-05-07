@@ -13,7 +13,7 @@ import android.content.Context;
 import android.widget.Toast;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.UserRating;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 
@@ -35,14 +35,14 @@ public class MdxUtils$SetVideoRatingCallback extends LoggingManagerCallback
             return;
         }
         if (status.isError()) {
-            Log.w("MdxUtils", "Invalid status code failed");
-            Toast.makeText((Context)this.activity, 2131493178, 1).show();
+            Log.w("MdxUtils", "onVideoRatingSet: Invalid status code - failed");
+            Toast.makeText((Context)this.activity, 2131493185, 1).show();
             Log.d("MdxUtils", "Report rate action ended");
-            UserActionLogUtils.reportRateActionEnded((Context)this.activity, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.activity.getString(2131493178), ActionOnUIError.displayedError), null, (int)this.rating);
+            UserActionLogUtils.reportRateActionEnded((Context)this.activity, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.activity.getString(2131493185), ActionOnUIError.displayedError), null, (int)this.rating);
             return;
         }
-        Log.v("MdxUtils", "Rating has been updated ok");
-        Toast.makeText((Context)this.activity, 2131493179, 1).show();
+        Log.v("MdxUtils", "onVideoRatingSet: Rating has been updated to: " + userRating.getUserRating());
+        Toast.makeText((Context)this.activity, 2131493186, 1).show();
         UserActionLogUtils.reportRateActionEnded((Context)this.activity, IClientLogging$CompletionReason.success, null, null, (int)this.rating);
     }
 }

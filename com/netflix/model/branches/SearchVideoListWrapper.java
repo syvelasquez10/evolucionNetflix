@@ -4,10 +4,10 @@
 
 package com.netflix.model.branches;
 
-import com.netflix.mediaclient.servicemgr.model.trackable.SearchTrackable;
-import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.SearchTrackable;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 
 public class SearchVideoListWrapper implements SearchVideoListProvider
 {

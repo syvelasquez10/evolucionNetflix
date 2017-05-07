@@ -5,12 +5,16 @@
 package android.support.v7.internal.widget;
 
 import android.view.animation.LinearInterpolator;
+import android.graphics.drawable.Drawable$Callback;
 import android.os.Build$VERSION;
 import android.os.Parcelable;
 import android.graphics.drawable.Animatable;
 import android.os.SystemClock;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.shapes.RoundRectShape;
+import android.graphics.drawable.shapes.Shape;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.view.animation.Transformation;
@@ -179,6 +183,24 @@ public class ProgressBarCompat extends View
         this.updateDrawableState();
     }
     
+    Shape getDrawableShape() {
+        return (Shape)new RoundRectShape(new float[] { 5.0f, 5.0f, 5.0f, 5.0f, 5.0f, 5.0f, 5.0f, 5.0f }, (RectF)null, (float[])null);
+    }
+    
+    public Drawable getIndeterminateDrawable() {
+        return this.mIndeterminateDrawable;
+    }
+    
+    public Interpolator getInterpolator() {
+        return this.mInterpolator;
+    }
+    
+    public int getMax() {
+        synchronized (this) {
+            return this.mMax;
+        }
+    }
+    
     public int getProgress() {
         synchronized (this) {
             int mProgress;
@@ -189,6 +211,23 @@ public class ProgressBarCompat extends View
                 mProgress = this.mProgress;
             }
             return mProgress;
+        }
+    }
+    
+    public Drawable getProgressDrawable() {
+        return this.mProgressDrawable;
+    }
+    
+    public int getSecondaryProgress() {
+        synchronized (this) {
+            int mSecondaryProgress;
+            if (this.mIndeterminate) {
+                mSecondaryProgress = 0;
+            }
+            else {
+                mSecondaryProgress = this.mSecondaryProgress;
+            }
+            return mSecondaryProgress;
         }
     }
     
@@ -339,6 +378,42 @@ public class ProgressBarCompat extends View
         }
     }
     
+    public void setIndeterminateDrawable(final Drawable drawable) {
+        if (drawable != null) {
+            drawable.setCallback((Drawable$Callback)this);
+        }
+        this.mIndeterminateDrawable = drawable;
+        if (this.mIndeterminate) {
+            this.mCurrentDrawable = drawable;
+            this.postInvalidate();
+        }
+    }
+    
+    public void setInterpolator(final Interpolator mInterpolator) {
+        this.mInterpolator = mInterpolator;
+    }
+    
+    public void setMax(final int n) {
+        // monitorenter(this)
+        int n2 = n;
+        if (n < 0) {
+            n2 = 0;
+        }
+        try {
+            if (n2 != this.mMax) {
+                this.mMax = n2;
+                this.postInvalidate();
+                if (this.mProgress > n2) {
+                    this.mProgress = n2;
+                }
+                this.refreshProgress(16908301, this.mProgress, false);
+            }
+        }
+        finally {
+        }
+        // monitorexit(this)
+    }
+    
     public void setProgress(final int n) {
         synchronized (this) {
             this.setProgress(n, false);
@@ -368,6 +443,36 @@ public class ProgressBarCompat extends View
                 }
                 continue;
             }
+        }
+    }
+    
+    public void setProgressDrawable(final Drawable drawable) {
+        int n;
+        if (this.mProgressDrawable != null && drawable != this.mProgressDrawable) {
+            this.mProgressDrawable.setCallback((Drawable$Callback)null);
+            n = 1;
+        }
+        else {
+            n = 0;
+        }
+        if (drawable != null) {
+            drawable.setCallback((Drawable$Callback)this);
+            final int minimumHeight = drawable.getMinimumHeight();
+            if (this.mMaxHeight < minimumHeight) {
+                this.mMaxHeight = minimumHeight;
+                this.requestLayout();
+            }
+        }
+        this.mProgressDrawable = drawable;
+        if (!this.mIndeterminate) {
+            this.mCurrentDrawable = drawable;
+            this.postInvalidate();
+        }
+        if (n != 0) {
+            this.updateDrawableBounds(this.getWidth(), this.getHeight());
+            this.updateDrawableState();
+            this.doRefreshProgress(16908301, this.mProgress, false, false);
+            this.doRefreshProgress(16908303, this.mSecondaryProgress, false, false);
         }
     }
     

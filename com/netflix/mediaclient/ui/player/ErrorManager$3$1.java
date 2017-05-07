@@ -17,7 +17,7 @@ import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.event.nrdp.media.NccpNetworkingError;
-import com.netflix.mediaclient.event.android.NetworkError;
+import com.netflix.mediaclient.event.network.NetworkError;
 import org.json.JSONObject;
 import org.json.JSONException;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
@@ -46,7 +46,7 @@ class ErrorManager$3$1 implements Runnable
     
     @Override
     public void run() {
-        if (Log.isLoggable("ErrorManager", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ErrorManager", "Open internal web view to " + this.val$urlLink);
         }
         this.this$1.this$0.context.startActivity(new Intent("android.intent.action.VIEW", Uri.parse(this.val$urlLink)));

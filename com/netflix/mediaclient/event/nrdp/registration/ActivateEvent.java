@@ -68,7 +68,7 @@ public class ActivateEvent extends BaseRegistrationEvent
     @Override
     protected void populate(final JSONObject jsonObject) {
         final String string = BaseNccpEvent.getString(jsonObject, "result", null);
-        if (Log.isLoggable("nf_event", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_event", "Device activated as " + this.cookies + ", status: " + string);
         }
         if ("COMPLETE".equalsIgnoreCase(string)) {

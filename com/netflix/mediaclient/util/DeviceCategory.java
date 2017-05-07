@@ -12,7 +12,7 @@ public enum DeviceCategory
     TABLET("tablet"), 
     UNKNOWN("unknown");
     
-    private String value;
+    private final String value;
     
     private DeviceCategory(final String value) {
         this.value = value;
@@ -33,9 +33,6 @@ public enum DeviceCategory
         }
         if (s.equalsIgnoreCase(DeviceCategory.ANDROID_TV.value)) {
             return DeviceCategory.ANDROID_TV;
-        }
-        if (s.equalsIgnoreCase(DeviceCategory.UNKNOWN.value)) {
-            return DeviceCategory.UNKNOWN;
         }
         return DeviceCategory.UNKNOWN;
     }

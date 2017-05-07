@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.profiles;
 
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.view.Menu;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
@@ -11,7 +12,7 @@ import android.os.Bundle;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.ui.RelaunchActivity;
+import com.netflix.mediaclient.ui.launch.RelaunchActivity;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.view.ViewGroup$MarginLayoutParams;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -28,8 +29,7 @@ import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Iterator;
 import android.widget.ListAdapter;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
-import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.ViewPropertyAnimator;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
@@ -40,7 +40,7 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.app.Status;
 import android.app.Activity;
 import android.widget.TextView;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import java.util.List;
 import android.widget.AdapterView$OnItemClickListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;

@@ -6,19 +6,25 @@ package com.netflix.mediaclient.util;
 
 import android.widget.SeekBar;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.servicemgr.model.Playable;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import android.util.Pair;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.common.RatingDialogFrag$Rating;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.AdapterView$OnItemClickListener;
-import android.content.Context;
-import android.app.Activity;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog$Builder;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import android.view.View;
+import android.content.DialogInterface$OnClickListener;
+import android.content.Context;
+import android.app.AlertDialog$Builder;
+import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
+import android.widget.TextView;
+import android.view.ViewGroup;
+import com.netflix.mediaclient.Log;
+import android.app.Activity;
 import android.app.AlertDialog;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
@@ -27,25 +33,83 @@ public final class MdxUtils
     private static final int MDX_EOS_DELTA_INSECOND = 10;
     private static final String TAG = "MdxUtils";
     
+    public static AlertDialog createMdxDisconnectDialog(final NetflixActivity netflixActivity, final MdxUtils$MdxTargetSelectionDialogInterface mdxUtils$MdxTargetSelectionDialogInterface) {
+        if (netflixActivity == null || mdxUtils$MdxTargetSelectionDialogInterface == null || AndroidUtils.isActivityFinishedOrDestroyed(netflixActivity)) {
+            Log.w("MdxUtils", "Activity is not valid or MdxFrag is null. Skipping MDX disconnect dialog");
+            return null;
+        }
+        final View inflate = netflixActivity.getLayoutInflater().inflate(2130903141, (ViewGroup)null);
+        ((TextView)inflate.findViewById(2131165499)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
+        final TextView textView = (TextView)inflate.findViewById(2131165500);
+        final TextView textView2 = (TextView)inflate.findViewById(2131165501);
+        final Playable videoDetails = mdxUtils$MdxTargetSelectionDialogInterface.getVideoDetails();
+        String string2;
+        if (mdxUtils$MdxTargetSelectionDialogInterface.isPlayingRemotely() && videoDetails != null) {
+            final String string = netflixActivity.getResources().getString(2131493230, new Object[] { "" });
+            textView2.setVisibility(0);
+            String text;
+            if (videoDetails.isPlayableEpisode()) {
+                text = netflixActivity.getResources().getString(2131493392, new Object[] { videoDetails.getParentTitle(), videoDetails.getSeasonNumber(), videoDetails.getEpisodeNumber(), videoDetails.getPlayableTitle() });
+            }
+            else {
+                text = videoDetails.getPlayableTitle();
+            }
+            textView2.setText((CharSequence)text);
+            string2 = string;
+        }
+        else {
+            string2 = netflixActivity.getResources().getString(2131493390);
+            textView2.setVisibility(8);
+        }
+        textView.setText((CharSequence)string2);
+        final AlertDialog create = new AlertDialog$Builder((Context)netflixActivity).setPositiveButton(2131493391, (DialogInterface$OnClickListener)new MdxUtils$2(netflixActivity)).setView(inflate).setCancelable(true).create();
+        create.setCanceledOnTouchOutside(true);
+        return create;
+    }
+    
+    public static AlertDialog createMdxMenuDialog(final NetflixActivity netflixActivity, final MdxUtils$MdxTargetSelectionDialogInterface mdxUtils$MdxTargetSelectionDialogInterface) {
+        if (netflixActivity == null || AndroidUtils.isActivityFinishedOrDestroyed(netflixActivity)) {
+            Log.w("MdxUtils", "Activity is not valid. Skipping MDX menu dialog");
+            return null;
+        }
+        if (isCurrentMdxTargetAvailable(netflixActivity.getServiceManager())) {
+            return createMdxDisconnectDialog(netflixActivity, mdxUtils$MdxTargetSelectionDialogInterface);
+        }
+        return createMdxTargetSelectionDialog(netflixActivity, mdxUtils$MdxTargetSelectionDialogInterface);
+    }
+    
     public static AlertDialog createMdxTargetSelectionDialog(final NetflixActivity netflixActivity, final MdxUtils$MdxTargetSelectionDialogInterface mdxUtils$MdxTargetSelectionDialogInterface) {
+        if (netflixActivity == null || mdxUtils$MdxTargetSelectionDialogInterface == null || AndroidUtils.isActivityFinishedOrDestroyed(netflixActivity)) {
+            Log.w("MdxUtils", "Activity is not valid or MdxFrag is null. Skipping MDX target selection dialog");
+            return null;
+        }
         final ServiceManager serviceManager = netflixActivity.getServiceManager();
         final MdxTargetSelection targetSelection = mdxUtils$MdxTargetSelectionDialogInterface.getTargetSelection();
         final int devicePositionByUUID = targetSelection.getDevicePositionByUUID(serviceManager.getMdx().getCurrentTarget());
         targetSelection.setTarget(devicePositionByUUID);
         final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(netflixActivity);
         mdxTargetSelectionDialog$Builder.setCancelable(true);
-        mdxTargetSelectionDialog$Builder.setTitle(2131493136);
+        mdxTargetSelectionDialog$Builder.setTitle(2131493142);
         mdxTargetSelectionDialog$Builder.setAdapterData(targetSelection.getTargets((Context)netflixActivity));
         String format = "";
         if (mdxUtils$MdxTargetSelectionDialogInterface.getVideoDetails() != null) {
             format = format;
             if (StringUtils.isNotEmpty(mdxUtils$MdxTargetSelectionDialogInterface.getVideoDetails().getPlayableTitle())) {
-                format = String.format(netflixActivity.getString(2131493222), mdxUtils$MdxTargetSelectionDialogInterface.getVideoDetails().getPlayableTitle());
+                format = String.format(netflixActivity.getString(2131493230), mdxUtils$MdxTargetSelectionDialogInterface.getVideoDetails().getPlayableTitle());
             }
         }
         mdxTargetSelectionDialog$Builder.setSelection(devicePositionByUUID, format);
         mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new MdxUtils$1(netflixActivity, serviceManager, targetSelection, mdxUtils$MdxTargetSelectionDialogInterface));
         return mdxTargetSelectionDialog$Builder.create();
+    }
+    
+    public static String getPlayableVideoId(final VideoDetails videoDetails) {
+        if (videoDetails instanceof EpisodeDetails) {
+            Log.d("MdxUtils", "Episode, use show ID as video ID");
+            return ((EpisodeDetails)videoDetails).getShowId();
+        }
+        Log.d("MdxUtils", "Movie, use movie ID as video ID");
+        return videoDetails.getId();
     }
     
     public static RatingDialogFrag$Rating getRating(final VideoDetails videoDetails, float value) {
@@ -82,15 +146,6 @@ public final class MdxUtils
         return ratingDialogFrag$Rating;
     }
     
-    public static String getVideoId(final VideoDetails videoDetails) {
-        if (videoDetails instanceof EpisodeDetails) {
-            Log.d("MdxUtils", "Episode, use show ID as video ID");
-            return ((EpisodeDetails)videoDetails).getShowId();
-        }
-        Log.d("MdxUtils", "Movie, use movie ID as video ID");
-        return videoDetails.getPlayable().getPlayableId();
-    }
-    
     public static boolean isCurrentMdxTargetAvailable(final ServiceManager serviceManager) {
         if (serviceManager == null || !serviceManager.isReady() || serviceManager.getMdx() == null || !serviceManager.getMdx().isReady()) {
             Log.d("MdxUtils", "MDX service is NOT ready");
@@ -100,7 +155,7 @@ public final class MdxUtils
     }
     
     public static boolean isMdxTargetAvailable(final ServiceManager serviceManager, final String s) {
-        if (Log.isLoggable("MdxUtils", 3)) {
+        if (Log.isLoggable()) {
             Log.d("MdxUtils", "Check if MDX remote target exist in target list: " + s);
         }
         if (StringUtils.isEmpty(s)) {
@@ -140,7 +195,7 @@ public final class MdxUtils
             return false;
         }
         final Playable playable = mdx.getVideoDetail().getPlayable();
-        if (Log.isLoggable("MdxUtils", 3)) {
+        if (Log.isLoggable()) {
             if (StringUtils.isNotEmpty(s)) {
                 Log.d("MdxUtils", "mCurrentPlayout.getPlayableId(): " + s);
             }
@@ -189,12 +244,12 @@ public final class MdxUtils
             }
         }
         if (progress2 == progress) {
-            if (Log.isLoggable("MdxUtils", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("MdxUtils", "Right on target, no need to ajust seekbar position " + progress + " [sec]");
             }
             return progress2;
         }
-        if (Log.isLoggable("MdxUtils", 3)) {
+        if (Log.isLoggable()) {
             Log.d("MdxUtils", "Progres : " + progress + " [sec] vs. bif position " + progress2 + " [sec]");
         }
         seekBar.setProgress(progress2);

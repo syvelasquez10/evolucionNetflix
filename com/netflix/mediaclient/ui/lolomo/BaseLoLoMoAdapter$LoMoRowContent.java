@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 
 public interface BaseLoLoMoAdapter$LoMoRowContent
 {

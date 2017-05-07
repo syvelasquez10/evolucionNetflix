@@ -4,7 +4,7 @@
 
 package com.netflix.model.branches;
 
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.content.Context;
 import com.netflix.mediaclient.service.falkor.Falkor$Creator;
 import java.util.HashSet;
@@ -14,8 +14,8 @@ import com.netflix.falkor.ModelProxy;
 import com.netflix.falkor.Ref;
 import com.netflix.falkor.BranchMap;
 import com.netflix.model.leafs.Season$Detail;
-import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
-import com.netflix.mediaclient.servicemgr.model.BasicVideo;
+import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.interface_.BasicVideo;
 import com.netflix.model.BaseFalkorObject;
 
 public class FalkorSeason extends BaseFalkorObject implements BasicVideo, SeasonDetails, FalkorObject
@@ -99,7 +99,7 @@ public class FalkorSeason extends BaseFalkorObject implements BasicVideo, Season
     
     @Override
     public String getSeasonNumberTitle(final Context context) {
-        return String.format(context.getString(2131493157), this.getSeasonNumber());
+        return String.format(context.getString(2131493164), this.getSeasonNumber());
     }
     
     @Override

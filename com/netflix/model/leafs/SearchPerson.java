@@ -10,9 +10,9 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 
-public class SearchPerson implements JsonPopulator, com.netflix.mediaclient.servicemgr.model.search.SearchPerson
+public class SearchPerson implements JsonPopulator, com.netflix.mediaclient.servicemgr.interface_.search.SearchPerson
 {
     private static final String TAG = "Person";
     private String id;

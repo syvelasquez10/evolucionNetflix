@@ -22,7 +22,7 @@ class KubrickLolomoUtils$HeroTitleScroller
     public KubrickLolomoUtils$HeroTitleScroller(final LoLoMoFrag frag) {
         this.frag = frag;
         final Resources resources = frag.getResources();
-        this.titleMarginTopPx = resources.getDimensionPixelSize(2131361994);
+        this.titleMarginTopPx = resources.getDimensionPixelSize(2131361993);
         this.textPadding = resources.getDimensionPixelOffset(2131361877);
     }
     

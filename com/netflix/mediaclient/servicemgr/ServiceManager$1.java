@@ -4,16 +4,16 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import java.util.List;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.widget.TextView;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.ThreadUtils;

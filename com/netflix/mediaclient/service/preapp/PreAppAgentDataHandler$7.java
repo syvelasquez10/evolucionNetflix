@@ -18,34 +18,32 @@ import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.pservice.PVideo;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.servicemgr.model.CWVideo;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.service.pservice.PDiskData$ListName;
 import java.util.Set;
-import com.netflix.mediaclient.servicemgr.model.Billboard;
+import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import java.util.List;
+import com.netflix.mediaclient.service.pservice.PDiskData;
 import com.netflix.mediaclient.service.ServiceAgent;
 import android.content.Context;
-import com.netflix.mediaclient.service.pservice.PDiskDataRepository;
-import com.netflix.mediaclient.service.pservice.PDiskData;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.data.DataRepository$DataSavedCallback;
 
-class PreAppAgentDataHandler$7 implements Runnable
+class PreAppAgentDataHandler$7 implements DataRepository$DataSavedCallback
 {
     final /* synthetic */ PreAppAgentDataHandler this$0;
-    final /* synthetic */ DataRepository$DataSavedCallback val$callback;
-    final /* synthetic */ PDiskData val$newData;
+    final /* synthetic */ PreAppAgentEventType val$updateType;
     
-    PreAppAgentDataHandler$7(final PreAppAgentDataHandler this$0, final PDiskData val$newData, final DataRepository$DataSavedCallback val$callback) {
+    PreAppAgentDataHandler$7(final PreAppAgentDataHandler this$0, final PreAppAgentEventType val$updateType) {
         this.this$0 = this$0;
-        this.val$newData = val$newData;
-        this.val$callback = val$callback;
+        this.val$updateType = val$updateType;
     }
     
     @Override
-    public void run() {
-        PDiskDataRepository.saveData(PreAppAgentDataHandler.mContext, this.val$newData.toJsonString(), this.val$callback);
+    public void onDataSaved(final String s) {
+        Log.d("nf_preappagentdatahandler", "onDataSaved");
+        PreAppAgentDataHandler.mServiceAgent.getMainHandler().post((Runnable)new PreAppAgentDataHandler$7$1(this));
     }
 }

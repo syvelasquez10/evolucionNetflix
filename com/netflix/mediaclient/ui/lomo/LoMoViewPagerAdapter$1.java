@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.EnumMap;
 
 final class LoMoViewPagerAdapter$1 extends EnumMap<LoMoType, LoMoViewPagerAdapter$Type>
@@ -20,5 +20,7 @@ final class LoMoViewPagerAdapter$1 extends EnumMap<LoMoType, LoMoViewPagerAdapte
         this.put(LoMoType.SOCIAL_GROUP, LoMoViewPagerAdapter$Type.STANDARD);
         this.put(LoMoType.SOCIAL_POPULAR, LoMoViewPagerAdapter$Type.STANDARD);
         this.put(LoMoType.STANDARD, LoMoViewPagerAdapter$Type.STANDARD);
+        this.put(LoMoType.POPULAR_TITLES, LoMoViewPagerAdapter$Type.STANDARD);
+        this.put(LoMoType.TOP_TEN, LoMoViewPagerAdapter$Type.STANDARD);
     }
 }

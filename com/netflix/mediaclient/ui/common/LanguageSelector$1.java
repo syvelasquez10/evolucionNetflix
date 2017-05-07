@@ -27,7 +27,7 @@ class LanguageSelector$1 implements AdapterView$OnItemClickListener
     
     public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
         final AudioSource item = this.val$audioAdapter.getItem(n);
-        if (Log.isLoggable("nf_language_selector", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_language_selector", "Audio selected on position " + n + ", audio choosen: " + item);
         }
         if (this.val$language.getSelectedAudio() != item) {

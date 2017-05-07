@@ -26,6 +26,7 @@ public final class R$attr
     public static final int homeAsUpIndicator = 2130772012;
     public static final int panelMenuListTheme = 2130772043;
     public static final int popupMenuStyle = 2130772023;
+    public static final int textColorSearchUrl = 2130772030;
     public static final int toolbarNavigationButtonStyle = 2130772022;
     public static final int toolbarStyle = 2130772021;
 }

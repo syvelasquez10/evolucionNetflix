@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.ui.kubrick_kids.lolomo;
 
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils$LoMoWidthType;
+import com.netflix.mediaclient.ui.lomo.LoMoUtils$LoMoWidthType;
 import android.view.View;
 import android.content.Context;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 
 @SuppressLint({ "ViewConstructor" })

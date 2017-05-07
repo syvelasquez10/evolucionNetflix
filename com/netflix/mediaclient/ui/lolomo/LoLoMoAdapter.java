@@ -5,14 +5,15 @@
 package com.netflix.mediaclient.ui.lolomo;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.util.LogUtils;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 
-public class LoLoMoAdapter extends BasePaginatedLoLoMoAdapter<LoMo>
+public class LoLoMoAdapter extends BaseLoLoMoAdapter<LoMo>
 {
     public static final String HOME_LOLOMO_GENRE_ID = "lolomo";
     protected static final String TAG = "LoLoMoAdapter";
@@ -46,6 +47,6 @@ public class LoLoMoAdapter extends BasePaginatedLoLoMoAdapter<LoMo>
         }
         Log.v("LoLoMoAdapter", "Prefetching lolomo...");
         this.requestId = System.nanoTime();
-        serviceManager.getBrowse().prefetchLoLoMo(0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD) - 1, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.CONTINUE_WATCHING) - 1, this.activity.isForKids() && !this.activity.isKubrick(), this.activity.isKubrick(), false, new LoLoMoAdapter$1(this, "LoLoMoAdapter", this.requestId));
+        serviceManager.getBrowse().prefetchLoLoMo(0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD) - 1, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.CONTINUE_WATCHING) - 1, BrowseExperience.shouldLoadExtraCharacterLeaves(), BrowseExperience.shouldLoadKubrickLeaves(), false, new LoLoMoAdapter$1(this, "LoLoMoAdapter", this.requestId));
     }
 }

@@ -4,9 +4,16 @@
 
 package crittercism.android;
 
-import org.json.JSONArray;
+import java.util.Comparator;
+import java.util.TreeMap;
+import java.util.Map;
 
-public interface p
+public final class p extends n
 {
-    o a(final JSONArray p0);
+    public p(final Map map) {
+        super(map);
+        final TreeMap a = new TreeMap(new p$1(this));
+        a.putAll(map);
+        super.a = a;
+    }
 }

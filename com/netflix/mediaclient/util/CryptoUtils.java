@@ -328,7 +328,7 @@ public final class CryptoUtils
             throw new IllegalArgumentException("Input array is null or 0!");
         }
         i = array[array.length - 1];
-        if (Log.isLoggable("nf_crypto", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_crypto", "Remove last " + i + " array elements");
         }
         byte[] array2;

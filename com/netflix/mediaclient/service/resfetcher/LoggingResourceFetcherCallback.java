@@ -13,17 +13,17 @@ public class LoggingResourceFetcherCallback implements ResourceFetcherCallback
     
     @Override
     public void onResourceFetched(final String s, final String s2, final Status status) {
-        if (Log.isLoggable("nf_service_resfetcher_callback", 4)) {
+        if (Log.isLoggable()) {
             Log.i("nf_service_resfetcher_callback", String.format("Resource %s fetched and saved at %s, status %d", s, s2, status.getStatusCode().getValue()));
         }
     }
     
     @Override
     public void onResourcePrefetched(final String s, final int n, final Status status) {
-        if (Log.isLoggable("nf_service_resfetcher_callback", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_resfetcher_callback", String.format("Resource %s prefetched, status %d", s, status.getStatusCode().getValue()));
         }
-        if (status.isError() && Log.isLoggable("nf_service_resfetcher_callback", 5)) {
+        if (status.isError() && Log.isLoggable()) {
             Log.w("nf_service_resfetcher_callback", String.format("Resource %s could not be prefetched, status %d", s, status.getStatusCode().getValue()));
         }
     }

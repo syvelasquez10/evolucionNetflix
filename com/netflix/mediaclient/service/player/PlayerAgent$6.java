@@ -13,14 +13,15 @@ import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import java.util.concurrent.Executors;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
-import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import java.util.TimerTask;
 import android.content.Intent;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.media.JPlayer2Helper;
 import android.media.AudioManager;
+import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
 import com.netflix.mediaclient.android.app.BackgroundTask;
@@ -43,7 +44,6 @@ import com.netflix.mediaclient.event.nrdp.media.ShowSubtitle;
 import com.netflix.mediaclient.event.nrdp.media.RemoveSubtitle;
 import com.netflix.mediaclient.event.nrdp.media.Buffering;
 import com.netflix.mediaclient.event.nrdp.media.GenericMediaEvent;
-import android.content.Context;
 import com.netflix.mediaclient.javabridge.invoke.media.Open$NetType;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import android.os.PowerManager$WakeLock;
@@ -84,7 +84,7 @@ class PlayerAgent$6 extends SimpleUserAgentWebCallback
         this.this$0.ignoreErrorsWhileActionId12IsProcessed = false;
         final StatusCode statusCode = status.getStatusCode();
         if (status.isSucces()) {
-            if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(PlayerAgent.TAG, "Dummy webcall completed with statusCode=" + statusCode);
             }
             final NccpError access$5100 = this.this$0.mActionId12Error;
@@ -92,7 +92,7 @@ class PlayerAgent$6 extends SimpleUserAgentWebCallback
             this.this$0.handlePlayerListener(this.this$0.mPlayerListenerManager.getPlayerListenerRestartPlaybackHandler(), access$5100);
             return;
         }
-        if (Log.isLoggable(PlayerAgent.TAG, 6)) {
+        if (Log.isLoggable()) {
             Log.e(PlayerAgent.TAG, "Dummy webcall completed  failed (skipping user info update) with statusCode=" + statusCode);
         }
         this.this$0.handlePlayerListener(this.this$0.mPlayerListenerManager.getPlayerListenerOnNccpErrorHandler(), this.this$0.mActionId12Error);

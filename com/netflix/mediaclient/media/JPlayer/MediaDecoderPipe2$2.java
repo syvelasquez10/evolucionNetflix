@@ -66,7 +66,7 @@ class MediaDecoderPipe2$2 extends Handler
                         }
                         if (dequeueOutputBuffer == -2) {
                             final MediaFormat outputFormat = this.this$0.mDecoder.getOutputFormat();
-                            if (Log.isLoggable(this.this$0.mTag, 3)) {
+                            if (Log.isLoggable()) {
                                 Log.d(this.this$0.mTag, "OUTPUT_FORMAT_CHANGED " + outputFormat);
                                 continue;
                             }
@@ -81,10 +81,10 @@ class MediaDecoderPipe2$2 extends Handler
                             if ((mediaCodec$BufferInfo.flags & 0x4) != 0x0) {
                                 Log.d(this.this$0.mTag, "got decoder output BUFFER_FLAG_END_OF_STREAM");
                             }
-                            if (this.frameDecoded <= 0L && Log.isLoggable(this.this$0.mTag, 3)) {
+                            if (this.frameDecoded <= 0L && Log.isLoggable()) {
                                 Log.d(this.this$0.mTag, "DequeueOutputBuffer " + dequeueOutputBuffer + " size= " + mediaCodec$BufferInfo.size + " @" + mediaCodec$BufferInfo.presentationTimeUs / 1000L + " ms");
                             }
-                            if (this.this$0.mRefClock != null && mediaCodec$BufferInfo.presentationTimeUs / 1000L <= this.this$0.mRefClock.get() && Log.isLoggable(this.this$0.mTag, 3)) {
+                            if (this.this$0.mRefClock != null && mediaCodec$BufferInfo.presentationTimeUs / 1000L <= this.this$0.mRefClock.get() && Log.isLoggable()) {
                                 Log.d(this.this$0.mTag, "STAT:DEC output late " + this.frameDecoded + " at " + this.this$0.mRefClock.get() + " by " + (mediaCodec$BufferInfo.presentationTimeUs / 1000L - this.this$0.mRefClock.get()) + " ms");
                             }
                             ++this.frameDecoded;

@@ -6,18 +6,18 @@ package com.netflix.mediaclient.ui.kubrick.lomo;
 
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 import com.netflix.mediaclient.android.widget.ObjectRecycler;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.model.KubrickVideo;
+import com.netflix.mediaclient.servicemgr.interface_.KubrickVideo;
 import com.netflix.mediaclient.ui.lomo.BasePaginatedAdapter;
 
 public class KubrickPaginatedLoMoAdapter extends BasePaginatedAdapter<KubrickVideo>
@@ -30,7 +30,7 @@ public class KubrickPaginatedLoMoAdapter extends BasePaginatedAdapter<KubrickVid
     
     @Override
     protected int computeNumItemsPerPage() {
-        if (DeviceUtils.getBasicScreenOrientation((Context)this.activity) == 2) {
+        if (DeviceUtils.isLandscape((Context)this.activity)) {
             return 4;
         }
         return 3;
@@ -44,7 +44,7 @@ public class KubrickPaginatedLoMoAdapter extends BasePaginatedAdapter<KubrickVid
     @Override
     public int getRowHeightInPx() {
         final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage() * 0.5625f);
-        if (Log.isLoggable("KubrickPaginatedLoMoAdapter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("KubrickPaginatedLoMoAdapter", "Computed view height: " + n + " (px)");
         }
         return n;

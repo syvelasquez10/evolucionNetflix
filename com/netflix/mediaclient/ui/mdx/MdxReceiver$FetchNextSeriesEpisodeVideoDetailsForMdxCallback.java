@@ -7,9 +7,9 @@ package com.netflix.mediaclient.ui.mdx;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.text.TextUtils;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 

@@ -14,9 +14,9 @@ public enum SubtitleConfiguration
 {
     public static SubtitleConfiguration DEFAULT;
     
-    ENHANCED_XML(IMedia$SubtitleProfile.ENHANCED, IMedia$SubtitleOutputMode.DATA_XML, 1, 2131493265), 
-    SIMPLE_EVENTS(IMedia$SubtitleProfile.SIMPLE, IMedia$SubtitleOutputMode.EVENTS, 3, 2131493267), 
-    SIMPLE_XML(IMedia$SubtitleProfile.SIMPLE, IMedia$SubtitleOutputMode.DATA_XML, 2, 2131493266);
+    ENHANCED_XML(IMedia$SubtitleProfile.ENHANCED, IMedia$SubtitleOutputMode.DATA_XML, 1, 2131493273), 
+    SIMPLE_EVENTS(IMedia$SubtitleProfile.SIMPLE, IMedia$SubtitleOutputMode.EVENTS, 3, 2131493275), 
+    SIMPLE_XML(IMedia$SubtitleProfile.SIMPLE, IMedia$SubtitleOutputMode.DATA_XML, 2, 2131493274);
     
     private static final String TAG = "nf_conf";
     private int mLabelId;
@@ -51,7 +51,7 @@ public enum SubtitleConfiguration
             Log.d("nf_conf", "No overrides found. Use default");
             return SubtitleConfiguration.DEFAULT;
         }
-        if (Log.isLoggable("nf_conf", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_conf", "Remote override found " + intPref);
         }
         return lookup(intPref);
@@ -73,7 +73,7 @@ public enum SubtitleConfiguration
                 return subtitleConfiguration;
             }
         }
-        if (Log.isLoggable("nf_conf", 6)) {
+        if (Log.isLoggable()) {
             Log.e("nf_conf", "Subtitle configuration lookup value " + n + " is not supported. Use default Enhanced + XML");
         }
         return SubtitleConfiguration.ENHANCED_XML;

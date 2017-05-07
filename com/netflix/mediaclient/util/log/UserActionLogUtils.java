@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.util.log;
 
 import com.netflix.mediaclient.servicemgr.UserActionLogging$RememberProfile;
+import com.netflix.mediaclient.service.pservice.logging.PreAppWidgetLogActionData;
+import com.netflix.mediaclient.service.pservice.logging.PreAppWidgetLogData;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.client.model.Error;
@@ -352,6 +354,41 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
+    public static void reportPreAppWidgetActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        ConsolidatedLoggingUtils.validateArgument(clientLogging$CompletionReason, "Reason can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PREAPP_WIDGET_ACTION_ENDED");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("reason", clientLogging$CompletionReason.name());
+        while (true) {
+            if (uiError == null) {
+                break Label_0058;
+            }
+            try {
+                intent.putExtra("error", uiError.toJSONObject().toString());
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            }
+            catch (JSONException ex) {
+                Log.e("nf_log", "Failed to get JSON string from UIError", (Throwable)ex);
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public static void reportPreAppWidgetActionStarted(final Context context, final UserActionLogging$CommandName userActionLogging$CommandName, final PreAppWidgetLogData preAppWidgetLogData, final PreAppWidgetLogActionData preAppWidgetLogActionData) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        ConsolidatedLoggingUtils.validateArgument(userActionLogging$CommandName, "command can not be null!");
+        ConsolidatedLoggingUtils.validateArgument(preAppWidgetLogData, "widgetLogData can not be null!");
+        ConsolidatedLoggingUtils.validateArgument(preAppWidgetLogActionData, "widgetLogActionData can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PREAPP_WIDGET_ACTION_START");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("cmd", userActionLogging$CommandName.name());
+        intent.putExtra("logData", preAppWidgetLogData.toJsonString());
+        intent.putExtra("widgetActionData", preAppWidgetLogActionData.toJsonString());
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
     public static void reportRateActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final Integer n2) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         ConsolidatedLoggingUtils.validateArgument(clientLogging$CompletionReason, "Reason can not be null!");
@@ -400,7 +437,7 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
         intent.putExtra("reason", clientLogging$CompletionReason.name());
         while (true) {
             if (error == null) {
-                break Label_0058;
+                break Label_0059;
             }
             try {
                 intent.putExtra("error", error.toJSONObject().toString());
@@ -435,7 +472,7 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
         intent.putExtra("reason", clientLogging$CompletionReason.name());
         while (true) {
             if (uiError == null) {
-                break Label_0058;
+                break Label_0059;
             }
             try {
                 intent.putExtra("error", uiError.toJSONObject().toString());
@@ -469,7 +506,7 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
         intent.putExtra("reason", clientLogging$CompletionReason.name());
         while (true) {
             if (error == null) {
-                break Label_0058;
+                break Label_0059;
             }
             try {
                 intent.putExtra("error", error.toJSONObject().toString());
@@ -505,7 +542,7 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
         intent.putExtra("id", n);
         while (true) {
             if (uiError == null) {
-                break Label_0073;
+                break Label_0075;
             }
             try {
                 intent.putExtra("error", uiError.toJSONObject().toString());

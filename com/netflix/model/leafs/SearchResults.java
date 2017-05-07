@@ -4,26 +4,25 @@
 
 package com.netflix.model.leafs;
 
-import com.netflix.mediaclient.servicemgr.model.trackable.SearchTrackable;
 import java.util.Iterator;
 import java.util.Collection;
 import com.netflix.model.branches.FalkorObject;
 import java.util.ArrayList;
-import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
-import com.netflix.mediaclient.servicemgr.model.search.SearchSuggestion;
-import com.netflix.mediaclient.service.webclient.model.leafs.SearchTrackableListSummary;
-import com.netflix.mediaclient.servicemgr.model.search.SearchPerson;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchSuggestion;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.SearchTrackable;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchPerson;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
+import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 
 public class SearchResults implements ISearchResults
 {
     private List<SearchPerson> people;
-    private SearchTrackableListSummary peopleListSummary;
+    private SearchTrackable peopleListSummary;
     private final List<Object> sectionsList;
     private List<SearchSuggestion> suggestions;
-    private SearchTrackableListSummary suggestionsListSummary;
-    private SearchTrackableListSummary videoListSummary;
+    private SearchTrackable suggestionsListSummary;
+    private SearchTrackable videoListSummary;
     private List<SearchVideo> videos;
     
     private SearchResults() {

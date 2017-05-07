@@ -8,16 +8,16 @@ import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.error.CrashReport;
+import com.netflix.mediaclient.javabridge.error.CrashReport;
 import android.os.Process;
-import com.netflix.mediaclient.error.Signal;
+import com.netflix.mediaclient.javabridge.error.Signal;
 import com.netflix.mediaclient.javabridge.invoke.android.InitVisualOn;
 import com.netflix.mediaclient.javabridge.invoke.android.SetVideoSurface;
 import com.netflix.mediaclient.javabridge.invoke.Invoke;
 import com.netflix.mediaclient.util.DeviceCategory;
 import java.lang.ref.WeakReference;
 import android.os.HandlerThread;
-import com.netflix.mediaclient.net.IpConnectivityPolicy;
+import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.javabridge.NrdProxy;
 import com.netflix.mediaclient.media.PlayerType;
@@ -49,7 +49,7 @@ class NativeTransport$TransportEventHandler extends Handler
             return;
         }
         final String s = (String)message.obj;
-        if (Log.isLoggable("nf-NativeTransport", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-NativeTransport", "Received message: " + s);
         }
         if (this.this$0.proxy != null) {

@@ -28,7 +28,7 @@ class SyncActionHandler extends BaseNflxHandlerWithoutDelayedActionSupport
         if (MdxUtils.isMdxTargetAvailable(this.mActivity.getServiceManager(), justUuid)) {
             Log.d("NflxHandler", "Sync action is required, target is available, sync");
             final boolean setDialUuidAsCurrentTarget = mdx.setDialUuidAsCurrentTarget(justUuid);
-            if (Log.isLoggable("NflxHandler", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("NflxHandler", "Set dial uuid as current target was success " + setDialUuidAsCurrentTarget);
             }
             return NflxHandler$Response.NOT_HANDLING;

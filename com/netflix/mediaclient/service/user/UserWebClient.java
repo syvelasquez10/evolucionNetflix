@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.user;
 
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 
 public interface UserWebClient

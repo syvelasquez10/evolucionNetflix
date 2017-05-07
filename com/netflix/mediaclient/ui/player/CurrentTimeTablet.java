@@ -45,7 +45,7 @@ public class CurrentTimeTablet extends CurrentTime
     
     @Override
     public void start(final ByteBuffer byteBuffer) {
-        if (Log.isLoggable("CurrentTimeTablet", 3)) {
+        if (Log.isLoggable()) {
             Log.d("CurrentTimeTablet", "start: bb " + byteBuffer);
         }
         this.mBifDownloaded.set(byteBuffer != null);

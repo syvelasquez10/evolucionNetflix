@@ -4,14 +4,14 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.servicemgr.model.CWVideo;
-import com.netflix.mediaclient.servicemgr.model.Billboard;
+import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
+import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.Video;
 import java.util.List;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 
-public class FetchVideosHandler<T> extends LoggingManagerCallback
+public class FetchVideosHandler<T extends Video> extends LoggingManagerCallback
 {
     private final FetchVideosHandler$FetchCallback<T> callback;
     private final int end;

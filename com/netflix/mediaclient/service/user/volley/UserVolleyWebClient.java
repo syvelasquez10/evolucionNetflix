@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.user.volley;
 
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.NetflixStatus;

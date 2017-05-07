@@ -26,9 +26,9 @@ class PreAppAgent$2 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (intent != null && "com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_DEACTIVE".equals(intent.getAction())) {
-            Log.i("nf_preappagent", "UserAgentIntentReceiver inovoked and received Intent with Action NOTIFY_USER_PROFILE_DEACTIVE");
-            this.this$0.handleProfileDeactive();
+        if (intent != null && "com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_DEACTIVE".equals(intent.getAction())) {
+            Log.i("nf_preappagent", "UserAgentIntentReceiver inovoked and received Intent with Action NOTIFY_USER_ACCOUNT_DEACTIVE");
+            this.this$0.handleAccountDeactive(context);
         }
     }
 }

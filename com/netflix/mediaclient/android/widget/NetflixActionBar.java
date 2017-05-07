@@ -8,10 +8,8 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.view.MenuItem;
 import android.app.Activity;
-import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.ui.home.HomeActivity;
-import com.netflix.mediaclient.ui.kids.KidsUtils;
 import java.security.InvalidParameterException;
+import android.annotation.SuppressLint;
 import android.view.ViewGroup$LayoutParams;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -34,7 +32,7 @@ public class NetflixActionBar
     protected Toolbar toolbar;
     
     public NetflixActionBar(final NetflixActivity netflixActivity, final boolean hasUpAction) {
-        if (Log.isLoggable("NetflixActionBar", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixActionBar", "Creating action bar of type: " + this.getClass().getSimpleName());
         }
         this.hasUpAction = hasUpAction;
@@ -51,7 +49,7 @@ public class NetflixActionBar
             Log.e("NetflixActionBar", "actionBarGroup is null");
         }
         else {
-            this.toolbar = (Toolbar)this.actionBarGroup.findViewById(2131165281);
+            this.toolbar = (Toolbar)this.actionBarGroup.findViewById(2131165280);
             if (this.toolbar == null) {
                 Log.e("NetflixActionBar", "toolBar is null");
                 return;
@@ -63,6 +61,7 @@ public class NetflixActionBar
         }
     }
     
+    @SuppressLint({ "DefaultLocale" })
     private void findHomeView() {
         if (this.toolbar != null && this.toolbar.getChildCount() > 1) {
             for (int i = 0; i < this.toolbar.getChildCount(); ++i) {
@@ -121,17 +120,6 @@ public class NetflixActionBar
     public void bringToFront() {
         if (this.actionBarGroup != null) {
             this.actionBarGroup.bringToFront();
-        }
-    }
-    
-    protected void configureBackButtonIfNecessary(final boolean b) {
-        if (KidsUtils.shouldShowBackNavigationAffordance(this.activity) && !(this.activity instanceof HomeActivity)) {
-            final ActionBar supportActionBar = this.activity.getSupportActionBar();
-            supportActionBar.setDisplayHomeAsUpEnabled(false);
-            supportActionBar.setDisplayShowHomeEnabled(false);
-            if (b && DeviceUtils.getScreenResolutionDpi((Context)this.activity) < 320) {
-                return;
-            }
         }
     }
     

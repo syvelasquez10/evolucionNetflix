@@ -34,13 +34,13 @@ class TargetSelector$1 extends Handler
                 this.this$0.mCallback.onStickinessExpired();
             }
             case 2: {
-                if (Log.isLoggable("nf_mdxTargetSelector", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_mdxTargetSelector", "TragetSelector: new target is selected " + this.this$0.mCurrentTarget);
                 }
                 PreferenceUtils.putLongPref(this.this$0.mContext, "mdx_target_lastactive", System.currentTimeMillis());
             }
             case 4: {
-                if (Log.isLoggable("nf_mdxTargetSelector", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_mdxTargetSelector", "TragetSelector: upadte selected target " + this.this$0.mCurrentTarget + " : " + this.this$0.mTaregtUuid + " : " + this.this$0.mTargetDialUuid + " : " + this.this$0.mTargetFriendlyName);
                 }
                 PreferenceUtils.putStringPref(this.this$0.mContext, "mdx_target_uuid", this.this$0.mCurrentTarget);

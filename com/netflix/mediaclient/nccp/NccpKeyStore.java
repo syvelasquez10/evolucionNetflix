@@ -86,60 +86,58 @@ public final class NccpKeyStore
         //    75: ifnull          82
         //    78: aload_0        
         //    79: invokevirtual   java/io/InputStream.close:()V
-        //    82: ldc             "nf_nccp"
-        //    84: iconst_3       
-        //    85: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //    88: ifeq            94
-        //    91: invokestatic    com/netflix/mediaclient/nccp/NccpKeyStore.dump:()V
-        //    94: ldc             "nf_nccp"
-        //    96: ldc             "Load NCCP trust store done."
-        //    98: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   101: pop            
-        //   102: return         
-        //   103: astore_0       
-        //   104: aload_2        
-        //   105: astore_1       
-        //   106: ldc             "nf_nccp"
-        //   108: ldc             "We failed to load NCCP trust store from res/raw"
-        //   110: aload_0        
-        //   111: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   114: pop            
-        //   115: aload_2        
-        //   116: ifnull          82
-        //   119: aload_2        
-        //   120: invokevirtual   java/io/InputStream.close:()V
-        //   123: goto            82
-        //   126: astore_0       
-        //   127: goto            82
-        //   130: astore_0       
-        //   131: aload_1        
-        //   132: ifnull          139
-        //   135: aload_1        
-        //   136: invokevirtual   java/io/InputStream.close:()V
-        //   139: aload_0        
-        //   140: athrow         
-        //   141: astore_0       
-        //   142: goto            82
-        //   145: astore_1       
-        //   146: goto            139
+        //    82: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //    85: ifeq            91
+        //    88: invokestatic    com/netflix/mediaclient/nccp/NccpKeyStore.dump:()V
+        //    91: ldc             "nf_nccp"
+        //    93: ldc             "Load NCCP trust store done."
+        //    95: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    98: pop            
+        //    99: return         
+        //   100: astore_0       
+        //   101: aload_2        
+        //   102: astore_1       
+        //   103: ldc             "nf_nccp"
+        //   105: ldc             "We failed to load NCCP trust store from res/raw"
+        //   107: aload_0        
+        //   108: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   111: pop            
+        //   112: aload_2        
+        //   113: ifnull          82
+        //   116: aload_2        
+        //   117: invokevirtual   java/io/InputStream.close:()V
+        //   120: goto            82
+        //   123: astore_0       
+        //   124: goto            82
+        //   127: astore_0       
+        //   128: aload_1        
+        //   129: ifnull          136
+        //   132: aload_1        
+        //   133: invokevirtual   java/io/InputStream.close:()V
+        //   136: aload_0        
+        //   137: athrow         
+        //   138: astore_0       
+        //   139: goto            82
+        //   142: astore_1       
+        //   143: goto            136
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  35     43     103    130    Ljava/lang/Throwable;
-        //  35     43     130    141    Any
-        //  48     58     103    130    Ljava/lang/Throwable;
-        //  48     58     130    141    Any
-        //  62     74     103    130    Ljava/lang/Throwable;
-        //  62     74     130    141    Any
-        //  78     82     141    145    Ljava/io/IOException;
-        //  106    115    130    141    Any
-        //  119    123    126    130    Ljava/io/IOException;
-        //  135    139    145    149    Ljava/io/IOException;
+        //  35     43     100    127    Ljava/lang/Throwable;
+        //  35     43     127    138    Any
+        //  48     58     100    127    Ljava/lang/Throwable;
+        //  48     58     127    138    Any
+        //  62     74     100    127    Ljava/lang/Throwable;
+        //  62     74     127    138    Any
+        //  78     82     138    142    Ljava/io/IOException;
+        //  103    112    127    138    Any
+        //  116    120    123    127    Ljava/io/IOException;
+        //  132    136    142    146    Ljava/io/IOException;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IndexOutOfBoundsException: Index: 81, Size: 81
+        // java.lang.IndexOutOfBoundsException: Index: 79, Size: 79
         //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
         //     at java.util.ArrayList.get(ArrayList.java:429)
         //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)

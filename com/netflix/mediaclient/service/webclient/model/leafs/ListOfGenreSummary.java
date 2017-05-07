@@ -6,18 +6,19 @@ package com.netflix.mediaclient.service.webclient.model.leafs;
 
 import com.netflix.mediaclient.util.StringUtils;
 import android.os.Parcel;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.os.Parcelable$Creator;
-import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 
+@Deprecated
 public class ListOfGenreSummary extends TrackableListSummary implements GenreList
 {
     public static final Parcelable$Creator<ListOfGenreSummary> CREATOR;
     private LoMoType enumType;
-    private String genreExperience;
-    private String genreId;
-    private String genreName;
-    private boolean isKidsGenre;
+    private final String genreExperience;
+    private final String genreId;
+    private final String genreName;
+    private final boolean isKidsGenre;
     
     static {
         CREATOR = (Parcelable$Creator)new ListOfGenreSummary$1();

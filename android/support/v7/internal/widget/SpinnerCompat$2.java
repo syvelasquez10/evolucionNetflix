@@ -4,6 +4,7 @@
 
 package android.support.v7.internal.widget;
 
+import android.widget.Adapter;
 import android.view.MotionEvent;
 import android.os.Parcelable;
 import android.content.DialogInterface;

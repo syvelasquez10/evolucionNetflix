@@ -8,6 +8,7 @@ import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.content.res.Resources;
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.Button;
 import android.widget.TextView;

@@ -27,7 +27,7 @@ public abstract class BaseNccpResponse implements NccpResponse
     
     public BaseNccpResponse(final String s) {
         final Document document = XmlDomUtils.createDocument(s);
-        if (Log.isLoggable("nf_nccp", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_nccp", "Doc: " + document);
         }
         final Element documentElement = document.getDocumentElement();
@@ -51,7 +51,7 @@ public abstract class BaseNccpResponse implements NccpResponse
     
     private boolean parseStatuses(final Element element) {
         final String firstFoundElementValueByTagName = XmlDomUtils.getFirstFoundElementValueByTagName(element, "nccp:success");
-        if (Log.isLoggable("nf_nccp", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_nccp", "Status: " + firstFoundElementValueByTagName);
         }
         if (!(this.success = "true".equalsIgnoreCase(firstFoundElementValueByTagName))) {

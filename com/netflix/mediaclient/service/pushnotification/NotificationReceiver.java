@@ -106,7 +106,7 @@ public final class NotificationReceiver extends BroadcastReceiver
     
     public void onReceive(final Context context, final Intent intent) {
         final String action = intent.getAction();
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", intent);
             Log.d("nf_push", "Received an action: " + action);
         }

@@ -10,9 +10,9 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 
 public class Video$Summary implements JsonPopulator, Video
 {
@@ -24,6 +24,7 @@ public class Video$Summary implements JsonPopulator, Video
     public String id;
     public boolean isEpisode;
     public String squareUrl;
+    public String storyImgDispUrl;
     public String title;
     public String tvCardUrl;
     public String type;
@@ -52,6 +53,11 @@ public class Video$Summary implements JsonPopulator, Video
     @Override
     public String getSquareUrl() {
         return this.squareUrl;
+    }
+    
+    @Override
+    public String getStoryDispUrl() {
+        return this.storyImgDispUrl;
     }
     
     @Override
@@ -86,75 +92,82 @@ public class Video$Summary implements JsonPopulator, Video
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0186: {
+            Label_0194: {
                 switch (s.hashCode()) {
                     case 3355: {
                         if (s.equals("id")) {
                             n = 0;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case 1153650071: {
                         if (s.equals("boxartUrl")) {
                             n = 1;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case 3575610: {
                         if (s.equals("type")) {
                             n = 2;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case 110371416: {
                         if (s.equals("title")) {
                             n = 3;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case -2124216975: {
                         if (s.equals("isEpisode")) {
                             n = 4;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case 329552226: {
                         if (s.equals("errorType")) {
                             n = 5;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case -1794520227: {
                         if (s.equals("tvCardUrl")) {
                             n = 6;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case -1217996834: {
                         if (s.equals("horzDispUrl")) {
                             n = 7;
-                            break Label_0186;
+                            break Label_0194;
+                        }
+                        break;
+                    }
+                    case 1251932671: {
+                        if (s.equals("storyImgDispUrl")) {
+                            n = 8;
+                            break Label_0194;
                         }
                         break;
                     }
                     case 1314358034: {
                         if (s.equals("squareUrl")) {
-                            n = 8;
-                            break Label_0186;
+                            n = 9;
+                            break Label_0194;
                         }
                         break;
                     }
                     case 1333091160: {
                         if (s.equals("videoYear")) {
-                            n = 9;
-                            break Label_0186;
+                            n = 10;
+                            break Label_0194;
                         }
                         break;
                     }
@@ -198,10 +211,14 @@ public class Video$Summary implements JsonPopulator, Video
                     continue;
                 }
                 case 8: {
-                    this.squareUrl = jsonElement2.getAsString();
+                    this.storyImgDispUrl = jsonElement2.getAsString();
                     continue;
                 }
                 case 9: {
+                    this.squareUrl = jsonElement2.getAsString();
+                    continue;
+                }
+                case 10: {
                     this.videoYear = entry.getValue().getAsInt();
                     continue;
                 }

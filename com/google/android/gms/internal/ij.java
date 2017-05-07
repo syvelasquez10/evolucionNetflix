@@ -152,6 +152,16 @@ public final class ij extends d<in>
         }
     }
     
+    private void e(final BaseImplementation$b<Status> gk) {
+        synchronized (ij.GM) {
+            if (this.GK != null) {
+                gk.b(new Status(2001));
+                return;
+            }
+            this.GK = gk;
+        }
+    }
+    
     private void fC() {
         this.GA = false;
         this.GB = -1;
@@ -225,6 +235,11 @@ public final class ij extends d<in>
             // monitorexit(this.Gu)
             this.gS().aI(s);
         }
+    }
+    
+    public void a(final String s, final BaseImplementation$b<Status> baseImplementation$b) {
+        this.e(baseImplementation$b);
+        this.gS().aH(s);
     }
     
     public void a(final String s, final String s2, final BaseImplementation$b<Status> baseImplementation$b) {

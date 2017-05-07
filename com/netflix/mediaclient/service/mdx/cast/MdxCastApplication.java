@@ -12,7 +12,6 @@ import android.os.Bundle;
 import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.Cast$ApplicationConnectionResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.netflix.mediaclient.util.StringUtils;
 import com.google.android.gms.cast.Cast$CastOptions$Builder;
 import com.google.android.gms.cast.Cast;
 import com.google.android.gms.common.api.GoogleApiClient$Builder;
@@ -51,21 +50,11 @@ public class MdxCastApplication extends Cast$Listener implements Cast$MessageRec
         this.mCallback = mCallback;
         this.mForceLaunch.set(b);
         final Cast$CastOptions$Builder builder = Cast$CastOptions.builder(castDevice, this);
-        if (Log.isLoggable(MdxCastApplication.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(MdxCastApplication.TAG, "CastOptions.Builder setVerboseLoggingEnabled(true)");
             builder.setVerboseLoggingEnabled(true);
         }
         (this.mApiClient = new GoogleApiClient$Builder(context).addApi(Cast.API, builder.build()).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build()).connect();
-    }
-    
-    private boolean isNetflixRunning() {
-        final String applicationStatus = Cast.CastApi.getApplicationStatus(this.mApiClient);
-        return StringUtils.isEmpty(applicationStatus) || applicationStatus.indexOf("Netflix") != -1 || applicationStatus.equalsIgnoreCase("null");
-    }
-    
-    private boolean isOtherAppRunning() {
-        final String applicationStatus = Cast.CastApi.getApplicationStatus(this.mApiClient);
-        return StringUtils.isNotEmpty(applicationStatus) && applicationStatus.indexOf("Chromecast Home Screen") == -1;
     }
     
     private void joinApp() {
@@ -105,43 +94,29 @@ public class MdxCastApplication extends Cast$Listener implements Cast$MessageRec
     
     @Override
     public void onConnected(final Bundle bundle) {
-        while (true) {
-            Log.d(MdxCastApplication.TAG, "GoogleApiClient connect(), success arg:" + bundle);
-            this.mConnected.set(true);
-            this.mConnectionSuspended.set(false);
-            while (true) {
-                Label_0175: {
-                    try {
-                        if (this.mForceLaunch.get()) {
-                            Log.d(MdxCastApplication.TAG, "forced, GoogleApiClient launchApp()");
-                            this.launchApp();
-                            return;
-                        }
-                        if (!this.isOtherAppRunning()) {
-                            Log.d(MdxCastApplication.TAG, "not forced, no app is runnning");
-                            this.joinApp();
-                            return;
-                        }
-                    }
-                    catch (IllegalStateException ex) {
-                        final MdxCastApplication$MdxCastApplicaCallback mCallback = this.mCallback;
-                        final StringBuilder append = new StringBuilder().append("onConnected ");
-                        if (this.mForceLaunch.get()) {
-                            final String s = "launch";
-                            mCallback.onFailToConnect(append.append(s).append(" has IllegalStateException: ").append(ex.getMessage()).toString());
-                            return;
-                        }
-                        break Label_0175;
-                    }
-                    break;
-                }
-                final String s = "join";
-                continue;
+        Log.d(MdxCastApplication.TAG, "GoogleApiClient connect(), success arg:" + bundle);
+        this.mConnected.set(true);
+        this.mConnectionSuspended.set(false);
+        try {
+            if (this.mForceLaunch.get()) {
+                Log.d(MdxCastApplication.TAG, "forced, GoogleApiClient launchApp()");
+                this.launchApp();
+                return;
             }
-        }
-        if (this.isNetflixRunning()) {
             Log.d(MdxCastApplication.TAG, "GoogleApiClient joinApp()");
             this.joinApp();
+        }
+        catch (IllegalStateException ex) {
+            final MdxCastApplication$MdxCastApplicaCallback mCallback = this.mCallback;
+            final StringBuilder append = new StringBuilder().append("onConnected ");
+            String s;
+            if (this.mForceLaunch.get()) {
+                s = "launch";
+            }
+            else {
+                s = "join";
+            }
+            mCallback.onFailToConnect(append.append(s).append(" has IllegalStateException: ").append(ex.getMessage()).toString());
         }
     }
     
@@ -184,20 +159,16 @@ public class MdxCastApplication extends Cast$Listener implements Cast$MessageRec
     }
     
     public void stop() {
-        while (true) {
-            try {
-                Cast.CastApi.removeMessageReceivedCallbacks(this.mApiClient, "urn:x-cast:mdx-netflix-com:service:target:2");
+        try {
+            Cast.CastApi.removeMessageReceivedCallbacks(this.mApiClient, "urn:x-cast:mdx-netflix-com:service:target:2");
+            if (this.mApiClient != null && this.mApiClient.isConnected()) {
+                Cast.CastApi.stopApplication(this.mApiClient);
                 this.mApiClient.disconnect();
             }
-            catch (IllegalStateException ex) {
-                ex.printStackTrace();
-                continue;
-            }
-            catch (IOException ex2) {
-                ex2.printStackTrace();
-                continue;
-            }
-            break;
+        }
+        catch (IOException ex) {}
+        catch (IllegalStateException ex2) {
+            goto Label_0057;
         }
     }
 }

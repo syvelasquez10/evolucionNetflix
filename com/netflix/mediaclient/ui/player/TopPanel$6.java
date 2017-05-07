@@ -25,7 +25,6 @@ import android.app.Activity;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
-import com.netflix.mediaclient.ui.common.Social;
 import com.netflix.mediaclient.ui.common.LanguageSelector;
 import android.animation.Animator;
 import android.view.View$OnClickListener;

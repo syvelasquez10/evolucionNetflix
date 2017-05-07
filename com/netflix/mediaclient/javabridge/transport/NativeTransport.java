@@ -8,9 +8,9 @@ import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.error.CrashReport;
+import com.netflix.mediaclient.javabridge.error.CrashReport;
 import android.os.Process;
-import com.netflix.mediaclient.error.Signal;
+import com.netflix.mediaclient.javabridge.error.Signal;
 import com.netflix.mediaclient.javabridge.invoke.android.InitVisualOn;
 import com.netflix.mediaclient.javabridge.invoke.android.SetVideoSurface;
 import com.netflix.mediaclient.javabridge.invoke.Invoke;
@@ -18,7 +18,7 @@ import com.netflix.mediaclient.util.DeviceCategory;
 import java.lang.ref.WeakReference;
 import android.os.HandlerThread;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.net.IpConnectivityPolicy;
+import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.javabridge.NrdProxy;
 import com.netflix.mediaclient.media.PlayerType;
@@ -33,9 +33,11 @@ public class NativeTransport implements Transport
     private static boolean mpCapable;
     private Bridge bridge;
     private boolean destroyed;
+    private int mDalvikVMHeapSize;
     private String mDeviceId;
     private boolean mDeviceLowMem;
     private String mDeviceModel;
+    private boolean mEnableLowBitrateStreams;
     private String mEsn;
     private final NativeTransport$TransportEventHandler mEventHandler;
     private String mFesn;
@@ -55,6 +57,7 @@ public class NativeTransport implements Transport
     
     public NativeTransport(final Bridge bridge, final NrdProxy proxy) {
         this.mVideoBufferSize = 0;
+        this.mDalvikVMHeapSize = 0;
         this.mIpConnectivityPolicy = IpConnectivityPolicy.IP_V6_V4.getValue();
         Log.d("nf-NativeTransport", "NativeTransport constructor start");
         this.bridge = bridge;
@@ -156,7 +159,7 @@ public class NativeTransport implements Transport
     }
     
     private static void postEventFromNative(final Object o, final String s) {
-        if (Log.isLoggable("nf-NativeTransport", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-NativeTransport", "Got event from native: " + s);
         }
         final NativeTransport nativeTransport = (NativeTransport)((WeakReference)o).get();
@@ -192,10 +195,12 @@ public class NativeTransport implements Transport
         this.mDeviceModel = StringUtils.notNull("modelId", esnProvider.getDeviceModel());
         this.mDeviceLowMem = this.bridge.isDeviceLowMem();
         this.mVideoBufferSize = this.bridge.getConfigVideoBufferSize();
+        this.mEnableLowBitrateStreams = this.bridge.enableLowBitrateStreams();
+        this.mDalvikVMHeapSize = (int)(Runtime.getRuntime().maxMemory() / 1048576L);
         if (ipConnectivityPolicy != null) {
             this.mIpConnectivityPolicy = ipConnectivityPolicy.getValue();
         }
-        if (Log.isLoggable("nf-NativeTransport", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-NativeTransport", "rootFileSystem: " + this.mRootFileSystem);
             Log.d("nf-NativeTransport", "esn: " + this.mEsn);
             Log.d("nf-NativeTransport", "deviceId: " + this.mDeviceId);
@@ -203,13 +208,15 @@ public class NativeTransport implements Transport
             Log.d("nf-NativeTransport", "LowMemDevice: " + this.mDeviceLowMem);
             Log.d("nf-NativeTransport", "VideoBufferSize: " + this.mVideoBufferSize);
             Log.d("nf-NativeTransport", "IP connectivity policy: " + this.mIpConnectivityPolicy);
+            Log.d("nf-NativeTransport", "Enable Low bitratestreams:" + this.mEnableLowBitrateStreams);
+            Log.d("nf-NativeTransport", "Dalvik VM HeapSize in MB: " + this.mDalvikVMHeapSize);
         }
         this.playerType = this.bridge.getCurrentPlayerType();
         if (this.playerType == null) {
             Log.e("nf-NativeTransport", "This should not happen, player type was null at this point! Use default.");
             this.playerType = PlayerTypeFactory.findDefaultPlayerType();
         }
-        else if (Log.isLoggable("nf-NativeTransport", 3)) {
+        else if (Log.isLoggable()) {
             Log.d("nf-NativeTransport", "Player type is " + this.playerType.getDescription());
         }
         if (this.playerType == PlayerType.device12 || this.playerType == PlayerType.device10 || this.playerType == PlayerType.device11) {
@@ -258,14 +265,15 @@ public class NativeTransport implements Transport
     
     @Override
     public void invokeMethod(String string, final String s, final String s2) {
-        if (Log.isLoggable("nf-NativeTransport", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-NativeTransport", " invokeMethod subobject = " + string + " method = " + s + " jsonString = " + s2);
         }
-        Label_0084: {
+        Label_0081: {
             if (string != null) {
-                break Label_0084;
+                break Label_0081;
             }
             string = "nrdp";
+        Block_5_Outer:
             while (true) {
                 String s3 = s2;
                 if (s2 == null) {
@@ -274,14 +282,17 @@ public class NativeTransport implements Transport
                 try {
                     this.native_invokeMethod(string, s, s3);
                     return;
-                    // iftrue(Label_0106:, !string.startsWith("nrdp"))
-                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                    continue;
-                    Label_0106: {
+                    Label_0103: {
                         string = "nrdp." + string;
                     }
-                    continue;
+                    continue Block_5_Outer;
+                    while (true) {
+                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                        continue Block_5_Outer;
+                        continue;
+                    }
                 }
+                // iftrue(Label_0103:, !string.startsWith("nrdp"))
                 catch (Throwable t) {
                     Log.w("nf-NativeTransport", "Failure in JNI. It may happend than NRDApp is null!", t);
                 }
@@ -292,22 +303,22 @@ public class NativeTransport implements Transport
     
     @Override
     public void setProperty(String string, final String s, final String s2) {
-        if (Log.isLoggable("nf-NativeTransport", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-NativeTransport", " setProperty subobject = " + string + " property = " + s + " jsonString = " + s2);
         }
-        Label_0071: {
+        Label_0068: {
             if (string != null) {
-                break Label_0071;
+                break Label_0068;
             }
             string = "nrdp";
             try {
-                // iftrue(Label_0093:, !string.startsWith("nrdp"))
+                // iftrue(Label_0090:, !string.startsWith("nrdp"))
                 while (true) {
                     this.native_setProperty(string, s, s2);
                     return;
                     Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
                     continue;
-                    Label_0093: {
+                    Label_0090: {
                         string = "nrdp." + string;
                     }
                     continue;

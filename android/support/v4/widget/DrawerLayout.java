@@ -4,6 +4,8 @@
 
 package android.support.v4.widget;
 
+import android.graphics.drawable.ColorDrawable;
+import android.support.v4.content.ContextCompat;
 import android.os.Parcelable;
 import android.view.View$MeasureSpec;
 import android.support.v4.view.KeyEventCompat;
@@ -937,6 +939,30 @@ public class DrawerLayout extends ViewGroup implements DrawerLayoutImpl
             return;
         }
         this.dispatchOnDrawerSlide(view, drawerLayout$LayoutParams.onScreen = onScreen);
+    }
+    
+    public void setScrimColor(final int mScrimColor) {
+        this.mScrimColor = mScrimColor;
+        this.invalidate();
+    }
+    
+    public void setStatusBarBackground(final int n) {
+        Drawable drawable;
+        if (n != 0) {
+            drawable = ContextCompat.getDrawable(this.getContext(), n);
+        }
+        else {
+            drawable = null;
+        }
+        this.mStatusBarBackground = drawable;
+    }
+    
+    public void setStatusBarBackground(final Drawable mStatusBarBackground) {
+        this.mStatusBarBackground = mStatusBarBackground;
+    }
+    
+    public void setStatusBarBackgroundColor(final int n) {
+        this.mStatusBarBackground = (Drawable)new ColorDrawable(n);
     }
     
     void updateDrawerState(int mDrawerState, final int n, final View view) {

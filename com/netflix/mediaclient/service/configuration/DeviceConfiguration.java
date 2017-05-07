@@ -15,7 +15,7 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import java.util.HashMap;
-import com.netflix.mediaclient.net.IpConnectivityPolicy;
+import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
@@ -234,7 +234,7 @@ public class DeviceConfiguration
     private void updateLocalPlaybackStatus(final String s) {
         if (StringUtils.isNotEmpty(s)) {
             final boolean boolean1 = Boolean.parseBoolean(s);
-            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(DeviceConfiguration.TAG, "Change in local playback status from " + this.mLocalPlaybackEnabled + " to " + boolean1);
             }
             if (this.mLocalPlaybackEnabled != boolean1) {
@@ -245,7 +245,7 @@ public class DeviceConfiguration
         else {
             PreferenceUtils.removePref(this.mContext, "playback_configuration_local_playback_enabled");
             this.mLocalPlaybackEnabled = DeviceUtils.isLocalPlaybackEnabled();
-            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(DeviceConfiguration.TAG, "Overide is not found, use default for local playback enabled " + this.mLocalPlaybackEnabled);
             }
         }
@@ -254,7 +254,7 @@ public class DeviceConfiguration
     private void updateMdxRemoteControlLockScreenStatus(final String s) {
         if (StringUtils.isNotEmpty(s)) {
             final boolean boolean1 = Boolean.parseBoolean(s);
-            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(DeviceConfiguration.TAG, "Change in MDX remote control lock screen be used status from " + this.mMdxRemoteControlLockScreenEnabled + " to " + boolean1);
             }
             if (this.mMdxRemoteControlLockScreenEnabled != boolean1) {
@@ -265,7 +265,7 @@ public class DeviceConfiguration
         else {
             PreferenceUtils.removePref(this.mContext, "mdx_configuration_remote_lockscreen_enabled");
             this.mMdxRemoteControlLockScreenEnabled = DeviceUtils.isRemoteControlEnabled();
-            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(DeviceConfiguration.TAG, "Overide is not found, use default on device for MDX remote control lock screen  " + this.mMdxRemoteControlLockScreenEnabled);
             }
         }
@@ -274,7 +274,7 @@ public class DeviceConfiguration
     private void updateMdxRemoteControlNotificationStatus(final String s) {
         if (StringUtils.isNotEmpty(s)) {
             final boolean boolean1 = Boolean.parseBoolean(s);
-            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(DeviceConfiguration.TAG, "Change in MDX remote control notification be used status from " + this.mMdxRemoteControlNotificationEnabled + " to " + boolean1);
             }
             if (this.mMdxRemoteControlNotificationEnabled != boolean1) {
@@ -285,7 +285,7 @@ public class DeviceConfiguration
         else {
             PreferenceUtils.removePref(this.mContext, "mdx_configuration_remote_notification_enabled");
             this.mMdxRemoteControlNotificationEnabled = DeviceUtils.isRemoteControlEnabled();
-            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(DeviceConfiguration.TAG, "Overide is not found, use default on device for MDX remote control notification " + this.mMdxRemoteControlNotificationEnabled);
             }
         }
@@ -391,7 +391,7 @@ public class DeviceConfiguration
     public void persistDeviceConfigOverride(final DeviceConfigData deviceConfigData) {
         final int n = -1;
         if (deviceConfigData != null) {
-            if (Log.isLoggable(DeviceConfiguration.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(DeviceConfiguration.TAG, String.format("writing configData to storage %s", deviceConfigData.toString()));
             }
             PlayerTypeFactory.updateDevicePlayerType(this.mContext, deviceConfigData.getPlayerType());

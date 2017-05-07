@@ -16,6 +16,7 @@ import com.netflix.mediaclient.javabridge.invoke.mdx.Configure;
 import java.util.Map;
 import com.netflix.mediaclient.javabridge.invoke.mdx.ClearDeviceMap;
 import com.netflix.mediaclient.event.nrdp.mdx.session.MessageEvent;
+import com.netflix.mediaclient.event.nrdp.mdx.TargetRestartingEvent;
 import com.netflix.mediaclient.event.nrdp.mdx.session.SessionEndedEvent;
 import com.netflix.mediaclient.event.nrdp.mdx.session.MessagingErrorEvent;
 import com.netflix.mediaclient.event.nrdp.mdx.session.MessageDeliveredEvent;

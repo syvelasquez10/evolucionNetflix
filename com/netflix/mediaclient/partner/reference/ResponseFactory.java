@@ -197,7 +197,7 @@ public final class ResponseFactory
     }
     
     public static Response createResponse(final PartnerRequest partnerRequest, final Intent intent, final int n) {
-        if (Log.isLoggable("nf_partner", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_partner", "createResponse:: request " + partnerRequest + ", response " + intent + ", resultCode " + n);
             if (intent != null) {
                 final Bundle extras = intent.getExtras();

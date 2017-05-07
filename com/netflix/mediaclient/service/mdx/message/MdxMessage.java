@@ -39,6 +39,7 @@ public abstract class MdxMessage
     public static final String TYPE_PLAYER_SKIP = "PLAYER_SKIP";
     public static final String TYPE_PLAYER_STATE_CHANGED = "PLAYER_STATE_CHANGED";
     public static final String TYPE_PLAYER_STOP = "PLAYER_STOP";
+    public static final String TYPE_POSTPLAY_STOP = "POSTPLAY_STOP";
     public static final String TYPE_SET_AUDIO_SUBTITLES = "SET_AUDIO_SUBTITLES";
     protected JSONObject mJson;
     private String mName;

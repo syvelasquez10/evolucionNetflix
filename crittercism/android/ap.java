@@ -4,46 +4,52 @@
 
 package crittercism.android;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.apache.http.StatusLine;
+import org.apache.http.ParseException;
+import org.apache.http.message.BasicLineParser;
+import org.apache.http.message.ParserCursor;
+import org.apache.http.util.CharArrayBuffer;
 
-public final class ap implements t
+public final class ap extends af
 {
-    private boolean a;
-    private boolean b;
+    private int d;
     
-    private ap(final boolean a) {
-        this.a = a;
-        this.b = true;
+    public ap(final al al) {
+        super(al);
+        this.d = -1;
     }
     
-    private JSONObject c() {
-        final JSONObject jsonObject = new JSONObject();
+    @Override
+    public final boolean a(final CharArrayBuffer charArrayBuffer) {
+        final ParserCursor parserCursor = new ParserCursor(0, charArrayBuffer.length());
         try {
-            jsonObject.put("optOutStatus", this.a).put("optOutStatusSet", this.b);
-            return jsonObject;
-        }
-        catch (JSONException ex) {
-            return jsonObject;
-        }
-    }
-    
-    public final void a(final boolean a) {
-        synchronized (this) {
-            this.a = a;
-        }
-    }
-    
-    public final boolean a() {
-        synchronized (this) {
-            return this.a;
-        }
-    }
-    
-    public final boolean a(final h h, final String s, final String s2) {
-        synchronized (this) {
-            h.b(s, s2, this.c().toString());
+            final StatusLine statusLine = BasicLineParser.DEFAULT.parseStatusLine(charArrayBuffer, parserCursor);
+            this.d = statusLine.getStatusCode();
+            super.a.a(statusLine.getStatusCode());
             return true;
         }
+        catch (ParseException ex) {
+            return false;
+        }
+    }
+    
+    @Override
+    public final af b() {
+        return new ao(this, this.d);
+    }
+    
+    @Override
+    public final af c() {
+        return as.d;
+    }
+    
+    @Override
+    protected final int d() {
+        return 20;
+    }
+    
+    @Override
+    protected final int e() {
+        return 64;
     }
 }

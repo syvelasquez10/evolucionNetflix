@@ -9,7 +9,6 @@ import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import android.text.TextUtils;
-import com.netflix.mediaclient.service.browse.volley.AddToQueueRequest;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
@@ -32,7 +31,7 @@ public class AddUserProfileRequest extends FalkorVolleyWebClientRequest<AccountD
         this.startInKidsZone = startInKidsZone;
         this.iconName = iconName;
         this.pqlQuery = new StringBuilder("['profilesList', 'add']").toString();
-        if (Log.isLoggable("nf_service_user_adduserprofilerequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_adduserprofilerequest", "PQL = " + this.pqlQuery);
         }
     }
@@ -52,13 +51,13 @@ public class AddUserProfileRequest extends FalkorVolleyWebClientRequest<AccountD
         else {
             s = "\"standard\"";
         }
-        sb.append(AddToQueueRequest.optionalParam).append(s);
+        sb.append("&param=").append(s);
         if (!TextUtils.isEmpty((CharSequence)this.iconName)) {
-            sb.append(AddToQueueRequest.optionalParam).append("\"" + this.iconName + "\"");
+            sb.append("&param=").append("\"" + this.iconName + "\"");
         }
         sb.append(FalkorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", String.format("[{'to':%s}, 'summary']", 5)));
         sb.append(FalkorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", "['summary']"));
-        if (Log.isLoggable("nf_service_user_adduserprofilerequest", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_user_adduserprofilerequest", " getOptionalParams: " + sb.toString());
         }
         return sb.toString();
@@ -85,7 +84,7 @@ public class AddUserProfileRequest extends FalkorVolleyWebClientRequest<AccountD
     
     @Override
     protected AccountData parseFalkorResponse(final String s) {
-        if (Log.isLoggable("nf_service_user_adduserprofilerequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_adduserprofilerequest", "String response to parse = " + s);
         }
         return FetchAccountDataRequest.parseProfilesList(s, false);

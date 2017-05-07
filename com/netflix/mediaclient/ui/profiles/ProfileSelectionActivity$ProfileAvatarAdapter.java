@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.profiles;
 
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
@@ -13,7 +14,7 @@ import android.os.Bundle;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.ui.RelaunchActivity;
+import com.netflix.mediaclient.ui.launch.RelaunchActivity;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.view.ViewGroup$MarginLayoutParams;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -30,8 +31,7 @@ import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Iterator;
 import android.widget.ListAdapter;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
-import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.ViewPropertyAnimator;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
@@ -55,7 +55,7 @@ import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.view.ViewGroup;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.widget.BaseAdapter;
 
 class ProfileSelectionActivity$ProfileAvatarAdapter extends BaseAdapter
@@ -89,15 +89,15 @@ class ProfileSelectionActivity$ProfileAvatarAdapter extends BaseAdapter
     public View getView(int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.getLayoutInflater().inflate(2130903174, viewGroup, false);
-            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131165300), inflate.findViewById(2131165631), (TextView)inflate.findViewById(2131165633), inflate.findViewById(2131165632)));
+            inflate = this.this$0.getLayoutInflater().inflate(2130903181, viewGroup, false);
+            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131165300), inflate.findViewById(2131165644), (TextView)inflate.findViewById(2131165646), inflate.findViewById(2131165645)));
         }
         final ProfileSelectionActivity$Holder profileSelectionActivity$Holder = (ProfileSelectionActivity$Holder)inflate.getTag();
         final UserProfile item = this.getItem(n);
         if (n == this.this$0.profiles.size()) {
-            profileSelectionActivity$Holder.img.setImageResource(2130837830);
+            profileSelectionActivity$Holder.img.setImageResource(2130837856);
             profileSelectionActivity$Holder.kidsBadge.setVisibility(8);
-            profileSelectionActivity$Holder.title.setText(2131493295);
+            profileSelectionActivity$Holder.title.setText(2131493303);
             profileSelectionActivity$Holder.topEditImg.setVisibility(8);
             return inflate;
         }

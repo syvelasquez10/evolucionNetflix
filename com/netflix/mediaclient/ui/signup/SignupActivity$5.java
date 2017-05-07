@@ -51,7 +51,7 @@ class SignupActivity$5 implements ManagerStatusListener
     
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-        if (Log.isLoggable("SignupActivity", 6)) {
+        if (Log.isLoggable()) {
             Log.d("SignupActivity", "ServiceManager ready: " + status.getStatusCode());
         }
         ThreadUtils.assertOnMain();

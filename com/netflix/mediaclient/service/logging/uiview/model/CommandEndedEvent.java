@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging.uiview.model;
 
+import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
@@ -19,14 +20,16 @@ public class CommandEndedEvent extends BaseUIViewSessionEndedEvent
     public static final String KEY_NAME = "name";
     public static final String UIVIEW_SESSION_NAME = "command";
     private UIViewLogging$UIViewCommandName mCommandName;
+    private String mUrl;
     
     static {
         DEF_VALUE_CONFIDENCE = 1;
     }
     
-    public CommandEndedEvent(final DeviceUniqueId deviceUniqueId, final long n, final UIViewLogging$UIViewCommandName mCommandName) {
+    public CommandEndedEvent(final DeviceUniqueId deviceUniqueId, final long n, final UIViewLogging$UIViewCommandName mCommandName, final String mUrl) {
         super("command", deviceUniqueId, n);
         this.mCommandName = mCommandName;
+        this.mUrl = mUrl;
     }
     
     @Override
@@ -37,8 +40,14 @@ public class CommandEndedEvent extends BaseUIViewSessionEndedEvent
         }
         if (this.mCommandName != null) {
             data.put("name", (Object)this.mCommandName.name());
-            data.put("inputMethod", (Object)CommandEndedEvent$InputMethod.gesture.name());
-            data.put("inputValue", (Object)CommandEndedEvent$InputValue.touch.name());
+            if (StringUtils.isNotEmpty(this.mUrl)) {
+                data.put("inputMethod", (Object)CommandEndedEvent$InputMethod.url.name());
+                data.put("inputValue", (Object)this.mUrl);
+            }
+            else {
+                data.put("inputMethod", (Object)CommandEndedEvent$InputMethod.gesture.name());
+                data.put("inputValue", (Object)CommandEndedEvent$InputValue.touch.name());
+            }
             data.put("isHotKey", (Object)"false");
             data.put("confidence", (Object)CommandEndedEvent.DEF_VALUE_CONFIDENCE);
         }

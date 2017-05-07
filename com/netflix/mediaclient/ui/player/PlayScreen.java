@@ -26,7 +26,6 @@ import android.view.View;
 import android.animation.Animator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import com.netflix.mediaclient.ui.Screen;
 
 public class PlayScreen implements Screen
 {
@@ -62,7 +61,7 @@ public class PlayScreen implements Screen
         this.listeners = listeners;
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
-        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165562);
+        this.mSurface = (TappableSurfaceView)mController.findViewById(2131165566);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -73,16 +72,16 @@ public class PlayScreen implements Screen
         }
         this.mFlipper = (ViewFlipper)mController.findViewById(2131165370);
         this.mBackground = (RelativeLayout)mController.findViewById(2131165369);
-        this.mBufferingOverlay = mController.findViewById(2131165584);
+        this.mBufferingOverlay = mController.findViewById(2131165588);
         int n;
         if (mController.isTablet()) {
-            n = 2131165581;
+            n = 2131165585;
         }
         else {
-            n = 2131165563;
+            n = 2131165567;
         }
         this.mBif = (ImageView)mController.findViewById(n);
-        this.mTabletBifsLayout = mController.findViewById(2131165580);
+        this.mTabletBifsLayout = mController.findViewById(2131165584);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
     }
@@ -110,7 +109,7 @@ public class PlayScreen implements Screen
     }
     
     private boolean isZoomEnabled() {
-        if (Log.isLoggable("screen", 3)) {
+        if (Log.isLoggable()) {
             Log.d("screen", "mZoomEnabled = " + this.mZoomEnabled + ", surface.canVideoBeZoomed()=" + this.mSurface.canVideoBeZoomed());
         }
         return this.mZoomEnabled && this.mSurface.canVideoBeZoomed();
@@ -182,18 +181,18 @@ public class PlayScreen implements Screen
     static int resolveContentView(final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForPhone) {
             Log.d("screen", "playout_phone_episode");
-            return 2130903159;
+            return 2130903164;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForTablet) {
             Log.d("screen", "playout_tablet_episode");
-            return 2130903163;
+            return 2130903168;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.RecommendationForTablet) {
             Log.d("screen", "playout_tablet_movie");
-            return 2130903164;
+            return 2130903169;
         }
         Log.d("screen", "playout_phone_movie");
-        return 2130903160;
+        return 2130903165;
     }
     
     public boolean canExitPlaybackEndOfPlay() {
@@ -311,7 +310,7 @@ public class PlayScreen implements Screen
     
     boolean inPostPlayOrPendingPostplay() {
         synchronized (this) {
-            if (Log.isLoggable("screen", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("screen", "inPostPlayOrPendingPostplay, state: " + this.mState + ", pending state: " + this.mPendingState);
             }
             return this.mState == PlayerUiState.PostPlay || this.mPendingState == PlayerUiState.PostPlay;
@@ -325,19 +324,19 @@ public class PlayScreen implements Screen
     protected void moveToState(final PlayerUiState playerUiState) {
         while (true) {
             while (true) {
-                Label_0111: {
+                Label_0108: {
                     synchronized (this) {
                         if (this.mState == playerUiState) {
                             Log.d("screen", "moveToState() Already in this state, do nothing: " + playerUiState);
                         }
                         else {
                             if ((this.mPendingState = playerUiState) != PlayerUiState.Loading) {
-                                break Label_0111;
+                                break Label_0108;
                             }
                             this.moveToLoading();
                             this.mState = playerUiState;
                             this.mPendingState = null;
-                            if (Log.isLoggable("screen", 4)) {
+                            if (Log.isLoggable()) {
                                 Log.i("screen", "moveToState() finished moving to state: " + this.mState);
                             }
                         }
@@ -367,7 +366,7 @@ public class PlayScreen implements Screen
     }
     
     void onTap(final boolean b) {
-        if (Log.isLoggable("screen", 3)) {
+        if (Log.isLoggable()) {
             Log.d("screen", "PlayScreen tap received. Event driven: " + b);
         }
         if (!b) {
@@ -460,7 +459,7 @@ public class PlayScreen implements Screen
             Log.w("screen", "bufferingOverlay is NULL!");
             return;
         }
-        if (Log.isLoggable("screen", 3)) {
+        if (Log.isLoggable()) {
             Log.d("screen", "Subtitles ARE visible");
         }
         if (b) {

@@ -16,6 +16,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.event.nrdp.mdx.pair.PairingResponseEvent;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.event.UIEvent;
+import com.netflix.mediaclient.service.mdx.message.controller.PostplayStop;
 import com.netflix.mediaclient.service.mdx.message.controller.PlayerStop;
 import com.netflix.mediaclient.service.mdx.message.controller.PlayerSkip;
 import com.netflix.mediaclient.service.mdx.message.controller.PlayerSetVolume;
@@ -33,6 +34,7 @@ import com.netflix.mediaclient.service.mdx.message.controller.PlayerSetAutoAdvan
 import com.netflix.mediaclient.service.mdx.message.controller.PinConfirmed;
 import com.netflix.mediaclient.service.mdx.message.controller.PinCancelled;
 import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
+import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
 import java.util.concurrent.atomic.AtomicLong;
 import com.netflix.mediaclient.javabridge.ui.mdxcontroller.MdxController;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
@@ -54,6 +56,13 @@ public class TargetManager implements EventListener, CommandInterface
         this.mController = mController;
         this.mEsn = mEsn;
         this.mRecentMessageTime.set(System.currentTimeMillis());
+    }
+    
+    public MdxTargetCapabilities getTargetCapabilities() {
+        if (this.mTarget != null) {
+            return this.mTarget.parseTargetCapabilities();
+        }
+        return null;
     }
     
     public long getTimeOfMostRecentIncomingMessage() {
@@ -204,6 +213,14 @@ public class TargetManager implements EventListener, CommandInterface
         if (this.mTarget != null) {
             final PlayerStop playerStop = new PlayerStop(this.mTarget.getTargetPlaybackSessionToken());
             this.mTarget.sendCommand(playerStop.messageName(), playerStop.messageObject());
+        }
+    }
+    
+    @Override
+    public void playerStopPostplay(final String s) {
+        if (this.mTarget != null) {
+            final PostplayStop postplayStop = new PostplayStop(this.mTarget.getTargetPlaybackSessionToken());
+            this.mTarget.sendCommand(postplayStop.messageName(), postplayStop.messageObject());
         }
     }
     

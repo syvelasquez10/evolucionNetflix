@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 public class TextViewWithPressHandler extends TextView
 {
-    private PressedStateHandler pressedHandler;
+    private AlphaPressedStateHandler pressedHandler;
     
     public TextViewWithPressHandler(final Context context) {
         super(context);
@@ -29,7 +29,7 @@ public class TextViewWithPressHandler extends TextView
     }
     
     private void init() {
-        this.pressedHandler = new PressedStateHandler((View)this);
+        this.pressedHandler = new AlphaPressedStateHandler((View)this);
     }
     
     protected void dispatchSetPressed(final boolean b) {

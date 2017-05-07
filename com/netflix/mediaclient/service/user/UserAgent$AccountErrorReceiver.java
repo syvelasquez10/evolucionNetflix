@@ -5,10 +5,11 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -58,7 +59,7 @@ public final class UserAgent$AccountErrorReceiver extends BroadcastReceiver
     public void onReceive(final Context context, final Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (Log.isLoggable("nf_service_useragent", 3)) {
+            if (Log.isLoggable()) {
                 Log.i("nf_service_useragent", "AccountErrorReceiver inovoked and received Intent with Action " + action);
             }
             if ("com.netflix.mediaclient.intent.action.DELETED_PROFILE".equals(action)) {

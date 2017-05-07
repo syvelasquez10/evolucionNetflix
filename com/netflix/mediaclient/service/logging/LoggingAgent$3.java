@@ -16,6 +16,7 @@ import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import com.netflix.mediaclient.util.IntentUtils;
+import com.netflix.mediaclient.javabridge.ui.LogArguments;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.servicemgr.SocialLogging;
 import com.netflix.mediaclient.servicemgr.ISearchLogging;
@@ -55,7 +56,7 @@ class LoggingAgent$3 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable("nf_log", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_log", "Received intent " + intent);
         }
         this.this$0.mIntegratedClientLoggingManager.handleIntent(intent);

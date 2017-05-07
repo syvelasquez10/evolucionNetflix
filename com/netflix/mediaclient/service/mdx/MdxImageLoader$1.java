@@ -36,7 +36,7 @@ class MdxImageLoader$1 implements ImageLoader$ImageLoaderListener
         else {
             Log.e("nf_mdxImageLoader", "bitmap is not valid " + bitmap);
         }
-        if (Log.isLoggable("nf_mdxImageLoader", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_mdxImageLoader", "downloaded image from " + s);
         }
         this.this$0.mCallback.onBitmapReady(this.this$0.mBitmap);

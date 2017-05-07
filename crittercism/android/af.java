@@ -4,69 +4,131 @@
 
 package crittercism.android;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeoutException;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
-import org.json.JSONObject;
+import org.apache.http.util.CharArrayBuffer;
 
-public final class af
+public abstract class af
 {
-    s a;
-    private boolean b;
+    al a;
+    CharArrayBuffer b;
+    protected int c;
+    private int d;
     
-    public af(final s a) {
-        this.a = null;
-        this.b = false;
-        this.a = a;
+    public af(final af af) {
+        this.a(af.a, af.c);
     }
     
-    public af(final s a, final boolean b) {
-        this.a = null;
-        this.b = false;
-        this.a = a;
-        this.b = b;
+    public af(final al al) {
+        this.a(al, 0);
     }
     
-    final JSONObject a(final int n) {
-        JSONObject jsonObject = new JSONObject();
-        final FutureTask<JSONObject> futureTask = new FutureTask<JSONObject>(new af$1(this));
-        final ExecutorService l = crittercism.android.l.i().l;
-        try {
-            l.execute(futureTask);
-            while (!futureTask.isDone()) {
-                jsonObject = futureTask.get(n, TimeUnit.MILLISECONDS);
+    private void a(final al a, final int c) {
+        this.a = a;
+        this.d = this.e();
+        this.b = new CharArrayBuffer(this.d());
+        this.c = c;
+    }
+    
+    private void g() {
+        this.a.a(as.d);
+    }
+    
+    public final int a() {
+        return this.c;
+    }
+    
+    public final void a(final byte[] array, final int n, final int n2) {
+        int b2;
+        for (int b = this.b(array, n, n2); b > 0 && b < n2; b += b2) {
+            b2 = this.a.a().b(array, n + b, n2 - b);
+            if (b2 <= 0) {
+                break;
             }
-            goto Label_0094;
-        }
-        catch (TimeoutException ex2) {
-            final HashMap<String, Integer> hashMap = new HashMap<String, Integer>();
-            hashMap.put("success", 1);
-            jsonObject = new JSONObject((Map)hashMap);
-        }
-        catch (Exception ex) {
-            new StringBuilder("Exception in sendToNetwork!: ").append(ex.getClass().getName());
-            final HashMap<String, Integer> hashMap2 = new HashMap<String, Integer>();
-            hashMap2.put("success", 0);
-            return new JSONObject((Map)hashMap2);
         }
     }
     
-    public final void a() {
-        final Thread thread = new Thread(new af$a(this));
-        thread.start();
-        if (!this.b) {
-            return;
+    public boolean a(final int n) {
+        if (n == -1) {
+            this.g();
         }
-        try {
-            thread.join();
+        else {
+            ++this.c;
+            final char c = (char)n;
+            af af;
+            if (c == '\n') {
+                if (this.a(this.b)) {
+                    af = this.b();
+                }
+                else {
+                    af = as.d;
+                }
+            }
+            else if (this.b.length() < this.d) {
+                this.b.append(c);
+                af = this;
+            }
+            else {
+                af = this.c();
+            }
+            if (af != this) {
+                this.a.a(af);
+            }
+            if (af == this) {
+                return false;
+            }
         }
-        catch (Exception ex) {
-            new StringBuilder("Exception in NetworkIO$send(): ").append(ex.getClass().getName());
+        return true;
+    }
+    
+    public abstract boolean a(final CharArrayBuffer p0);
+    
+    protected int b(final byte[] array, final int n, final int n2) {
+        boolean a = false;
+        final int n3 = -1;
+        int n4;
+        if (n2 == -1) {
+            this.g();
+            n4 = n3;
         }
-        catch (InterruptedException ex2) {}
+        else {
+            n4 = n3;
+            if (array != null) {
+                n4 = n3;
+                if (n2 != 0) {
+                    int n5 = 0;
+                    while (true) {
+                        n4 = n5;
+                        if (a || (n4 = n5) >= n2) {
+                            break;
+                        }
+                        a = this.a((char)array[n + n5]);
+                        ++n5;
+                    }
+                }
+            }
+        }
+        return n4;
+    }
+    
+    public abstract af b();
+    
+    public final void b(final int c) {
+        this.c = c;
+    }
+    
+    public abstract af c();
+    
+    protected abstract int d();
+    
+    protected abstract int e();
+    
+    public void f() {
+        if (this.a != null) {
+            this.a.a(as.d);
+        }
+    }
+    
+    @Override
+    public final String toString() {
+        return this.b.toString();
     }
 }

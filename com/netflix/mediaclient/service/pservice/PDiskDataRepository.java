@@ -46,11 +46,11 @@ public final class PDiskDataRepository
             pDiskDataRepository$LoadCallback.onDataLoaded(null);
             return;
         }
-        if (Log.isLoggable("nf_preapp_dataRepo", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_preapp_dataRepo", "Found " + array.length + " entries ");
         }
         final String key = array[0].getKey();
-        if (Log.isLoggable("nf_preapp_dataRepo", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_preapp_dataRepo", "Load data for " + key);
         }
         dataRepository.load(key, new PDiskDataRepository$2(pDiskDataRepository$LoadCallback));

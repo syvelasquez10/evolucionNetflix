@@ -37,7 +37,7 @@ class SnappableSeekBar$SnappableSeekBarChangeListener implements SeekBar$OnSeekB
         final int n = AndroidUtils.dipToPixels(this.this$0.getContext(), 24) * this.this$0.getMax() / this.this$0.getWidth();
         final int progress = this.this$0.getProgress();
         final MathUtils$Range mathUtils$Range = new MathUtils$Range(progress - n, n + progress);
-        if (Log.isLoggable("SnappableSeekBar", 2)) {
+        if (Log.isLoggable()) {
             Log.v("SnappableSeekBar", "snap region: " + mathUtils$Range + ", position: " + progress + ", max position: " + this.this$0.getMax());
         }
         return mathUtils$Range;
@@ -56,7 +56,7 @@ class SnappableSeekBar$SnappableSeekBarChangeListener implements SeekBar$OnSeekB
                 constrain = MathUtils.constrain(this.progressSnapRegion.getMidpoint(), 0, seekBar.getMax());
                 seekBar.setProgress(constrain);
                 n = constrain;
-                if (Log.isLoggable("SnappableSeekBar", 2)) {
+                if (Log.isLoggable()) {
                     Log.v("SnappableSeekBar", "Progress is within snap region - snapping to: " + constrain);
                     n = constrain;
                 }

@@ -10,18 +10,19 @@ import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import android.text.TextUtils;
 import android.util.Pair;
+import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
 import java.nio.ByteBuffer;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.javabridge.ui.mdxcontroller.TransactionId;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.IntentFilter;
 import android.annotation.SuppressLint;
 import android.os.PowerManager;
 import android.net.wifi.WifiManager;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.mediaclient.service.mdx.notification.MdxNotificationManagerFactory;
@@ -43,6 +44,7 @@ import android.graphics.Bitmap;
 import com.netflix.mediaclient.media.BifManager;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.service.mdx.notification.MdxNotificationManager$MdxNotificationIntentRetriever;
+import com.netflix.mediaclient.service.mdx.cast.CastAgent;
 import com.netflix.mediaclient.javabridge.ui.mdxcontroller.MdxController$PropertyUpdateListener;
 import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState$MdxPlaybackState;
@@ -54,7 +56,7 @@ import com.netflix.mediaclient.servicemgr.MdxPostplayState;
 import com.netflix.mediaclient.util.StringUtils;
 import android.app.Service;
 import android.app.Notification;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
@@ -97,8 +99,8 @@ class MdxAgent$3 extends BroadcastReceiver
                 this.this$0.mRemoteControlClientManager.setBoxart(this.this$0.mBoxartBitmap);
             }
         }
-        else if (this.this$0.mVolumeController != null) {
-            this.this$0.mVolumeController.startMediaSession();
+        else if (this.this$0.mMediaSessionController != null) {
+            this.this$0.mMediaSessionController.startMediaSession();
         }
         this.this$0.mMdxNotificationManager.startNotification((Notification)this.this$0.getMdxNotification(false).second, this.this$0.getService(), false);
         this.this$0.mMdxNotificationManager.setPlayerStateNotify(false, false);
@@ -129,6 +131,9 @@ class MdxAgent$3 extends BroadcastReceiver
             this.this$0.updateMdxRemoteClient(true);
             this.this$0.mRemoteControlClientManager.setState(false, false, true);
         }
+        else if (this.this$0.mMediaSessionController != null) {
+            this.this$0.mMediaSessionController.updateState(false, true);
+        }
         this.this$0.mMdxNotificationManager.startNotification((Notification)this.this$0.getMdxNotification(true).second, this.this$0.getService(), true);
         this.this$0.mMdxNotificationManager.setUpNextStateNotify(false, false, true);
     }
@@ -141,12 +146,15 @@ class MdxAgent$3 extends BroadcastReceiver
         final boolean booleanExtra = intent.getBooleanExtra("paused", false);
         final boolean booleanExtra2 = intent.getBooleanExtra("transitioning", false);
         final boolean inPostPlay = MdxAgent$Utils.isInPostPlay(intent);
-        if (Log.isLoggable("nf_mdx_agent", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_mdx_agent", "MdxAgent: simplePlaybackState : paused " + booleanExtra + ", transitioning " + booleanExtra2);
         }
         this.this$0.ensureManagers();
         if (AndroidUtils.getAndroidVersion() < 21) {
             this.this$0.mRemoteControlClientManager.setState(booleanExtra, booleanExtra2, inPostPlay);
+        }
+        else if (this.this$0.mMediaSessionController != null) {
+            this.this$0.mMediaSessionController.updateState(booleanExtra, inPostPlay);
         }
         this.this$0.mMdxNotificationManager.setPlayerStateNotify(booleanExtra, booleanExtra2);
     }
@@ -185,8 +193,8 @@ class MdxAgent$3 extends BroadcastReceiver
                             }
                         }
                     }
-                    if (AndroidUtils.getAndroidVersion() >= 21 && this.this$0.mVolumeController != null) {
-                        this.this$0.mVolumeController.updateCurrentVolume(intent.getIntExtra("volume", 0), false);
+                    if (AndroidUtils.getAndroidVersion() >= 21 && this.this$0.mMediaSessionController != null) {
+                        this.this$0.mMediaSessionController.updateCurrentVolume(intent.getIntExtra("volume", 0), false);
                     }
                 }
                 else {

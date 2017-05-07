@@ -22,7 +22,7 @@ import android.view.animation.Interpolator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.content.Context;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -45,7 +45,7 @@ import java.util.HashSet;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import android.view.View;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import android.view.View$OnClickListener;
 
 class RecommendToFriendsFrag$FriendsListAdapter$1 implements View$OnClickListener
@@ -62,11 +62,11 @@ class RecommendToFriendsFrag$FriendsListAdapter$1 implements View$OnClickListene
     
     public void onClick(final View view) {
         if (this.this$1.this$0.mCheckedFriends.contains(this.val$profile)) {
-            this.val$holder.checkMark.setImageResource(2130837833);
+            this.val$holder.checkMark.setImageResource(2130837859);
             this.this$1.this$0.mCheckedFriends.remove(this.val$profile);
         }
         else {
-            this.val$holder.checkMark.setImageResource(2130837834);
+            this.val$holder.checkMark.setImageResource(2130837860);
             this.this$1.this$0.mCheckedFriends.add(this.val$profile);
         }
         this.this$1.this$0.updateTotalSelectedStatus();

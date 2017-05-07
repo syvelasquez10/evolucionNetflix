@@ -4,17 +4,20 @@
 
 package com.netflix.mediaclient.service.pservice;
 
-import java.util.HashMap;
+import android.content.Intent;
 
-class PServiceFetchAgent$1 extends HashMap<PDiskData$ListName, Integer>
+class PServiceFetchAgent$1 extends PDiskDataRepository$LoadCallback
 {
     final /* synthetic */ PServiceFetchAgent this$0;
+    final /* synthetic */ Intent val$intent;
     
-    PServiceFetchAgent$1(final PServiceFetchAgent this$0) {
+    PServiceFetchAgent$1(final PServiceFetchAgent this$0, final Intent val$intent) {
         this.this$0 = this$0;
-        this.put(PDiskData$ListName.BILLBOARD, 1);
-        this.put(PDiskData$ListName.CW, 1);
-        this.put(PDiskData$ListName.IQ, 3);
-        this.put(PDiskData$ListName.STANDARD_FIRST, 3);
+        this.val$intent = val$intent;
+    }
+    
+    @Override
+    public void onDataLoaded(final PDiskData pDiskData) {
+        this.this$0.getMainHandler().post((Runnable)new PServiceFetchAgent$1$1(this, pDiskData));
     }
 }

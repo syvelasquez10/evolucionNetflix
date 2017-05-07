@@ -13,7 +13,7 @@ import com.google.gson.JsonElement;
 import android.os.Parcel;
 import com.google.gson.annotations.SerializedName;
 import android.os.Parcelable$Creator;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 import android.os.Parcelable;
 
 public class SocialNotificationsListSummary implements Parcelable, JsonPopulator

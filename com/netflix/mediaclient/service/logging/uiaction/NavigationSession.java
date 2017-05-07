@@ -22,12 +22,12 @@ public final class NavigationSession extends BaseUIActionSession
     
     public NavigationEndedEvent createEndedEvent(final IClientLogging$ModalView clientLogging$ModalView, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
         if (clientLogging$ModalView == this.mView) {
-            if (Log.isLoggable("nf_log", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_log", "We stayed in same view, do not report " + clientLogging$ModalView);
             }
             return null;
         }
-        if (Log.isLoggable("nf_log", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log", "We started from " + clientLogging$ModalView + " and ended up on " + this.mView);
         }
         final NavigationEndedEvent navigationEndedEvent = new NavigationEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.mAction, clientLogging$CompletionReason, uiError, clientLogging$ModalView, this.mView);

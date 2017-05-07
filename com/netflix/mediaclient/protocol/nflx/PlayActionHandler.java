@@ -4,17 +4,18 @@
 
 package com.netflix.mediaclient.protocol.nflx;
 
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import org.json.JSONObject;
 import com.netflix.mediaclient.util.NflxProtocolUtils$VideoInfo;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import com.netflix.mediaclient.Log;
 import java.util.Map;
@@ -55,7 +56,7 @@ class PlayActionHandler extends BaseNflxHandler
                 this.playVideo(episodeId, VideoType.EPISODE, justUuid, NflxProtocolUtils.getTrackId(this.mParamsMap));
                 return NflxHandler$Response.HANDLING_WITH_DELAY;
             }
-            else if (Log.isLoggable("NflxHandler", 2)) {
+            else if (Log.isLoggable()) {
                 Log.v("NflxHandler", "Can't play video of type: " + videoType);
             }
         }
@@ -64,16 +65,16 @@ class PlayActionHandler extends BaseNflxHandler
     
     @Override
     protected NflxHandler$Response handleEpisodeFromTinyUrl(final String s, final String s2, final String s3) {
-        if (Log.isLoggable("NflxHandler", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NflxHandler", "Play episode for: " + s);
         }
         this.playVideo(String.valueOf(s), VideoType.EPISODE, s2, s3);
-        return NflxHandler$Response.HANDLING;
+        return NflxHandler$Response.HANDLING_WITH_DELAY;
     }
     
     @Override
     protected NflxHandler$Response handleMovieFromTinyUrl(final String s, final String s2, final String s3) {
-        if (Log.isLoggable("NflxHandler", 3)) {
+        if (Log.isLoggable()) {
             Log.d("NflxHandler", "Handling movie from tiny URL. Extracted video id: " + s);
         }
         if (s != null) {
@@ -96,7 +97,7 @@ class PlayActionHandler extends BaseNflxHandler
             PlayerActivity.playVideo(this.mActivity, playable, playContext);
             return;
         }
-        if (Log.isLoggable("NflxHandler", 3)) {
+        if (Log.isLoggable()) {
             Log.d("NflxHandler", "Remote play required on target " + dialUuidAsCurrentTarget);
         }
         final IMdx mdx = this.mActivity.getServiceManager().getMdx();
@@ -116,7 +117,7 @@ class PlayActionHandler extends BaseNflxHandler
     }
     
     protected void playVideo(final String s, final VideoType videoType, final String s2, final String s3) {
-        if (Log.isLoggable("NflxHandler", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NflxHandler", String.format("Playing video: %s, videoType: %s", s, videoType));
         }
         if (VideoType.MOVIE.equals(videoType)) {
@@ -128,7 +129,7 @@ class PlayActionHandler extends BaseNflxHandler
                 return;
             }
             if (VideoType.SHOW.equals(videoType)) {
-                this.mActivity.getServiceManager().getBrowse().fetchShowDetails(s, null, this.mActivity.isKubrick(), new PlayActionHandler$1FetchPlayableCallback(s2));
+                this.mActivity.getServiceManager().getBrowse().fetchShowDetails(s, null, BrowseExperience.shouldLoadKubrickLeaves(), new PlayActionHandler$1FetchPlayableCallback(s2));
             }
         }
     }

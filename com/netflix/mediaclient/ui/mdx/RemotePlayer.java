@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.ui.mdx.events.MdxEventHandler;
 import com.netflix.mediaclient.util.ThreadUtils;
 import android.content.IntentFilter;
@@ -109,7 +109,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     }
     
     private void skip(final int n) {
-        if (Log.isLoggable("mdx_remote_player", 3)) {
+        if (Log.isLoggable()) {
             Log.d("mdx_remote_player", "Skip by " + n);
         }
         final Intent intent = this.createIntent("com.netflix.mediaclient.intent.action.MDX_SKIP");
@@ -177,7 +177,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     }
     
     public Language getLanguage() {
-        if (Log.isLoggable("mdx_remote_player", 2)) {
+        if (Log.isLoggable()) {
             Log.v("mdx_remote_player", "getLanguage: " + this.mCachedLanguage);
         }
         return this.mCachedLanguage;
@@ -226,7 +226,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     
     public void onReceive(final Context context, final Intent intent) {
         ThreadUtils.assertOnMain();
-        if (Log.isLoggable("mdx_remote_player", 2)) {
+        if (Log.isLoggable()) {
             Log.v("mdx_remote_player", "Received intent " + intent);
         }
         final MdxEventHandler handler = this.mMdxEventFactory.getHandler(intent.getAction());
@@ -265,7 +265,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     }
     
     public void seek(final int n) {
-        if (Log.isLoggable("mdx_remote_player", 3)) {
+        if (Log.isLoggable()) {
             Log.d("mdx_remote_player", "Seek to " + n);
         }
         final Intent intent = this.createIntent("com.netflix.mediaclient.intent.action.MDX_SEEK");
@@ -277,7 +277,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     }
     
     public void sendDialogResponse(final String s) {
-        if (Log.isLoggable("mdx_remote_player", 3)) {
+        if (Log.isLoggable()) {
             Log.d("mdx_remote_player", "User selected " + s);
         }
         final Intent intent = this.createIntent("com.netflix.mediaclient.intent.action.MDX_DIALOGRESP");
@@ -305,7 +305,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
                 mVolume = 0;
             }
             this.mVolume = mVolume;
-            if (Log.isLoggable("mdx_remote_player", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("mdx_remote_player", "Set volume to " + this.mVolume);
             }
             final Intent intent = this.createIntent("com.netflix.mediaclient.intent.action.MDX_SETVOLUME");
@@ -357,7 +357,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
     }
     
     public void updateLanguage(final Language mCachedLanguage) {
-        if (Log.isLoggable("mdx_remote_player", 2)) {
+        if (Log.isLoggable()) {
             Log.v("mdx_remote_player", "updateLanguage: " + mCachedLanguage);
         }
         this.mCachedLanguage = mCachedLanguage;
@@ -415,7 +415,7 @@ public class RemotePlayer extends BroadcastReceiver implements RemotePlaybackLis
                 Log.d("mdx_remote_player", "Stalled...");
             }
             else {
-                if (Log.isLoggable("mdx_remote_player", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("mdx_remote_player", "Not supported state " + mState + ". Do nothing.");
                 }
                 return;

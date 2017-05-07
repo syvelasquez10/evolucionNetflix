@@ -49,7 +49,7 @@ public abstract class BaseEsnProvider implements EsnProvider
     }
     
     public static String findBaseModelId() {
-        if (Log.isLoggable("ESN", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ESN", "Display " + Build.DISPLAY);
             Log.d("ESN", "ID " + Build.ID);
             Log.d("ESN", "MANUFACTURER " + Build.MANUFACTURER);
@@ -67,19 +67,19 @@ public abstract class BaseEsnProvider implements EsnProvider
             Log.d("ESN", "TAGS " + Build.TAGS);
         }
         final String model = Build.MODEL;
-        if (Log.isLoggable("ESN", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ESN", "Model: " + model);
         }
         String substring = model;
         if (model.length() > 45) {
             final String s = substring = model.substring(0, 45);
-            if (Log.isLoggable("ESN", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("ESN", "Model was bigger than: 45. Using first 45 characters: " + s);
                 substring = s;
             }
         }
         final String string = getManufactorer() + StringUtils.replaceWhiteSpace(substring, BaseEsnProvider.DELIM) + "S";
-        if (Log.isLoggable("ESN", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ESN", "Model ID: " + string);
         }
         return string;
@@ -143,7 +143,7 @@ public abstract class BaseEsnProvider implements EsnProvider
     
     protected static String getAndroidId(final Context context) {
         final String string = Settings$Secure.getString(context.getContentResolver(), "android_id");
-        if (Log.isLoggable("ESN", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ESN", "Android ID is " + string);
         }
         return string;
@@ -156,12 +156,12 @@ public abstract class BaseEsnProvider implements EsnProvider
             }
             else {
                 hashedDeviceId = (Context)findFutureDeviceId(hashedDeviceId);
-                if (Log.isLoggable("ESN", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("ESN", "===> Future Device ID: " + (String)hashedDeviceId);
                 }
                 try {
                     BaseEsnProvider.hashedDeviceId = CryptoUtils.hashSHA256((String)hashedDeviceId, SecurityRepository.getDeviceIdToken());
-                    if (Log.isLoggable("ESN", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("ESN", "===> Hashed Device ID: " + BaseEsnProvider.hashedDeviceId);
                     }
                     hashedDeviceId = (Context)validateChars(BaseEsnProvider.hashedDeviceId);
@@ -184,7 +184,7 @@ public abstract class BaseEsnProvider implements EsnProvider
         }
         else {
             final String s = deviceId = telephonyManager.getDeviceId();
-            if (Log.isLoggable("ESN", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("ESN", "IMEA is " + s);
                 return s;
             }
@@ -206,20 +206,20 @@ public abstract class BaseEsnProvider implements EsnProvider
         }
         else if (macAddress == null) {
             string = serial;
-            if (Log.isLoggable("ESN", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("ESN", "MAC address is NULL, but SERIAL exist: " + serial);
                 return serial;
             }
         }
         else {
             if (serial == null) {
-                if (Log.isLoggable("ESN", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("ESN", "SERIAL is NULL, but MAC address exist: " + macAddress);
                 }
                 return macAddress;
             }
             final String s = string = macAddress + serial;
-            if (Log.isLoggable("ESN", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("ESN", "SERIAL and MAC address both exist, return : " + s);
                 return s;
             }
@@ -229,22 +229,22 @@ public abstract class BaseEsnProvider implements EsnProvider
     
     protected static String getManufactorer() {
         final String manufacturer = Build.MANUFACTURER;
-        if (Log.isLoggable("ESN", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ESN", "manufacturer: " + manufacturer + "'");
         }
         String string = manufacturer;
         if (manufacturer.length() < 5) {
             string = manufacturer + "       ";
         }
-        if (Log.isLoggable("ESN", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ESN", "manufacturer: " + string + "'");
         }
         final String substring = string.substring(0, 5);
-        if (Log.isLoggable("ESN", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ESN", "manufacturer: " + substring + "'");
         }
         final String replaceWhiteSpace = StringUtils.replaceWhiteSpace(substring, BaseEsnProvider.DELIM, false);
-        if (Log.isLoggable("ESN", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ESN", "manufacturer: " + replaceWhiteSpace + "'");
         }
         return replaceWhiteSpace;
@@ -276,7 +276,7 @@ public abstract class BaseEsnProvider implements EsnProvider
                 ((StringBuilder)deviceId).append(this.modelId).append(BaseEsnProvider.ESN_DELIM).append(validateChars);
                 this.esn = ((StringBuilder)deviceId).toString();
                 this.nrdpDeviceModel = findDeviceModel();
-                if (Log.isLoggable("ESN", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("ESN", "NRDP device model: '" + this.nrdpDeviceModel + "'");
                 }
                 if (this.esn != null && this.esn.equals(this.fesn)) {
@@ -299,7 +299,7 @@ public abstract class BaseEsnProvider implements EsnProvider
         sb.append(BaseEsnProvider.ESN_PREFIX);
         sb.append(this.fesnModelId).append(BaseEsnProvider.ESN_DELIM).append(BaseEsnProvider.hashedDeviceId);
         this.fesn = sb.toString();
-        if (Log.isLoggable("ESN", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ESN", "===> Future ESN: " + this.fesn);
         }
     }

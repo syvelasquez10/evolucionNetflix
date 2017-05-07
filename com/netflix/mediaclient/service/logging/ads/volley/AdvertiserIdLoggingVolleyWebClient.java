@@ -26,7 +26,7 @@ public final class AdvertiserIdLoggingVolleyWebClient implements AdvertiserIdLog
     
     @Override
     public void sendLoggingEvent(final String s, final AdvertiserIdLoggingCallback advertiserIdLoggingCallback) {
-        if (Log.isLoggable("nf_log", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log", "send Advertising ID event send starts: " + s);
         }
         this.mWebClient.sendLoggingRequest(new AdvertiserIdLoggingVolleyWebClientRequest(s, advertiserIdLoggingCallback));

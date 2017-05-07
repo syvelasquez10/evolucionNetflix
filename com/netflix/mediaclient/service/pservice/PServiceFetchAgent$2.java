@@ -4,20 +4,18 @@
 
 package com.netflix.mediaclient.service.pservice;
 
-import android.content.Intent;
-
-class PServiceFetchAgent$2 extends PDiskDataRepository$LoadCallback
+class PServiceFetchAgent$2 implements Runnable
 {
     final /* synthetic */ PServiceFetchAgent this$0;
-    final /* synthetic */ Intent val$intent;
+    final /* synthetic */ PDiskDataRepository$LoadCallback val$loadCallback;
     
-    PServiceFetchAgent$2(final PServiceFetchAgent this$0, final Intent val$intent) {
+    PServiceFetchAgent$2(final PServiceFetchAgent this$0, final PDiskDataRepository$LoadCallback val$loadCallback) {
         this.this$0 = this$0;
-        this.val$intent = val$intent;
+        this.val$loadCallback = val$loadCallback;
     }
     
     @Override
-    public void onDataLoaded(final PDiskData pDiskData) {
-        this.this$0.getMainHandler().post((Runnable)new PServiceFetchAgent$2$1(this, pDiskData));
+    public void run() {
+        PDiskDataRepository.startLoadFromDisk(this.this$0.getContext(), this.val$loadCallback);
     }
 }

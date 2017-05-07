@@ -4,19 +4,18 @@
 
 package com.netflix.mediaclient.ui.home;
 
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.app.Activity;
 import com.netflix.mediaclient.ui.kids.KidsUtils$OnSwitchToKidsClickListener;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
-import android.view.ViewStub;
-import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.util.ViewUtils;
@@ -36,7 +35,7 @@ import android.annotation.SuppressLint;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 

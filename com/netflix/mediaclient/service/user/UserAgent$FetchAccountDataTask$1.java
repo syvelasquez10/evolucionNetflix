@@ -5,10 +5,11 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -30,7 +31,6 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.NetflixService;
-import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.javabridge.ui.Registration;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
@@ -63,7 +63,7 @@ class UserAgent$FetchAccountDataTask$1 extends SimpleUserAgentWebCallback
             this.this$1.this$0.mUser = accountData.getUser();
             this.this$1.this$0.mSubtitleDefaults = TextStyle.buildSubtitleSettings(this.this$1.this$0.mUser.getSubtitleDefaults());
             for (final UserProfile userProfile : this.this$1.this$0.mListOfUserProfiles) {
-                if (Log.isLoggable("nf_service_useragent", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_service_useragent", String.format("fetchAccountData profileName %s profileId %s socialStatus %s", userProfile.getFirstName(), userProfile.getProfileGuid(), userProfile.isSocialConnected()));
                 }
             }
@@ -74,7 +74,7 @@ class UserAgent$FetchAccountDataTask$1 extends SimpleUserAgentWebCallback
             this.this$1.this$0.persistUser(this.this$1.this$0.mUser);
         }
         else {
-            if (Log.isLoggable("nf_service_useragent", 6)) {
+            if (Log.isLoggable()) {
                 Log.e("nf_service_useragent", "fetchAccountData failed (skipping user info update) with statusCode=" + status.getStatusCode());
             }
             if (this.this$1.this$0.mUserAgentStateManager != null) {

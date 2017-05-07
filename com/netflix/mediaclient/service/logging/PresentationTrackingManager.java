@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.logging;
 
 import com.netflix.mediaclient.servicemgr.UiLocation;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebClientFactory;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebCallback;
 import com.netflix.mediaclient.service.logging.presentation.PresentationRequest;
@@ -48,7 +48,7 @@ class PresentationTrackingManager implements PresentationTracking
         if (array == null || array.length < 1) {
             Log.d("nf_presentation", "No saved events found");
         }
-        if (Log.isLoggable("nf_presentation", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_presentation", "Found " + array.length + " payloads waiting");
         }
         for (int length = array.length, i = 0; i < length; ++i) {
@@ -74,7 +74,7 @@ class PresentationTrackingManager implements PresentationTracking
     }
     
     private void loadAndSendEvent(final String s) {
-        if (Log.isLoggable("nf_presentation", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_presentation", "Load event " + s);
         }
         this.mDataRepository.load(s, new PresentationTrackingManager$4(this, s));
@@ -101,14 +101,14 @@ class PresentationTrackingManager implements PresentationTracking
     }
     
     private void sendPresentationEvents(final List<PresentationEvent> list, final boolean b) {
-        if (Log.isLoggable("nf_presentation", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_presentation", "Send events " + list.size());
         }
         final PresentationRequest presentationRequest = new PresentationRequest(this.mContext, this.mOwner.getConfigurationAgent(), this.mUser);
         presentationRequest.addAllEvent(list);
         try {
             final String string = presentationRequest.toJSONObject().toString();
-            if (Log.isLoggable("nf_presentation", 2)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_presentation", "Payload for presentation request " + string);
             }
             if (b) {

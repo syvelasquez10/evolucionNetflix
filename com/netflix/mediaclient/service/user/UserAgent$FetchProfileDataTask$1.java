@@ -5,10 +5,11 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -30,7 +31,6 @@ import org.json.JSONTokener;
 import org.json.JSONArray;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.NetflixService;
-import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.javabridge.ui.Registration;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
@@ -70,7 +70,7 @@ class UserAgent$FetchProfileDataTask$1 extends SimpleUserAgentWebCallback
             this.this$1.this$0.mSubtitleSettings = TextStyle.buildSubtitleSettings(userProfile.getSubtitlePreference());
             this.this$1.this$0.mCurrentUserProfile = userProfile;
         }
-        else if (Log.isLoggable("nf_service_useragent", 6)) {
+        else if (Log.isLoggable()) {
             Log.e("nf_service_useragent", "Ignore onProfileDataFetched failed (skipping userProfile update) with statusCode=" + status.getStatusCode());
         }
     }

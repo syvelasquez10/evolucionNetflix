@@ -5,15 +5,15 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.android.widget.ObjectRecycler;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.model.CWVideo;
+import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 
 public class PaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
 {

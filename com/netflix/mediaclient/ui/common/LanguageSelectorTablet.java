@@ -28,7 +28,7 @@ final class LanguageSelectorTablet extends LanguageSelector
         else {
             n4 = Math.max(language.getAltAudios().length, language.getSubtitles().length + 1) * n3;
         }
-        if (Log.isLoggable("nf_language_selector", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_language_selector", "Max height " + n2 + " px, item height " + n3 + " px, proposed list height " + n4 + " px, item divider height" + " px");
         }
         if (n4 > n && (n = n4) >= n2) {
@@ -40,6 +40,6 @@ final class LanguageSelectorTablet extends LanguageSelector
     @Override
     protected int getDialogLayoutId() {
         Log.d("nf_language_selector", "R.layout.language_selector_tablet_dialog");
-        return 2130903129;
+        return 2130903133;
     }
 }

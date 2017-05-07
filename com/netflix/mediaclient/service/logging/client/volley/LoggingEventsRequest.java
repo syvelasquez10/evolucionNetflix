@@ -42,7 +42,7 @@ public class LoggingEventsRequest extends ClientLoggingVolleyWebClientRequest<St
     
     @Override
     protected String parseResponse(final String s) {
-        if (Log.isLoggable("nf_log", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_log", "String response to parse = " + s);
         }
         return "OK";

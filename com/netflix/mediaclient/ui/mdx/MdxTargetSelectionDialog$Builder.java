@@ -31,21 +31,22 @@ public class MdxTargetSelectionDialog$Builder extends AlertDialog$Builder
         super((Context)activity);
         this.activity = activity;
         final LayoutInflater layoutInflater = activity.getLayoutInflater();
-        this.content = layoutInflater.inflate(2130903151, (ViewGroup)null);
-        this.title = (TextView)this.content.findViewById(2131165540);
-        this.listView = (ListView)this.content.findViewById(2131165541);
+        this.content = layoutInflater.inflate(2130903156, (ViewGroup)null);
+        this.title = (TextView)this.content.findViewById(2131165499);
+        this.listView = (ListView)this.content.findViewById(2131165547);
         this.adapterWrapper = new MdxTargetSelectionDialog$TargetsAdapter(layoutInflater);
         this.listView.setAdapter((ListAdapter)this.adapterWrapper);
         this.setCancelable(true);
     }
     
     public AlertDialog create() {
-        final AlertDialog create = new AlertDialog$Builder((Context)this.activity).setView(this.content).create();
-        create.setCanceledOnTouchOutside(true);
+        final MdxTargetSelectionDialog mdxTargetSelectionDialog = new MdxTargetSelectionDialog((Context)this.activity, null);
+        mdxTargetSelectionDialog.setView(this.content);
+        mdxTargetSelectionDialog.setCanceledOnTouchOutside(true);
         if (this.onCancelListener != null) {
-            create.setOnCancelListener(this.onCancelListener);
+            mdxTargetSelectionDialog.setOnCancelListener(this.onCancelListener);
         }
-        return create;
+        return mdxTargetSelectionDialog;
     }
     
     public void setAdapterData(final List<String> data) {

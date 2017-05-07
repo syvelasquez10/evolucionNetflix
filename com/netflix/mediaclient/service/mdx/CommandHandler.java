@@ -135,6 +135,10 @@ public final class CommandHandler
                         this.mTarget.pinCancelled(stringExtra);
                         return;
                     }
+                    if (action.equals("com.netflix.mediaclient.intent.action.MDX_STOPPOSTPALY")) {
+                        this.mTarget.playerStopPostplay(stringExtra);
+                        return;
+                    }
                     Log.e("nf_mdx", "handleCommandIntent: " + action + ", unknown command");
                 }
             }

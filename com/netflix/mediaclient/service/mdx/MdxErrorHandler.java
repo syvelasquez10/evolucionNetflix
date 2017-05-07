@@ -6,6 +6,8 @@ package com.netflix.mediaclient.service.mdx;
 
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
+import com.netflix.mediaclient.javabridge.ui.LogArguments;
+import com.netflix.mediaclient.javabridge.ui.LogArguments$LogLevel;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import android.app.AlertDialog$Builder;
@@ -14,6 +16,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class MdxErrorHandler
 {
+    private static final String TYPE_MDX = "mdx";
     private static final String kbHelpUrl_16001 = "https://help.netflix.com/en/node/12407";
     private static final String kbHelpUrl_16003 = "https://help.netflix.com/en/node/13590";
     private final NetflixActivity activity;
@@ -31,13 +34,13 @@ public class MdxErrorHandler
     private AlertDialog$Builder getDialogBuilder(final int n, final String s) {
         switch (n) {
             default: {
-                return new AlertDialog$Builder((Context)this.activity, 2131558696).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131492988, (DialogInterface$OnClickListener)null);
+                return new AlertDialog$Builder((Context)this.activity, 2131558712).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131492994, (DialogInterface$OnClickListener)null);
             }
             case 100: {
-                return new AlertDialog$Builder((Context)this.activity, 2131558696).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131492988, (DialogInterface$OnClickListener)null).setNegativeButton(2131493332, this.kblaunch_16001);
+                return new AlertDialog$Builder((Context)this.activity, 2131558712).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131492994, (DialogInterface$OnClickListener)null).setNegativeButton(2131493340, this.kblaunch_16001);
             }
             case 105: {
-                return new AlertDialog$Builder((Context)this.activity, 2131558696).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131492988, (DialogInterface$OnClickListener)null).setNegativeButton(2131493332, this.kblaunch_16003);
+                return new AlertDialog$Builder((Context)this.activity, 2131558712).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131492994, (DialogInterface$OnClickListener)null).setNegativeButton(2131493340, this.kblaunch_16003);
             }
         }
     }
@@ -45,7 +48,7 @@ public class MdxErrorHandler
     private String getErrorMessage(final int n, final String s) {
         switch (n) {
             default: {
-                if (Log.isLoggable(this.tag, 5)) {
+                if (Log.isLoggable()) {
                     Log.w(this.tag, "We do not have official error message for error code " + n);
                     return s;
                 }
@@ -55,28 +58,65 @@ public class MdxErrorHandler
                 return s;
             }
             case 100: {
-                return this.activity.getString(2131493212);
+                return this.activity.getString(2131493220);
             }
             case 104: {
-                return this.activity.getString(2131493213);
+                return this.activity.getString(2131493221);
             }
             case 105: {
-                return this.activity.getString(2131493214);
+                return this.activity.getString(2131493222);
             }
             case 200: {
-                return this.activity.getString(2131493215);
+                return this.activity.getString(2131493223);
             }
             case 106: {
-                return String.format(this.activity.getString(2131493217), s);
+                return String.format(this.activity.getString(2131493225), s);
             }
             case 201: {
-                return this.activity.getString(2131493216);
+                return this.activity.getString(2131493224);
             }
         }
     }
     
     private void handleError(final int n, final String s) {
         this.activity.displayDialog(this.getDialogBuilder(n, s));
+        this.reportErrorAsLogblob(n);
+    }
+    
+    private void reportErrorAsLogblob(final int n) {
+        while (true) {
+            String s = null;
+            switch (n) {
+                default: {
+                    return;
+                }
+                case 100: {
+                    s = "16001";
+                    break;
+                }
+                case 104: {
+                    s = "16002";
+                    break;
+                }
+                case 105: {
+                    s = "16003";
+                    break;
+                }
+                case 106: {
+                    s = "16004";
+                    break;
+                }
+            }
+            try {
+                this.activity.getServiceManager().getClientLogging().NrdpLog(new LogArguments(LogArguments$LogLevel.ERROR.getLevelInString(), s, "mdx", null));
+                return;
+            }
+            catch (Exception ex) {
+                Log.e(this.tag, "Unable to log error" + ex);
+                return;
+            }
+            continue;
+        }
     }
     
     private void sendToast(final int n, final String s) {
@@ -87,7 +127,7 @@ public class MdxErrorHandler
     }
     
     public void handleMdxError(final int n, final String s) {
-        if (Log.isLoggable(this.tag, 3)) {
+        if (Log.isLoggable()) {
             Log.d(this.tag, "Error received. Code: " + n + ", message: " + s);
         }
         if (this.activity.destroyed()) {

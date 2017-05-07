@@ -27,14 +27,14 @@ public final class PartnerReceiver extends BroadcastReceiver
     private void handleUsertatus(final Context context, final Intent intent) {
         Log.d("nf_receiver", "Received user status request");
         final boolean booleanPref = PreferenceUtils.getBooleanPref(context, "nf_user_status_loggedin", false);
-        if (Log.isLoggable("nf_receiver", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_receiver", "User is logged in: " + booleanPref);
         }
         broadcastUserStatus(context, booleanPref);
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable("nf_receiver", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_receiver", "Received an action: " + intent.getAction());
         }
         if ("com.netflix.mediaclient.intent.action.USER_STATUS".equals(intent.getAction())) {

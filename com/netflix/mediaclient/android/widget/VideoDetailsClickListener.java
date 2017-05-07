@@ -9,8 +9,8 @@ import android.widget.Toast;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.ui.social.FacebookLoginActivity;
 import android.app.Activity;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
@@ -41,7 +41,7 @@ public class VideoDetailsClickListener implements View$OnClickListener, View$OnL
             FacebookLoginActivity.show((Activity)view.getContext());
             return;
         }
-        DetailsActivityLauncher.show(this.activity, video, this.playContextProvider.getPlayContext());
+        DetailsActivityLauncher.show(this.activity, video, this.playContextProvider.getPlayContext(), "DeetsClickListener");
     }
     
     public boolean onLongClick(final View view) {
@@ -61,7 +61,7 @@ public class VideoDetailsClickListener implements View$OnClickListener, View$OnL
     }
     
     public void update(final View view, final Video video) {
-        if (Log.isLoggable("VideoDetailsClickListener", 2)) {
+        if (Log.isLoggable()) {
             Log.v("VideoDetailsClickListener", "Adding click listeners for: " + video.getTitle() + ", trackId: " + this.playContextProvider.getPlayContext().getTrackId());
         }
         view.setOnClickListener((View$OnClickListener)this);

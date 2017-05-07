@@ -9,7 +9,7 @@ import android.util.DisplayMetrics;
 import android.hardware.display.DisplayManager;
 import com.netflix.mediaclient.media.VideoResolutionRange;
 import org.json.JSONObject;
-import com.netflix.mediaclient.net.IpConnectivityPolicy;
+import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
@@ -22,6 +22,7 @@ import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import com.netflix.mediaclient.nccp.NccpKeyStore;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.ui.experience.PersistentExperience;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -54,7 +55,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     private static final int DATA_REQUEST_TIMEOUT_MS = 10000;
     public static final int DEFAULT_IMAGE_CACHE_SIZE_BYTES;
     private static final float DISK_CACHE_SIZE_AS_PERCENTAGE_OF_AVLBLMEM = 0.25f;
-    private static final KidsOnPhoneConfiguration DUMMY_KIDS_CONFIG;
     private static final KubrickConfiguration DUMMY_KUBRICK_CONFIG;
     private static final int HIGH_MEM_THREAD_COUNT = 4;
     private static final float IMAGE_CACHE_SIZE_AS_PERCENTAGE_OF_MAX_HEAP = 0.5f;
@@ -68,7 +68,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     public static final long MINIMUM_IMAGE_CACHE_TTL = 1209600000L;
     private static final int MIN_DISK_CACHE_SIZE_IN_BYTES = 5242880;
     private static final int MIN_VIDEO_BUFFERSIZE = 4194304;
-    private static final boolean OVERRIDE_SERVER_CONFIG_FOR_KIDS_ON_PHONE = false;
     private static final boolean OVERRIDE_SERVER_CONFIG_FOR_KUBRICK = false;
     public static final int RESOURCE_REQUEST_TIMEOUT_MS = 1000;
     private static final String TAG = "nf_configurationagent";
@@ -97,7 +96,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         DEFAULT_IMAGE_CACHE_SIZE_BYTES = (int)(Runtime.getRuntime().maxMemory() * 0.5f);
         sMemLevel = computeMemLevel();
         DUMMY_KUBRICK_CONFIG = new ConfigurationAgent$6();
-        DUMMY_KIDS_CONFIG = new ConfigurationAgent$7();
     }
     
     public ConfigurationAgent() {
@@ -139,7 +137,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
                 s2 = "low";
             }
         }
-        if (Log.isLoggable("nf_configurationagent", 4)) {
+        if (Log.isLoggable()) {
             Log.i("nf_configurationagent", String.format("maxMemoryAllocated: %d, memLevel: %s", maxMemory, s2));
         }
         return s2;
@@ -161,11 +159,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         Log.d("nf_configurationagent", "Need to fetchdeviceConfig synchronously ");
         ConfigData configString;
         try {
-            if (Log.isLoggable("nf_configurationagent", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_configurationagent", String.format("configurationUrl %s", s));
             }
             s = StringUtils.getRemoteDataAsString(s);
-            if (Log.isLoggable("nf_configurationagent", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_configurationagent", String.format("Device config data=%s", s));
             }
             configString = FetchConfigDataRequest.parseConfigString(s);
@@ -199,7 +197,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     private void launchTask(final ConfigurationAgent$FetchTask configurationAgent$FetchTask) {
-        if (Log.isLoggable("nf_configurationagent", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_configurationagent", "Launching task: " + configurationAgent$FetchTask.getClass().getSimpleName());
         }
         if (this.mConfigurationWebClient.isSynchronous()) {
@@ -223,17 +221,17 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     private void persistConfigOverride(final ConfigData configData) {
-        if (Log.isLoggable("nf_configurationagent", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_configurationagent", String.format("persistConfigOverride configData %s", configData.toString()));
         }
         this.mDeviceConfigOverride.persistDeviceConfigOverride(configData.getDeviceConfig());
         this.mStreamingConfigOverride.persistStreamingOverride(configData.getStreamingConfig());
         this.mAccountConfigOverride.persistAccountConfigOverride(configData.getAccountConfig());
+        PersistentExperience.update(this.getContext(), this);
     }
     
     private void prepareConfigWebClient() {
         this.mEndpointRegistry.setUserAgentInterface(this.getUserAgent());
-        this.mEndpointRegistry.setConfigurationAgentInterface(this.getConfigurationAgent());
         if (this.mConfigurationWebClient == null) {
             this.mConfigurationWebClient = ConfigurationWebClientFactory.create(this.getService(), this.getResourceFetcher().getApiNextWebClient());
         }
@@ -292,16 +290,16 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             this.mDiskCacheSizeBytes = (int)Math.min(availableInternalMemory * 0.25f, 2.62144E7f);
             this.mDiskCacheSizeBytes = Math.max(this.mDiskCacheSizeBytes, 5242880);
             PreferenceUtils.putIntPref(this.getContext(), "disk_cache_size", this.mDiskCacheSizeBytes);
-            if (Log.isLoggable("nf_configurationagent", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_configurationagent", "Available disk space in bytes = " + availableInternalMemory + " Saving disk Cache Size = " + this.mDiskCacheSizeBytes);
             }
         }
         this.mAppVersionCode = AndroidManifestUtils.getVersionCode(this.getContext());
-        if (Log.isLoggable("nf_configurationagent", 4)) {
+        if (Log.isLoggable()) {
             Log.i("nf_configurationagent", "Current app version code = " + this.mAppVersionCode);
         }
         this.mSoftwareVersion = AndroidManifestUtils.getVersion(this.getContext());
-        if (Log.isLoggable("nf_configurationagent", 4)) {
+        if (Log.isLoggable()) {
             Log.i("nf_configurationagent", "Current softwareVersion = " + this.mSoftwareVersion);
         }
         final DeviceModel deviceModel = new DeviceModel(this.mAppVersionCode, this.getContext());
@@ -326,6 +324,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public boolean enableHTTPSAuth() {
         return this.mAccountConfigOverride.enableHTTPSAuth();
+    }
+    
+    @Override
+    public boolean enableLowBitrateStreams() {
+        return this.mAccountConfigOverride.enableLowBitrateStreams();
     }
     
     @Override
@@ -384,7 +387,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     public DeviceCategory getDeviceCategory() {
         final DeviceCategory category = this.mDeviceConfigOverride.getCategory();
         if (category != null) {
-            if (Log.isLoggable("nf_configurationagent", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_configurationagent", "Device category is overriden by configuration server: " + category);
             }
             return category;
@@ -433,11 +436,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public JSONObject getJPlayerConfig() {
         return this.mAccountConfigOverride.getJPlayerConfig();
-    }
-    
-    @Override
-    public KidsOnPhoneConfiguration getKidsOnPhoneConfiguration() {
-        return this.mAccountConfigOverride.getKidsOnPhoneConfiguration();
     }
     
     @Override
@@ -494,11 +492,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
-    public int getSearchTest() {
-        return this.mAccountConfigOverride.getSearchTest();
-    }
-    
-    @Override
     public int getShareSheetExperience() {
         return this.mAccountConfigOverride.getShareSheetExperience();
     }
@@ -527,7 +520,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         final int videoBufferSize = this.mAccountConfigOverride.getVideoBufferSize();
         int n;
         if (videoBufferSize < 4194304 || (n = videoBufferSize) > 33554432) {
-            if (Log.isLoggable("nf_configurationagent", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_configurationagent", "Invalid VideoBufferSize " + videoBufferSize);
             }
             n = 0;
@@ -543,7 +536,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             maxResolutionConfigured = maxResolutionConfigured;
             if (!PlayerTypeFactory.isJPlayer2(this.getCurrentPlayerType())) {
                 final int n = maxResolutionConfigured = 384;
-                if (Log.isLoggable("nf_configurationagent", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_configurationagent", "apply phone restriction, max height " + 384);
                     maxResolutionConfigured = n;
                 }
@@ -553,7 +546,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             final Display[] displays = ((DisplayManager)this.getContext().getSystemService("display")).getDisplays();
             for (int length = displays.length, i = 0; i < length; ++i) {
                 final Display display = displays[i];
-                if (Log.isLoggable("nf_configurationagent", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_configurationagent", "getMaxResolutionRestriction " + display.toString());
                 }
                 if (display.isValid() && display.getDisplayId() == 0) {
@@ -564,8 +557,8 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
                 }
             }
         }
-        Label_0207: {
-            break Label_0207;
+        Label_0201: {
+            break Label_0201;
         }
         final int heightPixels = Integer.MAX_VALUE;
         return VideoResolutionRange.getVideoResolutionRangeFromMaxHieght(Math.min(maxResolutionConfigured, heightPixels));
@@ -573,7 +566,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     
     public boolean isAppVersionObsolete() {
         final int appMinimalVersion = this.mDeviceConfigOverride.getAppMinimalVersion();
-        if (Log.isLoggable("nf_configurationagent", 3)) {
+        if (Log.isLoggable()) {
             Log.i("nf_configurationagent", "minimalVersion = " + appMinimalVersion + " appVersionCode = " + this.mAppVersionCode + " so isAppVersionObsolete = " + (this.mAppVersionCode < appMinimalVersion));
         }
         return this.mAppVersionCode < appMinimalVersion;
@@ -581,7 +574,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     
     public boolean isAppVersionRecommended() {
         final int appRecommendedVersion = this.mDeviceConfigOverride.getAppRecommendedVersion();
-        if (Log.isLoggable("nf_configurationagent", 3)) {
+        if (Log.isLoggable()) {
             Log.i("nf_configurationagent", "recommendedVersion = " + appRecommendedVersion + " appVersionCode = " + this.mAppVersionCode + " so isAppVersionRecommended = " + (this.mAppVersionCode >= appRecommendedVersion));
         }
         return this.mAppVersionCode >= appRecommendedVersion;
@@ -645,10 +638,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             }
             // monitorexit(this)
         }
-    }
-    
-    public boolean shouldUseLegacyBrowseVolleyClient() {
-        return this.mAccountConfigOverride.shouldUseLegacyBrowseVolleyClient();
     }
     
     @Override

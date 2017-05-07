@@ -4,15 +4,53 @@
 
 package crittercism.android;
 
-public final class as
+import org.apache.http.util.CharArrayBuffer;
+
+public final class as extends af
 {
-    public String a;
+    public static final as d;
     
-    public as() {
-        this("anonymous");
+    static {
+        d = new as();
     }
     
-    public as(final String a) {
-        this.a = a;
+    private as() {
+        super((al)null);
+    }
+    
+    @Override
+    public final boolean a(final int n) {
+        ++this.c;
+        return false;
+    }
+    
+    @Override
+    public final boolean a(final CharArrayBuffer charArrayBuffer) {
+        return true;
+    }
+    
+    public final int b(final byte[] array, final int n, final int n2) {
+        this.c += n2;
+        return -1;
+    }
+    
+    @Override
+    public final af b() {
+        return this;
+    }
+    
+    @Override
+    public final af c() {
+        return this;
+    }
+    
+    @Override
+    protected final int d() {
+        return 0;
+    }
+    
+    @Override
+    protected final int e() {
+        return 0;
     }
 }

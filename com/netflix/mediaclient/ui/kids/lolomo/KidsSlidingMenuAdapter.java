@@ -4,12 +4,11 @@
 
 package com.netflix.mediaclient.ui.kids.lolomo;
 
-import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.view.View$OnClickListener;
 import android.view.ViewStub;
 import android.widget.TextView;
-import com.netflix.mediaclient.ui.kubrick_kids.KubrickKidsUtils;
-import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.home.SlidingMenuAdapter$Holder;
@@ -28,12 +27,12 @@ public class KidsSlidingMenuAdapter extends SlidingMenuAdapter
     
     public KidsSlidingMenuAdapter(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
         super(netflixActivity, drawerLayout);
-        this.itemTextColor = netflixActivity.getResources().getColor(2131296400);
-        this.selectedTextColor = netflixActivity.getResources().getColor(2131296401);
+        this.itemTextColor = netflixActivity.getResources().getColor(2131296402);
+        this.selectedTextColor = netflixActivity.getResources().getColor(2131296403);
         this.home.setTextColor(this.itemTextColor);
         ViewUtils.clearShadow(this.home);
-        this.home.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131361985)));
-        this.content.setBackgroundResource(2131296399);
+        this.home.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131361984)));
+        this.content.setBackgroundResource(2131296401);
     }
     
     @Override
@@ -46,14 +45,14 @@ public class KidsSlidingMenuAdapter extends SlidingMenuAdapter
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         super.onManagerReady(serviceManager, status);
-        if (KidsUtils.shouldShowKidsEntryInMenu(this.activity) || KubrickKidsUtils.shouldShowKidsEntryInMenu(this.activity)) {
+        if (KubrickUtils.shouldShowKidsEntryInMenu(this.activity)) {
             final TextView textViewToBold = (TextView)((ViewStub)this.content.findViewById(2131165383)).inflate().findViewById(2131165385);
-            textViewToBold.setText(2131492961);
+            textViewToBold.setText(2131492967);
             textViewToBold.setTextColor(this.activity.getResources().getColor(2131296358));
-            textViewToBold.setBackgroundResource(2130837736);
+            textViewToBold.setBackgroundResource(2130837756);
             ViewUtils.setTextViewToBold(textViewToBold);
             ViewUtils.clearShadow(textViewToBold);
-            textViewToBold.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361985)));
+            textViewToBold.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361984)));
             textViewToBold.setOnClickListener((View$OnClickListener)new KidsSlidingMenuAdapter$1(this));
         }
     }
@@ -75,6 +74,6 @@ public class KidsSlidingMenuAdapter extends SlidingMenuAdapter
         super.updateAdapterViews(slidingMenuAdapter$Holder, list);
         slidingMenuAdapter$Holder.tv.setTextColor(this.itemTextColor);
         ViewUtils.clearShadow(slidingMenuAdapter$Holder.tv);
-        slidingMenuAdapter$Holder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361985)));
+        slidingMenuAdapter$Holder.tv.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, this.activity.getResources().getDimensionPixelSize(2131361984)));
     }
 }

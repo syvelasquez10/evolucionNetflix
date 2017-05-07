@@ -10,7 +10,7 @@ import com.netflix.mediaclient.Log;
 import com.google.gson.JsonElement;
 import java.util.ArrayList;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 
 public class Video$HeroImages implements JsonPopulator
 {
@@ -24,7 +24,7 @@ public class Video$HeroImages implements JsonPopulator
     @Override
     public void populate(final JsonElement jsonElement) {
         final JsonObject asJsonObject = jsonElement.getAsJsonObject();
-        if (Log.isLoggable("HeroImages", 2)) {
+        if (Log.isLoggable()) {
             Log.v("HeroImages", "Populating with: " + asJsonObject);
         }
         final JsonArray asJsonArray = asJsonObject.getAsJsonArray("heroImgs");
@@ -32,7 +32,7 @@ public class Video$HeroImages implements JsonPopulator
         for (int i = 0; i < asJsonArray.size(); ++i) {
             this.heroImgs.add(asJsonArray.get(i).getAsString());
         }
-        if (Log.isLoggable("HeroImages", 3)) {
+        if (Log.isLoggable()) {
             Log.v("HeroImages", "Parsed hero images as: " + this.heroImgs);
         }
     }

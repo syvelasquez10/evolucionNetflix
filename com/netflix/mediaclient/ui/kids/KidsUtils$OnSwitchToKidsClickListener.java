@@ -4,29 +4,11 @@
 
 package com.netflix.mediaclient.ui.kids;
 
-import java.io.Serializable;
-import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration$ActionBarNavType;
-import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
-import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration$ScrollBehavior;
-import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
-import android.view.MenuItem;
-import android.view.Menu;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import android.view.ViewConfiguration;
 import android.graphics.drawable.Drawable;
-import android.content.res.Resources;
-import android.content.Context;
-import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration$LolomoImageType;
-import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
-import android.view.ViewGroup$LayoutParams;
-import android.widget.AbsListView$LayoutParams;
 import android.widget.ListView;
-import java.util.Iterator;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Intent;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;

@@ -7,13 +7,16 @@ package com.netflix.mediaclient.android.widget;
 import android.view.View$OnTouchListener;
 import android.widget.SearchView$OnQueryTextListener;
 import android.view.View$OnFocusChangeListener;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.app.SearchManager;
 import com.netflix.mediaclient.Log;
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.support.v7.app.ActionBar$LayoutParams;
 import android.view.ViewGroup;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.TextView;
@@ -34,7 +37,7 @@ public class SearchActionBar extends NetflixActionBar
         this.setupSearchManager(netflixActivity);
         this.configureSearchViewTextView();
         this.configureSearchViewIcon();
-        this.replaceBackgroundDrawables();
+        this.updateBackgroundDrawables();
         this.systemActionBar.setDisplayShowCustomEnabled(true);
         this.systemActionBar.setDisplayUseLogoEnabled(false);
     }
@@ -42,20 +45,35 @@ public class SearchActionBar extends NetflixActionBar
     private void configureSearchViewIcon() {
         final ImageView imageView = (ImageView)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_mag_icon", (String)null, (String)null));
         if (imageView != null) {
-            imageView.setImageResource(2130837701);
+            imageView.setImageResource(this.getActiveSearchIconResId());
         }
     }
     
     private void configureSearchViewTextView() {
         this.textView = (TextView)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_src_text", (String)null, (String)null));
         if (this.textView != null) {
-            this.textView.setHintTextColor(this.searchView.getResources().getColor(2131296369));
+            final int color = this.searchView.getResources().getColor(this.getSearchViewTextColorResId());
+            this.textView.setHintTextColor(color);
+            this.textView.setTextColor(color);
             this.textView.setImeOptions(33554432);
         }
     }
     
+    private Drawable getDrawableFromSystemId(final String s) {
+        final ImageView systemImageView = this.getSystemImageView(s);
+        if (systemImageView == null) {
+            return null;
+        }
+        return systemImageView.getDrawable();
+    }
+    
+    private ImageView getSystemImageView(final String s) {
+        return (ImageView)this.searchView.findViewById(this.searchView.getContext().getResources().getIdentifier(s, (String)null, (String)null));
+    }
+    
+    @SuppressLint({ "InflateParams" })
     private void initViews() {
-        final View inflate = LayoutInflater.from((Context)this.activity).inflate(2130903067, (ViewGroup)null);
+        final View inflate = LayoutInflater.from((Context)this.activity).inflate(2130903066, (ViewGroup)null);
         if (inflate != null) {
             this.searchView = (SearchView)inflate.findViewById(2131165295);
             final ActionBar$LayoutParams actionBar$LayoutParams = new ActionBar$LayoutParams(-1, -2, 8388613);
@@ -73,11 +91,6 @@ public class SearchActionBar extends NetflixActionBar
         viewById.setBackgroundResource(backgroundResource);
     }
     
-    private void replaceBackgroundDrawables() {
-        this.replaceBackgroundDrawable("android:id/search_plate", 2130837839);
-        this.replaceBackgroundDrawable("android:id/submit_area", 2130837840);
-    }
-    
     private void setupSearchManager(final NetflixActivity netflixActivity) {
         this.searchView.setSearchableInfo(((SearchManager)netflixActivity.getSystemService("search")).getSearchableInfo(netflixActivity.getComponentName()));
     }
@@ -87,12 +100,31 @@ public class SearchActionBar extends NetflixActionBar
             return;
         }
         this.searchView.setImeOptions(33554435);
-        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131493184));
+        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131493191));
         this.searchView.setInputType(8192);
         this.searchView.setQueryRefinementEnabled(true);
         this.searchView.setSubmitButtonEnabled(false);
         this.searchView.setIconifiedByDefault(false);
         this.searchView.setIconified(false);
+    }
+    
+    private void updateBackgroundDrawables() {
+        this.replaceBackgroundDrawable("android:id/search_plate", this.getSearchViewBgResId());
+        this.replaceBackgroundDrawable("android:id/submit_area", this.getSearchViewRightBgResId());
+        final Integer searchCloseButtonTint = this.getSearchCloseButtonTint();
+        if (searchCloseButtonTint != null) {
+            final Drawable drawableFromSystemId = this.getDrawableFromSystemId("android:id/search_close_btn");
+            if (drawableFromSystemId != null) {
+                DrawableCompat.setTint(drawableFromSystemId, searchCloseButtonTint);
+            }
+        }
+        final Integer searchVoiceButtonTint = this.getSearchVoiceButtonTint();
+        if (searchVoiceButtonTint != null) {
+            final Drawable drawableFromSystemId2 = this.getDrawableFromSystemId("android:id/search_voice_btn");
+            if (drawableFromSystemId2 != null) {
+                DrawableCompat.setTint(drawableFromSystemId2, searchVoiceButtonTint);
+            }
+        }
     }
     
     public void clearFocus() {
@@ -101,6 +133,30 @@ public class SearchActionBar extends NetflixActionBar
         if (focus != null) {
             focus.clearFocus();
         }
+    }
+    
+    protected int getActiveSearchIconResId() {
+        return 2130837722;
+    }
+    
+    protected Integer getSearchCloseButtonTint() {
+        return null;
+    }
+    
+    protected int getSearchViewBgResId() {
+        return 2130837865;
+    }
+    
+    protected int getSearchViewRightBgResId() {
+        return 2130837867;
+    }
+    
+    protected int getSearchViewTextColorResId() {
+        return 2131296371;
+    }
+    
+    protected Integer getSearchVoiceButtonTint() {
+        return null;
     }
     
     public void hideProgressSpinner() {

@@ -47,6 +47,6 @@ class LoginActivity$5 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131493244), this.this$0.getString(17039370), null)));
+        this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131493252), this.this$0.getString(2131492994), null)));
     }
 }

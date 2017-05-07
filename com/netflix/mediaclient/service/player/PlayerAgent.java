@@ -13,15 +13,16 @@ import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import java.util.concurrent.Executors;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
-import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import java.util.TimerTask;
 import android.content.Intent;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.media.JPlayer2Helper;
 import android.media.AudioManager;
+import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
 import com.netflix.mediaclient.android.app.BackgroundTask;
@@ -45,7 +46,6 @@ import com.netflix.mediaclient.event.nrdp.media.ShowSubtitle;
 import com.netflix.mediaclient.event.nrdp.media.RemoveSubtitle;
 import com.netflix.mediaclient.event.nrdp.media.Buffering;
 import com.netflix.mediaclient.event.nrdp.media.GenericMediaEvent;
-import android.content.Context;
 import com.netflix.mediaclient.javabridge.invoke.media.Open$NetType;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import android.os.PowerManager$WakeLock;
@@ -74,8 +74,10 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private static final int BANDWITH_CHECK_INTERVAL = 30000;
     private static final int DELAY_SEEKCOMPLETE_MS = 300;
     private static final int EOS_DELTA = 10000;
+    private static final int IntialLowBRThreshold = 200;
     private static final int MAX_CELLULAR_DOWNLOAD_LIMIT = 90000;
     private static final int MAX_WIFI_DOWNLOAD_LIMIT = 300000;
+    private static final int MaxBRThreshold = 20000;
     private static final int NETWORK_CHECK_INTERVAL = 1000;
     private static final int NETWORK_CHECK_TIMEOUT = 30000;
     private static final int SIXTY_COUNT = 60;
@@ -90,6 +92,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private static final int STATE_PRESTOP = 7;
     private static final int STATE_STOPPED = 3;
     private static final String TAG;
+    private static final int TimeToWaitBeforeLowBRStreamsEnabled = 5000;
     private static final int TimeToWaitBeforeShutdown = 30000;
     private static final int TimeToWaitBeforeUnmute = 10000;
     private boolean ignoreErrorsWhileActionId12IsProcessed;
@@ -104,6 +107,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private int mFuzz;
     private MediaPlayerHelper mHelper;
     private boolean mInPlayback;
+    private PlayerAgent$InitialVideoBitrateRangeTimeoutTask mInitVBRTimeoutTask;
     private volatile JPlayer$JplayerListener mJPlayerListener;
     private long mLastBandwidthCheck;
     private IManifestCache mManifestCache;
@@ -192,7 +196,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             this.mState = 8;
             final int n = (int)((ConnectivityUtils.getApplicationRx() - this.sessionInitRxBytes) / 1024L);
             final int n2 = (int)((ConnectivityUtils.getApplicationTx() - this.sessionInitTxBytes) / 1024L);
-            if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(PlayerAgent.TAG, "Bytes Tx: " + n2);
                 Log.d(PlayerAgent.TAG, "Bytes Rx: " + n);
             }
@@ -239,7 +243,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     }
     
     private void handleBufferRange(final BufferRange bufferRange) {
-        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(PlayerAgent.TAG, "MEDIA_BANDWIDTH_UPDATE :" + bufferRange.getBandwidth());
         }
         this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnBandwidthChangeHandler(), bufferRange.getBandwidth());
@@ -252,7 +256,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     }
     
     private void handleBufferring(final Buffering buffering) {
-        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(PlayerAgent.TAG, "MEDIA_BANDWIDTH_UPDATE :" + buffering.getPercentage());
         }
         this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnBufferingUpdateHandler(), buffering.getPercentage());
@@ -278,7 +282,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 }
                 if (this.inPlaybackSession) {
                     Log.d(PlayerAgent.TAG, "We are in playback. Ignore all errors, except 11.");
-                    if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                    if (Log.isLoggable()) {
                         Log.d(PlayerAgent.TAG, "Error in Playback, being ignored " + nccpActionId);
                     }
                 }
@@ -293,7 +297,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                     Log.d(PlayerAgent.TAG, "Handle all errors except if they are for background events, such as logblob, ping, playdata or heartbeat...");
                     final String transaction = nccpActionId.getTransaction();
                     if ("heartbeat".equalsIgnoreCase(transaction) || "logblob".equalsIgnoreCase(transaction) || "playdata".equalsIgnoreCase(transaction) || "ping".equalsIgnoreCase(transaction)) {
-                        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                        if (Log.isLoggable()) {
                             Log.d(PlayerAgent.TAG, "Ignore action id on " + transaction + ". We will deal with only licence and authorize here when not in playback");
                         }
                     }
@@ -302,7 +306,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                             Log.d(PlayerAgent.TAG, "We received background nccp error. Ignoring!");
                             return;
                         }
-                        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                        if (Log.isLoggable()) {
                             Log.d(PlayerAgent.TAG, "Handling error: " + mActionId12Error);
                         }
                         this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnNccpErrorHandler(), mActionId12Error);
@@ -330,7 +334,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 this.handleUnderflow();
                 return;
             }
-            if (Log.isLoggable(PlayerAgent.TAG, 6)) {
+            if (Log.isLoggable()) {
                 Log.e(PlayerAgent.TAG, "Tags not handled yet " + type);
             }
         }
@@ -400,7 +404,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 if (!this.toCancelOpen) {
                     Log.d(PlayerAgent.TAG, "handle openComplete notifying client");
                     this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerPrepareHandler(), new Object[0]);
-                    if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                    if (Log.isLoggable()) {
                         Log.d(PlayerAgent.TAG, "MEDIA_SET_VIDEO_SIZE 5, w " + this.mMedia.getVideoWidth() + ", h " + this.mMedia.getVideoHeight());
                     }
                     Log.d(PlayerAgent.TAG, "handle openComplete end");
@@ -492,18 +496,18 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     private void handleSubtitleUpdate(final int n) {
         while (true) {
-            Label_0108: {
+            Label_0104: {
                 synchronized (this) {
                     if (IMedia$SubtitleOutputMode.EVENTS.equals(this.mSubtitleConfiguration.getMode())) {
                         Log.d(PlayerAgent.TAG, "Subtitle output mode Events, do nothing");
                     }
                     else {
-                        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                        if (Log.isLoggable()) {
                             Log.d(PlayerAgent.TAG, "Subtitle output mode XML, send data");
                             Log.d(PlayerAgent.TAG, "Update PTS received " + n);
                         }
                         if (this.mMedia.getCurrentSubtitleTrack() != null) {
-                            break Label_0108;
+                            break Label_0104;
                         }
                         Log.d(PlayerAgent.TAG, "Subtitles are not visible, do not send any update");
                     }
@@ -563,6 +567,11 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnUpdatePtsHandler(), n);
     }
     
+    private boolean isMPPlayerType() {
+        final PlayerType currentType = PlayerTypeFactory.getCurrentType(this.getContext());
+        return currentType == PlayerType.device12 || currentType == PlayerType.device10 || currentType == PlayerType.device8;
+    }
+    
     private void muteAudio(final boolean muted) {
         synchronized (this) {
             if (muted != this.muted && this.getContext() != null) {
@@ -584,7 +593,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private void playWithBookmarkCheck() {
         this.seekedToPosition = (int)(Object)Long.valueOf(this.mBookmark);
         final int duration = this.getDuration();
-        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(PlayerAgent.TAG, "movie duration = " + duration + ", and bookmark = " + this.seekedToPosition);
         }
         this.mState = 6;
@@ -680,12 +689,15 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             if (this.mStartPlayTimeoutTask != null) {
                 this.mStartPlayTimeoutTask.cancel();
             }
+            if (this.mInitVBRTimeoutTask != null) {
+                this.mInitVBRTimeoutTask.cancel();
+            }
             if (this.mTimer != null) {
                 this.mTimer.purge();
             }
             this.reloadPlayer();
             this.clearBifs();
-            this.mMedia.setStreamingQoe(this.getConfigurationAgent().getStreamingQoe(), this.getConfigurationAgent().enableHTTPSAuth());
+            this.mMedia.setStreamingQoe(this.getConfigurationAgent().getStreamingQoe(), this.getConfigurationAgent().enableHTTPSAuth(), this.isMPPlayerType());
             this.mMedia.open(this.mMovieId, this.mPlayContext, this.getCurrentNetType(), this.mBookmark);
             return;
         }
@@ -705,6 +717,13 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private void transitToStoppedState() {
         if (this.mState == 0) {
             this.mMedia.setAudioBitrateRange(this.mAudioBitrateRange);
+            if (this.isMPPlayerType()) {
+                this.mMedia.setVideoBitrateRange(200, 20000);
+                if (this.mTimer != null) {
+                    this.mInitVBRTimeoutTask = new PlayerAgent$InitialVideoBitrateRangeTimeoutTask(this, null);
+                    this.mTimer.schedule(this.mInitVBRTimeoutTask, 5000L);
+                }
+            }
             this.mMedia.setVideoResolutionRange(this.getConfigurationAgent().getVideoResolutionRange());
             this.mMedia.setThrotteled(false);
             this.mMedia.setNetworkProfile(2);
@@ -728,12 +747,12 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     private void updateSubtitleSettings(final boolean b) {
         final SubtitleConfiguration subtitleConfiguration = this.findSubtitleConfiguration();
-        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(PlayerAgent.TAG, "Subtitle configuration was " + this.mSubtitleConfiguration);
             Log.d(PlayerAgent.TAG, "Sets subtitle configuration to " + subtitleConfiguration);
         }
         if (this.mSubtitleConfiguration == subtitleConfiguration && !b) {
-            if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(PlayerAgent.TAG, "Already used subtitle configuration, do nothing ");
             }
             return;
@@ -748,13 +767,13 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     private void updateSubtitleSettingsFromQaLocalOverride(final int n) {
         final SubtitleConfiguration lookup = SubtitleConfiguration.lookup(n);
-        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(PlayerAgent.TAG, "Received local override " + n);
             Log.d(PlayerAgent.TAG, "Subtitle configuration was " + this.mSubtitleConfiguration);
             Log.d(PlayerAgent.TAG, "Sets subtitle configuration to " + lookup);
         }
         if (this.mSubtitleConfiguration == lookup) {
-            if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(PlayerAgent.TAG, "Already used subtitle configuration, do nothing ");
             }
             return;
@@ -776,12 +795,12 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         }
         else {
             if (n >= this.seekedToPosition) {
-                if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                if (Log.isLoggable()) {
                     Log.d(PlayerAgent.TAG, "canUpdatePosition:: pts [" + n + "] >= seekedToPosition [" + this.seekedToPosition + "] , can update position");
                 }
                 if (!this.validPtsRecieved) {
                     if (this.prevEndPosition > this.seekedToPosition && n >= this.prevEndPosition - 2000) {
-                        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                        if (Log.isLoggable()) {
                             Log.d(PlayerAgent.TAG, "canUpdatePosition:: pts [" + n + "] >= prevEndPosition [" + this.prevEndPosition + "] , invlalid PTS");
                             return false;
                         }
@@ -793,7 +812,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 }
                 return true;
             }
-            if (Log.isLoggable(PlayerAgent.TAG, 5)) {
+            if (Log.isLoggable()) {
                 Log.w(PlayerAgent.TAG, "canUpdatePosition:: pts [" + n + "] < seekedToPosition [" + this.seekedToPosition + "] , can NOT update position");
                 return false;
             }
@@ -819,7 +838,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             this.mPlayerExecutor.shutdown();
         }
         super.destroy();
-        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(PlayerAgent.TAG, "Destroying " + this.getClass().getSimpleName());
         }
     }
@@ -837,7 +856,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         final IMedia$MediaEventEnum[] values = IMedia$MediaEventEnum.values();
         for (int length = values.length, i = 0; i < length; ++i) {
             final IMedia$MediaEventEnum media$MediaEventEnum = values[i];
-            if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(PlayerAgent.TAG, "Registering as listener for " + media$MediaEventEnum.getName());
             }
             this.mMedia.addEventListener(media$MediaEventEnum.getName(), this.mMediaEventListener);
@@ -849,14 +868,14 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             Log.e(PlayerAgent.TAG, "This should not happen, player type was null at this point! Use default.");
             this.mPlayerType = PlayerTypeFactory.findDefaultPlayerType();
         }
-        else if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+        else if (Log.isLoggable()) {
             Log.d(PlayerAgent.TAG, "Player type is " + this.mPlayerType.getDescription());
         }
         this.mHelper = MediaPlayerHelperFactory.getInstance(this.getContext(), this.mPlayerType);
         Log.d(PlayerAgent.TAG, "MP: Set audio bitrange to 64 Kbps");
         this.mMedia.setAudioBitrateRange(this.mAudioBitrateRange);
         this.mMedia.setVideoResolutionRange(this.getConfigurationAgent().getVideoResolutionRange());
-        this.mMedia.setStreamingQoe(this.getConfigurationAgent().getStreamingQoe(), this.getConfigurationAgent().enableHTTPSAuth());
+        this.mMedia.setStreamingQoe(this.getConfigurationAgent().getStreamingQoe(), this.getConfigurationAgent().enableHTTPSAuth(), this.isMPPlayerType());
         this.mMedia.setThrotteled(false);
         this.mMedia.setNetworkProfile(2);
         Log.d(PlayerAgent.TAG, "MP: Set to Mobile network Profile");
@@ -912,7 +931,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             seekedToPosition = currentPosition;
             if (!this.validPtsRecieved) {
                 if (this.prevEndPosition - 2000 > this.seekedToPosition && currentPosition >= this.seekedToPosition + 1500) {
-                    if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                    if (Log.isLoggable()) {
                         Log.d(PlayerAgent.TAG, "pts [" + currentPosition + "] >= prevEndPosition [" + this.prevEndPosition + "] , invlalid PTS");
                     }
                     return this.seekedToPosition;
@@ -1012,7 +1031,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     @Override
     public void open(final long mMovieId, final PlayContext mPlayContext, final long mBookmark) {
         synchronized (this) {
-            if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(PlayerAgent.TAG, "Open called movieId:" + mMovieId + " trackId:" + mPlayContext.getTrackId() + " bookmark:" + mBookmark);
             }
             this.mMovieId = mMovieId;
@@ -1059,127 +1078,123 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         //    32: aload_1        
         //    33: aload_0        
         //    34: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //    37: if_acmpne       98
-        //    40: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //    43: bipush          6
-        //    45: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //    48: ifeq            90
-        //    51: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //    54: new             Ljava/lang/StringBuilder;
-        //    57: dup            
-        //    58: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    61: ldc_w           "Player type is not changed! It is still "
-        //    64: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    67: aload_0        
-        //    68: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //    71: invokevirtual   com/netflix/mediaclient/media/PlayerType.getDescription:()Ljava/lang/String;
-        //    74: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    77: ldc_w           ". Preparing players!"
-        //    80: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    83: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //    86: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //    89: pop            
+        //    37: if_acmpne       93
+        //    40: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //    43: ifeq            85
+        //    46: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
+        //    49: new             Ljava/lang/StringBuilder;
+        //    52: dup            
+        //    53: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    56: ldc_w           "Player type is not changed! It is still "
+        //    59: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    62: aload_0        
+        //    63: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //    66: invokevirtual   com/netflix/mediaclient/media/PlayerType.getDescription:()Ljava/lang/String;
+        //    69: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    72: ldc_w           ". Preparing players!"
+        //    75: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    78: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    81: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //    84: pop            
+        //    85: aload_0        
+        //    86: aload_1        
+        //    87: invokespecial   com/netflix/mediaclient/service/player/PlayerAgent.preparePlayerType:(Lcom/netflix/mediaclient/media/PlayerType;)V
         //    90: aload_0        
-        //    91: aload_1        
-        //    92: invokespecial   com/netflix/mediaclient/service/player/PlayerAgent.preparePlayerType:(Lcom/netflix/mediaclient/media/PlayerType;)V
-        //    95: aload_0        
-        //    96: monitorexit    
-        //    97: return         
+        //    91: monitorexit    
+        //    92: return         
+        //    93: aload_0        
+        //    94: aload_1        
+        //    95: putfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
         //    98: aload_0        
-        //    99: aload_1        
-        //   100: putfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //   103: aload_0        
-        //   104: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //   107: ifnonnull       223
-        //   110: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //   113: ldc_w           "This should not happen, player type was null at this point! Use default."
-        //   116: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   119: pop            
-        //   120: aload_0        
-        //   121: invokestatic    com/netflix/mediaclient/service/configuration/PlayerTypeFactory.findDefaultPlayerType:()Lcom/netflix/mediaclient/media/PlayerType;
-        //   124: putfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //   127: aload_0        
-        //   128: aload_0        
-        //   129: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //   132: invokespecial   com/netflix/mediaclient/service/player/PlayerAgent.preparePlayerType:(Lcom/netflix/mediaclient/media/PlayerType;)V
-        //   135: aload_0        
-        //   136: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
-        //   139: aload_0        
-        //   140: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //   143: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.changePlayer:(Lcom/netflix/mediaclient/media/PlayerType;)V
-        //   148: aload_0        
-        //   149: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
-        //   152: aload_0        
-        //   153: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mAudioBitrateRange:Lcom/netflix/mediaclient/media/bitrate/AudioBitrateRange;
-        //   156: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setAudioBitrateRange:(Lcom/netflix/mediaclient/media/bitrate/AudioBitrateRange;)V
-        //   161: aload_0        
-        //   162: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
-        //   165: aload_0        
-        //   166: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getConfigurationAgent:()Lcom/netflix/mediaclient/service/ServiceAgent$ConfigurationAgentInterface;
-        //   169: invokeinterface com/netflix/mediaclient/service/ServiceAgent$ConfigurationAgentInterface.getVideoResolutionRange:()Lcom/netflix/mediaclient/media/VideoResolutionRange;
-        //   174: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setVideoResolutionRange:(Lcom/netflix/mediaclient/media/VideoResolutionRange;)V
-        //   179: aload_0        
-        //   180: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
-        //   183: iconst_0       
-        //   184: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setThrotteled:(Z)V
-        //   189: aload_0        
-        //   190: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
-        //   193: iconst_2       
-        //   194: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setNetworkProfile:(I)V
-        //   199: ldc2_w          400
-        //   202: invokestatic    java/lang/Thread.sleep:(J)V
-        //   205: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //   208: ldc_w           "Player changed done"
-        //   211: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   214: pop            
-        //   215: goto            95
-        //   218: astore_1       
-        //   219: aload_0        
-        //   220: monitorexit    
-        //   221: aload_1        
-        //   222: athrow         
-        //   223: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //   226: iconst_3       
-        //   227: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //   230: ifeq            127
-        //   233: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //   236: new             Ljava/lang/StringBuilder;
-        //   239: dup            
-        //   240: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   243: ldc_w           "Player type is "
-        //   246: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   249: aload_0        
-        //   250: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
-        //   253: invokevirtual   com/netflix/mediaclient/media/PlayerType.getDescription:()Ljava/lang/String;
-        //   256: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   259: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   262: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   265: pop            
-        //   266: goto            127
-        //   269: astore_1       
-        //   270: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
-        //   273: ldc_w           "ReloadPlayer "
-        //   276: aload_1        
-        //   277: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   280: pop            
-        //   281: goto            205
+        //    99: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //   102: ifnonnull       218
+        //   105: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
+        //   108: ldc_w           "This should not happen, player type was null at this point! Use default."
+        //   111: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   114: pop            
+        //   115: aload_0        
+        //   116: invokestatic    com/netflix/mediaclient/service/configuration/PlayerTypeFactory.findDefaultPlayerType:()Lcom/netflix/mediaclient/media/PlayerType;
+        //   119: putfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //   122: aload_0        
+        //   123: aload_0        
+        //   124: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //   127: invokespecial   com/netflix/mediaclient/service/player/PlayerAgent.preparePlayerType:(Lcom/netflix/mediaclient/media/PlayerType;)V
+        //   130: aload_0        
+        //   131: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
+        //   134: aload_0        
+        //   135: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //   138: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.changePlayer:(Lcom/netflix/mediaclient/media/PlayerType;)V
+        //   143: aload_0        
+        //   144: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
+        //   147: aload_0        
+        //   148: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mAudioBitrateRange:Lcom/netflix/mediaclient/media/bitrate/AudioBitrateRange;
+        //   151: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setAudioBitrateRange:(Lcom/netflix/mediaclient/media/bitrate/AudioBitrateRange;)V
+        //   156: aload_0        
+        //   157: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
+        //   160: aload_0        
+        //   161: invokevirtual   com/netflix/mediaclient/service/player/PlayerAgent.getConfigurationAgent:()Lcom/netflix/mediaclient/service/ServiceAgent$ConfigurationAgentInterface;
+        //   164: invokeinterface com/netflix/mediaclient/service/ServiceAgent$ConfigurationAgentInterface.getVideoResolutionRange:()Lcom/netflix/mediaclient/media/VideoResolutionRange;
+        //   169: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setVideoResolutionRange:(Lcom/netflix/mediaclient/media/VideoResolutionRange;)V
+        //   174: aload_0        
+        //   175: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
+        //   178: iconst_0       
+        //   179: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setThrotteled:(Z)V
+        //   184: aload_0        
+        //   185: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mMedia:Lcom/netflix/mediaclient/javabridge/ui/IMedia;
+        //   188: iconst_2       
+        //   189: invokeinterface com/netflix/mediaclient/javabridge/ui/IMedia.setNetworkProfile:(I)V
+        //   194: ldc2_w          400
+        //   197: invokestatic    java/lang/Thread.sleep:(J)V
+        //   200: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
+        //   203: ldc_w           "Player changed done"
+        //   206: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   209: pop            
+        //   210: goto            90
+        //   213: astore_1       
+        //   214: aload_0        
+        //   215: monitorexit    
+        //   216: aload_1        
+        //   217: athrow         
+        //   218: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   221: ifeq            122
+        //   224: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
+        //   227: new             Ljava/lang/StringBuilder;
+        //   230: dup            
+        //   231: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   234: ldc_w           "Player type is "
+        //   237: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   240: aload_0        
+        //   241: getfield        com/netflix/mediaclient/service/player/PlayerAgent.mPlayerType:Lcom/netflix/mediaclient/media/PlayerType;
+        //   244: invokevirtual   com/netflix/mediaclient/media/PlayerType.getDescription:()Ljava/lang/String;
+        //   247: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   250: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   253: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   256: pop            
+        //   257: goto            122
+        //   260: astore_1       
+        //   261: getstatic       com/netflix/mediaclient/service/player/PlayerAgent.TAG:Ljava/lang/String;
+        //   264: ldc_w           "ReloadPlayer "
+        //   267: aload_1        
+        //   268: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   271: pop            
+        //   272: goto            200
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                            
         //  -----  -----  -----  -----  --------------------------------
-        //  2      90     218    223    Any
-        //  90     95     218    223    Any
-        //  98     127    218    223    Any
-        //  127    199    218    223    Any
-        //  199    205    269    284    Ljava/lang/InterruptedException;
-        //  199    205    218    223    Any
-        //  205    215    218    223    Any
-        //  223    266    218    223    Any
-        //  270    281    218    223    Any
+        //  2      85     213    218    Any
+        //  85     90     213    218    Any
+        //  93     122    213    218    Any
+        //  122    194    213    218    Any
+        //  194    200    260    275    Ljava/lang/InterruptedException;
+        //  194    200    213    218    Any
+        //  200    210    213    218    Any
+        //  218    257    213    218    Any
+        //  261    272    213    218    Any
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0205:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0200:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -1234,7 +1249,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     @Override
     public boolean selectTracks(final AudioSource audioSource, final Subtitle subtitle) {
         synchronized (this) {
-            if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(PlayerAgent.TAG, "Selected track Audio: " + audioSource);
                 Log.d(PlayerAgent.TAG, "Selected track Subtitle: " + subtitle);
             }
@@ -1254,7 +1269,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     @Override
     public void setSurface(final Surface surface) {
-        if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+        if (Log.isLoggable()) {
             final String tag = PlayerAgent.TAG;
             final StringBuilder append = new StringBuilder().append("Surface is being set: ");
             String s;

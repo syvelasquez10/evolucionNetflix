@@ -5,10 +5,10 @@
 package com.netflix.falkor;
 
 import com.netflix.model.leafs.Video$Bookmark;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.service.NetflixService;
 import java.util.LinkedHashSet;
 import java.io.IOException;
@@ -18,15 +18,13 @@ import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.model.leafs.Video$InQueue;
 import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 import com.netflix.mediaclient.util.JsonUtils;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.android.app.BackgroundTask;
-import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.text.TextUtils;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
-import android.util.Pair;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.util.Map;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry$ResponsePathFormat;
 import java.util.Iterator;
@@ -34,8 +32,10 @@ import java.util.Comparator;
 import java.util.Collections;
 import com.netflix.mediaclient.util.AlphanumComparator;
 import com.netflix.mediaclient.service.browse.PostToHandlerCallbackWrapper;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.model.branches.FalkorObject;
+import android.util.Pair;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.os.Looper;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import android.os.Handler;
@@ -73,7 +73,7 @@ abstract class CachedModelProxy$CmpTask implements Runnable
     }
     
     private FalkorVolleyWebClientRequest createRequest(final List<PQL> list) {
-        if (Log.isLoggable("CachedModelProxy", 2)) {
+        if (Log.isLoggable()) {
             Log.v("CachedModelProxy", "Creating remote request for task " + this.getClass().getSimpleName() + " with pqls: " + list);
         }
         return new CachedModelProxy$CmpTask$1(this, (Context)this.this$0.getService(), list);
@@ -81,21 +81,21 @@ abstract class CachedModelProxy$CmpTask implements Runnable
     
     private void handleFailure(final BrowseAgentCallback browseAgentCallback, final Status status) {
         this.callbackForFailure(browseAgentCallback, status);
-        if (Log.isLoggable("CachedModelProxy", 2)) {
+        if (Log.isLoggable()) {
             Log.v("CachedModelProxy", "Called back for failure: " + this.getClass().getSimpleName());
         }
     }
     
     private void handleSuccess() {
         ThreadUtils.assertNotOnMain();
-        final BrowseAgentCallback access$700 = this.this$0.createHandlerWrapper(this.callback);
+        final BrowseAgentCallback access$800 = this.this$0.createHandlerWrapper(this.callback);
         if (this.getResult == null && !this.shouldUseCallMethod() && !this.shouldCustomHandleResponse() && !this.shouldSkipCache()) {
             Log.w("CachedModelProxy", "GetResult is null - shouldn't happen - forcing failure");
-            this.handleFailure(access$700, CommonStatus.INTERNAL_ERROR);
+            this.handleFailure(access$800, CommonStatus.INTERNAL_ERROR);
         }
         else {
-            this.fetchResultsAndCallbackForSuccess(access$700, this.getResult);
-            if (Log.isLoggable("CachedModelProxy", 2)) {
+            this.fetchResultsAndCallbackForSuccess(access$800, this.getResult);
+            if (Log.isLoggable()) {
                 Log.v("CachedModelProxy", "Results fetched - called back for success: " + this.getClass().getSimpleName());
             }
         }
@@ -138,7 +138,7 @@ abstract class CachedModelProxy$CmpTask implements Runnable
             return;
         }
         (this.getResult = this.this$0.get(list)).printPaths("CachedModelProxy");
-        if (this.getResult.hasMissingPaths() && !this.shouldUseCacheOnly()) {
+        if (this.getResult.hasMissingPaths() && !this.shouldUseCacheOnly() && !CachedModelProxy.FORCE_CMP_TO_LOCAL_CACHE) {
             final ArrayList<PQL> list2 = new ArrayList<PQL>(this.getResult.missingPqls);
             if (this.shouldCollapseMissingPql()) {
                 PQL.collapse(list2);
@@ -149,8 +149,8 @@ abstract class CachedModelProxy$CmpTask implements Runnable
             this.this$0.executeRequest(this.createRequest(list2));
             return;
         }
-        if (Log.isLoggable("CachedModelProxy", 2)) {
-            Log.v("CachedModelProxy", this.getClass().getSimpleName() + ": No missing paths found - all data is local to cache");
+        if (Log.isLoggable()) {
+            Log.v("CachedModelProxy", String.format("%s: No missing paths found - all data is local to cache. shouldUseCacheOnly(): %b, FORCE_CMP_TO_LOCAL_CACHE: %b", this.getClass().getSimpleName(), this.shouldUseCacheOnly(), CachedModelProxy.FORCE_CMP_TO_LOCAL_CACHE));
         }
         this.isAllDataLocalToCache = true;
         this.handleSuccess();

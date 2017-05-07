@@ -23,12 +23,12 @@ class EventQueue$QueueSizeFlushCriterion implements EventQueue$FlushCriterion
     @Override
     public boolean shouldFlushQueue(final int n, final long n2) {
         if (this.this$0.mEventQueue.size() >= this.this$0.mMaxNumberOfEvents) {
-            if (Log.isLoggable(this.this$0.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(this.this$0.TAG, "Posting events: Current number of events in outgoing queue is " + this.this$0.mEventQueue.size() + " and it is equal or higher than treshold of " + this.this$0.mMaxNumberOfEvents);
             }
             return true;
         }
-        if (Log.isLoggable(this.this$0.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(this.this$0.TAG, "Current number of events in outgoing queue is " + this.this$0.mEventQueue.size() + " and it is less than treshold of " + this.this$0.mMaxNumberOfEvents);
         }
         return false;

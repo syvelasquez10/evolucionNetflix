@@ -19,7 +19,8 @@ public enum Mdx$Events
     mdx_session_messagedelivered("messagedelivered"), 
     mdx_session_messagingerror("messagingerror"), 
     mdx_session_sessionended("sessionended"), 
-    mdx_session_startSessionResponse("startSessionResponse");
+    mdx_session_startSessionResponse("startSessionResponse"), 
+    mdx_targetrestarting("targetrestarting");
     
     protected String name;
     

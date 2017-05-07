@@ -8,21 +8,19 @@ import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataReque
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.AppStoreHelper;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils$KubrickExperience;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.util.UriUtil;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry$ResponsePathFormat;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import android.content.Context;
-import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 
 public class EndpointRegistryProvider implements ApiEndpointRegistry
 {
     private static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
-    private static final String ANDROID_ENDPOINT_FULL = "/android/3.11/api";
+    private static final String ANDROID_ENDPOINT_FULL = "/android/3.12/api";
     private static final boolean BROWSE_AUTO_REDIRECT_TRUE = true;
     private static final String BROWSE_RESP_AUTO_REDIRECT = "&routing=redirect";
     private static final String BROWSE_RESP_FORMAT = "responseFormat=json&progressive=false";
@@ -30,7 +28,6 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String CLIENT_LOGGING_ENDPOINT = "ichnaea.netflix.com";
     private static final String CLIENT_LOGGING_PATH = "/log";
     private static final String ENDPOINT_REVISION_LATEST = "&revision=latest";
-    private static final boolean FORCE_LEGACY_BROWSE_VOLLEY_CLIENT = false;
     private static final String HTTP = "http://";
     private static final String HTTPS = "https://";
     private static final String IMG_PREFERENCE_JPG = "jpg";
@@ -39,16 +36,13 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String PARAM_APK_VERSION = "appVer";
     private static final String PARAM_APP_INSTALL_STORE = "store";
     private static final String PARAM_APP_TYPE = "appType";
-    private static final String PARAM_BOXART_TYPE = "bat";
     private static final String PARAM_BUILD_BOARD = "osBoard";
     private static final String PARAM_BUILD_DEVICE = "osDevice";
     private static final String PARAM_BUILD_DISPLAY = "osDisplay";
     private static final String PARAM_DEBUG_BUILD = "dbg";
     private static final String PARAM_DEVICE_MEM_LEVEL = "memLevel";
-    private static final String PARAM_FORCE_LEGACY_BROWSE_VOLLEY_CLIENT = "fbv";
     private static final String PARAM_FORM_FACTOR = "ffbc";
     private static final String PARAM_IMG_TYPE_PREFERENCE = "imgpref";
-    private static final String PARAM_KOP_EXPERIENCE = "kop";
     private static final String PARAM_KUBRICK_KIDS_EXPERIENCE = "kk";
     private static final String PARAM_LANGUAGES = "languages";
     private static final String PARAM_MANUFACTURER = "mnf";
@@ -63,7 +57,6 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     private static final String WEBCLIENT_ENDPOINT = "api-global.netflix.com";
     private String mCachedEndpointUrl;
     private String mClientLogEndpointUrl;
-    private ServiceAgent$ConfigurationAgentInterface mConfigAgent;
     private String mConfigEndpointUrl;
     private final Context mContext;
     private final Boolean mDeviceHd;
@@ -89,14 +82,8 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         }
         if (this.mUserAgent != null && KidsUtils.isKidsProfile(this.mUserAgent.getCurrentProfile())) {
             sb.append(this.buildUrlParam("prfType", this.mUserAgent.getCurrentProfile().getProfileType().toString()));
-            if (KubrickUtils.computeKubrickExperience(this.mConfigAgent, this.mUserAgent.getCurrentProfile()) == KubrickUtils$KubrickExperience.KUBRICK_KIDS) {
+            if (BrowseExperience.isKubrickKids()) {
                 sb.append(this.buildUrlParam("kk", Boolean.TRUE.toString()));
-            }
-            else if (KidsUtils.isKoPExperience(this.mConfigAgent, this.mUserAgent.getCurrentProfile())) {
-                sb.append(this.buildUrlParam("kop", Boolean.TRUE.toString()));
-                if (this.mConfigAgent.getKidsOnPhoneConfiguration().isKidsOnPhoneEnabled()) {
-                    sb.append(this.buildUrlParam("bat", this.mConfigAgent.getKidsOnPhoneConfiguration().getLolomoImageType().toString()));
-                }
             }
         }
         sb.append(apiEndpointRegistry$ResponsePathFormat.urlParams);
@@ -144,9 +131,8 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         sb.append(this.buildUrlParam("mnf", UriUtil.urlEncodeParam(this.mDeviceModel.getManufacturer())));
         sb.append(this.buildUrlParam("store", AppStoreHelper.getInstallationSource(this.mContext)));
         sb.append(this.buildUrlParam("memLevel", ConfigurationAgent.getMemLevel()));
-        sb.append(this.buildUrlParam("fbv", String.valueOf(false)));
         final String string = sb.toString();
-        if (Log.isLoggable("EndpointRegistryProvider", 2)) {
+        if (Log.isLoggable()) {
             Log.v("EndpointRegistryProvider", "Config URL: " + string);
         }
         return string;
@@ -180,7 +166,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             sb.append("http://");
         }
         sb.append(this.mEndpointHost);
-        sb.append("/android/3.11/api");
+        sb.append("/android/3.12/api");
         sb.append("?");
         sb.append("responseFormat=json&progressive=false");
         sb.append("&routing=reject");
@@ -252,10 +238,6 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     
     public boolean isSecure() {
         return true;
-    }
-    
-    public void setConfigurationAgentInterface(final ServiceAgent$ConfigurationAgentInterface mConfigAgent) {
-        this.mConfigAgent = mConfigAgent;
     }
     
     public void setUserAgentInterface(final ServiceAgent$UserAgentInterface mUserAgent) {

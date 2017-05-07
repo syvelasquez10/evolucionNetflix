@@ -5,14 +5,15 @@
 package com.netflix.mediaclient.ui.player;
 
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import android.text.TextUtils;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import android.app.Activity;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.Log;
+import android.text.TextUtils;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.Context;
@@ -20,7 +21,7 @@ import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import android.content.Intent;
 import android.widget.TextView;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 
 public final class PostPlayForMDX extends PostPlayForEpisodes
 {
@@ -29,6 +30,8 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     
     PostPlayForMDX(final PlayerActivity playerActivity) {
         super(playerActivity);
+        this.mTimerValue = this.mContext.getResources().getInteger(2131427336);
+        this.mOffsetMs = this.mTimerValue * 1000;
     }
     
     private Intent createIntent(final String s) {
@@ -67,9 +70,30 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     }
     
     @Override
+    public void fetchPostPlayVideos(final String s) {
+        if (!TextUtils.isEmpty((CharSequence)s) && this.mContext != null && this.mContext.getServiceManager() != null) {
+            Log.d("nf_postplay", "Fetch postplay videos...");
+            this.mContext.getServiceManager().getBrowse().fetchEpisodeDetails(s, new PostPlayForMDX$FetchPostPlayForPlaybackCallback(this));
+            return;
+        }
+        Log.e("nf_postplay", "Unable to fetch postplay videos!");
+    }
+    
+    @Override
+    public void fetchPostPlayVideosIfNeeded(final String s) {
+        this.fetchPostPlayVideos(s);
+    }
+    
+    @Override
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mContext.findViewById(2131165595);
-        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165593);
+        this.mTargetNameView = (TextView)this.mContext.findViewById(2131165599);
+        this.mInfoTitleView = (TextView)this.mContext.findViewById(2131165597);
+    }
+    
+    public void handleBack() {
+        if (this.mContext != null) {
+            this.mContext.startService(this.createIntent("com.netflix.mediaclient.intent.action.MDX_STOPPOSTPALY"));
+        }
     }
     
     public void handleInfoButtonPress() {
@@ -110,20 +134,9 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     }
     
     public void init(final EpisodeDetails episodeDetails) {
-        this.mTimerValue = this.mContext.getResources().getInteger(2131427336);
-        this.mOffsetMs = this.mTimerValue * 1000;
         this.updateViews(this.episodeDetails = episodeDetails);
         this.setMDXTargetName();
         this.transitionToPostPlay();
-    }
-    
-    @Override
-    public void init(final String s) {
-        this.mTimerValue = this.mContext.getResources().getInteger(2131427336);
-        this.mOffsetMs = this.mTimerValue * 1000;
-        if (!TextUtils.isEmpty((CharSequence)s) && this.mContext != null && this.mContext.getServiceManager() != null) {
-            this.mContext.getServiceManager().getBrowse().fetchEpisodeDetails(s, new PostPlayForMDX$FetchPostPlayForPlaybackCallback(this));
-        }
     }
     
     @Override
@@ -142,7 +155,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void initInfoContainer() {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493281));
+            this.mInfoTitleView.setText(this.mContext.getResources().getText(2131493289));
             this.mInfoTitleView.setVisibility(4);
         }
         if (this.mTimerView != null) {

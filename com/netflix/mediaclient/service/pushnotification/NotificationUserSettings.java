@@ -74,7 +74,7 @@ class NotificationUserSettings
             notificationUserSettings.optInDisplayed = true;
         }
         notificationUserSettings.currentProfileToken = jsonObject.getString(NotificationUserSettings.PARAM_CURRENT_PROFILE_TOKEN);
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", "Loaded " + notificationUserSettings);
         }
         return notificationUserSettings;
@@ -92,7 +92,7 @@ class NotificationUserSettings
             hashMap = new HashMap<String, NotificationUserSettings>(jsonArray.length());
             for (int i = 0; i < jsonArray.length(); ++i) {
                 final NotificationUserSettings load = load(jsonArray.getJSONObject(i));
-                if (Log.isLoggable("nf_push", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_push", "User setttings found: " + load);
                 }
                 hashMap.put(load.accountOwnerToken, load);
@@ -120,7 +120,7 @@ class NotificationUserSettings
             return;
         }
         final String string = jsonArray.toString();
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", "Saving " + string);
         }
         PreferenceUtils.putStringPref(context, "notification_settings", string);

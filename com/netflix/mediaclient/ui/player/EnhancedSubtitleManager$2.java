@@ -62,7 +62,7 @@ class EnhancedSubtitleManager$2 implements Runnable
     @Override
     public void run() {
         final boolean remove = this.this$0.mPendingActions.remove(this);
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Delayed show " + this.val$show + " for block " + this.val$block.getId());
             Log.d("nf_subtitles_render", "Removed from pending queue " + remove);
         }

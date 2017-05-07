@@ -4,8 +4,7 @@
 
 package com.netflix.mediaclient.ui.kubrick.lolomo;
 
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
+import com.netflix.mediaclient.ui.lomo.LoMoUtils;
 import android.widget.FrameLayout$LayoutParams;
 import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter$RowHolder;
 import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter$LoMoRowContent;
@@ -19,18 +18,25 @@ import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDupl
 import java.util.ArrayList;
 import android.util.Log;
 import com.netflix.mediaclient.util.ThreadUtils;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.util.List;
-import com.netflix.mediaclient.ui.lolomo.BasePaginatedLoLoMoAdapter;
+import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
+import java.util.EnumSet;
 
 public class KubrickLolomoUtils
 {
     private static final String TAG = "KubrickLolomoUtils";
+    private static final EnumSet<LoMoType> duplicateRowTypes;
     
-    public static <T extends LoMo> List<T> createDuplicateRows(final BasePaginatedLoLoMoAdapter<?> basePaginatedLoLoMoAdapter, final List<? extends LoMo> list, int n) {
+    static {
+        duplicateRowTypes = EnumSet.of(LoMoType.STANDARD, LoMoType.POPULAR_TITLES, LoMoType.TOP_TEN, LoMoType.SOCIAL_FRIEND, LoMoType.SOCIAL_GROUP, LoMoType.SOCIAL_POPULAR);
+    }
+    
+    public static <T extends LoMo> List<T> createDuplicateRows(final BaseLoLoMoAdapter<?> baseLoLoMoAdapter, final List<? extends LoMo> list, int n) {
         ThreadUtils.assertOnMain();
         List<T> list2 = (List<T>)list;
-        if (basePaginatedLoLoMoAdapter.getCount() < n) {
+        if (baseLoLoMoAdapter.getCount() < n) {
             Log.v("KubrickLolomoUtils", "Manipulating lomo data to inject Kubrick duplicate rows");
             list2 = new ArrayList<T>(list.size() * 2);
             for (final LoMo loMo : list) {
@@ -49,9 +55,9 @@ public class KubrickLolomoUtils
     }
     
     public static BaseLoLoMoAdapter$RowHolder createHolder(final NetflixActivity netflixActivity, final View view, final LinearLayout linearLayout, final TextView textView, final BaseLoLoMoAdapter$LoMoRowContent baseLoLoMoAdapter$LoMoRowContent, final View view2) {
-        final TextView textView2 = (TextView)view.findViewById(2131165444);
+        final TextView textView2 = (TextView)view.findViewById(2131165449);
         ((FrameLayout$LayoutParams)textView2.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragImageOffsetLeftPx(netflixActivity);
-        return new KubrickLolomoUtils$KubrickRowHolder((View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, textView2, view.findViewById(2131165439));
+        return new KubrickLolomoUtils$KubrickRowHolder((View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2, textView2, view.findViewById(2131165444));
     }
     
     public static boolean isDuplicateRow(final LoMo loMo) {
@@ -59,8 +65,7 @@ public class KubrickLolomoUtils
     }
     
     public static boolean shouldDuplicateLomo(final LoMo loMo) {
-        final LoMoType type = loMo.getType();
-        return type == LoMoType.STANDARD || type == LoMoType.SOCIAL_FRIEND || type == LoMoType.SOCIAL_GROUP || type == LoMoType.SOCIAL_POPULAR;
+        return KubrickLolomoUtils.duplicateRowTypes.contains(loMo.getType());
     }
     
     public static void updateRowViews(final BaseLoLoMoAdapter$RowHolder baseLoLoMoAdapter$RowHolder, final LoMo loMo, int visibility) {

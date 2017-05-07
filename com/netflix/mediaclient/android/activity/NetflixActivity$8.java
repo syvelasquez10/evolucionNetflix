@@ -20,7 +20,7 @@ class NetflixActivity$8 extends BroadcastReceiver
     }
     
     private void logWithClassName(final String s) {
-        if (Log.isLoggable("NetflixActivity", 3)) {
+        if (Log.isLoggable()) {
             Log.d("NetflixActivity", this.this$0.getClass().getSimpleName() + ": " + s);
         }
     }

@@ -10,8 +10,8 @@ import android.widget.Toast;
 import com.netflix.mediaclient.android.app.Status;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.Log;
 
 public class AddToMyListWrapper
@@ -31,18 +31,18 @@ public class AddToMyListWrapper
             Log.v("AddToMyListWrapper", "No listeners for video: " + s);
             return;
         }
-        if (Log.isLoggable("AddToMyListWrapper", 2)) {
+        if (Log.isLoggable()) {
             Log.v("AddToMyListWrapper", "Updating state for video: " + s + " to: " + stateAndNotifyListeners);
         }
         addToListData.setStateAndNotifyListeners(stateAndNotifyListeners);
     }
     
     void addVideoToMyList(final String s, final VideoType videoType, final int n, final String s2) {
-        this.serviceMan.getBrowse().addToQueue(s, videoType, n, KubrickUtils.shouldShowKubrickExperience(this.serviceMan.getActivity()), s2, new LoggingManagerCallback("AddToMyListWrapper"));
+        this.serviceMan.getBrowse().addToQueue(s, videoType, n, BrowseExperience.shouldLoadKubrickLeaves(), s2, new LoggingManagerCallback("AddToMyListWrapper"));
     }
     
     public TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final TextView textView2, final String s, final VideoType videoType, final int n, final boolean b) {
-        if (netflixActivity.isKubrick()) {
+        if (BrowseExperience.isKubrick()) {
             return new KubrickTextViewWrapper(this, netflixActivity, textView, textView2, s, videoType, n, b);
         }
         return new TextViewWrapper(this, netflixActivity, textView, s, videoType, n, b);
@@ -79,7 +79,7 @@ public class AddToMyListWrapper
             Log.w("AddToMyListWrapper", "Unexpected case - can't find listener for video: " + s);
             return;
         }
-        if (Log.isLoggable("AddToMyListWrapper", 2)) {
+        if (Log.isLoggable()) {
             Log.v("AddToMyListWrapper", "Removing listener for video: " + s + ", listener: " + addToListData$StateListener);
         }
         addToListData.removeListener(addToListData$StateListener);
@@ -102,17 +102,17 @@ public class AddToMyListWrapper
             Log.v("AddToMyListWrapper", "Could not revert state for video: " + s);
         }
         else {
-            if (Log.isLoggable("AddToMyListWrapper", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("AddToMyListWrapper", "Reverting state for video: " + s);
             }
             addToListData.revertState();
             if (b2) {
                 int n;
                 if (b) {
-                    n = 2131493176;
+                    n = 2131493183;
                 }
                 else {
-                    n = 2131493177;
+                    n = 2131493184;
                 }
                 Toast.makeText((Context)this.serviceMan.getActivity(), n, 1).show();
             }

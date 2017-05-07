@@ -4,9 +4,10 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.util.SparseIntArray;
 import android.util.SparseArray;
@@ -47,40 +48,26 @@ public final class LomoConfig
     }
     
     public static int computeNumVideosToFetchPerBatch(final NetflixActivity netflixActivity, final LoMoType loMoType) {
-        final int n = 6;
-        int n2;
         if (loMoType == LoMoType.BILLBOARD) {
-            n2 = 10;
+            return 10;
+        }
+        final int screenSizeCategory = DeviceUtils.getScreenSizeCategory((Context)netflixActivity);
+        if (BrowseExperience.isKubrick() || BrowseExperience.isKubrickKids()) {
+            if (loMoType == LoMoType.CONTINUE_WATCHING) {
+                return 6;
+            }
+            return 12;
         }
         else {
-            final int screenSizeCategory = DeviceUtils.getScreenSizeCategory((Context)netflixActivity);
-            if (netflixActivity.isKubrick()) {
-                n2 = n;
-                if (loMoType != LoMoType.CONTINUE_WATCHING) {
-                    n2 = n;
-                    if (loMoType != LoMoType.INSTANT_QUEUE) {
-                        return 12;
-                    }
+            switch (LomoConfig$1.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$LoMoType[loMoType.ordinal()]) {
+                default: {
+                    return ((SparseIntArray)LomoConfig.numVideosPerPageTable.get(1)).get(screenSizeCategory) * ((SparseIntArray)LomoConfig.numVideosPerPageTable.get(2)).get(screenSizeCategory);
                 }
-            }
-            else if (netflixActivity.isForKids()) {
-                if (loMoType == LoMoType.CONTINUE_WATCHING) {
-                    return 3;
-                }
-                return 5;
-            }
-            else {
-                switch (LomoConfig$1.$SwitchMap$com$netflix$mediaclient$servicemgr$model$LoMoType[loMoType.ordinal()]) {
-                    default: {
-                        return ((SparseIntArray)LomoConfig.numVideosPerPageTable.get(1)).get(screenSizeCategory) * ((SparseIntArray)LomoConfig.numVideosPerPageTable.get(2)).get(screenSizeCategory);
-                    }
-                    case 1: {
-                        return Math.max(((SparseIntArray)LomoConfig.numCWVideosPerPageTable.get(1)).get(screenSizeCategory) * ((SparseIntArray)LomoConfig.numCWVideosPerPageTable.get(2)).get(screenSizeCategory), 4);
-                    }
+                case 1: {
+                    return Math.max(((SparseIntArray)LomoConfig.numCWVideosPerPageTable.get(1)).get(screenSizeCategory) * ((SparseIntArray)LomoConfig.numCWVideosPerPageTable.get(2)).get(screenSizeCategory), 4);
                 }
             }
         }
-        return n2;
     }
     
     public static int computeStandardNumVideosPerPage(final NetflixActivity netflixActivity, final boolean b) {

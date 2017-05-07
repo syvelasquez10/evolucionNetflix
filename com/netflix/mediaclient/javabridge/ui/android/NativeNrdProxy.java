@@ -77,7 +77,7 @@ public final class NativeNrdProxy extends BaseNrdProxy
                 Log.d("native_nrd_proxy", "handleName:: ObjectSyncComplete event, pass to Nrdp proxy");
                 return this.nrdp.processUpdate(jsonObject);
             }
-            if (Log.isLoggable("native_nrd_proxy", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("native_nrd_proxy", "Pass to UI. Handler not found for name " + string);
                 return 0;
             }
@@ -94,12 +94,12 @@ public final class NativeNrdProxy extends BaseNrdProxy
         }
         final NrdpObject nrdpObject = this.objMap.get(this.getKey(string));
         if (nrdpObject != null) {
-            if (Log.isLoggable("native_nrd_proxy", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("native_nrd_proxy", "Handler found for object " + string);
             }
             return nrdpObject.processUpdate(jsonObject);
         }
-        if (Log.isLoggable("native_nrd_proxy", 3)) {
+        if (Log.isLoggable()) {
             Log.d("native_nrd_proxy", "Pass to UI. Handler not found for object " + string);
         }
         return 0;
@@ -107,7 +107,7 @@ public final class NativeNrdProxy extends BaseNrdProxy
     
     @Override
     public NrdpObject findObjectCache(final String s) {
-        if (Log.isLoggable("native_nrd_proxy", 3)) {
+        if (Log.isLoggable()) {
             Log.d("native_nrd_proxy", "findObjectCache::  " + s);
         }
         return this.objMap.get(s);
@@ -133,7 +133,7 @@ public final class NativeNrdProxy extends BaseNrdProxy
     
     @Override
     public void invokeMethod(final String s, final String s2, final String s3) {
-        if (Log.isLoggable("native_nrd_proxy", 3)) {
+        if (Log.isLoggable()) {
             Log.d("native_nrd_proxy", "invokeMethod(SSS):: object: " + s + ", method: " + s2 + ", arguments: " + s3);
         }
         if (this.transport != null) {
@@ -145,7 +145,7 @@ public final class NativeNrdProxy extends BaseNrdProxy
     
     @Override
     public void processUpdate(final String s) {
-        if (Log.isLoggable("native_nrd_proxy", 3)) {
+        if (Log.isLoggable()) {
             Log.d("native_nrd_proxy", "processUpdate:: " + s);
         }
         JSONObject jsonObject;
@@ -173,7 +173,7 @@ public final class NativeNrdProxy extends BaseNrdProxy
     
     @Override
     public void setProperty(final String s, final String s2, final String s3) {
-        if (Log.isLoggable("native_nrd_proxy", 3)) {
+        if (Log.isLoggable()) {
             Log.d("native_nrd_proxy", "setProperty:: object: " + s + ", property: " + s2 + ", value: " + s3);
         }
         if (this.transport != null) {

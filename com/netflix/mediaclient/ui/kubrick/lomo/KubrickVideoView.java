@@ -5,12 +5,13 @@
 package com.netflix.mediaclient.ui.kubrick.lomo;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ImageView$ScaleType;
@@ -18,7 +19,7 @@ import android.util.AttributeSet;
 import android.content.Context;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
-import com.netflix.mediaclient.servicemgr.model.KubrickVideo;
+import com.netflix.mediaclient.servicemgr.interface_.KubrickVideo;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup$IVideoView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 
@@ -46,13 +47,10 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130837848);
+        this.setBackgroundResource(2130837876);
         this.setScaleType(ImageView$ScaleType.CENTER_CROP);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
-        this.showPlaceholderImg = true;
-        if (this.getContext() instanceof NetflixActivity) {
-            this.showPlaceholderImg = (!((NetflixActivity)this.getContext()).isKubrick() && ((NetflixActivity)this.getContext()).isForKids());
-        }
+        this.showPlaceholderImg = !BrowseExperience.isKubrickKids();
     }
     
     @Override

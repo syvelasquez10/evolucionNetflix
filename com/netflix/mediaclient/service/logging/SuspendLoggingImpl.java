@@ -99,7 +99,7 @@ public final class SuspendLoggingImpl implements SuspendLogging
             this.endResumingSession();
             return true;
         }
-        if (Log.isLoggable("nf_log", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log", "We do not support action " + action);
         }
         return false;

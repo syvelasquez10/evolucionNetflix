@@ -61,7 +61,7 @@ public class DataUtil
     }
     
     public static void logVerboseUriInfo(final String s, final Uri uri) {
-        if (Log.isLoggable(s, 2)) {
+        if (Log.isLoggable()) {
             Log.v(s, "Uri info");
             Log.v(s, "   scheme: " + uri.getScheme());
             Log.v(s, "   host: " + uri.getHost());

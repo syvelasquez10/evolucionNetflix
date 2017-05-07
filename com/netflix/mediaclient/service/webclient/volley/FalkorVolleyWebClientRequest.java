@@ -9,6 +9,7 @@ import com.android.volley.Response;
 import com.android.volley.NetworkResponse;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.HashMap;
+import com.android.volley.AuthFailureError;
 import java.util.Map;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.logging.client.model.Error;
@@ -36,6 +37,7 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
     public static final String ENDPOINT_REVISION = "X-Netflix.api-script-revision";
     public static final String NETFLIX_API_SCRIPT_EXECUTION_TIME_HEADER = "X-Netflix.api-script-execution-time";
     public static final String NETFLIX_SERVER_EXECUTION_TIME_HEADER = "X-Netflix.execution-time";
+    public static final String OPTIONAL_URL_REQUEST_PARAM_KEY = "&param=";
     private static final String PARAM_NAME_CALLPATH = "callPath";
     private static final String PARAM_NAME_PATH = "path";
     public static final String PARAM_NAME_PATH_SUFFIX = "pathSuffix";
@@ -70,7 +72,7 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
     @Override
     public void deliverError(final VolleyError volleyError) {
         final long durationTimeMs = this.getDurationTimeMs();
-        if (Log.isLoggable("FalkorVolleyWebClientRequest", 3)) {
+        if (Log.isLoggable()) {
             Log.d("FalkorVolleyWebClientRequest", "request duration time (ms): " + durationTimeMs + ", class: " + this.getClass());
         }
         final NetflixStatus status = VolleyUtils.getStatus(volleyError, this.mErrorLogger);
@@ -89,7 +91,7 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
     protected void deliverResponse(final T t) {
         super.deliverResponse(t);
         final long durationTimeMs = this.getDurationTimeMs();
-        if (Log.isLoggable("FalkorVolleyWebClientRequest", 3)) {
+        if (Log.isLoggable()) {
             Log.d("FalkorVolleyWebClientRequest", "request duration time (ms): " + durationTimeMs + ", class: " + this.getClass());
         }
         if (this.mContext != null) {
@@ -124,6 +126,9 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
     
     @Override
     public Map<String, String> getHeaders() {
+        if (this.areNetflixCookiesNull()) {
+            throw new AuthFailureError("Can't build valid headers. Cookies are null. url=" + this.getUrl());
+        }
         Map<String, String> headers;
         if ((headers = super.getHeaders()) == null) {
             headers = new HashMap<String, String>();
@@ -178,10 +183,10 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
         }
         this.storeReqNetflixId(this.getCurrentNetflixId());
         string = sb.toString();
-        if (Log.isLoggable("FalkorVolleyWebClientRequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("FalkorVolleyWebClientRequest", "VolleyWebClientRequest URL = " + string);
         }
-        if (Log.isLoggable("FalkorVolleyWebClientRequest", 5) && string.length() > 2000) {
+        if (Log.isLoggable() && string.length() > 2000) {
             Log.w("FalkorVolleyWebClientRequest", "URL length is over 2000 chars... this will probably cause problems");
             Log.w("FalkorVolleyWebClientRequest", "URL: " + string);
         }
@@ -198,10 +203,10 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
         // Original Bytecode:
         // 
         //     0: aload_1        
-        //     1: ifnull          181
+        //     1: ifnull          178
         //     4: aload_1        
         //     5: getfield        com/android/volley/NetworkResponse.headers:Ljava/util/Map;
-        //     8: ifnull          181
+        //     8: ifnull          178
         //    11: aload_1        
         //    12: getfield        com/android/volley/NetworkResponse.headers:Ljava/util/Map;
         //    15: ldc             "X-Netflix.api-script-execution-time"
@@ -221,79 +226,77 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
         //    48: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
         //    53: checkcast       Ljava/lang/String;
         //    56: putfield        com/netflix/mediaclient/service/webclient/volley/FalkorVolleyWebClientRequest.mEndpointRevision:Ljava/lang/String;
-        //    59: ldc             "FalkorVolleyWebClientRequest"
-        //    61: iconst_3       
-        //    62: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //    65: ifeq            117
-        //    68: ldc             "FalkorVolleyWebClientRequest"
-        //    70: new             Ljava/lang/StringBuilder;
-        //    73: dup            
-        //    74: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    77: ldc_w           "execTime: "
-        //    80: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    83: aload_2        
-        //    84: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    87: ldc_w           ", total server time "
-        //    90: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    93: aload_3        
-        //    94: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    97: ldc_w           ", revision: "
-        //   100: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   103: aload_0        
-        //   104: getfield        com/netflix/mediaclient/service/webclient/volley/FalkorVolleyWebClientRequest.mEndpointRevision:Ljava/lang/String;
-        //   107: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   110: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   113: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   116: pop            
-        //   117: aload_3        
-        //   118: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
-        //   121: ifeq            132
-        //   124: aload_0        
-        //   125: aload_3        
-        //   126: invokestatic    java/lang/Long.parseLong:(Ljava/lang/String;)J
-        //   129: putfield        com/netflix/mediaclient/service/webclient/volley/FalkorVolleyWebClientRequest.mServerExecTimeInMs:J
-        //   132: aload_2        
-        //   133: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
-        //   136: ifeq            147
-        //   139: aload_0        
-        //   140: aload_2        
-        //   141: invokestatic    java/lang/Long.parseLong:(Ljava/lang/String;)J
-        //   144: putfield        com/netflix/mediaclient/service/webclient/volley/FalkorVolleyWebClientRequest.mApiScriptExecTimeInMs:J
-        //   147: aload_0        
-        //   148: aload_1        
-        //   149: invokespecial   com/netflix/mediaclient/service/webclient/volley/VolleyWebClientRequest.parseNetworkResponse:(Lcom/android/volley/NetworkResponse;)Lcom/android/volley/Response;
-        //   152: areturn        
-        //   153: astore_3       
-        //   154: ldc             "FalkorVolleyWebClientRequest"
-        //   156: ldc_w           "Failed to parse server execution time!"
-        //   159: aload_3        
-        //   160: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   163: pop            
-        //   164: goto            132
-        //   167: astore_2       
-        //   168: ldc             "FalkorVolleyWebClientRequest"
-        //   170: ldc_w           "Failed to parse api script execution time!"
-        //   173: aload_2        
-        //   174: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   177: pop            
-        //   178: goto            147
-        //   181: ldc             "FalkorVolleyWebClientRequest"
-        //   183: ldc_w           "execTime not found!"
-        //   186: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
-        //   189: pop            
-        //   190: goto            147
+        //    59: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //    62: ifeq            114
+        //    65: ldc             "FalkorVolleyWebClientRequest"
+        //    67: new             Ljava/lang/StringBuilder;
+        //    70: dup            
+        //    71: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    74: ldc_w           "execTime: "
+        //    77: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    80: aload_2        
+        //    81: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    84: ldc_w           ", total server time "
+        //    87: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    90: aload_3        
+        //    91: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    94: ldc_w           ", revision: "
+        //    97: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   100: aload_0        
+        //   101: getfield        com/netflix/mediaclient/service/webclient/volley/FalkorVolleyWebClientRequest.mEndpointRevision:Ljava/lang/String;
+        //   104: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   107: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   110: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   113: pop            
+        //   114: aload_3        
+        //   115: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
+        //   118: ifeq            129
+        //   121: aload_0        
+        //   122: aload_3        
+        //   123: invokestatic    java/lang/Long.parseLong:(Ljava/lang/String;)J
+        //   126: putfield        com/netflix/mediaclient/service/webclient/volley/FalkorVolleyWebClientRequest.mServerExecTimeInMs:J
+        //   129: aload_2        
+        //   130: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
+        //   133: ifeq            144
+        //   136: aload_0        
+        //   137: aload_2        
+        //   138: invokestatic    java/lang/Long.parseLong:(Ljava/lang/String;)J
+        //   141: putfield        com/netflix/mediaclient/service/webclient/volley/FalkorVolleyWebClientRequest.mApiScriptExecTimeInMs:J
+        //   144: aload_0        
+        //   145: aload_1        
+        //   146: invokespecial   com/netflix/mediaclient/service/webclient/volley/VolleyWebClientRequest.parseNetworkResponse:(Lcom/android/volley/NetworkResponse;)Lcom/android/volley/Response;
+        //   149: areturn        
+        //   150: astore_3       
+        //   151: ldc             "FalkorVolleyWebClientRequest"
+        //   153: ldc_w           "Failed to parse server execution time!"
+        //   156: aload_3        
+        //   157: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   160: pop            
+        //   161: goto            129
+        //   164: astore_2       
+        //   165: ldc             "FalkorVolleyWebClientRequest"
+        //   167: ldc_w           "Failed to parse api script execution time!"
+        //   170: aload_2        
+        //   171: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   174: pop            
+        //   175: goto            144
+        //   178: ldc             "FalkorVolleyWebClientRequest"
+        //   180: ldc_w           "execTime not found!"
+        //   183: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   186: pop            
+        //   187: goto            144
         //    Signature:
         //  (Lcom/android/volley/NetworkResponse;)Lcom/android/volley/Response<TT;>;
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  124    132    153    167    Ljava/lang/Throwable;
-        //  139    147    167    181    Ljava/lang/Throwable;
+        //  121    129    150    164    Ljava/lang/Throwable;
+        //  136    144    164    178    Ljava/lang/Throwable;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0147:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0144:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -323,7 +326,7 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
         try {
             falkorResponse = this.parseFalkorResponse(s);
             this.mParseTimeInMs = SystemClock.elapsedRealtime() - this.mParseTimeInMs;
-            if (Log.isLoggable("FalkorVolleyWebClientRequest", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("FalkorVolleyWebClientRequest", "parse time (ms): " + this.mParseTimeInMs + ", class: " + this.getClass());
             }
             if (!this.parsedResponseCanBeNull() && falkorResponse == null) {

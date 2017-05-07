@@ -152,7 +152,7 @@ public class SignupActivity$NFAndroidJS
             Log.e("SignupActivity", "Failed to LoginToApp");
             ex.printStackTrace();
             this.this$0.mSignupOngoing = false;
-            this.this$0.provideDialog(this.this$0.getString(2131493250), this.this$0.mHandleError);
+            this.this$0.provideDialog(this.this$0.getString(2131493258), this.this$0.mHandleError);
             return;
         }
         Log.d("SignupActivity", "loginToApp, invalid state to Login, bailing out");

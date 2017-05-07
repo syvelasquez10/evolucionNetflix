@@ -11,16 +11,18 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
+import com.netflix.mediaclient.servicemgr.IBrowseManager;
 import com.netflix.mediaclient.util.MdxUtils$SetVideoRatingCallback;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.MdxUtils;
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.view.View;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -30,6 +32,7 @@ import android.app.Fragment;
 import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.DialogFragment;
+import com.netflix.mediaclient.Log;
 import java.util.HashSet;
 import com.netflix.mediaclient.service.mdx.MdxKeyEventHandler;
 import com.netflix.mediaclient.service.mdx.MdxKeyEventHandler$MdxKeyEventCallbacks;
@@ -38,14 +41,13 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.common.LanguageSelector;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.IMdx;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.Set;
 import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
-import com.netflix.mediaclient.ui.details.EpisodeRowView$EpisodeRowListener;
+import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import android.app.Dialog;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.media.Language;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
 
@@ -59,7 +61,7 @@ class MdxMiniPlayerFrag$5 implements LanguageSelector$LanguageSelectorCallback
     
     @Override
     public void languageChanged(final Language language, final boolean b) {
-        Log.v("MdxMiniPlayerFrag", "Language changed via dialog: " + language);
+        this.this$0.log("Language changed via dialog: " + language);
         if (this.this$0.remotePlayer != null) {
             this.this$0.remotePlayer.changeLanguage(language);
             this.this$0.remotePlayer.requestAudioAndSubtitleData();

@@ -38,7 +38,7 @@ class PushNotificationAgent$3 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable("nf_push", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_push", "Received intent " + intent);
         }
         final String action = intent.getAction();
@@ -62,7 +62,7 @@ class PushNotificationAgent$3 extends BroadcastReceiver
                 this.this$0.onNotificationOptIn(false);
                 return;
             }
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", "We do not support action " + action);
             }
         }

@@ -60,14 +60,14 @@ public class LoginActivity extends AccountActivity
         final String string2 = this.passwordView.getText().toString();
         boolean b = false;
         if (this.passwordIsInvalid(string2)) {
-            final String string3 = this.getString(2131493190);
+            final String string3 = this.getString(2131493197);
             this.reportCancel(string3);
             this.passwordView.setError((CharSequence)string3);
             o = this.passwordView;
             b = true;
         }
         if (this.emailIsInvalid(string)) {
-            final String string4 = this.getString(2131493189);
+            final String string4 = this.getString(2131493196);
             this.reportCancel(string4);
             this.emailView.setError((CharSequence)string4);
             o = this.emailView;
@@ -86,7 +86,7 @@ public class LoginActivity extends AccountActivity
         final int screenSensorOrientation = DeviceUtils.getScreenSensorOrientation((Context)this);
         Log.i("LoginActivity", "Locking orientation to: " + screenSensorOrientation);
         this.setRequestedOrientation(screenSensorOrientation);
-        this.statusMessageView.setText(2131493188);
+        this.statusMessageView.setText(2131493195);
         this.showProgress(true);
         serviceManager.loginUser(string, string2, this.loginQueryCallback);
     }
@@ -100,12 +100,12 @@ public class LoginActivity extends AccountActivity
     }
     
     private void handleLoginComplete(final Status status) {
-        if (Log.isLoggable("LoginActivity", 3)) {
+        if (Log.isLoggable()) {
             Log.d("LoginActivity", "Login Complete - Status: " + status);
         }
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showDebugToast(2131493195);
+            this.showDebugToast(2131493202);
             return;
         }
         this.handleUserAgentErrors(this, status);
@@ -186,19 +186,19 @@ public class LoginActivity extends AccountActivity
     protected String handleUserAgentErrors(final Activity activity, final Status status) {
         final StatusCode statusCode = status.getStatusCode();
         if (statusCode == StatusCode.NRD_LOGIN_ACTIONID_4 || statusCode == StatusCode.NRD_LOGIN_ACTIONID_8) {
-            final String string = this.getString(2131493191);
+            final String string = this.getString(2131493198);
             this.passwordView.setError((CharSequence)string);
             this.reportError(status, string);
             return string;
         }
         if (statusCode == StatusCode.NRD_LOGIN_ACTIONID_2) {
-            final String string2 = this.getString(2131493246) + " (" + statusCode.getValue() + ")";
+            final String string2 = this.getString(2131493254) + " (" + statusCode.getValue() + ")";
             this.displayUserAgentDialog(string2, null, false);
             this.reportError(status, string2);
             return string2;
         }
         if (statusCode == StatusCode.NETWORK_ERROR) {
-            final String string3 = this.getString(2131493247) + " (" + statusCode.getValue() + ")";
+            final String string3 = this.getString(2131493255) + " (" + statusCode.getValue() + ")";
             this.displayUserAgentDialog(string3, null, true);
             this.reportError(status, string3);
             return string3;
@@ -209,15 +209,15 @@ public class LoginActivity extends AccountActivity
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         Log.d("LoginActivity", this.getIntent());
-        this.setContentView(2130903133);
+        this.setContentView(2130903137);
         UserActionLogUtils.reportLoginActionEnded((Context)this, IClientLogging$CompletionReason.success, null);
-        (this.emailView = (EditText)this.findViewById(2131165486)).requestFocus();
-        (this.passwordView = (EditText)this.findViewById(2131165487)).setOnEditorActionListener((TextView$OnEditorActionListener)new LoginActivity$1(this));
-        this.loginForm = this.findViewById(2131165485);
-        this.loginButton = this.findViewById(2131165483);
+        (this.emailView = (EditText)this.findViewById(2131165490)).requestFocus();
+        (this.passwordView = (EditText)this.findViewById(2131165491)).setOnEditorActionListener((TextView$OnEditorActionListener)new LoginActivity$1(this));
+        this.loginForm = this.findViewById(2131165489);
+        this.loginButton = this.findViewById(2131165487);
         this.statusGroup = this.findViewById(2131165348);
-        this.statusMessageView = (TextView)this.findViewById(2131165489);
-        this.findViewById(2131165483).setOnClickListener((View$OnClickListener)new LoginActivity$2(this));
-        this.findViewById(2131165484).setOnClickListener((View$OnClickListener)new LoginActivity$3(this));
+        this.statusMessageView = (TextView)this.findViewById(2131165493);
+        this.findViewById(2131165487).setOnClickListener((View$OnClickListener)new LoginActivity$2(this));
+        this.findViewById(2131165488).setOnClickListener((View$OnClickListener)new LoginActivity$3(this));
     }
 }

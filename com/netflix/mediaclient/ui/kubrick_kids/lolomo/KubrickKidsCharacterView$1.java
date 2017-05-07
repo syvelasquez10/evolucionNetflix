@@ -9,10 +9,10 @@ import java.util.ArrayList;
 final class KubrickKidsCharacterView$1 extends ArrayList<Integer>
 {
     KubrickKidsCharacterView$1() {
-        this.add(2130837743);
-        this.add(2130837744);
-        this.add(2130837745);
-        this.add(2130837746);
-        this.add(2130837747);
+        this.add(2130837763);
+        this.add(2130837764);
+        this.add(2130837765);
+        this.add(2130837766);
+        this.add(2130837767);
     }
 }

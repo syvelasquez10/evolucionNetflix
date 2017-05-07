@@ -26,11 +26,11 @@ public final class MessageData
             Log.w("nf_push", "Intent or msg is null!");
         }
         else {
-            if (Log.isLoggable("nf_push", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("nf_push", "Add msg data to intent: " + messageData);
             }
             if (StringUtils.isNotEmpty(messageData.getGuid())) {
-                if (Log.isLoggable("nf_push", 2)) {
+                if (Log.isLoggable()) {
                     Log.v("nf_push", "Add GUID to intent: " + messageData.getGuid());
                 }
                 intent.putExtra("guid", messageData.getGuid());

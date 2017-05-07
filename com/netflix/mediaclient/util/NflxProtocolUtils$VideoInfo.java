@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.util;
 
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 
 public class NflxProtocolUtils$VideoInfo
 {

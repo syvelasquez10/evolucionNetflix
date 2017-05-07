@@ -12,7 +12,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import android.os.Parcel;
-import com.netflix.mediaclient.servicemgr.model.trackable.SearchTrackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.SearchTrackable;
 
 public class SearchTrackableListSummary extends TrackableListSummary implements SearchTrackable
 {

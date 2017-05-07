@@ -102,7 +102,7 @@ public interface IMedia
     
     void setNetworkProfile(final int p0);
     
-    void setStreamingQoe(final String p0, final boolean p1);
+    void setStreamingQoe(final String p0, final boolean p1, final boolean p2);
     
     void setSubtitleOutputMode(final IMedia$SubtitleOutputMode p0);
     

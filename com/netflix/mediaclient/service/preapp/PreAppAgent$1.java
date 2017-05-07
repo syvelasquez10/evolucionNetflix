@@ -28,7 +28,7 @@ class PreAppAgent$1 extends BroadcastReceiver
     public void onReceive(final Context context, final Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (Log.isLoggable("nf_preappagent", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_preappagent", String.format("received intent action: %s", action));
             }
             if ("com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_ALL_UPDATED".equals(action)) {

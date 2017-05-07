@@ -26,7 +26,7 @@ public class ScreenMargins
     public static ScreenMargins getScreenMargins(final String s, final String s2, float n) {
         final ScreenMargins screenMargins = new ScreenMargins();
         if (!StringUtils.isEmpty(s)) {
-            if (Log.isLoggable("nf_subtitles", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Calculate AspectDiff using extent " + s);
             }
             final Pair<Integer, Integer> numberPair = StringUtils.extractNumberPair(s);

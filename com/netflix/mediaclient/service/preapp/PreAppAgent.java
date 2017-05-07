@@ -19,6 +19,7 @@ import com.netflix.mediaclient.service.ServiceAgent;
 
 public class PreAppAgent extends ServiceAgent implements ServiceAgent$PreAppAgentInterface
 {
+    public static final String PREAPP_AGENT_TO_ACCOUNT_DEACTIVE = "com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_ACCOUNT_DEACTIVE";
     public static final String PREAPP_AGENT_TO_ALL_UPDATED = "com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_ALL_UPDATED";
     public static final String PREAPP_AGENT_TO_CW_UPDATED = "com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_CW_UPDATED";
     public static final String PREAPP_AGENT_TO_IQ_UPDATED = "com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_IQ_UPDATED";
@@ -32,7 +33,8 @@ public class PreAppAgent extends ServiceAgent implements ServiceAgent$PreAppAgen
         this.mUserAgentIntentReceiver = new PreAppAgent$2(this);
     }
     
-    private void handleProfileDeactive() {
+    private void handleAccountDeactive(final Context context) {
+        this.mPreAppAgentDataHandler.clear(PreAppAgentEventType.ACCOUNT_DEACTIVATED);
     }
     
     public static void informCwUpdated(final Context context) {
@@ -61,7 +63,7 @@ public class PreAppAgent extends ServiceAgent implements ServiceAgent$PreAppAgen
     
     private static void sendLocalBroadcast(final Context context, final String s) {
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(s));
-        if (Log.isLoggable("nf_preappagent", 3)) {
+        if (Log.isLoggable()) {
             Log.v("nf_preappagent", String.format("Intent %s sent", s));
         }
     }

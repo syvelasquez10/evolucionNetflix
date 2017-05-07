@@ -93,7 +93,7 @@ public class NotificationFeedback extends BaseCmpEvent implements Runnable
             Log.d("nf_rest", "Executing NotificationFeedbackCommand WebAPI call start");
             final String execute = notificationFeedbackCommand.execute();
             Log.d("nf_rest", "Executing NotificationFeedbackCommand WebAPI call done");
-            if (Log.isLoggable("nf_rest", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_rest", "NotificationFeedbackCommand response: " + execute);
             }
         }

@@ -18,13 +18,17 @@ public final class MdxTargetSelection
     
     public MdxTargetSelection(final Pair<String, String>[] array, final String s, final boolean b) {
         this.TAG = "nf_mdx";
+        Pair[] array2 = array;
+        if (array == null) {
+            array2 = new Pair[0];
+        }
         if (b) {
             Log.d("nf_mdx", "Include all targets");
-            this.mdxTargets = this.createListOfAllTargets(array, s);
+            this.mdxTargets = this.createListOfAllTargets((Pair<String, String>[])array2, s);
         }
         else {
             Log.d("nf_mdx", "Include ONLY remote targets");
-            this.mdxTargets = this.createListOfRemoteTargetsOnly(array, s);
+            this.mdxTargets = this.createListOfRemoteTargetsOnly((Pair<String, String>[])array2, s);
         }
         if (this.selectedTarget == null) {
             this.selectedTarget = this.mdxTargets[0];
@@ -62,7 +66,7 @@ public final class MdxTargetSelection
             for (int length = array.length, i = 0; i < length; ++i) {
                 final MdxTarget mdxTarget = array[i];
                 if (mdxTarget.isLocal()) {
-                    list.add(context.getString(2131493225));
+                    list.add(context.getString(2131493233));
                 }
                 else {
                     list.add(mdxTarget.getFriendlyName());

@@ -46,14 +46,14 @@ public abstract class NetflixDialogFrag extends DialogFragment implements Loadin
     
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        if (Log.isLoggable("NetflixDialogFrag", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixDialogFrag", "Creating frag: " + this.getClass().getSimpleName() + ", hash: " + this.hashCode());
         }
     }
     
     public void onDestroy() {
         super.onDestroy();
-        if (Log.isLoggable("NetflixDialogFrag", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixDialogFrag", "Destroying frag: " + this.getClass().getSimpleName() + ", hash: " + this.hashCode());
         }
         this.isDestroyed = true;

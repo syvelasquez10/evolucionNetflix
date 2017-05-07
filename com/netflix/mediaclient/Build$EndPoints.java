@@ -7,7 +7,7 @@ package com.netflix.mediaclient;
 public interface Build$EndPoints
 {
     public static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
-    public static final String ANDROID_ENDPOINT_FULL = "/android/3.11/api";
+    public static final String ANDROID_ENDPOINT_FULL = "/android/3.12/api";
     public static final String BOOTLOADER_URL = "https://www.netflix.com/applanding/android";
     public static final String CLIENT_LOGGING_ENDPOINT = "ichnaea.netflix.com";
     public static final String CLIENT_LOGGING_PATH = "/log";

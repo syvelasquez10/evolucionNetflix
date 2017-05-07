@@ -26,7 +26,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import java.util.HashSet;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.ArrayList;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import android.content.Context;

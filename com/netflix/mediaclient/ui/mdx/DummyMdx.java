@@ -10,7 +10,7 @@ import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import java.nio.ByteBuffer;
 import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.media.BifManager;
 import com.netflix.mediaclient.servicemgr.IMdx;
 
@@ -32,6 +32,11 @@ public class DummyMdx implements IMdx
     @Override
     public String getCurrentTarget() {
         return "Dummy_UUID";
+    }
+    
+    @Override
+    public MdxTargetCapabilities getCurrentTargetCapabilities() {
+        return null;
     }
     
     @Override

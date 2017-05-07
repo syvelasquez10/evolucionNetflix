@@ -87,162 +87,158 @@ public class WidevineMediaDrmEngine
         //    41: invokevirtual   android/media/MediaDrm.getPropertyByteArray:(Ljava/lang/String;)[B
         //    44: astore_3       
         //    45: aload_3        
-        //    46: ifnull          218
-        //    49: ldc             "WidevineMediaDrmEngine"
-        //    51: iconst_3       
-        //    52: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //    55: ifeq            166
-        //    58: new             Ljava/lang/StringBuilder;
-        //    61: dup            
-        //    62: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    65: astore          5
-        //    67: iconst_0       
-        //    68: istore_2       
-        //    69: iload_2        
-        //    70: aload_3        
-        //    71: arraylength    
-        //    72: if_icmpge       137
-        //    75: aload           5
-        //    77: ldc             "%02x  "
-        //    79: iconst_1       
-        //    80: anewarray       Ljava/lang/Object;
-        //    83: dup            
-        //    84: iconst_0       
-        //    85: aload_3        
-        //    86: iload_2        
-        //    87: baload         
-        //    88: invokestatic    java/lang/Byte.valueOf:(B)Ljava/lang/Byte;
-        //    91: aastore        
-        //    92: invokestatic    java/lang/String.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
-        //    95: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    98: pop            
-        //    99: iload_2        
-        //   100: iconst_1       
-        //   101: iadd           
-        //   102: istore_2       
-        //   103: goto            69
-        //   106: astore_1       
-        //   107: ldc             "WidevineMediaDrmEngine"
-        //   109: new             Ljava/lang/StringBuilder;
-        //   112: dup            
-        //   113: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   116: ldc             "fail to openSession "
-        //   118: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   121: aload_1        
-        //   122: invokevirtual   java/lang/Throwable.getMessage:()Ljava/lang/String;
-        //   125: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   128: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   131: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
-        //   134: pop            
-        //   135: aconst_null    
-        //   136: areturn        
-        //   137: ldc             "WidevineMediaDrmEngine"
-        //   139: new             Ljava/lang/StringBuilder;
-        //   142: dup            
-        //   143: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   146: ldc             "provisioningUniqueId "
-        //   148: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   151: aload           5
-        //   153: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   156: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   159: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   162: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
-        //   165: pop            
-        //   166: aload_3        
-        //   167: invokestatic    com/netflix/mediaclient/util/Base64.encodeBytes:([B)Ljava/lang/String;
-        //   170: astore_3       
-        //   171: aload_3        
-        //   172: ifnull          218
-        //   175: aload           4
-        //   177: ldc             "CDMID"
-        //   179: aload_3        
-        //   180: invokevirtual   java/util/HashMap.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-        //   183: pop            
-        //   184: ldc             "WidevineMediaDrmEngine"
-        //   186: iconst_3       
-        //   187: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //   190: ifeq            218
-        //   193: ldc             "WidevineMediaDrmEngine"
-        //   195: new             Ljava/lang/StringBuilder;
-        //   198: dup            
-        //   199: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   202: ldc             "CDMID "
-        //   204: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   207: aload_3        
-        //   208: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   211: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   214: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
-        //   217: pop            
-        //   218: aload_0        
-        //   219: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mDrm:Landroid/media/MediaDrm;
-        //   222: aload_0        
-        //   223: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mSessionId:[B
-        //   226: aload_1        
-        //   227: new             Ljava/lang/String;
-        //   230: dup            
-        //   231: invokespecial   java/lang/String.<init>:()V
-        //   234: iconst_1       
-        //   235: aload           4
-        //   237: invokevirtual   android/media/MediaDrm.getKeyRequest:([B[BLjava/lang/String;ILjava/util/HashMap;)Landroid/media/MediaDrm$KeyRequest;
-        //   240: astore_1       
-        //   241: aload_1        
-        //   242: ifnull          324
-        //   245: ldc             "WidevineMediaDrmEngine"
-        //   247: new             Ljava/lang/StringBuilder;
-        //   250: dup            
-        //   251: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   254: ldc             "getChallenge of size "
-        //   256: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   259: aload_1        
-        //   260: invokevirtual   android/media/MediaDrm$KeyRequest.getData:()[B
-        //   263: arraylength    
-        //   264: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
-        //   267: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   270: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
-        //   273: pop            
-        //   274: aload_1        
-        //   275: invokevirtual   android/media/MediaDrm$KeyRequest.getData:()[B
-        //   278: areturn        
-        //   279: astore_3       
-        //   280: ldc             "WidevineMediaDrmEngine"
-        //   282: ldc             "fail to encode property provisioningUniqueId"
-        //   284: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
-        //   287: pop            
-        //   288: aconst_null    
-        //   289: astore_3       
-        //   290: goto            171
-        //   293: astore_1       
-        //   294: ldc             "WidevineMediaDrmEngine"
-        //   296: new             Ljava/lang/StringBuilder;
-        //   299: dup            
-        //   300: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   303: ldc             "fail to getChallenge"
-        //   305: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   308: aload_1        
-        //   309: invokevirtual   android/media/NotProvisionedException.getMessage:()Ljava/lang/String;
-        //   312: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   315: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   318: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
-        //   321: pop            
-        //   322: aconst_null    
-        //   323: areturn        
-        //   324: ldc             "WidevineMediaDrmEngine"
-        //   326: ldc             "getChallenge done"
-        //   328: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
-        //   331: pop            
-        //   332: aconst_null    
-        //   333: areturn        
+        //    46: ifnull          212
+        //    49: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //    52: ifeq            163
+        //    55: new             Ljava/lang/StringBuilder;
+        //    58: dup            
+        //    59: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    62: astore          5
+        //    64: iconst_0       
+        //    65: istore_2       
+        //    66: iload_2        
+        //    67: aload_3        
+        //    68: arraylength    
+        //    69: if_icmpge       134
+        //    72: aload           5
+        //    74: ldc             "%02x  "
+        //    76: iconst_1       
+        //    77: anewarray       Ljava/lang/Object;
+        //    80: dup            
+        //    81: iconst_0       
+        //    82: aload_3        
+        //    83: iload_2        
+        //    84: baload         
+        //    85: invokestatic    java/lang/Byte.valueOf:(B)Ljava/lang/Byte;
+        //    88: aastore        
+        //    89: invokestatic    java/lang/String.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+        //    92: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    95: pop            
+        //    96: iload_2        
+        //    97: iconst_1       
+        //    98: iadd           
+        //    99: istore_2       
+        //   100: goto            66
+        //   103: astore_1       
+        //   104: ldc             "WidevineMediaDrmEngine"
+        //   106: new             Ljava/lang/StringBuilder;
+        //   109: dup            
+        //   110: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   113: ldc             "fail to openSession "
+        //   115: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   118: aload_1        
+        //   119: invokevirtual   java/lang/Throwable.getMessage:()Ljava/lang/String;
+        //   122: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   125: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   128: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
+        //   131: pop            
+        //   132: aconst_null    
+        //   133: areturn        
+        //   134: ldc             "WidevineMediaDrmEngine"
+        //   136: new             Ljava/lang/StringBuilder;
+        //   139: dup            
+        //   140: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   143: ldc             "provisioningUniqueId "
+        //   145: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   148: aload           5
+        //   150: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   153: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   156: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   159: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
+        //   162: pop            
+        //   163: aload_3        
+        //   164: invokestatic    com/netflix/mediaclient/util/Base64.encodeBytes:([B)Ljava/lang/String;
+        //   167: astore_3       
+        //   168: aload_3        
+        //   169: ifnull          212
+        //   172: aload           4
+        //   174: ldc             "CDMID"
+        //   176: aload_3        
+        //   177: invokevirtual   java/util/HashMap.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+        //   180: pop            
+        //   181: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   184: ifeq            212
+        //   187: ldc             "WidevineMediaDrmEngine"
+        //   189: new             Ljava/lang/StringBuilder;
+        //   192: dup            
+        //   193: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   196: ldc             "CDMID "
+        //   198: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   201: aload_3        
+        //   202: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   205: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   208: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
+        //   211: pop            
+        //   212: aload_0        
+        //   213: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mDrm:Landroid/media/MediaDrm;
+        //   216: aload_0        
+        //   217: getfield        com/netflix/mediaclient/service/configuration/drm/WidevineMediaDrmEngine.mSessionId:[B
+        //   220: aload_1        
+        //   221: new             Ljava/lang/String;
+        //   224: dup            
+        //   225: invokespecial   java/lang/String.<init>:()V
+        //   228: iconst_1       
+        //   229: aload           4
+        //   231: invokevirtual   android/media/MediaDrm.getKeyRequest:([B[BLjava/lang/String;ILjava/util/HashMap;)Landroid/media/MediaDrm$KeyRequest;
+        //   234: astore_1       
+        //   235: aload_1        
+        //   236: ifnull          318
+        //   239: ldc             "WidevineMediaDrmEngine"
+        //   241: new             Ljava/lang/StringBuilder;
+        //   244: dup            
+        //   245: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   248: ldc             "getChallenge of size "
+        //   250: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   253: aload_1        
+        //   254: invokevirtual   android/media/MediaDrm$KeyRequest.getData:()[B
+        //   257: arraylength    
+        //   258: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //   261: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   264: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
+        //   267: pop            
+        //   268: aload_1        
+        //   269: invokevirtual   android/media/MediaDrm$KeyRequest.getData:()[B
+        //   272: areturn        
+        //   273: astore_3       
+        //   274: ldc             "WidevineMediaDrmEngine"
+        //   276: ldc             "fail to encode property provisioningUniqueId"
+        //   278: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
+        //   281: pop            
+        //   282: aconst_null    
+        //   283: astore_3       
+        //   284: goto            168
+        //   287: astore_1       
+        //   288: ldc             "WidevineMediaDrmEngine"
+        //   290: new             Ljava/lang/StringBuilder;
+        //   293: dup            
+        //   294: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   297: ldc             "fail to getChallenge"
+        //   299: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   302: aload_1        
+        //   303: invokevirtual   android/media/NotProvisionedException.getMessage:()Ljava/lang/String;
+        //   306: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   309: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   312: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
+        //   315: pop            
+        //   316: aconst_null    
+        //   317: areturn        
+        //   318: ldc             "WidevineMediaDrmEngine"
+        //   320: ldc             "getChallenge done"
+        //   322: invokestatic    com/netflix/mediaclient/Log.i:(Ljava/lang/String;Ljava/lang/String;)I
+        //   325: pop            
+        //   326: aconst_null    
+        //   327: areturn        
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                                   
         //  -----  -----  -----  -----  ---------------------------------------
-        //  15     26     106    137    Ljava/lang/Throwable;
-        //  166    171    279    293    Ljava/io/IOException;
-        //  218    241    293    324    Landroid/media/NotProvisionedException;
+        //  15     26     103    134    Ljava/lang/Throwable;
+        //  163    168    273    287    Ljava/io/IOException;
+        //  212    235    287    318    Landroid/media/NotProvisionedException;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0218:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0212:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)

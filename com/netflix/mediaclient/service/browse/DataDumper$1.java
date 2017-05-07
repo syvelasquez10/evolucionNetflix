@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.util.FileUtils;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.LinkedHashMap;
 import com.netflix.mediaclient.servicemgr.IBrowseManager;
 import java.util.Iterator;
@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.ArrayList;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
@@ -34,7 +34,7 @@ class DataDumper$1 extends SimpleManagerCallback
         for (final LoMo loMo : list) {
             Log.v("DataDumper", "Fetching videos for lomo: " + loMo.getTitle());
             this.this$0.lomoVideos.put(loMo, null);
-            this.this$0.browseClient.fetchVideos(loMo, 0, 250, false, false, new DataDumper$VideosCallback(loMo, list2));
+            this.this$0.browseClient.fetchVideos(loMo, 0, 250, false, false, false, new DataDumper$VideosCallback(loMo, list2));
         }
     }
 }

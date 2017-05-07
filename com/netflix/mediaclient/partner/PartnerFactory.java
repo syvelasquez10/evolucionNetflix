@@ -59,108 +59,106 @@ public class PartnerFactory
         // 
         //     0: aload_0        
         //     1: monitorenter   
-        //     2: ldc             "nf_partner"
-        //     4: iconst_3       
-        //     5: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //     8: ifeq            36
-        //    11: ldc             "nf_partner"
-        //    13: new             Ljava/lang/StringBuilder;
-        //    16: dup            
-        //    17: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    20: ldc             "getPartner:: partner "
-        //    22: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    25: aload_2        
-        //    26: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    29: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //    32: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    35: pop            
-        //    36: aload_0        
-        //    37: getfield        com/netflix/mediaclient/partner/PartnerFactory.partnerHandlers:Ljava/util/Map;
-        //    40: aload_2        
-        //    41: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
-        //    46: checkcast       Lcom/netflix/mediaclient/partner/Partner;
-        //    49: astore          5
-        //    51: aload           5
-        //    53: ifnull          71
-        //    56: ldc             "nf_partner"
-        //    58: ldc             "Partner implementation found!"
-        //    60: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    63: pop            
-        //    64: aload           5
-        //    66: astore_1       
-        //    67: aload_0        
-        //    68: monitorexit    
-        //    69: aload_1        
-        //    70: areturn        
-        //    71: ldc             "nf_partner"
-        //    73: ldc             "Partner implementation lookup..."
-        //    75: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    78: pop            
-        //    79: aload_0        
-        //    80: aload_1        
-        //    81: invokevirtual   com/netflix/mediaclient/partner/PartnerFactory.getExternalSsoServices:(Landroid/content/Context;)[Ljava/lang/String;
-        //    84: astore_1       
-        //    85: iconst_0       
-        //    86: istore          4
-        //    88: iload           4
-        //    90: aload_1        
-        //    91: arraylength    
-        //    92: if_icmpge       160
-        //    95: aload_1        
-        //    96: iload           4
-        //    98: aaload         
-        //    99: ifnull          151
-        //   102: aload_1        
-        //   103: iload           4
-        //   105: aaload         
-        //   106: aload_2        
-        //   107: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
-        //   110: ifeq            151
-        //   113: ldc             "nf_partner"
-        //   115: ldc             "Partner implementation created!"
-        //   117: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   120: pop            
-        //   121: new             Lcom/netflix/mediaclient/partner/reference/NetflixPartner;
-        //   124: dup            
-        //   125: aload_2        
-        //   126: aload_3        
-        //   127: invokespecial   com/netflix/mediaclient/partner/reference/NetflixPartner.<init>:(Ljava/lang/String;Lcom/netflix/mediaclient/partner/PartnerCommunicationHandler;)V
-        //   130: astore_1       
-        //   131: aload_0        
-        //   132: getfield        com/netflix/mediaclient/partner/PartnerFactory.partnerHandlers:Ljava/util/Map;
-        //   135: aload_2        
-        //   136: aload_1        
-        //   137: invokeinterface java/util/Map.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-        //   142: pop            
-        //   143: goto            67
-        //   146: astore_1       
-        //   147: aload_0        
-        //   148: monitorexit    
-        //   149: aload_1        
-        //   150: athrow         
-        //   151: iload           4
-        //   153: iconst_1       
-        //   154: iadd           
-        //   155: istore          4
-        //   157: goto            88
-        //   160: ldc             "nf_partner"
-        //   162: ldc             "Partner implementation NOT found!"
-        //   164: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   167: pop            
-        //   168: aconst_null    
-        //   169: astore_1       
-        //   170: goto            67
+        //     2: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //     5: ifeq            33
+        //     8: ldc             "nf_partner"
+        //    10: new             Ljava/lang/StringBuilder;
+        //    13: dup            
+        //    14: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    17: ldc             "getPartner:: partner "
+        //    19: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    22: aload_2        
+        //    23: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    26: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    29: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    32: pop            
+        //    33: aload_0        
+        //    34: getfield        com/netflix/mediaclient/partner/PartnerFactory.partnerHandlers:Ljava/util/Map;
+        //    37: aload_2        
+        //    38: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+        //    43: checkcast       Lcom/netflix/mediaclient/partner/Partner;
+        //    46: astore          5
+        //    48: aload           5
+        //    50: ifnull          68
+        //    53: ldc             "nf_partner"
+        //    55: ldc             "Partner implementation found!"
+        //    57: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    60: pop            
+        //    61: aload           5
+        //    63: astore_1       
+        //    64: aload_0        
+        //    65: monitorexit    
+        //    66: aload_1        
+        //    67: areturn        
+        //    68: ldc             "nf_partner"
+        //    70: ldc             "Partner implementation lookup..."
+        //    72: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    75: pop            
+        //    76: aload_0        
+        //    77: aload_1        
+        //    78: invokevirtual   com/netflix/mediaclient/partner/PartnerFactory.getExternalSsoServices:(Landroid/content/Context;)[Ljava/lang/String;
+        //    81: astore_1       
+        //    82: iconst_0       
+        //    83: istore          4
+        //    85: iload           4
+        //    87: aload_1        
+        //    88: arraylength    
+        //    89: if_icmpge       157
+        //    92: aload_1        
+        //    93: iload           4
+        //    95: aaload         
+        //    96: ifnull          148
+        //    99: aload_1        
+        //   100: iload           4
+        //   102: aaload         
+        //   103: aload_2        
+        //   104: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
+        //   107: ifeq            148
+        //   110: ldc             "nf_partner"
+        //   112: ldc             "Partner implementation created!"
+        //   114: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   117: pop            
+        //   118: new             Lcom/netflix/mediaclient/partner/reference/NetflixPartner;
+        //   121: dup            
+        //   122: aload_2        
+        //   123: aload_3        
+        //   124: invokespecial   com/netflix/mediaclient/partner/reference/NetflixPartner.<init>:(Ljava/lang/String;Lcom/netflix/mediaclient/partner/PartnerCommunicationHandler;)V
+        //   127: astore_1       
+        //   128: aload_0        
+        //   129: getfield        com/netflix/mediaclient/partner/PartnerFactory.partnerHandlers:Ljava/util/Map;
+        //   132: aload_2        
+        //   133: aload_1        
+        //   134: invokeinterface java/util/Map.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+        //   139: pop            
+        //   140: goto            64
+        //   143: astore_1       
+        //   144: aload_0        
+        //   145: monitorexit    
+        //   146: aload_1        
+        //   147: athrow         
+        //   148: iload           4
+        //   150: iconst_1       
+        //   151: iadd           
+        //   152: istore          4
+        //   154: goto            85
+        //   157: ldc             "nf_partner"
+        //   159: ldc             "Partner implementation NOT found!"
+        //   161: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   164: pop            
+        //   165: aconst_null    
+        //   166: astore_1       
+        //   167: goto            64
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type
         //  -----  -----  -----  -----  ----
-        //  2      36     146    151    Any
-        //  36     51     146    151    Any
-        //  56     64     146    151    Any
-        //  71     85     146    151    Any
-        //  88     95     146    151    Any
-        //  102    143    146    151    Any
-        //  160    168    146    151    Any
+        //  2      33     143    148    Any
+        //  33     48     143    148    Any
+        //  53     61     143    148    Any
+        //  68     82     143    148    Any
+        //  85     92     143    148    Any
+        //  99     140    143    148    Any
+        //  157    165    143    148    Any
         // 
         // The error that occurred was:
         // 

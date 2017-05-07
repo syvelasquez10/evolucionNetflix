@@ -64,6 +64,11 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
     }
     
     @Override
+    public int getCount() {
+        return this.mItemCount;
+    }
+    
+    @Override
     public View getSelectedView() {
         if (this.mItemCount > 0 && this.mSelectedPosition >= 0) {
             return this.getChildAt(this.mSelectedPosition - this.mFirstPosition);
@@ -207,6 +212,7 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
         this.invalidate();
     }
     
+    @Override
     public void setAdapter(final SpinnerAdapter mAdapter) {
         int n = -1;
         if (this.mAdapter != null) {
@@ -239,6 +245,7 @@ abstract class AbsSpinnerCompat extends AdapterViewCompat<SpinnerAdapter>
         this.requestLayout();
     }
     
+    @Override
     public void setSelection(final int nextSelectedPositionInt) {
         this.setNextSelectedPositionInt(nextSelectedPositionInt);
         this.requestLayout();

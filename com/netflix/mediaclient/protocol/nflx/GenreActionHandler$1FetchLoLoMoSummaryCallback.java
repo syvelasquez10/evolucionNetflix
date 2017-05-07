@@ -6,11 +6,11 @@ package com.netflix.mediaclient.protocol.nflx;
 
 import android.app.Activity;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
-import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListOfGenreSummary;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.LoLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 

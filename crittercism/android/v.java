@@ -4,172 +4,205 @@
 
 package crittercism.android;
 
-import org.json.JSONObject;
 import java.util.Iterator;
-import android.content.Context;
-import java.util.Collection;
-import java.io.FilenameFilter;
-import java.io.File;
-import java.util.Vector;
+import java.net.URLStreamHandler;
+import java.lang.reflect.ParameterizedType;
+import java.util.Hashtable;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.util.LinkedList;
+import java.net.URLStreamHandlerFactory;
 
-public final class v extends s
+public final class v implements URLStreamHandlerFactory
 {
-    public v(final m m) {
-        this(m.a() + "/android_v2/ndk_crash");
+    private static final Object a;
+    private static v b;
+    private LinkedList c;
+    private boolean d;
+    private boolean e;
+    
+    static {
+        a = new Object();
     }
     
-    private v(final String a) {
-        this.a = a;
-        this.b = new Vector();
+    public v(final v$a v$a, final e e, final d d) {
+        this.c = new LinkedList();
+        this.d = false;
+        this.e = false;
+        if (v$a == v$a.c || v$a == v$a.a) {
+            this.c.add(new o(e, d));
+        }
+        if (v$a == v$a.c || v$a == v$a.b) {
+            this.c.add(new q(e, d));
+        }
     }
     
-    public static v a(m m) {
-        m = (m)new v(m.a() + "/android_v2/ndk_crash");
-        try {
-            final Context f = l.i().f;
-            final String string = f.getFilesDir().getAbsolutePath() + "/" + l.i().t.getNativeDumpPath();
-            final String packageName = f.getPackageName();
-            if (packageName != null && !packageName.equals("")) {
-                final File file = new File(string);
-                if (file.exists()) {
-                    final String[] list = file.list(new v$a(".dmp"));
-                    if (list != null && list.length > 0) {
-                        final Vector<String> vector = new Vector<String>();
-                        for (int i = 0; i < list.length; ++i) {
-                            new StringBuilder("filename = ").append(file.getAbsolutePath()).append("/").append(list[i]);
-                            vector.add(file.getAbsolutePath() + "/" + list[i]);
-                        }
-                        ((s)m).a(vector);
+    public static v a() {
+        return v.b;
+    }
+    
+    private boolean d() {
+        boolean d = false;
+        synchronized (this) {
+            synchronized (v.a) {
+                if (v.b != this) {
+                    final boolean d2 = this.d;
+                }
+                else {
+                    if (this.d && e()) {
+                        this.d = false;
+                        v.b = null;
                     }
+                    // monitorexit(v.a)
+                    d = this.d;
                 }
-            }
-            return (v)m;
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-            return (v)m;
-        }
-    }
-    
-    public final void a() {
-        try {
-            if (this.b != null) {
-                for (final String s : this.b) {
-                    new StringBuilder("deleting filename: ").append(s);
-                    new File(s).delete();
-                }
+                return d;
             }
         }
-        catch (Exception ex) {
-            ex.printStackTrace();
+    }
+    
+    private static boolean e() {
+        final Field[] declaredFields = URL.class.getDeclaredFields();
+        final int length = declaredFields.length;
+        final int n = 0;
+        if (n < length) {
+            final Field field = declaredFields[n];
+            if (!URLStreamHandlerFactory.class.isAssignableFrom(field.getType())) {
+                goto Label_0063;
+            }
+            try {
+                final eb f = eb.f;
+                field.setAccessible(true);
+                field.set(null, null);
+                field.setAccessible(false);
+                URL.setURLStreamHandlerFactory(null);
+                return true;
+            }
+            catch (IllegalAccessException ex) {
+                dy.c();
+            }
+            catch (SecurityException ex2) {
+                dy.c();
+                goto Label_0063;
+            }
+            catch (Throwable t) {
+                dy.c();
+                goto Label_0063;
+            }
         }
+        return false;
     }
     
-    @Override
-    public final void a(final JSONObject jsonObject) {
+    private static boolean f() {
+        final Field[] declaredFields = URL.class.getDeclaredFields();
+        final int length = declaredFields.length;
+        final int n = 0;
+        if (n < length) {
+            final Field field = declaredFields[n];
+            if (!Hashtable.class.isAssignableFrom(field.getType())) {
+                goto Label_0133;
+            }
+            final ParameterizedType parameterizedType = (ParameterizedType)field.getGenericType();
+            final Class clazz = (Class)parameterizedType.getActualTypeArguments()[0];
+            final Class clazz2 = (Class)parameterizedType.getActualTypeArguments()[1];
+            if (!String.class.isAssignableFrom(clazz) || !URLStreamHandler.class.isAssignableFrom(clazz2)) {
+                goto Label_0133;
+            }
+            try {
+                final eb g = eb.g;
+                field.setAccessible(true);
+                final Hashtable hashtable = (Hashtable)field.get(null);
+                if (hashtable != null) {
+                    hashtable.clear();
+                }
+                field.setAccessible(false);
+                return true;
+            }
+            catch (IllegalArgumentException ex) {
+                dy.c();
+            }
+            catch (SecurityException ex2) {
+                dy.c();
+                goto Label_0133;
+            }
+            catch (IllegalAccessException ex3) {
+                dy.c();
+                goto Label_0133;
+            }
+        }
+        return false;
     }
     
-    @Override
-    public final JSONObject b() {
+    public final boolean b() {
         // 
         // This method could not be decompiled.
         // 
         // Original Bytecode:
         // 
-        //     0: new             Lorg/json/JSONObject;
-        //     3: dup            
-        //     4: invokespecial   org/json/JSONObject.<init>:()V
-        //     7: astore_3       
-        //     8: new             Lorg/json/JSONObject;
-        //    11: dup            
-        //    12: invokespecial   org/json/JSONObject.<init>:()V
-        //    15: pop            
-        //    16: new             Lorg/json/JSONArray;
-        //    19: dup            
-        //    20: invokespecial   org/json/JSONArray.<init>:()V
-        //    23: pop            
-        //    24: new             Lorg/json/JSONArray;
-        //    27: dup            
-        //    28: aload_0        
-        //    29: getfield        crittercism/android/v.b:Ljava/util/Collection;
-        //    32: invokespecial   org/json/JSONArray.<init>:(Ljava/util/Collection;)V
-        //    35: astore_1       
-        //    36: invokestatic    crittercism/android/l.i:()Lcrittercism/android/l;
-        //    39: getfield        crittercism/android/l.c:Lcrittercism/android/i;
-        //    42: invokevirtual   crittercism/android/i.d:()Lorg/json/JSONObject;
-        //    45: astore_2       
-        //    46: aload_2        
-        //    47: ldc             "app_state"
-        //    49: invokestatic    crittercism/android/l.i:()Lcrittercism/android/l;
-        //    52: getfield        crittercism/android/l.c:Lcrittercism/android/i;
-        //    55: invokevirtual   crittercism/android/i.f:()Lorg/json/JSONObject;
-        //    58: invokevirtual   org/json/JSONObject.put:(Ljava/lang/String;Ljava/lang/Object;)Lorg/json/JSONObject;
-        //    61: pop            
+        //     0: iconst_1       
+        //     1: istore_1       
+        //     2: getstatic       crittercism/android/v.a:Ljava/lang/Object;
+        //     5: astore_2       
+        //     6: aload_2        
+        //     7: monitorenter   
+        //     8: getstatic       crittercism/android/v.b:Lcrittercism/android/v;
+        //    11: ifnull          25
+        //    14: getstatic       crittercism/android/v.b:Lcrittercism/android/v;
+        //    17: aload_0        
+        //    18: if_acmpne       70
+        //    21: aload_2        
+        //    22: monitorexit    
+        //    23: iload_1        
+        //    24: ireturn        
+        //    25: aload_0        
+        //    26: getfield        crittercism/android/v.d:Z
+        //    29: ifne            54
+        //    32: aload_0        
+        //    33: getfield        crittercism/android/v.e:Z
+        //    36: istore_1       
+        //    37: iload_1        
+        //    38: ifne            54
+        //    41: aload_0        
+        //    42: invokestatic    java/net/URL.setURLStreamHandlerFactory:(Ljava/net/URLStreamHandlerFactory;)V
+        //    45: aload_0        
+        //    46: iconst_1       
+        //    47: putfield        crittercism/android/v.d:Z
+        //    50: aload_0        
+        //    51: putstatic       crittercism/android/v.b:Lcrittercism/android/v;
+        //    54: aload_2        
+        //    55: monitorexit    
+        //    56: aload_0        
+        //    57: getfield        crittercism/android/v.d:Z
+        //    60: ireturn        
+        //    61: astore_3       
         //    62: aload_2        
-        //    63: ldc             "num_ndk_crashes"
-        //    65: aload_0        
-        //    66: getfield        crittercism/android/v.b:Ljava/util/Collection;
-        //    69: invokeinterface java/util/Collection.size:()I
-        //    74: invokevirtual   org/json/JSONObject.put:(Ljava/lang/String;I)Lorg/json/JSONObject;
-        //    77: pop            
-        //    78: aload_2        
-        //    79: ldc             "filenames"
-        //    81: aload_1        
-        //    82: invokevirtual   org/json/JSONObject.put:(Ljava/lang/String;Ljava/lang/Object;)Lorg/json/JSONObject;
-        //    85: pop            
-        //    86: aload_2        
-        //    87: ldc             "filename_prefix"
-        //    89: ldc             "ndk_crash_"
-        //    91: invokevirtual   org/json/JSONObject.put:(Ljava/lang/String;Ljava/lang/Object;)Lorg/json/JSONObject;
-        //    94: pop            
-        //    95: aload_2        
-        //    96: astore_1       
-        //    97: aload_3        
-        //    98: ldc             "requestUrl"
-        //   100: aload_0        
-        //   101: getfield        crittercism/android/v.a:Ljava/lang/String;
-        //   104: invokevirtual   org/json/JSONObject.put:(Ljava/lang/String;Ljava/lang/Object;)Lorg/json/JSONObject;
-        //   107: pop            
-        //   108: aload_3        
-        //   109: ldc             "requestData"
-        //   111: aload_1        
-        //   112: invokevirtual   org/json/JSONObject.put:(Ljava/lang/String;Ljava/lang/Object;)Lorg/json/JSONObject;
-        //   115: pop            
-        //   116: aload_3        
-        //   117: areturn        
-        //   118: astore_1       
-        //   119: new             Lorg/json/JSONArray;
-        //   122: dup            
-        //   123: invokespecial   org/json/JSONArray.<init>:()V
-        //   126: astore_1       
-        //   127: goto            36
-        //   130: astore_1       
-        //   131: new             Lorg/json/JSONObject;
-        //   134: dup            
-        //   135: invokespecial   org/json/JSONObject.<init>:()V
-        //   138: astore_1       
-        //   139: goto            97
-        //   142: astore_1       
-        //   143: new             Lorg/json/JSONObject;
-        //   146: dup            
-        //   147: invokespecial   org/json/JSONObject.<init>:()V
-        //   150: areturn        
+        //    63: monitorexit    
+        //    64: aload_3        
+        //    65: athrow         
+        //    66: astore_3       
+        //    67: goto            54
+        //    70: iconst_0       
+        //    71: istore_1       
+        //    72: goto            21
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  24     36     118    130    Ljava/lang/Exception;
-        //  36     95     130    142    Ljava/lang/Exception;
-        //  97     116    142    151    Ljava/lang/Exception;
+        //  8      21     61     66     Any
+        //  21     23     61     66     Any
+        //  25     37     61     66     Any
+        //  41     54     66     70     Ljava/lang/Throwable;
+        //  41     54     61     66     Any
+        //  54     56     61     66     Any
         // 
         // The error that occurred was:
         // 
-        // java.lang.IndexOutOfBoundsException: Index: 78, Size: 78
-        //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
-        //     at java.util.ArrayList.get(ArrayList.java:429)
-        //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)
-        //     at com.strobel.decompiler.ast.AstBuilder.build(AstBuilder.java:113)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:210)
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0054:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
         //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
         //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
         //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
@@ -187,16 +220,46 @@ public final class v extends s
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    @Override
-    public final void c() {
+    public final boolean c() {
+        while (true) {
+            boolean b = false;
+            while (true) {
+                synchronized (this) {
+                    this.d();
+                    if (this.d) {
+                        this.e = true;
+                        final int f = f() ? 1 : 0;
+                        if (!this.d || f != 0) {
+                            b = true;
+                        }
+                        return b;
+                    }
+                }
+                final int f = 0;
+                continue;
+            }
+        }
     }
     
     @Override
-    public final JSONObject d() {
-        return null;
-    }
-    
-    @Override
-    protected final void e() {
+    public final URLStreamHandler createURLStreamHandler(final String s) {
+        try {
+            if (!this.e) {
+                for (final m m : this.c) {
+                    if (m.a().equals(s)) {
+                        return m;
+                    }
+                }
+            }
+            return null;
+        }
+        catch (ThreadDeath threadDeath) {
+            throw threadDeath;
+        }
+        catch (Throwable t) {
+            this.e = true;
+            dy.a(t);
+            return null;
+        }
     }
 }

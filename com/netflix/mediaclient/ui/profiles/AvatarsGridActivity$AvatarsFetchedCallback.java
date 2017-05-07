@@ -42,7 +42,7 @@ class AvatarsGridActivity$AvatarsFetchedCallback extends SimpleManagerCallback
     
     @Override
     public void onAvailableAvatarsListFetched(final List<AvatarInfo> list, final Status status) {
-        if (Log.isLoggable("AvatarsGridActivity", 4)) {
+        if (Log.isLoggable()) {
             Log.i("AvatarsGridActivity", "onAvailableAvatarsListFetched: " + list);
         }
         if (status.isSucces() && list != null) {

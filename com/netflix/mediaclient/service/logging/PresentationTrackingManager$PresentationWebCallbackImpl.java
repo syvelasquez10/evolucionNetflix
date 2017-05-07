@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.logging;
 
 import com.netflix.mediaclient.servicemgr.UiLocation;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebClientFactory;
 import com.netflix.mediaclient.service.logging.presentation.PresentationRequest;
 import com.netflix.mediaclient.util.data.DataRepository$DataLoadedCallback;
@@ -36,7 +36,7 @@ class PresentationTrackingManager$PresentationWebCallbackImpl implements Present
     
     @Override
     public void onEventsDelivered(final String s) {
-        if (Log.isLoggable("nf_presentation", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_presentation", "Events delivered for  " + s);
         }
         this.this$0.mOwner.clearFailureCounter();
@@ -45,7 +45,7 @@ class PresentationTrackingManager$PresentationWebCallbackImpl implements Present
     
     @Override
     public void onEventsDeliveryFailed(final String s) {
-        if (Log.isLoggable("nf_presentation", 6)) {
+        if (Log.isLoggable()) {
             Log.e("nf_presentation", "Events delivery failed for  " + s);
         }
         if (StringUtils.isEmpty(s)) {

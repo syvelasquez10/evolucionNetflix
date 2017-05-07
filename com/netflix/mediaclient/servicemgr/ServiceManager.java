@@ -4,16 +4,16 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import java.util.List;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.widget.TextView;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.util.ThreadUtils;
@@ -29,6 +29,7 @@ public final class ServiceManager implements IServiceManagerAccess
     public static final String BROWSE_AGENT_CW_REFRESH = "com.netflix.mediaclient.intent.action.BA_CW_REFRESH";
     public static final String BROWSE_AGENT_EPISODE_REFRESH = "com.netflix.mediaclient.intent.action.BA_EPISODE_REFRESH";
     public static final String BROWSE_AGENT_IQ_REFRESH = "com.netflix.mediaclient.intent.action.BA_IQ_REFRESH";
+    public static final String BROWSE_AGENT_POPULAR_TITLES_REFRESH = "com.netflix.mediaclient.intent.action.BA_POPULAR_TITLES_REFRESH";
     public static final String BROWSE_PARAM_CUR_EPISODE_NUMBER = "curEpisodeNumber";
     public static final String BROWSE_PARAM_CUR_SEASON_NUMBER = "curSeasonNumber";
     public static final String DETAIL_PAGE_RELOAD = "com.netflix.mediaclient.intent.action.DETAIL_PAGE_REFRESH";
@@ -79,6 +80,26 @@ public final class ServiceManager implements IServiceManagerAccess
     
     private Intent getServiceIntent() {
         return new Intent((Context)this.mActivity, (Class)NetflixService.class);
+    }
+    
+    public static void sendCwRefreshBrodcast(final Context context) {
+        context.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.BA_CW_REFRESH"));
+        Log.v("ServiceManager", "Intent CW_REFRESH sent");
+    }
+    
+    public static void sendHomeRefreshBrodcast(final Context context) {
+        context.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO"));
+        Log.v("ServiceManager", "Intent REFRESH_HOME sent");
+    }
+    
+    public static void sendIqRefreshBrodcast(final Context context) {
+        context.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.BA_IQ_REFRESH"));
+        Log.v("ServiceManager", "Intent IQ_REFRESH sent");
+    }
+    
+    public static void sendPopularTitlesRefreshBrodcast(final Context context) {
+        context.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.BA_POPULAR_TITLES_REFRESH"));
+        Log.v("ServiceManager", "Intent BROWSE_AGENT_POPULAR_TITLES_REFRESH sent");
     }
     
     private INetflixService validateService() {
@@ -173,7 +194,7 @@ public final class ServiceManager implements IServiceManagerAccess
         if (s != null) {
             try {
                 final int addCallback = this.addCallback(managerCallback);
-                if (Log.isLoggable("ServiceManager", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("ServiceManager", "fetchResource requestId=" + addCallback + " resourceUrl=" + s);
                 }
                 final INetflixService validateService = this.validateService();
@@ -208,14 +229,6 @@ public final class ServiceManager implements IServiceManagerAccess
     
     public IBrowseManager getBrowse() {
         return this.mBrowseManager;
-    }
-    
-    public String getBrowseAgentString() {
-        final INetflixService service = this.getService();
-        if (service == null) {
-            return "n/a";
-        }
-        return service.getBrowseAgentString();
     }
     
     @Override
@@ -521,6 +534,12 @@ public final class ServiceManager implements IServiceManagerAccess
         }
         Log.w("ServiceManager", "setCurrentAppLocale:: service is not available");
         return false;
+    }
+    
+    public void uiComingFromBackground() {
+        if (this.mService != null) {
+            this.mService.uiComingFromBackground();
+        }
     }
     
     public void unregisterAddToMyListListener(final String s, final AddToListData$StateListener addToListData$StateListener) {

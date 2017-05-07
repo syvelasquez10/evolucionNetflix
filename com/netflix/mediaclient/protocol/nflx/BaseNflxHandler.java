@@ -30,22 +30,22 @@ abstract class BaseNflxHandler implements NflxHandler
     protected NflxProtocolUtils$VideoInfo getVideoInfo() {
         final String s = this.mParamsMap.get("movieid");
         if (!StringUtils.isEmpty(s)) {
-            final NflxProtocolUtils$VideoInfo videoInfoFromMovieIdUri = NflxProtocolUtils.getVideoInfoFromMovieIdUri(s);
-            if (videoInfoFromMovieIdUri == null && Log.isLoggable("NflxHandler", 5)) {
+            final NflxProtocolUtils$VideoInfo videoInfoFromVideoIdUrl = NflxProtocolUtils.getVideoInfoFromVideoIdUrl(s, this.mParamsMap);
+            if (videoInfoFromVideoIdUrl == null && Log.isLoggable()) {
                 Log.w("NflxHandler", "This should NOT happen! VideoInfo object not returned for video id " + s + ". Default to regular workflow");
             }
             final String episodeId = NflxProtocolUtils.getEpisodeId(this.mParamsMap);
-            if (StringUtils.isNotEmpty(episodeId) && videoInfoFromMovieIdUri != null) {
+            if (StringUtils.isNotEmpty(episodeId) && videoInfoFromVideoIdUrl != null) {
                 final NflxProtocolUtils$VideoInfo nflxProtocolUtils$VideoInfo;
-                if ((nflxProtocolUtils$VideoInfo = NflxProtocolUtils$VideoInfo.createFromEpisode(videoInfoFromMovieIdUri.getCatalogId(), episodeId)) != null) {
+                if ((nflxProtocolUtils$VideoInfo = NflxProtocolUtils$VideoInfo.createFromEpisode(videoInfoFromVideoIdUrl.getCatalogId(), episodeId)) != null) {
                     return nflxProtocolUtils$VideoInfo;
                 }
-                if (Log.isLoggable("NflxHandler", 5)) {
+                if (Log.isLoggable()) {
                     Log.w("NflxHandler", "VideoInfo object not returned for episode id " + episodeId + ". Default to show");
-                    return videoInfoFromMovieIdUri;
+                    return videoInfoFromVideoIdUrl;
                 }
             }
-            return videoInfoFromMovieIdUri;
+            return videoInfoFromVideoIdUrl;
         }
         return this.getVideoInfoFromTinyUrl();
     }
@@ -80,7 +80,7 @@ abstract class BaseNflxHandler implements NflxHandler
                     b = false;
                 }
                 final String substring = value.substring(1);
-                if (Log.isLoggable("NflxHandler", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("NflxHandler", "Received decodedVideoUrl " + value);
                 }
                 NflxHandler$Response nflxHandler$Response;

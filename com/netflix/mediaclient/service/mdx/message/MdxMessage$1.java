@@ -18,5 +18,6 @@ final class MdxMessage$1 extends HashSet<String>
         this.add("PLAYER_SKIP");
         this.add("PLAYER_STOP");
         this.add("SET_AUDIO_SUBTITLES");
+        this.add("POSTPLAY_STOP");
     }
 }

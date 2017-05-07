@@ -31,7 +31,7 @@ public class VerifyPinRequest extends FalkorVolleyWebClientRequest<Boolean>
         this.responseCallback = responseCallback;
         this.enteredPin = enteredPin;
         this.pqlQuery1 = String.format("['user', 'verifyPin', '%s']", enteredPin);
-        if (Log.isLoggable("nf_pin", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_pin", "PQL = " + this.pqlQuery1);
         }
     }
@@ -57,7 +57,7 @@ public class VerifyPinRequest extends FalkorVolleyWebClientRequest<Boolean>
     
     @Override
     protected Boolean parseFalkorResponse(final String s) {
-        if (Log.isLoggable("nf_pin", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_pin", "String response to parse = " + s);
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_pin", s);

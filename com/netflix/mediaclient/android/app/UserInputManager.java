@@ -87,7 +87,7 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
             Log.d("nf_input", "UI is  gone");
             this.mScheduler.execute(new UserInputManager$3(this));
         }
-        else if (Log.isLoggable("nf_input", 3)) {
+        else if (Log.isLoggable()) {
             Log.d("nf_input", "Activity destroyed, count " + n);
         }
     }
@@ -97,7 +97,7 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
             Log.d("nf_input", "UI may just started, only one activity");
             this.mScheduler.execute(new UserInputManager$2(this));
         }
-        else if (Log.isLoggable("nf_input", 3)) {
+        else if (Log.isLoggable()) {
             Log.d("nf_input", "New activity, count " + n);
         }
     }
@@ -127,27 +127,27 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
     }
     
     public void onActivityCreated(final Activity activity, final Bundle bundle) {
-        if (Log.isLoggable("nf_input", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_input", "onActivityCreated " + activity.getClass().getSimpleName());
         }
         this.postUiStart(this.mActivitiesCount.incrementAndGet());
     }
     
     public void onActivityDestroyed(final Activity activity) {
-        if (Log.isLoggable("nf_input", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_input", "onActivityDestroyed " + activity.getClass().getSimpleName());
         }
         this.postUiExit(this.mActivitiesCount.decrementAndGet());
     }
     
     public void onActivityPaused(final Activity activity) {
-        if (Log.isLoggable("nf_input", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_input", "onActivityPaused " + activity.getClass().getSimpleName());
         }
     }
     
     public void onActivityResumed(final Activity activity) {
-        if (Log.isLoggable("nf_input", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_input", "onActivityResumed " + activity.getClass().getSimpleName());
         }
         this.mResumed.incrementAndGet();
@@ -155,19 +155,19 @@ public class UserInputManager implements Application$ActivityLifecycleCallbacks
     }
     
     public void onActivitySaveInstanceState(final Activity activity, final Bundle bundle) {
-        if (Log.isLoggable("nf_input", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_input", "onActivitySaveInstanceState " + activity.getClass().getSimpleName());
         }
     }
     
     public void onActivityStarted(final Activity activity) {
-        if (Log.isLoggable("nf_input", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_input", "onActivityStarted " + activity.getClass().getSimpleName());
         }
     }
     
     public void onActivityStopped(final Activity activity) {
-        if (Log.isLoggable("nf_input", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_input", "onActivityStopped " + activity.getClass().getSimpleName());
         }
         this.mStopped.incrementAndGet();

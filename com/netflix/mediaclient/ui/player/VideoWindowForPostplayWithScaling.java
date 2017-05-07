@@ -40,8 +40,8 @@ public class VideoWindowForPostplayWithScaling implements VideoWindowForPostplay
         this.END_MARGIN_LEFT_DP = 12;
         this.END_WIDTH_DP = 300;
         this.mContext = mContext;
-        this.mSurface = (TappableSurfaceView)mContext.findViewById(2131165562);
-        this.mSurface2 = (TextureView)mContext.findViewById(2131165567);
+        this.mSurface = (TappableSurfaceView)mContext.findViewById(2131165566);
+        this.mSurface2 = (TextureView)mContext.findViewById(2131165571);
         this.mParent = (RelativeLayout)mContext.findViewById(2131165369);
         if (this.mSurface == null) {
             Log.w(VideoWindowForPostplayWithScaling.TAG, "PostPlayWithScaling:: surface not found");
@@ -67,7 +67,7 @@ public class VideoWindowForPostplayWithScaling implements VideoWindowForPostplay
     public void animateIn() {
         Log.d(VideoWindowForPostplayWithScaling.TAG, "PostPlayWithScaling:: doTransitionToPostPlay starts");
         this.mOriginalSurfaceState = this.getCurrentSurfaceState();
-        if (Log.isLoggable(VideoWindowForPostplayWithScaling.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(VideoWindowForPostplayWithScaling.TAG, "doTransitionToPostPlay bottom margin: " + this.mOriginalSurfaceState.bottomMargin);
             Log.d(VideoWindowForPostplayWithScaling.TAG, "doTransitionToPostPlay top margin: " + this.mOriginalSurfaceState.topMargin);
             Log.d(VideoWindowForPostplayWithScaling.TAG, "doTransitionToPostPlay left margin: " + this.mOriginalSurfaceState.leftMargin);

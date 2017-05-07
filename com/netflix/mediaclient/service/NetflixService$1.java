@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service;
 
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import android.os.Process;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
@@ -20,13 +20,15 @@ import com.netflix.mediaclient.servicemgr.IDiagnosis;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.IBrowseInterface;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import java.util.List;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.service.user.UserAgent$UserAgentCallback;
 import android.os.SystemClock;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.service.pservice.logging.PServiceLogging;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
 import android.support.v4.content.LocalBroadcastManager;
 import java.io.Serializable;
@@ -50,7 +52,6 @@ import com.netflix.mediaclient.service.falkor.FalkorAccess;
 import com.netflix.mediaclient.service.diagnostics.DiagnosisAgent;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.service.logging.LoggingAgent;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
 import android.os.IBinder;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;

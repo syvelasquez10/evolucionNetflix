@@ -40,7 +40,7 @@ public class Open extends BaseInvoke
         while (true) {
             while (true) {
                 JSONObject jsonObject2 = null;
-                Label_0300: {
+                Label_0294: {
                     try {
                         final JSONObject jsonObject = new JSONObject();
                         jsonObject.put("movieId", n);
@@ -52,7 +52,7 @@ public class Open extends BaseInvoke
                         }
                         else {
                             if (!Open$NetType.wifi.equals(open$NetType)) {
-                                break Label_0300;
+                                break Label_0294;
                             }
                             jsonObject2.put("nettype", (Object)"wifi");
                         }
@@ -62,12 +62,12 @@ public class Open extends BaseInvoke
                         jsonObject3.put("row", playContext.getListPos());
                         jsonObject3.put("rank", playContext.getVideoPos());
                         jsonObject2.put("uiplaycontext", (Object)jsonObject3);
-                        if (Log.isLoggable("nf_invoke", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("nf_invoke", String.format("DEBUG info: reqId %s, listPos %d,  videoPos %d", playContext.getRequestId(), playContext.getListPos(), playContext.getVideoPos()));
                         }
                         jsonObject.put("params", (Object)jsonObject2);
                         this.arguments = jsonObject.toString();
-                        if (Log.isLoggable("nf_invoke", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("nf_invoke", String.format("DEBUG info: sessionParams: %s", jsonObject.toString()));
                             return;
                         }

@@ -9,7 +9,6 @@ import android.os.Debug;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.content.Intent;
 import com.netflix.mediaclient.Log;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
@@ -23,8 +22,8 @@ class DebugMenuItems$5 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        Log.d(this.this$0.logTag, "Sending CW refresh: com.netflix.mediaclient.intent.action.BA_CW_REFRESH");
-        this.this$0.activity.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.BA_CW_REFRESH"));
+        Log.d(this.this$0.logTag, "Making refreshCw() call");
+        this.this$0.activity.getServiceManager().getBrowse().refreshCw();
         return true;
     }
 }

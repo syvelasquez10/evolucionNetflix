@@ -8,7 +8,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFocusHandler;
 import android.view.View;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.model.CWVideo;
+import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 
 public class CwViewGroup extends VideoViewGroup<CWVideo, CwView>
 {
@@ -29,7 +29,7 @@ public class CwViewGroup extends VideoViewGroup<CWVideo, CwView>
     @Override
     protected void updateViewIds(final CwView cwView, int computeViewId, final int n, final int n2) {
         computeViewId = LoLoMoFocusHandler.computeViewId(computeViewId, (n + n2) * 2);
-        if (Log.isLoggable("VideoViewGroup", 2)) {
+        if (Log.isLoggable()) {
             Log.v("VideoViewGroup", "Setting base view id to: " + computeViewId);
         }
         cwView.setId(computeViewId);

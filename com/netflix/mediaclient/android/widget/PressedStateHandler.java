@@ -4,42 +4,38 @@
 
 package com.netflix.mediaclient.android.widget;
 
-import com.netflix.mediaclient.util.gfx.AnimationUtils;
-import com.netflix.mediaclient.Log;
 import android.view.View;
 
-public class PressedStateHandler
+public abstract class PressedStateHandler
 {
-    private static final String TAG = "PressedStateHandler";
+    protected static final String TAG = "PressedStateHandler";
     private boolean enabled;
     private boolean pressed;
     private final View view;
     
-    public PressedStateHandler(final View view) {
+    protected PressedStateHandler(final View view) {
         this.enabled = true;
         this.view = view;
     }
+    
+    protected abstract void handlePressCancelled(final View p0);
+    
+    protected abstract void handlePressComplete(final View p0);
+    
+    protected abstract void handlePressStarted(final View p0);
     
     public void handleSetPressed(final boolean pressed) {
         if (!this.enabled) {
             return;
         }
-        if (Log.isLoggable("PressedStateHandler", 2)) {
-            Log.v("PressedStateHandler", "Prev pressed state: " + this.pressed + ", new pressed state: " + pressed);
-        }
         if (this.pressed && !pressed) {
-            AnimationUtils.startPressedStateCompleteAnimation(this.view);
+            this.handlePressComplete(this.view);
+        }
+        else if (pressed) {
+            this.handlePressStarted(this.view);
         }
         else {
-            final View view = this.view;
-            float alpha;
-            if (pressed) {
-                alpha = 0.7f;
-            }
-            else {
-                alpha = 1.0f;
-            }
-            view.setAlpha(alpha);
+            this.handlePressCancelled(this.view);
         }
         this.pressed = pressed;
     }

@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.mdx;
 
+import com.netflix.mediaclient.service.mdx.message.controller.PlayerGetCapabilities;
+import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
 import com.netflix.mediaclient.service.mdx.message.target.PinNotRequired;
 import com.netflix.mediaclient.service.mdx.message.target.PinRequired;
 import com.netflix.mediaclient.service.mdx.message.target.PlayerStateChanged;
@@ -58,7 +60,7 @@ class TargetContext$PlayerStateManager
             this.mVolume = this.mExpectedVolume;
             Log.d("nf_mdx", "TargetContext: PlayerStateManager overide volume");
         }
-        if (Log.isLoggable("nf_mdx", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_mdx", "TargetContext: PlayerStateManager notifyState " + this.mCurrentState + ", volume = " + this.mVolume + ", time = " + this.mTime);
         }
         this.this$0.mNotifier.state(s, this.mCurrentState, this.mTime, this.mVolume);
@@ -108,7 +110,7 @@ class TargetContext$PlayerStateManager
                 this.mCurrentState = currentState;
                 this.notifyState(s, playerState);
             }
-            if (Log.isLoggable("nf_mdx", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_mdx", "TargetContext: PlayerStateManager state changed to " + this.mCurrentState);
             }
         }

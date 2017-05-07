@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.util;
 
-import com.netflix.mediaclient.net.LogMobileType;
+import com.netflix.mediaclient.service.net.LogMobileType;
 
 public class ConnectivityUtils$NetworkState
 {

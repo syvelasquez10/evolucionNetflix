@@ -10,7 +10,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.servicemgr.UiLocation;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import java.util.ArrayList;
 import java.util.List;
 

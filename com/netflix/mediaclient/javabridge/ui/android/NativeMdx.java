@@ -17,6 +17,7 @@ import com.netflix.mediaclient.javabridge.invoke.mdx.Configure;
 import java.util.Map;
 import com.netflix.mediaclient.javabridge.invoke.mdx.ClearDeviceMap;
 import com.netflix.mediaclient.event.nrdp.mdx.session.MessageEvent;
+import com.netflix.mediaclient.event.nrdp.mdx.TargetRestartingEvent;
 import com.netflix.mediaclient.event.nrdp.mdx.session.SessionEndedEvent;
 import com.netflix.mediaclient.event.nrdp.mdx.session.MessagingErrorEvent;
 import com.netflix.mediaclient.event.nrdp.mdx.session.MessageDeliveredEvent;
@@ -121,7 +122,12 @@ public final class NativeMdx extends NativeNrdObject implements MdxController
             this.handleListener(SessionEndedEvent.TYPE.getName(), new SessionEndedEvent(jsonObject));
             return;
         }
-        if (Log.isLoggable("nf_mdx", 3)) {
+        if (TargetRestartingEvent.TYPE.getName().equalsIgnoreCase(string)) {
+            Log.d("nf_mdx", "NativeMdx: TargetRestartingEvent event");
+            this.handleListener(TargetRestartingEvent.TYPE.getName(), new TargetRestartingEvent(jsonObject));
+            return;
+        }
+        if (Log.isLoggable()) {
             Log.d("nf_mdx", "NativeMdx: MessageEvent event = " + string);
         }
         this.handleListener(MessageEvent.TYPE.getName(), new MessageEvent(jsonObject));
@@ -190,14 +196,14 @@ public final class NativeMdx extends NativeNrdObject implements MdxController
         while (true) {
             while (true) {
                 int n = 0;
-                Label_0408: {
+                Label_0395: {
                     try {
                         final String string = this.getString(jsonObject, "type", null);
-                        if (Log.isLoggable("nf_mdx", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("nf_mdx", "NativeMdx: processUpdate: handle type " + string);
                         }
                         if ("PropertyUpdate".equalsIgnoreCase(string)) {
-                            if (jsonObject != null && Log.isLoggable("nf_mdx", 3)) {
+                            if (jsonObject != null && Log.isLoggable()) {
                                 Log.d("nf_mdx", "NativeMdx: processUpdate: handle prop update " + jsonObject.toString());
                             }
                             jsonObject = this.getJSONObject(jsonObject, "properties", null);
@@ -210,7 +216,7 @@ public final class NativeMdx extends NativeNrdObject implements MdxController
                                 if (jsonArray == null) {
                                     return 0;
                                 }
-                                if (Log.isLoggable("nf_mdx", 3)) {
+                                if (Log.isLoggable()) {
                                     Log.d("nf_mdx", "NativeMdx: Devices found: " + jsonArray.length());
                                 }
                                 final ArrayList<RemoteDevice> list = new ArrayList<RemoteDevice>();
@@ -220,14 +226,14 @@ public final class NativeMdx extends NativeNrdObject implements MdxController
                                     return 1;
                                 }
                                 final RemoteDevice remoteDevice = RemoteDevice.toRemoteDevice(jsonArray.getJSONObject(n));
-                                if (Log.isLoggable("nf_mdx", 3)) {
+                                if (Log.isLoggable()) {
                                     Log.d("nf_mdx", "NativeMdx: Found: " + remoteDevice);
                                 }
                                 if (remoteDevice != null) {
                                     Log.d("nf_mdx", "NativeMdx: add to list");
                                     list.add(remoteDevice);
                                 }
-                                break Label_0408;
+                                break Label_0395;
                             }
                             else if (jsonObject.has("isReady")) {
                                 if (this.mPropertyListener != null) {
@@ -243,7 +249,7 @@ public final class NativeMdx extends NativeNrdObject implements MdxController
                                 this.handleEvents(this.getJSONObject(jsonObject, "data", null));
                                 return 1;
                             }
-                            if (Log.isLoggable("nf_mdx", 3)) {
+                            if (Log.isLoggable()) {
                                 Log.d("nf_mdx", "NativeMdx: processUpdate: type not handled ??? " + string);
                                 return 0;
                             }

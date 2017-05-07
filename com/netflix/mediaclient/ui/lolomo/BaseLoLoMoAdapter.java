@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
-import com.netflix.mediaclient.util.AndroidUtils;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
 import java.util.Collection;
@@ -12,36 +11,45 @@ import com.netflix.mediaclient.ui.lomo.BillboardView;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.widget.AbsListView;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.util.ThreadUtils;
 import android.widget.ListView;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.view.ViewGroup;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
+import java.util.Iterator;
+import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.content.res.Resources;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
+import com.netflix.mediaclient.ui.lomo.LoMoUtils;
 import android.widget.RelativeLayout$LayoutParams;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.widget.TextView;
-import android.widget.LinearLayout;
 import com.netflix.mediaclient.Log;
+import android.view.ViewGroup$LayoutParams;
+import android.widget.LinearLayout$LayoutParams;
+import com.viewpagerindicator.android.osp.ViewPager;
+import com.netflix.mediaclient.util.AndroidUtils;
+import android.content.Context;
+import com.viewpagerindicator.CirclePageIndicator;
 import android.view.View;
+import android.widget.LinearLayout;
 import java.util.ArrayList;
+import java.util.HashSet;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
+import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
+import java.util.Set;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.BaseAdapter;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 
 public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter implements LoLoMoFrag$ILoLoMoAdapter
 {
     private static final String TAG = "BaseLoLoMoAdapter";
     protected final NetflixActivity activity;
-    protected final LoLoMoFrag frag;
+    private final LoLoMoFrag frag;
     private boolean hasMoreData;
     private boolean isLoading;
     private int loMoStartIndex;
@@ -49,11 +57,13 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     private long lomoRequestId;
     private boolean lomoRequestPending;
     private final List<T> lomos;
-    protected LoadingStatus$LoadingStatusCallback mLoadingStatusCallback;
-    protected ServiceManager manager;
-    protected final ObjectRecycler$ViewRecycler viewRecycler;
+    private LoadingStatus$LoadingStatusCallback mLoadingStatusCallback;
+    private ServiceManager manager;
+    private final Set<LoMoViewPager> pagerSet;
+    private final ObjectRecycler$ViewRecycler viewRecycler;
     
     public BaseLoLoMoAdapter(final LoLoMoFrag frag, final String lolomoId) {
+        this.pagerSet = new HashSet<LoMoViewPager>();
         this.isLoading = true;
         this.lomos = new ArrayList<T>(40);
         this.lomoRequestPending = true;
@@ -63,31 +73,55 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         this.lolomoId = lolomoId;
     }
     
+    private boolean areRequestsPending() {
+        return this.lomoRequestPending;
+    }
+    
+    private BaseLoLoMoAdapter$LoMoRowContent createRowContent(final LinearLayout linearLayout, final View view) {
+        final CirclePageIndicator circlePageIndicator = new CirclePageIndicator((Context)this.activity);
+        final LoMoViewPager viewPager = new LoMoViewPager(this.frag, this.manager, circlePageIndicator, this.viewRecycler, view, this.isGenreList());
+        this.pagerSet.add(viewPager);
+        viewPager.setFocusable(false);
+        linearLayout.addView((View)viewPager);
+        circlePageIndicator.setFillColor(-1);
+        circlePageIndicator.setPageColor(-11513776);
+        circlePageIndicator.setRadius(AndroidUtils.dipToPixels((Context)this.activity, 4));
+        circlePageIndicator.setStrokeColor(0);
+        circlePageIndicator.setStrokeWidth(0.0f);
+        circlePageIndicator.setOnPageChangeListener(viewPager.getOnPageChangeListener());
+        circlePageIndicator.setViewPager(viewPager);
+        circlePageIndicator.setVisibility(8);
+        final LinearLayout$LayoutParams linearLayout$LayoutParams = new LinearLayout$LayoutParams(-1, -2);
+        linearLayout$LayoutParams.topMargin = (int)(2.0f * circlePageIndicator.getRadius() + circlePageIndicator.getPaddingTop() + circlePageIndicator.getPaddingBottom() + 1.0f) * -2;
+        linearLayout.addView((View)circlePageIndicator, (ViewGroup$LayoutParams)linearLayout$LayoutParams);
+        return viewPager;
+    }
+    
     private BaseLoLoMoAdapter$RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165443);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131165448);
         linearLayout.setFocusable(false);
-        final TextView textView = (TextView)view.findViewById(2131165441);
+        final TextView textView = (TextView)view.findViewById(2131165446);
         final Resources resources = this.activity.getResources();
         int n;
-        if (this.activity.isForKids()) {
+        if (BrowseExperience.isKubrickKids()) {
             n = 2131296358;
         }
         else {
-            n = 2131296369;
+            n = 2131296371;
         }
         textView.setTextColor(resources.getColor(n));
         final BaseLoLoMoAdapter$LoMoRowContent rowContent = this.createRowContent(linearLayout, (View)textView);
         final TextView initTitleView = this.initTitleView(view);
         ((RelativeLayout$LayoutParams)initTitleView.getLayoutParams()).leftMargin = LoMoUtils.getLomoFragImageOffsetLeftPx(this.activity);
-        return this.createHolder(view, linearLayout, initTitleView, rowContent, view.findViewById(2131165491));
+        return this.createHolder(view, linearLayout, initTitleView, rowContent, view.findViewById(2131165495));
     }
     
     private void fetchMoreData() {
         this.isLoading = true;
         this.lomoRequestId = System.nanoTime();
         final int n = this.loMoStartIndex + 20 - 1;
-        if (Log.isLoggable("BaseLoLoMoAdapter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("BaseLoLoMoAdapter", "fetching more data, starting at index: " + this.loMoStartIndex);
             Log.v("BaseLoLoMoAdapter", "fetching from: " + this.loMoStartIndex + " to: " + n + ", id: " + this.lolomoId);
         }
@@ -100,6 +134,26 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     private void hideLoadingAndErrorViews() {
         this.frag.hideLoadingAndErrorViews();
+    }
+    
+    private void initLoadingState() {
+        ThreadUtils.assertOnMain();
+        this.lomos.clear();
+        this.lomoRequestId = -2147483648L;
+        this.lomoRequestPending = true;
+        this.hasMoreData = false;
+        this.loMoStartIndex = 0;
+        this.notifyDataSetChanged();
+    }
+    
+    private boolean isAnyPagerLoading() {
+        final Iterator<LoMoViewPager> iterator = this.pagerSet.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().isLoading()) {
+                return true;
+            }
+        }
+        return false;
     }
     
     private boolean isRowAfterBillboardOrCwRow(final int n, LoMoType type) {
@@ -125,10 +179,6 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         return false;
     }
     
-    protected boolean areRequestsPending() {
-        return this.lomoRequestPending;
-    }
-    
     protected View createDummyView() {
         final View view = new View((Context)this.activity);
         view.setVisibility(8);
@@ -137,15 +187,6 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     protected BaseLoLoMoAdapter$RowHolder createHolder(final View view, final LinearLayout linearLayout, final TextView textView, final BaseLoLoMoAdapter$LoMoRowContent baseLoLoMoAdapter$LoMoRowContent, final View view2) {
         return new BaseLoLoMoAdapter$RowHolder((View)linearLayout, textView, baseLoLoMoAdapter$LoMoRowContent, view2);
-    }
-    
-    protected abstract BaseLoLoMoAdapter$LoMoRowContent createRowContent(final LinearLayout p0, final View p1);
-    
-    public void destroy() {
-    }
-    
-    protected Activity getActivity() {
-        return this.activity;
     }
     
     public int getCount() {
@@ -169,7 +210,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     protected int getShelfVisibility(final T t, final int n) {
-        if (this.isRowAfterBillboardOrCwRow(n, t.getType()) && !this.activity.isForKids()) {
+        if (this.isRowAfterBillboardOrCwRow(n, t.getType()) && !BrowseExperience.isKubrickKids()) {
             return 0;
         }
         return 8;
@@ -193,25 +234,23 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
             else {
                 this.updateRowViews((BaseLoLoMoAdapter$RowHolder)inflate.getTag(), (T)item, n);
             }
-            if (!this.activity.isForKids() || this.activity.isKubrick()) {
-                final ListView listView = this.frag.getListView();
-                int headerViewsCount;
-                if (listView == null) {
-                    headerViewsCount = 0;
+            final ListView listView = this.frag.getListView();
+            int headerViewsCount;
+            if (listView == null) {
+                headerViewsCount = 0;
+            }
+            else {
+                headerViewsCount = listView.getHeaderViewsCount();
+            }
+            if (headerViewsCount == 0) {
+                int actionBarHeight;
+                if (n == 0) {
+                    actionBarHeight = this.activity.getActionBarHeight();
                 }
                 else {
-                    headerViewsCount = listView.getHeaderViewsCount();
+                    actionBarHeight = 0;
                 }
-                if (headerViewsCount == 0) {
-                    int actionBarHeight;
-                    if (n == 0) {
-                        actionBarHeight = this.activity.getActionBarHeight();
-                    }
-                    else {
-                        actionBarHeight = 0;
-                    }
-                    ViewUtils.setPaddingTop(inflate, actionBarHeight);
-                }
+                ViewUtils.setPaddingTop(inflate, actionBarHeight);
             }
             dummyView = inflate;
             if (this.hasMoreData) {
@@ -226,29 +265,19 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     protected int getViewLayoutId() {
-        return 2130903134;
-    }
-    
-    protected void initLoadingState() {
-        ThreadUtils.assertOnMain();
-        this.lomos.clear();
-        this.lomoRequestId = -2147483648L;
-        this.lomoRequestPending = true;
-        this.hasMoreData = false;
-        this.loMoStartIndex = 0;
-        this.notifyDataSetChanged();
+        return 2130903138;
     }
     
     protected TextView initTitleView(final View view) {
-        if (this.activity.isForKids()) {
-            view.findViewById(2131165442).setVisibility(8);
-            final TextView textView = (TextView)view.findViewById(2131165492);
+        if (BrowseExperience.isKubrickKids()) {
+            view.findViewById(2131165447).setVisibility(8);
+            final TextView textView = (TextView)view.findViewById(2131165496);
             if (textView != null) {
                 textView.setVisibility(0);
             }
             return textView;
         }
-        return (TextView)view.findViewById(2131165442);
+        return (TextView)view.findViewById(2131165447);
     }
     
     public boolean isEnabled(final int n) {
@@ -258,7 +287,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     protected abstract boolean isGenreList();
     
     public boolean isLoadingData() {
-        return this.isLoading;
+        return this.isLoading || this.isAnyPagerLoading();
     }
     
     protected abstract void makeFetchRequest(final String p0, final int p1, final int p2, final ManagerCallback p3);
@@ -280,6 +309,13 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         }
     }
     
+    public void onDestroyView() {
+        final Iterator<LoMoViewPager> iterator = this.pagerSet.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().destroy();
+        }
+    }
+    
     public void onManagerReady(final ServiceManager manager, final Status status) {
         this.manager = manager;
         this.refreshData();
@@ -290,9 +326,17 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     public void onPause() {
+        final Iterator<LoMoViewPager> iterator = this.pagerSet.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().onPause();
+        }
     }
     
     public void onResume() {
+        final Iterator<LoMoViewPager> iterator = this.pagerSet.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().onResume();
+        }
     }
     
     public void onScroll(final AbsListView absListView, final int n, final int n2, final int n3) {
@@ -328,13 +372,13 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     protected void updateRowViews(final BaseLoLoMoAdapter$RowHolder baseLoLoMoAdapter$RowHolder, final T t, int dipToPixels) {
-        if (Log.isLoggable("BaseLoLoMoAdapter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("BaseLoLoMoAdapter", "Updating LoMo row content: " + t.getTitle() + ", type: " + t.getType() + ", pos: " + dipToPixels);
         }
         final TextView title = baseLoLoMoAdapter$RowHolder.title;
         String text;
         if (t.getType() == LoMoType.BILLBOARD) {
-            text = this.activity.getString(2131493273);
+            text = this.activity.getString(2131493281);
         }
         else {
             text = t.getTitle();
@@ -353,7 +397,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
             baseLoLoMoAdapter$RowHolder.shelf.setVisibility(this.getShelfVisibility(t, dipToPixels));
         }
         baseLoLoMoAdapter$RowHolder.rowContent.refresh(t, dipToPixels);
-        if (this.activity.isForKids()) {
+        if (BrowseExperience.isKubrickKids()) {
             if (t.getType() != LoMoType.CONTINUE_WATCHING) {
                 Api16Util.setBackgroundDrawableCompat(baseLoLoMoAdapter$RowHolder.contentGroup, null);
                 if (dipToPixels == this.getCount() - 1) {
@@ -373,7 +417,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
                 baseLoLoMoAdapter$RowHolder.title.setTextColor(baseLoLoMoAdapter$RowHolder.defaultTitleColors);
                 return;
             }
-            baseLoLoMoAdapter$RowHolder.contentGroup.setBackgroundResource(2130837724);
+            baseLoLoMoAdapter$RowHolder.contentGroup.setBackgroundResource(2130837744);
             baseLoLoMoAdapter$RowHolder.contentGroup.setPadding(0, 0, 0, AndroidUtils.dipToPixels((Context)this.activity, 22));
             baseLoLoMoAdapter$RowHolder.title.setTextColor(this.activity.getResources().getColor(2131296360));
         }

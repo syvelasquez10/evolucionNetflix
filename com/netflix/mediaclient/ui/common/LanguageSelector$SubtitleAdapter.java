@@ -49,7 +49,7 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             Log.d("nf_language_selector", "Subtitle create row " + n);
-            inflate = this.this$0.mController.getLayoutInflater().inflate(2130903127, viewGroup, false);
+            inflate = this.this$0.mController.getLayoutInflater().inflate(2130903131, viewGroup, false);
             inflate.setTag((Object)new LanguageSelector$RowHolder(inflate));
         }
         final LanguageSelector$RowHolder languageSelector$RowHolder = (LanguageSelector$RowHolder)inflate.getTag();
@@ -65,13 +65,13 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
             if (item.isCC()) {
                 Log.d("nf_language_selector", "Add CC");
                 sb.append(' ');
-                sb.append(this.this$0.mController.getText(2131493118));
+                sb.append(this.this$0.mController.getText(2131493124));
             }
             text = sb.toString();
             equals = item.equals(subtitle);
         }
         else {
-            text = this.this$0.mController.getString(2131493111);
+            text = this.this$0.mController.getString(2131493117);
             if (subtitle == null) {
                 equals = true;
                 text = text;
@@ -80,7 +80,7 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
         languageSelector$RowHolder.name.setText((CharSequence)text);
         languageSelector$RowHolder.choice.setChecked(equals);
         if (equals) {
-            if (Log.isLoggable("nf_language_selector", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_language_selector", "Subtitle is selected " + item);
             }
             ViewUtils.setTextOpacityToSelected(languageSelector$RowHolder.name);

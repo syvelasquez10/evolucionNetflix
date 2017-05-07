@@ -5,19 +5,18 @@
 package com.netflix.mediaclient.ui.home;
 
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.app.Activity;
 import com.netflix.mediaclient.ui.kids.KidsUtils$OnSwitchToKidsClickListener;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
-import android.view.ViewStub;
-import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.ViewUtils;
@@ -37,7 +36,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.widget.TextView;
 import android.view.ViewGroup;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import java.util.List;
 import android.widget.BaseAdapter;
 
@@ -66,7 +65,7 @@ class SlidingMenuAdapter$GenresListAdapter extends BaseAdapter
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903100, (ViewGroup)null);
+            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903099, (ViewGroup)null);
             inflate.setTag((Object)new SlidingMenuAdapter$Holder((TextView)inflate.findViewById(2131165385), inflate.findViewById(2131165386)));
         }
         final SlidingMenuAdapter$Holder slidingMenuAdapter$Holder = (SlidingMenuAdapter$Holder)inflate.getTag();

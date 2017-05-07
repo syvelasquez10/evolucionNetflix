@@ -26,7 +26,7 @@ class AdvertiserIdLoggingManager$3 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable("nf_adv_id", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_adv_id", "Received intent " + intent);
         }
         final String action = intent.getAction();
@@ -45,7 +45,7 @@ class AdvertiserIdLoggingManager$3 extends BroadcastReceiver
                 this.this$0.sendAdvertiserId(AdvertiserIdLogging$EventType.sign_up);
                 return;
             }
-            if (Log.isLoggable("nf_adv_id", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_adv_id", "We do not support action " + action);
             }
         }

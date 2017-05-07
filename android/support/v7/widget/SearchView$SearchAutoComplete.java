@@ -5,15 +5,24 @@
 package android.support.v7.widget;
 
 import android.view.View$MeasureSpec;
-import android.graphics.drawable.Drawable;
+import android.widget.ListAdapter;
+import android.database.Cursor;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.annotation.TargetApi;
 import android.support.v7.appcompat.R$dimen;
-import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.text.style.ImageSpan;
+import android.text.SpannableStringBuilder;
 import android.net.Uri;
 import android.os.Build$VERSION;
+import android.content.Intent;
+import android.support.v4.widget.CursorAdapter;
 import android.app.SearchableInfo;
+import android.graphics.drawable.Drawable$ConstantState;
+import java.util.WeakHashMap;
 import android.view.View$OnClickListener;
+import android.view.View$OnFocusChangeListener;
 import android.widget.ImageView;
 import android.os.Bundle;
 import android.support.v7.view.CollapsibleActionView;
@@ -106,6 +115,10 @@ public class SearchView$SearchAutoComplete extends AutoCompleteTextView
     
     public void setDropDownBackgroundResource(final int n) {
         this.setDropDownBackgroundDrawable(this.mTintManager.getDrawable(n));
+    }
+    
+    void setSearchView(final SearchView mSearchView) {
+        this.mSearchView = mSearchView;
     }
     
     public void setThreshold(final int n) {

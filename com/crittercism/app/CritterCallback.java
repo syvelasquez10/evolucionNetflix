@@ -6,5 +6,4 @@ package com.crittercism.app;
 
 public interface CritterCallback
 {
-    void onCritterDataReceived(final CritterUserData p0);
 }

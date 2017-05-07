@@ -21,14 +21,14 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import java.util.HashSet;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import java.util.Set;
 import android.widget.ListView;
-import com.netflix.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
@@ -93,21 +93,21 @@ class SocialNotificationsFrag$NotificationsListAdapter extends BaseAdapter
         }
         final SocialNotificationViewHolder socialNotificationViewHolder = (SocialNotificationViewHolder)inflate.getTag();
         if (!this.this$0.mLoadMoreAvailable && (this.this$0.mNotifications == null || this.this$0.mNotifications.getSocialNotifications() == null || this.this$0.mNotifications.getSocialNotifications().size() == 0)) {
-            SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493370);
+            SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493376);
             inflate.setOnClickListener((View$OnClickListener)null);
         }
         else {
             if (this.this$0.mLoadMoreAvailable && n == this.getCount() - 1) {
-                SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493340);
+                SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493348);
                 inflate.setOnClickListener((View$OnClickListener)null);
                 this.this$0.loadMoreNotifications();
                 return inflate;
             }
             if (notificationByType == null) {
-                if (Log.isLoggable(SocialNotificationsFrag.TAG, 6)) {
+                if (Log.isLoggable()) {
                     Log.e(SocialNotificationsFrag.TAG, "Got null notification for type: " + item.getType());
                 }
-                SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493367);
+                SocialNotification.showSingleLineText(socialNotificationViewHolder, 2131493375);
                 inflate.setOnClickListener((View$OnClickListener)null);
                 return inflate;
             }

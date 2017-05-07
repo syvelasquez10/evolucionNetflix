@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.pin;
 
 import com.netflix.mediaclient.util.ParcelUtils;
 import android.os.Parcel;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import android.os.Parcelable$Creator;
 import android.os.Parcelable;
 

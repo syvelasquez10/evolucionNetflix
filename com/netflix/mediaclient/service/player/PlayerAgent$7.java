@@ -13,14 +13,15 @@ import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import java.util.concurrent.Executors;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
-import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import java.util.TimerTask;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.media.JPlayer2Helper;
 import android.media.AudioManager;
+import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
 import com.netflix.mediaclient.android.app.BackgroundTask;
@@ -78,7 +79,7 @@ class PlayerAgent$7 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable(PlayerAgent.TAG, 2)) {
+        if (Log.isLoggable()) {
             Log.v(PlayerAgent.TAG, "Received intent " + intent);
         }
         final String action = intent.getAction();
@@ -86,7 +87,7 @@ class PlayerAgent$7 extends BroadcastReceiver
             Log.d(PlayerAgent.TAG, "subtitle configuration is changed");
             this.this$0.updateSubtitleSettingsFromQaLocalOverride(intent.getIntExtra("lookupType", -1));
         }
-        else if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+        else if (Log.isLoggable()) {
             Log.d(PlayerAgent.TAG, "We do not support action " + action);
         }
     }

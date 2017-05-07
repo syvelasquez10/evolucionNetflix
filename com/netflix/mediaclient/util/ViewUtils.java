@@ -6,7 +6,6 @@ package com.netflix.mediaclient.util;
 
 import java.util.Iterator;
 import java.util.Collection;
-import com.netflix.mediaclient.servicemgr.model.HdEnabledProvider;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.View$OnLongClickListener;
@@ -167,7 +166,7 @@ public class ViewUtils
         if (typeface == null) {
             default1 = Typeface.DEFAULT;
         }
-        if (Log.isLoggable("ViewUtils", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ViewUtils", "fs: " + measureText);
             Log.d("ViewUtils", "text: " + s);
         }
@@ -177,7 +176,7 @@ public class ViewUtils
         paint.setTextSize(measureText);
         paint.getTextBounds(s, 0, s.length(), rect);
         measureText = paint.measureText(s);
-        if (Log.isLoggable("ViewUtils", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ViewUtils", "h: " + rect.height());
             Log.d("ViewUtils", "w: " + rect.width());
             Log.d("ViewUtils", "realW: " + measureText);
@@ -190,7 +189,7 @@ public class ViewUtils
         if (typeface == null) {
             default1 = Typeface.DEFAULT;
         }
-        if (Log.isLoggable("ViewUtils", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ViewUtils", "fs: " + measureText);
             Log.d("ViewUtils", "text: " + s);
         }
@@ -198,7 +197,7 @@ public class ViewUtils
         paint.setTypeface(default1);
         paint.setTextSize(measureText);
         measureText = paint.measureText(s);
-        if (Log.isLoggable("ViewUtils", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ViewUtils", "realW: " + measureText);
         }
         return measureText;
@@ -462,10 +461,6 @@ public class ViewUtils
             viewUtils$Visibility = ViewUtils$Visibility.INVISIBLE;
         }
         setVisibility(view, viewUtils$Visibility);
-    }
-    
-    public static boolean shouldShowHdIcon(final NetflixActivity netflixActivity, final HdEnabledProvider hdEnabledProvider) {
-        return DeviceUtils.isDeviceHd(netflixActivity) && hdEnabledProvider.isVideoHd();
     }
     
     public static void showViews(final Collection<View> collection) {

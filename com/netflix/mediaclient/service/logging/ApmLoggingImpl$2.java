@@ -11,6 +11,8 @@ import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$U
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionStartedEvent;
 import com.netflix.mediaclient.javabridge.ui.Log$AppIdSetListener;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent;
+import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent$WidgetInstallAction;
 import android.content.Context;
 import com.netflix.mediaclient.service.logging.apm.model.UIStartupSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionEndedEvent;
@@ -76,14 +78,14 @@ class ApmLoggingImpl$2 implements Log$ResetSessionIdCallback
     public void sessionCreated(final String s) {
         this.this$0.mEventHandler.removeSession(this.this$0.mUserSession);
         this.this$0.mUserSession = this.val$us;
-        if (Log.isLoggable("nf_log_apm", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log_apm", "Session created: " + s);
         }
         this.val$us.setId(Long.valueOf(s));
         this.this$0.mNrdpLogSessionId = s;
         this.this$0.mEventHandler.addSession(this.this$0.mUserSession);
         final DeviceUniqueId id = this.val$us.getId();
-        if (Log.isLoggable("nf_log_apm", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log_apm", "User session id: " + id);
         }
         this.val$ev.setSessionId(id);

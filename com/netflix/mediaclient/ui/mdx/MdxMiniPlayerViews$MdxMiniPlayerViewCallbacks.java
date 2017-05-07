@@ -6,13 +6,11 @@ package com.netflix.mediaclient.ui.mdx;
 
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.widget.SnappableSeekBar$OnSnappableSeekBarChangeListener;
 
 interface MdxMiniPlayerViews$MdxMiniPlayerViewCallbacks extends SnappableSeekBar$OnSnappableSeekBarChangeListener
 {
-    float getCurrentRating();
-    
     VideoDetails getCurrentVideo();
     
     ServiceManager getManager();

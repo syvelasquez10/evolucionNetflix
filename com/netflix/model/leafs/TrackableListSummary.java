@@ -12,8 +12,8 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import android.os.Parcel;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 
 public class TrackableListSummary extends ListSummary implements JsonPopulator, Trackable
 {

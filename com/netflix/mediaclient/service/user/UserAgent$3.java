@@ -5,10 +5,11 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -29,7 +30,6 @@ import org.json.JSONTokener;
 import org.json.JSONArray;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.NetflixService;
-import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.player.subtitles.TextStyle;
 import com.netflix.mediaclient.javabridge.ui.Registration;
@@ -58,12 +58,12 @@ class UserAgent$3 extends SimpleUserAgentWebCallback
     
     @Override
     public void onUserProfilesUpdated(final AccountData accountData, final Status status) {
-        if (Log.isLoggable("nf_service_useragent", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_useragent", "onUserProfilesUpdated: " + status.getStatusCode());
         }
         if (status.isSucces() && accountData != null) {
             final List<UserProfile> userProfiles = accountData.getUserProfiles();
-            if (Log.isLoggable("nf_service_useragent", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_service_useragent", String.format("onUserProfilesUpdated got profiles: %d", userProfiles.size()));
             }
             this.this$0.mListOfUserProfiles = userProfiles;

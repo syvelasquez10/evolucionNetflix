@@ -12,14 +12,16 @@ public final class CommandSession extends BaseUIViewSession
 {
     public static final String NAME = "command";
     protected UIViewLogging$UIViewCommandName mCommandName;
+    protected String mUrl;
     
-    public CommandSession(final UIViewLogging$UIViewCommandName mCommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+    public CommandSession(final UIViewLogging$UIViewCommandName mCommandName, final IClientLogging$ModalView clientLogging$ModalView, final String mUrl) {
         super(clientLogging$ModalView);
         this.mCommandName = mCommandName;
+        this.mUrl = mUrl;
     }
     
     public CommandEndedEvent createEndedEvent() {
-        final CommandEndedEvent commandEndedEvent = new CommandEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.getAction());
+        final CommandEndedEvent commandEndedEvent = new CommandEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.getAction(), this.mUrl);
         commandEndedEvent.setCategory(this.getCategory());
         commandEndedEvent.setSessionId(this.mId);
         return commandEndedEvent;

@@ -24,7 +24,7 @@ public class SetVideoBitrateRanges extends BaseInvoke
     public SetVideoBitrateRanges(final int n, final int n2) {
         super("media", "setVideoBitrateRanges");
         final String[] supportedVideoProfiles = NativeTransport.getSupportedVideoProfiles();
-        if (Log.isLoggable("nf_invoke", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_invoke", "minBitrate: " + n + ", maxBitrate: " + n2);
         }
         final JSONArray jsonArray = new JSONArray();

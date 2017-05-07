@@ -10,7 +10,7 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 
 public final class Video$BookmarkStill implements JsonPopulator
 {

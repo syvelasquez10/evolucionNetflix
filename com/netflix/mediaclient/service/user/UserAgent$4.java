@@ -5,10 +5,11 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -31,7 +32,6 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.NetflixService;
-import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.player.subtitles.TextStyle;
 import com.netflix.mediaclient.javabridge.ui.Registration;
@@ -59,7 +59,7 @@ class UserAgent$4 extends SimpleConfigurationAgentWebCallback
     
     @Override
     public void onConfigDataFetched(final ConfigData configData, final Status status) {
-        if (Log.isLoggable("nf_service_useragent", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_useragent", String.format("onConfigDataFetched res.isSuccess:%b, isAccountDataAvailable:%b", status.isSucces(), this.this$0.isAccountDataAvailable()));
         }
         if (status.isSucces() || this.this$0.isAccountDataAvailable()) {

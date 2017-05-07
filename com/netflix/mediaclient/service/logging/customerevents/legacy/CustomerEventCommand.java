@@ -40,7 +40,7 @@ public class CustomerEventCommand extends ResponseWebApiPostCommand
     protected List<NameValuePair> getParameters() {
         final ArrayList<NameValuePair> list = new ArrayList<NameValuePair>(1);
         final String string = this.mPayload.toString();
-        if (Log.isLoggable("nf_rest", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_rest", "Payload: " + string);
         }
         this.addIfNotNull(list, "data", string);

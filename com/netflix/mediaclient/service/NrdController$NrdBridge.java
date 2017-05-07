@@ -20,7 +20,7 @@ import com.netflix.mediaclient.javabridge.ui.android.NrdpWrapper;
 import com.netflix.mediaclient.javabridge.NrdProxyFactory;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
 import com.netflix.mediaclient.javabridge.NrdProxy;
-import com.netflix.mediaclient.net.IpConnectivityPolicy;
+import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.util.AppStoreHelper;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import android.view.WindowManager;
@@ -38,6 +38,11 @@ class NrdController$NrdBridge implements Bridge
     
     private NrdController$NrdBridge(final NrdController this$0) {
         this.this$0 = this$0;
+    }
+    
+    @Override
+    public boolean enableLowBitrateStreams() {
+        return this.this$0.getConfigurationAgent().enableLowBitrateStreams();
     }
     
     @Override

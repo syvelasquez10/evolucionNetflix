@@ -7,7 +7,6 @@ package com.netflix.mediaclient.ui.home;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
 import android.app.DialogFragment;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.app.Activity;
 import android.content.Context;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -36,7 +35,7 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
     
     private boolean displayGooglePlayServicesDialogIfNeeded() {
         final int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable((Context)this.mOwner);
-        if (Log.isLoggable("DialogManager", 3)) {
+        if (Log.isLoggable()) {
             Log.d("DialogManager", "Google Play status: " + googlePlayServicesAvailable);
         }
         if (googlePlayServicesAvailable == 0) {
@@ -59,7 +58,6 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
                 }
                 catch (Throwable t) {
                     Log.e("DialogManager", "Failed to display Google play services error dialog!", t);
-                    ErrorLoggingManager.logHandledException(t);
                     return false;
                 }
             }

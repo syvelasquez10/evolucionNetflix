@@ -48,7 +48,7 @@ public class LocalizationManager
             AudioSubtitleDefaultOrderInfo.dumpLog(mDefaults, "nf-l10n");
             this.mDefaults = mDefaults;
         }
-        if (Log.isLoggable("nf-l10n", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-l10n", "User choice for language was " + languageChoice);
         }
         if (languageChoice == null) {
@@ -57,7 +57,7 @@ public class LocalizationManager
         }
         if (languageChoice.getSubtitle() != null) {
             this.userChoiceSubtitle = this.getSubtitleById(languageChoice.getSubtitle().getId());
-            if (Log.isLoggable("nf-l10n", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf-l10n", "User choice for subtitle was " + languageChoice.getSubtitle().getId() + ". In movie medatadata we found match: " + this.userChoiceSubtitle);
             }
         }
@@ -66,7 +66,7 @@ public class LocalizationManager
         }
         if (languageChoice.getAudio() != null) {
             this.userChoiceAudio = this.getAudioSourceById(languageChoice.getAudio().getId());
-            if (Log.isLoggable("nf-l10n", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf-l10n", "User choice for audio was " + languageChoice.getAudio().getId() + ". In movie medatadata we found match: " + this.userChoiceAudio);
             }
             return;
@@ -95,7 +95,7 @@ public class LocalizationManager
                 return audioSourceById;
             }
             audioSource = audioSourceById;
-            if (Log.isLoggable("nf-l10n", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf-l10n", "Initial audio source defined by defauls: " + audioSourceById);
                 return audioSourceById;
             }
@@ -112,7 +112,7 @@ public class LocalizationManager
             }
             final String subtitleTrackId = this.mDefaults[0].getSubtitleTrackId();
             if (subtitleTrackId == null || "none".equalsIgnoreCase(subtitleTrackId) || "".equals(subtitleTrackId)) {
-                if (Log.isLoggable("nf-l10n", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf-l10n", "Subtitle track id is NULL for default, no subtitles: " + this.mDefaults[0]);
                     return null;
                 }
@@ -124,7 +124,7 @@ public class LocalizationManager
                     return subtitleById;
                 }
                 subtitle = subtitleById;
-                if (Log.isLoggable("nf-l10n", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf-l10n", "Initial subtitle defined by defauls: " + subtitleById);
                     return subtitleById;
                 }
@@ -162,11 +162,11 @@ public class LocalizationManager
             Log.d("nf-l10n", "We found user preference for subtitle!");
         }
         if (this.userChoiceAudio != null) {
-            if (Log.isLoggable("nf-l10n", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf-l10n", "We found user preference for audio: " + this.userChoiceAudio);
             }
             if (this.userChoiceSubtitle != null) {
-                if (Log.isLoggable("nf-l10n", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf-l10n", "We found user preference for subtitle: " + this.userChoiceSubtitle);
                 }
             }
@@ -191,7 +191,7 @@ public class LocalizationManager
                 Log.d("nf-l10n", "No user preferences for audio and subtitle. Use NCCP defaults.");
                 return new LanguageChoice(this.findInitialSubtitle(), initialAudio);
             }
-            if (Log.isLoggable("nf-l10n", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf-l10n", "We found user preference for subtitle: " + this.userChoiceSubtitle);
             }
             if (initialAudio.isAllowedSubtitle(this.userChoiceSubtitle)) {

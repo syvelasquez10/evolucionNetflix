@@ -33,7 +33,7 @@ public abstract class Subtitle implements Comparable<Subtitle>
     
     public static void dumpLog(final Subtitle[] array, final String s) {
         if (array != null) {
-            if (Log.isLoggable(s, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(s, "Subtitles: " + array.length);
                 for (int i = 0; i < array.length; ++i) {
                     Log.d(s, i + " " + array[i]);

@@ -4,15 +4,15 @@
 
 package com.netflix.model.branches;
 
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.model.leafs.Video$Detail;
 import com.netflix.falkor.PQL;
 import android.util.Log;
 import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.model.leafs.Episode$Detail;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 
 public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetails, FalkorObject
 {
@@ -36,6 +36,14 @@ public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetai
     public boolean canBeSharedOnFacebook() {
         final FalkorVideo show = this.getShow();
         return show != null && show.canBeSharedOnFacebook();
+    }
+    
+    @Override
+    public String getAvailabilityDateMessage() {
+        if (this.episodeDetail == null) {
+            return null;
+        }
+        return this.episodeDetail.getAvailabilityDateMessage();
     }
     
     @Override

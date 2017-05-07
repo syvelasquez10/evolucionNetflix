@@ -5,11 +5,12 @@
 package com.netflix.mediaclient.ui.lolomo;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.model.genre.Genre;
+import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 

@@ -4,16 +4,18 @@
 
 package com.netflix.mediaclient.util;
 
+import com.netflix.mediaclient.servicemgr.interface_.FeatureEnabledProvider;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import com.netflix.mediaclient.repository.SecurityRepository;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.service.configuration.esn.BaseEsnProvider;
 import android.view.KeyCharacterMap;
 import android.annotation.SuppressLint;
 import android.content.pm.ApplicationInfo;
+import com.netflix.mediaclient.ui.details.DeviceCapabilityProvider;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import android.view.inputmethod.InputMethodManager;
@@ -57,7 +59,7 @@ public final class DeviceUtils
     
     public static String getCertificationVersion(final Context context) {
         final String trim = getSoftwareVersion(context).trim();
-        if (Log.isLoggable("nf_device_utils", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_device_utils", "SV: " + trim);
         }
         final int index = trim.indexOf(" ");
@@ -65,7 +67,7 @@ public final class DeviceUtils
         if (index > 0) {
             substring = trim.substring(0, index);
         }
-        if (Log.isLoggable("nf_device_utils", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_device_utils", "CV: " + substring);
         }
         return substring;
@@ -89,6 +91,10 @@ public final class DeviceUtils
         finally {
         }
         // monitorexit(DeviceUtils.class)
+    }
+    
+    public static DeviceCapabilityProvider getLocalCapabilities(final ServiceManager serviceManager) {
+        return new DeviceUtils$1(serviceManager);
     }
     
     public static String getNativeLibraryDirectory(final Context context) {
@@ -211,16 +217,16 @@ public final class DeviceUtils
     }
     
     public static boolean isDeviceEnabled(final Context context, final int n) {
-    Label_0201_Outer:
+    Label_0195_Outer:
         while (true) {
             boolean b = true;
             boolean b2 = true;
             while (true) {
                 while (true) {
                     int n3 = 0;
-                    Label_0207: {
+                    Label_0201: {
                         synchronized (DeviceUtils.class) {
-                            if (Log.isLoggable("nf_device_utils", 3)) {
+                            if (Log.isLoggable()) {
                                 Log.d("nf_device_utils", "isDeviceEnabled:: Disabled percentage: " + n);
                             }
                             final long hashCode;
@@ -237,23 +243,23 @@ public final class DeviceUtils
                                 if ((n3 = n2) < 0) {
                                     n3 = n2 + 100;
                                 }
-                                break Label_0207;
+                                break Label_0201;
                             }
-                            Label_0057: {
+                            Label_0054: {
                                 return b2;
                             }
                             b2 = b;
-                            // iftrue(Label_0057:, !Log.isLoggable("nf_device_utils", 3))
+                            // iftrue(Label_0054:, !Log.isLoggable())
                             final String s;
                             Log.d("nf_device_utils", "isDeviceEnabled:: deviceID " + s + ", hash " + hashCode + ", bucket " + n3 + ", enabled " + b);
                             b2 = b;
                             return b2;
                         }
                         b = false;
-                        continue Label_0201_Outer;
+                        continue Label_0195_Outer;
                     }
                     if (n3 <= 100 - n) {
-                        continue Label_0201_Outer;
+                        continue Label_0195_Outer;
                     }
                     break;
                 }
@@ -293,7 +299,7 @@ public final class DeviceUtils
     public static boolean isLocalPlaybackEnabled() {
         final String systemPropety = SecurityRepository.getSystemPropety("ro.nrdp.playback.enable");
         final boolean b = StringUtils.isEmpty(systemPropety) || "true".equalsIgnoreCase(systemPropety);
-        if (Log.isLoggable("nf_device_utils", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_device_utils", "isLocalPlaybackEnabled:: value: " + systemPropety + ", enabled: " + b);
         }
         return b;
@@ -310,7 +316,7 @@ public final class DeviceUtils
     public static boolean isRemoteControlEnabled() {
         final String systemPropety = SecurityRepository.getSystemPropety("ro.nrdp.mdx.remotecontrols");
         final boolean b = StringUtils.isEmpty(systemPropety) || "true".equalsIgnoreCase(systemPropety);
-        if (Log.isLoggable("nf_device_utils", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_device_utils", "isRemoteControlEnabled:: value: " + systemPropety + ", enabled: " + b);
         }
         return b;
@@ -332,7 +338,7 @@ public final class DeviceUtils
             return false;
         }
         final int n = configuration.screenLayout & 0xF;
-        if (Log.isLoggable("nf_device_utils", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_device_utils", "Screen size: " + n);
         }
         switch (n) {
@@ -367,26 +373,25 @@ public final class DeviceUtils
         while (true) {
             if (nativeLibraryDirectory != null) {
                 try {
-                    if (Log.isLoggable("nf_device_utils", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_device_utils", "Loading library " + s + " from app file system. Installed or updated app.");
                     }
                     final String string = nativeLibraryDirectory + "/lib" + s + ".so";
-                    if (Log.isLoggable("nf_device_utils", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_device_utils", "Loading from " + string);
                     }
                     System.load(string);
                     return true;
                     while (true) {
-                        while (true) {
+                        Log.d("nf_device_utils", "Loading library " + s + " leaving to android to find mapping. Preloaded app.");
+                        Label_0173: {
                             System.loadLibrary(s);
-                            return true;
-                            Log.d("nf_device_utils", "Loading library " + s + " leaving to android to find mapping. Preloaded app.");
-                            continue;
                         }
+                        return true;
                         continue;
                     }
                 }
-                // iftrue(Label_0182:, !Log.isLoggable("nf_device_utils", 3))
+                // iftrue(Label_0173:, !Log.isLoggable())
                 catch (Throwable t) {
                     Log.e("nf_device_utils", "Failed to load library from assumed location", t);
                     ErrorLoggingManager.logHandledException(t);
@@ -396,6 +401,26 @@ public final class DeviceUtils
             }
             continue;
         }
+    }
+    
+    public static boolean shouldShow3DIcon(final DeviceCapabilityProvider deviceCapabilityProvider, final FeatureEnabledProvider featureEnabledProvider) {
+        return deviceCapabilityProvider.is3dSupported() && featureEnabledProvider.isVideo3D();
+    }
+    
+    public static boolean shouldShow5dot1Icon(final DeviceCapabilityProvider deviceCapabilityProvider, final FeatureEnabledProvider featureEnabledProvider) {
+        return deviceCapabilityProvider.is5dot1Supported() && featureEnabledProvider.isVideo5dot1();
+    }
+    
+    public static boolean shouldShowHdIcon(final NetflixActivity netflixActivity, final FeatureEnabledProvider featureEnabledProvider) {
+        return isDeviceHd(netflixActivity) && featureEnabledProvider.isVideoHd();
+    }
+    
+    public static boolean shouldShowHdIcon(final DeviceCapabilityProvider deviceCapabilityProvider, final FeatureEnabledProvider featureEnabledProvider) {
+        return deviceCapabilityProvider.isHdSupported() && featureEnabledProvider.isVideoHd();
+    }
+    
+    public static boolean shouldShowUhdIcon(final DeviceCapabilityProvider deviceCapabilityProvider, final FeatureEnabledProvider featureEnabledProvider) {
+        return deviceCapabilityProvider.isUltraHdSupported() && featureEnabledProvider.isVideoUhd();
     }
     
     public static void showSoftKeyboard(final Activity activity) {

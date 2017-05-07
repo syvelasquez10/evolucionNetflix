@@ -35,8 +35,8 @@ public final class SimpleSubtitleManager implements SubtitleManager
         if (this.mScreen == null) {
             throw new IllegalArgumentException("Player screen is not initialized!");
         }
-        this.mSubtitleArea = mActivity.findViewById(2131165571);
-        this.mSubtitleLabel = (TextView)mActivity.findViewById(2131165480);
+        this.mSubtitleArea = mActivity.findViewById(2131165575);
+        this.mSubtitleLabel = (TextView)mActivity.findViewById(2131165484);
         int n;
         if (mActivity.isTablet()) {
             n = 54;
@@ -45,7 +45,7 @@ public final class SimpleSubtitleManager implements SubtitleManager
             n = 46;
         }
         this.mPlayerPadding = AndroidUtils.dipToPixels((Context)mActivity, n);
-        this.mBottomPanelHeight = mActivity.getResources().getDimensionPixelSize(2131362041);
+        this.mBottomPanelHeight = mActivity.getResources().getDimensionPixelSize(2131362044);
     }
     
     @Override
@@ -61,7 +61,7 @@ public final class SimpleSubtitleManager implements SubtitleManager
     @Override
     public void onPlayerOverlayVisibiltyChange(final boolean b) {
         final int n = this.mPlayerPadding + this.mBottomPanelHeight;
-        if (Log.isLoggable("nf_subtitles", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Player UI is now visible: " + b + ", push subtitles (if applicable) higher for " + this.mBottomPanelHeight + ", with padding " + this.mPlayerPadding + ", delta " + n);
         }
         if (this.mSubtitleArea != null) {
@@ -90,12 +90,12 @@ public final class SimpleSubtitleManager implements SubtitleManager
     
     @Override
     public void onSubtitleShow(final String s) {
-        if (Log.isLoggable("nf_subtitles", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Set subtitle to : " + s);
         }
         final Language language = this.mActivity.getLanguage();
         if (language != null && language.isSubtitleVisible()) {
-            if (Log.isLoggable("nf_subtitles", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Subtitle is visible : " + language.isSubtitleVisible());
             }
             this.setSubtitleVisibility(true);
@@ -107,7 +107,7 @@ public final class SimpleSubtitleManager implements SubtitleManager
     
     @Override
     public void setSubtitleVisibility(final boolean b) {
-        if (Log.isLoggable("nf_subtitles", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles", "setSubtitleVisibility to " + b);
         }
         if (this.mSubtitleArea == null) {

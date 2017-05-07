@@ -24,7 +24,7 @@ public class FetchDummyWebRequest extends FalkorVolleyWebClientRequest<String>
         super(context);
         this.responseCallback = responseCallback;
         this.pqlQuery = new StringBuilder("['dummy']").toString();
-        if (Log.isLoggable("nf_service_user_fetchdummywebrequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_fetchdummywebrequest", "PQL = " + this.pqlQuery);
         }
     }

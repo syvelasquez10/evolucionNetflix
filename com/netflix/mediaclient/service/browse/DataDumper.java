@@ -8,9 +8,9 @@ import java.util.Iterator;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.util.LinkedHashMap;
 import com.netflix.mediaclient.servicemgr.IBrowseManager;
 

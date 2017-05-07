@@ -17,11 +17,11 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import android.content.Context;
 import com.google.android.gcm.GCMRegistrar;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.service.logging.UserData;
 import android.content.Intent;
-import android.content.Context;
 import com.netflix.mediaclient.Log;
 import android.content.BroadcastReceiver;
 import java.util.Map;
@@ -71,7 +71,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         userData.secureNetflixId = intent.getStringExtra("sid");
         userData.accountOwnerToken = intent.getStringExtra("uid");
         userData.currentProfileToken = intent.getStringExtra("cp_uid");
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", "CreateUserData: " + userData);
         }
         return userData;
@@ -114,7 +114,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         userData.accountCountry = this.getUserAgent().getReqCountry();
         userData.accountCountry = this.getUserAgent().getGeoCountry();
         userData.languages = this.getUserAgent().getLanguagesInCsv();
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", "GetUserData: " + userData);
         }
         return userData;
@@ -125,7 +125,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
     }
     
     private void onGcmRegistration(final String gcmRegistrationId) {
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", "onGcmRegistration " + gcmRegistrationId);
         }
         this.gcmRegistrationId = gcmRegistrationId;
@@ -152,31 +152,31 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         }
         final String accountOwnerToken = this.getService().getAccountOwnerToken();
         final String currentProfileToken = this.getService().getCurrentProfileToken();
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", "onLogin with accountOwnerToken ID: " + accountOwnerToken);
         }
         this.mCurrentUserSettings = this.mSettings.get(accountOwnerToken);
         while (true) {
-            Label_0161: {
+            Label_0158: {
                 if (this.mCurrentUserSettings != null) {
-                    break Label_0161;
+                    break Label_0158;
                 }
                 Log.d("nf_push", "User was not know from before");
                 this.mCurrentUserSettings = this.createNewCurrentUserSettings(accountOwnerToken, currentProfileToken);
-                Label_0241: {
+                Label_0235: {
                     try {
                         Log.d("nf_push", String.format("report sGcmInfoEventStartedService: %s", this.mGcmInfoEventStartedService));
                         if (this.mGcmInfoEventStartedService) {
                             this.reportAndKillService();
                             return;
                         }
-                        break Label_0241;
+                        break Label_0235;
                     }
                     catch (Throwable t) {
                         Log.e("nf_push", "Check if we are registered already failed!", t);
                         return;
                     }
-                    break Label_0161;
+                    break Label_0158;
                 }
                 if (this.wasNotificationOptInDisplayed()) {
                     SettingsConfiguration.setPushOptInStatus(this.getContext(), this.mCurrentUserSettings.optedIn);
@@ -191,7 +191,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
                 Log.d("nf_push", "currentProfile change detected");
                 this.updateCurrentUserSettings(currentProfileToken);
             }
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", "User was know from before and he opted in " + this.mCurrentUserSettings.optedIn);
             }
             continue;
@@ -227,7 +227,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
     
     private void onMessage(final Intent intent) {
         Log.d("nf_push", "Message received, create notification. Running it on main thread.");
-        NotificationFactory.createNotification(this.getService(), intent, this.mImageLoader, this.getMessageId(this.getContext()), this.getService().getClientLogging().getErrorLogging());
+        NotificationFactory.createNotification(this.getService(), intent, this.mImageLoader, this.getMessageId(this.getContext()));
     }
     
     private void onNotificationBrowserRedirect(final Intent intent) {
@@ -236,13 +236,13 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             Log.e("nf_push", "Unable to report browser redirect notification since message data are missing!");
             return;
         }
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", "User browser redirect notification " + instance);
         }
         this.getService().getClientLogging().getCmpEventLogging().reportUserFeedbackOnReceivedPushNotification(instance, UserFeedbackOnReceivedPushNotification.opened);
         Log.d("nf_push", intent);
         final String stringExtra = intent.getStringExtra("target_url");
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", "URI to be redirected to " + stringExtra);
         }
         if (stringExtra != null) {
@@ -262,7 +262,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             Log.e("nf_push", "Unable to report canceled notification since message data are missing!");
             return;
         }
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", "User canceled notification " + instance);
         }
         this.getService().getClientLogging().getCmpEventLogging().reportUserFeedbackOnReceivedPushNotification(instance, UserFeedbackOnReceivedPushNotification.canceled);
@@ -303,7 +303,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
                 return;
             }
             this.reportOnRegistered = true;
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", String.format("can't report yet.. wait for registration to finish.. optIn:%b,  gcmInfoOptIn:%b", b, b2));
             }
         }
@@ -336,7 +336,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
         }
         this.mCurrentUserSettings.optedIn = optedIn;
         this.mCurrentUserSettings.optInDisplayed = true;
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", "Save user settings " + this.mCurrentUserSettings);
         }
         this.saveSettings();
@@ -344,12 +344,11 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
     
     private void validateCurrentUser() {
         final String accountOwnerToken = this.getService().getAccountOwnerToken();
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", "accountOwnerToken ID: " + accountOwnerToken);
         }
         if (StringUtils.isEmpty(accountOwnerToken)) {
             Log.e("nf_push", "accountOwnerToken ID is empty! This should NOT happen!");
-            this.getService().getClientLogging().getErrorLogging().logHandledException("PushNotificationAgent.validateCurrentUser: user ID is empty!");
         }
         else if (this.mCurrentUserSettings == null || !accountOwnerToken.equals(this.mCurrentUserSettings.accountOwnerToken)) {
             Log.d("nf_push", "We DO NOT have user! Try to find it from settings");
@@ -363,7 +362,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
                 return;
             }
             this.mCurrentUserSettings.current = true;
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", "User was know from before and he opted in " + this.mCurrentUserSettings.optedIn);
             }
         }
@@ -499,7 +498,7 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
             Log.d("nf_push", "Current user is empty. Do NOT display opt in dialog!");
             return true;
         }
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", "Current user was displayed " + this.mCurrentUserSettings.optInDisplayed);
         }
         return this.mCurrentUserSettings.optInDisplayed;

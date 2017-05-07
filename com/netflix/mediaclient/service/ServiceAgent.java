@@ -58,7 +58,7 @@ public abstract class ServiceAgent
         return null;
     }
     
-    protected Context getContext() {
+    public Context getContext() {
         final ServiceAgent$AgentContext agentContext = this.agentContext;
         if (agentContext != null) {
             return (Context)agentContext.getService();
@@ -133,7 +133,7 @@ public abstract class ServiceAgent
     protected final void initCompleted(final Status initErrorResult) {
         synchronized (this) {
             this.initErrorResult = initErrorResult;
-            if (Log.isLoggable("nf_service_ServiceAgent", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_service_ServiceAgent", "InitComplete with errorCode " + this.initErrorResult + " for " + this.getClass().getSimpleName());
             }
             if (this.initCallback != null) {

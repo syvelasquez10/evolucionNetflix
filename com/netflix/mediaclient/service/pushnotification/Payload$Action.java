@@ -37,7 +37,7 @@ public class Payload$Action
     }
     
     public int getIcon() {
-        return 2130837715;
+        return 2130837737;
     }
     
     public Uri getPayload() {

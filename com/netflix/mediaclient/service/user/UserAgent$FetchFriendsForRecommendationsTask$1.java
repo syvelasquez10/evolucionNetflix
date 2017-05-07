@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.List;
 
 class UserAgent$FetchFriendsForRecommendationsTask$1 extends SimpleUserAgentWebCallback

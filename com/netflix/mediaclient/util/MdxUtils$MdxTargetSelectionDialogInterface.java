@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.util;
 
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
 import com.netflix.mediaclient.ui.mdx.RemotePlayer;
 import com.netflix.mediaclient.ui.common.PlayContext;

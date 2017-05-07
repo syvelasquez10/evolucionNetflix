@@ -85,7 +85,7 @@ public final class m implements SupportMenuItem
     }
     
     CharSequence a(final aa aa) {
-        if (aa != null && aa.b()) {
+        if (aa != null && aa.a()) {
             return this.getTitleCondensed();
         }
         return this.getTitle();
@@ -242,15 +242,15 @@ public final class m implements SupportMenuItem
     
     @Override
     public boolean expandActionView() {
-        return this.m() && (this.t == null || this.t.onMenuItemActionExpand((MenuItem)this)) && this.l.c(this);
+        return this.n() && (this.t == null || this.t.onMenuItemActionExpand((MenuItem)this)) && this.l.c(this);
     }
     
     public boolean f() {
         return (this.p & 0x4) != 0x0;
     }
     
-    public boolean g() {
-        return this.l.q();
+    public void g() {
+        this.l.b(this);
     }
     
     public android.view.ActionProvider getActionProvider() {
@@ -326,7 +326,7 @@ public final class m implements SupportMenuItem
     }
     
     public boolean h() {
-        return (this.p & 0x20) == 0x20;
+        return this.l.q();
     }
     
     public boolean hasSubMenu() {
@@ -334,7 +334,7 @@ public final class m implements SupportMenuItem
     }
     
     public boolean i() {
-        return (this.q & 0x1) == 0x1;
+        return (this.p & 0x20) == 0x20;
     }
     
     @Override
@@ -367,18 +367,22 @@ public final class m implements SupportMenuItem
     }
     
     public boolean j() {
-        return (this.q & 0x2) == 0x2;
+        return (this.q & 0x1) == 0x1;
     }
     
     public boolean k() {
+        return (this.q & 0x2) == 0x2;
+    }
+    
+    public boolean l() {
         return (this.q & 0x4) == 0x4;
     }
     
-    public ActionProvider l() {
+    public ActionProvider m() {
         return this.s;
     }
     
-    public boolean m() {
+    public boolean n() {
         boolean b = false;
         if ((this.q & 0x8) != 0x0) {
             if (this.r == null && this.s != null) {

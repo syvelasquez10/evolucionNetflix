@@ -6,7 +6,7 @@ package com.netflix.mediaclient.event.nrdp.media;
 
 import com.netflix.mediaclient.event.nrdp.BaseNccpEvent;
 import org.json.JSONObject;
-import com.netflix.mediaclient.proxy.nrdp.media.StreamInfo;
+import com.netflix.mediaclient.javabridge.StreamInfo;
 
 public class StreamSelected extends BaseMediaEvent
 {

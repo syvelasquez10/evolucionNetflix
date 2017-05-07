@@ -93,7 +93,7 @@ public class Language
         else {
             for (int length = array.length, i = 0; i < length; ++i) {
                 final AudioSource audioSource = array[i];
-                if (Log.isLoggable("nf_language", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_language", "Testing " + audioSource + " for NCCP order number " + n);
                 }
                 if (audioSource.getNccpOrderNumber() == n) {
@@ -101,7 +101,7 @@ public class Language
                     return audioSource;
                 }
             }
-            if (Log.isLoggable("nf_language", 5)) {
+            if (Log.isLoggable()) {
                 Log.w("nf_language", "SHould NOT happen! Audio source NOT found for NCCP order number " + n);
                 return null;
             }
@@ -124,7 +124,7 @@ public class Language
         else {
             for (int length = array.length, i = 0; i < length; ++i) {
                 final Subtitle subtitle = array[i];
-                if (Log.isLoggable("nf_language", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_language", "Testing " + subtitle + " for NCCP order number " + n);
                 }
                 if (subtitle.getNccpOrderNumber() == n) {
@@ -132,7 +132,7 @@ public class Language
                     return subtitle;
                 }
             }
-            if (Log.isLoggable("nf_language", 5)) {
+            if (Log.isLoggable()) {
                 Log.w("nf_language", "Should NOT happen! Subtitle NOT found for NCCP order number " + n);
                 return null;
             }
@@ -185,18 +185,18 @@ public class Language
     private void updateUsedSubtitles(final AudioSource audioSource) {
         this.mUsedSubtitles.clear();
         if (audioSource == null || audioSource.isAllowedSubtitle(null)) {
-            if (Log.isLoggable("nf_language", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_language", "Subtitle off is allowed for audio " + audioSource + ". Add to list of used subtitles.");
             }
             this.mUsedSubtitles.add(null);
         }
         else if (this.mSubtitles == null || countAllowedSubtitles(this.mSubtitles, audioSource) < 1) {
-            if (Log.isLoggable("nf_language", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_language", "Subtitle off is NOT allowed for audio " + audioSource + ", but there are no other ALLOWED subtitles. NCCP error. Add to subtitle spinner.");
             }
             this.mUsedSubtitles.add(null);
         }
-        else if (Log.isLoggable("nf_language", 3)) {
+        else if (Log.isLoggable()) {
             Log.d("nf_language", "Subtitle off is NOT allowed for audio " + audioSource + ".");
         }
         if (this.mSubtitles != null) {
@@ -204,12 +204,12 @@ public class Language
             for (int length = mSubtitles.length, i = 0; i < length; ++i) {
                 final Subtitle subtitle = mSubtitles[i];
                 if (audioSource == null || audioSource.isAllowedSubtitle(subtitle)) {
-                    if (Log.isLoggable("nf_language", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_language", subtitle + " is allowed for audio " + audioSource + ". Add to subtitle spinner.");
                     }
                     this.mUsedSubtitles.add(subtitle);
                 }
-                else if (Log.isLoggable("nf_language", 3)) {
+                else if (Log.isLoggable()) {
                     Log.d("nf_language", subtitle + " is not allowed for audio " + audioSource + ". Skip.");
                 }
             }
@@ -255,7 +255,7 @@ public class Language
     }
     
     public AudioSource getSelectedAudio() {
-        if (Log.isLoggable("nf_language", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_language", "Get selected audio: " + this.mSelectedAudio);
         }
         return this.mSelectedAudio;
@@ -274,7 +274,7 @@ public class Language
     }
     
     public boolean isLanguageSwitchEnabled() {
-        if (Log.isLoggable("nf_language", 2)) {
+        if (Log.isLoggable()) {
             final StringBuilder append = new StringBuilder().append("isLanguageSwitchEnabled mSubtitles count: ");
             Serializable value;
             if (this.mSubtitles == null) {
@@ -288,7 +288,7 @@ public class Language
         if (this.mSubtitles != null && this.mSubtitles.length > 0) {
             return true;
         }
-        if (Log.isLoggable("nf_language", 2)) {
+        if (Log.isLoggable()) {
             final StringBuilder append2 = new StringBuilder().append("isLanguageSwitchEnabled mAltAudios count: ");
             Serializable value2;
             if (this.mAltAudios == null) {
@@ -312,7 +312,7 @@ public class Language
             return;
         }
         final AudioSource audioSource = getAudioSource(this.getAltAudios(), this.mPreviousNccpAudioIndex);
-        if (Log.isLoggable("nf_language", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_language", "Restore to previous audio in UI: " + audioSource);
         }
         if (this.setSelectedAudio(audioSource) == null) {
@@ -327,7 +327,7 @@ public class Language
         if (this.mPreviousNccpSubtitleIndex > -1) {
             subtitle = getSubtitle(this.getSubtitles(), this.mPreviousNccpSubtitleIndex);
         }
-        if (Log.isLoggable("nf_language", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_language", "Restore to previous subtitle in UI: " + subtitle);
         }
         this.mSelectedSubtitle = subtitle;
@@ -335,7 +335,7 @@ public class Language
     }
     
     public AudioSource setSelectedAudio(final AudioSource mSelectedAudio) {
-        if (Log.isLoggable("nf_language", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_language", "Set selected audio: " + mSelectedAudio);
         }
         this.updateUsedSubtitles(this.mSelectedAudio = mSelectedAudio);
@@ -343,7 +343,7 @@ public class Language
     }
     
     public Subtitle setSelectedSubtitle(final Subtitle mSelectedSubtitle) {
-        if (Log.isLoggable("nf_language", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_language", "Sets selected subtitle " + mSelectedSubtitle);
         }
         for (int i = 0; i < this.mUsedSubtitles.size(); ++i) {

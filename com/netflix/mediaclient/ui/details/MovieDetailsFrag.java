@@ -4,29 +4,27 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
-import com.netflix.mediaclient.servicemgr.model.trackable.TrackableObject;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import com.netflix.mediaclient.service.webclient.model.leafs.TrackableObject;
+import android.support.v7.widget.RecyclerView$ItemDecoration;
+import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
-import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.mediaclient.ui.DetailsPageParallaxScrollListener;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
 import com.netflix.mediaclient.ui.common.SimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.View;
 import android.support.v7.widget.RecyclerView$LayoutManager;
 import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView$ItemDecoration;
-import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
@@ -34,7 +32,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
-import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 
 public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
 {
@@ -80,10 +78,6 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         }
     }
     
-    private void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131361878), this.numColumns));
-    }
-    
     private void setupRecyclerViewLayoutManager() {
         final GridLayoutManager layoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns);
         layoutManager.setSpanSizeLookup(new MovieDetailsFrag$2(this));
@@ -101,7 +95,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     
     @Override
     protected int getLayoutId() {
-        return 2130903177;
+        return 2130903184;
     }
     
     public int getScrollYOffset() {
@@ -172,16 +166,17 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         this.targetScrollYOffset = targetScrollYOffset;
     }
     
-    protected void setupDetailsPageParallaxScrollListener() {
+    protected DetailsPageParallaxScrollListener setupDetailsPageParallaxScrollListener() {
         if (this.getActivity() != null && this.recyclerView != null) {
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final Drawable drawable = this.getActivity().getResources().getDrawable(2130837560);
-                drawable.setAlpha(0);
-                this.recyclerView.setOnScrollListener(new DetailsPageParallaxScrollListener(null, this.recyclerView, (View)this.detailsViewGroup.getHeroImage(), null, drawable));
+                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(null, this.recyclerView, (View)this.detailsViewGroup.getHeroImage(), null, this.recyclerView.getResources().getColor(2131296363), 0, null);
+                this.recyclerView.setOnScrollListener(onScrollListener);
+                return onScrollListener;
             }
         }
+        return null;
     }
     
     protected void setupRecyclerView() {
@@ -200,11 +195,15 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         this.recyclerView.setAdapter(this.adapter);
     }
     
+    protected void setupRecyclerViewItemDecoration() {
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131361878), this.numColumns));
+    }
+    
     @Override
     protected void showDetailsView(final MovieDetails movieDetails) {
         super.showDetailsView(movieDetails);
         if (this.similarShowsTitle != null) {
-            this.similarShowsTitle.setText((CharSequence)this.getString(2131493152, new Object[] { movieDetails.getTitle() }));
+            this.similarShowsTitle.setText((CharSequence)this.getString(2131493158, new Object[] { movieDetails.getTitle() }));
             this.similarShowsTitle.setVisibility(0);
         }
         this.adapter.setTrackable(new TrackableObject(movieDetails.getSimilarsRequestId(), movieDetails.getSimilarsTrackId(), movieDetails.getSimilarsListPos()));

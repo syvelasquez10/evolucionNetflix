@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.javabridge.ui;
 
-import com.netflix.mediaclient.error.CrashReport;
+import com.netflix.mediaclient.javabridge.error.CrashReport;
 import com.netflix.mediaclient.javabridge.invoke.Invoke;
 import com.netflix.mediaclient.javabridge.transport.TransportFactory;
 import org.json.JSONArray;
@@ -12,7 +12,7 @@ import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.javabridge.transport.Transport;
-import com.netflix.mediaclient.error.CrashListener;
+import com.netflix.mediaclient.javabridge.error.CrashListener;
 import com.netflix.mediaclient.javabridge.Bridge;
 import com.netflix.mediaclient.javabridge.NrdProxy;
 

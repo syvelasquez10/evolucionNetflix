@@ -13,7 +13,7 @@ public class Falkor
     public static final BranchNode NULL_ROOT;
     
     static {
-        if (Log.isLoggable(null, 2)) {}
+        if (Log.isLoggable()) {}
         ENABLE_VERBOSE_LOGGING = false;
         NULL_ROOT = null;
     }

@@ -57,4 +57,9 @@ public final class Cast$CastApi$a implements Cast$CastApi
             throw new IOException("service error");
         }
     }
+    
+    @Override
+    public PendingResult<Status> stopApplication(final GoogleApiClient googleApiClient) {
+        return googleApiClient.b((PendingResult<Status>)new Cast$CastApi$a$8(this));
+    }
 }

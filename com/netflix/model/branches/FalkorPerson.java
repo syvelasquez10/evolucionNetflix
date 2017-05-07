@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
-import com.netflix.mediaclient.servicemgr.model.search.SearchPerson;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchPerson;
 import com.netflix.model.BaseFalkorObject;
 
 public class FalkorPerson extends BaseFalkorObject implements SearchPerson, FalkorObject

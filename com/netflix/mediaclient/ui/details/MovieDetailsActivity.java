@@ -10,7 +10,7 @@ import android.content.Intent;
 import java.util.Iterator;
 import android.os.Parcelable;
 import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.app.Fragment;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -37,7 +37,7 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
     private void handleNewVideoId() {
         if (StringUtils.isNotEmpty(this.getVideoId())) {
             final MovieDetailsActivity$BackStackData movieDetailsActivity$BackStackData = new MovieDetailsActivity$BackStackData(this.getVideoId(), this.getPlayContext(), ((MovieDetailsFrag)this.getPrimaryFrag()).getScrollYOffset());
-            if (Log.isLoggable("MovieDetailsActivity", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("MovieDetailsActivity", "Adding curr video to back stack: " + movieDetailsActivity$BackStackData);
             }
             this.backStack.add(movieDetailsActivity$BackStackData);
@@ -74,7 +74,7 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
             final MovieDetailsActivity$BackStackData movieDetailsActivity$BackStackData = this.backStack.remove(this.backStack.size() - 1);
             this.setVideoId(movieDetailsActivity$BackStackData.videoId);
             this.setPlayContext(movieDetailsActivity$BackStackData.playContext);
-            if (Log.isLoggable("MovieDetailsActivity", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("MovieDetailsActivity", "Video id from back stack: " + movieDetailsActivity$BackStackData);
             }
             this.showNewDetailsFrag(movieDetailsActivity$BackStackData.scrollYOffset);

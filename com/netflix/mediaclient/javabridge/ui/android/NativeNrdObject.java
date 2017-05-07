@@ -44,7 +44,7 @@ public abstract class NativeNrdObject extends BaseNrdObject
     
     public void addEventListener(final String s, final EventListener eventListener) {
         if (eventListener == null) {
-            if (Log.isLoggable("nf_object", 3)) {
+            if (Log.isLoggable()) {
                 Log.w("nf_object", "Do not add! Listener is null for event type " + s);
             }
             return;
@@ -59,7 +59,7 @@ public abstract class NativeNrdObject extends BaseNrdObject
                 synchronized (this.listeners) {
                     list = this.listeners.get(s);
                     if (list == null) {
-                        if (Log.isLoggable("nf_object", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("nf_object", "Listeners not found for event type " + s);
                         }
                         final List<EventListener> list2 = new ArrayList<EventListener>();
@@ -69,7 +69,7 @@ public abstract class NativeNrdObject extends BaseNrdObject
                     }
                 }
                 List<EventListener> list2 = list;
-                if (Log.isLoggable("nf_object", 3)) {
+                if (Log.isLoggable()) {
                     final String s2;
                     Log.d("nf_object", "Listeners found for event type " + s2 + ": " + list.size());
                     list2 = list;
@@ -84,13 +84,13 @@ public abstract class NativeNrdObject extends BaseNrdObject
         final int callerId = callbackEvent.getCallerId();
         final Callback removeCallback = this.removeCallback(callerId);
         if (removeCallback != null) {
-            if (Log.isLoggable("nf_object", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_object", "Callback found: " + callerId);
             }
             removeCallback.done(callbackEvent);
             Log.d("nf_object", "Callback executed.");
         }
-        else if (Log.isLoggable("nf_object", 3)) {
+        else if (Log.isLoggable()) {
             Log.e("nf_object", "Callback not found for key " + callerId);
         }
         return 1;
@@ -100,7 +100,7 @@ public abstract class NativeNrdObject extends BaseNrdObject
         synchronized (this.listeners) {
             final List<EventListener> list = this.listeners.get(s);
             if (list == null) {
-                if (Log.isLoggable("nf_object", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_object", "Listeners not found for event type " + s);
                 }
                 return 1;
@@ -115,7 +115,7 @@ public abstract class NativeNrdObject extends BaseNrdObject
     }
     
     protected int handleNccpEvent(final String s, final JSONObject jsonObject) {
-        if (Log.isLoggable("nf_object", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_object", "NCCP event " + s);
         }
         if (jsonObject.has("origin") || jsonObject.getString("origin").equalsIgnoreCase("complete")) {
@@ -153,7 +153,7 @@ public abstract class NativeNrdObject extends BaseNrdObject
     
     public void removeEventListener(final String s, final EventListener eventListener) {
         if (eventListener == null) {
-            if (Log.isLoggable("nf_object", 3)) {
+            if (Log.isLoggable()) {
                 Log.w("nf_object", "Do not remove! Listener is null for event type " + s);
             }
             return;
@@ -166,14 +166,14 @@ public abstract class NativeNrdObject extends BaseNrdObject
         synchronized (this.listeners) {
             list = this.listeners.get(s);
             if (list == null) {
-                if (Log.isLoggable("nf_object", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_object", "Listeners not found for event type " + s);
                 }
                 return;
             }
         }
         final boolean remove = list.remove(eventListener);
-        if (Log.isLoggable("nf_object", 3)) {
+        if (Log.isLoggable()) {
             final String s2;
             Log.d("nf_object", "Listeners found for event type " + s2 + ": " + list.size() + " and listener was " + remove);
         }

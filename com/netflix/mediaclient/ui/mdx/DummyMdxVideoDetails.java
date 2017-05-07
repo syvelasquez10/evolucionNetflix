@@ -4,14 +4,19 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import com.netflix.mediaclient.servicemgr.model.Playable;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 
 class DummyMdxVideoDetails implements EpisodeDetails
 {
     @Override
     public String getActors() {
+        return null;
+    }
+    
+    @Override
+    public String getAvailabilityDateMessage() {
         return null;
     }
     
@@ -181,13 +186,33 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
+    public boolean isAvailableToStream() {
+        return true;
+    }
+    
+    @Override
     public boolean isInQueue() {
+        return false;
+    }
+    
+    @Override
+    public boolean isVideo3D() {
+        return false;
+    }
+    
+    @Override
+    public boolean isVideo5dot1() {
         return false;
     }
     
     @Override
     public boolean isVideoHd() {
         return true;
+    }
+    
+    @Override
+    public boolean isVideoUhd() {
+        return false;
     }
     
     @Override

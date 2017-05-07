@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 
 public class DummyPlayable implements Playable
 {

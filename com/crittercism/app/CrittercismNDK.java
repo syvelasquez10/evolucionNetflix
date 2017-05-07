@@ -4,46 +4,23 @@
 
 package com.crittercism.app;
 
-import android.util.Log;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileOutputStream;
+import crittercism.android.dy;
+import java.io.File;
 import android.content.Context;
 
 public class CrittercismNDK
 {
-    private static final String LIBNAME = "libcrittercism-ndk.so";
-    private static final int LIBRARY_VERSION = 2;
+    private static boolean isNdkInstalled;
     
-    public static native boolean checkLibraryVersion(final int p0);
-    
-    public static boolean doNdkSharedLibrariesExist(final Context context) {
-        try {
-            getJarredLibFileStream(context);
-            return true;
-        }
-        catch (IOException ex) {
-            return false;
-        }
+    static {
+        CrittercismNDK.isNdkInstalled = false;
     }
     
-    public static File getInstalledLibraryFile(final Context context) {
-        return new File(context.getFilesDir().getAbsolutePath() + "/com.crittercism/lib/" + "libcrittercism-ndk.so");
-    }
-    
-    public static InputStream getJarredLibFileStream(final Context context) {
-        String string = "armeabi";
-        if (System.getProperty("os.arch").contains("v7")) {
-            string = "armeabi" + "-v7a";
-        }
-        return context.getAssets().open(string + "/libcrittercism-ndk.so");
-    }
-    
-    public static boolean installLib(final Context context, final File file) {
-        if (file.exists()) {
-            return true;
-        }
+    public static boolean copyLibFromAssets(final Context context, final File file) {
+        dy.b();
         FileOutputStream fileOutputStream;
         InputStream jarredLibFileStream;
         try {
@@ -60,7 +37,7 @@ public class CrittercismNDK
             }
         }
         catch (Exception ex) {
-            Log.e("Crittercism", "Could not install breakpad library: " + ex.toString());
+            dy.b("Could not install breakpad library: " + ex.toString());
             return false;
         }
         jarredLibFileStream.close();
@@ -68,50 +45,73 @@ public class CrittercismNDK
         return true;
     }
     
+    public static boolean doNdkSharedLibrariesExist(final Context context) {
+        try {
+            getJarredLibFileStream(context);
+            return true;
+        }
+        catch (IOException ex) {
+            return false;
+        }
+    }
+    
+    public static InputStream getJarredLibFileStream(final Context context) {
+        String string = "armeabi";
+        if (System.getProperty("os.arch").contains("v7")) {
+            string = "armeabi" + "-v7a";
+        }
+        return context.getAssets().open(string + "/libcrittercism-v3.so");
+    }
+    
     public static native boolean installNdk(final String p0);
     
-    public static void installNdkLib(final Context t, String string) {
-        string = ((Context)t).getFilesDir().getAbsolutePath() + "/" + string;
-        int checkLibraryVersion = 0;
-        if (!doNdkSharedLibrariesExist((Context)t)) {
-            Log.e("Crittercism", "Trying to install Crittercism ndk on an sdkonly library");
+    public static void installNdkLib(final Context context, String string) {
+        int loadLibraryFromAssets = 1;
+        string = context.getFilesDir().getAbsolutePath() + "/" + string;
+        if (doNdkSharedLibrariesExist(context)) {
+            loadLibraryFromAssets = (loadLibraryFromAssets(context) ? 1 : 0);
         }
         else {
-            final File installedLibraryFile = getInstalledLibraryFile((Context)t);
-            if (installLib((Context)t, installedLibraryFile)) {
-                while (true) {
-                    try {
-                        System.load(installedLibraryFile.getAbsolutePath());
-                        checkLibraryVersion = (checkLibraryVersion(2) ? 1 : 0);
-                        Label_0099: {
-                            if (checkLibraryVersion != 0) {
-                                break Label_0099;
-                            }
-                            if (!installLib((Context)t, installedLibraryFile)) {
-                                return;
-                            }
-                            try {
-                                System.load(installedLibraryFile.getAbsolutePath());
-                                try {
-                                    if (installNdk(string)) {
-                                        final File file = new File(string);
-                                        file.getAbsolutePath();
-                                        file.mkdirs();
-                                    }
-                                }
-                                catch (Throwable t2) {}
-                            }
-                            catch (Throwable t) {
-                                Log.e("Crittercism", "Unable to load breakpad" + t.toString());
-                            }
-                        }
-                    }
-                    catch (Throwable t3) {
-                        continue;
-                    }
-                    break;
-                }
+            try {
+                System.loadLibrary("crittercism-v3");
             }
+            catch (Throwable t) {
+                loadLibraryFromAssets = 0;
+            }
+        }
+        if (loadLibraryFromAssets == 0) {
+            return;
+        }
+        try {
+            if (installNdk(string)) {
+                new File(string).mkdirs();
+                CrittercismNDK.isNdkInstalled = true;
+                return;
+            }
+            dy.c("Unable to initialize NDK crash reporting.");
+        }
+        catch (Throwable t2) {}
+    }
+    
+    public static boolean loadLibraryFromAssets(final Context context) {
+        final File file = new File(context.getFilesDir(), "/com.crittercism/lib/");
+        final File file2 = new File(file, "libcrittercism-v3.so");
+        final File file3 = new File(file, "libcrittercism-ndk.so");
+        if (!file2.exists()) {
+            if (!copyLibFromAssets(context, file2)) {
+                file2.delete();
+                return false;
+            }
+            file3.delete();
+        }
+        try {
+            System.load(file2.getAbsolutePath());
+            return true;
+        }
+        catch (Throwable t) {
+            dy.a("Unable to install NDK library", t);
+            file2.delete();
+            return false;
         }
     }
 }

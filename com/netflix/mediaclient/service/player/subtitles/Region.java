@@ -30,7 +30,7 @@ public class Region
         this.mId = element.getAttribute("xml:id");
         this.mCellResolution = mCellResolution;
         final TextStyle instanceFromContainer = TextStyle.createInstanceFromContainer(element, subtitleParser, textStyle);
-        if (Log.isLoggable("nf_subtitles", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Style defined as attribute in region " + instanceFromContainer);
         }
         if (instanceFromContainer != null) {
@@ -52,7 +52,7 @@ public class Region
             }
         }
         final TextStyle styles = this.parseStyles(element);
-        if (Log.isLoggable("nf_subtitles", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Style defined as elements in region " + styles);
         }
         this.mTextStyle = new TextStyle();
@@ -94,7 +94,7 @@ public class Region
             Log.e("nf_subtitles", "Styles element(s) not found in region");
             return null;
         }
-        if (Log.isLoggable("nf_subtitles", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Found " + elementsByTagName.getLength() + " styles for region");
         }
         final TextStyle textStyle = new TextStyle();
@@ -117,28 +117,28 @@ public class Region
     private void processRegionAttributes(final Element element) {
         final String attribute = element.getAttribute("tts:textAlign");
         if (!StringUtils.isEmpty(attribute)) {
-            if (Log.isLoggable("nf_subtitles", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Text alignment found " + attribute);
             }
             this.mHorizontalAlignment = HorizontalAlignment.from(attribute);
         }
         final String attribute2 = element.getAttribute("tts:displayAlign");
         if (!StringUtils.isEmpty(attribute2)) {
-            if (Log.isLoggable("nf_subtitles", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Display alignment found " + attribute2);
             }
             this.mVerticalAlignment = VerticalAlignment.from(attribute2);
         }
         final String attribute3 = element.getAttribute("tts:extent");
         if (!StringUtils.isEmpty(attribute3)) {
-            if (Log.isLoggable("nf_subtitles", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Extent found " + attribute3);
             }
             this.mExtent = DoubleLength.createInstance(attribute3, this.mCellResolution);
         }
         final String attribute4 = element.getAttribute("tts:origin");
         if (!StringUtils.isEmpty(attribute4)) {
-            if (Log.isLoggable("nf_subtitles", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Origin found " + attribute4);
             }
             this.mOrigin = DoubleLength.createInstance(attribute4, this.mCellResolution);

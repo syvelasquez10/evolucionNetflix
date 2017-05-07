@@ -11,13 +11,11 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
-import com.netflix.mediaclient.service.browse.volley.AddToQueueRequest;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 
@@ -62,7 +60,7 @@ public class SendRecommendationRequest extends FalkorVolleyWebClientRequest<Set<
         }
         sb.append("]");
         this.pqlQuery = "['" + "friendVideos" + "', " + sb.toString() + ", '" + mVideoId + "', '" + "recommend" + "']";
-        if (Log.isLoggable("nf_service_user_fetchfriendsforrecommendationrequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_fetchfriendsforrecommendationrequest", "PQL = " + this.pqlQuery);
         }
     }
@@ -75,7 +73,7 @@ public class SendRecommendationRequest extends FalkorVolleyWebClientRequest<Set<
     @Override
     protected String getOptionalParams() {
         final StringBuilder sb = new StringBuilder(FalkorVolleyWebClientRequest.urlEncodPQLParam("param", "\"" + this.mBodyText + "\""));
-        sb.append(AddToQueueRequest.optionalParam).append("\"").append(this.mGUID).append("\"");
+        sb.append("&param=").append("\"").append(this.mGUID).append("\"");
         return sb.toString();
     }
     
@@ -100,7 +98,7 @@ public class SendRecommendationRequest extends FalkorVolleyWebClientRequest<Set<
     
     @Override
     protected Set<FriendForRecommendation> parseFalkorResponse(final String s) {
-        if (Log.isLoggable("nf_service_user_fetchfriendsforrecommendationrequest", 4)) {
+        if (Log.isLoggable()) {
             Log.i("nf_service_user_fetchfriendsforrecommendationrequest", "Got result: " + s);
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchfriendsforrecommendationrequest", s);
@@ -116,7 +114,7 @@ public class SendRecommendationRequest extends FalkorVolleyWebClientRequest<Set<
             }
         }
         catch (Exception ex) {
-            if (Log.isLoggable("nf_service_user_fetchfriendsforrecommendationrequest", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("nf_service_user_fetchfriendsforrecommendationrequest", "While getting recommendations field from the response got an exception: " + ex);
             }
             throw new FalkorParseException("response missing friends json objects", ex);
@@ -129,7 +127,7 @@ public class SendRecommendationRequest extends FalkorVolleyWebClientRequest<Set<
                     friendForRecommendation.setWasRecommended(asJsonObject2.getAsJsonObject(this.mVideoId).getAsJsonPrimitive("wasRecommended").getAsBoolean());
                 }
                 else {
-                    if (!Log.isLoggable("nf_service_user_fetchfriendsforrecommendationrequest", 6)) {
+                    if (!Log.isLoggable()) {
                         continue;
                     }
                     Log.e("nf_service_user_fetchfriendsforrecommendationrequest", "Wierd profileObj: " + asJsonObject2 + " without videoId: " + this.mVideoId + " field...");

@@ -19,7 +19,7 @@ import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 
 public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag implements ErrorWrapper$Callback, DetailsActivity$Reloader, VideoDetailsViewGroup$VideoDetailsViewGroupProvider
 {
@@ -39,7 +39,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     protected abstract VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final T p0);
     
     protected int getLayoutId() {
-        return 2130903203;
+        return 2130903210;
     }
     
     protected ServiceManager getServiceManager() {
@@ -67,7 +67,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         final View inflate = layoutInflater.inflate(this.getLayoutId(), (ViewGroup)null, false);
         this.initDetailsViewGroup(inflate);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        this.primaryView = inflate.findViewById(2131165688);
+        this.primaryView = inflate.findViewById(2131165701);
         if (this.primaryView != null) {
             this.primaryView.setVerticalScrollBarEnabled(false);
         }
@@ -97,7 +97,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
             if (this.mVideoDetails instanceof VideoDetails) {
                 this.manager.updateMyListState(this.getVideoId(), this.mVideoDetails.isInQueue());
             }
-            else if (Log.isLoggable("DetailsFrag", 6)) {
+            else if (Log.isLoggable()) {
                 Log.e("DetailsFrag", "onResume() got weird videoDetails class: " + this.mVideoDetails);
             }
         }

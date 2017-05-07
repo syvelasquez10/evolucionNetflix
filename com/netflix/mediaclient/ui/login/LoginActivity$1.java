@@ -45,11 +45,11 @@ class LoginActivity$1 implements TextView$OnEditorActionListener
     }
     
     private boolean isLoginId(final int n) {
-        return n == 2131165488 || n == 0 || n == 6;
+        return n == 2131165492 || n == 0 || n == 6;
     }
     
     public boolean onEditorAction(final TextView textView, final int n, final KeyEvent keyEvent) {
-        if (Log.isLoggable("LoginActivity", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoginActivity", "Editor action: " + n + ", keyevent: " + keyEvent);
         }
         if (this.isLoginId(n)) {

@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.MenuItem$OnMenuItemClickListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -32,10 +32,10 @@ class DetailsMenu$OnVideoHideCallback extends LoggingManagerCallback
         this.this$0.shareItem.setEnabled(true);
         if (status.isError()) {
             Log.w("DetailsMenu", "Invalid status code");
-            Toast.makeText((Context)this.this$0.activity, 2131493117, 1).show();
+            Toast.makeText((Context)this.this$0.activity, 2131493123, 1).show();
             return;
         }
-        Toast.makeText((Context)this.this$0.activity, 2131493114, 1).show();
+        Toast.makeText((Context)this.this$0.activity, 2131493120, 1).show();
         this.this$0.updateShareItemAsUnshared();
     }
 }

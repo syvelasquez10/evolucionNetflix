@@ -9,7 +9,7 @@ import android.util.DisplayMetrics;
 import android.hardware.display.DisplayManager;
 import com.netflix.mediaclient.media.VideoResolutionRange;
 import org.json.JSONObject;
-import com.netflix.mediaclient.net.IpConnectivityPolicy;
+import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
@@ -20,6 +20,7 @@ import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.nccp.NccpKeyStore;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.ui.experience.PersistentExperience;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import java.util.Locale;
@@ -56,7 +57,7 @@ class ConfigurationAgent$1 implements DrmManager$DrmReadyCallback
     
     @Override
     public void drmError(final Status status) {
-        if (Log.isLoggable("nf_configurationagent", 6)) {
+        if (Log.isLoggable()) {
             Log.e("nf_configurationagent", "DRM failed to initialize, Error code: " + status.getStatusCode());
         }
         this.this$0.initCompleted(status);

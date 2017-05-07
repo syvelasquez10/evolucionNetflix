@@ -7,33 +7,35 @@ package com.netflix.mediaclient.service.falkor;
 import android.content.Intent;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
+import com.netflix.falkor.ModelProxy;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallbackWrapper;
 import com.netflix.mediaclient.service.NetflixService$ClientCallbacks;
 import com.netflix.mediaclient.servicemgr.IBrowseInterface;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.servicemgr.model.UserRating;
-import com.netflix.model.leafs.social.SocialNotificationsList;
-import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
-import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
-import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
-import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
-import com.netflix.mediaclient.servicemgr.model.LoLoMo;
-import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
-import com.netflix.mediaclient.servicemgr.model.genre.Genre;
-import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
-import com.netflix.mediaclient.servicemgr.model.CWVideo;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.model.leafs.Video$Summary;
+import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
+import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.Billboard;
+import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import java.util.List;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 
@@ -281,7 +283,7 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
     
     @Override
     public void onSocialNotificationsMarkedAsRead(final Status status) {
-        if (Log.isLoggable("FalkorAccess", 4)) {
+        if (Log.isLoggable()) {
             Log.i("FalkorAccess", "onSocialNotificationsMarkedAsRead: " + status);
         }
     }
@@ -304,6 +306,16 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
             return;
         }
         netflixServiceCallback.onVideoRatingSet(this.requestId, userRating, status);
+    }
+    
+    @Override
+    public void onVideoSummaryFetched(final Video$Summary video$Summary, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("FalkorAccess", "No client callback found for onVideoSummaryFetched");
+            return;
+        }
+        netflixServiceCallback.onVideoSummaryFetched(this.requestId, video$Summary, status);
     }
     
     @Override

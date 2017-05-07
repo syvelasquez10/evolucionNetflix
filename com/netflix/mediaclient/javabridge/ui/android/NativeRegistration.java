@@ -93,7 +93,7 @@ public final class NativeRegistration extends NativeNrdObject implements Registr
             if ("deactivated".equals(string)) {
                 return this.handleListener(string, new DeactivatedEvent(jsonObject2));
             }
-            if (Log.isLoggable("nf_reg", 5)) {
+            if (Log.isLoggable()) {
                 Log.w("nf_reg", "Nobody to handle by name " + string);
                 return 1;
             }
@@ -122,7 +122,7 @@ public final class NativeRegistration extends NativeNrdObject implements Registr
                 this.accounts.clear();
                 for (JSONArray jsonArray = this.getJSONArray(jsonObject2, "deviceAccounts"); i < jsonArray.length(); ++i) {
                     final DeviceAccount deviceAccount = new DeviceAccount(jsonArray.getJSONObject(i));
-                    if (Log.isLoggable("nf_reg", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_reg", "Account " + i + ": " + deviceAccount);
                     }
                     this.accounts.add(deviceAccount);
@@ -198,14 +198,14 @@ public final class NativeRegistration extends NativeNrdObject implements Registr
             for (final DeviceAccount deviceAccount : this.accounts) {
                 if (currentDeviceAccount.equals(deviceAccount.getAccountKey())) {
                     final DeviceAccount deviceAccount2 = deviceAccount;
-                    if (Log.isLoggable("nf_reg", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_reg", "Selected device account " + deviceAccount);
                         return deviceAccount;
                     }
                     return deviceAccount2;
                 }
             }
-            if (Log.isLoggable("nf_reg", 5)) {
+            if (Log.isLoggable()) {
                 Log.w("nf_reg", "Account is not found for key " + currentDeviceAccount);
             }
             return null;
@@ -245,7 +245,7 @@ public final class NativeRegistration extends NativeNrdObject implements Registr
     
     @Override
     protected int handleNccpEvent(final String s, final JSONObject jsonObject) {
-        if (Log.isLoggable("nf_reg", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_reg", "NCCP event " + s);
         }
         if (jsonObject.has("origin") && jsonObject.getString("origin").equalsIgnoreCase("complete")) {
@@ -275,11 +275,11 @@ public final class NativeRegistration extends NativeNrdObject implements Registr
     public int processUpdate(final JSONObject jsonObject) {
         try {
             final String string = this.getString(jsonObject, "type", null);
-            if (Log.isLoggable("nf_reg", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_reg", "processUpdate: handle type " + string);
             }
             if ("PropertyUpdate".equalsIgnoreCase(string)) {
-                if (jsonObject != null && Log.isLoggable("nf_reg", 3)) {
+                if (jsonObject != null && Log.isLoggable()) {
                     Log.d("nf_reg", "processUpdate: handle prop update " + jsonObject.toString());
                 }
                 return this.handlePropertyUpdate(jsonObject);

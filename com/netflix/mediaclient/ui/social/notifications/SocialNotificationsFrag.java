@@ -27,7 +27,7 @@ import com.netflix.mediaclient.StatusCode;
 import android.view.View;
 import com.netflix.mediaclient.ui.social.notifications.types.SocialNotification;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.HashSet;
@@ -36,7 +36,7 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.Set;
 import android.widget.ListView;
-import com.netflix.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
@@ -84,7 +84,7 @@ public class SocialNotificationsFrag extends NetflixFrag
                 this.mAdapter.notifyDataSetChanged();
             }
             if (this.leWrapper != null) {
-                this.leWrapper.showErrorView(2131493366, true, false);
+                this.leWrapper.showErrorView(2131493374, true, false);
             }
             return true;
         }
@@ -143,7 +143,7 @@ public class SocialNotificationsFrag extends NetflixFrag
                     final SocialNotificationSummary item = this.mAdapter.getItem(i);
                     this.mServiceManager.updateMyListState(item.getVideo().getId(), item.getInQueueValue());
                 }
-                else if (Log.isLoggable(SocialNotificationsFrag.TAG, 6)) {
+                else if (Log.isLoggable()) {
                     Log.e(SocialNotificationsFrag.TAG, "refreshNotificationMyListButtons() got null details for position: " + i);
                 }
             }
@@ -204,9 +204,9 @@ public class SocialNotificationsFrag extends NetflixFrag
     public View onCreateView(final LayoutInflater mLayoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v(SocialNotificationsFrag.TAG, "Creating new frag view...");
         this.mLayoutInflater = mLayoutInflater;
-        final View inflate = this.mLayoutInflater.inflate(2130903193, viewGroup, false);
+        final View inflate = this.mLayoutInflater.inflate(2130903200, viewGroup, false);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        (this.mNotificationsList = (ListView)inflate.findViewById(2131165669)).setItemsCanFocus(true);
+        (this.mNotificationsList = (ListView)inflate.findViewById(2131165682)).setItemsCanFocus(true);
         this.mAdapter = new SocialNotificationsFrag$NotificationsListAdapter(this, null);
         this.mNotificationsList.setAdapter((ListAdapter)this.mAdapter);
         this.leWrapper.showLoadingView(false);

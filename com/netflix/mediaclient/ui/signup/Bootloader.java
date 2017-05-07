@@ -31,7 +31,7 @@ final class Bootloader
         }
         final StringBuilder sb = new StringBuilder();
         final String query = Uri.parse(s).getQuery();
-        if (Log.isLoggable("SignupActivity", 3)) {
+        if (Log.isLoggable()) {
             Log.d("SignupActivity", "URL queryParam: " + query);
         }
         if (query != null) {
@@ -75,7 +75,7 @@ final class Bootloader
     }
     
     public String getUrl() {
-        if (Log.isLoggable("SignupActivity", 3)) {
+        if (Log.isLoggable()) {
             Log.d("SignupActivity", "URL : " + this.mUrl);
         }
         return this.mUrl;

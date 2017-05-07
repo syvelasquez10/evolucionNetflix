@@ -15,13 +15,16 @@ import android.content.DialogInterface$OnClickListener;
 import android.app.AlertDialog$Builder;
 import android.app.DialogFragment;
 import java.util.ArrayList;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.ui.details.RecommendToFriendsFrag;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
-import android.content.Context;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
+import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import android.content.Context;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -42,17 +45,19 @@ final class SocialUtils$2 implements View$OnClickListener
     
     public void onClick(final View view) {
         if (this.val$manager == null || !this.val$manager.isReady() || this.val$manager.getCurrentProfile() == null || this.val$activity == null) {
-            if (Log.isLoggable("SocialUtils", 6)) {
+            if (Log.isLoggable()) {
                 Log.e("SocialUtils", "Got problems trying to handle click on RecommendButton. Activity: " + this.val$activity + "; manager: " + this.val$manager);
             }
             return;
         }
+        UIViewLogUtils.reportUIViewCommandStarted((Context)this.val$activity, UIViewLogging$UIViewCommandName.recommendSheet, IClientLogging$ModalView.movieDetails, null, null);
         UserActionLogUtils.reportRecommendSheetActionStarted((Context)this.val$activity, null, IClientLogging$ModalView.movieDetails);
+        UIViewLogUtils.reportUIViewCommandEnded((Context)this.val$activity);
         if (this.val$manager.getCurrentProfile().isSocialConnected()) {
             this.val$activity.showDialog(RecommendToFriendsFrag.newInstance(this.val$videoId, null, null, null, null));
         }
         else {
-            final Dialog displayDialog = this.val$activity.displayDialog(new AlertDialog$Builder((Context)this.val$activity).setPositiveButton(2131492988, (DialogInterface$OnClickListener)new SocialUtils$2$1(this)).setMessage((CharSequence)Html.fromHtml(this.val$activity.getString(2131493345))).setNegativeButton(2131493108, (DialogInterface$OnClickListener)null));
+            final Dialog displayDialog = this.val$activity.displayDialog(new AlertDialog$Builder((Context)this.val$activity).setPositiveButton(2131492994, (DialogInterface$OnClickListener)new SocialUtils$2$1(this)).setMessage((CharSequence)Html.fromHtml(this.val$activity.getString(2131493353))).setNegativeButton(2131493114, (DialogInterface$OnClickListener)null));
             SocialLoggingUtils.reportSocialConnectImpressionEvent((Context)this.val$activity, IClientLogging$ModalView.movieDetails);
             ((TextView)displayDialog.findViewById(16908299)).setMovementMethod(LinkMovementMethod.getInstance());
         }

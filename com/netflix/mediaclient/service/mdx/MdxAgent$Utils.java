@@ -6,7 +6,7 @@ package com.netflix.mediaclient.service.mdx;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
@@ -61,7 +61,7 @@ public class MdxAgent$Utils
     }
     
     private static boolean playVideo(final NetflixActivity netflixActivity, final String s, final String s2, final int n, final int n2, final boolean b) {
-        if (Log.isLoggable("nf_mdx_agent", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_mdx_agent", "Starting playback movieId " + s + ", epId " + s2 + ", trackId " + n + ", bookmark " + n2);
         }
         final ServiceManager serviceManager = netflixActivity.getServiceManager();

@@ -8,7 +8,7 @@ import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.service.logging.cmpevents.legacy.NotificationFeedback;
 import com.netflix.mediaclient.service.pushnotification.UserFeedbackOnReceivedPushNotification;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.Log;
@@ -51,7 +51,7 @@ public final class LegacyCmpEventLoggingImpl implements CmpEventLogging
             userData.accountCountry = user.getGeoCountry();
             userData.languages = user.getLanguagesInCsv();
             userData2 = userData;
-            if (Log.isLoggable("nf_log", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_log", "GetUserData: " + userData);
                 return userData;
             }

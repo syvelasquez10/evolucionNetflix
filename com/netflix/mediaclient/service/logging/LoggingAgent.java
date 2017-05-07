@@ -17,6 +17,7 @@ import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import com.netflix.mediaclient.util.IntentUtils;
+import com.netflix.mediaclient.javabridge.ui.LogArguments;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.servicemgr.SocialLogging;
 import com.netflix.mediaclient.servicemgr.ISearchLogging;
@@ -128,8 +129,15 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     }
     
     @Override
+    public void NrdpLog(final LogArguments logArguments) {
+        if (this.mNrdpLog != null) {
+            this.mNrdpLog.log(logArguments);
+        }
+    }
+    
+    @Override
     public void changed(final String s, final String s2) {
-        if (com.netflix.mediaclient.Log.isLoggable("nf_log", 3)) {
+        if (com.netflix.mediaclient.Log.isLoggable()) {
             com.netflix.mediaclient.Log.d("nf_log", "App ID is changed to " + s);
             com.netflix.mediaclient.Log.d("nf_log", "Session ID is changed to " + s2);
         }
@@ -258,7 +266,7 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
         if (intent == null) {
             com.netflix.mediaclient.Log.w("nf_log", "Intent is null");
         }
-        else if (com.netflix.mediaclient.Log.isLoggable("nf_log", 3)) {
+        else if (com.netflix.mediaclient.Log.isLoggable()) {
             com.netflix.mediaclient.Log.d("nf_log", "Received command " + intent.getAction());
             return false;
         }
@@ -278,7 +286,7 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     
     @Override
     public void onConfigRefreshed(final Status status) {
-        if (com.netflix.mediaclient.Log.isLoggable("nf_log", 2)) {
+        if (com.netflix.mediaclient.Log.isLoggable()) {
             com.netflix.mediaclient.Log.v("nf_log", "Configuration is refreshed with status code " + status.getStatusCode());
         }
         if (status.isSucces()) {

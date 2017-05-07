@@ -71,7 +71,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
             sb.append("Video");
             this.mTag = sb.toString();
         }
-        else if (Log.isLoggable(this.mTag, 6)) {
+        else if (Log.isLoggable()) {
             Log.e(this.mTag, s + " is not valid");
         }
         Log.d(this.mTag, "creating ... ");
@@ -91,7 +91,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
     
     private boolean configureDecoder(final MediaFormat mediaFormat, final Surface surface, final MediaCrypto mediaCrypto) {
         this.mDecoder.configure(mediaFormat, surface, mediaCrypto, 0);
-        if (Log.isLoggable(this.mTag, 3)) {
+        if (Log.isLoggable()) {
             Log.d(this.mTag, "configureDecoder " + mediaFormat);
         }
         return true;
@@ -101,7 +101,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
         try {
             this.mOutputBuffers = this.mDecoder.getOutputBuffers();
             this.mOutputBufferCnt = this.mOutputBuffers.length;
-            if (Log.isLoggable(this.mTag, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(this.mTag, "has " + this.mOutputBufferCnt + " output buffers");
             }
             this.mOutputBufferInfo = new MediaCodec$BufferInfo[this.mOutputBufferCnt];
@@ -124,7 +124,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
         }
         if (this.mDecoder == null) {
             this.mDecoder = MediaCodec.createDecoderByType(s);
-            if (Log.isLoggable(this.mTag, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(this.mTag, "createDecoder " + s);
             }
         }
@@ -167,7 +167,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
         if (b) {
             string = adaptivePlaybackDecoderName + ".secure";
         }
-        if (Log.isLoggable(this.mTag, 3)) {
+        if (Log.isLoggable()) {
             Log.d(this.mTag, "createVideoDecoderForK " + s + ", name " + string);
         }
         try {
@@ -186,7 +186,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
         // Original Bytecode:
         // 
         //     0: iload_2        
-        //     1: ifeq            168
+        //     1: ifeq            163
         //     4: aload_0        
         //     5: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
         //     8: ldc_w           "try OMX.qcom.video.decoder.avc.smoothstreaming.secure"
@@ -198,101 +198,98 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
         //    22: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
         //    25: aload_0        
         //    26: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
-        //    29: ifnonnull       95
+        //    29: ifnonnull       90
         //    32: aload_0        
         //    33: aload_1        
         //    34: invokespecial   com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.getSecureDecoderNameForMime:(Ljava/lang/String;)Ljava/lang/String;
         //    37: astore_3       
-        //    38: aload_0        
-        //    39: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
-        //    42: iconst_3       
-        //    43: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //    46: ifeq            87
-        //    49: aload_0        
-        //    50: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
-        //    53: new             Ljava/lang/StringBuilder;
-        //    56: dup            
-        //    57: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    60: ldc_w           "createSecureDecoder "
-        //    63: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    66: aload_1        
-        //    67: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    70: ldc_w           ", name "
-        //    73: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    76: aload_3        
-        //    77: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    80: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //    83: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    86: pop            
-        //    87: aload_0        
-        //    88: aload_3        
-        //    89: invokestatic    android/media/MediaCodec.createByCodecName:(Ljava/lang/String;)Landroid/media/MediaCodec;
-        //    92: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
-        //    95: return         
-        //    96: astore_3       
-        //    97: aload_0        
-        //    98: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
-        //   101: ldc_w           "createSecureDecoder OMX.qcom.video.decoder.avc.smoothstreaming.secure failed"
-        //   104: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   107: pop            
-        //   108: aload_0        
-        //   109: aconst_null    
-        //   110: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
-        //   113: goto            25
-        //   116: astore          4
-        //   118: aload_0        
-        //   119: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
-        //   122: new             Ljava/lang/StringBuilder;
-        //   125: dup            
-        //   126: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   129: ldc_w           "createSecureDecoder "
-        //   132: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   135: aload_1        
-        //   136: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   139: ldc_w           ", name "
-        //   142: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   145: aload_3        
-        //   146: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   149: ldc_w           " failed"
-        //   152: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   155: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   158: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   161: pop            
-        //   162: aload_0        
-        //   163: aconst_null    
-        //   164: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
-        //   167: return         
-        //   168: aload_0        
-        //   169: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
-        //   172: ldc_w           "try OMX.qcom.video.decoder.avc.smoothstreaming"
-        //   175: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   178: pop            
-        //   179: aload_0        
-        //   180: ldc_w           "OMX.qcom.video.decoder.avc.smoothstreaming"
-        //   183: invokestatic    android/media/MediaCodec.createByCodecName:(Ljava/lang/String;)Landroid/media/MediaCodec;
-        //   186: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
-        //   189: return         
-        //   190: astore_1       
-        //   191: aload_0        
-        //   192: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
-        //   195: ldc_w           "createSecureDecoder OMX.qcom.video.decoder.avc.smoothstreaming failed"
-        //   198: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   201: pop            
-        //   202: aload_0        
-        //   203: aconst_null    
-        //   204: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
-        //   207: return         
+        //    38: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //    41: ifeq            82
+        //    44: aload_0        
+        //    45: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
+        //    48: new             Ljava/lang/StringBuilder;
+        //    51: dup            
+        //    52: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    55: ldc_w           "createSecureDecoder "
+        //    58: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    61: aload_1        
+        //    62: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    65: ldc_w           ", name "
+        //    68: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    71: aload_3        
+        //    72: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    75: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    78: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    81: pop            
+        //    82: aload_0        
+        //    83: aload_3        
+        //    84: invokestatic    android/media/MediaCodec.createByCodecName:(Ljava/lang/String;)Landroid/media/MediaCodec;
+        //    87: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
+        //    90: return         
+        //    91: astore_3       
+        //    92: aload_0        
+        //    93: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
+        //    96: ldc_w           "createSecureDecoder OMX.qcom.video.decoder.avc.smoothstreaming.secure failed"
+        //    99: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   102: pop            
+        //   103: aload_0        
+        //   104: aconst_null    
+        //   105: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
+        //   108: goto            25
+        //   111: astore          4
+        //   113: aload_0        
+        //   114: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
+        //   117: new             Ljava/lang/StringBuilder;
+        //   120: dup            
+        //   121: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   124: ldc_w           "createSecureDecoder "
+        //   127: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   130: aload_1        
+        //   131: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   134: ldc_w           ", name "
+        //   137: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   140: aload_3        
+        //   141: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   144: ldc_w           " failed"
+        //   147: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   150: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   153: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   156: pop            
+        //   157: aload_0        
+        //   158: aconst_null    
+        //   159: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
+        //   162: return         
+        //   163: aload_0        
+        //   164: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
+        //   167: ldc_w           "try OMX.qcom.video.decoder.avc.smoothstreaming"
+        //   170: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   173: pop            
+        //   174: aload_0        
+        //   175: ldc_w           "OMX.qcom.video.decoder.avc.smoothstreaming"
+        //   178: invokestatic    android/media/MediaCodec.createByCodecName:(Ljava/lang/String;)Landroid/media/MediaCodec;
+        //   181: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
+        //   184: return         
+        //   185: astore_1       
+        //   186: aload_0        
+        //   187: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mTag:Ljava/lang/String;
+        //   190: ldc_w           "createSecureDecoder OMX.qcom.video.decoder.avc.smoothstreaming failed"
+        //   193: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   196: pop            
+        //   197: aload_0        
+        //   198: aconst_null    
+        //   199: putfield        com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2.mDecoder:Landroid/media/MediaCodec;
+        //   202: return         
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  4      25     96     116    Ljava/lang/Exception;
-        //  87     95     116    168    Ljava/lang/Exception;
-        //  168    189    190    208    Ljava/lang/Exception;
+        //  4      25     91     111    Ljava/lang/Exception;
+        //  82     90     111    163    Ljava/lang/Exception;
+        //  163    184    185    203    Ljava/lang/Exception;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0087:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0082:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -334,7 +331,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
         this.mDecoder.start();
         this.mInputBuffers = this.mDecoder.getInputBuffers();
         this.mInputBufferCnt = this.mInputBuffers.length;
-        if (Log.isLoggable(this.mTag, 3)) {
+        if (Log.isLoggable()) {
             Log.d(this.mTag, "has " + this.mInputBufferCnt + " input buffers");
         }
         this.mInputBuffersQ = new LinkedList<Integer>();

@@ -6,8 +6,8 @@ package com.netflix.mediaclient.util;
 
 import android.content.SharedPreferences$Editor;
 import android.content.SharedPreferences;
-import com.netflix.mediaclient.error.Signal;
-import com.netflix.mediaclient.error.CrashReport;
+import com.netflix.mediaclient.javabridge.error.Signal;
+import com.netflix.mediaclient.javabridge.error.CrashReport;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 

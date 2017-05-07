@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 
 public interface VideoDetailsProvider extends PlayContextProvider

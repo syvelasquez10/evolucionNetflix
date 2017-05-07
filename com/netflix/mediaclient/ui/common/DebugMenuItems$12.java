@@ -10,7 +10,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -23,8 +23,10 @@ class DebugMenuItems$12 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        NetflixService.toggleFetchErrorsEnabled();
-        this.this$0.activity.showFetchErrorsToast();
+        final ServiceManager serviceManager = this.this$0.activity.getServiceManager();
+        if (serviceManager != null) {
+            serviceManager.getBrowse().flushCaches();
+        }
         return true;
     }
 }

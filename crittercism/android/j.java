@@ -4,61 +4,53 @@
 
 package crittercism.android;
 
-import java.io.File;
-import android.util.Log;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
 
-public final class j implements UncaughtExceptionHandler
+public final class j
 {
-    private UncaughtExceptionHandler a;
-    
-    public j(final UncaughtExceptionHandler a) {
-        this.a = a;
+    public static Object a(final Field field, final Object o) {
+        if (field == null || field == null) {
+            return null;
+        }
+        field.setAccessible(true);
+        try {
+            return field.get(o);
+        }
+        catch (ThreadDeath threadDeath) {
+            throw threadDeath;
+        }
+        catch (Throwable t) {
+            throw new cl("Unable to get value of field", t);
+        }
     }
     
-    @Override
-    public final void uncaughtException(final Thread thread, final Throwable t) {
-        while (true) {
-            try {
-                Object o = l.i();
-                final at e = ((l)o).e;
-                e.a((h)o);
-                Label_0112: {
-                    if (e.d()) {
-                        break Label_0112;
-                    }
-                    try {
-                        final File s = ((l)o).s;
-                        if (s != null && !s.exists()) {
-                            new StringBuilder("path = ").append(s.getAbsolutePath());
-                            s.createNewFile();
-                        }
-                        ((l)o).h.a(t);
-                        ((l)o).a(true);
-                        ((l)o).m.a((h)o, ae.b.a(), ae.b.b());
-                        if (this.a != null && !(this.a instanceof j)) {
-                            o = this.a;
-                            ((Thread.UncaughtExceptionHandler)o).uncaughtException(thread, t);
-                        }
-                    }
-                    catch (Exception ex) {
-                        new StringBuilder("Exception in setDidCrashOnLastAppLoad: ").append(ex.getClass().getName());
-                    }
+    public static Field a(final Class clazz, final Class clazz2) {
+        final Field[] declaredFields = clazz.getDeclaredFields();
+        Field field = null;
+        Field field2;
+        for (int i = 0; i < declaredFields.length; ++i, field = field2) {
+            field2 = field;
+            if (clazz2.isAssignableFrom(declaredFields[i].getType())) {
+                if (field != null) {
+                    throw new cl("Field is ambiguous: " + field.getName() + ", " + declaredFields[i].getName());
                 }
+                field2 = declaredFields[i];
             }
-            catch (Exception o) {
-                Log.w("CrittercismExceptionHandler", "Failed to log error with Crittercism.  Please contact us at support@crittercism.com.");
-                new StringBuilder("Did not log error to Crittercism.  EXCEPTION: ").append(((l)o).getClass().getName());
-                if (this.a != null && !(this.a instanceof j)) {
-                    o = this.a;
-                    continue;
-                }
+        }
+        if (field == null) {
+            throw new cl("Could not find field matching type: " + clazz2.getName());
+        }
+        field.setAccessible(true);
+        return field;
+    }
+    
+    public static void a(final AccessibleObject[] array) {
+        for (int i = 0; i < array.length; ++i) {
+            final AccessibleObject accessibleObject = array[i];
+            if (accessibleObject != null) {
+                accessibleObject.setAccessible(true);
             }
-            finally {
-                if (this.a != null && !(this.a instanceof j)) {
-                    this.a.uncaughtException(thread, t);
-                }
-            }
-            break;
         }
     }
 }

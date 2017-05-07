@@ -6,6 +6,8 @@ package com.netflix.mediaclient.service.mdx;
 
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
+import com.netflix.mediaclient.javabridge.ui.LogArguments;
+import com.netflix.mediaclient.javabridge.ui.LogArguments$LogLevel;
 import android.content.Context;
 import android.app.AlertDialog$Builder;
 import com.netflix.mediaclient.android.activity.NetflixActivity;

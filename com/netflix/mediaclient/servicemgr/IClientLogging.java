@@ -7,6 +7,7 @@ package com.netflix.mediaclient.servicemgr;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import java.util.List;
+import com.netflix.mediaclient.javabridge.ui.LogArguments;
 
 public interface IClientLogging
 {
@@ -18,6 +19,8 @@ public interface IClientLogging
     public static final String PAUSE_EVENTS_DELIVERY = "com.netflix.mediaclient.intent.action.LOG_PAUSE_EVENTS_DELIVERY";
     public static final String PRESENTATION_TRACKING_LOGGING_REQUEST_DELIVERY_STATUS = "com.netflix.mediaclient.intent.action.PRESENTATION_TRACKING_LOGGING_REQUEST_DELIVERY_STATUS";
     public static final String RESUME_EVENTS_DELIVERY = "com.netflix.mediaclient.intent.action.LOG_RESUME_EVENTS_DELIVERY";
+    
+    void NrdpLog(final LogArguments p0);
     
     List<SessionKey> getActiveLoggingSessions();
     

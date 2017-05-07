@@ -6,10 +6,10 @@ package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
-import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.falkor.ModelProxy;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 
 public interface IBrowseManager
 {
@@ -57,13 +57,17 @@ public interface IBrowseManager
     
     boolean fetchSocialNotificationsList(final int p0, final ManagerCallback p1);
     
-    boolean fetchVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final boolean p4, final ManagerCallback p5);
+    boolean fetchVideoSummary(final String p0, final ManagerCallback p1);
+    
+    boolean fetchVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final boolean p4, final boolean p5, final ManagerCallback p6);
     
     boolean flushCaches();
     
+    ModelProxy<?> getModelProxy();
+    
     boolean hideVideo(final String p0, final ManagerCallback p1);
     
-    void logBillboardActivity(final Video p0, final BrowseAgent$BillboardActivityType p1);
+    void logBillboardActivity(final Video p0, final BillboardInteractionType p1);
     
     void markSocialNotificationsAsRead(final List<SocialNotificationSummary> p0);
     

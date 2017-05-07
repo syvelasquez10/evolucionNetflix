@@ -47,7 +47,7 @@ class WidevineDrmManager$1 implements WidevineDrmManager$WidewineProvisiongCallb
     @Override
     public void done(final byte[] array) {
         if (array != null) {
-            if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(WidevineDrmManager.TAG, "Got CDM provisiong " + new String(array));
             }
             try {

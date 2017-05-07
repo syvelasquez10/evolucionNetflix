@@ -26,11 +26,6 @@ public class KubrickMovieDetailsActivity extends MovieDetailsActivity
     }
     
     @Override
-    public boolean isKubrick() {
-        return true;
-    }
-    
-    @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.getNetflixActionBar().hidelogo();

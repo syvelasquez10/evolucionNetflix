@@ -21,7 +21,7 @@ import android.view.animation.Interpolator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.content.Context;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -45,7 +45,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
@@ -60,7 +60,7 @@ class RecommendToFriendsFrag$7 extends SimpleManagerCallback
     @Override
     public void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> list, final Status status) {
         if (status.getRequestId() != this.this$0.mLastRequestId) {
-            if (Log.isLoggable(RecommendToFriendsFrag.TAG, 4)) {
+            if (Log.isLoggable()) {
                 Log.i(RecommendToFriendsFrag.TAG, "Skipping old result with ID: " + status.getRequestId() + "; last requestID: " + this.this$0.mLastRequestId);
             }
         }

@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui.kubrick_kids.lolomo;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.widget.ImageView$ScaleType;
 import android.view.ViewGroup$LayoutParams;
@@ -22,7 +22,7 @@ import android.widget.FrameLayout;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import android.view.View$OnClickListener;
 
 class KubrickKidsCharacterView$2 implements View$OnClickListener
@@ -36,6 +36,6 @@ class KubrickKidsCharacterView$2 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        DetailsActivityLauncher.show((NetflixActivity)this.this$0.getContext(), this.val$video, this.this$0.playContext);
+        DetailsActivityLauncher.show((NetflixActivity)this.this$0.getContext(), this.val$video, this.this$0.playContext, "KkChar");
     }
 }

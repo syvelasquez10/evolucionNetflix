@@ -35,7 +35,7 @@ public final class NativeNrdp extends NativeNrdObject implements Nrdp
         final String string2 = jsonObject.getString("type");
         if (!"config".equals(string)) {
             final JSONObject jsonObject2 = this.getJSONObject(jsonObject, "data", null);
-            if (Log.isLoggable("nf_nedp", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_nedp", "NativeNrdp received event " + jsonObject);
             }
             if ("background".equals(string)) {
@@ -70,7 +70,7 @@ public final class NativeNrdp extends NativeNrdObject implements Nrdp
                     jsonObject3.put("argument", jsonObject.get("returnValue"));
                     return 1;
                 }
-                if (Log.isLoggable("nf_nedp", 5)) {
+                if (Log.isLoggable()) {
                     Log.w("nf_nedp", "Nobody to handle by name " + string);
                     return 1;
                 }
@@ -161,11 +161,11 @@ public final class NativeNrdp extends NativeNrdObject implements Nrdp
     public int processUpdate(final JSONObject jsonObject) {
         try {
             final String string = this.getString(jsonObject, "type", null);
-            if (Log.isLoggable("nf_nedp", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_nedp", "processUpdate: handle type " + string);
             }
             if ("PropertyUpdate".equalsIgnoreCase(string)) {
-                if (jsonObject != null && Log.isLoggable("nf_nedp", 3)) {
+                if (jsonObject != null && Log.isLoggable()) {
                     Log.d("nf_nedp", "processUpdate: handle prop update " + jsonObject.toString());
                 }
                 return this.handlePropertyUpdate(jsonObject);

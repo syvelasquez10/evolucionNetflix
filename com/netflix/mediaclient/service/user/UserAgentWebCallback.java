@@ -7,7 +7,7 @@ package com.netflix.mediaclient.service.user;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserBoundCookies;
 import java.util.Set;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
 import com.netflix.mediaclient.android.app.Status;

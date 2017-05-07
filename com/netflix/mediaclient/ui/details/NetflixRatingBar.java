@@ -28,7 +28,7 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.graphics.drawable.shapes.Shape;
 import android.util.AttributeSet;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.model.Ratable;
+import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import com.netflix.mediaclient.ui.common.VideoDetailsProvider;
 import android.graphics.drawable.Drawable;
 import android.widget.RatingBar$OnRatingBarChangeListener;
@@ -89,7 +89,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
             Log.w("NetflixRatingBar", "Can't set rating because service man is null");
             return;
         }
-        if (Log.isLoggable("NetflixRatingBar", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixRatingBar", "Video ID: " + this.provider.getVideoId());
         }
         final String videoId = this.provider.getVideoId();
@@ -197,7 +197,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
     }
     
     private void updateRatingDrawable() {
-        if (Log.isLoggable("NetflixRatingBar", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixRatingBar", "Updating rating drawable, progress: " + this.getProgress() + ", user rating: " + this.getUserRating());
         }
         if (this.getUserRating() > 0) {
@@ -214,7 +214,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         final float progressPerStar = this.getProgressPerStar();
         if (progressPerStar > 0.0f) {
             final int secondaryProgress = (int)(progressPerStar * (this.getProgress() / progressPerStar) + 0.5f);
-            if (Log.isLoggable("NetflixRatingBar", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("NetflixRatingBar", "Setting secondary progress: " + secondaryProgress);
             }
             this.setSecondaryProgress(secondaryProgress);
@@ -222,20 +222,20 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
     }
     
     protected int getNetflixStarRatingDrawableId() {
-        return 2130837869;
+        return 2130837897;
     }
     
     protected int getUserStarRatingDrawableId() {
-        return 2130837871;
+        return 2130837899;
     }
     
     public void onRatingChanged(final RatingBar ratingBar, final float n, final boolean b) {
         this.dispatchedCallback = true;
         final int currRating = (int)Math.ceil(n);
-        if (Log.isLoggable("NetflixRatingBar", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixRatingBar", "Rating changed: " + currRating + ", from user: " + b);
         }
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493169), currRating));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493176), currRating));
         if (b && this.getUserRating() != currRating) {
             final int progress = (int)(currRating * this.getProgressPerStar());
             Log.v("NetflixRatingBar", "Setting progress: " + progress);

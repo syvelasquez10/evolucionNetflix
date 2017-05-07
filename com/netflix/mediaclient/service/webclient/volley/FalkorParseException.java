@@ -33,13 +33,17 @@ public class FalkorParseException extends VolleyError
     public static StatusCode getErrorCode(final String s) {
         final StatusCode falkor_RESPONSE_PARSE_ERROR = StatusCode.FALKOR_RESPONSE_PARSE_ERROR;
         if (!StringUtils.isEmpty(s)) {
-            if (Log.isLoggable(FalkorParseException.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(FalkorParseException.TAG, "errorMsg:" + s);
             }
-            if (FalkorParseUtils.isWrongState(s.toLowerCase(Locale.US))) {
+            if (isWrongState(s.toLowerCase(Locale.US))) {
                 return StatusCode.BROWSE_AGENT_WRONG_STATE;
             }
         }
         return falkor_RESPONSE_PARSE_ERROR;
+    }
+    
+    private static boolean isWrongState(final String s) {
+        return s.contains("wrong state");
     }
 }

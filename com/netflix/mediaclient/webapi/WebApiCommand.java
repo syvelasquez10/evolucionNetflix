@@ -71,7 +71,7 @@ public abstract class WebApiCommand
         }
         else {
             for (int i = 0; i < list.size(); ++i) {
-                if (Log.isLoggable("nf_rest", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_rest", "Response cookie: " + list.get(i));
                 }
                 if ("NetflixId".equals(list.get(i).getName())) {
@@ -87,7 +87,7 @@ public abstract class WebApiCommand
     private void dumpCookies(final HttpResponse httpResponse) {
         int n = 0;
         int n2 = 0;
-        if (Log.isLoggable("nf_rest", 3)) {
+        if (Log.isLoggable()) {
             final Header[] allHeaders = httpResponse.getAllHeaders();
             if (allHeaders != null && allHeaders.length > 0) {
                 Log.d("nf_rest", "We got headers: " + allHeaders.length);
@@ -136,12 +136,12 @@ public abstract class WebApiCommand
         final String name = cookie.getName();
         final String value = cookie.getValue();
         if (s == null || s.equals(value)) {
-            if (Log.isLoggable("nf_rest", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_rest", name + " is not changed");
             }
             return s;
         }
-        if (Log.isLoggable("nf_rest", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_rest", name + " is now " + value);
         }
         this.updated = true;
@@ -171,7 +171,7 @@ public abstract class WebApiCommand
         if (n == 410) {
             Log.w("nf_rest", "Received 410: Redirecting... ");
             string = new JSONObject(string).getString("host");
-            if (Log.isLoggable("nf_rest", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_rest", "Response 410: new WebAPI end point received: " + string);
             }
             HttpClientFactory.setWebApiEndPoint(string);
@@ -183,12 +183,12 @@ public abstract class WebApiCommand
                 return false;
             }
             if (n <= 200 || n > 399) {
-                if (Log.isLoggable("nf_rest", 6)) {
+                if (Log.isLoggable()) {
                     Log.e("nf_rest", "Response " + n);
                 }
                 throw new HttpException("Failed with response code " + n);
             }
-            if (Log.isLoggable("nf_rest", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_rest", "Response " + n);
                 return false;
             }
@@ -217,7 +217,7 @@ public abstract class WebApiCommand
         //    24: aconst_null    
         //    25: astore_3       
         //    26: iload_2        
-        //    27: ifeq            498
+        //    27: ifeq            486
         //    30: aload_0        
         //    31: getfield        com/netflix/mediaclient/webapi/WebApiCommand.count:I
         //    34: iconst_5       
@@ -246,212 +246,204 @@ public abstract class WebApiCommand
         //    79: invokevirtual   com/netflix/mediaclient/webapi/WebApiCommand.getHeaders:()[Landroid/util/Pair;
         //    82: astore          6
         //    84: aload           6
-        //    86: ifnull          220
+        //    86: ifnull          217
         //    89: aload           6
         //    91: arraylength    
-        //    92: ifle            220
+        //    92: ifle            217
         //    95: iconst_0       
         //    96: istore_1       
         //    97: iload_1        
         //    98: aload           6
         //   100: arraylength    
-        //   101: if_icmpge       229
-        //   104: ldc             "nf_rest"
-        //   106: iconst_3       
-        //   107: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //   110: ifeq            167
-        //   113: ldc             "nf_rest"
-        //   115: new             Ljava/lang/StringBuilder;
-        //   118: dup            
-        //   119: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   122: ldc_w           "Add header "
-        //   125: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   128: aload           6
-        //   130: iload_1        
-        //   131: aaload         
-        //   132: getfield        android/util/Pair.first:Ljava/lang/Object;
-        //   135: checkcast       Ljava/lang/String;
-        //   138: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   141: ldc_w           " with value: "
-        //   144: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   147: aload           6
-        //   149: iload_1        
-        //   150: aaload         
-        //   151: getfield        android/util/Pair.second:Ljava/lang/Object;
-        //   154: checkcast       Ljava/lang/String;
-        //   157: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   160: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   163: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   166: pop            
-        //   167: aload           6
-        //   169: iload_1        
-        //   170: aaload         
-        //   171: getfield        android/util/Pair.first:Ljava/lang/Object;
-        //   174: ifnull          521
-        //   177: aload           6
-        //   179: iload_1        
-        //   180: aaload         
-        //   181: getfield        android/util/Pair.second:Ljava/lang/Object;
-        //   184: ifnonnull       190
-        //   187: goto            521
-        //   190: aload           5
-        //   192: aload           6
-        //   194: iload_1        
-        //   195: aaload         
-        //   196: getfield        android/util/Pair.first:Ljava/lang/Object;
-        //   199: checkcast       Ljava/lang/String;
-        //   202: aload           6
-        //   204: iload_1        
-        //   205: aaload         
-        //   206: getfield        android/util/Pair.second:Ljava/lang/Object;
-        //   209: checkcast       Ljava/lang/String;
-        //   212: invokeinterface org/apache/http/client/methods/HttpUriRequest.setHeader:(Ljava/lang/String;Ljava/lang/String;)V
-        //   217: goto            521
-        //   220: ldc             "nf_rest"
-        //   222: ldc_w           "No header found"
-        //   225: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   228: pop            
-        //   229: ldc             "nf_rest"
-        //   231: iconst_3       
-        //   232: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //   235: ifeq            283
-        //   238: ldc             "nf_rest"
-        //   240: new             Ljava/lang/StringBuilder;
-        //   243: dup            
-        //   244: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   247: ldc_w           "executing request "
-        //   250: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   253: aload           5
-        //   255: invokeinterface org/apache/http/client/methods/HttpUriRequest.getURI:()Ljava/net/URI;
-        //   260: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
-        //   263: ldc_w           ", attempt: "
-        //   266: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   269: aload_0        
-        //   270: getfield        com/netflix/mediaclient/webapi/WebApiCommand.count:I
-        //   273: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
-        //   276: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   279: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   282: pop            
-        //   283: aload           4
-        //   285: aload           5
-        //   287: invokevirtual   org/apache/http/impl/client/DefaultHttpClient.execute:(Lorg/apache/http/client/methods/HttpUriRequest;)Lorg/apache/http/HttpResponse;
-        //   290: astore          6
-        //   292: aload           6
-        //   294: invokeinterface org/apache/http/HttpResponse.getEntity:()Lorg/apache/http/HttpEntity;
-        //   299: astore          5
-        //   301: aload           6
-        //   303: invokeinterface org/apache/http/HttpResponse.getStatusLine:()Lorg/apache/http/StatusLine;
-        //   308: astore          7
-        //   310: aload           7
-        //   312: ifnonnull       335
-        //   315: ldc             "nf_rest"
-        //   317: ldc_w           "Status is NULL. It should NOT happen!"
-        //   320: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   323: pop            
-        //   324: new             Ljava/lang/NullPointerException;
-        //   327: dup            
-        //   328: ldc_w           "Status is NULL. It should NOT happen!"
-        //   331: invokespecial   java/lang/NullPointerException.<init>:(Ljava/lang/String;)V
-        //   334: athrow         
-        //   335: aload           7
-        //   337: invokeinterface org/apache/http/StatusLine.getStatusCode:()I
-        //   342: istore_1       
+        //   101: if_icmpge       226
+        //   104: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   107: ifeq            164
+        //   110: ldc             "nf_rest"
+        //   112: new             Ljava/lang/StringBuilder;
+        //   115: dup            
+        //   116: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   119: ldc_w           "Add header "
+        //   122: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   125: aload           6
+        //   127: iload_1        
+        //   128: aaload         
+        //   129: getfield        android/util/Pair.first:Ljava/lang/Object;
+        //   132: checkcast       Ljava/lang/String;
+        //   135: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   138: ldc_w           " with value: "
+        //   141: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   144: aload           6
+        //   146: iload_1        
+        //   147: aaload         
+        //   148: getfield        android/util/Pair.second:Ljava/lang/Object;
+        //   151: checkcast       Ljava/lang/String;
+        //   154: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   157: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   160: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   163: pop            
+        //   164: aload           6
+        //   166: iload_1        
+        //   167: aaload         
+        //   168: getfield        android/util/Pair.first:Ljava/lang/Object;
+        //   171: ifnull          509
+        //   174: aload           6
+        //   176: iload_1        
+        //   177: aaload         
+        //   178: getfield        android/util/Pair.second:Ljava/lang/Object;
+        //   181: ifnonnull       187
+        //   184: goto            509
+        //   187: aload           5
+        //   189: aload           6
+        //   191: iload_1        
+        //   192: aaload         
+        //   193: getfield        android/util/Pair.first:Ljava/lang/Object;
+        //   196: checkcast       Ljava/lang/String;
+        //   199: aload           6
+        //   201: iload_1        
+        //   202: aaload         
+        //   203: getfield        android/util/Pair.second:Ljava/lang/Object;
+        //   206: checkcast       Ljava/lang/String;
+        //   209: invokeinterface org/apache/http/client/methods/HttpUriRequest.setHeader:(Ljava/lang/String;Ljava/lang/String;)V
+        //   214: goto            509
+        //   217: ldc             "nf_rest"
+        //   219: ldc_w           "No header found"
+        //   222: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   225: pop            
+        //   226: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   229: ifeq            277
+        //   232: ldc             "nf_rest"
+        //   234: new             Ljava/lang/StringBuilder;
+        //   237: dup            
+        //   238: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   241: ldc_w           "executing request "
+        //   244: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   247: aload           5
+        //   249: invokeinterface org/apache/http/client/methods/HttpUriRequest.getURI:()Ljava/net/URI;
+        //   254: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   257: ldc_w           ", attempt: "
+        //   260: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   263: aload_0        
+        //   264: getfield        com/netflix/mediaclient/webapi/WebApiCommand.count:I
+        //   267: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //   270: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   273: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   276: pop            
+        //   277: aload           4
+        //   279: aload           5
+        //   281: invokevirtual   org/apache/http/impl/client/DefaultHttpClient.execute:(Lorg/apache/http/client/methods/HttpUriRequest;)Lorg/apache/http/HttpResponse;
+        //   284: astore          6
+        //   286: aload           6
+        //   288: invokeinterface org/apache/http/HttpResponse.getEntity:()Lorg/apache/http/HttpEntity;
+        //   293: astore          5
+        //   295: aload           6
+        //   297: invokeinterface org/apache/http/HttpResponse.getStatusLine:()Lorg/apache/http/StatusLine;
+        //   302: astore          7
+        //   304: aload           7
+        //   306: ifnonnull       329
+        //   309: ldc             "nf_rest"
+        //   311: ldc_w           "Status is NULL. It should NOT happen!"
+        //   314: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   317: pop            
+        //   318: new             Ljava/lang/NullPointerException;
+        //   321: dup            
+        //   322: ldc_w           "Status is NULL. It should NOT happen!"
+        //   325: invokespecial   java/lang/NullPointerException.<init>:(Ljava/lang/String;)V
+        //   328: athrow         
+        //   329: aload           7
+        //   331: invokeinterface org/apache/http/StatusLine.getStatusCode:()I
+        //   336: istore_1       
+        //   337: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   340: ifeq            407
         //   343: ldc             "nf_rest"
-        //   345: iconst_3       
-        //   346: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //   349: ifeq            416
-        //   352: ldc             "nf_rest"
-        //   354: new             Ljava/lang/StringBuilder;
-        //   357: dup            
-        //   358: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   361: ldc_w           "Response status: code "
-        //   364: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   367: iload_1        
-        //   368: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
-        //   371: ldc_w           ", text "
-        //   374: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   377: aload           7
-        //   379: invokeinterface org/apache/http/StatusLine.getReasonPhrase:()Ljava/lang/String;
-        //   384: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   387: ldc_w           ", protocol "
-        //   390: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   393: aload           7
-        //   395: invokeinterface org/apache/http/StatusLine.getProtocolVersion:()Lorg/apache/http/ProtocolVersion;
-        //   400: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
-        //   403: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   406: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   409: pop            
-        //   410: aload_0        
-        //   411: aload           6
-        //   413: invokespecial   com/netflix/mediaclient/webapi/WebApiCommand.dumpCookies:(Lorg/apache/http/HttpResponse;)V
-        //   416: aload_0        
-        //   417: aload           4
-        //   419: invokevirtual   org/apache/http/impl/client/DefaultHttpClient.getCookieStore:()Lorg/apache/http/client/CookieStore;
-        //   422: invokeinterface org/apache/http/client/CookieStore.getCookies:()Ljava/util/List;
-        //   427: invokespecial   com/netflix/mediaclient/webapi/WebApiCommand.checkForCredentialUpdate:(Ljava/util/List;)V
-        //   430: aload           5
-        //   432: ifnull          518
-        //   435: aload           5
-        //   437: invokeinterface org/apache/http/HttpEntity.getContent:()Ljava/io/InputStream;
-        //   442: invokestatic    com/android/volley/toolbox/InputStreamUtil.convertStreamToString:(Ljava/io/InputStream;)Ljava/lang/String;
-        //   445: astore_3       
-        //   446: ldc             "nf_rest"
-        //   448: iconst_3       
-        //   449: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //   452: ifeq            481
-        //   455: ldc             "nf_rest"
-        //   457: new             Ljava/lang/StringBuilder;
-        //   460: dup            
-        //   461: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   464: ldc_w           "Full content: "
-        //   467: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   470: aload_3        
-        //   471: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   474: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   477: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   480: pop            
-        //   481: aload           5
-        //   483: invokeinterface org/apache/http/HttpEntity.consumeContent:()V
-        //   488: aload_0        
-        //   489: iload_1        
-        //   490: aload_3        
-        //   491: invokevirtual   com/netflix/mediaclient/webapi/WebApiCommand.checkStatus:(ILjava/lang/String;)Z
-        //   494: istore_2       
-        //   495: goto            26
-        //   498: aload           4
-        //   500: invokevirtual   org/apache/http/impl/client/DefaultHttpClient.getConnectionManager:()Lorg/apache/http/conn/ClientConnectionManager;
-        //   503: invokeinterface org/apache/http/conn/ClientConnectionManager.shutdown:()V
-        //   508: aload_3        
-        //   509: areturn        
-        //   510: astore_3       
-        //   511: aload           5
-        //   513: astore          4
-        //   515: goto            50
-        //   518: goto            495
-        //   521: iload_1        
-        //   522: iconst_1       
-        //   523: iadd           
-        //   524: istore_1       
-        //   525: goto            97
+        //   345: new             Ljava/lang/StringBuilder;
+        //   348: dup            
+        //   349: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   352: ldc_w           "Response status: code "
+        //   355: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   358: iload_1        
+        //   359: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //   362: ldc_w           ", text "
+        //   365: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   368: aload           7
+        //   370: invokeinterface org/apache/http/StatusLine.getReasonPhrase:()Ljava/lang/String;
+        //   375: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   378: ldc_w           ", protocol "
+        //   381: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   384: aload           7
+        //   386: invokeinterface org/apache/http/StatusLine.getProtocolVersion:()Lorg/apache/http/ProtocolVersion;
+        //   391: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   394: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   397: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   400: pop            
+        //   401: aload_0        
+        //   402: aload           6
+        //   404: invokespecial   com/netflix/mediaclient/webapi/WebApiCommand.dumpCookies:(Lorg/apache/http/HttpResponse;)V
+        //   407: aload_0        
+        //   408: aload           4
+        //   410: invokevirtual   org/apache/http/impl/client/DefaultHttpClient.getCookieStore:()Lorg/apache/http/client/CookieStore;
+        //   413: invokeinterface org/apache/http/client/CookieStore.getCookies:()Ljava/util/List;
+        //   418: invokespecial   com/netflix/mediaclient/webapi/WebApiCommand.checkForCredentialUpdate:(Ljava/util/List;)V
+        //   421: aload           5
+        //   423: ifnull          506
+        //   426: aload           5
+        //   428: invokeinterface org/apache/http/HttpEntity.getContent:()Ljava/io/InputStream;
+        //   433: invokestatic    com/android/volley/toolbox/InputStreamUtil.convertStreamToString:(Ljava/io/InputStream;)Ljava/lang/String;
+        //   436: astore_3       
+        //   437: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   440: ifeq            469
+        //   443: ldc             "nf_rest"
+        //   445: new             Ljava/lang/StringBuilder;
+        //   448: dup            
+        //   449: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   452: ldc_w           "Full content: "
+        //   455: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   458: aload_3        
+        //   459: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   462: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   465: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   468: pop            
+        //   469: aload           5
+        //   471: invokeinterface org/apache/http/HttpEntity.consumeContent:()V
+        //   476: aload_0        
+        //   477: iload_1        
+        //   478: aload_3        
+        //   479: invokevirtual   com/netflix/mediaclient/webapi/WebApiCommand.checkStatus:(ILjava/lang/String;)Z
+        //   482: istore_2       
+        //   483: goto            26
+        //   486: aload           4
+        //   488: invokevirtual   org/apache/http/impl/client/DefaultHttpClient.getConnectionManager:()Lorg/apache/http/conn/ClientConnectionManager;
+        //   491: invokeinterface org/apache/http/conn/ClientConnectionManager.shutdown:()V
+        //   496: aload_3        
+        //   497: areturn        
+        //   498: astore_3       
+        //   499: aload           5
+        //   501: astore          4
+        //   503: goto            50
+        //   506: goto            483
+        //   509: iload_1        
+        //   510: iconst_1       
+        //   511: iadd           
+        //   512: istore_1       
+        //   513: goto            97
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type
         //  -----  -----  -----  -----  ----
-        //  3      22     510    518    Any
+        //  3      22     498    506    Any
         //  30     49     49     50     Any
         //  62     84     49     50     Any
         //  89     95     49     50     Any
-        //  97     167    49     50     Any
-        //  167    187    49     50     Any
-        //  190    217    49     50     Any
-        //  220    229    49     50     Any
-        //  229    283    49     50     Any
-        //  283    310    49     50     Any
-        //  315    335    49     50     Any
-        //  335    416    49     50     Any
-        //  416    430    49     50     Any
-        //  435    481    49     50     Any
-        //  481    495    49     50     Any
+        //  97     164    49     50     Any
+        //  164    184    49     50     Any
+        //  187    214    49     50     Any
+        //  217    226    49     50     Any
+        //  226    277    49     50     Any
+        //  277    304    49     50     Any
+        //  309    329    49     50     Any
+        //  329    407    49     50     Any
+        //  407    421    49     50     Any
+        //  426    469    49     50     Any
+        //  469    483    49     50     Any
         // 
         // The error that occurred was:
         // 

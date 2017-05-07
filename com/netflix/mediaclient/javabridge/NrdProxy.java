@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.javabridge;
 
-import com.netflix.mediaclient.error.CrashListener;
-import com.netflix.mediaclient.error.CrashReport;
+import com.netflix.mediaclient.javabridge.error.CrashListener;
+import com.netflix.mediaclient.javabridge.error.CrashReport;
 import com.netflix.mediaclient.javabridge.invoke.Invoke;
 
 public interface NrdProxy

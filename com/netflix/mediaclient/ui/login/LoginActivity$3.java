@@ -50,6 +50,6 @@ class LoginActivity$3 implements View$OnClickListener
             this.this$0.startActivityForResult(setData, 0);
             return;
         }
-        this.this$0.displayUserAgentDialog(this.this$0.getString(2131493317, new Object[] { "https://signup.netflix.com/loginhelp" }), null, false);
+        this.this$0.displayUserAgentDialog(this.this$0.getString(2131493325, new Object[] { "https://signup.netflix.com/loginhelp" }), null, false);
     }
 }

@@ -4,39 +4,64 @@
 
 package crittercism.android;
 
-import java.text.ParseException;
-import android.util.SparseArray;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.concurrent.Executor;
+import java.util.Set;
+import java.util.List;
 
-public enum e
+public final class e
 {
-    a("NOT_ON_WIFI", 0, 0), 
-    b("ON_WIFI", 1, 1), 
-    c("UNKNOWN", 2, 2);
+    List a;
+    final Set b;
+    final Set c;
+    private Executor d;
     
-    private static SparseArray d;
-    private int e;
-    
-    static {
-        (e.d = new SparseArray()).put(0, (Object)e.a);
-        e.d.put(1, (Object)e.b);
+    public e(final Executor executor) {
+        this(executor, new LinkedList(), new LinkedList());
     }
     
-    private e(final String s, final int n, final int e) {
-        this.e = e;
+    private e(final Executor d, final List list, final List list2) {
+        this.a = new LinkedList();
+        this.b = new HashSet();
+        this.c = new HashSet();
+        this.d = d;
+        this.a(list);
+        this.b(list2);
     }
     
-    public static e a(final int n) {
-        final e[] values = values();
-        for (int length = values.length, i = 0; i < length; ++i) {
-            final e e = values[i];
-            if (e.e == n) {
-                return e;
-            }
+    @Deprecated
+    public final void a(final c c) {
+        this.a(c, c$a.e);
+    }
+    
+    public final void a(final c c, final c$a c2) {
+        if (c.b) {
+            return;
         }
-        throw new ParseException("Unknown status code: " + Integer.toString(n), 0);
+        c.b = true;
+        c.c = c2;
+        this.d.execute(new e$a(this, c, (byte)0));
     }
     
-    public final int a() {
-        return this.e;
+    public final void a(final f f) {
+        synchronized (this.a) {
+            this.a.add(f);
+        }
+    }
+    
+    public final void a(final List list) {
+        synchronized (this.b) {
+            this.b.addAll(list);
+            this.b.remove(null);
+        }
+    }
+    
+    public final void b(final List list) {
+        synchronized (this.c) {
+            this.c.addAll(list);
+            this.c.remove(null);
+        }
     }
 }

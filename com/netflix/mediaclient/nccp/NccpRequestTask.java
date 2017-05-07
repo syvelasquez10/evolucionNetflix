@@ -83,7 +83,7 @@ public class NccpRequestTask extends AsyncTaskCompat<Void, Void, NccpResponse>
             final String requestBody = this.transaction.getRequestBody();
             final HttpPost httpPost = new HttpPost(this.transaction.getEndpoint());
             httpPost.setEntity((HttpEntity)new StringEntity(requestBody, "UTF-8"));
-            if (Log.isLoggable("nf_nccp", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_nccp", "PostRequest:" + httpPost.getRequestLine());
                 Log.d("nf_nccp", "Endpoint " + this.transaction.getEndpoint());
                 Log.d("nf_nccp", "Content " + requestBody);
@@ -93,9 +93,9 @@ public class NccpRequestTask extends AsyncTaskCompat<Void, Void, NccpResponse>
                 for (final RequestParameter requestParameter : requestHeaders) {
                     httpPost.setHeader(requestParameter.name, requestParameter.value);
                 }
-                goto Label_0311;
+                goto Label_0308;
             }
-            goto Label_0311;
+            goto Label_0308;
         }
         catch (ConnectTimeoutException ex) {
             Log.e("nf_nccp", "Connection timeout", (Throwable)ex);
@@ -104,17 +104,17 @@ public class NccpRequestTask extends AsyncTaskCompat<Void, Void, NccpResponse>
         catch (SocketTimeoutException ex2) {
             Log.e("nf_nccp", "Socket timeout", ex2);
             nccpResponse = this.transaction.processError(ex2);
-            goto Label_0269;
+            goto Label_0266;
         }
         catch (ClientProtocolException ex3) {
             Log.e("nf_nccp", "Request protocol failed", (Throwable)ex3);
             nccpResponse = this.transaction.processError((Throwable)ex3);
-            goto Label_0269;
+            goto Label_0266;
         }
         catch (IOException ex4) {
             Log.e("nf_nccp", "Request IO failed ", ex4);
             nccpResponse = this.transaction.processError(ex4);
-            goto Label_0269;
+            goto Label_0266;
         }
         Log.w("nf_nccp", "Response handler is null!");
         return nccpResponse;

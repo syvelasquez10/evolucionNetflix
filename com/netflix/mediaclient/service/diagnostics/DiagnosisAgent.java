@@ -102,7 +102,7 @@ public class DiagnosisAgent extends ServiceAgent implements IDiagnosis
     
     @Override
     public void abortDiagnosis() {
-        if (Log.isLoggable("nf_service_diagnosisagent", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_diagnosisagent", "abortDiagnosis");
         }
         this.mIsDiagnosisOngoing = false;

@@ -17,6 +17,7 @@ import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import java.io.Serializable;
 import android.media.AudioManager;
 import android.view.MenuItem;
 import com.netflix.mediaclient.event.nrdp.media.Error;
@@ -26,7 +27,7 @@ import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.res.Configuration;
-import com.netflix.mediaclient.net.LogMobileType;
+import com.netflix.mediaclient.service.net.LogMobileType;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.view.Surface;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
@@ -48,7 +49,7 @@ import com.netflix.mediaclient.util.PreferenceUtils;
 import android.os.SystemClock;
 import android.util.Pair;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
@@ -59,24 +60,21 @@ import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import android.view.View;
 import android.view.KeyEvent;
-import java.io.Serializable;
-import com.netflix.mediaclient.ui.kids.player.KidsPlayerActivity;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import android.os.Parcelable;
 import android.content.Intent;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
 import android.view.SurfaceHolder$Callback;
 import com.netflix.mediaclient.media.JPlayer.SecondSurface;
-import com.netflix.mediaclient.ui.common.Social$SocialProviderCallback;
 import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.content.BroadcastReceiver;
 import android.os.Handler;
-import com.netflix.mediaclient.ui.details.EpisodeRowView$EpisodeRowListener;
+import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListener;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.media.Language;
@@ -88,15 +86,15 @@ import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
-import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
-import com.netflix.mediaclient.servicemgr.model.Playable;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import com.netflix.mediaclient.servicemgr.Asset;
 import android.content.Context;
 import android.widget.Toast;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 
@@ -120,10 +118,10 @@ class PlayerActivity$FetchVideoDetailsForPlaybackCallback extends LoggingManager
         }
         if (status.isError() || videoDetails == null) {
             Log.w("PlayerActivity", "Error loading video details for video playback");
-            Toast.makeText((Context)this$0, 2131493106, 1).show();
+            Toast.makeText((Context)this$0, 2131493112, 1).show();
             return;
         }
-        if (Log.isLoggable("PlayerActivity", 2)) {
+        if (Log.isLoggable()) {
             Log.v("PlayerActivity", "Retrieved details: " + videoDetails.getTitle() + ", " + videoDetails);
         }
         final PlayerActivity this$2 = this.this$0;

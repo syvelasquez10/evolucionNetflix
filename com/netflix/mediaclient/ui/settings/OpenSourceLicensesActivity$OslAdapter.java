@@ -45,8 +45,8 @@ class OpenSourceLicensesActivity$OslAdapter extends BaseAdapter
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.getLayoutInflater().inflate(2130903155, (ViewGroup)null);
-            inflate.setTag((Object)new OpenSourceLicensesActivity$Holder((TextView)inflate.findViewById(2131165547), (TextView)inflate.findViewById(2131165548)));
+            inflate = this.this$0.getLayoutInflater().inflate(2130903160, (ViewGroup)null);
+            inflate.setTag((Object)new OpenSourceLicensesActivity$Holder((TextView)inflate.findViewById(2131165553), (TextView)inflate.findViewById(2131165554)));
         }
         final OpenSourceLicensesActivity$Holder openSourceLicensesActivity$Holder = (OpenSourceLicensesActivity$Holder)inflate.getTag();
         final OpenSourceLicensesActivity$OslInfo item = this.getItem(n);

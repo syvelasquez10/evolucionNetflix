@@ -9,8 +9,8 @@ import java.util.HashMap;
 final class IMdx$1 extends HashMap<Integer, Integer>
 {
     IMdx$1() {
-        this.put(100, 2131493212);
-        this.put(104, 2131493213);
-        this.put(105, 2131493214);
+        this.put(100, 2131493220);
+        this.put(104, 2131493221);
+        this.put(105, 2131493222);
     }
 }

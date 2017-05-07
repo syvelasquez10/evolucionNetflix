@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.mdx;
 
+import com.netflix.mediaclient.service.mdx.message.controller.PlayerGetCapabilities;
+import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
 import com.netflix.mediaclient.service.mdx.message.target.PlayerState;
 import com.netflix.mediaclient.service.mdx.message.target.PinNotRequired;
 import com.netflix.mediaclient.service.mdx.message.target.PinRequired;
@@ -38,10 +40,17 @@ class TargetContext$1 extends Handler
         switch (message.what) {
             default: {}
             case 2: {
-                if (Log.isLoggable("nf_mdx", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_mdx", "TargetContext: received a command at state " + this.this$0.mStateMachine.mCurrentState.getName());
                 }
-                this.this$0.mStateMachine.addUiCommand((Runnable)message.obj);
+                this.this$0.mStateMachine.addUiCommand((Runnable)message.obj, true);
+                this.this$0.mStateMachine.receivedEvent(TargetStateManager$TargetContextEvent.SessionCommandReceived);
+            }
+            case 5: {
+                if (Log.isLoggable()) {
+                    Log.d("nf_mdx", "TargetContext: received a user command at state " + this.this$0.mStateMachine.mCurrentState.getName());
+                }
+                this.this$0.mStateMachine.addUiCommand((Runnable)message.obj, true);
                 this.this$0.mStateMachine.receivedEvent(TargetStateManager$TargetContextEvent.SessionCommandReceived);
             }
             case 1: {

@@ -40,6 +40,14 @@ public abstract class PServiceAgent
         return null;
     }
     
+    protected PServiceAgent$PServiceFetchAgentInterface getFetchAgent() {
+        final PServiceAgent$AgentContext agentContext = this.agentContext;
+        if (agentContext != null) {
+            return agentContext.getFetchAgent();
+        }
+        return null;
+    }
+    
     public Handler getMainHandler() {
         return this.mainHandler;
     }
@@ -48,6 +56,14 @@ public abstract class PServiceAgent
         final PServiceAgent$AgentContext agentContext = this.agentContext;
         if (agentContext != null) {
             return agentContext.getService();
+        }
+        return null;
+    }
+    
+    protected PServiceAgent$PServiceWidgetAgentInterface getWidgetAgent() {
+        final PServiceAgent$AgentContext agentContext = this.agentContext;
+        if (agentContext != null) {
+            return agentContext.getWidgetAgent();
         }
         return null;
     }
@@ -75,7 +91,7 @@ public abstract class PServiceAgent
     protected final void initCompleted(final Status initErrorResult) {
         synchronized (this) {
             this.initErrorResult = initErrorResult;
-            if (Log.isLoggable("nf_preapp_serviceagent", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_preapp_serviceagent", "InitComplete with errorCode " + this.initErrorResult + " for " + this.getClass().getSimpleName());
             }
             if (this.initCallback != null) {

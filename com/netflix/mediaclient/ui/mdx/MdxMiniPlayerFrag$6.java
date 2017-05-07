@@ -9,15 +9,17 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
+import com.netflix.mediaclient.servicemgr.IBrowseManager;
 import com.netflix.mediaclient.util.MdxUtils$SetVideoRatingCallback;
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.view.View;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -37,7 +39,7 @@ import android.os.Handler;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.Set;
 import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
-import com.netflix.mediaclient.ui.details.EpisodeRowView$EpisodeRowListener;
+import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.util.MdxUtils;
@@ -46,7 +48,7 @@ import com.netflix.mediaclient.media.Language;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.Log;
 
 class MdxMiniPlayerFrag$6 implements RemotePlayer$RemoteTargetUiListener
@@ -82,7 +84,7 @@ class MdxMiniPlayerFrag$6 implements RemotePlayer$RemoteTargetUiListener
         if (this.this$0.activity.destroyed()) {
             return;
         }
-        if (Log.isLoggable("MdxMiniPlayerFrag", 2)) {
+        if (Log.isLoggable()) {
             this.this$0.log("cancelDialog");
         }
         this.this$0.activity.removeVisibleDialog();
@@ -90,7 +92,7 @@ class MdxMiniPlayerFrag$6 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void endOfPlayback() {
-        if (Log.isLoggable("MdxMiniPlayerFrag", 2)) {
+        if (Log.isLoggable()) {
             this.this$0.log("endOfPlayback");
         }
         this.this$0.isEndOfPlayback = true;
@@ -102,7 +104,7 @@ class MdxMiniPlayerFrag$6 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void error(final int n, final String s) {
-        if (Log.isLoggable("MdxMiniPlayerFrag", 2)) {
+        if (Log.isLoggable()) {
             this.this$0.log("error - code: " + n + ", descrip: " + s);
         }
         this.this$0.isEndOfPlayback = true;
@@ -119,7 +121,7 @@ class MdxMiniPlayerFrag$6 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void mdxStateChanged(final boolean b) {
-        if (Log.isLoggable("MdxMiniPlayerFrag", 2)) {
+        if (Log.isLoggable()) {
             this.this$0.log("mdxStateChanged, ready: " + b);
         }
     }
@@ -129,7 +131,7 @@ class MdxMiniPlayerFrag$6 implements RemotePlayer$RemoteTargetUiListener
         if (this.this$0.activity.destroyed()) {
             return;
         }
-        if (Log.isLoggable("MdxMiniPlayerFrag", 2)) {
+        if (Log.isLoggable()) {
             this.this$0.log("showDialog, " + remoteDialog.toString());
         }
         final ShowMessageDialogFrag instance = ShowMessageDialogFrag.newInstance(remoteDialog);
@@ -158,7 +160,7 @@ class MdxMiniPlayerFrag$6 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void updateLanguage(final Language language) {
-        if (Log.isLoggable("MdxMiniPlayerFrag", 2)) {
+        if (Log.isLoggable()) {
             this.this$0.log("updateLanguage from remote player: " + language);
         }
         this.this$0.updateLanguage();
@@ -174,7 +176,7 @@ class MdxMiniPlayerFrag$6 implements RemotePlayer$RemoteTargetUiListener
             this.this$0.updateVolumeState(false);
             return;
         }
-        if (Log.isLoggable("MdxMiniPlayerFrag", 2)) {
+        if (Log.isLoggable()) {
             this.this$0.log("updateTargetCapabilities, " + mdxTargetCapabilities.toString());
         }
         this.this$0.updateVolumeState(mdxTargetCapabilities.isVolumeControl());
@@ -184,7 +186,7 @@ class MdxMiniPlayerFrag$6 implements RemotePlayer$RemoteTargetUiListener
     public void updateUi(final RemotePlayer$RemoteTargetState remotePlayer$RemoteTargetState) {
         final boolean b = false;
         ThreadUtils.assertOnMain();
-        if (Log.isLoggable("MdxMiniPlayerFrag", 2)) {
+        if (Log.isLoggable()) {
             this.this$0.log("updateUi, " + remotePlayer$RemoteTargetState.toString());
         }
         this.this$0.isEndOfPlayback = false;

@@ -4,12 +4,12 @@
 
 package com.netflix.mediaclient.protocol.nflx;
 
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
-import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import android.app.Activity;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
 class PlayActionHandler$1FetchPlayableCallback extends SimpleManagerCallback

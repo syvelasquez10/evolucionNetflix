@@ -5,18 +5,18 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
+import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import android.text.Html;
 import com.netflix.mediaclient.util.api.Api17Util;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.util.log.SocialLoggingUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
@@ -37,7 +37,7 @@ import android.view.View;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
-import com.netflix.mediaclient.servicemgr.model.Billboard;
+import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import android.widget.RelativeLayout;
 
 public class BillboardView extends RelativeLayout implements VideoViewGroup$IVideoView<Billboard>
@@ -91,12 +91,12 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         this.setFocusable(true);
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         this.detailsListener = new VideoDetailsClickListener(netflixActivity, this);
-        netflixActivity.getLayoutInflater().inflate(2130903070, (ViewGroup)this);
+        netflixActivity.getLayoutInflater().inflate(2130903069, (ViewGroup)this);
         if (netflixActivity.getServiceManager() != null) {
             this.isTablet = netflixActivity.getServiceManager().isTablet();
         }
         this.showArtworkOnly = shouldShowArtworkOnly(netflixActivity);
-        if (Log.isLoggable("BillboardView", 2)) {
+        if (Log.isLoggable()) {
             Log.v("BillboardView", "isTablet: " + this.isTablet + ", showArtworkOnly: " + this.showArtworkOnly);
         }
         this.infoViewGroup = this.findViewById(2131165306);
@@ -232,11 +232,11 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
     public void update(final Billboard billboard, final Trackable trackable, int n, final boolean b, final boolean b2) {
         final ServiceManager serviceManager = ((NetflixActivity)this.getContext()).getServiceManager();
         this.playContext = new PlayContextImp(trackable, n);
-        if (Log.isLoggable("BillboardView", 2)) {
+        if (Log.isLoggable()) {
             Log.v("BillboardView", "updating billboard, title: " + billboard.getTitle() + ", story url: " + billboard.getStoryUrl());
         }
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493166), billboard.getTitle());
+        final String format = String.format(this.getResources().getString(2131493173), billboard.getTitle());
         this.setContentDescription((CharSequence)format);
         if (billboard.getSocialBadge() != null && SocialUtils.isNotificationsFeatureSupported((NetflixActivity)this.getContext()) && StringUtils.isNotEmpty(billboard.getSocialBadge().getFullName())) {
             n = 1;
@@ -258,7 +258,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             this.friendAvatar.setVisibility(0);
             NetflixActivity.getImageLoader(this.getContext()).showImg(this.friendAvatar, billboard.getSocialBadge().getImageUrl(), IClientLogging$AssetType.merchStill, format, true, true, 1);
             this.friendRecommendationText.setVisibility(0);
-            this.friendRecommendationText.setText((CharSequence)Html.fromHtml(this.getContext().getString(2131493377, new Object[] { billboard.getSocialBadge().getFullName(), billboard.getTitle() })));
+            this.friendRecommendationText.setText((CharSequence)Html.fromHtml(this.getContext().getString(2131493383, new Object[] { billboard.getSocialBadge().getFullName(), billboard.getTitle() })));
             this.mStoryId = billboard.getSocialBadge().getStoryId();
         }
         if (this.showArtworkOnly) {
@@ -271,13 +271,13 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
             else {
                 s = billboard.getHorzDispUrl();
             }
-            if (Log.isLoggable("BillboardView", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("BillboardView", "Showing artwork only, image url: " + s);
             }
             NetflixActivity.getImageLoader(this.getContext()).showImg(this.storyArt, s, IClientLogging$AssetType.merchStill, format, true, true, 1);
         }
         else {
-            if (Log.isLoggable("BillboardView", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("BillboardView", "Showing billboard with action buttons, image url: " + billboard.getStoryUrl());
             }
             NetflixActivity.getImageLoader(this.getContext()).showImg(this.storyArt, billboard.getStoryUrl(), IClientLogging$AssetType.merchStill, format, true, true, 1);
@@ -306,7 +306,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         }
         if (serviceManager != null && serviceManager.isReady()) {
             Log.v("BillboardView", "Loggin billboard impression for video: " + billboard.getId());
-            serviceManager.getBrowse().logBillboardActivity(billboard, BrowseAgent$BillboardActivityType.IMPRESSION);
+            serviceManager.getBrowse().logBillboardActivity(billboard, BillboardInteractionType.IMPRESSION);
         }
     }
 }

@@ -17,7 +17,7 @@ import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.event.nrdp.media.NccpNetworkingError;
-import com.netflix.mediaclient.event.android.NetworkError;
+import com.netflix.mediaclient.event.network.NetworkError;
 import org.json.JSONException;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.util.StringUtils;

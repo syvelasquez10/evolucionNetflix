@@ -28,20 +28,20 @@ public class CellResolution
     
     public static CellResolution createInstance(final String s, final String s2, final String s3, final float n) {
         if (!StringUtils.isEmpty(s)) {
-            if (Log.isLoggable("nf_subtitles", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Cell resolution " + s);
             }
             final Pair<Integer, Integer> numberPair = StringUtils.extractNumberPair(s);
             if (numberPair != null && (int)numberPair.first > 0 && (int)numberPair.second > 0) {
                 final CellResolution cellResolution = new CellResolution((int)numberPair.first, (int)numberPair.second);
-                if (Log.isLoggable("nf_subtitles", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_subtitles", "New cell resolution: " + cellResolution);
                 }
                 return cellResolution;
             }
         }
         if (!StringUtils.isEmpty(s2)) {
-            if (Log.isLoggable("nf_subtitles", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Cell resolution ajust using extent " + s2);
             }
             final Pair<Integer, Integer> numberPair2 = StringUtils.extractNumberPair(s2);

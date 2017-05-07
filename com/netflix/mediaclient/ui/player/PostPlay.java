@@ -9,17 +9,18 @@ import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View$OnClickListener;
 import android.view.View$OnTouchListener;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.IPlayer;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.Log;
 import android.widget.TextView;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayContext;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayContext;
 import java.util.List;
 import android.view.animation.DecelerateInterpolator;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 
 public abstract class PostPlay
 {
+    private static final int DEFAULT_FETCH_POSTPLAY_MS = 10000;
     private static final int DEFAULT_INTERRUPTER_TIMEOUT_IN_MS = 3600000;
     private static final int DEFAULT_OFFSET_MS = 10000;
     protected static final int INTERRUPTER_COUNT = 3;
@@ -35,6 +37,7 @@ public abstract class PostPlay
     protected static final String TAG = "nf_postplay";
     protected AdvancedImageView mBackground;
     protected PlayerActivity mContext;
+    protected int mFetchPostplayOffsetMs;
     protected boolean mInPostPlay;
     protected int mInterrputerTimeoutOffset;
     protected View mInterrupter;
@@ -48,6 +51,7 @@ public abstract class PostPlay
     protected View mPostPlay;
     protected List<PostPlayContext> mPostPlayContexts;
     protected boolean mPostPlayDataExist;
+    protected PostPlay$PostPlayDataFetchStatus mPostPlayDataFetchStatus;
     protected boolean mPostPlayDismissed;
     protected View mPostPlayIgnoreTap;
     protected List<PostPlayVideo> mPostPlayVideos;
@@ -60,6 +64,7 @@ public abstract class PostPlay
     protected PostPlay(final PlayerActivity mContext) {
         this.mPanAnimationInterpolator = new DecelerateInterpolator();
         this.mOffsetMs = 10000;
+        this.mFetchPostplayOffsetMs = 10000;
         this.mInterrputerTimeoutOffset = 3600000;
         this.onInterrupterStart = new PostPlay$6(this);
         this.onInterrupterDismiss = new PostPlay$7(this);
@@ -67,6 +72,9 @@ public abstract class PostPlay
         this.findViewsCommon();
         this.findViews();
         this.setClickListeners();
+        this.mOffsetMs = this.mContext.getResources().getInteger(2131427335) * 1000;
+        this.mFetchPostplayOffsetMs = this.mOffsetMs;
+        this.mPostPlayDataFetchStatus = PostPlay$PostPlayDataFetchStatus.notStarted;
         if (this.mContext.getCurrentAsset() != null && this.mContext.getCurrentAsset().getPostPlayVideoPlayed() >= 3 && this.mContext.getState().noUserInteraction()) {
             Log.d("nf_postplay", "This is 3rd consecutive auto play with no user interaction, start interrupter timeout");
             this.mContext.getHandler().postDelayed(this.onInterrupterStart, 120000L);
@@ -129,7 +137,7 @@ public abstract class PostPlay
                 if (currentAsset != null) {
                     final int duration = player.getDuration();
                     final int n2 = currentAsset.getEndtime() * 1000;
-                    if (Log.isLoggable("nf_postplay", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_postplay", "Duration " + duration);
                         Log.d("nf_postplay", "Endtime " + n2);
                         Log.d("nf_postplay", "Current position " + n);
@@ -166,21 +174,50 @@ public abstract class PostPlay
         this.mContext.getSubtitleManager().clear();
     }
     
+    public void fetchPostPlayVideos(final String s) {
+        if (!TextUtils.isEmpty((CharSequence)s) && this.mContext != null && this.mContext.getServiceManager() != null) {
+            Log.d("nf_postplay", "Fetch postplay videos...");
+            this.mContext.getServiceManager().getBrowse().fetchPostPlayVideos(s, this.getVideoType(), new PostPlay$FetchPostPlayForPlaybackCallback(this));
+            return;
+        }
+        Log.e("nf_postplay", "Unable to fetch postplay videos!");
+    }
+    
+    public void fetchPostPlayVideosIfNeeded(final String s) {
+        if (this.mPostPlayDataFetchStatus == PostPlay$PostPlayDataFetchStatus.started) {
+            Log.d("nf_postplay", "Fetch of postplay data already in progress, do nothing.");
+            return;
+        }
+        if (this.mPostPlayDataFetchStatus != PostPlay$PostPlayDataFetchStatus.notStarted) {
+            Log.d("nf_postplay", "Fetching postplay was postponed, go and fetch it...");
+            this.fetchPostPlayVideos(s);
+            return;
+        }
+        Log.d("nf_postplay", "First time, postplaydata not fetched, check if we need to postpone data retrieval...");
+        if (this.shouldPostponeFetchPostPlayData()) {
+            Log.d("nf_postplay", "Postponing fetch of postplay data until playback starts...");
+            this.mPostPlayDataFetchStatus = PostPlay$PostPlayDataFetchStatus.postponed;
+            return;
+        }
+        Log.d("nf_postplay", "Fetching postplay data now, too close to start of postplay...");
+        this.fetchPostPlayVideos(s);
+    }
+    
     abstract void findViews();
     
     protected void findViewsCommon() {
-        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131165560);
-        this.mInterrupterContinue = this.mContext.findViewById(2131165559);
-        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131165603);
-        this.mSynopsis = (TextView)this.mContext.findViewById(2131165601);
-        this.mInterrupterStop = this.mContext.findViewById(2131165561);
-        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131165599);
-        this.mMoreButton = this.mContext.findViewById(2131165591);
-        this.mPlayButton = this.mContext.findViewById(2131165589);
-        this.mStopButton = this.mContext.findViewById(2131165590);
-        this.mTitle = (TextView)this.mContext.findViewById(2131165600);
-        this.mInterrupter = this.mContext.findViewById(2131165558);
-        this.mPostPlay = this.mContext.findViewById(2131165596);
+        this.mInterrupterPlayFromStart = this.mContext.findViewById(2131165564);
+        this.mInterrupterContinue = this.mContext.findViewById(2131165563);
+        this.mBackground = (AdvancedImageView)this.mContext.findViewById(2131165607);
+        this.mSynopsis = (TextView)this.mContext.findViewById(2131165605);
+        this.mInterrupterStop = this.mContext.findViewById(2131165565);
+        this.mPostPlayIgnoreTap = this.mContext.findViewById(2131165603);
+        this.mMoreButton = this.mContext.findViewById(2131165595);
+        this.mPlayButton = this.mContext.findViewById(2131165593);
+        this.mStopButton = this.mContext.findViewById(2131165594);
+        this.mTitle = (TextView)this.mContext.findViewById(2131165604);
+        this.mInterrupter = this.mContext.findViewById(2131165562);
+        this.mPostPlay = this.mContext.findViewById(2131165600);
     }
     
     protected abstract VideoType getVideoType();
@@ -189,11 +226,6 @@ public abstract class PostPlay
     
     protected void handleStop(final boolean b) {
         this.mContext.finish();
-    }
-    
-    public void init(final String s) {
-        this.mContext.getServiceManager().getBrowse().fetchPostPlayVideos(s, this.getVideoType(), new PostPlay$FetchPostPlayForPlaybackCallback(this));
-        this.mOffsetMs = this.mContext.getResources().getInteger(2131427335) * 1000;
     }
     
     protected boolean isAutoPlayEnabled() {
@@ -302,6 +334,39 @@ public abstract class PostPlay
         }
     }
     
+    protected boolean shouldPostponeFetchPostPlayData() {
+        boolean b = true;
+        boolean b2 = true;
+        if (this.mContext != null) {
+            final Asset currentAsset = this.mContext.getCurrentAsset();
+            if (currentAsset != null) {
+                final int n = currentAsset.getPlaybackBookmark() * 1000;
+                final int n2 = currentAsset.getDuration() * 1000;
+                int n3;
+                if ((n3 = n) < 0) {
+                    Log.d("nf_postplay", "Invalid bookmark, reset to 0");
+                    n3 = 0;
+                }
+                if (n2 <= 0) {
+                    Log.d("nf_postplay", "We do not have duration, do not postpone!");
+                    return false;
+                }
+                if (n3 + this.mFetchPostplayOffsetMs >= n2) {
+                    b = false;
+                }
+                b2 = b;
+                if (Log.isLoggable()) {
+                    Log.d("nf_postplay", " Duration (ms): " + n2);
+                    Log.d("nf_postplay", " Fetch Postplay Offset (ms): " + n2);
+                    Log.d("nf_postplay", " Bookmark (ms): " + n2);
+                    Log.d("nf_postplay", " Postpone catching playback " + b);
+                    return b;
+                }
+            }
+        }
+        return b2;
+    }
+    
     public void startBackgroundAutoPan() {
         if (this.mBackground != null && !DeviceUtils.isLandscape((Context)this.mContext) && this.mBackground.getMeasuredWidth() == 0) {
             this.mBackground.getLayoutParams().height = (int)(DeviceUtils.getScreenHeightInPixels((Context)this.mContext) * 0.6);
@@ -332,7 +397,7 @@ public abstract class PostPlay
         this.startBackgroundAutoPan();
     }
     
-    protected abstract void updateOnPostPlayVideosFetched(final List<PostPlayVideo> p0);
+    protected abstract void updateOnPostPlayVideosFetched();
     
     public boolean updatePlaybackPosition(final int n) {
         if (!this.isPostPlayAllowed()) {

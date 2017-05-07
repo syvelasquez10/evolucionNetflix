@@ -6,19 +6,22 @@ package com.netflix.mediaclient.ui.mdx;
 
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
+import com.netflix.mediaclient.ui.details.DeviceCapabilityProvider;
 
-public class MdxTargetCapabilities
+public class MdxTargetCapabilities implements DeviceCapabilityProvider
 {
     protected static String PROPERTY_autoAdvanceMax;
     protected static String PROPERTY_is3dSupported;
     protected static String PROPERTY_is5dot1Supported;
     protected static String PROPERTY_isHdSupported;
+    protected static String PROPERTY_isUltraHdSupported;
     protected static String PROPERTY_volumeControl;
     protected static String PROPERTY_volumeStep;
     private int autoAdvanceMax;
     private boolean is3dSupported;
     private boolean is5dot1Supported;
     private boolean isHdSupported;
+    private boolean isUltraHdSupported;
     private boolean volumeControl;
     private int volumeStep;
     
@@ -29,6 +32,7 @@ public class MdxTargetCapabilities
         MdxTargetCapabilities.PROPERTY_autoAdvanceMax = "autoAdvanceMax";
         MdxTargetCapabilities.PROPERTY_volumeControl = "volumeControl";
         MdxTargetCapabilities.PROPERTY_volumeStep = "volumeStep";
+        MdxTargetCapabilities.PROPERTY_isUltraHdSupported = "isUltraHdSupported";
     }
     
     public MdxTargetCapabilities(final String s) {
@@ -36,13 +40,10 @@ public class MdxTargetCapabilities
     }
     
     public MdxTargetCapabilities(final JSONObject jsonObject) {
-        final boolean b = true;
-        final String string = JsonUtils.getString(jsonObject, MdxTargetCapabilities.PROPERTY_is3dSupported, null);
-        this.is3dSupported = (string != null && "true".equalsIgnoreCase(string));
-        final String string2 = JsonUtils.getString(jsonObject, MdxTargetCapabilities.PROPERTY_isHdSupported, null);
-        this.isHdSupported = (string2 != null && "true".equalsIgnoreCase(string2));
-        final String string3 = JsonUtils.getString(jsonObject, MdxTargetCapabilities.PROPERTY_is5dot1Supported, null);
-        this.is5dot1Supported = (string3 != null && "true".equalsIgnoreCase(string3) && b);
+        this.is3dSupported = JsonUtils.getBoolean(jsonObject, MdxTargetCapabilities.PROPERTY_is3dSupported, false);
+        this.isHdSupported = JsonUtils.getBoolean(jsonObject, MdxTargetCapabilities.PROPERTY_isHdSupported, false);
+        this.is5dot1Supported = JsonUtils.getBoolean(jsonObject, MdxTargetCapabilities.PROPERTY_is5dot1Supported, false);
+        this.isUltraHdSupported = JsonUtils.getBoolean(jsonObject, MdxTargetCapabilities.PROPERTY_isUltraHdSupported, false);
         this.autoAdvanceMax = JsonUtils.getInt(jsonObject, MdxTargetCapabilities.PROPERTY_autoAdvanceMax, 0);
         if (jsonObject.has(MdxTargetCapabilities.PROPERTY_volumeControl)) {
             this.volumeControl = jsonObject.getBoolean(MdxTargetCapabilities.PROPERTY_volumeControl);
@@ -60,16 +61,24 @@ public class MdxTargetCapabilities
         return this.volumeStep;
     }
     
+    @Override
     public boolean is3dSupported() {
         return this.is3dSupported;
     }
     
+    @Override
     public boolean is5dot1Supported() {
         return this.is5dot1Supported;
     }
     
+    @Override
     public boolean isHdSupported() {
         return this.isHdSupported;
+    }
+    
+    @Override
+    public boolean isUltraHdSupported() {
+        return this.isUltraHdSupported;
     }
     
     public boolean isVolumeControl() {
@@ -78,6 +87,6 @@ public class MdxTargetCapabilities
     
     @Override
     public String toString() {
-        return "MdxTargetCapabilities [isHdSupported=" + this.isHdSupported + ", is5dot1Supported=" + this.is5dot1Supported + ", is3dSupported=" + this.is3dSupported + ", autoAdvanceMax=" + this.autoAdvanceMax + ", volumeControl=" + this.volumeControl + ", volumeStep=" + this.volumeStep + "]";
+        return "MdxTargetCapabilities [isHdSupported=" + this.isHdSupported + ", is5dot1Supported=" + this.is5dot1Supported + ", is3dSupported=" + this.is3dSupported + ", autoAdvanceMax=" + this.autoAdvanceMax + ", volumeControl=" + this.volumeControl + ", volumeStep=" + this.volumeStep + ", isUltraHdSupported=" + this.isUltraHdSupported + "]";
     }
 }

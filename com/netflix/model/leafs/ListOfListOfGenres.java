@@ -6,8 +6,8 @@ package com.netflix.model.leafs;
 
 import java.util.Iterator;
 import com.google.gson.JsonElement;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
-import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import java.util.ArrayList;
 
 public class ListOfListOfGenres extends ArrayList<GenreList> implements JsonPopulator

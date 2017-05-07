@@ -34,6 +34,7 @@ abstract class AbsActionBarView extends ViewGroup
     protected final Context mPopupContext;
     protected boolean mSplitActionBar;
     protected ViewGroup mSplitView;
+    protected boolean mSplitWhenNarrow;
     protected final AbsActionBarView$VisibilityAnimListener mVisAnimListener;
     protected ViewPropertyAnimatorCompat mVisibilityAnim;
     
@@ -111,6 +112,17 @@ abstract class AbsActionBarView extends ViewGroup
         }
     }
     
+    public int getAnimatedVisibility() {
+        if (this.mVisibilityAnim != null) {
+            return this.mVisAnimListener.mFinalVisibility;
+        }
+        return this.getVisibility();
+    }
+    
+    public int getContentHeight() {
+        return this.mContentHeight;
+    }
+    
     protected int measureChildView(final View view, final int n, final int n2, final int n3) {
         view.measure(View$MeasureSpec.makeMeasureSpec(n, Integer.MIN_VALUE), n2);
         return Math.max(0, n - view.getMeasuredWidth() - n3);
@@ -148,6 +160,18 @@ abstract class AbsActionBarView extends ViewGroup
     public void setContentHeight(final int mContentHeight) {
         this.mContentHeight = mContentHeight;
         this.requestLayout();
+    }
+    
+    public void setSplitToolbar(final boolean mSplitActionBar) {
+        this.mSplitActionBar = mSplitActionBar;
+    }
+    
+    public void setSplitView(final ViewGroup mSplitView) {
+        this.mSplitView = mSplitView;
+    }
+    
+    public void setSplitWhenNarrow(final boolean mSplitWhenNarrow) {
+        this.mSplitWhenNarrow = mSplitWhenNarrow;
     }
     
     public boolean showOverflowMenu() {

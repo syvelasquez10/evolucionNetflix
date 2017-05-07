@@ -38,7 +38,7 @@ public class LanguageSelector$AudioAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             Log.d("nf_language_selector", "Audio create row " + n);
-            inflate = this.this$0.mController.getLayoutInflater().inflate(2130903127, viewGroup, false);
+            inflate = this.this$0.mController.getLayoutInflater().inflate(2130903131, viewGroup, false);
             inflate.setTag((Object)new LanguageSelector$RowHolder(inflate));
         }
         final LanguageSelector$RowHolder languageSelector$RowHolder = (LanguageSelector$RowHolder)inflate.getTag();
@@ -47,7 +47,7 @@ public class LanguageSelector$AudioAdapter extends BaseAdapter
         languageSelector$RowHolder.name.setText((CharSequence)item.getLanguageDescription());
         languageSelector$RowHolder.choice.setChecked(equals);
         if (equals) {
-            if (Log.isLoggable("nf_language_selector", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_language_selector", "Audio is selected " + item);
             }
             ViewUtils.setTextOpacityToSelected(languageSelector$RowHolder.name);

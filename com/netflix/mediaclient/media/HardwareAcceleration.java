@@ -80,9 +80,9 @@ public final class HardwareAcceleration
     
     public static void update(final Context context, final Boolean hardwareAccelerationForced) {
         while (true) {
-            Label_0077: {
+            Label_0074: {
                 synchronized (HardwareAcceleration.class) {
-                    if (Log.isLoggable("nf-hwac", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf-hwac", "Force hardware acceleration " + hardwareAccelerationForced);
                     }
                     if (hardwareAccelerationForced == null) {
@@ -90,7 +90,7 @@ public final class HardwareAcceleration
                     }
                     else {
                         if (candHardwareAccelerationBeForced(context)) {
-                            break Label_0077;
+                            break Label_0074;
                         }
                         Log.d("nf-hwac", "Device is runing preICS Android. Ignore!");
                     }
@@ -104,7 +104,7 @@ public final class HardwareAcceleration
                 Log.d("nf-hwac", "Forcing hardware acceleration on next start");
                 return;
             }
-            if (Log.isLoggable("nf-hwac", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf-hwac", "No need to do anything. The same as existed " + hardwareAccelerationForced);
             }
         }

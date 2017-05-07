@@ -18,6 +18,8 @@ import android.content.res.TypedArray;
 import android.view.ContextThemeWrapper;
 import android.view.View$MeasureSpec;
 import android.os.Build$VERSION;
+import android.support.v7.internal.view.SupportMenuInflater;
+import android.view.MenuInflater;
 import android.support.v4.view.MarginLayoutParamsCompat;
 import android.view.ViewGroup$MarginLayoutParams;
 import android.support.v7.internal.view.menu.x;

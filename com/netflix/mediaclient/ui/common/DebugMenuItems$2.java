@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.common;
 
 import com.netflix.mediaclient.servicemgr.IBrowseManager;
-import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.view.MenuItem;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.MenuItem$OnMenuItemClickListener;

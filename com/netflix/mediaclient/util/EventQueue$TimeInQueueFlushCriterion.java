@@ -25,12 +25,12 @@ class EventQueue$TimeInQueueFlushCriterion implements EventQueue$FlushCriterion
     public boolean shouldFlushQueue(final int n, final long n2) {
         final long n3 = SystemClock.elapsedRealtime() - n2;
         if (n2 > 0L && n3 > this.this$0.mMaxTimeToStayInQueueInMs) {
-            if (Log.isLoggable(this.this$0.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(this.this$0.TAG, "Posting events: older event in queue was posted [ms] " + n3 + " and that triggers time of stay in queue criteria of " + this.this$0.mMaxTimeToStayInQueueInMs);
             }
             return true;
         }
-        if (Log.isLoggable(this.this$0.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(this.this$0.TAG, "Posting events: older event in queue was posted [ms] " + n3 + " and that does NOT triggers time of stay in queue criteria of " + this.this$0.mMaxTimeToStayInQueueInMs);
         }
         return false;

@@ -20,7 +20,7 @@ class AccountKeyMap$KeyIds
     
     AccountKeyMap$KeyIds(final AccountKeyMap this$0, final String s) {
         this.this$0 = this$0;
-        if (Log.isLoggable(AccountKeyMap.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(AccountKeyMap.TAG, "KeyIds from JSON " + s);
         }
         try {

@@ -44,7 +44,7 @@ public class MdpFromDeepLink extends BaseCustomerEvent implements Runnable
             Log.d("nf_rest", "Executing MdpFromDeepLink WebAPI call start");
             final String execute = customerEventCommand.execute();
             Log.d("nf_rest", "Executing MdpFromDeepLink WebAPI call done");
-            if (Log.isLoggable("nf_rest", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_rest", "MdpFromDeepLink response: " + execute);
             }
         }

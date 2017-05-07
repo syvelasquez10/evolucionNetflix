@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.service.pservice;
 
-import com.netflix.mediaclient.servicemgr.model.CWVideo;
-import com.netflix.mediaclient.servicemgr.model.Playable;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.servicemgr.model.Billboard;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Billboard;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.google.gson.annotations.SerializedName;
 
 public class PVideo
@@ -49,6 +49,8 @@ public class PVideo
     public String playableTitle;
     @SerializedName("plyableBookmarkPos")
     public int plyableBookmarkPos;
+    @SerializedName("storyImgDispUrl")
+    public String storyImgDispUrl;
     @SerializedName("synopsis")
     public String synopsis;
     @SerializedName("title")
@@ -69,6 +71,7 @@ public class PVideo
     public PVideo(final Video video) {
         this.id = video.getId();
         this.boxartUrl = video.getBoxshotUrl();
+        this.storyImgDispUrl = video.getStoryDispUrl();
         this.horzDispUrl = video.getHorzDispUrl();
         this.videoType = video.getType();
         this.title = video.getTitle();

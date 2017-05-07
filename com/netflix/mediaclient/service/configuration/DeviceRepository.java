@@ -20,11 +20,11 @@ public class DeviceRepository
         if (stringPref == null) {
             Log.d("nf_device", "Device category override not found.");
         }
-        else if (Log.isLoggable("nf_device", 3)) {
+        else if (Log.isLoggable()) {
             Log.d("nf_device", "Device category override found:" + stringPref);
         }
         this.category = DeviceCategory.find(stringPref);
-        if (Log.isLoggable("nf_device", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_device", "Device category override is:" + this.category);
         }
     }
@@ -40,7 +40,7 @@ public class DeviceRepository
         }
         else {
             if (this.category != null && s == null) {
-                if (Log.isLoggable("nf_device", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_device", "Old category was " + this.category + " and new category is null! Remove saved category!");
                 }
                 this.category = null;
@@ -49,14 +49,14 @@ public class DeviceRepository
             }
             final DeviceCategory find = DeviceCategory.find(s);
             if (!find.equals(this.category)) {
-                if (Log.isLoggable("nf_device", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_device", "Old category was " + this.category + " and new category is now " + find);
                 }
                 this.category = find;
                 PreferenceUtils.putStringPref(context, "nf_device_category", find.getValue());
                 return;
             }
-            if (Log.isLoggable("nf_device", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_device", "Both new and old category have the same value: " + find + ". Do NOT update.");
             }
         }

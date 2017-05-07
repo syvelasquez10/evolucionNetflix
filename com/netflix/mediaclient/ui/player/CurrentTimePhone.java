@@ -26,7 +26,7 @@ public class CurrentTimePhone extends CurrentTime
     @Override
     public void stop(final boolean b) {
         synchronized (this) {
-            if (Log.isLoggable("screen", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("screen", "Movie current time from stopCurrentTime, phone: " + b);
             }
             this.restorePlaybackIfSnapOnExit();

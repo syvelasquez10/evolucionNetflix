@@ -30,7 +30,7 @@ public final class CdmProvisionNccpResponse extends BaseNccpResponse
             final Node item = list.item(i);
             if (item instanceof Element) {
                 this.kcekeyid = Base64.decode(XmlDomUtils.getElementText((Element)item), 0);
-                if (Log.isLoggable("nf_nccp", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_nccp", "Kce key id found  after unbase: " + new String(this.kcekeyid));
                 }
             }
@@ -42,7 +42,7 @@ public final class CdmProvisionNccpResponse extends BaseNccpResponse
             final Node item = list.item(i);
             if (item instanceof Element) {
                 this.kchkeyid = Base64.decode(XmlDomUtils.getElementText((Element)item), 0);
-                if (Log.isLoggable("nf_nccp", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_nccp", "Kch key id found  after unbase: " + new String(this.kchkeyid));
                 }
             }

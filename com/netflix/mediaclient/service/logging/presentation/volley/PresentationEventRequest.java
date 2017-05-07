@@ -25,7 +25,7 @@ public class PresentationEventRequest extends PresentationVolleyWebClientRequest
     
     public Map<String, String> getParams() {
         final Map<String, String> requestParams = this.mRequestObj.toRequestParams();
-        if (Log.isLoggable("nf_presentation", 2)) {
+        if (Log.isLoggable()) {
             Log.d("nf_presentation", "params size " + requestParams.toString().length());
         }
         return requestParams;
@@ -33,7 +33,7 @@ public class PresentationEventRequest extends PresentationVolleyWebClientRequest
     
     @Override
     protected void onFailure(final Status status) {
-        if (Log.isLoggable("nf_presentation", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_presentation", "presentationEvent FAIL : " + status);
         }
         if (this.mCallback != null) {

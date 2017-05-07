@@ -56,7 +56,7 @@ public final class NativeDevice extends NativeNrdObject implements Device
     @Override
     public String getCertificationVersion() {
         final String trim = this.getSoftwareVersion().trim();
-        if (Log.isLoggable("nf-bridge", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-bridge", "SV: " + trim);
         }
         final int index = trim.indexOf(" ");
@@ -64,7 +64,7 @@ public final class NativeDevice extends NativeNrdObject implements Device
         if (index > 0) {
             substring = trim.substring(0, index);
         }
-        if (Log.isLoggable("nf-bridge", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-bridge", "CV: " + substring);
         }
         return substring;
@@ -115,7 +115,7 @@ public final class NativeDevice extends NativeNrdObject implements Device
                 Log.e("nf-bridge", "Device locale can not be null! Default to 'en'.");
             }
             language = userLocale;
-            if (Log.isLoggable("nf-bridge", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf-bridge", "Current device locale as raw user locale: " + userLocale);
                 return userLocale;
             }
@@ -161,11 +161,11 @@ public final class NativeDevice extends NativeNrdObject implements Device
     public int processUpdate(final JSONObject jsonObject) {
         try {
             final String string = this.getString(jsonObject, "type", null);
-            if (Log.isLoggable("nf-bridge", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf-bridge", "processUpdate: handle type " + string);
             }
             if ("PropertyUpdate".equalsIgnoreCase(string)) {
-                if (jsonObject != null && Log.isLoggable("nf-bridge", 3)) {
+                if (jsonObject != null && Log.isLoggable()) {
                     Log.d("nf-bridge", "processUpdate: handle prop update " + jsonObject.toString());
                 }
                 return this.handlePropertyUpdate(jsonObject);

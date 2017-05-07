@@ -4,49 +4,31 @@
 
 package crittercism.android;
 
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.Locale;
-import java.text.SimpleDateFormat;
-
-public final class au
+public interface au
 {
-    public static final au a;
-    private av b;
-    private SimpleDateFormat c;
+    String a();
     
-    static {
-        a = new au();
-    }
+    String b();
     
-    private au() {
-        this.b = new au$a(this, (byte)0);
-        this.c = null;
-        try {
-            this.c = b();
-        }
-        catch (Exception ex) {}
-    }
+    String c();
     
-    private static SimpleDateFormat b() {
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return simpleDateFormat;
-    }
+    String d();
     
-    public final long a(final String s) {
-        return this.c.parse(s).getTime();
-    }
+    int e();
     
-    public final String a() {
-        return this.a(this.b.a());
-    }
+    String f();
     
-    public final String a(final Date date) {
-        if (this.c != null) {
-            return this.c.format(date);
-        }
-        b();
-        return "";
-    }
+    int g();
+    
+    int h();
+    
+    String i();
+    
+    String j();
+    
+    String k();
+    
+    dx l();
+    
+    du m();
 }

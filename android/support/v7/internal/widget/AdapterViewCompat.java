@@ -39,6 +39,7 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
     int mOldSelectedPosition;
     long mOldSelectedRowId;
     AdapterViewCompat$OnItemClickListener mOnItemClickListener;
+    AdapterViewCompat$OnItemLongClickListener mOnItemLongClickListener;
     AdapterViewCompat$OnItemSelectedListener mOnItemSelectedListener;
     @ViewDebug$ExportedProperty(category = "list")
     int mSelectedPosition;
@@ -237,12 +238,50 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
     
     public abstract T getAdapter();
     
+    @ViewDebug$CapturedViewProperty
+    public int getCount() {
+        return this.mItemCount;
+    }
+    
+    public View getEmptyView() {
+        return this.mEmptyView;
+    }
+    
+    public int getFirstVisiblePosition() {
+        return this.mFirstPosition;
+    }
+    
     public long getItemIdAtPosition(final int n) {
         final Adapter adapter = this.getAdapter();
         if (adapter == null || n < 0) {
             return Long.MIN_VALUE;
         }
         return adapter.getItemId(n);
+    }
+    
+    public int getLastVisiblePosition() {
+        return this.mFirstPosition + this.getChildCount() - 1;
+    }
+    
+    public final AdapterViewCompat$OnItemClickListener getOnItemClickListener() {
+        return this.mOnItemClickListener;
+    }
+    
+    public final AdapterViewCompat$OnItemLongClickListener getOnItemLongClickListener() {
+        return this.mOnItemLongClickListener;
+    }
+    
+    public final AdapterViewCompat$OnItemSelectedListener getOnItemSelectedListener() {
+        return this.mOnItemSelectedListener;
+    }
+    
+    public Object getSelectedItem() {
+        final Adapter adapter = this.getAdapter();
+        final int selectedItemPosition = this.getSelectedItemPosition();
+        if (adapter != null && adapter.getCount() > 0 && selectedItemPosition >= 0) {
+            return adapter.getItem(selectedItemPosition);
+        }
+        return null;
     }
     
     @ViewDebug$CapturedViewProperty
@@ -400,6 +439,14 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
         }
     }
     
+    public abstract void setAdapter(final T p0);
+    
+    public void setEmptyView(final View mEmptyView) {
+        this.mEmptyView = mEmptyView;
+        final Adapter adapter = this.getAdapter();
+        this.updateEmptyStatus(adapter == null || adapter.isEmpty());
+    }
+    
     public void setFocusable(final boolean mDesiredFocusableState) {
         final boolean b = true;
         final Adapter adapter = this.getAdapter();
@@ -484,8 +531,21 @@ public abstract class AdapterViewCompat<T extends Adapter> extends ViewGroup
         this.mOnItemClickListener = mOnItemClickListener;
     }
     
+    public void setOnItemLongClickListener(final AdapterViewCompat$OnItemLongClickListener mOnItemLongClickListener) {
+        if (!this.isLongClickable()) {
+            this.setLongClickable(true);
+        }
+        this.mOnItemLongClickListener = mOnItemLongClickListener;
+    }
+    
+    public void setOnItemSelectedListener(final AdapterViewCompat$OnItemSelectedListener mOnItemSelectedListener) {
+        this.mOnItemSelectedListener = mOnItemSelectedListener;
+    }
+    
     void setSelectedPositionInt(final int mSelectedPosition) {
         this.mSelectedPosition = mSelectedPosition;
         this.mSelectedRowId = this.getItemIdAtPosition(mSelectedPosition);
     }
+    
+    public abstract void setSelection(final int p0);
 }

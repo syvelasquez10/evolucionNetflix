@@ -10,15 +10,15 @@ import android.widget.LinearLayout;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.content.Context;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.os.Bundle;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 
 class ShowDetailsFrag$FetchShowDetailsCallback extends LoggingManagerCallback

@@ -8,6 +8,7 @@ import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.view.ViewGroup$LayoutParams;
 import android.content.res.Resources;
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View$OnClickListener;
 import android.widget.Button;
@@ -33,7 +34,7 @@ public class ErrorWrapper
         (this.retryBtn = (Button)this.errorGroup.findViewById(2131165368)).setOnClickListener(this.retryClickListener);
         if (view.getContext() instanceof NetflixActivity) {
             final NetflixActivity netflixActivity = (NetflixActivity)view.getContext();
-            if (netflixActivity.isForKids()) {
+            if (BrowseExperience.isKubrickKids()) {
                 this.configureViewsForKidsExperience(netflixActivity);
             }
         }
@@ -46,9 +47,9 @@ public class ErrorWrapper
         ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131361882);
         ViewUtils.setTextViewToBold(this.errorMsg);
         final ViewGroup$LayoutParams layoutParams = this.retryBtn.getLayoutParams();
-        layoutParams.height = resources.getDimensionPixelSize(2131361973);
-        layoutParams.width = resources.getDimensionPixelSize(2131361972);
-        this.retryBtn.setBackgroundResource(2130837732);
+        layoutParams.height = resources.getDimensionPixelSize(2131361974);
+        layoutParams.width = resources.getDimensionPixelSize(2131361973);
+        this.retryBtn.setBackgroundResource(2130837752);
         this.retryBtn.setTextColor(resources.getColor(2131296360));
         ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131361887);
         ViewUtils.setTextViewToBold((TextView)this.retryBtn);
@@ -72,6 +73,10 @@ public class ErrorWrapper
     
     public void hide(final boolean b) {
         AnimationUtils.hideView(this.errorGroup, b);
+    }
+    
+    public void setCallback(final ErrorWrapper$Callback callback) {
+        this.callback = callback;
     }
     
     public void showErrorView(final int text, final boolean showRetry, final boolean b) {

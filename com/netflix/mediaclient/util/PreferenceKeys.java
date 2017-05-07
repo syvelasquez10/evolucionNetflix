@@ -49,6 +49,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_PLAYER_TYPE = "nflx_player_type";
     public static final String PREFERENCE_PLAYER_TYPE_QA_OVERRIDE = "nflx_player_type_qa";
     public static final String PREFERENCE_PRESENTATION_PAGE_AGGREGATION = "pt_aggregation_size";
+    public static final String PREFERENCE_PSERVICE_ACTIONS_TO_LOG = "pservice_actions_to_log";
     public static final String PREFERENCE_REPORTING_SERVICE = "reporting_service";
     public static final String PREFERENCE_SHOWN_PROFILE_GATE_COUNTER = "user_saw_profile_gate";
     public static final String PREFERENCE_SIGNUP_ENABLED = "signup_enabled";

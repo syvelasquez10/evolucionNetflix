@@ -4,7 +4,9 @@
 
 package com.netflix.mediaclient.android.activity;
 
-import com.netflix.mediaclient.ui.RelaunchActivity;
+import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
+import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog;
+import com.netflix.mediaclient.ui.launch.RelaunchActivity;
 import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -27,19 +29,17 @@ import java.util.Iterator;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.ui.settings.SettingsActivity;
 import com.netflix.mediaclient.ui.common.DebugMenuItems;
-import android.view.Window;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
-import com.netflix.mediaclient.ui.ServiceErrorsHandler;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.app.Activity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.ui.login.LogoutActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
-import com.netflix.mediaclient.ui.details.EpisodeRowView$EpisodeRowListener;
+import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
@@ -53,8 +53,8 @@ import android.app.AlertDialog$Builder;
 import android.view.MotionEvent;
 import com.netflix.mediaclient.util.MdxUtils;
 import android.view.KeyEvent;
-import com.netflix.mediaclient.ui.kids.KidsActionBar;
 import com.netflix.mediaclient.ui.kubrick_kids.KubrickKidsActionBar;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.content.Intent;
 import android.content.Context;
@@ -79,13 +79,12 @@ import java.util.Set;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.ui.pin.PinVerifier$PinVerificationCallback;
 import com.netflix.mediaclient.ui.mdx.ShowMessageDialogFrag$MessageResponseProvider;
-import com.netflix.mediaclient.ui.details.EpisodeRowView$EpisodeRowListenerProvider;
+import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListenerProvider;
 import com.netflix.mediaclient.android.app.LoadingStatus;
 import android.support.v7.app.ActionBarActivity;
 import android.app.DialogFragment;
-import com.netflix.mediaclient.ui.search.SearchUtils;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
-import com.netflix.mediaclient.ui.LaunchActivity;
+import com.netflix.mediaclient.ui.launch.LaunchActivity;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
@@ -107,7 +106,7 @@ class NetflixActivity$DefaultManagerStatusListener implements ManagerStatusListe
     
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-        if (Log.isLoggable("NetflixActivity", 3)) {
+        if (Log.isLoggable()) {
             Log.d("NetflixActivity", "onManagerReady, status: " + status.getStatusCode());
         }
         this.this$0.mIsTablet = serviceManager.isTablet();
@@ -145,12 +144,11 @@ class NetflixActivity$DefaultManagerStatusListener implements ManagerStatusListe
         if (this.isFrombackground) {
             this.this$0.showMDXPostPlayOnResume();
         }
-        SearchUtils.setTestCell(serviceManager.getConfiguration().getSearchTest());
     }
     
     @Override
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-        if (Log.isLoggable("NetflixActivity", 3)) {
+        if (Log.isLoggable()) {
             Log.d("NetflixActivity", "onManagerUnavailable, status: " + status.getStatusCode());
         }
         if (this.this$0.mdxFrag != null) {
@@ -165,7 +163,7 @@ class NetflixActivity$DefaultManagerStatusListener implements ManagerStatusListe
         }
         this.this$0.startLaunchActivityIfVisible();
         if (this.this$0.shouldFinishOnManagerError()) {
-            if (Log.isLoggable("NetflixActivity", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("NetflixActivity", this.this$0.getClass().getSimpleName() + ": Finishing activity because manager error occured...");
             }
             this.this$0.finish();

@@ -473,6 +473,36 @@ public class ActionBarContextView extends AbsActionBarView implements ViewProper
         this.requestLayout();
     }
     
+    @Override
+    public void setSplitToolbar(final boolean splitToolbar) {
+        if (this.mSplitActionBar != splitToolbar) {
+            if (this.mActionMenuPresenter != null) {
+                final ViewGroup$LayoutParams viewGroup$LayoutParams = new ViewGroup$LayoutParams(-2, -1);
+                if (!splitToolbar) {
+                    (this.mMenuView = (ActionMenuView)this.mActionMenuPresenter.getMenuView(this)).setBackgroundDrawable((Drawable)null);
+                    final ViewGroup viewGroup = (ViewGroup)this.mMenuView.getParent();
+                    if (viewGroup != null) {
+                        viewGroup.removeView((View)this.mMenuView);
+                    }
+                    this.addView((View)this.mMenuView, viewGroup$LayoutParams);
+                }
+                else {
+                    this.mActionMenuPresenter.setWidthLimit(this.getContext().getResources().getDisplayMetrics().widthPixels, true);
+                    this.mActionMenuPresenter.setItemLimit(Integer.MAX_VALUE);
+                    viewGroup$LayoutParams.width = -1;
+                    viewGroup$LayoutParams.height = this.mContentHeight;
+                    (this.mMenuView = (ActionMenuView)this.mActionMenuPresenter.getMenuView(this)).setBackgroundDrawable(this.mSplitBackground);
+                    final ViewGroup viewGroup2 = (ViewGroup)this.mMenuView.getParent();
+                    if (viewGroup2 != null) {
+                        viewGroup2.removeView((View)this.mMenuView);
+                    }
+                    this.mSplitView.addView((View)this.mMenuView, viewGroup$LayoutParams);
+                }
+            }
+            super.setSplitToolbar(splitToolbar);
+        }
+    }
+    
     public void setSubtitle(final CharSequence mSubtitle) {
         this.mSubtitle = mSubtitle;
         this.initTitle();

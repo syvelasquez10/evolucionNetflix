@@ -42,7 +42,7 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
     public FetchConfigDataRequest(final Context context, final ConfigurationAgentWebCallback responseCallback) {
         super(context);
         this.responseCallback = responseCallback;
-        if (Log.isLoggable("nf_config_data", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_config_data", "deviceConfigPql = " + FetchConfigDataRequest.deviceConfigPql);
             Log.v("nf_config_data", "accountConfigPql = " + FetchConfigDataRequest.accountConfigPql);
             Log.v("nf_config_data", "steamingqoePql = " + FetchConfigDataRequest.streamingQoePql);
@@ -51,7 +51,7 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
     
     public static ConfigData parseConfigString(final String s) {
         final ConfigData configData = new ConfigData();
-        if (Log.isLoggable("nf_config_data", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_config_data", "String response to parse = " + s);
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_config_data", s);
@@ -64,7 +64,7 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
             configData.deviceConfig = FalkorParseUtils.getPropertyObject(dataObj, "deviceConfig", DeviceConfigData.class);
         }
         if (dataObj.has("accountConfig")) {
-            if (Log.isLoggable("nf_config_data", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("nf_config_data", "Accnt config: " + dataObj.get("accountConfig"));
             }
             configData.accountConfig = FalkorParseUtils.getPropertyObject(dataObj, "accountConfig", AccountConfigData.class);

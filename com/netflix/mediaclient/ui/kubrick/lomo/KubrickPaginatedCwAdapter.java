@@ -6,18 +6,18 @@ package com.netflix.mediaclient.ui.kubrick.lomo;
 
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 import com.netflix.mediaclient.android.widget.ObjectRecycler;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.model.CWVideo;
+import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.ui.lomo.BasePaginatedAdapter;
 
 public class KubrickPaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
@@ -30,11 +30,10 @@ public class KubrickPaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
     
     @Override
     protected int computeNumItemsPerPage() {
-        int n = 2;
-        if (DeviceUtils.getBasicScreenOrientation((Context)this.activity) == 2) {
-            n = 3;
+        if (DeviceUtils.isLandscape((Context)this.activity)) {
+            return 3;
         }
-        return n;
+        return 2;
     }
     
     @Override
@@ -45,8 +44,8 @@ public class KubrickPaginatedCwAdapter extends BasePaginatedAdapter<CWVideo>
     @Override
     public int getRowHeightInPx() {
         final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage() * 0.5625f);
-        final int n2 = this.activity.getResources().getDimensionPixelSize(2131361988) + n;
-        if (Log.isLoggable("KubrickPaginatedCwAdapter", 2)) {
+        final int n2 = this.activity.getResources().getDimensionPixelSize(2131361987) + n;
+        if (Log.isLoggable()) {
             Log.v("KubrickPaginatedCwAdapter", "Computed view height: " + n + ", height with footer: " + n2 + " (px)");
         }
         return n2;

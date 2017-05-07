@@ -9,7 +9,7 @@ import com.netflix.mediaclient.android.app.NetflixStatus;
 
 public class FalkorAgentStatus extends NetflixStatus
 {
-    private boolean wasAllDataLocalToCache;
+    private final boolean wasAllDataLocalToCache;
     
     public FalkorAgentStatus(final StatusCode statusCode, final boolean wasAllDataLocalToCache) {
         super(statusCode);

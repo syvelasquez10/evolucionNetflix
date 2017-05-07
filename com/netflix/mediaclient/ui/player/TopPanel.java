@@ -27,7 +27,6 @@ import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
-import com.netflix.mediaclient.ui.common.Social;
 import com.netflix.mediaclient.ui.common.LanguageSelector;
 import android.view.MenuItem;
 import android.animation.Animator;
@@ -37,7 +36,7 @@ import android.support.v7.app.ActionBar;
 public final class TopPanel extends PlayerSection
 {
     private static final String TAG = "screen";
-    private ActionBar mActionBar;
+    private final ActionBar mActionBar;
     private final View$OnClickListener mBackListener;
     private Animator mCurrentToolbarAnimation;
     private MenuItem mDebugMetadata;
@@ -46,12 +45,12 @@ public final class TopPanel extends PlayerSection
     private boolean mEpisodeSelectorEnabled;
     private MenuItem mLanguage;
     private LanguageSelector mLanguageSelector;
-    private PlayScreen$Listeners mListeners;
+    private final PlayScreen$Listeners mListeners;
     private boolean mMDXSelectorEnabled;
     protected MenuItem mMdxTarget;
     private final Social mSocial;
     private MenuItem mSound;
-    private TextView mTitleLabel;
+    private final TextView mTitleLabel;
     private Toolbar mToolBar;
     private View mTopGradient;
     protected MdxTargetSelection mdxTargetSelector;
@@ -62,10 +61,7 @@ public final class TopPanel extends PlayerSection
         this.mListeners = mListeners;
         this.mSocial = new Social(playerActivity, playerActivity.getSocialProviderCallback());
         (this.mActionBar = playerActivity.getSupportActionBar()).setTitle("");
-        this.mTitleLabel = (TextView)playerActivity.findViewById(2131165573);
-        if (playerActivity.isForKids()) {
-            this.mTitleLabel.setOnClickListener(this.mBackListener);
-        }
+        this.mTitleLabel = (TextView)playerActivity.findViewById(2131165577);
     }
     
     private void changeControlsVisibility(final boolean b) {
@@ -91,9 +87,9 @@ public final class TopPanel extends PlayerSection
         this.mdxTargetSelector.setTarget(localDevicePosition);
         final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(playerActivity);
         mdxTargetSelectionDialog$Builder.setCancelable(false);
-        mdxTargetSelectionDialog$Builder.setTitle(2131493136);
+        mdxTargetSelectionDialog$Builder.setTitle(2131493142);
         mdxTargetSelectionDialog$Builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerActivity));
-        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131493222), this.getCurrentTitle()));
+        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerActivity.getString(2131493230), this.getCurrentTitle()));
         mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new TopPanel$8(this, playerActivity, b));
         mdxTargetSelectionDialog$Builder.setOnCancelListener((DialogInterface$OnCancelListener)new TopPanel$9(this, playerActivity));
         return mdxTargetSelectionDialog$Builder.create();
@@ -111,24 +107,24 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initGeneric(final Menu menu) {
-        (this.mEpisodeSelector = menu.add(2131493219)).setVisible(this.mEpisodeSelectorEnabled);
-        this.mEpisodeSelector.setIcon(2130837660);
+        (this.mEpisodeSelector = menu.add(2131493227)).setVisible(this.mEpisodeSelectorEnabled);
+        this.mEpisodeSelector.setIcon(2130837683);
         this.mEpisodeSelector.setShowAsAction(2);
         this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$6(this));
-        this.mTopGradient = this.context.findViewById(2131165569);
-        this.mToolBar = (Toolbar)this.context.findViewById(2131165572);
+        this.mTopGradient = this.context.findViewById(2131165573);
+        this.mToolBar = (Toolbar)this.context.findViewById(2131165576);
     }
     
     private void initLanguages(final Menu menu) {
         this.mLanguageSelector = LanguageSelector.createInstance(this.context, this.context.isTablet(), new TopPanel$3(this));
-        (this.mLanguage = menu.add(2131493144)).setVisible(this.showLanguageMenuItem());
-        this.mLanguage.setIcon(2130837707);
+        (this.mLanguage = menu.add(2131493150)).setVisible(this.showLanguageMenuItem());
+        this.mLanguage.setIcon(2130837729);
         this.mLanguage.setShowAsAction(2);
         this.mLanguage.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$4(this));
     }
     
     private void initMDX(final Menu menu) {
-        (this.mMdxTarget = menu.add(2131493142)).setIcon(2130837666);
+        (this.mMdxTarget = menu.add(2131493148)).setIcon(2130837674);
         this.mMdxTarget.setVisible(this.mMDXSelectorEnabled);
         this.mMdxTarget.setShowAsAction(2);
         this.mMdxTarget.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$7(this));
@@ -138,7 +134,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final Menu menu, final SeekBar$OnSeekBarChangeListener seekBar$OnSeekBarChangeListener) {
-        (this.mSound = menu.add(2131493174)).setIcon(2130837712);
+        (this.mSound = menu.add(2131493181)).setIcon(2130837734);
         this.mSound.setShowAsAction(2);
         this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
     }
@@ -166,7 +162,7 @@ public final class TopPanel extends PlayerSection
         else {
             subtitleVisibility = true;
         }
-        if (Log.isLoggable("screen", 3)) {
+        if (Log.isLoggable()) {
             Log.d("screen", "Selected subtitle " + selectedSubtitle);
             Log.d("screen", "Selected audio source " + selectedAudio);
         }
@@ -175,7 +171,7 @@ public final class TopPanel extends PlayerSection
         boolean b2;
         int n;
         if (nccpOrderNumber != language.getCurrentNccpAudioIndex()) {
-            if (Log.isLoggable("screen", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("screen", "Audio source is switched from " + language.getCurrentNccpAudioIndex() + " to " + nccpOrderNumber + " NCCP index");
             }
             Log.d("screen", "Start change language, get awake clock");
@@ -190,7 +186,7 @@ public final class TopPanel extends PlayerSection
         if (selectedSubtitle != null) {
             final int nccpOrderNumber2 = selectedSubtitle.getNccpOrderNumber();
             if (nccpOrderNumber2 != language.getCurrentNccpSubtitleIndex()) {
-                if (Log.isLoggable("screen", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("screen", "Subtitle is now visible and it is switched from " + language.getCurrentNccpSubtitleIndex() + " to " + nccpOrderNumber2 + " NCCP index");
                 }
                 n = 1;
@@ -315,7 +311,7 @@ public final class TopPanel extends PlayerSection
             this.mdxTargetSelector = mdxTargetSelector;
             final boolean mdxTargetSelectionVisible = this.isMdxTargetSelectionVisible();
             final boolean showing = this.mActionBar.isShowing();
-            if (Log.isLoggable("screen", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("screen", "Bottom panel is visible: " + showing);
                 Log.d("screen", "MDX target whould be visible: " + mdxTargetSelectionVisible);
             }

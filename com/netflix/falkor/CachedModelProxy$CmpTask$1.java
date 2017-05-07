@@ -5,10 +5,10 @@
 package com.netflix.falkor;
 
 import com.netflix.model.leafs.Video$Bookmark;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.service.NetflixService;
 import java.util.LinkedHashSet;
 import java.io.IOException;
@@ -17,23 +17,23 @@ import com.netflix.mediaclient.service.falkor.Falkor$SimilarRequestType;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.model.leafs.Video$InQueue;
 import com.netflix.model.branches.FalkorVideo;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 import com.netflix.mediaclient.util.JsonUtils;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.android.app.BackgroundTask;
-import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.text.TextUtils;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
-import android.util.Pair;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.util.Map;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry$ResponsePathFormat;
 import java.util.Comparator;
 import java.util.Collections;
 import com.netflix.mediaclient.util.AlphanumComparator;
 import com.netflix.mediaclient.service.browse.PostToHandlerCallbackWrapper;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.model.branches.FalkorObject;
+import android.util.Pair;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.os.Looper;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import android.os.Handler;
@@ -101,7 +101,7 @@ class CachedModelProxy$CmpTask$1 extends FalkorVolleyWebClientRequest
                 sb.append("&").append((String)dataUtil$StringPair.first).append("=").append((String)dataUtil$StringPair.second);
             }
             final String s = string = sb.toString();
-            if (Log.isLoggable("CachedModelProxy", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("CachedModelProxy", "Sending optional url params: " + s);
                 return s;
             }
@@ -133,7 +133,7 @@ class CachedModelProxy$CmpTask$1 extends FalkorVolleyWebClientRequest
         }
         final JsonObject asJsonObject = this.this$1.this$0.jsonParser.parse(s).getAsJsonObject();
         if (FalkorParseUtils.hasErrors(asJsonObject)) {
-            if (Log.isLoggable("CachedModelProxy", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("CachedModelProxy", "Found errors in json response: " + asJsonObject);
             }
             throw this.this$1.handleJsonError(asJsonObject);

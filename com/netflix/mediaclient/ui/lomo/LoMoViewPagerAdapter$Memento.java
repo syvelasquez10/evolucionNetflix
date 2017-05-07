@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 
 class LoMoViewPagerAdapter$Memento
 {
-    final BaseProgressivePagerAdapter$Memento adapterMemento;
+    final BaseProgressiveRowAdapter$Memento adapterMemento;
     final BasicLoMo lomo;
     final LoMoViewPagerAdapter$Type preErrorState;
     final LoMoViewPagerAdapter$Type state;
@@ -17,7 +17,7 @@ class LoMoViewPagerAdapter$Memento
         this.state = state;
         this.preErrorState = preErrorState;
         this.lomo = lomo;
-        this.adapterMemento = (BaseProgressivePagerAdapter$Memento)rowAdapter.saveToMemento();
+        this.adapterMemento = (BaseProgressiveRowAdapter$Memento)rowAdapter.saveToMemento();
     }
     
     @Override

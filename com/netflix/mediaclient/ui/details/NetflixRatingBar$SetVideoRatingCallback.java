@@ -26,7 +26,7 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.graphics.drawable.shapes.Shape;
 import android.util.AttributeSet;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.model.Ratable;
+import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import com.netflix.mediaclient.ui.common.VideoDetailsProvider;
 import android.graphics.drawable.Drawable;
 import android.widget.RatingBar$OnRatingBarChangeListener;
@@ -39,7 +39,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import android.widget.Toast;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.UserRating;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 
 class NetflixRatingBar$SetVideoRatingCallback extends LoggingManagerCallback
@@ -63,13 +63,13 @@ class NetflixRatingBar$SetVideoRatingCallback extends LoggingManagerCallback
         this.this$0.setEnabled(true);
         if (status.isError()) {
             Log.w("NetflixRatingBar", "Invalid status code");
-            Toast.makeText(this.this$0.getContext(), 2131493178, 1).show();
+            Toast.makeText(this.this$0.getContext(), 2131493185, 1).show();
             this.this$0.setRating((float)this.this$0.currRating);
-            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131493178), ActionOnUIError.displayedError), null, this.this$0.currRating);
+            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131493185), ActionOnUIError.displayedError), null, this.this$0.currRating);
             return;
         }
         Log.v("NetflixRatingBar", "Rating has been updated");
-        Toast.makeText(this.this$0.getContext(), 2131493179, 1).show();
+        Toast.makeText(this.this$0.getContext(), 2131493186, 1).show();
         this.this$0.currRating = this.rating;
         if (this.this$0.ratableObject != null) {
             this.this$0.ratableObject.setUserRating(this.rating);

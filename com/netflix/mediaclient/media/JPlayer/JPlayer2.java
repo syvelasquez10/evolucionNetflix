@@ -74,7 +74,7 @@ public class JPlayer2
             if ((intValue2 = (int)requiredMaximumResolution.second) > 1080) {
                 intValue2 = 1080;
             }
-            if (Log.isLoggable("NF_JPlayer2", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("NF_JPlayer2", "video max resolution is " + requiredMaximumResolution.first + " x " + requiredMaximumResolution.second);
                 Log.d("NF_JPlayer2", "video real resolution is " + n + " x " + intValue2);
             }

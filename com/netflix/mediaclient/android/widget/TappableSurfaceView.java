@@ -61,7 +61,7 @@ public class TappableSurfaceView extends SurfaceView
     }
     
     public boolean canVideoBeZoomed() {
-        if (Log.isLoggable("@@@", 3)) {
+        if (Log.isLoggable()) {
             Log.w("@@@", this.mVideoWidth + " X " + this.mVideoHeight + ", " + this.mPwidth + " X " + this.mPheight);
         }
         return this.mVideoWidth == 0 || this.mVideoHeight == 0 || this.mPwidth == 0 || this.mPheight == 0 || this.mVideoWidth * this.mPheight != this.mVideoHeight * this.mPwidth;
@@ -107,7 +107,7 @@ public class TappableSurfaceView extends SurfaceView
             }
             n2 = n4;
             n = n3;
-            if (Log.isLoggable("@@@", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("@@@", "parent size: " + n3 + " x " + n4);
                 n2 = n4;
                 n = n3;
@@ -116,7 +116,7 @@ public class TappableSurfaceView extends SurfaceView
         this.mPheight = n2;
         this.mPwidth = n;
         if (this.mPheight >= this.mPwidth && this.mPreviousMeasureWidth > 0 && this.mPreviousMeasureHeight > 0) {
-            if (Log.isLoggable("@@@", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("@@@", "use previous measure size: " + this.mPreviousMeasureWidth + 'x' + this.mPreviousMeasureHeight);
             }
             this.setMeasuredDimension(this.mPreviousMeasureWidth, this.mPreviousMeasureHeight);
@@ -141,7 +141,7 @@ public class TappableSurfaceView extends SurfaceView
                     else {
                         n5 = n2;
                         n6 = n;
-                        if (Log.isLoggable("@@@", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("@@@", "aspect ratio is correct: " + n + "/" + n2 + "=" + this.mVideoWidth + "/" + this.mVideoHeight);
                             n5 = n2;
                             n6 = n;
@@ -210,7 +210,7 @@ public class TappableSurfaceView extends SurfaceView
             }
             final int[] array = new int[2];
             this.getLocationOnScreen(array);
-            if (Log.isLoggable("@@@", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("@@@", "setting size: " + n2 + 'x' + n + ", start coordinates: " + array[0] + ", " + array[1]);
             }
             this.setMeasuredDimension(n2, n);

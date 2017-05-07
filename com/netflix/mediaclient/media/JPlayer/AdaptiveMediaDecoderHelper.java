@@ -25,13 +25,13 @@ public class AdaptiveMediaDecoderHelper
         for (int codecCount = MediaCodecList.getCodecCount(), i = 0; i < codecCount; ++i) {
             final MediaCodecInfo codecInfo = MediaCodecList.getCodecInfoAt(i);
             if (!codecInfo.isEncoder() && Arrays.asList(codecInfo.getSupportedTypes()).indexOf(s) >= 0 && codecInfo.getCapabilitiesForType(s).isFeatureSupported("adaptive-playback")) {
-                if (Log.isLoggable("AdaptiveMediaDecoderHelper", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("AdaptiveMediaDecoderHelper", codecInfo.getName() + " supports AdaptivePlayback");
                 }
                 return codecInfo.getName();
             }
         }
-        if (Log.isLoggable("AdaptiveMediaDecoderHelper", 3)) {
+        if (Log.isLoggable()) {
             Log.d("AdaptiveMediaDecoderHelper", "AdaptivePlayback is not supported");
         }
         return null;

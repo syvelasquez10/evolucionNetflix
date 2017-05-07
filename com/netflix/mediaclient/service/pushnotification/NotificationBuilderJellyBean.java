@@ -11,7 +11,6 @@ import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.util.StringUtils;
 import android.app.Notification$BigPictureStyle;
-import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.app.Notification$Builder;
 import android.content.Context;
@@ -20,16 +19,16 @@ import android.annotation.TargetApi;
 @TargetApi(16)
 public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
 {
-    private static void addBigPicture(final Context context, final Payload payload, final Notification$BigPictureStyle notification$BigPictureStyle, final int n, final ImageLoader imageLoader, final ErrorLogging errorLogging) {
+    private static void addBigPicture(final Context context, final Payload payload, final Notification$BigPictureStyle notification$BigPictureStyle, final int n, final ImageLoader imageLoader) {
         if (!StringUtils.isEmpty(payload.largeIcon) && imageLoader != null) {
-            imageLoader.getImg(payload.bigViewPicture, IClientLogging$AssetType.merchStill, 0, 0, new NotificationBuilderJellyBean$2(payload, notification$BigPictureStyle, context, n, errorLogging));
+            imageLoader.getImg(payload.bigViewPicture, IClientLogging$AssetType.merchStill, 0, 0, new NotificationBuilderJellyBean$2(payload, notification$BigPictureStyle, context, n));
             return;
         }
         Log.d("nf_push", "Large picture view was not set");
-        NotificationBuilder.sendNotification(context, notification$BigPictureStyle.build(), n, errorLogging);
+        NotificationBuilder.sendNotification(context, notification$BigPictureStyle.build(), n);
     }
     
-    private static void addBigView(final Context context, final Payload payload, final Notification$Builder notification$Builder, final int n, final ImageLoader imageLoader, final ErrorLogging errorLogging) {
+    private static void addBigView(final Context context, final Payload payload, final Notification$Builder notification$Builder, final int n, final ImageLoader imageLoader) {
         if (!StringUtils.isEmpty(payload.bigViewPicture)) {
             final Notification$BigPictureStyle notification$BigPictureStyle = new Notification$BigPictureStyle(notification$Builder);
             if (!StringUtils.isEmpty(payload.bigViewSummary)) {
@@ -38,7 +37,7 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
             if (!StringUtils.isEmpty(payload.bigViewTitle)) {
                 notification$BigPictureStyle.setBigContentTitle((CharSequence)payload.bigViewTitle);
             }
-            addBigPicture(context, payload, notification$BigPictureStyle, n, imageLoader, errorLogging);
+            addBigPicture(context, payload, notification$BigPictureStyle, n, imageLoader);
             return;
         }
         if (!StringUtils.isEmpty(payload.bigViewText)) {
@@ -50,15 +49,15 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
             if (!StringUtils.isEmpty(payload.bigViewTitle)) {
                 notification$BigTextStyle.setBigContentTitle((CharSequence)payload.bigViewTitle);
             }
-            NotificationBuilder.sendNotification(context, notification$BigTextStyle.build(), n, errorLogging);
+            NotificationBuilder.sendNotification(context, notification$BigTextStyle.build(), n);
             return;
         }
-        NotificationBuilder.sendNotification(context, notification$Builder.build(), n, errorLogging);
+        NotificationBuilder.sendNotification(context, notification$Builder.build(), n);
     }
     
-    public static void createNotification(final Context context, final Payload payload, final ImageLoader imageLoader, final int n, final ErrorLogging errorLogging) {
+    public static void createNotification(final Context context, final Payload payload, final ImageLoader imageLoader, final int n) {
         final long when = payload.getWhen();
-        final String title = payload.getTitle(context.getString(2131492977));
+        final String title = payload.getTitle(context.getString(2131492983));
         final String ticker = payload.getTicker(title);
         final Notification$Builder notification$Builder = new Notification$Builder(context);
         notification$Builder.setContentIntent(NotificationBuilder.getNotificationOpenedIntent(context, payload));
@@ -67,7 +66,7 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
         notification$Builder.setAutoCancel(true);
         notification$Builder.setContentTitle((CharSequence)title);
         notification$Builder.setContentText((CharSequence)payload.text);
-        notification$Builder.setSmallIcon(2130837786);
+        notification$Builder.setSmallIcon(2130837807);
         notification$Builder.setWhen(when);
         while (true) {
             if (!StringUtils.isNotEmpty(payload.sound) || !NotificationBuilder.isSoundEnabled(context)) {
@@ -92,10 +91,10 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
             break;
         }
         if (!StringUtils.isEmpty(payload.largeIcon) && imageLoader != null) {
-            imageLoader.getImg(payload.largeIcon, IClientLogging$AssetType.boxArt, 0, 0, new NotificationBuilderJellyBean$1(payload, notification$Builder, context, n, imageLoader, errorLogging));
+            imageLoader.getImg(payload.largeIcon, IClientLogging$AssetType.boxArt, 0, 0, new NotificationBuilderJellyBean$1(payload, notification$Builder, context, n, imageLoader));
             return;
         }
         Log.d("nf_push", "Icon was not set");
-        addBigView(context, payload, notification$Builder, n, imageLoader, errorLogging);
+        addBigView(context, payload, notification$Builder, n, imageLoader);
     }
 }

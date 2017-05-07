@@ -13,9 +13,9 @@ import android.support.v7.widget.RecyclerView$ViewHolder;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.MathUtils;
 import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
-import com.netflix.mediaclient.servicemgr.model.KubrickVideo;
+import com.netflix.mediaclient.servicemgr.interface_.KubrickVideo;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.support.v7.widget.RecyclerView$LayoutParams;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.support.v7.widget.RecyclerView$Adapter;
@@ -37,7 +37,7 @@ class KubrickGalleryViewGroup$GridAdapter extends RecyclerView$Adapter<KubrickGa
         this.numVideosPerPage = numVideosPerPage;
         final int computeViewPagerWidth = LoMoViewPager.computeViewPagerWidth(this.activity, true);
         numVideosPerPage = MathUtils.divideIntsWithRounding(computeViewPagerWidth, numVideosPerPage) * 2;
-        if (Log.isLoggable("KubrickGalleryViewGroup", 2)) {
+        if (Log.isLoggable()) {
             Log.v("KubrickGalleryViewGroup", "parent width: " + computeViewPagerWidth + ", child width: " + numVideosPerPage);
         }
         this.params = new RecyclerView$LayoutParams(numVideosPerPage, -1);

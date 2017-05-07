@@ -223,6 +223,11 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     }
     
     @Override
+    public CharSequence getTitle() {
+        return this.mToolbar.getTitle();
+    }
+    
+    @Override
     public ViewGroup getViewGroup() {
         return this.mToolbar;
     }
@@ -349,6 +354,19 @@ public class ToolbarWidgetWrapper implements DecorToolbar
     public void setHomeButtonEnabled(final boolean b) {
     }
     
+    @Override
+    public void setIcon(final int n) {
+        Drawable drawable;
+        if (n != 0) {
+            drawable = this.mTintManager.getDrawable(n);
+        }
+        else {
+            drawable = null;
+        }
+        this.setIcon(drawable);
+    }
+    
+    @Override
     public void setIcon(final Drawable mIcon) {
         this.mIcon = mIcon;
         this.updateToolbarLogo();

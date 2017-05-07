@@ -4,7 +4,7 @@
 
 package com.netflix.model.branches;
 
-import com.netflix.mediaclient.service.browse.BrowseAgent;
+import com.netflix.mediaclient.util.TimeUtils;
 import com.netflix.mediaclient.service.falkor.Falkor$Creator;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,10 +14,10 @@ import java.util.Collections;
 import com.netflix.mediaclient.Log;
 import java.util.ArrayList;
 import com.netflix.falkor.CachedModelProxy;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
 import com.netflix.falkor.Undefined;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.model.leafs.Video$Detail;
 import com.netflix.model.leafs.Video$Bookmark;
 import com.netflix.falkor.BranchNode;
@@ -27,9 +27,9 @@ import com.netflix.falkor.Ref;
 import com.netflix.model.leafs.KidsCharacter$Summary;
 import com.netflix.model.leafs.KidsCharacter$Detail;
 import java.util.Comparator;
-import com.netflix.mediaclient.servicemgr.model.details.KidsCharacterDetails;
-import com.netflix.mediaclient.servicemgr.model.Playable;
-import com.netflix.mediaclient.servicemgr.model.BasicVideo;
+import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.BasicVideo;
 import com.netflix.model.BaseFalkorObject;
 
 public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo, Playable, KidsCharacterDetails, FalkorObject
@@ -338,7 +338,7 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
         if (value != null) {
             return value;
         }
-        if (Log.isLoggable("FalkorKidsCharacter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("FalkorKidsCharacter", "Creating leaf for key: " + s);
         }
         switch (s) {
@@ -396,7 +396,7 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
         else {
             bookmarkPosition = this.getWatchNextBookmark().getBookmarkPosition();
         }
-        return BrowseAgent.computePlayPos(bookmarkPosition, this.getEndtime(), this.getRuntime());
+        return TimeUtils.computePlayPos(bookmarkPosition, this.getEndtime(), this.getRuntime());
     }
     
     @Override
@@ -449,6 +449,11 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     }
     
     @Override
+    public String getStoryDispUrl() {
+        throw new RuntimeException("Not implemented");
+    }
+    
+    @Override
     public String getStoryUrl() {
         final Video$Detail watchNextDetails = this.getWatchNextDetails();
         if (watchNextDetails == null) {
@@ -489,7 +494,7 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     
     @Override
     public String getWatchNextDispUrl() {
-        if (Log.isLoggable("FalkorKidsCharacter", 3)) {
+        if (Log.isLoggable()) {
             Log.d("FalkorKidsCharacter", String.format("[%s %s], firstPlay:%b (watchedRecently:%b), S%d:E%d, pos:%d", this.getWatchNextType(), this.getPlayableId(), this.isFirstPlay(), this.getHasWatchedRecently(), this.getSeasonNumber(), this.getEpisodeNumber(), this.getPlayableBookmarkPosition()));
         }
         if (this.isFirstPlay()) {

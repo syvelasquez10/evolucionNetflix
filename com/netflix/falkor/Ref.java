@@ -92,7 +92,7 @@ public class Ref implements Expires, PathBound, ReferenceTarget
                 return value2;
             }
             o = value2;
-            if (Log.isLoggable("Ref", 5)) {
+            if (Log.isLoggable()) {
                 final StringBuilder append = new StringBuilder().append("Target CANNOT store references, got value for path: ").append(this.refPath).append(", class: ");
                 Serializable class1;
                 if (value2 == null) {

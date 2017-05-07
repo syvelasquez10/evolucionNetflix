@@ -32,21 +32,21 @@ public abstract class NetflixFrag extends Fragment implements LoadingStatus, Man
     
     public void onAttach(final Activity activity) {
         super.onAttach(activity);
-        if (Log.isLoggable("NetflixFrag", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixFrag", "Frag attached to activity: " + this.getClass().getSimpleName());
         }
     }
     
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        if (Log.isLoggable("NetflixFrag", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixFrag", "Creating frag: " + this.getClass().getSimpleName() + ", hash: " + this.hashCode());
         }
     }
     
     public void onDestroy() {
         super.onDestroy();
-        if (Log.isLoggable("NetflixFrag", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixFrag", "Destroying frag: " + this.getClass().getSimpleName() + ", hash: " + this.hashCode());
         }
         this.isDestroyed = true;
@@ -54,7 +54,7 @@ public abstract class NetflixFrag extends Fragment implements LoadingStatus, Man
     
     public void onDetach() {
         super.onDetach();
-        if (Log.isLoggable("NetflixFrag", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixFrag", "Frag detached from activity: " + this.getClass().getSimpleName());
         }
     }

@@ -5,19 +5,19 @@
 package com.netflix.mediaclient.ui.kubrick.lomo;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.content.res.Resources;
 import com.netflix.mediaclient.util.TimeUtils;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.servicemgr.model.HdEnabledProvider;
-import com.netflix.mediaclient.servicemgr.model.Ratable;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.FeatureEnabledProvider;
+import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
+import com.netflix.mediaclient.ui.lomo.LoMoUtils;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.RelativeLayout$LayoutParams;
@@ -32,7 +32,7 @@ import com.netflix.mediaclient.android.widget.TopCropImageView;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
 import android.widget.TextView;
-import com.netflix.mediaclient.servicemgr.model.KubrickVideo;
+import com.netflix.mediaclient.servicemgr.interface_.KubrickVideo;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup$IVideoView;
 import android.widget.RelativeLayout;
 import com.netflix.mediaclient.util.StringUtils;
@@ -58,7 +58,7 @@ class KubrickHeroView$2 extends BroadcastReceiver
             final float floatExtra = intent.getFloatExtra("extra_user_rating", -1.0f);
             if (StringUtils.safeEquals(this.this$0.videoId, stringExtra)) {
                 this.this$0.rating.setRating(floatExtra);
-                if (Log.isLoggable("KubrickHeroView", 2)) {
+                if (Log.isLoggable()) {
                     Log.v("KubrickHeroView", "Updated video rating to: " + floatExtra);
                 }
             }

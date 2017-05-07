@@ -17,6 +17,7 @@ import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import com.netflix.mediaclient.util.IntentUtils;
+import com.netflix.mediaclient.javabridge.ui.LogArguments;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.servicemgr.SocialLogging;
 import com.netflix.mediaclient.servicemgr.ISearchLogging;

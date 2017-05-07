@@ -43,7 +43,7 @@ class DiagnosisAgent$NetworkListener implements EventListener
                     urlNetworkState.setErrorCode(networkEvent.getErrorCode());
                     urlNetworkState.setResult(networkEvent.getResult());
                     urlNetworkState.setStatus(DiagnosisAgent$UrlStatus.COMPLETED);
-                    if (Log.isLoggable("nf_service_diagnosisagent", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_service_diagnosisagent", "URL: " + urlNetworkState.getUrl());
                         Log.d("nf_service_diagnosisagent", "Error Code: " + urlNetworkState.getErrorCode() + " Err Group: " + urlNetworkState.getErrorGroup());
                     }
@@ -51,11 +51,11 @@ class DiagnosisAgent$NetworkListener implements EventListener
                     this.this$0.runTestForCurrentIndex();
                     return;
                 }
-                if (Log.isLoggable("nf_service_diagnosisagent", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_service_diagnosisagent", "URL: Ignoring response " + networkEvent.getUrl());
                 }
             }
-            else if (Log.isLoggable("nf_service_diagnosisagent", 3)) {
+            else if (Log.isLoggable()) {
                 Log.d("nf_service_diagnosisagent", "URL: Ignoring Network Event" + networkEvent.getUrl());
             }
         }

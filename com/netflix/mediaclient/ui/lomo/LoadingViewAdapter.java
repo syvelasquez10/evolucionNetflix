@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.android.fragment.LoadingView;

@@ -4,13 +4,14 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.mediaclient.service.browse.BrowseAgent;
-import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.service.NetflixService;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import com.netflix.falkor.BranchNode;
@@ -19,7 +20,7 @@ import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.NetflixApplication;
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +39,7 @@ import com.netflix.mediaclient.ui.social.notifications.SocialNotificationsStatic
 import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
 
@@ -58,17 +59,17 @@ class FalkorAgent$6 extends SimpleBrowseAgentCallback
     public void onSocialNotificationsListFetched(final SocialNotificationsList list, final Status status) {
         boolean b = true;
         if (list != null && status.getStatusCode() == StatusCode.OK) {
-            final SocialNotificationSummary access$600 = this.this$0.getFirstUnreadNotification(list);
-            final Context access$601 = this.this$0.getContext();
-            final boolean b2 = access$600 != null;
+            final SocialNotificationSummary access$400 = this.this$0.getFirstUnreadNotification(list);
+            final Context context = this.this$0.getContext();
+            final boolean b2 = access$400 != null;
             if (list.getSocialNotifications() == null || list.getSocialNotifications().size() <= 0) {
                 b = false;
             }
-            SocialUtils.notifyOthersOfUnreadNotifications(access$601, b2, b);
-            if (this.val$sendNotificationToStatusbar && this.this$0.shouldBeNotificationSentToStatusBar(access$600)) {
-                final SocialNotification notificationByType = SocialNotificationsStaticFactory.getNotificationByType(access$600.getType());
+            SocialUtils.notifyOthersOfUnreadNotifications(context, b2, b);
+            if (this.val$sendNotificationToStatusbar && this.this$0.shouldBeNotificationSentToStatusBar(access$400)) {
+                final SocialNotification notificationByType = SocialNotificationsStaticFactory.getNotificationByType(access$400.getType());
                 if (notificationByType.supportsStatusBar()) {
-                    notificationByType.sendNotificationToStatusbar(access$600, list.getSocialNotificationsListSummary(), this.this$0.getService().getImageLoader(), this.val$msg, this.this$0.getContext());
+                    notificationByType.sendNotificationToStatusbar(access$400, list.getSocialNotificationsListSummary(), this.this$0.getService().getImageLoader(), this.val$msg, this.this$0.getContext());
                 }
             }
         }

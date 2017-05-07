@@ -10,6 +10,8 @@ import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$T
 import com.netflix.mediaclient.service.logging.apm.model.Display;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionStartedEvent;
+import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent;
+import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent$WidgetInstallAction;
 import android.content.Context;
 import com.netflix.mediaclient.service.logging.apm.model.UserSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIStartupSessionEndedEvent;
@@ -73,7 +75,7 @@ class ApmLoggingImpl$1 implements Log$AppIdSetListener
     
     @Override
     public void onSet(final String s) {
-        if (Log.isLoggable("nf_log_apm", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log_apm", "startApplicationSession::onSet:: Application ID received " + s);
         }
         if (StringUtils.isNotEmpty(s)) {

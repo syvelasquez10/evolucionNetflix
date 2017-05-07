@@ -5,10 +5,10 @@
 package com.netflix.falkor;
 
 import com.netflix.model.leafs.Video$Bookmark;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
-import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.service.NetflixService;
 import java.util.LinkedHashSet;
 import java.io.IOException;
@@ -18,16 +18,14 @@ import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.model.leafs.Video$InQueue;
 import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 import com.netflix.mediaclient.util.JsonUtils;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.android.app.BackgroundTask;
-import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.util.DataUtil$StringPair;
 import android.text.TextUtils;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
-import android.util.Pair;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
@@ -40,8 +38,10 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.service.browse.PostToHandlerCallbackWrapper;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.google.gson.JsonObject;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.model.branches.FalkorObject;
+import android.util.Pair;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.Collection;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
 import android.os.Looper;
@@ -63,6 +63,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     public static final String EXTRA_USER_RATING = "extra_user_rating";
     public static final String EXTRA_VIDEO_ID = "extra_video_id";
     public static final int FETCH_REQUEST_BATCH_SIZE = 40;
+    private static boolean FORCE_CMP_TO_LOCAL_CACHE = false;
     private static final String JSON_VALUE = "value";
     private static final int MAX_KIDS_CHARACTER_GALLERY_VIDEOS = 100;
     public static final int MAX_SEARCH_RESULTS_PER_SECTION_INDEX = 19;
@@ -85,6 +86,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     private final FalkorVolleyWebClient webClient;
     
     static {
+        CachedModelProxy.FORCE_CMP_TO_LOCAL_CACHE = false;
         SEARCH_RESULT_TYPES = PQL.array("videos", "people", "suggestions");
         SEARCH_LEAF_TYPES = PQL.array("summary", "searchTitle");
         CW_VIDEO_LEAF_PQL = PQL.create(PQL.array("summary", "detail", "rating", "inQueue", "bookmark", "bookmarkStill", "socialEvidence"));
@@ -349,7 +351,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         else {
             value = (String)currLomoByType.second;
         }
-        if (Log.isLoggable("CachedModelProxy", 2)) {
+        if (Log.isLoggable()) {
             Log.v("CachedModelProxy", "Got curr lomo ID: " + id + ", list index: " + value + ", lomo type: " + loMoType);
         }
         return new DataUtil$StringPair(id, value);
@@ -422,7 +424,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                     return falkorObject2;
                 }
             }
-            if (Log.isLoggable("CachedModelProxy", 2)) {
+            if (Log.isLoggable()) {
                 Log.d("CachedModelProxy", "Couldn't find video in cache: " + pql);
             }
             return null;
@@ -432,20 +434,20 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     private void invalidate(final PQL pql) {
         while (true) {
             final Object value;
-            Label_0152: {
+            Label_0146: {
                 synchronized (this) {
                     value = this.getValue(pql.slice(0, pql.getNumKeySegments() - 1));
                     if (value == null) {
-                        if (Log.isLoggable("CachedModelProxy", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("CachedModelProxy", "Can't invalidate node because it is null: " + pql);
                         }
                     }
                     else {
                         if (!(value instanceof BranchNode)) {
-                            break Label_0152;
+                            break Label_0146;
                         }
                         final String value2 = String.valueOf(pql.getKeySegments().get(pql.getNumKeySegments() - 1));
-                        if (Log.isLoggable("CachedModelProxy", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("CachedModelProxy", "Invalidating at BranchNode: " + ((BranchNode)value).getClass() + ", node key: " + value2);
                         }
                         ((BranchNode)value).remove(value2);
@@ -455,44 +457,44 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
             }
             final Throwable t;
             if (value instanceof Ref) {
-                if (Log.isLoggable("CachedModelProxy", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("CachedModelProxy", "Invalidating ref path for pql: " + t);
                 }
                 ((Ref)value).setRefPath(null);
                 return;
             }
-            if (Log.isLoggable("CachedModelProxy", 5)) {
+            if (Log.isLoggable()) {
                 Log.w("CachedModelProxy", "Don't know how to invalidate node: " + ((Ref)value).getClass() + ", pql: " + t);
             }
         }
     }
     
     private void launchTask(final Runnable runnable) {
-        if (Log.isLoggable("CachedModelProxy", 2)) {
+        if (Log.isLoggable()) {
             Log.v("CachedModelProxy", "Launching task: " + runnable.getClass().getSimpleName());
         }
         new BackgroundTask().execute(runnable);
     }
     
     private void merge(final JsonObject jsonObject, final BranchNode branchNode) {
-    Label_0145_Outer:
+    Label_0142_Outer:
         while (true) {
             while (true) {
-            Label_0536:
+            Label_0527:
                 while (true) {
                     Map.Entry<String, JsonElement> entry = null;
                     String s = null;
                     Object orCreate = null;
-                    Label_0230: {
+                    Label_0227: {
                         synchronized (this) {
                             final Iterator<Map.Entry<String, JsonElement>> iterator = jsonObject.entrySet().iterator();
                             while (iterator.hasNext()) {
                                 entry = (Map.Entry<String, JsonElement>)iterator.next();
                                 s = entry.getKey();
                                 if (!(branchNode.getOrCreate(s) instanceof Sentinel) || JsonUtils.isNull(entry.getValue())) {
-                                    break Label_0536;
+                                    break Label_0527;
                                 }
-                                if (Log.isLoggable("CachedModelProxy", 3)) {
+                                if (Log.isLoggable()) {
                                     Log.d("CachedModelProxy", "Found sentinel at key: " + s + ", will replace with json data: " + entry.getValue());
                                 }
                                 branchNode.remove(s);
@@ -501,7 +503,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                                     Log.v("CachedModelProxy", "Curr node: " + branchNode.getClass().getSimpleName() + ", merging: " + s);
                                 }
                                 if (!(orCreate instanceof BranchNode)) {
-                                    break Label_0230;
+                                    break Label_0227;
                                 }
                                 this.merge(entry.getValue().getAsJsonObject(), (BranchNode)orCreate);
                             }
@@ -513,46 +515,46 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                         final JsonElement jsonElement = entry.getValue();
                         if (jsonElement.isJsonArray()) {
                             ref.setRefPath(PQL.fromJsonArray(jsonElement.getAsJsonArray()));
-                            continue Label_0145_Outer;
+                            continue Label_0142_Outer;
                         }
                         if (!jsonElement.isJsonObject()) {
-                            continue Label_0145_Outer;
+                            continue Label_0142_Outer;
                         }
                         if (jsonElement.getAsJsonObject().has("_sentinel")) {
                             if (Falkor.ENABLE_VERBOSE_LOGGING) {
                                 Log.v("CachedModelProxy", "key points to sentinel: " + Undefined.getInstance());
                             }
                             branchNode.set(s, Undefined.getInstance());
-                            continue Label_0145_Outer;
+                            continue Label_0142_Outer;
                         }
                         if ("current".equals(s)) {
                             if (Falkor.ENABLE_VERBOSE_LOGGING) {
                                 Log.v("CachedModelProxy", "json ref points to an ignored 'current' object: " + entry);
-                                continue Label_0145_Outer;
+                                continue Label_0142_Outer;
                             }
-                            continue Label_0145_Outer;
+                            continue Label_0142_Outer;
                         }
                         else {
-                            if (Log.isLoggable("CachedModelProxy", 5)) {
+                            if (Log.isLoggable()) {
                                 Log.w("CachedModelProxy", "Don't know how to handle json: " + entry);
-                                continue Label_0145_Outer;
+                                continue Label_0142_Outer;
                             }
-                            continue Label_0145_Outer;
+                            continue Label_0142_Outer;
                         }
                     }
                     else {
                         if (orCreate == null) {
-                            continue Label_0145_Outer;
+                            continue Label_0142_Outer;
                         }
                         if (orCreate instanceof JsonPopulator) {
                             ((JsonPopulator)orCreate).populate(entry.getValue());
-                            continue Label_0145_Outer;
+                            continue Label_0142_Outer;
                         }
-                        if (Log.isLoggable("CachedModelProxy", 5)) {
+                        if (Log.isLoggable()) {
                             Log.w("CachedModelProxy", "Creating duplicate Leaf object. JsonPopulator should be implemented by: " + ((JsonPopulator)orCreate).getClass());
                         }
                         branchNode.set(s, FalkorParseUtils.createObjectFromJson("CachedModelProxy", entry.getValue(), ((JsonPopulator)orCreate).getClass()));
-                        continue Label_0145_Outer;
+                        continue Label_0142_Outer;
                     }
                     break;
                 }
@@ -566,7 +568,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         synchronized (this) {
             final FalkorVideo falkorVideo = (FalkorVideo)this.getValue(PQL.create(videoType.getValue(), s, "summary"));
             if (falkorVideo != null) {
-                if (Log.isLoggable("CachedModelProxy", 2)) {
+                if (Log.isLoggable()) {
                     Log.v("CachedModelProxy", "Setting cached inQueue value to: " + b + ", for video: " + s);
                 }
                 falkorVideo.set("inQueue", new Video$InQueue(b));
@@ -584,8 +586,8 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //     1: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLolomoId:()Ljava/lang/String;
         //     4: astore          7
         //     6: aload_0        
-        //     7: getstatic       com/netflix/mediaclient/servicemgr/model/LoMoType.INSTANT_QUEUE:Lcom/netflix/mediaclient/servicemgr/model/LoMoType;
-        //    10: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoInfo:(Lcom/netflix/mediaclient/servicemgr/model/LoMoType;)Lcom/netflix/mediaclient/util/DataUtil$StringPair;
+        //     7: getstatic       com/netflix/mediaclient/servicemgr/interface_/LoMoType.INSTANT_QUEUE:Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;
+        //    10: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoInfo:(Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;)Lcom/netflix/mediaclient/util/DataUtil$StringPair;
         //    13: astore          8
         //    15: aload_0        
         //    16: new             new            !!! ERROR
@@ -658,7 +660,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     public void dumpCacheToDisk() {
         final StringBuilder sb = new StringBuilder();
         sb.append("==START OF CACHE==").append("\n");
-        if (Log.isLoggable("CachedModelProxy", 2)) {
+        if (Log.isLoggable()) {
             this.doDumpCacheToDiskRecursive(sb, this.root, 0, false);
         }
         sb.append("==END OF CACHE==").append("\n");
@@ -1121,8 +1123,8 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         // Original Bytecode:
         // 
         //     0: aload_0        
-        //     1: getstatic       com/netflix/mediaclient/servicemgr/model/LoMoType.INSTANT_QUEUE:Lcom/netflix/mediaclient/servicemgr/model/LoMoType;
-        //     4: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoByType:(Lcom/netflix/mediaclient/servicemgr/model/LoMoType;)Landroid/util/Pair;
+        //     1: getstatic       com/netflix/mediaclient/servicemgr/interface_/LoMoType.INSTANT_QUEUE:Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;
+        //     4: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoByType:(Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;)Landroid/util/Pair;
         //     7: astore          6
         //     9: aload           6
         //    11: ifnull          22
@@ -1144,15 +1146,16 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    48: aload_0        
         //    49: aload           6
         //    51: getfield        android/util/Pair.first:Ljava/lang/Object;
-        //    54: checkcast       Lcom/netflix/mediaclient/servicemgr/model/LoMo;
+        //    54: checkcast       Lcom/netflix/mediaclient/servicemgr/interface_/LoMo;
         //    57: iload_1        
         //    58: iload_2        
         //    59: iload_3        
         //    60: iload           4
-        //    62: aload           5
-        //    64: invokespecial   invokespecial  !!! ERROR
-        //    67: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
-        //    70: return         
+        //    62: iconst_0       
+        //    63: aload           5
+        //    65: invokespecial   invokespecial  !!! ERROR
+        //    68: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //    71: return         
         // 
         // The error that occurred was:
         // 
@@ -1208,8 +1211,8 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         // Original Bytecode:
         // 
         //     0: aload_0        
-        //     1: getstatic       com/netflix/mediaclient/servicemgr/model/LoMoType.INSTANT_QUEUE:Lcom/netflix/mediaclient/servicemgr/model/LoMoType;
-        //     4: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoInfo:(Lcom/netflix/mediaclient/servicemgr/model/LoMoType;)Lcom/netflix/mediaclient/util/DataUtil$StringPair;
+        //     1: getstatic       com/netflix/mediaclient/servicemgr/interface_/LoMoType.INSTANT_QUEUE:Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;
+        //     4: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoInfo:(Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;)Lcom/netflix/mediaclient/util/DataUtil$StringPair;
         //     7: astore          7
         //     9: aload           7
         //    11: ifnonnull       35
@@ -1226,9 +1229,9 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    37: getfield        com/netflix/mediaclient/util/DataUtil$StringPair.first:Ljava/lang/Object;
         //    40: checkcast       Ljava/lang/String;
         //    43: aload_1        
-        //    44: invokeinterface com/netflix/mediaclient/servicemgr/model/LoMo.getId:()Ljava/lang/String;
+        //    44: invokeinterface com/netflix/mediaclient/servicemgr/interface_/LoMo.getId:()Ljava/lang/String;
         //    49: invokestatic    com/netflix/mediaclient/util/StringUtils.safeEquals:(Ljava/lang/String;Ljava/lang/String;)Z
-        //    52: ifeq            92
+        //    52: ifeq            93
         //    55: getstatic       com/netflix/mediaclient/service/falkor/Falkor.ENABLE_VERBOSE_LOGGING:Z
         //    58: ifeq            70
         //    61: ldc             "CachedModelProxy"
@@ -1244,42 +1247,41 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    78: iload_3        
         //    79: iload           4
         //    81: iload           5
-        //    83: aload           6
-        //    85: invokespecial   invokespecial  !!! ERROR
-        //    88: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
-        //    91: return         
-        //    92: ldc             "CachedModelProxy"
-        //    94: iconst_2       
-        //    95: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //    98: ifeq            158
-        //   101: ldc             "CachedModelProxy"
-        //   103: new             Ljava/lang/StringBuilder;
-        //   106: dup            
-        //   107: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   110: ldc_w           "Requested IQ videos for lomo id: "
-        //   113: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   116: aload_1        
-        //   117: invokeinterface com/netflix/mediaclient/servicemgr/model/LoMo.getId:()Ljava/lang/String;
-        //   122: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   125: ldc_w           " but cache IQ lomo id is: "
-        //   128: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   131: aload           7
-        //   133: getfield        com/netflix/mediaclient/util/DataUtil$StringPair.first:Ljava/lang/Object;
-        //   136: checkcast       Ljava/lang/String;
-        //   139: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   142: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   145: invokestatic    com/netflix/mediaclient/Log.v:(Ljava/lang/String;Ljava/lang/String;)I
-        //   148: pop            
-        //   149: ldc             "CachedModelProxy"
-        //   151: ldc_w           "Updating existing lomo IQ id to cache id value"
-        //   154: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   157: pop            
-        //   158: aload_1        
-        //   159: aload           7
-        //   161: getfield        com/netflix/mediaclient/util/DataUtil$StringPair.first:Ljava/lang/Object;
-        //   164: checkcast       Ljava/lang/String;
-        //   167: invokeinterface com/netflix/mediaclient/servicemgr/model/LoMo.setId:(Ljava/lang/String;)V
-        //   172: goto            70
+        //    83: iconst_0       
+        //    84: aload           6
+        //    86: invokespecial   invokespecial  !!! ERROR
+        //    89: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //    92: return         
+        //    93: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //    96: ifeq            156
+        //    99: ldc             "CachedModelProxy"
+        //   101: new             Ljava/lang/StringBuilder;
+        //   104: dup            
+        //   105: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   108: ldc_w           "Requested IQ videos for lomo id: "
+        //   111: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   114: aload_1        
+        //   115: invokeinterface com/netflix/mediaclient/servicemgr/interface_/LoMo.getId:()Ljava/lang/String;
+        //   120: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   123: ldc_w           " but cache IQ lomo id is: "
+        //   126: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   129: aload           7
+        //   131: getfield        com/netflix/mediaclient/util/DataUtil$StringPair.first:Ljava/lang/Object;
+        //   134: checkcast       Ljava/lang/String;
+        //   137: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   140: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   143: invokestatic    com/netflix/mediaclient/Log.v:(Ljava/lang/String;Ljava/lang/String;)I
+        //   146: pop            
+        //   147: ldc             "CachedModelProxy"
+        //   149: ldc_w           "Updating existing lomo IQ id to cache id value"
+        //   152: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   155: pop            
+        //   156: aload_1        
+        //   157: aload           7
+        //   159: getfield        com/netflix/mediaclient/util/DataUtil$StringPair.first:Ljava/lang/Object;
+        //   162: checkcast       Ljava/lang/String;
+        //   165: invokeinterface com/netflix/mediaclient/servicemgr/interface_/LoMo.setId:(Ljava/lang/String;)V
+        //   170: goto            70
         // 
         // The error that occurred was:
         // 
@@ -1906,16 +1908,79 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public void fetchVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final boolean p4, final BrowseAgentCallback p5) {
+    public void fetchVideoSummary(final String p0, final BrowseAgentCallback p1) {
         // 
         // This method could not be decompiled.
         // 
         // Original Bytecode:
         // 
-        //     0: getstatic       com/netflix/mediaclient/servicemgr/model/LoMoType.BILLBOARD:Lcom/netflix/mediaclient/servicemgr/model/LoMoType;
+        //     0: aload_0        
+        //     1: new             new            !!! ERROR
+        //     4: dup            
+        //     5: aload_0        
+        //     6: aload_1        
+        //     7: aload_2        
+        //     8: invokespecial   invokespecial  !!! ERROR
+        //    11: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //    14: return         
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalArgumentException: Argument 'typeArguments' must not have any null elements.
+        //     at com.strobel.core.VerifyArgument.noNullElementsAndNotEmpty(VerifyArgument.java:145)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.makeGenericType(CoreMetadataFactory.java:570)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory.makeParameterizedType(CoreMetadataFactory.java:156)
+        //     at com.strobel.assembler.metadata.signatures.Reifier.visitClassTypeSignature(Reifier.java:125)
+        //     at com.strobel.assembler.metadata.signatures.ClassTypeSignature.accept(ClassTypeSignature.java:46)
+        //     at com.strobel.assembler.metadata.MetadataParser.parseClassSignature(MetadataParser.java:394)
+        //     at com.strobel.assembler.metadata.ClassFileReader.populateBaseTypes(ClassFileReader.java:665)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:438)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:366)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveType(MetadataSystem.java:124)
+        //     at com.strobel.decompiler.NoRetryMetadataSystem.resolveType(DecompilerDriver.java:463)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveCore(MetadataSystem.java:76)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:104)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:589)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:128)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:599)
+        //     at com.strobel.assembler.metadata.MethodReference.resolve(MethodReference.java:172)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferCall(TypeAnalysis.java:2428)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.doInferTypeForExpression(TypeAnalysis.java:1029)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferTypeForExpression(TypeAnalysis.java:803)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:672)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:655)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:365)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.run(TypeAnalysis.java:96)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:109)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
+    }
+    
+    public void fetchVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final boolean p4, final boolean p5, final BrowseAgentCallback p6) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: getstatic       com/netflix/mediaclient/servicemgr/interface_/LoMoType.BILLBOARD:Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;
         //     3: aload_1        
-        //     4: invokeinterface com/netflix/mediaclient/servicemgr/model/LoMo.getType:()Lcom/netflix/mediaclient/servicemgr/model/LoMoType;
-        //     9: invokevirtual   com/netflix/mediaclient/servicemgr/model/LoMoType.equals:(Ljava/lang/Object;)Z
+        //     4: invokeinterface com/netflix/mediaclient/servicemgr/interface_/LoMo.getType:()Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;
+        //     9: invokevirtual   com/netflix/mediaclient/servicemgr/interface_/LoMoType.equals:(Ljava/lang/Object;)Z
         //    12: ifeq            34
         //    15: aload_0        
         //    16: new             new            !!! ERROR
@@ -1924,7 +1989,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    21: iload_2        
         //    22: iload_3        
         //    23: iload           4
-        //    25: aload           6
+        //    25: aload           7
         //    27: invokespecial   invokespecial  !!! ERROR
         //    30: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
         //    33: return         
@@ -1937,10 +2002,11 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    42: iload_3        
         //    43: iload           4
         //    45: iload           5
-        //    47: aload           6
-        //    49: invokespecial   invokespecial  !!! ERROR
-        //    52: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
-        //    55: return         
+        //    47: iload           6
+        //    49: aload           7
+        //    51: invokespecial   invokespecial  !!! ERROR
+        //    54: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //    57: return         
         // 
         // The error that occurred was:
         // 
@@ -1991,7 +2057,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     
     public void flushCaches() {
         synchronized (this) {
-            if (Log.isLoggable("CachedModelProxy", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("CachedModelProxy", "Flushing caches...");
             }
             this.lastPrefetchFromVideo = -1;
@@ -2001,7 +2067,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
             }
             final Flushable flushable = (Flushable)this.root;
             try {
-                if (Log.isLoggable("CachedModelProxy", 2)) {
+                if (Log.isLoggable()) {
                     Log.v("CachedModelProxy", "Flushing root");
                 }
                 flushable.flush();
@@ -2010,6 +2076,11 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                 Log.handleException("CachedModelProxy", ex);
             }
         }
+    }
+    
+    public void forceFetchFromLocalCache(final boolean force_CMP_TO_LOCAL_CACHE) {
+        Log.w("CachedModelProxy", String.format("forcing CMP fetch behavior to useLocalCacheOnly:%b", force_CMP_TO_LOCAL_CACHE));
+        CachedModelProxy.FORCE_CMP_TO_LOCAL_CACHE = force_CMP_TO_LOCAL_CACHE;
     }
     
     @Override
@@ -2211,7 +2282,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public void logBillboardActivity(final Video p0, final BrowseAgent$BillboardActivityType p1) {
+    public void logBillboardActivity(final Video p0, final BillboardInteractionType p1) {
         // 
         // This method could not be decompiled.
         // 
@@ -2346,25 +2417,17 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         // Original Bytecode:
         // 
         //     0: aload_0        
-        //     1: invokevirtual   com/netflix/falkor/CachedModelProxy.getService:()Lcom/netflix/mediaclient/service/NetflixService;
-        //     4: astore          8
-        //     6: aload_0        
-        //     7: new             new            !!! ERROR
-        //    10: dup            
-        //    11: aload_0        
-        //    12: aload_1        
-        //    13: iload_3        
-        //    14: iload           5
-        //    16: aload           8
-        //    18: invokevirtual   com/netflix/mediaclient/service/NetflixService.getConfiguration:()Lcom/netflix/mediaclient/service/ServiceAgent$ConfigurationAgentInterface;
-        //    21: aload           8
-        //    23: invokevirtual   com/netflix/mediaclient/service/NetflixService.getCurrentProfile:()Lcom/netflix/mediaclient/servicemgr/model/user/UserProfile;
-        //    26: invokestatic    com/netflix/mediaclient/ui/kids/KidsUtils.isKoPExperience:(Lcom/netflix/mediaclient/service/ServiceAgent$ConfigurationAgentInterface;Lcom/netflix/mediaclient/servicemgr/model/user/UserProfile;)Z
-        //    29: iload           6
-        //    31: aload           7
-        //    33: invokespecial   invokespecial  !!! ERROR
-        //    36: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
-        //    39: return         
+        //     1: new             new            !!! ERROR
+        //     4: dup            
+        //     5: aload_0        
+        //     6: aload_1        
+        //     7: iload_3        
+        //     8: iload           5
+        //    10: iload           6
+        //    12: aload           7
+        //    14: invokespecial   invokespecial  !!! ERROR
+        //    17: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //    20: return         
         // 
         // The error that occurred was:
         // 
@@ -2498,8 +2561,8 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //     1: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLolomoId:()Ljava/lang/String;
         //     4: astore_1       
         //     5: aload_0        
-        //     6: getstatic       com/netflix/mediaclient/servicemgr/model/LoMoType.CONTINUE_WATCHING:Lcom/netflix/mediaclient/servicemgr/model/LoMoType;
-        //     9: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoInfo:(Lcom/netflix/mediaclient/servicemgr/model/LoMoType;)Lcom/netflix/mediaclient/util/DataUtil$StringPair;
+        //     6: getstatic       com/netflix/mediaclient/servicemgr/interface_/LoMoType.CONTINUE_WATCHING:Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;
+        //     9: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoInfo:(Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;)Lcom/netflix/mediaclient/util/DataUtil$StringPair;
         //    12: astore_2       
         //    13: aload_1        
         //    14: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
@@ -2515,7 +2578,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    37: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
         //    40: ifeq            53
         //    43: ldc             "CachedModelProxy"
-        //    45: ldc_w           "Can't refresh CW - CW lomo id is empty"
+        //    45: ldc_w           "Can't refresh CW - lomo id is empty"
         //    48: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
         //    51: pop            
         //    52: return         
@@ -2526,7 +2589,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    61: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
         //    64: ifeq            77
         //    67: ldc             "CachedModelProxy"
-        //    69: ldc_w           "Can't refresh CW - CW lomo index is invalid"
+        //    69: ldc_w           "Can't refresh CW - lomo index is invalid"
         //    72: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
         //    75: pop            
         //    76: return         
@@ -2602,8 +2665,8 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //     1: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLolomoId:()Ljava/lang/String;
         //     4: astore_1       
         //     5: aload_0        
-        //     6: getstatic       com/netflix/mediaclient/servicemgr/model/LoMoType.INSTANT_QUEUE:Lcom/netflix/mediaclient/servicemgr/model/LoMoType;
-        //     9: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoInfo:(Lcom/netflix/mediaclient/servicemgr/model/LoMoType;)Lcom/netflix/mediaclient/util/DataUtil$StringPair;
+        //     6: getstatic       com/netflix/mediaclient/servicemgr/interface_/LoMoType.INSTANT_QUEUE:Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;
+        //     9: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoInfo:(Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;)Lcom/netflix/mediaclient/util/DataUtil$StringPair;
         //    12: astore_2       
         //    13: aload_1        
         //    14: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
@@ -2619,7 +2682,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    37: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
         //    40: ifeq            53
         //    43: ldc             "CachedModelProxy"
-        //    45: ldc_w           "Can't refresh IQ - IQ lomo id is empty"
+        //    45: ldc_w           "Can't refresh IQ - lomo id is empty"
         //    48: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
         //    51: pop            
         //    52: return         
@@ -2630,7 +2693,111 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    61: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
         //    64: ifeq            77
         //    67: ldc             "CachedModelProxy"
-        //    69: ldc_w           "Can't refresh IQ - IQ lomo index is invalid"
+        //    69: ldc_w           "Can't refresh IQ - lomo index is invalid"
+        //    72: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    75: pop            
+        //    76: return         
+        //    77: aload_0        
+        //    78: new             new            !!! ERROR
+        //    81: dup            
+        //    82: aload_0        
+        //    83: aload_1        
+        //    84: aload_2        
+        //    85: getfield        com/netflix/mediaclient/util/DataUtil$StringPair.first:Ljava/lang/Object;
+        //    88: checkcast       Ljava/lang/String;
+        //    91: aload_2        
+        //    92: getfield        com/netflix/mediaclient/util/DataUtil$StringPair.second:Ljava/lang/Object;
+        //    95: checkcast       Ljava/lang/String;
+        //    98: invokespecial   invokespecial  !!! ERROR
+        //   101: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //   104: return         
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalArgumentException: Argument 'typeArguments' must not have any null elements.
+        //     at com.strobel.core.VerifyArgument.noNullElementsAndNotEmpty(VerifyArgument.java:145)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.makeGenericType(CoreMetadataFactory.java:570)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory.makeParameterizedType(CoreMetadataFactory.java:156)
+        //     at com.strobel.assembler.metadata.signatures.Reifier.visitClassTypeSignature(Reifier.java:125)
+        //     at com.strobel.assembler.metadata.signatures.ClassTypeSignature.accept(ClassTypeSignature.java:46)
+        //     at com.strobel.assembler.metadata.MetadataParser.parseClassSignature(MetadataParser.java:394)
+        //     at com.strobel.assembler.metadata.ClassFileReader.populateBaseTypes(ClassFileReader.java:665)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:438)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:366)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveType(MetadataSystem.java:124)
+        //     at com.strobel.decompiler.NoRetryMetadataSystem.resolveType(DecompilerDriver.java:463)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveCore(MetadataSystem.java:76)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:104)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:589)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:128)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:599)
+        //     at com.strobel.assembler.metadata.MethodReference.resolve(MethodReference.java:172)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferCall(TypeAnalysis.java:2428)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.doInferTypeForExpression(TypeAnalysis.java:1029)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferTypeForExpression(TypeAnalysis.java:803)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:672)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:655)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:365)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.run(TypeAnalysis.java:96)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:109)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
+    }
+    
+    public void refreshPopularTitlesLomo() {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_0        
+        //     1: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLolomoId:()Ljava/lang/String;
+        //     4: astore_1       
+        //     5: aload_0        
+        //     6: getstatic       com/netflix/mediaclient/servicemgr/interface_/LoMoType.POPULAR_TITLES:Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;
+        //     9: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoInfo:(Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;)Lcom/netflix/mediaclient/util/DataUtil$StringPair;
+        //    12: astore_2       
+        //    13: aload_1        
+        //    14: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
+        //    17: ifeq            30
+        //    20: ldc             "CachedModelProxy"
+        //    22: ldc_w           "Can't refresh Popular Titles - lolomoId is empty"
+        //    25: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    28: pop            
+        //    29: return         
+        //    30: aload_2        
+        //    31: getfield        com/netflix/mediaclient/util/DataUtil$StringPair.first:Ljava/lang/Object;
+        //    34: checkcast       Ljava/lang/String;
+        //    37: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
+        //    40: ifeq            53
+        //    43: ldc             "CachedModelProxy"
+        //    45: ldc_w           "Can't refresh Popular Titles - lomo id is empty"
+        //    48: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    51: pop            
+        //    52: return         
+        //    53: iconst_m1      
+        //    54: invokestatic    java/lang/String.valueOf:(I)Ljava/lang/String;
+        //    57: aload_2        
+        //    58: getfield        com/netflix/mediaclient/util/DataUtil$StringPair.second:Ljava/lang/Object;
+        //    61: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
+        //    64: ifeq            77
+        //    67: ldc             "CachedModelProxy"
+        //    69: ldc_w           "Can't refresh Popular Titles - lomo index is invalid"
         //    72: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
         //    75: pop            
         //    76: return         
@@ -2706,8 +2873,8 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //     1: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLolomoId:()Ljava/lang/String;
         //     4: astore          5
         //     6: aload_0        
-        //     7: getstatic       com/netflix/mediaclient/servicemgr/model/LoMoType.INSTANT_QUEUE:Lcom/netflix/mediaclient/servicemgr/model/LoMoType;
-        //    10: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoInfo:(Lcom/netflix/mediaclient/servicemgr/model/LoMoType;)Lcom/netflix/mediaclient/util/DataUtil$StringPair;
+        //     7: getstatic       com/netflix/mediaclient/servicemgr/interface_/LoMoType.INSTANT_QUEUE:Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;
+        //    10: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoInfo:(Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;)Lcom/netflix/mediaclient/util/DataUtil$StringPair;
         //    13: astore          6
         //    15: aload_0        
         //    16: new             new            !!! ERROR
@@ -2980,11 +3147,11 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         }
         else {
             final int playbackBookmark = asset.getPlaybackBookmark();
-            if (Log.isLoggable("CachedModelProxy", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("CachedModelProxy", "Updating video positions for asset: " + asset.getTitle() + ", playable bookmark: " + playbackBookmark);
             }
             if (playbackBookmark <= 0) {
-                if (Log.isLoggable("CachedModelProxy", 5)) {
+                if (Log.isLoggable()) {
                     Log.w("CachedModelProxy", "updateBookmarkPosition - bookmarkPos <= 0");
                 }
             }
@@ -2998,7 +3165,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                 }
                 final FalkorVideo falkorVideo = (FalkorVideo)this.getVideo(PQL.create(s, asset.getPlayableId(), "bookmark"));
                 if (falkorVideo == null) {
-                    if (Log.isLoggable("CachedModelProxy", 5)) {
+                    if (Log.isLoggable()) {
                         Log.w("CachedModelProxy", "updateBookmarkPosition - video is null, id: " + asset.getPlayableId());
                     }
                 }
@@ -3009,7 +3176,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                         bookmark.setLastModified(System.currentTimeMillis());
                         return;
                     }
-                    if (Log.isLoggable("CachedModelProxy", 5)) {
+                    if (Log.isLoggable()) {
                         Log.w("CachedModelProxy", "updateBookmarkPosition - bookmark is null, video id: " + asset.getPlayableId());
                     }
                 }

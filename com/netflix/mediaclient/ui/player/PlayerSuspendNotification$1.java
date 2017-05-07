@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import android.app.Notification;
 import android.text.TextUtils;
 import android.app.Notification$Builder;
@@ -26,9 +26,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.app.NotificationManager;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
 class PlayerSuspendNotification$1 extends SimpleManagerCallback

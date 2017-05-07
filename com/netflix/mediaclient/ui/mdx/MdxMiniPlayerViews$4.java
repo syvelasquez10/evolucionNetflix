@@ -34,8 +34,8 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.view.animation.Interpolator;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.TimeFormatterHelper;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.Log;
@@ -66,6 +66,6 @@ class MdxMiniPlayerViews$4 implements View$OnClickListener
             }
         }
         Log.v("MdxMiniPlayerViews", "showing details actiivty");
-        DetailsActivityLauncher.show(this.this$0.activity, currentVideo, PlayContext.EMPTY_CONTEXT);
+        DetailsActivityLauncher.show(this.this$0.activity, currentVideo, PlayContext.EMPTY_CONTEXT, "MdxMiniPlayer");
     }
 }

@@ -9,12 +9,13 @@ import java.util.Collection;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewParent;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup$IVideoView;
+import com.netflix.mediaclient.ui.details.IEpisodeView;
 import android.view.ViewGroup;
 import java.util.ArrayList;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.widget.Checkable;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
 import android.support.v7.widget.RecyclerView$ViewHolder;
 import android.support.v7.widget.RecyclerView$Adapter;
@@ -27,6 +28,7 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     protected final List<Video> data;
     private final List<View> headerViews;
     private boolean isSingleChoiceMode;
+    private int itemCheckedPosition;
     private RecyclerViewHeaderAdapter$OnItemClickListener itemClickListener;
     private int itemContentType;
     private Checkable lastCheckedView;
@@ -38,6 +40,8 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         this.data = new ArrayList<Video>();
         this.itemContentType = 2;
         this.lastCheckedView = null;
+        this.isSingleChoiceMode = true;
+        this.itemCheckedPosition = -1;
         this.viewCreator = viewCreator;
     }
     
@@ -58,9 +62,13 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
                 return;
             }
             ((RecyclerViewHeaderAdapter$VideoViewHolder)recyclerView$ViewHolder).setLoadingViewVisibility(8);
-            final VideoViewGroup$IVideoView videoViewGroup$IVideoView = (VideoViewGroup$IVideoView)((ViewGroup)recyclerView$ViewHolder.itemView).getChildAt(0);
-            if (videoViewGroup$IVideoView != null) {
-                videoViewGroup$IVideoView.update(item, this.getTrackable(), n, false, false);
+            final View child = ((ViewGroup)recyclerView$ViewHolder.itemView).getChildAt(0);
+            if (child instanceof IEpisodeView) {
+                ((IEpisodeView<Video>)child).update(item);
+                return;
+            }
+            if (child instanceof VideoViewGroup$IVideoView) {
+                ((VideoViewGroup$IVideoView<Video>)child).update(item, this.getTrackable(), n, false, false);
             }
         }
     }
@@ -81,6 +89,10 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     
     protected View getActiveLoadingView(final int n) {
         return null;
+    }
+    
+    public int getCheckedItemPosition() {
+        return this.itemCheckedPosition;
     }
     
     public int getDataSetCount() {
@@ -133,6 +145,7 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         else if (this.getItemViewType(n) == this.itemContentType) {
             this.onBindItemView(recyclerView$ViewHolder, n);
         }
+        this.onPostItemViewBind(n);
     }
     
     @Override
@@ -153,16 +166,13 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         return this.headerViews.remove(view);
     }
     
-    public void setItemChecked(int n, final RecyclerView recyclerView) {
-        if (this.isSingleChoiceMode) {
-            n += this.getHeaderViewsCount();
-            if (recyclerView != null && recyclerView.getChildCount() > n) {
-                final ViewGroup viewGroup = (ViewGroup)recyclerView.getChildAt(n);
-                if (viewGroup != null && viewGroup.getChildCount() > 0) {
-                    final View child = viewGroup.getChildAt(0);
-                    if (child instanceof Checkable) {
-                        this.setSingleChoiceModeState(child);
-                    }
+    public void setItemChecked(final int n, final RecyclerView recyclerView) {
+        if (n >= 0 && this.isSingleChoiceMode && recyclerView != null && recyclerView.getChildCount() > n) {
+            final ViewGroup viewGroup = (ViewGroup)recyclerView.getChildAt(n);
+            if (viewGroup != null && viewGroup.getChildCount() > 0) {
+                final View child = viewGroup.getChildAt(0);
+                if (child instanceof Checkable) {
+                    this.setSingleChoiceModeState(child, n);
                 }
             }
         }
@@ -178,7 +188,7 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
             this.data.add(new DummyEpisodeDetails(i));
         }
         this.data.addAll(collection);
-        this.notifyItemRangeChanged(this.getHeaderViewsCount() - 1, this.getItemCount() - 1);
+        this.notifyDataSetChanged();
     }
     
     public void setItems(final Collection<? extends Video> items, final int itemContentType, final RecyclerViewHeaderAdapter$IViewCreator viewCreator) {
@@ -195,18 +205,22 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
         this.isSingleChoiceMode = isSingleChoiceMode;
     }
     
-    void setSingleChoiceModeState(final View view) {
+    void setSingleChoiceModeState(final View view, final int itemCheckedPosition) {
         if (this.isSingleChoiceMode && view instanceof Checkable) {
             final Checkable lastCheckedView = (Checkable)view;
-            if (!lastCheckedView.isChecked()) {
+            if (lastCheckedView.isChecked()) {
+                lastCheckedView.setChecked(false);
+            }
+            else {
                 lastCheckedView.setChecked(true);
                 if (this.lastCheckedView != null && lastCheckedView != this.lastCheckedView) {
                     this.lastCheckedView.setChecked(false);
                 }
                 this.lastCheckedView = lastCheckedView;
-                return;
             }
-            lastCheckedView.setChecked(false);
+            if (lastCheckedView.isChecked()) {
+                this.itemCheckedPosition = itemCheckedPosition;
+            }
         }
     }
     
@@ -216,5 +230,18 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
     
     public void setViewCreator(final RecyclerViewHeaderAdapter$IViewCreator viewCreator) {
         this.viewCreator = viewCreator;
+    }
+    
+    public void updateItems(final Collection<? extends Video> collection, int i, final int n) {
+        if (i == 0) {
+            this.data.clear();
+        }
+        if (this.data.size() == 0) {
+            for (i = 0; i < this.getHeaderViewsCount(); ++i) {
+                this.data.add(new DummyEpisodeDetails(i));
+            }
+        }
+        this.data.addAll(collection);
+        this.notifyDataSetChanged();
     }
 }

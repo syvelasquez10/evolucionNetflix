@@ -15,6 +15,7 @@ import com.netflix.mediaclient.service.logging.uiaction.model.RemoveFromPlaylist
 import com.netflix.mediaclient.service.logging.uiaction.model.RegisterEndedEvent;
 import com.netflix.mediaclient.service.logging.android.model.RecommendSheetEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RateTitleEndedEvent;
+import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetActionEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.NewLolomoEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.NavigationEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.LoginEndedEvent;
@@ -57,6 +58,7 @@ import com.netflix.mediaclient.service.logging.uiaction.RemoveFromPlaylistSessio
 import com.netflix.mediaclient.service.logging.uiaction.RegisterSession;
 import com.netflix.mediaclient.service.logging.android.RecommendSheetSession;
 import com.netflix.mediaclient.service.logging.uiaction.RateTitleSession;
+import com.netflix.mediaclient.service.logging.android.preapp.PreAppWidgetActionSession;
 import com.netflix.mediaclient.service.logging.uiaction.NewLolomoSession;
 import com.netflix.mediaclient.service.logging.uiaction.NavigationSession;
 import com.netflix.mediaclient.service.logging.uiaction.LoginSession;
@@ -81,6 +83,7 @@ final class UserActionLoggingImpl implements UserActionLogging
     private LoginSession mLoginSession;
     private NavigationSession mNavigationSession;
     private NewLolomoSession mNewLolomoSession;
+    private PreAppWidgetActionSession mPreAppWidgetActionSession;
     private RateTitleSession mRateTitleSession;
     private RecommendSheetSession mRecommendSheetSession;
     private RegisterSession mRegisterSession;
@@ -486,8 +489,37 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.startNewLolomoSession(value, value2);
     }
     
+    private void handlePreAppWidgetActionEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
+        while (true) {
+            try {
+                final UIError instance = UIError.createInstance(stringExtra2);
+                if (!StringUtils.isEmpty(stringExtra)) {
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
+                }
+                this.endPreAppWidgetActionSession(value, instance);
+            }
+            catch (JSONException ex) {
+                final UIError instance = null;
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handlePreAppWidgetActionStart(final Intent intent) {
+        final String stringExtra = intent.getStringExtra("cmd");
+        UserActionLogging$CommandName value = null;
+        if (StringUtils.isNotEmpty(stringExtra)) {
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        this.startPreAppWidgetActionSession(value, intent.getStringExtra("logData"), intent.getStringExtra("widgetActionData"));
+    }
+    
     private void handleRateTitleEnded(final Intent intent) {
-    Label_0057_Outer:
+    Label_0060_Outer:
         while (true) {
             Integer value = null;
             Serializable s = intent.getStringExtra("reason");
@@ -495,13 +527,13 @@ final class UserActionLoggingImpl implements UserActionLogging
             final int intExtra = intent.getIntExtra("rating", 0);
             final int intExtra2 = intent.getIntExtra("rank", Integer.MIN_VALUE);
             while (true) {
-                Label_0089: {
+                Label_0093: {
                     while (true) {
                         while (true) {
                             try {
                                 final UIError instance = UIError.createInstance(stringExtra);
                                 if (!StringUtils.isNotEmpty((String)s)) {
-                                    break Label_0089;
+                                    break Label_0093;
                                 }
                                 s = IClientLogging$CompletionReason.valueOf((String)s);
                                 if (intExtra2 == Integer.MIN_VALUE) {
@@ -511,7 +543,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                             }
                             catch (JSONException ex) {
                                 final UIError instance = null;
-                                continue Label_0057_Outer;
+                                continue Label_0060_Outer;
                             }
                             break;
                         }
@@ -919,20 +951,20 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     private void handleStartPlayEnded(final Intent intent) {
-    Label_0047_Outer:
+    Label_0049_Outer:
         while (true) {
             Integer value = null;
             Serializable s = intent.getStringExtra("reason");
             final String stringExtra = intent.getStringExtra("error");
             final int intExtra = intent.getIntExtra("rank", Integer.MIN_VALUE);
             while (true) {
-                Label_0089: {
+                Label_0092: {
                     while (true) {
                         while (true) {
                             try {
                                 final UIError instance = UIError.createInstance(stringExtra);
                                 if (!StringUtils.isNotEmpty((String)s)) {
-                                    break Label_0089;
+                                    break Label_0092;
                                 }
                                 s = IClientLogging$CompletionReason.valueOf((String)s);
                                 if (intExtra == Integer.MIN_VALUE) {
@@ -942,7 +974,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                             }
                             catch (JSONException ex) {
                                 final UIError instance = null;
-                                continue Label_0047_Outer;
+                                continue Label_0049_Outer;
                             }
                             break;
                         }
@@ -1338,6 +1370,24 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.post(endedEvent);
         this.mNewLolomoSession = null;
         Log.d("nf_log", "NewLolomoSession end event posted.");
+    }
+    
+    @Override
+    public void endPreAppWidgetActionSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
+        if (this.mPreAppWidgetActionSession == null) {
+            return;
+        }
+        Log.d("nf_log", "PreAppWidgetActionSession session ended");
+        final PreAppWidgetActionEndedEvent endedEvent = this.mPreAppWidgetActionSession.createEndedEvent(clientLogging$CompletionReason, uiError);
+        if (endedEvent == null) {
+            Log.d("nf_log", "PreAppWidgetActionSession still waits on session id, do not post at this time.");
+            return;
+        }
+        this.mEventHandler.removeSession(this.mPreAppWidgetActionSession);
+        Log.d("nf_log", "PreAppWidgetActionSession end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mPreAppWidgetActionSession = null;
+        Log.d("nf_log", "PreAppWidgetActionSession end event posted.");
     }
     
     @Override
@@ -1765,7 +1815,17 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.handleNewLolomoEnded(intent);
             return true;
         }
-        if (Log.isLoggable("nf_log", 3)) {
+        if ("com.netflix.mediaclient.intent.action.PREAPP_WIDGET_ACTION_START".equals(action)) {
+            Log.d("nf_log", "PREAPP_WIDGET_ACTION_START");
+            this.handlePreAppWidgetActionStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.PREAPP_WIDGET_ACTION_ENDED".equals(action)) {
+            Log.d("nf_log", "PREAPP_WIDGET_ACTION_ENDED");
+            this.handlePreAppWidgetActionEnded(intent);
+            return true;
+        }
+        if (Log.isLoggable()) {
             Log.d("nf_log", "We do not support action " + action);
         }
         return false;
@@ -1879,6 +1939,19 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mNewLolomoSession = new NewLolomoSession(userActionLogging$CommandName, clientLogging$ModalView);
         this.mEventHandler.addSession(this.mNewLolomoSession);
         Log.d("nf_log", "NewLolomoSession session start done.");
+    }
+    
+    @Override
+    public void startPreAppWidgetActionSession(final UserActionLogging$CommandName userActionLogging$CommandName, final String s, final String s2) {
+        if (this.mPreAppWidgetActionSession != null) {
+            Log.e("nf_log", "PreAppWidgetActionSession already started!");
+            return;
+        }
+        Log.d("nf_log", "PreAppWidgetActionSessionstarting...");
+        final PreAppWidgetActionSession mPreAppWidgetActionSession = new PreAppWidgetActionSession(userActionLogging$CommandName, s, s2);
+        this.mEventHandler.addSession(mPreAppWidgetActionSession);
+        this.mPreAppWidgetActionSession = mPreAppWidgetActionSession;
+        Log.d("nf_log", "PreAppWidgetActionSession start done.");
     }
     
     @Override

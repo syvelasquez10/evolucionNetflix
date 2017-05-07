@@ -4,12 +4,13 @@
 
 package com.netflix.mediaclient.ui.search;
 
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
 import android.graphics.Typeface;
-import com.netflix.mediaclient.servicemgr.model.search.SearchSuggestion;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchSuggestion;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import com.netflix.mediaclient.servicemgr.model.search.SearchPerson;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchPerson;
+import android.annotation.SuppressLint;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.text.style.ForegroundColorSpan;

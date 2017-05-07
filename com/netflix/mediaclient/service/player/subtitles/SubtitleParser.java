@@ -60,18 +60,18 @@ public class SubtitleParser
         }
         final SubtitleBlock subtitleBlock = this.mTextBlocks.get(n2);
         if (subtitleBlock.isVisible(n)) {
-            if (Log.isLoggable("nf_subtitles", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Block " + n2 + " is visible for pts " + n);
             }
             return 0;
         }
         if (subtitleBlock.getStart() < n) {
-            if (Log.isLoggable("nf_subtitles", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Block " + n2 + " is before pts " + n);
             }
             return -1;
         }
-        if (Log.isLoggable("nf_subtitles", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Block " + n2 + " is after pts " + n);
         }
         return 1;
@@ -83,7 +83,7 @@ public class SubtitleParser
     }
     
     private int findIndex(final long n) {
-        if (Log.isLoggable("nf_subtitles", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Index was not known before. Find it for position " + n);
         }
         int n2;
@@ -107,7 +107,7 @@ public class SubtitleParser
                     if (this.compareBlockTime(n, n4) != 0) {
                         break;
                     }
-                    if (Log.isLoggable("nf_subtitles", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_subtitles", "New Index found " + n4);
                     }
                     search = n4;
@@ -115,7 +115,7 @@ public class SubtitleParser
                 }
             }
             n2 = n3;
-            if (Log.isLoggable("nf_subtitles", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Index found " + n3);
                 return n3;
             }
@@ -164,7 +164,7 @@ public class SubtitleParser
             throw new IllegalArgumentException("Head element can not be null!");
         }
         final String attribute = element.getAttribute("use");
-        if (Log.isLoggable("nf_subtitles", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Subtitle profile: " + attribute);
         }
         this.mSubtitleProfile = IMedia$SubtitleProfile.fromNccpCode(attribute);
@@ -192,12 +192,12 @@ public class SubtitleParser
                     Log.w("nf_subtitles", "Region not found!");
                 }
                 else if (region.getId() == null) {
-                    if (Log.isLoggable("nf_subtitles", 5)) {
+                    if (Log.isLoggable()) {
                         Log.w("nf_subtitles", "Region exist, but its ID is null: " + region);
                     }
                 }
                 else {
-                    if (Log.isLoggable("nf_subtitles", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_subtitles", "Region " + i + " found " + region);
                     }
                     this.mRegions.put(region.getId(), region);
@@ -230,13 +230,13 @@ public class SubtitleParser
                     Log.w("nf_subtitles", "Style not found!");
                 }
                 else if (instanceFromContainer.getId() == null) {
-                    if (Log.isLoggable("nf_subtitles", 5)) {
+                    if (Log.isLoggable()) {
                         Log.w("nf_subtitles", "Style exist, nut its ID is null: " + instanceFromContainer);
                     }
                 }
                 else {
                     this.mStyles.put(instanceFromContainer.getId(), instanceFromContainer);
-                    if (Log.isLoggable("nf_subtitles", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_subtitles", "Style found: " + instanceFromContainer);
                     }
                 }
@@ -268,7 +268,7 @@ public class SubtitleParser
             Log.d("nf_subtitles", "Tickrate defaults to 1000 on empty tag");
             this.mTickRate = 1000.0;
         }
-        if (Log.isLoggable("nf_subtitles", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Tickrate final: " + this.mTickRate);
         }
         this.mPixelAspectRatio = element.getAttribute("ttp:pixelAspectRatio");
@@ -339,11 +339,11 @@ public class SubtitleParser
         final long n2 = n + 2000L;
         final ArrayList<SubtitleBlock> list = new ArrayList<SubtitleBlock>();
         final ArrayList<SubtitleBlock> list2 = new ArrayList<SubtitleBlock>();
-        if (Log.isLoggable("nf_subtitles", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Subtitle blocks: " + this.mTextBlocks.size());
         }
         int i = this.getLastKnownPosition(n);
-        if (Log.isLoggable("nf_subtitles", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles", "==> Start search from index: " + i);
         }
         int n3 = 0;
@@ -356,7 +356,7 @@ public class SubtitleParser
             int n4;
             if (subtitleBlock.isVisible(n)) {
                 if ((n4 = n3) == 0) {
-                    if (Log.isLoggable("nf_subtitles", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_subtitles", "===> New index search found: " + i);
                     }
                     n4 = 1;

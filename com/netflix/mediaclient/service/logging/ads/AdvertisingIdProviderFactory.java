@@ -17,7 +17,7 @@ public final class AdvertisingIdProviderFactory
         ThreadUtils.assertNotOnMain();
         try {
             final int googlePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
-            if (Log.isLoggable("nf_log", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_log", "Google Play status: " + googlePlayServicesAvailable);
             }
             if (googlePlayServicesAvailable != 0) {
@@ -25,7 +25,7 @@ public final class AdvertisingIdProviderFactory
                 return null;
             }
             final GooglePlayAdvertisingIdProvider googlePlayAdvertisingIdProvider = new GooglePlayAdvertisingIdProvider(context);
-            if (Log.isLoggable("nf_log", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_log", "Google Play Advertising ID: " + googlePlayAdvertisingIdProvider.getId());
                 Log.d("nf_log", "Google Play Advertising ID is resettable : " + googlePlayAdvertisingIdProvider.isResettable());
                 Log.d("nf_log", "Google Play Advertising ID is limited : " + googlePlayAdvertisingIdProvider.isLimitAdTrackingEnabled());

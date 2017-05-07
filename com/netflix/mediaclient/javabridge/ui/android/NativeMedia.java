@@ -72,7 +72,7 @@ import com.netflix.mediaclient.media.TrickplayUrl;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
-import com.netflix.mediaclient.proxy.nrdp.media.StreamInfo;
+import com.netflix.mediaclient.javabridge.StreamInfo;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.javabridge.ui.IMedia;
@@ -108,7 +108,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     private void calculateVideoSize() {
-        if (Log.isLoggable("nf-media", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-media", "handlePropertyUpdate:: displayAspectRatio x: " + this.mDisplayAspectRatioX + ", y: " + this.mDisplayAspectRatioY);
         }
         final Display displaySize = this.getDisplaySize();
@@ -124,7 +124,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
             }
         }
         else {
-            if (Log.isLoggable("nf-media", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf-media", "handlePropertyUpdate:: screen size x: " + displaySize.getWidth() + ", y: " + displaySize.getHeight());
             }
             if (this.mDisplayAspectRatioY == 0) {
@@ -136,7 +136,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
                 this.mFrameX = this.mFrameY * this.mDisplayAspectRatioX / this.mDisplayAspectRatioY;
             }
         }
-        if (Log.isLoggable("nf-media", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-media", "handlePropertyUpdate:: frame x: " + this.mFrameX + ", y: " + this.mFrameY);
         }
     }
@@ -165,19 +165,19 @@ public class NativeMedia extends NativeNrdObject implements IMedia
             return new AudioSubtitleDefaultOrderInfo[0];
         }
         final ArrayList<AudioSubtitleDefaultOrderInfo> list = new ArrayList<AudioSubtitleDefaultOrderInfo>(jsonArray.length());
-    Label_0143_Outer:
+    Label_0140_Outer:
         while (i < jsonArray.length()) {
             while (true) {
                 try {
                     final AudioSubtitleDefaultOrderInfo audioSubtitleDefaultOrderInfo = new AudioSubtitleDefaultOrderInfo(jsonArray.getJSONObject(i));
-                    if (Log.isLoggable("nf-bridge", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf-bridge", "Default found " + audioSubtitleDefaultOrderInfo);
                     }
                     if (this.isValid(audioSubtitleDefaultOrderInfo)) {
                         list.add(audioSubtitleDefaultOrderInfo);
                     }
                     ++i;
-                    continue Label_0143_Outer;
+                    continue Label_0140_Outer;
                 }
                 catch (JSONException ex) {
                     Log.e("nf-bridge", "Failed to parse default ", (Throwable)ex);
@@ -203,7 +203,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
         for (int i = 0; i < this.mSubtitleTrackList.length; ++i) {
             final Subtitle subtitle = this.mSubtitleTrackList[i];
             if (subtitle.getId() != null && subtitle.getId().equals(s)) {
-                if (Log.isLoggable("nf-bridge", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf-bridge", "Subtitle found " + subtitle + " for id " + s);
                 }
                 return subtitle;
@@ -348,7 +348,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
                             if ("updateVideoBitrate".equalsIgnoreCase(string)) {
                                 final UpdateVideoBitrate updateVideoBitrate = new UpdateVideoBitrate(jsonObject);
                                 this.mCurrentVideoBitrate = updateVideoBitrate.getBitsPerSecond();
-                                if (Log.isLoggable("nf-bridge", 3)) {
+                                if (Log.isLoggable()) {
                                     Log.d("nf-bridge", "Media::processUpdate: Event found UpdateVideoBitrate " + updateVideoBitrate.getBitsPerSecond());
                                 }
                                 return -1;
@@ -378,7 +378,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
                                 baseMediaEvent = new GenericMediaEvent("underflow");
                             }
                             else {
-                                if (Log.isLoggable("nf-bridge", 3)) {
+                                if (Log.isLoggable()) {
                                     Log.d("nf-bridge", "Media::processUpdate: uknown type " + string);
                                     return 0;
                                 }
@@ -388,7 +388,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
                     }
                 }
             }
-            if (Log.isLoggable("nf-bridge", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf-bridge", "Passing event to MP " + baseMediaEvent);
             }
             if (baseMediaEvent != null && baseMediaEvent instanceof MediaEvent) {
@@ -474,7 +474,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
                 while (i < this.mAudioTrackList.length) {
                     final AudioSource audioSource = this.mAudioTrackList[i];
                     if (audioSource.getId() != null && audioSource.getId().equals(audioSubtitleDefaultOrderInfo.getAudioTrackId())) {
-                        if (Log.isLoggable("nf-bridge", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("nf-bridge", "Audio track found " + audioSource + " for default audio track id " + audioSubtitleDefaultOrderInfo.getAudioTrackId());
                         }
                         final String[] disallowedSubtitles = this.mAudioTrackList[i].getDisallowedSubtitles();
@@ -482,7 +482,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
                             int j = 0;
                             while (j < disallowedSubtitles.length) {
                                 if (disallowedSubtitles[j] != null && disallowedSubtitles[j].equals(audioSubtitleDefaultOrderInfo.getSubtitleTrackId())) {
-                                    if (Log.isLoggable("nf-bridge", 6)) {
+                                    if (Log.isLoggable()) {
                                         Log.e("nf-bridge", "Default subtitle track id " + audioSubtitleDefaultOrderInfo.getSubtitleTrackId() + " is not allowed! Error on NCCP side!");
                                         return false;
                                     }
@@ -494,13 +494,13 @@ public class NativeMedia extends NativeNrdObject implements IMedia
                             }
                         }
                         if (audioSubtitleDefaultOrderInfo.getSubtitleTrackId() == null || "none".equalsIgnoreCase(audioSubtitleDefaultOrderInfo.getSubtitleTrackId()) || "".equals(audioSubtitleDefaultOrderInfo.getSubtitleTrackId())) {
-                            if (Log.isLoggable("nf-bridge", 3)) {
+                            if (Log.isLoggable()) {
                                 Log.d("nf-bridge", "Subtitle track id is NULL for default, no subtitles: " + audioSubtitleDefaultOrderInfo);
                             }
                             return true;
                         }
                         if (this.getSubtitle(audioSubtitleDefaultOrderInfo.getSubtitleTrackId()) != null) {
-                            if (Log.isLoggable("nf-bridge", 3)) {
+                            if (Log.isLoggable()) {
                                 Log.d("nf-bridge", "Default is valid, no restrictions  " + audioSubtitleDefaultOrderInfo);
                             }
                             return true;
@@ -676,7 +676,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
             numChannels = 0;
         }
         final PlayoutMetadata playoutMetadata = new PlayoutMetadata(this.mPosition, this.mDuration, n, n2, highDefinition, superHighDefinition, languageDescription, numChannels, trackType);
-        if (Log.isLoggable("nf-bridge", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-bridge", "Media:: getPlayoutMetadata:: " + playoutMetadata);
         }
         return playoutMetadata;
@@ -710,12 +710,12 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     @Override
     public int getVideoHeight() {
         if (this.mCurrentVideoStream == null) {
-            if (Log.isLoggable("nf-bridge", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf-media", "getVideoHeight:: Current video stream info unknown, use display aspect ratio " + this.mDisplayAspectRatioY + " and height " + this.mFrameY);
             }
             return this.mFrameY;
         }
-        if (Log.isLoggable("nf-bridge", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-media", "Current video stream " + this.mCurrentVideoStream);
         }
         return this.mCurrentVideoStream.getFrameHeight();
@@ -724,12 +724,12 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     @Override
     public int getVideoWidth() {
         if (this.mCurrentVideoStream == null) {
-            if (Log.isLoggable("nf-bridge", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf-media", "getVideoHeight:: Current video stream info unknown, use display aspect ratio " + this.mDisplayAspectRatioX + " and width " + this.mFrameX);
             }
             return this.mFrameX;
         }
-        if (Log.isLoggable("nf-bridge", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-media", "Current video stream " + this.mCurrentVideoStream);
         }
         return this.mCurrentVideoStream.getFrameWidth();
@@ -755,11 +755,11 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     public int processUpdate(final JSONObject jsonObject) {
         try {
             final String string = this.getString(jsonObject, "type", null);
-            if (Log.isLoggable("nf-bridge", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf-bridge", "processUpdate: handle type " + string);
             }
             if ("PropertyUpdate".equalsIgnoreCase(string)) {
-                if (jsonObject != null && Log.isLoggable("nf-bridge", 3)) {
+                if (jsonObject != null && Log.isLoggable()) {
                     Log.d("nf-bridge", "processUpdate: handle prop update " + jsonObject.toString());
                 }
                 return this.handlePropertyUpdate(jsonObject);
@@ -840,20 +840,26 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     public boolean setProperty(final String s, final String s2) {
-        if (Log.isLoggable("nf-bridge", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-bridge", "Sets property " + s + " to " + s2);
         }
         return false;
     }
     
     @Override
-    public void setStreamingQoe(final String s, final boolean b) {
+    public void setStreamingQoe(final String s, final boolean b, final boolean b2) {
         if (s == null) {
             return;
         }
         try {
             final JSONObject jsonObject = new JSONObject(s);
             jsonObject.put("enableHTTPSAuth", b);
+            if (b2) {
+                jsonObject.put("minInitVideoBitrate", 200);
+                if (Log.isLoggable()) {
+                    Log.d("nf-bridge", "minInitVideoBitrate set to 200");
+                }
+            }
             this.bridge.getNrdProxy().invokeMethod(new SetConfigData(jsonObject, "streaming"));
         }
         catch (JSONException ex) {

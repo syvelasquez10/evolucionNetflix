@@ -401,9 +401,9 @@ public class i implements SupportMenu
             }
             else {
                 final boolean a = m.a();
-                final ActionProvider l = m.l();
-                final boolean b3 = l != null && l.hasSubMenu();
-                if (m.m()) {
+                final ActionProvider i = m.m();
+                final boolean b3 = i != null && i.hasSubMenu();
+                if (m.n()) {
                     final boolean b4 = b2 = (m.expandActionView() | a);
                     if (b4) {
                         this.a(true);
@@ -423,7 +423,7 @@ public class i implements SupportMenu
                     }
                     final ad ad = (ad)m.getSubMenu();
                     if (b3) {
-                        l.onPrepareSubMenu((SubMenu)ad);
+                        i.onPrepareSubMenu((SubMenu)ad);
                     }
                     final boolean b5 = b2 = (this.a(ad, x) | a);
                     if (!b5) {
@@ -759,7 +759,7 @@ public class i implements SupportMenu
             this.n.clear();
             for (int size = i.size(), j = 0; j < size; ++j) {
                 final m m = i.get(j);
-                if (m.h()) {
+                if (m.i()) {
                     this.m.add(m);
                 }
                 else {

@@ -25,15 +25,19 @@ import android.support.v7.media.MediaRouter$Callback;
 class CastManager$10 implements Runnable
 {
     final /* synthetic */ CastManager this$0;
-    final /* synthetic */ String val$id;
+    final /* synthetic */ String val$msg;
+    final /* synthetic */ String val$reqUrl;
+    final /* synthetic */ String val$uuid;
     
-    CastManager$10(final CastManager this$0, final String val$id) {
+    CastManager$10(final CastManager this$0, final String val$msg, final String val$uuid, final String val$reqUrl) {
         this.this$0 = this$0;
-        this.val$id = val$id;
+        this.val$msg = val$msg;
+        this.val$uuid = val$uuid;
+        this.val$reqUrl = val$reqUrl;
     }
     
     @Override
     public void run() {
-        this.this$0.nativeLaunchResult(false, this.val$id);
+        this.this$0.nativeMessageReceived(this.val$msg, this.val$uuid, this.val$reqUrl);
     }
 }

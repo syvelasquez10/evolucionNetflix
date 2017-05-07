@@ -12,6 +12,8 @@ import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$U
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionStartedEvent;
 import com.netflix.mediaclient.javabridge.ui.Log$AppIdSetListener;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent;
+import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent$WidgetInstallAction;
 import com.netflix.mediaclient.service.logging.apm.model.UserSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIStartupSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionEndedEvent;
@@ -101,7 +103,7 @@ class ApmLoggingImpl$NetworkStatusMonitor
         }
         final boolean connectedOrConnecting = activeNetworkInfo.isConnectedOrConnecting();
         final int type = activeNetworkInfo.getType();
-        if (Log.isLoggable("nf_log_apm", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log_apm", "handleConnectivityChange:: connected " + connectedOrConnecting + ", type: " + type);
         }
         switch (type) {

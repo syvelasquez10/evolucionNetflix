@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import android.os.Parcel;
 import java.util.List;
 import android.os.Parcelable$Creator;
+import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import android.os.Parcelable;
 
 public class SocialNotificationsListImpl implements Parcelable, SocialNotificationsList
@@ -28,7 +29,7 @@ public class SocialNotificationsListImpl implements Parcelable, SocialNotificati
         parcel.readList((List)(this.notifications = new ArrayList<SocialNotificationSummary>()), SocialNotificationSummary.class.getClassLoader());
     }
     
-    public SocialNotificationsListImpl(final SocialNotificationsListSummary summary, final List<FalkorSocialNotification> list, final ModelProxy modelProxy) {
+    public SocialNotificationsListImpl(final SocialNotificationsListSummary summary, final List<FalkorSocialNotification> list, final ModelProxy<?> modelProxy) {
         this.notifications = new ArrayList<SocialNotificationSummary>();
         for (int i = 0; i < list.size(); ++i) {
             final FalkorSocialNotification falkorSocialNotification = list.get(i);

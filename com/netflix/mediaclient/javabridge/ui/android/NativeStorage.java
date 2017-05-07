@@ -174,7 +174,7 @@ public final class NativeStorage extends NativeNrdObject implements Storage
                 }
             }
             else {
-                if (Log.isLoggable("nf_object", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_object", "Map not found for account key " + key);
                 }
                 key = null;
@@ -192,11 +192,11 @@ public final class NativeStorage extends NativeNrdObject implements Storage
     public int processUpdate(final JSONObject jsonObject) {
         try {
             final String string = this.getString(jsonObject, "type", null);
-            if (Log.isLoggable("nf_object", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_object", "processUpdate: handle type " + string);
             }
             if ("PropertyUpdate".equalsIgnoreCase(string)) {
-                if (jsonObject != null && Log.isLoggable("nf_object", 3)) {
+                if (jsonObject != null && Log.isLoggable()) {
                     Log.d("nf_object", "processUpdate: handle prop update " + jsonObject.toString());
                 }
                 return this.handlePropertyUpdate(jsonObject);
@@ -230,7 +230,7 @@ public final class NativeStorage extends NativeNrdObject implements Storage
                             if (nativeStorage$KeyValuePair != null) {
                                 list.remove(nativeStorage$KeyValuePair);
                             }
-                            else if (Log.isLoggable("nf_object", 3)) {
+                            else if (Log.isLoggable()) {
                                 final String s3;
                                 Log.d("nf_object", "Item was not found for key " + s2 + " and account " + s3);
                             }

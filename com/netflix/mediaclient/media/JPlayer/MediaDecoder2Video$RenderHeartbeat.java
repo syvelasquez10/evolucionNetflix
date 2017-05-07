@@ -30,7 +30,7 @@ class MediaDecoder2Video$RenderHeartbeat
         final long currentTimeMillis = System.currentTimeMillis();
         if (currentTimeMillis >= this.mLastBeat + 5000L) {
             this.mLastBeat = currentTimeMillis;
-            if (Log.isLoggable("MediaDecoder2Video", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("MediaDecoder2Video", "render alive, rendered frame " + this.this$0.nFrameRendered + ",skipped frame " + this.this$0.nFrameSkipped);
             }
         }

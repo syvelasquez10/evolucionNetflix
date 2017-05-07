@@ -4,16 +4,17 @@
 
 package com.netflix.mediaclient.ui.search;
 
+import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import com.netflix.mediaclient.ui.kubrick_kids.search.KubrickKidsSearchActionBar;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View$OnFocusChangeListener;
 import android.app.Activity;
-import java.io.Serializable;
-import com.netflix.mediaclient.ui.kids.search.KidsSearchActivity;
 import android.content.Intent;
 import android.annotation.SuppressLint;
 import android.view.View$OnTouchListener;
@@ -35,7 +36,7 @@ import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
+import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 
 class SearchActivity$FetchSearchResultsHandler extends LoggingManagerCallback
@@ -62,7 +63,7 @@ class SearchActivity$FetchSearchResultsHandler extends LoggingManagerCallback
         if (status.isError()) {
             Log.w("SearchActivity", "Invalid status code");
             this.this$0.showError();
-            UserActionLogUtils.reportSearchActionEnded(this.requestId, (Context)this.this$0, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getString(2131493196), ActionOnUIError.displayedError));
+            UserActionLogUtils.reportSearchActionEnded(this.requestId, (Context)this.this$0, IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getString(2131493203), ActionOnUIError.displayedError));
             return;
         }
         if (searchResults == null || !searchResults.hasResults()) {

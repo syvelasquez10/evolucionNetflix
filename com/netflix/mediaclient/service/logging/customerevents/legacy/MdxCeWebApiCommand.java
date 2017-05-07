@@ -91,7 +91,7 @@ public abstract class MdxCeWebApiCommand
     private void dumpCookies(final HttpResponse httpResponse) {
         int n = 0;
         int n2 = 0;
-        if (Log.isLoggable("nf_mdxMdxCustomerEventrest", 3)) {
+        if (Log.isLoggable()) {
             final Header[] allHeaders = httpResponse.getAllHeaders();
             if (allHeaders != null && allHeaders.length > 0) {
                 Log.d("nf_mdxMdxCustomerEventrest", "We got headers: " + allHeaders.length);
@@ -141,18 +141,18 @@ public abstract class MdxCeWebApiCommand
         if (n == 410) {
             Log.w("nf_mdxMdxCustomerEventrest", "Received 410: Redirecting... ");
             MdxCeWebApiCommand.mCustomerEventEndPoint = new JSONObject(s).getString("host");
-            if (Log.isLoggable("nf_mdxMdxCustomerEventrest", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_mdxMdxCustomerEventrest", "Response 410: new WebAPI end point received: " + MdxCeWebApiCommand.mCustomerEventEndPoint);
             }
             return true;
         }
         if (n == 200 || n == 202) {
-            if (Log.isLoggable("nf_mdxMdxCustomerEventrest", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_mdxMdxCustomerEventrest", "Response succeed with code " + n);
             }
             return false;
         }
-        if (Log.isLoggable("nf_mdxMdxCustomerEventrest", 6)) {
+        if (Log.isLoggable()) {
             Log.e("nf_mdxMdxCustomerEventrest", "Response " + n);
         }
         throw new HttpException("Failed with response code " + n);

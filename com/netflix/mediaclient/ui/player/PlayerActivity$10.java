@@ -17,6 +17,7 @@ import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import java.io.Serializable;
 import android.media.AudioManager;
 import android.widget.Toast;
 import android.view.MenuItem;
@@ -27,7 +28,7 @@ import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.res.Configuration;
-import com.netflix.mediaclient.net.LogMobileType;
+import com.netflix.mediaclient.service.net.LogMobileType;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -48,9 +49,9 @@ import com.netflix.mediaclient.util.PreferenceUtils;
 import android.os.SystemClock;
 import android.util.Pair;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
-import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
@@ -60,28 +61,25 @@ import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import android.view.View;
 import android.view.KeyEvent;
-import java.io.Serializable;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kids.player.KidsPlayerActivity;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import android.os.Parcelable;
 import android.content.Intent;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
 import com.netflix.mediaclient.media.JPlayer.SecondSurface;
-import com.netflix.mediaclient.ui.common.Social$SocialProviderCallback;
 import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import android.content.BroadcastReceiver;
 import android.os.Handler;
-import com.netflix.mediaclient.ui.details.EpisodeRowView$EpisodeRowListener;
+import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListener;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.media.Language;
 import android.view.View$OnClickListener;
 import android.widget.SeekBar$OnSeekBarChangeListener;
@@ -105,7 +103,7 @@ class PlayerActivity$10 implements SurfaceHolder$Callback
     }
     
     public void surfaceChanged(final SurfaceHolder surfaceHolder, final int n, final int n2, final int n3) {
-        if (Log.isLoggable("PlayerActivity", 3)) {
+        if (Log.isLoggable()) {
             Log.d("PlayerActivity", "Surface changed, format: " + n + ", width: " + n2 + ", height: " + n3);
             if (surfaceHolder != null && surfaceHolder.getSurface() != null) {
                 Log.d("PlayerActivity", "Holder: " + surfaceHolder);
@@ -120,7 +118,7 @@ class PlayerActivity$10 implements SurfaceHolder$Callback
             if (surfaceHolder != null && surfaceHolder.getSurface() != null && this.this$0.mScreen != null) {
                 this.this$0.mIsSurfaceReady = true;
                 this.this$0.mScreen.getSurfaceView().setVisibility(0);
-                if (Log.isLoggable("PlayerActivity", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("PlayerActivity", "Native surface: " + surfaceHolder.getSurface());
                 }
                 this.this$0.completeInitIfReady();

@@ -11,9 +11,9 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 
-public class SearchSuggestion implements JsonPopulator, com.netflix.mediaclient.servicemgr.model.search.SearchSuggestion
+public class SearchSuggestion implements JsonPopulator, com.netflix.mediaclient.servicemgr.interface_.search.SearchSuggestion
 {
     private static final String TAG = "SearchSuggestion";
     private String title;

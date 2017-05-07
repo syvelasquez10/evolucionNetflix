@@ -4,14 +4,14 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.servicemgr.model.Playable;
-import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.IconFontGlyph;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.IconFontGlyph;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import java.util.Random;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 
 public class DummyShowDetails implements ShowDetails
 {
@@ -212,13 +212,33 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
+    public boolean isAvailableToStream() {
+        return true;
+    }
+    
+    @Override
     public boolean isInQueue() {
+        return false;
+    }
+    
+    @Override
+    public boolean isVideo3D() {
+        return false;
+    }
+    
+    @Override
+    public boolean isVideo5dot1() {
         return false;
     }
     
     @Override
     public boolean isVideoHd() {
         return true;
+    }
+    
+    @Override
+    public boolean isVideoUhd() {
+        return false;
     }
     
     @Override

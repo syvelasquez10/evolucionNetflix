@@ -18,6 +18,6 @@ class KubrickShowDetailsFrag$3 implements RecyclerViewHeaderAdapter$IViewCreator
     
     @Override
     public View createItemView() {
-        return (View)new KubrickShowDetailsFrag$KubrickEpisodeView(this.this$0, (Context)this.this$0.getActivity(), 2130903117);
+        return (View)new KubrickShowDetailsFrag$KubrickEpisodeView(this.this$0, (Context)this.this$0.getActivity(), 2130903116);
     }
 }

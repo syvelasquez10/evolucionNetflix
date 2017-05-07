@@ -15,8 +15,8 @@ import com.netflix.mediaclient.Log;
 import java.io.FileInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.content.res.Resources;
 import java.util.StringTokenizer;
 import android.util.Pair;
@@ -82,7 +82,7 @@ public final class StringUtils
         spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, string.length(), 0);
         string = s;
         if (isEmpty(s)) {
-            string = context.getString(2131493153);
+            string = context.getString(2131493159);
         }
         spannableStringBuilder.append((CharSequence)" ");
         spannableStringBuilder.append((CharSequence)string);
@@ -161,7 +161,7 @@ public final class StringUtils
         if (isNotEmpty(s)) {
             sb.append(s).append("   ");
         }
-        sb.append(resources.getString(2131493159, new Object[] { TimeUtils.convertSecondsToMinutes(n2) }));
+        sb.append(resources.getString(2131493166, new Object[] { TimeUtils.convertSecondsToMinutes(n2) }));
         return sb.toString();
     }
     
@@ -290,7 +290,7 @@ public final class StringUtils
             Log.w("StringUtils", "No filename found in URI - using hashcode: " + s);
             s2 = String.valueOf(s.hashCode());
         }
-        if (Log.isLoggable("StringUtils", 2)) {
+        if (Log.isLoggable()) {
             Log.v("StringUtils", "Generating uri from: " + s + ", file name: " + s2);
         }
         return s2;

@@ -6,7 +6,7 @@ package com.netflix.mediaclient.service.webclient.model.leafs;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.user.ProfileType;
+import com.netflix.mediaclient.servicemgr.interface_.user.ProfileType;
 
 public class UserProfile$Summary
 {

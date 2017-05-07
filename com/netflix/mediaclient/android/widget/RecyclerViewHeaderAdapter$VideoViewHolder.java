@@ -9,10 +9,11 @@ import java.util.Collection;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewParent;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup$IVideoView;
+import com.netflix.mediaclient.ui.details.IEpisodeView;
 import java.util.ArrayList;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.widget.Checkable;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
 import android.support.v7.widget.RecyclerView$Adapter;
 import android.view.ViewGroup$LayoutParams;
@@ -46,11 +47,11 @@ class RecyclerViewHeaderAdapter$VideoViewHolder extends RecyclerView$ViewHolder 
         ((ViewGroup)this.itemView).addView(view);
     }
     
-    public void onClick(final View singleChoiceModeState) {
+    public void onClick(final View view) {
         if (this.this$0.itemClickListener != null) {
-            this.this$0.itemClickListener.onItemClick(singleChoiceModeState, this.getPosition());
+            this.this$0.itemClickListener.onItemClick(view, this.getPosition());
         }
-        this.this$0.setSingleChoiceModeState(singleChoiceModeState);
+        this.this$0.setSingleChoiceModeState(view, this.getPosition());
     }
     
     public void setLoadingViewVisibility(final int visibility) {

@@ -42,7 +42,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
         this.pqlQuery1 = new StringBuilder("['profilesList', 'summary']").toString();
         this.pqlQuery2 = "['profilesList', {'to':" + 5 + "}, ['summary', 'subtitlePreference']]";
         this.pqlQuery3 = new StringBuilder("['user', ['summary', 'subtitleDefaults']]").toString();
-        if (Log.isLoggable("nf_service_user_fetchaccountdatarequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_fetchaccountdatarequest", "PQL = " + this.pqlQuery1);
             Log.v("nf_service_user_fetchaccountdatarequest", "PQL = " + this.pqlQuery2);
             Log.v("nf_service_user_fetchaccountdatarequest", "PQL = " + this.pqlQuery3);
@@ -143,7 +143,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
     
     @Override
     protected AccountData parseFalkorResponse(final String s) {
-        if (Log.isLoggable("nf_service_user_fetchaccountdatarequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_fetchaccountdatarequest", "String response to parse = " + s);
         }
         return parseProfilesList(s, true);

@@ -64,7 +64,7 @@ public class TopCropImageView extends AdvancedImageView
         else {
             n3 = n / intrinsicWidth;
         }
-        if (Log.isLoggable("TopCropImageView", 2)) {
+        if (Log.isLoggable()) {
             Log.v("TopCropImageView", "Matrix scale: " + n3 + ", drawable height: " + intrinsicHeight + ", drawable width: " + intrinsicWidth + ", view height: " + n2 + ", view width: " + n + ", crop y-offset: " + this.cropPointYOffset);
         }
         imageMatrix.setScale(n3, n3, 0.0f, (float)this.cropPointYOffset);

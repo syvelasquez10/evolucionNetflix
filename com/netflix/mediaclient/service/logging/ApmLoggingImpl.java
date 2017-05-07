@@ -12,6 +12,8 @@ import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$U
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionStartedEvent;
 import com.netflix.mediaclient.javabridge.ui.Log$AppIdSetListener;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent;
+import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent$WidgetInstallAction;
 import android.content.Context;
 import com.netflix.mediaclient.service.logging.apm.model.UserSessionEndedEvent;
 import com.netflix.mediaclient.service.logging.apm.model.UIStartupSessionEndedEvent;
@@ -321,14 +323,24 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     private void handleEndedNetworkConnectionSession(final String s, final DataContext dataContext, final IClientLogging$ModalView clientLogging$ModalView) {
         final NetworkConnectionSession networkConnectionSession = this.mNetworkConnectionSessions.get(s);
         if (networkConnectionSession != null) {
-            if (Log.isLoggable("nf_log_apm", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_log_apm", "Terminated " + s + " networking sessio!");
             }
             this.mEventHandler.removeSession(networkConnectionSession);
         }
-        else if (Log.isLoggable("nf_log_apm", 6)) {
+        else if (Log.isLoggable()) {
             Log.e("nf_log_apm", "Trying to terminate " + s + " networking session that does not exist!");
         }
+    }
+    
+    private void handlePreappAddWidget(final Intent intent) {
+        Log.d("nf_log_apm", "PREAPP_ADD_WIDGET");
+        this.preappAddWidget(intent.getStringExtra("widgetData"), intent.getLongExtra("eventTime", System.currentTimeMillis()));
+    }
+    
+    private void handlePreappDeleteWidget(final Intent intent) {
+        Log.d("nf_log_apm", "PREAPP_DELETE_WIDGET");
+        this.preappDeleteWidget(intent.getStringExtra("widgetData"), intent.getLongExtra("eventTime", System.currentTimeMillis()));
     }
     
     private void handleSharedContextEnded(final Intent intent) {
@@ -351,7 +363,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         final Event startEvent = networkConnectionSession.createStartEvent();
         this.populateEvent(startEvent, dataContext, clientLogging$ModalView);
         this.mEventHandler.post(startEvent);
-        if (Log.isLoggable("nf_log_apm", 2)) {
+        if (Log.isLoggable()) {
             final StringBuilder append = new StringBuilder().append("Started network connection session, event: ");
             String string;
             if (startEvent == null) {
@@ -512,7 +524,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     public void endUiModelessViewSession(final String s) {
         final UIModelessViewSession uiModelessViewSession = this.mDialogSessions.get(s);
         if (uiModelessViewSession == null) {
-            if (Log.isLoggable("nf_log_apm", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_log_apm", "UI modeless session does NOT exist for request ID:" + s);
             }
             return;
@@ -574,7 +586,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         final String action = intent.getAction();
         switch (action) {
             default: {
-                if (Log.isLoggable("nf_log_apm", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log_apm", "We do not support action " + action);
                 }
                 return false;
@@ -607,6 +619,14 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
                 this.handleViewChanged(intent, b);
                 return true;
             }
+            case "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_ADD_WIDGET": {
+                this.handlePreappAddWidget(intent);
+                return true;
+            }
+            case "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_DELETE_WIDGET": {
+                this.handlePreappDeleteWidget(intent);
+                return true;
+            }
             case "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_STARTED": {
                 this.handleSharedContextStarted(intent);
                 return true;
@@ -632,6 +652,24 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     }
     
     @Override
+    public void preappAddWidget(final String s, final long n) {
+        if (Log.isLoggable()) {
+            Log.d("nf_log_apm", "preapp add widget");
+        }
+        this.mEventHandler.post(new PreAppWidgetInstallEvent(PreAppWidgetInstallEvent$WidgetInstallAction.ADD, s, n));
+        Log.d("nf_log_apm", "preapp add widget done");
+    }
+    
+    @Override
+    public void preappDeleteWidget(final String s, final long n) {
+        if (Log.isLoggable()) {
+            Log.d("nf_log_apm", "preapp delete widget");
+        }
+        this.mEventHandler.post(new PreAppWidgetInstallEvent(PreAppWidgetInstallEvent$WidgetInstallAction.DELETE, s, n));
+        Log.d("nf_log_apm", "preapp delete widget done");
+    }
+    
+    @Override
     public void setDataContext(final DataContext mDataContext) {
         this.mDataContext = mDataContext;
     }
@@ -640,7 +678,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     public void startApplicationSession(final boolean b) {
         Log.d("nf_log_apm", "Application session created");
         final String applicationId = this.mEventHandler.getApplicationId();
-        if (Log.isLoggable("nf_log_apm", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log_apm", "startApplicationSession: Application id " + applicationId);
         }
         final long currentTimeMillis = System.currentTimeMillis();
@@ -656,7 +694,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     @Override
     public String startAssetRequestSession(final String s, final IClientLogging$AssetType clientLogging$AssetType) {
         if (this.mAssetRequests.get(s) != null) {
-            if (Log.isLoggable("nf_log_apm", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_log_apm", "UI Asset request session already in progress for URL: " + s);
             }
             return null;
@@ -690,7 +728,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         final UIDataRequestSession uiDataRequestSession = new UIDataRequestSession(s, s2);
         this.mEventHandler.addSession(uiDataRequestSession);
         this.mDataRequests.put(s2, uiDataRequestSession);
-        if (Log.isLoggable("nf_log_apm", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log_apm", "UI data request session added for '" + s2 + "'");
         }
         Log.d("nf_log_apm", "Data session start done.");
@@ -699,7 +737,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     
     @Override
     public void startSharedContextSession(final String s) {
-        if (Log.isLoggable("nf_log_apm", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log_apm", "Shared context session started with uuid " + s);
         }
         if (s == null) {
@@ -728,7 +766,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     
     @Override
     public void startUiModelessViewSession(final boolean b, final IClientLogging$ModalView clientLogging$ModalView, final String s) {
-        if (Log.isLoggable("nf_log_apm", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log_apm", "UI modeless session created for " + clientLogging$ModalView + ". In portrait " + b + ". Dialog ID: " + s);
         }
         final UIModelessViewSession uiModelessViewSession = new UIModelessViewSession();
@@ -776,7 +814,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         }
         Log.d("nf_log_apm", "User session started");
         final String userSessionId = this.mEventHandler.getUserSessionId();
-        if (Log.isLoggable("nf_log_apm", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log_apm", "startUserSession: Current nrdp.log.sessionid " + userSessionId);
         }
         final UserSession mUserSession = new UserSession();
@@ -804,7 +842,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         Log.d("nf_log_apm", "User session start event posting...");
         final UserSessionStartedEvent startEvent = mUserSession.createStartEvent(applicationPerformanceMetricsLogging$Trigger, n);
         final String userSessionId = this.mEventHandler.getUserSessionId();
-        if (Log.isLoggable("nf_log_apm", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log_apm", "startUserSession: Current nrdp.log.sessionid " + userSessionId);
             Log.d("nf_log_apm", "startUserSession: Last used nrdp.log.sessionid " + this.mNrdpLogSessionId);
         }
@@ -830,7 +868,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     
     @Override
     public void uiViewChanged(final boolean b, final IClientLogging$ModalView mCurrentUiView) {
-        if (Log.isLoggable("nf_log_apm", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log_apm", "UI view changed " + mCurrentUiView);
         }
         this.mCurrentUiView = mCurrentUiView;
@@ -842,7 +880,7 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     
     @Override
     public void uiViewChanged(final boolean b, final IClientLogging$ModalView mCurrentUiView, final long time) {
-        if (Log.isLoggable("nf_log_apm", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log_apm", "UI view changed " + mCurrentUiView);
         }
         this.mCurrentUiView = mCurrentUiView;

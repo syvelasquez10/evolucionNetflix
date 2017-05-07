@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service;
 
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 
 public interface ServiceAgent$BrowseAgentInterface
@@ -21,5 +21,7 @@ public interface ServiceAgent$BrowseAgentInterface
     
     void fetchPostPlayVideos(final String p0, final VideoType p1, final BrowseAgentCallback p2);
     
-    void fetchRecommendedListFromCache(final int p0, final BrowseAgentCallback p1);
+    void fetchRecommendedListFromCache(final int p0, final int p1, final BrowseAgentCallback p2);
+    
+    void fetchVideoSummary(final String p0, final BrowseAgentCallback p1);
 }

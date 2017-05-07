@@ -13,6 +13,7 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
+import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.javabridge.ui.Log$ResetSessionIdCallback;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
@@ -21,7 +22,7 @@ import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
 import com.netflix.mediaclient.service.logging.client.model.LoggingRequest;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.util.data.DataRepository$DataLoadedCallback;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
@@ -62,39 +63,39 @@ class IntegratedClientLoggingManager$6 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable("nf_log", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_log", "Received intent " + intent);
         }
         final String action = intent.getAction();
         if ("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_STARTED".equals(action)) {
-            if (Log.isLoggable("nf_log", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_log", "Local playback started, was started " + this.this$0.mLocalPlaybackInProgress.get());
             }
             this.this$0.mLocalPlaybackInProgress.set(true);
         }
         else {
             if ("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_ENDED".equals(action)) {
-                if (Log.isLoggable("nf_log", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log", "Local playback ended, was started " + this.this$0.mLocalPlaybackInProgress.get());
                 }
                 this.this$0.mLocalPlaybackInProgress.set(false);
                 return;
             }
             if ("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_PAUSED".equals(action)) {
-                if (Log.isLoggable("nf_log", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log", "Local playback paused, was playing " + this.this$0.mLocalPlaybackInProgress.get());
                 }
                 this.this$0.mLocalPlaybackInProgress.set(false);
                 return;
             }
             if ("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_UNPAUSED".equals(action)) {
-                if (Log.isLoggable("nf_log", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log", "Local playback unpaused, was playing " + this.this$0.mLocalPlaybackInProgress.get());
                 }
                 this.this$0.mLocalPlaybackInProgress.set(true);
                 return;
             }
-            if (Log.isLoggable("nf_log", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_log", "We do not support action " + action);
             }
         }

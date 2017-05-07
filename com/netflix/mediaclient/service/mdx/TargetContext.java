@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.mdx;
 
+import com.netflix.mediaclient.service.mdx.message.controller.PlayerGetCapabilities;
+import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
 import com.netflix.mediaclient.service.mdx.message.target.PlayerState;
 import com.netflix.mediaclient.service.mdx.message.target.PinNotRequired;
 import com.netflix.mediaclient.service.mdx.message.target.PinRequired;
@@ -28,6 +30,7 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
 {
     private static final long DUPLICATE_MESSAGE_REQUEST_WINDOWS = 2000L;
     private static final int MSG_COMMAND = 2;
+    private static final int MSG_COMMAND_FROM_USER = 5;
     private static final int MSG_EVENT = 1;
     private static final int MSG_PERIODIC = 4;
     private static final int MSG_UPDATETARGET = 3;
@@ -63,7 +66,7 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
         this.mPlayerStateManager = new TargetContext$PlayerStateManager(this);
         this.mAudioSubtitleSettingBlobLock = new Object();
         this.mPreviousAudioSubExchangeTime = 0L;
-        if (Log.isLoggable("nf_mdx", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_mdx", "TargetContext: for device " + remoteDevice);
         }
         this.updateTargetProperty(remoteDevice);
@@ -531,6 +534,24 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
         }
     }
     
+    public MdxTargetCapabilities parseTargetCapabilities() {
+        if (Log.isLoggable()) {
+            Log.d("nf_mdx", "TargetContext: parseTargetCapabilities : " + this.mTargetCapability);
+        }
+        if (StringUtils.isNotEmpty(this.mTargetCapability)) {
+            try {
+                return new MdxTargetCapabilities(this.mTargetCapability);
+            }
+            catch (JSONException ex) {
+                Log.d("nf_mdx", "TargetContext: failed to parse Mdx Target Capabilities", (Throwable)ex);
+                return null;
+            }
+        }
+        final PlayerGetCapabilities playerGetCapabilities = new PlayerGetCapabilities();
+        this.sendCommand(playerGetCapabilities.messageName(), playerGetCapabilities.messageObject());
+        return null;
+    }
+    
     @Override
     public void removeEvents(final TargetStateManager$TargetContextEvent targetStateManager$TargetContextEvent) {
         if (this.mTargetContextHandler != null) {
@@ -554,13 +575,13 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
     }
     
     public void sendCommand(String s, final JSONObject jsonObject) {
-        if (Log.isLoggable("nf_mdx", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_mdx", "TargetContext: sendCommand: " + s + ", msgObj: " + jsonObject);
         }
-        Label_0234: {
+        Label_0231: {
             if ("PLAYER_GET_CAPABILITIES".equals(s)) {
                 if (!StringUtils.isNotEmpty(this.mTargetCapability)) {
-                    break Label_0234;
+                    break Label_0231;
                 }
                 Log.d("nf_mdx", "TargetContext: reutrn cached CAPABILITY");
                 if (StringUtils.isNotEmpty(this.mDialUuid)) {
@@ -597,7 +618,7 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
                     this.mPreviousAudioSubExchangeTime = System.currentTimeMillis();
                 }
                 // monitorexit(o)
-                break Label_0234;
+                break Label_0231;
             }
             return;
         }

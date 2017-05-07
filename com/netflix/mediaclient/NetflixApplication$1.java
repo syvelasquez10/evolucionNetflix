@@ -20,7 +20,7 @@ import android.support.v4.app.NotificationCompat$Builder;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.repository.SecurityRepository;
-import com.netflix.mediaclient.ui.LaunchActivity;
+import com.netflix.mediaclient.ui.launch.LaunchActivity;
 import com.netflix.mediaclient.android.app.UserInputManager;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.util.gfx.BitmapLruCache;
@@ -42,7 +42,7 @@ class NetflixApplication$1 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable("NetflixApplication", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixApplication", "Received intent " + intent);
         }
         final String action = intent.getAction();
@@ -52,7 +52,7 @@ class NetflixApplication$1 extends BroadcastReceiver
         }
         else if ("com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_INIT_COMPLETE".equals(action)) {
             final StatusCode statusCode = (StatusCode)intent.getSerializableExtra("status_code");
-            if (Log.isLoggable("NetflixApplication", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("NetflixApplication", "Netflix service is ready with status " + statusCode);
             }
             if (statusCode.isSucess()) {
@@ -63,7 +63,7 @@ class NetflixApplication$1 extends BroadcastReceiver
             Log.d("NetflixApplication", " Netflix application is NOT ready");
             this.this$0.mIsNetflixServiceReady.set(false);
         }
-        else if (Log.isLoggable("NetflixApplication", 3)) {
+        else if (Log.isLoggable()) {
             Log.d("NetflixApplication", "We do not support action " + action);
         }
     }

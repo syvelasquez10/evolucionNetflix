@@ -29,6 +29,7 @@ public final class UIViewLoggingImpl implements UIViewLogging
     private DataContext mDataContext;
     private EventHandler mEventHandler;
     private ImpressionSession mImpressionSession;
+    private String mUrl;
     
     public UIViewLoggingImpl(final EventHandler mEventHandler) {
         this.mEventHandler = mEventHandler;
@@ -50,20 +51,20 @@ public final class UIViewLoggingImpl implements UIViewLogging
         }
         final String stringExtra2 = intent.getStringExtra("view");
         while (true) {
-            Label_0114: {
+            Label_0125: {
                 if (!StringUtils.isNotEmpty(stringExtra2)) {
-                    break Label_0114;
+                    break Label_0125;
                 }
                 final IClientLogging$ModalView value2 = IClientLogging$ModalView.valueOf(stringExtra2);
                 final String stringExtra3 = intent.getStringExtra("dataContext");
                 DataContext instance = dataContext;
                 while (true) {
                     if (!StringUtils.isNotEmpty(stringExtra3)) {
-                        break Label_0073;
+                        break Label_0075;
                     }
                     try {
                         instance = DataContext.createInstance(new JSONObject(stringExtra3));
-                        this.startCommandSession(value, value2, instance);
+                        this.startCommandSession(value, value2, instance, intent.getStringExtra("url"));
                         return;
                     }
                     catch (JSONException ex) {
@@ -197,24 +198,25 @@ public final class UIViewLoggingImpl implements UIViewLogging
             this.handleUIViewImpressionEnd(intent);
             return true;
         }
-        if (Log.isLoggable("nf_log", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log", "We do not support action " + action);
         }
         return false;
     }
     
     @Override
-    public void startCommandSession(final UIViewLogging$UIViewCommandName uiViewLogging$UIViewCommandName, final IClientLogging$ModalView clientLogging$ModalView, final DataContext mDataContext) {
+    public void startCommandSession(final UIViewLogging$UIViewCommandName uiViewLogging$UIViewCommandName, final IClientLogging$ModalView clientLogging$ModalView, final DataContext mDataContext, final String mUrl) {
         synchronized (this) {
             if (this.mCommandSession != null) {
                 Log.e("nf_log", "uiView command session already started!");
             }
             else {
                 Log.d("nf_log", "uiView command session starting...");
-                final CommandSession mCommandSession = new CommandSession(uiViewLogging$UIViewCommandName, clientLogging$ModalView);
+                final CommandSession mCommandSession = new CommandSession(uiViewLogging$UIViewCommandName, clientLogging$ModalView, mUrl);
                 this.mEventHandler.addSession(mCommandSession);
                 this.mCommandSession = mCommandSession;
                 this.mDataContext = mDataContext;
+                this.mUrl = mUrl;
                 Log.d("nf_log", "uiView command session start done.");
             }
         }

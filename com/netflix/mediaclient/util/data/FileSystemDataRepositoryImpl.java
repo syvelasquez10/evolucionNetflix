@@ -68,7 +68,7 @@ public class FileSystemDataRepositoryImpl implements DataRepository
                     this.mEntries.remove(dataRepository$Entry.getKey());
                     ++n2;
                     if (this.mTotalSize + n < this.mMaxSizeInBytes) {
-                        if (Log.isLoggable("nf_log", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("nf_log", "Pruned " + n2 + " in " + (SystemClock.elapsedRealtime() - elapsedRealtime) + " [ms]. Still available [B]: " + (this.mTotalSize - mTotalSize));
                         }
                         return;
@@ -109,7 +109,7 @@ public class FileSystemDataRepositoryImpl implements DataRepository
         //     6: invokevirtual   java/io/File.listFiles:()[Ljava/io/File;
         //     9: astore          4
         //    11: aload           4
-        //    13: ifnull          89
+        //    13: ifnull          86
         //    16: aload           4
         //    18: arraylength    
         //    19: istore_2       
@@ -117,7 +117,7 @@ public class FileSystemDataRepositoryImpl implements DataRepository
         //    21: istore_1       
         //    22: iload_1        
         //    23: iload_2        
-        //    24: if_icmpge       89
+        //    24: if_icmpge       86
         //    27: aload           4
         //    29: iload_1        
         //    30: aaload         
@@ -125,58 +125,56 @@ public class FileSystemDataRepositoryImpl implements DataRepository
         //    33: aload           5
         //    35: invokevirtual   java/io/File.delete:()Z
         //    38: istore_3       
-        //    39: ldc             "nf_log"
-        //    41: iconst_3       
-        //    42: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //    45: ifeq            121
-        //    48: ldc             "nf_log"
-        //    50: new             Ljava/lang/StringBuilder;
-        //    53: dup            
-        //    54: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    57: ldc             "File found "
-        //    59: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    62: aload           5
-        //    64: invokevirtual   java/io/File.getName:()Ljava/lang/String;
-        //    67: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    70: ldc             " and deleted "
-        //    72: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    75: iload_3        
-        //    76: invokevirtual   java/lang/StringBuilder.append:(Z)Ljava/lang/StringBuilder;
-        //    79: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //    82: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    85: pop            
-        //    86: goto            121
-        //    89: aload_0        
-        //    90: getfield        com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.mEntries:Ljava/util/Map;
-        //    93: invokeinterface java/util/Map.clear:()V
-        //    98: aload_0        
-        //    99: lconst_0       
-        //   100: putfield        com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.mTotalSize:J
-        //   103: ldc             "nf_log"
-        //   105: ldc             "Cache cleared."
-        //   107: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   110: pop            
-        //   111: aload_0        
-        //   112: monitorexit    
-        //   113: return         
-        //   114: astore          4
-        //   116: aload_0        
-        //   117: monitorexit    
-        //   118: aload           4
-        //   120: athrow         
-        //   121: iload_1        
-        //   122: iconst_1       
-        //   123: iadd           
-        //   124: istore_1       
-        //   125: goto            22
+        //    39: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //    42: ifeq            118
+        //    45: ldc             "nf_log"
+        //    47: new             Ljava/lang/StringBuilder;
+        //    50: dup            
+        //    51: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    54: ldc             "File found "
+        //    56: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    59: aload           5
+        //    61: invokevirtual   java/io/File.getName:()Ljava/lang/String;
+        //    64: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    67: ldc             " and deleted "
+        //    69: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    72: iload_3        
+        //    73: invokevirtual   java/lang/StringBuilder.append:(Z)Ljava/lang/StringBuilder;
+        //    76: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    79: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    82: pop            
+        //    83: goto            118
+        //    86: aload_0        
+        //    87: getfield        com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.mEntries:Ljava/util/Map;
+        //    90: invokeinterface java/util/Map.clear:()V
+        //    95: aload_0        
+        //    96: lconst_0       
+        //    97: putfield        com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.mTotalSize:J
+        //   100: ldc             "nf_log"
+        //   102: ldc             "Cache cleared."
+        //   104: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   107: pop            
+        //   108: aload_0        
+        //   109: monitorexit    
+        //   110: return         
+        //   111: astore          4
+        //   113: aload_0        
+        //   114: monitorexit    
+        //   115: aload           4
+        //   117: athrow         
+        //   118: iload_1        
+        //   119: iconst_1       
+        //   120: iadd           
+        //   121: istore_1       
+        //   122: goto            22
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type
         //  -----  -----  -----  -----  ----
-        //  2      11     114    121    Any
-        //  16     20     114    121    Any
-        //  33     86     114    121    Any
-        //  89     111    114    121    Any
+        //  2      11     111    118    Any
+        //  16     20     111    118    Any
+        //  33     83     111    118    Any
+        //  86     108    111    118    Any
         // 
         // The error that occurred was:
         // 
@@ -226,172 +224,170 @@ public class FileSystemDataRepositoryImpl implements DataRepository
         //     7: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
         //    12: checkcast       Lcom/netflix/mediaclient/util/data/DataRepository$Entry;
         //    15: astore_3       
-        //    16: ldc             "nf_log"
-        //    18: iconst_3       
-        //    19: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //    22: ifeq            59
-        //    25: ldc             "nf_log"
-        //    27: new             Ljava/lang/StringBuilder;
-        //    30: dup            
-        //    31: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    34: ldc             "Find entry for key "
-        //    36: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    39: aload_1        
-        //    40: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    43: ldc             ", with file name "
-        //    45: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    48: aload_1        
-        //    49: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    52: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //    55: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    58: pop            
-        //    59: aload_3        
-        //    60: ifnonnull       87
-        //    63: ldc             "nf_log"
-        //    65: ldc             "Entry not found!"
-        //    67: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    70: pop            
-        //    71: aload_2        
-        //    72: ifnull          84
-        //    75: aload_2        
-        //    76: aload_1        
-        //    77: aconst_null    
-        //    78: lconst_0       
-        //    79: invokeinterface com/netflix/mediaclient/util/data/DataRepository$DataLoadedCallback.onDataLoaded:(Ljava/lang/String;[BJ)V
-        //    84: aload_0        
-        //    85: monitorexit    
-        //    86: return         
-        //    87: ldc             "nf_log"
-        //    89: ldc             "Entry found!"
-        //    91: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    94: pop            
-        //    95: aload_0        
-        //    96: aload_1        
-        //    97: invokespecial   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.getFileForName:(Ljava/lang/String;)Ljava/io/File;
-        //   100: astore          6
-        //   102: new             Lcom/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream;
-        //   105: dup            
-        //   106: new             Ljava/io/FileInputStream;
-        //   109: dup            
-        //   110: aload           6
-        //   112: invokespecial   java/io/FileInputStream.<init>:(Ljava/io/File;)V
-        //   115: aconst_null    
-        //   116: invokespecial   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.<init>:(Ljava/io/InputStream;Lcom/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$1;)V
-        //   119: astore          4
+        //    16: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //    19: ifeq            56
+        //    22: ldc             "nf_log"
+        //    24: new             Ljava/lang/StringBuilder;
+        //    27: dup            
+        //    28: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    31: ldc             "Find entry for key "
+        //    33: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    36: aload_1        
+        //    37: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    40: ldc             ", with file name "
+        //    42: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    45: aload_1        
+        //    46: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    49: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    52: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    55: pop            
+        //    56: aload_3        
+        //    57: ifnonnull       84
+        //    60: ldc             "nf_log"
+        //    62: ldc             "Entry not found!"
+        //    64: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    67: pop            
+        //    68: aload_2        
+        //    69: ifnull          81
+        //    72: aload_2        
+        //    73: aload_1        
+        //    74: aconst_null    
+        //    75: lconst_0       
+        //    76: invokeinterface com/netflix/mediaclient/util/data/DataRepository$DataLoadedCallback.onDataLoaded:(Ljava/lang/String;[BJ)V
+        //    81: aload_0        
+        //    82: monitorexit    
+        //    83: return         
+        //    84: ldc             "nf_log"
+        //    86: ldc             "Entry found!"
+        //    88: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    91: pop            
+        //    92: aload_0        
+        //    93: aload_1        
+        //    94: invokespecial   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.getFileForName:(Ljava/lang/String;)Ljava/io/File;
+        //    97: astore          6
+        //    99: new             Lcom/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream;
+        //   102: dup            
+        //   103: new             Ljava/io/FileInputStream;
+        //   106: dup            
+        //   107: aload           6
+        //   109: invokespecial   java/io/FileInputStream.<init>:(Ljava/io/File;)V
+        //   112: aconst_null    
+        //   113: invokespecial   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.<init>:(Ljava/io/InputStream;Lcom/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$1;)V
+        //   116: astore          4
+        //   118: aload           4
+        //   120: astore_3       
         //   121: aload           4
-        //   123: astore_3       
-        //   124: aload           4
-        //   126: aload           6
-        //   128: invokevirtual   java/io/File.length:()J
-        //   131: aload           4
-        //   133: invokestatic    com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.access$100:(Lcom/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream;)I
-        //   136: i2l            
-        //   137: lsub           
-        //   138: l2i            
-        //   139: invokestatic    com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.streamToBytes:(Ljava/io/InputStream;I)[B
-        //   142: astore          5
-        //   144: aload_2        
-        //   145: ifnull          165
-        //   148: aload           4
-        //   150: astore_3       
-        //   151: aload_2        
-        //   152: aload_1        
-        //   153: aload           5
-        //   155: aload           6
-        //   157: invokevirtual   java/io/File.lastModified:()J
-        //   160: invokeinterface com/netflix/mediaclient/util/data/DataRepository$DataLoadedCallback.onDataLoaded:(Ljava/lang/String;[BJ)V
-        //   165: aload           4
-        //   167: ifnull          84
-        //   170: aload           4
-        //   172: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.close:()V
-        //   175: goto            84
-        //   178: astore_1       
-        //   179: goto            84
-        //   182: astore          5
-        //   184: aconst_null    
-        //   185: astore          4
-        //   187: aload           4
-        //   189: astore_3       
-        //   190: ldc             "nf_log"
-        //   192: new             Ljava/lang/StringBuilder;
-        //   195: dup            
-        //   196: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   199: ldc             " Failed to load file "
-        //   201: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   204: aload           6
-        //   206: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
-        //   209: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   212: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   215: aload           5
-        //   217: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   220: pop            
-        //   221: aload           4
-        //   223: astore_3       
-        //   224: aload_0        
-        //   225: aload_1        
-        //   226: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.remove:(Ljava/lang/String;)V
-        //   229: aload           4
-        //   231: ifnull          239
-        //   234: aload           4
-        //   236: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.close:()V
-        //   239: aload_2        
-        //   240: ifnull          84
-        //   243: aload_2        
-        //   244: aload_1        
-        //   245: aconst_null    
-        //   246: lconst_0       
-        //   247: invokeinterface com/netflix/mediaclient/util/data/DataRepository$DataLoadedCallback.onDataLoaded:(Ljava/lang/String;[BJ)V
-        //   252: goto            84
-        //   255: astore_1       
-        //   256: aload_0        
-        //   257: monitorexit    
-        //   258: aload_1        
-        //   259: athrow         
-        //   260: astore_1       
-        //   261: aconst_null    
-        //   262: astore_3       
-        //   263: aload_3        
-        //   264: ifnull          271
-        //   267: aload_3        
-        //   268: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.close:()V
-        //   271: aload_1        
-        //   272: athrow         
-        //   273: astore_3       
-        //   274: goto            239
-        //   277: astore_2       
-        //   278: goto            271
-        //   281: astore_1       
-        //   282: goto            263
-        //   285: astore          5
-        //   287: goto            187
+        //   123: aload           6
+        //   125: invokevirtual   java/io/File.length:()J
+        //   128: aload           4
+        //   130: invokestatic    com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.access$100:(Lcom/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream;)I
+        //   133: i2l            
+        //   134: lsub           
+        //   135: l2i            
+        //   136: invokestatic    com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.streamToBytes:(Ljava/io/InputStream;I)[B
+        //   139: astore          5
+        //   141: aload_2        
+        //   142: ifnull          162
+        //   145: aload           4
+        //   147: astore_3       
+        //   148: aload_2        
+        //   149: aload_1        
+        //   150: aload           5
+        //   152: aload           6
+        //   154: invokevirtual   java/io/File.lastModified:()J
+        //   157: invokeinterface com/netflix/mediaclient/util/data/DataRepository$DataLoadedCallback.onDataLoaded:(Ljava/lang/String;[BJ)V
+        //   162: aload           4
+        //   164: ifnull          81
+        //   167: aload           4
+        //   169: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.close:()V
+        //   172: goto            81
+        //   175: astore_1       
+        //   176: goto            81
+        //   179: astore          5
+        //   181: aconst_null    
+        //   182: astore          4
+        //   184: aload           4
+        //   186: astore_3       
+        //   187: ldc             "nf_log"
+        //   189: new             Ljava/lang/StringBuilder;
+        //   192: dup            
+        //   193: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   196: ldc             " Failed to load file "
+        //   198: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   201: aload           6
+        //   203: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
+        //   206: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   209: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   212: aload           5
+        //   214: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   217: pop            
+        //   218: aload           4
+        //   220: astore_3       
+        //   221: aload_0        
+        //   222: aload_1        
+        //   223: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.remove:(Ljava/lang/String;)V
+        //   226: aload           4
+        //   228: ifnull          236
+        //   231: aload           4
+        //   233: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.close:()V
+        //   236: aload_2        
+        //   237: ifnull          81
+        //   240: aload_2        
+        //   241: aload_1        
+        //   242: aconst_null    
+        //   243: lconst_0       
+        //   244: invokeinterface com/netflix/mediaclient/util/data/DataRepository$DataLoadedCallback.onDataLoaded:(Ljava/lang/String;[BJ)V
+        //   249: goto            81
+        //   252: astore_1       
+        //   253: aload_0        
+        //   254: monitorexit    
+        //   255: aload_1        
+        //   256: athrow         
+        //   257: astore_1       
+        //   258: aconst_null    
+        //   259: astore_3       
+        //   260: aload_3        
+        //   261: ifnull          268
+        //   264: aload_3        
+        //   265: invokevirtual   com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl$CountingInputStream.close:()V
+        //   268: aload_1        
+        //   269: athrow         
+        //   270: astore_3       
+        //   271: goto            236
+        //   274: astore_2       
+        //   275: goto            268
+        //   278: astore_1       
+        //   279: goto            260
+        //   282: astore          5
+        //   284: goto            184
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  2      59     255    260    Any
-        //  63     71     255    260    Any
-        //  75     84     255    260    Any
-        //  87     102    255    260    Any
-        //  102    121    182    187    Ljava/io/IOException;
-        //  102    121    260    263    Any
-        //  124    144    285    290    Ljava/io/IOException;
-        //  124    144    281    285    Any
-        //  151    165    285    290    Ljava/io/IOException;
-        //  151    165    281    285    Any
-        //  170    175    178    182    Ljava/io/IOException;
-        //  170    175    255    260    Any
-        //  190    221    281    285    Any
-        //  224    229    281    285    Any
-        //  234    239    273    277    Ljava/io/IOException;
-        //  234    239    255    260    Any
-        //  243    252    255    260    Any
-        //  267    271    277    281    Ljava/io/IOException;
-        //  267    271    255    260    Any
-        //  271    273    255    260    Any
+        //  2      56     252    257    Any
+        //  60     68     252    257    Any
+        //  72     81     252    257    Any
+        //  84     99     252    257    Any
+        //  99     118    179    184    Ljava/io/IOException;
+        //  99     118    257    260    Any
+        //  121    141    282    287    Ljava/io/IOException;
+        //  121    141    278    282    Any
+        //  148    162    282    287    Ljava/io/IOException;
+        //  148    162    278    282    Any
+        //  167    172    175    179    Ljava/io/IOException;
+        //  167    172    252    257    Any
+        //  187    218    278    282    Any
+        //  221    226    278    282    Any
+        //  231    236    270    274    Ljava/io/IOException;
+        //  231    236    252    257    Any
+        //  240    249    252    257    Any
+        //  264    268    274    278    Ljava/io/IOException;
+        //  264    268    252    257    Any
+        //  268    270    252    257    Any
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0165:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0162:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -476,100 +472,96 @@ public class FileSystemDataRepositoryImpl implements DataRepository
         //   106: istore_2       
         //   107: iload_2        
         //   108: iload_3        
-        //   109: if_icmpge       248
+        //   109: if_icmpge       245
         //   112: aload           4
         //   114: iload_2        
         //   115: aaload         
         //   116: astore          5
         //   118: aload           5
-        //   120: ifnull          335
+        //   120: ifnull          329
         //   123: aload           5
         //   125: invokevirtual   java/io/File.exists:()Z
-        //   128: ifeq            335
-        //   131: ldc             "nf_log"
-        //   133: iconst_3       
-        //   134: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //   137: ifeq            221
-        //   140: new             Ljava/text/SimpleDateFormat;
-        //   143: dup            
-        //   144: ldc_w           "dd.MM.yyyy HH:mm:ss"
-        //   147: invokespecial   java/text/SimpleDateFormat.<init>:(Ljava/lang/String;)V
-        //   150: new             Ljava/util/Date;
-        //   153: dup            
-        //   154: aload           5
-        //   156: invokevirtual   java/io/File.lastModified:()J
-        //   159: invokespecial   java/util/Date.<init>:(J)V
-        //   162: invokevirtual   java/text/SimpleDateFormat.format:(Ljava/util/Date;)Ljava/lang/String;
-        //   165: astore          6
-        //   167: ldc             "nf_log"
-        //   169: new             Ljava/lang/StringBuilder;
-        //   172: dup            
-        //   173: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   176: ldc             "File found "
-        //   178: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   181: aload           5
-        //   183: invokevirtual   java/io/File.getName:()Ljava/lang/String;
-        //   186: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   189: ldc_w           " created "
-        //   192: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   195: aload           6
-        //   197: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   200: ldc_w           ". Size [B]: "
-        //   203: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   206: aload           5
-        //   208: invokevirtual   java/io/File.length:()J
-        //   211: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
-        //   214: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   217: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   220: pop            
-        //   221: aload_0        
-        //   222: getfield        com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.mEntries:Ljava/util/Map;
-        //   225: aload           5
-        //   227: invokevirtual   java/io/File.getName:()Ljava/lang/String;
-        //   230: new             Lcom/netflix/mediaclient/util/data/FileSystemEntryImpl;
-        //   233: dup            
-        //   234: aload           5
-        //   236: invokespecial   com/netflix/mediaclient/util/data/FileSystemEntryImpl.<init>:(Ljava/io/File;)V
-        //   239: invokeinterface java/util/Map.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-        //   244: pop            
-        //   245: goto            335
-        //   248: ldc             "nf_log"
-        //   250: iconst_3       
-        //   251: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //   254: ifeq            291
-        //   257: ldc             "nf_log"
-        //   259: new             Ljava/lang/StringBuilder;
-        //   262: dup            
-        //   263: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   266: aload_0        
-        //   267: getfield        com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.mEntries:Ljava/util/Map;
-        //   270: invokeinterface java/util/Map.size:()I
-        //   275: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
-        //   278: ldc_w           " entries found!"
-        //   281: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   284: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   287: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   290: pop            
-        //   291: aload_1        
-        //   292: ifnull          65
-        //   295: aload_0        
-        //   296: getfield        com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.mEntries:Ljava/util/Map;
-        //   299: invokeinterface java/util/Map.values:()Ljava/util/Collection;
-        //   304: astore          4
-        //   306: aload_1        
-        //   307: aload           4
-        //   309: aload           4
-        //   311: invokeinterface java/util/Collection.size:()I
-        //   316: anewarray       Lcom/netflix/mediaclient/util/data/DataRepository$Entry;
-        //   319: invokeinterface java/util/Collection.toArray:([Ljava/lang/Object;)[Ljava/lang/Object;
-        //   324: checkcast       [Lcom/netflix/mediaclient/util/data/DataRepository$Entry;
-        //   327: invokeinterface com/netflix/mediaclient/util/data/DataRepository$LoadedCallback.onLoaded:([Lcom/netflix/mediaclient/util/data/DataRepository$Entry;)V
-        //   332: goto            65
-        //   335: iload_2        
-        //   336: iconst_1       
-        //   337: iadd           
-        //   338: istore_2       
-        //   339: goto            107
+        //   128: ifeq            329
+        //   131: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   134: ifeq            218
+        //   137: new             Ljava/text/SimpleDateFormat;
+        //   140: dup            
+        //   141: ldc_w           "dd.MM.yyyy HH:mm:ss"
+        //   144: invokespecial   java/text/SimpleDateFormat.<init>:(Ljava/lang/String;)V
+        //   147: new             Ljava/util/Date;
+        //   150: dup            
+        //   151: aload           5
+        //   153: invokevirtual   java/io/File.lastModified:()J
+        //   156: invokespecial   java/util/Date.<init>:(J)V
+        //   159: invokevirtual   java/text/SimpleDateFormat.format:(Ljava/util/Date;)Ljava/lang/String;
+        //   162: astore          6
+        //   164: ldc             "nf_log"
+        //   166: new             Ljava/lang/StringBuilder;
+        //   169: dup            
+        //   170: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   173: ldc             "File found "
+        //   175: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   178: aload           5
+        //   180: invokevirtual   java/io/File.getName:()Ljava/lang/String;
+        //   183: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   186: ldc_w           " created "
+        //   189: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   192: aload           6
+        //   194: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   197: ldc_w           ". Size [B]: "
+        //   200: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   203: aload           5
+        //   205: invokevirtual   java/io/File.length:()J
+        //   208: invokevirtual   java/lang/StringBuilder.append:(J)Ljava/lang/StringBuilder;
+        //   211: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   214: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   217: pop            
+        //   218: aload_0        
+        //   219: getfield        com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.mEntries:Ljava/util/Map;
+        //   222: aload           5
+        //   224: invokevirtual   java/io/File.getName:()Ljava/lang/String;
+        //   227: new             Lcom/netflix/mediaclient/util/data/FileSystemEntryImpl;
+        //   230: dup            
+        //   231: aload           5
+        //   233: invokespecial   com/netflix/mediaclient/util/data/FileSystemEntryImpl.<init>:(Ljava/io/File;)V
+        //   236: invokeinterface java/util/Map.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+        //   241: pop            
+        //   242: goto            329
+        //   245: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   248: ifeq            285
+        //   251: ldc             "nf_log"
+        //   253: new             Ljava/lang/StringBuilder;
+        //   256: dup            
+        //   257: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   260: aload_0        
+        //   261: getfield        com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.mEntries:Ljava/util/Map;
+        //   264: invokeinterface java/util/Map.size:()I
+        //   269: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //   272: ldc_w           " entries found!"
+        //   275: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   278: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   281: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   284: pop            
+        //   285: aload_1        
+        //   286: ifnull          65
+        //   289: aload_0        
+        //   290: getfield        com/netflix/mediaclient/util/data/FileSystemDataRepositoryImpl.mEntries:Ljava/util/Map;
+        //   293: invokeinterface java/util/Map.values:()Ljava/util/Collection;
+        //   298: astore          4
+        //   300: aload_1        
+        //   301: aload           4
+        //   303: aload           4
+        //   305: invokeinterface java/util/Collection.size:()I
+        //   310: anewarray       Lcom/netflix/mediaclient/util/data/DataRepository$Entry;
+        //   313: invokeinterface java/util/Collection.toArray:([Ljava/lang/Object;)[Ljava/lang/Object;
+        //   318: checkcast       [Lcom/netflix/mediaclient/util/data/DataRepository$Entry;
+        //   321: invokeinterface com/netflix/mediaclient/util/data/DataRepository$LoadedCallback.onLoaded:([Lcom/netflix/mediaclient/util/data/DataRepository$Entry;)V
+        //   326: goto            65
+        //   329: iload_2        
+        //   330: iconst_1       
+        //   331: iadd           
+        //   332: istore_2       
+        //   333: goto            107
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type
@@ -579,10 +571,10 @@ public class FileSystemDataRepositoryImpl implements DataRepository
         //  68     77     96     101    Any
         //  86     93     96     101    Any
         //  101    105    96     101    Any
-        //  123    221    96     101    Any
-        //  221    245    96     101    Any
-        //  248    291    96     101    Any
-        //  295    332    96     101    Any
+        //  123    218    96     101    Any
+        //  218    242    96     101    Any
+        //  245    285    96     101    Any
+        //  289    326    96     101    Any
         // 
         // The error that occurred was:
         // 
@@ -614,27 +606,27 @@ public class FileSystemDataRepositoryImpl implements DataRepository
     public void remove(final String s) {
         while (true) {
             synchronized (this) {
-                if (Log.isLoggable("nf_log", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log", "Removing entry for key " + s + ", with file name " + s);
                 }
                 if (this.mEntries.remove(s) != null) {
-                    if (Log.isLoggable("nf_log", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_log", "Entry found, removing " + s);
                     }
                     final File fileForName = this.getFileForName(s);
                     if (fileForName != null) {
                         final boolean delete = fileForName.delete();
-                        if (Log.isLoggable("nf_log", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("nf_log", "File found " + fileForName.getName() + " and deleted " + delete + " for key " + s);
                         }
                     }
-                    else if (Log.isLoggable("nf_log", 6)) {
+                    else if (Log.isLoggable()) {
                         Log.e("nf_log", "File is null for key" + s);
                     }
                     return;
                 }
             }
-            if (Log.isLoggable("nf_log", 3)) {
+            if (Log.isLoggable()) {
                 final String s2;
                 Log.w("nf_log", "Entry not found, can not remove " + s2);
             }

@@ -35,7 +35,7 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.widget.EditText;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.widget.CheckBox;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
@@ -60,7 +60,7 @@ class ProfileDetailsActivity$9 implements View$OnClickListener
         }
         else {
             this.this$0.startActivityForResult(AvatarsGridActivity.getStartIntent((Context)this.this$0, this.this$0.mDefaultAvatar, this.this$0.mCurrentAvatar), 1);
-            if (Log.isLoggable("ProfileDetailsActivity", 4)) {
+            if (Log.isLoggable()) {
                 Log.i("ProfileDetailsActivity", "Started with defaultAvatar: " + this.this$0.mDefaultAvatar + "; currentAvatar: " + this.this$0.mCurrentAvatar);
             }
         }

@@ -5,13 +5,14 @@
 package com.netflix.mediaclient.ui.player;
 
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import android.text.TextUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import android.app.Activity;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.Log;
+import android.text.TextUtils;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.Context;
@@ -19,9 +20,9 @@ import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import android.content.Intent;
 import android.widget.TextView;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 
 class PostPlayForMDX$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback

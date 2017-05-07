@@ -11,9 +11,8 @@ import android.view.View;
 import com.netflix.mediaclient.Log;
 import java.util.ArrayList;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
-import android.view.LayoutInflater;
 import android.content.Context;
 import android.widget.BaseAdapter;
 
@@ -21,22 +20,14 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
 {
     private static final String TAG = "SeasonsSpinnerAdapter";
     private final Context context;
-    private final LayoutInflater inflater;
-    private int itemBgDrawableId;
+    private int itemBackgroundResource;
     private final List<SeasonDetails> seasons;
+    private SeasonsSpinnerAdapter$IViewCreator viewCreator;
     
-    public SeasonsSpinnerAdapter(final NetflixActivity context) {
+    public SeasonsSpinnerAdapter(final NetflixActivity context, final SeasonsSpinnerAdapter$IViewCreator viewCreator) {
         this.seasons = new ArrayList<SeasonDetails>();
         this.context = (Context)context;
-        this.inflater = (LayoutInflater)this.context.getSystemService("layout_inflater");
-        int itemBgDrawableId;
-        if (context.isForKids()) {
-            itemBgDrawableId = 2130837735;
-        }
-        else {
-            itemBgDrawableId = 2130837846;
-        }
-        this.itemBgDrawableId = itemBgDrawableId;
+        this.viewCreator = viewCreator;
     }
     
     public int getCount() {
@@ -59,22 +50,26 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         return this.getItem(n).getSeasonNumber();
     }
     
-    public View getView(int itemBgDrawableId, final View view, final ViewGroup viewGroup) {
+    public View getView(int itemBackgroundResource, final View view, final ViewGroup viewGroup) {
         TextView textView = (TextView)view;
         if (textView == null) {
-            textView = (TextView)this.inflater.inflate(2130903187, (ViewGroup)null, false);
+            textView = (TextView)this.viewCreator.createItemView();
         }
-        final SeasonDetails item = this.getItem(itemBgDrawableId);
+        final SeasonDetails item = this.getItem(itemBackgroundResource);
         textView.setTag((Object)item.getSeasonNumber());
         textView.setText((CharSequence)item.getSeasonNumberTitle(this.context));
         if (viewGroup instanceof SeasonsSpinner) {
-            itemBgDrawableId = 2131296356;
+            itemBackgroundResource = 2131296356;
         }
         else {
-            itemBgDrawableId = this.itemBgDrawableId;
+            itemBackgroundResource = this.itemBackgroundResource;
         }
-        textView.setBackgroundResource(itemBgDrawableId);
+        textView.setBackgroundResource(itemBackgroundResource);
         return (View)textView;
+    }
+    
+    public void setItemBackgroundColor(final int itemBackgroundResource) {
+        this.itemBackgroundResource = itemBackgroundResource;
     }
     
     public int tryGetSeasonIndexBySeasonNumber(int n) {

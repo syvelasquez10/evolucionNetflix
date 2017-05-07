@@ -7,13 +7,13 @@ package com.netflix.mediaclient.servicemgr;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
-import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.falkor.ModelProxy;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.service.browse.DataDumper;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 
 public final class BrowseManager implements IBrowseManager
 {
@@ -31,7 +31,7 @@ public final class BrowseManager implements IBrowseManager
             throw new IllegalArgumentException("Parameter cannot be null");
         }
         final int wrappedRequestId = this.mgr.getWrappedRequestId(managerCallback, s);
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "addToQueue requestId=" + wrappedRequestId + " id=" + s);
         }
         final INetflixService service = this.mgr.getService();
@@ -66,7 +66,7 @@ public final class BrowseManager implements IBrowseManager
     public boolean fetchCWVideos(final int n, final int n2, final ManagerCallback managerCallback) {
         synchronized (this) {
             final int requestId = this.mgr.getRequestId(managerCallback);
-            if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("ServiceManagerBrowse", "fetchCWLoMo requestId=" + requestId + " fromVideo=" + n + " toVideo=" + n2);
             }
             final INetflixService service = this.mgr.getService();
@@ -92,7 +92,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final int requestId = this.mgr.getRequestId(managerCallback);
         final String s2;
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "fetchEpisodeDetails requestId=" + requestId + " episodeId=" + s2);
         }
         final INetflixService service = this.mgr.getService();
@@ -118,7 +118,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final int requestId = this.mgr.getRequestId(managerCallback);
         final String s2;
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "fetchEpisodes requestId=" + requestId + " id=" + s2 + " fromEpisode=" + n + " toEpisode=" + n2);
         }
         final INetflixService service = this.mgr.getService();
@@ -139,7 +139,7 @@ public final class BrowseManager implements IBrowseManager
     public boolean fetchGenreLists(final ManagerCallback managerCallback) {
         synchronized (this) {
             final int requestId = this.mgr.getRequestId(managerCallback);
-            if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("ServiceManagerBrowse", "fetchGenreLists requestId=" + requestId);
             }
             final INetflixService service = this.mgr.getService();
@@ -165,7 +165,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final int requestId = this.mgr.getRequestId(managerCallback);
         final LoMo loMo2;
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "fetchGenreVideos requestId=" + requestId + " genreLoMoId=" + loMo2.getId() + " fromVideo=" + n + " toVideo=" + n2);
         }
         final INetflixService service = this.mgr.getService();
@@ -183,35 +183,38 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public boolean fetchGenres(String stackTraceString, final int n, final int n2, final ManagerCallback managerCallback) {
+    public boolean fetchGenres(final String s, final int n, final int n2, final ManagerCallback managerCallback) {
         while (true) {
-            boolean b = false;
+            final boolean b = false;
             final INetflixService service;
-            Label_0099: {
+            Label_0097: {
                 synchronized (this) {
                     service = this.mgr.getService();
+                    boolean b2;
                     if (service == null) {
                         Log.w("ServiceManagerBrowse", "fetchGenres:: service is not available");
+                        b2 = b;
                     }
                     else {
-                        if (!StringUtils.isEmpty(stackTraceString)) {
-                            break Label_0099;
+                        if (!StringUtils.isEmpty(s)) {
+                            break Label_0097;
                         }
-                        stackTraceString = android.util.Log.getStackTraceString((Throwable)new Exception("Parameter cannot be null"));
-                        Log.w("ServiceManagerBrowse", String.format("fetchGenres:: stack:%s", stackTraceString));
-                        service.getClientLogging().getErrorLogging().logHandledException(stackTraceString);
+                        b2 = b;
+                        if (Log.isLoggable()) {
+                            Log.w("ServiceManagerBrowse", String.format("fetchGenres:: stack:%s", android.util.Log.getStackTraceString((Throwable)new Exception("Parameter cannot be null"))));
+                            b2 = b;
+                        }
                     }
-                    return b;
+                    return b2;
                 }
             }
             final int requestId = this.mgr.getRequestId(managerCallback);
-            final String s;
-            if (Log.isLoggable("ServiceManagerBrowse", 3)) {
-                Log.d("ServiceManagerBrowse", "fetchGenres requestId=" + requestId + " id=" + s);
+            final String s2;
+            if (Log.isLoggable()) {
+                Log.d("ServiceManagerBrowse", "fetchGenres requestId=" + requestId + " id=" + s2);
             }
-            service.getBrowse().fetchGenres(s, n, n2, this.mgr.getClientId(), requestId);
-            b = true;
-            return b;
+            service.getBrowse().fetchGenres(s2, n, n2, this.mgr.getClientId(), requestId);
+            return true;
         }
     }
     
@@ -219,7 +222,7 @@ public final class BrowseManager implements IBrowseManager
     public boolean fetchIQVideos(final LoMo loMo, final int n, final int n2, final boolean b, final ManagerCallback managerCallback) {
         synchronized (this) {
             final int requestId = this.mgr.getRequestId(managerCallback);
-            if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("ServiceManagerBrowse", "fetchIQLoMo requestId=" + requestId + " fromVideo=" + n + " toVideo=" + n2);
             }
             final INetflixService service = this.mgr.getService();
@@ -246,7 +249,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final int requestId = this.mgr.getRequestId(managerCallback);
         final String s2;
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", String.format("fetchKidsCharacterDetails requestId=%d,  characterId=%s", requestId, s2));
         }
         final INetflixService service = this.mgr.getService();
@@ -270,7 +273,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final int requestId = this.mgr.getRequestId(managerCallback);
         final String s2;
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "fetchLoLoMoSummary requestId=" + requestId + " category=" + s2);
         }
         final INetflixService service = this.mgr.getService();
@@ -291,7 +294,7 @@ public final class BrowseManager implements IBrowseManager
     public boolean fetchLoMos(final int n, final int n2, final ManagerCallback managerCallback) {
         synchronized (this) {
             final int requestId = this.mgr.getRequestId(managerCallback);
-            if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("ServiceManagerBrowse", "fetchLoLoMo requestId=" + requestId + " fromLoMo=" + n + " toLoMo=" + n2);
             }
             final INetflixService service = this.mgr.getService();
@@ -317,7 +320,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final String s2;
         final int wrappedRequestId = this.mgr.getWrappedRequestId(managerCallback, s2);
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "fetchMovieDetails requestId=" + wrappedRequestId + " movieId=" + s2);
         }
         final INetflixService service = this.mgr.getService();
@@ -338,7 +341,7 @@ public final class BrowseManager implements IBrowseManager
     public boolean fetchPostPlayVideos(final String s, final VideoType videoType, final ManagerCallback managerCallback) {
         synchronized (this) {
             final int requestId = this.mgr.getRequestId(managerCallback);
-            if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("ServiceManagerBrowse", "fetchPostPlayVideos requestId=" + requestId + " currentPlayableId=" + s);
             }
             final INetflixService service = this.mgr.getService();
@@ -364,7 +367,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final int requestId = this.mgr.getRequestId(managerCallback);
         final String s2;
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "fetchSeasonDetails requestId=" + requestId + " seasonId=" + s2);
         }
         final INetflixService service = this.mgr.getService();
@@ -390,7 +393,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final int requestId = this.mgr.getRequestId(managerCallback);
         final String s2;
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "fetchSeasons requestId=" + requestId + " id=" + s2 + " fromSeason=" + n + " toSeason=" + n2);
         }
         final INetflixService service = this.mgr.getService();
@@ -416,7 +419,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final String s3;
         final int wrappedRequestId = this.mgr.getWrappedRequestId(managerCallback, s3);
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "fetchShowDetails requestId=" + wrappedRequestId + " id=" + s3);
         }
         final INetflixService service = this.mgr.getService();
@@ -442,7 +445,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final String s3;
         final int wrappedRequestId = this.mgr.getWrappedRequestId(managerCallback, s3);
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "fetchShowDetailsAndSeasons requestId=" + wrappedRequestId + " id=" + s3);
         }
         final INetflixService service = this.mgr.getService();
@@ -498,7 +501,7 @@ public final class BrowseManager implements IBrowseManager
     @Override
     public boolean fetchSocialNotificationsList(final int n, final ManagerCallback managerCallback) {
         final int requestId = this.mgr.getRequestId(managerCallback);
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "fetchSocialNotificationsList requestId=" + requestId);
         }
         final INetflixService service = this.mgr.getService();
@@ -511,7 +514,25 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public boolean fetchVideos(final LoMo loMo, final int n, final int n2, final boolean b, final boolean b2, final ManagerCallback managerCallback) {
+    public boolean fetchVideoSummary(final String s, final ManagerCallback managerCallback) {
+        if (StringUtils.isEmpty(s)) {
+            throw new IllegalArgumentException("Parameter cannot be null");
+        }
+        final int requestId = this.mgr.getRequestId(managerCallback);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManagerBrowse", "fetchVideoSummary requestId=" + requestId + " videoId=" + s);
+        }
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().fetchVideoSummary(s, this.mgr.getClientId(), requestId);
+            return true;
+        }
+        Log.w("ServiceManagerBrowse", "fetchVideoSummary:: service is not available");
+        return false;
+    }
+    
+    @Override
+    public boolean fetchVideos(final LoMo loMo, final int n, final int n2, final boolean b, final boolean b2, final boolean b3, final ManagerCallback managerCallback) {
         // monitorenter(this)
         while (true) {
             if (loMo != null) {
@@ -525,21 +546,21 @@ public final class BrowseManager implements IBrowseManager
                 // monitorexit(this)
                 final int requestId = this.mgr.getRequestId(managerCallback);
                 final LoMo loMo2;
-                if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("ServiceManagerBrowse", "fetchVideos requestId=" + requestId + " loMoId=" + loMo2.getId() + " fromVideo=" + n + " toVideo=" + n2);
                 }
                 final INetflixService service = this.mgr.getService();
-                boolean b3;
+                boolean b4;
                 if (service != null) {
-                    service.getBrowse().fetchVideos(loMo2, n, n2, b, b2, this.mgr.getClientId(), requestId);
-                    b3 = true;
+                    service.getBrowse().fetchVideos(loMo2, n, n2, b, b2, b3, this.mgr.getClientId(), requestId);
+                    b4 = true;
                 }
                 else {
                     Log.w("ServiceManagerBrowse", "fetchVideos:: service is not available");
-                    b3 = false;
+                    b4 = false;
                 }
                 // monitorexit(this)
-                return b3;
+                return b4;
             }
             continue;
         }
@@ -557,12 +578,22 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
+    public ModelProxy<?> getModelProxy() {
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            return service.getBrowse().getModelProxy();
+        }
+        Log.w("ServiceManagerBrowse", "getModelProxy:: service is not available");
+        return null;
+    }
+    
+    @Override
     public boolean hideVideo(final String s, final ManagerCallback managerCallback) {
         if (StringUtils.isEmpty(s)) {
             throw new IllegalArgumentException("Parameter cannot be null");
         }
         final int requestId = this.mgr.getRequestId(managerCallback);
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "hideVideo requestId=" + requestId + " id=" + s);
         }
         final INetflixService service = this.mgr.getService();
@@ -575,10 +606,10 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public void logBillboardActivity(final Video video, final BrowseAgent$BillboardActivityType browseAgent$BillboardActivityType) {
+    public void logBillboardActivity(final Video video, final BillboardInteractionType billboardInteractionType) {
         final INetflixService service = this.mgr.getService();
         if (service != null) {
-            service.getBrowse().logBillboardActivity(video, browseAgent$BillboardActivityType);
+            service.getBrowse().logBillboardActivity(video, billboardInteractionType);
             return;
         }
         Log.w("ServiceManagerBrowse", "logBillboardActivity:: service is not available");
@@ -598,7 +629,7 @@ public final class BrowseManager implements IBrowseManager
     public boolean prefetchGenreLoLoMo(final String s, final int n, final int n2, final int n3, final int n4, final boolean b, final boolean b2, final ManagerCallback managerCallback) {
         synchronized (this) {
             final int requestId = this.mgr.getRequestId(managerCallback);
-            if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("ServiceManagerBrowse", "prefetchGenreLoLoMo requestId=" + requestId + " genreId=" + s + " fromLoMo=" + n + " toLoMo=" + n2 + " fromVideo=" + n3 + " toVideo=" + n4 + "includeBoxshots=" + b2);
             }
             final INetflixService service = this.mgr.getService();
@@ -618,7 +649,7 @@ public final class BrowseManager implements IBrowseManager
     @Override
     public boolean prefetchLoLoMo(final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final boolean b, final boolean b2, final boolean b3, final ManagerCallback managerCallback) {
         final int requestId = this.mgr.getRequestId(managerCallback);
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "prefetchLoLoMo requestId=" + requestId + " fromLoMo=" + n + " toLoMo=" + n2 + " fromVideo=" + n3 + " toVideo=" + n4 + " fromCWVideo=" + n5 + " toCWVideo=" + n6 + " includeExtraCharacters=" + b + "includeBoxshots=" + b3);
         }
         final INetflixService service = this.mgr.getService();
@@ -676,7 +707,7 @@ public final class BrowseManager implements IBrowseManager
             throw new IllegalArgumentException("Parameter cannot be null");
         }
         final int wrappedRequestId = this.mgr.getWrappedRequestId(managerCallback, s);
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "removeFromQueue requestId=" + wrappedRequestId + " id=" + s);
         }
         final INetflixService service = this.mgr.getService();
@@ -692,7 +723,7 @@ public final class BrowseManager implements IBrowseManager
     public boolean searchNetflix(final String s, final ManagerCallback managerCallback) {
         synchronized (this) {
             final int requestId = this.mgr.getRequestId(managerCallback);
-            if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("ServiceManagerBrowse", "searchNetflix requestId=" + requestId);
             }
             final INetflixService service = this.mgr.getService();
@@ -712,7 +743,7 @@ public final class BrowseManager implements IBrowseManager
     @Override
     public void sendThanksToSocialNotification(final SocialNotificationSummary socialNotificationSummary, final ManagerCallback managerCallback) {
         final int requestId = this.mgr.getRequestId(managerCallback);
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "sendThanksToSocialNotification requestId=" + requestId);
         }
         final INetflixService service = this.mgr.getService();
@@ -732,7 +763,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final int requestId = this.mgr.getRequestId(managerCallback);
         final String s2;
-        if (Log.isLoggable("ServiceManagerBrowse", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ServiceManagerBrowse", "setVideoRating requestId=" + requestId + " id=" + s2);
         }
         final INetflixService service = this.mgr.getService();

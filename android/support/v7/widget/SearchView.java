@@ -6,19 +6,29 @@ package android.support.v7.widget;
 
 import android.graphics.Rect;
 import android.view.View$MeasureSpec;
-import android.graphics.drawable.Drawable;
+import android.widget.ListAdapter;
+import android.database.Cursor;
 import android.view.inputmethod.InputMethodManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.content.Context;
+import android.annotation.TargetApi;
 import android.support.v7.appcompat.R$dimen;
+import android.graphics.drawable.Drawable;
+import android.text.style.ImageSpan;
+import android.text.SpannableStringBuilder;
 import android.widget.AutoCompleteTextView;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build$VERSION;
+import android.content.Intent;
+import android.support.v7.internal.widget.TintManager;
+import android.support.v4.widget.CursorAdapter;
 import android.app.SearchableInfo;
 import android.view.View;
+import android.graphics.drawable.Drawable$ConstantState;
+import java.util.WeakHashMap;
 import android.view.View$OnClickListener;
+import android.view.View$OnFocusChangeListener;
 import android.widget.ImageView;
 import android.os.Bundle;
 import android.support.v7.view.CollapsibleActionView;
@@ -37,21 +47,33 @@ public class SearchView extends LinearLayoutCompat implements CollapsibleActionV
     private int mMaxWidth;
     private SearchView$OnCloseListener mOnCloseListener;
     private SearchView$OnQueryTextListener mOnQueryChangeListener;
+    private View$OnFocusChangeListener mOnQueryTextFocusChangeListener;
     private View$OnClickListener mOnSearchClickListener;
+    private SearchView$OnSuggestionListener mOnSuggestionListener;
+    private final WeakHashMap<String, Drawable$ConstantState> mOutsideDrawablesCache;
+    private CharSequence mQueryHint;
+    private boolean mQueryRefinement;
     private final SearchView$SearchAutoComplete mQueryTextView;
     private Runnable mReleaseCursorRunnable;
     private final ImageView mSearchButton;
     private final View mSearchEditFrame;
     private final ImageView mSearchHintIcon;
+    private final int mSearchIconResId;
     private SearchableInfo mSearchable;
     private Runnable mShowImeRunnable;
     private final View mSubmitArea;
     private final ImageView mSubmitButton;
     private boolean mSubmitButtonEnabled;
+    private final int mSuggestionCommitIconResId;
+    private final int mSuggestionRowLayout;
+    private CursorAdapter mSuggestionsAdapter;
+    private final TintManager mTintManager;
     private final Runnable mUpdateDrawableStateRunnable;
     private CharSequence mUserQuery;
+    private final Intent mVoiceAppSearchIntent;
     private final ImageView mVoiceButton;
     private boolean mVoiceButtonEnabled;
+    private final Intent mVoiceWebSearchIntent;
     
     static {
         IS_AT_LEAST_FROYO = (Build$VERSION.SDK_INT >= 8);
@@ -93,8 +115,47 @@ public class SearchView extends LinearLayoutCompat implements CollapsibleActionV
         SearchView.HIDDEN_METHOD_INVOKER.doAfterTextChanged(this.mQueryTextView);
     }
     
+    private CharSequence getDecoratedHint(final CharSequence charSequence) {
+        if (!this.mIconifiedByDefault) {
+            return charSequence;
+        }
+        final Drawable drawable = this.mTintManager.getDrawable(this.mSearchIconResId);
+        final int n = (int)(this.mQueryTextView.getTextSize() * 1.25);
+        drawable.setBounds(0, 0, n, n);
+        final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder((CharSequence)"   ");
+        spannableStringBuilder.append(charSequence);
+        spannableStringBuilder.setSpan((Object)new ImageSpan(drawable), 1, 2, 33);
+        return (CharSequence)spannableStringBuilder;
+    }
+    
     private int getPreferredWidth() {
         return this.getContext().getResources().getDimensionPixelSize(R$dimen.abc_search_view_preferred_width);
+    }
+    
+    @TargetApi(8)
+    private boolean hasVoiceSearch() {
+        boolean b2;
+        final boolean b = b2 = false;
+        if (this.mSearchable != null) {
+            b2 = b;
+            if (this.mSearchable.getVoiceSearchEnabled()) {
+                Intent intent = null;
+                if (this.mSearchable.getVoiceSearchLaunchWebSearch()) {
+                    intent = this.mVoiceWebSearchIntent;
+                }
+                else if (this.mSearchable.getVoiceSearchLaunchRecognizer()) {
+                    intent = this.mVoiceAppSearchIntent;
+                }
+                b2 = b;
+                if (intent != null) {
+                    b2 = b;
+                    if (this.getContext().getPackageManager().resolveActivity(intent, 65536) != null) {
+                        b2 = true;
+                    }
+                }
+            }
+        }
+        return b2;
     }
     
     static boolean isLandscapeMode(final Context context) {
@@ -159,6 +220,19 @@ public class SearchView extends LinearLayoutCompat implements CollapsibleActionV
         }
     }
     
+    private void setQuery(final CharSequence text) {
+        this.mQueryTextView.setText(text);
+        final SearchView$SearchAutoComplete mQueryTextView = this.mQueryTextView;
+        int length;
+        if (TextUtils.isEmpty(text)) {
+            length = 0;
+        }
+        else {
+            length = text.length();
+        }
+        mQueryTextView.setSelection(length);
+    }
+    
     private void updateCloseButton() {
         final boolean b = true;
         final boolean b2 = false;
@@ -191,6 +265,55 @@ public class SearchView extends LinearLayoutCompat implements CollapsibleActionV
             state = SearchView.EMPTY_STATE_SET;
         }
         drawable.setState(state);
+    }
+    
+    private void updateQueryHint() {
+        if (this.mQueryHint != null) {
+            this.mQueryTextView.setHint(this.getDecoratedHint(this.mQueryHint));
+        }
+        else {
+            if (!SearchView.IS_AT_LEAST_FROYO || this.mSearchable == null) {
+                this.mQueryTextView.setHint(this.getDecoratedHint(""));
+                return;
+            }
+            CharSequence string = null;
+            final int hintId = this.mSearchable.getHintId();
+            if (hintId != 0) {
+                string = this.getContext().getString(hintId);
+            }
+            if (string != null) {
+                this.mQueryTextView.setHint(this.getDecoratedHint(string));
+            }
+        }
+    }
+    
+    @TargetApi(8)
+    private void updateSearchAutoComplete() {
+        final boolean b = true;
+        this.mQueryTextView.setThreshold(this.mSearchable.getSuggestThreshold());
+        this.mQueryTextView.setImeOptions(this.mSearchable.getImeOptions());
+        int inputType;
+        final int n = inputType = this.mSearchable.getInputType();
+        if ((n & 0xF) == 0x1) {
+            inputType = (n & 0xFFFEFFFF);
+            if (this.mSearchable.getSuggestAuthority() != null) {
+                inputType = (inputType | 0x10000 | 0x80000);
+            }
+        }
+        this.mQueryTextView.setInputType(inputType);
+        if (this.mSuggestionsAdapter != null) {
+            this.mSuggestionsAdapter.changeCursor(null);
+        }
+        if (this.mSearchable.getSuggestAuthority() != null) {
+            this.mSuggestionsAdapter = new SuggestionsAdapter(this.getContext(), this, this.mSearchable, this.mOutsideDrawablesCache);
+            this.mQueryTextView.setAdapter((ListAdapter)this.mSuggestionsAdapter);
+            final SuggestionsAdapter suggestionsAdapter = (SuggestionsAdapter)this.mSuggestionsAdapter;
+            int queryRefinement = b ? 1 : 0;
+            if (this.mQueryRefinement) {
+                queryRefinement = 2;
+            }
+            suggestionsAdapter.setQueryRefinement(queryRefinement);
+        }
     }
     
     private void updateSubmitArea() {
@@ -289,6 +412,56 @@ public class SearchView extends LinearLayoutCompat implements CollapsibleActionV
         this.mClearingFocus = false;
     }
     
+    public int getImeOptions() {
+        return this.mQueryTextView.getImeOptions();
+    }
+    
+    public int getInputType() {
+        return this.mQueryTextView.getInputType();
+    }
+    
+    public int getMaxWidth() {
+        return this.mMaxWidth;
+    }
+    
+    public CharSequence getQuery() {
+        return (CharSequence)this.mQueryTextView.getText();
+    }
+    
+    public CharSequence getQueryHint() {
+        final CharSequence charSequence = null;
+        CharSequence mQueryHint;
+        if (this.mQueryHint != null) {
+            mQueryHint = this.mQueryHint;
+        }
+        else {
+            mQueryHint = charSequence;
+            if (SearchView.IS_AT_LEAST_FROYO) {
+                mQueryHint = charSequence;
+                if (this.mSearchable != null) {
+                    final int hintId = this.mSearchable.getHintId();
+                    mQueryHint = charSequence;
+                    if (hintId != 0) {
+                        return this.getContext().getString(hintId);
+                    }
+                }
+            }
+        }
+        return mQueryHint;
+    }
+    
+    int getSuggestionCommitIconResId() {
+        return this.mSuggestionCommitIconResId;
+    }
+    
+    int getSuggestionRowLayout() {
+        return this.mSuggestionRowLayout;
+    }
+    
+    public CursorAdapter getSuggestionsAdapter() {
+        return this.mSuggestionsAdapter;
+    }
+    
     public boolean isIconified() {
         return this.mIconified;
     }
@@ -361,6 +534,10 @@ public class SearchView extends LinearLayoutCompat implements CollapsibleActionV
         super.onMeasure(View$MeasureSpec.makeMeasureSpec(n, 1073741824), n2);
     }
     
+    void onQueryRefine(final CharSequence query) {
+        this.setQuery(query);
+    }
+    
     void onTextFocusChanged() {
         this.updateViewsVisibility(this.isIconified());
         this.postUpdateFocusedState();
@@ -388,12 +565,57 @@ public class SearchView extends LinearLayoutCompat implements CollapsibleActionV
         return super.requestFocus(n, rect);
     }
     
+    public void setAppSearchData(final Bundle mAppSearchData) {
+        this.mAppSearchData = mAppSearchData;
+    }
+    
     public void setIconified(final boolean b) {
         if (b) {
             this.onCloseClicked();
             return;
         }
         this.onSearchClicked();
+    }
+    
+    public void setIconifiedByDefault(final boolean mIconifiedByDefault) {
+        if (this.mIconifiedByDefault == mIconifiedByDefault) {
+            return;
+        }
+        this.updateViewsVisibility(this.mIconifiedByDefault = mIconifiedByDefault);
+        this.updateQueryHint();
+    }
+    
+    public void setImeOptions(final int imeOptions) {
+        this.mQueryTextView.setImeOptions(imeOptions);
+    }
+    
+    public void setInputType(final int inputType) {
+        this.mQueryTextView.setInputType(inputType);
+    }
+    
+    public void setMaxWidth(final int mMaxWidth) {
+        this.mMaxWidth = mMaxWidth;
+        this.requestLayout();
+    }
+    
+    public void setOnCloseListener(final SearchView$OnCloseListener mOnCloseListener) {
+        this.mOnCloseListener = mOnCloseListener;
+    }
+    
+    public void setOnQueryTextFocusChangeListener(final View$OnFocusChangeListener mOnQueryTextFocusChangeListener) {
+        this.mOnQueryTextFocusChangeListener = mOnQueryTextFocusChangeListener;
+    }
+    
+    public void setOnQueryTextListener(final SearchView$OnQueryTextListener mOnQueryChangeListener) {
+        this.mOnQueryChangeListener = mOnQueryChangeListener;
+    }
+    
+    public void setOnSearchClickListener(final View$OnClickListener mOnSearchClickListener) {
+        this.mOnSearchClickListener = mOnSearchClickListener;
+    }
+    
+    public void setOnSuggestionListener(final SearchView$OnSuggestionListener mOnSuggestionListener) {
+        this.mOnSuggestionListener = mOnSuggestionListener;
     }
     
     public void setQuery(final CharSequence charSequence, final boolean b) {
@@ -405,5 +627,50 @@ public class SearchView extends LinearLayoutCompat implements CollapsibleActionV
         if (b && !TextUtils.isEmpty(charSequence)) {
             this.onSubmitQuery();
         }
+    }
+    
+    public void setQueryHint(final CharSequence mQueryHint) {
+        this.mQueryHint = mQueryHint;
+        this.updateQueryHint();
+    }
+    
+    public void setQueryRefinementEnabled(final boolean mQueryRefinement) {
+        this.mQueryRefinement = mQueryRefinement;
+        if (this.mSuggestionsAdapter instanceof SuggestionsAdapter) {
+            final SuggestionsAdapter suggestionsAdapter = (SuggestionsAdapter)this.mSuggestionsAdapter;
+            int queryRefinement;
+            if (mQueryRefinement) {
+                queryRefinement = 2;
+            }
+            else {
+                queryRefinement = 1;
+            }
+            suggestionsAdapter.setQueryRefinement(queryRefinement);
+        }
+    }
+    
+    public void setSearchableInfo(final SearchableInfo mSearchable) {
+        this.mSearchable = mSearchable;
+        if (this.mSearchable != null) {
+            if (SearchView.IS_AT_LEAST_FROYO) {
+                this.updateSearchAutoComplete();
+            }
+            this.updateQueryHint();
+        }
+        this.mVoiceButtonEnabled = (SearchView.IS_AT_LEAST_FROYO && this.hasVoiceSearch());
+        if (this.mVoiceButtonEnabled) {
+            this.mQueryTextView.setPrivateImeOptions("nm");
+        }
+        this.updateViewsVisibility(this.isIconified());
+    }
+    
+    public void setSubmitButtonEnabled(final boolean mSubmitButtonEnabled) {
+        this.mSubmitButtonEnabled = mSubmitButtonEnabled;
+        this.updateViewsVisibility(this.isIconified());
+    }
+    
+    public void setSuggestionsAdapter(final CursorAdapter mSuggestionsAdapter) {
+        this.mSuggestionsAdapter = mSuggestionsAdapter;
+        this.mQueryTextView.setAdapter((ListAdapter)this.mSuggestionsAdapter);
     }
 }

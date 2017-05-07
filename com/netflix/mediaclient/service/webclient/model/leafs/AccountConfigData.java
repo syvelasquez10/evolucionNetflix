@@ -5,10 +5,7 @@
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
 import com.netflix.mediaclient.service.configuration.KubrickConfiguration;
-import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
 import org.json.JSONException;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
-import com.netflix.mediaclient.util.JsonUtils;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
@@ -19,9 +16,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class AccountConfigData
 {
-    private static final KidsOnPhoneConfigData DEFAULT_KIDS_CONFIG;
     private static final KubrickConfigData DEFAULT_KUBRICK_CONFIG;
-    private static final String FIELD_KIDS_ON_PHONE = "kidsOnPhoneConfig";
     private static final String TAG = "nf_config";
     @SerializedName("castWhitelistTargets")
     private final String castWhitelist;
@@ -33,10 +28,10 @@ public class AccountConfigData
     private boolean enableCast;
     @SerializedName("enableHTTPSAuth")
     private boolean enableHTTPSAuth;
+    @SerializedName("enableLowBitrateStreams")
+    private boolean enableLowBitrateStreams;
     @SerializedName("JPlayerConfig")
     private String jPlayerConfig;
-    @SerializedName("kidsOnPhoneConfig")
-    private KidsOnPhoneConfigData kidsOnPhoneConfig;
     @SerializedName("kubrickConfig")
     private KubrickConfigData kubrickConfig;
     @Expose
@@ -51,17 +46,12 @@ public class AccountConfigData
     private String preAppPartnerExperience;
     @SerializedName("preAppWidgetExperience")
     private String preAppWidgetExperience;
-    @SerializedName("tabletSearchExperience")
-    private int searchTest;
     @SerializedName("shareSheetExperience")
     private int shareSheetExperience;
-    @SerializedName("useLegacyBrowse")
-    private boolean useLegacyBrowse;
     @SerializedName("videoBufferSize")
     private final int videoBufferSize;
     
     static {
-        DEFAULT_KIDS_CONFIG = new KidsOnPhoneConfigData();
         DEFAULT_KUBRICK_CONFIG = new KubrickConfigData();
     }
     
@@ -71,59 +61,27 @@ public class AccountConfigData
         this.mdxBlacklistTargets = null;
         this.mCastWhitelistJSONArray = null;
         this.mMdxBlacklistTargetsJSONArray = null;
-        this.kidsOnPhoneConfig = AccountConfigData.DEFAULT_KIDS_CONFIG;
         this.kubrickConfig = AccountConfigData.DEFAULT_KUBRICK_CONFIG;
         this.mJPlayerConfigJSON = null;
     }
     
-    public static AccountConfigData fromJsonString(String string) {
+    public static AccountConfigData fromJsonString(final String s) {
         AccountConfigData accountConfigData;
-        if (StringUtils.isEmpty(string)) {
+        if (StringUtils.isEmpty(s)) {
             accountConfigData = null;
         }
         else {
-            if (Log.isLoggable("nf_config", 2)) {
-                Log.v("nf_config", "Parsing AccountConfig from json: " + string);
+            if (Log.isLoggable()) {
+                Log.v("nf_config", "Parsing AccountConfig from json: " + s);
             }
-            while (true) {
-                final AccountConfigData accountConfigData2 = FalkorParseUtils.getGson().fromJson(string, AccountConfigData.class);
-                accountConfigData2.mCastWhitelistJSONArray = null;
-                accountConfigData2.mMdxBlacklistTargetsJSONArray = null;
-                accountConfigData2.mJPlayerConfigJSON = null;
-                while (true) {
-                    try {
-                        JSONObject jsonObject;
-                        if (StringUtils.isEmpty(string)) {
-                            jsonObject = new JSONObject();
-                        }
-                        else {
-                            jsonObject = new JSONObject(string);
-                        }
-                        string = JsonUtils.getString(jsonObject, "kidsOnPhoneConfig", null);
-                        if (string != null) {
-                            if (Log.isLoggable("nf_config", 3)) {
-                                Log.d("nf_config", "Found KidsOnPhone config: " + string);
-                            }
-                            accountConfigData2.kidsOnPhoneConfig = FalkorParseUtils.getGson().fromJson(string, KidsOnPhoneConfigData.class);
-                            accountConfigData = accountConfigData2;
-                            if (accountConfigData2.kubrickConfig == null) {
-                                accountConfigData2.kubrickConfig = AccountConfigData.DEFAULT_KUBRICK_CONFIG;
-                                return accountConfigData2;
-                            }
-                            break;
-                        }
-                    }
-                    catch (JSONException ex) {
-                        Log.handleException("nf_config", (Exception)ex);
-                        ErrorLoggingManager.logHandledException((Throwable)ex);
-                        continue;
-                    }
-                    if (Log.isLoggable("nf_config", 3)) {
-                        Log.d("nf_config", "Using default KidsOnPhone config");
-                    }
-                    accountConfigData2.kidsOnPhoneConfig = AccountConfigData.DEFAULT_KIDS_CONFIG;
-                    continue;
-                }
+            final AccountConfigData accountConfigData2 = FalkorParseUtils.getGson().fromJson(s, AccountConfigData.class);
+            accountConfigData2.mCastWhitelistJSONArray = null;
+            accountConfigData2.mMdxBlacklistTargetsJSONArray = null;
+            accountConfigData2.mJPlayerConfigJSON = null;
+            accountConfigData = accountConfigData2;
+            if (accountConfigData2.kubrickConfig == null) {
+                accountConfigData2.kubrickConfig = AccountConfigData.DEFAULT_KUBRICK_CONFIG;
+                return accountConfigData2;
             }
         }
         return accountConfigData;
@@ -131,6 +89,10 @@ public class AccountConfigData
     
     public boolean enableHTTPSAuth() {
         return this.enableHTTPSAuth;
+    }
+    
+    public boolean enableLowBitrateStreams() {
+        return this.enableLowBitrateStreams;
     }
     
     public String getCastBlacklist() {
@@ -187,12 +149,8 @@ public class AccountConfigData
         }
     }
     
-    public KidsOnPhoneConfiguration getKidsOnPhone() {
-        return this.kidsOnPhoneConfig;
-    }
-    
     public KubrickConfiguration getKubrickConfig() {
-        return this.kubrickConfig;
+        return AccountConfigData.DEFAULT_KUBRICK_CONFIG;
     }
     
     public String getMdxBlacklist() {
@@ -230,20 +188,12 @@ public class AccountConfigData
         return this.preAppWidgetExperience;
     }
     
-    public int getSearchTest() {
-        return this.searchTest;
-    }
-    
     public int getShareSheetExperience() {
         return this.shareSheetExperience;
     }
     
     public int getVideoBufferSize() {
         return 0;
-    }
-    
-    public boolean shouldUseLegacyBrowseVolleyClient() {
-        return this.useLegacyBrowse;
     }
     
     public boolean toDisableMcQueenV2() {
@@ -256,7 +206,7 @@ public class AccountConfigData
     
     public String toJsonString() {
         final String json = FalkorParseUtils.getGson().toJson(this);
-        if (Log.isLoggable("nf_config", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_config", "AccountConfig as json: " + json);
         }
         return json;

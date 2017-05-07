@@ -84,12 +84,13 @@ public final class MdxReceiver extends BroadcastReceiver
         intentFilter.addAction("com.netflix.mediaclient.intent.action.MDXUPDATE_POSTPLAY");
         intentFilter.addAction("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART");
         intentFilter.addAction("com.netflix.mediaclient.intent.action.MDXUPDATE_STATE");
+        intentFilter.addAction("com.netflix.mediaclient.intent.action.MDXUPDATE_CAPABILITY");
         intentFilter.addCategory("com.netflix.mediaclient.intent.category.MDX");
         return intentFilter;
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable("nf_mdx", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_mdx", "MDX broadcast " + intent);
         }
         if (!this.mActivity.isFinishing()) {
@@ -112,6 +113,8 @@ public final class MdxReceiver extends BroadcastReceiver
                 if ("com.netflix.mediaclient.intent.action.MDXUPDATE_TARGETLIST".equals(action)) {
                     Log.d("nf_mdx", "MDX is ready, got target list update, invalidate action bar");
                     this.mActivity.invalidateOptionsMenu();
+                    this.mActivity.updateTargetSelectionDialog();
+                    this.mActivity.setConnectingToTarget(false);
                     return;
                 }
                 if ("com.netflix.mediaclient.intent.action.PIN_VERIFICATION_SHOW".equals(action)) {
@@ -137,6 +140,11 @@ public final class MdxReceiver extends BroadcastReceiver
                     if (sharedState != null && sharedState.getMdxPlaybackState() == IMdxSharedState$MdxPlaybackState.Transitioning) {
                         this.hideMdxController(context);
                     }
+                }
+                else if ("com.netflix.mediaclient.intent.action.MDXUPDATE_CAPABILITY".equals(action)) {
+                    Log.d("nf_mdx", "MDX is connected, invalidate action bar to finish animation");
+                    this.mActivity.setConnectingToTarget(false);
+                    this.mActivity.invalidateOptionsMenu();
                 }
             }
         }

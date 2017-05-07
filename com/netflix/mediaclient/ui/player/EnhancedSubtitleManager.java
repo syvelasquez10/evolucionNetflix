@@ -92,10 +92,10 @@ final class EnhancedSubtitleManager implements SubtitleManager
             throw new IllegalArgumentException("Player screen is not initialized!");
         }
         if (this.mActivity.isTablet()) {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361965);
+            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361966);
         }
         else {
-            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361964);
+            this.mDefaultTextSize = this.mActivity.getResources().getDimension(2131361965);
         }
         Log.v("nf_subtitles_render", "Create handler.");
         this.mHandler = new Handler();
@@ -109,11 +109,11 @@ final class EnhancedSubtitleManager implements SubtitleManager
             n = 46;
         }
         this.mBottomPanelPadding = AndroidUtils.dipToPixels((Context)mActivity, n);
-        this.mBottomPanelHeight = mActivity.getResources().getDimensionPixelSize(2131362041);
+        this.mBottomPanelHeight = mActivity.getResources().getDimensionPixelSize(2131362044);
         this.mTopPanelPadding = AndroidUtils.dipToPixels((Context)mActivity, 5);
-        this.mTopPanel = mActivity.findViewById(2131165572);
+        this.mTopPanel = mActivity.findViewById(2131165576);
         this.mTransparent = mActivity.getResources().getColor(17170445);
-        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131165564);
+        this.mDisplayArea = (RelativeLayout)this.mActivity.findViewById(2131165568);
         if (this.mDisplayArea.getWidth() == 0 || this.mDisplayArea.getHeight() == 0) {
             Log.w("nf_subtitles_render", "Display area w/h are 0, display area is not visible yet!");
         }
@@ -144,7 +144,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
             }
         }
         if (horizontalAlignment != null && verticalAlignment2 != null) {
-            if (Log.isLoggable("nf_subtitles_render", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("nf_subtitles_render", "Set gravity for region " + initialRegionPosition.getId());
             }
             linearLayout.setGravity(SubtitleUtils.toGravity(horizontalAlignment, verticalAlignment2));
@@ -230,11 +230,11 @@ final class EnhancedSubtitleManager implements SubtitleManager
             Log.d("nf_subtitles_render", "No unmeasured last horizontal wrapper");
             measuredWidth3 = n2;
         }
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Region after text nodes added, calculated w: " + measuredWidth3 + ", h: " + n);
         }
         linearLayout.measure(0, 0);
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Region after text nodes added, measured w: " + linearLayout.getMeasuredWidth() + ", h: " + linearLayout.getMeasuredHeight());
         }
         return (Pair<Integer, Integer>)new Pair((Object)linearLayout.getMeasuredWidth(), (Object)linearLayout.getMeasuredHeight());
@@ -271,7 +271,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
                     Log.e("nf_subtitles_render", "createRegions:: region ID is null on position " + i + ". Ignore region " + region);
                 }
                 else {
-                    if (Log.isLoggable("nf_subtitles_render", 2)) {
+                    if (Log.isLoggable()) {
                         Log.v("nf_subtitles_render", "Create linear layout from region " + region + " on position " + i);
                     }
                     this.addRegion(region);
@@ -293,12 +293,12 @@ final class EnhancedSubtitleManager implements SubtitleManager
             Log.d("nf_subtitles_render", "Block does not have region, put it in default region");
             return this.mDefaultRegion;
         }
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Block have region " + region);
         }
         final LinearLayout linearLayout = this.mRegions.get(region.getId());
         if (linearLayout == null) {
-            if (Log.isLoggable("nf_subtitles_render", 6)) {
+            if (Log.isLoggable()) {
                 Log.e("nf_subtitles_render", "Regions known " + this.mRegions.size());
                 final Iterator<String> iterator = this.mRegions.keySet().iterator();
                 while (iterator.hasNext()) {
@@ -353,7 +353,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
     
     private void handleDelayedSubtitleBlocks(final List<SubtitleBlock> list, final boolean b) {
         for (final SubtitleBlock subtitleBlock : list) {
-            if (Log.isLoggable("nf_subtitles_render", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("nf_subtitles_render", "Posting delayed block by " + subtitleBlock.getEnd() + " [ms]. Display " + b + " for block " + subtitleBlock.getId());
             }
             this.mHandler.postDelayed(this.createRunnable(subtitleBlock, b), subtitleBlock.getEnd());
@@ -394,7 +394,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
     private void moveBlocksBottomIfNeeded(final List<ViewUtils$ViewComparator> list) {
         for (int size = list.size(), i = 0; i < size - 1; ++i) {
             for (int j = i + 1; j < list.size(); ++j) {
-                if (Log.isLoggable("nf_subtitles_render", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_subtitles_render", "Blocks " + i + " and " + j + " test " + list.size());
                 }
                 SubtitleUtils.adjustIfIntersectByMovingSecondDown((LinearLayout)list.get(i).getView(), (LinearLayout)list.get(j).getView(), this.mDisplayArea.getHeight());
@@ -408,7 +408,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
         boolean b = false;
         while (i < size - 1) {
             for (int j = i + 1; j < list.size(); ++j) {
-                if (Log.isLoggable("nf_subtitles_render", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_subtitles_render", "Blocks " + i + " and " + j + " test " + list.size());
                 }
                 if (SubtitleUtils.adjustIfIntersectByMovingFirstUp((LinearLayout)list.get(j).getView(), (LinearLayout)list.get(i).getView()) == -1) {
@@ -423,7 +423,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
     
     private SubtitleUtils$Margins moveRegionInsideVisibleDisplayArea(final SubtitleUtils$Margins subtitleUtils$Margins, int left, int right, final Rect rect) {
         final int n = 0;
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Margins, left: " + subtitleUtils$Margins.left + ", top: " + subtitleUtils$Margins.top + ", right: " + subtitleUtils$Margins.right + ", bottom: " + subtitleUtils$Margins.bottom);
         }
         final SubtitleUtils$Margins subtitleUtils$Margins2 = new SubtitleUtils$Margins();
@@ -449,7 +449,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
         Log.d("nf_subtitles_render", "Check if region bottom is lower than display area");
         if (bottom > this.mDisplayArea.getHeight()) {
             final int n2 = left = top - (bottom - this.mDisplayArea.getHeight());
-            if (Log.isLoggable("nf_subtitles_render", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "New top " + n2);
                 left = n2;
             }
@@ -471,7 +471,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
         Log.d("nf_subtitles_render", "Check if region right is pass right of display area");
         if (right > this.mDisplayArea.getWidth()) {
             right = (left = left2 - (right - this.mDisplayArea.getWidth()));
-            if (Log.isLoggable("nf_subtitles_render", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "New left " + right);
                 left = right;
             }
@@ -521,11 +521,11 @@ final class EnhancedSubtitleManager implements SubtitleManager
     
     private void removeRegions() {
         while (true) {
-        Label_0175:
+        Label_0168:
             while (true) {
                 final String s;
                 final LinearLayout linearLayout;
-                Label_0129: {
+                Label_0125: {
                     synchronized (this) {
                         if (this.mRegions.size() < 1) {
                             Log.d("nf_subtitles_render", "removeRegions:: no region found to remove.");
@@ -533,21 +533,21 @@ final class EnhancedSubtitleManager implements SubtitleManager
                         else {
                             final Iterator<String> iterator = this.mRegions.keySet().iterator();
                             if (!iterator.hasNext()) {
-                                break Label_0175;
+                                break Label_0168;
                             }
                             s = iterator.next();
                             linearLayout = this.mRegions.get(s);
                             if (linearLayout != null) {
-                                break Label_0129;
+                                break Label_0125;
                             }
-                            if (Log.isLoggable("nf_subtitles_render", 6)) {
+                            if (Log.isLoggable()) {
                                 Log.e("nf_subtitles_render", "Removing region " + s + " is not possible. Region is null!");
                             }
                         }
                         return;
                     }
                 }
-                if (Log.isLoggable("nf_subtitles_render", 2)) {
+                if (Log.isLoggable()) {
                     Log.v("nf_subtitles_render", "Removing region " + s);
                 }
                 this.mDisplayArea.removeView((View)linearLayout);
@@ -599,27 +599,27 @@ final class EnhancedSubtitleManager implements SubtitleManager
         Label_0039_Outer:Label_0054_Outer:
         while (true) {
             while (true) {
-            Label_0187:
+            Label_0181:
                 while (true) {
-                    Label_0177: {
+                    Label_0171: {
                         synchronized (this) {
                             if (this.mDefaultRegion != null) {
                                 this.mDefaultRegion.setBackgroundColor(this.mTransparent);
                                 this.mDefaultRegion.setVisibility(4);
                                 if (!b) {
-                                    break Label_0177;
+                                    break Label_0171;
                                 }
                                 this.mDefaultRegion.removeAllViews();
                             }
                             for (final String s : this.mRegions.keySet()) {
-                                if (Log.isLoggable("nf_subtitles_render", 3)) {
+                                if (Log.isLoggable()) {
                                     Log.d("nf_subtitles_render", "Removing visible blocks for region " + s);
                                 }
                                 linearLayout = this.mRegions.get(s);
                                 if (linearLayout != null) {
-                                    break Label_0187;
+                                    break Label_0181;
                                 }
-                                if (!Log.isLoggable("nf_subtitles_render", 3)) {
+                                if (!Log.isLoggable()) {
                                     continue Label_0039_Outer;
                                 }
                                 Log.d("nf_subtitles_render", "Region not found for id " + s + ". Probably default region.");
@@ -669,7 +669,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
             linearLayout.setBackgroundColor(this.mActivity.getResources().getColor(17170445));
             return;
         }
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Sets region background color to " + n);
         }
         linearLayout.setBackgroundColor((int)n);
@@ -710,11 +710,11 @@ final class EnhancedSubtitleManager implements SubtitleManager
         else {
             final int width = regionForRectangle.width();
             final int height = regionForRectangle.height();
-            if (Log.isLoggable("nf_subtitles_render", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("nf_subtitles_render", "Display area: w/h: " + this.mDisplayArea.getWidth() + "/" + this.mDisplayArea.getHeight() + " Region w/h " + width + "/" + height + " known, set them");
             }
             final int n = this.mDisplayArea.getHeight() / 4;
-            if (Log.isLoggable("nf_subtitles_render", 2)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "h: " + height + ", maxHeight: " + n);
             }
             if (height < n) {
@@ -738,7 +738,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
         final int top = rect.top;
         final int n2 = this.mDisplayArea.getWidth() - rect.right;
         final int n3 = this.mDisplayArea.getHeight() - rect.bottom;
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Display area w/h" + this.mDisplayArea.getWidth() + "/" + this.mDisplayArea.getHeight());
             Log.d("nf_subtitles_render", "Margins, left: " + left + ", top: " + top + ", right: " + n2 + ", bottom: " + n3);
         }
@@ -747,7 +747,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
         if (n3 < 0) {
             Log.w("nf_subtitles_render", "Bottom margin is less than 0, correct");
             n5 = top + n3;
-            if (Log.isLoggable("nf_subtitles_render", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "Margins, left: " + left + ", top: " + n5 + ", right: " + n2 + ", bottom: " + 0);
             }
             n4 = 0;
@@ -763,7 +763,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
             }
             n7 = n6;
             n8 = n;
-            if (Log.isLoggable("nf_subtitles_render", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "Margins, left: " + left + ", top: " + 0 + ", right: " + n2 + ", bottom: " + n6);
                 n8 = n;
                 n7 = n6;
@@ -797,11 +797,11 @@ final class EnhancedSubtitleManager implements SubtitleManager
         else {
             final int width = regionForRectangle.width();
             final int height = regionForRectangle.height();
-            if (Log.isLoggable("nf_subtitles_render", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("nf_subtitles_render", "Display area: w/h: " + this.mDisplayArea.getWidth() + "/" + this.mDisplayArea.getHeight() + " Region w/h " + width + "/" + height + " known, set them");
             }
             final int n = this.mDisplayArea.getHeight() / 4;
-            if (Log.isLoggable("nf_subtitles_render", 2)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "h: " + height + ", maxHeight: " + n);
             }
             if (height < n) {
@@ -860,11 +860,11 @@ final class EnhancedSubtitleManager implements SubtitleManager
             Log.e("nf_subtitles_render", "Block is empty! Can not show!");
             return;
         }
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Show subtitle block: " + subtitleBlock);
         }
         final LinearLayout regionLayout = this.findRegionLayout(subtitleBlock);
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "LL for region " + regionLayout.getTag());
         }
         regionLayout.setVisibility(4);
@@ -918,7 +918,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
     
     private TextView toTextView(final SubtitleTextNode subtitleTextNode) {
         final String text = SubtitleUtils.createText(subtitleTextNode.getText(), subtitleTextNode.getLineBreaks());
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Create text view from " + subtitleTextNode);
             Log.d("nf_subtitles_render", "Text to set " + text);
         }
@@ -943,7 +943,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
         autoResizeTextView.setText((CharSequence)text);
         autoResizeTextView.setGravity(119);
         autoResizeTextView.measure(0, 0);
-        if (Log.isLoggable("nf_subtitles_render", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Post measure text view mw: " + autoResizeTextView.getMeasuredWidth() + ", mh: " + autoResizeTextView.getMeasuredHeight());
         }
         return autoResizeTextView;
@@ -974,7 +974,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
                 return;
             }
             Log.w("nf_subtitles_render", "updatePositionIfNeeded using region defaults for extent and origin");
-            if (Log.isLoggable("nf_subtitles_render", 2)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "Region h " + linearLayout.getHeight() + ", needed h " + n2);
             }
             this.setRegionPosition(linearLayout, region);
@@ -986,7 +986,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
     
     private void updateRegionPosition(final LinearLayout linearLayout, int left, int n, final DoubleLength doubleLength, final DoubleLength doubleLength2) {
         final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)linearLayout.getLayoutParams();
-        if (Log.isLoggable("nf_subtitles_render", 2)) {
+        if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "Display area: w " + this.mDisplayArea.getWidth() + ", h " + this.mDisplayArea.getHeight());
         }
         final Rect regionForRectangle = SubtitleUtils.createRegionForRectangle((View)this.mDisplayArea, doubleLength, doubleLength2);
@@ -1035,7 +1035,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
     public void onPlayerOverlayVisibiltyChange(final boolean b) {
         while (true) {
             synchronized (this) {
-                if (Log.isLoggable("nf_subtitles_render", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_subtitles_render", "Player UI is now visible: " + b);
                 }
                 if (this.mDisplayArea != null) {
@@ -1043,7 +1043,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
                     if (b) {
                         final int displayAreaMarginTop = this.getDisplayAreaMarginTop();
                         final int displayAreaMarginBottom = this.getDisplayAreaMarginBottom();
-                        if (Log.isLoggable("nf_subtitles_render", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("nf_subtitles_render", "Add bottom/top margin to display area on visible. Bottom margin " + displayAreaMarginBottom + ", top margin: " + displayAreaMarginTop);
                         }
                         layoutParams.setMargins(0, displayAreaMarginTop, 0, displayAreaMarginBottom);
@@ -1094,12 +1094,12 @@ final class EnhancedSubtitleManager implements SubtitleManager
             this.removeAll(false);
             final int hashCode = subtitleScreen2.getParser().hashCode();
             if (this.mSubtitleParserId != null && this.mSubtitleParserId == hashCode) {
-                if (Log.isLoggable("nf_subtitles_render", 2)) {
+                if (Log.isLoggable()) {
                     Log.v("nf_subtitles_render", "Same subtitles file " + this.mSubtitleParserId);
                 }
             }
             else {
-                if (Log.isLoggable("nf_subtitles_render", 2)) {
+                if (Log.isLoggable()) {
                     Log.v("nf_subtitles_render", "Subtitles file changed. Was " + this.mSubtitleParserId + ", now " + hashCode + ". (Re) create regions!");
                 }
                 this.mSubtitleParserId = subtitleScreen2.getParser().hashCode();
@@ -1125,7 +1125,7 @@ final class EnhancedSubtitleManager implements SubtitleManager
     @Override
     public void setSubtitleVisibility(final boolean b) {
         synchronized (this) {
-            if (Log.isLoggable("nf_subtitles_render", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles_render", "EnhancedSubtitleManager:: set subtitle visibility to visible " + b);
             }
             this.mHandler.post((Runnable)new EnhancedSubtitleManager$3(this, b));

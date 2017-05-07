@@ -30,7 +30,7 @@ public class CdmProvisionNccpTransaction extends BaseNccpTransaction
     @Override
     protected StringBuilder createCustomRequest(final StringBuilder sb) {
         final String encodeToString = Base64.encodeToString(this.keyRequest, 2);
-        if (Log.isLoggable("nf_nccp", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_nccp", "Key request encoded base64: " + encodeToString);
         }
         sb.append("<nccp:cdmprovision>");

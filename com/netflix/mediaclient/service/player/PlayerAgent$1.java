@@ -13,7 +13,6 @@ import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import java.util.concurrent.Executors;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
-import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -22,6 +21,7 @@ import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.media.JPlayer2Helper;
 import android.media.AudioManager;
+import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
 import com.netflix.mediaclient.android.app.BackgroundTask;
@@ -43,7 +43,6 @@ import com.netflix.mediaclient.event.nrdp.media.ShowSubtitle;
 import com.netflix.mediaclient.event.nrdp.media.RemoveSubtitle;
 import com.netflix.mediaclient.event.nrdp.media.Buffering;
 import com.netflix.mediaclient.event.nrdp.media.GenericMediaEvent;
-import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import android.os.PowerManager$WakeLock;
 import android.content.BroadcastReceiver;
@@ -80,11 +79,11 @@ class PlayerAgent$1 implements Runnable
     
     @Override
     public void run() {
-    Label_0522_Outer:
+    Label_0517_Outer:
         while (true) {
-            Label_0612: {
+            Label_0607: {
                 while (true) {
-                Label_0587:
+                Label_0582:
                     while (true) {
                         synchronized (this.this$0) {
                             this.this$0.mMedia.reset();
@@ -101,18 +100,18 @@ class PlayerAgent$1 implements Runnable
                                 this.this$0.mStartPlayTimeoutTask = new PlayerAgent$StartPlayTimeoutTask(this.this$0);
                                 this.this$0.mTimer.schedule(this.this$0.mStartPlayTimeoutTask, 30000L);
                             }
-                            if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                            if (Log.isLoggable()) {
                                 Log.d(PlayerAgent.TAG, "Player state is " + this.this$0.mState);
                             }
                             if (this.this$0.mState != 4 && this.this$0.mState != -1) {
-                                break Label_0612;
+                                break Label_0607;
                             }
                             Log.d(PlayerAgent.TAG, "Player state was CLOSED or CREATED, cancel timeout task!");
                             this.this$0.mState = 5;
                             if (this.this$0.mStartPlayTimeoutTask != null) {
                                 final boolean cancel = this.this$0.mStartPlayTimeoutTask.cancel();
                                 this.this$0.mStartPlayTimeoutTask = null;
-                                if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                                if (Log.isLoggable()) {
                                     Log.d(PlayerAgent.TAG, "Task was canceled " + cancel);
                                 }
                             }
@@ -121,11 +120,11 @@ class PlayerAgent$1 implements Runnable
                             }
                             if (this.this$0.mTimer != null) {
                                 final int purge = this.this$0.mTimer.purge();
-                                if (Log.isLoggable(PlayerAgent.TAG, 3)) {
+                                if (Log.isLoggable()) {
                                     Log.d(PlayerAgent.TAG, "Canceled tasks: " + purge);
                                 }
                                 this.this$0.reloadPlayer();
-                                this.this$0.mMedia.setStreamingQoe(this.this$0.getConfigurationAgent().getStreamingQoe(), this.this$0.getConfigurationAgent().enableHTTPSAuth());
+                                this.this$0.mMedia.setStreamingQoe(this.this$0.getConfigurationAgent().getStreamingQoe(), this.this$0.getConfigurationAgent().enableHTTPSAuth(), this.this$0.isMPPlayerType());
                                 this.this$0.mMedia.open(this.this$0.mMovieId, this.this$0.mPlayContext, this.this$0.getCurrentNetType(), this.this$0.mBookmark);
                                 this.this$0.toOpenAfterClose = false;
                                 final String value = this.this$0.getConfigurationAgent().getDeviceCategory().getValue();
@@ -137,11 +136,11 @@ class PlayerAgent$1 implements Runnable
                                     this.this$0.ptsTicker = -1;
                                     return;
                                 }
-                                break Label_0587;
+                                break Label_0582;
                             }
                         }
                         Log.w(PlayerAgent.TAG, "Timer was null!!!");
-                        continue Label_0522_Outer;
+                        continue Label_0517_Outer;
                     }
                     final String s;
                     this.this$0.mMedia.setWifiApsInfo(this.this$0.getContext(), s, false);

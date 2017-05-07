@@ -23,4 +23,6 @@ public interface Cast$CastApi
     PendingResult<Status> sendMessage(final GoogleApiClient p0, final String p1, final String p2);
     
     void setMessageReceivedCallbacks(final GoogleApiClient p0, final String p1, final Cast$MessageReceivedCallback p2);
+    
+    PendingResult<Status> stopApplication(final GoogleApiClient p0);
 }

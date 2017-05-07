@@ -19,4 +19,5 @@ public final class R$layout
     public static final int abc_screen_simple = 2130903057;
     public static final int abc_screen_simple_overlay_action_mode = 2130903058;
     public static final int abc_screen_toolbar = 2130903059;
+    public static final int abc_search_dropdown_item_icons_2line = 2130903060;
 }

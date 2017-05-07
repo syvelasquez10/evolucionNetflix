@@ -12,8 +12,8 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.model.branches.FalkorObject;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
-import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
 
 public class SocialBadge extends FriendProfile implements JsonPopulator, FalkorObject
 {

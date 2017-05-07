@@ -33,7 +33,7 @@ public class FetchProfileDataRequest extends FalkorVolleyWebClientRequest<UserPr
         this.responseCallback = responseCallback;
         this.mProfileId = mProfileId;
         this.pqlQuery1 = "['profiles','" + mProfileId + "',['summary', 'subtitlePreference']]";
-        if (Log.isLoggable("nf_service_user_fetchprofiledatarequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_fetchprofiledatarequest", "PQL = " + this.pqlQuery1);
         }
     }
@@ -59,7 +59,7 @@ public class FetchProfileDataRequest extends FalkorVolleyWebClientRequest<UserPr
     
     @Override
     protected UserProfile parseFalkorResponse(final String s) {
-        if (Log.isLoggable("nf_service_user_fetchprofiledatarequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_fetchprofiledatarequest", "String response to parse = " + s);
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchprofiledatarequest", s);

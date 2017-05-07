@@ -25,7 +25,7 @@ class LanguageSelector$2 implements AdapterView$OnItemClickListener
     
     public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
         final Subtitle item = this.val$subtitleAdapter.getItem(n);
-        if (Log.isLoggable("nf_language_selector", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_language_selector", "Subtitle selected on position " + n + ", data: " + item);
         }
         if (this.val$language.getSelectedSubtitle() != item) {

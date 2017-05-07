@@ -9,9 +9,8 @@ import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.service.configuration.PlaybackConfiguration;
 import com.netflix.mediaclient.service.configuration.MdxConfiguration;
 import com.netflix.mediaclient.service.configuration.KubrickConfiguration;
-import com.netflix.mediaclient.service.configuration.KidsOnPhoneConfiguration;
 import org.json.JSONObject;
-import com.netflix.mediaclient.net.IpConnectivityPolicy;
+import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
@@ -27,6 +26,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     void clearAccountConfigData();
     
     boolean enableHTTPSAuth();
+    
+    boolean enableLowBitrateStreams();
     
     void esnMigrationComplete();
     
@@ -64,8 +65,6 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     JSONObject getJPlayerConfig();
     
-    KidsOnPhoneConfiguration getKidsOnPhoneConfiguration();
-    
     KubrickConfiguration getKubrickConfiguration();
     
     MdxConfiguration getMdxConfiguration();
@@ -85,8 +84,6 @@ public interface ServiceAgent$ConfigurationAgentInterface
     int getResFetcherThreadPoolSize();
     
     int getResourceRequestTimeout();
-    
-    int getSearchTest();
     
     int getShareSheetExperience();
     

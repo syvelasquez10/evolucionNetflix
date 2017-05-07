@@ -4,22 +4,12 @@
 
 package crittercism.android;
 
-import java.io.File;
-import java.io.FilenameFilter;
-
-public final class v$a implements FilenameFilter
+public enum v$a
 {
-    private String a;
+    a("HTTP_ONLY", 0), 
+    b("HTTPS_ONLY", 1), 
+    c("ALL", 2);
     
-    public v$a(final String a) {
-        this.a = new String();
-        if (a != null) {
-            this.a = a;
-        }
-    }
-    
-    @Override
-    public final boolean accept(final File file, final String s) {
-        return s.endsWith(this.a);
+    private v$a(final String s, final int n) {
     }
 }

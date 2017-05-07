@@ -34,7 +34,7 @@ class SocialNotification$1 implements ImageLoader$ImageLoaderListener
     
     @Override
     public void onErrorResponse(final String s) {
-        if (Log.isLoggable(SocialNotification.TAG, 6)) {
+        if (Log.isLoggable()) {
             Log.e(SocialNotification.TAG, "Failed to download: " + s);
         }
     }

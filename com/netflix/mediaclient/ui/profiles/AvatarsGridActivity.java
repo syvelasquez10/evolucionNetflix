@@ -61,13 +61,13 @@ public class AvatarsGridActivity extends NetflixActivity
     }
     
     private void initUI() {
-        this.setContentView(2130903068);
+        this.setContentView(2130903067);
         this.mGridView = (GridView)this.findViewById(2131165298);
         this.mLoadingWrapper = new LoadingAndErrorWrapper(this.findViewById(2131165297), this.errorCallback);
         this.mAdapter = new AvatarsGridActivity$ProfileAvatarAdapter(this, null);
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
-            netflixActionBar.setTitle(this.getResources().getString(2131493305));
+            netflixActionBar.setTitle(this.getResources().getString(2131493313));
             netflixActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
         }
     }
@@ -92,7 +92,7 @@ public class AvatarsGridActivity extends NetflixActivity
     }
     
     private void updateTopGridViewMargin() {
-        int topMargin = (int)this.getResources().getDimension(2131361953);
+        int topMargin = (int)this.getResources().getDimension(2131361954);
         if (DeviceUtils.isNotTabletByContext((Context)this)) {
             topMargin += ViewUtils.getDefaultActionBarHeight((Context)this);
         }

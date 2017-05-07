@@ -28,7 +28,7 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.widget.EditText;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.widget.CheckBox;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
@@ -58,7 +58,7 @@ class ProfileDetailsActivity$AvatarsFetchedCallback extends SimpleManagerCallbac
     
     @Override
     public void onAvailableAvatarsListFetched(final List<AvatarInfo> list, final Status status) {
-        if (Log.isLoggable("ProfileDetailsActivity", 4)) {
+        if (Log.isLoggable()) {
             Log.i("ProfileDetailsActivity", "onAvailableAvatarsListFetched: " + list);
         }
         if (status.isSucces() && list != null) {

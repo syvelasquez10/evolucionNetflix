@@ -4,14 +4,15 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.view.ViewGroup$LayoutParams;
 import android.view.MotionEvent;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
+import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils$LoMoWidthType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.support.v4.view.PagerAdapter;
 import com.netflix.mediaclient.util.ThreadUtils;
 import android.content.Context;
@@ -45,7 +46,7 @@ class LoMoViewPager$1 implements Runnable
         if ((n = this.this$0.getCurrentItem() + 1) >= this.this$0.adapter.getCount()) {
             n = 0;
         }
-        if (Log.isLoggable("LoMoViewPager", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPager", "Auto-rotating to next view, id: " + n);
         }
         this.this$0.setCurrentItem(n, true, true);

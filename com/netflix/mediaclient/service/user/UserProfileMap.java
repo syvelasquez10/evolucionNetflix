@@ -39,79 +39,75 @@ class UserProfileMap
         //    15: ldc             ""
         //    17: invokestatic    com/netflix/mediaclient/util/PreferenceUtils.getStringPref:(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
         //    20: astore_1       
-        //    21: ldc             "nf_service_useragentproilemap"
-        //    23: iconst_3       
-        //    24: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //    27: ifeq            55
-        //    30: ldc             "nf_service_useragentproilemap"
-        //    32: new             Ljava/lang/StringBuilder;
-        //    35: dup            
-        //    36: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    39: ldc             "UserProfileMap json "
-        //    41: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    44: aload_1        
-        //    45: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    48: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //    51: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    54: pop            
-        //    55: aload_0        
-        //    56: new             Lorg/json/JSONObject;
-        //    59: dup            
-        //    60: aload_1        
-        //    61: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
-        //    64: putfield        com/netflix/mediaclient/service/user/UserProfileMap.mProfileMap:Lorg/json/JSONObject;
-        //    67: aload_0        
-        //    68: getfield        com/netflix/mediaclient/service/user/UserProfileMap.mContext:Landroid/content/Context;
-        //    71: ldc             "useragent_esnmigration_flags"
-        //    73: ldc             ""
-        //    75: invokestatic    com/netflix/mediaclient/util/PreferenceUtils.getStringPref:(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-        //    78: astore_1       
-        //    79: ldc             "nf_service_useragentproilemap"
-        //    81: iconst_3       
-        //    82: invokestatic    com/netflix/mediaclient/Log.isLoggable:(Ljava/lang/String;I)Z
-        //    85: ifeq            113
-        //    88: ldc             "nf_service_useragentproilemap"
-        //    90: new             Ljava/lang/StringBuilder;
-        //    93: dup            
-        //    94: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    97: ldc             "mEsnMigrationFlags json "
-        //    99: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   102: aload_1        
-        //   103: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   106: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   109: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   112: pop            
-        //   113: aload_0        
-        //   114: new             Lorg/json/JSONObject;
-        //   117: dup            
-        //   118: aload_1        
-        //   119: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
-        //   122: putfield        com/netflix/mediaclient/service/user/UserProfileMap.mEsnMigrationFlags:Lorg/json/JSONObject;
-        //   125: return         
-        //   126: astore_1       
-        //   127: aload_0        
-        //   128: new             Lorg/json/JSONObject;
-        //   131: dup            
-        //   132: invokespecial   org/json/JSONObject.<init>:()V
-        //   135: putfield        com/netflix/mediaclient/service/user/UserProfileMap.mProfileMap:Lorg/json/JSONObject;
-        //   138: goto            67
-        //   141: astore_1       
-        //   142: aload_0        
-        //   143: new             Lorg/json/JSONObject;
-        //   146: dup            
-        //   147: invokespecial   org/json/JSONObject.<init>:()V
-        //   150: putfield        com/netflix/mediaclient/service/user/UserProfileMap.mEsnMigrationFlags:Lorg/json/JSONObject;
-        //   153: return         
+        //    21: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //    24: ifeq            52
+        //    27: ldc             "nf_service_useragentproilemap"
+        //    29: new             Ljava/lang/StringBuilder;
+        //    32: dup            
+        //    33: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    36: ldc             "UserProfileMap json "
+        //    38: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    41: aload_1        
+        //    42: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    45: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    48: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    51: pop            
+        //    52: aload_0        
+        //    53: new             Lorg/json/JSONObject;
+        //    56: dup            
+        //    57: aload_1        
+        //    58: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
+        //    61: putfield        com/netflix/mediaclient/service/user/UserProfileMap.mProfileMap:Lorg/json/JSONObject;
+        //    64: aload_0        
+        //    65: getfield        com/netflix/mediaclient/service/user/UserProfileMap.mContext:Landroid/content/Context;
+        //    68: ldc             "useragent_esnmigration_flags"
+        //    70: ldc             ""
+        //    72: invokestatic    com/netflix/mediaclient/util/PreferenceUtils.getStringPref:(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+        //    75: astore_1       
+        //    76: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //    79: ifeq            107
+        //    82: ldc             "nf_service_useragentproilemap"
+        //    84: new             Ljava/lang/StringBuilder;
+        //    87: dup            
+        //    88: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    91: ldc             "mEsnMigrationFlags json "
+        //    93: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    96: aload_1        
+        //    97: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   100: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   103: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   106: pop            
+        //   107: aload_0        
+        //   108: new             Lorg/json/JSONObject;
+        //   111: dup            
+        //   112: aload_1        
+        //   113: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
+        //   116: putfield        com/netflix/mediaclient/service/user/UserProfileMap.mEsnMigrationFlags:Lorg/json/JSONObject;
+        //   119: return         
+        //   120: astore_1       
+        //   121: aload_0        
+        //   122: new             Lorg/json/JSONObject;
+        //   125: dup            
+        //   126: invokespecial   org/json/JSONObject.<init>:()V
+        //   129: putfield        com/netflix/mediaclient/service/user/UserProfileMap.mProfileMap:Lorg/json/JSONObject;
+        //   132: goto            64
+        //   135: astore_1       
+        //   136: aload_0        
+        //   137: new             Lorg/json/JSONObject;
+        //   140: dup            
+        //   141: invokespecial   org/json/JSONObject.<init>:()V
+        //   144: putfield        com/netflix/mediaclient/service/user/UserProfileMap.mEsnMigrationFlags:Lorg/json/JSONObject;
+        //   147: return         
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                    
         //  -----  -----  -----  -----  ------------------------
-        //  55     67     126    141    Lorg/json/JSONException;
-        //  113    125    141    154    Lorg/json/JSONException;
+        //  52     64     120    135    Lorg/json/JSONException;
+        //  107    119    135    148    Lorg/json/JSONException;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0113:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0107:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -172,13 +168,13 @@ class UserProfileMap
     }
     
     void markAllAccountForEsnMigration() {
-        if (Log.isLoggable("nf_service_useragentproilemap", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration");
         }
         if (this.mProfileMap != null) {
             final Iterator keys = this.mProfileMap.keys();
             boolean b = false;
-        Label_0087_Outer:
+        Label_0084_Outer:
             while (keys.hasNext()) {
                 final String s = keys.next();
                 if (!"currentAcc".equals(s) && !"primaryAcc".equals(s)) {
@@ -186,7 +182,7 @@ class UserProfileMap
                         try {
                             this.mEsnMigrationFlags.putOpt(s, (Object)true);
                             b = true;
-                            continue Label_0087_Outer;
+                            continue Label_0084_Outer;
                         }
                         catch (JSONException ex) {
                             continue;
@@ -197,7 +193,7 @@ class UserProfileMap
                 }
             }
             if (b) {
-                if (Log.isLoggable("nf_service_useragentproilemap", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_service_useragentproilemap", "markAllAccountForEsnMigration " + this.mEsnMigrationFlags);
                 }
                 PreferenceUtils.putStringPref(this.mContext, "useragent_esnmigration_flags", this.mEsnMigrationFlags.toString());

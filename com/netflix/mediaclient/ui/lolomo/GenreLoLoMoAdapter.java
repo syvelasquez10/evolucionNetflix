@@ -5,13 +5,14 @@
 package com.netflix.mediaclient.ui.lolomo;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.model.genre.Genre;
+import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 
-public class GenreLoLoMoAdapter extends BasePaginatedLoLoMoAdapter<Genre>
+public class GenreLoLoMoAdapter extends BaseLoLoMoAdapter<Genre>
 {
     private static final String TAG = "GenreLoLoMoAdapter";
     
@@ -41,6 +42,6 @@ public class GenreLoLoMoAdapter extends BasePaginatedLoLoMoAdapter<Genre>
             return;
         }
         Log.v("GenreLoLoMoAdapter", "Prefetching genre lolomo...");
-        serviceManager.getBrowse().prefetchGenreLoLoMo(this.getGenreId(), 0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD) - 1, this.activity.isKubrick(), false, new GenreLoLoMoAdapter$1(this, "GenreLoLoMoAdapter"));
+        serviceManager.getBrowse().prefetchGenreLoLoMo(this.getGenreId(), 0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD) - 1, BrowseExperience.shouldLoadKubrickLeaves(), false, new GenreLoLoMoAdapter$1(this, "GenreLoLoMoAdapter"));
     }
 }

@@ -28,7 +28,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import java.util.Iterator;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.HashSet;
 import android.content.DialogInterface;
 import android.content.DialogInterface$OnClickListener;

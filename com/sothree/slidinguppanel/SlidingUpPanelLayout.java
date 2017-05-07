@@ -317,6 +317,14 @@ public class SlidingUpPanelLayout extends ViewGroup
         return (ViewGroup$LayoutParams)new SlidingUpPanelLayout$LayoutParams(viewGroup$LayoutParams);
     }
     
+    public int getCoveredFadeColor() {
+        return this.mCoveredFadeColor;
+    }
+    
+    public int getPanelHeight() {
+        return this.mPanelHeight;
+    }
+    
     public boolean isAnchored() {
         return this.mSlideState == SlidingUpPanelLayout$SlideState.ANCHORED;
     }
@@ -614,8 +622,23 @@ public class SlidingUpPanelLayout extends ViewGroup
         }
     }
     
+    public void setAnchorPoint(final float mAnchorPoint) {
+        if (mAnchorPoint > 0.0f && mAnchorPoint < 1.0f) {
+            this.mAnchorPoint = mAnchorPoint;
+        }
+    }
+    
+    public void setCoveredFadeColor(final int mCoveredFadeColor) {
+        this.mCoveredFadeColor = mCoveredFadeColor;
+        this.invalidate();
+    }
+    
     public void setDragView(final View mDragView) {
         this.mDragView = mDragView;
+    }
+    
+    public void setEnableDragViewTouchEvents(final boolean mIsUsingDragViewTouchEvents) {
+        this.mIsUsingDragViewTouchEvents = mIsUsingDragViewTouchEvents;
     }
     
     public void setPanelHeight(final int mPanelHeight) {
@@ -629,6 +652,10 @@ public class SlidingUpPanelLayout extends ViewGroup
     
     public void setShadowDrawable(final Drawable mShadowDrawable) {
         this.mShadowDrawable = mShadowDrawable;
+    }
+    
+    public void setSlidingEnabled(final boolean mIsSlidingEnabled) {
+        this.mIsSlidingEnabled = mIsSlidingEnabled;
     }
     
     public void showPane() {

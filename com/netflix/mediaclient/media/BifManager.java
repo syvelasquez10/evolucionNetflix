@@ -42,7 +42,7 @@ public class BifManager
         this.mSavedFileName = "mdxbif.tmp";
         this.mAppContext = mAppContext;
         this.mUrlList.add(s);
-        if (Log.isLoggable("BifManager", 3)) {
+        if (Log.isLoggable()) {
             Log.d("BifManager", "load bif from  " + s);
         }
         this.loadBif();
@@ -61,7 +61,7 @@ public class BifManager
     }
     
     private void createUrlList(final TrickplayUrl[] array) {
-        if (Log.isLoggable("BifManager", 3)) {
+        if (Log.isLoggable()) {
             Log.d("BifManager", "BifManager start, pick urls..." + array);
         }
         while (true) {
@@ -75,7 +75,7 @@ public class BifManager
                         if (n >= url.length) {
                             break;
                         }
-                        if (Log.isLoggable("BifManager", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("BifManager", "preferred url" + n + " == " + url[n]);
                         }
                         this.mUrlList.add(url[n]);
@@ -89,7 +89,7 @@ public class BifManager
                             }
                         }
                     }
-                    if (Log.isLoggable("BifManager", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("BifManager", this.mTrickplayUrls.length + " TrickplayUrls entities with " + this.mUrlList.size() + " urls");
                     }
                     return;
@@ -121,7 +121,7 @@ public class BifManager
     }
     
     public ByteBuffer getIndexFrame(int intValue) {
-        if (Log.isLoggable("BifManager", 3)) {
+        if (Log.isLoggable()) {
             Log.d("BifManager", "get " + intValue);
         }
         if (!this.mBifReady) {
@@ -139,7 +139,7 @@ public class BifManager
                 final FileInputStream openFileInput = this.mAppContext.openFileInput(this.mSavedFileName);
                 openFileInput.skip(intValue - mHeaderIndexSize);
                 final int read = openFileInput.read(array, 0, n);
-                if (Log.isLoggable("BifManager", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("BifManager", "return @" + intValue + ", with size " + n + ", read " + read);
                 }
                 final ByteBuffer wrap = ByteBuffer.wrap(array, 0, n);

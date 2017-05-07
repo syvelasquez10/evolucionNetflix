@@ -18,14 +18,14 @@ class PostPlayForMovies$2 implements ImageLoader$ImageLoaderListener
     
     @Override
     public void onErrorResponse(final String s) {
-        if (Log.isLoggable("nf_postplay", 5)) {
+        if (Log.isLoggable()) {
             Log.w("nf_postplay", "Image failed to be retrieved " + s);
         }
     }
     
     @Override
     public void onResponse(final Bitmap bitmap, final String s) {
-        if (Log.isLoggable("nf_postplay", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_postplay", "Image retrieved " + s);
         }
     }

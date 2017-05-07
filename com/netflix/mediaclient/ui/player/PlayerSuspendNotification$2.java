@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import android.app.Notification;
 import android.text.TextUtils;
 import android.app.Notification$Builder;
@@ -43,7 +43,7 @@ class PlayerSuspendNotification$2 implements ImageLoader$ImageLoaderListener
     @Override
     public void onResponse(Bitmap copy, final String s) {
         if (copy != null && !copy.isRecycled()) {
-            if (Log.isLoggable(PlayerSuspendNotification.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(PlayerSuspendNotification.TAG, "downloaded image from " + s);
             }
             copy = copy.copy(copy.getConfig(), copy.isMutable());

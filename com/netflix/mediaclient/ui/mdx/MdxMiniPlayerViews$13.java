@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui.mdx;
 import android.view.ViewGroup$MarginLayoutParams;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.animation.TimeInterpolator;
 import com.netflix.mediaclient.Log;
@@ -51,6 +51,6 @@ class MdxMiniPlayerViews$13 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        this.this$0.activity.displayDialog((Dialog)MdxUtils.createMdxTargetSelectionDialog(this.this$0.activity, this.this$0.dialogCallbacks));
+        this.this$0.activity.displayDialog((Dialog)MdxUtils.createMdxMenuDialog(this.this$0.activity, this.this$0.dialogCallbacks));
     }
 }

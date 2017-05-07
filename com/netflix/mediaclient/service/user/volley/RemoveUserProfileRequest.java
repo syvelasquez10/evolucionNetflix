@@ -24,7 +24,7 @@ public class RemoveUserProfileRequest extends FalkorVolleyWebClientRequest<Accou
         super(context);
         this.responseCallback = responseCallback;
         this.pqlQuery = "['profiles', ['" + s + "'], 'remove']";
-        if (Log.isLoggable("nf_service_user_removeuserprofilerequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_removeuserprofilerequest", "PQL = " + this.pqlQuery);
         }
     }
@@ -38,7 +38,7 @@ public class RemoveUserProfileRequest extends FalkorVolleyWebClientRequest<Accou
     protected String getOptionalParams() {
         final StringBuilder sb = new StringBuilder(FalkorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", String.format("[{'to':%s}, 'summary']", 5)));
         sb.append(FalkorVolleyWebClientRequest.urlEncodPQLParam("pathSuffix", "['summary']"));
-        if (Log.isLoggable("nf_service_user_removeuserprofilerequest", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_user_removeuserprofilerequest", " getOptionalParams: " + sb.toString());
         }
         return sb.toString();
@@ -65,7 +65,7 @@ public class RemoveUserProfileRequest extends FalkorVolleyWebClientRequest<Accou
     
     @Override
     protected AccountData parseFalkorResponse(final String s) {
-        if (Log.isLoggable("nf_service_user_removeuserprofilerequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_removeuserprofilerequest", "String response to parse = " + s);
         }
         return FetchAccountDataRequest.parseProfilesList(s, false);

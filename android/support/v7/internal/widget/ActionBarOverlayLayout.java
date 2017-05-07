@@ -260,6 +260,11 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         return 0;
     }
     
+    public CharSequence getTitle() {
+        this.pullChildren();
+        return this.mDecorToolbar.getTitle();
+    }
+    
     public boolean hideOverflowMenu() {
         this.pullChildren();
         return this.mDecorToolbar.hideOverflowMenu();
@@ -551,6 +556,21 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
         }
     }
     
+    public void setIcon(final int icon) {
+        this.pullChildren();
+        this.mDecorToolbar.setIcon(icon);
+    }
+    
+    public void setIcon(final Drawable icon) {
+        this.pullChildren();
+        this.mDecorToolbar.setIcon(icon);
+    }
+    
+    public void setLogo(final int logo) {
+        this.pullChildren();
+        this.mDecorToolbar.setLogo(logo);
+    }
+    
     public void setMenu(final Menu menu, final y y) {
         this.pullChildren();
         this.mDecorToolbar.setMenu(menu, y);
@@ -567,6 +587,9 @@ public class ActionBarOverlayLayout extends ViewGroup implements DecorContentPar
     }
     
     public void setShowingForActionMode(final boolean b) {
+    }
+    
+    public void setUiOptions(final int n) {
     }
     
     public void setWindowCallback(final WindowCallback windowCallback) {

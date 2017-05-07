@@ -19,4 +19,5 @@ public final class R$bool
     public static final int default_underline_indicator_fades = 2131230730;
     public static final int phone = 2131230732;
     public static final int tablet = 2131230731;
+    public static final int widgetenable = 2131230733;
 }

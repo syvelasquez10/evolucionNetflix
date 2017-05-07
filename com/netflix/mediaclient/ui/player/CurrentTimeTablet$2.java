@@ -25,7 +25,7 @@ class CurrentTimeTablet$2 implements Animator$AnimatorListener
     
     public void onAnimationEnd(final Animator animator) {
         Log.i("CurrentTimeTablet", "startStopAnimation end");
-        if (Log.isLoggable("CurrentTimeTablet", 3)) {
+        if (Log.isLoggable()) {
             Log.d("CurrentTimeTablet", "Movie current time from stopCurrentTime#onAnimationEnd, tablet: " + this.val$updateCurrentTimeLabel);
         }
         this.this$0.restorePlaybackIfSnapOnExit();

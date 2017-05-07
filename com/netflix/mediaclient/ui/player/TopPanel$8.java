@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.ui.mdx.MdxTarget;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
@@ -45,7 +45,7 @@ class TopPanel$8 implements AdapterView$OnItemClickListener
                 }
             }
             else {
-                if (Log.isLoggable("screen", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("screen", "Remote target is selected " + selectedTarget);
                 }
                 if (MdxUtils.isMdxTargetAvailable(this.val$controller.getServiceManager(), selectedTarget.getUUID())) {

@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.util.gfx;
 
+import android.annotation.TargetApi;
 import android.animation.TimeInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.os.Build$VERSION;
@@ -20,7 +21,7 @@ import android.view.View;
 
 public class AnimationUtils
 {
-    public static final int ANIM_DURATION_MS = 125;
+    public static final int ANIM_DURATION_MS = 150;
     public static final int APPEARANCE_ANIMATION_MS = 300;
     private static final float LAYOUT_ANIMATION_DELAY_FRACTION = 0.25f;
     private static final String TAG = "AnimationUtils";
@@ -43,7 +44,7 @@ public class AnimationUtils
             return;
         }
         if (b) {
-            alphaAnimateView(view, 1.0f, 0.0f, 62, (Animator$AnimatorListener)new AnimationUtils$HideViewOnAnimatorEnd(view));
+            alphaAnimateView(view, 1.0f, 0.0f, 75, (Animator$AnimatorListener)new AnimationUtils$HideViewOnAnimatorEnd(view));
             return;
         }
         view.setVisibility(8);
@@ -52,7 +53,7 @@ public class AnimationUtils
     public static void setImageBitmapWithPropertyFade(final ImageView imageView, final Bitmap imageBitmap) {
         imageView.setAlpha(0.0f);
         imageView.setImageBitmap(imageBitmap);
-        imageView.animate().alpha(1.0f).setDuration(125L).start();
+        imageView.animate().alpha(1.0f).setDuration(150L).start();
     }
     
     public static void showView(final View view, final boolean b) {
@@ -60,7 +61,7 @@ public class AnimationUtils
             return;
         }
         if (b) {
-            alphaAnimateView(view, 0.0f, 1.0f, 125, (Animator$AnimatorListener)new AnimationUtils$ShowViewOnAnimatorStart(view));
+            alphaAnimateView(view, 0.0f, 1.0f, 150, (Animator$AnimatorListener)new AnimationUtils$ShowViewOnAnimatorStart(view));
             return;
         }
         view.setVisibility(0);
@@ -73,12 +74,13 @@ public class AnimationUtils
     }
     
     public static void startPressedStateCompleteAnimation(final View view) {
-        alphaAnimateView(view, 0.7f, 1.0f, 125, null);
+        alphaAnimateView(view, 0.7f, 1.0f, 150, null);
     }
     
+    @TargetApi(18)
     public static Animator startViewAppearanceAnimation(final View view, final boolean b) {
         float n = 1.0f;
-        if (Log.isLoggable("AnimationUtils", 4)) {
+        if (Log.isLoggable()) {
             Log.i("AnimationUtils", "startViewAppearanceAnimation() shouldAppear: " + b);
         }
         float n2;

@@ -40,7 +40,7 @@ public class SetWifiApsInfo extends BaseInvoke
                 try {
                     ((JSONObject)context).put("wifiapsinfo", (Object)"");
                     this.arguments = ((JSONObject)context).toString();
-                    if (Log.isLoggable("nf_invoke", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("nf_invoke", "WiFi APs Info: " + ((JSONObject)context).toString());
                     }
                 }
@@ -57,12 +57,12 @@ public class SetWifiApsInfo extends BaseInvoke
         while (true) {
             final JSONArray jsonArray = new JSONArray();
             while (true) {
-                Label_0612: {
-                    Label_0609: {
+                Label_0600: {
+                    Label_0597: {
                         try {
                             final WifiInfo connectionInfo = this.mainWifi.getConnectionInfo();
                             if (connectionInfo == null) {
-                                break Label_0612;
+                                break Label_0600;
                             }
                             String s2 = connectionInfo.getSSID();
                             if (s2.startsWith("\"") && s2.endsWith("\"")) {
@@ -76,7 +76,7 @@ public class SetWifiApsInfo extends BaseInvoke
                                         final JSONObject jsonObject3 = new JSONObject();
                                         jsonObject3.put("f", scanResults.get(i).frequency);
                                         jsonObject3.put("ss", scanResults.get(i).level);
-                                        if (Log.isLoggable("nf_invoke", 3)) {
+                                        if (Log.isLoggable()) {
                                             Log.d("nf_invoke", "WiFi ssid: " + scanResults.get(i).SSID + " Current Ap: " + connectionInfo.getSSID());
                                         }
                                         jsonObject4 = jsonObject2;
@@ -89,7 +89,7 @@ public class SetWifiApsInfo extends BaseInvoke
                                                 jsonObject4.put("ss", scanResults.get(i).level);
                                             }
                                         }
-                                        if (Log.isLoggable("nf_invoke", 3)) {
+                                        if (Log.isLoggable()) {
                                             Log.d("nf_invoke", "WiFi prop ssid: " + scanResults.get(i).SSID + " f: " + scanResults.get(i).frequency + " ss: " + scanResults.get(i).level);
                                         }
                                         jsonArray.put((Object)jsonObject3);
@@ -103,20 +103,20 @@ public class SetWifiApsInfo extends BaseInvoke
                                     }
                                     jsonObject5.put("deviceCategory", (Object)s);
                                     jsonObject.put("wifiapsinfo", (Object)jsonObject5.toString());
-                                    if (Log.isLoggable("nf_invoke", 3)) {
+                                    if (Log.isLoggable()) {
                                         Log.d("nf_invoke", "WiFi APs Info: " + jsonObject.toString());
                                     }
                                 }
                                 else {
                                     jsonObject.put("wifiapsinfo", (Object)"");
-                                    if (Log.isLoggable("nf_invoke", 3)) {
+                                    if (Log.isLoggable()) {
                                         Log.d("nf_invoke", "WiFiList unavailable, APs Info: " + jsonObject.toString());
                                     }
                                 }
                                 this.arguments = jsonObject.toString();
                                 return;
                             }
-                            break Label_0609;
+                            break Label_0597;
                         }
                         catch (JSONException ex) {
                             Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);

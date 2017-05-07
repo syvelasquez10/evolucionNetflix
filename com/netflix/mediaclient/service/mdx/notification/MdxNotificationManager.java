@@ -57,11 +57,11 @@ public final class MdxNotificationManager implements IMdxNotificationManager
     }
     
     private void createPlayerBuilder() {
-        this.playerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837759).setWhen(System.currentTimeMillis());
+        this.playerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837780).setWhen(System.currentTimeMillis());
     }
     
     private void createPostPlayerBuilder() {
-        this.postPlayerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837759).setWhen(System.currentTimeMillis());
+        this.postPlayerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837780).setWhen(System.currentTimeMillis());
     }
     
     private void createRemoteViews(final MdxAgent mdxAgent) {
@@ -192,7 +192,7 @@ public final class MdxNotificationManager implements IMdxNotificationManager
     
     @Override
     public void setTitlesNotify(final boolean isEpisode, final String s, final String s2) {
-        if (Log.isLoggable("nf_mdxnotification", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_mdxnotification", "is episode " + isEpisode + ",>" + s + ",>" + s2);
         }
         this.isEpisode = isEpisode;

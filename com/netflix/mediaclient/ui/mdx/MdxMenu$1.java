@@ -7,9 +7,13 @@ package com.netflix.mediaclient.ui.mdx;
 import android.graphics.drawable.Drawable;
 import android.util.Pair;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import android.graphics.drawable.AnimationDrawable;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.Log;
 import android.view.Menu;
+import android.os.Handler;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
 import com.netflix.mediaclient.util.MdxUtils;
@@ -25,7 +29,10 @@ class MdxMenu$1 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        this.this$0.activity.displayDialog((Dialog)MdxUtils.createMdxTargetSelectionDialog(this.this$0.activity, this.this$0.activity.getMdxMiniPlayerFrag()));
+        final AlertDialog mdxMenuDialog = MdxUtils.createMdxMenuDialog(this.this$0.activity, this.this$0.activity.getMdxMiniPlayerFrag());
+        if (mdxMenuDialog != null) {
+            this.this$0.activity.displayDialog((Dialog)mdxMenuDialog);
+        }
         return true;
     }
 }

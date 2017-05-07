@@ -210,7 +210,7 @@ public abstract class EventQueue<T>
             return false;
         }
         if (this.mFlushCriteria.size() > 0) {
-            if (Log.isLoggable(this.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(this.TAG, "Custom rules to flush queue found: " + this.mFlushCriteria.size());
             }
             final Iterator<EventQueue$FlushCriterion> iterator = this.mFlushCriteria.iterator();

@@ -6,28 +6,32 @@ package com.netflix.mediaclient.service.preapp;
 
 public enum PreAppAgentEventType
 {
+    ACCOUNT_DEACTIVATED, 
     ALL_UPDATED, 
     CW_UPDATED, 
-    IQ_UPDATED, 
-    WRITING_TO_DISK;
+    IQ_UPDATED;
     
     public static boolean isBBUpdated(final PreAppAgentEventType preAppAgentEventType) {
-        return preAppAgentEventType == PreAppAgentEventType.ALL_UPDATED;
+        return PreAppAgentEventType.ALL_UPDATED.equals(preAppAgentEventType);
     }
     
     public static boolean isCWUpdated(final PreAppAgentEventType preAppAgentEventType) {
-        return preAppAgentEventType == PreAppAgentEventType.CW_UPDATED || preAppAgentEventType == PreAppAgentEventType.ALL_UPDATED;
+        return PreAppAgentEventType.CW_UPDATED.equals(preAppAgentEventType) || PreAppAgentEventType.ALL_UPDATED.equals(preAppAgentEventType);
     }
     
     public static boolean isFirstStandardListUpdated(final PreAppAgentEventType preAppAgentEventType) {
-        return preAppAgentEventType == PreAppAgentEventType.ALL_UPDATED;
+        return PreAppAgentEventType.ALL_UPDATED.equals(preAppAgentEventType);
     }
     
     public static boolean isIQUpdated(final PreAppAgentEventType preAppAgentEventType) {
-        return preAppAgentEventType == PreAppAgentEventType.IQ_UPDATED || preAppAgentEventType == PreAppAgentEventType.ALL_UPDATED;
+        return PreAppAgentEventType.IQ_UPDATED.equals(preAppAgentEventType) || PreAppAgentEventType.ALL_UPDATED.equals(preAppAgentEventType);
     }
     
-    public static boolean isWriteToDiskInProgress(final PreAppAgentEventType preAppAgentEventType) {
-        return preAppAgentEventType == PreAppAgentEventType.WRITING_TO_DISK;
+    public static boolean isSecondStandardListUpdated(final PreAppAgentEventType preAppAgentEventType) {
+        return PreAppAgentEventType.ALL_UPDATED.equals(preAppAgentEventType);
+    }
+    
+    public static boolean shouldClearData(final PreAppAgentEventType preAppAgentEventType) {
+        return PreAppAgentEventType.ACCOUNT_DEACTIVATED.equals(preAppAgentEventType);
     }
 }

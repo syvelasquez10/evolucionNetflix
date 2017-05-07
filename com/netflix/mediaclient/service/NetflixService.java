@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service;
 
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import android.os.Process;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
@@ -20,13 +20,15 @@ import com.netflix.mediaclient.servicemgr.IDiagnosis;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.IBrowseInterface;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import java.util.List;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.service.user.UserAgent$UserAgentCallback;
 import android.os.SystemClock;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.service.pservice.logging.PServiceLogging;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
 import java.util.Iterator;
 import android.support.v4.content.LocalBroadcastManager;
@@ -56,7 +58,6 @@ import com.netflix.mediaclient.service.falkor.FalkorAccess;
 import com.netflix.mediaclient.service.diagnostics.DiagnosisAgent;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.service.logging.LoggingAgent;
-import com.netflix.mediaclient.service.browse.BrowseAgent;
 import android.os.IBinder;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;
@@ -78,8 +79,6 @@ public final class NetflixService extends Service implements INetflixService
     boolean hasLoggedAgent;
     private final Runnable initTimeoutRunnable;
     private final IBinder mBinder;
-    private BrowseAccess mBrowseAccess;
-    private BrowseAgent mBrowseAgent;
     private final NetflixService$ClientCallbacks mClientCallbacks;
     private LoggingAgent mClientLoggingAgent;
     private ConfigurationAgent mConfigurationAgent;
@@ -129,7 +128,7 @@ public final class NetflixService extends Service implements INetflixService
             Log.w("NetflixService", "Can't access alarm manager to cancel shutdown alarm");
             return;
         }
-        if (Log.isLoggable("NetflixService", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixService", "Canceling service shutdown alarm");
         }
         alarmManager.cancel(this.createShutdownServiceAlarmPendingIntent());
@@ -229,6 +228,12 @@ public final class NetflixService extends Service implements INetflixService
         return NetflixService.isCreated;
     }
     
+    private void notifyMdxAgentUiComingToForeground() {
+        if (this.mMdxEnabled && this.mMdxAgent != null && !this.mMdxAgent.hasActiveSession()) {
+            this.mMdxAgent.uiComingToForeground();
+        }
+    }
+    
     private void notifyServiceReady(final int n, final Status status) {
         Log.d("NetflixService", "Notifying client " + n + " that service is ready, status code: " + status.getStatusCode());
         final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.mClientCallbacks.get(n);
@@ -246,7 +251,8 @@ public final class NetflixService extends Service implements INetflixService
             Log.e("NetflixService", "Unable to post application started event. APM manager is null!");
             return;
         }
-        this.mClientLoggingAgent.getApplicationPerformanceMetricsLogging().startApplicationSession(true);
+        PServiceLogging.reportStoredLogEvents((Context)this, this.isUserLoggedIn());
+        this.mClientLoggingAgent.getApplicationPerformanceMetricsLogging().startApplicationSession(!ErrorLoggingManager.didCrashOnLastLoad());
         this.mClientLoggingAgent.getApplicationPerformanceMetricsLogging().startUserSession(ApplicationPerformanceMetricsLogging$Trigger.appStart);
         this.mClientLoggingAgent.getApplicationPerformanceMetricsLogging().handleConnectivityChange((Context)this);
     }
@@ -265,7 +271,7 @@ public final class NetflixService extends Service implements INetflixService
             return;
         }
         try {
-            if (Log.isLoggable("NetflixService", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("NetflixService", "Unregister " + s);
             }
             this.unregisterReceiver(broadcastReceiver);
@@ -283,7 +289,7 @@ public final class NetflixService extends Service implements INetflixService
         }
         final long elapsedRealtime = SystemClock.elapsedRealtime();
         final long n2 = elapsedRealtime + n;
-        if (Log.isLoggable("NetflixService", 2)) {
+        if (Log.isLoggable()) {
             Log.v("NetflixService", "Setting service shutdown alarm, current time (ms): " + elapsedRealtime + ", kill delay (ms): " + n + ", alarm set for (ms): " + n2);
         }
         alarmManager.set(2, n2, this.createShutdownServiceAlarmPendingIntent());
@@ -326,35 +332,7 @@ public final class NetflixService extends Service implements INetflixService
     }
     
     public IBrowseInterface getBrowse() {
-        boolean b = true;
-        final boolean shouldUseLegacyBrowseVolleyClient = this.mConfigurationAgent.shouldUseLegacyBrowseVolleyClient();
-        if (Log.isLoggable("NetflixService", 3) && !this.hasLoggedAgent) {
-            this.hasLoggedAgent = true;
-            final StringBuilder append = new StringBuilder().append("Service is currently configured to use Falkor Agent: ");
-            if (shouldUseLegacyBrowseVolleyClient) {
-                b = false;
-            }
-            Log.d("NetflixService", append.append(b).toString());
-        }
-        if (shouldUseLegacyBrowseVolleyClient) {
-            return this.mBrowseAccess;
-        }
         return this.mFalkorAccess;
-    }
-    
-    public BrowseAccess getBrowseAgent() {
-        return this.mBrowseAccess;
-    }
-    
-    public String getBrowseAgentString() {
-        final IBrowseInterface browse = this.getBrowse();
-        if (browse instanceof BrowseAccess) {
-            return "Legacy";
-        }
-        if (browse instanceof FalkorAccess) {
-            return "Falkor";
-        }
-        return "unknown";
     }
     
     public IClientLogging getClientLogging() {
@@ -511,8 +489,6 @@ public final class NetflixService extends Service implements INetflixService
         this.mDiagnosisAgent = new DiagnosisAgent();
         this.mFalkorAgent = new FalkorAgent();
         this.mFalkorAccess = new FalkorAccess(this.mFalkorAgent, this.mClientCallbacks);
-        this.mBrowseAgent = new BrowseAgent();
-        this.mBrowseAccess = new BrowseAccess(this.mBrowseAgent, this.mClientCallbacks);
         this.mPreAppAgent = new PreAppAgent();
         this.init();
     }
@@ -533,9 +509,6 @@ public final class NetflixService extends Service implements INetflixService
         this.mClientCallbacks.clear();
         if (this.mMdxEnabled && this.mMdxAgent != null) {
             this.mMdxAgent.destroy();
-        }
-        if (this.mBrowseAgent != null) {
-            this.mBrowseAgent.destroy();
         }
         if (this.mFalkorAgent != null) {
             this.mFalkorAgent.destroy();
@@ -596,7 +569,7 @@ public final class NetflixService extends Service implements INetflixService
             this.stopSelf();
             return true;
         }
-        if (Log.isLoggable("NetflixService", 4)) {
+        if (Log.isLoggable()) {
             Log.i("NetflixService", "No callbacks left - stopping service after delay of: 28800 seconds");
         }
         this.stopSelfInMs(28800000L);
@@ -617,6 +590,10 @@ public final class NetflixService extends Service implements INetflixService
         Log.i("NetflixService", "registerCallback, client: " + netflixServiceCallback.hashCode());
         if (this.mInitComplete) {
             this.notifyServiceReady(put, this.mInitStatusCode);
+            if (this.mClientCallbacks.size() == 1) {
+                Log.d("NetflixService", "UI started, notify MDX");
+                this.notifyMdxAgentUiComingToForeground();
+            }
             return;
         }
         this.mInitCallbacks.add(new NetflixService$NotifyServiceReadyInitCallback(this, put));
@@ -640,6 +617,11 @@ public final class NetflixService extends Service implements INetflixService
     
     public void setCurrentAppLocale(final String currentAppLocale) {
         this.mUserAgent.setCurrentAppLocale(currentAppLocale);
+    }
+    
+    public void uiComingFromBackground() {
+        Log.d("NetflixService", "UI coming from background, notify MDX");
+        this.notifyMdxAgentUiComingToForeground();
     }
     
     public void unregisterCallback(INetflixServiceCallback remove) {

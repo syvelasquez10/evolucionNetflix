@@ -17,7 +17,7 @@ class ExternalLinkActivity$ExternalWebClient extends WebChromeClient
     }
     
     public boolean onConsoleMessage(final ConsoleMessage consoleMessage) {
-        if (Log.isLoggable("ExternalLinkActivity_js", 3)) {
+        if (Log.isLoggable()) {
             Log.d("ExternalLinkActivity_js", consoleMessage.message() + " -- From line " + consoleMessage.lineNumber() + " of " + consoleMessage.sourceId());
         }
         return true;

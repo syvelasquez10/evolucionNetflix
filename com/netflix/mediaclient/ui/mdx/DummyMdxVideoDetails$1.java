@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 
 class DummyMdxVideoDetails$1 implements Playable
 {

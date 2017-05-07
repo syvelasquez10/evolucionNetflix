@@ -4,41 +4,21 @@
 
 package com.netflix.mediaclient.service.pservice;
 
+import com.netflix.mediaclient.android.app.BackgroundTask;
 import java.util.ArrayList;
+import com.netflix.mediaclient.Log;
 import java.util.List;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.android.app.BackgroundTask;
-import com.netflix.mediaclient.Log;
 import android.content.Intent;
-import java.util.Map;
 
-public class PServiceFetchAgent extends PServiceAgent implements PServiceAgent$PServicePartnerFetchInterface
+public class PServiceFetchAgent extends PServiceAgent implements PServiceAgent$PServiceFetchAgentInterface, PServiceAgent$PServicePartnerFetchInterface
 {
     public static final String PARTNER_EXP_DEFAULT = "default";
     private static final String TAG = "nf_preapp_fetchagent";
     public static final String WIDGET_EXP_DEFAULT = "default";
     private PDiskData mDiskData;
     private boolean mLoadFromDiskInProgress;
-    Map<PDiskData$ListName, Integer> mPartnerDefaultExp;
-    private boolean mRemoteDiskWriteInProgress;
-    
-    public PServiceFetchAgent() {
-        this.mPartnerDefaultExp = new PServiceFetchAgent$1(this);
-    }
-    
-    private int getVideoCount(final PDiskData$ListName pDiskData$ListName) {
-        final String preAppPartnerExperience = this.mDiskData.preAppPartnerExperience;
-        switch (preAppPartnerExperience.hashCode()) {
-            case 1544803905: {
-                if (preAppPartnerExperience.equals("default")) {
-                    break;
-                }
-                break;
-            }
-        }
-        return this.mPartnerDefaultExp.get(pDiskData$ListName);
-    }
     
     private boolean isLoadInProgress() {
         return this.mLoadFromDiskInProgress;
@@ -47,37 +27,12 @@ public class PServiceFetchAgent extends PServiceAgent implements PServiceAgent$P
     private void loadDefaultData() {
     }
     
-    private void lockDiskAccess() {
-        this.mRemoteDiskWriteInProgress = true;
-    }
-    
-    private void notifyOthers(final Intent intent) {
-    }
-    
     private void refreshData() {
-        this.refreshDataAndNotify(null);
-    }
-    
-    private void refreshDataAndNotify(final Intent intent) {
-        final PServiceFetchAgent$2 pServiceFetchAgent$2 = new PServiceFetchAgent$2(this, intent);
-        if (!this.canReadDataFromDisk()) {
-            Log.w("nf_preapp_fetchagent", "Skipping reading from disk because remote write in progress");
-            return;
-        }
-        this.setLoadFromDiskInProgress(true);
-        new BackgroundTask().execute(new PServiceFetchAgent$3(this, pServiceFetchAgent$2));
+        this.refreshDataAndNotify(new Intent("com.netflix.mediaclient.intent.action.ALL_UPDATED_FROM_PREAPP_AGENT"));
     }
     
     private void setLoadFromDiskInProgress(final boolean mLoadFromDiskInProgress) {
         this.mLoadFromDiskInProgress = mLoadFromDiskInProgress;
-    }
-    
-    private void unlockDiskAccess() {
-        this.mRemoteDiskWriteInProgress = false;
-    }
-    
-    public boolean canReadDataFromDisk() {
-        return !this.mRemoteDiskWriteInProgress;
     }
     
     void completeInit() {
@@ -94,15 +49,18 @@ public class PServiceFetchAgent extends PServiceAgent implements PServiceAgent$P
     @Override
     public List<PVideo> fetchVideosForPartner(final PDiskData$ListName pDiskData$ListName) {
         List<PVideo> list = null;
-        if (this.mDiskData != null) {
-            final int videoCount = this.getVideoCount(pDiskData$ListName);
-            if (videoCount > 0) {
+        if (this.mDiskData == null) {
+            Log.w("nf_preapp_fetchagent", "mDiskData is null - ignoring request");
+        }
+        else {
+            final int videoCountOfListForPartnerExp = PServiceABTest.getVideoCountOfListForPartnerExp(pDiskData$ListName, this.mDiskData);
+            if (videoCountOfListForPartnerExp > 0) {
                 final ArrayList<PVideo> list2 = new ArrayList<PVideo>();
                 final List<PVideo> listByName = this.mDiskData.getListByName(pDiskData$ListName);
                 int n = 0;
                 while (true) {
                     list = list2;
-                    if (n >= videoCount) {
+                    if (n >= videoCountOfListForPartnerExp) {
                         break;
                     }
                     list2.add(listByName.get(n));
@@ -113,26 +71,20 @@ public class PServiceFetchAgent extends PServiceAgent implements PServiceAgent$P
         return list;
     }
     
-    public void handleCommand(final Intent intent) {
-        if (intent == null) {
-            Log.w("nf_preapp_fetchagent", "Intent is null");
+    @Override
+    public PDiskData getDiskData() {
+        if (this.mDiskData == null) {
+            Log.w("nf_preapp_fetchagent", "mDiskData is null");
         }
-        else {
-            if ("com.netflix.mediaclient.intent.action.PREAPP_AGENT_FROM_ACTIVE_DISK_WRITE".equals(intent.getAction())) {
-                this.lockDiskAccess();
-                return;
-            }
-            if (!"com.netflix.mediaclient.intent.action.PREAPP_AGENT_FROM_ALL_UPDATED".equals(intent.getAction()) && !"com.netflix.mediaclient.intent.action.PREAPP_AGENT_FROM_CW_UPDATED".equals(intent.getAction()) && !"com.netflix.mediaclient.intent.action.PREAPP_AGENT_FROM_IQ_UPDATED".equals(intent.getAction())) {
-                Log.e("nf_preapp_fetchagent", "Uknown command!");
-                return;
-            }
-            if (Log.isLoggable("nf_preapp_fetchagent", 3)) {
-                Log.d("nf_preapp_fetchagent", String.format("received intent: %s", intent.getAction()));
-            }
-            this.unlockDiskAccess();
-            if (!this.isLoadInProgress()) {
-                this.refreshDataAndNotify(intent);
-            }
+        return this.mDiskData;
+    }
+    
+    public void refreshDataAndNotify(final Intent intent) {
+        if (this.isLoadInProgress()) {
+            return;
         }
+        final PServiceFetchAgent$1 pServiceFetchAgent$1 = new PServiceFetchAgent$1(this, intent);
+        this.setLoadFromDiskInProgress(true);
+        new BackgroundTask().execute(new PServiceFetchAgent$2(this, pServiceFetchAgent$1));
     }
 }

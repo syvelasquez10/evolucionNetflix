@@ -67,7 +67,7 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
         else {
             actionMenuItemView = null;
         }
-        if (actionMenuItemView != null && actionMenuItemView.c()) {
+        if (actionMenuItemView != null && actionMenuItemView.b()) {
             n3 = 1;
         }
         else {
@@ -145,7 +145,7 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
                 actionMenuView$LayoutParams.expandable = false;
                 actionMenuView$LayoutParams.leftMargin = 0;
                 actionMenuView$LayoutParams.rightMargin = 0;
-                actionMenuView$LayoutParams.preventEdgeOffset = (b && ((ActionMenuItemView)child).c());
+                actionMenuView$LayoutParams.preventEdgeOffset = (b && ((ActionMenuItemView)child).b());
                 if (actionMenuView$LayoutParams.isOverflowButton) {
                     n = 1;
                 }
@@ -421,6 +421,14 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
             this.mPresenter.setMenuView(this);
         }
         return (Menu)this.mMenu;
+    }
+    
+    public int getPopupTheme() {
+        return this.mPopupTheme;
+    }
+    
+    public int getWindowAnimations() {
+        return 0;
     }
     
     protected boolean hasSupportDividerBeforeChildAt(final int n) {

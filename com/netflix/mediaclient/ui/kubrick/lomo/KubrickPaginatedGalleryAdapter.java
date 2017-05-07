@@ -5,19 +5,19 @@
 package com.netflix.mediaclient.ui.kubrick.lomo;
 
 import com.netflix.mediaclient.android.widget.ObjectRecycler;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.ui.lomo.LoMoViewPager;
 import java.util.List;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.util.MathUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.model.KubrickVideo;
+import com.netflix.mediaclient.servicemgr.interface_.KubrickVideo;
 import com.netflix.mediaclient.ui.lomo.BasePaginatedAdapter;
 
 public class KubrickPaginatedGalleryAdapter extends BasePaginatedAdapter<KubrickVideo>
@@ -30,7 +30,7 @@ public class KubrickPaginatedGalleryAdapter extends BasePaginatedAdapter<Kubrick
     
     @Override
     protected int computeNumItemsPerPage() {
-        if (DeviceUtils.getBasicScreenOrientation((Context)this.activity) == 2) {
+        if (DeviceUtils.isLandscape((Context)this.activity)) {
             return 8;
         }
         return 6;
@@ -46,7 +46,7 @@ public class KubrickPaginatedGalleryAdapter extends BasePaginatedAdapter<Kubrick
         int computeNumVideosToFetchPerBatch = LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD);
         if (n == 0) {
             n = (computeNumVideosToFetchPerBatch -= 3);
-            if (Log.isLoggable("KubrickPaginatedGalleryAdapter", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("KubrickPaginatedGalleryAdapter", "For first batch of videos, reducing count for Gallery view - fetch size: " + n);
                 computeNumVideosToFetchPerBatch = n;
             }
@@ -66,7 +66,7 @@ public class KubrickPaginatedGalleryAdapter extends BasePaginatedAdapter<Kubrick
         }
         final int min = Math.min(n3, this.data.size());
         final int min2 = Math.min(this.numItemsPerPage + min, this.data.size());
-        if (Log.isLoggable("KubrickPaginatedGalleryAdapter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("KubrickPaginatedGalleryAdapter", this.getCurrTitleFormatted() + String.format("Getting [%d, %d], data set size: %d, page: %d", min, min2, this.data.size(), n));
         }
         return (List<KubrickVideo>)this.data.subList(min, min2);
@@ -75,7 +75,7 @@ public class KubrickPaginatedGalleryAdapter extends BasePaginatedAdapter<Kubrick
     @Override
     public int getRowHeightInPx() {
         final int n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.computeNumItemsPerPage() * 0.5625f) * 4;
-        if (Log.isLoggable("KubrickPaginatedGalleryAdapter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("KubrickPaginatedGalleryAdapter", "Computed view height: " + n + " (px)");
         }
         return n;

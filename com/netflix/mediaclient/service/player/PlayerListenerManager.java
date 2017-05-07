@@ -67,7 +67,7 @@ class PlayerListenerManager
             if (!this.mPlayerListeners.contains(player$PlayerListener)) {
                 this.mPlayerListeners.add(player$PlayerListener);
             }
-            if (Log.isLoggable(PlayerListenerManager.TAG, 6) && this.mPlayerListeners.size() > 2) {
+            if (Log.isLoggable() && this.mPlayerListeners.size() > 2) {
                 Log.e(PlayerListenerManager.TAG, "Listener count should not be generally greater than 2, count:" + this.mPlayerListeners.size());
             }
         }

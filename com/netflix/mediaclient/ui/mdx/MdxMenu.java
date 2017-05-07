@@ -8,29 +8,34 @@ import android.graphics.drawable.Drawable;
 import android.util.Pair;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.util.MdxUtils;
+import android.graphics.drawable.AnimationDrawable;
 import android.view.MenuItem$OnMenuItemClickListener;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.os.Handler;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public final class MdxMenu
 {
     private static final String TAG = "MdxMenu";
     private final NetflixActivity activity;
+    private final Handler handler;
     private final MenuItem mdxItem;
     private final boolean useDarkIcon;
     
     private MdxMenu(final NetflixActivity activity, final Menu menu) {
         Log.v("MdxMenu", "creating");
         this.activity = activity;
-        this.useDarkIcon = (activity.isKubrick() && activity.isForKids());
+        this.useDarkIcon = BrowseExperience.isKubrickKids();
         final MdxMiniPlayerFrag mdxMiniPlayerFrag = this.activity.getMdxMiniPlayerFrag();
+        this.handler = new Handler();
         if (mdxMiniPlayerFrag == null) {
             throw new IllegalArgumentException("Activity that uses MdxMenu must own a reference to mdxFrag!");
         }
         mdxMiniPlayerFrag.attachMenuItem(this);
-        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131493234))).setShowAsAction(1);
+        (this.mdxItem = menu.add((CharSequence)this.activity.getString(2131493242))).setShowAsAction(1);
         this.mdxItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new MdxMenu$1(this));
         this.setEnabled(mdxMiniPlayerFrag.isMdxMenuEnabled());
         this.update();
@@ -40,14 +45,21 @@ public final class MdxMenu
         new MdxMenu(netflixActivity, menu);
     }
     
+    private void animateMdxIcon(final AnimationDrawable animationDrawable) {
+        this.handler.post((Runnable)new MdxMenu$2(this, animationDrawable));
+    }
+    
     private int getIcon() {
+        if (this.activity.isConnectingToTarget()) {
+            return 2130837676;
+        }
         if (MdxUtils.isTargetReadyToControl(this.activity.getServiceManager())) {
-            return 2130837785;
+            return 2130837675;
         }
         if (this.useDarkIcon) {
-            return 2130837667;
+            return 2130837688;
         }
-        return 2130837666;
+        return 2130837674;
     }
     
     private boolean isAnyMdxTargetAvailable() {
@@ -65,7 +77,7 @@ public final class MdxMenu
             Log.d("MdxMenu", "No MDX remote targets found");
             return false;
         }
-        if (Log.isLoggable("MdxMenu", 3)) {
+        if (Log.isLoggable()) {
             Log.d("MdxMenu", "MDX remote targets found: " + targetList.length);
         }
         return true;
@@ -98,6 +110,9 @@ public final class MdxMenu
             return;
         }
         this.mdxItem.setIcon(this.getIcon());
+        if (this.mdxItem.getIcon() instanceof AnimationDrawable) {
+            this.animateMdxIcon((AnimationDrawable)this.mdxItem.getIcon());
+        }
         this.mdxItem.setVisible(this.isAnyMdxTargetAvailable());
         this.updateAlpha();
     }

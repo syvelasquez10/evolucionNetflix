@@ -5,17 +5,17 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.mediaclient.util.FileUtils;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.LinkedHashMap;
 import com.netflix.mediaclient.servicemgr.IBrowseManager;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import java.util.Collection;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.util.ArrayList;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.genre.Genre;
+import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 

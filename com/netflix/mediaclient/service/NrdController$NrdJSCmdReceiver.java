@@ -37,7 +37,7 @@ class NrdController$NrdJSCmdReceiver extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable("nf_nrdcontroller", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_nrdcontroller", "Received an action: " + intent.getAction());
         }
         if (!"com.netflix.mediaclient.intent.action.JS_BRIDGE_CMD".equals(intent.getAction())) {
@@ -52,7 +52,7 @@ class NrdController$NrdJSCmdReceiver extends BroadcastReceiver
                 if (string != null && string2 != null && string3 != null) {
                     this.this$0.nrd.invokeMethod(string, string2, string3);
                 }
-                if (Log.isLoggable("nf_nrdcontroller", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_nrdcontroller", "JS CMD: object: " + string + " method:  " + string2 + " param: " + string3);
                 }
             }

@@ -119,8 +119,28 @@ public class CirclePageIndicator extends View implements PageIndicator
         return n;
     }
     
+    public int getFillColor() {
+        return this.mPaintFill.getColor();
+    }
+    
+    public int getOrientation() {
+        return this.mOrientation;
+    }
+    
+    public int getPageColor() {
+        return this.mPaintPageFill.getColor();
+    }
+    
     public float getRadius() {
         return this.mRadius;
+    }
+    
+    public int getStrokeColor() {
+        return this.mPaintStroke.getColor();
+    }
+    
+    public float getStrokeWidth() {
+        return this.mPaintStroke.getStrokeWidth();
     }
     
     public void notifyDataSetChanged() {
@@ -341,6 +361,11 @@ public class CirclePageIndicator extends View implements PageIndicator
         return true;
     }
     
+    public void setCentered(final boolean mCentered) {
+        this.mCentered = mCentered;
+        this.invalidate();
+    }
+    
     public void setCurrentItem(final int mCurrentPage) {
         if (this.mViewPager == null) {
             throw new IllegalStateException("ViewPager has not been bound.");
@@ -349,8 +374,26 @@ public class CirclePageIndicator extends View implements PageIndicator
         this.invalidate();
     }
     
+    public void setFillColor(final int color) {
+        this.mPaintFill.setColor(color);
+        this.invalidate();
+    }
+    
     public void setOnPageChangeListener(final ViewPager$OnPageChangeListener mListener) {
         this.mListener = mListener;
+    }
+    
+    public void setOrientation(final int mOrientation) {
+        switch (mOrientation) {
+            default: {
+                throw new IllegalArgumentException("Orientation must be either HORIZONTAL or VERTICAL.");
+            }
+            case 0:
+            case 1: {
+                this.mOrientation = mOrientation;
+                this.requestLayout();
+            }
+        }
     }
     
     public void setPageColor(final int color) {
@@ -360,6 +403,11 @@ public class CirclePageIndicator extends View implements PageIndicator
     
     public void setRadius(final float mRadius) {
         this.mRadius = mRadius;
+        this.invalidate();
+    }
+    
+    public void setSnap(final boolean mSnap) {
+        this.mSnap = mSnap;
         this.invalidate();
     }
     

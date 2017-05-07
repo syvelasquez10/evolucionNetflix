@@ -8,9 +8,9 @@ import com.netflix.mediaclient.ui.pin.PinDialogVault;
 import com.netflix.mediaclient.ui.pin.PinDialogVault$PinInvokedFrom;
 import com.netflix.mediaclient.ui.pin.PinVerifier;
 import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
-import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.util.Pair;
@@ -31,7 +31,7 @@ public final class PlaybackLauncher
     }
     
     private static boolean isExisitingMdxTargetAvailable(final IMdx mdx, final String s) {
-        if (Log.isLoggable("nf_play", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_play", "Check if MDX remote target exist in target list: " + s);
         }
         if (!mdx.isReady()) {
@@ -54,7 +54,7 @@ public final class PlaybackLauncher
     }
     
     private static void logMdx(final IMdx mdx) {
-        if (Log.isLoggable("nf_play", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_play", "MDX is ready " + mdx.isReady());
             if (mdx.getTargetList() != null) {
                 Log.d("nf_play", "MDX found targets: " + mdx.getTargetList().length);
@@ -81,10 +81,6 @@ public final class PlaybackLauncher
         return isExisitingMdxTargetAvailable(mdx, currentTarget);
     }
     
-    public static void startPlaybackAfterPIN(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext) {
-        startPlaybackAfterPIN(netflixActivity, Asset.create(playable, playContext, PlayerActivity.PIN_VERIFIED));
-    }
-    
     public static void startPlaybackAfterPIN(final NetflixActivity netflixActivity, final Asset asset) {
         switch (PlaybackLauncher$2.$SwitchMap$com$netflix$mediaclient$ui$common$PlaybackLauncher$PlaybackTarget[whereToPlay(netflixActivity.getServiceManager()).ordinal()]) {
             default: {}
@@ -95,12 +91,16 @@ public final class PlaybackLauncher
                 verifyPinAndPlay(netflixActivity, asset, true);
             }
             case 3: {
-                displayErrorDialog(netflixActivity, 2131493379);
+                displayErrorDialog(netflixActivity, 2131493385);
             }
             case 4: {
-                displayErrorDialog(netflixActivity, 2131493380);
+                displayErrorDialog(netflixActivity, 2131493386);
             }
         }
+    }
+    
+    public static void startPlaybackAfterPIN(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext) {
+        startPlaybackAfterPIN(netflixActivity, Asset.create(playable, playContext, PlayerActivity.PIN_VERIFIED));
     }
     
     public static void startPlaybackForceLocal(final NetflixActivity netflixActivity, final Asset asset) {
@@ -126,7 +126,7 @@ public final class PlaybackLauncher
                 return;
             }
             Log.w("nf_play", "Local playback is disabled, we can not start playback!");
-            displayErrorDialog(netflixActivity, 2131493379);
+            displayErrorDialog(netflixActivity, 2131493385);
         }
     }
     
@@ -165,7 +165,7 @@ public final class PlaybackLauncher
                     Log.d("nf_play", "Local target, local playback disabled and no remote targets. Display an error.");
                     return PlaybackLauncher$PlaybackTarget.localButDisabled;
                 }
-                if (Log.isLoggable("nf_play", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_play", "Try to set first remote target as current target and launch playback. To " + (String)targetList[0].second);
                 }
                 serviceManager.getMdx().setCurrentTarget((String)targetList[0].first);

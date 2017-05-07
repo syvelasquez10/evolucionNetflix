@@ -5,10 +5,11 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -33,7 +34,6 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.NetflixService;
-import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.player.subtitles.TextStyle;
 import com.netflix.mediaclient.javabridge.ui.Registration;
@@ -88,7 +88,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     private List<UserProfile> buildListOfUserProfiles(final String s) {
-        if (Log.isLoggable("nf_service_useragent", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_useragent", "populateListOfUserProfiles with json " + s);
         }
         if (StringUtils.isEmpty(s)) {
@@ -99,7 +99,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             final JSONArray jsonArray = (JSONArray)new JSONTokener(s).nextValue();
             for (int i = 0; i < jsonArray.length(); ++i) {
                 final UserProfile userProfile = new UserProfile(jsonArray.opt(i).toString());
-                if (Log.isLoggable("nf_service_useragent", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_service_useragent", "has userprofile " + userProfile);
                 }
                 list.add(userProfile);
@@ -168,7 +168,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     private void launchTask(final UserAgent$FetchTask<?> userAgent$FetchTask) {
-        if (Log.isLoggable("nf_service_useragent", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_useragent", "Launching task: " + userAgent$FetchTask.getClass().getSimpleName());
         }
         if (this.mUserWebClient.isSynchronous()) {
@@ -179,7 +179,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     private void launchWebTask(final Runnable runnable) {
-        if (Log.isLoggable("nf_service_useragent", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_useragent", "Launching task: " + runnable.getClass().getSimpleName());
         }
         if (this.mUserWebClient.isSynchronous()) {
@@ -212,21 +212,21 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         while (iterator.hasNext()) {
             jsonArray.put((Object)iterator.next().toString());
         }
-        if (Log.isLoggable("nf_service_useragent", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_useragent", "persistListOfUserProfiles " + jsonArray.toString());
         }
         PreferenceUtils.putStringPref(this.getContext(), "useragent_userprofiles_data", jsonArray.toString());
     }
     
     private void persistUser(final User user) {
-        if (Log.isLoggable("nf_service_useragent", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_useragent", "persistUser " + user.toString());
         }
         PreferenceUtils.putStringPref(this.getContext(), "useragent_user_data", user.toString());
     }
     
     private User populateUser(final String s) {
-        if (Log.isLoggable("nf_service_useragent", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_useragent", "populateUser with json " + s);
         }
         User user;
@@ -235,7 +235,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         }
         else {
             final User user2 = user = new User(s);
-            if (Log.isLoggable("nf_service_useragent", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_service_useragent", "has user " + user2);
                 return user2;
             }
@@ -341,7 +341,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         this.mUserWebClient = UserWebClientFactory.create(this.getService(), this.getResourceFetcher().getApiNextWebClient());
         this.userLocaleRepository = new UserLocaleRepository();
         final String rawDeviceLocale = UserLocale.getRawDeviceLocale(this.getContext());
-        if (Log.isLoggable("nf_service_useragent", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_useragent", "Current device locale as raw user locale: " + rawDeviceLocale);
         }
         this.userLocaleRepository.setApplicationLanguage(new UserLocale(rawDeviceLocale));
@@ -399,7 +399,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         return this.mUser.getUserToken();
     }
     
-    public List<? extends com.netflix.mediaclient.servicemgr.model.user.UserProfile> getAllProfiles() {
+    public List<? extends com.netflix.mediaclient.servicemgr.interface_.user.UserProfile> getAllProfiles() {
         return this.mListOfUserProfiles;
     }
     
@@ -601,11 +601,12 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     @Override
-    public void profileActivated(String string, final DeviceAccount mCurrentUserAccount) {
+    public void profileActivated(final String s, final DeviceAccount mCurrentUserAccount) {
         this.mCurrentUserAccount = mCurrentUserAccount;
         for (final UserProfile mCurrentUserProfile : this.mListOfUserProfiles) {
-            if (mCurrentUserProfile.getProfileGuid().equals(string)) {
+            if (mCurrentUserProfile.getProfileGuid().equals(s)) {
                 this.mCurrentUserProfile = mCurrentUserProfile;
+                BrowseExperience.refresh(this.getContext(), this.mCurrentUserProfile);
                 if (this.mCurrentUserProfile != null && this.mCurrentUserProfile.getSubtitlePreference() != null) {
                     this.mSubtitleSettings = TextStyle.buildSubtitleSettings(this.getCurrentProfile().getSubtitlePreference());
                 }
@@ -617,17 +618,8 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         Log.e("nf_service_useragent", "profileActivated cannot find profileId");
         final NetflixService service = this.getService();
         if (service != null) {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("ProfileId not found: ").append(string);
-            final ArrayList<String> list = new ArrayList<String>();
-            final Iterator<UserProfile> iterator2 = this.mListOfUserProfiles.iterator();
-            while (iterator2.hasNext()) {
-                list.add(iterator2.next().getProfileGuid());
-            }
-            sb.append(", guids: ").append(list.toString());
-            string = sb.toString();
-            Log.e("nf_service_useragent", string);
-            service.getClientLogging().getErrorLogging().logHandledException(string);
+            Log.e("nf_service_useragent", "Activated ProfileId not found in list of user profiles: ");
+            service.getClientLogging().getErrorLogging().logHandledException("Activated ProfileId not found in list of user profiles: ");
         }
         this.mCurrentUserProfile = null;
         this.mSubtitleSettings = null;
@@ -653,7 +645,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         else {
             this.isProfileSwitchingDisabled = false;
         }
-        if (Log.isLoggable("nf_service_useragent", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_useragent", "Is profile switching disabled: " + this.isProfileSwitchingDisabled);
         }
     }

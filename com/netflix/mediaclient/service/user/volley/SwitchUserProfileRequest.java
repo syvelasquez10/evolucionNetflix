@@ -31,7 +31,7 @@ public class SwitchUserProfileRequest extends FalkorVolleyWebClientRequest<UserB
         this.responseCallback = responseCallback;
         this.guid = guid;
         this.pqlQuery = new StringBuilder("['switchProfile']").toString();
-        if (Log.isLoggable("nf_service_user_switchuserprofilerequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_switchuserprofilerequest", "PQL = " + this.pqlQuery);
         }
     }
@@ -44,7 +44,7 @@ public class SwitchUserProfileRequest extends FalkorVolleyWebClientRequest<UserB
     @Override
     protected String getOptionalParams() {
         final String urlEncodPQLParam = FalkorVolleyWebClientRequest.urlEncodPQLParam("param", "'" + this.guid + "'");
-        if (Log.isLoggable("nf_service_user_switchuserprofilerequest", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_service_user_switchuserprofilerequest", "getOptionalParams: " + urlEncodPQLParam);
         }
         return urlEncodPQLParam;
@@ -71,7 +71,7 @@ public class SwitchUserProfileRequest extends FalkorVolleyWebClientRequest<UserB
     
     @Override
     protected UserBoundCookies parseFalkorResponse(final String s) {
-        if (Log.isLoggable("nf_service_user_switchuserprofilerequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_switchuserprofilerequest", "String response to parse = " + s);
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_switchuserprofilerequest", s);

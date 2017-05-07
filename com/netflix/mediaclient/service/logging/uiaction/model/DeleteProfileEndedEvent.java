@@ -21,9 +21,6 @@ public final class DeleteProfileEndedEvent extends BaseUIActionSessionEndedEvent
     public DeleteProfileEndedEvent(final DeviceUniqueId deviceUniqueId, final long n, final IClientLogging$ModalView clientLogging$ModalView, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final String mProfileId) {
         super("deleteProfile", deviceUniqueId, n, clientLogging$ModalView, userActionLogging$CommandName, clientLogging$CompletionReason, uiError);
         this.mProfileId = mProfileId;
-        if (this.mProfileId == null) {
-            throw new IllegalArgumentException("Profile ID can not be null!");
-        }
     }
     
     public DeleteProfileEndedEvent(final JSONObject jsonObject) {
@@ -34,7 +31,9 @@ public final class DeleteProfileEndedEvent extends BaseUIActionSessionEndedEvent
     @Override
     protected JSONObject getData() {
         final JSONObject data = super.getData();
-        data.put("profileId", (Object)this.mProfileId);
+        if (this.mProfileId != null) {
+            data.put("profileId", (Object)this.mProfileId);
+        }
         return data;
     }
     

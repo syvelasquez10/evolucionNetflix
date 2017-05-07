@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.ui.player;
 
 import android.app.Activity;
-import com.netflix.mediaclient.ui.Section;
 
 public abstract class PlayerSection extends Section
 {

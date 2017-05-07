@@ -8,15 +8,15 @@ import android.os.Bundle;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.app.Fragment;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 
-public class ShowDetailsActivity extends DetailsActivity implements EpisodeRowView$EpisodeRowListener, EpisodeRowView$EpisodeRowListenerProvider
+public class ShowDetailsActivity extends DetailsActivity implements AbsEpisodeView$EpisodeRowListener, AbsEpisodeView$EpisodeRowListenerProvider
 {
     private boolean shouldHideDetailsView() {
         return DeviceUtils.isTabletByContext((Context)this) && DeviceUtils.isLandscape((Context)this);
@@ -33,13 +33,13 @@ public class ShowDetailsActivity extends DetailsActivity implements EpisodeRowVi
     }
     
     @Override
-    public EpisodeRowView$EpisodeRowListener getEpisodeRowListener() {
-        final EpisodeRowView$EpisodeRowListener episodeRowListener = super.getEpisodeRowListener();
-        EpisodeRowView$EpisodeRowListener episodeRowView$EpisodeRowListener = this;
+    public AbsEpisodeView$EpisodeRowListener getEpisodeRowListener() {
+        final AbsEpisodeView$EpisodeRowListener episodeRowListener = super.getEpisodeRowListener();
+        AbsEpisodeView$EpisodeRowListener absEpisodeView$EpisodeRowListener = this;
         if (episodeRowListener != null) {
-            episodeRowView$EpisodeRowListener = episodeRowListener;
+            absEpisodeView$EpisodeRowListener = episodeRowListener;
         }
-        return episodeRowView$EpisodeRowListener;
+        return absEpisodeView$EpisodeRowListener;
     }
     
     @Override

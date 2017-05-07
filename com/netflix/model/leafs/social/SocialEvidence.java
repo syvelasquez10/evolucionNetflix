@@ -12,10 +12,10 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
-import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
+import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
-import com.netflix.mediaclient.servicemgr.model.FriendProfilesProvider;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.FriendProfilesProvider;
 
 public class SocialEvidence implements FriendProfilesProvider, JsonPopulator
 {

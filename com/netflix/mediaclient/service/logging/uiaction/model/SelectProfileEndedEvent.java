@@ -25,9 +25,6 @@ public final class SelectProfileEndedEvent extends BaseUIActionSessionEndedEvent
         super("selectProfile", deviceUniqueId, n, clientLogging$ModalView, userActionLogging$CommandName, clientLogging$CompletionReason, uiError);
         this.mProfileId = mProfileId;
         this.mRememberProfile = mRememberProfile;
-        if (this.mProfileId == null) {
-            throw new IllegalArgumentException("Profile ID can not be null!");
-        }
     }
     
     public SelectProfileEndedEvent(final JSONObject jsonObject) {
@@ -42,7 +39,9 @@ public final class SelectProfileEndedEvent extends BaseUIActionSessionEndedEvent
     @Override
     protected JSONObject getData() {
         final JSONObject data = super.getData();
-        data.put("profileId", (Object)this.mProfileId);
+        if (this.mProfileId != null) {
+            data.put("profileId", (Object)this.mProfileId);
+        }
         if (this.mRememberProfile != null) {
             data.put("rememberProfile", (Object)this.mRememberProfile.name());
         }

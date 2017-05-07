@@ -49,7 +49,7 @@ class PinDialog$OnPinVerifiedCallback extends LoggingManagerCallback
     public void onPinVerified(final boolean b, final Status status) {
         super.onPinVerified(b, status);
         this.this$0.showProgress(false);
-        if (Log.isLoggable("nf_pin", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_pin", String.format("onPinVerified isPinValid:%b, statusCode:%d", b, status.getStatusCode().getValue()));
         }
         if (status.isSucces() && !b) {

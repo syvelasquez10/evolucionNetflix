@@ -34,7 +34,7 @@ class MediaDecoderPipe$DecoderHeartbeat
         final long currentTimeMillis = System.currentTimeMillis();
         if (currentTimeMillis >= this.mLastBeat + 5000L) {
             this.mLastBeat = currentTimeMillis;
-            if (Log.isLoggable(this.this$0.mTag, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(this.this$0.mTag, "decoder alive, received frame " + n + ",decoded frame " + n2);
             }
         }

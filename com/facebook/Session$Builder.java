@@ -24,9 +24,4 @@ public final class Session$Builder
         this.applicationId = applicationId;
         return this;
     }
-    
-    public Session$Builder setTokenCachingStrategy(final TokenCachingStrategy tokenCachingStrategy) {
-        this.tokenCachingStrategy = tokenCachingStrategy;
-        return this;
-    }
 }

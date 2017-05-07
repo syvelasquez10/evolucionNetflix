@@ -11,16 +11,18 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
+import com.netflix.mediaclient.servicemgr.IBrowseManager;
 import com.netflix.mediaclient.util.MdxUtils$SetVideoRatingCallback;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.MdxUtils;
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.view.View;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -40,11 +42,11 @@ import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallba
 import com.netflix.mediaclient.ui.common.LanguageSelector;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.IMdx;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.Set;
 import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
-import com.netflix.mediaclient.ui.details.EpisodeRowView$EpisodeRowListener;
+import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 
 class MdxMiniPlayerFrag$4 implements Runnable
@@ -64,7 +66,9 @@ class MdxMiniPlayerFrag$4 implements Runnable
         final long n = System.currentTimeMillis() - this.this$0.simulatedVideoPositionTimeFiredMs;
         if (this.this$0.simulatedVideoPositionTimeFiredMs > 0L && n > 0L) {
             MdxMiniPlayerFrag.access$914(this.this$0, n);
-            this.this$0.views.setProgress((int)this.this$0.simulatedCurrentTimelinePositionMs / 1000);
+            final int progress = (int)this.this$0.simulatedCurrentTimelinePositionMs / 1000;
+            this.this$0.log("updateSeekBarRunnable, timelinePosInSeconds: " + progress);
+            this.this$0.views.setProgress(progress);
         }
         this.this$0.simulatedVideoPositionTimeFiredMs = System.currentTimeMillis();
         this.this$0.handler.postDelayed(this.this$0.updateSeekBarRunnable, 1000L);

@@ -4,10 +4,6 @@
 
 package com.facebook;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.ArrayList;
-import java.util.List;
 import com.facebook.internal.Validate;
 import java.util.Date;
 import android.os.Bundle;
@@ -24,21 +20,6 @@ public abstract class TokenCachingStrategy
         return null;
     }
     
-    public static long getExpirationMilliseconds(final Bundle bundle) {
-        Validate.notNull(bundle, "bundle");
-        return bundle.getLong("com.facebook.TokenCachingStrategy.ExpirationDate");
-    }
-    
-    public static long getLastRefreshMilliseconds(final Bundle bundle) {
-        Validate.notNull(bundle, "bundle");
-        return bundle.getLong("com.facebook.TokenCachingStrategy.LastRefreshDate");
-    }
-    
-    public static List<String> getPermissions(final Bundle bundle) {
-        Validate.notNull(bundle, "bundle");
-        return (List<String>)bundle.getStringArrayList("com.facebook.TokenCachingStrategy.Permissions");
-    }
-    
     public static AccessTokenSource getSource(final Bundle bundle) {
         Validate.notNull(bundle, "bundle");
         if (bundle.containsKey("com.facebook.TokenCachingStrategy.AccessTokenSource")) {
@@ -48,11 +29,6 @@ public abstract class TokenCachingStrategy
             return AccessTokenSource.FACEBOOK_APPLICATION_WEB;
         }
         return AccessTokenSource.WEB_VIEW;
-    }
-    
-    public static String getToken(final Bundle bundle) {
-        Validate.notNull(bundle, "bundle");
-        return bundle.getString("com.facebook.TokenCachingStrategy.Token");
     }
     
     public static boolean hasTokenInformation(final Bundle bundle) {
@@ -67,40 +43,6 @@ public abstract class TokenCachingStrategy
     
     static void putDate(final Bundle bundle, final String s, final Date date) {
         bundle.putLong(s, date.getTime());
-    }
-    
-    public static void putExpirationMilliseconds(final Bundle bundle, final long n) {
-        Validate.notNull(bundle, "bundle");
-        bundle.putLong("com.facebook.TokenCachingStrategy.ExpirationDate", n);
-    }
-    
-    public static void putLastRefreshMilliseconds(final Bundle bundle, final long n) {
-        Validate.notNull(bundle, "bundle");
-        bundle.putLong("com.facebook.TokenCachingStrategy.LastRefreshDate", n);
-    }
-    
-    public static void putPermissions(final Bundle bundle, final List<String> list) {
-        Validate.notNull(bundle, "bundle");
-        Validate.notNull(list, "value");
-        ArrayList list2;
-        if (list instanceof ArrayList) {
-            list2 = (ArrayList<? extends E>)list;
-        }
-        else {
-            list2 = new ArrayList((Collection<? extends E>)list);
-        }
-        bundle.putStringArrayList("com.facebook.TokenCachingStrategy.Permissions", list2);
-    }
-    
-    public static void putSource(final Bundle bundle, final AccessTokenSource accessTokenSource) {
-        Validate.notNull(bundle, "bundle");
-        bundle.putSerializable("com.facebook.TokenCachingStrategy.AccessTokenSource", (Serializable)accessTokenSource);
-    }
-    
-    public static void putToken(final Bundle bundle, final String s) {
-        Validate.notNull(bundle, "bundle");
-        Validate.notNull(s, "value");
-        bundle.putString("com.facebook.TokenCachingStrategy.Token", s);
     }
     
     public abstract void clear();

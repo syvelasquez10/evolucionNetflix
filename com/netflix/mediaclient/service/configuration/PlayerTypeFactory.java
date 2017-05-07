@@ -26,7 +26,7 @@ public final class PlayerTypeFactory
     
     public static PlayerType findDefaultPlayerType() {
         final int androidVersion = AndroidUtils.getAndroidVersion();
-        if (Log.isLoggable("nf-playertypefactory", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf-playertypefactory", "Crypto factory type (CDM is 2): " + PlayerTypeFactory.cryptoFactoryType);
         }
         if (androidVersion > 18 && AdaptiveMediaDecoderHelper.isAvcDecoderSupportsAdaptivePlayback()) {
@@ -207,36 +207,32 @@ public final class PlayerTypeFactory
             if (currentType != null) {
                 break Label_0019;
             }
-        Label_0053_Outer:
             while (true) {
                 try {
                     Log.w("nf-playertypefactory", "Type is null, do nothing!");
                     return;
-                    // iftrue(Label_0053:, !Log.isLoggable("nf-playertypefactory", 3))
-                    // iftrue(Label_0077:, isValidPlayerType(currentType))
+                    // iftrue(Label_0050:, !Log.isLoggable())
+                    Log.d("nf-playertypefactory", "Updating player type " + currentType);
                     while (true) {
-                        Block_6: {
-                            break Block_6;
-                            while (true) {
-                                Log.e("nf-playertypefactory", "Invalid player type for this device. We should never be here!");
-                                return;
-                                continue Label_0053_Outer;
-                            }
+                        Label_0050: {
+                            break Label_0050;
+                            Log.e("nf-playertypefactory", "Invalid player type for this device. We should never be here!");
+                            return;
                         }
-                        Log.d("nf-playertypefactory", "Updating player type " + currentType);
                         continue;
                     }
                 }
+                // iftrue(Label_0074:, isValidPlayerType(currentType))
                 finally {
                 }
                 // monitorexit(PlayerTypeFactory.class)
-                Label_0077: {
+                Label_0074: {
                     if (PlayerTypeFactory.currentType != null && PlayerTypeFactory.currentType.getValue() == currentType.getValue()) {
                         Log.d("nf-playertypefactory", "Already known player type, used for playback currently. Do nothing");
                         return;
                     }
                 }
-                if (Log.isLoggable("nf-playertypefactory", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf-playertypefactory", "Saving to persistence new player type " + currentType);
                 }
                 PlayerTypeFactory.currentType = currentType;
@@ -257,28 +253,30 @@ public final class PlayerTypeFactory
                 try {
                     Log.w("nf-playertypefactory", "setPlayerTypeForQAOverride: Type is null, do nothing!");
                     return;
-                    // iftrue(Label_0077:, isValidPlayerType(currentType))
+                    // iftrue(Label_0074:, isValidPlayerType(currentType))
                     while (true) {
                         while (true) {
                             Log.e("nf-playertypefactory", "setPlayerTypeForQAOverride: Invalid player type for this device. We should never be here!");
                             return;
                             Log.d("nf-playertypefactory", "setPlayerTypeForQAOverride: Updating player type " + currentType);
-                            continue Block_6_Outer;
+                            Label_0050: {
+                                continue Block_6_Outer;
+                            }
                         }
                         continue;
                     }
                 }
-                // iftrue(Label_0053:, !Log.isLoggable("nf-playertypefactory", 3))
+                // iftrue(Label_0050:, !Log.isLoggable())
                 finally {
                 }
                 // monitorexit(PlayerTypeFactory.class)
-                Label_0077: {
+                Label_0074: {
                     if (PlayerTypeFactory.currentType != null && PlayerTypeFactory.currentType.getValue() == currentType.getValue()) {
                         Log.d("nf-playertypefactory", "setPlayerTypeForQAOverride: Already known player type, used for playback currently. Do nothing");
                         return;
                     }
                 }
-                if (Log.isLoggable("nf-playertypefactory", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf-playertypefactory", "SsetPlayerTypeForQAOverride: aving to persistence new player type " + currentType);
                 }
                 PlayerTypeFactory.currentType = currentType;

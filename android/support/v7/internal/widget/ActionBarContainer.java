@@ -229,6 +229,54 @@ public class ActionBarContainer extends FrameLayout
         this.invalidate();
     }
     
+    public void setSplitBackground(final Drawable mSplitBackground) {
+        boolean willNotDraw = true;
+        if (this.mSplitBackground != null) {
+            this.mSplitBackground.setCallback((Drawable$Callback)null);
+            this.unscheduleDrawable(this.mSplitBackground);
+        }
+        if ((this.mSplitBackground = mSplitBackground) != null) {
+            mSplitBackground.setCallback((Drawable$Callback)this);
+            if (this.mIsSplit && this.mSplitBackground != null) {
+                this.mSplitBackground.setBounds(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight());
+            }
+        }
+        if (this.mIsSplit) {
+            if (this.mSplitBackground != null) {
+                willNotDraw = false;
+            }
+        }
+        else if (this.mBackground != null || this.mStackedBackground != null) {
+            willNotDraw = false;
+        }
+        this.setWillNotDraw(willNotDraw);
+        this.invalidate();
+    }
+    
+    public void setStackedBackground(final Drawable mStackedBackground) {
+        boolean willNotDraw = true;
+        if (this.mStackedBackground != null) {
+            this.mStackedBackground.setCallback((Drawable$Callback)null);
+            this.unscheduleDrawable(this.mStackedBackground);
+        }
+        if ((this.mStackedBackground = mStackedBackground) != null) {
+            mStackedBackground.setCallback((Drawable$Callback)this);
+            if (this.mIsStacked && this.mStackedBackground != null) {
+                this.mStackedBackground.setBounds(this.mTabContainer.getLeft(), this.mTabContainer.getTop(), this.mTabContainer.getRight(), this.mTabContainer.getBottom());
+            }
+        }
+        if (this.mIsSplit) {
+            if (this.mSplitBackground != null) {
+                willNotDraw = false;
+            }
+        }
+        else if (this.mBackground != null || this.mStackedBackground != null) {
+            willNotDraw = false;
+        }
+        this.setWillNotDraw(willNotDraw);
+        this.invalidate();
+    }
+    
     public void setTabContainer(final ScrollingTabContainerView mTabContainer) {
         if (this.mTabContainer != null) {
             this.removeView(this.mTabContainer);

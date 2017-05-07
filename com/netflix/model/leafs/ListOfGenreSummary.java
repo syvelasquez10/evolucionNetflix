@@ -12,10 +12,10 @@ import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.util.StringUtils;
 import android.os.Parcel;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.os.Parcelable$Creator;
-import com.netflix.mediaclient.servicemgr.model.genre.GenreList;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 
 public class ListOfGenreSummary extends TrackableListSummary implements JsonPopulator, GenreList
 {

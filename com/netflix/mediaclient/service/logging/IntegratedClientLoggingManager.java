@@ -14,6 +14,7 @@ import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
+import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.javabridge.ui.Log$ResetSessionIdCallback;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
@@ -22,7 +23,7 @@ import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
 import com.netflix.mediaclient.service.logging.client.model.LoggingRequest;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.util.data.DataRepository$DataLoadedCallback;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
@@ -60,7 +61,6 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
     private static final int DEFAULT_USER_SESSION_TIMEOUT_MS = 1800000;
     static final String REPOSITORY_DIR = "iclevents";
     private static final String TAG = "nf_log";
-    private static final int USER_SESSION_START_DELTA = 2000;
     private UserActionLoggingImpl mActionLogging;
     private ApmLoggingImpl mApmLogging;
     private ClientLoggingWebClient mClientLoggingWebClient;
@@ -105,7 +105,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         else {
             Log.d("nf_log", "Local playback is NOT in progress, check last user interaction");
             final long timeSinceLastUserInteraction = this.mInputManager.getTimeSinceLastUserInteraction();
-            if (Log.isLoggable("nf_log", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_log", "Since last user interaction elapsed (sec): " + timeSinceLastUserInteraction / 1000L);
             }
             final long userSessionDurationInMs = this.getUserSessionDurationInMs();
@@ -125,7 +125,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         if (array == null || array.length < 1) {
             Log.d("nf_log", "No saved events found");
         }
-        if (Log.isLoggable("nf_log", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log", "Found " + array.length + " payloads waiting");
         }
         for (int length = array.length, i = 0; i < length; ++i) {
@@ -166,13 +166,13 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         else {
             final ConsolidatedLoggingSessionSpecification consolidatedLoggingSessionSpecification = configuration.getConsolidatedLoggingSessionSpecification(sessionLookupKey);
             if (consolidatedLoggingSessionSpecification == null) {
-                if (Log.isLoggable("nf_log", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log", "CL session specification overide not found. Event can be sent for " + sessionLookupKey);
                     return true;
                 }
             }
             else {
-                if (Log.isLoggable("nf_log", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log", "CL session specification overide found: " + consolidatedLoggingSessionSpecification);
                 }
                 if (consolidatedLoggingSessionSpecification.getDisableChancePercentagePerUserSession() <= 0) {
@@ -183,7 +183,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
                     Log.d("nf_log", "Event is fully suppressed.");
                     return true;
                 }
-                if (Log.isLoggable("nf_log", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log", "Event is suppressed with restriction that " + consolidatedLoggingSessionSpecification.getSuppressPercentagePerEvent() + " of created events will not be logged.");
                 }
                 Random random;
@@ -193,7 +193,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
                 }
                 final int nextInt = random.nextInt(100);
                 final boolean b2 = nextInt >= consolidatedLoggingSessionSpecification.getSuppressPercentagePerEvent();
-                if (Log.isLoggable("nf_log", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log", "Rnd value " + nextInt + ", event can be sent" + b2);
                 }
                 return b2;
@@ -221,7 +221,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
     }
     
     private void loadAndSendEvent(final String s) {
-        if (Log.isLoggable("nf_log", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log", "Load event " + s);
         }
         this.mDataRepository.load(s, new IntegratedClientLoggingManager$4(this, s));
@@ -252,14 +252,14 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
     }
     
     private void sendEvents(final List<Event> list, final boolean b) {
-        if (Log.isLoggable("nf_log", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log", "Send events " + list.size());
         }
         final LoggingRequest loggingRequest = new LoggingRequest(this.mContext, this.mService.getConfiguration(), this.mUser, this.mService.getCurrentAppLocale());
         loggingRequest.addAllEvent(list);
         try {
             final String string = loggingRequest.toJSONObject().toString();
-            if (Log.isLoggable("nf_log", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("nf_log", "Payload for log request: ");
                 Log.dumpVerbose("nf_log", string);
             }
@@ -361,14 +361,23 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
     
     public void endAllActiveSessions() {
         this.pauseDelivery();
-        this.mSuspendLogging.endAllActiveSessions();
-        this.mSocialLogging.endAllActiveSessions();
-        this.mUIViewLogging.endAllActiveSessions();
-        this.mActionLogging.endAllActiveSessions();
-        this.mUIViewLogging.endAllActiveSessions();
-        this.mSearchLogging.endAllActiveSessions();
-        this.mApmLogging.endAllActiveSessions();
-        this.resumeDelivery(false);
+        while (true) {
+            try {
+                this.mSuspendLogging.endAllActiveSessions();
+                this.mSocialLogging.endAllActiveSessions();
+                this.mUIViewLogging.endAllActiveSessions();
+                this.mActionLogging.endAllActiveSessions();
+                this.mUIViewLogging.endAllActiveSessions();
+                this.mSearchLogging.endAllActiveSessions();
+                this.mApmLogging.endAllActiveSessions();
+                this.resumeDelivery(false);
+            }
+            catch (Throwable t) {
+                LogUtils.reportErrorSafely("Failed to report", t);
+                continue;
+            }
+            break;
+        }
     }
     
     void flush(final boolean b) {
@@ -474,7 +483,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         sessionLookupKey = ConsolidatedLoggingUtils.createSessionLookupKey(sessionLookupKey, s);
         final Boolean b = this.mUserSessionEnabledStatusMap.get(sessionLookupKey);
         if (b != null) {
-            if (Log.isLoggable("nf_log", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_log", "CL session specification overide exist and status enabled : " + b);
             }
             booleanValue = b;
@@ -487,13 +496,13 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
             }
             final ConsolidatedLoggingSessionSpecification consolidatedLoggingSessionSpecification = configuration.getConsolidatedLoggingSessionSpecification(sessionLookupKey);
             if (consolidatedLoggingSessionSpecification == null) {
-                if (Log.isLoggable("nf_log", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log", "CL session specification overide not found. Session is enabled for " + sessionLookupKey);
                     return true;
                 }
             }
             else {
-                if (Log.isLoggable("nf_log", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log", "CL session specification overide found: " + consolidatedLoggingSessionSpecification);
                 }
                 if (consolidatedLoggingSessionSpecification.getDisableChancePercentagePerUserSession() <= 0) {
@@ -504,12 +513,12 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
                     Log.d("nf_log", "CL session is disabled");
                     return true;
                 }
-                if (Log.isLoggable("nf_log", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log", "CL session is enabled with restriction that " + consolidatedLoggingSessionSpecification.getDisableChancePercentagePerUserSession() + " of user sessions will not be logged.");
                 }
                 final int nextInt = new Random().nextInt(100);
                 final boolean b2 = nextInt >= consolidatedLoggingSessionSpecification.getDisableChancePercentagePerUserSession();
-                if (Log.isLoggable("nf_log", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log", "Rnd value " + nextInt + ", session is enabled " + b2);
                 }
                 this.mUserSessionEnabledStatusMap.put(sessionLookupKey, b2);
@@ -575,15 +584,15 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         event.setKids(this.isKids());
         if (event.getModalView() == null) {
             final IClientLogging$ModalView currentUiView = this.mApmLogging.getCurrentUiView();
-            if (Log.isLoggable("nf_log", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_log", "UI modalView is not preset, set it to " + currentUiView);
             }
             event.setModalView(currentUiView);
         }
-        else if (Log.isLoggable("nf_log", 3)) {
+        else if (Log.isLoggable()) {
             Log.d("nf_log", "UI modalView is preset to " + event.getModalView());
         }
-        if (Log.isLoggable("nf_log", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log", "Event received " + event);
         }
         this.mExecutor.execute(new IntegratedClientLoggingManager$2(this, event));
@@ -591,7 +600,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
     
     public void recreateSessions(final String s, final String s2) {
         synchronized (this) {
-            if (Log.isLoggable("nf_log", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_log", "recreateSessions:: Received app id " + s);
                 Log.d("nf_log", "recreateSessions:: Received user session id " + s2);
             }
@@ -608,11 +617,11 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
     public void removeSession(final LoggingSession loggingSession) {
         if (loggingSession != null) {
             if (this.mLoggingSessions.remove(loggingSession)) {
-                if (Log.isLoggable("nf_log", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_log", "Session " + loggingSession.getName() + " was removed from active sessions");
                 }
             }
-            else if (Log.isLoggable("nf_log", 5)) {
+            else if (Log.isLoggable()) {
                 Log.w("nf_log", "Session " + loggingSession.getName() + " was not found in active sessions");
             }
         }

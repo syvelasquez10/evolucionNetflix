@@ -4,57 +4,11 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.util.SocialUtils;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
-import com.netflix.mediaclient.servicemgr.model.details.SeasonDetails;
-import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.util.StringUtils;
-import android.support.v7.widget.RecyclerView$LayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView$Adapter;
-import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.android.widget.NetflixActionBar;
-import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.mediaclient.ui.DetailsPageParallaxScrollListener;
-import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.android.app.Status;
-import android.view.LayoutInflater;
-import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListener;
-import android.app.Activity;
-import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
-import android.content.DialogInterface;
-import com.netflix.mediaclient.android.app.LoadingStatus;
-import android.widget.FrameLayout$LayoutParams;
-import android.view.ViewGroup$LayoutParams;
-import android.widget.AbsListView$LayoutParams;
-import android.widget.FrameLayout;
-import android.widget.AdapterView$OnItemSelectedListener;
-import android.content.Context;
-import android.os.Build$VERSION;
-import android.view.View;
-import com.netflix.mediaclient.util.gfx.AnimationUtils;
-import android.content.IntentFilter;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import android.os.Bundle;
-import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import android.view.ViewGroup;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
-import android.support.v7.widget.RecyclerView;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
-import android.os.Handler;
-import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
-import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
-import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
-import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
-import com.netflix.mediaclient.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 
-class EpisodesFrag$4 implements Runnable
+class EpisodesFrag$4 implements SeasonsSpinnerAdapter$IViewCreator
 {
     final /* synthetic */ EpisodesFrag this$0;
     
@@ -63,18 +17,7 @@ class EpisodesFrag$4 implements Runnable
     }
     
     @Override
-    public void run() {
-        int selection;
-        if ((selection = this.this$0.currSeasonIndex) == -1) {
-            selection = this.this$0.spinner.tryGetSeasonIndexBySeasonNumber(this.this$0.showDetails.getCurrentSeasonNumber());
-        }
-        if (selection < 0) {
-            Log.v("EpisodeListFrag", "No valid season index found");
-            return;
-        }
-        if (Log.isLoggable("EpisodeListFrag", 2)) {
-            Log.v("EpisodeListFrag", "Setting current season to: " + selection);
-        }
-        this.this$0.spinner.setSelection(selection);
+    public View createItemView() {
+        return ((LayoutInflater)this.this$0.getActivity().getSystemService("layout_inflater")).inflate(2130903194, (ViewGroup)null, false);
     }
 }

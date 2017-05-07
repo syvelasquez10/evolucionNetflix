@@ -5,8 +5,9 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.util.Pair;
+import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import android.annotation.SuppressLint;
@@ -87,6 +88,7 @@ public interface IMdx
     public static final String MDX_SETVOLUME = "com.netflix.mediaclient.intent.action.MDX_SETVOLUME";
     public static final String MDX_SKIP = "com.netflix.mediaclient.intent.action.MDX_SKIP";
     public static final String MDX_STOP = "com.netflix.mediaclient.intent.action.MDX_STOP";
+    public static final String MDX_STOPPOSTPALY = "com.netflix.mediaclient.intent.action.MDX_STOPPOSTPALY";
     public static final String MDX_TOGGLE_PAUSE = "com.netflix.mediaclient.intent.action.MDX_TOGGLE_PAUSE";
     public static final String PIN_VERIFICATION_NOT_REQUIRED = "com.netflix.mediaclient.intent.action.PIN_VERIFICATION_NOT_REQUIRED";
     public static final String PLAYER_STATE_AUTO_ADVANCE = "AUTO_ADVANCE";
@@ -105,6 +107,8 @@ public interface IMdx
     ByteBuffer getBifFrame(final int p0);
     
     String getCurrentTarget();
+    
+    MdxTargetCapabilities getCurrentTargetCapabilities();
     
     IMdxSharedState getSharedState();
     

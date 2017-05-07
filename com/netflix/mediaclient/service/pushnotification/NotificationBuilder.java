@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.service.pushnotification;
 
 import android.app.NotificationManager;
-import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import android.app.Notification;
 import android.media.AudioManager;
 import com.netflix.mediaclient.util.NotificationUtils;
@@ -59,7 +58,7 @@ abstract class NotificationBuilder
         final Uri defaultActionPayload = payload.getDefaultActionPayload();
         if (defaultActionPayload != null) {
             final String scheme = defaultActionPayload.getScheme();
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", "getNotificationOpenedIntent: schema for default action uri: " + scheme);
             }
             if (scheme != null && "https".equals(scheme.toLowerCase(Locale.US))) {
@@ -101,7 +100,7 @@ abstract class NotificationBuilder
     
     protected static Uri getSound(final String s) {
         if (s != null && s.trim().toLowerCase(Locale.US).startsWith("http")) {
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", "CDN sound: " + s);
             }
             return Uri.parse(s);
@@ -126,7 +125,7 @@ abstract class NotificationBuilder
         return true;
     }
     
-    protected static void sendNotification(final Context context, final Notification notification, final int n, final ErrorLogging errorLogging) {
+    protected static void sendNotification(final Context context, final Notification notification, final int n) {
         final NotificationManager notificationManager = (NotificationManager)context.getSystemService("notification");
         if (notificationManager != null) {
             try {
@@ -135,12 +134,10 @@ abstract class NotificationBuilder
             }
             catch (SecurityException ex) {
                 Log.e("nf_push", "We are missing privilege?", ex);
-                errorLogging.logHandledException(ex);
                 return;
             }
             catch (Throwable t) {
                 Log.e("nf_push", "Unexpected failure when trying to send notification", t);
-                errorLogging.logHandledException(new RuntimeException("Unexpected failure when trying to send notification", t));
                 return;
             }
         }

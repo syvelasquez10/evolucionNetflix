@@ -30,6 +30,8 @@ public class PDiskData
     public String preAppWidgetExperience;
     @SerializedName("standardFirstList")
     public List<PVideo> standardFirstList;
+    @SerializedName("standardSecondList")
+    public List<PVideo> standardSecondList;
     @SerializedName("urlMap")
     public Map<String, String> urlMap;
     
@@ -39,14 +41,20 @@ public class PDiskData
         this.cwList = new ArrayList<PVideo>();
         this.iqList = new ArrayList<PVideo>();
         this.standardFirstList = new ArrayList<PVideo>();
+        this.standardSecondList = new ArrayList<PVideo>();
+        this.preAppPartnerExperience = "default";
+        this.preAppWidgetExperience = "default";
     }
     
     public PDiskData(final PDiskData pDiskData) {
+        this.preAppPartnerExperience = pDiskData.preAppPartnerExperience;
+        this.preAppWidgetExperience = pDiskData.preAppWidgetExperience;
         this.urlMap = pDiskData.urlMap;
         this.billboardList = pDiskData.billboardList;
         this.cwList = pDiskData.cwList;
         this.iqList = pDiskData.iqList;
         this.standardFirstList = pDiskData.standardFirstList;
+        this.standardSecondList = pDiskData.standardSecondList;
     }
     
     public static PDiskData fromJsonString(final String s) {
@@ -73,6 +81,9 @@ public class PDiskData
             }
             case 4: {
                 return this.standardFirstList;
+            }
+            case 5: {
+                return this.standardSecondList;
             }
         }
     }

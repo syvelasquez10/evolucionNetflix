@@ -30,7 +30,7 @@ public final class MdxAudioSource extends AudioSource
         this.trackType = 0;
         final JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "disallowedSubtitleTracks");
         if (jsonArray != null) {
-            if (Log.isLoggable("nf_audio_source", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_audio_source", "DisallowedSubtitleTracks found: " + jsonArray.length());
             }
             this.disallowedSubtitles = new String[jsonArray.length()];

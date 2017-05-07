@@ -54,7 +54,7 @@ public class Root implements BranchNode, Flushable
     @Override
     public void flush() {
         for (final String s : this.getKeys()) {
-            if (Log.isLoggable("Root", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("Root", "Flushing key: " + s);
             }
             this.remove(s);

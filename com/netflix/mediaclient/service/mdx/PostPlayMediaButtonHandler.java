@@ -16,7 +16,7 @@ public final class PostPlayMediaButtonHandler
     private static final String TAG = "PostPlayMediaButtonHandler";
     
     private void playNextVideo(final Context context, final int n, final int n2, final String s) {
-        if (Log.isLoggable("PostPlayMediaButtonHandler", 3)) {
+        if (Log.isLoggable()) {
             Log.d("PostPlayMediaButtonHandler", "Sending intent to play next video, uuid: " + s + ", catalogId: " + n + ", episodeId: " + n2);
         }
         final Intent addCategory = new Intent("com.netflix.mediaclient.intent.action.MDX_PLAY_VIDEOIDS").setClass(context, (Class)NetflixService.class).addCategory("com.netflix.mediaclient.intent.category.MDX").addCategory("com.netflix.mediaclient.intent.category.MDXRCC");
@@ -33,7 +33,7 @@ public final class PostPlayMediaButtonHandler
     }
     
     private void stopMDXTarget(final Context context, final String s) {
-        if (Log.isLoggable("PostPlayMediaButtonHandler", 3)) {
+        if (Log.isLoggable()) {
             Log.d("PostPlayMediaButtonHandler", "Sending intent to stop MDX target, uuid: " + s);
         }
         final Intent addCategory = new Intent("com.netflix.mediaclient.intent.action.MDX_STOP").setClass(context, (Class)NetflixService.class).addCategory("com.netflix.mediaclient.intent.category.MDX").addCategory("com.netflix.mediaclient.intent.category.MDXRCC");

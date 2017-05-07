@@ -5,12 +5,12 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import android.view.ViewGroup;
@@ -23,11 +23,11 @@ import android.widget.ImageView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
 import android.widget.RelativeLayout;
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.model.CWVideo;
+import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import android.view.View$OnClickListener;
 
 class CwView$1 implements View$OnClickListener

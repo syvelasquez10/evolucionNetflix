@@ -8,7 +8,7 @@ import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ImageView$ScaleType;
@@ -20,7 +20,7 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import java.util.List;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.ui.lomo.VideoViewGroup$IVideoView;
 import android.widget.FrameLayout;
 
@@ -61,7 +61,7 @@ public class KubrickKidsCharacterView extends FrameLayout implements VideoViewGr
     
     public void update(final Video video, final Trackable trackable, int n, final boolean b, final boolean b2) {
         final String boxshotUrl = video.getBoxshotUrl();
-        if (Log.isLoggable("KubrickKidsCharacterView", 2)) {
+        if (Log.isLoggable()) {
             Log.v("KubrickKidsCharacterView", "Updating for video: " + video.toString() + ", videoPos: " + n + ", img url: " + boxshotUrl);
         }
         this.playContext = new PlayContextImp(trackable, n);

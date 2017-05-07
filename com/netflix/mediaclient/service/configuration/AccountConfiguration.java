@@ -34,6 +34,10 @@ public class AccountConfiguration
         return this.mAccountConfigData != null && this.mAccountConfigData.enableHTTPSAuth();
     }
     
+    public boolean enableLowBitrateStreams() {
+        return this.mAccountConfigData != null && this.mAccountConfigData.enableLowBitrateStreams();
+    }
+    
     public boolean getCastEnabled() {
         return this.mAccountConfigData != null && this.mAccountConfigData.getCastEnabled();
     }
@@ -50,13 +54,6 @@ public class AccountConfiguration
             return null;
         }
         return this.mAccountConfigData.getJPlayerThreadConfigAsJson();
-    }
-    
-    public KidsOnPhoneConfiguration getKidsOnPhoneConfiguration() {
-        if (this.mAccountConfigData == null) {
-            return null;
-        }
-        return this.mAccountConfigData.getKidsOnPhone();
     }
     
     public KubrickConfiguration getKubrickConfig() {
@@ -87,13 +84,6 @@ public class AccountConfiguration
         return this.mAccountConfigData.getPreAppWidgetExperience();
     }
     
-    public int getSearchTest() {
-        if (this.mAccountConfigData == null) {
-            return 1;
-        }
-        return this.mAccountConfigData.getSearchTest();
-    }
-    
     public int getShareSheetExperience() {
         if (this.mAccountConfigData == null) {
             return 1;
@@ -113,19 +103,11 @@ public class AccountConfiguration
         if (mAccountConfigData != null) {
             jsonString = mAccountConfigData.toJsonString();
         }
-        if (Log.isLoggable(AccountConfiguration.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(AccountConfiguration.TAG, "Persisting account config: " + jsonString);
         }
         PreferenceUtils.putStringPref(this.mContext, "accountConfig", jsonString);
         this.mAccountConfigData = mAccountConfigData;
-    }
-    
-    public boolean shouldUseLegacyBrowseVolleyClient() {
-        if (this.mAccountConfigData == null) {
-            Log.w(AccountConfiguration.TAG, "shouldUseLegacyBrowseVolleyClient - account config data is null");
-            return false;
-        }
-        return this.mAccountConfigData.shouldUseLegacyBrowseVolleyClient();
     }
     
     public boolean toDisableMcQueenV2() {

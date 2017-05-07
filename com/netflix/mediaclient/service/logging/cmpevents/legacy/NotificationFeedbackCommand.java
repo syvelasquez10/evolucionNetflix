@@ -21,7 +21,7 @@ public class NotificationFeedbackCommand extends ResponseWebApiPostCommand
     public NotificationFeedbackCommand(final String s, final AuthorizationCredentials authorizationCredentials, final CommonRequestParameters commonRequestParameters, final JSONObject jsonObject, final String s2) {
         super(s, authorizationCredentials, commonRequestParameters);
         this.mPayload = jsonObject.toString();
-        if (Log.isLoggable("nf_rest", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_rest", "Payload: " + this.mPayload);
         }
     }

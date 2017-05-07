@@ -64,14 +64,14 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
         this.j = -1;
     }
     
-    private void d() {
+    private void c() {
         final boolean b = false;
         final boolean b2 = !TextUtils.isEmpty(this.b) && true;
         boolean b3 = false;
         Label_0051: {
             if (this.c != null) {
                 b3 = b;
-                if (!this.a.k()) {
+                if (!this.a.l()) {
                     break Label_0051;
                 }
                 if (!this.g) {
@@ -94,48 +94,10 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
     }
     
     @Override
-    public m a() {
-        return this.a;
-    }
-    
-    public void a(final Drawable c) {
-        this.c = c;
-        if (c != null) {
-            final int intrinsicWidth = c.getIntrinsicWidth();
-            int intrinsicHeight;
-            final int n = intrinsicHeight = c.getIntrinsicHeight();
-            int k;
-            if ((k = intrinsicWidth) > this.k) {
-                final float n2 = this.k / intrinsicWidth;
-                k = this.k;
-                intrinsicHeight = (int)(n * n2);
-            }
-            int i = intrinsicHeight;
-            int n3 = k;
-            if (intrinsicHeight > this.k) {
-                final float n4 = this.k / intrinsicHeight;
-                i = this.k;
-                n3 = (int)(k * n4);
-            }
-            c.setBounds(0, 0, n3, i);
-        }
-        this.setCompoundDrawables(c, (Drawable)null, (Drawable)null, (Drawable)null);
-        this.d();
-    }
-    
-    public void a(final c f) {
-        this.f = f;
-    }
-    
-    public void a(final k d) {
-        this.d = d;
-    }
-    
-    @Override
     public void a(final m a, int visibility) {
         this.a = a;
-        this.a(a.getIcon());
-        this.a(a.a(this));
+        this.setIcon(a.getIcon());
+        this.setTitle(a.a(this));
         this.setId(a.getItemId());
         if (a.isVisible()) {
             visibility = 0;
@@ -150,28 +112,28 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
         }
     }
     
-    public void a(final CharSequence b) {
-        this.setContentDescription(this.b = b);
-        this.d();
-    }
-    
     @Override
-    public boolean b() {
+    public boolean a() {
         return true;
     }
     
-    public boolean c() {
+    public boolean b() {
         return !TextUtils.isEmpty(this.getText());
     }
     
     @Override
+    public m getItemData() {
+        return this.a;
+    }
+    
+    @Override
     public boolean needsDividerAfter() {
-        return this.c();
+        return this.b();
     }
     
     @Override
     public boolean needsDividerBefore() {
-        return this.c() && this.a.getIcon() == null;
+        return this.b() && this.a.getIcon() == null;
     }
     
     public void onClick(final View view) {
@@ -185,11 +147,11 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
             super.onConfigurationChanged(configuration);
         }
         this.g = this.getContext().getResources().getBoolean(R$bool.abc_config_allowActionMenuItemTextWithIcon);
-        this.d();
+        this.c();
     }
     
     public boolean onLongClick(final View view) {
-        if (this.c()) {
+        if (this.b()) {
             return false;
         }
         final int[] array = new int[2];
@@ -217,8 +179,8 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
     }
     
     protected void onMeasure(int n, final int n2) {
-        final boolean c = this.c();
-        if (c && this.j >= 0) {
+        final boolean b = this.b();
+        if (b && this.j >= 0) {
             super.setPadding(this.j, this.getPaddingTop(), this.getPaddingRight(), this.getPaddingBottom());
         }
         super.onMeasure(n, n2);
@@ -234,7 +196,7 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
         if (mode != 1073741824 && this.i > 0 && measuredWidth < n) {
             super.onMeasure(View$MeasureSpec.makeMeasureSpec(n, 1073741824), n2);
         }
-        if (!c && this.c != null) {
+        if (!b && this.c != null) {
             super.setPadding((this.getMeasuredWidth() - this.c.getBounds().width()) / 2, this.getPaddingTop(), this.getPaddingRight(), this.getPaddingBottom());
         }
     }
@@ -243,7 +205,60 @@ public class ActionMenuItemView extends CompatTextView implements aa, ActionMenu
         return (this.a.hasSubMenu() && this.e != null && this.e.onTouch((View)this, motionEvent)) || super.onTouchEvent(motionEvent);
     }
     
+    public void setCheckable(final boolean b) {
+    }
+    
+    public void setChecked(final boolean b) {
+    }
+    
+    public void setExpandedFormat(final boolean h) {
+        if (this.h != h) {
+            this.h = h;
+            if (this.a != null) {
+                this.a.g();
+            }
+        }
+    }
+    
+    public void setIcon(final Drawable c) {
+        this.c = c;
+        if (c != null) {
+            final int intrinsicWidth = c.getIntrinsicWidth();
+            int intrinsicHeight;
+            final int n = intrinsicHeight = c.getIntrinsicHeight();
+            int k;
+            if ((k = intrinsicWidth) > this.k) {
+                final float n2 = this.k / intrinsicWidth;
+                k = this.k;
+                intrinsicHeight = (int)(n * n2);
+            }
+            int i = intrinsicHeight;
+            int n3 = k;
+            if (intrinsicHeight > this.k) {
+                final float n4 = this.k / intrinsicHeight;
+                i = this.k;
+                n3 = (int)(k * n4);
+            }
+            c.setBounds(0, 0, n3, i);
+        }
+        this.setCompoundDrawables(c, (Drawable)null, (Drawable)null, (Drawable)null);
+        this.c();
+    }
+    
+    public void setItemInvoker(final k d) {
+        this.d = d;
+    }
+    
     public void setPadding(final int j, final int n, final int n2, final int n3) {
         super.setPadding(this.j = j, n, n2, n3);
+    }
+    
+    public void setPopupCallback(final c f) {
+        this.f = f;
+    }
+    
+    public void setTitle(final CharSequence b) {
+        this.setContentDescription(this.b = b);
+        this.c();
     }
 }

@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.logging;
 
 import com.netflix.mediaclient.servicemgr.UiLocation;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebClientFactory;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;

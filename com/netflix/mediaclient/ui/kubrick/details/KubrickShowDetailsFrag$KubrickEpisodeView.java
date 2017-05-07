@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.kubrick.details;
 
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
 import android.support.v7.widget.RecyclerView$LayoutManager;
 import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
@@ -12,39 +13,48 @@ import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import com.netflix.mediaclient.ui.DetailsPageParallaxScrollListener$IScrollStateChanged;
 import android.view.View;
-import com.netflix.mediaclient.ui.DetailsPageParallaxScrollListener;
+import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
+import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.util.MdxUtils;
+import android.os.Bundle;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.util.MdxUtils$SetVideoRatingCallback;
+import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.Log;
 import android.view.ViewGroup;
-import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
+import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
+import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
-import com.netflix.mediaclient.servicemgr.model.details.ShowDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
+import com.netflix.mediaclient.ui.mdx.DialogMessageReceiver;
 import java.util.List;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
+import com.netflix.mediaclient.ui.mdx.DialogMessageReceiver$Callback;
 import com.netflix.mediaclient.ui.details.ServiceManagerProvider;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
-import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
-import com.netflix.mediaclient.servicemgr.model.Video;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.util.TimeUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import android.content.Context;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
-import com.netflix.mediaclient.ui.details.EpisodeRowView;
+import com.netflix.mediaclient.ui.details.EpisodesFrag$EpisodeView;
 
-class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodeRowView
+public class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodesFrag$EpisodeView
 {
     private AdvancedImageView img;
     private TextView runtime;
@@ -52,31 +62,29 @@ class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodeRowView
     
     public KubrickShowDetailsFrag$KubrickEpisodeView(final KubrickShowDetailsFrag this$0, final Context context, final int n) {
         this.this$0 = this$0;
-        super(context, n);
-        this.setTag(2131165257, (Object)true);
+        super(this$0, context, n);
     }
     
     private void adjustHeight() {
-        this.img.getLayoutParams().height = (int)(DeviceUtils.getScreenWidthInPixels((Context)this.this$0.getActivity()) / this.this$0.numColumns * 0.5625f);
+        this.img.getLayoutParams().height = (int)((DeviceUtils.getScreenWidthInPixels((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131361997) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
     }
     
     private void updateRuntime(final EpisodeDetails episodeDetails) {
         if (this.runtime != null && episodeDetails.getPlayable().getRuntime() > 0) {
-            this.runtime.setText((CharSequence)this.getResources().getString(2131493159, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
+            this.runtime.setText((CharSequence)this.getResources().getString(2131493166, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
         }
     }
     
     @Override
-    protected CharSequence createTitleText(final EpisodeDetails episodeDetails, final String s) {
-        this.setTag(2131165258, (Object)episodeDetails.getSeasonNumber());
-        return this.getResources().getString(2131493228, new Object[] { episodeDetails.getEpisodeNumber(), s });
+    protected CharSequence createTitleText(final EpisodeDetails episodeDetails) {
+        return this.getResources().getString(2131493236, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
     }
     
     @Override
     protected void findViews() {
         super.findViews();
-        this.img = (AdvancedImageView)this.findViewById(2131165429);
-        this.runtime = (TextView)this.findViewById(2131165430);
+        this.img = (AdvancedImageView)this.findViewById(2131165432);
+        this.runtime = (TextView)this.findViewById(2131165433);
     }
     
     @Override
@@ -87,7 +95,7 @@ class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodeRowView
     @Override
     public void setChecked(final boolean checked) {
         this.checked = checked;
-        this.setCheckedProgressBar();
+        this.updateProgressBar();
     }
     
     @Override
@@ -99,12 +107,13 @@ class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodeRowView
     }
     
     @Override
-    public void update(final Video video, final Trackable trackable, final int n, final boolean b, final boolean b2) {
-        this.updateEpisodeImage((EpisodeDetails)video);
-        this.updateRuntime((EpisodeDetails)video);
-        this.updateTitle((EpisodeDetails)video);
-        this.updateSynopsis((EpisodeDetails)video);
-        this.setupPlayButton((EpisodeDetails)video);
+    public void update(final EpisodeDetails episodeDetails, final boolean b) {
+        super.update(episodeDetails, b);
+        this.updateEpisodeImage(episodeDetails);
+        this.updateRuntime(episodeDetails);
+        this.updateTitle(episodeDetails);
+        this.setupPlayButton(episodeDetails);
+        this.updateProgressBar();
     }
     
     protected void updateEpisodeImage(final EpisodeDetails episodeDetails) {
@@ -128,6 +137,6 @@ class KubrickShowDetailsFrag$KubrickEpisodeView extends EpisodeRowView
         if (this.title == null) {
             return;
         }
-        this.title.setText(this.createTitleText(episodeDetails, episodeDetails.getTitle()));
+        this.title.setText(this.createTitleText(episodeDetails));
     }
 }

@@ -88,6 +88,24 @@ public final class ApmLogUtils extends ConsolidatedLoggingUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
+    public static void reportPreappAddWidget(final Context context, final String s, final long n) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_ADD_WIDGET");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("widgetData", s);
+        intent.putExtra("eventTime", n);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    public static void reportPreappDeleteWidget(final Context context, final String s, final long n) {
+        ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_DELETE_WIDGET");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("widgetData", s);
+        intent.putExtra("eventTime", n);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
     public static void reportStartSharedContext(final Context context, final String s) {
         ConsolidatedLoggingUtils.validateArgument(context, "Context can not be null!");
         ConsolidatedLoggingUtils.validateArgument(s, "UUID can not be null");

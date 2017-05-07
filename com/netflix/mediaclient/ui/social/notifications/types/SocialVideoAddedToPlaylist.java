@@ -17,7 +17,7 @@ public class SocialVideoAddedToPlaylist extends SocialNotification
 {
     @Override
     protected void addNotificationText(final NotificationCompat$Builder notificationCompat$Builder, final NotificationCompat$BigPictureStyle notificationCompat$BigPictureStyle, final SocialNotificationSummary socialNotificationSummary, final Context context) {
-        final String string = context.getResources().getString(2131493357);
+        final String string = context.getResources().getString(2131493365);
         notificationCompat$BigPictureStyle.setSummaryText(string);
         notificationCompat$Builder.setContentText(string);
     }
@@ -30,6 +30,6 @@ public class SocialVideoAddedToPlaylist extends SocialNotification
     @Override
     public void initView(final View view, final SocialNotificationViewHolder socialNotificationViewHolder, final SocialNotificationSummary socialNotificationSummary, final Context context) {
         super.initView(view, socialNotificationViewHolder, socialNotificationSummary, context);
-        socialNotificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493361, new Object[] { socialNotificationSummary.getVideo().getTitle() })));
+        socialNotificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(context.getResources().getString(2131493369, new Object[] { socialNotificationSummary.getVideo().getTitle() })));
     }
 }

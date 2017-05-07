@@ -5,18 +5,18 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
+import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import android.text.Html;
 import com.netflix.mediaclient.util.api.Api17Util;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.SocialUtils;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.util.log.SocialLoggingUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
@@ -33,7 +33,7 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
-import com.netflix.mediaclient.servicemgr.model.Billboard;
+import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import android.widget.RelativeLayout;
 import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
@@ -51,7 +51,7 @@ class BillboardView$1 implements ViewTreeObserver$OnGlobalLayoutListener
     
     public void onGlobalLayout() {
         if (!((NetflixActivity)this.this$0.getContext()).destroyed()) {
-            if (Log.isLoggable("BillboardView", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("BillboardView", "vg height: " + this.this$0.infoViewGroup.getHeight() + ", h: " + this.this$0.getHeight());
             }
             if (this.this$0.getHeight() > 0 && this.this$0.infoViewGroup.getHeight() >= this.this$0.getHeight()) {

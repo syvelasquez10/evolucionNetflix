@@ -9,7 +9,7 @@ import android.util.DisplayMetrics;
 import android.hardware.display.DisplayManager;
 import com.netflix.mediaclient.media.VideoResolutionRange;
 import org.json.JSONObject;
-import com.netflix.mediaclient.net.IpConnectivityPolicy;
+import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
@@ -22,6 +22,7 @@ import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import com.netflix.mediaclient.nccp.NccpKeyStore;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.ui.experience.PersistentExperience;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -56,7 +57,7 @@ class ConfigurationAgent$FetchConfigDataTask$1 extends SimpleConfigurationAgentW
     
     @Override
     public void onConfigDataFetched(final ConfigData configData, final Status status) {
-        if (Log.isLoggable("nf_configurationagent", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_configurationagent", String.format("onConfigDataFetched statusCode=%d", status.getStatusCode().getValue()));
         }
         this.this$1.this$0.mConfigRefreshStatus = status;

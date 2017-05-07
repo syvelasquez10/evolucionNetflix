@@ -173,10 +173,10 @@ public class Payload
                                                                 Log.e("nf_push", "Invalid action: " + o);
                                                             }
                                                             break;
-                                                            int1 = 0;
-                                                            break Label_0217;
                                                             long1 = 0L;
                                                             break Label_0367;
+                                                            int1 = 0;
+                                                            break Label_0217;
                                                         }
                                                         catch (JSONException ex) {
                                                             Log.e("nf_push", String.format("invalid renoPayload %s", o), (Throwable)ex);
@@ -306,47 +306,47 @@ public class Payload
         if (StringUtils.isEmpty(s)) {
             Log.d("nf_push", "Empty payload, return URI that will launch our application to HOME page");
             s = "nflx://www.netflix.com/Browse?q=" + URLEncoder.encode("action=home&source=pn", "UTF-8");
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", "Payload for home page " + s);
             }
             return Uri.parse(s);
         }
         if (s2 != null && "CUSTOM".equalsIgnoreCase(s2.trim())) {
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", "Custom action. Just pass through " + s);
             }
             return Uri.parse(s);
         }
         if (s.toLowerCase(Locale.US).startsWith("nflx://")) {
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", "Payload using nflx. Just pass through: " + s);
             }
             s = "nflx://www.netflix.com/Browse?q=" + URLEncoder.encode("target_url=" + s, "UTF-8");
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", "Payload for MDP page " + s);
             }
             return Uri.parse(s);
         }
         if (s.toLowerCase(Locale.US).startsWith("https://")) {
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", "Payload using https : " + s + ". Just pass through.");
             }
             return Uri.parse(s);
         }
         if (s.toLowerCase(Locale.US).startsWith("http://")) {
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", "Payload using http : " + s);
             }
             s = "nflx://" + s.substring("http://".length());
             s = "nflx://www.netflix.com/Browse?q=" + URLEncoder.encode("target_url=" + s, "UTF-8");
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", "Payload for MDP page " + s);
             }
             return Uri.parse(s);
         }
         Log.d("nf_push", "Unsuported protocol, return URI that will launch our application to HOME page");
         s = "nflx://www.netflix.com/Browse?q=" + URLEncoder.encode("action=home&source=pn", "UTF-8");
-        if (Log.isLoggable("nf_push", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_push", "Payload for home page " + s);
         }
         return Uri.parse(s);
@@ -384,7 +384,7 @@ public class Payload
         final long currentTimeMillis = System.currentTimeMillis();
         if (this.when >= currentTimeMillis) {
             final long when = this.when;
-            if (Log.isLoggable("nf_push", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_push", "Post notification later: " + when);
             }
             return when;

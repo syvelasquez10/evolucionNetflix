@@ -5,9 +5,9 @@
 package android.support.v7.internal.widget;
 
 import android.support.v7.internal.app.WindowCallback;
-import android.graphics.drawable.Drawable;
 import android.support.v7.internal.view.menu.y;
 import android.view.Menu;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.content.Context;
@@ -27,6 +27,8 @@ public interface DecorToolbar
     int getDisplayOptions();
     
     int getNavigationMode();
+    
+    CharSequence getTitle();
     
     ViewGroup getViewGroup();
     
@@ -53,6 +55,10 @@ public interface DecorToolbar
     void setEmbeddedTabView(final ScrollingTabContainerView p0);
     
     void setHomeButtonEnabled(final boolean p0);
+    
+    void setIcon(final int p0);
+    
+    void setIcon(final Drawable p0);
     
     void setLogo(final int p0);
     

@@ -20,7 +20,7 @@ import android.support.v4.app.NotificationCompat$Builder;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.repository.SecurityRepository;
-import com.netflix.mediaclient.ui.LaunchActivity;
+import com.netflix.mediaclient.ui.launch.LaunchActivity;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.android.app.UserInputManager;
@@ -101,7 +101,7 @@ public class NetflixApplication extends Application
             else {
                 final int libraryVersion = SecurityRepository.getLibraryVersion();
                 final int versionCode = AndroidManifestUtils.getVersionCode((Context)this);
-                if (Log.isLoggable("NetflixApplication", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("NetflixApplication", "Manifest library version: " + versionCode + ", real: " + libraryVersion);
                 }
                 if (libraryVersion != versionCode) {
@@ -133,13 +133,13 @@ public class NetflixApplication extends Application
     }
     
     private void registerReceiver() {
-        Log.d("NetflixApplication", "Register receiver");
+        Log.d("NetflixApplication", "Registering application broadcast receiver");
         IntentUtils.registerSafelyLocalBroadcastReceiver((Context)this, this.broadcastReceiver, "com.netflix.mediaclient.intent.category.NETFLIX_SERVICE", "com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_INIT_COMPLETE", "com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_DESTROYED");
     }
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837715).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493255, new Object[] { n })).setContentTitle(this.getString(2131493253, new Object[] { n })).setContentText(this.getString(2131493254, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837737).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131493263, new Object[] { n })).setContentTitle(this.getString(2131493261, new Object[] { n })).setContentText(this.getString(2131493262, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");
@@ -174,7 +174,7 @@ public class NetflixApplication extends Application
     
     public void onConfigurationChanged(final Configuration configuration) {
         super.onConfigurationChanged(configuration);
-        if (Log.isLoggable("NetflixApplication", 3)) {
+        if (Log.isLoggable()) {
             Log.d("NetflixApplication", "onConfigurationChanged");
         }
         this.refreshLocale(this.mServiceLocale);
@@ -182,8 +182,8 @@ public class NetflixApplication extends Application
     
     public void onCreate() {
         super.onCreate();
-        Log.d("NetflixApplication", "Application started");
-        Log.d("NetflixApplication", "Load native libraries ");
+        Log.d("NetflixApplication", "Application onCreate");
+        Log.d("NetflixApplication", "Loading native libraries");
         this.loadAndVerifyNativeLibraries();
         this.registerActivityLifecycleCallbacks((Application$ActivityLifecycleCallbacks)this.mUserInput);
         this.registerReceiver();
@@ -203,7 +203,7 @@ public class NetflixApplication extends Application
     }
     
     public void refreshLocale(final String mServiceLocale) {
-        if (Log.isLoggable("nf_locale", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_locale", "refreshLocale with language = " + mServiceLocale);
         }
         if (mServiceLocale == null) {
@@ -214,12 +214,12 @@ public class NetflixApplication extends Application
             final Locale locale = new UserLocale(this.mServiceLocale).getLocale();
             final Locale default1 = Locale.getDefault();
             if (locale.getLanguage().equals(default1.getLanguage()) && (StringUtils.isEmpty(locale.getCountry()) || locale.getCountry().equals(default1.getCountry()))) {
-                if (Log.isLoggable("nf_locale", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_locale", "No need to refreshLocale: serviceLocale=" + locale + " current Locale language=" + default1);
                 }
             }
             else {
-                if (Log.isLoggable("nf_locale", 4)) {
+                if (Log.isLoggable()) {
                     Log.i("nf_locale", "Changing language from " + default1 + " to " + locale);
                 }
                 Locale.setDefault(locale);

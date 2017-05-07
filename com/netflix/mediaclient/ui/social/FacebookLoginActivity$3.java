@@ -33,7 +33,7 @@ class FacebookLoginActivity$3 implements Session$StatusCallback
     
     @Override
     public void call(final Session session, final SessionState sessionState, final Exception ex) {
-        if (Log.isLoggable("FacebookLoginActivity", 2)) {
+        if (Log.isLoggable()) {
             Log.v("FacebookLoginActivity", "Callback - Session: " + session + ", State: " + sessionState + ", Exception: " + ex + ", Current Access Token: " + Session.getActiveSession().getAccessToken());
         }
         SocialLoggingUtils.reportEndSocialConnectSession((Context)this.this$0);

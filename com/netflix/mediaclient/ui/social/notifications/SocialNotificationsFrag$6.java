@@ -25,7 +25,7 @@ import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.StatusCode;
 import android.view.View;
 import com.netflix.mediaclient.ui.social.notifications.types.SocialNotification;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.HashSet;
@@ -40,7 +40,7 @@ import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.Collection;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.model.leafs.social.SocialNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.search.SocialNotificationsList;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
 class SocialNotificationsFrag$6 extends SimpleManagerCallback

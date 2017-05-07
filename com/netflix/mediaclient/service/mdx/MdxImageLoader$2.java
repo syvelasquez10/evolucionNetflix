@@ -27,7 +27,7 @@ class MdxImageLoader$2 implements ResourceFetcherCallback
     @Override
     public void onResourceFetched(final String s, final String s2, final Status status) {
         if (status.isSucces()) {
-            if (Log.isLoggable("nf_mdxImageLoader", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_mdxImageLoader", "resource fetched to " + s2);
             }
             if (this.this$0.mWorkerHandler != null && StringUtils.isNotEmpty(s2)) {
@@ -38,7 +38,7 @@ class MdxImageLoader$2 implements ResourceFetcherCallback
     
     @Override
     public void onResourcePrefetched(final String s, final int n, final Status status) {
-        if (Log.isLoggable("nf_mdxImageLoader", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_mdxImageLoader", "ERROR resource prefetched from " + s);
         }
     }

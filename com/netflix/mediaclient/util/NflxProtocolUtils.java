@@ -97,7 +97,7 @@ public final class NflxProtocolUtils
     }
     
     public static String getExpandUrl(String s) {
-        if (Log.isLoggable("NflxHandler", 3)) {
+        if (Log.isLoggable()) {
             Log.d("NflxHandler", "Gets expanded tiny URL " + s);
         }
         if (StringUtils.isEmpty(s)) {
@@ -112,7 +112,7 @@ public final class NflxProtocolUtils
             throw new IllegalArgumentException("Movie ID not found in tiny URL " + substring);
         }
         s = split[split.length - 1];
-        if (Log.isLoggable("NflxHandler", 3)) {
+        if (Log.isLoggable()) {
             Log.d("NflxHandler", "Encoded ID in tiny URL: " + s);
         }
         return s;
@@ -159,7 +159,7 @@ public final class NflxProtocolUtils
         final int lastIndex = s.lastIndexOf(s2);
         if (lastIndex > 0) {
             final String substring = s.substring(lastIndex + s2.length());
-            if (Log.isLoggable("NflxHandler", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("NflxHandler", "Found video id: " + substring + " for path key: " + s2);
             }
             if (StringUtils.isEmpty(substring)) {
@@ -178,15 +178,15 @@ public final class NflxProtocolUtils
         return null;
     }
     
-    public static NflxProtocolUtils$VideoInfo getVideoInfoFromMovieIdUri(String s) {
+    public static NflxProtocolUtils$VideoInfo getVideoInfoFromVideoIdUrl(String decode, final Map<String, String> map) {
         while (true) {
             try {
-                s = URLDecoder.decode(s, "utf-8");
-                if (Log.isLoggable("NflxHandler", 3)) {
+                decode = URLDecoder.decode(decode, "utf-8");
+                if (Log.isLoggable()) {
                     Log.d("NflxHandler", "movie id uri exist in params map");
-                    Log.d("NflxHandler", "Gets video info from " + s);
+                    Log.d("NflxHandler", "Gets video info from " + decode);
                 }
-                final String videoIdFromUri = getVideoIdFromUri(s, "series/");
+                final String videoIdFromUri = getVideoIdFromUri(decode, "series/");
                 if (videoIdFromUri != null) {
                     return NflxProtocolUtils$VideoInfo.createFromShow(videoIdFromUri);
                 }
@@ -197,12 +197,18 @@ public final class NflxProtocolUtils
             }
             break;
         }
-        s = getVideoIdFromUri(s, "movies/");
-        if (s != null) {
-            return NflxProtocolUtils$VideoInfo.createFromMovie(s);
+        final String videoIdFromUri2 = getVideoIdFromUri(decode, "movies/");
+        if (videoIdFromUri2 != null) {
+            return NflxProtocolUtils$VideoInfo.createFromMovie(videoIdFromUri2);
         }
-        Log.e("NflxHandler", "Unable to get video id! This should NOT happen!");
-        return null;
+        if (!NumberUtils.isPositiveWholeNumber(decode)) {
+            Log.e("NflxHandler", "Unable to get video id! This should NOT happen!");
+            return null;
+        }
+        if (map.containsKey("episodeid")) {
+            return NflxProtocolUtils$VideoInfo.createFromShow(decode);
+        }
+        return NflxProtocolUtils$VideoInfo.createFromMovie(decode);
     }
     
     public static boolean isGenreAction(final String s) {
@@ -225,7 +231,7 @@ public final class NflxProtocolUtils
         final String source = getSource(map);
         final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
         if (clientLogging != null) {
-            if (Log.isLoggable("NflxHandler", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("NflxHandler", "Reporting that application is started from deep link. Source: " + source + ", action: " + s);
             }
             if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
@@ -289,7 +295,7 @@ public final class NflxProtocolUtils
             Log.e("NflxHandler", "Unable to report since message data are missing!");
             return;
         }
-        if (Log.isLoggable("NflxHandler", 3)) {
+        if (Log.isLoggable()) {
             Log.d("NflxHandler", "User opened notification " + instance);
         }
         clientLogging.getCmpEventLogging().reportUserFeedbackOnReceivedPushNotification(instance, UserFeedbackOnReceivedPushNotification.opened);

@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.MenuItem$OnMenuItemClickListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -32,11 +32,11 @@ public class DetailsMenu
     }
     
     private void updateShareItemAsUnshared() {
-        this.shareItem.setTitle(2131493116).setEnabled(false).setVisible(true);
+        this.shareItem.setTitle(2131493122).setEnabled(false).setVisible(true);
     }
     
     private void updateShareItemToUnshare(final ServiceManager serviceManager, final String s) {
-        this.shareItem.setTitle(2131493115).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DetailsMenu$UnshareClickHandler(this, serviceManager, s)).setEnabled(true).setVisible(true);
+        this.shareItem.setTitle(2131493121).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DetailsMenu$UnshareClickHandler(this, serviceManager, s)).setEnabled(true).setVisible(true);
     }
     
     public void updateShareItem(final ServiceManager serviceManager, final VideoDetails videoDetails) {

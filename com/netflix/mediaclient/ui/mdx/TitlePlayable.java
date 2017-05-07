@@ -4,8 +4,8 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
-import com.netflix.mediaclient.ui.Asset;
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.Asset;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 
 class TitlePlayable implements Playable
 {

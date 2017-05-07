@@ -155,7 +155,7 @@ public abstract class BaseNccpTransaction implements NccpTransaction
     public NccpResponse processResponse(final HttpResponse httpResponse) {
         final int statusCode = httpResponse.getStatusLine().getStatusCode();
         if (statusCode != 200) {
-            if (Log.isLoggable("nf_nccp", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_nccp", "Server returned HTTP error code " + statusCode);
             }
             return new NccpTransactionHttpError(statusCode, this.getName());
@@ -167,7 +167,7 @@ public abstract class BaseNccpTransaction implements NccpTransaction
             return new EmptyReponse(this.getName());
         }
         final String s = new String(byteArray);
-        if (Log.isLoggable("nf_nccp", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_nccp", "Response body is " + s);
         }
         return this.processResponseBody(s);

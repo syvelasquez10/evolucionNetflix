@@ -6,10 +6,10 @@ package com.netflix.mediaclient.service.mdx;
 
 import java.util.List;
 import android.text.TextUtils;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.details.PostPlayVideosProvider;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
 
 class MdxAgent$3$1 extends SimpleBrowseAgentCallback
@@ -22,7 +22,7 @@ class MdxAgent$3$1 extends SimpleBrowseAgentCallback
     
     @Override
     public void onPostPlayVideosFetched(final PostPlayVideosProvider postPlayVideosProvider, final Status status) {
-        if (Log.isLoggable("nf_mdx_agent", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_mdx_agent", "onPostPlayVideosFetched, res: " + status);
         }
         if (status.isSucces() && postPlayVideosProvider != null) {

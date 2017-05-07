@@ -10,8 +10,8 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.google.gson.JsonElement;
 import java.util.Locale;
-import com.netflix.mediaclient.servicemgr.model.IconFontGlyph;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.IconFontGlyph;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 
 public class Video$Evidence implements JsonPopulator
 {
@@ -50,7 +50,7 @@ public class Video$Evidence implements JsonPopulator
     @Override
     public void populate(JsonElement value) {
         final JsonObject asJsonObject = value.getAsJsonObject();
-        if (Log.isLoggable("Evidence", 2)) {
+        if (Log.isLoggable()) {
             Log.v("Evidence", "Populating with: " + asJsonObject);
         }
         value = asJsonObject.get("value");
@@ -59,19 +59,19 @@ public class Video$Evidence implements JsonPopulator
                 final JsonElement jsonElement = entry.getValue();
                 final String s = entry.getKey();
                 int n = 0;
-                Label_0146: {
+                Label_0142: {
                     switch (s.hashCode()) {
                         case 3292052: {
                             if (s.equals("kind")) {
                                 n = 0;
-                                break Label_0146;
+                                break Label_0142;
                             }
                             break;
                         }
                         case 3556653: {
                             if (s.equals("text")) {
                                 n = 1;
-                                break Label_0146;
+                                break Label_0142;
                             }
                             break;
                         }

@@ -45,7 +45,7 @@ public class PartnerJSObject extends JSObject
     
     private void returnResultToJS(String javaScript, final JSONObject jsonObject) {
         javaScript = this.toJavaScript(javaScript, jsonObject);
-        if (Log.isLoggable("nf_partner", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_partner", "Injecting event " + javaScript);
         }
         this.injectJavaScript(javaScript);
@@ -72,14 +72,14 @@ public class PartnerJSObject extends JSObject
     }
     
     public void getExternalUserData(final String s, final String s2, final int n) {
-        if (Log.isLoggable("nf_partner", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_partner", "nrdpPartner.Signup.getExternalUserData: service " + s + ", idx " + n + ", userid " + s2);
         }
         new BackgroundTask().execute(new PartnerJSObject$3(this, s, n, s2));
     }
     
     public void getExternalUserToken(final String s, final int n) {
-        if (Log.isLoggable("nf_partner", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_partner", "nrdpPartner.Sso.getExternalUserToken:: service " + s + ", idx " + n);
         }
         new BackgroundTask().execute(new PartnerJSObject$1(this, s, n));
@@ -99,14 +99,14 @@ public class PartnerJSObject extends JSObject
     }
     
     public void requestExternalUserAuth(final String s, final int n) {
-        if (Log.isLoggable("nf_partner", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_partner", "nrdpPartner.Sso.requestExternalUserAuth:: service " + s + ", idx " + n);
         }
         new BackgroundTask().execute(new PartnerJSObject$2(this, s, n));
     }
     
     public void requestExternalUserConfirmation(final String s, final String s2, final int n) {
-        if (Log.isLoggable("nf_partner", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_partner", "nrdpPartner.Signup.requestExternalUserConfirmation: service " + s + ", idx " + n + ", userid " + s2);
         }
         new BackgroundTask().execute(new PartnerJSObject$4(this, s, n, s2));

@@ -17,6 +17,10 @@ public class AuthFailureError extends VolleyError
         super(networkResponse);
     }
     
+    public AuthFailureError(final String s) {
+        super(s);
+    }
+    
     @Override
     public String getMessage() {
         if (this.mResolutionIntent != null) {

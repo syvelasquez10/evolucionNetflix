@@ -5,10 +5,11 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -31,7 +32,6 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.NetflixService;
-import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.player.subtitles.TextStyle;
 import com.netflix.mediaclient.javabridge.ui.Registration;
@@ -60,7 +60,7 @@ class UserAgent$SwitchWebUserProfilesTask$1 extends SimpleUserAgentWebCallback
     @Override
     public void onUserProfileSwitched(final UserBoundCookies userBoundCookies, final Status status) {
         if (status.isSucces()) {
-            if (Log.isLoggable("nf_service_useragent", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_service_useragent", String.format("switchWebUserProfile  netflixId %s secureNetflixId %s", userBoundCookies.getUserBoundNetflixId(), userBoundCookies.getUserBoundSecureNetflixId()));
             }
             if (this.this$1.this$0.mUserAgentStateManager != null) {
@@ -69,7 +69,7 @@ class UserAgent$SwitchWebUserProfilesTask$1 extends SimpleUserAgentWebCallback
             SocialUtils.removeSocialNotificationsFromStatusBar(this.this$1.this$0.getContext());
         }
         else {
-            if (Log.isLoggable("nf_service_useragent", 6)) {
+            if (Log.isLoggable()) {
                 Log.e("nf_service_useragent", "switchWebUserProfile failed  with statusCode=" + status.getStatusCode());
             }
             if (this.this$1.this$0.mUserAgentStateManager != null) {

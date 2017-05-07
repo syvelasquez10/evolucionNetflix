@@ -31,12 +31,12 @@ public class LastKeyEvent
         final long n = this.ts + this.expirationTimeout - currentTimeMillis;
         if (this.lastKey == keyEvent.getKeyCode()) {
             if (n > 0L) {
-                if (Log.isLoggable("nf_key", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_key", "Ignore repeated key press " + this.lastKey + " in " + n + " ms, which is less than threshold of " + this.expirationTimeout);
                 }
                 return true;
             }
-            if (Log.isLoggable("nf_key", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_key", "Do NOT ignore repeated key press " + this.lastKey + " in " + n + " ms, which is more than threshold of " + this.expirationTimeout);
             }
         }

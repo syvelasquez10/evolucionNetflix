@@ -7,13 +7,14 @@ package com.netflix.mediaclient.service.falkor;
 import android.content.Intent;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.model.leafs.social.SocialNotificationSummary;
 import java.util.List;
-import com.netflix.mediaclient.service.browse.BrowseAgent$BillboardActivityType;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.falkor.ModelProxy;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallbackWrapper;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.NetflixService$ClientCallbacks;
@@ -145,8 +146,13 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void fetchVideos(final LoMo loMo, final int n, final int n2, final boolean b, final boolean b2, final int n3, final int n4) {
-        this.mBrowseAgent.fetchVideos(loMo, n, n2, b, b2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n3, n4)));
+    public void fetchVideoSummary(final String s, final int n, final int n2) {
+        this.mBrowseAgent.fetchVideoSummary(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
+    }
+    
+    @Override
+    public void fetchVideos(final LoMo loMo, final int n, final int n2, final boolean b, final boolean b2, final boolean b3, final int n3, final int n4) {
+        this.mBrowseAgent.fetchVideos(loMo, n, n2, b, b2, b3, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n3, n4)));
     }
     
     @Override
@@ -155,13 +161,23 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
+    public void forceFetchFromLocalCache(final boolean b) {
+        this.mBrowseAgent.forceFetchFromLocalCache(b);
+    }
+    
+    @Override
+    public ModelProxy<?> getModelProxy() {
+        return this.mBrowseAgent.getModelProxy();
+    }
+    
+    @Override
     public void hideVideo(final String s, final int n, final int n2) {
         this.mBrowseAgent.hideVideo(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override
-    public void logBillboardActivity(final Video video, final BrowseAgent$BillboardActivityType browseAgent$BillboardActivityType) {
-        this.mBrowseAgent.logBillboardActivity(video, browseAgent$BillboardActivityType);
+    public void logBillboardActivity(final Video video, final BillboardInteractionType billboardInteractionType) {
+        this.mBrowseAgent.logBillboardActivity(video, billboardInteractionType);
     }
     
     @Override

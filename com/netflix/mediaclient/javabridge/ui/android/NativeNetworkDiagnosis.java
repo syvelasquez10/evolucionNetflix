@@ -65,7 +65,7 @@ public class NativeNetworkDiagnosis extends NativeNrdObject implements NetworkDi
         try {
             final String string = this.getString(jsonObject, "type", null);
             final String string2 = this.getString(jsonObject, "name", null);
-            if (Log.isLoggable("nf_object", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_object", "processUpdate: handle type " + string);
             }
             if ("Event".equalsIgnoreCase(string) && "INetwork".equals(string2)) {

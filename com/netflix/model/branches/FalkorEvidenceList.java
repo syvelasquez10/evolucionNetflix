@@ -5,17 +5,17 @@
 package com.netflix.model.branches;
 
 import android.os.Parcel;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.service.falkor.Falkor$Creator;
 import java.util.Set;
-import com.netflix.mediaclient.servicemgr.model.user.FriendProfile;
+import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
 import java.util.List;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.netflix.falkor.Func;
 import com.netflix.falkor.Ref;
 import com.netflix.model.leafs.ListOfMoviesSummary;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.falkor.BranchMap;
 
 public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorObject

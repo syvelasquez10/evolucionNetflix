@@ -6,7 +6,7 @@ package com.netflix.mediaclient.service.falkor;
 
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.List;
 import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
 
@@ -20,7 +20,7 @@ class FalkorAgent$4$1$1 extends SimpleBrowseAgentCallback
     
     @Override
     public void onEpisodesFetched(final List<EpisodeDetails> list, final Status status) {
-        if (Log.isLoggable("FalkorAgent", 3)) {
+        if (Log.isLoggable()) {
             Log.d("FalkorAgent", String.format("fetchEpisodesForSeason - onEpisodesFetched res %d", status.getStatusCode().getValue()));
         }
     }

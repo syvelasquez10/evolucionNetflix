@@ -24,7 +24,7 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     
     public DiagnosisActivity$ResultsAdapter(final DiagnosisActivity this$0, final Context context) {
         this.this$0 = this$0;
-        super(context, 2130903090, 2131165356);
+        super(context, 2130903089, 2131165356);
         this.context = context;
     }
     
@@ -44,20 +44,20 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     }
     
     public View getView(final int n, View inflate, final ViewGroup viewGroup) {
-        inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903090, viewGroup, false);
+        inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903089, viewGroup, false);
         final TextView textView = (TextView)inflate.findViewById(2131165358);
         final TextView textView2 = (TextView)inflate.findViewById(2131165359);
         final ImageView imageView = (ImageView)inflate.findViewById(2131165357);
-        imageView.setImageResource(2130837710);
+        imageView.setImageResource(2130837732);
         final UrlNetworkState urlNetworkState = this.this$0.mUrlList.get(n);
         this.setTitleText(textView, urlNetworkState.getUrl(), n);
         if (urlNetworkState.getStatus().equals(DiagnosisAgent$UrlStatus.COMPLETED)) {
             if (urlNetworkState.getResult() != 0) {
                 textView2.setText((CharSequence)("nw-" + urlNetworkState.getErrorGroup() + "-" + urlNetworkState.getErrorCode()));
-                imageView.setImageResource(2130837709);
+                imageView.setImageResource(2130837731);
                 return inflate;
             }
-            imageView.setImageResource(2130837710);
+            imageView.setImageResource(2130837732);
             textView2.setVisibility(4);
         }
         else {
@@ -78,9 +78,9 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     
     public void setTitleText(final TextView textView, final String s, final int n) {
         if (s != null && s.contains("netflix")) {
-            textView.setText((CharSequence)this.context.getString(2131493327, new Object[] { n + 1 }));
+            textView.setText((CharSequence)this.context.getString(2131493335, new Object[] { n + 1 }));
             return;
         }
-        textView.setText(2131493328);
+        textView.setText(2131493336);
     }
 }

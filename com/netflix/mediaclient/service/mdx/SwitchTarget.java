@@ -46,7 +46,7 @@ public final class SwitchTarget
         }
         this.mCallback.onSetToNewTarget(this.mNewUuid);
         if (StringUtils.isNotEmpty(this.mNewUuid)) {
-            if (Log.isLoggable("nf_mdxSwitchTarget", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_mdxSwitchTarget", "start playback on " + this.mNewUuid + ", " + this.mVideoIds.catalogIdUrl + ", " + this.mVideoIds.episodeIdUrl + ", " + this.mStartTime);
             }
             this.mTargeManger.playerPlay(this.mNewUuid, this.mVideoIds.catalogIdUrl, this.mTrackId, this.mVideoIds.episodeIdUrl, this.mStartTime);

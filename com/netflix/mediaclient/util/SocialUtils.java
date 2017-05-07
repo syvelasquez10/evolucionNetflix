@@ -12,6 +12,7 @@ import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
+import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
@@ -22,7 +23,7 @@ import android.widget.LinearLayout$LayoutParams;
 import android.app.NotificationManager;
 import android.support.v4.content.LocalBroadcastManager;
 import java.io.Serializable;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.ui.details.RecommendToFriendsFrag;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -36,7 +37,7 @@ import android.view.MenuItem;
 import com.netflix.mediaclient.Log;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.content.Context;
 
 public class SocialUtils
@@ -59,13 +60,13 @@ public class SocialUtils
             Log.w("SocialUtils", "Got null notificationsListStatus value!");
         }
         else if (socialUtils$NotificationsListStatus != SocialUtils$NotificationsListStatus.NO_MESSAGES && isNotificationsFeatureSupported(netflixActivity)) {
-            final MenuItem add = menu.add(0, 2131165255, 0, 2131493185);
+            final MenuItem add = menu.add(0, 2131165255, 0, 2131493192);
             int icon;
             if (socialUtils$NotificationsListStatus == SocialUtils$NotificationsListStatus.HAS_UNREAD_MESSAGES) {
-                icon = 2130837670;
+                icon = 2130837691;
             }
             else {
-                icon = 2130837669;
+                icon = 2130837690;
             }
             add.setIcon(icon).setShowAsAction(1);
         }
@@ -73,7 +74,7 @@ public class SocialUtils
     
     public static void addShareIconIfNeeded(final NetflixActivity netflixActivity, final Menu menu) {
         if (getShareSheetType() == SocialUtils$ShareSheetType.SHARE_IN_HEADER || getShareSheetType() == SocialUtils$ShareSheetType.RECOMMEND_PLUS_SHARE) {
-            menu.add(0, 2131165256, 65536, 2131493352).setIcon(2130837668).setShowAsAction(2);
+            menu.add(0, 2131165256, 65536, 2131493360).setIcon(2130837689).setShowAsAction(2);
         }
     }
     
@@ -104,7 +105,7 @@ public class SocialUtils
     }
     
     private static String getShareText(final Resources resources, final String s, final String s2) {
-        return resources.getString(2131493354, new Object[] { s, s2 });
+        return resources.getString(2131493362, new Object[] { s, s2 });
     }
     
     private static String getShareUrl(final String s, final VideoType videoType) {
@@ -125,14 +126,14 @@ public class SocialUtils
             return SocialUtils$NotificationsListStatus.NO_MESSAGES;
         }
         final String action = intent.getAction();
-        if (Log.isLoggable(s, 2)) {
+        if (Log.isLoggable()) {
             Log.v(s, "notificationsUpdateReciever invoked with Action: " + action);
         }
         if ("com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED".equals(action)) {
             Log.i(s, "Updating menu icon");
             return (SocialUtils$NotificationsListStatus)intent.getSerializableExtra("notifications_list_status");
         }
-        if (Log.isLoggable(s, 5)) {
+        if (Log.isLoggable()) {
             Log.w(s, "handleNotificationsUpdateReceiver got strange action: " + action);
         }
         return SocialUtils$NotificationsListStatus.NO_MESSAGES;
@@ -169,7 +170,7 @@ public class SocialUtils
         else {
             socialUtils$NotificationsListStatus = SocialUtils$NotificationsListStatus.NO_MESSAGES;
         }
-        if (Log.isLoggable("SocialUtils", 4)) {
+        if (Log.isLoggable()) {
             Log.i("SocialUtils", "notifyOthersOfUnreadNotifications: " + socialUtils$NotificationsListStatus);
         }
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.BA_NOTIFICATION_LIST_UPDATED");
@@ -189,7 +190,7 @@ public class SocialUtils
         if (n >= 0 && n < SocialUtils$ShareSheetType.values().length) {
             SocialUtils.shareSheetType = SocialUtils$ShareSheetType.values()[n];
         }
-        else if (Log.isLoggable("SocialUtils", 5)) {
+        else if (Log.isLoggable()) {
             Log.w("SocialUtils", "setShareSheetType() got weird cellIndex: " + n + ". Cell #1 will be used instead.");
         }
     }
@@ -220,8 +221,8 @@ public class SocialUtils
                     return addToMyListWrapper(netflixActivity, serviceManager, textView3, textView4, s);
                 }
                 case 3: {
-                    textView.setText(2131493352);
-                    textView.setCompoundDrawablesWithIntrinsicBounds(2130837704, 0, 0, 0);
+                    textView.setText(2131493360);
+                    textView.setCompoundDrawablesWithIntrinsicBounds(2130837726, 0, 0, 0);
                 }
                 case 4: {
                     textView.setOnClickListener((View$OnClickListener)new SocialUtils$1(netflixActivity, s, s2, videoType));
@@ -265,12 +266,14 @@ public class SocialUtils
     private static void startShare(final Context context, String shareUrl, final String s, final VideoType videoType) {
         final Resources resources = context.getResources();
         shareUrl = getShareUrl(shareUrl, videoType);
+        UIViewLogUtils.reportUIViewCommandStarted(context, UIViewLogging$UIViewCommandName.shareSheet, IClientLogging$ModalView.movieDetails, null, null);
         UserActionLogUtils.reportShareSheetActionStarted(shareUrl, context, null, IClientLogging$ModalView.movieDetails);
+        UIViewLogUtils.reportUIViewCommandEnded(context);
         final Intent intent = new Intent("android.intent.action.SEND");
         intent.setFlags(268435456);
         intent.setType("text/plain");
         intent.putExtra("android.intent.extra.TEXT", getShareText(resources, s, shareUrl));
-        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131493353)));
+        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131493361)));
         UserActionLogUtils.reportShareSheetActionEnded(context, IClientLogging$CompletionReason.success, null);
     }
     

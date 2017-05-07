@@ -19,7 +19,7 @@ class LoLoMoFrag$2 implements AbsListView$RecyclerListener
     public void onMovedToScrapHeap(final View view) {
         final BaseLoLoMoAdapter$RowHolder baseLoLoMoAdapter$RowHolder = (BaseLoLoMoAdapter$RowHolder)view.getTag();
         if (baseLoLoMoAdapter$RowHolder == null) {
-            if (Log.isLoggable("LoLoMoFrag", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("LoLoMoFrag", "View tag is null - can't notify holder of move to scrap, view: " + view.getClass().getSimpleName());
             }
             return;

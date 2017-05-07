@@ -4,12 +4,7 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import android.os.Handler;
-import android.os.Debug;
-import com.netflix.mediaclient.ui.home.HomeActivity;
-import android.view.Menu;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -22,8 +17,7 @@ class DebugMenuItems$8 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        Log.d(this.this$0.logTag, "Making refreshAll() call");
-        this.this$0.activity.getServiceManager().getBrowse().refreshAll();
+        AndroidUtils.dumpHprofToDisk();
         return true;
     }
 }

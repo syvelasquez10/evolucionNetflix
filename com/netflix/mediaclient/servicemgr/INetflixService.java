@@ -4,14 +4,14 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.service.webclient.model.leafs.social.FriendForRecommendation;
+import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
 import java.util.Set;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import android.os.Handler;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import java.util.List;
 
 public interface INetflixService
@@ -38,8 +38,6 @@ public interface INetflixService
     void getAvailableAvatarsList(final int p0, final int p1);
     
     IBrowseInterface getBrowse();
-    
-    String getBrowseAgentString();
     
     IClientLogging getClientLogging();
     
@@ -108,6 +106,8 @@ public interface INetflixService
     void sendRecommendationsToFriends(final String p0, final Set<FriendForRecommendation> p1, final String p2, final String p3);
     
     void setCurrentAppLocale(final String p0);
+    
+    void uiComingFromBackground();
     
     void unregisterCallback(final INetflixServiceCallback p0);
     

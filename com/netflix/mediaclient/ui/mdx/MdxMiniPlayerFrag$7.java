@@ -11,15 +11,17 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
+import com.netflix.mediaclient.servicemgr.IBrowseManager;
 import com.netflix.mediaclient.util.MdxUtils$SetVideoRatingCallback;
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.view.View;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -39,7 +41,7 @@ import android.os.Handler;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.Set;
 import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
-import com.netflix.mediaclient.ui.details.EpisodeRowView$EpisodeRowListener;
+import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.util.MdxUtils;
 import com.netflix.mediaclient.Log;
@@ -47,7 +49,7 @@ import android.widget.SeekBar;
 import com.netflix.mediaclient.media.Language;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 
 class MdxMiniPlayerFrag$7 implements MdxMiniPlayerViews$MdxMiniPlayerViewCallbacks
 {
@@ -56,11 +58,6 @@ class MdxMiniPlayerFrag$7 implements MdxMiniPlayerViews$MdxMiniPlayerViewCallbac
     
     MdxMiniPlayerFrag$7(final MdxMiniPlayerFrag this$0) {
         this.this$0 = this$0;
-    }
-    
-    @Override
-    public float getCurrentRating() {
-        return MdxMiniPlayerFrag.state.currUserRating;
     }
     
     @Override
@@ -177,7 +174,7 @@ class MdxMiniPlayerFrag$7 implements MdxMiniPlayerViews$MdxMiniPlayerViewCallbac
         if (b) {
             final int n = (int)((System.nanoTime() - this.startTrackingTouchTime) / 1000000000L);
             final int progress = progressByBif.getProgress() + n;
-            if (Log.isLoggable("MdxMiniPlayerFrag", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("MdxMiniPlayerFrag", "Seconds elapsed during seek (back to snap position): " + n + ", new time: " + progress);
             }
             this.this$0.views.setProgress(progress);

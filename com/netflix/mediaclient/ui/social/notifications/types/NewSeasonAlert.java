@@ -45,10 +45,10 @@ public class NewSeasonAlert extends SocialNotification
         socialNotificationViewHolder.getFriendImage().setVisibility(8);
         int backgroundResource;
         if (socialNotificationSummary.getWasRead()) {
-            backgroundResource = 2130837844;
+            backgroundResource = 2130837872;
         }
         else {
-            backgroundResource = 2131296423;
+            backgroundResource = 2131296425;
         }
         view.setBackgroundResource(backgroundResource);
         socialNotificationViewHolder.getMovieArtImage().setVisibility(8);
@@ -68,13 +68,14 @@ public class NewSeasonAlert extends SocialNotification
         socialNotificationViewHolder.getNSAPlayButton().setVisibility(0);
         socialNotificationViewHolder.getLeftButton().setVisibility(8);
         socialNotificationViewHolder.getRightButton().setVisibility(8);
+        final int resourceStringId = socialNotificationSummary.getShowType().getResourceStringId();
         socialNotificationViewHolder.getMiddleTextView().setGravity(3);
         String s2;
         if (socialNotificationSummary.getNSASeasonsCount() > 1) {
-            s2 = context.getResources().getString(2131493369, new Object[] { socialNotificationSummary.getNSASeasonsCount(), socialNotificationSummary.getVideo().getTitle() });
+            s2 = context.getResources().getQuantityString(resourceStringId, socialNotificationSummary.getNSASeasonsCount(), new Object[] { socialNotificationSummary.getNSASeasonsCount(), socialNotificationSummary.getVideo().getTitle() });
         }
         else {
-            s2 = context.getResources().getString(2131493368, new Object[] { socialNotificationSummary.getVideo().getTitle(), socialNotificationSummary.getNSASeasonIndex() });
+            s2 = context.getResources().getQuantityString(resourceStringId, 1, new Object[] { socialNotificationSummary.getVideo().getTitle(), socialNotificationSummary.getNSASeasonIndex() });
         }
         socialNotificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(s2));
         socialNotificationViewHolder.getRightButton().setVisibility(0);

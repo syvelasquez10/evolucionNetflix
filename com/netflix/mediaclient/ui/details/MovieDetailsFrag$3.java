@@ -4,10 +4,10 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.content.Context;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.details.MovieDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 
 class MovieDetailsFrag$3 implements VideoDetailsViewGroup$DetailsStringProvider
 {
@@ -37,11 +37,11 @@ class MovieDetailsFrag$3 implements VideoDetailsViewGroup$DetailsStringProvider
         if (StringUtils.isEmpty(this.val$details.getGenres())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131493156, this.val$details.getGenres());
+        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131493163, this.val$details.getGenres());
     }
     
     @Override
     public CharSequence getStarringText() {
-        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131493154, this.val$details.getActors());
+        return StringUtils.createBoldLabeledText((Context)this.this$0.getActivity(), 2131493161, this.val$details.getActors());
     }
 }

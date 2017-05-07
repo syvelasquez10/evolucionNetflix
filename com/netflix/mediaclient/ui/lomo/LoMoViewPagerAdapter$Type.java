@@ -4,15 +4,17 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
-enum LoMoViewPagerAdapter$Type
+public enum LoMoViewPagerAdapter$Type
 {
     BILLBOARD, 
     CHARACTER, 
     CW, 
     ERROR, 
     IQ, 
-    KUBRICK_GALLERY, 
     KUBRICK_HERO, 
+    KUBRICK_HERO_DUPLICATE, 
+    KUBRICK_KIDS_POPULAR, 
+    KUBRICK_KIDS_TOP_TEN, 
     LOADING, 
     STANDARD;
 }

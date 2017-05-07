@@ -37,4 +37,6 @@ public interface CommandInterface
     void playerSkip(final String p0, final int p1);
     
     void playerStop(final String p0);
+    
+    void playerStopPostplay(final String p0);
 }

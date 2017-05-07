@@ -9,5 +9,6 @@ enum CommandEndedEvent$InputMethod
     gesture, 
     key, 
     pointer, 
+    url, 
     voice;
 }

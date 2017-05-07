@@ -31,15 +31,15 @@ import com.netflix.mediaclient.android.widget.StaticGridView;
 import com.netflix.mediaclient.android.widget.LoggingScrollView;
 import com.netflix.mediaclient.ui.common.SearchSimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.model.search.SearchVideo;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideo;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.Log;
 import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.search.SearchVideoListProvider;
+import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 
 class SearchQueryDetailsActivity$OnSimsFetchedCallback extends LoggingManagerCallback

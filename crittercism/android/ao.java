@@ -4,18 +4,44 @@
 
 package crittercism.android;
 
-public final class ao implements t
+public final class ao extends ak
 {
-    public String a;
+    private int g;
     
-    private ao(final String a) {
-        this.a = a;
+    public ao(final af af, final int g) {
+        super(af);
+        this.g = g;
     }
     
-    public final boolean a(final h h, final String s, final String s2) {
-        synchronized (this) {
-            h.b(s, s2, this.a);
-            return true;
+    @Override
+    protected final af g() {
+        int n;
+        if (super.a.c().equals("HEAD") || (this.g >= 100 && this.g <= 199) || this.g == 204 || this.g == 304) {
+            n = 1;
+        }
+        else {
+            n = 0;
+        }
+        if (n != 0) {
+            super.a.b(this.a());
+            return super.a.b();
+        }
+        if (super.f) {
+            return new ai(this);
+        }
+        if (super.d) {
+            if (super.e > 0) {
+                return new ag(this, super.e);
+            }
+            super.a.b(this.a());
+            return super.a.b();
+        }
+        else {
+            if (super.a.c().equals("CONNECT")) {
+                super.a.b(this.a());
+                return super.a.b();
+            }
+            return new aj(this);
         }
     }
 }

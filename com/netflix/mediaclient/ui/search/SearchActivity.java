@@ -4,22 +4,23 @@
 
 package com.netflix.mediaclient.ui.search;
 
+import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import com.netflix.mediaclient.ui.kubrick_kids.search.KubrickKidsSearchActionBar;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View$OnFocusChangeListener;
 import android.app.Activity;
 import com.netflix.mediaclient.Log;
-import java.io.Serializable;
 import android.content.Context;
-import com.netflix.mediaclient.ui.kids.search.KidsSearchActivity;
 import android.content.Intent;
 import android.annotation.SuppressLint;
 import android.view.View$OnTouchListener;
-import com.netflix.mediaclient.servicemgr.model.search.ISearchResults;
+import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.SearchView$OnQueryTextListener;
@@ -66,19 +67,12 @@ public class SearchActivity extends NetflixActivity
     }
     
     public static Intent create(final NetflixActivity netflixActivity) {
-        Serializable s;
-        if (netflixActivity.isForKids()) {
-            s = KidsSearchActivity.class;
-        }
-        else {
-            s = SearchActivity.class;
-        }
-        return new Intent((Context)netflixActivity, (Class)s).setAction("android.intent.action.VIEW");
+        return new Intent((Context)netflixActivity, (Class)SearchActivity.class).setAction("android.intent.action.VIEW");
     }
     
     private void findViews() {
-        this.fragGroup = (ViewGroup)this.findViewById(2131165647);
-        this.loadingWrapper = this.findViewById(2131165646);
+        this.fragGroup = (ViewGroup)this.findViewById(2131165660);
+        this.loadingWrapper = this.findViewById(2131165659);
     }
     
     private void handleNewIntent(final Intent intent) {
@@ -137,7 +131,7 @@ public class SearchActivity extends NetflixActivity
     private void setupFragments(final Bundle bundle) {
         if (bundle == null) {
             (this.resultsFrag = SearchResultsFrag.create()).setServiceManager(this.serviceManager);
-            this.getFragmentManager().beginTransaction().add(2131165647, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
+            this.getFragmentManager().beginTransaction().add(2131165660, (Fragment)this.resultsFrag, "videos_frag").setTransition(4099).commit();
             this.showInitState();
             return;
         }
@@ -149,7 +143,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     private void showEmpty() {
-        this.leWrapper.showErrorView(2131493197, false, false);
+        this.leWrapper.showErrorView(2131493204, false, false);
         this.fragGroup.setVisibility(4);
         this.searchActionBar.hideProgressSpinner();
     }
@@ -169,7 +163,15 @@ public class SearchActivity extends NetflixActivity
     }
     
     @Override
+    protected boolean canApplyBrowseExperience() {
+        return true;
+    }
+    
+    @Override
     protected NetflixActionBar createActionBar() {
+        if (BrowseExperience.isKubrickKids()) {
+            return new KubrickKidsSearchActionBar(this);
+        }
         return new SearchActionBar(this);
     }
     
@@ -179,7 +181,10 @@ public class SearchActivity extends NetflixActivity
     }
     
     protected int getInitMessageStringId() {
-        return 2131493183;
+        if (BrowseExperience.isKubrickKids()) {
+            return 2131492971;
+        }
+        return 2131493190;
     }
     
     @Override
@@ -203,7 +208,8 @@ public class SearchActivity extends NetflixActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903178);
+        SearchUtils.setSearchExperience(BrowseExperience.getSearchExperience());
+        this.setContentView(2130903185);
         this.setupActionBar();
         this.findViews();
         this.setupLoadingWrapper();
@@ -213,6 +219,10 @@ public class SearchActivity extends NetflixActivity
         }
         this.loggingSessionId = SearchLogUtils.reportSearchSessionStarted(this.requestId, (Context)this, this.getUiScreen(), this.query);
         this.handleNewIntent(this.getIntent());
+        if (BrowseExperience.isKubrickKids()) {
+            this.leWrapper.getErrorMessageTextView().setTextColor(this.getResources().getColor(2131296358));
+            ViewUtils.clearShadow(this.leWrapper.getErrorMessageTextView());
+        }
     }
     
     @Override
@@ -234,7 +244,7 @@ public class SearchActivity extends NetflixActivity
     }
     
     public void showError() {
-        this.leWrapper.showErrorView(2131493196, true, false);
+        this.leWrapper.showErrorView(2131493203, true, false);
         this.fragGroup.setVisibility(4);
         this.searchActionBar.hideProgressSpinner();
     }

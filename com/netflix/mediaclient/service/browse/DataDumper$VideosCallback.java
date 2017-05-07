@@ -9,12 +9,12 @@ import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import java.util.LinkedHashMap;
 import com.netflix.mediaclient.servicemgr.IBrowseManager;
-import com.netflix.mediaclient.servicemgr.model.Billboard;
+import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
 class DataDumper$VideosCallback extends SimpleManagerCallback

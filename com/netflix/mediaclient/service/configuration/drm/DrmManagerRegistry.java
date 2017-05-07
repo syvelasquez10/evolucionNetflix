@@ -43,7 +43,7 @@ public final class DrmManagerRegistry
         Label_0101_Outer:Label_0111_Outer:
         while (true) {
             while (true) {
-                Label_0256: {
+                Label_0250: {
                     while (true) {
                         synchronized (DrmManagerRegistry.class) {
                             androidVersion = AndroidUtils.getAndroidVersion();
@@ -60,18 +60,18 @@ public final class DrmManagerRegistry
                                             DrmManagerRegistry.instance = new WidevineDrmManager(instance, serviceAgent$UserAgentInterface, errorLogging, drmManager$DrmReadyCallback);
                                         }
                                         else {
-                                            if (Log.isLoggable("nf_drm", 3)) {
+                                            if (Log.isLoggable()) {
                                                 Log.d("nf_drm", "LegacyDrmManager for devices running android version = " + androidVersion);
                                             }
                                             DrmManagerRegistry.instance = new LegacyDrmManager(drmManager$DrmReadyCallback);
                                         }
                                         if (DrmManagerRegistry.instance.getDrmType() != 0) {
-                                            break Label_0256;
+                                            break Label_0250;
                                         }
                                         if (DrmManagerRegistry.disableWidevine) {
                                             DrmManagerRegistry.currentDrmSystem = "FORCE_LEGACY";
                                             PreferenceUtils.putStringPref(instance, "nf_drm_system_id", DrmManagerRegistry.currentDrmSystem);
-                                            if (Log.isLoggable("nf_drm", 3)) {
+                                            if (Log.isLoggable()) {
                                                 Log.d("nf_drm", "currentDrmSystem : " + DrmManagerRegistry.currentDrmSystem + ", previousDrmSystem : " + DrmManagerRegistry.previousDrmSystem);
                                             }
                                             instance = (Context)DrmManagerRegistry.instance;
@@ -166,7 +166,7 @@ public final class DrmManagerRegistry
     }
     
     public static boolean isDrmSystemChanged() {
-        if (Log.isLoggable("nf_drm", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_drm", "currentDrmSystem : " + DrmManagerRegistry.currentDrmSystem + ", previousDrmSystem : " + DrmManagerRegistry.previousDrmSystem);
         }
         if (StringUtils.isEmpty(DrmManagerRegistry.currentDrmSystem)) {
@@ -198,7 +198,7 @@ public final class DrmManagerRegistry
                 return b;
             }
             if (androidVersion == 18 && isDevicePredeterminedToUseWV() && WidevineDrmManager.isWidewineSupported()) {
-                if (Log.isLoggable("nf_drm", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_drm", "API level = " + androidVersion + " and Build.DEVICE =" + Build.DEVICE + ". Using WidevineDrmManager");
                     Log.d("nf_drm", "Flo/Deb devices running JB MR2  WITH Widevine support");
                 }

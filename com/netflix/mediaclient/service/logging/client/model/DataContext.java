@@ -7,10 +7,10 @@ package com.netflix.mediaclient.service.logging.client.model;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.Asset;
 import com.netflix.mediaclient.util.NumberUtils;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.google.gson.annotations.Since;
 import com.google.gson.annotations.SerializedName;
 
@@ -45,20 +45,6 @@ public class DataContext
     public DataContext() {
     }
     
-    public DataContext(final Trackable trackable) {
-        this(trackable, 0, null);
-    }
-    
-    public DataContext(final Trackable trackable, final Integer rank, final String s) {
-        if (trackable != null) {
-            this.setRow(trackable.getListPos());
-            this.setRequestId(trackable.getRequestId());
-            this.setTrackId(trackable.getTrackId());
-        }
-        this.setRank(rank);
-        this.setVideoId(NumberUtils.toIntegerSafely(s, null));
-    }
-    
     public DataContext(final Asset asset) {
         int videoPos;
         if (asset == null) {
@@ -75,9 +61,23 @@ public class DataContext
             playableId = asset.getPlayableId();
         }
         this(asset, videoPos, playableId);
-        if (asset == null && Log.isLoggable("DataContext", 5)) {
+        if (asset == null && Log.isLoggable()) {
             Log.w("DataContext", "Asset is null!");
         }
+    }
+    
+    public DataContext(final Trackable trackable) {
+        this(trackable, 0, null);
+    }
+    
+    public DataContext(final Trackable trackable, final Integer rank, final String s) {
+        if (trackable != null) {
+            this.setRow(trackable.getListPos());
+            this.setRequestId(trackable.getRequestId());
+            this.setTrackId(trackable.getTrackId());
+        }
+        this.setRank(rank);
+        this.setVideoId(NumberUtils.toIntegerSafely(s, null));
     }
     
     public DataContext(final PlayContext playContext, final String s) {
@@ -89,7 +89,7 @@ public class DataContext
             videoPos = playContext.getVideoPos();
         }
         this(playContext, videoPos, s);
-        if (playContext == null && Log.isLoggable("DataContext", 5)) {
+        if (playContext == null && Log.isLoggable()) {
             Log.w("DataContext", "playContext is null!");
         }
     }

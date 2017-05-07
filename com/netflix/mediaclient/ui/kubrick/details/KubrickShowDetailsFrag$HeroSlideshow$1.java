@@ -4,14 +4,17 @@
 
 package com.netflix.mediaclient.ui.kubrick.details;
 
-import com.netflix.mediaclient.servicemgr.model.details.KubrickShowDetails;
+import android.text.TextUtils;
+import java.util.Collection;
+import com.netflix.mediaclient.servicemgr.interface_.details.KubrickShowDetails;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.content.Context;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import java.util.ArrayList;
 import java.util.List;
 import android.os.Handler;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 class KubrickShowDetailsFrag$HeroSlideshow$1 implements Runnable
 {

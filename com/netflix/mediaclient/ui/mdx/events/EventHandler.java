@@ -13,7 +13,7 @@ public abstract class EventHandler implements MdxEventHandler
     
     public EventHandler(final String mAction) {
         this.mAction = mAction;
-        if (Log.isLoggable("mdxui", 3)) {
+        if (Log.isLoggable()) {
             Log.d("mdxui", "MDX event handler for " + mAction);
         }
     }

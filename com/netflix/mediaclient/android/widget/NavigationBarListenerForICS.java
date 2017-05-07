@@ -19,7 +19,7 @@ public class NavigationBarListenerForICS extends NavigationBarListener implement
     @Override
     public void onSystemUiVisibilityChange(final int n) {
         final int n2 = n & 0x2;
-        if (Log.isLoggable("nf_navbar", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_navbar", "onSystemUiVisibilityChange called: " + n);
             Log.d("nf_navbar", "onSystemUiVisibilityChange visibility mask: " + (n & 0x0));
             Log.d("nf_navbar", "onSystemUiVisibilityChange hide mask: " + n2);

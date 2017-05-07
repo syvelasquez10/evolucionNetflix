@@ -126,12 +126,12 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     
     private boolean createNccpCryptoFactoryDrmSession() {
         while (true) {
-            Label_0151: {
+            Label_0146: {
                 try {
                     this.nccpCryptoFactoryCryptoSession.sessionId = this.drm.openSession();
-                    if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+                    if (Log.isLoggable()) {
                         if (this.nccpCryptoFactoryCryptoSession.sessionId == null) {
-                            break Label_0151;
+                            break Label_0146;
                         }
                         Log.d(WidevineDrmManager.TAG, "Device is provisioned. NCCP crypto factory session ID: " + new String(this.nccpCryptoFactoryCryptoSession.sessionId));
                     }
@@ -156,7 +156,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     
     private void dumpKeyReqyest(final byte[] array) {
         if (array != null) {
-            if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(WidevineDrmManager.TAG, "key request created: " + Base64.encodeToString(array, 2));
             }
             return;
@@ -203,18 +203,18 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         final String stringPref = PreferenceUtils.getStringPref(this.mContext, "nf_drm_system_id", null);
         final String deviceType = this.getDeviceType();
         if (stringPref == null) {
-            if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(WidevineDrmManager.TAG, "System ID was not saved, user is not logged in, no need to report that plugin is changed: " + stringPref);
             }
         }
         else {
             if (!stringPref.equals(deviceType)) {
-                if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+                if (Log.isLoggable()) {
                     Log.d(WidevineDrmManager.TAG, "System ID changed from " + stringPref + " to " + deviceType);
                 }
                 return true;
             }
-            if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(WidevineDrmManager.TAG, "System ID did not changed: " + stringPref);
                 return false;
             }
@@ -245,7 +245,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                             new BackgroundTask().execute(new WidevineDrmManager$3(this));
                             final Intent intent = new Intent("com.netflix.mediaclient.ui.error.ACTION_DISPLAY_ERROR");
                             intent.putExtra("status", statusCode.getValue());
-                            intent.putExtra("message_id", 2131493372);
+                            intent.putExtra("message_id", 2131493378);
                             LocalBroadcastManager.getInstance(this.mContext).sendBroadcast(intent);
                         }
                         return;
@@ -298,7 +298,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     }
     
     private void showProperties() {
-        if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(WidevineDrmManager.TAG, "vendor: " + this.drm.getPropertyString("vendor"));
             Log.d(WidevineDrmManager.TAG, "version: " + this.drm.getPropertyString("version"));
             Log.d(WidevineDrmManager.TAG, "description: " + this.drm.getPropertyString("description"));
@@ -336,7 +336,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     
     void clearKeys(final String s) {
         synchronized (this) {
-            if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(WidevineDrmManager.TAG, "clearKeys " + s);
             }
             this.mKeyIdsMap.removeCurrentKeyIds(s);
@@ -411,7 +411,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                 return propertyByteArray;
             }
             array = propertyByteArray;
-            if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(WidevineDrmManager.TAG, "MediaDrm device ID is: " + new String(propertyByteArray));
                 return propertyByteArray;
             }
@@ -427,7 +427,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         }
         else {
             final String s = propertyString = this.drm.getPropertyString("systemId");
-            if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(WidevineDrmManager.TAG, "MediaDrm system ID is: " + s);
                 return s;
             }
@@ -479,7 +479,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                 Log.d(WidevineDrmManager.TAG, "MediaDrm event: Key expired");
                 return;
             }
-            if (n == 4 && Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+            if (n == 4 && Log.isLoggable()) {
                 Log.d(WidevineDrmManager.TAG, "MediaDrm event: Vendor defined: " + n);
             }
         }
@@ -488,7 +488,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     boolean restoreKeys(final String mCurrentAccountId, final String s, final String s2) {
         boolean b = true;
         synchronized (this) {
-            if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+            if (Log.isLoggable()) {
                 Log.d(WidevineDrmManager.TAG, "restoreKeys for " + mCurrentAccountId + ",kceKid: " + s + ",kchKid: " + s2);
             }
             if (mCurrentAccountId.equals(this.mCurrentAccountId)) {
@@ -529,22 +529,22 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
     boolean updateNccpSessionKeyResponse(final byte[] array, final byte[] array2, final byte[] array3, final String s) {
         while (true) {
             boolean b = false;
-        Label_0061_Outer:
+        Label_0057_Outer:
             while (true) {
                 while (true) {
                     final byte[] array4;
-                    Label_0197: {
+                    Label_0189: {
                         synchronized (this) {
-                            if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+                            if (Log.isLoggable()) {
                                 Log.d(WidevineDrmManager.TAG, "Update key response for account " + s);
                             }
-                            break Label_0197;
+                            break Label_0189;
                             Log.e(WidevineDrmManager.TAG, "Update key response has invlaid input");
                             return b;
                             try {
                                 final byte[] pendingSessionId = this.nccpCryptoFactoryCryptoSession.pendingSessionId;
                                 if (pendingSessionId != null) {
-                                    if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+                                    if (Log.isLoggable()) {
                                         Log.d(WidevineDrmManager.TAG, "Update key response for pending session id " + new String(pendingSessionId));
                                     }
                                     final byte[] activatePendingSessionId = this.nccpCryptoFactoryCryptoSession.activatePendingSessionId();
@@ -562,7 +562,6 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                                 Log.e(WidevineDrmManager.TAG, "We failed to update key response...", t);
                                 this.mediaDrmFailure(StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE, t);
                             }
-                            return b;
                         }
                     }
                     if (array4 != null && array2 != null && array3 != null) {
@@ -570,7 +569,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                     }
                     break;
                 }
-                continue Label_0061_Outer;
+                continue Label_0057_Outer;
             }
         }
     }
@@ -589,7 +588,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
             }
             try {
                 final boolean b = verify = mediaDrmCryptoSession.verify(this.nccpCryptoFactoryCryptoSession.kchKeyId, array, array2);
-                if (Log.isLoggable(WidevineDrmManager.TAG, 3)) {
+                if (Log.isLoggable()) {
                     Log.d(WidevineDrmManager.TAG, "Messaage is verified: " + b);
                     return b;
                 }

@@ -19,14 +19,14 @@ public class DialogMessageReceiver extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable("DialogMessageReceiver", 2)) {
+        if (Log.isLoggable()) {
             Log.v("DialogMessageReceiver", "Received intent " + intent);
         }
         final String action = intent.getAction();
         if ("ui_rating".equals(action)) {
             this.callback.handleUserRatingChange(intent.getExtras().getString("videoId"), intent.getExtras().getFloat("rating"));
         }
-        else if (Log.isLoggable("DialogMessageReceiver", 3)) {
+        else if (Log.isLoggable()) {
             Log.d("DialogMessageReceiver", "We do not support action " + action);
         }
     }

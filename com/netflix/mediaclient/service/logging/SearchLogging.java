@@ -49,7 +49,7 @@ public class SearchLogging implements ISearchLogging
                     final SearchFocusSessionEndedEvent endedEvent = searchFocusSession.createEndedEvent();
                     this.mEventHandler.post(endedEvent);
                     this.focusFocusSessions.remove(n);
-                    if (Log.isLoggable("nf_log_search", 3)) {
+                    if (Log.isLoggable()) {
                         try {
                             Log.d("nf_log_search", "SearchFocusSession stop done." + endedEvent.toJSONObject().toString(5));
                         }
@@ -68,7 +68,7 @@ public class SearchLogging implements ISearchLogging
                 final SearchSessionEndedEvent endedEvent = searchSession.createEndedEvent();
                 this.mEventHandler.post(endedEvent);
                 this.searchSessions.remove(n);
-                if (Log.isLoggable("nf_log_search", 3)) {
+                if (Log.isLoggable()) {
                     try {
                         Log.d("nf_log_search", "Search session stop done." + endedEvent.toJSONObject().toString(5));
                     }
@@ -104,7 +104,7 @@ public class SearchLogging implements ISearchLogging
         if (this.mEventHandler != null) {
             final SearchEditEvent searchEditEvent = new SearchEditEvent(intent.getStringExtra("query"));
             this.mEventHandler.post(searchEditEvent);
-            if (Log.isLoggable("nf_log_search", 3)) {
+            if (Log.isLoggable()) {
                 try {
                     Log.d("nf_log_search", "Search Edit Event fired" + searchEditEvent.toJSONObject().toString(5));
                 }
@@ -130,14 +130,14 @@ public class SearchLogging implements ISearchLogging
                 value = null;
             }
             while (true) {
-                Label_0156: {
+                Label_0153: {
                     if (!StringUtils.isNotEmpty(stringExtra3)) {
-                        break Label_0156;
+                        break Label_0153;
                     }
                     final IClientLogging$ModalView value2 = IClientLogging$ModalView.valueOf(stringExtra3);
                     final SearchImpressionEvent searchImpressionEvent = new SearchImpressionEvent(stringExtra, intExtra, intExtra2, stringArrayExtra, value2, value);
                     this.mEventHandler.post(searchImpressionEvent);
-                    if (!Log.isLoggable("nf_log_search", 3)) {
+                    if (!Log.isLoggable()) {
                         return;
                     }
                     try {
@@ -186,7 +186,7 @@ public class SearchLogging implements ISearchLogging
             Log.d("nf_log_search", "SEARCH_IMPRESSION");
             return true;
         }
-        if (Log.isLoggable("nf_log_search", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log_search", "We do not support action " + action);
         }
         return false;
@@ -203,7 +203,7 @@ public class SearchLogging implements ISearchLogging
                     this.mEventHandler.addSession(searchFocusSession);
                     final SearchFocusSessionStartedEvent startEvent = searchFocusSession.createStartEvent(intent.getStringExtra("term"));
                     this.mEventHandler.post(startEvent);
-                    if (Log.isLoggable("nf_log_search", 3)) {
+                    if (Log.isLoggable()) {
                         try {
                             Log.d("nf_log_search", "startFocusSession done." + startEvent.toJSONObject().toString(5));
                         }
@@ -225,7 +225,7 @@ public class SearchLogging implements ISearchLogging
                     this.mEventHandler.addSession(searchSession);
                     final SearchSessionStartedEvent startEvent = searchSession.createStartEvent();
                     this.mEventHandler.post(startEvent);
-                    if (Log.isLoggable("nf_log_search", 3)) {
+                    if (Log.isLoggable()) {
                         try {
                             Log.d("nf_log_search", "Search session start done." + startEvent.toJSONObject().toString(5));
                         }

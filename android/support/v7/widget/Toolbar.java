@@ -19,6 +19,8 @@ import android.content.res.TypedArray;
 import android.view.ContextThemeWrapper;
 import android.view.View$MeasureSpec;
 import android.os.Build$VERSION;
+import android.support.v7.internal.view.SupportMenuInflater;
+import android.view.MenuInflater;
 import android.support.v4.view.MarginLayoutParamsCompat;
 import android.view.ViewGroup$MarginLayoutParams;
 import android.support.v7.internal.view.menu.x;
@@ -332,6 +334,10 @@ public class Toolbar extends ViewGroup
         return MarginLayoutParamsCompat.getMarginEnd(viewGroup$MarginLayoutParams) + MarginLayoutParamsCompat.getMarginStart(viewGroup$MarginLayoutParams);
     }
     
+    private MenuInflater getMenuInflater() {
+        return new SupportMenuInflater(this.getContext());
+    }
+    
     private int getMinimumHeightCompat() {
         if (Build$VERSION.SDK_INT >= 16) {
             return ViewCompat.getMinimumHeight((View)this);
@@ -552,6 +558,13 @@ public class Toolbar extends ViewGroup
         return null;
     }
     
+    public CharSequence getLogoDescription() {
+        if (this.mLogoView != null) {
+            return this.mLogoView.getContentDescription();
+        }
+        return null;
+    }
+    
     public Menu getMenu() {
         this.ensureMenu();
         return this.mMenuView.getMenu();
@@ -569,6 +582,10 @@ public class Toolbar extends ViewGroup
             return this.mNavButtonView.getDrawable();
         }
         return null;
+    }
+    
+    public int getPopupTheme() {
+        return this.mPopupTheme;
     }
     
     public CharSequence getSubtitle() {
@@ -1054,6 +1071,10 @@ public class Toolbar extends ViewGroup
         this.mContentInsets.setRelative(n, n2);
     }
     
+    public void setLogo(final int n) {
+        this.setLogo(this.mTintManager.getDrawable(n));
+    }
+    
     public void setLogo(final Drawable imageDrawable) {
         if (imageDrawable != null) {
             this.ensureLogoView();
@@ -1067,6 +1088,19 @@ public class Toolbar extends ViewGroup
         }
         if (this.mLogoView != null) {
             this.mLogoView.setImageDrawable(imageDrawable);
+        }
+    }
+    
+    public void setLogoDescription(final int n) {
+        this.setLogoDescription(this.getContext().getText(n));
+    }
+    
+    public void setLogoDescription(final CharSequence contentDescription) {
+        if (!TextUtils.isEmpty(contentDescription)) {
+            this.ensureLogoView();
+        }
+        if (this.mLogoView != null) {
+            this.mLogoView.setContentDescription(contentDescription);
         }
     }
     
@@ -1129,6 +1163,10 @@ public class Toolbar extends ViewGroup
         }
     }
     
+    public void setNavigationIcon(final int n) {
+        this.setNavigationIcon(this.mTintManager.getDrawable(n));
+    }
+    
     public void setNavigationIcon(final Drawable imageDrawable) {
         if (imageDrawable != null) {
             this.ensureNavButtonView();
@@ -1162,6 +1200,10 @@ public class Toolbar extends ViewGroup
             }
             this.mPopupContext = this.getContext();
         }
+    }
+    
+    public void setSubtitle(final int n) {
+        this.setSubtitle(this.getContext().getText(n));
     }
     
     public void setSubtitle(final CharSequence charSequence) {
@@ -1198,6 +1240,17 @@ public class Toolbar extends ViewGroup
         }
     }
     
+    public void setSubtitleTextColor(final int n) {
+        this.mSubtitleTextColor = n;
+        if (this.mSubtitleTextView != null) {
+            this.mSubtitleTextView.setTextColor(n);
+        }
+    }
+    
+    public void setTitle(final int n) {
+        this.setTitle(this.getContext().getText(n));
+    }
+    
     public void setTitle(final CharSequence charSequence) {
         if (!TextUtils.isEmpty(charSequence)) {
             if (this.mTitleTextView == null) {
@@ -1229,6 +1282,13 @@ public class Toolbar extends ViewGroup
         this.mTitleTextAppearance = mTitleTextAppearance;
         if (this.mTitleTextView != null) {
             this.mTitleTextView.setTextAppearance(context, mTitleTextAppearance);
+        }
+    }
+    
+    public void setTitleTextColor(final int n) {
+        this.mTitleTextColor = n;
+        if (this.mTitleTextView != null) {
+            this.mTitleTextView.setTextColor(n);
         }
     }
     

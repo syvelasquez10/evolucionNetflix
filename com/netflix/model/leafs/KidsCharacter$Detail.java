@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.google.gson.JsonElement;
-import com.netflix.mediaclient.servicemgr.model.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 
 public final class KidsCharacter$Detail implements JsonPopulator
 {
@@ -23,47 +23,47 @@ public final class KidsCharacter$Detail implements JsonPopulator
     @Override
     public void populate(final JsonElement jsonElement) {
         final JsonObject asJsonObject = jsonElement.getAsJsonObject();
-        if (Log.isLoggable("KidsCharacter.Detail", 2)) {
+        if (Log.isLoggable()) {
             Log.v("KidsCharacter.Detail", "Populating with: " + asJsonObject);
         }
         for (final Map.Entry<String, JsonElement> entry : asJsonObject.entrySet()) {
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0150: {
+            Label_0146: {
                 switch (s.hashCode()) {
                     case 1590765524: {
                         if (s.equals("episodeCount")) {
                             n = 0;
-                            break Label_0150;
+                            break Label_0146;
                         }
                         break;
                     }
                     case -1855447105: {
                         if (s.equals("movieCount")) {
                             n = 1;
-                            break Label_0150;
+                            break Label_0146;
                         }
                         break;
                     }
                     case -2011547908: {
                         if (s.equals("hasWatchedRecently")) {
                             n = 2;
-                            break Label_0150;
+                            break Label_0146;
                         }
                         break;
                     }
                     case 1828656532: {
                         if (s.equals("synopsis")) {
                             n = 3;
-                            break Label_0150;
+                            break Label_0146;
                         }
                         break;
                     }
                     case -1551264767: {
                         if (s.equals("storyImgUrl")) {
                             n = 4;
-                            break Label_0150;
+                            break Label_0146;
                         }
                         break;
                     }

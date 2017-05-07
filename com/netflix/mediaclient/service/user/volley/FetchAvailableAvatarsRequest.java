@@ -34,7 +34,7 @@ public class FetchAvailableAvatarsRequest extends FalkorVolleyWebClientRequest<L
         super(context);
         this.responseCallback = responseCallback;
         this.pqlQuery = "['availableAvatarsList']";
-        if (Log.isLoggable("nf_service_user_fetchavailableavatarsrequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_service_user_fetchavailableavatarsrequest", "PQL = " + this.pqlQuery);
         }
     }
@@ -60,7 +60,7 @@ public class FetchAvailableAvatarsRequest extends FalkorVolleyWebClientRequest<L
     
     @Override
     protected List<AvatarInfo> parseFalkorResponse(String s) {
-        if (Log.isLoggable("nf_service_user_fetchavailableavatarsrequest", 2)) {
+        if (Log.isLoggable()) {
             Log.i("nf_service_user_fetchavailableavatarsrequest", "Got result: " + s);
         }
         final JsonObject dataObj = FalkorParseUtils.getDataObj("nf_service_user_fetchavailableavatarsrequest", s);
@@ -77,7 +77,7 @@ public class FetchAvailableAvatarsRequest extends FalkorVolleyWebClientRequest<L
             }
         }
         catch (Exception ex) {
-            if (Log.isLoggable("nf_service_user_fetchavailableavatarsrequest", 6)) {
+            if (Log.isLoggable()) {
                 Log.e("nf_service_user_fetchavailableavatarsrequest", "Got exception for string response to parse: " + s);
             }
             throw new FalkorParseException("response missing avatars json objects", ex);

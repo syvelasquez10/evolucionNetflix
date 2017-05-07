@@ -6,7 +6,7 @@ package com.netflix.mediaclient.android.widget;
 
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.model.IconFontGlyph;
+import com.netflix.mediaclient.servicemgr.interface_.IconFontGlyph;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -41,7 +41,7 @@ public class IconFontTextView extends TextView
     
     public void setToIcon(final IconFontGlyph iconFontGlyph, final int n) {
         final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(n);
-        if (Log.isLoggable("IconFontTextView", 2)) {
+        if (Log.isLoggable()) {
             Log.v("IconFontTextView", "Setting icon char to: " + iconFontGlyph + ", unicode: " + StringUtils.toUnicode(iconFontGlyph.getUnicodeChar()) + ", dimenId: " + n);
             Log.v("IconFontTextView", "Setting icon text size to: " + dimensionPixelOffset);
         }

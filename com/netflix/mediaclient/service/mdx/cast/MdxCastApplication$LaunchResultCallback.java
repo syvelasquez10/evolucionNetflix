@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 import com.google.android.gms.common.ConnectionResult;
 import android.os.Bundle;
 import com.google.android.gms.cast.ApplicationMetadata;
-import com.netflix.mediaclient.util.StringUtils;
 import com.google.android.gms.cast.Cast$CastOptions$Builder;
 import com.google.android.gms.common.api.GoogleApiClient$Builder;
 import com.google.android.gms.cast.Cast$CastOptions;

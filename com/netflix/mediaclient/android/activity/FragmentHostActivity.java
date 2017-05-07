@@ -59,7 +59,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
     }
     
     protected int getContentLayoutId() {
-        return 2130903096;
+        return 2130903095;
     }
     
     public Fragment getPrimaryFrag() {

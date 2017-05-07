@@ -59,7 +59,7 @@ public final class VolleyUtils
         }
         else {
             final String lowerCase = message.toLowerCase(Locale.US);
-            if (Log.isLoggable("nf_volley", 5)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_volley", ".next call failed with error =" + lowerCase);
             }
             statusCode = StatusCode.NETWORK_ERROR;

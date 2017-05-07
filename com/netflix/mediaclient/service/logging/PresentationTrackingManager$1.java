@@ -22,7 +22,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.presentation.PresentationEvent;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.UiLocation;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 
 class PresentationTrackingManager$1 implements Runnable
 {
@@ -43,7 +43,7 @@ class PresentationTrackingManager$1 implements Runnable
     @Override
     public void run() {
         final PresentationEvent presentationEvent = new PresentationEvent(this.val$trackable, this.val$videoIds, this.val$videoPos, this.val$uiLocation);
-        if (Log.isLoggable("nf_presentation", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_presentation", "PresentationEvent received " + presentationEvent);
         }
         this.this$0.mPresentationEventQueue.post(presentationEvent);

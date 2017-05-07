@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.servicemgr;
 
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 
 public interface PresentationTracking
 {

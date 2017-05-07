@@ -7,15 +7,16 @@ package com.netflix.mediaclient.ui.lomo;
 import android.view.ViewGroup;
 import android.widget.LinearLayout$LayoutParams;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoDuplicate;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.view.View;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.EnumMap;
 import android.support.v4.view.PagerAdapter;
 import com.netflix.mediaclient.Log;
@@ -36,13 +37,13 @@ class LoMoViewPagerAdapter$3 implements RowAdapterCallbacks
     
     @Override
     public void notifyParentOfDataSetChange() {
-        if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPagerAdapter", "Notified parent of data set change");
         }
         this.this$0.notifyDataSetChanged();
         this.this$0.pager.notifyDataSetChanged();
         if (this.this$0.pager.getCurrentItem() == 0) {
-            if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("LoMoViewPagerAdapter", "Data loaded for page 0 - saving state");
             }
             this.this$0.pager.saveStateAndTrackPresentation(0);
@@ -54,7 +55,7 @@ class LoMoViewPagerAdapter$3 implements RowAdapterCallbacks
         if (this.this$0.state != LoMoViewPagerAdapter$Type.ERROR) {
             this.this$0.preErrorState = this.this$0.state;
         }
-        if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
+        if (Log.isLoggable()) {
             Log.v("LoMoViewPagerAdapter", "Pre-error state: " + this.this$0.preErrorState);
         }
         this.this$0.setState(LoMoViewPagerAdapter$Type.ERROR);

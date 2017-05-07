@@ -8,6 +8,7 @@ import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.util.AttributeSet;
 import android.content.Context;
 
@@ -32,7 +33,14 @@ public class AdvancedImageView extends LoggingImageView
     }
     
     private void init() {
-        this.pressedHandler = new PressedStateHandler((View)this);
+        PressedStateHandler pressedHandler;
+        if (BrowseExperience.isKubrickKids()) {
+            pressedHandler = new ScalePressedStateHandler((View)this);
+        }
+        else {
+            pressedHandler = new AlphaPressedStateHandler((View)this);
+        }
+        this.pressedHandler = pressedHandler;
     }
     
     protected void dispatchSetPressed(final boolean b) {

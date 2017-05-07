@@ -7,14 +7,15 @@ package com.netflix.mediaclient.util;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
 import android.content.Context;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import java.util.Collections;
 import com.netflix.mediaclient.servicemgr.UiLocation;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
-import com.netflix.mediaclient.servicemgr.model.Video;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
 
 public final class LogUtils
@@ -49,9 +50,23 @@ public final class LogUtils
     }
     
     public static void logCurrentThreadName(final String s, final String s2) {
-        if (Log.isLoggable(s, 2)) {
+        if (Log.isLoggable()) {
             Log.v(s, "Current thread name: " + Thread.currentThread().getName() + ", msg: " + s2);
         }
+    }
+    
+    public static void reportErrorSafely(final String s, final Throwable t) {
+        String s2 = s;
+        if (s == null) {
+            s2 = "";
+        }
+        if (t != null) {
+            Log.e("nf_log", s2, t);
+        }
+        else {
+            Log.e("nf_log", s2);
+        }
+        ErrorLoggingManager.logHandledException(t);
     }
     
     public static void reportPresentationTracking(final ServiceManager serviceManager, final BasicLoMo basicLoMo, final Video video, final int n) {
@@ -70,7 +85,7 @@ public final class LogUtils
         else {
             uiLocation = UiLocation.HOME_LOLOMO;
         }
-        if (Log.isLoggable("nf_presentation", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_presentation", String.format("%s, %s, offset %d, id: %s", basicLoMo.getTitle(), uiLocation, n, video.getId()));
         }
         serviceManager.getClientLogging().getPresentationTracking().reportPresentation(basicLoMo, Collections.singletonList(video.getId()), n, uiLocation);

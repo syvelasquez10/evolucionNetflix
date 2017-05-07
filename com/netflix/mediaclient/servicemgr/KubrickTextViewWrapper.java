@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.TextView;
 

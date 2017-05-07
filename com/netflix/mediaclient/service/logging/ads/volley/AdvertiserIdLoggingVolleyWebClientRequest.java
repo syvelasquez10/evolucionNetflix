@@ -35,7 +35,7 @@ public final class AdvertiserIdLoggingVolleyWebClientRequest extends ClientLoggi
     
     @Override
     protected void onFailure(final Status status) {
-        if (Log.isLoggable("nf_volleyrequest", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_volleyrequest", "Advertiser ID and opt in startus failed to be delivered. Status code returned" + status);
         }
         if (this.mCallback != null) {
@@ -45,7 +45,7 @@ public final class AdvertiserIdLoggingVolleyWebClientRequest extends ClientLoggi
     
     @Override
     protected void onSuccess(final String s) {
-        if (Log.isLoggable("nf_volleyrequest", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_volleyrequest", "Advertiser ID and opt in startus delivered " + s);
         }
         if (this.mCallback != null) {
@@ -55,7 +55,7 @@ public final class AdvertiserIdLoggingVolleyWebClientRequest extends ClientLoggi
     
     @Override
     protected String parseResponse(final String s) {
-        if (Log.isLoggable("nf_volleyrequest", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_volleyrequest", "String response to parse = " + s);
         }
         return "OK";

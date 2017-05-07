@@ -5,14 +5,14 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import com.netflix.mediaclient.servicemgr.model.Video;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.model.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
@@ -26,7 +26,7 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import android.widget.ImageView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
-import com.netflix.mediaclient.servicemgr.model.CWVideo;
+import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import android.widget.RelativeLayout;
 
 public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<CWVideo>
@@ -57,10 +57,10 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837848);
+        this.setBackgroundResource(2130837876);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        netflixActivity.getLayoutInflater().inflate(2130903086, (ViewGroup)this);
+        netflixActivity.getLayoutInflater().inflate(2130903085, (ViewGroup)this);
         this.title = (TextView)this.findViewById(2131165345);
         this.img = (AdvancedImageView)this.findViewById(2131165342);
         this.progress = (ProgressBar)this.findViewById(2131165347);
@@ -83,15 +83,15 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
     }
     
     public void update(final CWVideo cwVideo, final Trackable trackable, int progress, final boolean b, final boolean b2) {
-        if (Log.isLoggable("CwView", 2)) {
+        if (Log.isLoggable()) {
             Log.v("CwView", "Updating for video: " + cwVideo.toString());
         }
         this.playContext = new PlayContextImp(trackable, progress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131493166), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131493173), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.title.setText((CharSequence)this.getContext().getString(2131493230, new Object[] { cwVideo.getTitle(), cwVideo.getSeasonNumber(), cwVideo.getEpisodeNumber() }));
+            this.title.setText((CharSequence)this.getContext().getString(2131493238, new Object[] { cwVideo.getTitle(), cwVideo.getSeasonNumber(), cwVideo.getEpisodeNumber() }));
         }
         else {
             this.title.setText((CharSequence)cwVideo.getTitle());
@@ -116,7 +116,7 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
         this.progress.setProgress(progress);
         ServiceManagerUtils.cacheManifestIfEnabled(((NetflixActivity)this.getContext()).getServiceManager(), cwVideo);
         this.setOnClickListener((View$OnClickListener)new CwView$1(this, cwVideo));
-        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493203), cwVideo.getTitle()));
+        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131493210), cwVideo.getTitle()));
         this.clicker.update((View)this.info, cwVideo);
     }
 }

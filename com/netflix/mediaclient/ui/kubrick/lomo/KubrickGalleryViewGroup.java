@@ -6,12 +6,12 @@ package com.netflix.mediaclient.ui.kubrick.lomo;
 
 import com.netflix.mediaclient.util.DataUtil;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
-import com.netflix.mediaclient.servicemgr.model.KubrickVideo;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import com.netflix.mediaclient.servicemgr.interface_.KubrickVideo;
 import java.util.List;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils;
-import com.netflix.mediaclient.servicemgr.model.LoMoUtils$LoMoWidthType;
+import com.netflix.mediaclient.ui.lomo.LoMoUtils;
+import com.netflix.mediaclient.ui.lomo.LoMoUtils$LoMoWidthType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.support.v7.widget.RecyclerView$Adapter;
 import android.support.v7.widget.RecyclerView$LayoutManager;
@@ -41,7 +41,7 @@ public class KubrickGalleryViewGroup extends RecyclerView
     }
     
     public void updateDataThenViews(final List<KubrickVideo> list, final int n, final int page, final int n2, final Trackable trackable) {
-        if (Log.isLoggable("KubrickGalleryViewGroup", 2)) {
+        if (Log.isLoggable()) {
             Log.v("KubrickGalleryViewGroup", "Setting data, first: " + DataUtil.getFirstItemSafely(list) + ", hash: " + this.hashCode() + ", num per page: " + n + ", page: " + page + ", listViewPos: " + n2);
         }
         this.page = page;

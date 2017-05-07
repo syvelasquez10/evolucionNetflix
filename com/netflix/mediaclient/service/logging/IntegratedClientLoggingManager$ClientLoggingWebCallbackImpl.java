@@ -14,6 +14,7 @@ import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
+import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.javabridge.ui.Log$ResetSessionIdCallback;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
@@ -21,7 +22,7 @@ import com.netflix.mediaclient.service.logging.client.model.SessionEvent;
 import com.netflix.mediaclient.service.logging.client.model.LoggingRequest;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.util.data.DataRepository$DataLoadedCallback;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
@@ -65,7 +66,7 @@ class IntegratedClientLoggingManager$ClientLoggingWebCallbackImpl implements Cli
     
     @Override
     public void onEventsDelivered(final String s) {
-        if (Log.isLoggable("nf_log", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_log", "Events delivered for  " + s);
         }
         this.this$0.mOwner.clearFailureCounter();
@@ -74,7 +75,7 @@ class IntegratedClientLoggingManager$ClientLoggingWebCallbackImpl implements Cli
     
     @Override
     public void onEventsDeliveryFailed(final String s) {
-        if (Log.isLoggable("nf_log", 6)) {
+        if (Log.isLoggable()) {
             Log.e("nf_log", "Events delivery failed for  " + s);
         }
         if (StringUtils.isEmpty(s)) {

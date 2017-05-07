@@ -15,6 +15,6 @@ public class KubrickKidsActionBar extends NetflixActionBar
     
     @Override
     protected int getLayoutId() {
-        return 2130903066;
+        return 2130903065;
     }
 }

@@ -54,7 +54,7 @@ public final class EsnProviderRegistry
             }
         }
         baseEsnProvider.initialize(context);
-        if (Log.isLoggable("nf_esn", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_esn", "ESN: " + baseEsnProvider.getEsn());
         }
         return baseEsnProvider;

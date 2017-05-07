@@ -28,7 +28,7 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.widget.EditText;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.widget.CheckBox;
-import com.netflix.mediaclient.servicemgr.model.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
@@ -66,7 +66,7 @@ class ProfileDetailsActivity$5 implements View$OnClickListener
             return;
         }
         if (this.this$0.mServiceManager.getCurrentProfile() != null && this.this$0.mInputProfile.getProfileGuid().equals(this.this$0.mServiceManager.getCurrentProfile().getProfileGuid())) {
-            this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131493311), this.this$0.getString(17039370), null)));
+            this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131493319), this.this$0.getString(2131492994), null)));
             return;
         }
         UserActionLogUtils.reportEditProfileActionEnded((Context)this.this$0, IClientLogging$CompletionReason.canceled, this.this$0.getUiScreen(), null, this.this$0.getProfileForLogging());

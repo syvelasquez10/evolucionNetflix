@@ -18,6 +18,7 @@ public interface UIViewLogging
     public static final String EXTRA_GUID = "guid";
     public static final String EXTRA_SUCCESS = "success";
     public static final String EXTRA_TRACK_ID = "trackId";
+    public static final String EXTRA_URL = "url";
     public static final String EXTRA_VIEW = "view";
     public static final String IMPRESSION = "com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION";
     public static final String IMPRESSION_SESSION_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIVIEW_IMPRESSION_SESSION_ENDED";
@@ -31,7 +32,7 @@ public interface UIViewLogging
     
     void endImpressionSession(final boolean p0, final Error p1);
     
-    void startCommandSession(final UIViewLogging$UIViewCommandName p0, final IClientLogging$ModalView p1, final DataContext p2);
+    void startCommandSession(final UIViewLogging$UIViewCommandName p0, final IClientLogging$ModalView p1, final DataContext p2, final String p3);
     
     void startImpressionSession(final IClientLogging$ModalView p0, final String p1);
 }

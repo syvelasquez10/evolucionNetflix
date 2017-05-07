@@ -13,7 +13,7 @@ import java.util.Enumeration;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import com.netflix.mediaclient.net.LogMobileType;
+import com.netflix.mediaclient.service.net.LogMobileType;
 import com.netflix.mediaclient.Log;
 import android.net.TrafficStats;
 import android.os.Process;
@@ -121,14 +121,14 @@ public final class ConnectivityUtils
     
     public static String getLocalMobileIP4Address(final Context context) {
         while (true) {
-        Label_0049:
+        Label_0046:
             while (true) {
                 String localWifiIP4Address = null;
                 NetworkInterface networkInterface = null;
-                Label_0098: {
+                Label_0095: {
                     try {
                         localWifiIP4Address = getLocalWifiIP4Address(context);
-                        if (Log.isLoggable("nf_net", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("nf_net", "Exclude wifi if exist: " + localWifiIP4Address);
                         }
                         final Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -138,7 +138,7 @@ public final class ConnectivityUtils
                         while (networkInterfaces.hasMoreElements()) {
                             networkInterface = networkInterfaces.nextElement();
                             if (!networkInterface.isLoopback()) {
-                                break Label_0098;
+                                break Label_0095;
                             }
                             Log.d("nf_net", "NI is loopback, skip");
                         }
@@ -150,29 +150,29 @@ public final class ConnectivityUtils
                 }
                 if (networkInterface.isVirtual()) {
                     Log.d("nf_net", "NI is virtual, skip");
-                    continue Label_0049;
+                    continue Label_0046;
                 }
                 if (!networkInterface.isUp()) {
                     Log.d("nf_net", "NI is not up, skip");
-                    continue Label_0049;
+                    continue Label_0046;
                 }
                 final Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
                 while (inetAddresses.hasMoreElements()) {
                     final InetAddress inetAddress = inetAddresses.nextElement();
                     Log.d("nf_net", "" + inetAddress);
                     if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
-                        if (Log.isLoggable("nf_net", 3)) {
+                        if (Log.isLoggable()) {
                             Log.d("nf_net", "Found: " + inetAddress + ". Check if it is WiFi address.");
                         }
                         final String hostAddress = inetAddress.getHostAddress();
                         if (localWifiIP4Address != null && localWifiIP4Address.equals(hostAddress)) {
                             Log.d("nf_net", "WiFi interface found in all network interaces, skip!");
-                            continue Label_0049;
+                            continue Label_0046;
                         }
                         return hostAddress;
                     }
                 }
-                continue Label_0049;
+                continue Label_0046;
             }
         }
     }
@@ -497,20 +497,20 @@ public final class ConnectivityUtils
         String s2 = null;
         String ipAddr = null;
         boolean b2 = false;
-        Label_0182: {
+        Label_0179: {
             if (activeNetworkInfo != null) {
                 if (activeNetworkInfo.getTypeName() != null && "WIFI".equals(activeNetworkInfo.getTypeName().toUpperCase())) {
                     final WifiManager wifiManager = (WifiManager)context.getSystemService("wifi");
                     while (true) {
-                        Label_0326: {
+                        Label_0320: {
                             if (wifiManager == null) {
-                                break Label_0326;
+                                break Label_0320;
                             }
                             final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
                             if (connectionInfo == null) {
-                                break Label_0326;
+                                break Label_0320;
                             }
-                            if (Log.isLoggable("nf_net", 3)) {
+                            if (Log.isLoggable()) {
                                 Log.d("nf_net", connectionInfo.toString());
                                 Log.d("nf_net", "" + connectionInfo.getSSID());
                             }
@@ -519,7 +519,7 @@ public final class ConnectivityUtils
                             s2 = ssid;
                             ipAddr = localWifiIP4Address;
                             b2 = false;
-                            break Label_0182;
+                            break Label_0179;
                         }
                         ipAddr = null;
                         s2 = s;
@@ -542,7 +542,7 @@ public final class ConnectivityUtils
         if (s2 == null) {
             s3 = "";
         }
-        if (Log.isLoggable("nf_net", 3)) {
+        if (Log.isLoggable()) {
             Log.d("nf_net", "LocalIPAddress:" + ipAddr);
         }
         final ConnectivityUtils$NetworkState connectivityUtils$NetworkState = new ConnectivityUtils$NetworkState(b, !b2, s3);

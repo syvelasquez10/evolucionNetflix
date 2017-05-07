@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.ui.kubrick.lolomo;
 
-import com.netflix.mediaclient.ui.lolomo.BasePaginatedLoLoMoAdapter;
+import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter;
 import java.util.List;
 import android.widget.AbsListView;
-import com.netflix.mediaclient.servicemgr.model.LoMo;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter$RowHolder;
 import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter$LoMoRowContent;
 import android.widget.TextView;
@@ -39,7 +39,7 @@ public class KubrickLoLoMoAdapter extends LoLoMoAdapter
     
     @Override
     protected int getViewLayoutId() {
-        return 2130903119;
+        return 2130903122;
     }
     
     @Override

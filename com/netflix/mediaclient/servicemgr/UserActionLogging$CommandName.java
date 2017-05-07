@@ -6,5 +6,6 @@ package com.netflix.mediaclient.servicemgr;
 
 public enum UserActionLogging$CommandName
 {
+    androidWidgetCommand, 
     rating;
 }

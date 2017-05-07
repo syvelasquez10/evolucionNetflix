@@ -93,10 +93,6 @@ public class Session$AuthorizationRequest implements Serializable
         return this;
     }
     
-    public void setIsLegacy(final boolean isLegacy) {
-        this.isLegacy = isLegacy;
-    }
-    
     Session$AuthorizationRequest setLoginBehavior(final SessionLoginBehavior loginBehavior) {
         if (loginBehavior != null) {
             this.loginBehavior = loginBehavior;
@@ -107,13 +103,6 @@ public class Session$AuthorizationRequest implements Serializable
     Session$AuthorizationRequest setPermissions(final List<String> permissions) {
         if (permissions != null) {
             this.permissions = permissions;
-        }
-        return this;
-    }
-    
-    Session$AuthorizationRequest setRequestCode(final int requestCode) {
-        if (requestCode >= 0) {
-            this.requestCode = requestCode;
         }
         return this;
     }

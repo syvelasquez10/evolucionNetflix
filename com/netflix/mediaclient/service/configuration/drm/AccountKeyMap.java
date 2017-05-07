@@ -29,7 +29,7 @@ class AccountKeyMap
     AccountKeyMap(final Context mContext) {
         this.mContext = mContext;
         final String stringPref = PreferenceUtils.getStringPref(this.mContext, "nf_drm_acckeymap", null);
-        if (Log.isLoggable(AccountKeyMap.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(AccountKeyMap.TAG, "has json " + stringPref);
         }
         if (stringPref == null) {
@@ -49,7 +49,7 @@ class AccountKeyMap
         final String stringPref = PreferenceUtils.getStringPref(this.mContext, "nf_drm_cdm_keyset_id", null);
         final String stringPref2 = PreferenceUtils.getStringPref(this.mContext, "nf_drm_kce_key_id", null);
         final String stringPref3 = PreferenceUtils.getStringPref(this.mContext, "nf_drm_kch_key_id", null);
-        if (Log.isLoggable(AccountKeyMap.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(AccountKeyMap.TAG, "has legacy ksid [" + stringPref + "], kce_id [" + stringPref2 + "], kch_id [" + stringPref3 + "]");
         }
         if (StringUtils.isNotEmpty(stringPref) && StringUtils.isNotEmpty(stringPref2) && StringUtils.isNotEmpty(stringPref3)) {
@@ -61,7 +61,7 @@ class AccountKeyMap
     }
     
     private void saveToPreference() {
-        if (Log.isLoggable(AccountKeyMap.TAG, 3)) {
+        if (Log.isLoggable()) {
             Log.d(AccountKeyMap.TAG, "saveToPreference " + this.mAccountKeyMap.toString());
         }
         PreferenceUtils.putStringPref(this.mContext, "nf_drm_acckeymap", this.mAccountKeyMap.toString());
@@ -137,7 +137,7 @@ class AccountKeyMap
                         }
                         continue;
                     }
-                    if (Log.isLoggable(AccountKeyMap.TAG, 3)) {
+                    if (Log.isLoggable()) {
                         Log.d(AccountKeyMap.TAG, "account not found when restoreKeyIdsForAccount " + s);
                     }
                     this.mAccountKeyMap.putOpt("currentAccount", (Object)s);

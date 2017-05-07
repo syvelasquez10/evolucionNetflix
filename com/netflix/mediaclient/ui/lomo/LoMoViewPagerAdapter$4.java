@@ -7,15 +7,16 @@ package com.netflix.mediaclient.ui.lomo;
 import android.view.ViewGroup;
 import android.widget.LinearLayout$LayoutParams;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoDuplicate;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.view.View;
 import android.view.View$OnClickListener;
-import com.netflix.mediaclient.servicemgr.model.BasicLoMo;
+import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.model.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.EnumMap;
 import android.support.v4.view.PagerAdapter;
 import com.netflix.mediaclient.Log;
@@ -37,23 +38,29 @@ class LoMoViewPagerAdapter$4 extends BroadcastReceiver
         }
         else {
             final String action = intent.getAction();
-            if (Log.isLoggable("LoMoViewPagerAdapter", 2)) {
+            if (Log.isLoggable()) {
                 Log.v("LoMoViewPagerAdapter", "browseReceiver inovoked with Action: " + action);
             }
             if ("com.netflix.mediaclient.intent.action.BA_CW_REFRESH".equals(action)) {
-                if (LoMoViewPagerAdapter$Type.CW.equals(this.this$0.state)) {
-                    Log.v("LoMoViewPagerAdapter", "Reloading cw row ");
-                    this.this$0.refresh(this.this$0.loMo, this.this$0.listViewPos);
-                }
                 this.this$0.pager.invalidateCwCache();
-                return;
-            }
-            if ("com.netflix.mediaclient.intent.action.BA_IQ_REFRESH".equals(action)) {
-                if (LoMoViewPagerAdapter$Type.IQ.equals(this.this$0.state)) {
-                    Log.v("LoMoViewPagerAdapter", "Reloading iq row ");
+                if (LoMoViewPagerAdapter$Type.CW.equals(this.this$0.state)) {
+                    Log.v("LoMoViewPagerAdapter", "Reloading cw row");
                     this.this$0.refresh(this.this$0.loMo, this.this$0.listViewPos);
                 }
+            }
+            else if ("com.netflix.mediaclient.intent.action.BA_IQ_REFRESH".equals(action)) {
                 this.this$0.pager.invalidateIqCache();
+                if (LoMoViewPagerAdapter$Type.IQ.equals(this.this$0.state)) {
+                    Log.v("LoMoViewPagerAdapter", "Reloading iq row");
+                    this.this$0.refresh(this.this$0.loMo, this.this$0.listViewPos);
+                }
+            }
+            else if ("com.netflix.mediaclient.intent.action.BA_POPULAR_TITLES_REFRESH".equals(action)) {
+                this.this$0.pager.invalidatePopularTitlesCache();
+                if (LoMoViewPagerAdapter$Type.KUBRICK_KIDS_POPULAR.equals(this.this$0.state)) {
+                    Log.v("LoMoViewPagerAdapter", "Reloading popular titles row");
+                    this.this$0.refresh(this.this$0.loMo, this.this$0.listViewPos);
+                }
             }
         }
     }

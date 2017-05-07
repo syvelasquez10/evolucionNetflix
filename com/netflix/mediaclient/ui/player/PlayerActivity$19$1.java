@@ -18,7 +18,7 @@ class PlayerActivity$19$1 extends SimpleManagerCallback
     
     @Override
     public void onVideoHide(final Status status) {
-        if (Log.isLoggable("PlayerActivity", 3)) {
+        if (Log.isLoggable()) {
             Log.d("PlayerActivity", "Video is hidden status code " + status.getStatusCode());
         }
     }

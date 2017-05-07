@@ -7,7 +7,7 @@ package com.netflix.mediaclient.util;
 import com.netflix.mediaclient.ui.mdx.RemotePlayer;
 import com.netflix.mediaclient.ui.mdx.MdxTarget;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
-import com.netflix.mediaclient.ui.Asset;
+import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
 import com.netflix.mediaclient.Log;
 import android.view.View;
@@ -45,7 +45,7 @@ final class MdxUtils$1 implements AdapterView$OnItemClickListener
             Log.e("MdxUtils", "Target is NULL, this should NOT happen!");
         }
         else if (selectedTarget.getUUID() != null && selectedTarget.getUUID().equals(this.val$serviceManager.getMdx().getCurrentTarget())) {
-            if (Log.isLoggable("MdxUtils", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("MdxUtils", "Same MDX target selected. Do nothing and dismiss dialog");
             }
         }
@@ -65,13 +65,13 @@ final class MdxUtils$1 implements AdapterView$OnItemClickListener
         }
         else if (MdxUtils.isMdxTargetAvailable(this.val$serviceManager, selectedTarget.getUUID())) {
             if (this.val$callbacks.isPlayingLocally() || this.val$callbacks.isPlayingRemotely()) {
-                if (Log.isLoggable("MdxUtils", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("MdxUtils", "Remote target is available, switching playback to: " + selectedTarget.getUUID());
                 }
                 final RemotePlayer player = this.val$callbacks.getPlayer();
                 if (player != null) {
                     final int n3 = positionInSeconds = player.getPositionInSeconds();
-                    if (Log.isLoggable("MdxUtils", 3)) {
+                    if (Log.isLoggable()) {
                         Log.d("MdxUtils", "Start remote playback from position [sec] " + n3);
                         positionInSeconds = n3;
                     }
@@ -84,7 +84,7 @@ final class MdxUtils$1 implements AdapterView$OnItemClickListener
                 this.val$callbacks.notifyPlayingBackRemote();
             }
             else {
-                if (Log.isLoggable("MdxUtils", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("MdxUtils", "Target is remote. Setting new current target to: " + selectedTarget.getUUID());
                 }
                 this.val$serviceManager.getMdx().setCurrentTarget(selectedTarget.getUUID());
@@ -93,6 +93,7 @@ final class MdxUtils$1 implements AdapterView$OnItemClickListener
         else {
             Log.w("MdxUtils", "Remote target is NOT available, stay and dismiss dialog");
         }
+        this.val$activity.setConnectingToTarget(true);
         this.val$activity.invalidateOptionsMenu();
     }
 }

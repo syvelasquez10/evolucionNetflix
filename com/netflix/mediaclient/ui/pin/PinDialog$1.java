@@ -47,7 +47,7 @@ class PinDialog$1 extends LinkMovementMethod
     }
     
     public boolean onTouchEvent(final TextView textView, final Spannable spannable, final MotionEvent motionEvent) {
-        this.this$0.mPinForgotView.setLinkTextColor(this.this$0.getResources().getColor(2131296420));
+        this.this$0.mPinForgotView.setLinkTextColor(this.this$0.getResources().getColor(2131296422));
         return super.onTouchEvent(textView, spannable, motionEvent);
     }
 }

@@ -62,7 +62,7 @@ class VideoWindowForPostplayWithAnimation$ScaleAnimation implements Runnable
                 final int n9 = this.mParams.getStartLeftMargin() + (int)this.calculateOffset(n4, n, n7);
                 final int n10 = this.mParams.getStartTopMargin() + (int)this.calculateOffset(n3, n, n6);
                 final float n11 = this.mParams.getStartScale() - n * n5 * n8;
-                if (Log.isLoggable(VideoWindowForPostplayWithScaling.TAG, 3)) {
+                if (Log.isLoggable()) {
                     Log.d(VideoWindowForPostplayWithScaling.TAG, "Count # " + n);
                     Log.d(VideoWindowForPostplayWithScaling.TAG, "left: " + n9);
                     Log.d(VideoWindowForPostplayWithScaling.TAG, "top: " + n10);

@@ -12,11 +12,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.media.RemoteControlClient;
 import android.content.ComponentName;
 import com.netflix.mediaclient.service.configuration.MdxConfiguration;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.AudioManager$OnAudioFocusChangeListener;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
@@ -43,18 +43,18 @@ class RemoteControlClientManager$1 extends BroadcastReceiver
         else {
             final KeyEvent keyEvent = (KeyEvent)intent.getExtras().get("android.intent.extra.KEY_EVENT");
             if (keyEvent.getAction() == 0) {
-                if (Log.isLoggable("RemoteControlClientManager", 2)) {
+                if (Log.isLoggable()) {
                     Log.v("RemoteControlClientManager", "received ACTION_MEDIA_BUTTON, key down event, keyCode: " + keyEvent.getKeyCode());
                 }
                 if (this.this$0.mIsPostPlay) {
                     while (true) {
-                        Label_0184: {
+                        Label_0181: {
                             if (!(this.this$0.mEpisodeDetails instanceof EpisodeDetails)) {
-                                break Label_0184;
+                                break Label_0181;
                             }
                             final EpisodeDetails episodeDetails = (EpisodeDetails)this.this$0.mEpisodeDetails;
                             if (episodeDetails.getPlayable() == null) {
-                                break Label_0184;
+                                break Label_0181;
                             }
                             final int int2 = Integer.parseInt(episodeDetails.getPlayable().getParentId());
                             int1 = Integer.parseInt(episodeDetails.getId());

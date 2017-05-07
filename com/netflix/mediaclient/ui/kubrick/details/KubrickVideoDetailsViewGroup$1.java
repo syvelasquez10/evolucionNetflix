@@ -5,29 +5,31 @@
 package com.netflix.mediaclient.ui.kubrick.details;
 
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import com.netflix.mediaclient.servicemgr.model.details.VideoDetails;
 import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
-import com.netflix.mediaclient.servicemgr.model.HdEnabledProvider;
-import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.interface_.FeatureEnabledProvider;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup$DetailsStringProvider;
-import com.netflix.mediaclient.servicemgr.model.details.EvidenceDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EvidenceDetails;
 import android.content.res.Resources;
 import com.netflix.mediaclient.util.TimeUtils;
-import com.netflix.mediaclient.servicemgr.model.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import android.app.FragmentTransaction;
+import android.app.Fragment;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.common.RatingDialogFrag;
+import com.netflix.mediaclient.util.MdxUtils;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.KubrickVideo;
+import com.netflix.mediaclient.servicemgr.interface_.KubrickVideo;
 import android.view.ViewGroup$LayoutParams;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.android.widget.IconFontTextView;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.widget.RadioGroup;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
-import android.widget.Toast;
 import android.view.View;
 import android.view.View$OnClickListener;
 
@@ -40,6 +42,6 @@ class KubrickVideoDetailsViewGroup$1 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        Toast.makeText(this.this$0.rate.getContext(), (CharSequence)"NOT IMPLEMENTED", 0).show();
+        this.this$0.showRatingDialog();
     }
 }

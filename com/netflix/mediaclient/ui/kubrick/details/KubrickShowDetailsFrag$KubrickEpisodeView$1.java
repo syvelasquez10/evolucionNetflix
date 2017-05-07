@@ -7,16 +7,15 @@ package com.netflix.mediaclient.ui.kubrick.details;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.model.trackable.Trackable;
-import com.netflix.mediaclient.servicemgr.model.Video;
 import com.netflix.mediaclient.util.TimeUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import android.content.Context;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
-import com.netflix.mediaclient.ui.details.EpisodeRowView;
+import com.netflix.mediaclient.ui.details.EpisodesFrag$EpisodeView;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.model.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import android.view.View$OnClickListener;
 
 class KubrickShowDetailsFrag$KubrickEpisodeView$1 implements View$OnClickListener

@@ -161,12 +161,12 @@ public class TextStyle
         textStyle2.populate(element);
         textStyle2.mCellResolution = subtitleParser.getCellResolution();
         if (textStyle2.mParentStyleId != null) {
-            if (Log.isLoggable("nf_subtitles", 3)) {
+            if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Parent style found. ID: " + textStyle2.mParentStyleId);
             }
             final TextStyle namedStyle = subtitleParser.getNamedStyle(textStyle2.mParentStyleId);
             if (namedStyle != null) {
-                if (Log.isLoggable("nf_subtitles", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_subtitles", "Parent style found, merge: " + textStyle2.mParentStyleId);
                 }
                 textStyle2.merge(namedStyle);
@@ -179,7 +179,7 @@ public class TextStyle
             Log.v("nf_subtitles", "Apply default style");
             textStyle2.merge(textStyle);
         }
-        if (Log.isLoggable("nf_subtitles", 2)) {
+        if (Log.isLoggable()) {
             Log.v("nf_subtitles", "Style created: " + textStyle2);
         }
         return textStyle2;
@@ -364,7 +364,7 @@ public class TextStyle
     public void merge(final TextStyle textStyle) {
         if (textStyle != null) {
             if (this.mColor == null && textStyle.mColor != null) {
-                if (Log.isLoggable("nf_subtitles", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_subtitles", "Use parent color " + textStyle.mColor);
                 }
                 this.mColor = textStyle.mColor;
@@ -376,7 +376,7 @@ public class TextStyle
                 this.mBackgroundColor = textStyle.mBackgroundColor;
             }
             if (this.mFontSize == null && textStyle.mFontSize != null) {
-                if (Log.isLoggable("nf_subtitles", 3)) {
+                if (Log.isLoggable()) {
                     Log.d("nf_subtitles", "Use parent mFontSize " + textStyle.mFontSize);
                 }
                 this.mFontSize = textStyle.mFontSize;
