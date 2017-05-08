@@ -59,7 +59,6 @@ public final class OfflineErrorLogblob extends OfflineBaseLogblob
     
     public static void sendDownloadStopError(final LogblobLogging logblobLogging, final String s, final String s2, final String s3, final StopReason stopReason) {
         if (logblobLogging != null) {
-        Label_0092_Outer:
             while (true) {
                 while (true) {
                     Label_0280: {
@@ -115,14 +114,11 @@ public final class OfflineErrorLogblob extends OfflineBaseLogblob
                                     break Label_0280;
                                 }
                             }
-                            while (true) {
-                                logblobLogging.sendLogblob(new OfflineErrorLogblob(error, s, s2, s3, UserVisibleErrorCodeGenerator.getOfflineErrorCodeForStoppedDownload(stopReason), "downloadStopError", true));
-                                return;
-                                Log.d("offlineErrorLogBlob", " onDownloadStopped stopReason: %s, no-op", stopReason);
-                                continue Label_0092_Outer;
-                            }
+                            Log.d("offlineErrorLogBlob", " onDownloadStopped stopReason: %s, no-op", stopReason);
+                            // iftrue(Label_0004:, !false)
+                            logblobLogging.sendLogblob(new OfflineErrorLogblob(error, s, s2, s3, UserVisibleErrorCodeGenerator.getOfflineErrorCodeForStoppedDownload(stopReason), "downloadStopError", true));
+                            return;
                         }
-                        // iftrue(Label_0004:, !false)
                         catch (JSONException ex) {
                             Log.i("offlineErrorLogBlob", "JSONException:", ex);
                             return;

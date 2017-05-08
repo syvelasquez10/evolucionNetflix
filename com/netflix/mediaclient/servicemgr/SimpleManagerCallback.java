@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.model.leafs.Video$Summary;
-import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.RatingInfo;
 import com.netflix.model.survey.Survey;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
@@ -223,7 +223,7 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     }
     
     @Override
-    public void onVideoRatingSet(final UserRating userRating, final Status status) {
+    public void onVideoRatingSet(final RatingInfo ratingInfo, final Status status) {
     }
     
     @Override

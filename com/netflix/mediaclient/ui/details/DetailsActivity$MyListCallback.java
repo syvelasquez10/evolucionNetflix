@@ -24,29 +24,29 @@ class DetailsActivity$MyListCallback extends LoggingManagerCallback
     @Override
     public void onQueueAdd(final Status status) {
         super.onQueueAdd(status);
-        int n = 2131296652;
+        int n = 2131296650;
         if (CommonStatus.OK == status) {
-            n = 2131296727;
+            n = 2131296724;
         }
         else if (status.getStatusCode() == StatusCode.ALREADY_IN_QUEUE) {
-            n = 2131296840;
+            n = 2131296833;
         }
         else if (status.getStatusCode() == StatusCode.NOT_VALID) {
-            n = 2131296651;
+            n = 2131296649;
         }
         Toast.makeText((Context)this.this$0, n, 1).show();
     }
     
     @Override
     public void onQueueRemove(final Status status) {
-        int n = 2131296728;
+        int n = 2131296725;
         super.onQueueRemove(status);
         if (CommonStatus.OK != status) {
             if (status.getStatusCode() == StatusCode.NOT_IN_QUEUE) {
                 Log.w("DetailsActivity", "It was already removed");
             }
             else {
-                n = 2131296654;
+                n = 2131296652;
             }
         }
         Toast.makeText((Context)this.this$0, n, 1).show();

@@ -10,9 +10,11 @@ import java.util.Collection;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import java.util.Iterator;
 import android.content.Context;
+import com.netflix.mediaclient.service.configuration.persistent.Config_Ab8204;
 import com.netflix.mediaclient.service.configuration.persistent.LolomoPayloadABTestConfig;
 import com.netflix.mediaclient.service.configuration.persistent.KidsParityPhone;
 import com.netflix.mediaclient.service.configuration.persistent.KidsParityTablet;
+import com.netflix.mediaclient.service.configuration.persistent.Config_Ab7994;
 import com.netflix.mediaclient.service.configuration.persistent.AimLowTextPlaceholderConfig;
 import com.netflix.mediaclient.service.configuration.persistent.DPPrefetchABTestConfig;
 import com.netflix.mediaclient.service.configuration.persistent.PrefetchLolomoConfig;
@@ -46,9 +48,11 @@ public final class PersistentConfig
         PersistentConfig.sConfigs.put(PrefetchLolomoConfig.class, new PrefetchLolomoConfig());
         PersistentConfig.sConfigs.put(DPPrefetchABTestConfig.class, new DPPrefetchABTestConfig());
         PersistentConfig.sConfigs.put(AimLowTextPlaceholderConfig.class, new AimLowTextPlaceholderConfig());
+        PersistentConfig.sConfigs.put(Config_Ab7994.class, new Config_Ab7994());
         PersistentConfig.sConfigs.put(KidsParityTablet.class, new KidsParityTablet());
         PersistentConfig.sConfigs.put(KidsParityPhone.class, new KidsParityPhone());
         PersistentConfig.sConfigs.put(LolomoPayloadABTestConfig.class, new LolomoPayloadABTestConfig());
+        PersistentConfig.sConfigs.put(Config_Ab8204.class, new Config_Ab8204());
     }
     
     public static void delete(final Context context) {

@@ -74,15 +74,15 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
             n2 = n4;
         }
         if (n2 != 0 && n != 0) {
-            return this.getString(2131296843);
+            return this.getString(2131296836);
         }
         if (n != 0) {
-            return this.getString(2131296575);
+            return this.getString(2131296573);
         }
         if (n2 != 0) {
-            return this.getString(2131296696);
+            return this.getString(2131296693);
         }
-        return this.getString(2131296698);
+        return this.getString(2131296695);
     }
     
     @Override
@@ -165,24 +165,24 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
         switch (DiagnosisActivity$4.$SwitchMap$com$netflix$mediaclient$ui$diagnosis$DiagnosisActivity$InfoGroupState[diagnosisActivity$InfoGroupState.ordinal()]) {
             default: {}
             case 1: {
-                this.mNetworkStatus.setText(2131296570);
-                this.mTestInfo.setText(2131296829);
-                this.mTestButton.setText(2131296818);
+                this.mNetworkStatus.setText(2131296568);
+                this.mTestInfo.setText(2131296823);
+                this.mTestButton.setText(2131296814);
                 this.mTestButton.setVisibility(0);
                 this.mProgressBar.setVisibility(4);
             }
             case 2: {
-                this.mNetworkStatus.setText(2131296699);
+                this.mNetworkStatus.setText(2131296696);
                 this.mTestInfo.setVisibility(0);
                 this.mTestInfo.setText((CharSequence)this.getStringForFailure());
                 this.mTestButton.setVisibility(0);
-                this.mTestButton.setText(2131296828);
+                this.mTestButton.setText(2131296822);
                 this.mProgressBar.setVisibility(4);
             }
             case 3: {
-                this.mNetworkStatus.setText(2131296698);
+                this.mNetworkStatus.setText(2131296695);
                 this.mTestButton.setVisibility(0);
-                this.mTestButton.setText(2131296828);
+                this.mTestButton.setText(2131296822);
                 this.mProgressBar.setVisibility(4);
             }
             case 4: {
@@ -190,7 +190,7 @@ public class DiagnosisActivity extends NetflixActivity implements IDiagnosis$Dia
                 this.mStatutListView.setVisibility(0);
                 this.mTestButton.setVisibility(4);
                 this.mProgressBar.setVisibility(0);
-                this.mNetworkStatus.setText(2131296571);
+                this.mNetworkStatus.setText(2131296569);
                 this.mTestInfo.setVisibility(4);
             }
         }

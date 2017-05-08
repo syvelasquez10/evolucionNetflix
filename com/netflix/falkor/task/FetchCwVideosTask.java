@@ -29,7 +29,7 @@ public class FetchCwVideosTask extends CmpTask
     
     @Override
     protected void buildPqlList(final List<PQL> list) {
-        CmpUtils.buildCwPql(list, this.fromVideo, this.toVideo);
+        CmpUtils.buildCwPql(list, this.modelProxy.getCurrLolomoId(), this.fromVideo, this.toVideo);
     }
     
     @Override

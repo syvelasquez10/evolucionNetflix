@@ -67,7 +67,7 @@ public class BarkerSeasonsDialogAdapter extends RecyclerView$Adapter<BarkerSeaso
     
     @Override
     public BarkerSeasonsDialogAdapter$EpisodesViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int n) {
-        return new BarkerSeasonsDialogAdapter$EpisodesViewHolder(this, LayoutInflater.from(viewGroup.getContext()).inflate(2130903169, viewGroup, false));
+        return new BarkerSeasonsDialogAdapter$EpisodesViewHolder(this, LayoutInflater.from(viewGroup.getContext()).inflate(2130903171, viewGroup, false));
     }
     
     public int updateSeasonData(final List<SeasonDetails> list, final int n) {

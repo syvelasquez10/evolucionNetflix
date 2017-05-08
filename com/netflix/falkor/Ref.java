@@ -9,8 +9,9 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.Date;
+import com.netflix.model.leafs.BaseFalkorLeafItem;
 
-public class Ref implements Expires, PathBound, ReferenceTarget
+public class Ref extends BaseFalkorLeafItem implements Expires, PathBound, ReferenceTarget
 {
     private static final String TAG = "Ref";
     private Date expires;
@@ -35,7 +36,6 @@ public class Ref implements Expires, PathBound, ReferenceTarget
         this.valueRef.set(null);
     }
     
-    @Override
     public Date getExpires() {
         return this.expires;
     }
@@ -56,7 +56,6 @@ public class Ref implements Expires, PathBound, ReferenceTarget
         return value;
     }
     
-    @Override
     public PQL getPath() {
         return this.path;
     }
@@ -65,7 +64,6 @@ public class Ref implements Expires, PathBound, ReferenceTarget
         return this.refPath;
     }
     
-    @Override
     public LinkedList<Ref> getReferences() {
         return this.references;
     }
@@ -114,12 +112,10 @@ public class Ref implements Expires, PathBound, ReferenceTarget
         return o;
     }
     
-    @Override
     public void setExpires(final Date expires) {
         this.expires = expires;
     }
     
-    @Override
     public void setPath(final PQL path) {
         this.path = path;
     }
@@ -135,12 +131,10 @@ public class Ref implements Expires, PathBound, ReferenceTarget
         this.valueRef.set(null);
     }
     
-    @Override
     public void setReferences(final LinkedList<Ref> references) {
         this.references = references;
     }
     
-    @Override
     public String toString() {
         return String.format("Ref path: %s", this.getRefPath());
     }

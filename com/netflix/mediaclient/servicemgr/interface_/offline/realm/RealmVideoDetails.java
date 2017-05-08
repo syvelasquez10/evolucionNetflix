@@ -18,6 +18,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
 import com.netflix.mediaclient.service.NetflixService;
 import io.realm.Realm;
+import io.realm.internal.RealmObjectProxy;
 import io.realm.RealmList;
 import io.realm.RealmVideoDetailsRealmProxyInterface;
 import io.realm.RealmModel;
@@ -45,7 +46,6 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
     private boolean isInQueue;
     private boolean isOriginal;
     private boolean isPreRelease;
-    private boolean isVideo3D;
     private boolean isVideo5dot1;
     private boolean isVideoDolbyVision;
     private boolean isVideoHd;
@@ -69,6 +69,12 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
     private float userRating;
     private int videoType;
     private int year;
+    
+    public RealmVideoDetails() {
+        if (this instanceof RealmObjectProxy) {
+            ((RealmObjectProxy)this).realm$injectObjectContext();
+        }
+    }
     
     public static void insertInRealm(final Realm realm, final NetflixService netflixService, final VideoDetails videoDetails, final String s) {
         insertInRealm(realm, netflixService, videoDetails, null, s);
@@ -123,7 +129,6 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
         this.realmSet$isInQueue(videoDetails.isInQueue());
         this.realmSet$isVideoHd(videoDetails.isVideoHd());
         this.realmSet$isVideoUhd(videoDetails.isVideoUhd());
-        this.realmSet$isVideo3D(videoDetails.isVideo3D());
         this.realmSet$isVideo5dot1(videoDetails.isVideo5dot1());
         this.realmSet$isVideoHdr10(videoDetails.isVideoHdr10());
         this.realmSet$isVideoDolbyVision(videoDetails.isVideoDolbyVision());
@@ -361,10 +366,6 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
         return false;
     }
     
-    public boolean isVideo3D() {
-        return this.realmGet$isVideo3D();
-    }
-    
     public boolean isVideo5dot1() {
         return this.realmGet$isVideo5dot1();
     }
@@ -463,10 +464,6 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
     
     public boolean realmGet$isPreRelease() {
         return this.isPreRelease;
-    }
-    
-    public boolean realmGet$isVideo3D() {
-        return this.isVideo3D;
     }
     
     public boolean realmGet$isVideo5dot1() {
@@ -641,10 +638,6 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
         this.isPreRelease = isPreRelease;
     }
     
-    public void realmSet$isVideo3D(final boolean isVideo3D) {
-        this.isVideo3D = isVideo3D;
-    }
-    
     public void realmSet$isVideo5dot1(final boolean isVideo5dot1) {
         this.isVideo5dot1 = isVideo5dot1;
     }
@@ -752,7 +745,12 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
     }
     
     @Override
+    public boolean shouldRefreshVolatileData() {
+        return false;
+    }
+    
+    @Override
     public String toString() {
-        return "RealmVideoDetails{id='" + this.realmGet$id() + '\'' + ", year=" + this.realmGet$year() + ", maturityLevel=" + this.realmGet$maturityLevel() + ", synopsis='" + this.realmGet$synopsis() + '\'' + ", quality='" + this.realmGet$quality() + '\'' + ", actors='" + this.realmGet$actors() + '\'' + ", genres='" + this.realmGet$genres() + '\'' + ", cert='" + this.realmGet$cert() + '\'' + ", supplMessage='" + this.realmGet$supplMessage() + '\'' + ", defaultTrailer='" + this.realmGet$defaultTrailer() + '\'' + ", copyright='" + this.realmGet$copyright() + '\'' + ", hResPortBoxArtUrl='" + this.realmGet$hResPortBoxArtUrl() + '\'' + ", hResLandBoxArtUrl='" + this.realmGet$hResLandBoxArtUrl() + '\'' + ", boxshotUrl='" + this.realmGet$boxshotUrl() + '\'' + ", boxartImageId='" + this.realmGet$boxartImageId() + '\'' + ", horzDispUrl='" + this.realmGet$horzDispUrl() + '\'' + ", horzDispSmallUrl='" + this.realmGet$horzDispSmallUrl() + '\'' + ", storyDispUrl='" + this.realmGet$storyDispUrl() + '\'' + ", tvCardUrl='" + this.realmGet$tvCardUrl() + '\'' + ", storyUrl='" + this.realmGet$storyUrl() + '\'' + ", bifUrl='" + this.realmGet$bifUrl() + '\'' + ", catalogIdUrl='" + this.realmGet$catalogIdUrl() + '\'' + ", titleImgUrl='" + this.realmGet$titleImgUrl() + '\'' + ", titleCroppedImgUrl='" + this.realmGet$titleCroppedImgUrl() + '\'' + ", title='" + this.realmGet$title() + '\'' + ", isOriginal=" + this.realmGet$isOriginal() + ", isPreRelease=" + this.realmGet$isPreRelease() + ", hasWatched=" + this.realmGet$hasWatched() + ", hasTrailers=" + this.realmGet$hasTrailers() + ", isInQueue=" + this.realmGet$isInQueue() + ", isVideoHd=" + this.realmGet$isVideoHd() + ", isVideoUhd=" + this.realmGet$isVideoUhd() + ", isVideo3D=" + this.realmGet$isVideo3D() + ", isVideo5dot1=" + this.realmGet$isVideo5dot1() + ", isVideoHdr10=" + this.realmGet$isVideoHdr10() + ", isVideoDolbyVision=" + this.realmGet$isVideoDolbyVision() + ", userRating=" + this.realmGet$userRating() + ", predictedRating=" + this.realmGet$predictedRating() + ", playable=" + this.realmGet$playable() + ", errorType=" + this.realmGet$errorType() + ", videoType=" + this.realmGet$videoType() + '}';
+        return "RealmVideoDetails{id='" + this.realmGet$id() + '\'' + ", year=" + this.realmGet$year() + ", maturityLevel=" + this.realmGet$maturityLevel() + ", synopsis='" + this.realmGet$synopsis() + '\'' + ", quality='" + this.realmGet$quality() + '\'' + ", actors='" + this.realmGet$actors() + '\'' + ", genres='" + this.realmGet$genres() + '\'' + ", cert='" + this.realmGet$cert() + '\'' + ", supplMessage='" + this.realmGet$supplMessage() + '\'' + ", defaultTrailer='" + this.realmGet$defaultTrailer() + '\'' + ", copyright='" + this.realmGet$copyright() + '\'' + ", hResPortBoxArtUrl='" + this.realmGet$hResPortBoxArtUrl() + '\'' + ", hResLandBoxArtUrl='" + this.realmGet$hResLandBoxArtUrl() + '\'' + ", boxshotUrl='" + this.realmGet$boxshotUrl() + '\'' + ", boxartImageId='" + this.realmGet$boxartImageId() + '\'' + ", horzDispUrl='" + this.realmGet$horzDispUrl() + '\'' + ", horzDispSmallUrl='" + this.realmGet$horzDispSmallUrl() + '\'' + ", storyDispUrl='" + this.realmGet$storyDispUrl() + '\'' + ", tvCardUrl='" + this.realmGet$tvCardUrl() + '\'' + ", storyUrl='" + this.realmGet$storyUrl() + '\'' + ", bifUrl='" + this.realmGet$bifUrl() + '\'' + ", catalogIdUrl='" + this.realmGet$catalogIdUrl() + '\'' + ", titleImgUrl='" + this.realmGet$titleImgUrl() + '\'' + ", titleCroppedImgUrl='" + this.realmGet$titleCroppedImgUrl() + '\'' + ", title='" + this.realmGet$title() + '\'' + ", isOriginal=" + this.realmGet$isOriginal() + ", isPreRelease=" + this.realmGet$isPreRelease() + ", hasWatched=" + this.realmGet$hasWatched() + ", hasTrailers=" + this.realmGet$hasTrailers() + ", isInQueue=" + this.realmGet$isInQueue() + ", isVideoHd=" + this.realmGet$isVideoHd() + ", isVideoUhd=" + this.realmGet$isVideoUhd() + ", isVideo5dot1=" + this.realmGet$isVideo5dot1() + ", isVideoHdr10=" + this.realmGet$isVideoHdr10() + ", isVideoDolbyVision=" + this.realmGet$isVideoDolbyVision() + ", userRating=" + this.realmGet$userRating() + ", predictedRating=" + this.realmGet$predictedRating() + ", playable=" + this.realmGet$playable() + ", errorType=" + this.realmGet$errorType() + ", videoType=" + this.realmGet$videoType() + '}';
     }
 }

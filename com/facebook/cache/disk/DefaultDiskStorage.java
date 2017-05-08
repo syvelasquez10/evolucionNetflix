@@ -112,6 +112,7 @@ public class DefaultDiskStorage implements DiskStorage
     
     private void recreateDirectoryIfVersionChanges() {
         int n = 1;
+    Block_3_Outer:
         while (true) {
             Label_0024: {
                 if (this.mRootDirectory.exists()) {
@@ -123,10 +124,13 @@ public class DefaultDiskStorage implements DiskStorage
                 try {
                     FileUtils.mkdirs(this.mVersionDirectory);
                     return;
-                    // iftrue(Label_0085:, this.mVersionDirectory.exists())
-                    FileTree.deleteRecursively(this.mRootDirectory);
-                    continue;
+                    while (true) {
+                        FileTree.deleteRecursively(this.mRootDirectory);
+                        continue Block_3_Outer;
+                        continue;
+                    }
                 }
+                // iftrue(Label_0085:, this.mVersionDirectory.exists())
                 catch (FileUtils$CreateDirectoryException ex) {
                     this.mCacheErrorLogger.logError(CacheErrorLogger$CacheErrorCategory.WRITE_CREATE_DIR, DefaultDiskStorage.TAG, "version directory could not be created: " + this.mVersionDirectory, null);
                     return;

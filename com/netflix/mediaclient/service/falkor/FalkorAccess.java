@@ -205,7 +205,12 @@ public class FalkorAccess implements IBrowseInterface
     
     @Override
     public void flushCaches() {
-        this.mBrowseAgent.flushCaches();
+        this.mBrowseAgent.flushCaches(true);
+    }
+    
+    @Override
+    public void flushOnlyMemCache() {
+        this.mBrowseAgent.flushCaches(false);
     }
     
     @Override

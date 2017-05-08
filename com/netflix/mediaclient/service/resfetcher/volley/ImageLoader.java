@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.resfetcher.volley;
 
 import java.util.LinkedList;
 import android.text.TextUtils;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$InteractiveListener;
 import com.netflix.mediaclient.android.widget.AdvancedImageView$ImageLoaderInfo;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
@@ -70,6 +71,7 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         this.mInFlightRequests = new HashMap<String, ImageLoader$BatchedImageRequest>();
         this.mBatchedResponses = new HashMap<String, ImageLoader$BatchedImageRequest>();
         this.mHandler = new Handler(Looper.getMainLooper());
+        this.mTTRTracker = new InteractiveTracker$TTRTracker();
         this.mRequestQueue = mRequestQueue;
         this.mCache = mCache;
         this.mApmLogger = mApmLogger;
@@ -245,8 +247,9 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         this.showImgInternal(advancedImageView, imageUrl, clientLogging$AssetType, imageLoader$StaticImgConfig, false, 1, imageLoaderInfo.bitmapConfig);
     }
     
-    public void setTTRTracker(final InteractiveTracker$TTRTracker mttrTracker) {
-        this.mTTRTracker = mttrTracker;
+    public void setTTRListener(final InteractiveTracker$InteractiveListener listener) {
+        this.mTTRTracker.clearImageListeners();
+        this.mTTRTracker.setListener(listener);
     }
     
     public void showImg(final AdvancedImageView advancedImageView, final String s, final IClientLogging$AssetType clientLogging$AssetType, final String s2, final ImageLoader$StaticImgConfig imageLoader$StaticImgConfig, final boolean b) {

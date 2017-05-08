@@ -9,6 +9,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.model.leafs.advisory.Advisory;
 import java.util.List;
 import com.google.gson.Gson;
+import io.realm.internal.RealmObjectProxy;
 import io.realm.RealmPlayableRealmProxyInterface;
 import io.realm.RealmModel;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
@@ -44,9 +45,15 @@ public class RealmPlayable implements Playable, RealmModel, RealmPlayableRealmPr
     private long watchedTime;
     
     public RealmPlayable() {
+        if (this instanceof RealmObjectProxy) {
+            ((RealmObjectProxy)this).realm$injectObjectContext();
+        }
     }
     
     public RealmPlayable(final Playable playable) {
+        if (this instanceof RealmObjectProxy) {
+            ((RealmObjectProxy)this).realm$injectObjectContext();
+        }
         this.realmSet$playableId(playable.getPlayableId());
         this.realmSet$parentId(playable.getTopLevelId());
         this.realmSet$isNSRE(playable.isNSRE());

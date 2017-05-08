@@ -9,7 +9,7 @@ import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.util.ConnectivityUtils;
-import com.netflix.mediaclient.service.logging.StorageLogblobInfo;
+import com.netflix.mediaclient.util.StorageStateUtils;
 import com.netflix.mediaclient.util.MediaUtils;
 import com.netflix.mediaclient.util.SubtitleUtils;
 import com.netflix.mediaclient.media.JPlayer.AdaptiveMediaDecoderHelper;
@@ -295,7 +295,7 @@ public class NativeTransport implements Transport
             this.mIpConnectivityPolicy = ipConnectivityPolicy.getValue();
         }
         this.mVideoDecoderCapLogging = MediaUtils.getDecoderCapbilityForFormatIfUpdated();
-        this.mDeviceStorageInfo = StorageLogblobInfo.buildDeviceExternalStorageLogblobInfo(this.bridge.getContext());
+        this.mDeviceStorageInfo = StorageStateUtils.buildDeviceExternalStorageLogblobInfo(this.bridge.getContext());
         final JSONObject carrierInfo = ConnectivityUtils.getCarrierInfo(this.bridge.getContext());
         if (carrierInfo != null) {
             this.mStartupCarrierInfo = carrierInfo.toString();
@@ -383,6 +383,7 @@ public class NativeTransport implements Transport
                 break Label_0080;
             }
             string = "nrdp";
+        Block_5_Outer:
             while (true) {
                 String s3 = s2;
                 if (s2 == null) {
@@ -391,17 +392,17 @@ public class NativeTransport implements Transport
                 try {
                     this.native_invokeMethod(string, s, s3);
                     return;
-                    // iftrue(Label_0102:, !string.startsWith("nrdp"))
-                    Block_5: {
-                        break Block_5;
-                        Label_0102: {
-                            string = "nrdp." + string;
-                        }
+                    Label_0102: {
+                        string = "nrdp." + string;
+                    }
+                    continue Block_5_Outer;
+                    while (true) {
+                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                        continue Block_5_Outer;
                         continue;
                     }
-                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                    continue;
                 }
+                // iftrue(Label_0102:, !string.startsWith("nrdp"))
                 catch (Throwable t) {
                     Log.w("nf-NativeTransport", "Failure in JNI. It may happend than NRDApp is null!", t);
                 }
@@ -422,19 +423,18 @@ public class NativeTransport implements Transport
             string = "nrdp";
             try {
                 // iftrue(Label_0090:, !string.startsWith("nrdp"))
-            Block_4_Outer:
                 while (true) {
-                    this.native_setProperty(string, s, s2);
-                    return;
                     while (true) {
+                        this.native_setProperty(string, s, s2);
+                        return;
                         Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                        continue Block_4_Outer;
+                        continue;
+                        Label_0090: {
+                            string = "nrdp." + string;
+                        }
                         continue;
                     }
-                    Label_0090: {
-                        string = "nrdp." + string;
-                    }
-                    continue Block_4_Outer;
+                    continue;
                 }
             }
             catch (Throwable t) {

@@ -4,15 +4,19 @@
 
 package com.netflix.mediaclient;
 
-import android.app.Application;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.event.UIEvent;
 import android.app.Application$ActivityLifecycleCallbacks;
+import com.netflix.mediaclient.android.debug.DebugOverlay;
+import com.netflix.falkor.cache.FalkorCache;
 import io.realm.Realm;
 import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.common.NetflixCommon$Host;
+import android.app.Application;
+import com.netflix.mediaclient.common.NetflixCommon;
 import com.netflix.cstatssamurai.ClientStats;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -77,7 +81,7 @@ public class NetflixApplication extends MultiDexApplication
         this.mUserInput = new UserInputManager();
         this.MAX_ACTIVITY_TRANSITION_TIME_MS = 600L;
         this.mIsNetflixServiceReady = new AtomicBoolean(false);
-        this.broadcastReceiver = new NetflixApplication$1(this);
+        this.broadcastReceiver = new NetflixApplication$2(this);
     }
     
     public static void activityPaused() {
@@ -166,7 +170,7 @@ public class NetflixApplication extends MultiDexApplication
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837984).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131297007, new Object[] { n })).setContentTitle(this.getString(2131297008, new Object[] { n })).setContentText(this.getString(2131296539, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130838007).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131297010, new Object[] { n })).setContentTitle(this.getString(2131297011, new Object[] { n })).setContentText(this.getString(2131296538, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");
@@ -188,6 +192,10 @@ public class NetflixApplication extends MultiDexApplication
     
     private void setupClientStats() {
         ClientStats.getInstance().setEnabled(true);
+    }
+    
+    private void setupNetflixCommon() {
+        NetflixCommon.initWith(this, new NetflixApplication$1(this));
     }
     
     public void clearSignedInOnce() {
@@ -234,9 +242,12 @@ public class NetflixApplication extends MultiDexApplication
         super.onCreate();
         NetflixApplication.instance = this;
         Log.d("NetflixApplication", "Application onCreate");
+        this.setupNetflixCommon();
         Log.d("NetflixApplication", "Loading native libraries");
         this.loadAndVerifyNativeLibraries();
         Realm.init((Context)this);
+        FalkorCache.init(this);
+        DebugOverlay.init(this);
         this.registerActivityLifecycleCallbacks((Application$ActivityLifecycleCallbacks)this.mUserInput);
         this.registerReceiver();
         this.setupClientStats();
@@ -305,7 +316,7 @@ public class NetflixApplication extends MultiDexApplication
     
     public void startActivityTransitionTimer() {
         this.mActivityTransitionTimer = new Timer();
-        this.mActivityTransitionTimerTask = new NetflixApplication$2(this);
+        this.mActivityTransitionTimerTask = new NetflixApplication$3(this);
         this.mActivityTransitionTimer.schedule(this.mActivityTransitionTimerTask, 600L);
     }
     

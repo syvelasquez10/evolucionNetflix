@@ -25,7 +25,7 @@ public interface CmpTaskDetails
     
     List<DataUtil$StringPair> getOptionalRequestParams();
     
-    boolean shouldCollapseMissingPql();
+    boolean shouldCollapseMissingPql(final List<PQL> p0);
     
     boolean shouldCustomHandleResponse();
     

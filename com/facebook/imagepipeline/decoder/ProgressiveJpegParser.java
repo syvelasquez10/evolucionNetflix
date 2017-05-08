@@ -37,13 +37,12 @@ public class ProgressiveJpegParser
     
     private boolean doParseMoreData(final InputStream inputStream) {
         final int mBestScanNumber = this.mBestScanNumber;
-        int read = 0;
-        int n;
-        Label_0080_Outer:Label_0076_Outer:
+    Label_0076_Outer:
         while (true) {
             while (true) {
                 Label_0286: {
                     while (true) {
+                        int read = 0;
                         Label_0244: {
                             Label_0236: {
                                 Label_0176: {
@@ -82,9 +81,8 @@ public class ProgressiveJpegParser
                                                             break Label_0286;
                                                         }
                                                     }
-                                                    this.mLastByteRead = read;
-                                                    continue Label_0080_Outer;
                                                     Preconditions.checkState(false);
+                                                    this.mLastByteRead = read;
                                                     continue Label_0076_Outer;
                                                 }
                                                 catch (IOException ex) {
@@ -94,50 +92,50 @@ public class ProgressiveJpegParser
                                             }
                                             if (read == 255) {
                                                 this.mParserState = 1;
-                                                continue Label_0076_Outer;
+                                                continue;
                                             }
                                             this.mParserState = 6;
-                                            continue Label_0076_Outer;
+                                            continue;
                                         }
                                         if (read == 216) {
                                             this.mParserState = 2;
-                                            continue Label_0076_Outer;
+                                            continue;
                                         }
                                         this.mParserState = 6;
-                                        continue Label_0076_Outer;
+                                        continue;
                                     }
                                     if (read == 255) {
                                         this.mParserState = 3;
-                                        continue Label_0076_Outer;
+                                        continue;
                                     }
-                                    continue Label_0076_Outer;
+                                    continue;
                                 }
                                 if (read == 255) {
                                     this.mParserState = 3;
-                                    continue Label_0076_Outer;
+                                    continue;
                                 }
                                 if (read == 0) {
                                     this.mParserState = 2;
-                                    continue Label_0076_Outer;
+                                    continue;
                                 }
                                 if (read == 218 || read == 217) {
                                     this.newScanOrImageEndFound(this.mBytesParsed - 2);
                                 }
                                 if (doesMarkerStartSegment(read)) {
                                     this.mParserState = 4;
-                                    continue Label_0076_Outer;
+                                    continue;
                                 }
                                 this.mParserState = 2;
-                                continue Label_0076_Outer;
+                                continue;
                             }
                             this.mParserState = 5;
-                            continue Label_0076_Outer;
+                            continue;
                         }
-                        n = (this.mLastByteRead << 8) + read - 2;
+                        final int n = (this.mLastByteRead << 8) + read - 2;
                         StreamUtil.skip(inputStream, n);
                         this.mBytesParsed += n;
                         this.mParserState = 2;
-                        continue Label_0076_Outer;
+                        continue;
                     }
                 }
                 continue;

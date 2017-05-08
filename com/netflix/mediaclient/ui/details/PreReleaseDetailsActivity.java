@@ -22,8 +22,8 @@ public class PreReleaseDetailsActivity extends MovieDetailsActivity
     }
     
     private void showSnackBar() {
-        final Snackbar make = Snackbar.make(this.findViewById(16908290), 2131297004, 0);
-        final TextView textView = (TextView)((Snackbar$SnackbarLayout)make.getView()).findViewById(2131820932);
+        final Snackbar make = Snackbar.make(this.findViewById(16908290), 2131297007, 0);
+        final TextView textView = (TextView)((Snackbar$SnackbarLayout)make.getView()).findViewById(2131820934);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
         if (Build$VERSION.SDK_INT >= 17) {
             textView.setTextAlignment(4);

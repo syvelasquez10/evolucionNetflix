@@ -11,7 +11,7 @@ import com.android.volley.NetworkDispatcher$NetworkDispatcherListener;
 final class ConnectivityLogger$2 implements NetworkDispatcher$NetworkDispatcherListener
 {
     @Override
-    public void onCompleted(final Request request) {
+    public void onCompleted(final Request request, final Throwable t) {
         DeviceBandwidthSampler.getInstance().stopSampling();
     }
     

@@ -67,9 +67,9 @@ abstract class DecodeProducer$ProgressiveDecoder extends DelegatingConsumer<Enco
                                     this.mProducerListener.onProducerFinishWithSuccess(this.mProducerContext.getId(), "DecodeProducer", (Map<String, String>)o);
                                     this.handleResult(decodeImage, b);
                                     return;
-                                    n = this.getIntermediateImageEndOffset(encodedImage);
-                                    break;
                                     o = this.getQualityInfo();
+                                    continue;
+                                    n = this.getIntermediateImageEndOffset(encodedImage);
                                 }
                                 catch (Exception ex) {
                                     final Object o;

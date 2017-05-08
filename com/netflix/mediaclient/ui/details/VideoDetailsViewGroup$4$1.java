@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.RatingInfo;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.ui.rating.Ratings$ThumbRatingWithCLCallback;
@@ -21,6 +21,6 @@ class VideoDetailsViewGroup$4$1 extends Ratings$ThumbRatingWithCLCallback
     protected void onThumbRatingError(final Status status) {
     }
     
-    protected void onThumbRatingSet(final UserRating userRating) {
+    protected void onThumbRatingSet(final RatingInfo ratingInfo) {
     }
 }

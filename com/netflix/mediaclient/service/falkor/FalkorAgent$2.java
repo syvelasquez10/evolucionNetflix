@@ -91,6 +91,10 @@ class FalkorAgent$2 extends BroadcastReceiver
             }
             if ("com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_DEACTIVE".equals(action)) {
                 this.this$0.handleAccountDeactive();
+                return;
+            }
+            if ("com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_NOT_LOGGED_IN".equals(action)) {
+                this.this$0.handleAccountNotLoggedIn();
             }
         }
     }

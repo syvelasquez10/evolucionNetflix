@@ -17,12 +17,13 @@ import com.netflix.mediaclient.util.JsonUtils;
 import com.netflix.falkor.Sentinel;
 import com.google.gson.JsonElement;
 import java.util.Map;
+import com.netflix.falkor.cache.FalkorCacheHelperInterface;
+import com.netflix.falkor.BranchNode;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry$ResponsePathFormat;
 import java.util.Collection;
 import java.util.ArrayList;
 import com.netflix.falkor.PQL;
-import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.CachedModelProxy$GetResult;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.google.gson.JsonObject;
@@ -62,6 +63,11 @@ class CmpTask$1 extends FalkorVolleyWebClientRequest<Void>
         this.useAuthorization = this.this$0.shouldUseAuthorization();
         this.optionalRequestParams = this.this$0.getOptionalRequestParams();
         this.requestStartTime = -1L;
+    }
+    
+    @Override
+    protected boolean canHaveEmptyProfileGuid() {
+        return this.this$0.canHaveEmptyProfileGuidOverride();
     }
     
     @Override
@@ -154,7 +160,7 @@ class CmpTask$1 extends FalkorVolleyWebClientRequest<Void>
             final long elapsedRealtime = SystemClock.elapsedRealtime();
             CachedModelProxy.setLastWriteTimeMS(elapsedRealtime);
             Log.v("CachedModelProxy", "parseFalkorResponse: current merge time - %d", elapsedRealtime);
-            this.this$0.merge(asJsonObject.getAsJsonObject("value"), this.this$0.modelProxy.getRoot());
+            this.this$0.mergeFalkorResponse(asJsonObject);
         }
         this.this$0.handleSuccess();
         return null;

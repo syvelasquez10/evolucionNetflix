@@ -139,67 +139,83 @@ public abstract class BaseCryptoManager implements MediaDrm$OnEventListener, Cry
         //    68: invokevirtual   android/media/MediaDrm.getKeyRequest:([B[BLjava/lang/String;ILjava/util/HashMap;)Landroid/media/MediaDrm$KeyRequest;
         //    71: invokevirtual   android/media/MediaDrm$KeyRequest.getData:()[B
         //    74: putfield        com/netflix/mediaclient/service/configuration/crypto/CryptoManager$CryptoSession.keyRequestData:[B
-        //    77: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
-        //    80: ifeq            117
-        //    83: getstatic       com/netflix/mediaclient/service/configuration/crypto/BaseCryptoManager.TAG:Ljava/lang/String;
-        //    86: new             Ljava/lang/StringBuilder;
-        //    89: dup            
-        //    90: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    93: ldc             "keyRequestData: |"
-        //    95: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    98: aload_2        
-        //    99: invokevirtual   com/netflix/mediaclient/service/configuration/crypto/CryptoManager$CryptoSession.getKeyRequestDataAsString:()Ljava/lang/String;
-        //   102: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   105: ldc             "|"
-        //   107: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   110: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   113: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   116: pop            
-        //   117: getstatic       com/netflix/mediaclient/service/configuration/crypto/BaseCryptoManager.TAG:Ljava/lang/String;
-        //   120: ldc_w           "Number of all opened crypto sessions: %d"
-        //   123: iconst_1       
-        //   124: anewarray       Ljava/lang/Object;
-        //   127: dup            
-        //   128: iconst_0       
-        //   129: aload_0        
-        //   130: getfield        com/netflix/mediaclient/service/configuration/crypto/BaseCryptoManager.mCryptoSessionCounter:Ljava/util/concurrent/atomic/AtomicInteger;
-        //   133: invokevirtual   java/util/concurrent/atomic/AtomicInteger.get:()I
-        //   136: invokestatic    java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
-        //   139: aastore        
-        //   140: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)I
-        //   143: pop            
-        //   144: aload_2        
-        //   145: areturn        
-        //   146: astore_1       
-        //   147: aconst_null    
-        //   148: astore_2       
-        //   149: getstatic       com/netflix/mediaclient/service/configuration/crypto/BaseCryptoManager.TAG:Ljava/lang/String;
-        //   152: aload_1        
-        //   153: ldc_w           "createCryptoSession failed !"
-        //   156: iconst_0       
-        //   157: anewarray       Ljava/lang/Object;
-        //   160: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)I
-        //   163: pop            
-        //   164: getstatic       com/netflix/mediaclient/service/error/crypto/CryptoErrorManager.INSTANCE:Lcom/netflix/mediaclient/service/error/crypto/CryptoErrorManager;
-        //   167: getstatic       com/netflix/mediaclient/service/error/crypto/ErrorSource.msl:Lcom/netflix/mediaclient/service/error/crypto/ErrorSource;
-        //   170: getstatic       com/netflix/mediaclient/StatusCode.DRM_FAILURE_MEDIADRM_GET_KEY_REQUEST:Lcom/netflix/mediaclient/StatusCode;
-        //   173: aload_1        
-        //   174: invokevirtual   com/netflix/mediaclient/service/error/crypto/CryptoErrorManager.mediaDrmFailure:(Lcom/netflix/mediaclient/service/error/crypto/ErrorSource;Lcom/netflix/mediaclient/StatusCode;Ljava/lang/Throwable;)V
-        //   177: aload_2        
-        //   178: areturn        
-        //   179: astore_1       
-        //   180: goto            149
+        //    77: aload_2        
+        //    78: invokevirtual   com/netflix/mediaclient/service/configuration/crypto/CryptoManager$CryptoSession.isKeyRequestDataNullOrEmpty:()Z
+        //    81: ifeq            99
+        //    84: getstatic       com/netflix/mediaclient/service/configuration/crypto/BaseCryptoManager.TAG:Ljava/lang/String;
+        //    87: ldc             "keyRequestData is null or empty, closeCryptoSession to avoid session leaks"
+        //    89: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //    92: pop            
+        //    93: aload_0        
+        //    94: aload_2        
+        //    95: invokevirtual   com/netflix/mediaclient/service/configuration/crypto/BaseCryptoManager.closeCryptoSession:(Lcom/netflix/mediaclient/service/configuration/crypto/CryptoManager$CryptoSession;)Z
+        //    98: pop            
+        //    99: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   102: ifeq            140
+        //   105: getstatic       com/netflix/mediaclient/service/configuration/crypto/BaseCryptoManager.TAG:Ljava/lang/String;
+        //   108: new             Ljava/lang/StringBuilder;
+        //   111: dup            
+        //   112: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   115: ldc             "keyRequestData: |"
+        //   117: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   120: aload_2        
+        //   121: invokevirtual   com/netflix/mediaclient/service/configuration/crypto/CryptoManager$CryptoSession.getKeyRequestDataAsString:()Ljava/lang/String;
+        //   124: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   127: ldc_w           "|"
+        //   130: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   133: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   136: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   139: pop            
+        //   140: getstatic       com/netflix/mediaclient/service/configuration/crypto/BaseCryptoManager.TAG:Ljava/lang/String;
+        //   143: ldc_w           "Number of all opened crypto sessions: %d"
+        //   146: iconst_1       
+        //   147: anewarray       Ljava/lang/Object;
+        //   150: dup            
+        //   151: iconst_0       
+        //   152: aload_0        
+        //   153: getfield        com/netflix/mediaclient/service/configuration/crypto/BaseCryptoManager.mCryptoSessionCounter:Ljava/util/concurrent/atomic/AtomicInteger;
+        //   156: invokevirtual   java/util/concurrent/atomic/AtomicInteger.get:()I
+        //   159: invokestatic    java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+        //   162: aastore        
+        //   163: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)I
+        //   166: pop            
+        //   167: aload_2        
+        //   168: areturn        
+        //   169: astore_1       
+        //   170: aconst_null    
+        //   171: astore_2       
+        //   172: getstatic       com/netflix/mediaclient/service/configuration/crypto/BaseCryptoManager.TAG:Ljava/lang/String;
+        //   175: aload_1        
+        //   176: ldc_w           "createCryptoSession failed !"
+        //   179: iconst_0       
+        //   180: anewarray       Ljava/lang/Object;
+        //   183: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)I
+        //   186: pop            
+        //   187: aload_0        
+        //   188: aload_2        
+        //   189: invokevirtual   com/netflix/mediaclient/service/configuration/crypto/BaseCryptoManager.closeCryptoSession:(Lcom/netflix/mediaclient/service/configuration/crypto/CryptoManager$CryptoSession;)Z
+        //   192: pop            
+        //   193: getstatic       com/netflix/mediaclient/service/error/crypto/CryptoErrorManager.INSTANCE:Lcom/netflix/mediaclient/service/error/crypto/CryptoErrorManager;
+        //   196: getstatic       com/netflix/mediaclient/service/error/crypto/ErrorSource.msl:Lcom/netflix/mediaclient/service/error/crypto/ErrorSource;
+        //   199: getstatic       com/netflix/mediaclient/StatusCode.DRM_FAILURE_MEDIADRM_GET_KEY_REQUEST:Lcom/netflix/mediaclient/StatusCode;
+        //   202: aload_1        
+        //   203: invokevirtual   com/netflix/mediaclient/service/error/crypto/CryptoErrorManager.mediaDrmFailure:(Lcom/netflix/mediaclient/service/error/crypto/ErrorSource;Lcom/netflix/mediaclient/StatusCode;Ljava/lang/Throwable;)V
+        //   206: aload_2        
+        //   207: areturn        
+        //   208: astore_1       
+        //   209: goto            172
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  0      17     146    149    Ljava/lang/Throwable;
-        //  17     117    179    183    Ljava/lang/Throwable;
-        //  117    144    179    183    Ljava/lang/Throwable;
+        //  0      17     169    172    Ljava/lang/Throwable;
+        //  17     99     208    212    Ljava/lang/Throwable;
+        //  99     140    208    212    Ljava/lang/Throwable;
+        //  140    167    208    212    Ljava/lang/Throwable;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0117:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0099:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -479,12 +495,12 @@ public abstract class BaseCryptoManager implements MediaDrm$OnEventListener, Cry
     public WidevineKeyRequestData getKeyRequestData() {
         // monitorexit(this)
         while (true) {
-            Label_0065: {
+            Label_0078: {
                 synchronized (this) {
-                    if (this.mPendingKeyRequestData != null) {
-                        break Label_0065;
+                    if (this.mPendingKeyRequestData != null && !this.mPendingKeyRequestData.getKeyRequestDataCryptoSession().isKeyRequestDataNullOrEmpty()) {
+                        break Label_0078;
                     }
-                    Log.d(BaseCryptoManager.TAG, "Key request does not exist, create it!");
+                    Log.d(BaseCryptoManager.TAG, "valid keyRequestData does not exist, create it!");
                     if (this.doGetKeyRequestData() == null) {
                         throw new IllegalStateException("Crypto session can not be null after ");
                     }

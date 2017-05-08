@@ -48,8 +48,8 @@ public final class CmpTaskWrapper extends CmpTask
     }
     
     @Override
-    protected boolean shouldCollapseMissingPql() {
-        return this.taskDetails.shouldCollapseMissingPql();
+    protected boolean shouldCollapseMissingPql(final List<PQL> list) {
+        return this.taskDetails.shouldCollapseMissingPql(list);
     }
     
     @Override

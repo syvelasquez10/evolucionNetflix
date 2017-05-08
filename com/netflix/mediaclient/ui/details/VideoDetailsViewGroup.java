@@ -5,20 +5,22 @@
 package com.netflix.mediaclient.ui.details;
 
 import android.text.Html;
+import com.netflix.android.widgetry.widget.UserRatingButton$OnRateListener;
+import android.support.design.widget.CoordinatorLayout;
+import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import java.util.List;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import java.util.Iterator;
 import java.util.Map;
 import com.netflix.mediaclient.android.widget.PressedStateHandler$DelayedOnClickListener;
+import android.annotation.SuppressLint;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.util.Coppola1Utils;
-import com.netflix.android.widgetry.widget.UserRatingButton$OnRateListener;
-import android.support.design.widget.CoordinatorLayout;
-import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
 import android.widget.FrameLayout;
@@ -37,7 +39,6 @@ import com.netflix.mediaclient.servicemgr.interface_.FeatureEnabledProvider;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.MdxUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import android.util.AttributeSet;
@@ -63,40 +64,40 @@ public class VideoDetailsViewGroup extends LinearLayout
     public static final String UPDATE_CAPABILITIES_BADGES = "com.netflix.mediaclient.intent.action.UPDATE_CAPABILITIES_BADGES";
     private static final EnumMap<VideoDetailsViewGroup$SupportedCapabilities, Integer> mCapabilityBadgesMap;
     private View actionBarDummyView;
-    private boolean actionButtonsCreated;
-    private TextView addToMyList;
-    private View addToMyListGroup;
-    private TextView addToMyListLabel;
-    private ImageView backgroundImg;
+    protected boolean actionButtonsCreated;
+    protected TextView addToMyList;
+    protected View addToMyListGroup;
+    protected TextView addToMyListLabel;
+    protected ImageView backgroundImg;
     private int badgesPadding;
-    private TextView basicInfo;
+    protected TextView basicInfo;
     protected TextView basicInfoBadges;
     protected ViewGroup copyright;
-    private TextView creators;
+    protected TextView creators;
     protected VideoDetails details;
     protected TextView episodeBadge;
     protected TextView episodeTitle;
-    private ViewGroup footerViewGroup;
+    protected ViewGroup footerViewGroup;
     protected TopCropImageView horzDispImg;
     protected ViewGroup imgGroup;
     protected View infoContainer;
-    private DownloadButton mMovieDownloadButton;
+    protected DownloadButton mMovieDownloadButton;
     private ThumbsToMatchPercentageAnimator mThumbsToMatchPercentageAnimator;
-    private TextView matchPercentage;
-    private ViewStub myListMdp;
-    private ViewStub myListSdp;
+    protected TextView matchPercentage;
+    protected ViewStub myListMdp;
+    protected ViewStub myListSdp;
     protected View$OnClickListener onCWClickListener;
     protected View play;
     protected NetflixRatingBar ratingBar;
     private final BroadcastReceiver ratingsUpdateBroadcastReceiver;
     protected TextView relatedTitle;
-    private TextView starring;
+    protected TextView starring;
     protected TextView supplemental;
     protected TextView synopsis;
     protected TextView title;
     private final BroadcastReceiver updateCapabilityBadges;
     protected UserRatingButton userRatingButton;
-    private LinearLayout videoActionsContainer;
+    protected LinearLayout videoActionsContainer;
     private String videoId;
     
     static {
@@ -140,48 +141,15 @@ public class VideoDetailsViewGroup extends LinearLayout
         }
     }
     
-    private void createActionButtons(final boolean b) {
-        if (!this.actionButtonsCreated) {
-            Object inflate;
-            if (this.myListMdp == null || this.myListSdp == null) {
-                inflate = this;
-            }
-            else {
-                ViewStub viewStub;
-                if (b) {
-                    viewStub = this.myListMdp;
-                }
-                else {
-                    viewStub = this.myListSdp;
-                }
-                inflate = viewStub.inflate();
-            }
-            this.videoActionsContainer = (LinearLayout)((View)inflate).findViewById(2131821528);
-            this.addToMyListGroup = ((View)inflate).findViewById(2131821160);
-            this.addToMyList = (TextView)((View)inflate).findViewById(2131820925);
-            this.addToMyListLabel = (TextView)((View)inflate).findViewById(2131821161);
-            this.mMovieDownloadButton = (DownloadButton)((View)inflate).findViewById(2131821076);
-            this.userRatingButton = (UserRatingButton)((View)inflate).findViewById(2131821529);
-            if (this.userRatingButton != null) {
-                this.userRatingButton.setDark(KidsUtils.getSectionTextColor(this.getContext(), VideoDetailsViewGroup$Section.ACTIONS) == -1);
-            }
-            LocalizationUtils.setRtlLayoutDirectionIfApplicable((View)this.userRatingButton);
-            this.setupVideoActionsBar();
-            this.actionButtonsCreated = true;
-            KidsUtils.manageSectionTextColor(this.addToMyList, VideoDetailsViewGroup$Section.ACTIONS);
-            KidsUtils.manageSectionTextColor(this.addToMyListLabel, VideoDetailsViewGroup$Section.ACTION_LABEL);
-        }
-    }
-    
     private EnumMap<VideoDetailsViewGroup$SupportedCapabilities, Boolean> createCapabilitiesMap(final VideoDetails videoDetails, final NetflixActivity netflixActivity) {
         while (true) {
-            Label_0185: {
+            Label_0162: {
                 if (!MdxUtils.isCurrentMdxTargetAvailable(netflixActivity.getServiceManager())) {
-                    break Label_0185;
+                    break Label_0162;
                 }
                 final Object currentTargetCapabilities = netflixActivity.getServiceManager().getMdx().getCurrentTargetCapabilities();
                 if (currentTargetCapabilities == null) {
-                    break Label_0185;
+                    break Label_0162;
                 }
                 DeviceCapabilityProvider localCapabilities;
                 if ((localCapabilities = (DeviceCapabilityProvider)currentTargetCapabilities) == null) {
@@ -205,10 +173,6 @@ public class VideoDetailsViewGroup extends LinearLayout
                         enumMap.put(VideoDetailsViewGroup$SupportedCapabilities.HD, Boolean.valueOf(true));
                         return enumMap;
                     }
-                    if (DeviceUtils.shouldShow3DIcon(localCapabilities, (FeatureEnabledProvider)videoDetails)) {
-                        enumMap.put(VideoDetailsViewGroup$SupportedCapabilities._3D, Boolean.valueOf(true));
-                        return enumMap;
-                    }
                 }
                 return enumMap;
             }
@@ -218,7 +182,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private int getBadgesPadding() {
-        return this.getResources().getDimensionPixelSize(2131427708);
+        return this.getResources().getDimensionPixelSize(2131427712);
     }
     
     private String getIfValidOrFallback(final String s, final String s2) {
@@ -257,14 +221,14 @@ public class VideoDetailsViewGroup extends LinearLayout
                 }
                 matchPercentage.setTextColor(ContextCompat.getColor(context, n));
             }
-            this.mThumbsToMatchPercentageAnimator = new ThumbsToMatchPercentageAnimator(this.matchPercentage, 2131296975, 2131296976, KidsUtils.getSectionTextColor(this.getContext(), VideoDetailsViewGroup$Section.ACTIONS));
+            this.mThumbsToMatchPercentageAnimator = new ThumbsToMatchPercentageAnimator(this.matchPercentage, 2131296978, 2131296979, KidsUtils.getSectionTextColor(this.getContext(), VideoDetailsViewGroup$Section.ACTIONS));
         }
         this.badgesPadding = this.getBadgesPadding();
         this.setImgLayoutListener();
         this.onCWClickListener = (View$OnClickListener)new VideoDetailsViewGroup$2(this);
         if (this.infoContainer != null && KidsUtils.shouldPadInfo(this.getContext())) {
             final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams = (ViewGroup$MarginLayoutParams)this.infoContainer.getLayoutParams();
-            viewGroup$MarginLayoutParams.topMargin += this.getResources().getDimensionPixelSize(2131427637);
+            viewGroup$MarginLayoutParams.topMargin += this.getResources().getDimensionPixelSize(2131427641);
             this.infoContainer.invalidate();
             if (this.title != null) {
                 this.title.setSingleLine();
@@ -284,22 +248,11 @@ public class VideoDetailsViewGroup extends LinearLayout
         this.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new VideoDetailsViewGroup$3(this));
     }
     
-    private void setupVideoActionsBar() {
-        if (!Ratings.isAndroidThumbActive()) {
-            ViewUtils.setVisibleOrGone((View)this.userRatingButton, false);
-            ViewUtils.setVisibleOrGone((View)this.matchPercentage, false);
-        }
-        else {
-            ViewUtils.setVisibleOrGone((View)this.ratingBar, false);
-        }
-        this.updateVideoActionsLayout();
-    }
-    
     private boolean showCurrentEpisodeDetails(final VideoDetails videoDetails) {
         return this.isNSREShow(videoDetails) && this.hasWatched(videoDetails);
     }
     
-    private static void updateButtonLayout(final View view, final int n) {
+    protected static void updateButtonLayout(final View view, final int n) {
         if (view != null && view.getParent() != null) {
             final FrameLayout frameLayout = (FrameLayout)view.getParent();
             frameLayout.setVisibility(view.getVisibility());
@@ -327,40 +280,9 @@ public class VideoDetailsViewGroup extends LinearLayout
         }
     }
     
-    private void updateRating(final VideoDetails videoDetails) {
-        final NetflixRatingBar$RatingBarDataProvider ratingBarDataProviderSafely = ViewUtils.getRatingBarDataProviderSafely((View)this);
-        if (this.ratingBar != null) {
-            this.ratingBar.update(ratingBarDataProviderSafely, videoDetails);
-        }
-        if (this.userRatingButton != null) {
-            final NetflixActivity netflixActivity = AndroidUtils.getContextAs(this.getContext(), NetflixActivity.class);
-            if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
-                final CoordinatorLayout coordinatorLayout = (CoordinatorLayout)netflixActivity.findViewById(2131820945);
-                this.userRatingButton.setRating(videoDetails.getUserThumbRating());
-                this.userRatingButton.setOnRateListener(coordinatorLayout, new VideoDetailsViewGroup$4(this, netflixActivity, ratingBarDataProviderSafely, videoDetails), true, 1);
-                this.updateMatchPercentage(videoDetails.getUserThumbRating(), false);
-            }
-        }
-    }
-    
-    private void updateVideoActionsLayout() {
-        if (this.videoActionsContainer != null) {
-            if (this.videoActionsContainer.getChildCount() != 3) {
-                throw new IllegalStateException("Only 3 buttons expected in the video actions");
-            }
-            final int max = Math.max(Math.min(this.getMeasuredWidth() / 4, this.getResources().getDimensionPixelSize(2131427938)), this.getResources().getDimensionPixelSize(2131427939));
-            for (int i = 0; i < this.videoActionsContainer.getChildCount(); ++i) {
-                this.videoActionsContainer.getChildAt(i).setVisibility(4);
-            }
-            updateButtonLayout((View)this.mMovieDownloadButton, max);
-            updateButtonLayout((View)this.userRatingButton, max);
-            updateButtonLayout(this.addToMyListGroup, max);
-        }
-    }
-    
     protected void alignViews() {
         if (Coppola1Utils.isCoppolaContext(this.getContext())) {
-            final View viewById = this.findViewById(2131820922);
+            final View viewById = this.findViewById(2131820923);
             if (viewById != null) {
                 ((LinearLayout$LayoutParams)viewById.getLayoutParams()).topMargin = 0;
             }
@@ -385,28 +307,61 @@ public class VideoDetailsViewGroup extends LinearLayout
         return n2;
     }
     
+    protected void createActionButtons(final boolean b) {
+        if (!this.actionButtonsCreated) {
+            Object inflate;
+            if (this.myListMdp == null || this.myListSdp == null) {
+                inflate = this;
+            }
+            else {
+                ViewStub viewStub;
+                if (b) {
+                    viewStub = this.myListMdp;
+                }
+                else {
+                    viewStub = this.myListSdp;
+                }
+                inflate = viewStub.inflate();
+            }
+            this.videoActionsContainer = (LinearLayout)((View)inflate).findViewById(2131821544);
+            this.addToMyListGroup = ((View)inflate).findViewById(2131821170);
+            this.addToMyList = (TextView)((View)inflate).findViewById(2131820926);
+            this.addToMyListLabel = (TextView)((View)inflate).findViewById(2131821171);
+            this.mMovieDownloadButton = (DownloadButton)((View)inflate).findViewById(2131821086);
+            this.userRatingButton = (UserRatingButton)((View)inflate).findViewById(2131821545);
+            if (this.userRatingButton != null) {
+                this.userRatingButton.setDark(KidsUtils.getSectionTextColor(this.getContext(), VideoDetailsViewGroup$Section.ACTIONS) == -1);
+            }
+            LocalizationUtils.setRtlLayoutDirectionIfApplicable((View)this.userRatingButton);
+            this.setupVideoActionsBar();
+            this.actionButtonsCreated = true;
+            KidsUtils.manageSectionTextColor(this.addToMyList, VideoDetailsViewGroup$Section.ACTIONS);
+            KidsUtils.manageSectionTextColor(this.addToMyListLabel, VideoDetailsViewGroup$Section.ACTION_LABEL);
+        }
+    }
+    
     protected void findViews() {
-        this.myListMdp = (ViewStub)this.findViewById(2131821543);
-        this.myListSdp = (ViewStub)this.findViewById(2131821540);
+        this.myListMdp = (ViewStub)this.findViewById(2131821564);
+        this.myListSdp = (ViewStub)this.findViewById(2131821561);
         this.matchPercentage = (TextView)this.findViewById(2131820710);
         this.ratingBar = (NetflixRatingBar)this.findViewById(2131820712);
-        this.basicInfo = (TextView)this.findViewById(2131820923);
+        this.basicInfo = (TextView)this.findViewById(2131820924);
         this.episodeBadge = (TextView)this.findViewById(2131820736);
         this.episodeTitle = (TextView)this.findViewById(2131820737);
         this.supplemental = (TextView)this.findViewById(2131820750);
         this.synopsis = (TextView)this.findViewById(2131820752);
-        this.starring = (TextView)this.findViewById(2131821097);
-        this.creators = (TextView)this.findViewById(2131821098);
+        this.starring = (TextView)this.findViewById(2131821107);
+        this.creators = (TextView)this.findViewById(2131821108);
         this.horzDispImg = (TopCropImageView)this.findViewById(2131820743);
         this.title = (TextView)this.findViewById(2131820757);
-        this.imgGroup = (ViewGroup)this.findViewById(2131820926);
-        this.backgroundImg = (ImageView)this.findViewById(2131821034);
+        this.imgGroup = (ViewGroup)this.findViewById(2131820927);
+        this.backgroundImg = (ImageView)this.findViewById(2131821044);
         this.relatedTitle = (TextView)this.findViewById(2131820760);
-        this.basicInfoBadges = (TextView)this.findViewById(2131820924);
+        this.basicInfoBadges = (TextView)this.findViewById(2131820925);
         this.footerViewGroup = (ViewGroup)this.findViewById(2131820759);
-        this.copyright = (ViewGroup)this.findViewById(2131821530);
+        this.copyright = (ViewGroup)this.findViewById(2131821547);
         this.play = this.findViewById(2131820758);
-        this.infoContainer = this.findViewById(2131820922);
+        this.infoContainer = this.findViewById(2131820923);
     }
     
     public TextView getAddToMyListButton() {
@@ -434,7 +389,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     protected int getlayoutId() {
-        return 2130903336;
+        return 2130903345;
     }
     
     public void hideRelatedTitle() {
@@ -493,26 +448,15 @@ public class VideoDetailsViewGroup extends LinearLayout
         super.setVisibility(visibility);
     }
     
+    @SuppressLint({ "ERADICATE_PARAMETER_NOT_NULLABLE" })
     public void setupDownloadButton(final VideoDetails videoDetails) {
-        final NetflixActivity netflixActivity = AndroidUtils.getContextAs(this.getContext(), NetflixActivity.class);
-        if (netflixActivity == null || videoDetails == null || netflixActivity.getServiceManager() == null || !netflixActivity.getServiceManager().isReady() || AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
-            ViewUtils.setVisibleOrInvisible((View)this.mMovieDownloadButton, false);
-        }
-        else if (this.mMovieDownloadButton != null) {
-            if (netflixActivity.getServiceManager().isOfflineFeatureAvailable()) {
-                if (videoDetails.getPlayable().isAvailableOffline() && videoDetails.getType() == VideoType.MOVIE) {
-                    this.mMovieDownloadButton.setStateFromPlayable(videoDetails.getPlayable(), netflixActivity);
-                    ViewUtils.setVisibleOrInvisible((View)this.mMovieDownloadButton, true);
-                }
-                else {
-                    ViewUtils.setVisibleOrInvisible((View)this.mMovieDownloadButton, false);
-                }
-            }
-            else {
-                ViewUtils.setVisibleOrInvisible((View)this.mMovieDownloadButton, false);
-            }
+        if (this.shouldRenderDownloadButton(videoDetails)) {
+            this.mMovieDownloadButton.setStateFromPlayable(videoDetails.getPlayable(), (NetflixActivity)AndroidUtils.getContextAs(this.getContext(), NetflixActivity.class));
+            ViewUtils.setVisibleOrInvisible((View)this.mMovieDownloadButton, true);
             this.updateVideoActionsLayout();
+            return;
         }
+        ViewUtils.setVisibleOrInvisible((View)this.mMovieDownloadButton, false);
     }
     
     protected void setupImageClicks(final VideoDetails videoDetails, final NetflixActivity netflixActivity) {
@@ -521,6 +465,27 @@ public class VideoDetailsViewGroup extends LinearLayout
         }
         this.horzDispImg.requestFocus();
         this.horzDispImg.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(this.horzDispImg.getPressedStateHandler(), this.onCWClickListener));
+    }
+    
+    protected void setupVideoActionsBar() {
+        if (!Ratings.isAndroidThumbActive()) {
+            ViewUtils.setVisibleOrGone((View)this.userRatingButton, false);
+            ViewUtils.setVisibleOrGone((View)this.matchPercentage, false);
+        }
+        else {
+            ViewUtils.setVisibleOrGone((View)this.ratingBar, false);
+        }
+        this.updateVideoActionsLayout();
+    }
+    
+    protected boolean shouldRenderDownloadButton(final VideoDetails videoDetails) {
+        if (videoDetails != null && videoDetails.getType() == VideoType.MOVIE) {
+            final NetflixActivity netflixActivity = AndroidUtils.getContextAs(this.getContext(), NetflixActivity.class);
+            if (netflixActivity != null && videoDetails != null && netflixActivity.getServiceManager() != null && netflixActivity.getServiceManager().isReady() && !AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
+                return this.mMovieDownloadButton != null && netflixActivity.getServiceManager().isOfflineFeatureAvailable() && videoDetails.getPlayable().isAvailableOffline();
+            }
+        }
+        return false;
     }
     
     public void showRelatedTitle() {
@@ -608,12 +573,12 @@ public class VideoDetailsViewGroup extends LinearLayout
         }
     }
     
+    @SuppressLint({ "ERADICATE_PARAMETER_NOT_NULLABLE" })
     public void updateDownloadButtonIfExists(final VideoDetails videoDetails) {
-        final NetflixActivity netflixActivity = AndroidUtils.getContextAs(this.getContext(), NetflixActivity.class);
-        if (netflixActivity != null && videoDetails != null && netflixActivity.getServiceManager() != null && netflixActivity.getServiceManager().isReady() && !AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity) && this.mMovieDownloadButton != null && netflixActivity.getServiceManager().isOfflineFeatureAvailable()) {
+        if (this.shouldRenderDownloadButton(videoDetails)) {
             this.mMovieDownloadButton.setVisibility(0);
             this.mMovieDownloadButton.setEnabled(true);
-            this.mMovieDownloadButton.setStateFromPlayable(videoDetails.getPlayable(), netflixActivity);
+            this.mMovieDownloadButton.setStateFromPlayable(videoDetails.getPlayable(), (NetflixActivity)AndroidUtils.getContextAs(this.getContext(), NetflixActivity.class));
             this.updateVideoActionsLayout();
         }
     }
@@ -637,15 +602,19 @@ public class VideoDetailsViewGroup extends LinearLayout
         final String currentEpisodeTitle = showDetails.getCurrentEpisodeTitle();
         LoMoUtils.toggleEpisodeBadge((List)showDetails.getCurrentEpisodeBadges(), this.episodeBadge);
         if (currentEpisodeTitle != null) {
-            this.episodeTitle.setText((CharSequence)this.getResources().getString(2131296646, new Object[] { currentEpisodeTitle }));
-            this.supplemental.setText((CharSequence)showDetails.getSupplementalMessage());
-            this.supplemental.setVisibility(0);
+            this.episodeTitle.setText((CharSequence)this.getResources().getString(2131296643, new Object[] { currentEpisodeTitle }));
+            if (this.supplemental != null) {
+                this.supplemental.setText((CharSequence)showDetails.getSupplementalMessage());
+                this.supplemental.setVisibility(0);
+            }
             this.starring.setVisibility(8);
             this.creators.setVisibility(8);
         }
         else {
             this.episodeTitle.setText((CharSequence)showDetails.getSupplementalMessage());
-            this.supplemental.setVisibility(8);
+            if (this.supplemental != null) {
+                this.supplemental.setVisibility(8);
+            }
             this.starring.setVisibility(0);
             this.creators.setVisibility(0);
         }
@@ -653,9 +622,25 @@ public class VideoDetailsViewGroup extends LinearLayout
         KidsUtils.setTextColorIfApplicable(this.supplemental);
     }
     
+    public void updateRating(final VideoDetails videoDetails) {
+        final NetflixRatingBar$RatingBarDataProvider ratingBarDataProviderSafely = ViewUtils.getRatingBarDataProviderSafely((View)this);
+        if (this.ratingBar != null) {
+            this.ratingBar.update(ratingBarDataProviderSafely, videoDetails);
+        }
+        if (this.userRatingButton != null) {
+            final NetflixActivity netflixActivity = AndroidUtils.getContextAs(this.getContext(), NetflixActivity.class);
+            if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
+                final CoordinatorLayout coordinatorLayout = (CoordinatorLayout)netflixActivity.findViewById(2131820947);
+                this.userRatingButton.setRating(videoDetails.getUserThumbRating());
+                this.userRatingButton.setOnRateListener(coordinatorLayout, new VideoDetailsViewGroup$4(this, netflixActivity, ratingBarDataProviderSafely, videoDetails), true, 1);
+                this.updateMatchPercentage(videoDetails.getUserThumbRating(), false);
+            }
+        }
+    }
+    
     protected void updateRelatedTitle(final VideoDetails videoDetails) {
         if (this.relatedTitle != null) {
-            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131296797, new Object[] { videoDetails.getTitle() }));
+            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131296793, new Object[] { videoDetails.getTitle() }));
             KidsUtils.manageSectionTextColor(this.relatedTitle, VideoDetailsViewGroup$Section.TITLE);
         }
     }
@@ -684,6 +669,21 @@ public class VideoDetailsViewGroup extends LinearLayout
         if (this.title != null) {
             this.title.setText((CharSequence)videoDetails.getTitle());
             KidsUtils.manageSectionTextColor(this.title, VideoDetailsViewGroup$Section.TITLE);
+        }
+    }
+    
+    protected void updateVideoActionsLayout() {
+        if (this.videoActionsContainer != null) {
+            if (this.videoActionsContainer.getChildCount() < 3) {
+                throw new IllegalStateException("At least 3 buttons expected in the video actions");
+            }
+            final int max = Math.max(Math.min(this.getMeasuredWidth() / 4, this.getResources().getDimensionPixelSize(2131427942)), this.getResources().getDimensionPixelSize(2131427943));
+            for (int i = 0; i < this.videoActionsContainer.getChildCount(); ++i) {
+                this.videoActionsContainer.getChildAt(i).setVisibility(4);
+            }
+            updateButtonLayout((View)this.mMovieDownloadButton, max);
+            updateButtonLayout((View)this.userRatingButton, max);
+            updateButtonLayout(this.addToMyListGroup, max);
         }
     }
 }

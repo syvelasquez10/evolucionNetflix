@@ -23,7 +23,7 @@ public interface ServiceAgent$BrowseAgentInterface
     
     void fetchFalkorVideo(final String p0, final BrowseAgentCallback p1);
     
-    void fetchIQ(final int p0, final boolean p1, final BrowseAgentCallback p2);
+    void fetchIQ(final int p0, final boolean p1, final boolean p2, final BrowseAgentCallback p3);
     
     void fetchInteractiveVideoMoments(final VideoType p0, final String p1, final String p2, final int p3, final int p4, final BrowseAgentCallback p5);
     

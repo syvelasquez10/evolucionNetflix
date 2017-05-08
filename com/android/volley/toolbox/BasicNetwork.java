@@ -347,445 +347,444 @@ public class BasicNetwork implements Network
         // 
         //     0: invokestatic    android/os/SystemClock.elapsedRealtime:()J
         //     3: lstore_3       
-        //     4: aconst_null    
-        //     5: astore          8
-        //     7: aconst_null    
-        //     8: astore          11
-        //    10: new             Ljava/util/HashMap;
-        //    13: dup            
-        //    14: invokespecial   java/util/HashMap.<init>:()V
-        //    17: astore          9
-        //    19: new             Ljava/util/HashMap;
-        //    22: dup            
-        //    23: invokespecial   java/util/HashMap.<init>:()V
-        //    26: astore          7
-        //    28: aload_0        
-        //    29: aload           7
-        //    31: aload_1        
-        //    32: invokevirtual   com/android/volley/Request.getCacheEntry:()Lcom/android/volley/Cache$Entry;
-        //    35: invokespecial   com/android/volley/toolbox/BasicNetwork.addCacheHeaders:(Ljava/util/Map;Lcom/android/volley/Cache$Entry;)V
-        //    38: aload_0        
-        //    39: getfield        com/android/volley/toolbox/BasicNetwork.mHttpStack:Lcom/android/volley/toolbox/HttpStack;
-        //    42: aload_1        
-        //    43: aload           7
-        //    45: invokeinterface com/android/volley/toolbox/HttpStack.performRequest:(Lcom/android/volley/Request;Ljava/util/Map;)Lorg/apache/http/HttpResponse;
-        //    50: astore          7
-        //    52: aload           7
-        //    54: invokeinterface org/apache/http/HttpResponse.getStatusLine:()Lorg/apache/http/StatusLine;
-        //    59: astore          12
-        //    61: aload           12
-        //    63: invokeinterface org/apache/http/StatusLine.getStatusCode:()I
-        //    68: istore_2       
-        //    69: ldc_w           "Http status: %d"
-        //    72: iconst_1       
-        //    73: anewarray       Ljava/lang/Object;
-        //    76: dup            
-        //    77: iconst_0       
-        //    78: iload_2        
-        //    79: invokestatic    java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
-        //    82: aastore        
-        //    83: invokestatic    com/android/volley/VolleyLog.d:(Ljava/lang/String;[Ljava/lang/Object;)V
-        //    86: iload_2        
-        //    87: sipush          500
-        //    90: if_icmpne       124
-        //    93: new             Ljava/net/HttpRetryException;
-        //    96: dup            
-        //    97: ldc_w           "retry"
-        //   100: iload_2        
-        //   101: invokespecial   java/net/HttpRetryException.<init>:(Ljava/lang/String;I)V
-        //   104: athrow         
-        //   105: astore          7
-        //   107: ldc_w           "Http500"
-        //   110: aload_1        
-        //   111: new             Lcom/android/volley/TimeoutError;
-        //   114: dup            
-        //   115: invokespecial   com/android/volley/TimeoutError.<init>:()V
-        //   118: invokestatic    com/android/volley/toolbox/BasicNetwork.attemptRetryOnException:(Ljava/lang/String;Lcom/android/volley/Request;Lcom/android/volley/VolleyError;)V
-        //   121: goto            4
-        //   124: iload_2        
-        //   125: sipush          410
-        //   128: if_icmpne       174
-        //   131: aload_0        
-        //   132: aload           7
-        //   134: invokevirtual   com/android/volley/toolbox/BasicNetwork.getRedirectedHost:(Lorg/apache/http/HttpResponse;)Ljava/lang/String;
-        //   137: astore          8
-        //   139: aload_1        
-        //   140: aload           8
-        //   142: invokevirtual   com/android/volley/Request.changeHostUrl:(Ljava/lang/String;)V
-        //   145: new             Lorg/apache/http/client/RedirectException;
-        //   148: dup            
-        //   149: aload           8
-        //   151: invokespecial   org/apache/http/client/RedirectException.<init>:(Ljava/lang/String;)V
-        //   154: athrow         
-        //   155: astore          7
-        //   157: ldc_w           "socket"
-        //   160: aload_1        
-        //   161: new             Lcom/android/volley/TimeoutError;
-        //   164: dup            
-        //   165: invokespecial   com/android/volley/TimeoutError.<init>:()V
-        //   168: invokestatic    com/android/volley/toolbox/BasicNetwork.attemptRetryOnException:(Ljava/lang/String;Lcom/android/volley/Request;Lcom/android/volley/VolleyError;)V
-        //   171: goto            4
-        //   174: aload           7
-        //   176: invokeinterface org/apache/http/HttpResponse.getAllHeaders:()[Lorg/apache/http/Header;
-        //   181: invokestatic    com/android/volley/toolbox/BasicNetwork.convertHeaders:([Lorg/apache/http/Header;)Ljava/util/Map;
-        //   184: astore          8
-        //   186: iload_2        
-        //   187: sipush          301
-        //   190: if_icmpeq       207
-        //   193: iload_2        
-        //   194: sipush          302
-        //   197: if_icmpeq       207
-        //   200: iload_2        
-        //   201: sipush          307
-        //   204: if_icmpne       305
-        //   207: aload           8
-        //   209: ldc_w           "Location"
-        //   212: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
-        //   217: checkcast       Ljava/lang/String;
-        //   220: astore          9
+        //     4: new             Ljava/util/HashMap;
+        //     7: dup            
+        //     8: invokespecial   java/util/HashMap.<init>:()V
+        //    11: astore          9
+        //    13: new             Ljava/util/HashMap;
+        //    16: dup            
+        //    17: invokespecial   java/util/HashMap.<init>:()V
+        //    20: astore          7
+        //    22: aload_0        
+        //    23: aload           7
+        //    25: aload_1        
+        //    26: invokevirtual   com/android/volley/Request.getCacheEntry:()Lcom/android/volley/Cache$Entry;
+        //    29: invokespecial   com/android/volley/toolbox/BasicNetwork.addCacheHeaders:(Ljava/util/Map;Lcom/android/volley/Cache$Entry;)V
+        //    32: aload_0        
+        //    33: getfield        com/android/volley/toolbox/BasicNetwork.mHttpStack:Lcom/android/volley/toolbox/HttpStack;
+        //    36: aload_1        
+        //    37: aload           7
+        //    39: invokeinterface com/android/volley/toolbox/HttpStack.performRequest:(Lcom/android/volley/Request;Ljava/util/Map;)Lorg/apache/http/HttpResponse;
+        //    44: astore          7
+        //    46: aload           7
+        //    48: invokeinterface org/apache/http/HttpResponse.getStatusLine:()Lorg/apache/http/StatusLine;
+        //    53: astore          11
+        //    55: aload           11
+        //    57: invokeinterface org/apache/http/StatusLine.getStatusCode:()I
+        //    62: istore_2       
+        //    63: ldc_w           "Http status: %d"
+        //    66: iconst_1       
+        //    67: anewarray       Ljava/lang/Object;
+        //    70: dup            
+        //    71: iconst_0       
+        //    72: iload_2        
+        //    73: invokestatic    java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+        //    76: aastore        
+        //    77: invokestatic    com/android/volley/VolleyLog.d:(Ljava/lang/String;[Ljava/lang/Object;)V
+        //    80: iload_2        
+        //    81: sipush          500
+        //    84: if_icmpne       118
+        //    87: new             Ljava/net/HttpRetryException;
+        //    90: dup            
+        //    91: ldc_w           "retry"
+        //    94: iload_2        
+        //    95: invokespecial   java/net/HttpRetryException.<init>:(Ljava/lang/String;I)V
+        //    98: athrow         
+        //    99: astore          7
+        //   101: ldc_w           "Http500"
+        //   104: aload_1        
+        //   105: new             Lcom/android/volley/TimeoutError;
+        //   108: dup            
+        //   109: invokespecial   com/android/volley/TimeoutError.<init>:()V
+        //   112: invokestatic    com/android/volley/toolbox/BasicNetwork.attemptRetryOnException:(Ljava/lang/String;Lcom/android/volley/Request;Lcom/android/volley/VolleyError;)V
+        //   115: goto            4
+        //   118: iload_2        
+        //   119: sipush          410
+        //   122: if_icmpne       168
+        //   125: aload_0        
+        //   126: aload           7
+        //   128: invokevirtual   com/android/volley/toolbox/BasicNetwork.getRedirectedHost:(Lorg/apache/http/HttpResponse;)Ljava/lang/String;
+        //   131: astore          8
+        //   133: aload_1        
+        //   134: aload           8
+        //   136: invokevirtual   com/android/volley/Request.changeHostUrl:(Ljava/lang/String;)V
+        //   139: new             Lorg/apache/http/client/RedirectException;
+        //   142: dup            
+        //   143: aload           8
+        //   145: invokespecial   org/apache/http/client/RedirectException.<init>:(Ljava/lang/String;)V
+        //   148: athrow         
+        //   149: astore          7
+        //   151: ldc_w           "socket"
+        //   154: aload_1        
+        //   155: new             Lcom/android/volley/TimeoutError;
+        //   158: dup            
+        //   159: invokespecial   com/android/volley/TimeoutError.<init>:()V
+        //   162: invokestatic    com/android/volley/toolbox/BasicNetwork.attemptRetryOnException:(Ljava/lang/String;Lcom/android/volley/Request;Lcom/android/volley/VolleyError;)V
+        //   165: goto            4
+        //   168: aload           7
+        //   170: invokeinterface org/apache/http/HttpResponse.getAllHeaders:()[Lorg/apache/http/Header;
+        //   175: invokestatic    com/android/volley/toolbox/BasicNetwork.convertHeaders:([Lorg/apache/http/Header;)Ljava/util/Map;
+        //   178: astore          8
+        //   180: iload_2        
+        //   181: sipush          301
+        //   184: if_icmpeq       201
+        //   187: iload_2        
+        //   188: sipush          302
+        //   191: if_icmpeq       201
+        //   194: iload_2        
+        //   195: sipush          307
+        //   198: if_icmpne       299
+        //   201: aload           8
+        //   203: ldc_w           "Location"
+        //   206: invokeinterface java/util/Map.get:(Ljava/lang/Object;)Ljava/lang/Object;
+        //   211: checkcast       Ljava/lang/String;
+        //   214: astore          9
+        //   216: aload           9
+        //   218: ifnull          256
+        //   221: aload_1        
         //   222: aload           9
-        //   224: ifnull          262
-        //   227: aload_1        
-        //   228: aload           9
-        //   230: invokevirtual   com/android/volley/Request.changeToRedirectedUrl:(Ljava/lang/String;)V
-        //   233: new             Lorg/apache/http/client/RedirectException;
-        //   236: dup            
-        //   237: aload           9
-        //   239: invokespecial   org/apache/http/client/RedirectException.<init>:(Ljava/lang/String;)V
-        //   242: athrow         
-        //   243: astore          7
-        //   245: ldc_w           "connection"
-        //   248: aload_1        
-        //   249: new             Lcom/android/volley/TimeoutError;
-        //   252: dup            
-        //   253: invokespecial   com/android/volley/TimeoutError.<init>:()V
-        //   256: invokestatic    com/android/volley/toolbox/BasicNetwork.attemptRetryOnException:(Ljava/lang/String;Lcom/android/volley/Request;Lcom/android/volley/VolleyError;)V
-        //   259: goto            4
-        //   262: new             Ljava/io/IOException;
-        //   265: dup            
-        //   266: invokespecial   java/io/IOException.<init>:()V
-        //   269: athrow         
-        //   270: astore          7
-        //   272: new             Ljava/lang/RuntimeException;
-        //   275: dup            
-        //   276: new             Ljava/lang/StringBuilder;
-        //   279: dup            
-        //   280: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   283: ldc_w           "Bad URL "
-        //   286: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   289: aload_1        
-        //   290: invokevirtual   com/android/volley/Request.getUrl:()Ljava/lang/String;
-        //   293: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   296: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   299: aload           7
-        //   301: invokespecial   java/lang/RuntimeException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
-        //   304: athrow         
-        //   305: iload_2        
-        //   306: sipush          304
-        //   309: if_icmpne       333
-        //   312: new             Lcom/android/volley/NetworkResponse;
-        //   315: dup            
-        //   316: sipush          304
-        //   319: aload_1        
-        //   320: invokevirtual   com/android/volley/Request.getCacheEntry:()Lcom/android/volley/Cache$Entry;
-        //   323: getfield        com/android/volley/Cache$Entry.data:[B
-        //   326: aload           8
-        //   328: iconst_1       
-        //   329: invokespecial   com/android/volley/NetworkResponse.<init>:(I[BLjava/util/Map;Z)V
-        //   332: areturn        
-        //   333: aload_1        
-        //   334: instanceof      Lcom/android/volley/toolbox/ProgressiveRequest;
-        //   337: ifeq            478
-        //   340: new             Lcom/android/volley/toolbox/ProgressiveNetworkResponse;
-        //   343: dup            
-        //   344: iload_2        
-        //   345: aload           7
-        //   347: invokeinterface org/apache/http/HttpResponse.getEntity:()Lorg/apache/http/HttpEntity;
-        //   352: aload           8
+        //   224: invokevirtual   com/android/volley/Request.changeToRedirectedUrl:(Ljava/lang/String;)V
+        //   227: new             Lorg/apache/http/client/RedirectException;
+        //   230: dup            
+        //   231: aload           9
+        //   233: invokespecial   org/apache/http/client/RedirectException.<init>:(Ljava/lang/String;)V
+        //   236: athrow         
+        //   237: astore          7
+        //   239: ldc_w           "connection"
+        //   242: aload_1        
+        //   243: new             Lcom/android/volley/TimeoutError;
+        //   246: dup            
+        //   247: invokespecial   com/android/volley/TimeoutError.<init>:()V
+        //   250: invokestatic    com/android/volley/toolbox/BasicNetwork.attemptRetryOnException:(Ljava/lang/String;Lcom/android/volley/Request;Lcom/android/volley/VolleyError;)V
+        //   253: goto            4
+        //   256: new             Ljava/io/IOException;
+        //   259: dup            
+        //   260: invokespecial   java/io/IOException.<init>:()V
+        //   263: athrow         
+        //   264: astore          7
+        //   266: new             Ljava/lang/RuntimeException;
+        //   269: dup            
+        //   270: new             Ljava/lang/StringBuilder;
+        //   273: dup            
+        //   274: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   277: ldc_w           "Bad URL "
+        //   280: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   283: aload_1        
+        //   284: invokevirtual   com/android/volley/Request.getUrl:()Ljava/lang/String;
+        //   287: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   290: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   293: aload           7
+        //   295: invokespecial   java/lang/RuntimeException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   298: athrow         
+        //   299: iload_2        
+        //   300: sipush          304
+        //   303: if_icmpne       327
+        //   306: new             Lcom/android/volley/NetworkResponse;
+        //   309: dup            
+        //   310: sipush          304
+        //   313: aload_1        
+        //   314: invokevirtual   com/android/volley/Request.getCacheEntry:()Lcom/android/volley/Cache$Entry;
+        //   317: getfield        com/android/volley/Cache$Entry.data:[B
+        //   320: aload           8
+        //   322: iconst_1       
+        //   323: invokespecial   com/android/volley/NetworkResponse.<init>:(I[BLjava/util/Map;Z)V
+        //   326: areturn        
+        //   327: aload_1        
+        //   328: instanceof      Lcom/android/volley/toolbox/ProgressiveRequest;
+        //   331: ifeq            472
+        //   334: new             Lcom/android/volley/toolbox/ProgressiveNetworkResponse;
+        //   337: dup            
+        //   338: iload_2        
+        //   339: aload           7
+        //   341: invokeinterface org/apache/http/HttpResponse.getEntity:()Lorg/apache/http/HttpEntity;
+        //   346: aload           8
+        //   348: iconst_0       
+        //   349: invokespecial   com/android/volley/toolbox/ProgressiveNetworkResponse.<init>:(ILorg/apache/http/HttpEntity;Ljava/util/Map;Z)V
+        //   352: astore          10
         //   354: iconst_0       
-        //   355: invokespecial   com/android/volley/toolbox/ProgressiveNetworkResponse.<init>:(ILorg/apache/http/HttpEntity;Ljava/util/Map;Z)V
-        //   358: astore          10
-        //   360: iconst_0       
-        //   361: newarray        B
-        //   363: astore          9
-        //   365: invokestatic    android/os/SystemClock.elapsedRealtime:()J
-        //   368: lload_3        
-        //   369: lsub           
-        //   370: lstore          5
-        //   372: aload_0        
-        //   373: lload           5
-        //   375: aload_1        
-        //   376: aload           10
-        //   378: aload           12
-        //   380: invokespecial   com/android/volley/toolbox/BasicNetwork.logSlowRequests:(JLcom/android/volley/Request;Lcom/android/volley/NetworkResponse;Lorg/apache/http/StatusLine;)V
-        //   383: aload_0        
-        //   384: aload_1        
-        //   385: aload           9
-        //   387: arraylength    
-        //   388: lload           5
-        //   390: invokespecial   com/android/volley/toolbox/BasicNetwork.collectNetworkStats:(Lcom/android/volley/Request;IJ)V
-        //   393: iload_2        
-        //   394: sipush          200
-        //   397: if_icmpeq       747
-        //   400: iload_2        
-        //   401: sipush          204
-        //   404: if_icmpeq       747
-        //   407: iload_2        
-        //   408: sipush          206
-        //   411: if_icmpeq       747
-        //   414: iload_2        
-        //   415: sipush          202
-        //   418: if_icmpeq       747
-        //   421: aload           10
-        //   423: instanceof      Lcom/android/volley/toolbox/ProgressiveNetworkResponse;
-        //   426: ifeq            446
-        //   429: aload           10
-        //   431: checkcast       Lcom/android/volley/toolbox/ProgressiveNetworkResponse;
-        //   434: invokevirtual   com/android/volley/toolbox/ProgressiveNetworkResponse.getHttpEntity:()Lorg/apache/http/HttpEntity;
-        //   437: invokeinterface org/apache/http/HttpEntity.consumeContent:()V
-        //   442: aload_1        
-        //   443: invokevirtual   com/android/volley/Request.releaseResources:()V
-        //   446: new             Ljava/io/IOException;
-        //   449: dup            
-        //   450: invokespecial   java/io/IOException.<init>:()V
-        //   453: athrow         
-        //   454: astore          7
-        //   456: ldc_w           "redirect"
-        //   459: aload_1        
-        //   460: new             Lcom/android/volley/VolleyError;
-        //   463: dup            
-        //   464: aload           7
-        //   466: invokevirtual   org/apache/http/client/RedirectException.getMessage:()Ljava/lang/String;
-        //   469: invokespecial   com/android/volley/VolleyError.<init>:(Ljava/lang/String;)V
-        //   472: invokestatic    com/android/volley/toolbox/BasicNetwork.attemptRetryOnException:(Ljava/lang/String;Lcom/android/volley/Request;Lcom/android/volley/VolleyError;)V
-        //   475: goto            4
-        //   478: aload_0        
-        //   479: aload           7
-        //   481: invokeinterface org/apache/http/HttpResponse.getEntity:()Lorg/apache/http/HttpEntity;
-        //   486: aload_1        
-        //   487: invokespecial   com/android/volley/toolbox/BasicNetwork.entityToBytes:(Lorg/apache/http/HttpEntity;Lcom/android/volley/Request;)[B
-        //   490: astore          10
-        //   492: new             Lcom/android/volley/NetworkResponse;
-        //   495: dup            
-        //   496: iload_2        
-        //   497: aload           10
-        //   499: aload           8
-        //   501: iconst_0       
-        //   502: invokespecial   com/android/volley/NetworkResponse.<init>:(I[BLjava/util/Map;Z)V
-        //   505: astore          11
-        //   507: aload           10
-        //   509: astore          9
-        //   511: aload           11
-        //   513: astore          10
-        //   515: goto            365
-        //   518: astore          7
-        //   520: aload           11
-        //   522: astore          10
-        //   524: ldc_w           "ioexception:"
-        //   527: iconst_1       
-        //   528: anewarray       Ljava/lang/Object;
-        //   531: dup            
-        //   532: iconst_0       
-        //   533: aload           7
-        //   535: aastore        
-        //   536: invokestatic    com/android/volley/VolleyLog.e:(Ljava/lang/String;[Ljava/lang/Object;)V
-        //   539: aload           8
-        //   541: ifnull          634
-        //   544: aload           8
-        //   546: invokeinterface org/apache/http/HttpResponse.getStatusLine:()Lorg/apache/http/StatusLine;
-        //   551: invokeinterface org/apache/http/StatusLine.getStatusCode:()I
-        //   556: istore_2       
-        //   557: ldc_w           "Unexpected response code %d for %s"
-        //   560: iconst_2       
-        //   561: anewarray       Ljava/lang/Object;
-        //   564: dup            
-        //   565: iconst_0       
-        //   566: iload_2        
-        //   567: invokestatic    java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
-        //   570: aastore        
-        //   571: dup            
-        //   572: iconst_1       
-        //   573: aload_1        
-        //   574: invokevirtual   com/android/volley/Request.getUrl:()Ljava/lang/String;
-        //   577: aastore        
-        //   578: invokestatic    com/android/volley/VolleyLog.e:(Ljava/lang/String;[Ljava/lang/Object;)V
-        //   581: aload           10
-        //   583: ifnull          654
-        //   586: new             Lcom/android/volley/NetworkResponse;
-        //   589: dup            
-        //   590: iload_2        
-        //   591: aload           10
-        //   593: aload           9
-        //   595: iconst_0       
-        //   596: invokespecial   com/android/volley/NetworkResponse.<init>:(I[BLjava/util/Map;Z)V
-        //   599: astore          7
-        //   601: iload_2        
-        //   602: sipush          401
-        //   605: if_icmpeq       615
-        //   608: iload_2        
-        //   609: sipush          403
-        //   612: if_icmpne       644
-        //   615: ldc_w           "auth"
-        //   618: aload_1        
-        //   619: new             Lcom/android/volley/AuthFailureError;
-        //   622: dup            
-        //   623: aload           7
-        //   625: invokespecial   com/android/volley/AuthFailureError.<init>:(Lcom/android/volley/NetworkResponse;)V
-        //   628: invokestatic    com/android/volley/toolbox/BasicNetwork.attemptRetryOnException:(Ljava/lang/String;Lcom/android/volley/Request;Lcom/android/volley/VolleyError;)V
-        //   631: goto            4
-        //   634: new             Lcom/android/volley/NoConnectionError;
-        //   637: dup            
-        //   638: aload           7
-        //   640: invokespecial   com/android/volley/NoConnectionError.<init>:(Ljava/lang/Throwable;)V
-        //   643: athrow         
-        //   644: new             Lcom/android/volley/ServerError;
-        //   647: dup            
-        //   648: aload           7
-        //   650: invokespecial   com/android/volley/ServerError.<init>:(Lcom/android/volley/NetworkResponse;)V
-        //   653: athrow         
-        //   654: new             Lcom/android/volley/NetworkError;
-        //   657: dup            
-        //   658: aconst_null    
-        //   659: invokespecial   com/android/volley/NetworkError.<init>:(Lcom/android/volley/NetworkResponse;)V
-        //   662: athrow         
-        //   663: astore          10
-        //   665: aload           7
-        //   667: astore          8
-        //   669: aload           10
-        //   671: astore          7
-        //   673: aload           11
-        //   675: astore          10
-        //   677: goto            524
-        //   680: astore          10
-        //   682: aload           8
-        //   684: astore          9
-        //   686: aload           7
-        //   688: astore          8
-        //   690: aload           10
-        //   692: astore          7
-        //   694: aload           11
-        //   696: astore          10
-        //   698: goto            524
-        //   701: astore          9
+        //   355: newarray        B
+        //   357: astore          9
+        //   359: invokestatic    android/os/SystemClock.elapsedRealtime:()J
+        //   362: lload_3        
+        //   363: lsub           
+        //   364: lstore          5
+        //   366: aload_0        
+        //   367: lload           5
+        //   369: aload_1        
+        //   370: aload           10
+        //   372: aload           11
+        //   374: invokespecial   com/android/volley/toolbox/BasicNetwork.logSlowRequests:(JLcom/android/volley/Request;Lcom/android/volley/NetworkResponse;Lorg/apache/http/StatusLine;)V
+        //   377: aload_0        
+        //   378: aload_1        
+        //   379: aload           9
+        //   381: arraylength    
+        //   382: lload           5
+        //   384: invokespecial   com/android/volley/toolbox/BasicNetwork.collectNetworkStats:(Lcom/android/volley/Request;IJ)V
+        //   387: iload_2        
+        //   388: sipush          200
+        //   391: if_icmpeq       748
+        //   394: iload_2        
+        //   395: sipush          204
+        //   398: if_icmpeq       748
+        //   401: iload_2        
+        //   402: sipush          206
+        //   405: if_icmpeq       748
+        //   408: iload_2        
+        //   409: sipush          202
+        //   412: if_icmpeq       748
+        //   415: aload           10
+        //   417: instanceof      Lcom/android/volley/toolbox/ProgressiveNetworkResponse;
+        //   420: ifeq            440
+        //   423: aload           10
+        //   425: checkcast       Lcom/android/volley/toolbox/ProgressiveNetworkResponse;
+        //   428: invokevirtual   com/android/volley/toolbox/ProgressiveNetworkResponse.getHttpEntity:()Lorg/apache/http/HttpEntity;
+        //   431: invokeinterface org/apache/http/HttpEntity.consumeContent:()V
+        //   436: aload_1        
+        //   437: invokevirtual   com/android/volley/Request.releaseResources:()V
+        //   440: new             Ljava/io/IOException;
+        //   443: dup            
+        //   444: invokespecial   java/io/IOException.<init>:()V
+        //   447: athrow         
+        //   448: astore          7
+        //   450: ldc_w           "redirect"
+        //   453: aload_1        
+        //   454: new             Lcom/android/volley/VolleyError;
+        //   457: dup            
+        //   458: aload           7
+        //   460: invokevirtual   org/apache/http/client/RedirectException.getMessage:()Ljava/lang/String;
+        //   463: invokespecial   com/android/volley/VolleyError.<init>:(Ljava/lang/String;)V
+        //   466: invokestatic    com/android/volley/toolbox/BasicNetwork.attemptRetryOnException:(Ljava/lang/String;Lcom/android/volley/Request;Lcom/android/volley/VolleyError;)V
+        //   469: goto            4
+        //   472: aload_0        
+        //   473: aload           7
+        //   475: invokeinterface org/apache/http/HttpResponse.getEntity:()Lorg/apache/http/HttpEntity;
+        //   480: aload_1        
+        //   481: invokespecial   com/android/volley/toolbox/BasicNetwork.entityToBytes:(Lorg/apache/http/HttpEntity;Lcom/android/volley/Request;)[B
+        //   484: astore          9
+        //   486: new             Lcom/android/volley/NetworkResponse;
+        //   489: dup            
+        //   490: iload_2        
+        //   491: aload           9
+        //   493: aload           8
+        //   495: iconst_0       
+        //   496: invokespecial   com/android/volley/NetworkResponse.<init>:(I[BLjava/util/Map;Z)V
+        //   499: astore          10
+        //   501: goto            359
+        //   504: astore          7
+        //   506: aconst_null    
+        //   507: astore          10
+        //   509: aconst_null    
+        //   510: astore          11
+        //   512: aload           9
+        //   514: astore          8
+        //   516: aload           11
+        //   518: astore          9
+        //   520: ldc_w           "ioexception:"
+        //   523: iconst_1       
+        //   524: anewarray       Ljava/lang/Object;
+        //   527: dup            
+        //   528: iconst_0       
+        //   529: aload           7
+        //   531: aastore        
+        //   532: invokestatic    com/android/volley/VolleyLog.e:(Ljava/lang/String;[Ljava/lang/Object;)V
+        //   535: iconst_0       
+        //   536: istore_2       
+        //   537: aload           10
+        //   539: ifnull          555
+        //   542: aload           10
+        //   544: invokeinterface org/apache/http/HttpResponse.getStatusLine:()Lorg/apache/http/StatusLine;
+        //   549: invokeinterface org/apache/http/StatusLine.getStatusCode:()I
+        //   554: istore_2       
+        //   555: ldc_w           "Unexpected response code %d for %s"
+        //   558: iconst_2       
+        //   559: anewarray       Ljava/lang/Object;
+        //   562: dup            
+        //   563: iconst_0       
+        //   564: iload_2        
+        //   565: invokestatic    java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+        //   568: aastore        
+        //   569: dup            
+        //   570: iconst_1       
+        //   571: aload_1        
+        //   572: invokevirtual   com/android/volley/Request.getUrl:()Ljava/lang/String;
+        //   575: aastore        
+        //   576: invokestatic    com/android/volley/VolleyLog.e:(Ljava/lang/String;[Ljava/lang/Object;)V
+        //   579: aload           9
+        //   581: ifnull          642
+        //   584: new             Lcom/android/volley/NetworkResponse;
+        //   587: dup            
+        //   588: iload_2        
+        //   589: aload           9
+        //   591: aload           8
+        //   593: iconst_0       
+        //   594: invokespecial   com/android/volley/NetworkResponse.<init>:(I[BLjava/util/Map;Z)V
+        //   597: astore          7
+        //   599: iload_2        
+        //   600: sipush          401
+        //   603: if_icmpeq       613
+        //   606: iload_2        
+        //   607: sipush          403
+        //   610: if_icmpne       632
+        //   613: ldc_w           "auth"
+        //   616: aload_1        
+        //   617: new             Lcom/android/volley/AuthFailureError;
+        //   620: dup            
+        //   621: aload           7
+        //   623: invokespecial   com/android/volley/AuthFailureError.<init>:(Lcom/android/volley/NetworkResponse;)V
+        //   626: invokestatic    com/android/volley/toolbox/BasicNetwork.attemptRetryOnException:(Ljava/lang/String;Lcom/android/volley/Request;Lcom/android/volley/VolleyError;)V
+        //   629: goto            4
+        //   632: new             Lcom/android/volley/ServerError;
+        //   635: dup            
+        //   636: aload           7
+        //   638: invokespecial   com/android/volley/ServerError.<init>:(Lcom/android/volley/NetworkResponse;)V
+        //   641: athrow         
+        //   642: ldc_w           "retrying"
+        //   645: iconst_0       
+        //   646: anewarray       Ljava/lang/Object;
+        //   649: invokestatic    com/android/volley/VolleyLog.e:(Ljava/lang/String;[Ljava/lang/Object;)V
+        //   652: ldc_w           "IOException"
+        //   655: aload_1        
+        //   656: new             Lcom/android/volley/VolleyError;
+        //   659: dup            
+        //   660: aload           7
+        //   662: invokevirtual   java/io/IOException.getMessage:()Ljava/lang/String;
+        //   665: invokespecial   com/android/volley/VolleyError.<init>:(Ljava/lang/String;)V
+        //   668: invokestatic    com/android/volley/toolbox/BasicNetwork.attemptRetryOnException:(Ljava/lang/String;Lcom/android/volley/Request;Lcom/android/volley/VolleyError;)V
+        //   671: goto            4
+        //   674: astore          12
+        //   676: aconst_null    
+        //   677: astore          11
+        //   679: aload           7
+        //   681: astore          10
+        //   683: aload           9
+        //   685: astore          8
+        //   687: aload           12
+        //   689: astore          7
+        //   691: aload           11
+        //   693: astore          9
+        //   695: goto            520
+        //   698: astore          9
+        //   700: aconst_null    
+        //   701: astore          11
         //   703: aload           7
-        //   705: astore          11
+        //   705: astore          10
         //   707: aload           9
         //   709: astore          7
-        //   711: aload           8
+        //   711: aload           11
         //   713: astore          9
-        //   715: aload           11
-        //   717: astore          8
-        //   719: goto            524
-        //   722: astore          12
-        //   724: aload           9
-        //   726: astore          10
-        //   728: aload           7
-        //   730: astore          11
-        //   732: aload           12
-        //   734: astore          7
-        //   736: aload           8
-        //   738: astore          9
-        //   740: aload           11
-        //   742: astore          8
-        //   744: goto            524
-        //   747: aload           10
-        //   749: areturn        
+        //   715: goto            520
+        //   718: astore          11
+        //   720: aload           7
+        //   722: astore          10
+        //   724: aload           11
+        //   726: astore          7
+        //   728: goto            520
+        //   731: astore          10
+        //   733: aload           7
+        //   735: astore          11
+        //   737: aload           10
+        //   739: astore          7
+        //   741: aload           11
+        //   743: astore          10
+        //   745: goto            520
+        //   748: aload           10
+        //   750: areturn        
         //    Signature:
         //  (Lcom/android/volley/Request<*>;)Lcom/android/volley/NetworkResponse;
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                                          
         //  -----  -----  -----  -----  ----------------------------------------------
-        //  19     52     105    124    Ljava/net/HttpRetryException;
-        //  19     52     155    174    Ljava/net/SocketTimeoutException;
-        //  19     52     243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  19     52     270    305    Ljava/net/MalformedURLException;
-        //  19     52     454    478    Lorg/apache/http/client/RedirectException;
-        //  19     52     518    524    Ljava/io/IOException;
-        //  52     86     105    124    Ljava/net/HttpRetryException;
-        //  52     86     155    174    Ljava/net/SocketTimeoutException;
-        //  52     86     243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  52     86     270    305    Ljava/net/MalformedURLException;
-        //  52     86     454    478    Lorg/apache/http/client/RedirectException;
-        //  52     86     663    680    Ljava/io/IOException;
-        //  93     105    105    124    Ljava/net/HttpRetryException;
-        //  93     105    155    174    Ljava/net/SocketTimeoutException;
-        //  93     105    243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  93     105    270    305    Ljava/net/MalformedURLException;
-        //  93     105    454    478    Lorg/apache/http/client/RedirectException;
-        //  93     105    663    680    Ljava/io/IOException;
-        //  131    155    105    124    Ljava/net/HttpRetryException;
-        //  131    155    155    174    Ljava/net/SocketTimeoutException;
-        //  131    155    243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  131    155    270    305    Ljava/net/MalformedURLException;
-        //  131    155    454    478    Lorg/apache/http/client/RedirectException;
-        //  131    155    663    680    Ljava/io/IOException;
-        //  174    186    105    124    Ljava/net/HttpRetryException;
-        //  174    186    155    174    Ljava/net/SocketTimeoutException;
-        //  174    186    243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  174    186    270    305    Ljava/net/MalformedURLException;
-        //  174    186    454    478    Lorg/apache/http/client/RedirectException;
-        //  174    186    663    680    Ljava/io/IOException;
-        //  207    222    105    124    Ljava/net/HttpRetryException;
-        //  207    222    155    174    Ljava/net/SocketTimeoutException;
-        //  207    222    243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  207    222    270    305    Ljava/net/MalformedURLException;
-        //  207    222    454    478    Lorg/apache/http/client/RedirectException;
-        //  207    222    680    701    Ljava/io/IOException;
-        //  227    243    105    124    Ljava/net/HttpRetryException;
-        //  227    243    155    174    Ljava/net/SocketTimeoutException;
-        //  227    243    243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  227    243    270    305    Ljava/net/MalformedURLException;
-        //  227    243    454    478    Lorg/apache/http/client/RedirectException;
-        //  227    243    680    701    Ljava/io/IOException;
-        //  262    270    105    124    Ljava/net/HttpRetryException;
-        //  262    270    155    174    Ljava/net/SocketTimeoutException;
-        //  262    270    243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  262    270    270    305    Ljava/net/MalformedURLException;
-        //  262    270    454    478    Lorg/apache/http/client/RedirectException;
-        //  262    270    680    701    Ljava/io/IOException;
-        //  312    333    105    124    Ljava/net/HttpRetryException;
-        //  312    333    155    174    Ljava/net/SocketTimeoutException;
-        //  312    333    243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  312    333    270    305    Ljava/net/MalformedURLException;
-        //  312    333    454    478    Lorg/apache/http/client/RedirectException;
-        //  312    333    680    701    Ljava/io/IOException;
-        //  333    365    105    124    Ljava/net/HttpRetryException;
-        //  333    365    155    174    Ljava/net/SocketTimeoutException;
-        //  333    365    243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  333    365    270    305    Ljava/net/MalformedURLException;
-        //  333    365    454    478    Lorg/apache/http/client/RedirectException;
-        //  333    365    680    701    Ljava/io/IOException;
-        //  365    393    105    124    Ljava/net/HttpRetryException;
-        //  365    393    155    174    Ljava/net/SocketTimeoutException;
-        //  365    393    243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  365    393    270    305    Ljava/net/MalformedURLException;
-        //  365    393    454    478    Lorg/apache/http/client/RedirectException;
-        //  365    393    722    747    Ljava/io/IOException;
-        //  421    446    105    124    Ljava/net/HttpRetryException;
-        //  421    446    155    174    Ljava/net/SocketTimeoutException;
-        //  421    446    243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  421    446    270    305    Ljava/net/MalformedURLException;
-        //  421    446    454    478    Lorg/apache/http/client/RedirectException;
-        //  421    446    722    747    Ljava/io/IOException;
-        //  446    454    105    124    Ljava/net/HttpRetryException;
-        //  446    454    155    174    Ljava/net/SocketTimeoutException;
-        //  446    454    243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  446    454    270    305    Ljava/net/MalformedURLException;
-        //  446    454    454    478    Lorg/apache/http/client/RedirectException;
-        //  446    454    722    747    Ljava/io/IOException;
-        //  478    492    105    124    Ljava/net/HttpRetryException;
-        //  478    492    155    174    Ljava/net/SocketTimeoutException;
-        //  478    492    243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  478    492    270    305    Ljava/net/MalformedURLException;
-        //  478    492    454    478    Lorg/apache/http/client/RedirectException;
-        //  478    492    680    701    Ljava/io/IOException;
-        //  492    507    105    124    Ljava/net/HttpRetryException;
-        //  492    507    155    174    Ljava/net/SocketTimeoutException;
-        //  492    507    243    262    Lorg/apache/http/conn/ConnectTimeoutException;
-        //  492    507    270    305    Ljava/net/MalformedURLException;
-        //  492    507    454    478    Lorg/apache/http/client/RedirectException;
-        //  492    507    701    722    Ljava/io/IOException;
+        //  13     46     99     118    Ljava/net/HttpRetryException;
+        //  13     46     149    168    Ljava/net/SocketTimeoutException;
+        //  13     46     237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  13     46     264    299    Ljava/net/MalformedURLException;
+        //  13     46     448    472    Lorg/apache/http/client/RedirectException;
+        //  13     46     504    520    Ljava/io/IOException;
+        //  46     80     99     118    Ljava/net/HttpRetryException;
+        //  46     80     149    168    Ljava/net/SocketTimeoutException;
+        //  46     80     237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  46     80     264    299    Ljava/net/MalformedURLException;
+        //  46     80     448    472    Lorg/apache/http/client/RedirectException;
+        //  46     80     674    698    Ljava/io/IOException;
+        //  87     99     99     118    Ljava/net/HttpRetryException;
+        //  87     99     149    168    Ljava/net/SocketTimeoutException;
+        //  87     99     237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  87     99     264    299    Ljava/net/MalformedURLException;
+        //  87     99     448    472    Lorg/apache/http/client/RedirectException;
+        //  87     99     674    698    Ljava/io/IOException;
+        //  125    149    99     118    Ljava/net/HttpRetryException;
+        //  125    149    149    168    Ljava/net/SocketTimeoutException;
+        //  125    149    237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  125    149    264    299    Ljava/net/MalformedURLException;
+        //  125    149    448    472    Lorg/apache/http/client/RedirectException;
+        //  125    149    674    698    Ljava/io/IOException;
+        //  168    180    99     118    Ljava/net/HttpRetryException;
+        //  168    180    149    168    Ljava/net/SocketTimeoutException;
+        //  168    180    237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  168    180    264    299    Ljava/net/MalformedURLException;
+        //  168    180    448    472    Lorg/apache/http/client/RedirectException;
+        //  168    180    674    698    Ljava/io/IOException;
+        //  201    216    99     118    Ljava/net/HttpRetryException;
+        //  201    216    149    168    Ljava/net/SocketTimeoutException;
+        //  201    216    237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  201    216    264    299    Ljava/net/MalformedURLException;
+        //  201    216    448    472    Lorg/apache/http/client/RedirectException;
+        //  201    216    698    718    Ljava/io/IOException;
+        //  221    237    99     118    Ljava/net/HttpRetryException;
+        //  221    237    149    168    Ljava/net/SocketTimeoutException;
+        //  221    237    237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  221    237    264    299    Ljava/net/MalformedURLException;
+        //  221    237    448    472    Lorg/apache/http/client/RedirectException;
+        //  221    237    698    718    Ljava/io/IOException;
+        //  256    264    99     118    Ljava/net/HttpRetryException;
+        //  256    264    149    168    Ljava/net/SocketTimeoutException;
+        //  256    264    237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  256    264    264    299    Ljava/net/MalformedURLException;
+        //  256    264    448    472    Lorg/apache/http/client/RedirectException;
+        //  256    264    698    718    Ljava/io/IOException;
+        //  306    327    99     118    Ljava/net/HttpRetryException;
+        //  306    327    149    168    Ljava/net/SocketTimeoutException;
+        //  306    327    237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  306    327    264    299    Ljava/net/MalformedURLException;
+        //  306    327    448    472    Lorg/apache/http/client/RedirectException;
+        //  306    327    698    718    Ljava/io/IOException;
+        //  327    359    99     118    Ljava/net/HttpRetryException;
+        //  327    359    149    168    Ljava/net/SocketTimeoutException;
+        //  327    359    237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  327    359    264    299    Ljava/net/MalformedURLException;
+        //  327    359    448    472    Lorg/apache/http/client/RedirectException;
+        //  327    359    698    718    Ljava/io/IOException;
+        //  359    387    99     118    Ljava/net/HttpRetryException;
+        //  359    387    149    168    Ljava/net/SocketTimeoutException;
+        //  359    387    237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  359    387    264    299    Ljava/net/MalformedURLException;
+        //  359    387    448    472    Lorg/apache/http/client/RedirectException;
+        //  359    387    731    748    Ljava/io/IOException;
+        //  415    440    99     118    Ljava/net/HttpRetryException;
+        //  415    440    149    168    Ljava/net/SocketTimeoutException;
+        //  415    440    237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  415    440    264    299    Ljava/net/MalformedURLException;
+        //  415    440    448    472    Lorg/apache/http/client/RedirectException;
+        //  415    440    731    748    Ljava/io/IOException;
+        //  440    448    99     118    Ljava/net/HttpRetryException;
+        //  440    448    149    168    Ljava/net/SocketTimeoutException;
+        //  440    448    237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  440    448    264    299    Ljava/net/MalformedURLException;
+        //  440    448    448    472    Lorg/apache/http/client/RedirectException;
+        //  440    448    731    748    Ljava/io/IOException;
+        //  472    486    99     118    Ljava/net/HttpRetryException;
+        //  472    486    149    168    Ljava/net/SocketTimeoutException;
+        //  472    486    237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  472    486    264    299    Ljava/net/MalformedURLException;
+        //  472    486    448    472    Lorg/apache/http/client/RedirectException;
+        //  472    486    698    718    Ljava/io/IOException;
+        //  486    501    99     118    Ljava/net/HttpRetryException;
+        //  486    501    149    168    Ljava/net/SocketTimeoutException;
+        //  486    501    237    256    Lorg/apache/http/conn/ConnectTimeoutException;
+        //  486    501    264    299    Ljava/net/MalformedURLException;
+        //  486    501    448    472    Lorg/apache/http/client/RedirectException;
+        //  486    501    718    731    Ljava/io/IOException;
         // 
         // The error that occurred was:
         // 

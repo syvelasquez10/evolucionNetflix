@@ -10,7 +10,7 @@ import com.netflix.msl.keyx.WidevineKeyRequestData;
 
 public class AndroidWidevineKeyRequestData extends WidevineKeyRequestData
 {
-    private CryptoManager$CryptoSession keyRequestDataCryptoSession;
+    private final CryptoManager$CryptoSession keyRequestDataCryptoSession;
     
     public AndroidWidevineKeyRequestData(final JSONObject jsonObject) {
         super(jsonObject);

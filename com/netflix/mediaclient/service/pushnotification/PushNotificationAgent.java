@@ -175,12 +175,8 @@ public class PushNotificationAgent extends ServiceAgent implements IPushNotifica
                     }
                     break Label_0158;
                 }
-                if (this.wasNotificationOptInDisplayed()) {
-                    SettingsConfiguration.setPushOptInStatus(this.getContext(), this.mCurrentUserSettings.optedIn);
-                    this.report(this.mCurrentUserSettings.optedIn);
-                    return;
-                }
-                Log.d("nf_push", String.format("onLogin: dont report yet, wasNotificationOptInDisplayed: %b", this.wasNotificationOptInDisplayed()));
+                SettingsConfiguration.setPushOptInStatus(this.getContext(), this.mCurrentUserSettings.optedIn);
+                this.report(this.mCurrentUserSettings.optedIn);
                 return;
             }
             this.mCurrentUserSettings.current = true;

@@ -87,6 +87,8 @@ public interface IBrowseInterface
     
     void flushCaches();
     
+    void flushOnlyMemCache();
+    
     void forceFetchFromLocalCache(final boolean p0);
     
     String getLolomoId();

@@ -8,8 +8,8 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.falkor.CachedModelProxy$GetResult;
 import java.util.Collections;
 import com.netflix.mediaclient.android.app.Status;
-import java.util.Map;
 import android.util.Pair;
+import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.Log;
 import com.netflix.falkor.PQL;
@@ -23,11 +23,12 @@ public class FetchVideosTask extends CmpTask
     private final boolean fetchByLomoType;
     private final int fromVideo;
     private final boolean includeKubrick;
+    private final boolean includePreApp;
     private final LoMo lomo;
     private final int toVideo;
     private final boolean useCacheOnly;
     
-    public FetchVideosTask(final CachedModelProxy cachedModelProxy, final LoMo lomo, final int fromVideo, final int toVideo, final boolean useCacheOnly, final boolean includeKubrick, final boolean fetchByLomoType, final BrowseAgentCallback browseAgentCallback) {
+    public FetchVideosTask(final CachedModelProxy cachedModelProxy, final LoMo lomo, final int fromVideo, final int toVideo, final boolean useCacheOnly, final boolean includeKubrick, final boolean fetchByLomoType, final boolean includePreApp, final BrowseAgentCallback browseAgentCallback) {
         super(cachedModelProxy, browseAgentCallback);
         this.lomo = lomo;
         this.fromVideo = fromVideo;
@@ -35,6 +36,7 @@ public class FetchVideosTask extends CmpTask
         this.useCacheOnly = useCacheOnly;
         this.includeKubrick = includeKubrick;
         this.fetchByLomoType = fetchByLomoType;
+        this.includePreApp = includePreApp;
     }
     
     @Override
@@ -65,15 +67,16 @@ public class FetchVideosTask extends CmpTask
         else {
             s4 = "lists";
         }
-        final Map range = PQL.range(this.fromVideo, this.toVideo);
-        Object array;
+        final ArrayList<String> list2 = new ArrayList<String>();
+        list2.add("summary");
         if (this.includeKubrick) {
-            array = PQL.array("summary", "kubrick", "rating");
+            list2.add("kubrick");
+            list2.add("rating");
         }
-        else {
-            array = "summary";
+        if (this.includePreApp) {
+            list2.add("detail");
         }
-        list.add(PQL.create(s4, s2, range, array));
+        list.add(PQL.create(s4, s2, PQL.range(this.fromVideo, this.toVideo), list2));
     }
     
     @Override
@@ -87,7 +90,7 @@ public class FetchVideosTask extends CmpTask
     }
     
     @Override
-    protected boolean shouldCollapseMissingPql() {
+    protected boolean shouldCollapseMissingPql(final List<PQL> list) {
         return true;
     }
     

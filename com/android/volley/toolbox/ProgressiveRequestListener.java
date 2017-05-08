@@ -8,6 +8,8 @@ import com.android.volley.VolleyError;
 
 public interface ProgressiveRequestListener
 {
+    void onCancelled();
+    
     void onError(final VolleyError p0);
     
     void onNext(final byte[] p0, final int p1);

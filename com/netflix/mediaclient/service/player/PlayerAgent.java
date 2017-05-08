@@ -1390,12 +1390,11 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     @Override
     public void open(final long mMovieId, final PlayContext mPlayContext, final long n) {
-    Label_0261_Outer:
+        int maxBRThreshold = 0;
+        Label_0084_Outer:Label_0261_Outer:
         while (true) {
-        Label_0084_Outer:
             while (true) {
                 while (true) {
-                    int maxBRThreshold = 0;
                     Label_0315: {
                         synchronized (this) {
                             while (true) {
@@ -1427,18 +1426,19 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                                     Log.d(PlayerAgent.TAG, String.format("nf_bw bwOverride: %d,MaxBRThreshold : %d ", maxBRThreshold, PlayerAgent.MaxBRThreshold));
                                 }
                                 break Label_0315;
-                                maxBRThreshold = PlayerAgent.MaxBRThreshold;
                                 PlayerAgent.MaxBRThreshold = maxBRThreshold;
-                                continue Label_0261_Outer;
+                                continue Label_0084_Outer;
                             }
+                            maxBRThreshold = PlayerAgent.MaxBRThreshold;
+                            continue Label_0261_Outer;
                         }
                     }
                     if (maxBRThreshold > 0) {
-                        continue;
+                        continue Label_0261_Outer;
                     }
                     break;
                 }
-                continue Label_0084_Outer;
+                continue;
             }
         }
     }

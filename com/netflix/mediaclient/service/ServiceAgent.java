@@ -24,6 +24,7 @@ import com.netflix.mediaclient.android.app.Status;
 
 public abstract class ServiceAgent
 {
+    public static final String CATEGORY_DEBUG = "com.netflix.mediaclient.intent.category.DEBUG";
     private static final String TAG = "nf_service_ServiceAgent";
     private ServiceAgent$AgentContext agentContext;
     private ServiceAgent$InitCallback initCallback;

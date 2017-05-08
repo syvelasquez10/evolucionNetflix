@@ -67,11 +67,11 @@ public class RemoveFromQueueTask extends CmpTask
         String s;
         if (status.getStatusCode() == StatusCode.NOT_IN_QUEUE) {
             Log.v("CachedModelProxy", "Remove from queue failed - video was not in queue");
-            s = this.modelProxy.getContext().getString(2131296728);
+            s = this.modelProxy.getContext().getString(2131296725);
         }
         else {
             Log.v("CachedModelProxy", "Remove from queue failed - general error");
-            s = this.modelProxy.getContext().getString(2131296654);
+            s = this.modelProxy.getContext().getString(2131296652);
         }
         UserActionLogUtils.reportRemoveFromQueueActionEnded(this.modelProxy.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, s, ActionOnUIError.displayedError));
         browseAgentCallback.onQueueRemove(status);
@@ -83,7 +83,6 @@ public class RemoveFromQueueTask extends CmpTask
         if (this.isIqLomoValid) {
             this.modelProxy.invalidate(PQL.create("lists", this.iqLomoId));
         }
-        this.modelProxy.updateInQueueStatus(this.type, this.videoId, false);
         ServiceManager.sendIqRefreshBrodcast(this.modelProxy.getContext());
         UserActionLogUtils.reportRemoveFromQueueActionEnded(this.modelProxy.getContext(), IClientLogging$CompletionReason.success, (UIError)null);
         browseAgentCallback.onQueueRemove(CommonStatus.OK);

@@ -8,6 +8,7 @@ import java.io.File;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineImageUtils;
 import com.netflix.mediaclient.service.NetflixService;
+import io.realm.internal.RealmObjectProxy;
 import io.realm.RealmProfileRealmProxyInterface;
 import io.realm.RealmModel;
 import io.realm.Realm;

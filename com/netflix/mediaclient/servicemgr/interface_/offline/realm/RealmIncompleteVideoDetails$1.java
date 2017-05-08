@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr.interface_.offline.realm;
 
+import io.realm.internal.RealmObjectProxy;
 import com.netflix.mediaclient.util.LogUtils;
 import io.realm.RealmIncompleteVideoDetailsRealmProxyInterface;
 import io.realm.RealmObject;

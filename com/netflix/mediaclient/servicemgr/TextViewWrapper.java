@@ -5,6 +5,9 @@
 package com.netflix.mediaclient.servicemgr;
 
 import android.view.View$OnClickListener;
+import android.graphics.drawable.Drawable;
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -34,11 +37,13 @@ class TextViewWrapper implements AddToListData$StateListener
     }
     
     protected void setAsInList() {
-        this.textView.setText((CharSequence)this.activity.getString(2131296693, new Object[] { "\u2212" }));
+        this.textView.setCompoundDrawablesRelativeWithIntrinsicBounds(ContextCompat.getDrawable((Context)this.activity, 2130837927), (Drawable)null, (Drawable)null, (Drawable)null);
+        this.textView.setText((CharSequence)this.activity.getString(2131296691));
     }
     
     protected void setAsNotInList() {
-        this.textView.setText((CharSequence)this.activity.getString(2131296693, new Object[] { "+" }));
+        this.textView.setCompoundDrawablesRelativeWithIntrinsicBounds(ContextCompat.getDrawable((Context)this.activity, 2130837928), (Drawable)null, (Drawable)null, (Drawable)null);
+        this.textView.setText((CharSequence)this.activity.getString(2131296691));
     }
     
     protected void show() {
@@ -49,14 +54,14 @@ class TextViewWrapper implements AddToListData$StateListener
     public void update(final AddToListData$AddToListState addToListData$AddToListState) {
         switch (TextViewWrapper$3.$SwitchMap$com$netflix$mediaclient$servicemgr$AddToListData$AddToListState[addToListData$AddToListState.ordinal()]) {
             case 1: {
-                this.textView.setContentDescription((CharSequence)this.activity.getString(2131296775));
+                this.textView.setContentDescription((CharSequence)this.activity.getString(2131296772));
                 this.textView.setEnabled(true);
                 this.setAsInList();
                 this.textView.setOnClickListener((View$OnClickListener)new TextViewWrapper$1(this));
                 break;
             }
             case 2: {
-                this.textView.setContentDescription((CharSequence)this.activity.getString(2131296535));
+                this.textView.setContentDescription((CharSequence)this.activity.getString(2131296534));
                 this.textView.setEnabled(true);
                 this.setAsNotInList();
                 this.textView.setOnClickListener((View$OnClickListener)new TextViewWrapper$2(this));

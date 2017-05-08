@@ -73,7 +73,7 @@ public final class BandwidthUtility
     
     public static int getDataSaverDescription(final Context context) {
         if (Boolean.valueOf(isAutomaticOn(context))) {
-            return 2131296551;
+            return 2131296549;
         }
         return getManualChoiceDescription(BandwidthPreferenceDialog$ManualBwChoice.create(getManualChoice(context)));
     }
@@ -90,22 +90,22 @@ public final class BandwidthUtility
     private static int getManualChoiceDescription(final BandwidthPreferenceDialog$ManualBwChoice bandwidthPreferenceDialog$ManualBwChoice) {
         switch (BandwidthUtility$1.$SwitchMap$com$netflix$mediaclient$ui$bandwidthsetting$BandwidthPreferenceDialog$ManualBwChoice[bandwidthPreferenceDialog$ManualBwChoice.ordinal()]) {
             default: {
-                return 2131296551;
+                return 2131296549;
             }
             case 1: {
-                return 2131296559;
-            }
-            case 2: {
-                return 2131296555;
-            }
-            case 3: {
                 return 2131296557;
             }
-            case 4: {
+            case 2: {
                 return 2131296553;
             }
+            case 3: {
+                return 2131296555;
+            }
+            case 4: {
+                return 2131296551;
+            }
             case 5: {
-                return 2131296565;
+                return 2131296563;
             }
         }
     }

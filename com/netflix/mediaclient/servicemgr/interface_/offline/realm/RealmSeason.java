@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr.interface_.offline.realm;
 
+import io.realm.internal.RealmObjectProxy;
 import io.realm.RealmSeasonRealmProxyInterface;
 import io.realm.RealmObject;
 
@@ -11,6 +12,12 @@ public class RealmSeason extends RealmObject implements RealmSeasonRealmProxyInt
 {
     private int number;
     private String title;
+    
+    public RealmSeason() {
+        if (this instanceof RealmObjectProxy) {
+            ((RealmObjectProxy)this).realm$injectObjectContext();
+        }
+    }
     
     public int getNumber() {
         return this.realmGet$number();

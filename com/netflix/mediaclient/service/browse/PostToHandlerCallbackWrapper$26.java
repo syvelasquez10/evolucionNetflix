@@ -32,24 +32,24 @@ import com.netflix.model.branches.FalkorPerson;
 import java.util.List;
 import android.os.Handler;
 import com.netflix.mediaclient.util.ThreadUtils;
-import com.netflix.mediaclient.servicemgr.interface_.UserRating;
 import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.interface_.RatingInfo;
 
 class PostToHandlerCallbackWrapper$26 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
+    final /* synthetic */ RatingInfo val$ratingInfo;
     final /* synthetic */ Status val$res;
-    final /* synthetic */ UserRating val$userRating;
     
-    PostToHandlerCallbackWrapper$26(final PostToHandlerCallbackWrapper this$0, final UserRating val$userRating, final Status val$res) {
+    PostToHandlerCallbackWrapper$26(final PostToHandlerCallbackWrapper this$0, final RatingInfo val$ratingInfo, final Status val$res) {
         this.this$0 = this$0;
-        this.val$userRating = val$userRating;
+        this.val$ratingInfo = val$ratingInfo;
         this.val$res = val$res;
     }
     
     @Override
     public void run() {
         ThreadUtils.assertOnMain();
-        this.this$0.callback.onVideoRatingSet(this.val$userRating, this.val$res);
+        this.this$0.callback.onVideoRatingSet(this.val$ratingInfo, this.val$res);
     }
 }

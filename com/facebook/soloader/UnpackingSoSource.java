@@ -262,36 +262,36 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //   360: dup            
         //   361: invokespecial   java/lang/NullPointerException.<init>:()V
         //   364: athrow         
-        //   365: astore_3       
-        //   366: aload_3        
+        //   365: astore_1       
+        //   366: aload_1        
         //   367: athrow         
-        //   368: astore_1       
+        //   368: astore_3       
         //   369: aload           9
         //   371: ifnull          383
-        //   374: aload_3        
+        //   374: aload_1        
         //   375: ifnull          493
         //   378: aload           9
         //   380: invokevirtual   com/facebook/soloader/UnpackingSoSource$Unpacker.close:()V
-        //   383: aload_1        
+        //   383: aload_3        
         //   384: athrow         
-        //   385: astore_1       
-        //   386: aload_1        
+        //   385: astore_3       
+        //   386: aload_3        
         //   387: athrow         
-        //   388: astore_3       
+        //   388: astore_1       
         //   389: aload           8
         //   391: ifnull          403
-        //   394: aload_1        
+        //   394: aload_3        
         //   395: ifnull          529
         //   398: aload           8
         //   400: invokevirtual   java/io/RandomAccessFile.close:()V
-        //   403: aload_3        
+        //   403: aload_1        
         //   404: athrow         
         //   405: aload           12
         //   407: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDsoIterator.close:()V
         //   410: goto            249
-        //   413: astore_1       
+        //   413: astore_3       
         //   414: aconst_null    
-        //   415: astore_3       
+        //   415: astore_1       
         //   416: goto            369
         //   419: astore_1       
         //   420: aload_1        
@@ -326,7 +326,7 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //   477: astore          6
         //   479: goto            271
         //   482: astore          6
-        //   484: aload_3        
+        //   484: aload_1        
         //   485: aload           6
         //   487: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
         //   490: goto            383
@@ -342,7 +342,7 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //   512: invokevirtual   java/io/RandomAccessFile.close:()V
         //   515: goto            285
         //   518: astore          6
-        //   520: aload_1        
+        //   520: aload_3        
         //   521: aload           6
         //   523: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
         //   526: goto            403
@@ -387,9 +387,9 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //   608: aload           6
         //   610: astore_3       
         //   611: goto            321
-        //   614: astore_3       
+        //   614: astore_1       
         //   615: aconst_null    
-        //   616: astore_1       
+        //   616: astore_3       
         //   617: goto            389
         //    Exceptions:
         //  Try           Handler
@@ -540,18 +540,18 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //   120: aconst_null    
         //   121: astore          8
         //   123: iconst_1       
-        //   124: istore          5
+        //   124: istore          4
         //   126: iconst_0       
         //   127: istore_1       
-        //   128: iload           5
+        //   128: iload           4
         //   130: ifeq            257
         //   133: iload_1        
         //   134: aload           7
         //   136: getfield        com/facebook/soloader/UnpackingSoSource$DsoManifest.dsos:[Lcom/facebook/soloader/UnpackingSoSource$Dso;
         //   139: arraylength    
         //   140: if_icmpge       257
-        //   143: iload           5
-        //   145: istore          4
+        //   143: iload           4
+        //   145: istore          5
         //   147: aload           7
         //   149: getfield        com/facebook/soloader/UnpackingSoSource$DsoManifest.dsos:[Lcom/facebook/soloader/UnpackingSoSource$Dso;
         //   152: iload_1        
@@ -572,18 +572,18 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //   186: getfield        com/facebook/soloader/UnpackingSoSource$Dso.hash:Ljava/lang/String;
         //   189: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
         //   192: istore          6
-        //   194: iload           5
-        //   196: istore          4
+        //   194: iload           4
+        //   196: istore          5
         //   198: iload           6
         //   200: ifeq            206
         //   203: iconst_0       
-        //   204: istore          4
+        //   204: istore          5
         //   206: iload_1        
         //   207: iconst_1       
         //   208: iadd           
         //   209: istore_1       
-        //   210: iload           4
-        //   212: istore          5
+        //   210: iload           5
+        //   212: istore          4
         //   214: goto            128
         //   217: astore          7
         //   219: ldc             "fb-UnpackingSoSource"
@@ -606,7 +606,7 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //   252: invokevirtual   java/io/RandomAccessFile.close:()V
         //   255: aload_3        
         //   256: athrow         
-        //   257: iload           5
+        //   257: iload           4
         //   259: ifeq            269
         //   262: aload_0        
         //   263: aload           10
@@ -745,9 +745,9 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    private static void writeState(File t, final byte b) {
-        final RandomAccessFile randomAccessFile = new RandomAccessFile((File)t, "rw");
-        t = null;
+    private static void writeState(final File file, final byte b) {
+        final RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
+        final Throwable t = null;
         while (true) {
             try {
                 randomAccessFile.seek(0L);
@@ -765,7 +765,7 @@ public abstract class UnpackingSoSource extends DirectorySoSource
                         randomAccessFile.close();
                         return;
                     }
-                    catch (Throwable t) {
+                    catch (Throwable t2) {
                         throw new NullPointerException();
                     }
                 }
@@ -786,11 +786,11 @@ public abstract class UnpackingSoSource extends DirectorySoSource
                         }
                         try {
                             randomAccessFile.close();
-                            throw;
+                            throw file;
                         }
                         catch (Throwable randomAccessFile) {
                             t.addSuppressed((Throwable)randomAccessFile);
-                            throw;
+                            throw file;
                         }
                     }
                     randomAccessFile.close();

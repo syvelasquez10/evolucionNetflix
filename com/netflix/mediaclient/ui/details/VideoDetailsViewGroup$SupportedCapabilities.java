@@ -10,6 +10,5 @@ enum VideoDetailsViewGroup$SupportedCapabilities
     HD, 
     HDR10, 
     UHD, 
-    _3D, 
     _5dot1;
 }

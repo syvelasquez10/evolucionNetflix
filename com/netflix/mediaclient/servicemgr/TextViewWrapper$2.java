@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -26,7 +28,7 @@ class TextViewWrapper$2 implements View$OnClickListener
     public void onClick(final View view) {
         String actionToken = null;
         this.this$0.setAsInList();
-        Toast.makeText(this.this$0.textView.getContext(), (CharSequence)this.this$0.textView.getContext().getString(2131297012), 0).show();
+        Toast.makeText(this.this$0.textView.getContext(), (CharSequence)this.this$0.textView.getContext().getString(2131297015), 0).show();
         UserActionLogUtils.reportAddToQueueActionStarted((Context)this.this$0.activity, (UserActionLogging$CommandName)null, this.this$0.activity.getUiScreen());
         if (this.this$0.activity instanceof DetailsActivity) {
             actionToken = ((DetailsActivity)this.this$0.activity).getActionToken();

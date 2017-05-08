@@ -10,22 +10,25 @@ import com.android.volley.Response;
 import com.android.volley.NetworkResponse;
 import com.netflix.msl.client.ApiHttpWrapper;
 import com.netflix.mediaclient.android.app.NetflixStatus;
-import com.netflix.mediaclient.servicemgr.IMSLClient$MSLUserCredentialRegistry;
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.util.VolleyUtils;
 import com.netflix.mediaclient.StatusCode;
-import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.MultiValuedMap;
 import com.netflix.mediaclient.util.MultiValuedHashMap;
 import java.util.List;
-import com.netflix.msl.userauth.UserAuthenticationData;
 import com.netflix.mediaclient.service.msl.client.AndroidMslClient;
 import com.netflix.msl.MslException;
 import com.netflix.mediaclient.service.msl.client.MslErrorException;
 import com.netflix.android.org.json.JSONException;
 import java.io.IOException;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.webclient.volley.FalkorException;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.msl.userauth.UserAuthenticationData;
+import com.netflix.msl.userauth.NetflixIdAuthenticationData;
+import com.netflix.mediaclient.servicemgr.IMSLClient$MSLUserCredentialRegistry;
+import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.servicemgr.IMSLClient$MSLApiUnwrappedParams;
 import java.util.Map;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry$ResponsePathFormat;
@@ -64,6 +67,14 @@ public abstract class FalkorMSLVolleyRequest<T> extends MSLVolleyRequest<T>
             s = "POST";
         }
         return new IMSLClient$MSLApiUnwrappedParams(this.getMSLUri(), s, map, mslQuery, mslPayload);
+    }
+    
+    private IMSLClient$MSLUserCredentialRegistry getUserAuthorizationData(final UserCredentialRegistry userCredentialRegistry) {
+        return new FalkorMSLVolleyRequest$1(this, userCredentialRegistry.getCurrentProfileGuid(), (UserAuthenticationData)new NetflixIdAuthenticationData(userCredentialRegistry.getNetflixID(), userCredentialRegistry.getSecureNetflixID()));
+    }
+    
+    protected static boolean isNotAuthorized(final String s) {
+        return StringUtils.isNotEmpty(s) && FalkorException.isNotAuthorized(s.toLowerCase());
     }
     
     @Override
@@ -124,6 +135,16 @@ public abstract class FalkorMSLVolleyRequest<T> extends MSLVolleyRequest<T>
     
     protected abstract List<String> getPQLQueries();
     
+    public String getPQLQueriesRepresentationAsString() {
+        if (this.getPQLQueries() == null) {
+            return "null";
+        }
+        if (this.getPQLQueries().size() == 1) {
+            return this.getPQLQueries().get(0);
+        }
+        return this.getPQLQueries().toString();
+    }
+    
     @Override
     protected Map<String, String> getParams() {
         final Map<String, String> params = super.getParams();
@@ -175,17 +196,21 @@ public abstract class FalkorMSLVolleyRequest<T> extends MSLVolleyRequest<T>
             Log.d("FalkorMSLVolleyRequest", "handleNotAuthorized:: User is NOT currently logged in, pass this failure regular way...");
             return false;
         }
+        final UserCredentialRegistry userCredentialRegistry = this.mUserAgent.getUserCredentialRegistry();
+        if (userCredentialRegistry == null || StringUtils.isEmpty(userCredentialRegistry.getNetflixID()) || StringUtils.isEmpty(userCredentialRegistry.getSecureNetflixID())) {
+            Log.w("FalkorMSLVolleyRequest", "handleNotAuthorized:: Missing cookies, force user out... This should NOT happen here!");
+            this.mUserAgent.logoutUser();
+            return false;
+        }
         Log.d("FalkorMSLVolleyRequest", "handleNotAuthorized:: Mismatch between user agent and MSL store, user is logged in according to user agent. We have cookies, just retry");
         ++this.mRetryAttempts;
-        this.setMSLUserCredentialRegistry(null);
+        this.setMSLUserCredentialRegistry(this.getUserAuthorizationData(userCredentialRegistry));
         return true;
     }
     
     protected T parseApiResponse(final ApiHttpWrapper apiHttpWrapper) {
         final String dataAsString = apiHttpWrapper.getDataAsString();
-        if (Log.isLoggable()) {
-            Log.d("FalkorMSLVolleyRequest", "parseApiResponse: " + dataAsString);
-        }
+        Log.d("FalkorMSLVolleyRequest", "parseApiResponse: %s", dataAsString);
         return this.parseFalkorResponse(dataAsString);
     }
     

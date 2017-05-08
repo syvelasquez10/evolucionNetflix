@@ -143,16 +143,16 @@ public class NfDrmSession
                         this.mCallbackHandler.obtainMessage(n2, this.mIdHigh, this.mIdLow, (Object)this.mLicenseContext).sendToTarget();
                         Log.d("NfPlayerDrmManager", "postKeyRequest succeeds.");
                         return;
+                        this.mLicenseContext.setmLicenseType(NfDrmManagerInterface$LicenseType.LICENSE_TYPE_LDL);
+                        Log.d("NfPlayerDrmManager", "request LDL.");
+                        n2 = 3;
+                        n = 1;
+                        continue;
                         Label_0150: {
                             this.mLicenseContext.setmLicenseType(NfDrmManagerInterface$LicenseType.LICENSE_TYPE_STANDARD);
                         }
                         Log.d("NfPlayerDrmManager", "request STANDARD.");
                         n2 = 2;
-                        n = 1;
-                        continue;
-                        this.mLicenseContext.setmLicenseType(NfDrmManagerInterface$LicenseType.LICENSE_TYPE_LDL);
-                        Log.d("NfPlayerDrmManager", "request LDL.");
-                        n2 = 3;
                         n = 1;
                         continue;
                     }

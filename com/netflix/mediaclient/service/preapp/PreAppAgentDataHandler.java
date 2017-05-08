@@ -15,6 +15,7 @@ import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.pservice.PService;
 import android.content.Intent;
+import com.netflix.model.branches.FalkorVideo;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.service.pservice.PVideo;
@@ -163,7 +164,7 @@ public class PreAppAgentDataHandler
         if (list2 != null && pDiskData != null && list != null) {
             final Iterator<Video> iterator = list.iterator();
             while (iterator.hasNext()) {
-                list2.add(new PVideo(iterator.next()));
+                list2.add(new PVideo((FalkorVideo)iterator.next()));
             }
         }
     }
@@ -184,7 +185,7 @@ public class PreAppAgentDataHandler
             browseAgent.fetchCW(6, false, simpleBrowseAgentCallback);
         }
         if (PreAppAgentEventType.isIQUpdated(preAppAgentEventType)) {
-            browseAgent.fetchIQ(6, false, simpleBrowseAgentCallback2);
+            browseAgent.fetchIQ(6, false, true, simpleBrowseAgentCallback2);
         }
         if (PreAppAgentEventType.isFirstStandardListUpdated(preAppAgentEventType)) {
             browseAgent.fetchRecommendedList(0, 6, false, simpleBrowseAgentCallback3);

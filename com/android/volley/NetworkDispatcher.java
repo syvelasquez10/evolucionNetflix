@@ -44,7 +44,7 @@ public class NetworkDispatcher extends Thread
         request.markInFlight(false);
         for (final NetworkDispatcher$NetworkDispatcherListener networkDispatcher$NetworkDispatcherListener : NetworkDispatcher.sListener.keySet()) {
             if (networkDispatcher$NetworkDispatcherListener != null) {
-                networkDispatcher$NetworkDispatcherListener.onCompleted(request);
+                networkDispatcher$NetworkDispatcherListener.onCompleted(request, null);
             }
         }
     }

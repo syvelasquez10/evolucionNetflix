@@ -26,7 +26,7 @@ public interface NotifierInterface
     
     void notready();
     
-    void playbackEnd(final String p0, final String p1);
+    void playbackEnd(final String p0, final String p1, final boolean p2);
     
     void playbackStart(final String p0);
     

@@ -82,12 +82,12 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
     }
     
     private void addTopGradientIfNeeded() {
-        final FrameLayout frameLayout = (FrameLayout)this.detailsFrag.getView().findViewById(2131821063);
+        final FrameLayout frameLayout = (FrameLayout)this.detailsFrag.getView().findViewById(2131821073);
         if (frameLayout.findViewById(2131820556) == null) {
             final ImageView imageView = new ImageView((Context)this);
-            imageView.setImageResource(2130838145);
+            imageView.setImageResource(2130838168);
             imageView.setId(2131820556);
-            frameLayout.addView((View)imageView, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, (int)this.getResources().getDimension(2131427708), 48));
+            frameLayout.addView((View)imageView, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, (int)this.getResources().getDimension(2131427712), 48));
         }
     }
     
@@ -143,7 +143,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
             else {
                 this.getFragmentManager().beginTransaction().remove(this.detailsFrag).commitAllowingStateLoss();
                 this.detailsFrag = this.createEpisodesFrag();
-                this.getFragmentManager().beginTransaction().add(2131820921, this.detailsFrag).commitAllowingStateLoss();
+                this.getFragmentManager().beginTransaction().add(2131820922, this.detailsFrag).commitAllowingStateLoss();
                 ((EpisodesFrag)this.detailsFrag).setVideoId(this.videoId);
                 this.doOnManagerReady();
                 Log.i("CoppolaDetailsActivity", "onNewIntent() for show after movie");
@@ -158,7 +158,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
         else {
             this.getFragmentManager().beginTransaction().remove(this.detailsFrag).commitAllowingStateLoss();
             this.detailsFrag = MovieDetailsFrag.create(this.videoId);
-            this.getFragmentManager().beginTransaction().add(2131820921, this.detailsFrag).commitAllowingStateLoss();
+            this.getFragmentManager().beginTransaction().add(2131820922, this.detailsFrag).commitAllowingStateLoss();
             ((MovieDetailsFrag)this.detailsFrag).setVideoId(this.videoId);
             this.doOnManagerReady();
             Log.i("CoppolaDetailsActivity", "onNewIntent() for movie after show");
@@ -168,7 +168,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
     }
     
     private void hidePlayerUI() {
-        final View viewById = this.findViewById(2131820920);
+        final View viewById = this.findViewById(2131820921);
         viewById.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new CoppolaDetailsActivity$4(this, viewById));
     }
     
@@ -217,7 +217,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
     }
     
     private void setupImageContainer() {
-        final TappableSurfaceView tappableSurfaceView = (TappableSurfaceView)this.playerFragment.getView().findViewById(2131821255);
+        final TappableSurfaceView tappableSurfaceView = (TappableSurfaceView)this.playerFragment.getView().findViewById(2131821268);
         if (this.bIsInPortrait) {
             this.getNetflixActionBar().show(false);
             final int n = (int)(DeviceUtils.getScreenHeightInPixels((Context)this) / 2.5f);
@@ -389,7 +389,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
         this.removeStatusBar();
         this.refreshVideoTypeAndContext();
         super.onCreate(bundle);
-        this.imageContainer = this.findViewById(2131820919);
+        this.imageContainer = this.findViewById(2131820920);
         if (this.getIntent() != null && this.getIntent().hasExtra("push_to_landscape")) {
             this.setRequestedOrientation(6);
         }

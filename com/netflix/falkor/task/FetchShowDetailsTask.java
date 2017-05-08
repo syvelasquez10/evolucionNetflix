@@ -61,4 +61,9 @@ public class FetchShowDetailsTask extends CmpTask
         }
         browseAgentCallback.onShowDetailsFetched(showDetails, new FalkorAgentStatus(StatusCode.OK, this.isAllDataLocalToCache()));
     }
+    
+    @Override
+    protected boolean shouldCollapseMissingPql(final List<PQL> list) {
+        return true;
+    }
 }

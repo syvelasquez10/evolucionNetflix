@@ -604,6 +604,7 @@ abstract class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManage
                                 Log.e(WidevineDrmManager.TAG, "We failed to update key response...", t);
                                 CryptoErrorManager.INSTANCE.mediaDrmFailure(ErrorSource.ntba, StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE, t);
                             }
+                            return b;
                         }
                     }
                     if (array4 != null && array2 != null && array3 != null) {

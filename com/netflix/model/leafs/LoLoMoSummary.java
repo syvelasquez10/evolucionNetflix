@@ -18,7 +18,7 @@ import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
 import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class LoLoMoSummary implements JsonMerger, JsonPopulator, LoLoMo
+public class LoLoMoSummary extends BaseFalkorLeafItem implements JsonMerger, JsonPopulator, LoLoMo
 {
     private static final String TAG = "LoLoMoSummary";
     private String mGenreId;
@@ -27,32 +27,26 @@ public class LoLoMoSummary implements JsonMerger, JsonPopulator, LoLoMo
     @SerializedName("title")
     private String mTitle;
     
-    @Override
     public String getId() {
         return this.mGenreId;
     }
     
-    @Override
     public String getLolomosId() {
         return null;
     }
     
-    @Override
     public int getNumLoMos() {
         return this.mNumLoMos;
     }
     
-    @Override
     public String getTitle() {
         return this.mTitle;
     }
     
-    @Override
     public LoMoType getType() {
         return LoMoType.STANDARD;
     }
     
-    @Override
     public void populate(final JsonElement jsonElement) {
         final JsonObject asJsonObject = jsonElement.getAsJsonObject();
         if (Falkor.ENABLE_VERBOSE_LOGGING) {
@@ -96,7 +90,6 @@ public class LoLoMoSummary implements JsonMerger, JsonPopulator, LoLoMo
         }
     }
     
-    @Override
     public boolean set(final String s, final JsonParser jsonParser) {
         switch (s) {
             default: {

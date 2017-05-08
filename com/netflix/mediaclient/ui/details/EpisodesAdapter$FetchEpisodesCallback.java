@@ -68,6 +68,7 @@ public class EpisodesAdapter$FetchEpisodesCallback extends LoggingManagerCallbac
             Log.v("EpisodesAdapter", "No details in response");
             this.this$0.hasMoreData = false;
             this.this$0.notifyDataSetChanged();
+            this.this$0.onFetchError();
             return;
         }
         if (Log.isLoggable()) {

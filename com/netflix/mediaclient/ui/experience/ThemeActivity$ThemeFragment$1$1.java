@@ -22,6 +22,6 @@ class ThemeActivity$ThemeFragment$1$1 implements View$OnClickListener
     
     public void onClick(final View view) {
         ThemeActivity.saveTheme((Context)this.this$1.this$0.getActivity(), this.val$theme);
-        AndroidUtils.restartApplication(this.this$1.this$0.getActivity());
+        AndroidUtils.restartApplication(this.this$1.this$0.getActivity(), "ThemeActivity");
     }
 }

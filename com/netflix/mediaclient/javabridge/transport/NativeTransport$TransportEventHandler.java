@@ -9,7 +9,7 @@ import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.util.ConnectivityUtils;
-import com.netflix.mediaclient.service.logging.StorageLogblobInfo;
+import com.netflix.mediaclient.util.StorageStateUtils;
 import com.netflix.mediaclient.util.MediaUtils;
 import com.netflix.mediaclient.util.SubtitleUtils;
 import com.netflix.mediaclient.media.JPlayer.AdaptiveMediaDecoderHelper;

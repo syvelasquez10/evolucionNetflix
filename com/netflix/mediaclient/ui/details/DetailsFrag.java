@@ -75,11 +75,11 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     protected abstract VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final T p0);
     
     protected int getLayoutId() {
-        return 2130903330;
+        return 2130903336;
     }
     
     protected int getPrimaryViewId() {
-        return 2131821533;
+        return 2131821550;
     }
     
     public String getTitle() {
@@ -126,18 +126,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     
     public void onResume() {
         super.onResume();
-        final ServiceManager serviceManager = this.getServiceManager();
-        if (serviceManager != null) {
-            if (this.detailsViewGroup != null) {
-                this.detailsViewGroup.refreshImagesIfNecessary();
-            }
-            if (this.mVideoDetails instanceof VideoDetails) {
-                serviceManager.updateMyListState(this.getVideoId(), this.mVideoDetails.isInQueue());
-            }
-            else if (Log.isLoggable()) {
-                Log.d("DetailsFrag", "onResume() got weird videoDetails class: " + this.mVideoDetails);
-            }
-        }
+        this.updateMyListState();
     }
     
     @Override
@@ -185,6 +174,21 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         this.leWrapper.showLoadingView(true);
         if (this.primaryView != null) {
             AnimationUtils.hideView(this.primaryView, true);
+        }
+    }
+    
+    protected void updateMyListState() {
+        final ServiceManager serviceManager = this.getServiceManager();
+        if (serviceManager != null) {
+            if (this.detailsViewGroup != null) {
+                this.detailsViewGroup.refreshImagesIfNecessary();
+            }
+            if (this.mVideoDetails instanceof VideoDetails) {
+                serviceManager.updateMyListState(this.getVideoId(), this.mVideoDetails.isInQueue());
+            }
+            else if (Log.isLoggable()) {
+                Log.d("DetailsFrag", "onResume() got weird videoDetails class: " + this.mVideoDetails);
+            }
         }
     }
 }

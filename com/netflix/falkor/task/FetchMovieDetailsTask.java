@@ -12,6 +12,8 @@ import com.netflix.mediaclient.Log;
 import com.netflix.falkor.CachedModelProxy$GetResult;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.service.configuration.persistent.Config_Ab7994;
+import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Collections;
@@ -38,6 +40,10 @@ public class FetchMovieDetailsTask extends CmpTask
         CmpUtils.buildMovieDetailsPQLs(list, Collections.singletonList(this.movieId));
         if (StringUtils.isNotEmpty(this.scene)) {
             list.add(CmpUtils.buildScenePql(VideoType.MOVIE.getValue(), this.movieId, this.scene));
+        }
+        if (Config_Ab7994.shouldRenderTabs(NetflixApplication.getContext())) {
+            list.add(CmpUtils.buildVideoTrailersPql(true, this.movieId));
+            list.add(CmpUtils.buildVideoTrailersSummaryPql(true, this.movieId));
         }
     }
     

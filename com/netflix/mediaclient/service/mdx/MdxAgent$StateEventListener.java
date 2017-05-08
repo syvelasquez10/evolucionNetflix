@@ -75,7 +75,7 @@ class MdxAgent$StateEventListener implements EventListener
     public void received(final UIEvent uiEvent) {
         if (uiEvent instanceof InitEvent) {
             this.this$0.mReady.set(true);
-            this.this$0.mTargetMap.clear();
+            this.this$0.clearTargetMapThreadSafe();
             this.this$0.mTargetRestartingList.clear();
             this.this$0.mNotifier.ready();
             if (this.this$0.mCastManager != null) {
@@ -83,7 +83,7 @@ class MdxAgent$StateEventListener implements EventListener
             }
         }
         else if (uiEvent instanceof InitErrorEvent) {
-            this.this$0.mMdxNrdpLogger.logDebug("MDX init error");
+            this.this$0.mMdxNrdpLogger.logError("MDX init error");
             this.this$0.mReady.set(false);
             this.this$0.mMdxNativeExitCompleted.set(true);
             if (this.this$0.mNotifier != null) {
@@ -94,7 +94,7 @@ class MdxAgent$StateEventListener implements EventListener
             if (((StateEvent)uiEvent).isReady()) {
                 this.this$0.mMdxNrdpLogger.logDebug("MDX state READY");
                 this.this$0.mReady.set(true);
-                this.this$0.mTargetMap.clear();
+                this.this$0.clearTargetMapThreadSafe();
                 this.this$0.mTargetRestartingList.clear();
                 if (this.this$0.mNotifier != null) {
                     this.this$0.mNotifier.ready();
@@ -104,15 +104,15 @@ class MdxAgent$StateEventListener implements EventListener
                 }
             }
             else {
-                this.this$0.mMdxNrdpLogger.logDebug("MDX state NOT_READY");
+                this.this$0.mMdxNrdpLogger.logError("MDX state NOT_READY");
                 this.this$0.mReady.set(false);
                 this.this$0.mMdxNativeExitCompleted.set(true);
-                this.this$0.mTargetMap.clear();
+                this.this$0.clearTargetMapThreadSafe();
                 this.this$0.mTargetRestartingList.clear();
                 if (this.this$0.mNotifier != null) {
                     this.this$0.mNotifier.notready();
                 }
-                this.this$0.sessionGone();
+                this.this$0.sessionGone(true);
                 if (this.this$0.mCastManager != null) {
                     this.this$0.mCastManager.stop();
                 }

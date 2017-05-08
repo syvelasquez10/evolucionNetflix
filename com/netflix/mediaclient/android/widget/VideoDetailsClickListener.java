@@ -6,6 +6,7 @@ package com.netflix.mediaclient.android.widget;
 
 import android.content.Context;
 import android.widget.Toast;
+import org.json.JSONObject;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.Log;
@@ -54,7 +55,7 @@ public class VideoDetailsClickListener implements View$OnClickListener, View$OnL
         if (tag == null) {
             return false;
         }
-        UserActionLogUtils.reportCustomAction(view.getContext(), "onLongClick", (IClientLogging$ModalView)null);
+        UserActionLogUtils.reportCustomAction(view.getContext(), "onLongClick", (IClientLogging$ModalView)null, (JSONObject)null);
         Toast.makeText((Context)this.activity, (CharSequence)((Video)tag).getTitle(), 0).show();
         return true;
     }

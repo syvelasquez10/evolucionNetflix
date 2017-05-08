@@ -71,7 +71,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             return episodeDetails.getTitle();
         }
         if (StringUtils.isEmpty(episodeDetails.getAvailabilityDateMessage())) {
-            return context.getString(2131296707);
+            return context.getString(2131296704);
         }
         return episodeDetails.getAvailabilityDateMessage();
     }
@@ -185,10 +185,10 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             final Resources resources = this.getResources();
             int n;
             if (episodeDetails.isAvailableToStream()) {
-                n = 2131755197;
+                n = 2131755208;
             }
             else {
-                n = 2131755213;
+                n = 2131755224;
             }
             title.setTextColor(resources.getColor(n));
             this.title.setClickable(false);
@@ -246,7 +246,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             }
         }
         if (BrowseExperience.isLightTheme()) {
-            this.progressBar.setProgressDrawable(ContextCompat.getDrawable(this.getContext(), 2130837995));
+            this.progressBar.setProgressDrawable(ContextCompat.getDrawable(this.getContext(), 2130838018));
         }
     }
     

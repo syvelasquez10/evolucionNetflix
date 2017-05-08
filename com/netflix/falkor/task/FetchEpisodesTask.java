@@ -62,7 +62,7 @@ public class FetchEpisodesTask extends CmpTask
     }
     
     @Override
-    protected boolean shouldCollapseMissingPql() {
+    protected boolean shouldCollapseMissingPql(final List<PQL> list) {
         return true;
     }
 }

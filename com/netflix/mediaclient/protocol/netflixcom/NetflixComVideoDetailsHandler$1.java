@@ -9,11 +9,15 @@ import com.netflix.mediaclient.ui.details.DetailsActivity$Action;
 import java.util.List;
 import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.IClientLogging;
 import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
+import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import android.content.Context;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -49,14 +53,12 @@ class NetflixComVideoDetailsHandler$1 extends SimpleManagerCallback
             }
             else {
                 if (this.val$activity != null && this.val$activity.getServiceManager() != null) {
-                    final IClientLogging clientLogging = this.val$activity.getServiceManager().getClientLogging();
-                    if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
-                        final StringBuilder sb = new StringBuilder();
-                        sb.append("trkid").append('=').append(this.val$trackId);
-                        sb.append('&');
-                        sb.append("movieid").append('=').append(this.val$videoId);
-                        clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking(sb.toString());
-                    }
+                    final StringBuilder sb = new StringBuilder();
+                    sb.append("trkid").append('=').append(this.val$trackId);
+                    sb.append('&');
+                    sb.append("movieid").append('=').append(this.val$videoId);
+                    UIViewLogUtils.reportUIViewCommandStarted((Context)this.val$activity, UIViewLogging$UIViewCommandName.deepLink, IClientLogging$ModalView.movieDetails, (DataContext)null, sb.toString());
+                    UIViewLogUtils.reportUIViewCommandEnded((Context)this.val$activity);
                 }
                 DetailsActivityLauncher.show(this.val$activity, (Video)falkorVideo, NflxProtocolUtils.getPlayContext(this.val$trackId), this.this$0.getAction(), this.this$0.getActionToken(), "DeepLink");
             }

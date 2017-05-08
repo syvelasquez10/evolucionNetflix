@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
-import com.netflix.mediaclient.util.StringUtils;
 import java.util.Iterator;
 import com.netflix.mediaclient.ui.offline.OfflineUiHelper;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
@@ -99,13 +98,13 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
             i = n11;
         }
         if (n > 0) {
-            return context.getString(2131296933, new Object[] { n, n4 });
+            return context.getString(2131296931, new Object[] { n, n4 });
         }
         if (n3 > 0) {
-            return context.getString(2131296937, new Object[] { n2 + n3 });
+            return context.getString(2131296936, new Object[] { n2 + n3 });
         }
         if (n2 > 0) {
-            return context.getString(2131296939, new Object[] { n2 });
+            return context.getString(2131296938, new Object[] { n2 });
         }
         return null;
     }
@@ -129,12 +128,6 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
         return null;
     }
     
-    private String getDownloadProgress(final Context context, final OfflinePlayableViewData offlinePlayableViewData) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(this.getTitleOrEmpty(context, offlinePlayableViewData.getPlayableId())).append(" ").append("(" + StringUtils.getAsPercentString(offlinePlayableViewData.getPercentageDownloaded()) + ")");
-        return sb.toString();
-    }
-    
     private String getTitleOrEmpty(final Context context, final String s) {
         final String s2 = this.mPlayableToTitleMap.get(s);
         if (s2 != null) {
@@ -148,11 +141,11 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
         if (offlineVideoDetails.getType() == VideoType.EPISODE && offlineVideoDetails.getPlayable() != null) {
             final RealmVideoDetails offlineVideoDetails2 = RealmUtils.getOfflineVideoDetails(offlineVideoDetails.getPlayable().getTopLevelId());
             if (offlineVideoDetails2 != null) {
-                s3 = context.getString(2131296789, new Object[] { offlineVideoDetails2.getTitle(), offlineVideoDetails.getPlayable().getSeasonAbbrSeqLabel(), offlineVideoDetails.getPlayable().getEpisodeNumber(), offlineVideoDetails.getTitle() });
+                s3 = context.getString(2131296785, new Object[] { offlineVideoDetails2.getTitle(), offlineVideoDetails.getPlayable().getSeasonAbbrSeqLabel(), offlineVideoDetails.getPlayable().getEpisodeNumber(), offlineVideoDetails.getTitle() });
             }
             else {
                 ErrorLoggingManager.logHandledException("No show found for episode: playableId=" + s + "/parent=" + offlineVideoDetails.getPlayable().getTopLevelId());
-                s3 = context.getString(2131296645, new Object[] { offlineVideoDetails.getPlayable().getSeasonAbbrSeqLabel(), offlineVideoDetails.getPlayable().getEpisodeNumber(), offlineVideoDetails.getTitle() });
+                s3 = context.getString(2131296642, new Object[] { offlineVideoDetails.getPlayable().getSeasonAbbrSeqLabel(), offlineVideoDetails.getPlayable().getEpisodeNumber(), offlineVideoDetails.getTitle() });
             }
         }
         else {
@@ -168,7 +161,7 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
     
     @Override
     public CharSequence getColoredStatusString(final Context context, int n, String s, final VideoType videoType) {
-        final int n2 = 2131755116;
+        final int n2 = 2131755121;
         final String s2 = "";
         if (videoType == VideoType.SHOW) {
             s = this.buildShowCompositeStatus(context, n);
@@ -189,7 +182,7 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
             n = n2;
             switch (OfflinePlayableUiListImpl$2.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$offline$DownloadState[downloadState.ordinal()]) {
                 case 4: {
-                    s = context.getString(2131296938);
+                    s = context.getString(2131296930);
                     n = n2;
                     break;
                 }
@@ -201,8 +194,8 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                         case 3:
                         case 4:
                         case 5: {
-                            s = context.getString(2131296934);
-                            n = 2131755135;
+                            s = context.getString(2131296933);
+                            n = 2131755146;
                         }
                         case 1:
                         case 6: {
@@ -210,7 +203,7 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                         }
                         default: {
                             s = "";
-                            n = 2131755116;
+                            n = 2131755121;
                             break;
                         }
                         case 2: {
@@ -220,31 +213,31 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                             if (expiringInMillis > 0L) {
                                 if (expiringInMillis > TimeUnit.DAYS.toMillis(1L)) {
                                     n = (int)TimeUnit.MILLISECONDS.toDays(expiringInMillis);
-                                    s = context.getResources().getQuantityString(2131361805, n, new Object[] { n });
+                                    s = context.getResources().getQuantityString(2131361806, n, new Object[] { n });
                                 }
                                 else if (expiringInMillis > TimeUnit.HOURS.toMillis(1L)) {
                                     n = (int)TimeUnit.MILLISECONDS.toHours(expiringInMillis);
-                                    s = context.getResources().getQuantityString(2131361806, n, new Object[] { n });
+                                    s = context.getResources().getQuantityString(2131361807, n, new Object[] { n });
                                 }
                                 else {
                                     n = (int)TimeUnit.MILLISECONDS.toMinutes(expiringInMillis);
-                                    s = context.getResources().getQuantityString(2131361807, n, new Object[] { n });
+                                    s = context.getResources().getQuantityString(2131361808, n, new Object[] { n });
                                 }
-                                n = 2131755135;
+                                n = 2131755146;
                                 break;
                             }
                             break;
                         }
                         case 7: {
-                            n = 2131755135;
-                            s = context.getString(2131296935);
+                            n = 2131755146;
+                            s = context.getString(2131296934);
                             break;
                         }
                     }
                     break;
                 }
                 case 1: {
-                    s = context.getString(2131296932);
+                    s = context.getString(2131296930);
                     n = n2;
                 }
                 case 5:
@@ -262,10 +255,10 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                     n = n2;
                     if (!offlinePlayableViewData.getStopReason().showBangIconErrorInUi()) {
                         if (percentageDownloaded > 0) {
-                            s = context.getString(2131296936);
+                            s = context.getString(2131296935);
                         }
                         else {
-                            s = context.getString(2131296938);
+                            s = context.getString(2131296930);
                         }
                         n = n2;
                         break;
@@ -338,39 +331,37 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
         final boolean b2 = !ConnectivityUtils.isConnected(context);
         String s = null;
         if (requiresUnmeteredNetwork && b) {
-            s = context.getString(2131296931);
+            s = context.getString(2131296929);
         }
         else if (b2) {
-            s = context.getString(2131296930);
+            s = context.getString(2131296928);
         }
         final Collection<OfflinePlayableViewData> values = this.mVideoIdToOfflineData.values();
         if (values.size() == 1) {
             final OfflinePlayableViewData offlinePlayableViewData = values.iterator().next();
-            final String titleOrEmpty = this.getTitleOrEmpty(context, offlinePlayableViewData.getPlayableId());
+            this.getTitleOrEmpty(context, offlinePlayableViewData.getPlayableId());
             if (OfflineUiHelper.hasErrorOrWarning(offlinePlayableViewData)) {
-                if (s == null) {
-                    s = titleOrEmpty;
-                }
-                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131296929, new Object[] { s }), 1);
+                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131296939), 1, true);
             }
             if (downloadCompleted(offlinePlayableViewData)) {
-                if (snackBarDownloadCompleteCount == 1) {
-                    return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131296926, new Object[] { titleOrEmpty }), 0);
-                }
+                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361800, 1, new Object[] { 1 }), 0, true);
             }
-            else {
-                if (downloadPaused(offlinePlayableViewData)) {
-                    if (s == null) {
-                        s = context.getResources().getString(2131296936);
-                    }
-                    return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131296927, new Object[] { s }), 0);
+            if (downloadPaused(offlinePlayableViewData)) {
+                ActivityPageOfflineAgentListener$SnackbarMessage activityPageOfflineAgentListener$SnackbarMessage;
+                if (s != null) {
+                    activityPageOfflineAgentListener$SnackbarMessage = new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131296924, new Object[] { s }), 0);
                 }
-                if (this.getCurrentlyDownloading() != null || s != null) {
-                    if (s == null) {
-                        s = this.getDownloadProgress(context, offlinePlayableViewData);
-                    }
-                    return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131296927, new Object[] { s }), 0);
+                else {
+                    activityPageOfflineAgentListener$SnackbarMessage = new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131296925), 0);
                 }
+                activityPageOfflineAgentListener$SnackbarMessage.paused = true;
+                return activityPageOfflineAgentListener$SnackbarMessage;
+            }
+            if (this.getCurrentlyDownloading() != null || s != null) {
+                if (!TextUtils.isEmpty((CharSequence)s)) {
+                    return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361802, 1, new Object[] { s, 1 }), 0);
+                }
+                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361801, 1, new Object[] { 1 }), 0);
             }
         }
         else {
@@ -438,37 +429,49 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
             }
             final int n23 = n5 + n4;
             if (n == n22) {
-                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361800, n22, new Object[] { n22 }), n2);
+                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361800, n22, new Object[] { n22 }), n2, true);
             }
-            final OfflinePlayableViewData currentlyDownloading = this.getCurrentlyDownloading();
+            this.getCurrentlyDownloading();
             if (n4 == n) {
-                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361801, n4, new Object[] { context.getResources().getString(2131296936), n4 }), n2);
+                final ActivityPageOfflineAgentListener$SnackbarMessage activityPageOfflineAgentListener$SnackbarMessage2 = new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131296925), 0);
+                activityPageOfflineAgentListener$SnackbarMessage2.paused = true;
+                return activityPageOfflineAgentListener$SnackbarMessage2;
             }
             if (n2 == n) {
-                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361802, n2, new Object[] { n2 }), n2);
+                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361803, n2, new Object[] { n2 }), n2);
             }
-            if (s == null) {
-                if (n23 > 0) {
-                    s = context.getResources().getString(2131296936);
+            String string;
+            if (s != null) {
+                string = s;
+            }
+            else if (n2 > 0) {
+                string = context.getResources().getString(2131296932, new Object[] { n2 });
+            }
+            else {
+                string = null;
+            }
+            if (n4 > 0 && n23 == n4) {
+                ActivityPageOfflineAgentListener$SnackbarMessage activityPageOfflineAgentListener$SnackbarMessage3;
+                if (s == null) {
+                    activityPageOfflineAgentListener$SnackbarMessage3 = new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131296925), 0);
                 }
                 else {
-                    s = "";
+                    activityPageOfflineAgentListener$SnackbarMessage3 = new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getString(2131296926, new Object[] { s }), 0);
                 }
-                if (n2 > 0) {
-                    s = context.getResources().getQuantityString(2131361803, n2, new Object[] { n2, "\ud83d\udca5" });
-                }
-                else if (currentlyDownloading != null) {
-                    s = this.getDownloadProgress(context, currentlyDownloading);
-                }
+                activityPageOfflineAgentListener$SnackbarMessage3.paused = true;
+                return activityPageOfflineAgentListener$SnackbarMessage3;
             }
             if (n23 > 0) {
-                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361801, n23, new Object[] { s, n23 }), n2);
-            }
-            if (n22 > 0) {
-                if (TextUtils.isEmpty((CharSequence)s)) {
-                    return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361800, n22, new Object[] { n22 }), n2);
+                if (!TextUtils.isEmpty((CharSequence)string)) {
+                    return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361802, n23 + n22, new Object[] { string, n23 + n22 }), n2);
                 }
-                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361799, n22, new Object[] { s, n22 }), n2);
+                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361801, n23 + n22, new Object[] { n23 + n22 }), n2);
+            }
+            else if (n22 > 0) {
+                if (TextUtils.isEmpty((CharSequence)string)) {
+                    return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361800, n22, new Object[] { n22 }), n2, true);
+                }
+                return new ActivityPageOfflineAgentListener$SnackbarMessage(context.getResources().getQuantityString(2131361799, n22, new Object[] { string, n22 }), n2, true);
             }
         }
         return null;

@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.l10n.BidiMarker;
 import android.text.TextUtils;
 import java.util.Locale;
+import android.content.Context;
 import android.view.ViewGroup$MarginLayoutParams;
 import android.view.View;
 
@@ -41,6 +42,15 @@ public class UiUtils
             return ((ViewGroup$MarginLayoutParams)view.getLayoutParams()).topMargin;
         }
         return 0;
+    }
+    
+    public static int getStatusBarHeight(final Context context) {
+        int dimensionPixelSize = 0;
+        final int identifier = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (identifier > 0) {
+            dimensionPixelSize = context.getResources().getDimensionPixelSize(identifier);
+        }
+        return dimensionPixelSize;
     }
     
     public static boolean isCurrentLocaleRTL() {

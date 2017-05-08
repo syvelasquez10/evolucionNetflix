@@ -28,6 +28,7 @@ public interface UserActionLogging
     public static final String EDIT_PROFILE_ENDED = "com.netflix.mediaclient.intent.action.LOG_UIA_EDIT_PROFILE_ENDED";
     public static final String EDIT_PROFILE_START = "com.netflix.mediaclient.intent.action.LOG_UIA_EDIT_PROFILE_START";
     public static final String EXTRA_CMD = "cmd";
+    public static final String EXTRA_CUSTOM = "custom";
     public static final String EXTRA_ERROR = "error";
     public static final String EXTRA_ERROR_CODE = "error_code";
     public static final String EXTRA_HTTP_RESPONSE = "http_response";
@@ -156,7 +157,7 @@ public interface UserActionLogging
     
     boolean handleIntent(final Intent p0, final boolean p1);
     
-    void reportCustomAction(final String p0, final IClientLogging$ModalView p1);
+    void reportCustomAction(final String p0, final IClientLogging$ModalView p1, final JSONObject p2);
     
     void setDataContext(final DataContext p0);
     

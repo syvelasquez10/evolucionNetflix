@@ -4,6 +4,8 @@
 
 package io.realm;
 
+import io.realm.internal.CheckedRow;
+import io.realm.internal.UncheckedRow;
 import io.realm.internal.RealmProxyMediator;
 import io.realm.internal.Table;
 import java.util.Collections;
@@ -12,12 +14,12 @@ import io.realm.internal.RealmObjectProxy;
 import io.realm.internal.Row;
 import java.util.List;
 import io.realm.log.RealmLog;
+import java.util.Iterator;
 import io.realm.internal.ObjectServerFacade;
 import java.io.FileNotFoundException;
 import io.realm.exceptions.RealmMigrationNeededException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import io.realm.internal.SharedRealm$SchemaVersionListener;
-import io.realm.internal.RealmNotifier;
 import io.realm.internal.SharedRealm;
 import io.realm.internal.async.RealmThreadPoolExecutor;
 import android.content.Context;
@@ -29,7 +31,6 @@ abstract class BaseRealm implements Closeable
     static final RealmThreadPoolExecutor asyncTaskExecutor;
     public static final BaseRealm$ThreadLocalRealmObjectContext objectContext;
     protected RealmConfiguration configuration;
-    HandlerController handlerController;
     RealmSchema schema;
     protected SharedRealm sharedRealm;
     final long threadId;
@@ -42,8 +43,6 @@ abstract class BaseRealm implements Closeable
     protected BaseRealm(final RealmConfiguration configuration) {
         this.threadId = Thread.currentThread().getId();
         this.configuration = configuration;
-        this.handlerController = new HandlerController(this);
-        final AndroidNotifier androidNotifier = new AndroidNotifier(this.handlerController);
         Object o;
         if (!(this instanceof Realm)) {
             o = null;
@@ -51,11 +50,8 @@ abstract class BaseRealm implements Closeable
         else {
             o = new BaseRealm$1(this);
         }
-        this.sharedRealm = SharedRealm.getInstance(configuration, (RealmNotifier)androidNotifier, (SharedRealm$SchemaVersionListener)o, true);
+        this.sharedRealm = SharedRealm.getInstance(configuration, (SharedRealm$SchemaVersionListener)o, true);
         this.schema = new RealmSchema(this);
-        if (this.handlerController.isAutoRefreshAvailable()) {
-            this.setAutoRefresh(true);
-        }
     }
     
     static boolean deleteRealm(final RealmConfiguration realmConfiguration) {
@@ -68,13 +64,15 @@ abstract class BaseRealm implements Closeable
         if (realmConfiguration == null) {
             throw new IllegalArgumentException("RealmConfiguration must be provided");
         }
-        if (realmMigration == null && realmConfiguration.getMigration() == null) {
-            throw new RealmMigrationNeededException(realmConfiguration.getPath(), "RealmMigration must be provided", (Throwable)ex);
-        }
-        final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-        RealmCache.invokeWithGlobalRefCount(realmConfiguration, (RealmCache$Callback)new BaseRealm$4(realmConfiguration, atomicBoolean, realmMigration, baseRealm$MigrationCallback));
-        if (atomicBoolean.get()) {
-            throw new FileNotFoundException("Cannot migrate a Realm file which doesn't exist: " + realmConfiguration.getPath());
+        if (!realmConfiguration.isSyncConfiguration()) {
+            if (realmMigration == null && realmConfiguration.getMigration() == null) {
+                throw new RealmMigrationNeededException(realmConfiguration.getPath(), "RealmMigration must be provided", (Throwable)ex);
+            }
+            final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+            RealmCache.invokeWithGlobalRefCount(realmConfiguration, (RealmCache$Callback)new BaseRealm$4(realmConfiguration, atomicBoolean, realmMigration, baseRealm$MigrationCallback));
+            if (atomicBoolean.get()) {
+                throw new FileNotFoundException("Cannot migrate a Realm file which doesn't exist: " + realmConfiguration.getPath());
+            }
         }
     }
     
@@ -112,15 +110,18 @@ abstract class BaseRealm implements Closeable
     }
     
     public void commitTransaction() {
-        this.commitTransaction(true);
-    }
-    
-    void commitTransaction(final boolean b) {
         this.checkIfValid();
         this.sharedRealm.commitTransaction();
-        ObjectServerFacade.getFacade(this.configuration.isSyncConfiguration()).notifyCommit(this.configuration, this.sharedRealm.getLastSnapshotVersion());
-        if (b) {
-            this.sharedRealm.realmNotifier.notifyCommitByLocalThread();
+        if (!this.isClosed()) {
+            ObjectServerFacade.getFacade(this.configuration.isSyncConfiguration()).notifyCommit(this.configuration, this.sharedRealm.getLastSnapshotVersion());
+        }
+    }
+    
+    public void deleteAll() {
+        this.checkIfValid();
+        final Iterator<RealmObjectSchema> iterator = this.schema.getAll().iterator();
+        while (iterator.hasNext()) {
+            this.schema.getTable(iterator.next().getClassName()).clear();
         }
     }
     
@@ -192,6 +193,25 @@ abstract class BaseRealm implements Closeable
         return (E)instance;
     }
     
+     <E extends RealmModel> E get(final Class<E> clazz, final String s, final UncheckedRow uncheckedRow) {
+        int n;
+        if (s != null) {
+            n = 1;
+        }
+        else {
+            n = 0;
+        }
+        Object instance;
+        if (n != 0) {
+            instance = new DynamicRealmObject(this, (Row)CheckedRow.getFromRow(uncheckedRow));
+        }
+        else {
+            instance = this.configuration.getSchemaMediator().newInstance((Class)clazz, (Object)this, (Row)uncheckedRow, this.schema.getColumnInfo((Class)clazz), false, (List)Collections.emptyList());
+        }
+        ((RealmObjectProxy)instance).realmGet$proxyState().setTableVersion$realm();
+        return (E)instance;
+    }
+    
     public RealmConfiguration getConfiguration() {
         return this.configuration;
     }
@@ -208,10 +228,6 @@ abstract class BaseRealm implements Closeable
         return this.sharedRealm.getSchemaVersion();
     }
     
-    boolean hasValidNotifier() {
-        return this.sharedRealm.realmNotifier != null && this.sharedRealm.realmNotifier.isValid();
-    }
-    
     public boolean isClosed() {
         if (this.threadId != Thread.currentThread().getId()) {
             throw new IllegalStateException("Realm access from incorrect thread. Realm objects can only be accessed on the thread they were created.");
@@ -219,15 +235,14 @@ abstract class BaseRealm implements Closeable
         return this.sharedRealm == null || this.sharedRealm.isClosed();
     }
     
+    public boolean isEmpty() {
+        this.checkIfValid();
+        return this.sharedRealm.isEmpty();
+    }
+    
     public boolean isInTransaction() {
         this.checkIfValid();
         return this.sharedRealm.isInTransaction();
-    }
-    
-    public void setAutoRefresh(final boolean autoRefresh) {
-        this.checkIfValid();
-        this.handlerController.checkCanBeAutoRefreshed();
-        this.handlerController.setAutoRefresh(autoRefresh);
     }
     
     void setVersion(final long schemaVersion) {

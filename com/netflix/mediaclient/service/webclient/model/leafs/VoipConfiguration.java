@@ -26,12 +26,16 @@ public class VoipConfiguration
     private boolean enableVoipOverWiFi;
     @SerializedName("jitterThresholdInMs")
     private Threshold jitterThresholdInMs;
+    @SerializedName("openDialpadByDefault")
+    private boolean openDialpadByDefault;
     @SerializedName("packetLosThresholdInPercent")
     private Threshold packetLosThresholdInPercent;
     @SerializedName("rttThresholdInMs")
     private Threshold rttThresholdInMs;
     @SerializedName("sampleRateInHz")
     private int sampleRateInHz;
+    @SerializedName("showConfirmationDialog")
+    private boolean showConfirmationDialog;
     @SerializedName("showHelpForNonMember")
     private boolean showHelpForNonMember;
     @SerializedName("sipThresholdInMs")
@@ -46,6 +50,8 @@ public class VoipConfiguration
         this.enableVoipOverData = true;
         this.enableVoipOverWiFi = true;
         this.sampleRateInHz = 8000;
+        this.showConfirmationDialog = true;
+        this.openDialpadByDefault = false;
     }
     
     public static VoipConfiguration loadFromPreferences(Context context) {
@@ -125,12 +131,20 @@ public class VoipConfiguration
         return this.enableVoipOverWiFi;
     }
     
+    public boolean isOpenDialpadByDefault() {
+        return this.openDialpadByDefault;
+    }
+    
+    public boolean isShowConfirmationDialog() {
+        return this.showConfirmationDialog;
+    }
+    
     public boolean isShowHelpForNonMember() {
         return this.showHelpForNonMember;
     }
     
     @Override
     public String toString() {
-        return "VoipConfiguration{enableVoip=" + this.enableVoip + ", enableVoipOverData=" + this.enableVoipOverData + ", enableVoipOverWiFi=" + this.enableVoipOverWiFi + ", rttThresholdInMs=" + this.rttThresholdInMs + ", jitterThresholdInMs=" + this.jitterThresholdInMs + ", sipThresholdInMs=" + this.sipThresholdInMs + ", packetLosThresholdInPercent=" + this.packetLosThresholdInPercent + ", sampleRateInHz=" + this.sampleRateInHz + ", showHelpForNonMember=" + this.showHelpForNonMember + '}';
+        return "VoipConfiguration{enableVoip=" + this.enableVoip + ", enableVoipOverData=" + this.enableVoipOverData + ", enableVoipOverWiFi=" + this.enableVoipOverWiFi + ", rttThresholdInMs=" + this.rttThresholdInMs + ", jitterThresholdInMs=" + this.jitterThresholdInMs + ", sipThresholdInMs=" + this.sipThresholdInMs + ", packetLosThresholdInPercent=" + this.packetLosThresholdInPercent + ", sampleRateInHz=" + this.sampleRateInHz + ", showHelpForNonMember=" + this.showHelpForNonMember + ", showConfirmationDialog=" + this.showConfirmationDialog + ", openDialpadByDefault=" + this.openDialpadByDefault + '}';
     }
 }

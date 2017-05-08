@@ -4,7 +4,6 @@
 
 package com.netflix.falkor;
 
-import com.netflix.model.leafs.Video$InQueue;
 import com.netflix.falkor.task.UpdateExpiryAdvisoryStatusTask;
 import com.netflix.model.leafs.advisory.ExpiringContentAdvisory$ContentAction;
 import com.netflix.model.branches.FalkorVideo;
@@ -20,6 +19,7 @@ import com.netflix.falkor.task.RefreshPopularTitlesTask;
 import com.netflix.falkor.task.RefreshIqTask;
 import com.netflix.falkor.task.RefreshDiscoveryTask;
 import com.netflix.falkor.task.RefreshCwTask;
+import com.netflix.falkor.cache.FalkorCache$RealmAccess;
 import com.netflix.falkor.task.PrefetchVideoListDetailsTask;
 import com.netflix.mediaclient.ui.details.DPPrefetchABTestUtils;
 import com.netflix.falkor.task.PrefetchLoLoMoTask;
@@ -31,6 +31,7 @@ import com.netflix.falkor.task.LogPostPlayImpression;
 import com.netflix.falkor.task.LogBillboardActivityTask;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.model.branches.MementoVideoSwatch;
+import com.netflix.mediaclient.util.LogUtils;
 import java.util.LinkedHashSet;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
@@ -101,6 +102,7 @@ import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
+import com.netflix.falkor.cache.FalkorCacheHelperInterface;
 import java.util.Iterator;
 import java.util.Comparator;
 import java.util.List;
@@ -108,6 +110,7 @@ import java.util.Collections;
 import com.netflix.mediaclient.util.AlphanumComparator;
 import java.util.Collection;
 import java.util.ArrayList;
+import com.netflix.falkor.cache.FalkorCacheHelperFactory;
 import android.os.Looper;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import android.os.Handler;
@@ -128,7 +131,6 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     private static final boolean ORIGINALS_BILLBOARDS_ENABLED = true;
     private static final int PREFETCH_BILLBOARD_VIDEO_INDEX = 9;
     private static final String TAG = "CachedModelProxy";
-    private static final String TAG_TIMING = "CachedModelProxy_Timing";
     private static long sLastWriteTimeMS;
     private final JsonParser jsonParser;
     private int lastPrefetchFromVideo;
@@ -142,12 +144,61 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         CachedModelProxy.FORCE_CMP_TO_LOCAL_CACHE = false;
     }
     
-    public CachedModelProxy(final ServiceProvider serviceProvider, final T root, final FalkorVolleyWebClient webClient) {
+    public CachedModelProxy(ServiceProvider serviceProvider, final T root, FalkorVolleyWebClient helper) {
         this.jsonParser = new JsonParser();
-        this.serviceProvider = serviceProvider;
+        this.serviceProvider = (ServiceProvider)serviceProvider;
         this.root = root;
-        this.webClient = webClient;
+        this.webClient = helper;
         this.mainHandler = new Handler(Looper.getMainLooper());
+        helper = (FalkorVolleyWebClient)FalkorCacheHelperFactory.getHelper(this.getContext());
+        serviceProvider = null;
+        try {
+            ((FalkorCacheHelperInterface)helper).expireLolomoListsFromCache();
+            if (helper == null) {
+                return;
+            }
+            Label_0084: {
+                if (!false) {
+                    break Label_0084;
+                }
+                try {
+                    ((FalkorCacheHelperInterface)helper).close();
+                    return;
+                }
+                catch (Throwable serviceProvider) {
+                    throw new NullPointerException();
+                }
+            }
+            ((FalkorCacheHelperInterface)helper).close();
+        }
+        catch (Throwable t) {
+            serviceProvider = t;
+            throw t;
+        }
+        finally {
+            while (true) {
+                if (helper == null) {
+                    break Label_0111;
+                }
+                EndFinally_0: {
+                    Label_0122: {
+                        if (serviceProvider == null) {
+                            break Label_0122;
+                        }
+                        try {
+                            ((FalkorCacheHelperInterface)helper).close();
+                            break EndFinally_0;
+                        }
+                        catch (Throwable t2) {
+                            serviceProvider.addSuppressed(t2);
+                            continue;
+                        }
+                    }
+                    ((FalkorCacheHelperInterface)helper).close();
+                }
+                continue;
+            }
+        }
     }
     
     private void doDumpCacheToDiskRecursive(final StringBuilder sb, final BranchNode branchNode, final int n, final boolean b) {
@@ -184,7 +235,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         }
     }
     
-    private void get(final PQL pql, Object o, final int n, final CachedModelProxy$GetResult cachedModelProxy$GetResult) {
+    private void get(final PQL pql, Object retrieveFromCache, int n, final CachedModelProxy$GetResult cachedModelProxy$GetResult, final FalkorCacheHelperInterface falkorCacheHelperInterface) {
         while (true) {
             int i = 0;
             final PQL pql2;
@@ -195,14 +246,14 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                             Log.v("CachedModelProxy", "get from path: " + pql + ", offset: " + n);
                         }
                         i = pql.getKeySegments().size();
-                        if (n < i && o == null) {
+                        if (n < i && retrieveFromCache == null) {
                             cachedModelProxy$GetResult.missingPqls.add(pql);
                         }
                         else {
                             if (n != i) {
                                 break Label_0123;
                             }
-                            if (o == null) {
+                            if (retrieveFromCache == null) {
                                 break Label_0108;
                             }
                             cachedModelProxy$GetResult.foundPqls.add(pql);
@@ -216,27 +267,27 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
             if (n > i) {
                 throw new IllegalStateException("Offset is invalid");
             }
-            if (o instanceof Ref) {
-                o = o;
-                final Object hardValue = ((Ref)o).getHardValue();
+            if (retrieveFromCache instanceof Ref) {
+                retrieveFromCache = retrieveFromCache;
+                final Object hardValue = ((Ref)retrieveFromCache).getHardValue();
                 if (hardValue != null) {
-                    this.get(((Ref)o).getRefPath().append(pql2.slice(n)), hardValue, ((Ref)o).getRefPath().getKeySegments().size(), cachedModelProxy$GetResult);
+                    this.get(((Ref)retrieveFromCache).getRefPath().append(pql2.slice(n)), hardValue, ((Ref)retrieveFromCache).getRefPath().getKeySegments().size(), cachedModelProxy$GetResult, falkorCacheHelperInterface);
                     return;
                 }
-                if (((Ref)o).getRefPath() != null) {
-                    this.get(((Ref)o).getRefPath().append(pql2.slice(n)), this.root, 0, cachedModelProxy$GetResult);
+                if (((Ref)retrieveFromCache).getRefPath() != null) {
+                    this.get(((Ref)retrieveFromCache).getRefPath().append(pql2.slice(n)), this.root, 0, cachedModelProxy$GetResult, falkorCacheHelperInterface);
                     return;
                 }
                 if (Falkor.ENABLE_VERBOSE_LOGGING) {
-                    Log.v("CachedModelProxy", "Ref path is null: " + ((Ref)o).getPath());
+                    Log.v("CachedModelProxy", "Ref path is null: " + ((Ref)retrieveFromCache).getPath());
                 }
             }
             else {
-                if (o instanceof Exception || o instanceof Undefined) {
+                if (retrieveFromCache instanceof Exception || retrieveFromCache instanceof Undefined) {
                     cachedModelProxy$GetResult.ignoredPqls.add(pql2);
                     return;
                 }
-                final BranchNode branchNode = (BranchNode)o;
+                final BranchNode branchNode = (BranchNode)retrieveFromCache;
                 final Map<K, Integer> value = pql2.getKeySegments().get(n);
                 if (value instanceof List) {
                     for (final Map<K, Integer> next : (List<Object>)value) {
@@ -252,31 +303,40 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                                 throw new IllegalStateException("No 'to' param");
                             }
                             for (int i = value2; i <= n3; ++i) {
-                                this.get(pql2.replaceKeySegment(n, String.valueOf(i)), o, n, cachedModelProxy$GetResult);
+                                this.get(pql2.replaceKeySegment(n, String.valueOf(i)), retrieveFromCache, n, cachedModelProxy$GetResult, falkorCacheHelperInterface);
                             }
                         }
                         else {
-                            this.get(pql2, branchNode.get(next.toString()), n + 1, cachedModelProxy$GetResult);
+                            this.get(pql2.replaceKeySegment(n, next), retrieveFromCache, n, cachedModelProxy$GetResult, falkorCacheHelperInterface);
                         }
                     }
                     return;
                 }
                 if (!(value instanceof Map)) {
-                    this.get(pql2, branchNode.get(value.toString()), n + 1, cachedModelProxy$GetResult);
+                    final String string = value.toString();
+                    final Object value3 = branchNode.get(string);
+                    ++n;
+                    if ((retrieveFromCache = value3) == null) {
+                        retrieveFromCache = value3;
+                        if (falkorCacheHelperInterface != null) {
+                            retrieveFromCache = falkorCacheHelperInterface.retrieveFromCache(pql2.getKeySegments(), n, string, branchNode);
+                        }
+                    }
+                    this.get(pql2, retrieveFromCache, n, cachedModelProxy$GetResult, falkorCacheHelperInterface);
                     return;
                 }
                 final Map<K, Integer> map2 = value;
                 final Integer n4 = map2.get("from");
                 final Integer n5 = map2.get("to");
-                Integer value3;
-                if ((value3 = n4) == null) {
-                    value3 = 0;
+                Integer value4;
+                if ((value4 = n4) == null) {
+                    value4 = 0;
                 }
                 if (n5 == null) {
                     throw new IllegalStateException("No 'to' param");
                 }
-                for (int i = value3; i <= n5; ++i) {
-                    this.get(pql2.replaceKeySegment(n, String.valueOf(i)), o, n, cachedModelProxy$GetResult);
+                for (int i = value4; i <= n5; ++i) {
+                    this.get(pql2.replaceKeySegment(n, String.valueOf(i)), retrieveFromCache, n, cachedModelProxy$GetResult, falkorCacheHelperInterface);
                 }
             }
         }
@@ -547,17 +607,17 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         this.launchTask(new FetchGenresTask(this, s, n, n2, browseAgentCallback));
     }
     
-    public void fetchIQVideos(final int n, final int n2, final boolean b, final boolean b2, final BrowseAgentCallback browseAgentCallback) {
+    public void fetchIQVideos(final int n, final int n2, final boolean b, final boolean b2, final boolean b3, final BrowseAgentCallback browseAgentCallback) {
         final Pair<LoMo, String> currLomoByType = this.getCurrLomoByType(LoMoType.INSTANT_QUEUE);
         if (currLomoByType == null || currLomoByType.first == null) {
             Log.d("CachedModelProxy", "Asked to fetch IQ videos but no IQ lomo currently exists in cache!");
             browseAgentCallback.onVideosFetched(null, CommonStatus.NOT_VALID);
             return;
         }
-        this.launchTask(new FetchVideosTask(this, (LoMo)currLomoByType.first, n, n2, b, b2, false, browseAgentCallback));
+        this.launchTask(new FetchVideosTask(this, (LoMo)currLomoByType.first, n, n2, b, b2, false, b3, browseAgentCallback));
     }
     
-    public void fetchIQVideos(final LoMo loMo, final int n, final int n2, final boolean b, final boolean b2, final BrowseAgentCallback browseAgentCallback) {
+    public void fetchIQVideos(final LoMo loMo, final int n, final int n2, final boolean b, final boolean b2, final boolean b3, final BrowseAgentCallback browseAgentCallback) {
         final DataUtil$StringPair currLomoInfo = this.getCurrLomoInfo(LoMoType.INSTANT_QUEUE);
         if (currLomoInfo == null) {
             Log.w("CachedModelProxy", "Asked to fetch IQ videos but no IQ lomo currently exists in cache!");
@@ -576,7 +636,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
             }
             loMo.setId((String)currLomoInfo.first);
         }
-        this.launchTask(new FetchVideosTask(this, loMo, n, n2, b, b2, false, browseAgentCallback));
+        this.launchTask(new FetchVideosTask(this, loMo, n, n2, b, b2, false, b3, browseAgentCallback));
     }
     
     public void fetchInteractiveVideoMoments(final VideoType videoType, final String s, final String s2, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
@@ -647,7 +707,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         this.launchTask(new FetchVideoSummaryTask(this, s, browseAgentCallback));
     }
     
-    public void fetchVideos(final LoMo loMo, final int n, final int n2, final boolean b, final boolean b2, final boolean b3, final BrowseAgentCallback browseAgentCallback) {
+    public void fetchVideos(final LoMo loMo, final int n, final int n2, final boolean b, final boolean b2, final boolean b3, final boolean b4, final BrowseAgentCallback browseAgentCallback) {
         if (LoMoType.BILLBOARD.equals(loMo.getType())) {
             this.launchTask(new FetchBillboardVideosTask(this, n, n2, b, browseAgentCallback));
             return;
@@ -656,7 +716,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
             this.launchTask(new FetchDiscoveryVideosTask(this, loMo.getId(), n, n2, b, browseAgentCallback));
             return;
         }
-        this.launchTask(new FetchVideosTask(this, loMo, n, n2, b, b2, b3, browseAgentCallback));
+        this.launchTask(new FetchVideosTask(this, loMo, n, n2, b, b2, b3, b4, browseAgentCallback));
     }
     
     public void flushCaches() {
@@ -688,17 +748,132 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     }
     
     @Override
-    public CachedModelProxy$GetResult get(final Collection<PQL> collection) {
-        final CachedModelProxy$GetResult cachedModelProxy$GetResult;
-        synchronized (this) {
-            cachedModelProxy$GetResult = new CachedModelProxy$GetResult(collection);
-            final Iterator<PQL> iterator = collection.iterator();
-            while (iterator.hasNext()) {
-                this.get(iterator.next(), this.root, 0, cachedModelProxy$GetResult);
-            }
-        }
-        // monitorexit(this)
-        return cachedModelProxy$GetResult;
+    public CachedModelProxy$GetResult get(final Collection<PQL> p0) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_0        
+        //     1: monitorenter   
+        //     2: new             Lcom/netflix/falkor/CachedModelProxy$GetResult;
+        //     5: dup            
+        //     6: aload_1        
+        //     7: invokespecial   com/netflix/falkor/CachedModelProxy$GetResult.<init>:(Ljava/util/Collection;)V
+        //    10: astore_2       
+        //    11: aload_0        
+        //    12: invokevirtual   com/netflix/falkor/CachedModelProxy.getContext:()Landroid/content/Context;
+        //    15: invokestatic    com/netflix/falkor/cache/FalkorCacheHelperFactory.getHelper:(Landroid/content/Context;)Lcom/netflix/falkor/cache/FalkorCacheHelperInterface;
+        //    18: astore_3       
+        //    19: aload_1        
+        //    20: invokeinterface java/util/Collection.iterator:()Ljava/util/Iterator;
+        //    25: astore_1       
+        //    26: aload_1        
+        //    27: invokeinterface java/util/Iterator.hasNext:()Z
+        //    32: ifeq            83
+        //    35: aload_0        
+        //    36: aload_1        
+        //    37: invokeinterface java/util/Iterator.next:()Ljava/lang/Object;
+        //    42: checkcast       Lcom/netflix/falkor/PQL;
+        //    45: aload_0        
+        //    46: getfield        com/netflix/falkor/CachedModelProxy.root:Lcom/netflix/falkor/BranchNode;
+        //    49: iconst_0       
+        //    50: aload_2        
+        //    51: aload_3        
+        //    52: invokespecial   com/netflix/falkor/CachedModelProxy.get:(Lcom/netflix/falkor/PQL;Ljava/lang/Object;ILcom/netflix/falkor/CachedModelProxy$GetResult;Lcom/netflix/falkor/cache/FalkorCacheHelperInterface;)V
+        //    55: goto            26
+        //    58: astore_1       
+        //    59: aload_1        
+        //    60: athrow         
+        //    61: astore_2       
+        //    62: aload_3        
+        //    63: ifnull          76
+        //    66: aload_1        
+        //    67: ifnull          128
+        //    70: aload_3        
+        //    71: invokeinterface com/netflix/falkor/cache/FalkorCacheHelperInterface.close:()V
+        //    76: aload_2        
+        //    77: athrow         
+        //    78: astore_1       
+        //    79: aload_0        
+        //    80: monitorexit    
+        //    81: aload_1        
+        //    82: athrow         
+        //    83: aload_3        
+        //    84: ifnull          97
+        //    87: iconst_0       
+        //    88: ifeq            110
+        //    91: aload_3        
+        //    92: invokeinterface com/netflix/falkor/cache/FalkorCacheHelperInterface.close:()V
+        //    97: aload_0        
+        //    98: monitorexit    
+        //    99: aload_2        
+        //   100: areturn        
+        //   101: astore_1       
+        //   102: new             Ljava/lang/NullPointerException;
+        //   105: dup            
+        //   106: invokespecial   java/lang/NullPointerException.<init>:()V
+        //   109: athrow         
+        //   110: aload_3        
+        //   111: invokeinterface com/netflix/falkor/cache/FalkorCacheHelperInterface.close:()V
+        //   116: goto            97
+        //   119: astore_3       
+        //   120: aload_1        
+        //   121: aload_3        
+        //   122: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
+        //   125: goto            76
+        //   128: aload_3        
+        //   129: invokeinterface com/netflix/falkor/cache/FalkorCacheHelperInterface.close:()V
+        //   134: goto            76
+        //   137: astore_2       
+        //   138: aconst_null    
+        //   139: astore_1       
+        //   140: goto            62
+        //    Signature:
+        //  (Ljava/util/Collection<Lcom/netflix/falkor/PQL;>;)Lcom/netflix/falkor/CachedModelProxy$GetResult;
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type                 
+        //  -----  -----  -----  -----  ---------------------
+        //  2      19     78     83     Any
+        //  19     26     58     62     Ljava/lang/Throwable;
+        //  19     26     137    143    Any
+        //  26     55     58     62     Ljava/lang/Throwable;
+        //  26     55     137    143    Any
+        //  59     61     61     62     Any
+        //  70     76     119    128    Ljava/lang/Throwable;
+        //  70     76     78     83     Any
+        //  76     78     78     83     Any
+        //  91     97     101    110    Ljava/lang/Throwable;
+        //  91     97     78     83     Any
+        //  102    110    78     83     Any
+        //  110    116    78     83     Any
+        //  120    125    78     83     Any
+        //  128    134    78     83     Any
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0076:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
     public <I extends FalkorObject> List<I> getAllItemsAsList(final PQL pql) {
@@ -817,21 +992,50 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     
     @Override
     public <I extends FalkorObject> List<I> getItemsAsList(final Collection<PQL> collection) {
-        final LinkedHashSet<I> set;
-        synchronized (this) {
-            set = new LinkedHashSet<I>();
-            final Iterator<PQL> iterator = collection.iterator();
-            while (iterator.hasNext()) {
-                for (final PQL pql : iterator.next().explode()) {
-                    final Object value = this.getValue(pql);
-                    if (value instanceof FalkorObject) {
-                        final FalkorObject falkorObject = (I)value;
-                        if (Falkor.ENABLE_VERBOSE_LOGGING) {
-                            Log.v("CachedModelProxy", "got falkor object - pql: " + pql + ", item: " + falkorObject);
+        LinkedHashSet<I> set;
+        while (true) {
+            while (true) {
+                PQL pql = null;
+                Object o = null;
+                Label_0219: {
+                    synchronized (this) {
+                        set = new LinkedHashSet<I>();
+                        final Iterator<PQL> iterator = collection.iterator();
+                        while (iterator.hasNext()) {
+                            pql = iterator.next();
+                            final int allNodeIndex = pql.getAllNodeIndex();
+                            PQL replaceKeySegment = pql;
+                            if (allNodeIndex >= 0) {
+                                o = this.getValue(pql.slice(0, allNodeIndex + 1));
+                                if (!(o instanceof Ref)) {
+                                    break Label_0219;
+                                }
+                                o = ((Ref)o).getRefPath();
+                                replaceKeySegment = pql;
+                                if (o != null) {
+                                    replaceKeySegment = pql.replaceKeySegment(allNodeIndex, ((PQL)o).getKeySegments().get(allNodeIndex));
+                                }
+                            }
+                            final Iterator<Object> iterator2 = replaceKeySegment.explode().iterator();
+                            while (iterator2.hasNext()) {
+                                pql = iterator2.next();
+                                o = this.getValue(pql);
+                                if (o instanceof FalkorObject) {
+                                    o = o;
+                                    if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                                        Log.v("CachedModelProxy", "got falkor object - pql: " + pql + ", item: " + o);
+                                    }
+                                    set.add((I)o);
+                                }
+                            }
                         }
-                        set.add((I)falkorObject);
+                        break;
                     }
                 }
+                final PQL pql2;
+                LogUtils.reportErrorSafely("CachedModelProxy " + pql2.toString() + " was not a Ref - " + o);
+                PQL replaceKeySegment = pql;
+                continue;
             }
         }
         final ArrayList list = new ArrayList<I>(set.size());
@@ -1049,42 +1253,217 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         return this.webClient;
     }
     
-    public void invalidate(final PQL pql) {
-        while (true) {
-            final Object value;
-            Label_0146: {
-                synchronized (this) {
-                    value = this.getValue(pql.slice(0, pql.getNumKeySegments() - 1));
-                    if (value == null) {
-                        if (Log.isLoggable()) {
-                            Log.d("CachedModelProxy", "Can't invalidate node because it is null: " + pql);
-                        }
-                    }
-                    else {
-                        if (!(value instanceof BranchNode)) {
-                            break Label_0146;
-                        }
-                        final String value2 = String.valueOf(pql.getKeySegments().get(pql.getNumKeySegments() - 1));
-                        if (Log.isLoggable()) {
-                            Log.d("CachedModelProxy", "Invalidating at BranchNode: " + ((BranchNode)value).getClass() + ", node key: " + value2);
-                        }
-                        ((BranchNode)value).remove(value2);
-                    }
-                    return;
-                }
-            }
-            final Throwable t;
-            if (value instanceof Ref) {
-                if (Log.isLoggable()) {
-                    Log.d("CachedModelProxy", "Invalidating ref path for pql: " + t);
-                }
-                ((Ref)value).setRefPath(null);
-                return;
-            }
-            if (Log.isLoggable()) {
-                Log.w("CachedModelProxy", "Don't know how to invalidate node: " + ((Ref)value).getClass() + ", pql: " + t);
-            }
-        }
+    public void invalidate(final PQL p0) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aconst_null    
+        //     1: astore_3       
+        //     2: aload_0        
+        //     3: monitorenter   
+        //     4: aload_0        
+        //     5: aload_1        
+        //     6: iconst_0       
+        //     7: aload_1        
+        //     8: invokevirtual   com/netflix/falkor/PQL.getNumKeySegments:()I
+        //    11: iconst_1       
+        //    12: isub           
+        //    13: invokevirtual   com/netflix/falkor/PQL.slice:(II)Lcom/netflix/falkor/PQL;
+        //    16: invokevirtual   com/netflix/falkor/CachedModelProxy.getValue:(Lcom/netflix/falkor/PQL;)Ljava/lang/Object;
+        //    19: astore_2       
+        //    20: aload_0        
+        //    21: invokevirtual   com/netflix/falkor/CachedModelProxy.getContext:()Landroid/content/Context;
+        //    24: invokestatic    com/netflix/falkor/cache/FalkorCacheHelperFactory.getHelper:(Landroid/content/Context;)Lcom/netflix/falkor/cache/FalkorCacheHelperInterface;
+        //    27: astore          4
+        //    29: aload           4
+        //    31: aload_1        
+        //    32: invokevirtual   com/netflix/falkor/PQL.getKeySegments:()Ljava/util/List;
+        //    35: invokeinterface com/netflix/falkor/cache/FalkorCacheHelperInterface.deleteSubPath:(Ljava/util/List;)V
+        //    40: aload           4
+        //    42: ifnull          56
+        //    45: iconst_0       
+        //    46: ifeq            109
+        //    49: aload           4
+        //    51: invokeinterface com/netflix/falkor/cache/FalkorCacheHelperInterface.close:()V
+        //    56: aload_2        
+        //    57: ifnonnull       160
+        //    60: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //    63: ifeq            92
+        //    66: ldc             "CachedModelProxy"
+        //    68: new             Ljava/lang/StringBuilder;
+        //    71: dup            
+        //    72: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    75: ldc_w           "Can't invalidate node because it is null: "
+        //    78: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    81: aload_1        
+        //    82: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //    85: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    88: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    91: pop            
+        //    92: aload_0        
+        //    93: monitorexit    
+        //    94: return         
+        //    95: astore_1       
+        //    96: new             Ljava/lang/NullPointerException;
+        //    99: dup            
+        //   100: invokespecial   java/lang/NullPointerException.<init>:()V
+        //   103: athrow         
+        //   104: astore_1       
+        //   105: aload_0        
+        //   106: monitorexit    
+        //   107: aload_1        
+        //   108: athrow         
+        //   109: aload           4
+        //   111: invokeinterface com/netflix/falkor/cache/FalkorCacheHelperInterface.close:()V
+        //   116: goto            56
+        //   119: astore_1       
+        //   120: aload_1        
+        //   121: athrow         
+        //   122: astore_2       
+        //   123: aload           4
+        //   125: ifnull          139
+        //   128: aload_1        
+        //   129: ifnull          150
+        //   132: aload           4
+        //   134: invokeinterface com/netflix/falkor/cache/FalkorCacheHelperInterface.close:()V
+        //   139: aload_2        
+        //   140: athrow         
+        //   141: astore_3       
+        //   142: aload_1        
+        //   143: aload_3        
+        //   144: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
+        //   147: goto            139
+        //   150: aload           4
+        //   152: invokeinterface com/netflix/falkor/cache/FalkorCacheHelperInterface.close:()V
+        //   157: goto            139
+        //   160: aload_2        
+        //   161: instanceof      Lcom/netflix/falkor/BranchNode;
+        //   164: ifeq            244
+        //   167: aload_1        
+        //   168: invokevirtual   com/netflix/falkor/PQL.getKeySegments:()Ljava/util/List;
+        //   171: aload_1        
+        //   172: invokevirtual   com/netflix/falkor/PQL.getNumKeySegments:()I
+        //   175: iconst_1       
+        //   176: isub           
+        //   177: invokeinterface java/util/List.get:(I)Ljava/lang/Object;
+        //   182: invokestatic    java/lang/String.valueOf:(Ljava/lang/Object;)Ljava/lang/String;
+        //   185: astore_1       
+        //   186: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   189: ifeq            231
+        //   192: ldc             "CachedModelProxy"
+        //   194: new             Ljava/lang/StringBuilder;
+        //   197: dup            
+        //   198: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   201: ldc_w           "Invalidating at BranchNode: "
+        //   204: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   207: aload_2        
+        //   208: invokevirtual   java/lang/Object.getClass:()Ljava/lang/Class;
+        //   211: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   214: ldc_w           ", node key: "
+        //   217: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   220: aload_1        
+        //   221: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   224: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   227: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   230: pop            
+        //   231: aload_2        
+        //   232: checkcast       Lcom/netflix/falkor/BranchNode;
+        //   235: aload_1        
+        //   236: invokeinterface com/netflix/falkor/BranchNode.remove:(Ljava/lang/String;)V
+        //   241: goto            92
+        //   244: aload_2        
+        //   245: instanceof      Lcom/netflix/falkor/Ref;
+        //   248: ifeq            294
+        //   251: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   254: ifeq            283
+        //   257: ldc             "CachedModelProxy"
+        //   259: new             Ljava/lang/StringBuilder;
+        //   262: dup            
+        //   263: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   266: ldc_w           "Invalidating ref path for pql: "
+        //   269: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   272: aload_1        
+        //   273: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   276: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   279: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   282: pop            
+        //   283: aload_2        
+        //   284: checkcast       Lcom/netflix/falkor/Ref;
+        //   287: aconst_null    
+        //   288: invokevirtual   com/netflix/falkor/Ref.setRefPath:(Lcom/netflix/falkor/PQL;)V
+        //   291: goto            92
+        //   294: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   297: ifeq            92
+        //   300: ldc             "CachedModelProxy"
+        //   302: new             Ljava/lang/StringBuilder;
+        //   305: dup            
+        //   306: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   309: ldc_w           "Don't know how to invalidate node: "
+        //   312: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   315: aload_2        
+        //   316: invokevirtual   java/lang/Object.getClass:()Ljava/lang/Class;
+        //   319: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   322: ldc_w           ", pql: "
+        //   325: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   328: aload_1        
+        //   329: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   332: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   335: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   338: pop            
+        //   339: goto            92
+        //   342: astore_2       
+        //   343: aload_3        
+        //   344: astore_1       
+        //   345: goto            123
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type                 
+        //  -----  -----  -----  -----  ---------------------
+        //  4      29     104    109    Any
+        //  29     40     119    123    Ljava/lang/Throwable;
+        //  29     40     342    348    Any
+        //  49     56     95     104    Ljava/lang/Throwable;
+        //  49     56     104    109    Any
+        //  60     92     104    109    Any
+        //  96     104    104    109    Any
+        //  109    116    104    109    Any
+        //  120    122    122    123    Any
+        //  132    139    141    150    Ljava/lang/Throwable;
+        //  132    139    104    109    Any
+        //  139    141    104    109    Any
+        //  142    147    104    109    Any
+        //  150    157    104    109    Any
+        //  160    231    104    109    Any
+        //  231    241    104    109    Any
+        //  244    283    104    109    Any
+        //  283    291    104    109    Any
+        //  294    339    104    109    Any
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0056:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
     public void invalidateEpisodes(final String s, final VideoType videoType) {
@@ -1146,6 +1525,15 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         DPPrefetchABTestUtils.addToQueue(list, browseAgentCallback);
         if (prefetchQueueEmpty) {
             this.prefetchVideoDetailsFromQueue();
+        }
+    }
+    
+    public void purgePersistentCache() {
+        try {
+            FalkorCache$RealmAccess.purge();
+        }
+        catch (IllegalStateException ex) {
+            LogUtils.reportErrorSafely("purgePersistentCache", (Throwable)ex);
         }
     }
     
@@ -1219,8 +1607,58 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         this.sendDetailPageReloadBroadcast(this.getContext());
     }
     
-    public void serialize(final Writer writer) {
-        this.write(new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().setVersion(1.0).addSerializationExclusionStrategy(new CachedModelProxy$SuperclassExclusionStrategy(this, null)).addDeserializationExclusionStrategy(new CachedModelProxy$SuperclassExclusionStrategy(this, null)).create(), new JsonWriter(writer));
+    public void serialize(Writer t) {
+        final Throwable t2 = null;
+        final Gson create = new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().setVersion(1.0).addSerializationExclusionStrategy(new CachedModelProxy$SuperclassExclusionStrategy(this, null)).addDeserializationExclusionStrategy(new CachedModelProxy$SuperclassExclusionStrategy(this, null)).create();
+        final JsonWriter jsonWriter = new JsonWriter((Writer)t);
+        t = t2;
+        try {
+            this.write(create, jsonWriter);
+            if (jsonWriter == null) {
+                return;
+            }
+            Label_0088: {
+                if (!false) {
+                    break Label_0088;
+                }
+                try {
+                    jsonWriter.close();
+                    return;
+                }
+                catch (Throwable t) {
+                    throw new NullPointerException();
+                }
+            }
+            jsonWriter.close();
+        }
+        catch (Throwable t3) {
+            t = t3;
+            throw t3;
+        }
+        finally {
+            while (true) {
+                if (jsonWriter == null) {
+                    break Label_0111;
+                }
+                EndFinally_0: {
+                    Label_0122: {
+                        if (t == null) {
+                            break Label_0122;
+                        }
+                        try {
+                            jsonWriter.close();
+                            break EndFinally_0;
+                        }
+                        catch (Throwable t4) {
+                            t.addSuppressed(t4);
+                            continue;
+                        }
+                    }
+                    jsonWriter.close();
+                }
+                continue;
+            }
+        }
     }
     
     public void setVideoRating(final String s, final VideoType videoType, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
@@ -1289,13 +1727,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         this.launchTask(new UpdateExpiryAdvisoryStatusTask(this, s, expiringContentAdvisory$ContentAction));
     }
     
-    public void updateInQueueStatus(final VideoType videoType, final String s, final boolean b) {
-        synchronized (this) {
-            final FalkorVideo falkorVideo = (FalkorVideo)this.getValue(PQL.create(videoType.getValue(), s, "summary"));
-            if (falkorVideo != null) {
-                Log.v("CachedModelProxy", "Setting cached inQueue value to: %b, for video: %s", b, s);
-                falkorVideo.set("inQueue", (Object)new Video$InQueue(b));
-            }
-        }
+    public void updateFalkorCacheEnabled() {
+        FalkorCacheHelperFactory.updateFalkorCacheEnabled();
     }
 }

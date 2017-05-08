@@ -18,7 +18,7 @@ import com.netflix.mediaclient.service.browse.BrowseAgentCallbackWrapper;
 import com.netflix.mediaclient.service.NetflixService$ClientCallbacks;
 import com.netflix.mediaclient.servicemgr.IBrowseInterface;
 import com.netflix.model.leafs.Video$Summary;
-import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.RatingInfo;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
@@ -408,13 +408,13 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
     }
     
     @Override
-    public void onVideoRatingSet(final UserRating userRating, final Status status) {
+    public void onVideoRatingSet(final RatingInfo ratingInfo, final Status status) {
         final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
         if (netflixServiceCallback == null) {
             Log.w("FalkorAccess", "No client callback found for onVideoRatingSet");
             return;
         }
-        netflixServiceCallback.onVideoRatingSet(this.requestId, userRating, status);
+        netflixServiceCallback.onVideoRatingSet(this.requestId, ratingInfo, status);
     }
     
     @Override

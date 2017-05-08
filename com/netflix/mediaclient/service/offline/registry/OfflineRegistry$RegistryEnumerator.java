@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.offline.registry;
 import android.os.StatFs;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
+import com.netflix.mediaclient.service.offline.utils.OfflineUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
 import java.util.Iterator;

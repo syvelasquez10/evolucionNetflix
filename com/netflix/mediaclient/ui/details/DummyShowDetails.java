@@ -110,7 +110,7 @@ public class DummyShowDetails implements ShowDetails
     
     @Override
     public int getCurrentSeasonNumber() {
-        return new Random().nextInt(this.getNumOfSeasons());
+        return new Random().nextInt(this.getSeasonCount());
     }
     
     @Override
@@ -189,11 +189,6 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
-    public int getNumOfSeasons() {
-        return 100;
-    }
-    
-    @Override
     public String getNumSeasonsLabel() {
         return null;
     }
@@ -211,6 +206,11 @@ public class DummyShowDetails implements ShowDetails
     @Override
     public String getQuality() {
         return null;
+    }
+    
+    @Override
+    public int getSeasonCount() {
+        return 100;
     }
     
     @Override
@@ -266,6 +266,26 @@ public class DummyShowDetails implements ShowDetails
     @Override
     public String getTitleImgUrl() {
         return null;
+    }
+    
+    @Override
+    public List<Video> getTrailers() {
+        return null;
+    }
+    
+    @Override
+    public int getTrailersListPos() {
+        return 0;
+    }
+    
+    @Override
+    public String getTrailersRequestId() {
+        return null;
+    }
+    
+    @Override
+    public int getTrailersTrackId() {
+        return 0;
     }
     
     @Override
@@ -339,11 +359,6 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
-    public boolean isVideo3D() {
-        return false;
-    }
-    
-    @Override
     public boolean isVideo5dot1() {
         return false;
     }
@@ -375,5 +390,10 @@ public class DummyShowDetails implements ShowDetails
     
     @Override
     public void setUserThumbRating(final int n) {
+    }
+    
+    @Override
+    public boolean shouldRefreshVolatileData() {
+        return false;
     }
 }

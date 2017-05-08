@@ -97,7 +97,7 @@ abstract class DownloadNotificationManager extends SimpleOfflineAgentListener
         notification$Builder.setOnlyAlertOnce(true);
         if (Build$VERSION.SDK_INT >= 21) {
             notification$Builder.setVisibility(1);
-            notification$Builder.setColor(ContextCompat.getColor(this.mContext, 2131755175));
+            notification$Builder.setColor(ContextCompat.getColor(this.mContext, 2131755186));
         }
         if (largeIcon != null) {
             notification$Builder.setLargeIcon(largeIcon);
@@ -158,7 +158,7 @@ abstract class DownloadNotificationManager extends SimpleOfflineAgentListener
                 String s;
                 if (downloadNotificationManager$NotificationData.mVideoType == VideoType.EPISODE) {
                     s = new String(playable.getParentTitle());
-                    string = this.mContext.getString(2131296645, new Object[] { playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), offlineVideoDetails.getTitle() });
+                    string = this.mContext.getString(2131296642, new Object[] { playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), offlineVideoDetails.getTitle() });
                 }
                 else {
                     s = new String(offlineVideoDetails.getTitle());
@@ -239,10 +239,10 @@ abstract class DownloadNotificationManager extends SimpleOfflineAgentListener
         }
         this.mKitKatCompatBuilder.mActions.clear();
         this.mKitKatCompatBuilder.setProgress(100, n, false);
-        this.mKitKatCompatBuilder.addAction(new NotificationCompat$Action(2130837916, this.mContext.getString(2131296716), this.getStopDownloadIntent(offlinePlayableViewData.getPlayableId())));
-        this.mKitKatCompatBuilder.addAction(new NotificationCompat$Action(2130837738, this.mContext.getString(2131296708), this.getDeletePlayableIntent(offlinePlayableViewData.getPlayableId())));
+        this.mKitKatCompatBuilder.addAction(new NotificationCompat$Action(2130837941, this.mContext.getString(2131296713), this.getStopDownloadIntent(offlinePlayableViewData.getPlayableId())));
+        this.mKitKatCompatBuilder.addAction(new NotificationCompat$Action(2130837740, this.mContext.getString(2131296705), this.getDeletePlayableIntent(offlinePlayableViewData.getPlayableId())));
         this.mKitKatCompatBuilder.setContentText(this.getShortPercentageString(offlinePlayableViewData)).setShowWhen(false).setOngoing(true).setAutoCancel(false);
-        this.mKitKatCompatBuilder.setSmallIcon(2130837945);
+        this.mKitKatCompatBuilder.setSmallIcon(2130837967);
         final String bigTextForInProgress = this.getBigTextForInProgress(offlinePlayableViewData, ensureImageAndVideoType);
         final NotificationCompat$BigTextStyle setBigContentTitle = new NotificationCompat$BigTextStyle().setBigContentTitle(ensureImageAndVideoType.mTitle);
         setBigContentTitle.bigText(bigTextForInProgress);
@@ -284,7 +284,7 @@ abstract class DownloadNotificationManager extends SimpleOfflineAgentListener
         final Notification$Builder notification$Builder = new Notification$Builder(this.mContext);
         notification$Builder.setDeleteIntent(this.getDeleteIntent());
         notification$Builder.setShowWhen(true).setOngoing(false).setSmallIcon(this.getDownloadCompleteSmallIcon()).setAutoCancel(true);
-        final String string = this.mContext.getString(2131296709);
+        final String string = this.mContext.getString(2131296706);
         notification$Builder.setContentTitle((CharSequence)string).setTicker((CharSequence)string);
         Notification notification;
         if (this.mNumDownloadCompletedForNotification <= 1) {
@@ -486,21 +486,21 @@ abstract class DownloadNotificationManager extends SimpleOfflineAgentListener
         String s;
         if (stopReason == StopReason.NoNetworkConnectivity || stopReason == StopReason.NotAllowedOnCurrentNetwork) {
             if (this.mOfflineAgent.getRequiresUnmeteredNetwork()) {
-                s = this.mContext.getString(2131296714);
+                s = this.mContext.getString(2131296711);
             }
             else {
-                s = this.mContext.getString(2131296713);
+                s = this.mContext.getString(2131296710);
             }
         }
         else if (stopReason == StopReason.NotEnoughSpace) {
-            s = this.mContext.getString(2131296711);
+            s = this.mContext.getString(2131296708);
         }
         else {
             if (stopReason != StopReason.EncodesAreNotAvailableAnyMore && stopReason != StopReason.GeoCheckError) {
                 this.removeAllNotifications();
                 return;
             }
-            s = LocalizationUtils.prependBidiMarkerIfRtl(this.mContext.getString(2131296710), BidiMarker.FORCED_RTL) + LocalizationUtils.prependBidiMarkerIfRtl(UserVisibleErrorCodeGenerator.addParenthesisWithPrefixSpace(UserVisibleErrorCodeGenerator.getOfflineErrorCodeForStoppedDownload(stopReason)), BidiMarker.FORCED_RTL);
+            s = LocalizationUtils.prependBidiMarkerIfRtl(this.mContext.getString(2131296707), BidiMarker.FORCED_RTL) + LocalizationUtils.prependBidiMarkerIfRtl(UserVisibleErrorCodeGenerator.addParenthesisWithPrefixSpace(UserVisibleErrorCodeGenerator.getOfflineErrorCodeForStoppedDownload(stopReason)), BidiMarker.FORCED_RTL);
         }
         this.showNotificationForErrors(offlinePlayableViewData, s);
     }

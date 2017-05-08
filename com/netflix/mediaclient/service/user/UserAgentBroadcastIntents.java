@@ -23,6 +23,7 @@ public final class UserAgentBroadcastIntents
     public static final String NOTIFY_PROFILES_LIST_UPDATED = "com.netflix.mediaclient.intent.action.NOTIFY_PROFILES_LIST_UPDATED";
     public static final String NOTIFY_USER_ACCOUNT_ACTIVE = "com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_ACTIVE";
     public static final String NOTIFY_USER_ACCOUNT_DEACTIVE = "com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_DEACTIVE";
+    public static final String NOTIFY_USER_ACCOUNT_NOT_LOGGED_IN = "com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_NOT_LOGGED_IN";
     public static final String NOTIFY_USER_PROFILE_ACTIVE = "com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_ACTIVE";
     public static final String NOTIFY_USER_PROFILE_DEACTIVE = "com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_DEACTIVE";
     public static final String NOTIFY_USER_PROFILE_READY_TO_SELECT = "com.netflix.mediaclient.intent.action.NOTIFY_USER_PROFILE_READY_TO_SELECT";
@@ -89,5 +90,9 @@ public final class UserAgentBroadcastIntents
     
     static void signalUserAccountDeactivated(final Context context) {
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_DEACTIVE"));
+    }
+    
+    public static void signalUserAccountNotLoggedIn(final Context context) {
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.NOTIFY_USER_ACCOUNT_NOT_LOGGED_IN"));
     }
 }

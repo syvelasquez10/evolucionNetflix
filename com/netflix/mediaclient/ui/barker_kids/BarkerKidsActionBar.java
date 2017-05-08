@@ -24,10 +24,10 @@ public class BarkerKidsActionBar extends NetflixActionBar
         final Toolbar toolbar = this.toolbar;
         int navigationIcon;
         if (b) {
-            navigationIcon = 2130837804;
+            navigationIcon = 2130837823;
         }
         else {
-            navigationIcon = 2130837803;
+            navigationIcon = 2130837822;
         }
         toolbar.setNavigationIcon(navigationIcon);
     }

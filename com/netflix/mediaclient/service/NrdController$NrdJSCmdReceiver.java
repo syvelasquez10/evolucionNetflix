@@ -4,7 +4,9 @@
 
 package com.netflix.mediaclient.service;
 
+import android.net.NetworkInfo;
 import com.netflix.mediaclient.javabridge.invoke.android.SetNetworkInterfaces;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.javabridge.invoke.android.SetLanguage;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Locale;

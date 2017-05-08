@@ -12,7 +12,7 @@ import io.realm.RealmMigration;
 
 public class RealmOfflineMigration implements RealmMigration
 {
-    static final int OFFLINE_REALM_DB_SCHEMA_VERSION = 4;
+    static final int OFFLINE_REALM_DB_SCHEMA_VERSION = 5;
     private static final String TAG = "RealmOfflineMigration";
     
     public void migrate(final DynamicRealm dynamicRealm, long n, final long n2) {
@@ -40,9 +40,15 @@ public class RealmOfflineMigration implements RealmMigration
             schema.get("RealmPlayable").addField("isPreviewProtected", (Class)Boolean.TYPE, new FieldAttribute[0]);
             n4 = n + 1L;
         }
-        if (n4 != n2) {
-            throw new RuntimeException("you missed a migration. oldVersion is " + n4 + " and should be " + n2);
+        n = n4;
+        if (n4 == 4L) {
+            Log.d("RealmOfflineMigration", "Migrating from " + n4);
+            schema.get("RealmVideoDetails").removeField("isVideo3D");
+            n = n4 + 1L;
         }
-        Log.d("RealmOfflineMigration", "Migrating to " + n4);
+        if (n != n2) {
+            throw new RuntimeException("you missed a migration. oldVersion is " + n + " and should be " + n2);
+        }
+        Log.d("RealmOfflineMigration", "Migrating to " + n);
     }
 }

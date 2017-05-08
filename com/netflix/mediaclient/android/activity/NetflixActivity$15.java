@@ -32,7 +32,6 @@ import java.util.Iterator;
 import com.netflix.mediaclient.android.widget.advisor.Advisor;
 import com.netflix.mediaclient.android.debug.DebugMenuItems;
 import android.view.Menu;
-import com.netflix.mediaclient.android.debug.DebugOverlay;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ColorDrawable;

@@ -108,11 +108,11 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     }
     
     public static DetailsPageParallaxScrollListener createDefault(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] array, final View view, final View view2) {
-        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131755260), 0, 255, view2);
+        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131755273), 0, 255, view2);
     }
     
     public static DetailsPageParallaxScrollListener createParallaxOnly(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] array, final View view, final View view2) {
-        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131755260), 0, 0, view2);
+        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131755273), 0, 0, view2);
     }
     
     private void detachTrackingViewFromOriginalParent() {

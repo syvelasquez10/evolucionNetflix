@@ -134,9 +134,9 @@ public class OfflineManifestManagerImpl implements OfflineManifestManager
             Log.e("nf_offlineManifestMgr", "readManifestFromPersistentStore file not found=" + file.getAbsolutePath());
             return null;
         }
-        NfManifest nfManifest;
+        NfManifest nfManifest = null;
+    Label_0150_Outer:
         while (true) {
-        Label_0124_Outer:
             while (true) {
                 while (true) {
                     List<NfManifest> manifestResponse = null;
@@ -148,9 +148,10 @@ public class OfflineManifestManagerImpl implements OfflineManifestManager
                                 break;
                             }
                             break Label_0202;
-                            string = "nfManifestList size=" + manifestResponse.size();
                             LogUtils.reportErrorSafely("readManifestFromPersistentStore " + string);
                             return null;
+                            string = "nfManifestList size=" + manifestResponse.size();
+                            continue Label_0150_Outer;
                         }
                         catch (Exception ex) {
                             LogUtils.reportErrorSafely("readManifestFromPersistentStore Exception:", (Throwable)ex);
@@ -161,11 +162,11 @@ public class OfflineManifestManagerImpl implements OfflineManifestManager
                     }
                     if (manifestResponse == null) {
                         string = "nfManifestList is null";
-                        continue;
+                        continue Label_0150_Outer;
                     }
                     break;
                 }
-                continue Label_0124_Outer;
+                continue;
             }
         }
         return nfManifest;

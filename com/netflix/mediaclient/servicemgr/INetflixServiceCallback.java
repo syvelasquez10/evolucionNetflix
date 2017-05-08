@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.model.leafs.Video$Summary;
-import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.RatingInfo;
 import com.netflix.model.survey.Survey;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
@@ -125,7 +125,7 @@ public interface INetflixServiceCallback
     
     void onVideoHide(final int p0, final Status p1);
     
-    void onVideoRatingSet(final int p0, final UserRating p1, final Status p2);
+    void onVideoRatingSet(final int p0, final RatingInfo p1, final Status p2);
     
     void onVideoSummaryFetched(final int p0, final Video$Summary p1, final Status p2);
     

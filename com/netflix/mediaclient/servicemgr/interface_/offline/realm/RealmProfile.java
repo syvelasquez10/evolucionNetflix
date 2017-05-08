@@ -11,6 +11,7 @@ import io.realm.Realm$Transaction;
 import com.netflix.mediaclient.service.NetflixService;
 import io.realm.Realm;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
+import io.realm.internal.RealmObjectProxy;
 import io.realm.RealmProfileRealmProxyInterface;
 import io.realm.RealmModel;
 
@@ -20,6 +21,12 @@ public class RealmProfile implements RealmModel, RealmProfileRealmProxyInterface
     private String id;
     private boolean kids;
     private String name;
+    
+    public RealmProfile() {
+        if (this instanceof RealmObjectProxy) {
+            ((RealmObjectProxy)this).realm$injectObjectContext();
+        }
+    }
     
     private void fillForRealm(final UserProfile userProfile) {
         this.realmSet$name(userProfile.getProfileName());

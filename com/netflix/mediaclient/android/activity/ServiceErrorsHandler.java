@@ -29,7 +29,7 @@ public class ServiceErrorsHandler
     private static final String TAG = "ServiceErrorsHandler";
     
     private static String buildNetflixConnectivityErrorMessage(final Activity activity, final StatusCode statusCode) {
-        return activity.getString(2131296858) + " (" + statusCode.getValue() + ")";
+        return activity.getString(2131296851) + " (" + statusCode.getValue() + ")";
     }
     
     private static boolean handleAppUpdateNeeded(final Activity activity, final boolean b) {
@@ -46,14 +46,14 @@ public class ServiceErrorsHandler
         final UpdateDialog$Builder updateDialog$Builder = new UpdateDialog$Builder((Context)activity);
         updateDialog$Builder.setTitle("");
         if (!b) {
-            updateDialog$Builder.setMessage(2131296540);
+            updateDialog$Builder.setMessage(2131296539);
             updateDialog$Builder.setCancelable(false);
-            updateDialog$Builder.setNegativeButton(2131296566, (DialogInterface$OnClickListener)new ServiceErrorsHandler$1(activity));
+            updateDialog$Builder.setNegativeButton(2131296564, (DialogInterface$OnClickListener)new ServiceErrorsHandler$1(activity));
         }
         else {
-            updateDialog$Builder.setMessage(2131296678);
+            updateDialog$Builder.setMessage(2131296675);
         }
-        updateDialog$Builder.setPositiveButton(2131296726, (DialogInterface$OnClickListener)new ServiceErrorsHandler$2(activity));
+        updateDialog$Builder.setPositiveButton(2131296723, (DialogInterface$OnClickListener)new ServiceErrorsHandler$2(activity));
         updateDialog$Builder.show();
         return true;
     }
@@ -90,22 +90,22 @@ public class ServiceErrorsHandler
                 return handleAppUpdateNeeded(activity, true);
             }
             case 5: {
-                provideDialog(activity, activity.getString(2131296819));
+                provideDialog(activity, activity.getString(2131296815));
                 return true;
             }
             case 6:
             case 7: {
-                provideDialog(activity, activity.getString(2131296637));
+                provideDialog(activity, activity.getString(2131296634));
                 return true;
             }
             case 8: {
-                provideDialog(activity, activity.getString(2131296644));
+                provideDialog(activity, activity.getString(2131296641));
                 return true;
             }
             case 9:
             case 10:
             case 11: {
-                provideDialog(activity, activity.getString(2131296848) + " (" + statusCode.getValue() + ")");
+                provideDialog(activity, activity.getString(2131296841) + " (" + statusCode.getValue() + ")");
                 return true;
             }
             case 12: {
@@ -117,11 +117,11 @@ public class ServiceErrorsHandler
     }
     
     private static void provideDialog(final Activity activity, final String message) {
-        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage(message).setPositiveButton(2131296726, (DialogInterface$OnClickListener)new ServiceErrorsHandler$3(activity)).show();
+        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage(message).setPositiveButton(2131296723, (DialogInterface$OnClickListener)new ServiceErrorsHandler$3(activity)).show();
     }
     
     private static void provideDialogWithHelpButton(final Activity activity, final String message) {
-        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage(message).setPositiveButton(2131296726, (DialogInterface$OnClickListener)new ServiceErrorsHandler$5(activity)).setNegativeButton(2131296669, (DialogInterface$OnClickListener)new ServiceErrorsHandler$4(activity)).show();
+        new AlertDialog$Builder((Context)activity).setCancelable(false).setMessage(message).setPositiveButton(2131296723, (DialogInterface$OnClickListener)new ServiceErrorsHandler$5(activity)).setNegativeButton(2131296666, (DialogInterface$OnClickListener)new ServiceErrorsHandler$4(activity)).show();
     }
     
     private static boolean provideUnSupportedLanguageDialog(final Activity activity, final String s) {

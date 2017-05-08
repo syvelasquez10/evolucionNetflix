@@ -302,7 +302,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     public void onFailToConnect(final String s) {
         Log.d(CastManager.TAG, "onFailToConnect");
         if (this.mSelectedRoute != null) {
-            this.mMdxNrdpLogger.logDebug(this.mSelectedRoute.getName() + ": cannot coonect to netflix, " + s);
+            this.mMdxNrdpLogger.logError(this.mSelectedRoute.getName() + ": cannot coonect to netflix, " + s);
         }
         this.notifySessionend();
     }
@@ -311,7 +311,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     public void onFailToLaunch(final String s) {
         Log.d(CastManager.TAG, "onFailToLaunch");
         if (this.mSelectedRoute != null) {
-            this.mMdxNrdpLogger.logDebug(this.mSelectedRoute.getName() + ": cannot launch netflix, " + s);
+            this.mMdxNrdpLogger.logError(this.mSelectedRoute.getName() + ": cannot launch netflix, " + s);
             this.nativeLaunchResultWrapper(false, this.getUuid(this.mSelectedRoute.getId()));
             return;
         }
@@ -322,7 +322,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
     public void onFailToSendMessage(final String s) {
         Log.d(CastManager.TAG, "onFailToSendMessage");
         if (this.mSelectedRoute != null) {
-            this.mMdxNrdpLogger.logDebug(this.mSelectedRoute.getName() + ": cannot send message, " + s);
+            this.mMdxNrdpLogger.logError(this.mSelectedRoute.getName() + ": cannot send message, " + s);
             this.nativeSendMessageResultWrapper(false, this.getUuid(this.mSelectedRoute.getId()));
             return;
         }

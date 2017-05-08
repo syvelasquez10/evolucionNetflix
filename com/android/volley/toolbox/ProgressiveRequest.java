@@ -83,19 +83,20 @@ public abstract class ProgressiveRequest extends Request<Void>
             while (true) {
                 final HttpEntity httpEntity = ((ProgressiveNetworkResponse)networkResponse).getHttpEntity();
                 this.onResponseStart(httpEntity.getContentLength());
-            Label_0150_Outer:
+            Label_0177_Outer:
                 while (true) {
                     while (true) {
                         int read = 0;
-                        Label_0227: {
+                        Label_0254: {
                             try {
                                 final InputStream content = httpEntity.getContent();
                                 if (!this.isCanceled()) {
                                     read = content.read(this.mByteArray);
-                                    if (this.mListener != null) {
-                                        this.mListener.onNext(this.mByteArray, read);
+                                    final ProgressiveRequestListener mListener = this.mListener;
+                                    if (mListener != null) {
+                                        mListener.onNext(this.mByteArray, read);
                                     }
-                                    break Label_0227;
+                                    break Label_0254;
                                 }
                                 else {
                                     if (content != null) {
@@ -115,8 +116,14 @@ public abstract class ProgressiveRequest extends Request<Void>
                         }
                         break;
                     }
-                    continue Label_0150_Outer;
+                    continue Label_0177_Outer;
                 }
+            }
+        }
+        if (this.isCanceled()) {
+            final ProgressiveRequestListener mListener2 = this.mListener;
+            if (mListener2 != null) {
+                mListener2.onCancelled();
             }
         }
         this.closeResponse(networkResponse);

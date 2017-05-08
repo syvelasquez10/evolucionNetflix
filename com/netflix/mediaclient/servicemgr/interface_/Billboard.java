@@ -14,9 +14,9 @@ public interface Billboard extends Playable, Video
     
     String getHighResolutionLandscapeBoxArtUrl();
     
-    int getNumOfSeasons();
-    
     String getNumSeasonsLabel();
+    
+    int getSeasonCount();
     
     String getStoryUrl();
     

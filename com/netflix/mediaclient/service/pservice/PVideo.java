@@ -7,7 +7,7 @@ package com.netflix.mediaclient.service.pservice;
 import com.netflix.mediaclient.util.UriUtil;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
-import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.google.gson.annotations.SerializedName;
@@ -56,8 +56,6 @@ public class PVideo
     public String playableTitle;
     @SerializedName("plyableBookmarkPos")
     public int plyableBookmarkPos;
-    @SerializedName("storyImgDispUrl")
-    public String storyImgDispUrl;
     @SerializedName("synopsis")
     public String synopsis;
     @SerializedName("title")
@@ -70,21 +68,23 @@ public class PVideo
     public VideoType videoType;
     
     public PVideo(final Billboard billboard) {
-        this((Video)billboard);
+        this((FalkorVideo)billboard);
         this.copyPlayableInfo(this, billboard);
     }
     
     public PVideo(final CWVideo cwVideo) {
-        this((Video)cwVideo);
+        this((FalkorVideo)cwVideo);
         this.copyPlayableInfo(this, cwVideo);
         this.trickplayUrl = UriUtil.buildStillUrlFromPos(cwVideo, true);
     }
     
-    public PVideo(final Video video) {
-        this.id = video.getId();
-        this.boxartUrl = video.getBoxshotUrl();
-        this.videoType = video.getType();
-        this.title = video.getTitle();
+    public PVideo(final FalkorVideo falkorVideo) {
+        this.id = falkorVideo.getId();
+        this.boxartUrl = falkorVideo.getBoxshotUrl();
+        this.videoType = falkorVideo.getType();
+        this.title = falkorVideo.getTitle();
+        this.horzDispUrl = falkorVideo.getHorzDispUrl();
+        this.tvCardUrl = falkorVideo.getTitleImgUrl();
     }
     
     private PVideo copyPlayableInfo(final PVideo pVideo, final Playable playable) {

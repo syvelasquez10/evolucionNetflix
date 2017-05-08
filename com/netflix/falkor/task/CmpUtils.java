@@ -4,10 +4,12 @@
 
 package com.netflix.falkor.task;
 
-import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.configuration.persistent.Config_Ab7994;
+import com.netflix.mediaclient.NetflixApplication;
 import java.util.Collection;
 import java.util.Arrays;
 import java.util.ArrayList;
+import com.netflix.mediaclient.util.StringUtils;
 import java.util.List;
 import com.netflix.falkor.PQL;
 
@@ -20,9 +22,10 @@ public final class CmpUtils
     static final List<PQL> FETCH_EPISODES_LEAF_TYPES;
     private static final int FROM_SEASON = 0;
     private static final int MAX_KIDS_CHARACTER_GALLERY_VIDEOS = 100;
+    public static final int MAX_SEARCH_RESULTS_PER_SECTION_INDEX = 19;
     private static final int MAX_VIDEO_DETAILS_SIMILARS_COUNT = 12;
     private static final int MAX_VIDEO_DETAILS_TRAILERS_COUNT = 25;
-    private static final int TO_SEASON = 99;
+    private static final int TO_SEASON = 39;
     
     static {
         FETCH_EPISODES_LEAF_TYPES = PQL.array("summary", "detail", "bookmark", "offlineAvailable");
@@ -32,15 +35,37 @@ public final class CmpUtils
         BB_CURR_EPISODE_PQL = CmpUtils.CW_CURR_EPISODE_PQL;
     }
     
-    public static void buildBillboardPql(final List<PQL> list, final int n, final int n2) {
-        list.add(CmpUtils.BB_VIDEO_LEAF_PQL.prepend(PQL.create("lolomo", "billboard", "videoEvidence", PQL.range(n, n2))));
-        list.add(CmpUtils.BB_CURR_EPISODE_PQL.prepend(PQL.create("lolomo", "billboard", "videoEvidence", PQL.range(n, n2))));
-        list.add(PQL.create("lolomo", "billboard", "billboardData", PQL.range(n, n2), "billboardSummary"));
+    public static void buildBillboardPql(final List<PQL> list, final String s, final int n, final int n2) {
+        final boolean empty = StringUtils.isEmpty(s);
+        PQL pql;
+        if (empty) {
+            pql = PQL.create("lolomo", "billboard", "videoEvidence", PQL.range(n, n2));
+        }
+        else {
+            pql = PQL.create("lolomos", s, "billboard", "videoEvidence", PQL.range(n, n2));
+        }
+        PQL pql2;
+        if (empty) {
+            pql2 = PQL.create("lolomo", "billboard", "billboardData", PQL.range(n, n2), "billboardSummary");
+        }
+        else {
+            pql2 = PQL.create("lolomos", s, "billboard", "billboardData", PQL.range(n, n2), "billboardSummary");
+        }
+        list.add(CmpUtils.BB_VIDEO_LEAF_PQL.prepend(pql));
+        list.add(CmpUtils.BB_CURR_EPISODE_PQL.prepend(pql));
+        list.add(pql2);
     }
     
-    public static void buildCwPql(final List<PQL> list, final int n, final int n2) {
-        list.add(CmpUtils.CW_VIDEO_LEAF_PQL.prepend(PQL.create("lolomo", "continueWatching", PQL.range(n, n2))));
-        list.add(CmpUtils.CW_CURR_EPISODE_PQL.prepend(PQL.create("lolomo", "continueWatching", PQL.range(n, n2))));
+    public static void buildCwPql(final List<PQL> list, final String s, final int n, final int n2) {
+        PQL pql;
+        if (StringUtils.isEmpty(s)) {
+            pql = PQL.create("lolomo", "continueWatching", PQL.range(n, n2));
+        }
+        else {
+            pql = PQL.create("lolomos", s, "continueWatching", PQL.range(n, n2));
+        }
+        list.add(CmpUtils.CW_VIDEO_LEAF_PQL.prepend(pql));
+        list.add(CmpUtils.CW_CURR_EPISODE_PQL.prepend(pql));
     }
     
     public static PQL buildKidsCharacterVideoGalleryPql(final String s) {
@@ -59,7 +84,7 @@ public final class CmpUtils
     
     public static void buildShowDetailsPQL(final List<PQL> list, final List<String> list2, final String s, final boolean b, final boolean b2, final boolean b3) {
         final ArrayList list3 = new ArrayList(10);
-        list3.addAll(Arrays.asList("summary", "detail", "rating", "inQueue", "defaultTrailer"));
+        list3.addAll(Arrays.asList("summary", "detail", "rating", "inQueue", "hasWatched", "defaultTrailer"));
         if (b2) {
             list3.addAll(Arrays.asList("kubrick", "heroImgs", "evidence"));
         }
@@ -70,7 +95,12 @@ public final class CmpUtils
         }
         list.add(buildVideoSimsPql(false, list2));
         list.add(buildVideoSimsSummaryPql(false, list2));
+        if (Config_Ab7994.shouldRenderTabs(NetflixApplication.getContext())) {
+            list.add(buildVideoTrailersSummaryPql(false, list2));
+            list.add(buildVideoTrailersPql(false, list2));
+        }
         if (b) {
+            list.add(PQL.create("shows", list2, "seasons", "summary"));
             list.add(getSeasonsPQL(list2));
         }
         if (b3) {
@@ -166,7 +196,17 @@ public final class CmpUtils
         return PQL.create(s, list, "trailers", "summary");
     }
     
+    public static void buildVolatileVideoPQLs(final List<PQL> list, final String s, final boolean b) {
+        if (b) {
+            list.add(PQL.create("movies", s, PQL.array("inQueue", "rating", "bookmark")));
+            return;
+        }
+        list.add(PQL.create("shows", s, PQL.array("inQueue", "rating")));
+        list.add(PQL.create("shows", s, "seasons", "summary"));
+        list.add(PQL.create("shows", s, "episodes", "current", PQL.array("detail", "bookmark")));
+    }
+    
     public static PQL getSeasonsPQL(final List<String> list) {
-        return PQL.create("shows", list, "seasons", PQL.range(0, 99), "detail");
+        return PQL.create("shows", list, "seasons", PQL.range(0, 39), "detail");
     }
 }

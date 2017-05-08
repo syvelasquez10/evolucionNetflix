@@ -28,7 +28,7 @@ public class ThemeActivity$ThemeFragment extends NetflixFrag
     
     public View onCreateView(final LayoutInflater inflater, final ViewGroup viewGroup, final Bundle bundle) {
         this.inflater = inflater;
-        final View inflate = inflater.inflate(2130903282, viewGroup, false);
+        final View inflate = inflater.inflate(2130903285, viewGroup, false);
         (this.recyclerView = (RecyclerView)inflate.findViewById(16908298)).setBackgroundColor(-65536);
         new LoadingAndErrorWrapper(inflate, null).hide(false);
         return inflate;

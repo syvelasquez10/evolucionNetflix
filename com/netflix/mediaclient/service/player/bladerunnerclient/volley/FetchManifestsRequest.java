@@ -8,14 +8,13 @@ import java.util.Iterator;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
+import org.json.JSONObject;
 import java.util.Map;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.service.player.bladerunnerclient.BladeRunnerWebCallback;
-import org.json.JSONObject;
-import com.netflix.mediaclient.service.msl.volley.ApiFalkorMSLVolleyRequest;
 
-public class FetchManifestsRequest extends ApiFalkorMSLVolleyRequest<JSONObject>
+public class FetchManifestsRequest extends BladeRunnerRequest
 {
     private static final String TAG = "nf_msl_volley_FetchManifestsRequest";
     private final String pqlQuery1;
@@ -203,7 +202,6 @@ public class FetchManifestsRequest extends ApiFalkorMSLVolleyRequest<JSONObject>
     
     @Override
     protected JSONObject parseFalkorResponse(final String s) {
-        Log.dumpVerbose("nf_msl_volley_FetchManifestsRequest", "parseFalkorResponse " + s);
         try {
             return new JSONObject(s);
         }

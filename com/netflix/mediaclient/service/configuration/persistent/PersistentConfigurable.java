@@ -37,12 +37,24 @@ public abstract class PersistentConfigurable
         return this.mCell;
     }
     
+    public int getCellCountForAllocateABTestActivity() {
+        return ABTestConfig$Cell.values().length;
+    }
+    
+    public CharSequence getCellFriendlyTextForAllocateABTestActivity(final ABTestConfig$Cell abTestConfig$Cell) {
+        return "Cell " + abTestConfig$Cell.getCellId();
+    }
+    
     public ABTestConfig getConfiguration(final ABTestConfigData abTestConfigData) {
         return abTestConfigData.getConfigForId(this.getTestId());
     }
     
     public ABTestConfig$Cell getDefaultCell() {
         return ABTestConfig$Cell.CELL_ONE;
+    }
+    
+    public CharSequence getFriendlyTextForAllocateABTestActivity() {
+        return this.getClass().getSimpleName();
     }
     
     public abstract String getPrefKey();

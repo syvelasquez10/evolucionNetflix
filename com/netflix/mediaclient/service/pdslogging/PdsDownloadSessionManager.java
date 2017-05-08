@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.service.pdslogging;
 
-import java.util.Iterator;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
-import com.netflix.mediaclient.android.app.Status;
+import java.util.Iterator;
 import com.netflix.mediaclient.util.IntentUtils;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface$OfflinePdsDataCallback;
@@ -114,6 +114,11 @@ public class PdsDownloadSessionManager extends SimpleOfflineAgentListener
         this.removeDownloadSession(pdsDownloadSession.getPlayableId());
     }
     
+    private void handlePlayableDeleted(final String s, final Status status) {
+        this.sendDownloadCancelFor(s, status);
+        this.removeDownloadSession(s);
+    }
+    
     private void handleProgressMessage(final PdsDownloadSession pdsDownloadSession, final int n) {
         if (pdsDownloadSession.isPaused()) {
             pdsDownloadSession.setPaused(false);
@@ -141,6 +146,20 @@ public class PdsDownloadSessionManager extends SimpleOfflineAgentListener
         }
     }
     
+    private void sendDownloadCancelFor(final String s, final Status status) {
+        final PdsDownloadSession pdsDownloadSession = this.mPdsDownloadSessions.get(s);
+        if (pdsDownloadSession != null) {
+            pdsDownloadSession.sendStopDownloadOnCancel(status.getStatusCode().toString(), status.getMessage());
+        }
+    }
+    
+    private void sendDownloadCancelsForAll(final Status status) {
+        final Iterator<PdsDownloadSession> iterator = this.mPdsDownloadSessions.values().iterator();
+        while (iterator.hasNext()) {
+            iterator.next().sendStopDownloadOnCancel(status.getStatusCode().toString(), status.getMessage());
+        }
+    }
+    
     private void unregisterReceiver(final Context context) {
         IntentUtils.unregisterSafelyLocalBroadcastReceiver(context, this.mPdsDownloadEventReceiver);
     }
@@ -156,6 +175,7 @@ public class PdsDownloadSessionManager extends SimpleOfflineAgentListener
     
     @Override
     public void onAllPlayablesDeleted(final Status status) {
+        this.sendDownloadCancelsForAll(status);
         this.removeAllDownloadSessions();
     }
     
@@ -219,7 +239,7 @@ public class PdsDownloadSessionManager extends SimpleOfflineAgentListener
     
     @Override
     public void onOfflinePlayableDeleted(final String s, final Status status) {
-        this.removeDownloadSession(s);
+        this.handlePlayableDeleted(s, status);
     }
     
     @Override
@@ -237,11 +257,9 @@ public class PdsDownloadSessionManager extends SimpleOfflineAgentListener
     
     @Override
     public void onOfflinePlayablesDeleted(final List<String> list, final Status status) {
-        if (status.isSucces()) {
-            final Iterator<String> iterator = list.iterator();
-            while (iterator.hasNext()) {
-                this.removeDownloadSession(iterator.next());
-            }
+        final Iterator<String> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            this.handlePlayableDeleted(iterator.next(), status);
         }
     }
     

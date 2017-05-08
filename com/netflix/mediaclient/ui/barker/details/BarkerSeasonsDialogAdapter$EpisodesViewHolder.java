@@ -28,8 +28,8 @@ public class BarkerSeasonsDialogAdapter$EpisodesViewHolder extends RecyclerView$
     public BarkerSeasonsDialogAdapter$EpisodesViewHolder(final BarkerSeasonsDialogAdapter this$0, final View view) {
         this.this$0 = this$0;
         super(view);
-        this.text = (TextView)view.findViewById(2131821065);
-        this.selectIndicator = view.findViewById(2131821064);
+        this.text = (TextView)view.findViewById(2131821075);
+        this.selectIndicator = view.findViewById(2131821074);
         if (view != null) {
             view.setOnClickListener((View$OnClickListener)this);
         }

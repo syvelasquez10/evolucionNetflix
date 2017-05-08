@@ -21,15 +21,15 @@ public final class MdxPlayerRemoteViews extends MdxRemoteViews
         if (context == null) {
             return;
         }
-        this.headerTitle = context.getResources().getString(2131296861);
+        this.headerTitle = context.getResources().getString(2131296854);
     }
     
     @Override
     protected RemoteViews createViewForEpisodes(final boolean b) {
         if (b) {
-            return new RemoteViews(this.mPackageName, 2130903200);
+            return new RemoteViews(this.mPackageName, 2130903202);
         }
-        return new RemoteViews(this.mPackageName, 2130903199);
+        return new RemoteViews(this.mPackageName, 2130903201);
     }
     
     @Override
@@ -41,16 +41,16 @@ public final class MdxPlayerRemoteViews extends MdxRemoteViews
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131821121, 2130838067);
-        remoteViews.setOnClickPendingIntent(2131821121, this.mIntentRetriever.getSkipbackIntent(-30));
+        remoteViews.setImageViewResource(2131821131, 2130838090);
+        remoteViews.setOnClickPendingIntent(2131821131, this.mIntentRetriever.getSkipbackIntent(-30));
     }
     
     protected void setSkipInactive(final RemoteViews remoteViews) {
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131821121, 2130838068);
-        remoteViews.setOnClickPendingIntent(2131821121, this.mIntentRetriever.getNoActionIntent());
+        remoteViews.setImageViewResource(2131821131, 2130838091);
+        remoteViews.setOnClickPendingIntent(2131821131, this.mIntentRetriever.getNoActionIntent());
     }
     
     @Override

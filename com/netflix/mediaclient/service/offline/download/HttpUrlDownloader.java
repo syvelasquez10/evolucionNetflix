@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.service.offline.download;
 
-import java.io.FileNotFoundException;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
-import com.android.volley.RequestQueue;
 import java.util.HashMap;
 import java.util.Map;
 import com.android.volley.VolleyError;
@@ -45,10 +45,10 @@ class HttpUrlDownloader extends ProgressiveRequest implements ProgressiveRequest
     }
     
     private void flushAndCloseOutputStream() {
-        synchronized (this) {
-            if (this.mBufferedOutputStream == null) {
-                return;
-            }
+        if (this.mBufferedOutputStream == null) {
+            return;
+        }
+        while (true) {
             try {
                 this.mBufferedOutputStream.flush();
                 this.mBufferedOutputStream.close();
@@ -56,7 +56,9 @@ class HttpUrlDownloader extends ProgressiveRequest implements ProgressiveRequest
             }
             catch (IOException ex) {
                 Log.e("nf_httpUrlDownloader", ex, "flushAndCloseOutputStream:", new Object[0]);
+                continue;
             }
+            break;
         }
     }
     
@@ -96,9 +98,7 @@ class HttpUrlDownloader extends ProgressiveRequest implements ProgressiveRequest
             Log.i("nf_httpUrlDownloader", "cancel " + this.hashCode());
         }
         this.mHttpUrlDownloadListener = null;
-        this.setProgressiveRequestListener(null);
         super.cancel();
-        this.flushAndCloseOutputStream();
     }
     
     @Override
@@ -116,6 +116,13 @@ class HttpUrlDownloader extends ProgressiveRequest implements ProgressiveRequest
     }
     
     @Override
+    public void onCancelled() {
+        Log.i("nf_httpUrlDownloader", "onCancelled");
+        this.setProgressiveRequestListener(null);
+        this.flushAndCloseOutputStream();
+    }
+    
+    @Override
     public void onError(final VolleyError volleyError) {
         this.setProgressiveRequestListener(null);
         this.mHttpUrlDownloadStats.mOnErrorTime = System.currentTimeMillis();
@@ -130,11 +137,10 @@ class HttpUrlDownloader extends ProgressiveRequest implements ProgressiveRequest
                 Log.i("nf_httpUrlDownloader", "onNext mBufferedOutputStream null. not writing");
                 return;
             }
-            if (n > 0) {
-                this.mBufferedOutputStream.write(array, 0, n);
-                final HttpUrlDownloadStats mHttpUrlDownloadStats = this.mHttpUrlDownloadStats;
-                mHttpUrlDownloadStats.mBytesDownloadedInSession += n;
-                this.sendProgress();
+            if (this.isCanceled()) {
+                Log.i("nf_httpUrlDownloader", "cancelled, closing file and returning");
+                this.setProgressiveRequestListener(null);
+                this.flushAndCloseOutputStream();
                 return;
             }
         }
@@ -143,6 +149,13 @@ class HttpUrlDownloader extends ProgressiveRequest implements ProgressiveRequest
             this.setProgressiveRequestListener(null);
             this.sendUrlDownloadDiskIOError();
             super.cancel();
+            return;
+        }
+        if (n > 0) {
+            this.mBufferedOutputStream.write(array, 0, n);
+            final HttpUrlDownloadStats mHttpUrlDownloadStats = this.mHttpUrlDownloadStats;
+            mHttpUrlDownloadStats.mBytesDownloadedInSession += n;
+            this.sendProgress();
             return;
         }
         if (n < 0) {
@@ -162,9 +175,26 @@ class HttpUrlDownloader extends ProgressiveRequest implements ProgressiveRequest
         if (Log.isLoggable()) {
             Log.i("nf_httpUrlDownloader", "onResponseStart responseContentLength=" + n);
         }
-        this.mHttpUrlDownloadStats.mHttpResponseStartTime = System.currentTimeMillis();
-        if (this.mHttpUrlDownloadListener != null) {
-            this.mHttpUrlDownloadListener.onHttpResponseStart(n);
+        Label_0113: {
+            if (this.mBufferedOutputStream != null) {
+                break Label_0113;
+            }
+            try {
+                this.mBufferedOutputStream = new BufferedOutputStream(new FileOutputStream(this.mFile, true));
+                if (Log.isLoggable()) {
+                    Log.i("nf_httpUrlDownloader", "fileName=" + this.mFile.getAbsolutePath() + " fileSize=" + this.mFile.length());
+                }
+                this.mHttpUrlDownloadStats.mHttpResponseStartTime = System.currentTimeMillis();
+                if (this.mHttpUrlDownloadListener != null) {
+                    this.mHttpUrlDownloadListener.onHttpResponseStart(n);
+                }
+            }
+            catch (FileNotFoundException ex) {
+                if (Log.isLoggable()) {
+                    Log.e("nf_httpUrlDownloader", ex, "start failed to create file=" + this.mFile.getAbsolutePath(), new Object[0]);
+                }
+                this.sendUrlDownloadDiskIOError();
+            }
         }
     }
     
@@ -174,18 +204,6 @@ class HttpUrlDownloader extends ProgressiveRequest implements ProgressiveRequest
         if (Log.isLoggable()) {
             Log.i("nf_httpUrlDownloader", "HttpUrlDownloader starting... url=" + this.mUrl);
         }
-        try {
-            this.mBufferedOutputStream = new BufferedOutputStream(new FileOutputStream(this.mFile, true));
-            if (Log.isLoggable()) {
-                Log.i("nf_httpUrlDownloader", "fileName=" + this.mFile.getAbsolutePath() + " fileSize=" + this.mFile.length());
-            }
-            requestQueue.add(this);
-        }
-        catch (FileNotFoundException ex) {
-            if (Log.isLoggable()) {
-                Log.e("nf_httpUrlDownloader", ex, "start failed to create file=" + this.mFile.getAbsolutePath(), new Object[0]);
-            }
-            this.sendUrlDownloadDiskIOError();
-        }
+        requestQueue.add(this);
     }
 }

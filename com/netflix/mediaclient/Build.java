@@ -6,8 +6,8 @@ package com.netflix.mediaclient;
 
 public interface Build
 {
-    public static final String BUILD_DATE = "20170407";
-    public static final String BUILD_TIME = "230950";
+    public static final String BUILD_DATE = "20170427";
+    public static final String BUILD_TIME = "150050";
     public static final String PLATFORM_TYPE = "Android Sidecar";
     public static final boolean debug = false;
     public static final boolean enableTestServer = false;

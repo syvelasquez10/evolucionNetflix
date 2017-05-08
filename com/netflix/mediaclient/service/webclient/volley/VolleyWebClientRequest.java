@@ -56,6 +56,10 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
         return StringUtils.isEmpty(this.mUserCredentialRegistry.getNetflixID()) || StringUtils.isEmpty(this.mUserCredentialRegistry.getSecureNetflixID());
     }
     
+    protected boolean canHaveEmptyProfileGuid() {
+        return true;
+    }
+    
     @Override
     public void changeHostUrl(final String s) {
         this.mUrl = Request.buildNewUrlString(this.mUrl, s);
@@ -189,19 +193,15 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
     
     protected boolean isResponseForSameProfile() {
         final String currentProfileGuid = this.getCurrentProfileGuid();
-        boolean equalsIgnoreCase;
-        if (StringUtils.isEmpty(this.mReqProfileGuid) || StringUtils.isEmpty(currentProfileGuid)) {
+        if (this.canHaveEmptyProfileGuid() && (StringUtils.isEmpty(this.mReqProfileGuid) || StringUtils.isEmpty(currentProfileGuid))) {
             Log.d("nf_volleyrequest", String.format("isResponseForSameProfile: one of mReqProfileGuid %s, getCurrentProfileGuid  %s is empty. Ignore validity check", this.mReqProfileGuid, currentProfileGuid));
-            equalsIgnoreCase = true;
+            return true;
         }
-        else {
-            final boolean b = equalsIgnoreCase = this.mReqProfileGuid.equalsIgnoreCase(currentProfileGuid);
-            if (!b) {
-                Log.d("nf_volleyrequest", String.format("response not valid - mReqProfileGuid %s, getCurrentProfileGuid  %s", this.mReqProfileGuid, currentProfileGuid));
-                return b;
-            }
+        final boolean b = this.mReqProfileGuid != null && this.mReqProfileGuid.equalsIgnoreCase(currentProfileGuid);
+        if (!b) {
+            Log.d("nf_volleyrequest", String.format("isResponseForSameProfile: response not valid - mReqProfileGuid %s, getCurrentProfileGuid %s", this.mReqProfileGuid, currentProfileGuid));
         }
-        return equalsIgnoreCase;
+        return b;
     }
     
     protected abstract void onFailure(final Status p0);

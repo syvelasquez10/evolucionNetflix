@@ -30,21 +30,21 @@ public class AdvancedImageView extends RoundedImageView
     
     public AdvancedImageView(final Context context) {
         super(context);
-        this.defaultForegroundResId = 2130838138;
+        this.defaultForegroundResId = 2130838161;
         this.pressedHandler = null;
         this.init(null);
     }
     
     public AdvancedImageView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.defaultForegroundResId = 2130838138;
+        this.defaultForegroundResId = 2130838161;
         this.pressedHandler = null;
         this.init(set);
     }
     
     public AdvancedImageView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.defaultForegroundResId = 2130838138;
+        this.defaultForegroundResId = 2130838161;
         this.pressedHandler = null;
         this.init(set);
     }

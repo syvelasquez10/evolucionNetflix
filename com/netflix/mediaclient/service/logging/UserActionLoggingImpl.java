@@ -28,7 +28,6 @@ import com.netflix.mediaclient.service.logging.uiaction.model.DeserializeLolomoE
 import com.netflix.mediaclient.service.logging.uiaction.model.DeleteProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.ChangeValueEndedEvent;
 import java.util.Iterator;
-import org.json.JSONObject;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$PaymentType;
 import com.netflix.mediaclient.service.logging.uiaction.model.AddToPlaylistEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.AddProfileEndedEvent;
@@ -40,6 +39,8 @@ import com.netflix.mediaclient.ui.common.PlayLocationType;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$RememberProfile;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
+import com.netflix.mediaclient.util.LogUtils;
+import org.json.JSONObject;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$Profile;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import java.io.Serializable;
@@ -312,13 +313,38 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     private void handleCustomAction(final Intent intent) {
+        final JSONObject jsonObject = null;
+        Log.d("nf_log", "CUSTOM_ACTION");
         final String stringExtra = intent.getStringExtra("cmd");
         final String stringExtra2 = intent.getStringExtra("view");
-        IClientLogging$ModalView value = null;
-        if (StringUtils.isNotEmpty(stringExtra2)) {
-            value = IClientLogging$ModalView.valueOf(stringExtra2);
+        while (true) {
+            Label_0083: {
+                if (!StringUtils.isNotEmpty(stringExtra2)) {
+                    break Label_0083;
+                }
+                final IClientLogging$ModalView value = IClientLogging$ModalView.valueOf(stringExtra2);
+                final String stringExtra3 = intent.getStringExtra("custom");
+                JSONObject jsonObject2 = jsonObject;
+                while (true) {
+                    if (stringExtra3 == null) {
+                        break Label_0062;
+                    }
+                    try {
+                        jsonObject2 = new JSONObject(stringExtra3);
+                        this.reportCustomAction(stringExtra, value, jsonObject2);
+                        return;
+                    }
+                    catch (JSONException ex) {
+                        LogUtils.reportErrorSafely("handleCustomAction", (Throwable)ex);
+                        jsonObject2 = jsonObject;
+                        continue;
+                    }
+                    break;
+                }
+            }
+            final IClientLogging$ModalView value = null;
+            continue;
         }
-        this.reportCustomAction(stringExtra, value);
     }
     
     private void handleDeleteProfileEnded(Intent value) {
@@ -653,10 +679,10 @@ final class UserActionLoggingImpl implements UserActionLogging
                                                     return;
                                                 }
                                                 break Label_0180;
-                                                value = n;
-                                                break;
                                                 value2 = n;
                                                 continue Label_0099_Outer;
+                                                value = n;
+                                                break;
                                             }
                                             catch (JSONException ex) {
                                                 Log.e("nf_log", "Failed JSON", (Throwable)ex);
@@ -2304,8 +2330,8 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
-    public void reportCustomAction(final String s, final IClientLogging$ModalView clientLogging$ModalView) {
-        this.mEventHandler.post(new CustomEvent(s, clientLogging$ModalView));
+    public void reportCustomAction(final String s, final IClientLogging$ModalView clientLogging$ModalView, final JSONObject jsonObject) {
+        this.mEventHandler.post(new CustomEvent(s, clientLogging$ModalView, jsonObject));
     }
     
     @Override

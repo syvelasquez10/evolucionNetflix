@@ -128,9 +128,7 @@ class NetflixService$6 extends BroadcastReceiver
         boolean previewProtected = false;
         final String action = intent.getAction();
         if ("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND".equals(action)) {
-            if (Log.isLoggable()) {
-                Log.d("NetflixService", "mdx exit, stop service in 28800000ms");
-            }
+            Log.d("NetflixService", "mdx exit, stop service in %sms", 28800000L);
             this.this$0.stopSelfInMs(28800000L);
             final Asset mdxAgentVideoAsset = this.getMdxAgentVideoAsset();
             boolean pinProtected;
@@ -144,8 +142,10 @@ class NetflixService$6 extends BroadcastReceiver
                 pinProtected = false;
             }
             PinVerifier.getInstance().registerPlayEvent(pinProtected, previewProtected2);
-            Log.d("NetflixService", "Refreshing CW for MDXUPDATE_PLAYBACKEND...");
-            this.this$0.getBrowse().refreshCw(false);
+            if (intent.getBooleanExtra("updateCW", true)) {
+                Log.d("NetflixService", "Refreshing CW for MDXUPDATE_PLAYBACKEND...");
+                this.this$0.getBrowse().refreshCw(false);
+            }
         }
         else if ("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART".equals(action)) {
             if (this.this$0.mMdxAgent == null || !this.this$0.mMdxAgent.hasActiveSession()) {

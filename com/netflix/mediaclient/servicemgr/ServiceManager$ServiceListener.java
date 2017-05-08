@@ -31,7 +31,7 @@ import com.netflix.mediaclient.service.NetflixService;
 import android.content.Context;
 import android.content.ServiceConnection;
 import com.netflix.model.leafs.Video$Summary;
-import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.RatingInfo;
 import com.netflix.model.survey.Survey;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
@@ -749,7 +749,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     }
     
     @Override
-    public void onVideoRatingSet(final int n, final UserRating userRating, final Status status) {
+    public void onVideoRatingSet(final int n, final RatingInfo ratingInfo, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
             Log.d("ServiceManager", "onVideoRatingSet requestId=" + n + " errorCode=" + status.getStatusCode());
@@ -759,7 +759,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             Log.d("ServiceManager", "No callback for onVideoRatingSet requestId " + n);
             return;
         }
-        access$400.onVideoRatingSet(userRating, status);
+        access$400.onVideoRatingSet(ratingInfo, status);
     }
     
     @Override

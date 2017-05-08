@@ -4,6 +4,10 @@
 
 package com.netflix.mediaclient.servicemgr.interface_.offline.realm;
 
+import java.util.ListIterator;
+import io.realm.internal.Collection;
+import io.realm.BaseRealm;
+import io.realm.OrderedRealmCollectionImpl;
 import com.netflix.mediaclient.Log;
 import java.io.File;
 import android.content.Context;
@@ -11,6 +15,7 @@ import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.model.leafs.advisory.Advisory;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import io.realm.internal.RealmObjectProxy;
 import io.realm.RealmVideoDetailsRealmProxyInterface;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineImageUtils;

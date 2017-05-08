@@ -16,7 +16,7 @@ import com.netflix.mediaclient.ui.rating.Ratings;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.RatingInfo;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.falkor.CachedModelProxy;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -36,8 +36,8 @@ public class SetVideoRatingTask extends CmpTask
         this.trackId = trackId;
     }
     
-    private void notifyUserRatingChanged(final UserRating userRating) {
-        if (userRating == null) {
+    private void notifyUserRatingChanged(final RatingInfo ratingInfo) {
+        if (ratingInfo == null) {
             Log.d("CachedModelProxy", "null user rating - can't notify listeners");
         }
         else {
@@ -46,17 +46,17 @@ public class SetVideoRatingTask extends CmpTask
                 Log.d("CachedModelProxy", "null service - can't notify listeners");
                 return;
             }
-            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("com.netflix.falkor.ACTION_NOTIFY_OF_RATINGS_CHANGE").putExtra("extra_video_id", this.id).putExtra("extra_user_rating", userRating.getUserRating()).putExtra("extra_user_thumb_rating", userRating.getUserThumbRating()));
+            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("com.netflix.falkor.ACTION_NOTIFY_OF_RATINGS_CHANGE").putExtra("extra_video_id", this.id).putExtra("extra_user_rating", ratingInfo.getUserRating()).putExtra("extra_user_thumb_rating", ratingInfo.getUserThumbRating()));
             if (Log.isLoggable()) {
                 final StringBuilder append = new StringBuilder().append("sent notification of video ratings change, video: ").append(this.id).append(", rating: ");
-                float userRating2;
+                float userRating;
                 if (!Ratings.isAndroidThumbActive()) {
-                    userRating2 = userRating.getUserRating();
+                    userRating = ratingInfo.getUserRating();
                 }
                 else {
-                    userRating2 = userRating.getUserThumbRating();
+                    userRating = ratingInfo.getUserThumbRating();
                 }
-                Log.d("CachedModelProxy", append.append(userRating2).toString());
+                Log.d("CachedModelProxy", append.append(userRating).toString());
             }
         }
     }
@@ -77,9 +77,9 @@ public class SetVideoRatingTask extends CmpTask
     
     @Override
     protected void fetchResultsAndCallbackForSuccess(final BrowseAgentCallback browseAgentCallback, final CachedModelProxy$GetResult cachedModelProxy$GetResult) {
-        final UserRating userRating = (UserRating)this.modelProxy.getVideo(PQL.create(this.type.getValue(), this.id, "summary"));
-        browseAgentCallback.onVideoRatingSet(userRating, CommonStatus.OK);
-        this.notifyUserRatingChanged(userRating);
+        final RatingInfo ratingInfo = (RatingInfo)this.modelProxy.getVideo(PQL.create(this.type.getValue(), this.id, "summary"));
+        browseAgentCallback.onVideoRatingSet(ratingInfo, CommonStatus.OK);
+        this.notifyUserRatingChanged(ratingInfo);
     }
     
     @Override

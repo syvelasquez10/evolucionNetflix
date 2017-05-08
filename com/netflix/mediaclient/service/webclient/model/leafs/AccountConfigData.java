@@ -31,6 +31,8 @@ public class AccountConfigData
     private boolean enableHTTPSAuth;
     @SerializedName("enableLowBitrateStreams")
     private boolean enableLowBitrateStreams;
+    @SerializedName("falkorCacheDisabled")
+    private boolean falkorCacheDisabled;
     @SerializedName("JPlayerConfig")
     private String jPlayerConfig;
     @Expose
@@ -198,6 +200,10 @@ public class AccountConfigData
     
     public int getVideoBufferSize() {
         return 0;
+    }
+    
+    public boolean isFalkorCacheDisabled() {
+        return this.falkorCacheDisabled;
     }
     
     public boolean isMyListForKidsDisabled() {

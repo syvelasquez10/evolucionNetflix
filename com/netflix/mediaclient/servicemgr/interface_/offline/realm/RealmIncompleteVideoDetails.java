@@ -7,6 +7,7 @@ package com.netflix.mediaclient.servicemgr.interface_.offline.realm;
 import io.realm.Realm$Transaction;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import io.realm.Realm;
+import io.realm.internal.RealmObjectProxy;
 import com.netflix.mediaclient.util.LogUtils;
 import io.realm.RealmIncompleteVideoDetailsRealmProxyInterface;
 import io.realm.RealmObject;
@@ -20,6 +21,12 @@ public class RealmIncompleteVideoDetails extends RealmObject implements RealmInc
     
     static {
         TAG = LogUtils.getTag((Class)RealmIncompleteVideoDetails.class);
+    }
+    
+    public RealmIncompleteVideoDetails() {
+        if (this instanceof RealmObjectProxy) {
+            ((RealmObjectProxy)this).realm$injectObjectContext();
+        }
     }
     
     public static void insertInRealm(final Realm realm, final String s, final VideoType videoType, final String s2) {

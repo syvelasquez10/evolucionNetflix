@@ -62,19 +62,19 @@ public final class SysUtil
         return -1;
     }
     
-    static void fsyncRecursive(final File file) {
-        if (file.isDirectory()) {
-            final File[] listFiles = file.listFiles();
+    static void fsyncRecursive(File t) {
+        if (((File)t).isDirectory()) {
+            final File[] listFiles = ((File)t).listFiles();
             if (listFiles == null) {
-                throw new IOException("cannot list directory " + file);
+                throw new IOException("cannot list directory " + t);
             }
             for (int i = 0; i < listFiles.length; ++i) {
                 fsyncRecursive(listFiles[i]);
             }
         }
-        else if (!file.getPath().endsWith("_lock")) {
-            final RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
-            final Throwable t = null;
+        else if (!((File)t).getPath().endsWith("_lock")) {
+            final RandomAccessFile randomAccessFile = new RandomAccessFile((File)t, "r");
+            t = null;
             while (true) {
                 try {
                     randomAccessFile.getFD().sync();
@@ -84,7 +84,7 @@ public final class SysUtil
                                 randomAccessFile.close();
                                 return;
                             }
-                            catch (Throwable t2) {
+                            catch (Throwable t) {
                                 throw new NullPointerException();
                             }
                         }
@@ -106,11 +106,11 @@ public final class SysUtil
                             }
                             try {
                                 randomAccessFile.close();
-                                throw file;
+                                throw;
                             }
                             catch (Throwable randomAccessFile) {
                                 t.addSuppressed((Throwable)randomAccessFile);
-                                throw file;
+                                throw;
                             }
                         }
                         randomAccessFile.close();

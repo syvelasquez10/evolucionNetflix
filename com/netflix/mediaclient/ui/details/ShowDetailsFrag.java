@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
 import android.widget.LinearLayout;
@@ -13,17 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.content.Context;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 
 public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
 {
-    private static final String EXTRA_EPISODE_ID = "extra_episode_id";
-    private static final String EXTRA_VIDEO_ID = "extra_video_id";
+    protected static final String EXTRA_EPISODE_ID = "extra_episode_id";
+    protected static final String EXTRA_VIDEO_ID = "extra_video_id";
     private static final String TAG = "ShowDetailsFrag";
     private String episodeId;
     private boolean isLoading;
@@ -55,6 +56,33 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
         serviceManager.getBrowse().fetchShowDetails(this.videoId, this.episodeId, BrowseExperience.shouldLoadKubrickLeavesInDetails(), new ShowDetailsFrag$FetchShowDetailsCallback(this, this.requestId));
     }
     
+    private void onShowDataReady(final ShowDetails showDetails, final Status status) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.getNetflixActivity())) {
+            Log.v("ShowDetailsFrag", "Activity state is invalid");
+            return;
+        }
+        if (this.requestId != this.requestId || this.isDestroyed()) {
+            Log.v("ShowDetailsFrag", "Ignoring stale callback");
+            return;
+        }
+        this.isLoading = false;
+        if (status != null && status.isError()) {
+            Log.w("ShowDetailsFrag", "Invalid status code");
+            this.showErrorView();
+            return;
+        }
+        if (showDetails == null) {
+            Log.v("ShowDetailsFrag", "No details in response");
+            this.showErrorView();
+            return;
+        }
+        this.showDetailsView(showDetails);
+    }
+    
+    protected void dataReady(final ShowDetails showDetails) {
+        this.onShowDataReady(showDetails, null);
+    }
+    
     @Override
     protected VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final ShowDetails showDetails) {
         return new ShowDetailsFrag$ShowDetailsStringProvider((Context)this.getActivity(), showDetails);
@@ -67,7 +95,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     
     @Override
     protected void initDetailsViewGroup(final View view) {
-        this.detailsViewGroup = (VideoDetailsViewGroup)view.findViewById(2131821534);
+        this.detailsViewGroup = (VideoDetailsViewGroup)view.findViewById(2131821551);
     }
     
     public boolean isLoadingData() {
@@ -84,7 +112,7 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View onCreateView = super.onCreateView(layoutInflater, viewGroup, bundle);
-        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131821538);
+        final LinearLayout linearLayout = (LinearLayout)onCreateView.findViewById(2131821559);
         if (linearLayout != null) {
             linearLayout.setOrientation(1);
             for (int i = 0; i < linearLayout.getChildCount(); ++i) {
@@ -95,12 +123,6 @@ public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
             }
         }
         return onCreateView;
-    }
-    
-    @Override
-    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
-        super.onManagerReady(serviceManager, status);
-        this.fetchShowData();
     }
     
     @Override

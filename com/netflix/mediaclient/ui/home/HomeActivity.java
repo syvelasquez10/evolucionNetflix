@@ -51,7 +51,6 @@ import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.os.Handler;
 import com.netflix.mediaclient.util.IrisUtils$NotificationsListStatus;
@@ -62,7 +61,6 @@ import android.content.BroadcastReceiver;
 import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;
 import java.util.LinkedList;
-import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$TTRTracker;
 import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag$OptInResponseHandler;
 import com.netflix.mediaclient.ui.offline.TutorialHelper$Tutorialable;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
@@ -80,7 +78,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     public static final String REFRESH_HOME_LOLOMO = "com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO";
     static final int REQUEST_RESOLVE_ERROR = 1001;
     private static final String TAG = "HomeActivity";
-    private InteractiveTracker$TTRTracker TTRTracker;
     private boolean bWasHamburgerClicked;
     private final LinkedList<Intent> backStackIntents;
     private DrawerLayout drawerLayout;
@@ -195,7 +192,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131296773, 1).show();
+        Toast.makeText((Context)this, 2131296770, 1).show();
         this.clearAllStateAndRefresh();
     }
     
@@ -215,21 +212,18 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     private void setupTTRTracking() {
         Log.i("HomeActivity", "setupTTRTracking");
-        if (this.TTRTracker == null) {
-            this.TTRTracker = new InteractiveTracker$TTRTracker(new HomeActivity$3(this));
-            NetflixActivity.getImageLoader((Context)this).setTTRTracker(this.TTRTracker);
-        }
+        NetflixActivity.getImageLoader((Context)this).setTTRListener((InteractiveTracker$InteractiveListener)new HomeActivity$3(this));
     }
     
     private void setupViews() {
-        (this.drawerLayout = (DrawerLayout)this.findViewById(2131821032)).setDrawerListener(new HomeActivity$4(this));
+        (this.drawerLayout = (DrawerLayout)this.findViewById(2131821042)).setDrawerListener(new HomeActivity$4(this));
         this.unlockSlidingDrawerIfPossible();
         this.slidingMenuAdapter = BrowseExperience.get().createSlidingMenuAdapter(this, this.drawerLayout);
         if (Log.isLoggable()) {
             Log.v("HomeActivity", "Created sliding menu adapter of type: " + this.slidingMenuAdapter.getClass());
         }
         this.drawerLayout.setFocusable(false);
-        this.drawerLayout.setScrimColor(this.getResources().getColor(2131755121));
+        this.drawerLayout.setScrimColor(this.getResources().getColor(2131755126));
         this.updateActionBar();
         this.updateSlidingDrawer();
     }
@@ -252,7 +246,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131820920, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131820921, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, (Status)CommonStatus.OK);
     }
@@ -327,12 +321,12 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     public int getActionBarParentViewId() {
-        return 2131821022;
+        return 2131821032;
     }
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903156;
+        return 2130903158;
     }
     
     public IClientLogging$ModalView getCurrentViewType() {
@@ -444,7 +438,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     protected void onDestroy() {
         if (this.manager != null && this.manager.isReady()) {
-            NetflixActivity.getImageLoader((Context)this).setTTRTracker((InteractiveTracker$TTRTracker)null);
+            NetflixActivity.getImageLoader((Context)this).setTTRListener((InteractiveTracker$InteractiveListener)null);
         }
         super.onDestroy();
     }

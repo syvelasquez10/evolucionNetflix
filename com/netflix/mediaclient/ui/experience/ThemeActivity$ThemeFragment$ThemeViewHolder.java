@@ -19,9 +19,9 @@ public class ThemeActivity$ThemeFragment$ThemeViewHolder extends RecyclerView$Vi
     ThemeActivity$ThemeFragment$ThemeViewHolder(final View root) {
         super(root);
         this.root = root;
-        this.background = root.findViewById(2131821018);
-        this.lightDark = root.findViewById(2131821501);
-        this.text = (TextView)root.findViewById(2131821502);
-        this.textSecondary = (TextView)root.findViewById(2131821503);
+        this.background = root.findViewById(2131821028);
+        this.lightDark = root.findViewById(2131821517);
+        this.text = (TextView)root.findViewById(2131821518);
+        this.textSecondary = (TextView)root.findViewById(2131821519);
     }
 }

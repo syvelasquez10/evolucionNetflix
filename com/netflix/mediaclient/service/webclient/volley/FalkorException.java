@@ -107,8 +107,8 @@ public class FalkorException extends VolleyError
         return s.contains("map error".toLowerCase());
     }
     
-    private static boolean isNotAuthorized(final String s) {
-        return s.contains("not authorized".toLowerCase()) || s.contains("unauthorized".toLowerCase());
+    public static boolean isNotAuthorized(final String s) {
+        return s.contains("not authorized") || s.contains("unauthorized");
     }
     
     private static boolean isNullPointerException(final String s) {

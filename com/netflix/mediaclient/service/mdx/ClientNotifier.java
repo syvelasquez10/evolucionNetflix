@@ -103,18 +103,29 @@ public final class ClientNotifier implements NotifierInterface
     }
     
     @Override
-    public void playbackEnd(final String s, final String s2) {
-        synchronized (this.mSharedStateMap) {
-            if (this.mSharedStateMap.get(s) != null) {
-                this.mSharedStateMap.get(s).notifyPlaybackEnd();
+    public void playbackEnd(final String s, final String s2, final boolean b) {
+        while (true) {
+            while (true) {
+                synchronized (this.mSharedStateMap) {
+                    if (this.mSharedStateMap.get(s) != null) {
+                        this.mSharedStateMap.get(s).notifyPlaybackEnd();
+                    }
+                    // monitorexit(this.mSharedStateMap)
+                    final Intent putExtra = new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s);
+                    if (!b) {
+                        final boolean b2 = true;
+                        final Intent putExtra2 = putExtra.putExtra("updateCW", b2);
+                        if (!TextUtils.isEmpty((CharSequence)s2)) {
+                            putExtra2.putExtra("postplayState", s2);
+                        }
+                        this.mContext.sendBroadcast(putExtra2);
+                        Log.v("nf_mdx", "Intent MDXUPDATE_PLAYBACKEND sent");
+                        return;
+                    }
+                }
+                final boolean b2 = false;
+                continue;
             }
-            // monitorexit(this.mSharedStateMap)
-            final Intent putExtra = new Intent("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND").addCategory("com.netflix.mediaclient.intent.category.MDX").putExtra("uuid", s);
-            if (!TextUtils.isEmpty((CharSequence)s2)) {
-                putExtra.putExtra("postplayState", s2);
-            }
-            this.mContext.sendBroadcast(putExtra);
-            Log.v("nf_mdx", "Intent MDXUPDATE_PLAYBACKEND sent");
         }
     }
     

@@ -46,7 +46,6 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -55,7 +54,6 @@ import android.content.BroadcastReceiver;
 import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;
 import java.util.LinkedList;
-import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$TTRTracker;
 import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag$OptInResponseHandler;
 import com.netflix.mediaclient.ui.offline.TutorialHelper$Tutorialable;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
@@ -83,7 +81,6 @@ class HomeActivity$4 implements DrawerLayout$DrawerListener
     public void onDrawerClosed(final View view) {
         Log.i("HomeActivity", "onDrawerClosed");
         if (this.this$0.slidingMenuAdapter instanceof StandardSlidingMenu) {
-            ((StandardSlidingMenu)this.this$0.slidingMenuAdapter).onNavDrawerClosed();
             this.this$0.cancelMarkingNotificationsAsRead();
             ((StandardSlidingMenu)this.this$0.slidingMenuAdapter).reportNotificationsImpression(false);
             UIViewLogUtils.reportLeftMenuImpressionEnded((Context)this.this$0, true);

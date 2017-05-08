@@ -202,7 +202,7 @@ public class NetflixActionBar
     public void replaceUpButtonWithCancelIcon(final boolean b) {
         if (b) {
             this.backButton = this.toolbar.getNavigationIcon();
-            this.toolbar.setNavigationIcon(2130837726);
+            this.toolbar.setNavigationIcon(2130837728);
             return;
         }
         this.toolbar.setNavigationIcon(this.backButton);
@@ -276,10 +276,10 @@ public class NetflixActionBar
         final Toolbar toolbar = this.toolbar;
         int navigationIcon;
         if (b) {
-            navigationIcon = 2130837801;
+            navigationIcon = 2130837820;
         }
         else {
-            navigationIcon = 2130837799;
+            navigationIcon = 2130837818;
         }
         toolbar.setNavigationIcon(navigationIcon);
     }

@@ -31,6 +31,7 @@ public class PdsDownloadSession
     private JSONObject mLinkStopDownloadOnLicenseError;
     private String mOxId;
     private IPdsLogging mPdsLogging;
+    private int mPercentageDownloaded;
     private String mPlayableId;
     private String mUserSessionId;
     
@@ -55,7 +56,7 @@ public class PdsDownloadSession
         if (Log.isLoggable()) {
             Assert.assertNotNull((Object)jsonObject);
         }
-        return new PdsDownloadEventParamBuilder(jsonObject, this.mAppSessionId, this.mUserSessionId).setDownloadContext(this.mDc);
+        return new PdsDownloadEventParamBuilder(jsonObject, this.mAppSessionId, this.mUserSessionId).setProgressPercentage(this.mPercentageDownloaded).setDownloadContext(this.mDc);
     }
     
     private void sendEventForLink(final JSONObject jsonObject) {
@@ -81,12 +82,12 @@ public class PdsDownloadSession
         this.mPdsLogging.flushEventsInLogging();
     }
     
-    private boolean shouldRateLimitProgressMessage(final int lastNotifiedProgressPercentage) {
-        if (lastNotifiedProgressPercentage == 0 || lastNotifiedProgressPercentage >= this.lastNotifiedProgressPercentage + 30) {
-            this.lastNotifiedProgressPercentage = lastNotifiedProgressPercentage;
+    private boolean shouldRateLimitProgressMessage() {
+        if (this.mPercentageDownloaded == 0 || this.mPercentageDownloaded >= this.lastNotifiedProgressPercentage + 30) {
+            this.lastNotifiedProgressPercentage = this.mPercentageDownloaded;
             return false;
         }
-        Log.d(PdsDownloadSession.TAG, "rate limited progress message percentage: %d, lastNotifiedProgressPercentage: %d, interval: %d", lastNotifiedProgressPercentage, this.lastNotifiedProgressPercentage, 30);
+        Log.d(PdsDownloadSession.TAG, "rate limited progress message percentage: %d, lastNotifiedProgressPercentage: %d, interval: %d", this.mPercentageDownloaded, this.lastNotifiedProgressPercentage, 30);
         return true;
     }
     
@@ -123,9 +124,12 @@ public class PdsDownloadSession
         this.sendEventForLink(this.mLinkPauseDownload);
     }
     
-    public void sendDownloadProgressMessage(final int progressPercentage) {
-        if (this.mLinkProgressDownload != null && !this.shouldRateLimitProgressMessage(progressPercentage)) {
-            this.sendPdsEventViaLogging(this.buildDownloadEvent(this.mLinkProgressDownload).setProgressPercentage(progressPercentage).build());
+    public void sendDownloadProgressMessage(final int n) {
+        if (this.mLinkProgressDownload != null) {
+            this.mPercentageDownloaded = n;
+            if (!this.shouldRateLimitProgressMessage()) {
+                this.sendPdsEventViaLogging(this.buildDownloadEvent(this.mLinkProgressDownload).setProgressPercentage(n).build());
+            }
         }
     }
     
@@ -135,6 +139,10 @@ public class PdsDownloadSession
     
     public void sendStartDownloadMessage() {
         this.sendEventForLink(this.mLinkStartDownload);
+    }
+    
+    public void sendStopDownloadOnCancel(final String s, final String s2) {
+        this.sendStopDownloadEventForLink(this.mLinkCancelDownload, s, s2);
     }
     
     public void sendStopDownloadOnError(final String s, final String s2) {

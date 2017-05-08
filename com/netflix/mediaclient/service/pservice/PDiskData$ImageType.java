@@ -7,7 +7,6 @@ package com.netflix.mediaclient.service.pservice;
 public enum PDiskData$ImageType
 {
     HORIZONTAL_ART("horizontalArt"), 
-    STORY_ART("storyArt"), 
     TITLE_CARD("titleCard"), 
     TRICKPLAY("trickplay"), 
     UNKNOWN("");

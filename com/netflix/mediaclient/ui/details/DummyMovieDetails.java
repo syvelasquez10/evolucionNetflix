@@ -215,6 +215,26 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
+    public List<Video> getTrailers() {
+        return null;
+    }
+    
+    @Override
+    public int getTrailersListPos() {
+        return 0;
+    }
+    
+    @Override
+    public String getTrailersRequestId() {
+        return null;
+    }
+    
+    @Override
+    public int getTrailersTrackId() {
+        return 0;
+    }
+    
+    @Override
     public String getTvCardUrl() {
         return null;
     }
@@ -285,11 +305,6 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
-    public boolean isVideo3D() {
-        return false;
-    }
-    
-    @Override
     public boolean isVideo5dot1() {
         return false;
     }
@@ -321,5 +336,10 @@ public class DummyMovieDetails implements MovieDetails
     
     @Override
     public void setUserThumbRating(final int n) {
+    }
+    
+    @Override
+    public boolean shouldRefreshVolatileData() {
+        return false;
     }
 }

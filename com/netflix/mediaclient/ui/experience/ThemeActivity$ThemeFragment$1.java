@@ -44,6 +44,6 @@ class ThemeActivity$ThemeFragment$1 extends RecyclerView$Adapter<ThemeActivity$T
     
     @Override
     public ThemeActivity$ThemeFragment$ThemeViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int n) {
-        return new ThemeActivity$ThemeFragment$ThemeViewHolder(this.this$0.inflater.inflate(2130903314, viewGroup, false));
+        return new ThemeActivity$ThemeFragment$ThemeViewHolder(this.this$0.inflater.inflate(2130903318, viewGroup, false));
     }
 }

@@ -132,6 +132,22 @@ public final class PreferenceUtils
         }
     }
     
+    public static boolean putFloatPref(final Context context, final String s, final float n) {
+        if (!validate(context, s)) {
+            return false;
+        }
+        try {
+            final SharedPreferences$Editor edit = context.getSharedPreferences("nfxpref", 0).edit();
+            edit.putFloat(s, n);
+            edit.apply();
+            return true;
+        }
+        catch (Throwable t) {
+            Log.e("nfxpref", "Failed to save to preferences!", t);
+            return false;
+        }
+    }
+    
     public static boolean putIntPref(final Context context, final String s, final int n) {
         if (!validate(context, s)) {
             return false;

@@ -29,15 +29,15 @@ public class BarkerKidsPaginatedCharacterAdapter extends PaginatedLoMoAdapter
     }
     
     public int getRowHeightInPx() {
-        return this.getActivity().getResources().getDimensionPixelSize(2131427786) + this.getActivity().getResources().getDimensionPixelSize(2131427785) + this.getActivity().getResources().getDimensionPixelSize(2131427496);
+        return this.getActivity().getResources().getDimensionPixelSize(2131427790) + this.getActivity().getResources().getDimensionPixelSize(2131427789) + this.getActivity().getResources().getDimensionPixelSize(2131427496);
     }
     
     protected View getView(final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final List<Video> list, final int n, final int n2, final BasicLoMo basicLoMo) {
         BarkerKidsCharacterViewGroup barkerKidsCharacterViewGroup;
         if ((barkerKidsCharacterViewGroup = ((ObjectRecycler<BarkerKidsCharacterViewGroup>)objectRecycler$ViewRecycler).pop(BarkerKidsCharacterViewGroup.class)) == null) {
             barkerKidsCharacterViewGroup = new BarkerKidsCharacterViewGroup((Context)this.getActivity());
-            ViewUtils.setPaddingTop((View)barkerKidsCharacterViewGroup, this.getActivity().getResources().getDimensionPixelSize(2131427786));
-            ViewUtils.setPaddingBottom((View)barkerKidsCharacterViewGroup, this.getActivity().getResources().getDimensionPixelSize(2131427785));
+            ViewUtils.setPaddingTop((View)barkerKidsCharacterViewGroup, this.getActivity().getResources().getDimensionPixelSize(2131427790));
+            ViewUtils.setPaddingBottom((View)barkerKidsCharacterViewGroup, this.getActivity().getResources().getDimensionPixelSize(2131427789));
             barkerKidsCharacterViewGroup.init(n);
         }
         barkerKidsCharacterViewGroup.updateDataThenViews((List)list, n, n2, this.getListViewPos(), (Trackable)basicLoMo);

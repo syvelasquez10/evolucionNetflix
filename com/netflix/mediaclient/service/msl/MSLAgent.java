@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.msl;
 import com.netflix.mediaclient.service.configuration.crypto.CryptoManager$DrmReadyCallback;
 import com.netflix.mediaclient.servicemgr.INetflixService;
 import com.netflix.mediaclient.service.configuration.crypto.CryptoManagerRegistry;
+import com.netflix.mediaclient.util.IntentUtils;
 import com.android.volley.Request;
 import com.netflix.mediaclient.service.msl.volley.MSLVolleyRequest;
 import com.netflix.mediaclient.servicemgr.IMSLClient$NetworkRequestInspector;
@@ -26,6 +27,7 @@ import com.netflix.android.org.json.JSONObject;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.android.volley.RequestQueue;
+import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.msl.client.AndroidMslClient;
 import com.netflix.mediaclient.servicemgr.IMSLClient;
 import com.netflix.mediaclient.service.ServiceAgent;
@@ -33,8 +35,10 @@ import com.netflix.mediaclient.service.ServiceAgent;
 public class MSLAgent extends ServiceAgent implements IMSLClient
 {
     private static boolean DEBUG = false;
+    public static final String DEBUG_MSL_TEST_USER_RECOVERY = "com.netflix.mediaclient.intent.action.DEBUG_MSL_TEST_USER_RECOVERY";
     private static final String TAG = "nf_msl";
     private AndroidMslClient mClient;
+    private BroadcastReceiver mDebugReceiver;
     private boolean mEnabled;
     private MSLAgent$NetworkRequestInspectorManager mNetworkRequestInspectorManager;
     private RequestQueue mRequestQueue;
@@ -64,6 +68,10 @@ public class MSLAgent extends ServiceAgent implements IMSLClient
         }
         Log.d("nf_msl", "Execute AppBoot asynchronously, regular app launch...");
         new BackgroundTask().execute(new MSLAgent$2(this));
+    }
+    
+    private void handleTestUserRecovery() {
+        Log.e("nf_msl", "Received request for test user recovery in release build. This should NOT happen!");
     }
     
     private void initializeMsl() {
@@ -120,6 +128,9 @@ public class MSLAgent extends ServiceAgent implements IMSLClient
         return b2;
     }
     
+    private void registerReceiverForDebug() {
+    }
+    
     @Override
     public void addNetworkRequestInspector(final IMSLClient$NetworkRequestInspector imslClient$NetworkRequestInspector, final Class[] array) {
         throw new IllegalAccessError("Trying to add NetworkRequestInspector in release build!");
@@ -173,11 +184,15 @@ public class MSLAgent extends ServiceAgent implements IMSLClient
             this.mRequestQueue.stop();
             this.mRequestQueue = null;
         }
+        if (this.mDebugReceiver != null) {
+            IntentUtils.unregisterSafelyLocalBroadcastReceiver(this.getContext(), this.mDebugReceiver);
+        }
     }
     
     @Override
     protected void doInit() {
         Log.d("nf_msl", "MSLAgent::doInit start ");
+        this.registerReceiverForDebug();
         Log.d("nf_msl", "Initiate crypto, if Widevine is supported!");
         try {
             CryptoManagerRegistry.createCryptoInstance(this.getContext(), this.getService(), new MSLAgent$1(this));

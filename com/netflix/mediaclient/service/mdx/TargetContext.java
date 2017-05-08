@@ -154,7 +154,7 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
     
     private void playbackEnd(final String s, final String s2) {
         Log.d("nf_mdx", "TargetContext: playbackEnd");
-        this.mNotifier.playbackEnd(s, s2);
+        this.mNotifier.playbackEnd(s, s2, false);
     }
     
     private void playbackStart(final String s) {

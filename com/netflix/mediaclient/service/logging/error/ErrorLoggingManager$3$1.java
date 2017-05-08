@@ -29,7 +29,7 @@ class ErrorLoggingManager$3$1 extends Thread
         Looper.prepare();
         final Context currentActivityForDebug = NetflixApplication.getCurrentActivityForDebug();
         if (currentActivityForDebug != null) {
-            (this.this$0.alertDialog = new AlertDialog$Builder(currentActivityForDebug).setTitle((CharSequence)"Netflix app has crashed! :/").setMessage((CharSequence)String.format(this.this$0.message, this.this$0.counter)).setPositiveButton((CharSequence)"Yes", (DialogInterface$OnClickListener)new ErrorLoggingManager$3$1$3(this, currentActivityForDebug)).setNegativeButton((CharSequence)"No", (DialogInterface$OnClickListener)new ErrorLoggingManager$3$1$2(this)).setOnCancelListener((DialogInterface$OnCancelListener)new ErrorLoggingManager$3$1$1(this)).setIcon(2130837756).create()).show();
+            (this.this$0.alertDialog = new AlertDialog$Builder(currentActivityForDebug).setTitle((CharSequence)"Netflix app has crashed! :/").setMessage((CharSequence)String.format(this.this$0.message, this.this$0.counter)).setPositiveButton((CharSequence)"Yes", (DialogInterface$OnClickListener)new ErrorLoggingManager$3$1$3(this, currentActivityForDebug)).setNegativeButton((CharSequence)"No", (DialogInterface$OnClickListener)new ErrorLoggingManager$3$1$2(this)).setOnCancelListener((DialogInterface$OnCancelListener)new ErrorLoggingManager$3$1$1(this)).setIcon(2130837775).create()).show();
         }
         this.this$0.handler = new Handler();
         Looper.loop();

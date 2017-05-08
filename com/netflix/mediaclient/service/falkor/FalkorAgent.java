@@ -532,13 +532,20 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     
     private void handleAccountDeactive() {
         this.cancelPrefetchLolomoSchedulerJob();
+        this.cmp.purgePersistentCache();
+    }
+    
+    private void handleAccountNotLoggedIn() {
+        Log.i("FalkorAgent", "handleAccountNotLoggedIn");
+        this.flushCaches(true);
     }
     
     private void handleProfileActive() {
         if (this.shouldFlushCache()) {
             Log.i("FalkorAgent", "handleProfileActive: Flushing all caches because new profile activated...");
-            this.flushCaches();
+            this.flushCaches(false);
         }
+        this.cmp.updateFalkorCacheEnabled();
         this.hasProfileChanged = false;
         this.checkAndInitPrefetchLolomoJob();
         FalkorAgent.isCurrentProfileActive.set(true);
@@ -547,6 +554,11 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     private void handleProfileDeactive() {
         FalkorAgent.isCurrentProfileActive.set(false);
         this.hasProfileChanged = true;
+        this.cmp.purgePersistentCache();
+        if (this.shouldFlushCache()) {
+            Log.i("FalkorAgent", "handleProfileActive: Flushing all caches because profile deactivate...");
+            this.flushCaches(false);
+        }
         if (this.isInPrefetchLolomoTest(this.getContext())) {
             if (Log.isLoggable()) {
                 Log.d("FalkorAgent", "handleProfileDeactive: deleting prefetch lolomo disk cache.");
@@ -830,7 +842,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchVideos(loMo, n, n2, FalkorAgent.USE_CACHE_AND_REMOTE, b, false, browseAgentCallback);
+        this.cmp.fetchVideos(loMo, n, n2, FalkorAgent.USE_CACHE_AND_REMOTE, b, false, false, browseAgentCallback);
     }
     
     public void fetchGenres(final String s, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
@@ -841,18 +853,18 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     }
     
     @Override
-    public void fetchIQ(final int n, final boolean b, final BrowseAgentCallback browseAgentCallback) {
+    public void fetchIQ(final int n, final boolean b, final boolean b2, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchIQVideos(0, n - 1, b, false, browseAgentCallback);
+        this.cmp.fetchIQVideos(0, n - 1, b, false, b2, browseAgentCallback);
     }
     
     public void fetchIQVideos(final LoMo loMo, final int n, final int n2, final boolean b, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchIQVideos(loMo, n, n2, FalkorAgent.USE_CACHE_AND_REMOTE, b, browseAgentCallback);
+        this.cmp.fetchIQVideos(loMo, n, n2, FalkorAgent.USE_CACHE_AND_REMOTE, b, false, browseAgentCallback);
     }
     
     @Override
@@ -1015,12 +1027,15 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchVideos(loMo, n, n2, b, b2, b3, browseAgentCallback);
+        this.cmp.fetchVideos(loMo, n, n2, b, b2, b3, false, browseAgentCallback);
     }
     
-    public void flushCaches() {
+    public void flushCaches(final boolean b) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        if (b) {
+            this.cmp.purgePersistentCache();
         }
         this.cmp.flushCaches();
     }
@@ -1153,7 +1168,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.flushCaches();
+        this.flushCaches(true);
         ServiceManager.sendHomeRefreshBrodcast((Context)this.getService());
     }
     

@@ -38,6 +38,11 @@ public class FetchNonMemberVideosTask extends CmpTask
     }
     
     @Override
+    protected boolean canHaveEmptyProfileGuidOverride() {
+        return true;
+    }
+    
+    @Override
     protected void fetchResultsAndCallbackForSuccess(final BrowseAgentCallback browseAgentCallback, final CachedModelProxy$GetResult cachedModelProxy$GetResult) {
         if (this.useCacheOnly && browseAgentCallback != null) {
             browseAgentCallback.onVideosFetched(this.modelProxy.getItemsAsList(cachedModelProxy$GetResult.pqls), CommonStatus.OK);

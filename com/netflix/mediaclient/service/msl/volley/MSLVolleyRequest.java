@@ -344,7 +344,8 @@ public abstract class MSLVolleyRequest<T> extends Request<T> implements IMSLClie
     
     protected void initUrl(final String mUrl) {
         if (this.mUrl != null) {
-            throw new IllegalStateException("Can not change the URL of a VolleyWebCLientRequest.");
+            Log.d("nf_volleyrequest", "Reusing existing request...");
+            return;
         }
         this.mUrl = mUrl;
         if (TextUtils.isEmpty((CharSequence)this.mUrl)) {

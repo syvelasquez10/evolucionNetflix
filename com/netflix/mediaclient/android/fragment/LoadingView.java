@@ -31,6 +31,6 @@ public class LoadingView extends FrameLayout
     
     private void init() {
         this.setLayoutParams((ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1));
-        ((LayoutInflater)this.getContext().getSystemService("layout_inflater")).inflate(2130903192, (ViewGroup)this);
+        ((LayoutInflater)this.getContext().getSystemService("layout_inflater")).inflate(2130903194, (ViewGroup)this);
     }
 }

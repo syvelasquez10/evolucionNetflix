@@ -32,7 +32,7 @@ public class FetchBillboardVideosTask extends CmpTask
     
     @Override
     protected void buildPqlList(final List<PQL> list) {
-        CmpUtils.buildBillboardPql(list, this.fromVideo, this.toVideo);
+        CmpUtils.buildBillboardPql(list, this.modelProxy.getCurrLolomoId(), this.fromVideo, this.toVideo);
     }
     
     @Override

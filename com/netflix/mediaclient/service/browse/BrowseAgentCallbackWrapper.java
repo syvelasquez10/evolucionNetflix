@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.model.leafs.Video$Summary;
-import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.RatingInfo;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
@@ -268,9 +268,9 @@ public class BrowseAgentCallbackWrapper implements BrowseAgentCallback
     }
     
     @Override
-    public void onVideoRatingSet(final UserRating userRating, final Status status) {
+    public void onVideoRatingSet(final RatingInfo ratingInfo, final Status status) {
         this.handleResultTiming("onVideoRatingSet");
-        this.callback.onVideoRatingSet(userRating, this.wrapStatus(status));
+        this.callback.onVideoRatingSet(ratingInfo, this.wrapStatus(status));
     }
     
     @Override

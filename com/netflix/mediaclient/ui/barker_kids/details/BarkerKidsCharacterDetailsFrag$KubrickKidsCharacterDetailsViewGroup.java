@@ -71,22 +71,22 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
     private Drawable getBackgroundResource() {
         switch (this.this$0.kidsColorId) {
             default: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837610);
+                return this.this$0.getActivity().getResources().getDrawable(2130837612);
             }
-            case 2131755152: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837614);
+            case 2131755163: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837616);
             }
-            case 2131755144: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837610);
+            case 2131755155: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837612);
             }
-            case 2131755147: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837611);
-            }
-            case 2131755149: {
+            case 2131755158: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837613);
             }
-            case 2131755148: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837612);
+            case 2131755160: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837615);
+            }
+            case 2131755159: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837614);
             }
         }
     }
@@ -98,27 +98,27 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
         int imageResource = 0;
         switch (this.this$0.kidsColorId) {
             default: {
-                imageResource = 2130837624;
+                imageResource = 2130837626;
                 break;
             }
-            case 2131755152: {
-                imageResource = 2130837628;
+            case 2131755163: {
+                imageResource = 2130837630;
                 break;
             }
-            case 2131755144: {
-                imageResource = 2130837623;
-                break;
-            }
-            case 2131755147: {
+            case 2131755155: {
                 imageResource = 2130837625;
                 break;
             }
-            case 2131755149: {
+            case 2131755158: {
                 imageResource = 2130837627;
                 break;
             }
-            case 2131755148: {
-                imageResource = 2130837626;
+            case 2131755160: {
+                imageResource = 2130837629;
+                break;
+            }
+            case 2131755159: {
+                imageResource = 2130837628;
                 break;
             }
         }
@@ -161,14 +161,14 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
     @Override
     protected void findViews() {
         super.findViews();
-        this.characterView = (AdvancedImageView)this.findViewById(2131821035);
-        this.playView = (ImageView)this.findViewById(2131821038);
-        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131821036);
+        this.characterView = (AdvancedImageView)this.findViewById(2131821045);
+        this.playView = (ImageView)this.findViewById(2131821048);
+        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131821046);
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903158;
+        return 2130903160;
     }
     
     @Override

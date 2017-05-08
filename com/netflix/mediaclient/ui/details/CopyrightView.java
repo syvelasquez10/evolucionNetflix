@@ -39,7 +39,7 @@ public class CopyrightView
     }
     
     public static CopyrightView create(final VideoDetails videoDetails, final Context context) {
-        final ViewGroup viewGroup = (ViewGroup)((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903327, (ViewGroup)null);
+        final ViewGroup viewGroup = (ViewGroup)((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903333, (ViewGroup)null);
         if (viewGroup != null) {
             return new CopyrightView(videoDetails, context, viewGroup);
         }
@@ -50,7 +50,7 @@ public class CopyrightView
         if (this.details == null || this.copyrightViewGroup == null) {
             return;
         }
-        this.copyrightTextView = (TextView)this.copyrightViewGroup.findViewById(2131821531);
+        this.copyrightTextView = (TextView)this.copyrightViewGroup.findViewById(2131821548);
         if (this.copyrightTextView != null && this.details != null) {
             this.copyrightTextView.setText((CharSequence)this.details.getCopyright());
             this.copyrightTextView.setVisibility(0);
@@ -61,7 +61,7 @@ public class CopyrightView
     }
     
     private void setExpandedText(final VideoDetails videoDetails, final View view) {
-        final TextView textView = (TextView)view.findViewById(2131821532);
+        final TextView textView = (TextView)view.findViewById(2131821549);
         if (textView != null) {
             textView.setText((CharSequence)videoDetails.getCopyright());
         }
@@ -93,7 +93,7 @@ public class CopyrightView
     
     private void showExpandedCopyrightPopup(final VideoDetails videoDetails) {
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(this.context);
-        final View inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903328, (ViewGroup)null);
+        final View inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903334, (ViewGroup)null);
         if (inflate == null) {
             return;
         }

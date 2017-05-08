@@ -24,20 +24,20 @@ public abstract class ImageLoader$ImageInteractionTrackingListener implements Im
     
     @Override
     public void onErrorResponse(final VolleyError volleyError) {
-        if (this.this$0.mTTRTracker != null && this.hasRegistered) {
+        if (this.hasRegistered) {
             this.this$0.mTTRTracker.onImageLoaded(this, ImageLoader$Type.NETWORK);
         }
     }
     
     @Override
     public void onResponse(final ImageLoader$ImageContainer imageLoader$ImageContainer, final ImageLoader$Type imageLoader$Type) {
-        if (this.this$0.mTTRTracker != null && this.hasRegistered) {
+        if (this.hasRegistered) {
             this.this$0.mTTRTracker.onImageLoaded(this, imageLoader$Type);
         }
     }
     
     public void registerForTTR(final Request$Priority request$Priority) {
-        if (this.this$0.mTTRTracker != null && this.this$0.mTTRTracker.shouldTrack(this.view, request$Priority)) {
+        if (this.this$0.mTTRTracker.shouldTrack(this.view, request$Priority)) {
             this.this$0.mTTRTracker.registerListener(this, this.view);
             this.hasRegistered = true;
         }

@@ -104,7 +104,7 @@ class FalkorAgent$11 extends SimpleBrowseAgentCallback
                     if (Log.isLoggable()) {
                         Log.d("FalkorAgent", String.format("fetchRecommendedListFromCache listTitle: %s, listId: %s", loMo.getTitle(), loMo.getId()));
                     }
-                    this.this$0.cmp.fetchVideos(loMo, 0, this.val$n - 1, this.val$useCacheOnly, false, false, this.val$cb);
+                    this.this$0.cmp.fetchVideos(loMo, 0, this.val$n - 1, this.val$useCacheOnly, false, false, true, this.val$cb);
                     b = true;
                     break;
                 }

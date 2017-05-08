@@ -12,7 +12,7 @@ import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 
 public class SimilarItemsGridViewAdapter extends RecyclerViewHeaderAdapter
 {
-    private final boolean clipToCompleteRows;
+    private boolean clipToCompleteRows;
     private int numColumns;
     
     public SimilarItemsGridViewAdapter(final boolean clipToCompleteRows, final int numColumns, final RecyclerViewHeaderAdapter$IViewCreator recyclerViewHeaderAdapter$IViewCreator) {
@@ -61,5 +61,9 @@ public class SimilarItemsGridViewAdapter extends RecyclerViewHeaderAdapter
             return this.clipCountToCompleteRows();
         }
         return super.getItemCount();
+    }
+    
+    public void setClipToCompleteRows(final boolean clipToCompleteRows) {
+        this.clipToCompleteRows = clipToCompleteRows;
     }
 }

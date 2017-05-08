@@ -26,7 +26,11 @@ import android.os.Build$VERSION;
 import android.content.Intent;
 import android.app.Activity;
 import android.net.Uri;
+import com.netflix.falkor.cache.FalkorCache;
+import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import io.realm.RealmConfiguration;
 import java.util.Map;
 import java.io.PrintStream;
 import java.util.Properties;
@@ -34,8 +38,6 @@ import java.util.Iterator;
 import java.io.FilenameFilter;
 import java.util.List;
 import java.util.ArrayList;
-import java.io.IOException;
-import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import java.io.OutputStream;
 import java.io.InputStream;
@@ -84,18 +86,6 @@ public class ExportDebugData
         }
     }
     
-    private static void addOfflineRealm(final Context context, final ZipOutputStream zipOutputStream) {
-        final File file = new File(context.getFilesDir(), RealmUtils.sCurrentConfig.getRealmFileName());
-        if (file.exists()) {
-            Log.i("ExportDebugData", "Adding " + file.getAbsolutePath());
-            zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
-            copyFile(new FileInputStream(file), zipOutputStream);
-            zipOutputStream.closeEntry();
-            return;
-        }
-        throw new IOException("Unable to find " + file.getAbsolutePath());
-    }
-    
     private static void addOfflineRegistry(final Context context, final ZipOutputStream zipOutputStream) {
         final File file = new File(AndroidUtils.getExternalDownloadDirIfAvailable(context).getAbsolutePath() + "/.of");
         final ArrayList<Object> list = new ArrayList<Object>();
@@ -122,6 +112,25 @@ public class ExportDebugData
         zipOutputStream.putNextEntry(new ZipEntry("preferences.xml"));
         properties.storeToXML(new PrintStream(zipOutputStream), "Export of " + s);
         zipOutputStream.closeEntry();
+    }
+    
+    private static void addRealmFile(final Context context, final RealmConfiguration realmConfiguration, final ZipOutputStream zipOutputStream) {
+        final File file = new File(context.getFilesDir(), realmConfiguration.getRealmFileName());
+        if (file.exists()) {
+            Log.i("ExportDebugData", "Adding " + file.getAbsolutePath());
+            zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
+            copyFile(new FileInputStream(file), zipOutputStream);
+            zipOutputStream.closeEntry();
+            final File file2 = new File(context.getFilesDir(), realmConfiguration.getRealmFileName() + ".lru_backup/journal");
+            if (file2.exists()) {
+                Log.i("ExportDebugData", "Adding " + file2.getAbsolutePath());
+                zipOutputStream.putNextEntry(new ZipEntry(file.getName() + ".lru_backup/journal.txt"));
+                copyFile(new FileInputStream(file2), zipOutputStream);
+                zipOutputStream.closeEntry();
+            }
+            return;
+        }
+        throw new IOException("Unable to find " + file.getAbsolutePath());
     }
     
     private static void copyFile(final InputStream p0, final OutputStream p1) {
@@ -222,9 +231,9 @@ public class ExportDebugData
         while (true) {
             ArrayList<Uri> list = null;
             Intent intent = null;
-        Label_0780:
+        Label_0792:
             while (true) {
-                Label_0917: {
+                Label_0929: {
                     while (true) {
                         try {
                             final File file = new File(context.getFilesDir(), "debug_data");
@@ -239,7 +248,8 @@ public class ExportDebugData
                             final ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(file2));
                             zipOutputStream.setLevel(9);
                             addFalkorMemCache(context, zipOutputStream);
-                            addOfflineRealm(context, zipOutputStream);
+                            addRealmFile(context, RealmUtils.sCurrentConfig, zipOutputStream);
+                            addRealmFile(context, FalkorCache.sRealmConfiguration, zipOutputStream);
                             addOfflineRegistry(context, zipOutputStream);
                             addPreferences(context, zipOutputStream, "nfxpref");
                             zipOutputStream.close();
@@ -265,7 +275,7 @@ public class ExportDebugData
                             list.add(Uri.parse("content://com.netflix.mediaclient.debugdata.fileprovider/debug_data/" + "debug_data.zip"));
                             final NetflixActivity netflixActivity = AndroidUtils.getContextAs(context, NetflixActivity.class);
                             if (netflixActivity == null || netflixActivity.getServiceManager() == null || !netflixActivity.getServiceManager().isReady() || netflixActivity.getServiceManager().getCurrentProfile() == null) {
-                                break Label_0917;
+                                break Label_0929;
                             }
                             string2 = "user=" + netflixActivity.getServiceManager().getCurrentProfile().getEmail() + " (" + netflixActivity.getServiceManager().getCurrentProfile().getLanguagesInCsv() + ")\n";
                             intent = new Intent("android.intent.action.SEND_MULTIPLE");
@@ -276,7 +286,7 @@ public class ExportDebugData
                                 s2 = "Enter_JIRA_summary_here";
                             }
                             intent.putExtra("android.intent.extra.SUBJECT", s2);
-                            final StringBuilder append = new StringBuilder().append("\n\nEnter_JIRA_description_here\n\n\n\n\npackage=com.netflix.mediaclient\nversion=4.15.1 build 14947\ncode=14947\nandroid=").append(Build$VERSION.SDK_INT).append("\nbrand=").append(Build.BRAND).append("\nmanufacturer=").append(Build.MANUFACTURER).append("\nmodel=").append(Build.MODEL).append("\ndevice=").append(Build.DEVICE).append("\ndevice.locale=").append(Locale.getDefault().getCountry()).append("_").append(Locale.getDefault().getLanguage()).append("\n").append(string2).append("\n");
+                            final StringBuilder append = new StringBuilder().append("\n\nEnter_JIRA_description_here\n\n\n\n\npackage=com.netflix.mediaclient\nversion=4.16.0 build 15122\ncode=15122\nandroid=").append(Build$VERSION.SDK_INT).append("\nbrand=").append(Build.BRAND).append("\nmanufacturer=").append(Build.MANUFACTURER).append("\nmodel=").append(Build.MODEL).append("\ndevice=").append(Build.DEVICE).append("\ndevice.locale=").append(Locale.getDefault().getCountry()).append("_").append(Locale.getDefault().getLanguage()).append("\n").append(string2).append("\n");
                             if (s == null) {
                                 string = "";
                                 intent.putExtra("android.intent.extra.TEXT", append.append(string).toString());
@@ -284,7 +294,7 @@ public class ExportDebugData
                                 while (iterator.hasNext()) {
                                     grantRead(context, intent, iterator.next());
                                 }
-                                break Label_0780;
+                                break Label_0792;
                             }
                         }
                         catch (Throwable t) {
@@ -477,20 +487,20 @@ public class ExportDebugData
         //    85: aload_2        
         //    86: invokevirtual   java/io/FileWriter.close:()V
         //    89: goto            61
-        //    92: astore_1       
-        //    93: aload_1        
+        //    92: astore_0       
+        //    93: aload_0        
         //    94: athrow         
-        //    95: astore_0       
+        //    95: astore_1       
         //    96: aload_2        
         //    97: ifnull          108
-        //   100: aload_1        
+        //   100: aload_0        
         //   101: ifnull          119
         //   104: aload_2        
         //   105: invokevirtual   java/io/FileWriter.close:()V
-        //   108: aload_0        
+        //   108: aload_1        
         //   109: athrow         
         //   110: astore_2       
-        //   111: aload_1        
+        //   111: aload_0        
         //   112: aload_2        
         //   113: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
         //   116: goto            108
@@ -513,9 +523,9 @@ public class ExportDebugData
         //   160: pop            
         //   161: aconst_null    
         //   162: areturn        
-        //   163: astore_0       
+        //   163: astore_1       
         //   164: aconst_null    
-        //   165: astore_1       
+        //   165: astore_0       
         //   166: goto            96
         //    Exceptions:
         //  Try           Handler

@@ -40,7 +40,7 @@ import android.view.animation.Interpolator;
 import android.annotation.SuppressLint;
 
 @SuppressLint({ "PrivateResource" })
-public final class BuffetBar
+public class BuffetBar
 {
     static final int ANIMATION_DURATION = 250;
     static final int ANIMATION_FADE_DURATION = 180;
@@ -60,7 +60,8 @@ public final class BuffetBar
     private int mLastBackgroundColor;
     final BuffetManager$Callback mManagerCallback;
     private final ViewGroup mTargetParent;
-    final BuffetBar$BuffetLayout mView;
+    private BuffetBar$BuffetLayout mView;
+    private boolean swipeToDismissEnabled;
     
     static {
         APPCOMPAT_CHECK_ATTRS = new int[] { R$attr.colorPrimary };
@@ -68,8 +69,9 @@ public final class BuffetBar
         sHandler = new Handler(Looper.getMainLooper(), (Handler$Callback)new BuffetBar$1());
     }
     
-    private BuffetBar(final ViewGroup mTargetParent) {
+    public BuffetBar(final ViewGroup mTargetParent) {
         this.mLastBackgroundColor = -1;
+        this.swipeToDismissEnabled = true;
         this.mManagerCallback = new BuffetBar$3(this);
         this.mTargetParent = mTargetParent;
         checkAppCompatTheme(this.mContext = mTargetParent.getContext());
@@ -103,7 +105,7 @@ public final class BuffetBar
         }
     }
     
-    private static ViewGroup findSuitableParent(View view) {
+    protected static ViewGroup findSuitableParent(View view) {
         ViewGroup viewGroup = null;
         View view2 = view;
         while (!(view2 instanceof CoordinatorLayout)) {
@@ -165,8 +167,16 @@ public final class BuffetBar
         BuffetManager.getInstance().dismiss(this.mManagerCallback, n);
     }
     
+    protected BuffetBar$BuffetLayout getBuffetLayout() {
+        return this.mView;
+    }
+    
     public int getDuration() {
         return this.mDuration;
+    }
+    
+    protected ViewGroup getTargetParent() {
+        return this.mTargetParent;
     }
     
     public View getView() {
@@ -258,6 +268,10 @@ public final class BuffetBar
     public BuffetBar setDuration(final int mDuration) {
         this.mDuration = mDuration;
         return this;
+    }
+    
+    public void setSwipeToDismissEnabled(final boolean swipeToDismissEnabled) {
+        this.swipeToDismissEnabled = swipeToDismissEnabled;
     }
     
     public BuffetBar setText(final int n) {

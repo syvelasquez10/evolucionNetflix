@@ -110,7 +110,7 @@ public class BarkerKidsCharacterDetailsFrag extends BarkerKidsShowDetailsFrag
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
             seasonsSpinnerAdapter.setItemBackgroundColor(this.kidsColorId);
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131755284);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131755297);
             seasonsSpinnerAdapter.setDropDownTextColor(this.kidsColorId);
         }
         return seasonsSelectorGroup;
@@ -118,35 +118,35 @@ public class BarkerKidsCharacterDetailsFrag extends BarkerKidsShowDetailsFrag
     
     @Override
     protected int getNumColumns() {
-        int n = 2131558421;
-        final int n2 = 2131558420;
+        int n = 2131558423;
+        final int n2 = 2131558422;
         if (KidsUtils.isKidsParity((Context)this.getActivity())) {
             if (this.shouldRenderAsSDP) {
                 if (!DeviceUtils.isLandscape((Context)this.getActivity())) {
-                    n = 2131558420;
+                    n = 2131558422;
                 }
             }
             else if (DeviceUtils.isLandscape((Context)this.getActivity())) {
-                n = 2131558419;
+                n = 2131558421;
             }
         }
         else if (this.shouldRenderAsSDP) {
             n = n2;
         }
         else {
-            n = 2131558419;
+            n = 2131558421;
         }
         return this.getActivity().getResources().getInteger(n);
     }
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427777) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427781) * 2;
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903175;
+        return 2130903177;
     }
     
     @Override

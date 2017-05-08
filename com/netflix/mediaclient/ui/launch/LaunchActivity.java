@@ -32,6 +32,7 @@ import com.netflix.mediaclient.service.webclient.model.leafs.SignInConfigData;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
 import com.netflix.mediaclient.ui.signup.ReactSignupActivity;
 import com.netflix.mediaclient.service.configuration.SignInConfiguration;
+import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import com.google.android.gms.common.api.Api$ApiOptions$NotRequiredOptions;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.auth.api.Auth;
@@ -125,7 +126,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showDebugToast(this.getString(2131296793));
+            this.showDebugToast(this.getString(2131296789));
             SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.smartLock, IClientLogging$CompletionReason.success, (Error)null);
             return;
         }
@@ -220,9 +221,11 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         final boolean booleanPref = PreferenceUtils.getBooleanPref((Context)this, "prefs_non_member_playback", false);
         if ((isSignUpEnabled(serviceManager) && !this.getNetflixApplication().hasSignedUpOnce()) || booleanPref) {
             this.handleUserSignUp(serviceManager);
-            return;
         }
-        this.handleUserLogin(serviceManager);
+        else {
+            this.handleUserLogin(serviceManager);
+        }
+        UserAgentBroadcastIntents.signalUserAccountNotLoggedIn((Context)this);
     }
     
     private void handleUserSignUp(final ServiceManager serviceManager) {
@@ -539,7 +542,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         Log.d("LaunchActivity", "Service is NOT ready, use splash screen... nf_config: splashscreen");
         this.mSplashScreenStarted = System.currentTimeMillis();
-        this.setContentView(2130903304);
+        this.setContentView(2130903308);
     }
     
     @Override

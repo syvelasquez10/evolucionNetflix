@@ -5,6 +5,9 @@
 package com.netflix.mediaclient.android.activity;
 
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
+import android.app.Activity;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.app.FragmentTransaction;
 import com.netflix.mediaclient.Log;
 import android.view.ViewGroup$MarginLayoutParams;
@@ -62,7 +65,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
     }
     
     protected int getContentLayoutId() {
-        return 2130903149;
+        return 2130903151;
     }
     
     public Fragment getPrimaryFrag() {
@@ -73,7 +76,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
         return this.primaryFragContainer;
     }
     
-    protected Fragment getSecondaryFrag() {
+    public Fragment getSecondaryFrag() {
         return this.secondaryFrag;
     }
     
@@ -98,8 +101,8 @@ public abstract class FragmentHostActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.setContentView(this.getContentLayoutId());
-        this.contentHost = (LinearLayout)this.findViewById(2131820918);
-        this.primaryFragContainer = (ViewGroup)this.findViewById(2131820920);
+        this.contentHost = (LinearLayout)this.findViewById(2131820919);
+        this.primaryFragContainer = (ViewGroup)this.findViewById(2131820921);
         if (!this.hasEmbeddedToolbar()) {
             final ViewGroup$LayoutParams layoutParams = this.primaryFragContainer.getLayoutParams();
             if (layoutParams instanceof ViewGroup$MarginLayoutParams) {
@@ -109,7 +112,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
                 Log.e("FragmentHostActivity", "Can't remove margin from layout of non-supported type: " + layoutParams);
             }
         }
-        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131820921);
+        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131820922);
         this.setupCastPlayerFrag(bundle);
         if (bundle == null) {
             this.primaryFrag = this.createPrimaryFrag();
@@ -119,9 +122,9 @@ public abstract class FragmentHostActivity extends NetflixActivity
                 Log.d("FragmentHostActivity", "Creating secondary fragment of type: " + this.secondaryFrag);
             }
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
-            beginTransaction.add(2131820920, this.primaryFrag, "primary");
+            beginTransaction.add(2131820921, this.primaryFrag, "primary");
             if (this.secondaryFrag != null) {
-                beginTransaction.add(2131820921, this.secondaryFrag, "secondary");
+                beginTransaction.add(2131820922, this.secondaryFrag, "secondary");
             }
             beginTransaction.commit();
         }
@@ -143,6 +146,15 @@ public abstract class FragmentHostActivity extends NetflixActivity
             }
             secondaryFragContainer.setVisibility(visibility);
         }
+    }
+    
+    public void requestExternalStoragePermission() {
+        if (ContextCompat.checkSelfPermission((Context)this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
+            Log.i("FragmentHostActivity", "requestExternalStoragePermission requesting permission.");
+            ActivityCompat.requestPermissions(this, new String[] { "android.permission.WRITE_EXTERNAL_STORAGE" }, 1);
+            return;
+        }
+        Log.i("FragmentHostActivity", "requestExternalStoragePermission already have permission.");
     }
     
     @Override

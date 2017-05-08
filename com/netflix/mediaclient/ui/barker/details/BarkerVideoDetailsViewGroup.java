@@ -148,7 +148,7 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
         else {
             videoType = this.details.getType();
         }
-        final RatingDialogFrag create = RatingDialogFrag.create(topLevelId, videoType, "", this.rate, 2130903279, false);
+        final RatingDialogFrag create = RatingDialogFrag.create(topLevelId, videoType, "", this.rate, 2130903282, false);
         final FragmentTransaction beginTransaction = ((NetflixActivity)this.getContext()).getFragmentManager().beginTransaction();
         beginTransaction.add(0, (Fragment)create, "frag_dialog");
         beginTransaction.commitAllowingStateLoss();
@@ -241,7 +241,7 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
             n = 0.0f;
         }
         else {
-            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131427775);
+            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131427779);
         }
         final int n2 = (int)n;
         this.alignHeroImage();
@@ -276,8 +276,8 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
         this.basicSupplementalInfo = (TextView)this.findViewById(2131820715);
         this.dataSelectorGroup = (RadioGroup)this.findViewById(2131820738);
         this.horzDispImg2 = (AdvancedImageView)this.findViewById(2131820744);
-        this.myList = (IconFontTextView)this.findViewById(2131820925);
-        this.download = (DownloadButton)this.findViewById(2131821076);
+        this.myList = (IconFontTextView)this.findViewById(2131820926);
+        this.download = (DownloadButton)this.findViewById(2131821086);
         this.year = (TextView)this.findViewById(2131820713);
         this.leftGroup = this.findViewById(2131820749);
         this.shadow = this.findViewById(2131820745);
@@ -286,7 +286,7 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
         this.bookmarkDuration = (TextView)this.findViewById(2131820734);
         this.bookmarkProgressBar = (ProgressBar)this.findViewById(2131820735);
         this.credits = this.findViewById(2131820754);
-        this.actions = this.findViewById(2131821528);
+        this.actions = this.findViewById(2131821544);
         this.detailFlipper = (LinearLayout)this.findViewById(2131820748);
         this.detailSpacer = this.findViewById(2131820753);
         this.ratingContainer = this.findViewById(2131820711);
@@ -335,12 +335,12 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
     
     protected void setEpisodesTextAsSelected() {
         if (this.dataSelectorEpisodes != null) {
-            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131755284));
+            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131755297));
             this.dataSelectorEpisodesTop.setVisibility(0);
             this.dataSelectorEpisodes.setTypeface(Typeface.DEFAULT_BOLD);
         }
         if (this.dataSelectorRelated != null) {
-            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131755154));
+            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131755165));
             this.dataSelectorRelatedTop.setVisibility(4);
             this.dataSelectorRelated.setTypeface(Typeface.DEFAULT);
         }
@@ -412,7 +412,7 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
                 this.episodeTitle.setText((CharSequence)AbsEpisodeView.createTitleText(episodeDetails, this.getContext()));
             }
             else {
-                this.episodeTitle.setText((CharSequence)this.getResources().getString(2131296647, new Object[] { episodeDetails.getSeasonAbbrSeqLabel(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() }));
+                this.episodeTitle.setText((CharSequence)this.getResources().getString(2131296644, new Object[] { episodeDetails.getSeasonAbbrSeqLabel(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() }));
             }
             this.episodeTitle.setVisibility(0);
         }

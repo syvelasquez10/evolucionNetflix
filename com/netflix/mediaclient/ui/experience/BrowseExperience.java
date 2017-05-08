@@ -339,7 +339,7 @@ public enum BrowseExperience implements IExperience
         @Override
         public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
             String s = null;
-            if (clazz == CwView.class) {
+            if (CwView.class.isAssignableFrom(clazz)) {
                 if (video instanceof CWVideo) {
                     s = ((CWVideo)video).createModifiedStillUrl();
                 }

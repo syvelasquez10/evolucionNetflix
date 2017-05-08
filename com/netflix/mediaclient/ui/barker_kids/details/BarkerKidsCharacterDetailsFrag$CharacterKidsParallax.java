@@ -72,22 +72,22 @@ class BarkerKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
     private Drawable getBackroundResource(final View view) {
         switch (this.this$0.kidsColorId) {
             default: {
-                return view.getResources().getDrawable(2130838017);
+                return view.getResources().getDrawable(2130838040);
             }
-            case 2131755152: {
-                return view.getResources().getDrawable(2130838021);
+            case 2131755163: {
+                return view.getResources().getDrawable(2130838044);
             }
-            case 2131755144: {
-                return view.getResources().getDrawable(2130838016);
+            case 2131755155: {
+                return view.getResources().getDrawable(2130838039);
             }
-            case 2131755147: {
-                return view.getResources().getDrawable(2130838018);
+            case 2131755158: {
+                return view.getResources().getDrawable(2130838041);
             }
-            case 2131755149: {
-                return view.getResources().getDrawable(2130838020);
+            case 2131755160: {
+                return view.getResources().getDrawable(2130838043);
             }
-            case 2131755148: {
-                return view.getResources().getDrawable(2130838019);
+            case 2131755159: {
+                return view.getResources().getDrawable(2130838042);
             }
         }
     }

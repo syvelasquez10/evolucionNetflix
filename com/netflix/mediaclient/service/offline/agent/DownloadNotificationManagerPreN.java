@@ -20,22 +20,22 @@ class DownloadNotificationManagerPreN extends DownloadNotificationManager
     
     @Override
     protected void addCancelDownloadAction(final Notification$Builder notification$Builder, final OfflinePlayableViewData offlinePlayableViewData) {
-        notification$Builder.addAction(2130837738, (CharSequence)this.mContext.getString(2131296708), this.getDeletePlayableIntent(offlinePlayableViewData.getPlayableId()));
+        notification$Builder.addAction(2130837740, (CharSequence)this.mContext.getString(2131296705), this.getDeletePlayableIntent(offlinePlayableViewData.getPlayableId()));
     }
     
     @Override
     protected void addResumeDownloadAction(final Notification$Builder notification$Builder, final OfflinePlayableViewData offlinePlayableViewData) {
-        notification$Builder.addAction(2130837757, (CharSequence)this.mContext.getString(2131296715), this.getStartDownloadIntent(offlinePlayableViewData.getPlayableId()));
+        notification$Builder.addAction(2130837776, (CharSequence)this.mContext.getString(2131296712), this.getStartDownloadIntent(offlinePlayableViewData.getPlayableId()));
     }
     
     @Override
     protected void addStopDownloadAction(final Notification$Builder notification$Builder, final OfflinePlayableViewData offlinePlayableViewData) {
-        notification$Builder.addAction(2130837916, (CharSequence)this.mContext.getString(2131296716), this.getStopDownloadIntent(offlinePlayableViewData.getPlayableId()));
+        notification$Builder.addAction(2130837941, (CharSequence)this.mContext.getString(2131296713), this.getStopDownloadIntent(offlinePlayableViewData.getPlayableId()));
     }
     
     @Override
     protected void addWatchAction(final Notification$Builder notification$Builder, final OfflinePlayableViewData offlinePlayableViewData, final VideoType videoType) {
-        notification$Builder.addAction(2130838071, (CharSequence)this.mContext.getString(2131296717), this.getWatchPlayableIntent(offlinePlayableViewData.getPlayableId(), videoType));
+        notification$Builder.addAction(2130838094, (CharSequence)this.mContext.getString(2131296714), this.getWatchPlayableIntent(offlinePlayableViewData.getPlayableId(), videoType));
     }
     
     @Override
@@ -50,21 +50,21 @@ class DownloadNotificationManagerPreN extends DownloadNotificationManager
     
     @Override
     protected int getDownloadCompleteSmallIcon() {
-        return 2130837945;
+        return 2130837967;
     }
     
     @Override
     protected int getErrorNotificationSmallIcon() {
-        return 2130837945;
+        return 2130837967;
     }
     
     @Override
     protected void setSmallIconForInProgress(final Notification$Builder notification$Builder) {
-        notification$Builder.setSmallIcon(2130837945);
+        notification$Builder.setSmallIcon(2130837967);
     }
     
     @Override
     protected void setSmallIconForStoppedByUser(final Notification$Builder notification$Builder) {
-        notification$Builder.setSmallIcon(2130837945);
+        notification$Builder.setSmallIcon(2130837967);
     }
 }

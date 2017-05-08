@@ -456,16 +456,13 @@ public class CoordinatorLayout extends ViewGroup implements NestedScrollingParen
                                 return constructor.newInstance(context, set);
                             }
                             break Label_0228;
-                            while (true) {
-                                s2 = CoordinatorLayout.WIDGET_PACKAGE_NAME + '.' + s;
-                                continue Label_0070_Outer;
-                                s2 = s;
-                                s2 = s;
-                                continue;
-                            }
+                            s2 = s;
+                            // iftrue(Label_0041:, s.indexOf(46) >= 0)
+                            s2 = s;
+                            // iftrue(Label_0041:, TextUtils.isEmpty((CharSequence)CoordinatorLayout.WIDGET_PACKAGE_NAME))
+                            s2 = CoordinatorLayout.WIDGET_PACKAGE_NAME + '.' + s;
+                            continue Label_0070_Outer;
                         }
-                        // iftrue(Label_0041:, s.indexOf(46) >= 0)
-                        // iftrue(Label_0041:, TextUtils.isEmpty((CharSequence)CoordinatorLayout.WIDGET_PACKAGE_NAME))
                         catch (Exception ex) {
                             throw new RuntimeException("Could not inflate Behavior subclass " + s2, ex);
                         }
@@ -694,9 +691,9 @@ public class CoordinatorLayout extends ViewGroup implements NestedScrollingParen
                                     b2 = (acquireTempRect2.left <= ((Rect)acquireTempRect).right && acquireTempRect2.top <= ((Rect)acquireTempRect).bottom && acquireTempRect2.right >= ((Rect)acquireTempRect).left && acquireTempRect2.bottom >= ((Rect)acquireTempRect).top && b);
                                     return b2;
                                     b2 = false;
-                                    break;
-                                    b2 = false;
                                     continue;
+                                    b2 = false;
+                                    break;
                                 }
                                 finally {
                                     releaseTempRect(acquireTempRect2);

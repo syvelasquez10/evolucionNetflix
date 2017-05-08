@@ -160,6 +160,12 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         this.mMdxController.addEventListener(Mdx$Events.mdx_targetrestarting.getName(), this.mStateEventListener);
     }
     
+    private void clearTargetMapThreadSafe() {
+        synchronized (this.mTargetMap) {
+            this.mTargetMap.clear();
+        }
+    }
+    
     private void clearVideoDetails() {
         this.mVideoIds = new WebApiUtils$VideoIds();
         this.mVideoDetails = null;
@@ -208,9 +214,9 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         }
         else {
             final Playable playable = this.mVideoDetails.getPlayable();
-            string = this.getContext().getString(2131296645, new Object[] { playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), this.mVideoDetails.getTitle() });
+            string = this.getContext().getString(2131296642, new Object[] { playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), this.mVideoDetails.getTitle() });
             if (this.mVideoDetails.isNSRE()) {
-                return this.getContext().getString(2131296646, new Object[] { this.mVideoDetails.getTitle() });
+                return this.getContext().getString(2131296643, new Object[] { this.mVideoDetails.getTitle() });
             }
         }
         return string;
@@ -253,9 +259,9 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             return null;
         }
         final EpisodeDetails episodeDetails = (EpisodeDetails)this.mVideoDetailsPostplay;
-        final String string = this.getContext().getString(2131296645, new Object[] { episodeDetails.getSeasonAbbrSeqLabel(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        final String string = this.getContext().getString(2131296642, new Object[] { episodeDetails.getSeasonAbbrSeqLabel(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
         if (episodeDetails.isNSRE()) {
-            return this.getContext().getString(2131296646, new Object[] { episodeDetails.getTitle() });
+            return this.getContext().getString(2131296643, new Object[] { episodeDetails.getTitle() });
         }
         return string;
     }
@@ -317,78 +323,89 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         if (!StringUtils.isEmpty(this.mCurrentTargetUuid)) {
             final boolean b = false;
             final RemoteDevice deviceFromUuid = this.getDeviceFromUuid(this.mCurrentTargetUuid);
-            RemoteDevice remoteDevice;
-            boolean b2;
-            if (deviceFromUuid == null) {
-                if (this.getDeviceFromUuid(this.mTargetUuid) != null) {
-                    remoteDevice = this.getDeviceFromUuid(this.mTargetUuid);
-                    this.mCurrentTargetUuid = this.mTargetUuid;
-                    b2 = true;
-                }
-                else if (this.getDeviceFromUuid(this.mTargetDialUuid) != null) {
-                    remoteDevice = this.getDeviceFromUuid(this.mTargetDialUuid);
-                    this.mCurrentTargetUuid = this.mTargetDialUuid;
-                    b2 = true;
-                }
-                else {
-                    for (final RemoteDevice remoteDevice2 : this.mTargetMap) {
-                        if (StringUtils.isNotEmpty(this.mTargetFriendlyName) && this.mTargetFriendlyName.equals(remoteDevice2.friendlyName)) {
-                            if (StringUtils.isNotEmpty(remoteDevice2.dialUuid)) {
-                                this.mCurrentTargetUuid = remoteDevice2.dialUuid;
-                                break;
+            while (true) {
+                Label_0377: {
+                    if (deviceFromUuid != null) {
+                        break Label_0377;
+                    }
+                    RemoteDevice remoteDevice;
+                    int n;
+                    if (this.getDeviceFromUuid(this.mTargetUuid) != null) {
+                        remoteDevice = this.getDeviceFromUuid(this.mTargetUuid);
+                        this.mCurrentTargetUuid = this.mTargetUuid;
+                        n = 1;
+                    }
+                    else {
+                        if (this.getDeviceFromUuid(this.mTargetDialUuid) == null) {
+                            synchronized (this.mTargetMap) {
+                                for (final RemoteDevice remoteDevice2 : this.mTargetMap) {
+                                    if (StringUtils.isNotEmpty(this.mTargetFriendlyName) && this.mTargetFriendlyName.equals(remoteDevice2.friendlyName)) {
+                                        if (StringUtils.isNotEmpty(remoteDevice2.dialUuid)) {
+                                            this.mCurrentTargetUuid = remoteDevice2.dialUuid;
+                                            break;
+                                        }
+                                        this.mCurrentTargetUuid = remoteDevice2.uuid;
+                                        break;
+                                    }
+                                }
+                                // monitorexit(this.mTargetMap)
+                                if (Log.isLoggable()) {
+                                    Log.d("nf_mdx_MdxAgent", "MdxAgent: taregt no longer exist " + this.mCurrentTargetUuid);
+                                }
+                                return;
                             }
-                            this.mCurrentTargetUuid = remoteDevice2.uuid;
-                            break;
+                            break Label_0377;
+                        }
+                        remoteDevice = this.getDeviceFromUuid(this.mTargetDialUuid);
+                        this.mCurrentTargetUuid = this.mTargetDialUuid;
+                        n = 1;
+                    }
+                    final String uuid = remoteDevice.uuid;
+                    final String dialUuid = remoteDevice.dialUuid;
+                    final String friendlyName = remoteDevice.friendlyName;
+                    int n2 = n;
+                    if (StringUtils.isNotEmpty(uuid)) {
+                        n2 = n;
+                        if (!uuid.equals(this.mTargetUuid)) {
+                            this.mTargetUuid = uuid;
+                            n2 = 1;
                         }
                     }
-                    if (Log.isLoggable()) {
-                        Log.d("nf_mdx_MdxAgent", "MdxAgent: taregt no longer exist " + this.mCurrentTargetUuid);
+                    int n3 = n2;
+                    if (StringUtils.isNotEmpty(dialUuid)) {
+                        n3 = n2;
+                        if (!uuid.equals(this.mTargetDialUuid)) {
+                            this.mTargetDialUuid = dialUuid;
+                            n3 = 1;
+                        }
+                    }
+                    int n4 = n3;
+                    if (StringUtils.isNotEmpty(friendlyName)) {
+                        n4 = n3;
+                        if (!uuid.equals(this.mTargetFriendlyName)) {
+                            this.mTargetFriendlyName = friendlyName;
+                            n4 = 1;
+                        }
+                    }
+                    if (n4 != 0 && this.mTargetSelector != null) {
+                        this.mTargetSelector.updateSelectedTarget(this.mCurrentTargetUuid, this.mTargetUuid, this.mTargetDialUuid, this.mTargetFriendlyName);
+                        return;
                     }
                     return;
                 }
-            }
-            else {
+                RemoteDevice remoteDevice = deviceFromUuid;
+                int n = b ? 1 : 0;
+                if (!StringUtils.isNotEmpty(deviceFromUuid.dialUuid)) {
+                    continue;
+                }
                 remoteDevice = deviceFromUuid;
-                b2 = b;
-                if (StringUtils.isNotEmpty(deviceFromUuid.dialUuid)) {
+                n = (b ? 1 : 0);
+                if (!deviceFromUuid.dialUuid.equals(this.mCurrentTargetUuid)) {
+                    this.mCurrentTargetUuid = deviceFromUuid.dialUuid;
+                    n = 1;
                     remoteDevice = deviceFromUuid;
-                    b2 = b;
-                    if (!deviceFromUuid.dialUuid.equals(this.mCurrentTargetUuid)) {
-                        this.mCurrentTargetUuid = deviceFromUuid.dialUuid;
-                        b2 = true;
-                        remoteDevice = deviceFromUuid;
-                    }
                 }
-            }
-            final String uuid = remoteDevice.uuid;
-            final String dialUuid = remoteDevice.dialUuid;
-            final String friendlyName = remoteDevice.friendlyName;
-            boolean b3 = b2;
-            if (StringUtils.isNotEmpty(uuid)) {
-                b3 = b2;
-                if (!uuid.equals(this.mTargetUuid)) {
-                    this.mTargetUuid = uuid;
-                    b3 = true;
-                }
-            }
-            boolean b4 = b3;
-            if (StringUtils.isNotEmpty(dialUuid)) {
-                b4 = b3;
-                if (!uuid.equals(this.mTargetDialUuid)) {
-                    this.mTargetDialUuid = dialUuid;
-                    b4 = true;
-                }
-            }
-            boolean b5 = b4;
-            if (StringUtils.isNotEmpty(friendlyName)) {
-                b5 = b4;
-                if (!uuid.equals(this.mTargetFriendlyName)) {
-                    this.mTargetFriendlyName = friendlyName;
-                    b5 = true;
-                }
-            }
-            if (b5 && this.mTargetSelector != null) {
-                this.mTargetSelector.updateSelectedTarget(this.mCurrentTargetUuid, this.mTargetUuid, this.mTargetDialUuid, this.mTargetFriendlyName);
+                continue;
             }
         }
     }
@@ -460,12 +477,12 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
-    private void sessionGone() {
+    private void sessionGone(final boolean b) {
         if (this.mTargetManager != null) {
             this.mTargetManager.targetGone(this.mCurrentTargetUuid);
         }
         this.mNotifier.error(this.mCurrentTargetUuid, 201, "stop connecting to target");
-        this.mNotifier.playbackEnd(this.mCurrentTargetUuid, null);
+        this.mNotifier.playbackEnd(this.mCurrentTargetUuid, null, b);
     }
     
     private void unregisterStartStopReceiver() {
@@ -511,7 +528,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             if (videoDetails.getType() == VideoType.EPISODE) {
                 String s;
                 if (b) {
-                    s = this.getContext().getString(2131296686);
+                    s = this.getContext().getString(2131296683);
                 }
                 else {
                     s = videoDetails.getPlayable().getParentTitle();
@@ -613,7 +630,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         }
         this.mReady.set(false);
         this.mMdxNativeExitCompleted.set(true);
-        this.mTargetMap.clear();
+        this.clearTargetMapThreadSafe();
         this.mTargetRestartingList.clear();
         this.mMdxController.setPropertyUpdateListener(this);
         TransactionId.setTransactionIdSource(this.getNrdController().getNrdp());
@@ -962,7 +979,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             this.removePairingEventListener(this.mTargetManager);
             this.removeSessionEventListener(this.mTargetManager);
             this.clearVideoDetails();
-            this.sessionGone();
+            this.sessionGone(true);
             this.mTargetMap.clear();
             this.mTargetRestartingList.clear();
             if (this.mNotifier != null) {
@@ -1021,7 +1038,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
     @Override
     public void onSessionWatchDogExpired() {
         if (this.mNotifier != null) {
-            this.mNotifier.playbackEnd(this.mCurrentTargetUuid, null);
+            this.mNotifier.playbackEnd(this.mCurrentTargetUuid, null, false);
         }
     }
     
@@ -1077,7 +1094,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
     @Override
     public void setCurrentTarget(final String mCurrentTargetUuid) {
         if (StringUtils.isEmpty(mCurrentTargetUuid)) {
-            this.sessionGone();
+            this.sessionGone(false);
             this.clearVideoDetails();
             this.getService().getClientLogging().getCustomerEventLogging().logMdxTargetSelection("local playback");
             this.resetTargetSelection();

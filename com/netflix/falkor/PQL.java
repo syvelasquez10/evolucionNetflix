@@ -5,12 +5,14 @@
 package com.netflix.falkor;
 
 import java.util.LinkedHashSet;
+import com.google.gson.JsonObject;
+import com.netflix.mediaclient.util.LogUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonArray;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Collections;
 import java.util.Arrays;
@@ -79,25 +81,28 @@ public class PQL implements Cloneable
                         final List<Object> value2 = keySegments.get(n3);
                         List<Object> list2;
                         if (!(value2 instanceof List)) {
-                            list2 = (List<Object>)new ArrayList<HashMap<String, Integer>>();
+                            list2 = new ArrayList<Object>();
                             list2.add(value2);
                             keySegments.set(n3, list2);
                         }
-                        else {
+                        else if (value2 instanceof ArrayList) {
                             list2 = value2;
                         }
-                        final Map<String, Integer> value3 = list2.get(list2.size() - 1);
-                        Object o;
+                        else {
+                            list2 = new ArrayList<Object>(value2);
+                        }
+                        final Object value3 = list2.get(list2.size() - 1);
+                        Map<K, Integer> map;
                         if (value3 instanceof Map) {
-                            o = value3;
+                            map = (HashMap<K, Integer>)value3;
                         }
                         else {
-                            o = null;
+                            map = null;
                         }
                         final Integer integer = parseInteger(value3);
                         final Integer integer2 = parseInteger(keySegments2.get(n3));
-                        if (o != null && ((Map<K, Integer>)o).get("to") != null && integer2 != null && ((Map<K, Integer>)o).get("to").equals(integer2 - 1)) {
-                            ((Map<K, Integer>)o).put((K)"to", ((Map<K, Integer>)o).get("to") + 1);
+                        if (map != null && map.get("to") != null && integer2 != null && map.get("to").equals(integer2 - 1)) {
+                            map.put((K)"to", map.get("to") + 1);
                         }
                         else if (integer != null && integer2 != null && integer.equals(integer2 - 1)) {
                             final HashMap<String, Integer> hashMap = new HashMap<String, Integer>();
@@ -279,9 +284,40 @@ public class PQL implements Cloneable
     
     public static PQL fromJsonArray(final JsonArray jsonArray) {
         final ArrayList<String> list = new ArrayList<String>(jsonArray.size());
-        final Iterator<JsonElement> iterator = jsonArray.iterator();
-        while (iterator.hasNext()) {
-            list.add(iterator.next().getAsString());
+        for (final JsonElement jsonElement : jsonArray) {
+            if (jsonElement.isJsonPrimitive()) {
+                list.add(jsonElement.getAsString());
+            }
+            else if (jsonElement.isJsonArray()) {
+                final ArrayList<String> list2 = new ArrayList<String>();
+                final JsonArray asJsonArray = jsonElement.getAsJsonArray();
+                for (int i = 0; i < asJsonArray.size(); ++i) {
+                    list2.add(jsonArray.get(i).toString());
+                }
+                list.add((String)list2);
+            }
+            else if (jsonElement.isJsonObject()) {
+                final JsonObject asJsonObject = jsonElement.getAsJsonObject();
+                final JsonElement value = asJsonObject.get("to");
+                if (value == null) {
+                    continue;
+                }
+                final JsonElement value2 = asJsonObject.get("from");
+                final HashMap<String, Long> hashMap = new HashMap<String, Long>();
+                hashMap.put("to", value.getAsLong());
+                long asLong;
+                if (value2 == null) {
+                    asLong = 0L;
+                }
+                else {
+                    asLong = value2.getAsLong();
+                }
+                hashMap.put("from", asLong);
+                list.add((String)hashMap);
+            }
+            else {
+                LogUtils.reportErrorSafely("PQL.fromJsonArray: unknown json " + jsonElement);
+            }
         }
         return fromList(list);
     }
@@ -304,7 +340,7 @@ public class PQL implements Cloneable
     }
     
     private static Double parseDouble(final Object o) {
-        if (o instanceof Map) {
+        if (o instanceof Map || o instanceof List) {
             return null;
         }
         if (o instanceof String) {
@@ -685,6 +721,22 @@ public class PQL implements Cloneable
             }
         }
         return set;
+    }
+    
+    public int getAllNodeIndex() {
+        int i = 1;
+        final List keySegments = this.keySegments;
+        final int size = keySegments.size();
+        if (size > 1) {
+            while (i < size) {
+                final Object value = keySegments.get(i);
+                if (value instanceof String && "all".equals(value)) {
+                    return i;
+                }
+                ++i;
+            }
+        }
+        return -1;
     }
     
     public List<Object> getKeySegments() {

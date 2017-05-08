@@ -180,6 +180,9 @@ public class PerformanceProfiler
     }
     
     public void flushApmEvents(final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging) {
+        if (applicationPerformanceMetricsLogging == null) {
+            return;
+        }
         this.warnOfOpenSessions();
         final Iterator<DiscreteEvent> iterator = this.events.iterator();
         while (iterator.hasNext()) {

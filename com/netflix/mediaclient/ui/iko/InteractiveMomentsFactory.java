@@ -16,7 +16,7 @@ public class InteractiveMomentsFactory
     public static InteractiveMomentsManager getManager(final String s) {
         if (!StringUtils.isEmpty(s)) {
             if ("kong".equalsIgnoreCase(s)) {
-                return new KongInteractiveMomentsManager();
+                return (InteractiveMomentsManager)new KongInteractiveMomentsManager();
             }
             if ("wordparty".equalsIgnoreCase(s)) {
                 return (InteractiveMomentsManager)new WPInteractiveMomentsManager();

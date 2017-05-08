@@ -349,7 +349,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
             return;
         }
         Log.e("nf_offlineAgent", "handleCreateRequest already requested");
-        this.sendResponseForCreate(mPlayableId, new NetflixStatus(StatusCode.DL_TITTLE_ALREADY_REQUESTED_FOR_DOWNLOAD));
+        this.mAgentListenerHelper.onCreateRequestResponse(this.getMainHandler(), mPlayableId, new NetflixStatus(StatusCode.DL_TITTLE_ALREADY_REQUESTED_FOR_DOWNLOAD));
     }
     
     private void handleDeleteAllRequest(final boolean b) {

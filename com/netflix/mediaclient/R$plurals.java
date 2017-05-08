@@ -16,10 +16,11 @@ public final class R$plurals
     public static final int offline_snackbar_download_complete_multiple = 2131361799;
     public static final int offline_snackbar_download_complete_multiple_no_subtitles = 2131361800;
     public static final int offline_snackbar_downloading_multiple = 2131361801;
-    public static final int offline_snackbar_failed_multiple = 2131361802;
-    public static final int offline_snackbar_some_failed = 2131361803;
-    public static final int offline_state_download_removed = 2131361804;
-    public static final int offline_state_expiring_days = 2131361805;
-    public static final int offline_state_expiring_hours = 2131361806;
-    public static final int offline_state_expiring_minutes = 2131361807;
+    public static final int offline_snackbar_downloading_multiple_with_subtitle = 2131361802;
+    public static final int offline_snackbar_failed_multiple = 2131361803;
+    public static final int offline_snackbar_some_failed = 2131361804;
+    public static final int offline_state_download_removed = 2131361805;
+    public static final int offline_state_expiring_days = 2131361806;
+    public static final int offline_state_expiring_hours = 2131361807;
+    public static final int offline_state_expiring_minutes = 2131361808;
 }

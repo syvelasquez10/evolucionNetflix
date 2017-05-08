@@ -629,18 +629,15 @@ public class ListPopupWindow implements ShowableListMenu
                                             }
                                             continue Label_0309_Outer;
                                             // iftrue(Label_0488:, this.mDropDownWidth != -2)
-                                            while (true) {
-                                                Block_20: {
-                                                    break Block_20;
-                                                    height = this.mDropDownHeight;
-                                                    continue Label_0350_Outer;
-                                                }
-                                                width3 = this.getAnchorView().getWidth();
-                                                continue Label_0309_Outer;
-                                                continue;
+                                            // iftrue(Label_0309:, this.mDropDownHeight == -2)
+                                            Block_20: {
+                                                break Block_20;
+                                                height = this.mDropDownHeight;
+                                                continue Label_0350_Outer;
                                             }
+                                            width3 = this.getAnchorView().getWidth();
+                                            continue Label_0309_Outer;
                                         }
-                                        // iftrue(Label_0309:, this.mDropDownHeight == -2)
                                         catch (Exception ex) {
                                             Log.e("ListPopupWindow", "Could not invoke setEpicenterBounds on PopupWindow", (Throwable)ex);
                                             continue;

@@ -47,7 +47,7 @@ public class SeasonsSpinner extends AppCompatSpinner
     
     private void init() {
         this.drawableMultipleSeasons = this.getBackground();
-        this.drawableOneSeason = this.getResources().getDrawable(2131755266);
+        this.drawableOneSeason = this.getResources().getDrawable(2131755279);
         this.setId(2131820566);
         ScalePressedStateHandler pressedHandler;
         if (BrowseExperience.showKidsExperience()) {

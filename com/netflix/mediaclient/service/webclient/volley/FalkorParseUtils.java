@@ -12,9 +12,11 @@ import com.netflix.mediaclient.Log;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.NetflixApplication;
 import com.google.gson.Gson;
+import java.util.Date;
 
 public class FalkorParseUtils
 {
+    private static final Date EXPIRY_NEVER_DATE;
     public static final String FIELD_VALUE = "value";
     public static final String METHOD_TYPE_CALL = "call";
     public static final String METHOD_TYPE_GET = "get";
@@ -23,7 +25,35 @@ public class FalkorParseUtils
     private static final Gson gson;
     
     static {
+        EXPIRY_NEVER_DATE = new Date(System.currentTimeMillis() + 7776000000L);
         gson = NetflixApplication.getGson();
+    }
+    
+    public static Date createDateFromExpires(final JsonElement jsonElement) {
+        Date date2;
+        final Date date = date2 = null;
+        if (jsonElement != null) {
+            date2 = date;
+            if (jsonElement.isJsonObject()) {
+                date2 = date;
+                if (jsonElement.getAsJsonObject().has("$expires")) {
+                    final long asLong = jsonElement.getAsJsonObject().get("$expires").getAsLong();
+                    if (asLong < 0L) {
+                        date2 = new Date(new Date().getTime() - asLong);
+                    }
+                    else {
+                        if (asLong == 0L) {
+                            return new Date(new Date().getTime() + 5000L);
+                        }
+                        if (asLong == 1L) {
+                            return FalkorParseUtils.EXPIRY_NEVER_DATE;
+                        }
+                        return new Date(asLong);
+                    }
+                }
+            }
+        }
+        return date2;
     }
     
     public static Object createObjectFromJson(final String s, final JsonElement jsonElement, final Class<?> clazz) {

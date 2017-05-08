@@ -28,6 +28,7 @@ public class FetchSeasonsTask extends CmpTask
     
     @Override
     protected void buildPqlList(final List<PQL> list) {
+        list.add(PQL.create("shows", this.showId, "seasons", "summary"));
         list.add(PQL.create("shows", this.showId, "seasons", PQL.range(this.fromSeason, this.toSeason), "detail"));
     }
     

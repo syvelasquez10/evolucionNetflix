@@ -4,7 +4,10 @@
 
 package com.netflix.mediaclient.service;
 
+import android.net.NetworkInfo;
+import android.content.Context;
 import com.netflix.mediaclient.javabridge.invoke.android.SetNetworkInterfaces;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.javabridge.invoke.android.SetLanguage;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.Locale;
@@ -114,8 +117,12 @@ public class NrdController extends ServiceAgent
     }
     
     public void setNetworkInterfaces() {
-        if (this.nrd != null) {
-            this.nrd.invokeMethod(new SetNetworkInterfaces(this.getContext()));
+        final Context context = this.getContext();
+        if (this.nrd != null && context != null) {
+            final NetworkInfo[] networkInterfaces = ConnectivityUtils.getNetworkInterfaces(context);
+            if (networkInterfaces != null) {
+                this.nrd.invokeMethod(new SetNetworkInterfaces(this.getContext(), networkInterfaces));
+            }
         }
     }
     

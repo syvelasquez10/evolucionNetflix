@@ -43,7 +43,6 @@ import android.widget.Toast;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.os.Handler;
 import com.netflix.mediaclient.util.IrisUtils$NotificationsListStatus;
@@ -53,7 +52,6 @@ import android.content.BroadcastReceiver;
 import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;
 import java.util.LinkedList;
-import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$TTRTracker;
 import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag$OptInResponseHandler;
 import com.netflix.mediaclient.ui.offline.TutorialHelper$Tutorialable;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
@@ -88,7 +86,7 @@ class HomeActivity$6$2 implements LoadingStatus$LoadingStatusCallback
         this.this$1.this$0.setLoadingStatusCallback(null);
         Log.d("HomeActivity", "LOLOMO is loaded, report UI browse startup session ended in case this was on UI startup");
         final long elapsedRealtime = SystemClock.elapsedRealtime();
-        final long access$1400 = this.this$1.this$0.mStartedTimeMs;
+        final long access$1300 = this.this$1.this$0.mStartedTimeMs;
         if (status.isError()) {
             this.this$1.this$0.handleFalkorAgentErrors(status);
         }
@@ -96,6 +94,6 @@ class HomeActivity$6$2 implements LoadingStatus$LoadingStatusCallback
         if (SurveyActivity.shouldShowSurvey((Context)this.this$1.this$0, this.val$manager)) {
             SurveyActivity.makeSurveyRequestAndShow((NetflixActivity)this.this$1.this$0);
         }
-        this.this$1.this$0.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().endUiBrowseStartupSession(elapsedRealtime - access$1400, status.isSucces(), null);
+        this.this$1.this$0.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().endUiBrowseStartupSession(elapsedRealtime - access$1300, status.isSucces(), null);
     }
 }

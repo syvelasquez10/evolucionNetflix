@@ -14,6 +14,7 @@ import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.pservice.PService;
 import android.content.Intent;
+import com.netflix.model.branches.FalkorVideo;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.service.pservice.PVideo;

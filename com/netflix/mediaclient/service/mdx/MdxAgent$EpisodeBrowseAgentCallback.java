@@ -121,9 +121,9 @@ class MdxAgent$EpisodeBrowseAgentCallback extends SimpleBrowseAgentCallback
             this.this$0.logPlaystart(false);
         }
         this.this$0.updateMdxRemoteClient(this.isPostPlay);
-        String s = this.this$0.getContext().getString(2131296645, new Object[] { this.vidDetails.getPlayable().getSeasonAbbrSeqLabel(), this.vidDetails.getPlayable().getEpisodeNumber(), this.vidDetails.getTitle() });
+        String s = this.this$0.getContext().getString(2131296642, new Object[] { this.vidDetails.getPlayable().getSeasonAbbrSeqLabel(), this.vidDetails.getPlayable().getEpisodeNumber(), this.vidDetails.getTitle() });
         if (this.vidDetails.isNSRE()) {
-            s = this.this$0.getContext().getString(2131296646, new Object[] { this.vidDetails.getTitle() });
+            s = this.this$0.getContext().getString(2131296643, new Object[] { this.vidDetails.getTitle() });
         }
         this.this$0.updateMdxNotification(true, this.vidDetails.getPlayable().getParentTitle(), s, this.isPostPlay);
     }

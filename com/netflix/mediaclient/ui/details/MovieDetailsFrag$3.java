@@ -6,8 +6,6 @@ package com.netflix.mediaclient.ui.details;
 
 import java.util.Collection;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
-import com.netflix.mediaclient.service.webclient.model.leafs.TrackableObject;
 import com.netflix.mediaclient.ui.offline.DownloadButton;
 import com.netflix.mediaclient.ui.offline.TutorialHelper;
 import com.netflix.android.tooltips.Tooltip;
@@ -19,13 +17,17 @@ import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import com.netflix.mediaclient.service.webclient.model.leafs.TrackableObject;
 import android.transition.Transition$TransitionListener;
+import com.netflix.mediaclient.util.DataUtil;
 import com.netflix.mediaclient.ui.common.SimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.service.configuration.persistent.Config_Ab7994;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
@@ -34,7 +36,6 @@ import android.support.v7.widget.RecyclerView$LayoutManager;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.StringUtils;
@@ -59,10 +60,10 @@ class MovieDetailsFrag$3 extends TransitionListenerAdapter
     }
     
     public void onTransitionEnd(final Transition transition) {
-        this.this$0.setBackgroundResource(2131755266);
+        this.this$0.setBackgroundResource(2131755279);
     }
     
     public void onTransitionStart(final Transition transition) {
-        this.this$0.setBackgroundResource(2131755285);
+        this.this$0.setBackgroundResource(2131755298);
     }
 }

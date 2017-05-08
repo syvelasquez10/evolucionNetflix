@@ -56,11 +56,11 @@ public final class MdxNotificationManager implements IMdxNotificationManager
     }
     
     private void createPlayerBuilder() {
-        this.playerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837645).setWhen(System.currentTimeMillis());
+        this.playerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837647).setWhen(System.currentTimeMillis());
     }
     
     private void createPostPlayerBuilder() {
-        this.postPlayerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837645).setWhen(System.currentTimeMillis());
+        this.postPlayerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837647).setWhen(System.currentTimeMillis());
     }
     
     private void createRemoteViews(final MdxAgent mdxAgent) {

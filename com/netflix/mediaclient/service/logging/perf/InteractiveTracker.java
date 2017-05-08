@@ -19,10 +19,12 @@ public class InteractiveTracker
     private InteractiveTracker$InteractiveListener interactiveListener;
     Set<ImageLoader$ImageListener> onscreenListeners;
     
-    public InteractiveTracker(final InteractiveTracker$InteractiveListener interactiveListener) {
+    public InteractiveTracker() {
         this.onscreenListeners = new HashSet<ImageLoader$ImageListener>();
-        this.interactiveListener = interactiveListener;
-        Log.d("InteractiveTracker", "-------------- Timer created --------------");
+    }
+    
+    public void clearImageListeners() {
+        this.onscreenListeners.clear();
     }
     
     public boolean isComplete() {
@@ -31,18 +33,17 @@ public class InteractiveTracker
     
     public void isNowInteractive() {
         Log.d("InteractiveTracker", "isNowInteractive()");
-        this.hasCompleted = true;
-        if (this.interactiveListener != null) {
-            this.interactiveListener.onInteractive();
+        if (this.interactiveListener == null) {
+            Log.d("InteractiveTracker", "... but there was no listener attached so tracking has not completed");
+            return;
         }
+        this.hasCompleted = true;
+        this.interactiveListener.onInteractive();
     }
     
     public void onImageLoaded(final ImageLoader$ImageListener imageLoader$ImageListener, final ImageLoader$Type imageLoader$Type) {
         Log.d("InteractiveTracker", "onImageLoaded -- " + imageLoader$ImageListener + " ... type? " + imageLoader$Type);
-        if (imageLoader$Type == ImageLoader$Type.PLACEHOLDER) {
-            Log.i("InteractiveTracker", ".... was a PLACEHOLDER");
-        }
-        else {
+        if (imageLoader$Type != ImageLoader$Type.PLACEHOLDER) {
             if (!this.onscreenListeners.remove(imageLoader$ImageListener)) {
                 Log.d("InteractiveTracker", ".... wasn't in onscreenListeners");
                 return;
@@ -59,6 +60,11 @@ public class InteractiveTracker
         this.onscreenListeners.add(imageLoader$ImageListener);
         imageView.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new InteractiveTracker$1(this, imageView));
         return imageLoader$ImageListener;
+    }
+    
+    public void setListener(final InteractiveTracker$InteractiveListener interactiveListener) {
+        this.interactiveListener = interactiveListener;
+        Log.d("InteractiveTracker", "-------------- Listener set --------------");
     }
     
     public boolean shouldTrack(final ImageView imageView) {

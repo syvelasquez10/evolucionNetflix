@@ -328,11 +328,6 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
-    public boolean isVideo3D() {
-        return false;
-    }
-    
-    @Override
     public boolean isVideo5dot1() {
         return false;
     }
@@ -363,5 +358,10 @@ public class DummyEpisodeDetails implements EpisodeDetails
     
     @Override
     public void setUserThumbRating(final int n) {
+    }
+    
+    @Override
+    public boolean shouldRefreshVolatileData() {
+        return false;
     }
 }

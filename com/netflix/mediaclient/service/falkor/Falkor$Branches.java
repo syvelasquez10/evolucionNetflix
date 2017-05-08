@@ -37,6 +37,7 @@ public class Falkor$Branches
     public static final String SIMILARS = "similars";
     public static final String SUGGESTIONS = "suggestions";
     public static final String TOP_GENRES = "topGenres";
+    public static final String TRAILERS = "trailers";
     public static final String TURBO_COLLECTION = "turboCollection";
     public static final String VIDEOS = "videos";
     public static final String VIDEO_EVIDENCE = "videoEvidence";

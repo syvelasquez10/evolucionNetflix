@@ -7,7 +7,7 @@ package com.netflix.mediaclient.servicemgr.interface_.offline.realm;
 import io.realm.RealmQuery;
 import java.util.concurrent.ThreadPoolExecutor;
 import io.realm.internal.async.RealmAsyncTaskImpl;
-import io.realm.Realm$2;
+import io.realm.Realm$1;
 import io.realm.Realm$Transaction$OnError;
 import io.realm.Realm$Transaction$OnSuccess;
 import io.realm.RealmAsyncTask;
@@ -15,12 +15,11 @@ import io.realm.log.RealmLog;
 import io.realm.internal.Table;
 import java.util.Collections;
 import io.realm.BaseRealm$MigrationCallback;
-import io.realm.Realm$3;
-import io.realm.internal.ColumnInfo;
+import io.realm.Realm$2;
 import java.util.Iterator;
 import java.util.Set;
 import io.realm.internal.RealmProxyMediator;
-import io.realm.Realm$1;
+import io.realm.internal.ColumnInfo;
 import io.realm.RealmSchema;
 import io.realm.RealmObjectSchema;
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class RealmUtils
     private static HashMap<Long, RealmUtils$DbState> sCurrentStatesMap;
     
     static {
-        RealmUtils.sCurrentConfig = new RealmConfiguration$Builder().name("offline.realm").modules((Object)new RealmOfflineModule(), new Object[0]).migration((RealmMigration)new RealmOfflineMigration()).schemaVersion(4L).build();
+        RealmUtils.sCurrentConfig = new RealmConfiguration$Builder().name("offline.realm").modules((Object)new RealmOfflineModule(), new Object[0]).migration((RealmMigration)new RealmOfflineMigration()).schemaVersion(5L).build();
     }
     
     private static void checkAndUpdateCurrentState(final RealmUtils$DbState realmUtils$DbState, final RealmUtils$DbState realmUtils$DbState2) {

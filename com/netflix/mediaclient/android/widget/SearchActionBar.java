@@ -63,8 +63,8 @@ public class SearchActionBar extends NetflixActionBar
         this.editTextView = (EditText)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_src_text", (String)null, (String)null));
         if (this.editTextView != null) {
             final int color = this.searchView.getResources().getColor(this.getSearchViewTextColorResId());
-            final int color2 = this.searchView.getResources().getColor(2131755274);
-            this.editTextView.setTextSize((float)this.activity.getResources().getInteger(2131558430));
+            final int color2 = this.searchView.getResources().getColor(2131755287);
+            this.editTextView.setTextSize((float)this.activity.getResources().getInteger(2131558432));
             this.editTextView.setHintTextColor(color2);
             this.editTextView.setTextColor(color);
             this.editTextView.setImeOptions(33554432);
@@ -128,7 +128,7 @@ public class SearchActionBar extends NetflixActionBar
             return;
         }
         this.searchView.setImeOptions(33554435);
-        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131296992));
+        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131296995));
         this.searchView.setInputType(8192);
         this.searchView.setQueryRefinementEnabled(true);
         this.searchView.setSubmitButtonEnabled(false);
@@ -164,7 +164,7 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getActiveSearchIconResId() {
-        return 2130837948;
+        return 2130837970;
     }
     
     protected Integer getSearchCloseButtonTint() {
@@ -172,18 +172,18 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getSearchViewBgResId() {
-        return 2130838127;
+        return 2130838150;
     }
     
     protected int getSearchViewRightBgResId() {
         if (this.showVoiceSearch) {
-            return 2130838129;
+            return 2130838152;
         }
-        return 2131755266;
+        return 2131755279;
     }
     
     protected int getSearchViewTextColorResId() {
-        return 2131755197;
+        return 2131755208;
     }
     
     protected Integer getSearchVoiceButtonTint() {

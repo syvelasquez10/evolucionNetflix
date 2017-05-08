@@ -4,6 +4,7 @@
 
 package com.netflix.falkor.task;
 
+import com.netflix.falkor.PQL;
 import com.netflix.mediaclient.util.DataUtil$StringPair;
 import java.util.List;
 import com.google.gson.JsonObject;
@@ -26,7 +27,7 @@ public abstract class BaseCmpTask implements CmpTaskDetails
     }
     
     @Override
-    public boolean shouldCollapseMissingPql() {
+    public boolean shouldCollapseMissingPql(final List<PQL> list) {
         return false;
     }
     

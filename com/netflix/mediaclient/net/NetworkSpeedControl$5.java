@@ -33,6 +33,6 @@ final class NetworkSpeedControl$5 implements DialogInterface$OnClickListener
     public void onClick(final DialogInterface dialogInterface, final int n) {
         setSelectedSpeedIndex(n, (Context)this.val$activity);
         dialogInterface.dismiss();
-        AndroidUtils.restartApplication(this.val$activity);
+        AndroidUtils.restartApplication(this.val$activity, "Debug menu");
     }
 }

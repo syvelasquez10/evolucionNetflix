@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.offline.registry;
 import android.os.StatFs;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
+import com.netflix.mediaclient.service.offline.utils.OfflineUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
 import java.util.Iterator;
@@ -338,8 +339,10 @@ public class OfflineRegistry
             final OfflinePlayablePersistentData offlinePlayablePersistentData = iterator.next();
             if (offlinePlayablePersistentData.getDownloadState() == DownloadState.Creating || offlinePlayablePersistentData.getDownloadState() == DownloadState.CreateFailed) {
                 if (Log.isLoggable()) {
-                    Log.i("nf_offline_registry", "removeCreatingOrFailedItemsFromRegistryData ignoring playableId=" + offlinePlayablePersistentData.mPlayableId + " state=" + offlinePlayablePersistentData.getDownloadState());
+                    Log.i("nf_offline_registry", "removeCreatingOrFailedItemsFromRegistryData playableId=" + offlinePlayablePersistentData.mPlayableId + " state=" + offlinePlayablePersistentData.getDownloadState());
                 }
+                final String directoryPathForViewable = OfflinePathUtils.getDirectoryPathForViewable(registryData.mOfflineRootStorageDirPath, offlinePlayablePersistentData.mPlayableId);
+                Log.i("nf_offline_registry", "removeCreatingOrFailedItemsFromRegistryData deleting downloads path=%s success=%b", directoryPathForViewable, OfflineUtils.deletePlayableDirectory(directoryPathForViewable));
                 iterator.remove();
             }
         }

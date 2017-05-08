@@ -52,8 +52,8 @@ public class PrefetchLoLoMoTask extends CmpTask
             array = PQL.array(summaryNodeKey, "kubrick", "rating");
         }
         list.add(PQL.create("lolomo", range, range2, array));
-        CmpUtils.buildCwPql(list, 0, this.toCWVideo);
-        CmpUtils.buildBillboardPql(list, 0, this.toBBVideo);
+        CmpUtils.buildCwPql(list, null, 0, this.toCWVideo);
+        CmpUtils.buildBillboardPql(list, null, 0, this.toBBVideo);
         if (this.includeExtraCharacters) {
             final int n = this.toVideo + 1;
             list.add(PQL.create("lolomo", "characters", PQL.range(n, this.toVideo + n), "summary"));
@@ -85,6 +85,11 @@ public class PrefetchLoLoMoTask extends CmpTask
     
     public Request$Priority getPriorityOverride() {
         return Request$Priority.IMMEDIATE;
+    }
+    
+    @Override
+    protected boolean shouldCollapseMissingPql(final List<PQL> list) {
+        return list.size() > 25;
     }
     
     @Override

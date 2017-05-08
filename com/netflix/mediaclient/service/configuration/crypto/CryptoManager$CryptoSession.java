@@ -20,6 +20,10 @@ public class CryptoManager$CryptoSession
         return Base64.encodeToString(this.keyRequestData, 2);
     }
     
+    public boolean isKeyRequestDataNullOrEmpty() {
+        return this.keyRequestData == null || this.keyRequestData.length <= 0;
+    }
+    
     public boolean isPending() {
         return this.keySetId == null && this.keyRequestData != null;
     }

@@ -71,11 +71,11 @@ public class AddToQueueTask extends CmpTask
         String s;
         if (status.getStatusCode() == StatusCode.ALREADY_IN_QUEUE) {
             Log.v("CachedModelProxy", "Add to queue failed - video already in queue");
-            s = this.modelProxy.getContext().getString(2131296840);
+            s = this.modelProxy.getContext().getString(2131296833);
         }
         else {
             Log.v("CachedModelProxy", "Add to queue failed - general error");
-            s = this.modelProxy.getContext().getString(2131296651);
+            s = this.modelProxy.getContext().getString(2131296649);
         }
         UserActionLogUtils.reportAddToQueueActionEnded(this.modelProxy.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, s, ActionOnUIError.displayedError), (Integer)null);
         browseAgentCallback.onQueueAdd(status);
@@ -94,7 +94,6 @@ public class AddToQueueTask extends CmpTask
         if (this.isIqLomoValid) {
             this.modelProxy.invalidate(PQL.create("lists", this.iqLomoId));
         }
-        this.modelProxy.updateInQueueStatus(this.type, this.videoId, true);
         ServiceManager.sendIqRefreshBrodcast(this.modelProxy.getContext());
         UserActionLogUtils.reportAddToQueueActionEnded(this.modelProxy.getContext(), IClientLogging$CompletionReason.success, (UIError)null, (Integer)null);
         browseAgentCallback.onQueueAdd(CommonStatus.OK);

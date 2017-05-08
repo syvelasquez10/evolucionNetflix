@@ -69,4 +69,6 @@ public interface VideoDetails extends ArtworkUrlProvider, FeatureEnabledProvider
     boolean isOriginal();
     
     boolean isSupplementalVideo();
+    
+    boolean shouldRefreshVolatileData();
 }

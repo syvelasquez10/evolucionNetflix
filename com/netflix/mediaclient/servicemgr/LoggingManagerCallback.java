@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.model.leafs.Video$Summary;
-import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.RatingInfo;
 import com.netflix.model.survey.Survey;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
@@ -581,17 +581,17 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
-    public void onVideoRatingSet(final UserRating userRating, final Status status) {
+    public void onVideoRatingSet(final RatingInfo ratingInfo, final Status status) {
         if (Log.isLoggable()) {
             final String tag = this.tag;
-            float userRating2;
-            if (userRating == null) {
-                userRating2 = -1.0f;
+            float userRating;
+            if (ratingInfo == null) {
+                userRating = -1.0f;
             }
             else {
-                userRating2 = userRating.getUserRating();
+                userRating = ratingInfo.getUserRating();
             }
-            Log.v(tag, String.format("onVideoRatingSet, rating: %f, status: %d", userRating2, status.getStatusCode().getValue()));
+            Log.v(tag, String.format("onVideoRatingSet, rating: %f, status: %d", userRating, status.getStatusCode().getValue()));
         }
     }
     

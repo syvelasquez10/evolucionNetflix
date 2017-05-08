@@ -36,11 +36,11 @@ public class ShowDetailsFrag$ShowDetailsStringProvider implements VideoDetailsVi
         if (StringUtils.isEmpty(this.details.getGenres())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText(this.context, 2131296666, this.details.getGenres());
+        return StringUtils.createBoldLabeledText(this.context, 2131296663, this.details.getGenres());
     }
     
     @Override
     public CharSequence getStarringText() {
-        return StringUtils.createBoldLabeledText(this.context, 2131296817, this.details.getActors());
+        return StringUtils.createBoldLabeledText(this.context, 2131296813, this.details.getActors());
     }
 }

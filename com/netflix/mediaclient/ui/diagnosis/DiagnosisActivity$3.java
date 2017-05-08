@@ -40,16 +40,16 @@ class DiagnosisActivity$3 implements ManagerStatusListener
         this.this$0.mDiagnosis = this.this$0.getServiceManager().getDiagnosis();
         this.this$0.mDiagnosis.addListener(this.this$0);
         this.this$0.mUrlList = this.this$0.mDiagnosis.getNetworkStateList();
-        this.this$0.mStatutListView = (ListView)this.this$0.findViewById(2131820949);
+        this.this$0.mStatutListView = (ListView)this.this$0.findViewById(2131820951);
         this.this$0.mAdapter = new DiagnosisActivity$ResultsAdapter(this.this$0, (Context)this.this$0);
         this.this$0.mStatutListView.setAdapter((ListAdapter)this.this$0.mAdapter);
-        this.this$0.mNetworkStatus = (TextView)this.this$0.findViewById(2131820941);
-        this.this$0.mTestInfo = (TextView)this.this$0.findViewById(2131820942);
-        this.this$0.mTestButton = (Button)this.this$0.findViewById(2131820944);
-        this.this$0.mRadioLogo = (ImageView)this.this$0.findViewById(2131820948);
-        this.this$0.mProgressBar = (ProgressBar)this.this$0.findViewById(2131820943);
+        this.this$0.mNetworkStatus = (TextView)this.this$0.findViewById(2131820943);
+        this.this$0.mTestInfo = (TextView)this.this$0.findViewById(2131820944);
+        this.this$0.mTestButton = (Button)this.this$0.findViewById(2131820946);
+        this.this$0.mRadioLogo = (ImageView)this.this$0.findViewById(2131820950);
+        this.this$0.mProgressBar = (ProgressBar)this.this$0.findViewById(2131820945);
         this.this$0.updateInfoGroup(DiagnosisActivity$InfoGroupState.INITIAL);
-        this.this$0.findViewById(2131820944).setOnClickListener((View$OnClickListener)new DiagnosisActivity$3$1(this));
+        this.this$0.findViewById(2131820946).setOnClickListener((View$OnClickListener)new DiagnosisActivity$3$1(this));
         if (Log.isLoggable("DiagnosisActivity", 3)) {
             Log.d("DiagnosisActivity", "onManagaerReady complete");
         }

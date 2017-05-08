@@ -89,17 +89,17 @@ class FalkorAgent$8 extends SimpleBrowseAgentCallback
     public void onNotificationsListFetched(final IrisNotificationsList list, final Status status) {
         boolean b = true;
         if (list != null && status.getStatusCode() == StatusCode.OK) {
-            final IrisNotificationSummary access$500 = this.this$0.getFirstUnreadNotification(list);
+            final IrisNotificationSummary access$600 = this.this$0.getFirstUnreadNotification(list);
             final Context context = this.this$0.getContext();
-            final boolean b2 = access$500 != null;
+            final boolean b2 = access$600 != null;
             if (list.getSocialNotifications() == null || list.getSocialNotifications().size() <= 0) {
                 b = false;
             }
             IrisUtils.notifyOthersOfUnreadNotifications(context, b2, b);
-            if (this.val$sendNotificationToStatusbar && this.this$0.shouldBeNotificationSentToStatusBar(access$500)) {
-                final BaseNotification notificationByType = NotificationsStaticFactory.getNotificationByType(access$500.getType());
+            if (this.val$sendNotificationToStatusbar && this.this$0.shouldBeNotificationSentToStatusBar(access$600)) {
+                final BaseNotification notificationByType = NotificationsStaticFactory.getNotificationByType(access$600.getType());
                 if (notificationByType.supportsStatusBar()) {
-                    notificationByType.sendNotificationToStatusbar(access$500, list.getSocialNotificationsListSummary(), this.this$0.getService().getImageLoader(), this.val$msg, this.this$0.getContext());
+                    notificationByType.sendNotificationToStatusbar(access$600, list.getSocialNotificationsListSummary(), this.this$0.getService().getImageLoader(), this.val$msg, this.this$0.getContext());
                 }
             }
         }

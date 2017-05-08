@@ -92,17 +92,17 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     private void findViews() {
-        this.actorStillImg = (FocalPointImageView)this.findViewById(2131821395);
-        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131821396);
-        this.knownFor = (TextView)this.findViewById(2131821400);
-        this.knownForLabel = (TextView)this.findViewById(2131821399);
-        this.spouse = (TextView)this.findViewById(2131821404);
-        this.spouseLabel = (TextView)this.findViewById(2131821403);
-        this.name = (TextView)this.findViewById(2131821398);
-        this.born = (TextView)this.findViewById(2131821402);
-        this.bornLabel = (TextView)this.findViewById(2131821401);
-        this.onNetFlixLabel = this.findViewById(2131821397);
-        this.this$0.caret = this.findViewById(2131821405);
+        this.actorStillImg = (FocalPointImageView)this.findViewById(2131821408);
+        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131821409);
+        this.knownFor = (TextView)this.findViewById(2131821413);
+        this.knownForLabel = (TextView)this.findViewById(2131821412);
+        this.spouse = (TextView)this.findViewById(2131821417);
+        this.spouseLabel = (TextView)this.findViewById(2131821416);
+        this.name = (TextView)this.findViewById(2131821411);
+        this.born = (TextView)this.findViewById(2131821415);
+        this.bornLabel = (TextView)this.findViewById(2131821414);
+        this.onNetFlixLabel = this.findViewById(2131821410);
+        this.this$0.caret = this.findViewById(2131821418);
     }
     
     private void init() {
@@ -113,7 +113,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     
     private void setupCaret() {
         if (this.this$0.caret != null) {
-            this.this$0.caret.setTranslationX((float)(-(BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427594))));
+            this.this$0.caret.setTranslationX((float)(-(BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427598))));
             this.this$0.caret.setOnClickListener((View$OnClickListener)new RoleDetailsFrag$ActorDetailsView$1(this));
         }
     }
@@ -215,7 +215,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     protected int getlayoutId() {
-        return 2130903280;
+        return 2130903283;
     }
     
     void updateDetails(final FalkorPerson falkorPerson, final boolean b) {

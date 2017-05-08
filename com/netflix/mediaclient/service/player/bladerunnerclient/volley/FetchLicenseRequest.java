@@ -12,11 +12,10 @@ import java.util.List;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.player.bladerunnerclient.OfflineLicenseResponse;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.player.bladerunnerclient.BladeRunnerWebCallback;
 import org.json.JSONObject;
-import com.netflix.mediaclient.service.msl.volley.ApiFalkorMSLVolleyRequest;
+import com.netflix.mediaclient.service.player.bladerunnerclient.BladeRunnerWebCallback;
 
-public class FetchLicenseRequest extends ApiFalkorMSLVolleyRequest<JSONObject>
+public class FetchLicenseRequest extends BladeRunnerRequest
 {
     private static final String TAG = "nf_msl_volley_FetchLicenseRequest";
     private final FetchLicenseRequest$LicenseReqType licenseReqType;
@@ -98,7 +97,6 @@ public class FetchLicenseRequest extends ApiFalkorMSLVolleyRequest<JSONObject>
     
     @Override
     protected JSONObject parseFalkorResponse(final String s) {
-        Log.dumpVerbose("nf_msl_volley_FetchLicenseRequest", "parseFalkorResponse " + s);
         try {
             return new JSONObject(s);
         }

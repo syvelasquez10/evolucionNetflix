@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.resfetcher.volley;
 
 import android.text.TextUtils;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$InteractiveListener;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 import android.graphics.drawable.Drawable;
 import com.android.volley.Request;

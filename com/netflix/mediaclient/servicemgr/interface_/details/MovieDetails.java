@@ -6,7 +6,7 @@ package com.netflix.mediaclient.servicemgr.interface_.details;
 
 import java.util.Set;
 
-public interface MovieDetails extends EvidenceDetails, Similarable, VideoDetails
+public interface MovieDetails extends EvidenceDetails, Similarable, Trailerable, VideoDetails
 {
     Set<String> getCharacterRoles();
     

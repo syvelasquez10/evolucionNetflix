@@ -72,15 +72,14 @@ class MdxAgent$DiscoveryEventListener implements EventListener
     
     @Override
     public void received(final UIEvent uiEvent) {
-        int i = 0;
         if (uiEvent instanceof DeviceFoundEvent) {
             final DeviceFoundEvent deviceFoundEvent = (DeviceFoundEvent)uiEvent;
             final String uuid = deviceFoundEvent.getRemoteDevice().uuid;
             final String dialUuid = deviceFoundEvent.getRemoteDevice().dialUuid;
             if (this.this$0.isSameDevice(uuid, this.this$0.mCurrentTargetUuid) || this.this$0.isSameDevice(dialUuid, this.this$0.mCurrentTargetUuid)) {
-                final RemoteDevice access$2000 = this.this$0.getDeviceFromUuid(this.this$0.mCurrentTargetUuid);
-                if (access$2000 != null) {
-                    this.this$0.mTargetManager.targetFound(access$2000);
+                final RemoteDevice access$2100 = this.this$0.getDeviceFromUuid(this.this$0.mCurrentTargetUuid);
+                if (access$2100 != null) {
+                    this.this$0.mTargetManager.targetFound(access$2100);
                 }
             }
             if (this.this$0.mNotifier != null) {
@@ -92,14 +91,15 @@ class MdxAgent$DiscoveryEventListener implements EventListener
             }
         }
         else if (uiEvent instanceof DeviceLostEvent) {
-            for (String[] devices = ((DeviceLostEvent)uiEvent).getDevices(); i < devices.length; ++i) {
+            final String[] devices = ((DeviceLostEvent)uiEvent).getDevices();
+            for (int length = devices.length, i = 0; i < length; ++i) {
                 final String s = devices[i];
                 if (this.this$0.isSameDevice(s, this.this$0.mCurrentTargetUuid) || this.this$0.mTargetManager.isTargetHaveContext(s)) {
                     if (!this.this$0.mTargetRestartingList.contains(s)) {
                         if (this.this$0.mNotifier != null) {
                             this.this$0.mNotifier.error(this.this$0.mCurrentTargetUuid, 200, "device lost");
                         }
-                        this.this$0.sessionGone();
+                        this.this$0.sessionGone(false);
                         this.this$0.mMdxNrdpLogger.logDebug("current target device lost");
                     }
                     else if (Log.isLoggable()) {
@@ -128,13 +128,13 @@ class MdxAgent$DiscoveryEventListener implements EventListener
                     return;
                 }
                 if (this.this$0.mNotifier != null) {
-                    final RemoteDevice access$2001 = this.this$0.getDeviceFromUuid(this.this$0.mCurrentTargetUuid);
+                    final RemoteDevice access$2101 = this.this$0.getDeviceFromUuid(this.this$0.mCurrentTargetUuid);
                     String friendlyName = new String();
-                    if (access$2001 != null) {
-                        friendlyName = access$2001.friendlyName;
+                    if (access$2101 != null) {
+                        friendlyName = access$2101.friendlyName;
                     }
                     this.this$0.mNotifier.error(this.this$0.mCurrentTargetUuid, 106, friendlyName);
-                    this.this$0.mMdxNrdpLogger.logDebug("current target device fails to launched");
+                    this.this$0.mMdxNrdpLogger.logError("current target device fails to launched");
                 }
             }
         }

@@ -190,14 +190,14 @@ public enum CryptoErrorManager
     
     int getErrorMessageForFatalError(final ErrorSource errorSource, final StatusCode statusCode) {
         while (true) {
-            int n = 2131296642;
+            int n = 2131296639;
             while (true) {
                 final CryptoErrorManager$FatalCryptoError lastFatalCryptoError;
                 Label_0098: {
                     synchronized (this) {
                         if (this.mIgnoreFatalError.get()) {
                             com.netflix.mediaclient.Log.w(CryptoErrorManager.TAG, "Crypto fallback in progress. We should not see this. Do not add error. Return crypto failback message. Next app start will see different crypto...");
-                            n = 2131296639;
+                            n = 2131296636;
                         }
                         else {
                             lastFatalCryptoError = this.getLastFatalCryptoError();
@@ -221,7 +221,7 @@ public enum CryptoErrorManager
                         return n;
                     }
                     com.netflix.mediaclient.Log.w(CryptoErrorManager.TAG, "Found previous valid fatal error, app was restarted and we failed again, Tell user to restart device.");
-                    n = 2131296643;
+                    n = 2131296640;
                     continue;
                 }
                 else {
@@ -230,17 +230,17 @@ public enum CryptoErrorManager
                     }
                     if (!lastFatalCryptoError.wasDeviceRestartedSinceErrorOccured(this.mAppStartupTime)) {
                         com.netflix.mediaclient.Log.w(CryptoErrorManager.TAG, "Found previous valid fatal error, but since than device was NOT restarted again. It should NOT happen. Return message to restart device again.");
-                        n = 2131296643;
+                        n = 2131296640;
                         return n;
                     }
                     com.netflix.mediaclient.Log.w(CryptoErrorManager.TAG, "Found previous valid fatal error, app was restarted and than rebooted and each time we failed again, Fallback...");
                     if (this.handleCryptoFallback()) {
                         com.netflix.mediaclient.Log.d(CryptoErrorManager.TAG, "Failback to legacy crypto...");
-                        n = 2131296640;
+                        n = 2131296637;
                         return n;
                     }
                     com.netflix.mediaclient.Log.d(CryptoErrorManager.TAG, "Failback to Widevine L3.");
-                    n = 2131296641;
+                    n = 2131296638;
                     return n;
                 }
                 break;

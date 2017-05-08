@@ -29,22 +29,22 @@ public class BarkerKidsMovieDetailsFrag extends BarkerMovieDetailsFrag
     
     @Override
     protected int getBackgroundResource() {
-        return 2131755265;
+        return 2131755278;
     }
     
     @Override
     protected int getLayoutId() {
-        return 2130903175;
+        return 2130903177;
     }
     
     @Override
     protected int getNumColumns() {
-        return this.getActivity().getResources().getInteger(2131558419);
+        return this.getActivity().getResources().getInteger(2131558421);
     }
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427777) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427781) * 2;
     }
     
     @Override
@@ -76,7 +76,7 @@ public class BarkerKidsMovieDetailsFrag extends BarkerMovieDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427787), this.numColumns));
+        this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427791), this.numColumns));
     }
     
     @Override

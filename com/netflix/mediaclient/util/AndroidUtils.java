@@ -15,6 +15,7 @@ import android.content.ComponentName;
 import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
 import android.appwidget.AppWidgetManager;
 import android.util.DisplayMetrics;
+import android.support.v4.content.ContextCompat;
 import com.netflix.mediaclient.javabridge.transport.NativeTransport;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
@@ -461,6 +462,10 @@ public final class AndroidUtils
         return getAndroidVersion() > 13;
     }
     
+    public static boolean isPermissionNotGranted(final Context context, final String s) {
+        return ContextCompat.checkSelfPermission(context, s) != 0;
+    }
+    
     public static boolean isPropertyStreamingVideoDrs() {
         return NativeTransport.isPropertyStreamingVideoDrs();
     }
@@ -566,11 +571,11 @@ public final class AndroidUtils
         }
     }
     
-    public static void restartApplication(final Activity activity) {
+    public static void restartApplication(final Activity activity, final String s) {
         new RestartApplicationAction(activity).run();
         final AlarmManager alarmManager = (AlarmManager)activity.getSystemService("alarm");
         if (alarmManager != null) {
-            alarmManager.set(1, System.currentTimeMillis() + 2000L, PendingIntent.getActivity((Context)activity, 0, RelaunchActivity.createStartIntent(activity, "Debug menu"), 268435456));
+            alarmManager.set(1, System.currentTimeMillis() + 2000L, PendingIntent.getActivity((Context)activity, 0, RelaunchActivity.createStartIntent(activity, s), 268435456));
         }
     }
     

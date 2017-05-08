@@ -57,10 +57,9 @@ public class LocalExifThumbnailProducer implements ThumbnailProducer<EncodedImag
                                 final int intValue2;
                                 encodedImage.setHeight(intValue2);
                                 return encodedImage;
-                                intValue2 = -1;
-                                continue;
                                 intValue = -1;
                                 break;
+                                intValue2 = -1;
                             }
                             finally {
                                 CloseableReference.closeSafely((CloseableReference<?>)of);

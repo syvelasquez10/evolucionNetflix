@@ -6,8 +6,6 @@ package com.netflix.mediaclient.ui.details;
 
 import java.util.Collection;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
-import com.netflix.mediaclient.service.webclient.model.leafs.TrackableObject;
 import com.netflix.mediaclient.ui.offline.DownloadButton;
 import com.netflix.mediaclient.ui.offline.TutorialHelper;
 import com.netflix.android.tooltips.Tooltip;
@@ -19,14 +17,18 @@ import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
+import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import com.netflix.mediaclient.service.webclient.model.leafs.TrackableObject;
 import android.transition.Transition$TransitionListener;
 import android.transition.Transition;
+import com.netflix.mediaclient.util.DataUtil;
 import com.netflix.mediaclient.ui.common.SimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.service.configuration.persistent.Config_Ab7994;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
@@ -35,7 +37,6 @@ import android.support.v7.widget.RecyclerView$LayoutManager;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.StringUtils;
@@ -80,7 +81,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
             create.getView().setVisibility(0);
             return;
         }
-        this.adapter.addFooterView(ViewUtils.createActionBarDummyView(this.getNetflixActivity(), this.getResources().getDimensionPixelOffset(2131427903)));
+        this.adapter.addFooterView(ViewUtils.createActionBarDummyView(this.getNetflixActivity(), this.getResources().getDimensionPixelOffset(2131427907)));
     }
     
     public static MovieDetailsFrag create(final String s) {
@@ -89,19 +90,6 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
         arguments.putString("video_id", s);
         movieDetailsFrag.setArguments(arguments);
         return movieDetailsFrag;
-    }
-    
-    private void restoreLayoutManagerState() {
-        if (DataUtil.areAnyNull("MovieDetailsFrag", "can't restore layout manager", new Object[] { this.layoutManagerSavedState, this.recyclerView, this.parallaxScroller })) {
-            return;
-        }
-        if (Log.isLoggable()) {
-            Log.v("MovieDetailsFrag", "Restoring layout manager state: " + this.layoutManagerSavedState);
-        }
-        this.recyclerView.getLayoutManager().onRestoreInstanceState(this.layoutManagerSavedState);
-        this.layoutManagerSavedState = null;
-        Log.v("MovieDetailsFrag", "Posting message to reset parallax views");
-        this.recyclerView.post((Runnable)new MovieDetailsFrag$7(this));
     }
     
     private void setBackgroundResource(final int backgroundResource) {
@@ -124,7 +112,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     protected void findViews(final View view) {
         this.recyclerView = (RecyclerView)this.primaryView;
-        this.rootContainer = view.findViewById(2131821063);
+        this.rootContainer = view.findViewById(2131821073);
     }
     
     @Override
@@ -134,7 +122,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     @Override
     protected int getLayoutId() {
-        return 2130903282;
+        return 2130903285;
     }
     
     @Override
@@ -168,7 +156,13 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     @Override
     protected void initDetailsViewGroup(final View view) {
-        (this.detailsViewGroup = new VideoDetailsViewGroup((Context)this.getActivity())).removeActionBarDummyView();
+        if (Config_Ab7994.shouldRenderTabs((Context)this.getActivity())) {
+            this.detailsViewGroup = new VideoDetailsViewGroup_Ab7994((Context)this.getActivity());
+        }
+        else {
+            this.detailsViewGroup = new VideoDetailsViewGroup((Context)this.getActivity());
+        }
+        this.detailsViewGroup.removeActionBarDummyView();
         this.detailsViewGroup.showRelatedTitle();
         if (DeviceUtils.isLandscape((Context)this.getActivity()) && DeviceUtils.isTabletByContext((Context)this.getActivity())) {
             this.detailsViewGroup.setPadding(0, this.getNetflixActivity().getActionBarHeight(), 0, 0);
@@ -231,13 +225,24 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
         this.fetchMovieData();
     }
     
+    protected void restoreLayoutManagerState() {
+        if (DataUtil.areAnyNull("MovieDetailsFrag", "can't restore layout manager", new Object[] { this.layoutManagerSavedState, this.recyclerView, this.parallaxScroller })) {
+            return;
+        }
+        Log.v("MovieDetailsFrag", "Restoring layout manager state: %s", this.layoutManagerSavedState);
+        this.recyclerView.getLayoutManager().onRestoreInstanceState(this.layoutManagerSavedState);
+        this.layoutManagerSavedState = null;
+        Log.v("MovieDetailsFrag", "Posting message to reset parallax views");
+        this.recyclerView.post((Runnable)new MovieDetailsFrag$7(this));
+    }
+    
     public void scrollTop() {
         this.recyclerView.post((Runnable)new MovieDetailsFrag$1(this));
     }
     
     public void setExitTransition(final Transition exitTransition) {
         super.setExitTransition(exitTransition);
-        this.setBackgroundResource(2131755285);
+        this.setBackgroundResource(2131755298);
         if (exitTransition != null) {
             exitTransition.addListener((Transition$TransitionListener)new MovieDetailsFrag$3(this));
         }
@@ -246,6 +251,10 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     @Override
     public void setLayoutManagerSavedState(final Parcelable layoutManagerSavedState) {
         this.layoutManagerSavedState = layoutManagerSavedState;
+    }
+    
+    protected void setTrackId(final MovieDetails movieDetails) {
+        this.adapter.setTrackable(new TrackableObject(movieDetails.getSimilarsRequestId(), movieDetails.getSimilarsTrackId(), movieDetails.getSimilarsListPos()));
     }
     
     public void setVideoId(final String videoId) {
@@ -283,7 +292,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     }
     
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427637), this.numColumns));
+        this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427641), this.numColumns));
     }
     
     protected void setupRecyclerViewLayoutManager() {
@@ -296,19 +305,19 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
         if (downloadButton == null) {
             return null;
         }
-        return TutorialHelper.buildDownloadButtonTutorial(downloadButton.findViewById(2131820964), this.getActivity(), userProfile);
+        return TutorialHelper.buildDownloadButtonTutorial(downloadButton.findViewById(2131820966), this.getActivity(), userProfile);
     }
     
     @Override
-    protected void showDetailsView(final MovieDetails movieDetails) {
-        super.showDetailsView(movieDetails);
-        this.adapter.setTrackable(new TrackableObject(movieDetails.getSimilarsRequestId(), movieDetails.getSimilarsTrackId(), movieDetails.getSimilarsListPos()));
-        this.showSimsItems(movieDetails);
+    protected void showDetailsView(final MovieDetails trackId) {
+        super.showDetailsView(trackId);
+        this.setTrackId(trackId);
+        this.showSimsItems(trackId);
         if (this.recyclerView != null) {
             this.recyclerView.setVisibility(0);
-            this.getNetflixActivity().getTutorialHelper().showTutorialForVideoWithScroll((TutorialHelper$Tutorialable)this, (VideoDetails)movieDetails, this.recyclerView, this.getServiceManager());
+            this.getNetflixActivity().getTutorialHelper().showTutorialForVideoWithScroll((TutorialHelper$Tutorialable)this, (VideoDetails)trackId, this.recyclerView, this.getServiceManager());
         }
-        this.addFooter(movieDetails);
+        this.addFooter(trackId);
         this.restoreLayoutManagerState();
         this.onLoaded(CommonStatus.OK);
     }
@@ -321,5 +330,11 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
         else if (this.getVideoDetailsViewGroup() != null) {
             this.getVideoDetailsViewGroup().hideRelatedTitle();
         }
+    }
+    
+    protected void updateVolatileDataInView(final MovieDetails movieDetails) {
+        Log.v("MovieDetailsFrag", "Volatile data update rating: %d, inQ: %b", movieDetails.getUserThumbRating(), movieDetails.isInQueue());
+        this.detailsViewGroup.updateRating(movieDetails);
+        this.updateMyListState();
     }
 }

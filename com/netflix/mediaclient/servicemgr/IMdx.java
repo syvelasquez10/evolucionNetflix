@@ -52,6 +52,7 @@ public interface IMdx
     public static final String MDX_EXTRA_CURRENT_STATE = "currentState";
     public static final String MDX_EXTRA_DATA = "data";
     public static final String MDX_EXTRA_DURATION = "duration";
+    public static final String MDX_EXTRA_ENDPLAY_UPDATE_CW = "updateCW";
     public static final String MDX_EXTRA_EPISODE_ID = "episodeId";
     public static final String MDX_EXTRA_ERROR_CODE = "errorCode";
     public static final String MDX_EXTRA_ERROR_DESC = "errorDesc";

@@ -43,7 +43,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import android.widget.Toast;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.interface_.UserRating;
+import com.netflix.mediaclient.servicemgr.interface_.RatingInfo;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 
 class NetflixRatingBar$SetVideoRatingCallback extends LoggingManagerCallback
@@ -58,8 +58,8 @@ class NetflixRatingBar$SetVideoRatingCallback extends LoggingManagerCallback
     }
     
     @Override
-    public void onVideoRatingSet(final UserRating userRating, final Status status) {
-        super.onVideoRatingSet(userRating, status);
+    public void onVideoRatingSet(final RatingInfo ratingInfo, final Status status) {
+        super.onVideoRatingSet(ratingInfo, status);
         if (this.this$0.provider == null || this.this$0.provider.destroyed()) {
             Log.v("NetflixRatingBar", "Activity destroyed - ignoring ratings update callback");
             return;
@@ -67,13 +67,13 @@ class NetflixRatingBar$SetVideoRatingCallback extends LoggingManagerCallback
         this.this$0.setEnabled(true);
         if (status.isError()) {
             Log.w("NetflixRatingBar", "Invalid status code");
-            Toast.makeText(this.this$0.getContext(), 2131296656, 1).show();
+            Toast.makeText(this.this$0.getContext(), 2131296654, 1).show();
             this.this$0.setRating((float)this.this$0.currRating);
-            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131296656), ActionOnUIError.displayedError), (Integer)null, this.this$0.currRating, "star", (Integer)null, (Boolean)null);
+            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131296654), ActionOnUIError.displayedError), (Integer)null, this.this$0.currRating, "star", (Integer)null, (Boolean)null);
             return;
         }
         Log.v("NetflixRatingBar", "Rating has been updated");
-        Toast.makeText(this.this$0.getContext(), 2131296772, 1).show();
+        Toast.makeText(this.this$0.getContext(), 2131296769, 1).show();
         this.this$0.currRating = this.rating;
         if (this.this$0.ratableObject != null) {
             this.this$0.ratableObject.setUserRating(this.rating);
