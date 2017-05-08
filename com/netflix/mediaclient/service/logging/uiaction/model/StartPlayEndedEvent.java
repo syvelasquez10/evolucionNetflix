@@ -33,7 +33,7 @@ public final class StartPlayEndedEvent extends BaseUIActionSessionEndedEvent
     
     public StartPlayEndedEvent(final JSONObject jsonObject) {
         super(jsonObject);
-        this.mRankTitle = JsonUtils.getIntegerObject(jsonObject, "rankTitle", null);
+        this.mRankTitle = JsonUtils.getIntegerObject(jsonObject, "rankTitle", (Integer)null);
     }
     
     @Override

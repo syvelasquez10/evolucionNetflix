@@ -169,6 +169,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     boolean ignorePreloadForPlayBilling();
     
+    boolean isActivityTrackingDisabled();
+    
     boolean isAllowHevcMobile();
     
     boolean isAllowVp9Mobile();

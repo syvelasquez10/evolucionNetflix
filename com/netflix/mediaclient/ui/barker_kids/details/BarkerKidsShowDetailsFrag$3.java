@@ -19,6 +19,6 @@ class BarkerKidsShowDetailsFrag$3 implements SeasonsSpinnerAdapter$IViewCreator
     
     @Override
     public View createItemView() {
-        return ((LayoutInflater)this.this$0.getActivity().getSystemService("layout_inflater")).inflate(2130903167, (ViewGroup)null, false);
+        return ((LayoutInflater)this.this$0.getActivity().getSystemService("layout_inflater")).inflate(2130903168, (ViewGroup)null, false);
     }
 }

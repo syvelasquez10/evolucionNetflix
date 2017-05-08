@@ -27,7 +27,7 @@ public class UserActionLogging$Profile
     }
     
     public UserActionLogging$Profile(final JSONObject jsonObject) {
-        this.id = JsonUtils.getString(jsonObject, "profileId", null);
+        this.id = JsonUtils.getString(jsonObject, "profileId", (String)null);
         this.isKids = JsonUtils.getBoolean(jsonObject, "kids", false);
         final int int1 = JsonUtils.getInt(jsonObject, "age", -1);
         if (int1 < 0) {

@@ -102,7 +102,7 @@ public class PdsLoggingImpl implements IPdsLogging
         Log.d("nf_pds_logs", "::init data repository started ");
         final File file = new File(this.mContext.getFilesDir(), "pdsevents");
         file.mkdirs();
-        this.mDataRepository = new FileSystemDataRepositoryImpl(file);
+        this.mDataRepository = (DataRepository)new FileSystemDataRepositoryImpl(file);
         this.mExecutor.execute(new PdsLoggingImpl$1(this));
         Log.d("nf_pds_logs", "::init data repository done ");
     }
@@ -111,7 +111,7 @@ public class PdsLoggingImpl implements IPdsLogging
         if (Log.isLoggable()) {
             Log.d("nf_pds_logs", "Load pdsEvent " + s);
         }
-        this.mDataRepository.load(s, new PdsLoggingImpl$4(this, s));
+        this.mDataRepository.load(s, (DataRepository$DataLoadedCallback)new PdsLoggingImpl$4(this, s));
     }
     
     private void removeSavedPdsEvents(final String s) {
@@ -284,6 +284,6 @@ public class PdsLoggingImpl implements IPdsLogging
     
     @Override
     public void sendPdsEventViaLogging(final String s) {
-        this.mEventQueue.post(s);
+        this.mEventQueue.post((Object)s);
     }
 }

@@ -4,6 +4,7 @@
 
 package com.netflix.android.tooltips;
 
+import android.util.Log;
 import android.text.Html;
 import android.content.SharedPreferences;
 import android.view.View$OnClickListener;

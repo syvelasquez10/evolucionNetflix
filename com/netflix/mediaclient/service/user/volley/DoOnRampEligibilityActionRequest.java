@@ -55,7 +55,7 @@ public class DoOnRampEligibilityActionRequest extends FalkorVolleyWebClientReque
             Log.v("DoOnRampEligibilityActionRequest", "String response to parse = " + string);
         }
         try {
-            return new OnRampEligibility(new JsonParser().parse(string).getAsJsonObject().getAsJsonObject("value").getAsJsonObject("onramp").getAsJsonObject(this.action.toString().toLowerCase()));
+            return new OnRampEligibility((JsonElement)new JsonParser().parse(string).getAsJsonObject().getAsJsonObject("value").getAsJsonObject("onramp").getAsJsonObject(this.action.toString().toLowerCase()));
         }
         catch (Exception ex) {
             string = "DoOnRampEligibilityActionRequest got exception trying to parse JSON: " + ex + " ... JSON -> " + string;

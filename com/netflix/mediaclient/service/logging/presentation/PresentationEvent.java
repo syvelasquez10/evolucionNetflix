@@ -70,16 +70,16 @@ public class PresentationEvent
         }
         final PresentationEvent presentationEvent = new PresentationEvent();
         try {
-            presentationEvent.videoIds.add(JsonUtils.getString(jsonObject, "video_id", null));
-            final String string = JsonUtils.getString(jsonObject, "image_key", null);
+            presentationEvent.videoIds.add(JsonUtils.getString(jsonObject, "video_id", (String)null));
+            final String string = JsonUtils.getString(jsonObject, "image_key", (String)null);
             if (presentationEvent != null && presentationEvent.videoImageTypeIdentifierIds != null) {
                 presentationEvent.videoImageTypeIdentifierIds.add(string);
             }
-            presentationEvent.requestId = JsonUtils.getString(jsonObject, "request_id", null);
+            presentationEvent.requestId = JsonUtils.getString(jsonObject, "request_id", (String)null);
             presentationEvent.trackId = JsonUtils.getInt(jsonObject, "track_id", 0);
             presentationEvent.row = JsonUtils.getInt(jsonObject, "row", 0);
             presentationEvent.rank = JsonUtils.getInt(jsonObject, "rank", 0);
-            presentationEvent.location = JsonUtils.getString(jsonObject, "location", null);
+            presentationEvent.location = JsonUtils.getString(jsonObject, "location", (String)null);
             presentationEvent.time = JsonUtils.getLong(jsonObject, "time", 0L);
             presentationEvent.isHero = JsonUtils.getBoolean(jsonObject, "is_hero", false);
             return presentationEvent;

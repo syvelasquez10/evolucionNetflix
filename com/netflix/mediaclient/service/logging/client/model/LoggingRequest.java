@@ -72,10 +72,10 @@ public class LoggingRequest
         }
         final LoggingRequest loggingRequest = new LoggingRequest();
         loggingRequest.time = JsonUtils.getLong(jsonObject, "time", 0L);
-        loggingRequest.netflixId = JsonUtils.getString(jsonObject, "netflixId", null);
-        loggingRequest.locale = JsonUtils.getString(jsonObject, "locale", null);
-        loggingRequest.version = Version.createInstance(JsonUtils.getJSONObject(jsonObject, "version", null));
-        loggingRequest.device = Device.createInstance(JsonUtils.getJSONObject(jsonObject, "device", null));
+        loggingRequest.netflixId = JsonUtils.getString(jsonObject, "netflixId", (String)null);
+        loggingRequest.locale = JsonUtils.getString(jsonObject, "locale", (String)null);
+        loggingRequest.version = Version.createInstance(JsonUtils.getJSONObject(jsonObject, "version", (JSONObject)null));
+        loggingRequest.device = Device.createInstance(JsonUtils.getJSONObject(jsonObject, "device", (JSONObject)null));
         final JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "events");
         if (jsonArray != null) {
             for (int i = 0; i < jsonArray.length(); ++i) {

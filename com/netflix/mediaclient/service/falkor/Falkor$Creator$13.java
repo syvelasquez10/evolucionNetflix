@@ -12,6 +12,6 @@ final class Falkor$Creator$13 implements Func<FalkorEvidenceList<Ref>>
 {
     @Override
     public FalkorEvidenceList<Ref> call() {
-        return new FalkorEvidenceList<Ref>(Falkor$Creator.Ref);
+        return (FalkorEvidenceList<Ref>)new FalkorEvidenceList((Func)Falkor$Creator.Ref);
     }
 }

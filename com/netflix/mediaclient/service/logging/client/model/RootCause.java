@@ -10,6 +10,7 @@ public enum RootCause
     clientRequestBad, 
     dnsLookupFailure, 
     dnsTimeout, 
+    handledException, 
     http4xx, 
     http5xx, 
     networkFailure, 

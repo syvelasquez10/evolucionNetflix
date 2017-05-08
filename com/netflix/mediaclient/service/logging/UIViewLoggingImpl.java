@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging;
 
+import com.netflix.mediaclient.service.logging.uiview.model.ModalViewStartedEvent;
 import com.netflix.mediaclient.service.logging.uiview.model.CommandEndedEvent$InputMethod;
 import com.netflix.mediaclient.service.logging.uiview.model.ModalViewEndedEvent;
 import com.netflix.mediaclient.service.logging.uiview.model.ImpressionEvent;
@@ -394,7 +395,7 @@ public final class UIViewLoggingImpl implements UIViewLogging
         if (StringUtils.isNotEmpty(stringExtra)) {
             value = IClientLogging$ModalView.valueOf(stringExtra);
         }
-        this.startModalViewSession(value);
+        this.startModalViewSession(value, intent.getStringExtra("trackingInfo"));
     }
     
     private void populateEvent(final Event event, final DataContext dataContext, final IClientLogging$ModalView modalView) {
@@ -593,7 +594,7 @@ public final class UIViewLoggingImpl implements UIViewLogging
     }
     
     @Override
-    public void startModalViewSession(final IClientLogging$ModalView clientLogging$ModalView) {
+    public void startModalViewSession(final IClientLogging$ModalView clientLogging$ModalView, final String trackingInfo) {
         synchronized (this) {
             if (this.mModalViewSessions.get(clientLogging$ModalView) != null) {
                 Log.e("nf_log", "uiView modalView session already started!");
@@ -601,6 +602,15 @@ public final class UIViewLoggingImpl implements UIViewLogging
             else {
                 Log.d("nf_log", "uiView modalView session starting...");
                 final ModalViewSession modalViewSession = new ModalViewSession(clientLogging$ModalView);
+                final ModalViewStartedEvent startEvent = modalViewSession.createStartEvent();
+                DataContext dataContext = null;
+                if (StringUtils.isNotEmpty(trackingInfo)) {
+                    dataContext = new DataContext();
+                    dataContext.setTrackingInfo(trackingInfo);
+                }
+                this.populateEvent(startEvent, dataContext, modalViewSession.getView());
+                Log.d("nf_log", "uiView modalView session start event posting...");
+                this.mEventHandler.post(startEvent);
                 this.mEventHandler.addSession(modalViewSession);
                 this.mModalViewSessions.put(clientLogging$ModalView, modalViewSession);
                 Log.d("nf_log", "uiView modalView session start done.");

@@ -179,6 +179,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
+    public long getPlayableBookmarkUpdateTime() {
+        return 0L;
+    }
+    
+    @Override
     public float getPredictedRating() {
         return 0.0f;
     }

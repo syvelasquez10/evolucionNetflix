@@ -111,7 +111,7 @@ public abstract class BasePaginatedAdapter<T extends Video>
             final int size = this.data.size();
             this.appendOrUpdate(this.data, list, n, b);
             if (Log.isLoggable()) {
-                Log.v("BasePaginatedAdapter", this.getCurrTitleFormatted() + "appending data starting with item: " + DataUtil.getFirstItemSafely(list) + ", prev size: " + size + ", new size: " + this.data.size());
+                Log.v("BasePaginatedAdapter", this.getCurrTitleFormatted() + "appending data starting with item: " + DataUtil.getFirstItemSafely((List)list) + ", prev size: " + size + ", new size: " + this.data.size());
                 if (this.data.size() == size) {
                     Log.w("BasePaginatedAdapter", this.getCurrTitleFormatted() + "***** append called but no items added");
                 }

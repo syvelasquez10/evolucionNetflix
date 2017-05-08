@@ -25,17 +25,17 @@ public class BarkerKidsSearchActionBar extends SearchActionBar
     
     @Override
     protected Integer getSearchCloseButtonTint() {
-        return this.activity.getResources().getColor(2131689584);
+        return this.activity.getResources().getColor(2131689585);
     }
     
     @Override
     protected int getSearchViewBgResId() {
-        return 2130838119;
+        return 2130838121;
     }
     
     @Override
     protected int getSearchViewRightBgResId() {
-        return 2130838121;
+        return 2130838123;
     }
     
     @Override
@@ -45,6 +45,6 @@ public class BarkerKidsSearchActionBar extends SearchActionBar
     
     @Override
     protected Integer getSearchVoiceButtonTint() {
-        return this.activity.getResources().getColor(2131689584);
+        return this.activity.getResources().getColor(2131689585);
     }
 }

@@ -163,16 +163,16 @@ public class SubtitleUrl
     }
     
     protected void populate(final JSONObject jsonObject) {
-        this.mUrl = JsonUtils.getString(jsonObject, "url", null);
-        this.mProfile = ISubtitleDef$SubtitleProfile.fromNccpCode(JsonUtils.getString(jsonObject, "profile", null));
+        this.mUrl = JsonUtils.getString(jsonObject, "url", (String)null);
+        this.mProfile = ISubtitleDef$SubtitleProfile.fromNccpCode(JsonUtils.getString(jsonObject, "profile", (String)null));
         this.mXid = JsonUtils.getLong(jsonObject, "xid", 0L);
         this.mCdnId = JsonUtils.getLong(jsonObject, "cdnId", 0L);
-        this.mDownloadableId = JsonUtils.getString(jsonObject, "downloadableId", null);
+        this.mDownloadableId = JsonUtils.getString(jsonObject, "downloadableId", (String)null);
         if (this.mProfile == ISubtitleDef$SubtitleProfile.IMAGE || this.mProfile == ISubtitleDef$SubtitleProfile.IMAGE_ENC) {
             this.mMasterIndexSize = JsonUtils.getInt(jsonObject, "masterIndexSize", 0);
             this.mMasterIndexOffset = JsonUtils.getInt(jsonObject, "masterIndexOffset", 0);
         }
-        this.mDecryptionKey = JsonUtils.getString(jsonObject, "decryptionKey", null);
+        this.mDecryptionKey = JsonUtils.getString(jsonObject, "decryptionKey", (String)null);
     }
     
     public void setDecryptionKey(final String mDecryptionKey) {

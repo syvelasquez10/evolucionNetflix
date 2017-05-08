@@ -128,6 +128,11 @@ public class zza
         return parcel.readInt() != 0;
     }
     
+    public static short zzf(final Parcel parcel, final int n) {
+        zza(parcel, n, 4);
+        return (short)parcel.readInt();
+    }
+    
     public static int zzg(final Parcel parcel, final int n) {
         zza(parcel, n, 4);
         return parcel.readInt();
@@ -136,6 +141,11 @@ public class zza
     public static long zzi(final Parcel parcel, final int n) {
         zza(parcel, n, 8);
         return parcel.readLong();
+    }
+    
+    public static float zzl(final Parcel parcel, final int n) {
+        zza(parcel, n, 4);
+        return parcel.readFloat();
     }
     
     public static double zzn(final Parcel parcel, final int n) {

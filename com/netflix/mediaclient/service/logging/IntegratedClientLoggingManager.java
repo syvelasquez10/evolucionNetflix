@@ -190,7 +190,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         Log.d("nf_log", "ICLManager::init data repository started ");
         final File file = new File(this.mContext.getFilesDir(), "iclevents");
         file.mkdirs();
-        this.mDataRepository = new FileSystemDataRepositoryImpl(file);
+        this.mDataRepository = (DataRepository)new FileSystemDataRepositoryImpl(file);
         this.mExecutor.execute(new IntegratedClientLoggingManager$1(this));
         Log.d("nf_log", "ICLManager::init data repository done ");
     }
@@ -263,7 +263,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         if (Log.isLoggable()) {
             Log.d("nf_log", "Load event " + s);
         }
-        this.mDataRepository.load(s, new IntegratedClientLoggingManager$5(this, s));
+        this.mDataRepository.load(s, (DataRepository$DataLoadedCallback)new IntegratedClientLoggingManager$5(this, s));
     }
     
     private void registerReceivers() {

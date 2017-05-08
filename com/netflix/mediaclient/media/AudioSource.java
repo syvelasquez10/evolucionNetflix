@@ -77,7 +77,7 @@ public abstract class AudioSource implements Comparable<AudioSource>
         }
         final int optInt = jsonObject.optInt("impl", -1);
         if (optInt == 2) {
-            return MdxAudioSource.newInstance(jsonObject, jsonObject.getInt("order"));
+            return (AudioSource)MdxAudioSource.newInstance(jsonObject, jsonObject.getInt("order"));
         }
         if (optInt == 1) {
             return NccpAudioSource.newInstance(jsonObject, jsonObject.getInt("order"));

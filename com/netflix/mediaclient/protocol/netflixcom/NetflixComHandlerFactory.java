@@ -92,7 +92,7 @@ public class NetflixComHandlerFactory
             else {
                 s3 = "home";
             }
-            NflxProtocolUtils.reportApplicationLaunchedFromDeepLinking(netflixActivity, s3, NflxProtocolUtils.createDeepLink(map));
+            NflxProtocolUtils.reportApplicationLaunchedFromDeepLinking(netflixActivity, s3, NflxProtocolUtils.createDeepLink((Map)map));
         }
         switch (s2) {
             default: {
@@ -147,7 +147,7 @@ public class NetflixComHandlerFactory
         else {
             final NflxHandler$Response tryHandle = handler.tryHandle(netflixActivity, actionParts, NetflixComUtils.getTrackId(data));
             if (tryHandle != NflxHandler$Response.NOT_HANDLING) {
-                UIViewLogUtils.reportUIViewCommand((Context)netflixActivity, UIViewLogging$UIViewCommandName.deepLink, IClientLogging$ModalView.homeScreen, null, data.toString());
+                UIViewLogUtils.reportUIViewCommand((Context)netflixActivity, UIViewLogging$UIViewCommandName.deepLink, IClientLogging$ModalView.homeScreen, (DataContext)null, data.toString());
                 return tryHandle;
             }
             ErrorLoggingManager.logHandledException("SPY-7518 - couldn't handle the following data: " + data.toString());

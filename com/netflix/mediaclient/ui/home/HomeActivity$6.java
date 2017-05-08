@@ -85,7 +85,7 @@ class HomeActivity$6 implements ManagerStatusListener
         Log.v("HomeActivity", "ServiceManager ready");
         this.this$0.manager = serviceManager;
         this.this$0.mDialogManager = new DialogManager(this.this$0);
-        if (OnRampActivity.shouldShowOnRamp(serviceManager, this.this$0)) {
+        if (OnRampActivity.shouldShowOnRamp(serviceManager, (Activity)this.this$0)) {
             serviceManager.doOnRampEligibilityAction(OnRampEligibility$Action.FETCH, new HomeActivity$6$1(this));
         }
         else {
@@ -100,7 +100,7 @@ class HomeActivity$6 implements ManagerStatusListener
         this.this$0.slidingMenuAdapter.onManagerReady(serviceManager, status);
         this.this$0.setLoadingStatusCallback(new HomeActivity$6$2(this));
         if (SurveyActivity.shouldShowSurvey((Context)this.this$0, serviceManager)) {
-            SurveyActivity.makeSurveyRequestAndShow(this.this$0);
+            SurveyActivity.makeSurveyRequestAndShow((NetflixActivity)this.this$0);
         }
     }
     

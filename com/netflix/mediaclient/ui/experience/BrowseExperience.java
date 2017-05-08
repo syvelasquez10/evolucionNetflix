@@ -132,7 +132,7 @@ public enum BrowseExperience implements IExperience
         
         @Override
         public RowAdapterProvider$IRowAdapterProvider createRowAdapterProvider(final NetflixActivity netflixActivity, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final boolean b) {
-            return new RowAdapterProvider$KidsTabletRowAdapterProvider(netflixActivity, rowAdapterCallbacks, objectRecycler$ViewRecycler, b);
+            return (RowAdapterProvider$IRowAdapterProvider)new RowAdapterProvider$KidsTabletRowAdapterProvider(netflixActivity, rowAdapterCallbacks, objectRecycler$ViewRecycler, b);
         }
         
         @Override
@@ -199,7 +199,7 @@ public enum BrowseExperience implements IExperience
         
         @Override
         public RowAdapterProvider$IRowAdapterProvider createRowAdapterProvider(final NetflixActivity netflixActivity, final RowAdapterCallbacks rowAdapterCallbacks, final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final boolean b) {
-            return new RowAdapterProvider$StandardRowAdapterProvider(netflixActivity, rowAdapterCallbacks, objectRecycler$ViewRecycler, b);
+            return (RowAdapterProvider$IRowAdapterProvider)new RowAdapterProvider$StandardRowAdapterProvider(netflixActivity, rowAdapterCallbacks, objectRecycler$ViewRecycler, b);
         }
         
         @Override

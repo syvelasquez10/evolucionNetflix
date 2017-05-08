@@ -25,7 +25,7 @@ public class DiscoveryRecord implements Discovery
     
     @Override
     public List<Advisory> getAdvisories() {
-        return this.video.getAdvisories();
+        return (List<Advisory>)this.video.getAdvisories();
     }
     
     @Override

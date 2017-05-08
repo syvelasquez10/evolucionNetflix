@@ -28,7 +28,7 @@ public class OfflineDrmSession implements DrmSessionManager<FrameworkMediaCrypto
     }
     
     OfflineDrmSession(final byte[] array) {
-        this.mDrm = MediaDrmUtils.getNewMediaDrmInstance(null);
+        this.mDrm = MediaDrmUtils.getNewMediaDrmInstance((MediaDrm$OnEventListener)null);
         this.mSessionId = this.mDrm.openSession();
         this.mDrm.restoreKeys(this.mSessionId, array);
         this.mMediaCrypto = new FrameworkMediaCrypto(new MediaCrypto(OfflineDrmSession.WIDEVINE_SCHEME, this.mSessionId));

@@ -25,7 +25,7 @@ public final class DeleteProfileEndedEvent extends BaseUIActionSessionEndedEvent
     
     public DeleteProfileEndedEvent(final JSONObject jsonObject) {
         super(jsonObject);
-        this.mProfileId = JsonUtils.getString(jsonObject, "profileId", null);
+        this.mProfileId = JsonUtils.getString(jsonObject, "profileId", (String)null);
     }
     
     @Override

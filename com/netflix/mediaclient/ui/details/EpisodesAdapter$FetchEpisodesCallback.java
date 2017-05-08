@@ -79,6 +79,6 @@ public class EpisodesAdapter$FetchEpisodesCallback extends LoggingManagerCallbac
         this.this$0.updateEpisodesData(list, this.startIndex);
         this.this$0.episodeListFrag.updateEpisodeSelection();
         this.this$0.episodeListFrag.onEpisodesUpdated(list);
-        this.this$0.episodeListFrag.setAsDAB(DataUtil.hasUnavailableEpisodes(list));
+        this.this$0.episodeListFrag.setAsDAB(DataUtil.hasUnavailableEpisodes((List)list));
     }
 }

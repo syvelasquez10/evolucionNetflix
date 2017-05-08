@@ -124,28 +124,28 @@ public class KongGearSelectionScreen extends KongBaseScreen
     
     @Override
     void initViews(final View view) {
-        this.gear1Group = (ViewGroup)view.findViewById(2131755667);
-        this.gear2Group = (ViewGroup)view.findViewById(2131755668);
+        this.gear1Group = (ViewGroup)view.findViewById(2131755675);
+        this.gear2Group = (ViewGroup)view.findViewById(2131755676);
         this.leftGateWidth = DeviceUtils.getScreenWidthInPixels((Context)this.postPlayManager.getActivity());
         this.rightGateWidth = this.leftGateWidth;
         if (this.gear1Group != null) {
-            this.gear1 = (ImageView)this.gear1Group.findViewById(2131755110);
-            this.gear1Background = (ImageView)this.gear1Group.findViewById(2131755429);
-            final PressAnimationFrameLayout pressAnimationFrameLayout = (PressAnimationFrameLayout)this.gear1Group.findViewById(2131755428);
+            this.gear1 = (ImageView)this.gear1Group.findViewById(2131755117);
+            this.gear1Background = (ImageView)this.gear1Group.findViewById(2131755437);
+            final PressAnimationFrameLayout pressAnimationFrameLayout = (PressAnimationFrameLayout)this.gear1Group.findViewById(2131755436);
             ViewUtils.setVisibleOrGone((View)this.gear1Background, false);
-            this.gear1Title = (TextView)this.gear1Group.findViewById(2131755114);
-            this.gear1Timer = (TextView)this.gear1Group.findViewById(2131755430);
+            this.gear1Title = (TextView)this.gear1Group.findViewById(2131755121);
+            this.gear1Timer = (TextView)this.gear1Group.findViewById(2131755438);
             final KongGearSelectionScreen$BattleResultClickListener onClickListener = new KongGearSelectionScreen$BattleResultClickListener(this, 0);
             this.gear1Group.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(pressAnimationFrameLayout.getPressedStateHandler(), (View$OnClickListener)onClickListener));
             this.gear1Timer.setOnClickListener((View$OnClickListener)onClickListener);
         }
         if (this.gear2Group != null) {
-            this.gear2 = (ImageView)this.gear2Group.findViewById(2131755110);
-            this.gear2Background = (ImageView)this.gear2Group.findViewById(2131755429);
-            final PressAnimationFrameLayout pressAnimationFrameLayout2 = (PressAnimationFrameLayout)this.gear2Group.findViewById(2131755428);
+            this.gear2 = (ImageView)this.gear2Group.findViewById(2131755117);
+            this.gear2Background = (ImageView)this.gear2Group.findViewById(2131755437);
+            final PressAnimationFrameLayout pressAnimationFrameLayout2 = (PressAnimationFrameLayout)this.gear2Group.findViewById(2131755436);
             ViewUtils.setVisibleOrGone((View)this.gear2Background, false);
-            this.gear2Title = (TextView)this.gear2Group.findViewById(2131755114);
-            this.gear2Timer = (TextView)this.gear2Group.findViewById(2131755430);
+            this.gear2Title = (TextView)this.gear2Group.findViewById(2131755121);
+            this.gear2Timer = (TextView)this.gear2Group.findViewById(2131755438);
             final KongGearSelectionScreen$BattleResultClickListener onClickListener2 = new KongGearSelectionScreen$BattleResultClickListener(this, 1);
             this.gear2Group.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(pressAnimationFrameLayout2.getPressedStateHandler(), (View$OnClickListener)onClickListener2));
             this.gear2Timer.setOnClickListener((View$OnClickListener)onClickListener2);

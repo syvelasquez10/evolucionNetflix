@@ -39,7 +39,7 @@ public class SlidingMenuNotificationsFrag extends NotificationsFrag
     
     @Override
     protected int getRowLayoutResourceId() {
-        return 2130903173;
+        return 2130903174;
     }
     
     @Override

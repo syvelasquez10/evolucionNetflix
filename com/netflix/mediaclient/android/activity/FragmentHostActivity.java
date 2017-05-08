@@ -40,7 +40,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
     private ViewGroup secondaryFragContainer;
     
     private void setupMiniPlayerFrag(final Bundle bundle) {
-        final View viewById = this.findViewById(2131755515);
+        final View viewById = this.findViewById(2131755523);
         if (viewById == null) {
             return;
         }
@@ -51,7 +51,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
             this.miniPlayerFrag = MiniPlayerFactory.createMiniPlayer((Context)this);
             if (this.miniPlayerFrag != null) {
-                beginTransaction.replace(2131755515, this.miniPlayerFrag, "mini_player");
+                beginTransaction.replace(2131755523, this.miniPlayerFrag, "mini_player");
             }
             beginTransaction.commit();
             return;
@@ -90,7 +90,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
     }
     
     protected int getContentLayoutId() {
-        return 2130903139;
+        return 2130903140;
     }
     
     public Fragment getPrimaryFrag() {
@@ -111,7 +111,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
     
     @Override
     protected boolean handleBackPressed() {
-        return this.getMdxMiniPlayerFrag() instanceof IHandleBackPress && this.getMdxMiniPlayerFrag().handleBackPressed();
+        return this.getMdxMiniPlayerFrag() instanceof IHandleBackPress && ((IHandleBackPress)this.getMdxMiniPlayerFrag()).handleBackPressed();
     }
     
     protected boolean hasEmbeddedToolbar() {
@@ -131,8 +131,8 @@ public abstract class FragmentHostActivity extends NetflixActivity
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.setContentView(this.getContentLayoutId());
-        this.contentHost = (LinearLayout)this.findViewById(2131755305);
-        this.primaryFragContainer = (ViewGroup)this.findViewById(2131755307);
+        this.contentHost = (LinearLayout)this.findViewById(2131755312);
+        this.primaryFragContainer = (ViewGroup)this.findViewById(2131755314);
         if (!this.hasEmbeddedToolbar()) {
             final ViewGroup$LayoutParams layoutParams = this.primaryFragContainer.getLayoutParams();
             if (layoutParams instanceof ViewGroup$MarginLayoutParams) {
@@ -142,7 +142,7 @@ public abstract class FragmentHostActivity extends NetflixActivity
                 Log.e("FragmentHostActivity", "Can't remove margin from layout of non-supported type: " + layoutParams);
             }
         }
-        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131755308);
+        this.secondaryFragContainer = (ViewGroup)this.findViewById(2131755315);
         this.setupMiniPlayerFrag(bundle);
         if (bundle == null) {
             this.primaryFrag = this.createPrimaryFrag();
@@ -152,9 +152,9 @@ public abstract class FragmentHostActivity extends NetflixActivity
                 Log.d("FragmentHostActivity", "Creating secondary fragment of type: " + this.secondaryFrag);
             }
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
-            beginTransaction.add(2131755307, this.primaryFrag, "primary");
+            beginTransaction.add(2131755314, this.primaryFrag, "primary");
             if (this.secondaryFrag != null) {
-                beginTransaction.add(2131755308, this.secondaryFrag, "secondary");
+                beginTransaction.add(2131755315, this.secondaryFrag, "secondary");
             }
             beginTransaction.commit();
         }

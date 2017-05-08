@@ -29,8 +29,8 @@ public final class SelectProfileEndedEvent extends BaseUIActionSessionEndedEvent
     
     public SelectProfileEndedEvent(final JSONObject jsonObject) {
         super(jsonObject);
-        this.mProfileId = JsonUtils.getString(jsonObject, "profileId", null);
-        final String string = JsonUtils.getString(jsonObject, "rememberProfile", null);
+        this.mProfileId = JsonUtils.getString(jsonObject, "profileId", (String)null);
+        final String string = JsonUtils.getString(jsonObject, "rememberProfile", (String)null);
         if (string != null) {
             this.mRememberProfile = Enum.valueOf(UserActionLogging$RememberProfile.class, string);
         }

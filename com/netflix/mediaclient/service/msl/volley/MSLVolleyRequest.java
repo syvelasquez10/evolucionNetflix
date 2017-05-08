@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Collections;
 import com.netflix.mediaclient.service.offline.agent.PlayabilityEnforcer;
 import com.netflix.mediaclient.service.logging.client.model.Error;
-import com.netflix.mediaclient.service.logging.client.model.FalkorPathResult;
 import java.util.List;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
@@ -135,17 +134,17 @@ public abstract class MSLVolleyRequest<T> extends Request<T> implements IMSLClie
     }
     
     protected static Throwable findCauseForMslException(final MslException ex) {
-        Throwable t;
+        Object o;
         if (ex == null) {
-            t = null;
+            o = null;
         }
         else {
-            t = ex;
+            o = ex;
             if (ex.getCause() != null) {
                 return findCause(ex.getCause());
             }
         }
-        return t;
+        return (Throwable)o;
     }
     
     private String getEncodedPayload() {
@@ -241,7 +240,7 @@ public abstract class MSLVolleyRequest<T> extends Request<T> implements IMSLClie
             httpResponse.setContentLength(this.getResponseSizeInBytes());
             httpResponse.setApiScriptExecutionTime((int)this.mApiScriptExecTimeInMs);
             httpResponse.setEndpointRevision(this.mEndpointRevision);
-            ApmLogUtils.reportDataRequestEnded(this.mMslClient.getContext(), String.valueOf(this.mUuid), IClientLogging$CompletionReason.success, null, null, httpResponse);
+            ApmLogUtils.reportDataRequestEnded(this.mMslClient.getContext(), String.valueOf(this.mUuid), IClientLogging$CompletionReason.success, (List)null, (Error)null, httpResponse);
             PlayabilityEnforcer.updateLastContactNetflix(this.mMslClient.getContext());
         }
         this.onSuccess(t);

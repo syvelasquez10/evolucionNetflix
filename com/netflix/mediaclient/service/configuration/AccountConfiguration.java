@@ -31,7 +31,7 @@ public class AccountConfiguration
     
     public void clear() {
         final NetflixPreference netflixPreference = new NetflixPreference(this.mContext);
-        netflixPreference.putStringPref("accountConfig", null);
+        netflixPreference.putStringPref("accountConfig", (String)null);
         netflixPreference.putIntPref("bw_user_control_auto", -1);
         netflixPreference.putIntPref("bw_user_manual_setting", -1);
         netflixPreference.commit();

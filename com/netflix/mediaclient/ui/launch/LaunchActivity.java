@@ -123,7 +123,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
             this.showDebugToast(this.getString(2131296791));
-            SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.smartLock, IClientLogging$CompletionReason.success, null);
+            SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.smartLock, IClientLogging$CompletionReason.success, (Error)null);
             return;
         }
         Log.e("LaunchActivity", "Login failed, redirect to LoginActivity with credential and status");
@@ -170,7 +170,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void handleUserLoginWithCredentials(final Credential credential) {
-        SignInLogUtils.reportCredentialRetrievalSessionEnded((Context)this, SignInLogging$CredentialService.GooglePlayService, IClientLogging$CompletionReason.success, null);
+        SignInLogUtils.reportCredentialRetrievalSessionEnded((Context)this, SignInLogging$CredentialService.GooglePlayService, IClientLogging$CompletionReason.success, (Error)null);
         final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging();
         final Display display = ConsolidatedLoggingUtils.getDisplay((Context)this);
         Log.d("LaunchActivity", "User is NOT logged in, redirect to Login screen with login credentials");
@@ -386,14 +386,14 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         final Display display = ConsolidatedLoggingUtils.getDisplay((Context)this);
         if (this.shouldDisplayOfflineContent(serviceManager)) {
             Log.d("LaunchActivity", "Redirect to offline activity with profile %s, %s", serviceManager.getCurrentProfile().getProfileName(), serviceManager.getCurrentProfile().getProfileGuid());
-            this.startNextActivity(OfflineActivity.showAllDownloads(this).putExtra("com.netflix.mediaclient._TRANSITION_ANIMATION", false));
+            this.startNextActivity(OfflineActivity.showAllDownloads((Activity)this).putExtra("com.netflix.mediaclient._TRANSITION_ANIMATION", false));
         }
         else {
             Log.d("LaunchActivity", "Redirect to home with profile %s, %s", serviceManager.getCurrentProfile().getProfileName(), serviceManager.getCurrentProfile().getProfileGuid());
             this.startNextActivity(HomeActivity.createStartIntent(this).putExtra("com.netflix.mediaclient._TRANSITION_ANIMATION", false));
         }
         if (EogUtils.shouldShowEogAlert(serviceManager)) {
-            this.startNextActivity(EndOfGrandfatheringActivity.createStartIntent(this, EndOfGrandfatheringActivity.shouldBlockUser(serviceManager.getEndOfGrandfatheringAlert().isBlocking())));
+            this.startNextActivity(EndOfGrandfatheringActivity.createStartIntent((NetflixActivity)this, EndOfGrandfatheringActivity.shouldBlockUser(serviceManager.getEndOfGrandfatheringAlert().isBlocking())));
         }
         if (this.shouldCreateUiSessions()) {
             applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.homeScreen, this.mStarted, display, null, UIBrowseStartupSessionCustomData.create((Context)this));
@@ -529,7 +529,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         Log.d("LaunchActivity", "Service is NOT ready, use splash screen... nf_config: splashscreen");
         this.mSplashScreenStarted = System.currentTimeMillis();
-        this.setContentView(2130903309);
+        this.setContentView(2130903314);
     }
     
     @Override

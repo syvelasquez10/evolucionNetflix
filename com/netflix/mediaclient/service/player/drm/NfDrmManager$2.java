@@ -57,7 +57,7 @@ class NfDrmManager$2 implements Runnable
                 if (Log.isLoggable()) {
                     Log.d("NfPlayerDrmManager", "movieId = " + n + ", priority = " + n2 + ", request manifest");
                 }
-                this.this$0.mWaitToPrepareList.add(new Triple<Long, Integer, PlayContext>(n, n2, playContext));
+                this.this$0.mWaitToPrepareList.add(new Triple((Object)n, (Object)n2, (Object)playContext));
                 this.this$0.mManifestCache.getManifestAsync(n, this.this$0);
             }
         }

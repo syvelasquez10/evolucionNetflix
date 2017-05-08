@@ -25,7 +25,7 @@ public final class SearchEndedEvent extends BaseUIActionSessionEndedEvent
     
     public SearchEndedEvent(final JSONObject jsonObject) {
         super(jsonObject);
-        this.mTerm = JsonUtils.getString(jsonObject, "term", null);
+        this.mTerm = JsonUtils.getString(jsonObject, "term", (String)null);
     }
     
     @Override

@@ -27,6 +27,8 @@ public class DeviceConfigData
     private List<ConsolidatedLoggingSessionSpecification> consolidated_logging_specification;
     private String current_version;
     private String device_category;
+    @SerializedName("disableActivityTracking")
+    private boolean disableActivityTracking;
     @SerializedName("disableCastFaststart")
     private boolean disableCastFaststart;
     @SerializedName("disableDataSaver")
@@ -237,6 +239,10 @@ public class DeviceConfigData
     
     public String getWebsocketDisabled() {
         return this.disable_websocket;
+    }
+    
+    public boolean isActivivityTrackingDisabled() {
+        return this.disableActivityTracking;
     }
     
     public boolean isAllowHevcMobile() {

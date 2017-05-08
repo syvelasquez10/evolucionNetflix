@@ -27,11 +27,11 @@ public final class PlayerCapabilities extends MdxMessage
         final boolean b = true;
         super("PLAYER_CAPABILITIES");
         this.mJson = mJson;
-        final String string = JsonUtils.getString(mJson, "is3dSupported", null);
+        final String string = JsonUtils.getString(mJson, "is3dSupported", (String)null);
         this.mIs3dSupported = (string != null && "true".equalsIgnoreCase(string));
-        final String string2 = JsonUtils.getString(mJson, "isHdSupported", null);
+        final String string2 = JsonUtils.getString(mJson, "isHdSupported", (String)null);
         this.mIsHdSupported = (string2 != null && "true".equalsIgnoreCase(string2));
-        final String string3 = JsonUtils.getString(mJson, "is5dot1Supported", null);
+        final String string3 = JsonUtils.getString(mJson, "is5dot1Supported", (String)null);
         this.mIs5dot1Supported = (string3 != null && "true".equalsIgnoreCase(string3) && b);
         this.mAutoAdvanceMax = JsonUtils.getInt(mJson, "autoAdvanceMax", 0);
         if (mJson.has("volumeControl")) {

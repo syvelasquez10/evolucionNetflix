@@ -37,6 +37,6 @@ class NetflixComBrowseHandler$1FetchLoLoMoSummaryCallback extends SimpleManagerC
             NetflixComUtils.startHomeActivity(this.val$activity);
             Log.w("NetflixComBrowseHandler", "Couldn't fetch genre details, launching HomeActivity");
         }
-        NflxProtocolUtils.reportDelayedResponseHandled(this.val$activity);
+        NflxProtocolUtils.reportDelayedResponseHandled((Activity)this.val$activity);
     }
 }

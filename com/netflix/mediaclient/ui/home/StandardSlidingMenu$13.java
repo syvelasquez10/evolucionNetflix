@@ -18,6 +18,6 @@ final class StandardSlidingMenu$13 implements Runnable
     
     @Override
     public void run() {
-        this.val$context.startActivity(AboutActivity.createStartIntent(this.val$context));
+        this.val$context.startActivity(AboutActivity.createStartIntent((Activity)this.val$context));
     }
 }

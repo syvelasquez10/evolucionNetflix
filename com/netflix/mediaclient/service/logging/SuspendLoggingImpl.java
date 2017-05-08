@@ -9,8 +9,8 @@ import com.netflix.mediaclient.service.logging.suspend.model.UnfocusedSessionEnd
 import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import com.netflix.mediaclient.Log;
-import java.util.Map;
 import android.net.Uri;
+import java.util.Map;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import com.netflix.mediaclient.protocol.netflixcom.NetflixComUtils;
 import com.netflix.mediaclient.util.StringUtils;
@@ -46,7 +46,7 @@ public final class SuspendLoggingImpl implements SuspendLogging
             if (!StringUtils.isEmpty(stringExtra)) {
                 final Map<String, String> parameters = NetflixComUtils.getParameters(data);
                 parameters.put("source", stringExtra);
-                return NflxProtocolUtils.createDeepLink(parameters);
+                return NflxProtocolUtils.createDeepLink((Map)parameters);
             }
         }
         return null;

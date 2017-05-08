@@ -25,7 +25,6 @@ import com.netflix.mediaclient.servicemgr.Asset;
 import java.io.File;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
-import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import com.netflix.mediaclient.util.IntentUtils;
@@ -114,7 +113,7 @@ class FalkorAgent$PrefetchLolomoSchedulerJob implements NetflixJobExecutor
                 return;
             }
             PreferenceUtils.putLongPref((Context)this.this$0.getService(), "prefs_prefetch_lolomo_job_last_start_time_ms", elapsedRealtime);
-            UserActionLogUtils.reportPrefetchLolomoJobStarted(this.this$0.getContext(), null, null);
+            UserActionLogUtils.reportPrefetchLolomoJobStarted(this.this$0.getContext(), (UserActionLogging$CommandName)null, (IClientLogging$ModalView)null);
             if (Log.isLoggable()) {
                 Log.d("FalkorAgent", "onNetflixStartJob: jobId = " + netflixJob$NetflixJobId);
             }

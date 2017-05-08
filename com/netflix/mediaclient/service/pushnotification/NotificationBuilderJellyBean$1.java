@@ -36,7 +36,6 @@ final class NotificationBuilderJellyBean$1 implements ImageLoader$ImageLoaderLis
         this.val$imageLoader = val$imageLoader;
     }
     
-    @Override
     public void onErrorResponse(final String s) {
         if (Log.isLoggable()) {
             Log.e("nf_push", "Failed to downlod " + this.val$payload.largeIcon + ". Reason: " + s);
@@ -45,7 +44,6 @@ final class NotificationBuilderJellyBean$1 implements ImageLoader$ImageLoaderLis
     }
     
     @SuppressLint({ "NewApi" })
-    @Override
     public void onResponse(Bitmap squaredBitmap, final String s) {
         if (Log.isLoggable()) {
             Log.d("nf_push", "Image is downloaded " + this.val$payload.largeIcon + " from " + s);
@@ -54,7 +52,7 @@ final class NotificationBuilderJellyBean$1 implements ImageLoader$ImageLoaderLis
             if (AndroidUtils.getAndroidVersion() >= 21) {
                 squaredBitmap = ViewUtils.createSquaredBitmap(squaredBitmap);
                 this.val$builder.setLargeIcon(squaredBitmap);
-                this.val$builder.setColor(this.val$context.getResources().getColor(2131689634));
+                this.val$builder.setColor(this.val$context.getResources().getColor(2131689635));
             }
             else {
                 this.val$builder.setLargeIcon(squaredBitmap);

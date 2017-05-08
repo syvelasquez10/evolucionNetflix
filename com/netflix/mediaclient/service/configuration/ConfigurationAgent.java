@@ -898,6 +898,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public boolean isActivityTrackingDisabled() {
+        return this.mDeviceConfigOverride.isActivivityTrackingDisabled();
+    }
+    
+    @Override
     public boolean isAllowHevcMobile() {
         return this.mDeviceConfigOverride != null && this.mDeviceConfigOverride.isAllowHevcMobile();
     }
@@ -1005,7 +1010,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     public boolean isTablet() {
-        return DeviceCategory.TABLET.equals(this.getDeviceCategory());
+        return DeviceCategory.TABLET.equals((Object)this.getDeviceCategory());
     }
     
     @Override

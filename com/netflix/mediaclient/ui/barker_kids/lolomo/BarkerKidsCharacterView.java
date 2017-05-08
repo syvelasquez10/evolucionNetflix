@@ -54,7 +54,7 @@ public class BarkerKidsCharacterView extends FrameLayout implements VideoViewGro
         (this.img = new AdvancedImageView(context)).setCornerRadius(dimensionPixelSize2 / 2);
         this.img.setScaleType(ImageView$ScaleType.CENTER_CROP);
         this.addView((View)this.img, (ViewGroup$LayoutParams)frameLayout$LayoutParams);
-        this.listener = new BarkerKidsCharacterView$CharacterVideoDetailsClickListener(this, (NetflixActivity)context, this);
+        this.listener = new BarkerKidsCharacterView$CharacterVideoDetailsClickListener(this, (NetflixActivity)context, (PlayContextProvider)this);
     }
     
     public String getImageUrl(final Video video, final boolean b) {

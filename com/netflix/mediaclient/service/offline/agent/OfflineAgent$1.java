@@ -55,6 +55,7 @@ import android.os.Looper;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.offline.registry.RegistryData;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry$RegistryEnumerator;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.service.NetflixService;

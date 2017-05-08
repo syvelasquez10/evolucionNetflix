@@ -68,7 +68,7 @@ class NotificationsFrag$4 extends LoggingManagerCallback
             }
             this.this$0.refreshNotificationsListStatus();
             if (this.this$0.mAdapter != null) {
-                this.this$0.mAdapter.notifyDataSetChanged();
+                this.this$0.mAdapter.notifyDataSetChanged("fetchNotificationsList.onNotificationsListFetched");
             }
         }
     }

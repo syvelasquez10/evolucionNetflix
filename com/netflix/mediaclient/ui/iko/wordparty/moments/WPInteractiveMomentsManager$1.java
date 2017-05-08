@@ -72,7 +72,6 @@ class WPInteractiveMomentsManager$1 implements PlayPauseListener
         this.this$0 = this$0;
     }
     
-    @Override
     public void onPlaybackPaused(final boolean b, final int n) {
         this.this$0.handlePlaybackPaused(b, n);
     }

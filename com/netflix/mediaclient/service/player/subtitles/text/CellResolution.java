@@ -31,7 +31,7 @@ public class CellResolution
             if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Cell resolution " + s);
             }
-            final Pair<Integer, Integer> numberPair = StringUtils.extractNumberPair(s);
+            final Pair numberPair = StringUtils.extractNumberPair(s);
             if (numberPair != null && (int)numberPair.first > 0 && (int)numberPair.second > 0) {
                 final CellResolution cellResolution = new CellResolution((int)numberPair.first, (int)numberPair.second);
                 if (Log.isLoggable()) {
@@ -44,7 +44,7 @@ public class CellResolution
             if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Cell resolution ajust using extent " + s2);
             }
-            final Pair<Integer, Integer> numberPair2 = StringUtils.extractNumberPair(s2);
+            final Pair numberPair2 = StringUtils.extractNumberPair(s2);
             Pair numberPair3 = StringUtils.extractNumberPair(s3);
             if (numberPair3 != null) {
                 numberPair3 = new Pair((Object)1, (Object)1);

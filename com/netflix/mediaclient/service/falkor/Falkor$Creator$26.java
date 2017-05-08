@@ -21,6 +21,6 @@ final class Falkor$Creator$26 implements Func<SummarizedList<Ref, DiscoverySumma
     
     @Override
     public SummarizedList<Ref, DiscoverySummary> call() {
-        return new SummarizedList<Ref, DiscoverySummary>(Falkor$Creator.Ref, Falkor$Creator.FalkorDiscoverySummary(this.val$proxy));
+        return (SummarizedList<Ref, DiscoverySummary>)new SummarizedList((Func)Falkor$Creator.Ref, (Func)Falkor$Creator.FalkorDiscoverySummary(this.val$proxy));
     }
 }

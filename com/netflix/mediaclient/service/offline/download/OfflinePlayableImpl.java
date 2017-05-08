@@ -308,7 +308,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         if (OfflineUtils.deletePlayableDirectory(this.mDirPathOfPlayable)) {
             return CommonStatus.OK;
         }
-        LogUtils.reportErrorSafely("deletePlayableDirectory failed:" + this.mDirPathOfPlayable, null);
+        LogUtils.reportErrorSafely("deletePlayableDirectory failed:" + this.mDirPathOfPlayable, (Throwable)null);
         return new NetflixStatus(StatusCode.DL_CANT_DELETE_PLAYABLE_DIRECTORY);
     }
     

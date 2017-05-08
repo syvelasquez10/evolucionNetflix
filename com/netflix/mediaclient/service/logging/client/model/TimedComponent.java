@@ -33,7 +33,7 @@ public class TimedComponent
             return null;
         }
         final TimedComponent timedComponent = new TimedComponent();
-        timedComponent.name = JsonUtils.getString(jsonObject, "name", null);
+        timedComponent.name = JsonUtils.getString(jsonObject, "name", (String)null);
         timedComponent.elapsed = JsonUtils.getLong(jsonObject, "elapsed", 0L);
         return timedComponent;
     }

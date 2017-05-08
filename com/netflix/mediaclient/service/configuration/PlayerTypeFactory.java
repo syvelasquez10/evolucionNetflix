@@ -201,22 +201,26 @@ public final class PlayerTypeFactory
             if (currentType != null) {
                 break Label_0019;
             }
+        Block_6_Outer:
             while (true) {
                 try {
                     Log.w("nf-playertypefactory", "setPlayerTypeForQAOverride: Type is null, do nothing!");
                     return;
+                    // iftrue(Label_0074:, isValidPlayerType(currentType))
                     // iftrue(Label_0050:, !Log.isLoggable())
-                    Log.d("nf-playertypefactory", "setPlayerTypeForQAOverride: Updating player type " + currentType);
-                    while (true) {
-                        Label_0050: {
-                            break Label_0050;
-                            Log.e("nf-playertypefactory", "setPlayerTypeForQAOverride: Invalid player type for this device. We should never be here!");
-                            return;
+                    Block_7: {
+                        while (true) {
+                            while (true) {
+                                break Block_7;
+                                Log.d("nf-playertypefactory", "setPlayerTypeForQAOverride: Updating player type " + currentType);
+                                continue Block_6_Outer;
+                            }
+                            continue;
                         }
-                        continue;
                     }
+                    Log.e("nf-playertypefactory", "setPlayerTypeForQAOverride: Invalid player type for this device. We should never be here!");
+                    return;
                 }
-                // iftrue(Label_0074:, isValidPlayerType(currentType))
                 finally {
                 }
                 // monitorexit(PlayerTypeFactory.class)

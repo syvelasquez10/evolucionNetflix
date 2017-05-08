@@ -32,9 +32,9 @@ public final class SubmitPaymentEndedEvent extends BaseUIActionSessionEndedEvent
     
     public SubmitPaymentEndedEvent(final JSONObject jsonObject) {
         super(jsonObject);
-        this.mPaymentType = UserActionLogging$PaymentType.valueOf(JsonUtils.getString(jsonObject, "paymentType", null));
+        this.mPaymentType = UserActionLogging$PaymentType.valueOf(JsonUtils.getString(jsonObject, "paymentType", (String)null));
         this.mSuccess = JsonUtils.getBoolean(jsonObject, "success", false);
-        this.mErrorCode = JsonUtils.getJSONObject(jsonObject, "errorCode", null);
+        this.mErrorCode = JsonUtils.getJSONObject(jsonObject, "errorCode", (JSONObject)null);
     }
     
     @Override

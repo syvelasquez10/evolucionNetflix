@@ -22,7 +22,7 @@ public final class TrickplayUrl implements Comparable<TrickplayUrl>
     
     public TrickplayUrl(final JSONObject jsonObject) {
         int i = 0;
-        this.downloadableId = JsonUtils.getString(jsonObject, "downloadable_id", null);
+        this.downloadableId = JsonUtils.getString(jsonObject, "downloadable_id", (String)null);
         this.downloadableSize = JsonUtils.getLong(jsonObject, "size", -1L);
         this.width = JsonUtils.getInt(jsonObject, "width", 0);
         this.height = JsonUtils.getInt(jsonObject, "height", 0);

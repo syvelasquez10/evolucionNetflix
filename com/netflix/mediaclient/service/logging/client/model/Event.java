@@ -71,21 +71,21 @@ public abstract class Event implements JsonSerializer
         int i = 0;
         this.activeSessions = new ArrayList<SessionKey>();
         this.time = System.currentTimeMillis();
-        final String string = JsonUtils.getString(jsonObject, "type", null);
+        final String string = JsonUtils.getString(jsonObject, "type", (String)null);
         if (string != null) {
             this.type = EventType.valueOf(string);
         }
         this.kids = JsonUtils.getBoolean(jsonObject, "kids", false);
-        final String string2 = JsonUtils.getString(jsonObject, "modalView", null);
+        final String string2 = JsonUtils.getString(jsonObject, "modalView", (String)null);
         if (string2 != null) {
             this.modalView = IClientLogging$ModalView.valueOf(string2);
         }
-        this.category = JsonUtils.getString(jsonObject, "category", null);
-        this.name = JsonUtils.getString(jsonObject, "name", null);
+        this.category = JsonUtils.getString(jsonObject, "category", (String)null);
+        this.name = JsonUtils.getString(jsonObject, "name", (String)null);
         this.time = JsonUtils.getLong(jsonObject, "time", 0L);
         this.sequence = JsonUtils.getLong(jsonObject, "sequence", 0L);
         this.uptime = JsonUtils.getLong(jsonObject, "uptime", 0L);
-        this.dataContext = DataContext.createInstance(JsonUtils.getJSONObject(jsonObject, "dataContext", null));
+        this.dataContext = DataContext.createInstance(JsonUtils.getJSONObject(jsonObject, "dataContext", (JSONObject)null));
         final JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "activeSessions");
         if (jsonArray != null) {
             while (i < jsonArray.length()) {

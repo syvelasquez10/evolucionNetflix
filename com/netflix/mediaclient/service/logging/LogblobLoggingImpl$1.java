@@ -41,6 +41,6 @@ class LogblobLoggingImpl$1 implements Runnable
     @Override
     public void run() {
         Log.d("nf_logblob", "Check if we have not delivered events from last time our app was runnung...");
-        this.this$0.mDataRepository.loadAll(new LogblobLoggingImpl$1$1(this));
+        this.this$0.mDataRepository.loadAll((DataRepository$LoadedCallback)new LogblobLoggingImpl$1$1(this));
     }
 }

@@ -29,8 +29,8 @@ public final class UpgradeStreamsEndedEvent extends BaseUIActionSessionEndedEven
     
     public UpgradeStreamsEndedEvent(final JSONObject jsonObject) {
         super(jsonObject);
-        this.mCurrentStreams = UserActionLogging$Streams.valueOf(JsonUtils.getString(jsonObject, "currentStreams", null));
-        this.mEndStreams = UserActionLogging$Streams.valueOf(JsonUtils.getString(jsonObject, "endStreams", null));
+        this.mCurrentStreams = UserActionLogging$Streams.valueOf(JsonUtils.getString(jsonObject, "currentStreams", (String)null));
+        this.mEndStreams = UserActionLogging$Streams.valueOf(JsonUtils.getString(jsonObject, "endStreams", (String)null));
     }
     
     @Override

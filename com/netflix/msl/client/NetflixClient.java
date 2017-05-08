@@ -47,7 +47,7 @@ public abstract class NetflixClient
             messageStreamFactory = new MessageStreamFactory();
         }
         if (errorMessageRegistry == null) {
-            errorMessageRegistry = new DummyMessageRegistry();
+            errorMessageRegistry = (ErrorMessageRegistry)new DummyMessageRegistry();
         }
         this.mslControl = new MslControl(0, messageStreamFactory, errorMessageRegistry);
         this.esnPrefix = esnPrefix;
@@ -56,7 +56,7 @@ public abstract class NetflixClient
         this.urlProvider = NetflixUrlProviderFactory.of(environment);
         this.rsaStore = rsaStore;
         if (messageDebugContext == null) {
-            messageDebugContext = new SystemDebugContext();
+            messageDebugContext = (MessageDebugContext)new SystemDebugContext();
         }
         this.messageDebugContext = messageDebugContext;
     }
@@ -92,7 +92,7 @@ public abstract class NetflixClient
             return jsonObject;
         }
         catch (MalformedURLException ex) {
-            throw new MslInternalException("Unable to parse our own url for " + appbootUri, ex);
+            throw new MslInternalException("Unable to parse our own url for " + appbootUri, (Throwable)ex);
         }
     }
     
@@ -125,7 +125,7 @@ public abstract class NetflixClient
             return new URL(apiUri);
         }
         catch (MalformedURLException ex) {
-            throw new MslInternalException("Unable to parse our own url for " + apiUri, ex);
+            throw new MslInternalException("Unable to parse our own url for " + apiUri, (Throwable)ex);
         }
     }
     
@@ -135,7 +135,7 @@ public abstract class NetflixClient
             return new URL(nccpUri);
         }
         catch (MalformedURLException ex) {
-            throw new MslInternalException("Unable to parse our own url for " + nccpUri, ex);
+            throw new MslInternalException("Unable to parse our own url for " + nccpUri, (Throwable)ex);
         }
     }
     
@@ -176,16 +176,16 @@ public abstract class NetflixClient
         Label_0099: {
             input.getMessageHeader();
         }
-        return IoUtil.readBytes(input, 2048);
+        return IoUtil.readBytes((InputStream)input, 2048);
     }
     
     public ApiHttpWrapper unwrapApiResponse(final byte[] array) {
         final JSONArray jsonArray = new JSONArray(new String(array, Charset.forName("UTF-8")));
         final String string = jsonArray.getJSONObject(0).getString("edgemsl-version");
         final JSONObject jsonObject = jsonArray.getJSONObject(1);
-        final Map<String, Object> map = JsonUtil.getMap(jsonObject, "headers");
+        final Map map = JsonUtil.getMap(jsonObject, "headers");
         final HashMap<String, String> hashMap = new HashMap<String, String>();
-        for (final Map.Entry<String, V> entry : map.entrySet()) {
+        for (final Map.Entry<Object, V> entry : map.entrySet()) {
             hashMap.put(entry.getKey(), entry.getValue().toString());
         }
         return new ApiHttpWrapper(string, hashMap, Integer.valueOf(jsonObject.getString("status")), Base64.decode(jsonObject.getJSONObject("payload").getString("data")));

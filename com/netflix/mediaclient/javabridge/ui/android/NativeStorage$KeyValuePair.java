@@ -21,8 +21,8 @@ class NativeStorage$KeyValuePair
     
     public NativeStorage$KeyValuePair(final NativeStorage this$0, final JSONObject jsonObject) {
         this.this$0 = this$0;
-        this.key = JsonUtils.getString(jsonObject, "key", null);
-        this.value = JsonUtils.getString(jsonObject, "value", null);
+        this.key = JsonUtils.getString(jsonObject, "key", (String)null);
+        this.value = JsonUtils.getString(jsonObject, "value", (String)null);
     }
     
     public JSONObject toJson() {

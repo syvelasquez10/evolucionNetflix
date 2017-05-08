@@ -22,12 +22,10 @@ class FalkorAgent$18 implements ImageLoader$ImageLoaderListener
         this.val$videoImagesRequest.countDown();
     }
     
-    @Override
     public void onErrorResponse(final String s) {
         this.countDownRequests();
     }
     
-    @Override
     public void onResponse(final Bitmap bitmap, final String s) {
         this.countDownRequests();
     }

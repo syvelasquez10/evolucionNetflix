@@ -11,6 +11,6 @@ import android.view.Menu;
 public class DetailsMenu
 {
     public static void addItems(final DetailsActivity detailsActivity, final Menu menu, final boolean b) {
-        SearchMenu.addSearchNavigation(detailsActivity, menu, b);
+        SearchMenu.addSearchNavigation((NetflixActivity)detailsActivity, menu, b);
     }
 }

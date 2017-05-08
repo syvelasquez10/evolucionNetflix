@@ -34,6 +34,11 @@ public class zzb
         parcel.writeDouble(n2);
     }
     
+    public static void zza(final Parcel parcel, final int n, final float n2) {
+        zzb(parcel, n, 4);
+        parcel.writeFloat(n2);
+    }
+    
     public static void zza(final Parcel parcel, final int n, final long n2) {
         zzb(parcel, n, 8);
         parcel.writeLong(n2);
@@ -101,6 +106,11 @@ public class zzb
             parcel.writeInt((int)list.get(i));
         }
         zzH(parcel, zzG);
+    }
+    
+    public static void zza(final Parcel parcel, final int n, final short n2) {
+        zzb(parcel, n, 4);
+        parcel.writeInt((int)n2);
     }
     
     public static void zza(final Parcel parcel, int n, final boolean b) {

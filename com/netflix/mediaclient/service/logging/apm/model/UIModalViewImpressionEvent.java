@@ -17,9 +17,9 @@ public class UIModalViewImpressionEvent extends DiscreteEvent
     
     public UIModalViewImpressionEvent(JSONObject jsonObject) {
         super(jsonObject);
-        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
+        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", (JSONObject)null);
         if (jsonObject != null) {
-            final String string = JsonUtils.getString(jsonObject, "orientation", null);
+            final String string = JsonUtils.getString(jsonObject, "orientation", (String)null);
             if (string == null) {
                 this.orientation = Orientation.portrait;
                 return;

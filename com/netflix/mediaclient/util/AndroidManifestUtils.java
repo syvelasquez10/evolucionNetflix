@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.util;
 
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager$NameNotFoundException;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
@@ -59,7 +58,7 @@ public final class AndroidManifestUtils
             }
             return packageInfo.versionCode;
         }
-        catch (PackageManager$NameNotFoundException ex) {
+        catch (Throwable t) {
             return -1;
         }
     }
@@ -75,7 +74,7 @@ public final class AndroidManifestUtils
             }
             return packageInfo.versionName;
         }
-        catch (PackageManager$NameNotFoundException ex) {
+        catch (Throwable t) {
             return null;
         }
     }

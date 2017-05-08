@@ -41,7 +41,7 @@ class ViewDetailsActionHandler extends BaseNflxHandler
         }
         final VideoType videoType = videoInfo.getVideoType();
         final String catalogId = videoInfo.getCatalogId();
-        final String trackId = NflxProtocolUtils.getTrackId(this.mParamsMap);
+        final String trackId = NflxProtocolUtils.getTrackId((Map)this.mParamsMap);
         final DetailsActivity$Action action = this.getAction();
         final String actionToken = this.getActionToken();
         if (Log.isLoggable()) {

@@ -18,7 +18,7 @@ class StandardSlidingMenu$5 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        this.this$0.activity.startActivity(OfflineActivity.showAllDownloads(this.this$0.activity));
+        this.this$0.activity.startActivity(OfflineActivity.showAllDownloads((Activity)this.this$0.activity));
         this.this$0.closeDrawers();
     }
 }

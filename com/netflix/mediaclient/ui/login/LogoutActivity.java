@@ -36,7 +36,7 @@ public class LogoutActivity extends AccountActivity
     private void handleLogoutComplete() {
         Log.i("LogoutActivity", "Handling logout completion...");
         PerformanceProfiler.getInstance().flushApmEvents(this.getApmSafely());
-        UserActionLogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging$CompletionReason.success, null);
+        UserActionLogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging$CompletionReason.success, (UIError)null);
         Toast.makeText(this.getApplicationContext(), 2131296793, 1).show();
         relaunchApp(this, "handleLogoutComplete()");
     }

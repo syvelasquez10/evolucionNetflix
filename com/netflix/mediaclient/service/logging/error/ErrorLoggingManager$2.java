@@ -28,7 +28,7 @@ final class ErrorLoggingManager$2 implements UncaughtExceptionHandler
         //     0: aload_0        
         //     1: getfield        com/netflix/mediaclient/service/logging/error/ErrorLoggingManager$2.val$context:Landroid/content/Context;
         //     4: aload_2        
-        //     5: invokestatic    com/netflix/mediaclient/util/log/ExceptionLogClUtils.reportExceptionToCL:(Landroid/content/Context;Ljava/lang/Throwable;)V
+        //     5: invokestatic    com/netflix/mediaclient/util/log/ExceptionLogClUtils.reportUnhandledExceptionToCL:(Landroid/content/Context;Ljava/lang/Throwable;)V
         //     8: aload_0        
         //     9: getfield        com/netflix/mediaclient/service/logging/error/ErrorLoggingManager$2.val$globalContext:Landroid/content/Context;
         //    12: invokestatic    com/netflix/mediaclient/service/configuration/PersistentConfig.inMementoTest:(Landroid/content/Context;)Z

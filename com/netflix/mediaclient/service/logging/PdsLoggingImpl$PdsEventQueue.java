@@ -36,7 +36,6 @@ class PdsLoggingImpl$PdsEventQueue extends EventQueue<String>
         super("nf_pds_queue", 6, 120000L, true, true);
     }
     
-    @Override
     protected void doFlush(final List<String> list, final boolean b) {
         this.this$0.flushEventsInQueue(list, b);
     }

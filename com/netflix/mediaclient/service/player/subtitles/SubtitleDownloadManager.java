@@ -36,7 +36,7 @@ public class SubtitleDownloadManager implements SubtitleParser$DownloadFailedCal
         if (mUser == null) {
             throw new IllegalArgumentException("User is null!");
         }
-        this.mBackOffPolicy = createExponentialBackOffPolicy(mPlayer.getConfigurationAgent());
+        this.mBackOffPolicy = (BackOff)createExponentialBackOffPolicy(mPlayer.getConfigurationAgent());
         this.mPlayer = mPlayer;
         this.mUser = mUser;
     }
@@ -83,7 +83,7 @@ public class SubtitleDownloadManager implements SubtitleParser$DownloadFailedCal
             this.mStartPositionForSubtitleQoeInMs = mStartPositionForSubtitleQoeInMs;
             if (mData != null) {
                 this.mData = mData;
-                this.mBackOffPolicy = createExponentialBackOffPolicy(this.mPlayer.getConfigurationAgent());
+                this.mBackOffPolicy = (BackOff)createExponentialBackOffPolicy(this.mPlayer.getConfigurationAgent());
                 this.createParserAndStartDownload();
             }
         }

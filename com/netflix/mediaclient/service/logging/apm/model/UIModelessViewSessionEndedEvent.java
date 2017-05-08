@@ -31,9 +31,9 @@ public final class UIModelessViewSessionEndedEvent extends SessionEndedEvent
     
     public UIModelessViewSessionEndedEvent(JSONObject jsonObject) {
         super(jsonObject);
-        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
+        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", (JSONObject)null);
         if (jsonObject != null) {
-            final String string = JsonUtils.getString(jsonObject, "modelessView", null);
+            final String string = JsonUtils.getString(jsonObject, "modelessView", (String)null);
             if (string != null) {
                 this.modelessView = IClientLogging$ModalView.valueOf(string);
             }

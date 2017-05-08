@@ -88,7 +88,6 @@ public class WidevineCryptoContext implements ICryptoContext
         return new WidevineCryptoContext(mslContext, jsonObject);
     }
     
-    @Override
     public byte[] decrypt(byte[] array) {
         if (this.encryptionKeyId == null) {
             throw new MslCryptoException(MslError.DECRYPT_NOT_SUPPORTED, "no encryption/decryption key");
@@ -111,7 +110,6 @@ public class WidevineCryptoContext implements ICryptoContext
         return array;
     }
     
-    @Override
     public byte[] encrypt(byte[] encrypt) {
         if (this.encryptionKeyId == null) {
             throw new MslCryptoException(MslError.ENCRYPT_NOT_SUPPORTED, "no encryption/decryption key");
@@ -146,7 +144,6 @@ public class WidevineCryptoContext implements ICryptoContext
         CryptoManagerRegistry.getCryptoManager().closeCryptoSession(this.cryptoSession);
     }
     
-    @Override
     public byte[] sign(byte[] bytes) {
         if (this.hmacKeyId == null) {
             throw new MslCryptoException(MslError.SIGN_NOT_SUPPORTED, "No signature key.");
@@ -174,12 +171,10 @@ public class WidevineCryptoContext implements ICryptoContext
         return "WidevineCryptoContext{encryptionKeyId='" + this.encryptionKeyId + '\'' + ", hmacKeyId='" + this.hmacKeyId + '\'' + ", ctx=" + this.ctx + ", envelopeId='" + this.envelopeId + '\'' + ", cryptoSession='" + this.cryptoSession + '\'' + '}';
     }
     
-    @Override
     public byte[] unwrap(final byte[] array) {
         throw new MslCryptoException(MslError.UNWRAP_NOT_SUPPORTED, "no wrap/unwrap key");
     }
     
-    @Override
     public boolean verify(final byte[] array, final byte[] array2) {
         if (this.hmacKeyId == null) {
             throw new MslCryptoException(MslError.VERIFY_NOT_SUPPORTED, "No signature key.");
@@ -188,7 +183,7 @@ public class WidevineCryptoContext implements ICryptoContext
             return CryptoManagerRegistry.getCryptoManager().verify(this.cryptoSession, this.hmacKeyId, array, MslSignatureEnvelope.parse(array2).getSignature());
         }
         catch (MslEncodingException ex) {
-            throw new MslCryptoException(MslError.SIGNATURE_ENVELOPE_PARSE_ERROR, ex);
+            throw new MslCryptoException(MslError.SIGNATURE_ENVELOPE_PARSE_ERROR, (Throwable)ex);
         }
         catch (MslCryptoException ex2) {
             throw ex2;
@@ -198,7 +193,6 @@ public class WidevineCryptoContext implements ICryptoContext
         }
     }
     
-    @Override
     public byte[] wrap(final byte[] array) {
         throw new MslCryptoException(MslError.WRAP_NOT_SUPPORTED, "no wrap/unwrap key");
     }

@@ -81,7 +81,7 @@ class EmailPasswordFragment$6 implements ResultCallback<Status>
                 Log.d("LoginBaseFragment", "SAVE: OK");
             }
             this.this$0.getNetflixActivity().showDebugToast("Credential Saved");
-            SignInLogUtils.reportCredentialStoreSessionEnded((Context)this.this$0.getNetflixActivity(), SignInLogging$CredentialService.GooglePlayService, IClientLogging$CompletionReason.success, null);
+            SignInLogUtils.reportCredentialStoreSessionEnded((Context)this.this$0.getNetflixActivity(), SignInLogging$CredentialService.GooglePlayService, IClientLogging$CompletionReason.success, (Error)null);
             if (this.this$0.mLoginFragmentListener != null) {
                 this.this$0.mLoginFragmentListener.handleBackToRegularWorkflow();
             }

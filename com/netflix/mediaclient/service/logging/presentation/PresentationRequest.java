@@ -125,14 +125,14 @@ public class PresentationRequest
             throw new IllegalArgumentException("Cant create PT request from empty string");
         }
         final JSONObject jsonObject = new JSONObject(s);
-        this.esn = JsonUtils.getString(jsonObject, "esn", null);
-        this.country = JsonUtils.getString(jsonObject, "country", null);
-        this.device_type = JsonUtils.getString(jsonObject, "device_type", null);
-        this.app_name = JsonUtils.getString(jsonObject, "application_name", null);
-        this.app_ver = JsonUtils.getString(jsonObject, "application_v", null);
-        this.nrdp_ver = JsonUtils.getString(jsonObject, "sdk_version", null);
-        this.api = JsonUtils.getString(jsonObject, "sw_version", null);
-        final JSONArray jsonArray = new JSONArray(JsonUtils.getString(jsonObject, "data", null));
+        this.esn = JsonUtils.getString(jsonObject, "esn", (String)null);
+        this.country = JsonUtils.getString(jsonObject, "country", (String)null);
+        this.device_type = JsonUtils.getString(jsonObject, "device_type", (String)null);
+        this.app_name = JsonUtils.getString(jsonObject, "application_name", (String)null);
+        this.app_ver = JsonUtils.getString(jsonObject, "application_v", (String)null);
+        this.nrdp_ver = JsonUtils.getString(jsonObject, "sdk_version", (String)null);
+        this.api = JsonUtils.getString(jsonObject, "sw_version", (String)null);
+        final JSONArray jsonArray = new JSONArray(JsonUtils.getString(jsonObject, "data", (String)null));
         for (int i = 0; i < jsonArray.length(); ++i) {
             final PresentationEvent instance = PresentationEvent.createInstance(jsonArray.getJSONObject(i));
             if (instance != null) {

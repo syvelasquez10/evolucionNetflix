@@ -23,7 +23,7 @@ class ErrorWrapper$1 implements View$OnClickListener
     public void onClick(final View view) {
         final NetflixActivity netflixActivity = AndroidUtils.getContextAs(view.getContext(), NetflixActivity.class);
         if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
-            netflixActivity.startActivity(OfflineActivity.showAllDownloads(netflixActivity));
+            netflixActivity.startActivity(OfflineActivity.showAllDownloads((Activity)netflixActivity));
         }
     }
 }

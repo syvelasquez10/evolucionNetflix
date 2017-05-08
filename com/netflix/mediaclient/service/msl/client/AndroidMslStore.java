@@ -148,7 +148,7 @@ public class AndroidMslStore implements MslStore
                             for (final MasterToken masterToken : this.cryptoContexts.keySet()) {
                                 final JSONObject jsonObject2 = new JSONObject();
                                 jsonObject2.put("masterToken", new JSONObject(masterToken.toJSONString()));
-                                jsonObject2.put("cryptoContext", this.cryptoContexts.get(masterToken).toJSONObject());
+                                jsonObject2.put("cryptoContext", ((WidevineCryptoContext)this.cryptoContexts.get(masterToken)).toJSONObject());
                                 jsonArray.put(jsonObject2);
                             }
                             break Label_0160;
@@ -235,7 +235,6 @@ public class AndroidMslStore implements MslStore
         }
     }
     
-    @Override
     public void addServiceTokens(final Set<ServiceToken> set) {
     Label_0018_Outer:
         while (true) {
@@ -255,7 +254,7 @@ public class AndroidMslStore implements MslStore
                                 final Iterator<MasterToken> iterator2 = this.cryptoContexts.keySet().iterator();
                                 Block_16: {
                                     while (iterator2.hasNext()) {
-                                        if (serviceToken.isBoundTo(iterator2.next())) {
+                                        if (serviceToken.isBoundTo((MasterToken)iterator2.next())) {
                                             break Block_16;
                                         }
                                     }
@@ -271,7 +270,7 @@ public class AndroidMslStore implements MslStore
                             final Iterator<UserIdToken> iterator3 = this.userIdTokens.values().iterator();
                             while (true) {
                                 while (iterator3.hasNext()) {
-                                    if (serviceToken.isBoundTo(iterator3.next())) {
+                                    if (serviceToken.isBoundTo((UserIdToken)iterator3.next())) {
                                         final int n2 = 1;
                                         if (n2 == 0) {
                                             throw new MslException(MslError.SERVICETOKEN_USERIDTOKEN_NOT_FOUND, "st uitserialnumber " + serviceToken.getUserIdTokenSerialNumber());
@@ -319,7 +318,6 @@ public class AndroidMslStore implements MslStore
         // monitorexit(this)
     }
     
-    @Override
     public void addUserIdToken(final String s, final UserIdToken userIdToken) {
         while (true) {
             while (true) {
@@ -331,7 +329,7 @@ public class AndroidMslStore implements MslStore
                         final Iterator<MasterToken> iterator = this.cryptoContexts.keySet().iterator();
                         Block_5: {
                             while (iterator.hasNext()) {
-                                if (userIdToken.isBoundTo(iterator.next())) {
+                                if (userIdToken.isBoundTo((MasterToken)iterator.next())) {
                                     break Block_5;
                                 }
                             }
@@ -354,7 +352,6 @@ public class AndroidMslStore implements MslStore
     }
     // monitorexit(this)
     
-    @Override
     public void clearCryptoContexts() {
         synchronized (this) {
             Log.d("nf_msl_store", "clearCryptoContexts::");
@@ -367,7 +364,6 @@ public class AndroidMslStore implements MslStore
         }
     }
     
-    @Override
     public void clearServiceTokens() {
         synchronized (this) {
             this.unboundServiceTokens.clear();
@@ -377,7 +373,6 @@ public class AndroidMslStore implements MslStore
         }
     }
     
-    @Override
     public void clearUserIdTokens() {
         synchronized (this) {
             Log.d("nf_msl_store", "clearUserIdTokens::");
@@ -386,7 +381,7 @@ public class AndroidMslStore implements MslStore
                     this.removeServiceTokens(null, null, userIdToken);
                 }
                 catch (MslException ex) {
-                    throw new MslInternalException("Unexpected exception while removing user ID token bound service tokens.", ex);
+                    throw new MslInternalException("Unexpected exception while removing user ID token bound service tokens.", (Throwable)ex);
                 }
             }
         }
@@ -395,7 +390,6 @@ public class AndroidMslStore implements MslStore
     }
     // monitorexit(this)
     
-    @Override
     public ICryptoContext getCryptoContext(final MasterToken masterToken) {
         synchronized (this) {
             if (Log.isLoggable()) {
@@ -405,7 +399,6 @@ public class AndroidMslStore implements MslStore
         }
     }
     
-    @Override
     public MasterToken getMasterToken() {
         while (true) {
             while (true) {
@@ -433,7 +426,6 @@ public class AndroidMslStore implements MslStore
         }
     }
     
-    @Override
     public long getNonReplayableId(final MasterToken masterToken) {
         synchronized (this) {
             if (Log.isLoggable()) {
@@ -454,7 +446,6 @@ public class AndroidMslStore implements MslStore
         }
     }
     
-    @Override
     public Set<ServiceToken> getServiceTokens(final MasterToken masterToken, final UserIdToken userIdToken) {
         final MasterToken masterToken2;
         Label_0090: {
@@ -497,7 +488,6 @@ public class AndroidMslStore implements MslStore
         return set;
     }
     
-    @Override
     public UserIdToken getUserIdToken(final String s) {
         synchronized (this) {
             Log.d("nf_msl_store", "getUserIdToken:: userId: %s", s);
@@ -530,55 +520,55 @@ public class AndroidMslStore implements MslStore
                         JSONArray optJSONArray5;
                         ArrayList<ServiceToken> list;
                         JSONArray optJSONArray6;
-                        int n = 0;
-                        int n2 = 0;
-                        int n3 = 0;
+                        int n;
                         JSONObject jsonObject2;
                         Long value;
-                        JSONArray optJSONArray7;
-                        HashSet set;
-                        int n4;
                         Long value2;
-                        long optLong;
-                        Long value3;
-                        Long value4;
-                        int n5;
-                        int n6 = 0;
-                        ServiceToken serviceToken;
-                        int n7 = 0;
-                        JSONArray optJSONArray8;
-                        int n8;
-                        ServiceToken serviceToken2;
-                        JSONObject jsonObject3;
-                        String optString;
-                        UserIdToken userIdToken;
-                        JSONObject jsonObject4;
-                        HashSet set2;
-                        ServiceToken serviceToken3;
-                        JSONObject jsonObject5;
+                        int n2 = 0;
                         MasterToken masterToken;
                         WidevineCryptoContext restoreWidevineCryptoContext;
+                        String optString;
+                        UserIdToken userIdToken;
+                        int n3;
+                        int n4;
+                        int n5 = 0;
+                        ServiceToken serviceToken;
+                        HashSet<ServiceToken> set;
+                        int n6 = 0;
+                        int n7 = 0;
+                        JSONArray optJSONArray7;
+                        int n8 = 0;
+                        JSONObject jsonObject3;
+                        Long value3;
+                        ServiceToken serviceToken2;
+                        HashSet set2;
+                        JSONObject jsonObject4;
+                        Long value4;
+                        JSONArray optJSONArray8;
+                        long optLong;
+                        ServiceToken serviceToken3;
+                        JSONObject jsonObject5;
                         JSONObject jsonObject6;
                         JSONObject jsonObject7;
-                        Label_0145_Outer:Label_0946_Outer:Label_1229_Outer:
+                        Block_9_Outer:Label_0330_Outer:Label_0712_Outer:Label_0878_Outer:Label_1163_Outer:Label_1229_Outer:
                         while (true) {
-                            Label_1229:Label_1163_Outer:
+                        Label_1229:
                             while (true) {
-                                Label_1163:Label_0878_Outer:
+                            Label_1163:
                                 while (true) {
-                                Label_0878:
+                                Label_0946_Outer:
                                     while (true) {
-                                        Label_0946:Label_0535_Outer:Label_0712_Outer:
+                                    Label_0946:
                                         while (true) {
                                             Label_1501: {
-                                                Label_1496: {
-                                                    while (true) {
-                                                        Label_1489: {
-                                                        Label_0535:
+                                            Label_0535_Outer:
+                                                while (true) {
+                                                    Label_1489: {
+                                                    Label_0535:
+                                                        while (true) {
+                                                            Label_0330:Block_13_Outer:
                                                             while (true) {
-                                                            Label_0330:
-                                                                while (true) {
-                                                                Label_0453_Outer:
+                                                                Label_1474: {
                                                                     while (true) {
                                                                         Label_1467: {
                                                                             Label_1462: {
@@ -601,7 +591,7 @@ public class AndroidMslStore implements MslStore
                                                                                             if (Log.isLoggable()) {
                                                                                                 Log.d("nf_msl_store", "load:: UserId tokens map found, size: " + optJSONArray2.length());
                                                                                             }
-                                                                                            break Label_0453_Outer;
+                                                                                            break Label_1474;
                                                                                         }
                                                                                         else {
                                                                                             Log.d("nf_msl_store", "load:: UserId tokens map not found!");
@@ -632,7 +622,7 @@ public class AndroidMslStore implements MslStore
                                                                                                         if (Log.isLoggable()) {
                                                                                                             Log.d("nf_msl_store", "load:: MasterTokenServiceToken map found, size: " + optJSONArray5.length());
                                                                                                         }
-                                                                                                        break Label_1496;
+                                                                                                        break Label_0535_Outer;
                                                                                                     }
                                                                                                     else {
                                                                                                         Log.d("nf_msl_store", "load:: MasterTokenServiceToken map not found!");
@@ -644,143 +634,144 @@ public class AndroidMslStore implements MslStore
                                                                                                         if (Log.isLoggable()) {
                                                                                                             Log.d("nf_msl_store", "load:: UserIdsServiceToken map found, size: " + optJSONArray6.length());
                                                                                                         }
-                                                                                                        break Label_0878;
+                                                                                                        break Label_0946_Outer;
                                                                                                     }
                                                                                                 }
                                                                                             }
                                                                                         }
                                                                                     }
-                                                                                    // iftrue(Label_0278:, n3 >= optJSONArray.length())
-                                                                                    // iftrue(Label_0483:, n4 >= optJSONArray2.length())
-                                                                                    // iftrue(Label_1508:, n2 >= optJSONArray7.length())
-                                                                                    // iftrue(Label_0660:, n5 >= optJSONArray3.length())
-                                                                                    // iftrue(Label_1443:, n7 >= optJSONArray8.length())
-                                                                                    // iftrue(Label_0453:, !Log.isLoggable())
-                                                                                    // iftrue(Label_1431:, n8 >= optJSONArray6.length())
-                                                                                    // iftrue(Label_1501:, !Log.isLoggable())
                                                                                     // iftrue(Label_0630:, !Log.isLoggable())
-                                                                                    // iftrue(Label_1489:, !Log.isLoggable())
-                                                                                    // iftrue(Label_0817:, n6 >= optJSONArray4.length())
                                                                                     // iftrue(Label_1520:, !Log.isLoggable())
+                                                                                    // iftrue(Label_0817:, n6 >= optJSONArray4.length())
+                                                                                    // iftrue(Label_1501:, !Log.isLoggable())
+                                                                                    // iftrue(Label_0660:, n >= optJSONArray3.length())
+                                                                                    // iftrue(Label_1114:, n7 >= optJSONArray5.length())
+                                                                                    // iftrue(Label_1054:, !serviceToken2.isMasterTokenBound() || !serviceToken2.isUserIdTokenBound())
+                                                                                    // iftrue(Label_1431:, n4 >= optJSONArray6.length())
+                                                                                    // iftrue(Label_0278:, n2 >= optJSONArray.length())
+                                                                                    // iftrue(Label_1443:, n5 >= optJSONArray8.length())
+                                                                                    // iftrue(Label_1392:, serviceToken == null)
+                                                                                    // iftrue(Label_1508:, n8 >= optJSONArray7.length())
+                                                                                    // iftrue(Label_1489:, !Log.isLoggable())
+                                                                                    // iftrue(Label_0483:, n3 >= optJSONArray2.length())
                                                                                     // iftrue(Label_1298:, !Log.isLoggable())
-                                                                                    // iftrue(Label_1392:, serviceToken2 == null)
                                                                                     // iftrue(Label_1467:, !Log.isLoggable())
-                                                                                    // iftrue(Label_1054:, !serviceToken3.isMasterTokenBound() || !serviceToken3.isUserIdTokenBound())
-                                                                                    // iftrue(Label_1114:, n >= optJSONArray5.length())
+                                                                                    // iftrue(Label_0453:, !Log.isLoggable())
                                                                                     while (true) {
-                                                                                        Block_13: {
-                                                                                            Block_31: {
-                                                                                                Label_0630_Outer:Block_27_Outer:
+                                                                                        Block_12: {
+                                                                                        Block_24:
+                                                                                            while (true) {
+                                                                                            Block_27:
                                                                                                 while (true) {
-                                                                                                    while (true) {
-                                                                                                        Block_25: {
-                                                                                                            Block_8: {
+                                                                                                    Block_8: {
+                                                                                                        while (true) {
+                                                                                                            Block_32: {
                                                                                                                 while (true) {
-                                                                                                                Block_17:
-                                                                                                                    while (true) {
+                                                                                                                    Block_17: {
                                                                                                                         while (true) {
-                                                                                                                        Label_1298:
-                                                                                                                            while (true) {
-                                                                                                                                Block_32: {
+                                                                                                                            Block_20: {
+                                                                                                                                while (true) {
                                                                                                                                     while (true) {
-                                                                                                                                        while (true) {
+                                                                                                                                        Block_28: {
                                                                                                                                             while (true) {
-                                                                                                                                            Block_16:
-                                                                                                                                                while (true) {
-                                                                                                                                                    Log.d("nf_msl_store", "load:: add to MasterTokenServiceToken map at i" + n + " and j " + n2 + ": serviceToken ");
-                                                                                                                                                    break Label_1501;
-                                                                                                                                                    break Block_8;
-                                                                                                                                                    jsonObject2 = optJSONArray5.getJSONObject(n);
-                                                                                                                                                    value = jsonObject2.getLong("mtSerialNumber");
-                                                                                                                                                    optJSONArray7 = jsonObject2.optJSONArray("serviceTokenSet");
-                                                                                                                                                    set = new HashSet<ServiceToken>(optJSONArray7.length());
-                                                                                                                                                    this.mtServiceTokens.put(value, (HashSet<ServiceToken>)set);
-                                                                                                                                                    n2 = 0;
-                                                                                                                                                    break Label_0946;
-                                                                                                                                                    Block_12: {
-                                                                                                                                                        break Block_12;
-                                                                                                                                                        Log.d("nf_msl_store", "Check if service token exist for given userIdToken serial number: " + value2 + " and master token serial number: " + optLong);
-                                                                                                                                                        break Label_1298;
-                                                                                                                                                        this.nonReplayableIds.put(value3, value4);
-                                                                                                                                                        ++n5;
-                                                                                                                                                        break Label_0535;
-                                                                                                                                                        Log.d("nf_msl_store", "load:: add to UnboundServiceTokens Set at " + n6 + ": serviceToken: " + serviceToken);
-                                                                                                                                                        break Label_1489;
-                                                                                                                                                        break Block_25;
-                                                                                                                                                        break Block_16;
-                                                                                                                                                        break Block_32;
-                                                                                                                                                        Log.d("nf_msl_store", "load:: add to UserIdsServiceToken map at i" + n8 + " and j " + n7 + ": serviceToken: " + serviceToken2);
-                                                                                                                                                        break Label_1163;
-                                                                                                                                                    }
-                                                                                                                                                    jsonObject3 = optJSONArray2.getJSONObject(n4);
-                                                                                                                                                    optString = jsonObject3.optString("userId", null);
-                                                                                                                                                    userIdToken = new UserIdToken(this.mMslContext, jsonObject3.getJSONObject("userIdToken"), this.getMasterToken(jsonObject3.getLong("mtSerialNumber")));
-                                                                                                                                                    break Block_13;
-                                                                                                                                                    break Block_31;
-                                                                                                                                                    continue Label_0145_Outer;
-                                                                                                                                                }
-                                                                                                                                                jsonObject4 = optJSONArray3.getJSONObject(n5);
-                                                                                                                                                value3 = jsonObject4.getLong("mtSerialNumber");
-                                                                                                                                                value4 = jsonObject4.getLong("nonReplayableId");
+                                                                                                                                                jsonObject2 = optJSONArray3.getJSONObject(n);
+                                                                                                                                                value = jsonObject2.getLong("mtSerialNumber");
+                                                                                                                                                value2 = jsonObject2.getLong("nonReplayableId");
                                                                                                                                                 break Block_17;
-                                                                                                                                                this.userIdTokens.put(optString, userIdToken);
-                                                                                                                                                ++n4;
-                                                                                                                                                continue Label_0330;
-                                                                                                                                                serviceToken = new ServiceToken(this.mMslContext, optJSONArray4.getJSONObject(n6), null, null, (ICryptoContext)null);
-                                                                                                                                                this.unboundServiceTokens.add(serviceToken);
-                                                                                                                                                continue Label_1229_Outer;
+                                                                                                                                                Log.d("nf_msl_store", "load:: add to cryptoContexts at " + n2 + ": masterToken: " + masterToken + " and cryptoContext: " + restoreWidevineCryptoContext);
+                                                                                                                                                break Label_1467;
+                                                                                                                                                while (true) {
+                                                                                                                                                    while (true) {
+                                                                                                                                                        this.userIdTokens.put(optString, userIdToken);
+                                                                                                                                                        ++n3;
+                                                                                                                                                        break Label_0330;
+                                                                                                                                                        Log.d("nf_msl_store", "load:: add to UserIdsServiceToken map at i" + n4 + " and j " + n5 + ": serviceToken: " + serviceToken);
+                                                                                                                                                        break Label_1163;
+                                                                                                                                                        Log.d("nf_msl_store", "load:: add to userIdTokens at " + n3 + ": userId: " + optString + " and token: " + userIdToken.toString());
+                                                                                                                                                        continue Label_0330_Outer;
+                                                                                                                                                    }
+                                                                                                                                                    Log.d("nf_msl_store", "Double bound service token found, use it");
+                                                                                                                                                    set.add(serviceToken);
+                                                                                                                                                    continue Block_13_Outer;
+                                                                                                                                                }
+                                                                                                                                                break Block_20;
+                                                                                                                                                break Block_28;
+                                                                                                                                                continue Block_9_Outer;
                                                                                                                                             }
-                                                                                                                                            Label_1392: {
-                                                                                                                                                Log.e("nf_msl_store", "Double bound service token not found, this should not happen!");
+                                                                                                                                            break Block_24;
+                                                                                                                                            jsonObject3 = optJSONArray7.getJSONObject(n8);
+                                                                                                                                            serviceToken2 = new ServiceToken(this.mMslContext, jsonObject3.getJSONObject("serviceToken"), this.getMasterToken(value3), this.getUserIdToken(jsonObject3.optLong("uitSerialNumber", -1L)), (ICryptoContext)null);
+                                                                                                                                            set2.add(serviceToken2);
+                                                                                                                                            break Block_27;
+                                                                                                                                            Block_31: {
+                                                                                                                                                break Block_31;
+                                                                                                                                                break Block_8;
                                                                                                                                             }
-                                                                                                                                            throw new IllegalStateException("Double bound service token not found, this should not happen!");
-                                                                                                                                            continue Label_0712_Outer;
+                                                                                                                                            jsonObject4 = optJSONArray6.getJSONObject(n4);
+                                                                                                                                            value4 = jsonObject4.getLong("uitSerialNumber");
+                                                                                                                                            optJSONArray8 = jsonObject4.optJSONArray("serviceTokenSet");
+                                                                                                                                            set = new HashSet<ServiceToken>(optJSONArray8.length());
+                                                                                                                                            this.uitServiceTokens.put(value4, set);
+                                                                                                                                            n5 = 0;
+                                                                                                                                            break Label_1229;
                                                                                                                                         }
-                                                                                                                                        Log.d("nf_msl_store", "Double bound service token found, use it");
-                                                                                                                                        set2.add(serviceToken2);
-                                                                                                                                        continue Label_1163_Outer;
+                                                                                                                                        Log.d("nf_msl_store", "load:: add to MasterTokenServiceToken map at i" + n7 + " and j " + n8 + ": serviceToken ");
+                                                                                                                                        break Label_1501;
+                                                                                                                                        break Block_32;
+                                                                                                                                        serviceToken = getServiceToken(list, optLong, value4);
+                                                                                                                                        continue Label_0712_Outer;
                                                                                                                                     }
+                                                                                                                                    Log.d("nf_msl_store", "load:: add to UnboundServiceTokens Set at " + n6 + ": serviceToken: " + serviceToken3);
+                                                                                                                                    break Label_1489;
+                                                                                                                                    continue Label_1163_Outer;
                                                                                                                                 }
-                                                                                                                                optLong = optJSONArray8.getJSONObject(n7).optLong("mtSerialNumber", -1L);
-                                                                                                                                continue Label_0630_Outer;
                                                                                                                             }
-                                                                                                                            serviceToken2 = getServiceToken(list, optLong, value2);
-                                                                                                                            continue Block_27_Outer;
+                                                                                                                            serviceToken3 = new ServiceToken(this.mMslContext, optJSONArray4.getJSONObject(n6), (MasterToken)null, (UserIdToken)null, (ICryptoContext)null);
+                                                                                                                            this.unboundServiceTokens.add(serviceToken3);
+                                                                                                                            continue Label_0946_Outer;
                                                                                                                         }
-                                                                                                                        list.add(serviceToken3);
-                                                                                                                        continue Label_0453_Outer;
+                                                                                                                        break Block_12;
                                                                                                                     }
-                                                                                                                    Log.d("nf_msl_store", "load:: add to NonReplayableIds at " + n5 + ": master token serial number: " + value3 + " and nonReplayableId: " + value4);
-                                                                                                                    continue Label_0535_Outer;
+                                                                                                                    Log.d("nf_msl_store", "load:: add to NonReplayableIds at " + n + ": master token serial number: " + value + " and nonReplayableId: " + value2);
+                                                                                                                    Label_0630: {
+                                                                                                                        this.nonReplayableIds.put(value, value2);
+                                                                                                                    }
+                                                                                                                    ++n;
+                                                                                                                    continue Label_0535;
+                                                                                                                    Log.d("nf_msl_store", "Check if service token exist for given userIdToken serial number: " + value4 + " and master token serial number: " + optLong);
+                                                                                                                    continue Label_0946_Outer;
                                                                                                                 }
                                                                                                             }
-                                                                                                            jsonObject5 = optJSONArray.getJSONObject(n3);
-                                                                                                            masterToken = new MasterToken(this.mMslContext, jsonObject5.getJSONObject("masterToken"));
-                                                                                                            restoreWidevineCryptoContext = WidevineCryptoContext.restoreWidevineCryptoContext(this.mMslContext, jsonObject5.getJSONObject("cryptoContext"));
-                                                                                                            this.cryptoContexts.put(masterToken, restoreWidevineCryptoContext);
-                                                                                                            break Label_0630_Outer;
+                                                                                                            optLong = optJSONArray8.getJSONObject(n5).optLong("mtSerialNumber", -1L);
+                                                                                                            continue;
                                                                                                         }
-                                                                                                        jsonObject6 = optJSONArray7.getJSONObject(n2);
-                                                                                                        serviceToken3 = new ServiceToken(this.mMslContext, jsonObject6.getJSONObject("serviceToken"), this.getMasterToken(value), this.getUserIdToken(jsonObject6.optLong("uitSerialNumber", -1L)), (ICryptoContext)null);
-                                                                                                        set.add(serviceToken3);
-                                                                                                        continue Label_0878_Outer;
                                                                                                     }
-                                                                                                    continue Label_0946_Outer;
+                                                                                                    jsonObject5 = optJSONArray.getJSONObject(n2);
+                                                                                                    masterToken = new MasterToken(this.mMslContext, jsonObject5.getJSONObject("masterToken"));
+                                                                                                    restoreWidevineCryptoContext = WidevineCryptoContext.restoreWidevineCryptoContext(this.mMslContext, jsonObject5.getJSONObject("cryptoContext"));
+                                                                                                    this.cryptoContexts.put(masterToken, (ICryptoContext)restoreWidevineCryptoContext);
+                                                                                                    continue Label_0330_Outer;
                                                                                                 }
-                                                                                                Log.d("nf_msl_store", "load:: add to cryptoContexts at " + n3 + ": masterToken: " + masterToken + " and cryptoContext: " + restoreWidevineCryptoContext);
-                                                                                                break Label_1467;
+                                                                                                list.add(serviceToken2);
+                                                                                                continue Label_0535_Outer;
                                                                                             }
-                                                                                            jsonObject7 = optJSONArray6.getJSONObject(n8);
-                                                                                            value2 = jsonObject7.getLong("uitSerialNumber");
-                                                                                            optJSONArray8 = jsonObject7.optJSONArray("serviceTokenSet");
-                                                                                            set2 = new HashSet<ServiceToken>(optJSONArray8.length());
-                                                                                            this.uitServiceTokens.put(value2, (HashSet<ServiceToken>)set2);
-                                                                                            n7 = 0;
-                                                                                            continue Label_1229;
+                                                                                            jsonObject6 = optJSONArray5.getJSONObject(n7);
+                                                                                            value3 = jsonObject6.getLong("mtSerialNumber");
+                                                                                            optJSONArray7 = jsonObject6.optJSONArray("serviceTokenSet");
+                                                                                            set2 = new HashSet<ServiceToken>(optJSONArray7.length());
+                                                                                            this.mtServiceTokens.put(value3, (HashSet<ServiceToken>)set2);
+                                                                                            n8 = 0;
+                                                                                            continue Label_0946;
                                                                                         }
-                                                                                        Log.d("nf_msl_store", "load:: add to userIdTokens at " + n4 + ": userId: " + optString + " and token: " + userIdToken.toString());
+                                                                                        jsonObject7 = optJSONArray2.getJSONObject(n3);
+                                                                                        optString = jsonObject7.optString("userId", null);
+                                                                                        userIdToken = new UserIdToken(this.mMslContext, jsonObject7.getJSONObject("userIdToken"), this.getMasterToken(jsonObject7.getLong("mtSerialNumber")));
                                                                                         continue Label_0712_Outer;
                                                                                     }
+                                                                                    Label_1392: {
+                                                                                        Log.e("nf_msl_store", "Double bound service token not found, this should not happen!");
+                                                                                    }
+                                                                                    throw new IllegalStateException("Double bound service token not found, this should not happen!");
                                                                                 }
                                                                                 catch (Throwable t) {
                                                                                     Log.e("nf_msl_store", t, "Failed to load MSL store: try restore...", new Object[0]);
@@ -788,44 +779,44 @@ public class AndroidMslStore implements MslStore
                                                                                 }
                                                                                 break;
                                                                                 Label_1443: {
-                                                                                    ++n8;
+                                                                                    ++n4;
                                                                                 }
                                                                                 continue Label_1163;
                                                                             }
-                                                                            n3 = 0;
-                                                                            continue Label_0946_Outer;
+                                                                            n2 = 0;
+                                                                            continue Label_1229_Outer;
                                                                         }
-                                                                        ++n3;
-                                                                        continue Label_0946_Outer;
+                                                                        ++n2;
+                                                                        continue Label_1229_Outer;
                                                                     }
-                                                                    n4 = 0;
-                                                                    continue Label_0330;
                                                                 }
-                                                                n5 = 0;
-                                                                continue Label_0535;
+                                                                n3 = 0;
+                                                                continue Label_0330;
                                                             }
-                                                            n6 = 0;
-                                                            continue Label_0878_Outer;
+                                                            n = 0;
+                                                            continue Label_0535;
                                                         }
-                                                        ++n6;
+                                                        n6 = 0;
                                                         continue Label_0878_Outer;
                                                     }
+                                                    ++n6;
+                                                    continue Label_0878_Outer;
                                                 }
-                                                n = 0;
-                                                continue Label_0878;
+                                                n7 = 0;
+                                                continue Label_1163_Outer;
                                             }
-                                            ++n2;
+                                            ++n8;
                                             continue Label_0946;
                                         }
                                         Label_1508: {
-                                            ++n;
+                                            ++n7;
                                         }
-                                        continue Label_0878;
+                                        continue Label_1163_Outer;
                                     }
-                                    n8 = 0;
+                                    n4 = 0;
                                     continue Label_1163;
                                 }
-                                ++n7;
+                                ++n5;
                                 continue Label_1229;
                             }
                         }
@@ -845,7 +836,6 @@ public class AndroidMslStore implements MslStore
         return this.cryptoContexts.isEmpty();
     }
     
-    @Override
     public void removeCryptoContext(final MasterToken masterToken) {
         Label_0188: {
             Object iterator;
@@ -879,12 +869,11 @@ public class AndroidMslStore implements MslStore
             }
             // monitorexit(this)
             catch (MslException ex) {
-                throw new MslInternalException("Unexpected exception while removing master token bound service tokens.", ex);
+                throw new MslInternalException("Unexpected exception while removing master token bound service tokens.", (Throwable)ex);
             }
         }
     }
     
-    @Override
     public void removeServiceTokens(final String s, final MasterToken masterToken, final UserIdToken userIdToken) {
         synchronized (this) {
             if (Log.isLoggable()) {
@@ -965,7 +954,6 @@ public class AndroidMslStore implements MslStore
     }
     // monitorexit(this)
     
-    @Override
     public void removeUserIdToken(final UserIdToken userIdToken) {
         while (true) {
         Label_0061:
@@ -982,7 +970,7 @@ public class AndroidMslStore implements MslStore
                         Label_0142: {
                             Block_5: {
                                 for (final Map.Entry<String, UserIdToken> entry : this.userIdTokens.entrySet()) {
-                                    if (entry.getValue().equals(userIdToken)) {
+                                    if (entry.getValue().equals((Object)userIdToken)) {
                                         break Block_5;
                                     }
                                 }
@@ -997,7 +985,7 @@ public class AndroidMslStore implements MslStore
                                 return;
                             }
                             catch (MslException ex) {
-                                throw new MslInternalException("Unexpected exception while removing user ID token bound service tokens.", ex);
+                                throw new MslInternalException("Unexpected exception while removing user ID token bound service tokens.", (Throwable)ex);
                             }
                         }
                     }
@@ -1008,7 +996,6 @@ public class AndroidMslStore implements MslStore
         }
     }
     
-    @Override
     public void setCryptoContext(final MasterToken masterToken, final ICryptoContext cryptoContext) {
         synchronized (this) {
             Log.d("nf_msl_store", "setCryptoContex:: starts...");

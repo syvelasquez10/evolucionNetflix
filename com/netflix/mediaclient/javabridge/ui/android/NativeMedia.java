@@ -602,8 +602,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void close(final String s, final PlaybackVolumeMetric playbackVolumeMetric, final JSONObject jsonObject) {
-        this.bridge.getNrdProxy().invokeMethod(new Close(s, playbackVolumeMetric, jsonObject));
+    public void close(final String s, final PlaybackVolumeMetric playbackVolumeMetric, final JSONObject jsonObject, final JSONObject jsonObject2) {
+        this.bridge.getNrdProxy().invokeMethod(new Close(s, playbackVolumeMetric, jsonObject, jsonObject2));
     }
     
     @Override
@@ -1005,7 +1005,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     
     @Override
     public void volumeChange(final PlaybackVolumeMetric playbackVolumeMetric, final PlaybackVolumeMetric playbackVolumeMetric2) {
-        if (playbackVolumeMetric == null || playbackVolumeMetric2 == null || playbackVolumeMetric.equals(playbackVolumeMetric2)) {
+        if (playbackVolumeMetric == null || playbackVolumeMetric2 == null || playbackVolumeMetric.equals((Object)playbackVolumeMetric2)) {
             return;
         }
         this.bridge.getNrdProxy().invokeMethod(new VolumeChange(playbackVolumeMetric, playbackVolumeMetric2));

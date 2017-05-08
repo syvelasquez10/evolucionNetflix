@@ -33,16 +33,16 @@ public final class UIDataRequestSessionEndedEvent extends SessionEndedEvent
     
     public UIDataRequestSessionEndedEvent(JSONObject jsonObject) {
         super(jsonObject);
-        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
+        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", (JSONObject)null);
         if (jsonObject != null) {
-            final String string = JsonUtils.getString(jsonObject, "reason", null);
+            final String string = JsonUtils.getString(jsonObject, "reason", (String)null);
             if (string != null) {
                 this.reason = Enum.valueOf(IClientLogging$CompletionReason.class, string);
             }
-            this.url = JsonUtils.getString(jsonObject, "url", null);
-            this.error = Error.createInstance(JsonUtils.getJSONObject(jsonObject, "error", null));
-            this.response = HttpResponse.createInstance(JsonUtils.getJSONObject(jsonObject, "response", null));
-            this.requestId = JsonUtils.getString(jsonObject, "requestId", null);
+            this.url = JsonUtils.getString(jsonObject, "url", (String)null);
+            this.error = Error.createInstance(JsonUtils.getJSONObject(jsonObject, "error", (JSONObject)null));
+            this.response = HttpResponse.createInstance(JsonUtils.getJSONObject(jsonObject, "response", (JSONObject)null));
+            this.requestId = JsonUtils.getString(jsonObject, "requestId", (String)null);
         }
     }
     

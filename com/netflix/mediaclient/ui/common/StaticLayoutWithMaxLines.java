@@ -43,7 +43,7 @@ public class StaticLayoutWithMaxLines
                         catch (Exception ex) {
                             StaticLayoutWithMaxLines.stopTrying = true;
                             Log.e("StaticLayoutWithMaxL", "Error instantiating StaticLayout with maxlines");
-                            LogUtils.reportErrorSafely("Reflection error instantiating StaticLayout with maxlines", ex);
+                            LogUtils.reportErrorSafely("Reflection error instantiating StaticLayout with maxlines", (Throwable)ex);
                             return null;
                         }
                     }

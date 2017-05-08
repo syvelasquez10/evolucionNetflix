@@ -83,7 +83,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     protected final ImageView switchProfilesIcon;
     
     static {
-        HOME_LOLOMO = new StandardSlidingMenu$DummyGenreList();
+        HOME_LOLOMO = (GenreList)new StandardSlidingMenu$DummyGenreList();
     }
     
     public StandardSlidingMenu(final NetflixActivity activity, final DrawerLayout drawerLayout, final boolean canLoadNotifications) {
@@ -98,41 +98,41 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
         this.activity = activity;
         this.drawerLayout = drawerLayout;
         this.canLoadNotifications = canLoadNotifications;
-        final View inflate = activity.getLayoutInflater().inflate(2130903314, (ViewGroup)drawerLayout);
-        (this.contentLayout = (LinearLayout)drawerLayout.findViewById(2131755905)).setOnClickListener((View$OnClickListener)null);
-        this.genresLeWrapper = new LoadingAndErrorWrapper(drawerLayout.findViewById(2131755915), this.genresErrorCallback);
-        this.notificationsDivider = drawerLayout.findViewById(2131755910);
-        this.notificationsHeader = drawerLayout.findViewById(2131755906);
+        final View inflate = activity.getLayoutInflater().inflate(2130903319, (ViewGroup)drawerLayout);
+        (this.contentLayout = (LinearLayout)drawerLayout.findViewById(2131755925)).setOnClickListener((View$OnClickListener)null);
+        this.genresLeWrapper = new LoadingAndErrorWrapper(drawerLayout.findViewById(2131755935), this.genresErrorCallback);
+        this.notificationsDivider = drawerLayout.findViewById(2131755930);
+        this.notificationsHeader = drawerLayout.findViewById(2131755926);
         if (this.notificationsHeader != null) {
-            final TextView textView = (TextView)this.notificationsHeader.findViewById(2131755641);
+            final TextView textView = (TextView)this.notificationsHeader.findViewById(2131755649);
             textView.setText((CharSequence)activity.getString(2131296856));
             textView.setPadding(0, 0, 0, 0);
         }
         if (this.canLoadNotifications) {
             Log.v("StandardSlidingMenu", "Inflating notifications into layout");
-            (this.notificationsStub = (ViewStub)inflate.findViewById(2131755909)).inflate();
-            (this.notificationsFrag = (SlidingMenuNotificationsFrag)activity.getFragmentManager().findFragmentById(2131755472)).setNotificationsListStatusListener(new StandardSlidingMenu$3(this));
+            (this.notificationsStub = (ViewStub)inflate.findViewById(2131755929)).inflate();
+            (this.notificationsFrag = (SlidingMenuNotificationsFrag)activity.getFragmentManager().findFragmentById(2131755480)).setNotificationsListStatusListener(new StandardSlidingMenu$3(this));
             if (Log.isLoggable()) {
                 Log.v("StandardSlidingMenu", "Notifications frag: " + this.notificationsFrag);
             }
             this.setNotificationsVisible(this.notificationsFrag.areNotificationsPresent());
-            final View viewById = this.contentLayout.findViewById(2131755906);
-            viewById.setBackgroundResource(2130838126);
+            final View viewById = this.contentLayout.findViewById(2131755926);
+            viewById.setBackgroundResource(2130838128);
             viewById.setOnClickListener((View$OnClickListener)new StandardSlidingMenu$4(this, activity));
         }
         else {
             this.notificationsDivider.setVisibility(8);
             this.notificationsHeader.setVisibility(8);
         }
-        (this.profilesGroup = inflate.findViewById(2131755900)).setOnClickListener(this.onSwitchProfileClickListener);
-        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131755901);
-        this.profileName = (TextView)this.profilesGroup.findViewById(2131755903);
-        (this.profileImg = (AdvancedImageView)this.profilesGroup.findViewById(2131755902)).setPressedStateHandlerEnabled(false);
-        (this.genresList = (StaticListView)this.contentLayout.findViewById(2131755916)).setFocusable(false);
+        (this.profilesGroup = inflate.findViewById(2131755920)).setOnClickListener(this.onSwitchProfileClickListener);
+        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131755921);
+        this.profileName = (TextView)this.profilesGroup.findViewById(2131755923);
+        (this.profileImg = (AdvancedImageView)this.profilesGroup.findViewById(2131755922)).setPressedStateHandlerEnabled(false);
+        (this.genresList = (StaticListView)this.contentLayout.findViewById(2131755936)).setFocusable(false);
         this.homeGenreRow = this.createHomeRow();
         this.genresList.addHeaderView(this.homeGenreRow, (Object)null, false);
         this.setSelectedGenre(StandardSlidingMenu.HOME_LOLOMO);
-        (this.appList = (StaticListView)this.contentLayout.findViewById(2131755918)).setFocusable(false);
+        (this.appList = (StaticListView)this.contentLayout.findViewById(2131755938)).setFocusable(false);
         this.setAppActions();
         this.fetchGenresDataIfReady();
         activity.registerReceiverWithAutoUnregister(this.mNetworkChangeReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
@@ -140,7 +140,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     
     private void applyGenreSelectionStyle(final StandardSlidingMenu$GenreRowHolder standardSlidingMenu$GenreRowHolder) {
         ViewUtils.setTextViewToBold(standardSlidingMenu$GenreRowHolder.tv);
-        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131689683));
+        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131689684));
         standardSlidingMenu$GenreRowHolder.selectionIndicator.setVisibility(0);
     }
     
@@ -186,41 +186,41 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     }
     
     private View createHomeRow() {
-        final View inflate = this.activity.getLayoutInflater().inflate(2130903315, (ViewGroup)null);
-        (this.homeText = (TextView)inflate.findViewById(2131755641)).setText(2131296669);
-        inflate.setBackgroundResource(2130838126);
+        final View inflate = this.activity.getLayoutInflater().inflate(2130903320, (ViewGroup)null);
+        (this.homeText = (TextView)inflate.findViewById(2131755649)).setText(2131296669);
+        inflate.setBackgroundResource(2130838128);
         inflate.setOnClickListener(this.onHomeClickListener);
-        inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder(this.homeText, inflate.findViewById(2131755642)));
+        inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder(this.homeText, inflate.findViewById(2131755650)));
         return inflate;
     }
     
     private void createOfflineRowIfNeeded() {
         if (this.activity.showOfflineInMenu() && this.activity.getServiceManager().isOfflineFeatureAvailable()) {
-            final View viewById = this.contentLayout.findViewById(2131755911);
-            final View viewById2 = viewById.findViewById(2131755919);
-            final View viewById3 = viewById.findViewById(2131755913);
+            final View viewById = this.contentLayout.findViewById(2131755931);
+            final View viewById2 = viewById.findViewById(2131755939);
+            final View viewById3 = viewById.findViewById(2131755933);
             viewById2.setVisibility(0);
             if (BrowseExperience.showKidsExperience()) {
                 viewById2.getLayoutParams().height = this.activity.getResources().getDimensionPixelSize(2131427701);
                 viewById3.getLayoutParams().height = this.activity.getResources().getDimensionPixelSize(2131427701);
             }
-            final TextView textView = (TextView)viewById.findViewById(2131755641);
+            final TextView textView = (TextView)viewById.findViewById(2131755649);
             textView.setPadding(0, 0, 0, 0);
             textView.setText((CharSequence)this.activity.getString(2131296634));
             if (BrowseExperience.showKidsExperience()) {
-                textView.setTextColor(ContextCompat.getColor((Context)this.activity, 2131689595));
+                textView.setTextColor(ContextCompat.getColor((Context)this.activity, 2131689596));
             }
-            final ImageView imageView = (ImageView)viewById.findViewById(2131755912);
+            final ImageView imageView = (ImageView)viewById.findViewById(2131755932);
             Drawable imageDrawable;
             final Drawable drawable = imageDrawable = ContextCompat.getDrawable((Context)this.activity, 2130837681);
             if (BrowseExperience.showKidsExperience()) {
                 imageDrawable = DrawableCompat.wrap(drawable.mutate());
-                final int color = ContextCompat.getColor((Context)this.activity, 2131689595);
+                final int color = ContextCompat.getColor((Context)this.activity, 2131689596);
                 textView.setTextColor(color);
                 DrawableCompat.setTint(imageDrawable, color);
             }
             imageView.setImageDrawable(imageDrawable);
-            viewById.setBackgroundResource(2130838126);
+            viewById.setBackgroundResource(2130838128);
             viewById.setOnClickListener((View$OnClickListener)new StandardSlidingMenu$5(this));
             viewById.setVisibility(0);
         }
@@ -244,7 +244,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     
     private void removeGenreSelectionStyle(final StandardSlidingMenu$GenreRowHolder standardSlidingMenu$GenreRowHolder) {
         ViewUtils.setTextViewToNormal(standardSlidingMenu$GenreRowHolder.tv);
-        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131689684));
+        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131689685));
         standardSlidingMenu$GenreRowHolder.selectionIndicator.setVisibility(8);
     }
     

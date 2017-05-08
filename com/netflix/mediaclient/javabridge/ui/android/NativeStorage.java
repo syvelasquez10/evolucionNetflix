@@ -32,7 +32,7 @@ public final class NativeStorage extends NativeNrdObject implements Storage
             Log.w("nf_object", "handlePropertyUpdate:: properties does not exist");
             return 0;
         }
-        this.load(JsonUtils.getString(jsonObject, "data", null));
+        this.load(JsonUtils.getString(jsonObject, "data", (String)null));
         return 1;
     }
     
@@ -45,7 +45,7 @@ public final class NativeStorage extends NativeNrdObject implements Storage
                 if (jsonArray != null) {
                     for (int i = 0; i < jsonArray.length(); ++i) {
                         final JSONObject jsonObject2 = jsonArray.getJSONObject(i);
-                        final String string = JsonUtils.getString(jsonObject2, "dak", null);
+                        final String string = JsonUtils.getString(jsonObject2, "dak", (String)null);
                         final ArrayList<NativeStorage$KeyValuePair> list = new ArrayList<NativeStorage$KeyValuePair>();
                         this.itemMapsByAccount.put(string, list);
                         final JSONArray jsonArray2 = JsonUtils.getJSONArray(jsonObject2, "items");

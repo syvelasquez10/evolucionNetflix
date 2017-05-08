@@ -39,6 +39,6 @@ class PresentationTrackingManager$2 implements Runnable
     @Override
     public void run() {
         Log.d("nf_presentation", "Check if we have not delivered events from last time our app was runnung...");
-        this.this$0.mDataRepository.loadAll(new PresentationTrackingManager$2$1(this));
+        this.this$0.mDataRepository.loadAll((DataRepository$LoadedCallback)new PresentationTrackingManager$2$1(this));
     }
 }

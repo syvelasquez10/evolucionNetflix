@@ -112,7 +112,7 @@ public abstract class RecyclerViewHeaderAdapter extends RecyclerView$Adapter<Rec
             if (Log.isLoggable()) {
                 Log.v("RecyclerViewHeaderAdapter", "onBindItemView - updating for video view, position: " + n);
             }
-            ((VideoViewGroup$IVideoView<Video>)child).update(item, this.getTrackable(), n, false, false);
+            ((VideoViewGroup$IVideoView)child).update((Object)item, this.getTrackable(), n, false, false);
         }
         this.ensureCheckedState(n, child);
     }

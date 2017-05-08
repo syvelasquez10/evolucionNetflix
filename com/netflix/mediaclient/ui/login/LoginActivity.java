@@ -79,7 +79,7 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
         final FragmentManager fragmentManager = this.getFragmentManager();
         final FragmentTransaction beginTransaction = fragmentManager.beginTransaction();
         this.mEmailPasswordFragment = EmailPasswordFragment.newInstance(this.getIntent().getExtras());
-        beginTransaction.replace(2131755483, (Fragment)this.mEmailPasswordFragment, "EmailPasswordFragment").addToBackStack("EmailPasswordFragment");
+        beginTransaction.replace(2131755491, (Fragment)this.mEmailPasswordFragment, "EmailPasswordFragment").addToBackStack("EmailPasswordFragment");
         beginTransaction.commitAllowingStateLoss();
         fragmentManager.executePendingTransactions();
         this.getActiveFragment(fragmentManager);
@@ -178,7 +178,7 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
         if (n == 1) {
             if (n2 == -1) {
                 this.showDebugToast("Account credentials saved!");
-                SignInLogUtils.reportCredentialStoreSessionEnded((Context)this, SignInLogging$CredentialService.GooglePlayService, IClientLogging$CompletionReason.success, null);
+                SignInLogUtils.reportCredentialStoreSessionEnded((Context)this, SignInLogging$CredentialService.GooglePlayService, IClientLogging$CompletionReason.success, (Error)null);
             }
             else {
                 this.showDebugToast("Failed to save account credentials!");
@@ -194,7 +194,7 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         AndroidUtils.setWindowSecureFlag(this);
-        this.setContentView(2130903183);
+        this.setContentView(2130903184);
         if (bundle != null) {
             this.mEmailPasswordFragment = (EmailPasswordFragment)this.getFragmentManager().findFragmentByTag("EmailPasswordFragment");
         }
@@ -202,7 +202,7 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
             PerformanceProfiler.getInstance().startSession(Sessions.LOG_IN, null);
             this.showEmailPasswordFragment();
         }
-        UserActionLogUtils.reportLoginActionEnded((Context)this, IClientLogging$CompletionReason.success, null);
+        UserActionLogUtils.reportLoginActionEnded((Context)this, IClientLogging$CompletionReason.success, (UIError)null);
     }
     
     @Override

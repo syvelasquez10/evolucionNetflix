@@ -208,6 +208,9 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     @Override
     protected void doInit() {
         com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent::init start ");
+        this.connectionClassManagerListener = ConnectivityLogger.getConnectionClassManagerListener();
+        ConnectionClassManager.getInstance().register(this.connectionClassManagerListener);
+        NetworkDispatcher.addNetworkDispatcherListener(this.networkDispatcherListener = ConnectivityLogger.getNetworkDispatcherListener());
         this.mCustomerEventLogging = new LegacyCustomerEventLoggingImpl(this, this.getContext(), this.mWorkerHandler);
         this.mCmpEventLogging = new LegacyCmpEventLoggingImpl(this, this.getContext());
         this.mIntegratedClientLoggingManager = new IntegratedClientLoggingManager(this.getContext(), this, this.getUser(), this.getService());

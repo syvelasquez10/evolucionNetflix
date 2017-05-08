@@ -41,7 +41,7 @@ public class Error implements JsonSerializer
     
     public Error(final JSONObject jsonObject) {
         this.deepError = new ArrayList<DeepErrorElement>();
-        final String string = JsonUtils.getString(jsonObject, "rootCause", null);
+        final String string = JsonUtils.getString(jsonObject, "rootCause", (String)null);
         if (string != null) {
             this.rootCause = RootCause.valueOf(string);
         }

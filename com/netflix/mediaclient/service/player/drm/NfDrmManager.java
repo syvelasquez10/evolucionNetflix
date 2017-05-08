@@ -278,8 +278,8 @@ public class NfDrmManager implements MediaDrm$OnEventListener, NfDrmManagerInter
     
     private PlayContext getAssocaitedPlayContext(final long n) {
         for (final Triple<Long, Integer, PlayContext> triple : this.mWaitToPrepareList) {
-            if (triple.first.equals(n)) {
-                return triple.third;
+            if (((Long)triple.first).equals(n)) {
+                return (PlayContext)triple.third;
             }
         }
         return PlayContext.EMPTY_CONTEXT;
@@ -446,7 +446,7 @@ public class NfDrmManager implements MediaDrm$OnEventListener, NfDrmManagerInter
             }
             if (b) {
                 for (final Triple<Long, Integer, PlayContext> triple : this.mWaitToPrepareList) {
-                    if (triple.first.equals(movieId)) {
+                    if (((Long)triple.first).equals(movieId)) {
                         this.mWaitToPrepareList.remove(triple);
                         if (Log.isLoggable()) {
                             Log.d("NfPlayerDrmManager", "onManifestAvailable, remove from waiting list " + movieId);

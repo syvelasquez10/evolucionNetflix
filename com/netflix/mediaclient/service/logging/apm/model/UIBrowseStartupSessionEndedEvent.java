@@ -34,10 +34,10 @@ public final class UIBrowseStartupSessionEndedEvent extends SessionEndedEvent
     public UIBrowseStartupSessionEndedEvent(JSONObject jsonObject) {
         super(jsonObject);
         this.success = true;
-        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
+        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", (JSONObject)null);
         if (jsonObject != null) {
             this.success = JsonUtils.getBoolean(jsonObject, "success", true);
-            this.error = UIError.createInstance(JsonUtils.getJSONObject(jsonObject, "error", null));
+            this.error = UIError.createInstance(JsonUtils.getJSONObject(jsonObject, "error", (JSONObject)null));
             this.timeToBrowseInteractive = JsonUtils.getLong(jsonObject, "timeToBrowseInteractive", 0L);
         }
     }

@@ -52,13 +52,12 @@ public class MslUrlHttpURLConnectionImpl implements Url
         this.mHeaders = mHeaders;
     }
     
-    @Override
     public Url$Connection openConnection() {
         synchronized (this.mConnections) {
             final MslUrlHttpURLConnectionImpl$HttpConnection mslUrlHttpURLConnectionImpl$HttpConnection = new MslUrlHttpURLConnectionImpl$HttpConnection(this);
             Log.d("nf_msl_net", "MSL opened connection, total count on MSL connections on this URL %d", this.mConnections.size());
             this.mConnections.add(mslUrlHttpURLConnectionImpl$HttpConnection);
-            return mslUrlHttpURLConnectionImpl$HttpConnection;
+            return (Url$Connection)mslUrlHttpURLConnectionImpl$HttpConnection;
         }
     }
     
@@ -93,7 +92,6 @@ public class MslUrlHttpURLConnectionImpl implements Url
         this.mSslSocketFactory = mSslSocketFactory;
     }
     
-    @Override
     public void setTimeout(final int mTimeout) {
         this.mTimeout = mTimeout;
     }

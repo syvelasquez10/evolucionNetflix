@@ -72,10 +72,10 @@ public class InfoEventHandler
             this.informServerAndKillSelf(netflixService);
             return;
         }
-        UserActionLogUtils.reportNewLolomoActionStarted(netflixService.getApplicationContext(), null, null);
+        UserActionLogUtils.reportNewLolomoActionStarted(netflixService.getApplicationContext(), (UserActionLogging$CommandName)null, (IClientLogging$ModalView)null);
         netflixService.getHandler().removeCallbacks(this.refreshLolomoRunnable);
         netflixService.getHandler().postDelayed(this.refreshLolomoRunnable, this.getBrowseEventRateLimitMs(netflixService));
-        UserActionLogUtils.reportNewLolomoActionEnded(netflixService.getApplicationContext(), IClientLogging$CompletionReason.success, null, payload.renoCause, payload.renoMessageGuid, payload.renoCreationTimestamp, payload.messageGuid, payload.guid);
+        UserActionLogUtils.reportNewLolomoActionEnded(netflixService.getApplicationContext(), IClientLogging$CompletionReason.success, (Error)null, payload.renoCause, payload.renoMessageGuid, payload.renoCreationTimestamp, payload.messageGuid, payload.guid);
     }
     
     private void handleMyListEvent(final NetflixService netflixService, final boolean b, final boolean b2) {

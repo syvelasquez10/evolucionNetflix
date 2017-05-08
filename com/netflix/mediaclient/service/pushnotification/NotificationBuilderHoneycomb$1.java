@@ -29,14 +29,12 @@ final class NotificationBuilderHoneycomb$1 implements ImageLoader$ImageLoaderLis
         this.val$msgId = val$msgId;
     }
     
-    @Override
     public void onErrorResponse(final String s) {
         if (Log.isLoggable()) {
             Log.e("nf_push", "Failed to downlod " + this.val$payload.largeIcon + ". Reason: " + s);
         }
     }
     
-    @Override
     public void onResponse(final Bitmap largeIcon, final String s) {
         if (Log.isLoggable()) {
             Log.d("nf_push", "Image is downloaded " + this.val$payload.largeIcon + " from " + s);

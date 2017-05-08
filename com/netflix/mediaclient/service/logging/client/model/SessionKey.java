@@ -43,8 +43,8 @@ public class SessionKey
         if (long1 > 0L) {
             sessionKey.id = new DeviceUniqueId(long1);
         }
-        sessionKey.category = JsonUtils.getString(jsonObject, "category", null);
-        sessionKey.name = JsonUtils.getString(jsonObject, "sessionName", null);
+        sessionKey.category = JsonUtils.getString(jsonObject, "category", (String)null);
+        sessionKey.name = JsonUtils.getString(jsonObject, "sessionName", (String)null);
         return sessionKey;
     }
     

@@ -42,12 +42,12 @@ public class DeepErrorElement$Debug
             return null;
         }
         final DeepErrorElement$Debug deepErrorElement$Debug = new DeepErrorElement$Debug();
-        deepErrorElement$Debug.stackTrace = JsonUtils.getString(jsonObject, "stackTrace", null);
-        deepErrorElement$Debug.message = JsonUtils.getJSONObject(jsonObject, "message", null);
-        deepErrorElement$Debug.strMessage = JsonUtils.getString(jsonObject, "srtMessage", null);
-        deepErrorElement$Debug.stackTraceFileName = JsonUtils.getString(jsonObject, "stackTraceFileName", null);
-        deepErrorElement$Debug.stackTraceLineNumber = JsonUtils.getIntegerObject(jsonObject, "stackTraceLineNumber", null);
-        deepErrorElement$Debug.stackTraceMethodName = JsonUtils.getString(jsonObject, "stackTraceMethodName", null);
+        deepErrorElement$Debug.stackTrace = JsonUtils.getString(jsonObject, "stackTrace", (String)null);
+        deepErrorElement$Debug.message = JsonUtils.getJSONObject(jsonObject, "message", (JSONObject)null);
+        deepErrorElement$Debug.strMessage = JsonUtils.getString(jsonObject, "srtMessage", (String)null);
+        deepErrorElement$Debug.stackTraceFileName = JsonUtils.getString(jsonObject, "stackTraceFileName", (String)null);
+        deepErrorElement$Debug.stackTraceLineNumber = JsonUtils.getIntegerObject(jsonObject, "stackTraceLineNumber", (Integer)null);
+        deepErrorElement$Debug.stackTraceMethodName = JsonUtils.getString(jsonObject, "stackTraceMethodName", (String)null);
         return deepErrorElement$Debug;
     }
     

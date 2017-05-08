@@ -30,9 +30,9 @@ public class Watermark
         if (jsonObject == null) {
             throw new IllegalArgumentException("Watermark json is null!");
         }
-        this.mIdentifier = JsonUtils.getString(jsonObject, "identifier", null);
+        this.mIdentifier = JsonUtils.getString(jsonObject, "identifier", (String)null);
         this.mOpacity = JsonUtils.getInt(jsonObject, "opacity", -1);
-        final String string = JsonUtils.getString(jsonObject, "anchor", null);
+        final String string = JsonUtils.getString(jsonObject, "anchor", (String)null);
         if (StringUtils.isEmpty(string)) {
             return;
         }

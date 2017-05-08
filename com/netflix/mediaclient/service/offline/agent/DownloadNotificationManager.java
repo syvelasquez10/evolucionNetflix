@@ -95,7 +95,7 @@ abstract class DownloadNotificationManager implements OfflineAgentListener
         notification$Builder.setOnlyAlertOnce(true);
         if (Build$VERSION.SDK_INT >= 21) {
             notification$Builder.setVisibility(1);
-            notification$Builder.setColor(ContextCompat.getColor(this.mContext, 2131689634));
+            notification$Builder.setColor(ContextCompat.getColor(this.mContext, 2131689635));
         }
         if (largeIcon != null) {
             notification$Builder.setLargeIcon(largeIcon);
@@ -168,7 +168,7 @@ abstract class DownloadNotificationManager implements OfflineAgentListener
                 if (Log.isLoggable()) {
                     Log.i("nf_downloadNotification", "onVideoSummaryFetched mVideoType=" + downloadNotificationManager$NotificationData.mVideoType);
                 }
-                this.mImageLoader.getImg(offlineVideoDetails.getBoxshotUrl(), IClientLogging$AssetType.boxArt, 0, 0, new DownloadNotificationManager$2(this, downloadNotificationManager$NotificationData));
+                this.mImageLoader.getImg(offlineVideoDetails.getBoxshotUrl(), IClientLogging$AssetType.boxArt, 0, 0, (ImageLoader$ImageLoaderListener)new DownloadNotificationManager$2(this, downloadNotificationManager$NotificationData));
             }
         }
     }

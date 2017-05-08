@@ -30,7 +30,7 @@ class NetflixTextButton$Attributes
     
     NetflixTextButton$Attributes(Context obtainStyledAttributes, final int n) {
         this.animationDuration = obtainStyledAttributes.getResources().getInteger(17694720);
-        obtainStyledAttributes = (Context)new ContextThemeWrapper(obtainStyledAttributes, n).obtainStyledAttributes(new int[] { 2130772275, 2130772277, 2130772278, 2130772279, 2130772280, 2130772276, 2130772281, 2130772282 });
+        obtainStyledAttributes = (Context)new ContextThemeWrapper(obtainStyledAttributes, n).obtainStyledAttributes(new int[] { 2130772300, 2130772302, 2130772303, 2130772304, 2130772305, 2130772301, 2130772306, 2130772307 });
         try {
             this.strokeColor = getColorState((TypedArray)obtainStyledAttributes, 0);
             this.buttonColor = getColorState((TypedArray)obtainStyledAttributes, 1);

@@ -173,7 +173,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     private void doLoginComplete() {
-        SignInLogUtils.reportSignInRequestSessionEnded(this.getContext(), null, IClientLogging$CompletionReason.success, null);
+        SignInLogUtils.reportSignInRequestSessionEnded(this.getContext(), (SignInLogging$SignInType)null, IClientLogging$CompletionReason.success, (Error)null);
         this.notifyLoginComplete(new NetflixStatus(StatusCode.OK));
         this.getApplication().setSignedInOnce();
         PreferenceUtils.putBooleanPref(this.getContext(), "nf_user_status_loggedin", true);
@@ -789,14 +789,14 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     @Override
     public boolean isPotentialPrivacyViolationFoundForLogging(final String s) {
-        if (PrivacyUtils.isPotentialPrivacyViolationFound(s, this.mUser)) {
+        if (PrivacyUtils.isPotentialPrivacyViolationFound(s, (com.netflix.mediaclient.servicemgr.interface_.user.User)this.mUser)) {
             if (Log.isLoggable()) {
                 Log.w("nf_service_useragent", "Privacy violation for " + s + " found with current user " + this.mUser);
             }
             return true;
         }
         for (final UserProfile userProfile : this.mListOfUserProfiles) {
-            if (PrivacyUtils.isPotentialPrivacyViolationFound(s, userProfile)) {
+            if (PrivacyUtils.isPotentialPrivacyViolationFound(s, (com.netflix.mediaclient.servicemgr.interface_.user.UserProfile)userProfile)) {
                 if (Log.isLoggable()) {
                     Log.w("nf_service_useragent", "Privacy violation for " + s + " found with profile " + userProfile);
                 }
@@ -1002,14 +1002,14 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             signInLogging$SignInType = SignInLogging$SignInType.tokenActivate;
         }
         if (this.mUserAgentStateManager == null) {
-            SignInLogUtils.reportSignInRequestSessionEnded(this.getContext(), signInLogging$SignInType, IClientLogging$CompletionReason.failed, null);
+            SignInLogUtils.reportSignInRequestSessionEnded(this.getContext(), signInLogging$SignInType, IClientLogging$CompletionReason.failed, (Error)null);
             this.notifyLoginComplete(StatusUtils.createStatus(StatusCode.NRD_ERROR, "UserAgent: activateAccByToken fails UserAgentStateManager is null", true, RootCause.clientFailure));
             return;
         }
         if (!this.mUserAgentStateManager.activateAccByToken(activationTokens)) {
             this.notifyLoginComplete(StatusUtils.createStatus(StatusCode.NRD_REGISTRATION_EXISTS, "UserAgent: activateAccByToken fails, NRD registration exist", false, RootCause.clientFailure));
             this.notifyLoginComplete(new NetflixStatus(StatusCode.NRD_REGISTRATION_EXISTS));
-            SignInLogUtils.reportSignInRequestSessionEnded(this.getContext(), signInLogging$SignInType, IClientLogging$CompletionReason.failed, null);
+            SignInLogUtils.reportSignInRequestSessionEnded(this.getContext(), signInLogging$SignInType, IClientLogging$CompletionReason.failed, (Error)null);
             return;
         }
         this.mLoginCallback = mLoginCallback;

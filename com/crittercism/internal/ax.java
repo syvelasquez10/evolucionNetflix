@@ -706,18 +706,26 @@ public final class ax implements ar, au, av, f
             if (t != null) {
                 break Label_0015;
             }
+        Block_4_Outer:
             while (true) {
                 try {
                     dw.b("Calling logHandledException with a null java.lang.Throwable. Nothing will be reported to Crittercism");
                     Label_0012: {
                         return;
                     }
-                    // iftrue(Label_0067:, !this.s)
-                    final ax$7 ax$7 = new ax$7(this, t, Thread.currentThread().getId());
                     // iftrue(Label_0012:, this.o.a((Runnable)ax$7))
-                    this.r.execute(ax$7);
-                    return;
+                    while (true) {
+                        while (true) {
+                            final ax$7 ax$7;
+                            this.r.execute(ax$7);
+                            return;
+                            ax$7 = new ax$7(this, t, Thread.currentThread().getId());
+                            continue Block_4_Outer;
+                        }
+                        continue;
+                    }
                 }
+                // iftrue(Label_0067:, !this.s)
                 finally {
                 }
                 // monitorexit(this)

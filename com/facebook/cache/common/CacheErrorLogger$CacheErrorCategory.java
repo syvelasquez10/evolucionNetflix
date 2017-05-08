@@ -1,0 +1,26 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package com.facebook.cache.common;
+
+public enum CacheErrorLogger$CacheErrorCategory
+{
+    DELETE_FILE, 
+    EVICTION, 
+    GENERIC_IO, 
+    OTHER, 
+    READ_DECODE, 
+    READ_FILE, 
+    READ_FILE_NOT_FOUND, 
+    READ_INVALID_ENTRY, 
+    WRITE_CALLBACK_ERROR, 
+    WRITE_CREATE_DIR, 
+    WRITE_CREATE_TEMPFILE, 
+    WRITE_ENCODE, 
+    WRITE_INVALID_ENTRY, 
+    WRITE_RENAME_FILE_OTHER, 
+    WRITE_RENAME_FILE_TEMPFILE_NOT_FOUND, 
+    WRITE_RENAME_FILE_TEMPFILE_PARENT_NOT_FOUND, 
+    WRITE_UPDATE_FILE_NOT_FOUND;
+}

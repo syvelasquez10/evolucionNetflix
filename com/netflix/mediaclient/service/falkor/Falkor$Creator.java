@@ -104,7 +104,7 @@ public class Falkor$Creator
     }
     
     public static SummarizedList<Ref, IrisNotificationsListSummary> FalkorSocialNotificationsList(final ModelProxy<? extends BranchNode> modelProxy) {
-        return new SummarizedList<Ref, IrisNotificationsListSummary>(Falkor$Creator.Ref, FalkorSocialNotificationsListSummary(modelProxy));
+        return (SummarizedList<Ref, IrisNotificationsListSummary>)new SummarizedList((Func)Falkor$Creator.Ref, (Func)FalkorSocialNotificationsListSummary(modelProxy));
     }
     
     public static Func<IrisNotificationsListSummary> FalkorSocialNotificationsListSummary(final ModelProxy<? extends BranchNode> modelProxy) {

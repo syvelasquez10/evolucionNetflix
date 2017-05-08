@@ -41,7 +41,7 @@ public abstract class BaseNotification
     }
     
     public static final NotificationViewHolder getViewHolder(final View view, final IrisNotificationSummary$NotificationTypes irisNotificationSummary$NotificationTypes) {
-        return new NotificationViewHolder((AdvancedImageView)view.findViewById(2131755889), (AdvancedImageView)view.findViewById(2131755478), (TextView)view.findViewById(2131755477), (TextView)view.findViewById(2131755475), (TextView)view.findViewById(2131755476), (TextView)view.findViewById(2131755891), (Button)view.findViewById(2131755892), (Button)view.findViewById(2131755893), view.findViewById(2131755890), view.findViewById(2131755888), (AdvancedImageView)view.findViewById(2131755474), view.findViewById(2131755473));
+        return new NotificationViewHolder((AdvancedImageView)view.findViewById(2131755909), (AdvancedImageView)view.findViewById(2131755486), (TextView)view.findViewById(2131755485), (TextView)view.findViewById(2131755483), (TextView)view.findViewById(2131755484), (TextView)view.findViewById(2131755911), (Button)view.findViewById(2131755912), (Button)view.findViewById(2131755913), view.findViewById(2131755910), view.findViewById(2131755908), (AdvancedImageView)view.findViewById(2131755482), view.findViewById(2131755481));
     }
     
     public static void showSingleLineText(final NotificationViewHolder notificationViewHolder, final int text) {
@@ -165,7 +165,7 @@ public abstract class BaseNotification
         if (StringUtils.isEmpty(s = irisNotificationSummary.getFriendProfile().getImageUrl())) {
             s = irisNotificationSummary.getFriendProfile().getBigImageUrl();
         }
-        imageLoader.getImg(s, IClientLogging$AssetType.profileAvatar, 0, 0, baseNotification$1);
+        imageLoader.getImg(s, IClientLogging$AssetType.profileAvatar, 0, 0, (ImageLoader$ImageLoaderListener)baseNotification$1);
     }
     
     public boolean supportsStatusBar() {

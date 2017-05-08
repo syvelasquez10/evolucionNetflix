@@ -58,7 +58,7 @@ public class FalkorPathResult implements JsonSerializer
         }
         final FalkorPathResult falkorPathResult = new FalkorPathResult();
         falkorPathResult.success = JsonUtils.getBoolean(jsonObject, "success", false);
-        falkorPathResult.path = JsonUtils.getString(jsonObject, "path", null);
+        falkorPathResult.path = JsonUtils.getString(jsonObject, "path", (String)null);
         final JSONArray jsonArray = JsonUtils.getJSONArray(jsonObject, "pathError");
         if (jsonArray != null) {
             while (i < jsonArray.length()) {

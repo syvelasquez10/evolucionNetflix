@@ -134,7 +134,7 @@ public class AndroidDebugContext implements MessageDebugContext
         if (messageHeader.getMessageCapabilities() != null) {
             jsonObject.put("messagecapabilities", new JSONObject(messageHeader.getMessageCapabilities().toJSONString()));
         }
-        final Set<KeyRequestData> keyRequestData = messageHeader.getKeyRequestData();
+        final Set keyRequestData = messageHeader.getKeyRequestData();
         if (keyRequestData != null) {
             final JSONArray jsonArray = new JSONArray();
             final Iterator<KeyRequestData> iterator = keyRequestData.iterator();
@@ -147,7 +147,7 @@ public class AndroidDebugContext implements MessageDebugContext
         if (keyResponseData != null) {
             jsonObject.put("keyresponse", new JSONObject(keyResponseData.toJSONString()));
         }
-        final Set<ServiceToken> serviceTokens = messageHeader.getServiceTokens();
+        final Set serviceTokens = messageHeader.getServiceTokens();
         final JSONArray jsonArray2 = new JSONArray();
         for (final ServiceToken serviceToken : serviceTokens) {
             final JSONObject jsonObject4 = new JSONObject();
@@ -174,14 +174,12 @@ public class AndroidDebugContext implements MessageDebugContext
         Log.d("nf_msl", "MSL Message Header {}:\n{}" + s + marshalHeaderAsJson.toString(4));
     }
     
-    @Override
     public void receivedHeader(final Header header) {
         if (Log.isLoggable()) {
             this.logHeader("Receive", header);
         }
     }
     
-    @Override
     public void sentHeader(final Header header) {
         if (Log.isLoggable()) {
             this.logHeader("Sent", header);

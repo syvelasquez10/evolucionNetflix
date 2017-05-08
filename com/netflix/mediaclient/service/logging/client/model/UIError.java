@@ -44,8 +44,8 @@ public class UIError extends Error
     
     public UIError(final JSONObject jsonObject) {
         super(jsonObject);
-        this.displayedMessage = JsonUtils.getString(jsonObject, "displayedMessage", null);
-        final String string = JsonUtils.getString(jsonObject, "uiAction", null);
+        this.displayedMessage = JsonUtils.getString(jsonObject, "displayedMessage", (String)null);
+        final String string = JsonUtils.getString(jsonObject, "uiAction", (String)null);
         if (string != null) {
             this.uiAction = ActionOnUIError.valueOf(string);
         }

@@ -135,11 +135,9 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
             if (googleApiClient != null) {
                 break Label_0023;
             }
-            Object o;
-            String string;
-            final GoogleApiClient googleApiClient2;
-            Block_5_Outer:Block_7_Outer:
             while (true) {
+                Object o = null;
+                String string = null;
                 try {
                     if (Log.isLoggable()) {
                         Log.d("LoginBaseFragment", "GPS client is null, unable to try to save credentials");
@@ -147,38 +145,35 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
                     Label_0020: {
                         return;
                     }
-                    // iftrue(Label_0119:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
-                    // iftrue(Label_0020:, !this.mSaveCredentials)
-                    // iftrue(Label_0045:, !Log.isLoggable())
+                Block_7_Outer:
                     while (true) {
-                        Label_0096: {
-                            while (true) {
-                            Block_4:
-                                while (true) {
-                                    SignInLogUtils.reportCredentialStoreSessionStarted((Context)this.getNetflixActivity(), SignInLogging$CredentialService.GooglePlayService);
-                                    this.mSaveCredentials = false;
-                                    o = this.mEmailEditText.getText().toString();
-                                    string = this.mPasswordEditText.getText().toString();
-                                    break Label_0096;
-                                    break Block_4;
-                                    Log.d("LoginBaseFragment", "Trying to save credentials to GPS");
-                                    continue Block_5_Outer;
-                                }
-                                continue Block_7_Outer;
+                        Log.d("LoginBaseFragment", "Trying to save credentials to GPS");
+                        while (true) {
+                            Label_0045: {
+                                break Label_0045;
+                                Log.w("LoginBaseFragment", "Credential is empty, do not save it.");
+                                return;
                             }
-                            Log.w("LoginBaseFragment", "Credential is empty, do not save it.");
-                            return;
+                            SignInLogUtils.reportCredentialStoreSessionStarted((Context)this.getNetflixActivity(), SignInLogging$CredentialService.GooglePlayService);
+                            this.mSaveCredentials = false;
+                            o = this.mEmailEditText.getText().toString();
+                            string = this.mPasswordEditText.getText().toString();
+                            continue;
                         }
-                        continue;
+                        continue Block_7_Outer;
                     }
                 }
+                // iftrue(Label_0045:, !Log.isLoggable())
+                // iftrue(Label_0119:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
                 // iftrue(Label_0020:, !Log.isLoggable())
+                // iftrue(Label_0020:, !this.mSaveCredentials)
                 finally {
                 }
                 // monitorexit(this)
                 Label_0119: {
                     o = new Credential$Builder((String)o).setPassword(string).build();
                 }
+                final GoogleApiClient googleApiClient2;
                 Auth.CredentialsApi.save(googleApiClient2, (Credential)o).setResultCallback(new EmailPasswordFragment$6(this));
             }
         }
@@ -237,7 +232,7 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
         }
         this.getNetflixActivity().setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            SignInLogUtils.reportSignInRequestSessionEnded((Context)this.getNetflixActivity(), SignInLogging$SignInType.emailPassword, IClientLogging$CompletionReason.success, null);
+            SignInLogUtils.reportSignInRequestSessionEnded((Context)this.getNetflixActivity(), SignInLogging$SignInType.emailPassword, IClientLogging$CompletionReason.success, (Error)null);
             this.getNetflixActivity().showDebugToast(this.getString(2131296791));
             this.saveCredentials();
             return;
@@ -332,12 +327,12 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
     
     private void reportCancel(final String s) {
         UserActionLogUtils.reportNavigationActionEnded((Context)this.getNetflixActivity(), this.getNetflixActivity().getUiScreen(), IClientLogging$CompletionReason.canceled, new UIError(RootCause.clientFailure, ActionOnUIError.displayedError, s, null));
-        UserActionLogUtils.reportNavigationActionStarted((Context)this.getNetflixActivity(), null, this.getNetflixActivity().getUiScreen());
+        UserActionLogUtils.reportNavigationActionStarted((Context)this.getNetflixActivity(), (UserActionLogging$CommandName)null, this.getNetflixActivity().getUiScreen());
     }
     
     private void reportError(final com.netflix.mediaclient.android.app.Status status, final String s) {
         UserActionLogUtils.reportNavigationActionEnded((Context)this.getNetflixActivity(), this.getNetflixActivity().getUiScreen(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, s, ActionOnUIError.displayedError));
-        UserActionLogUtils.reportNavigationActionStarted((Context)this.getNetflixActivity(), null, this.getNetflixActivity().getUiScreen());
+        UserActionLogUtils.reportNavigationActionStarted((Context)this.getNetflixActivity(), (UserActionLogging$CommandName)null, this.getNetflixActivity().getUiScreen());
     }
     
     private void resolveResult(final Status status) {
@@ -478,7 +473,7 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
         if (Log.isLoggable()) {
             Log.i("LoginBaseFragment", "EmailPasswordFragment onCreateView");
         }
-        final View inflate = layoutInflater.inflate(2130903184, viewGroup, false);
+        final View inflate = layoutInflater.inflate(2130903185, viewGroup, false);
         this.setupViews(inflate);
         this.connectToSmartLock();
         return inflate;
@@ -504,18 +499,18 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
     @Override
     protected void setupViews(final View view) {
         super.setupViews(view);
-        (this.mEmailEditText = (EditText)view.findViewById(2131755489)).requestFocus();
-        this.mPasswordEditText = (EditText)view.findViewById(2131755490);
-        this.mLoginForm = view.findViewById(2131755487);
-        this.mLoginButton = view.findViewById(2131755485);
-        this.mStatusGroup = view.findViewById(2131755327);
-        this.mStatusMessageView = (TextView)view.findViewById(2131755488);
+        (this.mEmailEditText = (EditText)view.findViewById(2131755497)).requestFocus();
+        this.mPasswordEditText = (EditText)view.findViewById(2131755498);
+        this.mLoginForm = view.findViewById(2131755495);
+        this.mLoginButton = view.findViewById(2131755493);
+        this.mStatusGroup = view.findViewById(2131755334);
+        this.mStatusMessageView = (TextView)view.findViewById(2131755496);
         if (LocalizationUtils.isLocaleRTL(Locale.getDefault())) {
             this.mPasswordEditText.setGravity(5);
             this.mPasswordEditText.setOnFocusChangeListener((View$OnFocusChangeListener)new EmailPasswordFragment$1(this));
         }
         this.mPasswordEditText.setOnEditorActionListener((TextView$OnEditorActionListener)new EmailPasswordFragment$2(this));
-        view.findViewById(2131755485).setOnClickListener((View$OnClickListener)new EmailPasswordFragment$3(this));
-        view.findViewById(2131755486).setOnClickListener((View$OnClickListener)new EmailPasswordFragment$4(this));
+        view.findViewById(2131755493).setOnClickListener((View$OnClickListener)new EmailPasswordFragment$3(this));
+        view.findViewById(2131755494).setOnClickListener((View$OnClickListener)new EmailPasswordFragment$4(this));
     }
 }

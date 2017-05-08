@@ -140,7 +140,7 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
             return;
         }
         if (this.getActivity().getIntent().getBooleanExtra("extra_same_activity_type", false)) {
-            Api16Util.setBackgroundDrawableCompat(view, null);
+            Api16Util.setBackgroundDrawableCompat(view, (Drawable)null);
             return;
         }
         this.setupRecyclerShadow();
@@ -216,20 +216,20 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131755446);
+        this.rootContainer = view.findViewById(2131755454);
         if (this.rootContainer != null) {
             this.rootContainer.setBackgroundResource(this.getBackgroundResource());
         }
         if (!this.showDetailsOnLaunch) {
-            this.seasonsDialogRecyclerView = (RecyclerView)view.findViewById(2131755445);
-            this.fragBackground = view.findViewById(2131755446);
+            this.seasonsDialogRecyclerView = (RecyclerView)view.findViewById(2131755453);
+            this.fragBackground = view.findViewById(2131755454);
             return;
         }
-        this.fragBackground = view.findViewById(2131755458);
+        this.fragBackground = view.findViewById(2131755466);
     }
     
     protected int getBackgroundResource() {
-        return 2131689708;
+        return 2131689709;
     }
     
     protected int getNumColumns() {
@@ -252,9 +252,9 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     @Override
     protected int getlayoutId() {
         if (this.showDetailsOnLaunch) {
-            return 2130903290;
+            return 2130903291;
         }
-        return 2130903159;
+        return 2130903160;
     }
     
     @Override
@@ -376,9 +376,9 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.removeItemDecoration(this.innerGridDecoration);
+        this.recyclerView.removeItemDecoration((RecyclerView$ItemDecoration)this.innerGridDecoration);
         this.innerGridDecoration = new ItemDecorationBarkerGrid((Context)this.getActivity(), this.getNumColumns());
-        this.recyclerView.addItemDecoration(this.innerGridDecoration);
+        this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)this.innerGridDecoration);
     }
     
     @Override

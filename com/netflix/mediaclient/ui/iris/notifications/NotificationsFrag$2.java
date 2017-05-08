@@ -67,7 +67,7 @@ class NotificationsFrag$2 implements View$OnClickListener
     
     public void onClick(final View view) {
         this.this$0.playVideo(this.val$videoId, this.val$playContext, this.val$videoType);
-        UIViewLogUtils.reportUIViewCommandStarted((Context)this.this$0.getActivity(), UIViewLogging$UIViewCommandName.startPlay, IClientLogging$ModalView.menuPanel, null, null, this.this$0.getModelObject(this.val$summary, this.val$position));
+        UIViewLogUtils.reportUIViewCommandStarted((Context)this.this$0.getActivity(), UIViewLogging$UIViewCommandName.startPlay, IClientLogging$ModalView.menuPanel, (DataContext)null, (String)null, this.this$0.getModelObject(this.val$summary, this.val$position));
         UIViewLogUtils.reportUIViewCommandEnded((Context)this.this$0.getActivity());
     }
 }

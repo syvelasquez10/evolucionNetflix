@@ -23,7 +23,6 @@ final class PDiskDataRepository$1 extends PDiskDataRepository$FileLoadedCallback
         super(dataRepository, pDiskDataRepository$LoadCallback);
     }
     
-    @Override
     public void onLoaded(final DataRepository$Entry[] array) {
         if (array != null && array.length > 0) {
             initFromDiskData(this.getRepository(), array, this.val$loadCallback);

@@ -241,11 +241,11 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
     }
     
     protected int getNetflixStarRatingDrawableId() {
-        return 2130838154;
+        return 2130838156;
     }
     
     protected int getUserStarRatingDrawableId() {
-        return 2130838157;
+        return 2130838159;
     }
     
     public void onRatingChanged(final RatingBar ratingBar, final float n, final boolean b) {
@@ -281,7 +281,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
             switch (motionEvent.getAction()) {
                 case 0: {
                     Log.d("NetflixRatingBar", "Report rate action started");
-                    UserActionLogUtils.reportRateActionStarted((Context)netflixActivitySafely, null, netflixActivitySafely.getUiScreen());
+                    UserActionLogUtils.reportRateActionStarted((Context)netflixActivitySafely, (UserActionLogging$CommandName)null, netflixActivitySafely.getUiScreen());
                     return onTouchEvent;
                 }
                 case 1: {

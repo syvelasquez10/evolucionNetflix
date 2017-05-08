@@ -4,6 +4,8 @@
 
 package com.google.android.gms.common.internal;
 
+import com.google.android.gms.common.api.GoogleApiClient$Builder;
+import android.content.Context;
 import java.util.Iterator;
 import java.util.Collection;
 import java.util.HashSet;
@@ -55,6 +57,10 @@ public final class zzf
             set2.addAll((Collection<?>)iterator.next().zzTm);
         }
         this.zzafh = (Set<Scope>)Collections.unmodifiableSet((Set<?>)set2);
+    }
+    
+    public static zzf zzak(final Context context) {
+        return new GoogleApiClient$Builder(context).zznB();
     }
     
     public Account getAccount() {

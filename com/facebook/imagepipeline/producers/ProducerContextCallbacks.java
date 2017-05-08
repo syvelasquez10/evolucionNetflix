@@ -1,0 +1,16 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package com.facebook.imagepipeline.producers;
+
+public interface ProducerContextCallbacks
+{
+    void onCancellationRequested();
+    
+    void onIsIntermediateResultExpectedChanged();
+    
+    void onIsPrefetchChanged();
+    
+    void onPriorityChanged();
+}

@@ -59,7 +59,7 @@ class BarkerMovieDetailsFrag$BarkerSimilarItemsGridViewAdapter$1 implements Recy
     public View createItemView() {
         final VideoView videoView = new VideoView(this.val$this$0.recyclerView.getContext());
         videoView.setAdjustViewBounds(true);
-        videoView.setClickListener(new BarkerMovieDetailsFrag$BarkerRelatedVideoDetailsClickListener(this.val$this$0, this.val$this$0.getNetflixActivity(), videoView));
+        videoView.setClickListener(new BarkerMovieDetailsFrag$BarkerRelatedVideoDetailsClickListener(this.val$this$0, this.val$this$0.getNetflixActivity(), (PlayContextProvider)videoView));
         videoView.setScaleType(ImageView$ScaleType.FIT_XY);
         videoView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(this.getImageWidth(), this.getImageHeight()));
         videoView.setIsHorizontal(false);

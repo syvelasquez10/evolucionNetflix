@@ -80,14 +80,14 @@ public class LoLoMoFocusHandler extends DataSetObserver
         if (!(viewParent instanceof VideoViewGroup)) {
             viewParent2 = viewParent.getParent();
         }
-        VideoViewGroup<?, ?> videoViewGroup;
+        VideoViewGroup videoViewGroup;
         if (viewParent2 instanceof VideoViewGroup) {
-            videoViewGroup = (VideoViewGroup<?, ?>)viewParent2;
+            videoViewGroup = (VideoViewGroup)viewParent2;
         }
         else {
             videoViewGroup = null;
         }
-        return videoViewGroup;
+        return (VideoViewGroup<?, ?>)videoViewGroup;
     }
     
     private ViewPager getViewPager(final View view) {

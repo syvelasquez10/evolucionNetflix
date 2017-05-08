@@ -218,14 +218,14 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void setupViews() {
-        (this.drawerLayout = (DrawerLayout)this.findViewById(2131755415)).setDrawerListener(new HomeActivity$4(this));
+        (this.drawerLayout = (DrawerLayout)this.findViewById(2131755423)).setDrawerListener(new HomeActivity$4(this));
         this.unlockSlidingDrawerIfPossible();
         this.slidingMenuAdapter = BrowseExperience.get().createSlidingMenuAdapter(this, this.drawerLayout);
         if (Log.isLoggable()) {
             Log.v("HomeActivity", "Created sliding menu adapter of type: " + this.slidingMenuAdapter.getClass());
         }
         this.drawerLayout.setFocusable(false);
-        this.drawerLayout.setScrimColor(this.getResources().getColor(2131689577));
+        this.drawerLayout.setScrimColor(this.getResources().getColor(2131689578));
         this.updateActionBar();
         this.updateSlidingDrawer();
     }
@@ -248,7 +248,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131755307, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131755314, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
@@ -297,17 +297,14 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.slidingMenuAdapter.setSelectedGenre(this.genre);
     }
     
-    @Override
     protected boolean canApplyBrowseExperience() {
         return true;
     }
     
-    @Override
     public boolean canShowSnackBar() {
         return true;
     }
     
-    @Override
     protected ManagerStatusListener createManagerStatusListener() {
         return this.managerStatusListener;
     }
@@ -321,19 +318,17 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         return LoLoMoFrag.create(this.genreId, this.genre);
     }
     
-    @Override
     public boolean dispatchKeyEvent(final KeyEvent keyEvent) {
         return this.getPrimaryFrag().dispatchKeyEvent(keyEvent) || super.dispatchKeyEvent(keyEvent);
     }
     
-    @Override
     public int getActionBarParentViewId() {
-        return 2131755406;
+        return 2131755414;
     }
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903146;
+        return 2130903147;
     }
     
     public int getCurrentUnreadCount() {
@@ -363,7 +358,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         return (LoLoMoFrag)super.getPrimaryFrag();
     }
     
-    @Override
     public IClientLogging$ModalView getUiScreen() {
         return IClientLogging$ModalView.homeScreen;
     }
@@ -390,7 +384,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         return false;
     }
     
-    @Override
     public void onAccept() {
         if (this.mDialogManager != null) {
             this.mDialogManager.onAccept();
@@ -411,14 +404,13 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.setupViews();
         this.registerReceivers();
         this.pauseTimeMs = SystemClock.elapsedRealtime();
-        Coppola2Utils.forceToPortraitIfNeeded(this);
+        Coppola2Utils.forceToPortraitIfNeeded((Activity)this);
     }
     
-    @Override
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         boolean visible = true;
         if (this.getMdxMiniPlayerFrag() != null) {
-            MdxMenu.addSelectPlayTarget(this, menu, BrowseExperience.showKidsExperience());
+            MdxMenu.addSelectPlayTarget((NetflixActivity)this, menu, BrowseExperience.showKidsExperience());
         }
         else {
             Log.e("HomeActivity", "onCreateOptionsMenu got null MdxMiniPlayerFrag");
@@ -437,7 +429,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         else {
             n = 0;
         }
-        final MenuItem addSearchNavigation = SearchMenu.addSearchNavigation(this, menu, BrowseExperience.showKidsExperience());
+        final MenuItem addSearchNavigation = SearchMenu.addSearchNavigation((NetflixActivity)this, menu, BrowseExperience.showKidsExperience());
         if (n != 0) {
             visible = false;
         }
@@ -445,7 +437,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         super.onCreateOptionsMenu(menu, menu2);
     }
     
-    @Override
     public void onDecline() {
         if (this.mDialogManager != null) {
             this.mDialogManager.onDecline();
@@ -453,7 +444,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.showDataSaverNotif();
     }
     
-    @Override
     protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
         Log.d("HomeActivity", "onNewIntent: ", intent);
@@ -462,7 +452,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         }
     }
     
-    @Override
     protected void onPause() {
         super.onPause();
         if (Log.isLoggable()) {
@@ -474,7 +463,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         LocalBroadcastManager.getInstance((Context)this).unregisterReceiver(this.mUserMessageUpdatedReceiver);
     }
     
-    @Override
     protected void onResume() {
         super.onResume();
         this.slidingMenuAdapter.onActivityResume(this);
@@ -494,28 +482,23 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.runWhenManagerIsReady(new HomeActivity$5(this));
     }
     
-    @Override
     protected void onSaveInstanceState(final Bundle bundle) {
         super.onSaveInstanceState(bundle);
         bundle.putSerializable("extra_back_stack_intents", (Serializable)this.backStackIntents);
     }
     
-    @Override
     protected void onSlidingPanelCollapsed(final View view) {
         this.unlockSlidingDrawerIfPossible();
     }
     
-    @Override
     protected void onSlidingPanelExpanded(final View view) {
         this.lockSlidingDrawer();
     }
     
-    @Override
     public void performUpAction() {
         this.toggleDrawer();
     }
     
-    @Override
     protected boolean requiresDownloadButtonListener() {
         return true;
     }
@@ -524,22 +507,18 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         HomeActivity.currentUnreadCount = currentUnreadCount;
     }
     
-    @Override
     public Tooltip setupTutorial(final UserProfile userProfile) {
-        return TutorialHelper.buildMyDownloadTutorial(this.getNetflixActionBar().getHomeView(), this, userProfile);
+        return TutorialHelper.buildMyDownloadTutorial(this.getNetflixActionBar().getHomeView(), (Activity)this, userProfile);
     }
     
-    @Override
     public boolean shouldApplyPaddingToSlidingPanel() {
         return false;
     }
     
-    @Override
     protected boolean shouldSetIntentOnNewIntent() {
         return false;
     }
     
-    @Override
     protected boolean showNoNetworkOverlayIfNeeded() {
         return true;
     }

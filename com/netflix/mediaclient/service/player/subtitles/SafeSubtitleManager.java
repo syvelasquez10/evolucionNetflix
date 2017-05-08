@@ -48,13 +48,11 @@ public class SafeSubtitleManager implements SubtitleManager
         return !b;
     }
     
-    @Override
     public boolean canHandleSubtitleProfile(final ISubtitleDef$SubtitleProfile subtitleDef$SubtitleProfile) {
         final SubtitleManager realSubtitleManager = this.getRealSubtitleManager();
         return realSubtitleManager != null && realSubtitleManager.canHandleSubtitleProfile(subtitleDef$SubtitleProfile);
     }
     
-    @Override
     public void clear() {
         if (this.mSubtitleManager != null) {
             final SubtitleManager realSubtitleManager = this.getRealSubtitleManager();
@@ -64,7 +62,6 @@ public class SafeSubtitleManager implements SubtitleManager
         }
     }
     
-    @Override
     public void clearPendingUpdates() {
         final SubtitleManager realSubtitleManager = this.getRealSubtitleManager();
         if (realSubtitleManager != null) {
@@ -72,12 +69,10 @@ public class SafeSubtitleManager implements SubtitleManager
         }
     }
     
-    @Override
     public NetflixActivity getContext() {
         return this.mPlayerFrag.getNetflixActivity();
     }
     
-    @Override
     public ISubtitleDef$SubtitleProfile getSubtitleProfile() {
         final SubtitleManager realSubtitleManager = this.getRealSubtitleManager();
         if (realSubtitleManager != null) {
@@ -86,7 +81,6 @@ public class SafeSubtitleManager implements SubtitleManager
         return null;
     }
     
-    @Override
     public void onPlayerOverlayVisibiltyChange(final boolean b) {
         final SubtitleManager realSubtitleManager = this.getRealSubtitleManager();
         if (realSubtitleManager != null) {
@@ -94,7 +88,6 @@ public class SafeSubtitleManager implements SubtitleManager
         }
     }
     
-    @Override
     public void onSubtitleChange(final SubtitleScreen subtitleScreen) {
         synchronized (this) {
             final ISubtitleDef$SubtitleProfile subtitleProfile = subtitleScreen.getParser().getSubtitleProfile();
@@ -112,7 +105,6 @@ public class SafeSubtitleManager implements SubtitleManager
         }
     }
     
-    @Override
     public void onSubtitleRemove() {
         final SubtitleManager realSubtitleManager = this.getRealSubtitleManager();
         if (realSubtitleManager != null) {
@@ -120,7 +112,6 @@ public class SafeSubtitleManager implements SubtitleManager
         }
     }
     
-    @Override
     public void setSubtitleVisibility(final boolean subtitleVisibility) {
         final SubtitleManager realSubtitleManager = this.getRealSubtitleManager();
         if (realSubtitleManager != null) {

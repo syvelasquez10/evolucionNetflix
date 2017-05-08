@@ -44,9 +44,9 @@ public class Device
             return null;
         }
         final Device device = new Device();
-        device.esn = JsonUtils.getString(jsonObject, "esn", null);
-        device.model = JsonUtils.getString(jsonObject, "model", null);
-        device.type = JsonUtils.getString(jsonObject, "type", null);
+        device.esn = JsonUtils.getString(jsonObject, "esn", (String)null);
+        device.model = JsonUtils.getString(jsonObject, "model", (String)null);
+        device.type = JsonUtils.getString(jsonObject, "type", (String)null);
         return device;
     }
     

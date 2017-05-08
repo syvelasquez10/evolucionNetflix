@@ -68,7 +68,6 @@ class IntegratedClientLoggingManager$5 implements DataRepository$DataLoadedCallb
         this.val$deliveryRequestId = val$deliveryRequestId;
     }
     
-    @Override
     public void onDataLoaded(String s, final byte[] array, final long n) {
         if (array == null || array.length < 1) {
             Log.e("nf_log", "We failed to retrieve payload. Trying to delete it");

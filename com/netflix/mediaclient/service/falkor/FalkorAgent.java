@@ -25,7 +25,6 @@ import com.netflix.mediaclient.servicemgr.Asset;
 import java.io.File;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
-import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import com.netflix.mediaclient.util.IntentUtils;
@@ -105,7 +104,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     }
     
     private void cacheImage(final CountDownLatch countDownLatch, final String s) {
-        this.getService().getImageLoader().getImg(s, IClientLogging$AssetType.boxArt, 0, 0, new FalkorAgent$18(this, countDownLatch));
+        this.getService().getImageLoader().getImg(s, IClientLogging$AssetType.boxArt, 0, 0, (ImageLoader$ImageLoaderListener)new FalkorAgent$18(this, countDownLatch));
     }
     
     private void cacheLolomoImages(final CountDownLatch countDownLatch) {
@@ -632,7 +631,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
             clientLogging$CompletionReason = IClientLogging$CompletionReason.success;
         }
         if (b3) {
-            UserActionLogUtils.reportPrefetchLolomoJobEnded(this.getContext(), clientLogging$CompletionReason, null);
+            UserActionLogUtils.reportPrefetchLolomoJobEnded(this.getContext(), clientLogging$CompletionReason, (UIError)null);
         }
     }
     
@@ -705,7 +704,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     public void doInit() {
         this.cache = new Root();
         this.cmp = new CachedModelProxy<Root>(this, this.cache, (FalkorVolleyWebClient)this.getResourceFetcher().getApiNextWebClient());
-        this.cache.setProxy(this.cmp);
+        this.cache.setProxy((ModelProxy)this.cmp);
         IntentUtils.registerSafelyLocalBroadcastReceiver(this.getContext(), this.userAgentIntentReceiver, UserAgentBroadcastIntents.getNotificationIntentFilter());
         IntentUtils.registerSafelyBroadcastReceiver(this.getContext(), this.playReceiver, null, "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_START", "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP");
         FalkorAgent.isCacheWarmed = this.checkAndDeserializeFalcorCacheFromDisk();

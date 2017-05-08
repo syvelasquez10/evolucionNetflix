@@ -32,7 +32,7 @@ class NetworkSpeedControl$2 implements View$OnClickListener
     
     public void onClick(final View view) {
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.this$0.mNetflixActivity);
-        alertDialog$Builder.setTitle(2131297102);
+        alertDialog$Builder.setTitle(2131297125);
         alertDialog$Builder.setPositiveButton(2131297008, (DialogInterface$OnClickListener)new NetworkSpeedControl$2$1(this));
         alertDialog$Builder.setNegativeButton(2131297007, (DialogInterface$OnClickListener)new NetworkSpeedControl$2$2(this));
         alertDialog$Builder.create().show();

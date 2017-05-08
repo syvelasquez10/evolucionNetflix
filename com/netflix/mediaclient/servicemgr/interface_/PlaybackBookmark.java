@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.servicemgr.interface_;
 
-import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.Asset;
 
 public class PlaybackBookmark
@@ -21,12 +20,5 @@ public class PlaybackBookmark
     
     public static PlaybackBookmark fromAsset(final Asset asset) {
         return new PlaybackBookmark(asset.getPlaybackBookmark(), System.currentTimeMillis(), asset.getPlayableId());
-    }
-    
-    public static PlaybackBookmark fromVideoDetails(final EpisodeDetails episodeDetails) {
-        if (episodeDetails == null) {
-            return null;
-        }
-        return new PlaybackBookmark(episodeDetails.getBookmarkPosition(), System.currentTimeMillis(), episodeDetails.getId());
     }
 }

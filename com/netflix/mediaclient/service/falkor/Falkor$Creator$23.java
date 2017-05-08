@@ -11,6 +11,6 @@ final class Falkor$Creator$23 implements Func<FalkorBillboardData>
 {
     @Override
     public FalkorBillboardData call() {
-        return new FalkorBillboardData(Falkor$Creator.BillboardSummary);
+        return new FalkorBillboardData((Func)Falkor$Creator.BillboardSummary);
     }
 }

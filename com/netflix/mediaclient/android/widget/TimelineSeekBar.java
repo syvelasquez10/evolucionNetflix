@@ -72,7 +72,7 @@ public class TimelineSeekBar extends NetflixSeekBar
         }
         Drawable thumb2;
         if (b) {
-            thumb2 = this.getResources().getDrawable(2131689713);
+            thumb2 = this.getResources().getDrawable(2131689714);
         }
         else {
             thumb2 = this.getResources().getDrawable(2130838099);
@@ -88,7 +88,7 @@ public class TimelineSeekBar extends NetflixSeekBar
         if (Log.isLoggable()) {
             Log.d("nf_timelineseekbar", "onTouchEvent: " + motionEvent.getAction());
         }
-        return (this.onSeekBarChangeListener instanceof PlayerFragment$VideoPositionListener && ((PlayerFragment$VideoPositionListener)this.onSeekBarChangeListener).handleTouchEvent(this, motionEvent, touchEventToProgress)) || super.onTouchEvent(motionEvent);
+        return (this.onSeekBarChangeListener instanceof PlayerFragment$VideoPositionListener && ((PlayerFragment$VideoPositionListener)this.onSeekBarChangeListener).handleTouchEvent((SeekBar)this, motionEvent, touchEventToProgress)) || super.onTouchEvent(motionEvent);
     }
     
     public boolean onTrackballEvent(final MotionEvent motionEvent) {

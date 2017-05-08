@@ -117,7 +117,7 @@ public class DebugMenuItems
     }
     
     private void addNetworkSpeedController(final Menu menu) {
-        menu.add(2131297071).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$2(this));
+        menu.add(2131297094).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$2(this));
     }
     
     private void addReportBug(final Menu menu) {
@@ -141,7 +141,7 @@ public class DebugMenuItems
     }
     
     private void addShowControlledNetworkSpeedChart(final Menu menu) {
-        menu.add(2131297070).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$1(this));
+        menu.add(2131297093).setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$1(this));
     }
     
     private void addShowPlaybackAdvisory(final Menu menu) {

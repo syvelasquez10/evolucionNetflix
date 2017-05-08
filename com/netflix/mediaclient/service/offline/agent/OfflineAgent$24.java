@@ -83,9 +83,10 @@ import android.os.HandlerThread;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.IntentCommandHandler;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
@@ -94,26 +95,24 @@ class OfflineAgent$24 extends SimpleBrowseAgentCallback
 {
     final /* synthetic */ OfflineAgent this$0;
     final /* synthetic */ Runnable val$callback;
-    final /* synthetic */ String val$playableId;
     final /* synthetic */ String val$profileId;
     
-    OfflineAgent$24(final OfflineAgent this$0, final String val$profileId, final String val$playableId, final Runnable val$callback) {
+    OfflineAgent$24(final OfflineAgent this$0, final String val$profileId, final Runnable val$callback) {
         this.this$0 = this$0;
         this.val$profileId = val$profileId;
-        this.val$playableId = val$playableId;
         this.val$callback = val$callback;
     }
     
     @Override
     public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
         super.onMovieDetailsFetched(movieDetails, status);
-        if (status.isError()) {
-            handleFetchDetailsError(status);
+        if (status.isError() || movieDetails == null) {
+            handleFetchDetailsError(status, movieDetails);
         }
         else {
             Log.d("nf_offlineAgent", "Saving movie details");
             RealmVideoDetails.insertInRealm(this.this$0.mRealm, this.this$0.getService(), movieDetails, this.val$profileId);
-            OfflineAgentHelper.updateBookmarkIfNewer(this.val$playableId, movieDetails, this.val$profileId);
+            BookmarkStore.getInstance().createOrUpdateBookmark(movieDetails, this.val$profileId);
             if (this.val$callback != null) {
                 this.val$callback.run();
             }

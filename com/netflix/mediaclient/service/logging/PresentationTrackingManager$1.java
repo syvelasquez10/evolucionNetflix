@@ -51,6 +51,6 @@ class PresentationTrackingManager$1 implements Runnable
         if (Log.isLoggable()) {
             Log.d("nf_presentation", "PresentationEvent received " + presentationEvent);
         }
-        this.this$0.mPresentationEventQueue.post(presentationEvent);
+        this.this$0.mPresentationEventQueue.post((Object)presentationEvent);
     }
 }

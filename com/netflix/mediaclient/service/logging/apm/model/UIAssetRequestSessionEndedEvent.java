@@ -35,19 +35,19 @@ public final class UIAssetRequestSessionEndedEvent extends SessionEndedEvent
     
     public UIAssetRequestSessionEndedEvent(JSONObject jsonObject) {
         super(jsonObject);
-        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
+        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", (JSONObject)null);
         if (jsonObject != null) {
-            final String string = JsonUtils.getString(jsonObject, "assetType", null);
+            final String string = JsonUtils.getString(jsonObject, "assetType", (String)null);
             if (string != null) {
                 this.assetType = IClientLogging$AssetType.valueOf(string);
             }
-            final String string2 = JsonUtils.getString(jsonObject, "reason", null);
+            final String string2 = JsonUtils.getString(jsonObject, "reason", (String)null);
             if (string2 != null) {
                 this.reason = Enum.valueOf(IClientLogging$CompletionReason.class, string2);
             }
-            this.url = JsonUtils.getString(jsonObject, "url", null);
-            this.error = UIError.createInstance(JsonUtils.getJSONObject(jsonObject, "error", null));
-            this.response = HttpResponse.createInstance(JsonUtils.getJSONObject(jsonObject, "response", null));
+            this.url = JsonUtils.getString(jsonObject, "url", (String)null);
+            this.error = UIError.createInstance(JsonUtils.getJSONObject(jsonObject, "error", (JSONObject)null));
+            this.response = HttpResponse.createInstance(JsonUtils.getJSONObject(jsonObject, "response", (JSONObject)null));
         }
     }
     

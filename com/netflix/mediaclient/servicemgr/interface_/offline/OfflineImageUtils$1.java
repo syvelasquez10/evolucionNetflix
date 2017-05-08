@@ -26,11 +26,9 @@ final class OfflineImageUtils$1 implements ImageLoader$ImageLoaderListener
         this.val$localFilePath = val$localFilePath;
     }
     
-    @Override
     public void onErrorResponse(final String s) {
     }
     
-    @Override
     public void onResponse(final Bitmap bitmap, final String s) {
         if (bitmap != null) {
             copyResourceToFilesDir(this.val$service, this.val$src, this.val$localFilePath);

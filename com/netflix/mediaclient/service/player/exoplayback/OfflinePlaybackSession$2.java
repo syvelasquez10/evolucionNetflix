@@ -39,9 +39,11 @@ import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.media.Subtitle;
 import android.content.Context;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.media.AudioSource;
 import android.util.Pair;
+import com.netflix.mediaclient.util.activitytracking.ActivityTracker;
 import com.netflix.mediaclient.Log;
 
 class OfflinePlaybackSession$2 implements Runnable

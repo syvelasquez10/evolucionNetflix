@@ -22,7 +22,7 @@ public final class AppSessionStartedEvent extends SessionStartedEvent
     public AppSessionStartedEvent(JSONObject jsonObject) {
         super(jsonObject);
         this.lastShutdownGraceful = true;
-        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
+        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", (JSONObject)null);
         if (jsonObject != null) {
             this.lastShutdownGraceful = JsonUtils.getBoolean(jsonObject, "lastShutdownGraceful", true);
         }

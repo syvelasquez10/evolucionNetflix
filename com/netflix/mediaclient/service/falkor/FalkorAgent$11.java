@@ -24,7 +24,6 @@ import com.netflix.mediaclient.servicemgr.Asset;
 import java.io.File;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
-import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import com.netflix.mediaclient.util.IntentUtils;

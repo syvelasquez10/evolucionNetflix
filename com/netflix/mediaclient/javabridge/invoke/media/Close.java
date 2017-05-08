@@ -13,27 +13,31 @@ import com.netflix.mediaclient.javabridge.invoke.BaseInvoke;
 public class Close extends BaseInvoke
 {
     private static final String METHOD = "close";
+    private static final String PROPERTY_ACTIVITY_DATA = "activitydata";
     private static final String PROPERTY_AST = "audioSinkType";
     private static final String PROPERTY_CARRIER_INFO = "carrierinfo";
     private static final String PROPERTY_VOLUME = "volume";
     private static final String TARGET = "media";
     
-    public Close(final String s, final PlaybackVolumeMetric playbackVolumeMetric, final JSONObject jsonObject) {
+    public Close(final String s, final PlaybackVolumeMetric playbackVolumeMetric, final JSONObject jsonObject, final JSONObject jsonObject2) {
         super("media", "close");
-        this.setArguments(s, playbackVolumeMetric, jsonObject);
+        this.setArguments(s, playbackVolumeMetric, jsonObject, jsonObject2);
     }
     
-    private void setArguments(final String s, final PlaybackVolumeMetric playbackVolumeMetric, final JSONObject jsonObject) {
+    private void setArguments(final String s, final PlaybackVolumeMetric playbackVolumeMetric, final JSONObject jsonObject, final JSONObject jsonObject2) {
         try {
-            final JSONObject jsonObject2 = new JSONObject();
-            jsonObject2.put("audioSinkType", (Object)s);
+            final JSONObject jsonObject3 = new JSONObject();
+            jsonObject3.put("audioSinkType", (Object)s);
             if (playbackVolumeMetric != null) {
-                jsonObject2.put("volume", playbackVolumeMetric.getVolumeMetric());
+                jsonObject3.put("volume", playbackVolumeMetric.getVolumeMetric());
             }
             if (jsonObject != null) {
-                jsonObject2.put("carrierinfo", (Object)jsonObject);
+                jsonObject3.put("carrierinfo", (Object)jsonObject);
             }
-            this.arguments = jsonObject2.toString();
+            if (jsonObject2 != null) {
+                jsonObject3.put("activitydata", (Object)jsonObject2);
+            }
+            this.arguments = jsonObject3.toString();
         }
         catch (JSONException ex) {
             Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);

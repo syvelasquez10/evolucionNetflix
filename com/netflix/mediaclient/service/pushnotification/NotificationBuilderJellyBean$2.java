@@ -24,7 +24,6 @@ final class NotificationBuilderJellyBean$2 implements ImageLoader$ImageLoaderLis
         this.val$msgId = val$msgId;
     }
     
-    @Override
     public void onErrorResponse(final String s) {
         if (Log.isLoggable()) {
             Log.e("nf_push", "Failed to downlod " + this.val$payload.largeIcon + ". Reason: " + s);
@@ -32,7 +31,6 @@ final class NotificationBuilderJellyBean$2 implements ImageLoader$ImageLoaderLis
         NotificationBuilder.sendNotification(this.val$context, this.val$bigPictureStyle.build(), this.val$msgId);
     }
     
-    @Override
     public void onResponse(final Bitmap bitmap, final String s) {
         if (Log.isLoggable()) {
             Log.d("nf_push", "Image is downloaded " + this.val$payload.bigViewPicture + " from " + s);

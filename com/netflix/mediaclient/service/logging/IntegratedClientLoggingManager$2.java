@@ -70,6 +70,6 @@ class IntegratedClientLoggingManager$2 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.mEventQueue.post(this.val$event);
+        this.this$0.mEventQueue.post((Object)this.val$event);
     }
 }

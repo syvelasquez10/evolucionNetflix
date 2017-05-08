@@ -75,19 +75,19 @@ class BarkerKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
             default: {
                 return view.getResources().getDrawable(2130837997);
             }
-            case 2131689607: {
+            case 2131689608: {
                 return view.getResources().getDrawable(2130838001);
             }
-            case 2131689599: {
+            case 2131689600: {
                 return view.getResources().getDrawable(2130837996);
             }
-            case 2131689602: {
+            case 2131689603: {
                 return view.getResources().getDrawable(2130837998);
             }
-            case 2131689604: {
+            case 2131689605: {
                 return view.getResources().getDrawable(2130838000);
             }
-            case 2131689603: {
+            case 2131689604: {
                 return view.getResources().getDrawable(2130837999);
             }
         }
@@ -96,7 +96,7 @@ class BarkerKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
     @Override
     protected void setInitialToolbarColor() {
         super.setInitialToolbarColor();
-        final View viewById = this.recyclerView.getRootView().findViewById(2131755140);
+        final View viewById = this.recyclerView.getRootView().findViewById(2131755147);
         if (viewById != null) {
             Api16Util.setBackgroundDrawableCompat(viewById, this.getBackroundResource(viewById));
         }

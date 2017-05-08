@@ -24,8 +24,8 @@ class ProfileGateActionHandler extends BaseNflxHandlerWithoutDelayedActionSuppor
     @Override
     public NflxHandler$Response handle() {
         Log.d("NflxHandler", "Profile gate is required.");
-        NflxProtocolUtils.reportOnProfileGate(this.mActivity, this.mParamsMap, this.mStarted);
-        this.mActivity.startActivity(ProfileSelectionActivity.createSwitchFromDeepLinking(this.mActivity, IClientLogging$ModalView.homeScreen));
+        NflxProtocolUtils.reportOnProfileGate(this.mActivity, (Map)this.mParamsMap, this.mStarted);
+        this.mActivity.startActivity(ProfileSelectionActivity.createSwitchFromDeepLinking((Activity)this.mActivity, IClientLogging$ModalView.homeScreen));
         return NflxHandler$Response.HANDLING;
     }
 }

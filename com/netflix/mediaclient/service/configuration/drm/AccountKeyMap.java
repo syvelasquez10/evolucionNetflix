@@ -48,9 +48,9 @@ class AccountKeyMap
     
     private void buildKeyIdsMapFromLegacy() {
         final NetflixPreference netflixPreference = new NetflixPreference(this.mContext);
-        final String stringPref = netflixPreference.getStringPref("nf_drm_cdm_keyset_id", null);
-        final String stringPref2 = netflixPreference.getStringPref("nf_drm_kce_key_id", null);
-        final String stringPref3 = netflixPreference.getStringPref("nf_drm_kch_key_id", null);
+        final String stringPref = netflixPreference.getStringPref("nf_drm_cdm_keyset_id", (String)null);
+        final String stringPref2 = netflixPreference.getStringPref("nf_drm_kce_key_id", (String)null);
+        final String stringPref3 = netflixPreference.getStringPref("nf_drm_kch_key_id", (String)null);
         if (Log.isLoggable()) {
             Log.d(AccountKeyMap.TAG, "has legacy ksid [" + stringPref + "], kce_id [" + stringPref2 + "], kch_id [" + stringPref3 + "]");
         }

@@ -75,22 +75,22 @@ public class NfManifestCache implements NfManifestCacheInterface
     private void prepareManifests(final List<Triple<Long, Integer, PlayContext>> list) {
         final ArrayList<Long> list2 = new ArrayList<Long>();
         for (final Triple<Long, Integer, PlayContext> triple : list) {
-            final Long n = triple.first;
+            final Long n = (Long)triple.first;
             if (this.mPendingMovies.get(n) != null) {
                 if (Log.isLoggable()) {
                     Log.d(NfManifestCache.TAG, "skip pending movie manifest " + n);
                 }
-                this.mPendingMovies.get(n).updatePriority(triple.second);
+                this.mPendingMovies.get(n).updatePriority((int)triple.second);
             }
             else if (this.mManifestMap.get(n) != null) {
                 if (Log.isLoggable()) {
                     Log.d(NfManifestCache.TAG, "skip cached movie manifest" + n);
                 }
-                this.mManifestMap.get(n).setPriority(triple.second);
+                this.mManifestMap.get(n).setPriority((int)triple.second);
             }
             else {
                 list2.add(n);
-                this.mPendingMovies.put(n, new NfManifestCache$PendingMovie(this, triple.second, null));
+                this.mPendingMovies.put(n, new NfManifestCache$PendingMovie(this, (int)triple.second, null));
                 if (!Log.isLoggable()) {
                     continue;
                 }

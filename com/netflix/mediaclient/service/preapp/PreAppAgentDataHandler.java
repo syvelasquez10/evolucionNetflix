@@ -495,7 +495,7 @@ public class PreAppAgentDataHandler
         }
         final PreAppAgentDataHandler$10 preAppAgentDataHandler$10 = new PreAppAgentDataHandler$10(this, preAppAgentEventType);
         pDiskData.print();
-        new BackgroundTask().execute(new PreAppAgentDataHandler$11(this, pDiskData, preAppAgentDataHandler$10));
+        new BackgroundTask().execute(new PreAppAgentDataHandler$11(this, pDiskData, (DataRepository$DataSavedCallback)preAppAgentDataHandler$10));
     }
     
     private void setExperienceType(final PDiskData pDiskData) {

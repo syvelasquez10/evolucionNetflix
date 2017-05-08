@@ -50,14 +50,14 @@ public class PostPlayEndedEvent extends BaseUIActionSessionEndedEvent
         super(jsonObject);
         this.mAutoPlayCountdownEnabled = JsonUtils.getBoolean(jsonObject, "isAutoPlayCountdownEnabled", false);
         this.mLengthOfAutoPlayCountdown = JsonUtils.getInt(jsonObject, "lengthOfAutoPlayCountdown", 0);
-        final String string = JsonUtils.getString(jsonObject, "postPlayExperience", null);
+        final String string = JsonUtils.getString(jsonObject, "postPlayExperience", (String)null);
         if (StringUtils.isNotEmpty(string)) {
             this.mPostPlayExperience = UserActionLogging$PostPlayExperience.valueOf(string);
         }
         this.mWasAutoPlayCountdownInterrupted = JsonUtils.getBoolean(jsonObject, "wasAutoPlayCountdownInterrupted", false);
         this.mDidUserContinueWatching = JsonUtils.getBoolean(jsonObject, "didUserContinueWatching", false);
-        this.mChosenVideoId = JsonUtils.getIntegerObject(jsonObject, "chosenVideoId", null);
-        this.mChosenIndex = JsonUtils.getIntegerObject(jsonObject, "chosenIndex", null);
+        this.mChosenVideoId = JsonUtils.getIntegerObject(jsonObject, "chosenVideoId", (Integer)null);
+        this.mChosenIndex = JsonUtils.getIntegerObject(jsonObject, "chosenIndex", (Integer)null);
         this.mTrackId = JsonUtils.getInt(jsonObject, "trackId", 0);
     }
     

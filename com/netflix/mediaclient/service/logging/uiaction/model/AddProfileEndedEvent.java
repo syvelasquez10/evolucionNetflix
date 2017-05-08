@@ -33,7 +33,7 @@ public class AddProfileEndedEvent extends BaseUIActionSessionEndedEvent
     
     public AddProfileEndedEvent(JSONObject jsonObject) {
         super(jsonObject);
-        jsonObject = JsonUtils.getJSONObject(jsonObject, "profile", null);
+        jsonObject = JsonUtils.getJSONObject(jsonObject, "profile", (JSONObject)null);
         if (jsonObject == null) {
             LogUtils.reportErrorSafely("AddProfileEndedEvent: Profile object missing!", (Throwable)new JSONException("AddProfileEndedEvent: Profile object missing!"));
             return;

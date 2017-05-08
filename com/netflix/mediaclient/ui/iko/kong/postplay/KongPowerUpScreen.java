@@ -76,9 +76,9 @@ public class KongPowerUpScreen extends KongBaseScreen
     void initViews(final View view) {
         this.powerUpViewsContainer = (ViewGroup)view;
         this.context = this.postPlayManager.getActivity();
-        this.powerUpContainer = (ViewGroup)this.powerUpViewsContainer.findViewById(2131755673);
+        this.powerUpContainer = (ViewGroup)this.powerUpViewsContainer.findViewById(2131755681);
         this.powerUpParams = new FrameLayout$LayoutParams(-2, this.context.getResources().getDimensionPixelSize(2131427464), 17);
-        this.powerUpTitleView = (TextView)this.powerUpViewsContainer.findViewById(2131755672);
+        this.powerUpTitleView = (TextView)this.powerUpViewsContainer.findViewById(2131755680);
         (this.smAvatarImage = new ImageView((Context)this.postPlayManager.getActivity())).setLayoutParams((ViewGroup$LayoutParams)this.powerUpParams);
         (this.whiteFlareImage = new ImageView((Context)this.context)).setLayoutParams((ViewGroup$LayoutParams)this.powerUpParams);
         (this.emptyBadgeImage = new ImageView((Context)this.context)).setLayoutParams((ViewGroup$LayoutParams)this.powerUpParams);
@@ -201,7 +201,7 @@ public class KongPowerUpScreen extends KongBaseScreen
         ViewUtils.resetImageDrawable(this.smAvatarImage);
         if (this.gearItemsList != null) {
             for (int i = 0; i < this.gearItemsList.size(); ++i) {
-                ViewUtils.resetImageDrawable(this.gearItemsImageViewList.get(i));
+                ViewUtils.resetImageDrawable((ImageView)this.gearItemsImageViewList.get(i));
             }
         }
         ViewUtils.resetImageDrawable(this.whiteFlareImage);

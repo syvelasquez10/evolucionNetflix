@@ -59,7 +59,7 @@ public class WidevineErrorDescriptor implements ErrorDescriptor
             mOkTask = new WidevineErrorDescriptor$1(this);
         }
         if (uri != null) {
-            this.mData = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", message, null, mOkTask, this.mContext.getString(2131296633), new LaunchBrowser(this.mContext, uri));
+            this.mData = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", message, null, mOkTask, this.mContext.getString(2131296633), (Runnable)new LaunchBrowser(this.mContext, uri));
             return;
         }
         this.mData = new AlertDialogFactory$AlertDialogDescriptor("", message, null, mOkTask);

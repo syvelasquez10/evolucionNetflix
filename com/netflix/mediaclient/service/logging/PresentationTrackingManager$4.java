@@ -37,7 +37,6 @@ class PresentationTrackingManager$4 implements DataRepository$DataLoadedCallback
         this.val$deliveryRequestId = val$deliveryRequestId;
     }
     
-    @Override
     public void onDataLoaded(final String s, final byte[] array, final long n) {
         if (array == null || array.length < 1) {
             Log.e("nf_presentation", "We failed to retrieve payload. Trying to delete it");

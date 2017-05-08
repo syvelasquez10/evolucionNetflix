@@ -260,7 +260,7 @@ public class ExportDebugData
                         intent.setType("text/plain");
                         intent.putExtra("android.intent.extra.EMAIL", new String[] { "spy-issues@netflix.com" });
                         intent.putExtra("android.intent.extra.SUBJECT", "Enter_JIRA_summary_here");
-                        intent.putExtra("android.intent.extra.TEXT", "\n\nEnter_JIRA_description_here\n\n\n\n\npackage=com.netflix.mediaclient\nversion=4.13.0 build 14540\ncode=14540\nandroid=" + Build$VERSION.SDK_INT + "\nbrand=" + Build.BRAND + "\nmanufacturer=" + Build.MANUFACTURER + "\nmodel=" + Build.MODEL + "\ndevice=" + Build.DEVICE + "\ndevice.locale=" + Locale.getDefault().getCountry() + "_" + Locale.getDefault().getLanguage() + "\n" + string);
+                        intent.putExtra("android.intent.extra.TEXT", "\n\nEnter_JIRA_description_here\n\n\n\n\npackage=com.netflix.mediaclient\nversion=4.13.2 build 14565\ncode=14565\nandroid=" + Build$VERSION.SDK_INT + "\nbrand=" + Build.BRAND + "\nmanufacturer=" + Build.MANUFACTURER + "\nmodel=" + Build.MODEL + "\ndevice=" + Build.DEVICE + "\ndevice.locale=" + Locale.getDefault().getCountry() + "_" + Locale.getDefault().getLanguage() + "\n" + string);
                         final Iterator<Uri> iterator = list.iterator();
                         while (iterator.hasNext()) {
                             grantRead((Context)activity, intent, iterator.next());
@@ -329,8 +329,8 @@ public class ExportDebugData
                 Log.e("ExportDebugData", "Unable to capture logcat", t);
                 return null;
             }
-            IoUtil.safeClose(bufferedReader);
-            IoUtil.safeClose(fileWriter);
+            IoUtil.safeClose((Closeable)bufferedReader);
+            IoUtil.safeClose((Closeable)fileWriter);
             return file;
         }
         Log.e("ExportDebugData", "Unable to capture logcat, " + file.getAbsolutePath() + " cannot be used");
@@ -352,7 +352,7 @@ public class ExportDebugData
                 rootView.setDrawingCacheEnabled(false);
                 final FileOutputStream fileOutputStream = new FileOutputStream(file);
                 bitmap.compress(Bitmap$CompressFormat.JPEG, 100, (OutputStream)fileOutputStream);
-                IoUtil.safeClose(fileOutputStream);
+                IoUtil.safeClose((Closeable)fileOutputStream);
                 return file;
             }
             Log.e("ExportDebugData", "Unable to capture screenshot, " + file.getAbsolutePath() + " cannot be used");

@@ -35,14 +35,14 @@ public abstract class BaseUIActionSessionEndedEvent extends SessionEndedEvent
     
     public BaseUIActionSessionEndedEvent(JSONObject jsonObject) {
         super(jsonObject);
-        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
+        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", (JSONObject)null);
         if (jsonObject != null) {
-            this.mCompletionReason = IClientLogging$CompletionReason.valueOf(JsonUtils.getString(jsonObject, "reason", null));
-            jsonObject = JsonUtils.getJSONObject(jsonObject, "started", null);
+            this.mCompletionReason = IClientLogging$CompletionReason.valueOf(JsonUtils.getString(jsonObject, "reason", (String)null));
+            jsonObject = JsonUtils.getJSONObject(jsonObject, "started", (JSONObject)null);
             if (jsonObject != null) {
-                this.mView = IClientLogging$ModalView.valueOf(JsonUtils.getString(jsonObject, "modalView", null));
-                this.mAction = UserActionLogging$CommandName.valueOf(JsonUtils.getString(jsonObject, "commandName", null));
-                jsonObject = JsonUtils.getJSONObject(jsonObject, "error", null);
+                this.mView = IClientLogging$ModalView.valueOf(JsonUtils.getString(jsonObject, "modalView", (String)null));
+                this.mAction = UserActionLogging$CommandName.valueOf(JsonUtils.getString(jsonObject, "commandName", (String)null));
+                jsonObject = JsonUtils.getJSONObject(jsonObject, "error", (JSONObject)null);
                 if (jsonObject != null) {
                     this.mUIError = new UIError(jsonObject);
                 }

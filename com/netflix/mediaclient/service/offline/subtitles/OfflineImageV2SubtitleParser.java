@@ -186,7 +186,7 @@ public class OfflineImageV2SubtitleParser extends ImageV2SubtitleParser implemen
     
     @Override
     public Subtitle getCurrentSubtitle() {
-        return this.mSubtitle;
+        return (Subtitle)this.mSubtitle;
     }
     
     protected boolean handleImport() {

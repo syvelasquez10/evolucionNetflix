@@ -34,7 +34,7 @@ public abstract class SessionEvent extends Event
     public SessionEvent(final JSONObject jsonObject) {
         super(jsonObject);
         this.sessionId = new DeviceUniqueId(JsonUtils.getLong(jsonObject, "sessionId", 0L));
-        this.sessionName = JsonUtils.getString(jsonObject, "sessionName", null);
+        this.sessionName = JsonUtils.getString(jsonObject, "sessionName", (String)null);
     }
     
     public DeviceUniqueId getSessionId() {

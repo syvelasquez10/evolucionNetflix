@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import android.app.Activity;
 import com.netflix.mediaclient.util.Coppola1Utils;
-import java.util.Collections;
+import java.util.HashMap;
 import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
@@ -55,7 +55,7 @@ class DetailsActivity$1 implements LoadingStatus$LoadingStatusCallback
         this.this$0.setLoadingStatusCallback(null);
         if (!this.this$0.isFinishing()) {
             Log.d("DetailsActivity", "DetailsPage is loaded, reporting navigate.ended for movieDetails");
-            UserActionLogUtils.reportNavigationActionEnded((Context)this.this$0, this.this$0.getUiScreen(), IClientLogging$CompletionReason.success, null);
+            UserActionLogUtils.reportNavigationActionEnded((Context)this.this$0, this.this$0.getUiScreen(), IClientLogging$CompletionReason.success, (UIError)null);
             if (status.isError()) {
                 this.this$0.handleFalkorAgentErrors(status);
             }

@@ -23,7 +23,7 @@ public class NetflixComSearchHandler implements NetflixComHandler
         if (list.size() > 1) {
             s = list.get(1);
         }
-        SearchActivity.search(netflixActivity, s);
+        SearchActivity.search((Activity)netflixActivity, s);
         return NflxHandler$Response.HANDLING;
     }
 }

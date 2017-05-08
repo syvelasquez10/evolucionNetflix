@@ -28,9 +28,9 @@ public final class UserSessionStartedEvent extends SessionStartedEvent
     
     public UserSessionStartedEvent(JSONObject jsonObject) {
         super(jsonObject);
-        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
+        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", (JSONObject)null);
         if (jsonObject != null) {
-            final String string = JsonUtils.getString(jsonObject, "trigger", null);
+            final String string = JsonUtils.getString(jsonObject, "trigger", (String)null);
             if (string != null) {
                 this.trigger = Enum.valueOf(ApplicationPerformanceMetricsLogging$Trigger.class, string);
             }

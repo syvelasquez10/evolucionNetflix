@@ -81,11 +81,12 @@ import android.os.HandlerThread;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.IntentCommandHandler;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
@@ -107,8 +108,8 @@ class OfflineAgent$25 extends SimpleBrowseAgentCallback
     @Override
     public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
         super.onEpisodeDetailsFetched(episodeDetails, status);
-        if (status.isError()) {
-            handleFetchDetailsError(status);
+        if (status.isError() || episodeDetails == null) {
+            handleFetchDetailsError(status, episodeDetails);
         }
         else {
             final String showId = episodeDetails.getShowId();
@@ -118,7 +119,7 @@ class OfflineAgent$25 extends SimpleBrowseAgentCallback
             }
             Log.d("nf_offlineAgent", "Saving episode details, season details already saved");
             RealmVideoDetails.insertInRealm(this.this$0.mRealm, this.this$0.getService(), episodeDetails, this.val$profileId);
-            OfflineAgentHelper.updateBookmarkIfNewer(this.val$playableId, episodeDetails, this.val$profileId);
+            BookmarkStore.getInstance().createOrUpdateBookmark(episodeDetails, this.val$profileId);
             if (this.val$callback != null) {
                 this.val$callback.run();
             }

@@ -4,6 +4,7 @@
 
 package com.netflix.android.tooltips;
 
+import android.util.Log;
 import android.text.Html;
 import android.content.SharedPreferences;
 import android.view.View$OnLayoutChangeListener;
@@ -20,6 +21,7 @@ public final class Tooltip
 {
     private static final String PREFS = "com.netflix.android.tooltips";
     private static final String PREF_CONSUMED = "consumed.";
+    private static final String TAG = "Tooltip";
     private Tooltip$Callback mCallback;
     private String mKey;
     private final CoordinatorLayout mParent;
@@ -97,7 +99,10 @@ public final class Tooltip
     }
     
     public void show() {
-        if (!this.isConsumed()) {
+        if (this.mTooltipLayout.isShown()) {
+            Log.d("Tooltip", "Tooltip is already showing");
+        }
+        else if (!this.isConsumed()) {
             this.mTooltipLayout.show(this.mParent);
             this.mTooltipLayout.setCallback(new Tooltip$3(this));
         }

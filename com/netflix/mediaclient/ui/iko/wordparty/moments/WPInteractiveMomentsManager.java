@@ -124,7 +124,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         this.momentsDisplayTimeList = new ArrayList<Integer>();
         this.handler = new Handler();
         this.isPugAutoOptIn = true;
-        this.playPauseListener = new WPInteractiveMomentsManager$1(this);
+        this.playPauseListener = (PlayPauseListener)new WPInteractiveMomentsManager$1(this);
         this.onTapHijackListener = (View$OnTouchListener)new WPInteractiveMomentsManager$12(this);
     }
     
@@ -136,7 +136,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
             final ViewPropertyAnimator animate = this.pugContainer.animate();
             if (b) {
                 if (this.pugContainer.getTranslationY() != -this.bottomPanelHeight) {
-                    if (!ViewUtils.isNavigationBarBelowContent(this.fragment.getNetflixActivity())) {
+                    if (!ViewUtils.isNavigationBarBelowContent((Activity)this.fragment.getNetflixActivity())) {
                         animate.translationX((float)(-ViewUtils.getNavigationBarHeight(this.getContext(), false)));
                     }
                     animate.translationY((float)(-this.bottomPanelHeight)).start();
@@ -220,14 +220,14 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
             }
             return;
         }
-        this.bottomPanel = view.findViewById(2131755704);
-        this.loadingProgressBar = (ProgressBar)view.findViewById(2131755980);
-        this.pugContainer = (FrameLayout)view.findViewById(2131755961);
-        this.wpContainer = (RelativeLayout)view.findViewById(2131755960);
-        this.pugImageView = (ImageView)view.findViewById(2131755964);
-        this.pugRevealView = view.findViewById(2131755962);
-        this.progressBar = (ProgressBar)view.findViewById(2131755963);
-        (this.closeButton = (IconFontTextView)view.findViewById(2131755640)).setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$10(this));
+        this.bottomPanel = view.findViewById(2131755712);
+        this.loadingProgressBar = (ProgressBar)view.findViewById(2131756000);
+        this.pugContainer = (FrameLayout)view.findViewById(2131755981);
+        this.wpContainer = (RelativeLayout)view.findViewById(2131755980);
+        this.pugImageView = (ImageView)view.findViewById(2131755984);
+        this.pugRevealView = view.findViewById(2131755982);
+        this.progressBar = (ProgressBar)view.findViewById(2131755983);
+        (this.closeButton = (IconFontTextView)view.findViewById(2131755648)).setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$10(this));
         this.progressBar.setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$11(this));
         this.wpContainer.setOnTouchListener((View$OnTouchListener)null);
         this.momentScreen = new WPMomentScreen(this);
@@ -637,7 +637,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
     private void reportMomentStarted() {
         final Context context = this.getContext();
         if (context != null) {
-            IkoLogUtils.reportIkoMomentStarted(context, null, IClientLogging$ModalView.ikoMoment);
+            IkoLogUtils.reportIkoMomentStarted(context, (UserActionLogging$CommandName)null, IClientLogging$ModalView.ikoMoment);
         }
     }
     
@@ -859,7 +859,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         }
         this.fragment = fragment;
         final View view = fragment.getView();
-        this.ikoContainer = (RelativeLayout)view.findViewById(2131755416);
+        this.ikoContainer = (RelativeLayout)view.findViewById(2131755424);
         if (this.ikoContainer == null) {
             Log.d("WPInteractiveMomentsManager", "No interactive moments view container. Exiting the decorator.");
             return;
@@ -871,7 +871,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
             this.ikoContainer.removeAllViews();
         }
         this.hasInteractiveMoments = false;
-        LayoutInflater.from((Context)fragment.getNetflixActivity()).inflate(2130903337, (ViewGroup)this.ikoContainer, true);
+        LayoutInflater.from((Context)fragment.getNetflixActivity()).inflate(2130903342, (ViewGroup)this.ikoContainer, true);
         this.findAndConfigureViews(view);
         if (ViewUtils.isNavigationBarBelowContent(fragment.getActivity())) {
             this.bottomPanelHeight += ViewUtils.getNavigationBarHeight((Context)fragment.getActivity(), false);
@@ -900,7 +900,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         if (this.fragment != null) {
             navigationBarBelowContent = navigationBarBelowContent;
             if (this.fragment.getNetflixActivity() != null) {
-                navigationBarBelowContent = ViewUtils.isNavigationBarBelowContent(this.fragment.getNetflixActivity());
+                navigationBarBelowContent = ViewUtils.isNavigationBarBelowContent((Activity)this.fragment.getNetflixActivity());
             }
         }
         return navigationBarBelowContent;
@@ -919,7 +919,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         }
         this.cleanUpResources();
         if (this.getContext() != null) {
-            IkoLogUtils.reportIkoModeEnded(this.getContext(), IClientLogging$CompletionReason.success, null);
+            IkoLogUtils.reportIkoModeEnded(this.getContext(), IClientLogging$CompletionReason.success, (UIError)null);
         }
     }
     
@@ -936,7 +936,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
                     return;
                 }
                 if (this.getContext() != null) {
-                    IkoLogUtils.reportIkoModeStarted(this.getContext(), null, IClientLogging$ModalView.ikoMode);
+                    IkoLogUtils.reportIkoModeStarted(this.getContext(), (UserActionLogging$CommandName)null, IClientLogging$ModalView.ikoMode);
                 }
                 this.data = (WPInteractiveMomentsModel)data;
                 this.interactiveMoments = this.data.getMoments();
@@ -1167,7 +1167,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
                 sceneType = null;
                 momentId = null;
             }
-            IkoLogUtils.reportIkoMomentEnded(context, clientLogging$CompletionReason, null, momentId, sceneType, momentExpectedVideoOffset, currentStateNameForLogging);
+            IkoLogUtils.reportIkoMomentEnded(context, clientLogging$CompletionReason, (UIError)null, momentId, sceneType, momentExpectedVideoOffset, currentStateNameForLogging);
         }
     }
     

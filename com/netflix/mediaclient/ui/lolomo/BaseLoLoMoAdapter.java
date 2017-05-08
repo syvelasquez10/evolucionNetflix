@@ -99,24 +99,24 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         final LinearLayout$LayoutParams linearLayout$LayoutParams = new LinearLayout$LayoutParams(-1, -2);
         linearLayout$LayoutParams.topMargin = circlePageIndicator.getMeasuredHeight() * -2;
         linearLayout.addView((View)circlePageIndicator, (ViewGroup$LayoutParams)linearLayout$LayoutParams);
-        return viewPager;
+        return (BaseLoLoMoAdapter$LoMoRowContent)viewPager;
     }
     
     private BaseLoLoMoAdapter$RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131755469);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131755477);
         linearLayout.setFocusable(false);
-        final TextView textView = (TextView)view.findViewById(2131755471);
+        final TextView textView = (TextView)view.findViewById(2131755479);
         final Resources resources = this.activity.getResources();
         int n;
         if (BrowseExperience.showKidsExperience()) {
-            n = 2131689544;
+            n = 2131689545;
         }
         else {
-            n = 2131689656;
+            n = 2131689657;
         }
         textView.setTextColor(resources.getColor(n));
-        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131755492));
+        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131755500));
     }
     
     private void fetchMoreData() {
@@ -276,7 +276,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     protected int getViewLayoutId() {
-        return 2130903186;
+        return 2130903187;
     }
     
     public int getViewTypeCount() {
@@ -301,7 +301,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     protected TextView initTitleView(final View view) {
-        final TextView textView = (TextView)view.findViewById(2131755470);
+        final TextView textView = (TextView)view.findViewById(2131755478);
         if (Log.isLoggable()) {
             Log.v("BaseLoLoMoAdapter", "Manipulating title padding, view: " + textView);
         }
@@ -437,7 +437,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         }
         baseLoLoMoAdapter$RowHolder.rowContent.refresh(t, n);
         if (BrowseExperience.showKidsExperience()) {
-            Api16Util.setBackgroundDrawableCompat(baseLoLoMoAdapter$RowHolder.contentGroup, null);
+            Api16Util.setBackgroundDrawableCompat(baseLoLoMoAdapter$RowHolder.contentGroup, (Drawable)null);
             baseLoLoMoAdapter$RowHolder.contentGroup.setPadding(0, 0, 0, this.activity.getResources().getDimensionPixelSize(2131427787));
             baseLoLoMoAdapter$RowHolder.title.setTextColor(baseLoLoMoAdapter$RowHolder.defaultTitleColors);
         }

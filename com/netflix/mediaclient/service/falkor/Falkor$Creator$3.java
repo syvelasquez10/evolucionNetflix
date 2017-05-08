@@ -12,6 +12,6 @@ final class Falkor$Creator$3 implements Func<UnsummarizedList<Ref>>
 {
     @Override
     public UnsummarizedList<Ref> call() {
-        return new UnsummarizedList<Ref>(Falkor$Creator.Ref);
+        return (UnsummarizedList<Ref>)new UnsummarizedList((Func)Falkor$Creator.Ref);
     }
 }

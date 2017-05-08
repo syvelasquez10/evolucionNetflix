@@ -36,6 +36,10 @@ public class NetworkDispatcher extends Thread
         this.mDelivery = mDelivery;
     }
     
+    public static void addNetworkDispatcherListener(final NetworkDispatcher$NetworkDispatcherListener networkDispatcher$NetworkDispatcherListener) {
+        NetworkDispatcher.sListener.put(networkDispatcher$NetworkDispatcherListener, networkDispatcher$NetworkDispatcherListener);
+    }
+    
     private void notifyOnFinished(final Request request) {
         request.markInFlight(false);
         for (final NetworkDispatcher$NetworkDispatcherListener networkDispatcher$NetworkDispatcherListener : NetworkDispatcher.sListener.keySet()) {

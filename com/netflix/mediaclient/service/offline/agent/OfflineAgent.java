@@ -57,6 +57,7 @@ import com.netflix.mediaclient.service.offline.registry.RegistryData;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry$RegistryEnumerator;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
@@ -194,7 +195,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (context != null) {
             if (!this.mOfflineRegistry.persistRegistry()) {
                 Log.e("nf_offlineAgent", "doSaveToRegistryInBGThread can't persist registry");
-                LogUtils.reportErrorSafely("persistRegistry failed", null);
+                LogUtils.reportErrorSafely("persistRegistry failed", (Throwable)null);
                 this.sendError(new NetflixStatus(StatusCode.DL_CANT_PERSIST_REGISTRY));
             }
             return;
@@ -208,7 +209,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     
     private void fetchVideoDetailsAndSaveToRealm(final String s, final VideoType videoType, final String s2, final Runnable runnable) {
         if (videoType == VideoType.MOVIE) {
-            this.getBrowseAgent().fetchMovieDetails(s, null, new OfflineAgent$24(this, s2, s, runnable));
+            this.getBrowseAgent().fetchMovieDetails(s, null, new OfflineAgent$24(this, s2, runnable));
         }
         else if (videoType == VideoType.EPISODE) {
             this.getBrowseAgent().fetchEpisodeDetails(s, null, new OfflineAgent$25(this, s, s2, runnable));
@@ -454,8 +455,8 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         this.mDownloadController.onDownloadResumeJobDone();
     }
     
-    private static void handleFetchDetailsError(final Status status) {
-        final String string = "serializeMetadataToDisc() got an error: " + status;
+    private static void handleFetchDetailsError(final Status status, final VideoDetails videoDetails) {
+        final String string = "serializeMetadataToDisc() got an error: " + status + " videoDetails" + videoDetails;
         Log.w("nf_offlineAgent", string);
         ErrorLoggingManager.logHandledException(string);
     }
@@ -623,13 +624,13 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     private void reportDeleteConsolidatedLogging(final Status status, final OfflinePlayable offlinePlayable) {
         final String mOxId = offlinePlayable.getOfflineViewablePersistentData().mOxId;
         if (offlinePlayable.getDownloadState() != DownloadState.Complete) {
-            OfflineLogUtils.reportDownloadEnded(this.getContext(), mOxId, null, IClientLogging$CompletionReason.canceled, status.getError());
+            OfflineLogUtils.reportDownloadEnded(this.getContext(), mOxId, (IClientLogging$ModalView)null, IClientLogging$CompletionReason.canceled, status.getError());
         }
         if (status.isError()) {
-            OfflineLogUtils.reportRemoveCachedVideoEnded(this.getContext(), mOxId, null, IClientLogging$CompletionReason.failed, status.getError());
+            OfflineLogUtils.reportRemoveCachedVideoEnded(this.getContext(), mOxId, (IClientLogging$ModalView)null, IClientLogging$CompletionReason.failed, status.getError());
             return;
         }
-        OfflineLogUtils.reportRemoveCachedVideoEnded(this.getContext(), mOxId, null, IClientLogging$CompletionReason.success, null);
+        OfflineLogUtils.reportRemoveCachedVideoEnded(this.getContext(), mOxId, (IClientLogging$ModalView)null, IClientLogging$CompletionReason.success, (Error)null);
     }
     
     private void saveToRegistry() {
@@ -701,7 +702,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         }
         else {
             if (status.isSucces()) {
-                OfflineLogUtils.reportAddCachedVideoEnded(this.getContext(), offlineViewableByPlayableId.getOfflineViewablePersistentData().mOxId, IClientLogging$ModalView.addCachedVideoButton, IClientLogging$CompletionReason.success, null);
+                OfflineLogUtils.reportAddCachedVideoEnded(this.getContext(), offlineViewableByPlayableId.getOfflineViewablePersistentData().mOxId, IClientLogging$ModalView.addCachedVideoButton, IClientLogging$CompletionReason.success, (Error)null);
                 if (status.getStatusCode() == StatusCode.DL_WARNING_DL_N_TIMES_BEFORE_DATE) {
                     offlineViewableByPlayableId.getOfflineViewablePersistentData().setWarningStatus(status);
                     offlineViewableByPlayableId.getOfflineViewablePersistentData().setDownloadStateStopped(StopReason.DownloadLimitRequiresManualResume);
@@ -953,10 +954,12 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     public void onAccountDataFetched() {
         ThreadUtils.assertNotOnMain();
         Log.i("nf_offlineAgent", "onAccountDataFetched");
-        this.handleMayBeNewUser();
-        this.handleLicenseRefreshForAll();
-        if (DownloadGeoPlayabilityHelper.hasGeoCountryChanged(this.mOfflineRegistry.getGeoCountryCode(), this.mConfigurationAgent.getGeoCountryCode())) {
-            this.sendGeoPlayabilityRequest();
+        if (!this.isOfflineFeatureDisabled()) {
+            this.handleMayBeNewUser();
+            this.handleLicenseRefreshForAll();
+            if (DownloadGeoPlayabilityHelper.hasGeoCountryChanged(this.mOfflineRegistry.getGeoCountryCode(), this.mConfigurationAgent.getGeoCountryCode())) {
+                this.sendGeoPlayabilityRequest();
+            }
         }
     }
     

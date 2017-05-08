@@ -39,7 +39,7 @@ public class BarkerKidsDetailsActivity extends DetailsActivity implements PlayCo
         barkerKidsDetailActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
         barkerKidsDetailActionBar.setTitle("");
         barkerKidsDetailActionBar.setAlpha(0.0f);
-        final View viewById = this.findViewById(2131755140);
+        final View viewById = this.findViewById(2131755147);
         if (viewById != null) {
             viewById.setBackgroundColor(0);
         }
@@ -64,7 +64,7 @@ public class BarkerKidsDetailsActivity extends DetailsActivity implements PlayCo
                 return BarkerKidsShowDetailsFrag.create(this.videoId);
             }
             case 3: {
-                return BarkerKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color_id", 2131689601));
+                return BarkerKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color_id", 2131689602));
             }
         }
     }
@@ -109,7 +109,7 @@ public class BarkerKidsDetailsActivity extends DetailsActivity implements PlayCo
         if (menu2 != null) {
             new DebugMenuItems("KidsShowDetailsActivity", this).addItems(menu2);
         }
-        MdxMenu.addSelectPlayTarget(this, menu, false);
+        MdxMenu.addSelectPlayTarget((NetflixActivity)this, menu, false);
     }
     
     @Override

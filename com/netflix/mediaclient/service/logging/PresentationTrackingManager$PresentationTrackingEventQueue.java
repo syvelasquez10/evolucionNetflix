@@ -37,7 +37,6 @@ class PresentationTrackingManager$PresentationTrackingEventQueue extends EventQu
         super("nf_pt_queue", n, 300000L, true, true);
     }
     
-    @Override
     protected void doFlush(final List<PresentationEvent> list, final boolean b) {
         this.this$0.sendPresentationEvents(list, b);
     }

@@ -69,18 +69,18 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     @Override
     protected ViewGroup createSeasonsSelectorGroup() {
         final ViewGroup seasonsSelectorGroup = super.createSeasonsSelectorGroup();
-        this.setSpinnerBackground(this.getResources().getColor(2131689601));
+        this.setSpinnerBackground(this.getResources().getColor(2131689602));
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131689730);
-            seasonsSpinnerAdapter.setDropDownTextColor(2131689601);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131689731);
+            seasonsSpinnerAdapter.setDropDownTextColor(2131689602);
         }
         return seasonsSelectorGroup;
     }
     
     @Override
     protected int getBackgroundResource() {
-        return 2131689712;
+        return 2131689713;
     }
     
     @Override
@@ -95,7 +95,7 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     
     @Override
     protected int getlayoutId() {
-        return 2130903166;
+        return 2130903167;
     }
     
     @Override
@@ -160,7 +160,7 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     protected void setupRecyclerViewItemDecoration() {
         if (this.itemDecoration == null) {
             this.itemDecoration = new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427744), this.getNumColumns());
-            this.recyclerView.addItemDecoration(this.itemDecoration);
+            this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)this.itemDecoration);
         }
     }
     
@@ -174,7 +174,7 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     @Override
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new BarkerKidsShowDetailsFrag$3(this));
-        adapter.setItemBackgroundColor(2131689601);
+        adapter.setItemBackgroundColor(2131689602);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     

@@ -101,12 +101,12 @@ public abstract class FalkorMSLVolleyRequest<T> extends MSLVolleyRequest<T>
                             throw new IOException(ex2);
                         }
                         catch (MslException ex3) {
-                            Log.e("FalkorMSLVolleyRequest", ex3, "API request failed with MSL exception", new Object[0]);
+                            Log.e("FalkorMSLVolleyRequest", (Throwable)ex3, "API request failed with MSL exception", new Object[0]);
                             final Throwable causeForMslException = MSLVolleyRequest.findCauseForMslException(ex3);
                             if (causeForMslException instanceof IOException) {
                                 throw (IOException)causeForMslException;
                             }
-                            throw new IOException(ex3);
+                            throw new IOException((Throwable)ex3);
                         }
                     }
                     final UserAuthenticationData userAuthenticationData = null;
@@ -129,18 +129,18 @@ public abstract class FalkorMSLVolleyRequest<T> extends MSLVolleyRequest<T>
         final Map<String, String> params = super.getParams();
         Object o;
         if (params == null) {
-            o = new MultiValuedHashMap<Object, Object>();
+            o = new MultiValuedHashMap();
         }
         else {
             o = params;
             if (!(params instanceof MultiValuedMap)) {
-                o = new MultiValuedHashMap<Object, Object>(params.size());
-                ((Map<Object, Object>)o).putAll(params);
+                o = new MultiValuedHashMap(params.size());
+                ((MultiValuedMap)o).putAll((Map)params);
             }
         }
-        ((Map<?, ?>)o).put("method", this.getMethodType());
+        ((Map<String, String>)o).put("method", this.getMethodType());
         if (this.shouldMaterializeRequest()) {
-            ((Map<?, ?>)o).put("materialize", "true");
+            ((Map<String, String>)o).put("materialize", "true");
         }
         final List<String> pqlQueries = this.getPQLQueries();
         if (pqlQueries == null) {
@@ -148,7 +148,7 @@ public abstract class FalkorMSLVolleyRequest<T> extends MSLVolleyRequest<T>
         }
         final Iterator<String> iterator = pqlQueries.iterator();
         while (iterator.hasNext()) {
-            ((Map<?, ?>)o).put(this.getQueryPathName(), iterator.next());
+            ((Map<String, String>)o).put(this.getQueryPathName(), iterator.next());
         }
         return (Map<String, String>)o;
     }
@@ -161,7 +161,7 @@ public abstract class FalkorMSLVolleyRequest<T> extends MSLVolleyRequest<T>
     }
     
     protected boolean handleNotAuthorized(final FalkorException ex) {
-        final NetflixStatus status = VolleyUtils.getStatus(ex, this.mErrorLogger, StatusCode.INT_ERR_FALKOR_EXCEPTION);
+        final NetflixStatus status = VolleyUtils.getStatus((VolleyError)ex, this.mErrorLogger, StatusCode.INT_ERR_FALKOR_EXCEPTION);
         if (status == null || status.getStatusCode() != StatusCode.USER_NOT_AUTHORIZED) {
             Log.d("FalkorMSLVolleyRequest", "handleNotAuthorized:: regular API failure");
             return false;

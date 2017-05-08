@@ -63,7 +63,7 @@ public class SearchActionBar extends NetflixActionBar
         this.editTextView = (EditText)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_src_text", (String)null, (String)null));
         if (this.editTextView != null) {
             final int color = this.searchView.getResources().getColor(this.getSearchViewTextColorResId());
-            final int color2 = this.searchView.getResources().getColor(2131689720);
+            final int color2 = this.searchView.getResources().getColor(2131689721);
             this.editTextView.setTextSize((float)this.activity.getResources().getInteger(2131558429));
             this.editTextView.setHintTextColor(color2);
             this.editTextView.setTextColor(color);
@@ -103,9 +103,9 @@ public class SearchActionBar extends NetflixActionBar
     private void initViews() {
         final View inflate = LayoutInflater.from((Context)this.activity).inflate(2130903070, (ViewGroup)null);
         if (inflate != null) {
-            this.searchView = (SearchView)inflate.findViewById(2131755156);
+            this.searchView = (SearchView)inflate.findViewById(2131755163);
             final ActionBar$LayoutParams actionBar$LayoutParams = new ActionBar$LayoutParams(-1, -2, 8388613);
-            this.progressSpinner = (ProgressBar)inflate.findViewById(2131755157);
+            this.progressSpinner = (ProgressBar)inflate.findViewById(2131755164);
             this.systemActionBar.setCustomView(inflate, actionBar$LayoutParams);
         }
     }
@@ -143,14 +143,14 @@ public class SearchActionBar extends NetflixActionBar
         if (searchCloseButtonTint != null) {
             final Drawable drawableFromSystemId = this.getDrawableFromSystemId("android:id/search_close_btn");
             if (drawableFromSystemId != null) {
-                ViewUtils.setDrawableTint(drawableFromSystemId, searchCloseButtonTint);
+                ViewUtils.setDrawableTint(drawableFromSystemId, (int)searchCloseButtonTint);
             }
         }
         final Integer searchVoiceButtonTint = this.getSearchVoiceButtonTint();
         if (searchVoiceButtonTint != null) {
             final Drawable drawableFromSystemId2 = this.getDrawableFromSystemId("android:id/search_voice_btn");
             if (drawableFromSystemId2 != null) {
-                ViewUtils.setDrawableTint(drawableFromSystemId2, searchVoiceButtonTint);
+                ViewUtils.setDrawableTint(drawableFromSystemId2, (int)searchVoiceButtonTint);
             }
         }
     }
@@ -172,18 +172,18 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getSearchViewBgResId() {
-        return 2130838118;
+        return 2130838120;
     }
     
     protected int getSearchViewRightBgResId() {
         if (this.showVoiceSearch) {
-            return 2130838120;
+            return 2130838122;
         }
-        return 2131689713;
+        return 2131689714;
     }
     
     protected int getSearchViewTextColorResId() {
-        return 2131689656;
+        return 2131689657;
     }
     
     protected Integer getSearchVoiceButtonTint() {

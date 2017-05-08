@@ -22,8 +22,8 @@ public final class AudioSubtitleDefaultOrderInfo implements Comparable<AudioSubt
     }
     
     public AudioSubtitleDefaultOrderInfo(final JSONObject jsonObject, final long creationTimeInMs) {
-        this.audioTrackId = JsonUtils.getString(jsonObject, "audioTrackId", null);
-        this.subtitleTrackId = JsonUtils.getString(jsonObject, "subtitleTrackId", null);
+        this.audioTrackId = JsonUtils.getString(jsonObject, "audioTrackId", (String)null);
+        this.subtitleTrackId = JsonUtils.getString(jsonObject, "subtitleTrackId", (String)null);
         this.preferenceOrder = JsonUtils.getInt(jsonObject, "preferenceOrder", -1);
         this.creationTimeInMs = creationTimeInMs;
     }

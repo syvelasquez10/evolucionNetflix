@@ -73,6 +73,6 @@ class KongInteractivePostPlayManager$6 extends KongInteractivePostPlayManager$Ba
             Toast.makeText((Context)this.this$0.getActivity(), 2131296660, 1).show();
             return;
         }
-        this.this$0.playerFragment.playNextVideo(videoDetails.getPlayable(), this.val$playContext, this.val$autoplay);
+        this.this$0.playerFragment.playNextVideo(videoDetails.getPlayable(), (PlayContext)this.val$playContext, this.val$autoplay);
     }
 }

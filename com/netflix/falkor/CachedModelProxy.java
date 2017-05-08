@@ -586,7 +586,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                                 entry = (Map.Entry<String, JsonElement>)iterator.next();
                                 s = entry.getKey();
                                 final Object orCreate = branchNode.getOrCreate(s);
-                                if (!(orCreate instanceof Sentinel) || JsonUtils.isNull(entry.getValue())) {
+                                if (!(orCreate instanceof Sentinel) || JsonUtils.isNull((JsonElement)entry.getValue())) {
                                     break Label_0518;
                                 }
                                 if (Log.isLoggable()) {
@@ -781,7 +781,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                 if (Log.isLoggable()) {
                     Log.v("CachedModelProxy", "Setting cached inQueue value to: " + b + ", for video: " + s);
                 }
-                falkorVideo.set("inQueue", new Video$InQueue(b));
+                falkorVideo.set("inQueue", (Object)new Video$InQueue(b));
             }
         }
     }

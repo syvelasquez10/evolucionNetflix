@@ -21,7 +21,7 @@ class BarkerKidsShowDetailsFrag$BarkerKidsEpisodeView extends BarkerShowDetailsF
     public BarkerKidsShowDetailsFrag$BarkerKidsEpisodeView(final BarkerKidsShowDetailsFrag this$0, final Context context, final int n) {
         this.this$0 = this$0;
         super(this$0, context, n);
-        this.pressableViewGroup = (PressAnimationFrameLayout)this.findViewById(2131755419);
+        this.pressableViewGroup = (PressAnimationFrameLayout)this.findViewById(2131755427);
         this.image.setPressedStateHandlerEnabled(false);
     }
     
@@ -68,7 +68,7 @@ class BarkerKidsShowDetailsFrag$BarkerKidsEpisodeView extends BarkerShowDetailsF
     protected void updateTitle(final EpisodeDetails episodeDetails) {
         if (this.title != null) {
             super.updateTitle(episodeDetails);
-            this.title.setTextColor(this.getResources().getColor(2131689605));
+            this.title.setTextColor(this.getResources().getColor(2131689606));
             final View view = (View)this.getParent();
             if (view != null) {
                 view.setTag(2131755028, (Object)episodeDetails.getSeasonNumber());

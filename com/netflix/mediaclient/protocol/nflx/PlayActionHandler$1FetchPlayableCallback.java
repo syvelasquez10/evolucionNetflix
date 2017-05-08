@@ -29,7 +29,7 @@ class PlayActionHandler$1FetchPlayableCallback extends SimpleManagerCallback
         if (status.isSucces()) {
             this.this$0.play(episodeDetails.getPlayable(), this.val$targetDialUuid, NflxProtocolUtils.getPlayContext(this.trackId));
         }
-        NflxProtocolUtils.reportDelayedResponseHandled(this.this$0.mActivity);
+        NflxProtocolUtils.reportDelayedResponseHandled((Activity)this.this$0.mActivity);
     }
     
     @Override
@@ -37,7 +37,7 @@ class PlayActionHandler$1FetchPlayableCallback extends SimpleManagerCallback
         if (status.isSucces()) {
             this.this$0.play(movieDetails.getPlayable(), this.val$targetDialUuid, NflxProtocolUtils.getPlayContext(this.trackId));
         }
-        NflxProtocolUtils.reportDelayedResponseHandled(this.this$0.mActivity);
+        NflxProtocolUtils.reportDelayedResponseHandled((Activity)this.this$0.mActivity);
     }
     
     @Override
@@ -45,6 +45,6 @@ class PlayActionHandler$1FetchPlayableCallback extends SimpleManagerCallback
         if (status.isSucces()) {
             this.this$0.play(showDetails.getPlayable(), this.val$targetDialUuid, NflxProtocolUtils.getPlayContext(this.trackId));
         }
-        NflxProtocolUtils.reportDelayedResponseHandled(this.this$0.mActivity);
+        NflxProtocolUtils.reportDelayedResponseHandled((Activity)this.this$0.mActivity);
     }
 }

@@ -39,7 +39,6 @@ class LogblobLoggingImpl$LogblobQueue extends EventQueue<Logblob>
         super("nf_logblob_queue", 30, 60000L, true, true);
     }
     
-    @Override
     protected void doFlush(final List<Logblob> list, final boolean b) {
         this.this$0.sendEvents(list, b);
     }

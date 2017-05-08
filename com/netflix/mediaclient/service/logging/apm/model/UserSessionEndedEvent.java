@@ -43,9 +43,9 @@ public final class UserSessionEndedEvent extends SessionEndedEvent
     
     public UserSessionEndedEvent(JSONObject jsonObject) {
         super(jsonObject);
-        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
+        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", (JSONObject)null);
         if (jsonObject != null) {
-            final String string = JsonUtils.getString(jsonObject, "endReason", null);
+            final String string = JsonUtils.getString(jsonObject, "endReason", (String)null);
             if (string != null) {
                 this.endReason = Enum.valueOf(ApplicationPerformanceMetricsLogging$EndReason.class, string);
             }

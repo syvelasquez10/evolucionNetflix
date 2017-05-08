@@ -74,7 +74,7 @@ class PresentationTrackingManager implements PresentationTracking
         Log.d("nf_presentation", "PtManager::init data repository started ");
         final File file = new File(this.mContext.getFilesDir(), "ptevents");
         file.mkdirs();
-        this.mDataRepository = new FileSystemDataRepositoryImpl(file);
+        this.mDataRepository = (DataRepository)new FileSystemDataRepositoryImpl(file);
         this.mExecutor.execute(new PresentationTrackingManager$2(this));
         Log.d("nf_presentation", "PtManager::init data repository done ");
     }
@@ -91,7 +91,7 @@ class PresentationTrackingManager implements PresentationTracking
         if (Log.isLoggable()) {
             Log.d("nf_presentation", "Load event " + s);
         }
-        this.mDataRepository.load(s, new PresentationTrackingManager$4(this, s));
+        this.mDataRepository.load(s, (DataRepository$DataLoadedCallback)new PresentationTrackingManager$4(this, s));
     }
     
     private void removeSavedEvents(final String s) {

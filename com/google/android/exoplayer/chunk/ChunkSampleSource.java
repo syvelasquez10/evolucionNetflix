@@ -332,9 +332,8 @@ public class ChunkSampleSource implements SampleSource, SampleSource$SampleSourc
                                 this.loadControl.trimAllocator();
                                 return;
                                 b2 = false;
-                                continue;
-                                b2 = false;
                                 break;
+                                b2 = false;
                             }
                             finally {
                                 this.loadControl.unregister(this);

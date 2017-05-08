@@ -13,10 +13,11 @@ import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.logging.perf.Events;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import java.util.ArrayList;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.content.Context;
+import java.util.NoSuchElementException;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import java.util.Iterator;
 import java.util.Collections;
@@ -87,10 +88,18 @@ public final class DPPrefetchABTestUtils
     }
     
     public static Video getNextPrefetchVideo() {
-        if (DPPrefetchABTestUtils.prefetchDPQueue.isEmpty()) {
+        try {
+            if (DPPrefetchABTestUtils.prefetchDPQueue.isEmpty()) {
+                return null;
+            }
+            return DPPrefetchABTestUtils.prefetchDPQueue.pop();
+        }
+        catch (NoSuchElementException ex) {
+            if (Log.isLoggable()) {
+                Log.d("DPPrefetchABTestUtils", "getNextPrefetchVideo(): ignore NoSuchElementException - " + ex);
+            }
             return null;
         }
-        return DPPrefetchABTestUtils.prefetchDPQueue.pop();
     }
     
     public static int getPrefetchCounter() {

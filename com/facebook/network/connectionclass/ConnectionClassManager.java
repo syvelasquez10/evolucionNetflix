@@ -151,6 +151,13 @@ public class ConnectionClassManager
         }
     }
     
+    public ConnectionQuality register(final ConnectionClassManager$ConnectionClassStateChangeListener connectionClassManager$ConnectionClassStateChangeListener) {
+        if (connectionClassManager$ConnectionClassStateChangeListener != null) {
+            this.mListenerList.add(connectionClassManager$ConnectionClassStateChangeListener);
+        }
+        return this.mCurrentBandwidthConnectionQuality.get();
+    }
+    
     public void remove(final ConnectionClassManager$ConnectionClassStateChangeListener connectionClassManager$ConnectionClassStateChangeListener) {
         if (connectionClassManager$ConnectionClassStateChangeListener != null) {
             this.mListenerList.remove(connectionClassManager$ConnectionClassStateChangeListener);

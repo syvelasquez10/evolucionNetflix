@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.content.res.Resources;
+import java.util.List;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils;
 import com.netflix.mediaclient.ui.common.PlayLocationType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
@@ -87,14 +88,14 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     }
     
     protected void findViews() {
-        this.episodeBadge = (TextView)this.findViewById(2131755180);
-        this.title = (TextView)this.findViewById(2131755182);
-        this.episodeNumber = (TextView)this.findViewById(2131755181);
-        this.synopsis = (TextView)this.findViewById(2131755183);
-        this.playButton = (ImageView)this.findViewById(2131755175);
-        this.episodeDownloadButton = (DownloadButton)this.findViewById(2131755178);
-        this.progressBar = (ProgressBar)this.findViewById(2131755177);
-        this.episodeTime = (TextView)this.findViewById(2131755184);
+        this.episodeBadge = (TextView)this.findViewById(2131755187);
+        this.title = (TextView)this.findViewById(2131755189);
+        this.episodeNumber = (TextView)this.findViewById(2131755188);
+        this.synopsis = (TextView)this.findViewById(2131755190);
+        this.playButton = (ImageView)this.findViewById(2131755182);
+        this.episodeDownloadButton = (DownloadButton)this.findViewById(2131755185);
+        this.progressBar = (ProgressBar)this.findViewById(2131755184);
+        this.episodeTime = (TextView)this.findViewById(2131755191);
     }
     
     protected int getDefaultSynopsisVisibility() {
@@ -180,16 +181,16 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             final Resources resources = this.getResources();
             int n;
             if (episodeDetails.isAvailableToStream()) {
-                n = 2131689656;
+                n = 2131689657;
             }
             else {
-                n = 2131689672;
+                n = 2131689673;
             }
             title.setTextColor(resources.getColor(n));
             this.title.setClickable(false);
         }
         if (this.episodeBadge != null) {
-            LoMoUtils.toggleEpisodeBadge(episodeDetails.getEpisodeBadges(), this.episodeBadge);
+            LoMoUtils.toggleEpisodeBadge((List)episodeDetails.getEpisodeBadges(), this.episodeBadge);
         }
         if (this.episodeTime != null) {
             if (episodeDetails.isNSRE()) {

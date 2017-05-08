@@ -97,7 +97,7 @@ public class ABTestConfigData
             ABTestConfigData.testIds.add("6941");
             ABTestConfigData.testIds.add("7129");
         }
-        return StringUtils.joinArray(ABTestConfigData.testIds.toArray(new String[ABTestConfigData.testIds.size()]));
+        return StringUtils.joinArray((String[])ABTestConfigData.testIds.toArray(new String[ABTestConfigData.testIds.size()]));
     }
     
     public static ABTestConfigData getRawABConfig() {

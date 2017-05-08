@@ -40,6 +40,7 @@ import android.annotation.SuppressLint;
 import android.media.AudioDeviceInfo;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.media.AudioManager;
+import org.json.JSONObject;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.media.PlayoutMetadata;
@@ -79,6 +80,7 @@ import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthDelayedBifDownload;
 import android.telephony.PhoneStateListener;
 import com.netflix.mediaclient.media.BifManager;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
+import com.netflix.mediaclient.util.activitytracking.ActivityTracker;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
 import android.net.ConnectivityManager;
 import com.netflix.mediaclient.servicemgr.IPlayer;
@@ -118,6 +120,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private boolean ignoreErrorsWhileActionId12IsProcessed;
     private boolean inPlaybackSession;
     private NccpError mActionId12Error;
+    private ActivityTracker mActivityTracker;
     private AudioBitrateRange mAudioBitrateRange;
     private BifManager mBifManager;
     private long mBookmark;
@@ -267,7 +270,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             if (this.telephonyManager != null) {
                 this.telephonyManager.listen(this.mCellularNetworkListener, 0);
             }
-            this.mMedia.close(audioSinkType, this.mPlaybackVolumeMetric, ConnectivityUtils.getCarrierInfo(this.getContext()));
+            this.mMedia.close(audioSinkType, this.mPlaybackVolumeMetric, ConnectivityUtils.getCarrierInfo(this.getContext()), this.getActivityData());
             this.mNrdp.getLog().flush();
         }
     }
@@ -283,6 +286,16 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             default1 = SubtitleConfiguration.DEFAULT;
         }
         return default1;
+    }
+    
+    private JSONObject getActivityData() {
+        if (this.mActivityTracker != null) {
+            this.mActivityTracker.stopTrackingActivityUpdates();
+            final JSONObject activityData = this.mActivityTracker.getActivityData();
+            this.mActivityTracker = null;
+            return activityData;
+        }
+        return null;
     }
     
     @SuppressLint({ "NewApi" })
@@ -739,6 +752,9 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             this.muteAudio(false);
             this.splashScreenRemoved = true;
             this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnStartedHandler(), new Object[0]);
+            if (ActivityTracker.canUseActivityTracker(this.getConfigurationAgent(), this.getContext())) {
+                this.mActivityTracker = new ActivityTracker(this.getContext());
+            }
         }
         if (this.canStartBifDownload()) {
             this.startBif();
@@ -760,7 +776,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             return;
         }
         final PlaybackVolumeMetric mPlaybackVolumeMetric2 = new PlaybackVolumeMetric(this.getContext());
-        if (mPlaybackVolumeMetric2.equals(this.mPlaybackVolumeMetric)) {
+        if (mPlaybackVolumeMetric2.equals((Object)this.mPlaybackVolumeMetric)) {
             Log.d(PlayerAgent.TAG, "handleVolumeChange:: no change");
             return;
         }

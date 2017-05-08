@@ -49,7 +49,7 @@ public class DeviceRepository
                 return;
             }
             final DeviceCategory find = DeviceCategory.find(s);
-            if (!find.equals(this.category)) {
+            if (!find.equals((Object)this.category)) {
                 if (Log.isLoggable()) {
                     Log.d("nf_device", "Old category was " + this.category + " and new category is now " + find);
                 }

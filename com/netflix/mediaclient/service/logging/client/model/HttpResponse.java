@@ -66,18 +66,18 @@ public class HttpResponse implements JsonSerializer
             return null;
         }
         final HttpResponse httpResponse = new HttpResponse();
-        httpResponse.contentLength = JsonUtils.getIntegerObject(optJSONObject, "contentLength", null);
-        httpResponse.dnsTime = JsonUtils.getIntegerObject(optJSONObject, "dnsTime", null);
-        httpResponse.sslTime = JsonUtils.getIntegerObject(optJSONObject, "sslTime", null);
-        httpResponse.responseTime = JsonUtils.getIntegerObject(optJSONObject, "responseTime", null);
-        httpResponse.transferTime = JsonUtils.getIntegerObject(optJSONObject, "transferTime", null);
-        httpResponse.serverExecutionTime = JsonUtils.getIntegerObject(optJSONObject, "serverExecutionTime", null);
-        httpResponse.parseTime = JsonUtils.getIntegerObject(optJSONObject, "parseTime", null);
-        httpResponse.mimeType = JsonUtils.getString(optJSONObject, "mimeType", null);
+        httpResponse.contentLength = JsonUtils.getIntegerObject(optJSONObject, "contentLength", (Integer)null);
+        httpResponse.dnsTime = JsonUtils.getIntegerObject(optJSONObject, "dnsTime", (Integer)null);
+        httpResponse.sslTime = JsonUtils.getIntegerObject(optJSONObject, "sslTime", (Integer)null);
+        httpResponse.responseTime = JsonUtils.getIntegerObject(optJSONObject, "responseTime", (Integer)null);
+        httpResponse.transferTime = JsonUtils.getIntegerObject(optJSONObject, "transferTime", (Integer)null);
+        httpResponse.serverExecutionTime = JsonUtils.getIntegerObject(optJSONObject, "serverExecutionTime", (Integer)null);
+        httpResponse.parseTime = JsonUtils.getIntegerObject(optJSONObject, "parseTime", (Integer)null);
+        httpResponse.mimeType = JsonUtils.getString(optJSONObject, "mimeType", (String)null);
         optJSONObject = optJSONObject.optJSONObject("custom");
         if (optJSONObject != null) {
-            httpResponse.apiScriptExecutionTime = JsonUtils.getIntegerObject(optJSONObject, "apiScriptExecutionTime", null);
-            httpResponse.endpointRevision = JsonUtils.getString(optJSONObject, "apiScriptRevision", null);
+            httpResponse.apiScriptExecutionTime = JsonUtils.getIntegerObject(optJSONObject, "apiScriptExecutionTime", (Integer)null);
+            httpResponse.endpointRevision = JsonUtils.getString(optJSONObject, "apiScriptRevision", (String)null);
         }
         return httpResponse;
     }

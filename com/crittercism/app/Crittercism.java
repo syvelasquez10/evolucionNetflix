@@ -333,6 +333,7 @@ public class Crittercism
             if (e != null) {
                 break Label_0019;
             }
+        Label_0097_Outer:
             while (true) {
                 while (true) {
                     ax c;
@@ -349,18 +350,17 @@ public class Crittercism
                     }
                     catch (ThreadDeath threadDeath) {
                         throw threadDeath;
-                        long nanoTime = System.nanoTime();
-                        c = ax.C();
-                        // iftrue(Label_0142:, Build$VERSION.SDK_INT >= 14)
-                        Block_9: {
-                            break Block_9;
-                            nanoTime = (System.nanoTime() - nanoTime) / 1000000L;
+                        while (true) {
+                            dw.b("Crittercism is not supported for Android API less than 14 (ICS).");
+                            long nanoTime = (System.nanoTime() - nanoTime) / 1000000L;
                             dw.d("Crittercism finished initializing in " + nanoTime + "ms");
                             return;
+                            nanoTime = System.nanoTime();
+                            c = ax.C();
+                            continue Label_0097_Outer;
                         }
-                        dw.b("Crittercism is not supported for Android API less than 14 (ICS).");
-                        continue;
                     }
+                    // iftrue(Label_0142:, Build$VERSION.SDK_INT >= 14)
                     catch (Throwable t2) {
                         dw.b(t2);
                         return;

@@ -9,8 +9,8 @@ import android.view.MenuItem;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import android.app.Activity;
 import com.netflix.mediaclient.util.Coppola1Utils;
-import java.util.Collections;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import java.util.HashMap;
 import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
@@ -90,12 +90,12 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         if (Log.isLoggable()) {
             Log.d("DetailsActivity", "handleAddToMyList:: msg token " + this.mActionToken);
         }
-        UserActionLogUtils.reportAddToQueueActionStarted((Context)this, null, this.getUiScreen());
+        UserActionLogUtils.reportAddToQueueActionStarted((Context)this, (UserActionLogging$CommandName)null, this.getUiScreen());
         this.serviceMan.getBrowse().addToQueue(this.videoId, this.getVideoType(), this.getTrackId(), BrowseExperience.shouldLoadKubrickLeavesInDetails(), this.mActionToken, new DetailsActivity$MyListCallback(this, "DetailsActivity"));
     }
     
     private void handleRemoveFromMyList() {
-        UserActionLogUtils.reportRemoveFromQueueActionStarted((Context)this, null, this.getUiScreen());
+        UserActionLogUtils.reportRemoveFromQueueActionStarted((Context)this, (UserActionLogging$CommandName)null, this.getUiScreen());
         this.serviceMan.getBrowse().removeFromQueue(this.videoId, this.getVideoType(), this.mActionToken, new DetailsActivity$MyListCallback(this, "DetailsActivity"));
     }
     
@@ -142,7 +142,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     
     public void endDPTTISession(final Map<String, String> map) {
         this.startDPTTISession = false;
-        PerformanceProfiler.getInstance().endSession(Sessions.DP_TTI, map);
+        PerformanceProfiler.getInstance().endSession(Sessions.DP_TTI, this.populateDPTTISession(map));
         PerformanceProfiler.getInstance().flushApmEvents(this.getApmSafely());
     }
     
@@ -235,7 +235,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     
     @Override
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
-        MdxMenu.addSelectPlayTarget(this, menu, false);
+        MdxMenu.addSelectPlayTarget((NetflixActivity)this, menu, false);
         IrisUtils.addShareIcon(this.serviceMan, menu, (Context)this);
         this.shareMenuCreated = true;
         DetailsMenu.addItems(this, menu, false);
@@ -246,7 +246,9 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     protected void onDestroy() {
         super.onDestroy();
         if (this.startDPTTISession) {
-            this.endDPTTISession(Collections.singletonMap("reason", IClientLogging$CompletionReason.canceled.name()));
+            final HashMap<String, String> hashMap = new HashMap<String, String>();
+            hashMap.put("reason", IClientLogging$CompletionReason.canceled.name());
+            this.endDPTTISession(hashMap);
         }
     }
     
@@ -257,8 +259,8 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         if (this.shareMenuCreated) {
             this.invalidateOptionsMenu();
         }
-        Coppola1Utils.injectPlayerFragmentIfNeeded(this, this.videoId, this.getVideoType(), this.getPlayContext(), serviceMan, status);
-        Coppola1Utils.forceToPortraitIfNeeded(this);
+        Coppola1Utils.injectPlayerFragmentIfNeeded((Activity)this, this.videoId, this.getVideoType(), this.getPlayContext(), serviceMan, status);
+        Coppola1Utils.forceToPortraitIfNeeded((Activity)this);
         ((ManagerStatusListener)this.getPrimaryFrag()).onManagerReady(serviceMan, status);
         final Fragment secondaryFrag = this.getSecondaryFrag();
         if (secondaryFrag != null) {
@@ -297,6 +299,17 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     protected void onSaveInstanceState(final Bundle bundle) {
         bundle.putBoolean("notification_beacon_sent", this.mNotificationOpenedReportAlreadySent);
         super.onSaveInstanceState(bundle);
+    }
+    
+    public Map<String, String> populateDPTTISession(final Map<String, String> map) {
+        Map<String, String> map2 = map;
+        if (this.getVideoType() != null) {
+            if ((map2 = map) == null) {
+                map2 = new HashMap<String, String>();
+            }
+            map2.put("videoType", this.getVideoType().name());
+        }
+        return map2;
     }
     
     public void registerLoadingStatusCallback() {

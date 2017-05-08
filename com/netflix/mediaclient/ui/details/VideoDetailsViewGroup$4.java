@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.details;
 
 import android.text.Html;
+import java.util.List;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
@@ -23,7 +24,6 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import android.view.LayoutInflater;
-import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
 import com.netflix.mediaclient.servicemgr.interface_.FeatureEnabledProvider;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.MdxUtils;

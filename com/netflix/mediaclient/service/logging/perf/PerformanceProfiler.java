@@ -183,7 +183,7 @@ public class PerformanceProfiler
         this.warnOfOpenSessions();
         final Iterator<DiscreteEvent> iterator = this.events.iterator();
         while (iterator.hasNext()) {
-            ApmLogUtils.reportPerformanceEvent(iterator.next(), applicationPerformanceMetricsLogging);
+            ApmLogUtils.reportPerformanceEvent((DiscreteEvent)iterator.next(), applicationPerformanceMetricsLogging);
         }
         for (final PerfSession perfSession : this.sessions.values()) {
             if (perfSession.isComplete()) {

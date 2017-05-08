@@ -80,7 +80,7 @@ public class RealmPlayable implements Playable, RealmModel, RealmPlayableRealmPr
         if (StringUtils.isEmpty(this.realmGet$advisoriesString())) {
             return null;
         }
-        return Advisory.asList(new JsonParser().parse(this.realmGet$advisoriesString()).getAsJsonArray());
+        return (List<Advisory>)Advisory.asList(new JsonParser().parse(this.realmGet$advisoriesString()).getAsJsonArray());
     }
     
     @Override

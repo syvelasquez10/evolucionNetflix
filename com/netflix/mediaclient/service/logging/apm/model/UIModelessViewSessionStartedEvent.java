@@ -19,16 +19,16 @@ public final class UIModelessViewSessionStartedEvent extends SessionStartedEvent
     
     public UIModelessViewSessionStartedEvent(JSONObject jsonObject) {
         super(jsonObject);
-        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
+        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", (JSONObject)null);
         if (jsonObject != null) {
-            final String string = JsonUtils.getString(jsonObject, "orientation", null);
+            final String string = JsonUtils.getString(jsonObject, "orientation", (String)null);
             if (string != null) {
                 this.orientation = Orientation.valueOf(string);
             }
             else {
                 this.orientation = Orientation.portrait;
             }
-            final String string2 = JsonUtils.getString(jsonObject, "modelessView", null);
+            final String string2 = JsonUtils.getString(jsonObject, "modelessView", (String)null);
             if (string2 != null) {
                 this.modelessView = IClientLogging$ModalView.valueOf(string2);
             }

@@ -25,7 +25,7 @@ class KidsParallax extends DetailsPageParallaxScrollListener
     private View toolbarView;
     
     public KidsParallax(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] array, final View view, final View view2) {
-        super(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131689707), 0, 0, view2);
+        super(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131689708), 0, 0, view2);
         this.setApplyToolBarGradientTransform(false);
     }
     
@@ -117,8 +117,8 @@ class KidsParallax extends DetailsPageParallaxScrollListener
     
     @Override
     protected void setInitialToolbarColor() {
-        this.toolbarView = this.recyclerView.getRootView().findViewById(2131755140);
-        this.shadow = this.recyclerView.getRootView().findViewById(2131755155);
+        this.toolbarView = this.recyclerView.getRootView().findViewById(2131755147);
+        this.shadow = this.recyclerView.getRootView().findViewById(2131755162);
         final Drawable drawable = this.toolbarView.getResources().getDrawable(2130837997);
         if (drawable != null && this.toolbarView != null) {
             Api16Util.setBackgroundDrawableCompat(this.toolbarView, drawable);

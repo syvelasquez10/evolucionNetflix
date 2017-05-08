@@ -43,14 +43,14 @@ public class Display
             return null;
         }
         final Display display = new Display();
-        display.refreshRate = JsonUtils.getIntegerObject(jsonObject, "refreshRate", null);
-        display.aspectRatio = Display$AspectRatio.find(JsonUtils.getString(jsonObject, "aspectRatio", null));
-        final JSONObject jsonObject2 = JsonUtils.getJSONObject(jsonObject, "resolution", null);
+        display.refreshRate = JsonUtils.getIntegerObject(jsonObject, "refreshRate", (Integer)null);
+        display.aspectRatio = Display$AspectRatio.find(JsonUtils.getString(jsonObject, "aspectRatio", (String)null));
+        final JSONObject jsonObject2 = JsonUtils.getJSONObject(jsonObject, "resolution", (JSONObject)null);
         if (jsonObject2 != null) {
-            display.width = JsonUtils.getIntegerObject(jsonObject2, "width", null);
-            display.height = JsonUtils.getIntegerObject(jsonObject2, "height", null);
+            display.width = JsonUtils.getIntegerObject(jsonObject2, "width", (Integer)null);
+            display.height = JsonUtils.getIntegerObject(jsonObject2, "height", (Integer)null);
         }
-        final String string = JsonUtils.getString(jsonObject, "connector", null);
+        final String string = JsonUtils.getString(jsonObject, "connector", (String)null);
         if (string != null) {
             display.connector = Display$Connector.valueOf(string);
         }

@@ -90,7 +90,7 @@ public class SnappableSeekBar extends SeekBar
     
     private void init() {
         if (AndroidUtils.getAndroidVersion() >= 21) {
-            Api21Util.setSplitTrack(this, false);
+            Api21Util.setSplitTrack((SeekBar)this, false);
         }
     }
     

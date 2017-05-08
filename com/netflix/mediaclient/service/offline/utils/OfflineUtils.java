@@ -10,10 +10,10 @@ import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.media.manifest.Stream;
 import com.netflix.mediaclient.media.manifest.VideoTrack;
 import java.util.Collection;
+import com.netflix.mediaclient.ui.offline.OfflineSubtitle;
 import com.netflix.mediaclient.service.offline.download.DownloadableType;
 import com.netflix.mediaclient.media.SubtitleUrl;
 import com.netflix.mediaclient.media.SubtitleTrackData;
-import com.netflix.mediaclient.ui.offline.OfflineSubtitle;
 import java.util.HashMap;
 import com.netflix.mediaclient.media.Subtitle;
 import java.util.Map;
@@ -113,12 +113,12 @@ public class OfflineUtils
     }
     
     private static Map<String, Subtitle> getOfflineSubtitleForDownloadables(final NfManifest nfManifest, final List<String> list, final String s) {
-        final HashMap<String, OfflineSubtitle> hashMap = new HashMap<String, OfflineSubtitle>();
+        final HashMap<String, OfflineSubtitle> hashMap = (HashMap<String, OfflineSubtitle>)new HashMap<String, Subtitle>();
         for (final SubtitleTrackData subtitleTrackData : nfManifest.getSubtitleTracks(System.nanoTime())) {
             for (final String s2 : list) {
                 if (subtitleTrackData.getUrls().size() > 0 && StringUtils.notEmptyAndEquals(subtitleTrackData.getUrls().get(0).getDownloadableId(), s2)) {
-                    final OfflineSubtitle instance = OfflineSubtitle.newInstance(subtitleTrackData.getSubtitleInfo(), subtitleTrackData.getUrls().get(0), OfflinePathUtils.getFilePathForDownloadable(s, s2, DownloadableType.Subtitle));
-                    hashMap.put(s2, instance);
+                    final OfflineSubtitle instance = OfflineSubtitle.newInstance(subtitleTrackData.getSubtitleInfo(), (SubtitleUrl)subtitleTrackData.getUrls().get(0), OfflinePathUtils.getFilePathForDownloadable(s, s2, DownloadableType.Subtitle));
+                    hashMap.put(s2, (Subtitle)instance);
                     Log.d("nf_offlineUtils", "Downloadable ID: %s: %s", s2, instance.toString());
                     break;
                 }

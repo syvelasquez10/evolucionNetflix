@@ -125,7 +125,7 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
             }
             final ImageRequest imageRequest = new ImageRequest(s, new ImageLoader$2(this, s, startSession, cacheKey), n, n2, bitmap$Config, new ImageLoader$3(this, s, startSession, cacheKey), request$Priority, this.mRequestSocketTimeout, this.mMinimumCacheTtl);
             imageRequest.setTag(this.mRequestTag);
-            ApmLogUtils.reportAssetRequest(s, null, this.mApmLogger);
+            ApmLogUtils.reportAssetRequest(s, (IClientLogging$AssetType)null, this.mApmLogger);
             this.mRequestQueue.add(imageRequest);
             this.mInFlightRequests.put(cacheKey, new ImageLoader$BatchedImageRequest(imageRequest, imageLoader$ImageContainer3));
             return imageLoader$ImageContainer3;
@@ -196,7 +196,6 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         return new ImageLoader$1(this, imageLoader$ImageLoaderListener);
     }
     
-    @Override
     public void cancelAllRequests() {
         Log.i("ImageLoader", "Cancelling all ImageLoader requests!");
         if (this.mRequestQueue != null) {
@@ -207,13 +206,11 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         }
     }
     
-    @Override
     public void clear(final AdvancedImageView advancedImageView) {
         advancedImageView.setContentDescription((CharSequence)null);
         advancedImageView.setImageLoaderInfo(null);
     }
     
-    @Override
     public void getImg(final String s, final IClientLogging$AssetType clientLogging$AssetType, final int n, final int n2, final ImageLoader$ImageLoaderListener imageLoader$ImageLoaderListener) {
         this.get(s, clientLogging$AssetType, this.wrapPrivateListener(imageLoader$ImageLoaderListener), n, n2, Request$Priority.LOW, Bitmap$Config.RGB_565);
     }
@@ -224,7 +221,6 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         return this.mCache.getBitmap(cacheKey) != null;
     }
     
-    @Override
     public void refreshImgIfNecessary(final AdvancedImageView advancedImageView, final IClientLogging$AssetType clientLogging$AssetType) {
         Log.v("ImageLoader", "refreshImgIfNecessary: " + advancedImageView);
         if (advancedImageView == null) {
@@ -249,22 +245,18 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         this.showImgInternal(advancedImageView, imageUrl, clientLogging$AssetType, imageLoader$StaticImgConfig, false, 1, imageLoaderInfo.bitmapConfig);
     }
     
-    @Override
     public void setTTRTracker(final InteractiveTracker$TTRTracker mttrTracker) {
         this.mTTRTracker = mttrTracker;
     }
     
-    @Override
     public void showImg(final AdvancedImageView advancedImageView, final String s, final IClientLogging$AssetType clientLogging$AssetType, final String s2, final ImageLoader$StaticImgConfig imageLoader$StaticImgConfig, final boolean b) {
         this.showImg(advancedImageView, s, clientLogging$AssetType, s2, imageLoader$StaticImgConfig, b, 0, Bitmap$Config.RGB_565);
     }
     
-    @Override
     public void showImg(final AdvancedImageView advancedImageView, final String s, final IClientLogging$AssetType clientLogging$AssetType, final String s2, final ImageLoader$StaticImgConfig imageLoader$StaticImgConfig, final boolean b, final int n) {
         this.showImg(advancedImageView, s, clientLogging$AssetType, s2, imageLoader$StaticImgConfig, b, n, Bitmap$Config.RGB_565);
     }
     
-    @Override
     public void showImg(final AdvancedImageView drawableToNull, final String s, final IClientLogging$AssetType clientLogging$AssetType, String imageUrl, final ImageLoader$StaticImgConfig imageLoader$StaticImgConfig, final boolean b, final int n, final Bitmap$Config bitmap$Config) {
         if (imageUrl != null) {
             drawableToNull.setContentDescription((CharSequence)imageUrl);

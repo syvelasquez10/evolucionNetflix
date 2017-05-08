@@ -65,15 +65,15 @@ public class GalleryGenresLoMoFrag extends LoLoMoFrag
         final GridLayoutManager layoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns);
         layoutManager.setSpanSizeLookup(new GalleryGenresLoMoFrag$1(this));
         this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427778), this.numColumns));
+        this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427778), this.numColumns));
     }
     
     @Override
     protected int getLayoutId() {
         if (BrowseExperience.showKidsExperience()) {
-            return 2130903166;
+            return 2130903167;
         }
-        return 2130903290;
+        return 2130903291;
     }
     
     @Override

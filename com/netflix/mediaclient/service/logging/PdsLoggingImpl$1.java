@@ -38,6 +38,6 @@ class PdsLoggingImpl$1 implements Runnable
     @Override
     public void run() {
         Log.d("nf_pds_logs", "Check if we have not delivered events from last time our app was runnung...");
-        this.this$0.mDataRepository.loadAll(new PdsLoggingImpl$1$1(this));
+        this.this$0.mDataRepository.loadAll((DataRepository$LoadedCallback)new PdsLoggingImpl$1$1(this));
     }
 }

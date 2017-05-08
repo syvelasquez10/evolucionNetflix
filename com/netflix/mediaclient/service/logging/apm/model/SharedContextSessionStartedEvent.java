@@ -24,9 +24,9 @@ public class SharedContextSessionStartedEvent extends SessionStartedEvent
     
     public SharedContextSessionStartedEvent(JSONObject jsonObject) {
         super(jsonObject);
-        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
+        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", (JSONObject)null);
         if (jsonObject != null) {
-            this.mUuid = JsonUtils.getString(jsonObject, "uuid", null);
+            this.mUuid = JsonUtils.getString(jsonObject, "uuid", (String)null);
         }
     }
     

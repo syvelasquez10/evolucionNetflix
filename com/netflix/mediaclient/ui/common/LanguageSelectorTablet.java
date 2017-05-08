@@ -40,6 +40,6 @@ class LanguageSelectorTablet extends LanguageSelector
     @Override
     protected int getDialogLayoutId() {
         Log.d("nf_language_selector", "R.layout.language_selector_tablet_dialog");
-        return 2130903179;
+        return 2130903180;
     }
 }

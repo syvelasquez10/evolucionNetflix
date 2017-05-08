@@ -27,7 +27,7 @@ import android.annotation.TargetApi;
 @TargetApi(4)
 public final class ErrorLoggingManager
 {
-    private static final String CRITTER_VERSION_NAME = "4.13.0";
+    private static final String CRITTER_VERSION_NAME = "4.13.2";
     private static final boolean ENABLE_CRITTERCISM = true;
     private static final String TAG = "nf_log_crit";
     private static boolean sBreadcrumbLoggingEnabled;
@@ -106,7 +106,7 @@ public final class ErrorLoggingManager
                 crittercismConfig.setNdkCrashReportingEnabled(false);
                 crittercismConfig.setServiceMonitoringEnabled(false);
                 crittercismConfig.setLogcatReportingEnabled(false);
-                crittercismConfig.setCustomVersionName("4.13.0");
+                crittercismConfig.setCustomVersionName("4.13.2");
                 try {
                     final Context context2;
                     Crittercism.initialize(context2, SecurityRepository.getCrittercismAppId(), crittercismConfig);
@@ -151,7 +151,7 @@ public final class ErrorLoggingManager
     
     public static void logHandledException(final String s) {
         if (!StringUtils.isEmpty(s)) {
-            ExceptionLogClUtils.reportExceptionToCL(NetflixApplication.getContext(), new Exception(s));
+            ExceptionLogClUtils.reportHandledExceptionToCL(NetflixApplication.getContext(), (Throwable)new Exception(s));
             if (isEnabledAndReady() && ErrorLoggingManager.sErrorLoggingEnabledByConfig) {
                 logHandledException(new Exception(s));
                 return;
@@ -164,7 +164,7 @@ public final class ErrorLoggingManager
     
     public static void logHandledException(final Throwable t) {
         if (t != null) {
-            ExceptionLogClUtils.reportExceptionToCL(NetflixApplication.getContext(), t);
+            ExceptionLogClUtils.reportHandledExceptionToCL(NetflixApplication.getContext(), t);
             if (isEnabledAndReady() && ErrorLoggingManager.sErrorLoggingEnabledByConfig) {
                 Crittercism.logHandledException(t);
                 return;

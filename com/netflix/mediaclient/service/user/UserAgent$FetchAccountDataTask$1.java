@@ -78,11 +78,11 @@ class UserAgent$FetchAccountDataTask$1 extends SimpleUserAgentWebCallback
             this.this$1.this$0.mListOfUserProfiles = accountData.getUserProfiles();
             this.this$1.this$0.mUser = accountData.getUser();
             this.this$1.this$0.mSubtitleDefaults = TextStyle.buildSubtitleSettings(this.this$1.this$0.mUser.getSubtitleDefaults());
+            this.this$1.this$0.persistListOfUserProfiles(this.this$1.this$0.mListOfUserProfiles);
+            this.this$1.this$0.persistUser(this.this$1.this$0.mUser);
             if (this.this$1.this$0.mUserAgentStateManager != null) {
                 this.this$1.this$0.mUserAgentStateManager.accountDataFetched(accountData);
             }
-            this.this$1.this$0.persistListOfUserProfiles(this.this$1.this$0.mListOfUserProfiles);
-            this.this$1.this$0.persistUser(this.this$1.this$0.mUser);
             UserAgentBroadcastIntents.signalAccountDataFetched(this.this$1.this$0.getContext());
         }
         else {

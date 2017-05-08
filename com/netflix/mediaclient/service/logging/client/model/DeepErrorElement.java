@@ -29,8 +29,8 @@ public class DeepErrorElement
             return null;
         }
         final DeepErrorElement deepErrorElement = new DeepErrorElement();
-        deepErrorElement.debug = DeepErrorElement$Debug.createInstance(JsonUtils.getJSONObject(jsonObject, "debug", null));
-        deepErrorElement.errorCode = JsonUtils.getString(jsonObject, "errorCode", null);
+        deepErrorElement.debug = DeepErrorElement$Debug.createInstance(JsonUtils.getJSONObject(jsonObject, "debug", (JSONObject)null));
+        deepErrorElement.errorCode = JsonUtils.getString(jsonObject, "errorCode", (String)null);
         deepErrorElement.fatal = JsonUtils.getBoolean(jsonObject, "fatal", false);
         return deepErrorElement;
     }

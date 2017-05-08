@@ -64,7 +64,7 @@ public final class PServiceLogging
                 }
                 case 3: {
                     UserActionLogUtils.reportPreAppWidgetActionStarted(context, UserActionLogging$CommandName.androidWidgetCommand, PreAppWidgetLogData.createInstance(context, pServiceWidgetLogEvent.widgetSize, b), new PreAppWidgetLogActionData(PreAppWidgetLogActionData$PreAppWidgetActionName.GO_TO_NEXT));
-                    UserActionLogUtils.reportPreAppWidgetActionEnded(context, IClientLogging$CompletionReason.success, null);
+                    UserActionLogUtils.reportPreAppWidgetActionEnded(context, IClientLogging$CompletionReason.success, (UIError)null);
                     continue;
                 }
             }

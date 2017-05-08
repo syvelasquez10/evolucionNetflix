@@ -40,12 +40,12 @@ public final class R$string
     public static final int app_name = 2131296456;
     public static final int appbar_scrolling_view_behavior = 2131297009;
     public static final int bottom_sheet_behavior = 2131297012;
-    public static final int character_counter_pattern = 2131297016;
-    public static final int password_toggle_content_description = 2131297094;
-    public static final int path_password_eye = 2131297095;
-    public static final int path_password_eye_mask_strike_through = 2131297096;
-    public static final int path_password_eye_mask_visible = 2131297097;
-    public static final int path_password_strike_through = 2131297098;
+    public static final int character_counter_pattern = 2131297039;
+    public static final int password_toggle_content_description = 2131297117;
+    public static final int path_password_eye = 2131297118;
+    public static final int path_password_eye_mask_strike_through = 2131297119;
+    public static final int path_password_eye_mask_visible = 2131297120;
+    public static final int path_password_strike_through = 2131297121;
     public static final int search_menu_title = 2131296325;
     public static final int status_bar_notification_info_overflow = 2131296326;
 }

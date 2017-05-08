@@ -58,14 +58,14 @@ public class Version
             return null;
         }
         final Version version = new Version();
-        version.app = JsonUtils.getString(jsonObject, "app", null);
-        version.ui = JsonUtils.getString(jsonObject, "ui", null);
-        version.nrdapp = JsonUtils.getString(jsonObject, "nrdapp", null);
-        version.nrdlib = JsonUtils.getString(jsonObject, "nrdlib", null);
-        version.mdxlib = JsonUtils.getString(jsonObject, "mdxlib", null);
-        version.mdxjs = JsonUtils.getString(jsonObject, "mdxjs", null);
-        version.nrdsdk = JsonUtils.getString(jsonObject, "nrdsdk", null);
-        version.os = JsonUtils.getString(jsonObject, "os", null);
+        version.app = JsonUtils.getString(jsonObject, "app", (String)null);
+        version.ui = JsonUtils.getString(jsonObject, "ui", (String)null);
+        version.nrdapp = JsonUtils.getString(jsonObject, "nrdapp", (String)null);
+        version.nrdlib = JsonUtils.getString(jsonObject, "nrdlib", (String)null);
+        version.mdxlib = JsonUtils.getString(jsonObject, "mdxlib", (String)null);
+        version.mdxjs = JsonUtils.getString(jsonObject, "mdxjs", (String)null);
+        version.nrdsdk = JsonUtils.getString(jsonObject, "nrdsdk", (String)null);
+        version.os = JsonUtils.getString(jsonObject, "os", (String)null);
         return version;
     }
     

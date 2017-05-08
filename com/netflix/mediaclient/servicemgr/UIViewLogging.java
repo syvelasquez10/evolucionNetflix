@@ -55,5 +55,5 @@ public interface UIViewLogging
     
     void startImpressionSession(final IClientLogging$ModalView p0, final String p1);
     
-    void startModalViewSession(final IClientLogging$ModalView p0);
+    void startModalViewSession(final IClientLogging$ModalView p0, final String p1);
 }

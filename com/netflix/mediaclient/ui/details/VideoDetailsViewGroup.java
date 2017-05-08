@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.details;
 
 import android.text.Html;
+import java.util.List;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
@@ -24,7 +25,6 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import android.view.LayoutInflater;
-import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
 import com.netflix.mediaclient.servicemgr.interface_.FeatureEnabledProvider;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.MdxUtils;
@@ -124,40 +124,40 @@ public class VideoDetailsViewGroup extends LinearLayout
                 if (!MdxUtils.isCurrentMdxTargetAvailable(netflixActivity.getServiceManager())) {
                     break Label_0185;
                 }
-                final MdxTargetCapabilities currentTargetCapabilities = netflixActivity.getServiceManager().getMdx().getCurrentTargetCapabilities();
+                final Object currentTargetCapabilities = netflixActivity.getServiceManager().getMdx().getCurrentTargetCapabilities();
                 if (currentTargetCapabilities == null) {
                     break Label_0185;
                 }
                 DeviceCapabilityProvider localCapabilities;
-                if ((localCapabilities = currentTargetCapabilities) == null) {
+                if ((localCapabilities = (DeviceCapabilityProvider)currentTargetCapabilities) == null) {
                     localCapabilities = DeviceUtils.getLocalCapabilities(netflixActivity.getServiceManager());
                 }
                 final EnumMap<VideoDetailsViewGroup$SupportedCapabilities, Boolean> enumMap = new EnumMap<VideoDetailsViewGroup$SupportedCapabilities, Boolean>(VideoDetailsViewGroup$SupportedCapabilities.class);
-                enumMap.put(VideoDetailsViewGroup$SupportedCapabilities._5dot1, Boolean.valueOf(DeviceUtils.shouldShow5dot1Icon(localCapabilities, videoDetails)));
-                if (DeviceUtils.shouldShowDolbyVisionIcon(localCapabilities, videoDetails)) {
+                enumMap.put(VideoDetailsViewGroup$SupportedCapabilities._5dot1, Boolean.valueOf(DeviceUtils.shouldShow5dot1Icon(localCapabilities, (FeatureEnabledProvider)videoDetails)));
+                if (DeviceUtils.shouldShowDolbyVisionIcon(localCapabilities, (FeatureEnabledProvider)videoDetails)) {
                     enumMap.put(VideoDetailsViewGroup$SupportedCapabilities.DOLBY_VISION, Boolean.valueOf(true));
                 }
                 else {
-                    if (DeviceUtils.shouldShowHdr10Icon(localCapabilities, videoDetails)) {
+                    if (DeviceUtils.shouldShowHdr10Icon(localCapabilities, (FeatureEnabledProvider)videoDetails)) {
                         enumMap.put(VideoDetailsViewGroup$SupportedCapabilities.HDR10, Boolean.valueOf(true));
                         return enumMap;
                     }
-                    if (DeviceUtils.shouldShowUhdIcon(localCapabilities, videoDetails)) {
+                    if (DeviceUtils.shouldShowUhdIcon(localCapabilities, (FeatureEnabledProvider)videoDetails)) {
                         enumMap.put(VideoDetailsViewGroup$SupportedCapabilities.UHD, Boolean.valueOf(true));
                         return enumMap;
                     }
-                    if (DeviceUtils.shouldShowHdIcon(localCapabilities, videoDetails)) {
+                    if (DeviceUtils.shouldShowHdIcon(localCapabilities, (FeatureEnabledProvider)videoDetails)) {
                         enumMap.put(VideoDetailsViewGroup$SupportedCapabilities.HD, Boolean.valueOf(true));
                         return enumMap;
                     }
-                    if (DeviceUtils.shouldShow3DIcon(localCapabilities, videoDetails)) {
+                    if (DeviceUtils.shouldShow3DIcon(localCapabilities, (FeatureEnabledProvider)videoDetails)) {
                         enumMap.put(VideoDetailsViewGroup$SupportedCapabilities._3D, Boolean.valueOf(true));
                         return enumMap;
                     }
                 }
                 return enumMap;
             }
-            final MdxTargetCapabilities currentTargetCapabilities = null;
+            final Object currentTargetCapabilities = null;
             continue;
         }
     }
@@ -229,7 +229,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void alignViews() {
         if (Coppola1Utils.isCoppolaContext(this.getContext())) {
-            final View viewById = this.findViewById(2131755309);
+            final View viewById = this.findViewById(2131755316);
             if (viewById != null) {
                 ((LinearLayout$LayoutParams)viewById.getLayoutParams()).topMargin = 0;
             }
@@ -255,27 +255,27 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     protected void findViews() {
-        this.ratingBar = (NetflixRatingBar)this.findViewById(2131755167);
-        this.addToMyListGroup = this.findViewById(2131755189);
-        this.addToMyList = (TextView)this.findViewById(2131755312);
-        this.addToMyListLabel = (TextView)this.findViewById(2131755597);
-        this.mMovieDownloadButton = (DownloadButton)this.findViewById(2131755190);
-        this.basicInfo = (TextView)this.findViewById(2131755310);
-        this.episodeBadge = (TextView)this.findViewById(2131755193);
-        this.episodeTitle = (TextView)this.findViewById(2131755194);
-        this.supplemental = (TextView)this.findViewById(2131755208);
-        this.synopsis = (TextView)this.findViewById(2131755210);
-        this.starring = (TextView)this.findViewById(2131755479);
-        this.creators = (TextView)this.findViewById(2131755480);
-        this.horzDispImg = (TopCropImageView)this.findViewById(2131755200);
-        this.title = (TextView)this.findViewById(2131755215);
-        this.imgGroup = (ViewGroup)this.findViewById(2131755313);
-        this.backgroundImg = (ImageView)this.findViewById(2131755417);
-        this.relatedTitle = (TextView)this.findViewById(2131755218);
-        this.basicInfoBadges = (TextView)this.findViewById(2131755311);
-        this.footerViewGroup = (ViewGroup)this.findViewById(2131755217);
-        this.copyright = (ViewGroup)this.findViewById(2131755948);
-        this.play = this.findViewById(2131755216);
+        this.ratingBar = (NetflixRatingBar)this.findViewById(2131755174);
+        this.addToMyListGroup = this.findViewById(2131755196);
+        this.addToMyList = (TextView)this.findViewById(2131755319);
+        this.addToMyListLabel = (TextView)this.findViewById(2131755605);
+        this.mMovieDownloadButton = (DownloadButton)this.findViewById(2131755197);
+        this.basicInfo = (TextView)this.findViewById(2131755317);
+        this.episodeBadge = (TextView)this.findViewById(2131755200);
+        this.episodeTitle = (TextView)this.findViewById(2131755201);
+        this.supplemental = (TextView)this.findViewById(2131755215);
+        this.synopsis = (TextView)this.findViewById(2131755217);
+        this.starring = (TextView)this.findViewById(2131755487);
+        this.creators = (TextView)this.findViewById(2131755488);
+        this.horzDispImg = (TopCropImageView)this.findViewById(2131755207);
+        this.title = (TextView)this.findViewById(2131755222);
+        this.imgGroup = (ViewGroup)this.findViewById(2131755320);
+        this.backgroundImg = (ImageView)this.findViewById(2131755425);
+        this.relatedTitle = (TextView)this.findViewById(2131755225);
+        this.basicInfoBadges = (TextView)this.findViewById(2131755318);
+        this.footerViewGroup = (ViewGroup)this.findViewById(2131755224);
+        this.copyright = (ViewGroup)this.findViewById(2131755968);
+        this.play = this.findViewById(2131755223);
         LocalizationUtils.setLayoutDirection((View)this.ratingBar);
         LocalizationUtils.setLayoutDirection((View)this.addToMyList);
         LocalizationUtils.setLayoutDirection((View)this.mMovieDownloadButton);
@@ -320,7 +320,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     protected int getlayoutId() {
-        return 2130903333;
+        return 2130903338;
     }
     
     public void hideRelatedTitle() {
@@ -474,13 +474,13 @@ public class VideoDetailsViewGroup extends LinearLayout
         if (this.showCurrentEpisodeDetails(videoDetails)) {
             s2 = this.getIfValidOrFallback(((ShowDetails)videoDetails).getCurrentEpisodeHorzDispUrl(), s2);
         }
-        NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.horzDispImg, s2, IClientLogging$AssetType.boxArt, s, BrowseExperience.getImageLoaderConfig(), true, 1);
+        NetflixActivity.getImageLoader((Context)netflixActivity).showImg((AdvancedImageView)this.horzDispImg, s2, IClientLogging$AssetType.boxArt, s, BrowseExperience.getImageLoaderConfig(), true, 1);
         this.setupImageClicks(videoDetails, netflixActivity);
     }
     
     public void updateNSREFields(final ShowDetails showDetails) {
         final String currentEpisodeTitle = showDetails.getCurrentEpisodeTitle();
-        LoMoUtils.toggleEpisodeBadge(showDetails.getCurrentEpisodeBadges(), this.episodeBadge);
+        LoMoUtils.toggleEpisodeBadge((List)showDetails.getCurrentEpisodeBadges(), this.episodeBadge);
         if (currentEpisodeTitle != null) {
             this.episodeTitle.setText((CharSequence)this.getResources().getString(2131296645, new Object[] { currentEpisodeTitle }));
             this.supplemental.setText((CharSequence)showDetails.getSupplementalMessage());

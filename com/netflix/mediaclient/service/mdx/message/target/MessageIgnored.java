@@ -28,7 +28,7 @@ public final class MessageIgnored extends MdxMessage
         this.mJson = mJson;
         this.mTransactionId = mJson.getString(MessageIgnored.PROPERTY_transactionId);
         this.mErrorCode = mJson.getString(MessageIgnored.PROPERTY_errorCode);
-        this.mErrorDesc = JsonUtils.getString(mJson, MessageIgnored.PROPERTY_errorDesc, null);
+        this.mErrorDesc = JsonUtils.getString(mJson, MessageIgnored.PROPERTY_errorDesc, (String)null);
     }
     
     public String getErrorCode() {

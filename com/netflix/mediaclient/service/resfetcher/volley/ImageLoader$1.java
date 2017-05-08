@@ -34,7 +34,7 @@ class ImageLoader$1 implements ImageLoader$ImageListener
     @Override
     public void onResponse(final ImageLoader$ImageContainer imageLoader$ImageContainer, final ImageLoader$Type imageLoader$Type) {
         if (imageLoader$ImageContainer == null) {
-            this.val$listener.onResponse(null, null);
+            this.val$listener.onResponse((Bitmap)null, (String)null);
             return;
         }
         this.val$listener.onResponse(imageLoader$ImageContainer.getBitmap(), imageLoader$ImageContainer.getRequestUrl());

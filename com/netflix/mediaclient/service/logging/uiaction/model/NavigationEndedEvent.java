@@ -28,8 +28,8 @@ public class NavigationEndedEvent extends BaseUIActionSessionEndedEvent
     
     public NavigationEndedEvent(final JSONObject jsonObject) {
         super(jsonObject);
-        this.mStartView = IClientLogging$ModalView.valueOf(JsonUtils.getString(jsonObject, "sourceModalView", null));
-        this.mDestinationView = IClientLogging$ModalView.valueOf(JsonUtils.getString(jsonObject, "destinationView", null));
+        this.mStartView = IClientLogging$ModalView.valueOf(JsonUtils.getString(jsonObject, "sourceModalView", (String)null));
+        this.mDestinationView = IClientLogging$ModalView.valueOf(JsonUtils.getString(jsonObject, "destinationView", (String)null));
     }
     
     @Override

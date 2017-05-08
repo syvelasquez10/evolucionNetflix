@@ -19,7 +19,6 @@ public class OfflineStorageVolumeUiListImpl implements OfflineStorageVolumeUiLis
         this.mOfflineStorageVolumeList = new ArrayList<OfflineStorageVolume>();
     }
     
-    @Override
     public OfflineStorageVolume get(final int n) {
         return this.mOfflineStorageVolumeList.get(n);
     }
@@ -46,7 +45,6 @@ public class OfflineStorageVolumeUiListImpl implements OfflineStorageVolumeUiLis
         return n >= 0 && n < this.size() && this.get(n).isRemovable();
     }
     
-    @Override
     public int size() {
         return this.mOfflineStorageVolumeList.size();
     }

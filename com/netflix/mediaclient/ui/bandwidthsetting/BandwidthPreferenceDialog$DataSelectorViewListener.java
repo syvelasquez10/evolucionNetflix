@@ -37,28 +37,28 @@ class BandwidthPreferenceDialog$DataSelectorViewListener implements View$OnClick
                     bandwidthPreferenceDialog$ManualBwChoice = undefined;
                     break;
                 }
-                case 2131755797:
-                case 2131755798: {
-                    bandwidthPreferenceDialog$ManualBwChoice = BandwidthPreferenceDialog$ManualBwChoice.OFF;
-                    break;
-                }
-                case 2131755801:
-                case 2131755802: {
-                    bandwidthPreferenceDialog$ManualBwChoice = BandwidthPreferenceDialog$ManualBwChoice.LOW;
-                    break;
-                }
                 case 2131755805:
                 case 2131755806: {
-                    bandwidthPreferenceDialog$ManualBwChoice = BandwidthPreferenceDialog$ManualBwChoice.MEDIUM;
+                    bandwidthPreferenceDialog$ManualBwChoice = BandwidthPreferenceDialog$ManualBwChoice.OFF;
                     break;
                 }
                 case 2131755809:
                 case 2131755810: {
-                    bandwidthPreferenceDialog$ManualBwChoice = BandwidthPreferenceDialog$ManualBwChoice.HIGH;
+                    bandwidthPreferenceDialog$ManualBwChoice = BandwidthPreferenceDialog$ManualBwChoice.LOW;
                     break;
                 }
                 case 2131755813:
                 case 2131755814: {
+                    bandwidthPreferenceDialog$ManualBwChoice = BandwidthPreferenceDialog$ManualBwChoice.MEDIUM;
+                    break;
+                }
+                case 2131755817:
+                case 2131755818: {
+                    bandwidthPreferenceDialog$ManualBwChoice = BandwidthPreferenceDialog$ManualBwChoice.HIGH;
+                    break;
+                }
+                case 2131755821:
+                case 2131755822: {
                     bandwidthPreferenceDialog$ManualBwChoice = BandwidthPreferenceDialog$ManualBwChoice.UNLIMITED;
                     break;
                 }

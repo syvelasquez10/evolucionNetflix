@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.protocol.nflx;
 
+import java.util.Map;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import com.netflix.mediaclient.Log;
 
@@ -20,6 +21,6 @@ class BaseNflxHandler$1 implements Runnable
     @Override
     public void run() {
         Log.d("NflxHandler", "Resolving tiny URL in background");
-        this.this$0.handleTinyUrl(this.val$tinyUrl, NflxProtocolUtils.extractJustUuid(this.this$0.mParamsMap.get("targetid")), NflxProtocolUtils.getTrackId(this.this$0.mParamsMap));
+        this.this$0.handleTinyUrl(this.val$tinyUrl, NflxProtocolUtils.extractJustUuid((String)this.this$0.mParamsMap.get("targetid")), NflxProtocolUtils.getTrackId((Map)this.this$0.mParamsMap));
     }
 }

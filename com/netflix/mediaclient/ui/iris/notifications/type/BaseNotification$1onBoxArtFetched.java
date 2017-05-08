@@ -51,17 +51,15 @@ class BaseNotification$1onBoxArtFetched implements ImageLoader$ImageLoaderListen
         this.mSocialProfile = mSocialProfile;
     }
     
-    @Override
     public void onErrorResponse(final String s) {
         if (Log.isLoggable()) {
             Log.e(BaseNotification.TAG, "Failed to download: " + s);
         }
     }
     
-    @Override
     public void onResponse(final Bitmap bitmap, final String s) {
         if (bitmap != null) {
-            final int color = this.val$context.getResources().getColor(2131689634);
+            final int color = this.val$context.getResources().getColor(2131689635);
             final NotificationCompat$BigPictureStyle bigPicture = new NotificationCompat$BigPictureStyle().bigPicture(bitmap);
             final NotificationCompat$Builder setColor = new NotificationCompat$Builder(this.val$context).setSmallIcon(2130837935).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
             setColor.setGroup("iris_notifications");

@@ -22,7 +22,7 @@ public class ExpiringContentAdvisor extends TwoLineAdvisor
     @Override
     public void dismiss() {
         super.dismiss();
-        if (PlayScreen.isBrowseValid(this.controller)) {
+        if (PlayScreen.isBrowseValid((NetflixFrag)this.controller)) {
             this.controller.getServiceManager().getBrowse().updateExpiredContentAdvisoryStatus(this.controller.getCurrentAsset().getPlayableId(), ExpiringContentAdvisory$ContentAction.NEVER_SHOW_AGAIN);
         }
     }
@@ -34,7 +34,7 @@ public class ExpiringContentAdvisor extends TwoLineAdvisor
     @Override
     protected void showInternal() {
         super.showInternal();
-        if (PlayScreen.isBrowseValid(this.controller)) {
+        if (PlayScreen.isBrowseValid((NetflixFrag)this.controller)) {
             this.controller.getServiceManager().getBrowse().updateExpiredContentAdvisoryStatus(this.controller.getCurrentAsset().getPlayableId(), ExpiringContentAdvisory$ContentAction.LOG_WHEN_SHOWN);
         }
     }

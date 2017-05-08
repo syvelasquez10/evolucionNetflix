@@ -19,12 +19,11 @@ public final class AndroidMessageRegistry implements ErrorMessageRegistry
         this.context = context;
     }
     
-    @Override
     public String getUserMessage(final MslError mslError, final List<String> list) {
         String s;
         if (mslError == null) {
             Log.e("nf_msl_error", "getUserMessage:: NULL");
-            s = this.context.getString(2131297069);
+            s = this.context.getString(2131297092);
         }
         else {
             final String s2 = s = mslError.getInternalCode() + " " + mslError.getResponseCode().name() + " " + mslError.getMessage();
@@ -36,13 +35,12 @@ public final class AndroidMessageRegistry implements ErrorMessageRegistry
         return s;
     }
     
-    @Override
     public String getUserMessage(final Throwable t, final List<String> list) {
         if (Log.isLoggable()) {
             Log.e("nf_msl_error", t, "getUserMessage::", new Object[0]);
         }
         if (t == null) {
-            return this.context.getString(2131297069);
+            return this.context.getString(2131297092);
         }
         return t.getMessage();
     }

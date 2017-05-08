@@ -42,6 +42,7 @@ public class DeviceConfiguration
     private Map<String, ConsolidatedLoggingSessionSpecification> mConsolidatedLoggingSpecification;
     private Context mContext;
     private DeviceRepository mDeviceRepository;
+    private boolean mDisableActivityTracker;
     private boolean mDisableCastFaststart;
     private boolean mDisableDataSaver;
     private ErrorLoggingSpecification mErrorLoggingSpecification;
@@ -120,6 +121,7 @@ public class DeviceConfiguration
         this.mDisableDataSaver = PreferenceUtils.getBooleanPref(this.mContext, "disable_data_saver", false);
         this.mAllowHevcMobile = PreferenceUtils.getBooleanPref(this.mContext, "prefs_allow_hevc_mobile", false);
         this.mAllowVp9Mobile = PreferenceUtils.getBooleanPref(this.mContext, "prefs_allow_vp9_mobile", DeviceUtils.DEFAULT_ALLOW_VP9_MOBILE);
+        this.mDisableActivityTracker = PreferenceUtils.getBooleanPref(this.mContext, "prefs_activity_tracking", false);
     }
     
     private Map<String, ConsolidatedLoggingSessionSpecification> loadConsolidateLoggingSpecification() {
@@ -476,6 +478,10 @@ public class DeviceConfiguration
         return this.mIgnorePreloadForPlayBilling;
     }
     
+    public boolean isActivivityTrackingDisabled() {
+        return this.mDisableActivityTracker;
+    }
+    
     public boolean isAllowHevcMobile() {
         return this.mAllowHevcMobile;
     }
@@ -595,6 +601,7 @@ public class DeviceConfiguration
         netflixPreference.putBooleanPref("disable_data_saver", this.mDisableDataSaver = deviceConfigData.getDisableDataSaver());
         netflixPreference.putBooleanPref("prefs_allow_hevc_mobile", this.mAllowHevcMobile = deviceConfigData.isAllowHevcMobile());
         netflixPreference.putBooleanPref("prefs_allow_vp9_mobile", this.mAllowVp9Mobile = deviceConfigData.isAllowVp9Mobile());
+        netflixPreference.putBooleanPref("prefs_activity_tracking", this.mDisableActivityTracker = deviceConfigData.isActivivityTrackingDisabled());
         if (!this.isDeviceConfigInCache()) {
             this.updateDeviceConfigFlag(netflixPreference, true);
         }

@@ -10,7 +10,7 @@ import com.netflix.mediaclient.javabridge.ui.LogArguments$LogLevel;
 
 public class EndPlay extends OfflinePlaybackBaseLogblob
 {
-    public EndPlay(final LogArguments$LogLevel logArguments$LogLevel, final long n, final long n2, final String s, final String s2, final String s3, final long n3, final long n4, final long n5, final String s4, final boolean b, final JSONObject jsonObject, final JSONObject jsonObject2, final String s5, final String s6, final String s7) {
+    public EndPlay(final LogArguments$LogLevel logArguments$LogLevel, final long n, final long n2, final String s, final String s2, final String s3, final long n3, final long n4, final long n5, final String s4, final boolean b, final JSONObject jsonObject, final JSONObject jsonObject2, final String s5, final String s6, final String s7, final String s8) {
         super(s, s2, s3);
         this.updateSeverity(logArguments$LogLevel);
         this.mJson.put("level", logArguments$LogLevel.getLevel());
@@ -36,6 +36,9 @@ public class EndPlay extends OfflinePlaybackBaseLogblob
         }
         if (StringUtils.isNotEmpty(s7)) {
             this.mJson.put("errorstring", (Object)s7);
+        }
+        if (StringUtils.isNotEmpty(s8)) {
+            this.mJson.put("activitydata", (Object)s8);
         }
     }
     

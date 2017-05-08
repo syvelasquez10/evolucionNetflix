@@ -52,7 +52,7 @@ public class FetchSurveyRequest extends FalkorVolleyWebClientRequest<Survey>
             Log.v("FetchSurveyRequest", "String response to parse = " + string);
         }
         try {
-            return new Survey(new JsonParser().parse(string).getAsJsonObject().getAsJsonObject("value").getAsJsonObject("survey").getAsJsonObject("get"));
+            return new Survey((JsonElement)new JsonParser().parse(string).getAsJsonObject().getAsJsonObject("value").getAsJsonObject("survey").getAsJsonObject("get"));
         }
         catch (Exception ex) {
             string = "FetchSurveyTask got exception trying to parse JSON: " + ex + " ... JSON -> " + string;

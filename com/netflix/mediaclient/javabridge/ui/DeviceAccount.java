@@ -20,7 +20,7 @@ public final class DeviceAccount
     
     public DeviceAccount(final JSONObject jsonObject) {
         int i = 0;
-        this.accountKey = JsonUtils.getString(jsonObject, "accountKey", null);
+        this.accountKey = JsonUtils.getString(jsonObject, "accountKey", (String)null);
         this.registered = JsonUtils.getBoolean(jsonObject, "registered", false);
         this.lastAccessTime = JsonUtils.getLong(jsonObject, "lastAccessTime", 0L);
         if (jsonObject.has("tokens")) {

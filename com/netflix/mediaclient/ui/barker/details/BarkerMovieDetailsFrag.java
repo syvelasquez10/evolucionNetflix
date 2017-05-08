@@ -90,7 +90,7 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
             return;
         }
         if (this.fromSameActivityType) {
-            Api16Util.setBackgroundDrawableCompat(view, null);
+            Api16Util.setBackgroundDrawableCompat(view, (Drawable)null);
             return;
         }
         this.setupRecyclerShadow();
@@ -121,15 +121,15 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131755446);
-        this.fragBackground = view.findViewById(2131755458);
+        this.rootContainer = view.findViewById(2131755454);
+        this.fragBackground = view.findViewById(2131755466);
         if (this.rootContainer != null) {
             this.rootContainer.setBackgroundResource(this.getBackgroundResource());
         }
     }
     
     protected int getBackgroundResource() {
-        return 2131689708;
+        return 2131689709;
     }
     
     @Override
@@ -239,7 +239,7 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
     @Override
     protected void setupRecyclerViewItemDecoration() {
         this.innerGridDecoration = new ItemDecorationBarkerGrid((Context)this.getActivity(), this.numColumns);
-        this.recyclerView.addItemDecoration(this.innerGridDecoration);
+        this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)this.innerGridDecoration);
     }
     
     @Override

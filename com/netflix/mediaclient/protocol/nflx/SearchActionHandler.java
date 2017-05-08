@@ -24,7 +24,7 @@ class SearchActionHandler extends BaseNflxHandlerWithoutDelayedActionSupport
             Log.v("NflxHandler", "Could not find query param");
             return NflxHandler$Response.NOT_HANDLING;
         }
-        SearchActivity.search(this.mActivity, s);
+        SearchActivity.search((Activity)this.mActivity, s);
         return NflxHandler$Response.HANDLING;
     }
 }

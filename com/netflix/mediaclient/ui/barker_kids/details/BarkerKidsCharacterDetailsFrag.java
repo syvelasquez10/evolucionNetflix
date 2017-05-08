@@ -111,7 +111,7 @@ public class BarkerKidsCharacterDetailsFrag extends BarkerKidsShowDetailsFrag
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
             seasonsSpinnerAdapter.setItemBackgroundColor(this.kidsColorId);
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131689730);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131689731);
             seasonsSpinnerAdapter.setDropDownTextColor(this.kidsColorId);
         }
         return seasonsSelectorGroup;
@@ -137,7 +137,7 @@ public class BarkerKidsCharacterDetailsFrag extends BarkerKidsShowDetailsFrag
     
     @Override
     protected int getlayoutId() {
-        return 2130903166;
+        return 2130903167;
     }
     
     @Override

@@ -29,7 +29,7 @@ class PlayActionHandler extends BaseNflxHandler
     @Override
     public NflxHandler$Response handle() {
         Log.v("NflxHandler", "handlePlayAction starts...");
-        final String justUuid = NflxProtocolUtils.extractJustUuid(this.mParamsMap.get("targetid"));
+        final String justUuid = NflxProtocolUtils.extractJustUuid((String)this.mParamsMap.get("targetid"));
         final NflxProtocolUtils$VideoInfo videoInfo = this.getVideoInfo();
         if (videoInfo == null) {
             Log.e("NflxHandler", "handlePlayAction fails, no video info found!");
@@ -43,16 +43,16 @@ class PlayActionHandler extends BaseNflxHandler
             Log.v("NflxHandler", "handlePlayAction, handling.");
             final VideoType videoType = videoInfo.getVideoType();
             if (videoType == VideoType.MOVIE || videoType == VideoType.SHOW) {
-                this.playVideo(videoInfo.getCatalogId(), videoType, justUuid, NflxProtocolUtils.getTrackId(this.mParamsMap));
+                this.playVideo(videoInfo.getCatalogId(), videoType, justUuid, NflxProtocolUtils.getTrackId((Map)this.mParamsMap));
                 return NflxHandler$Response.HANDLING_WITH_DELAY;
             }
             if (videoType == VideoType.EPISODE) {
-                final String episodeId = NflxProtocolUtils.getEpisodeId(this.mParamsMap);
+                final String episodeId = NflxProtocolUtils.getEpisodeId((Map)this.mParamsMap);
                 if (StringUtils.isEmpty(episodeId)) {
                     Log.v("NflxHandler", "no episode id");
                     return NflxHandler$Response.NOT_HANDLING;
                 }
-                this.playVideo(episodeId, VideoType.EPISODE, justUuid, NflxProtocolUtils.getTrackId(this.mParamsMap));
+                this.playVideo(episodeId, VideoType.EPISODE, justUuid, NflxProtocolUtils.getTrackId((Map)this.mParamsMap));
                 return NflxHandler$Response.HANDLING_WITH_DELAY;
             }
             else if (Log.isLoggable()) {

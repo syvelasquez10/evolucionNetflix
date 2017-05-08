@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.util.MultiValuedMap;
 import com.netflix.mediaclient.service.configuration.volley.FetchConfigDataRequest;
 import com.netflix.mediaclient.util.MultiValuedHashMap;
 import java.util.Map;
@@ -187,40 +188,39 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     @Override
     public Map<String, String> getApiRequestParams(final ApiEndpointRegistry$ResponsePathFormat apiEndpointRegistry$ResponsePathFormat) {
         synchronized (this) {
-            final MultiValuedHashMap<String, String> multiValuedHashMap = new MultiValuedHashMap<String, String>();
-            multiValuedHashMap.put("responseFormat", "json");
-            multiValuedHashMap.put("progressive", "false");
-            multiValuedHashMap.put("routing", "reject");
-            multiValuedHashMap.put("ffbc", this.mConfigurationAgent.getDeviceModel().getFormFactor());
+            final MultiValuedHashMap multiValuedHashMap = new MultiValuedHashMap();
+            ((MultiValuedMap)multiValuedHashMap).put((Object)"responseFormat", (Object)"json");
+            ((MultiValuedMap)multiValuedHashMap).put((Object)"progressive", (Object)"false");
+            ((MultiValuedMap)multiValuedHashMap).put((Object)"routing", (Object)"reject");
+            ((MultiValuedMap)multiValuedHashMap).put((Object)"ffbc", (Object)this.mConfigurationAgent.getDeviceModel().getFormFactor());
             if (this.mUserAgent != null && StringUtils.isNotEmpty(this.mUserAgent.getCurrentAppLanguage())) {
-                multiValuedHashMap.put("languages", this.mUserAgent.getCurrentAppLanguage());
+                ((MultiValuedMap)multiValuedHashMap).put((Object)"languages", (Object)this.mUserAgent.getCurrentAppLanguage());
             }
             if (this.mUserAgent != null && KidsUtils.isKidsProfile(this.mUserAgent.getCurrentProfile())) {
-                multiValuedHashMap.put("prfType", this.mUserAgent.getCurrentProfile().getProfileType().toString());
+                ((MultiValuedMap)multiValuedHashMap).put((Object)"prfType", (Object)this.mUserAgent.getCurrentProfile().getProfileType().toString());
                 if (BrowseExperience.showKidsExperience()) {
-                    multiValuedHashMap.put("kk", Boolean.TRUE.toString());
+                    ((MultiValuedMap)multiValuedHashMap).put((Object)"kk", (Object)Boolean.TRUE.toString());
                 }
             }
             if (apiEndpointRegistry$ResponsePathFormat != null) {
-                multiValuedHashMap.put("pathFormat", apiEndpointRegistry$ResponsePathFormat.value);
+                ((MultiValuedMap)multiValuedHashMap).put((Object)"pathFormat", (Object)apiEndpointRegistry$ResponsePathFormat.value);
             }
             else {
                 if (Log.isLoggable()) {
                     Log.w("EndpointRegistryProvider", "Response format is NOT known, go for GRAPH for request " + this.getClass().getSimpleName());
                 }
-                multiValuedHashMap.put("pathFormat", ApiEndpointRegistry$ResponsePathFormat.GRAPH.value);
+                ((MultiValuedMap)multiValuedHashMap).put((Object)"pathFormat", (Object)ApiEndpointRegistry$ResponsePathFormat.GRAPH.value);
             }
-            multiValuedHashMap.put("res", this.mConfigurationAgent.getImageResolutionClass().urlParamValue);
-            multiValuedHashMap.put("imgpref", this.mConfigurationAgent.getImagePreference());
-            multiValuedHashMap.put("imgpref", this.getImagePreference());
+            ((MultiValuedMap)multiValuedHashMap).put((Object)"res", (Object)this.mConfigurationAgent.getImageResolutionClass().urlParamValue);
+            ((MultiValuedMap)multiValuedHashMap).put((Object)"imgpref", (Object)this.mConfigurationAgent.getImagePreference());
+            ((MultiValuedMap)multiValuedHashMap).put((Object)"imgpref", (Object)this.getImagePreference());
             if (this.mOfflineAgent != null && this.mOfflineAgent.isOfflineFeatureEnabled()) {
-                multiValuedHashMap.put("dlEnabled", Boolean.TRUE.toString());
+                ((MultiValuedMap)multiValuedHashMap).put((Object)"dlEnabled", (Object)Boolean.TRUE.toString());
             }
-            return multiValuedHashMap;
+            return (Map<String, String>)multiValuedHashMap;
         }
     }
     
-    @Override
     public String getApiUri(final String s) {
         final StringBuilder sb = new StringBuilder();
         sb.append("http://");
@@ -270,7 +270,6 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         return this.buildConfigUrl(true) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.nrmInfoPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.signInConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.streamingQoePqlDefault));
     }
     
-    @Override
     public String getAppbootUri(final String s) {
         if (StringUtils.isNotEmpty(this.mAppBootUrl)) {
             return this.mAppBootUrl;
@@ -318,7 +317,6 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         return this.buildConfigUrl(true) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.customerSupportVoipPql)) + this.buildUrlParam("esn", UriUtil.urlEncodeParam(s));
     }
     
-    @Override
     public String getNccpUri(final String s) {
         return this.getApiUri(s);
     }

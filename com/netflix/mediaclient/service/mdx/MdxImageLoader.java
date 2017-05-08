@@ -54,7 +54,7 @@ public final class MdxImageLoader
         }
         final ImageLoader imageLoader = this.mResourceFetcher.getImageLoader(this.mContext);
         if (imageLoader != null) {
-            imageLoader.getImg(s, IClientLogging$AssetType.boxArt, 0, 0, new MdxImageLoader$1(this));
+            ((com.netflix.mediaclient.util.gfx.ImageLoader)imageLoader).getImg(s, IClientLogging$AssetType.boxArt, 0, 0, (ImageLoader$ImageLoaderListener)new MdxImageLoader$1(this));
             return;
         }
         Log.e("nf_mdxImageLoader", "ImageLoader is null!");

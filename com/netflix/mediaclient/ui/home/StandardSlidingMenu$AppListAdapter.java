@@ -73,8 +73,8 @@ class StandardSlidingMenu$AppListAdapter extends BaseAdapter
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903315, (ViewGroup)null);
-            inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder((TextView)inflate.findViewById(2131755641), inflate.findViewById(2131755642)));
+            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903320, (ViewGroup)null);
+            inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder((TextView)inflate.findViewById(2131755649), inflate.findViewById(2131755650)));
         }
         final StandardSlidingMenu$GenreRowHolder standardSlidingMenu$GenreRowHolder = (StandardSlidingMenu$GenreRowHolder)inflate.getTag();
         standardSlidingMenu$GenreRowHolder.tv.setText((CharSequence)this.getItem(n).text);

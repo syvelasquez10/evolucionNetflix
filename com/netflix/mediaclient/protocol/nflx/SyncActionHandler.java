@@ -19,7 +19,7 @@ class SyncActionHandler extends BaseNflxHandlerWithoutDelayedActionSupport
     
     @Override
     public NflxHandler$Response handle() {
-        final String justUuid = NflxProtocolUtils.extractJustUuid(this.mParamsMap.get("targetid"));
+        final String justUuid = NflxProtocolUtils.extractJustUuid((String)this.mParamsMap.get("targetid"));
         final IMdx mdx = this.mActivity.getServiceManager().getMdx();
         if (mdx == null) {
             Log.e("NflxHandler", "Sync action is required, MDX agent is null. This should NOT happen!");

@@ -120,7 +120,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.removeOfflineAgentListener();
         final OfflineAgentInterface offlineAgentOrNull = NetflixActivity.getOfflineAgentOrNull(this.getNetflixActivity());
         if (offlineAgentOrNull != null) {
-            offlineAgentOrNull.addOfflineAgentListener(this.agentListener = new ActivityPageOfflineAgentListener(viewGroup, false));
+            offlineAgentOrNull.addOfflineAgentListener((OfflineAgentListener)(this.agentListener = new ActivityPageOfflineAgentListener(viewGroup, false)));
         }
     }
     
@@ -173,7 +173,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     public static NetflixDialogFrag createEpisodes(final String s, final String s2, final boolean b) {
         final EpisodesFrag episodesFrag = new EpisodesFrag();
-        episodesFrag.setStyle(1, 2131493151);
+        episodesFrag.setStyle(1, 2131493156);
         return applyCreateArgs(episodesFrag, s, s2, b, true);
     }
     
@@ -210,7 +210,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     private void removeOfflineAgentListener() {
         final OfflineAgentInterface offlineAgentOrNull = NetflixActivity.getOfflineAgentOrNull(this.getNetflixActivity());
         if (offlineAgentOrNull != null && this.agentListener != null) {
-            offlineAgentOrNull.removeOfflineAgentListener(this.agentListener);
+            offlineAgentOrNull.removeOfflineAgentListener((OfflineAgentListener)this.agentListener);
             this.agentListener = null;
         }
     }
@@ -257,7 +257,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.spinner = spinner;
         this.setupSeasonsSpinnerAdapter();
         this.setupSeasonsSpinnerListener();
-        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131689713);
+        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131689714);
         this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131427895)));
         this.spinnerViewGroup.addView((View)this.spinner, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2, 8388627));
         return this.spinnerViewGroup;
@@ -307,7 +307,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     }
     
     protected int getlayoutId() {
-        return 2130903290;
+        return 2130903291;
     }
     
     protected void initDetailsViewGroup() {
@@ -404,7 +404,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
             final Iterator<EpisodeDetails> iterator = list.iterator();
             while (iterator.hasNext()) {
                 if (iterator.next().getPlayable().isAvailableOffline()) {
-                    this.getNetflixActivity().getTutorialHelper().showTutorialForVideoWithScroll(this, list.get(0), this.recyclerView, this.getServiceManager());
+                    this.getNetflixActivity().getTutorialHelper().showTutorialForVideoWithScroll((TutorialHelper$Tutorialable)this, (VideoDetails)list.get(0), this.recyclerView, this.getServiceManager());
                 }
             }
         }
@@ -537,7 +537,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new EpisodesFrag$4(this));
-        adapter.setItemBackgroundColor(2130838128);
+        adapter.setItemBackgroundColor(2130838130);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     
@@ -550,9 +550,8 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.addSpinnerToDetailsGroup();
     }
     
-    @Override
     public Tooltip setupTutorial(final UserProfile userProfile) {
-        final View viewById = this.recyclerView.findViewById(2131755178);
+        final View viewById = this.recyclerView.findViewById(2131755185);
         if (viewById == null) {
             return null;
         }

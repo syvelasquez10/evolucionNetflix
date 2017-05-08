@@ -39,7 +39,7 @@ public class LanguageSelector$AudioAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             Log.d("nf_language_selector", "Audio create row " + n);
-            inflate = this.activity.getLayoutInflater().inflate(2130903177, viewGroup, false);
+            inflate = this.activity.getLayoutInflater().inflate(2130903178, viewGroup, false);
             inflate.setTag((Object)new LanguageSelector$RowHolder(inflate));
         }
         final LanguageSelector$RowHolder languageSelector$RowHolder = (LanguageSelector$RowHolder)inflate.getTag();

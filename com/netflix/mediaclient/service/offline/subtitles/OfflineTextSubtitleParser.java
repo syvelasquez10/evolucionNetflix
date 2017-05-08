@@ -26,7 +26,7 @@ public class OfflineTextSubtitleParser extends BaseTextSubtitleParser implements
     
     @Override
     public Subtitle getCurrentSubtitle() {
-        return this.mOfflineSubtitle;
+        return (Subtitle)this.mOfflineSubtitle;
     }
     
     protected boolean handleImport() {

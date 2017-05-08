@@ -40,7 +40,7 @@ class BarkerKidsMovieDetailsFrag$1 implements RecyclerViewHeaderAdapter$IViewCre
     public View createItemView() {
         final VideoView videoView = new VideoView(this.this$0.recyclerView.getContext());
         videoView.setAdjustViewBounds(true);
-        videoView.setClickListener(new BarkerMovieDetailsFrag$BarkerRelatedVideoDetailsClickListener(this.this$0, this.this$0.getNetflixActivity(), videoView));
+        videoView.setClickListener(new BarkerMovieDetailsFrag$BarkerRelatedVideoDetailsClickListener(this.this$0, this.this$0.getNetflixActivity(), (PlayContextProvider)videoView));
         videoView.setScaleType(ImageView$ScaleType.FIT_XY);
         videoView.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, this.getImageHeight()));
         return (View)videoView;

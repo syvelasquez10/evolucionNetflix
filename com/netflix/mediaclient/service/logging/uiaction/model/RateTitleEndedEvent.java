@@ -28,7 +28,7 @@ public final class RateTitleEndedEvent extends BaseUIActionSessionEndedEvent
     
     public RateTitleEndedEvent(final JSONObject jsonObject) {
         super(jsonObject);
-        this.mRankTitle = JsonUtils.getIntegerObject(jsonObject, " rankTitle", null);
+        this.mRankTitle = JsonUtils.getIntegerObject(jsonObject, " rankTitle", (Integer)null);
         this.mRating = JsonUtils.getInt(jsonObject, " rating", 0);
     }
     

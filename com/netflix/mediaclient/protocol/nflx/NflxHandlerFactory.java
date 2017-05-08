@@ -36,7 +36,7 @@ public final class NflxHandlerFactory
     
     public static void endCommandSessions(final Context context, final Intent intent) {
         if (isIntentFromPreappWidget(intent)) {
-            UserActionLogUtils.reportPreAppWidgetActionEnded(context, IClientLogging$CompletionReason.success, null);
+            UserActionLogUtils.reportPreAppWidgetActionEnded(context, IClientLogging$CompletionReason.success, (UIError)null);
         }
     }
     
@@ -121,7 +121,7 @@ public final class NflxHandlerFactory
         if (map.get("profileGate") != null) {
             return new ProfileGateActionHandler(netflixActivity, map, n);
         }
-        final String action = NflxProtocolUtils.getAction(map);
+        final String action = NflxProtocolUtils.getAction((Map)map);
         if (action == null) {
             Log.w("NflxHandler", "Action is null!");
             return new NotHandlingActionHandler();
@@ -129,7 +129,7 @@ public final class NflxHandlerFactory
         final String lowerCase = action.toLowerCase(Locale.US);
         NflxHandler$Response nflxHandler$Response = NflxHandler$Response.HANDLING;
         final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
-        final DeepLink deepLink = NflxProtocolUtils.createDeepLink(map);
+        final DeepLink deepLink = NflxProtocolUtils.createDeepLink((Map)map);
         NflxProtocolUtils.reportApplicationLaunchedFromDeepLinking(netflixActivity, lowerCase, deepLink);
         NflxHandler nflxHandler;
         IClientLogging$ModalView clientLogging$ModalView;
@@ -209,15 +209,15 @@ public final class NflxHandlerFactory
         }
         final boolean contains = s.contains("source=android");
         if (contains) {
-            UIViewLogUtils.reportUIViewCommandStarted((Context)netflixActivity, UIViewLogging$UIViewCommandName.shareOpenSheet, IClientLogging$ModalView.movieDetails, null, null);
-            UserActionLogUtils.reportShareSheetOpenActionStarted(s, (Context)netflixActivity, null, IClientLogging$ModalView.movieDetails);
+            UIViewLogUtils.reportUIViewCommandStarted((Context)netflixActivity, UIViewLogging$UIViewCommandName.shareOpenSheet, IClientLogging$ModalView.movieDetails, (DataContext)null, (String)null);
+            UserActionLogUtils.reportShareSheetOpenActionStarted(s, (Context)netflixActivity, (UserActionLogging$CommandName)null, IClientLogging$ModalView.movieDetails);
             UIViewLogUtils.reportUIViewCommandEnded((Context)netflixActivity);
         }
         final HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("u", s);
-        NflxProtocolUtils.reportUiSessions(netflixActivity, NflxHandler$Response.HANDLING, false, IClientLogging$ModalView.movieDetails, n, null);
+        NflxProtocolUtils.reportUiSessions(netflixActivity, NflxHandler$Response.HANDLING, false, IClientLogging$ModalView.movieDetails, n, (DeepLink)null);
         if (contains) {
-            UserActionLogUtils.reportShareSheetOpenActionEnded((Context)netflixActivity, IClientLogging$CompletionReason.success, null);
+            UserActionLogUtils.reportShareSheetOpenActionEnded((Context)netflixActivity, IClientLogging$CompletionReason.success, (Error)null);
         }
         return new ViewDetailsActionHandler(netflixActivity, hashMap);
     }

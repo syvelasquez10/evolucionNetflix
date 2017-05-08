@@ -42,7 +42,7 @@ public class IconFontTextView extends TextView
     public void setToIcon(final IconFontGlyph iconFontGlyph, final int n) {
         final int dimensionPixelOffset = this.getResources().getDimensionPixelOffset(n);
         if (Log.isLoggable()) {
-            Log.v("IconFontTextView", "Setting icon char to: " + iconFontGlyph + ", unicode: " + StringUtils.toUnicode(iconFontGlyph.getUnicodeChar()) + ", dimenId: " + n);
+            Log.v("IconFontTextView", "Setting icon char to: " + iconFontGlyph + ", unicode: " + StringUtils.toUnicode((char)iconFontGlyph.getUnicodeChar()) + ", dimenId: " + n);
             Log.v("IconFontTextView", "Setting icon text size to: " + dimensionPixelOffset);
         }
         this.setText((CharSequence)String.valueOf(iconFontGlyph.getUnicodeChar()));

@@ -147,4 +147,22 @@ class NotificationsFrag$NotificationsListAdapter extends BaseAdapter
         }
         return inflate;
     }
+    
+    public void notifyDataSetChanged() {
+        this.notifyDataSetChanged("notifyDataSetChanged");
+    }
+    
+    public void notifyDataSetChanged(final String s) {
+        if (this.this$0.mNotificationsList != null) {
+            this.this$0.mNotificationsList.setLastNotifiedCount(this.getCount(), s);
+        }
+        super.notifyDataSetChanged();
+    }
+    
+    public void notifyDataSetInvalidated() {
+        if (this.this$0.mNotificationsList != null) {
+            this.this$0.mNotificationsList.setLastNotifiedCount(this.getCount(), "notifyDataSetInvalidated");
+        }
+        super.notifyDataSetInvalidated();
+    }
 }

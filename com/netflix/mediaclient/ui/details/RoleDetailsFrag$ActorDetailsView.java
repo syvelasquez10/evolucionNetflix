@@ -92,17 +92,17 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     private void findViews() {
-        this.actorStillImg = (FocalPointImageView)this.findViewById(2131755843);
-        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131755844);
-        this.knownFor = (TextView)this.findViewById(2131755848);
-        this.knownForLabel = (TextView)this.findViewById(2131755847);
-        this.spouse = (TextView)this.findViewById(2131755852);
-        this.spouseLabel = (TextView)this.findViewById(2131755851);
-        this.name = (TextView)this.findViewById(2131755846);
-        this.born = (TextView)this.findViewById(2131755850);
-        this.bornLabel = (TextView)this.findViewById(2131755849);
-        this.onNetFlixLabel = this.findViewById(2131755845);
-        this.this$0.caret = this.findViewById(2131755853);
+        this.actorStillImg = (FocalPointImageView)this.findViewById(2131755851);
+        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131755852);
+        this.knownFor = (TextView)this.findViewById(2131755856);
+        this.knownForLabel = (TextView)this.findViewById(2131755855);
+        this.spouse = (TextView)this.findViewById(2131755860);
+        this.spouseLabel = (TextView)this.findViewById(2131755859);
+        this.name = (TextView)this.findViewById(2131755854);
+        this.born = (TextView)this.findViewById(2131755858);
+        this.bornLabel = (TextView)this.findViewById(2131755857);
+        this.onNetFlixLabel = this.findViewById(2131755853);
+        this.this$0.caret = this.findViewById(2131755861);
     }
     
     private void init() {
@@ -125,12 +125,12 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
                 this.actorHeadshotImg.setImageDrawable(null);
                 return;
             }
-            NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.actorHeadshotImg, falkorPerson.detail.getHeadshotImageUrl(), IClientLogging$AssetType.boxArt, "RoleDetailsFrag.ActorDetailsView.actorHeadshotImg", BrowseExperience.getImageLoaderConfig(), true);
+            NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg((AdvancedImageView)this.actorHeadshotImg, falkorPerson.detail.getHeadshotImageUrl(), IClientLogging$AssetType.boxArt, "RoleDetailsFrag.ActorDetailsView.actorHeadshotImg", BrowseExperience.getImageLoaderConfig(), true);
         }
     }
     
     private void updateActorStillImage(final FalkorPerson falkorPerson) {
-        final View viewById = this.findViewById(2131755517);
+        final View viewById = this.findViewById(2131755525);
         if (this.actorStillImg != null) {
             this.adjustHeight(this.actorStillImg);
             this.actorStillImg.setImageLoaderInfo(null);
@@ -146,7 +146,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
             if (DeviceUtils.isPortrait((Context)this.this$0.getActivity())) {
                 this.actorStillImg.setCropPointXOffsetPercent(this.this$0.still.getStillXFocus());
             }
-            NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.actorStillImg, this.this$0.still.getStillUrl(), IClientLogging$AssetType.boxArt, "RoleDetailsFrag.ActorDetailsView.actorStillImg", BrowseExperience.getImageLoaderConfig(), true);
+            NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg((AdvancedImageView)this.actorStillImg, this.this$0.still.getStillUrl(), IClientLogging$AssetType.boxArt, "RoleDetailsFrag.ActorDetailsView.actorStillImg", BrowseExperience.getImageLoaderConfig(), true);
             viewById.setVisibility(0);
             this.actorStillImg.clearColorFilter();
         }
@@ -217,7 +217,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     protected int getlayoutId() {
-        return 2130903288;
+        return 2130903289;
     }
     
     void updateDetails(final FalkorPerson falkorPerson, final boolean b) {

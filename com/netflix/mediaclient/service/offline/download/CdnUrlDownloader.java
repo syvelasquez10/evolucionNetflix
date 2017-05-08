@@ -154,7 +154,7 @@ public class CdnUrlDownloader implements HttpUrlDownloader$HttpUrlDownloadListen
                                 statusCode = n;
                             }
                         }
-                        final NetflixStatus status = VolleyUtils.getStatus(volleyError, null, StatusCode.INT_ERR_FETCH_NETWORK_ERROR);
+                        final NetflixStatus status = VolleyUtils.getStatus(volleyError, (ErrorLogging)null, StatusCode.INT_ERR_FETCH_NETWORK_ERROR);
                         this.doStopDownload();
                         if (ConnectivityUtils.isConnected(this.mContext)) {
                             if (OfflineUtils.cdnUrlExpiredOrMoved(statusCode)) {
@@ -179,7 +179,7 @@ public class CdnUrlDownloader implements HttpUrlDownloader$HttpUrlDownloadListen
                     if (Log.isLoggable()) {
                         Log.e("nf_cdnUrlDownloader", "onNetworkError deleting " + this.mDownloadableFile.getName() + " deleted=" + delete);
                     }
-                    LogUtils.reportErrorSafely("http 416 error", null);
+                    LogUtils.reportErrorSafely("http 416 error", (Throwable)null);
                 }
                 this.handleCdnUrlNetworkError();
                 return;

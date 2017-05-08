@@ -65,7 +65,7 @@ public class NetflixActionBar
             Log.e("NetflixActionBar", "actionBarGroup is null");
         }
         else {
-            this.toolbar = (Toolbar)this.actionBarGroup.findViewById(2131755140);
+            this.toolbar = (Toolbar)this.actionBarGroup.findViewById(2131755147);
             if (this.toolbar == null) {
                 Log.e("NetflixActionBar", "toolBar is null");
                 return;
@@ -315,7 +315,7 @@ public class NetflixActionBar
     }
     
     protected void showDropShadowIfAvailable() {
-        final View viewById = this.actionBarGroup.findViewById(2131755155);
+        final View viewById = this.actionBarGroup.findViewById(2131755162);
         if (viewById != null) {
             viewById.setVisibility(0);
         }

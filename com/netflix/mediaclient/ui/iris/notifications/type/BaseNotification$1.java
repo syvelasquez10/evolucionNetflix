@@ -32,17 +32,15 @@ class BaseNotification$1 implements ImageLoader$ImageLoaderListener
         this.val$context = val$context;
     }
     
-    @Override
     public void onErrorResponse(final String s) {
         if (Log.isLoggable()) {
             Log.e(BaseNotification.TAG, "Failed to download: " + s);
         }
     }
     
-    @Override
     public void onResponse(final Bitmap bitmap, final String s) {
         if (bitmap != null) {
-            this.val$imageLoader.getImg(this.val$notificationSummary.getTVCardUrl(), IClientLogging$AssetType.boxArt, 0, 0, new BaseNotification$1onBoxArtFetched(this.this$0, bitmap, this.val$context, this.val$notificationSummary, this.val$listSummary, this.val$msg));
+            this.val$imageLoader.getImg(this.val$notificationSummary.getTVCardUrl(), IClientLogging$AssetType.boxArt, 0, 0, (ImageLoader$ImageLoaderListener)new BaseNotification$1onBoxArtFetched(this.this$0, bitmap, this.val$context, this.val$notificationSummary, this.val$listSummary, this.val$msg));
         }
     }
 }

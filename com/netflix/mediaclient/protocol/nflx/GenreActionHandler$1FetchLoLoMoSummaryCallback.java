@@ -32,6 +32,6 @@ class GenreActionHandler$1FetchLoLoMoSummaryCallback extends SimpleManagerCallba
         if (status.isSucces()) {
             HomeActivity.showGenreList(this.activity, new ListOfGenreSummary(loLoMo.getNumLoMos(), -1, -1, "", loLoMo.getTitle(), this.genreId, GenreList$GenreType.LOLOMO.name(), false, loLoMo.getType().toString()));
         }
-        NflxProtocolUtils.reportDelayedResponseHandled(this.activity);
+        NflxProtocolUtils.reportDelayedResponseHandled((Activity)this.activity);
     }
 }

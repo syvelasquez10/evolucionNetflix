@@ -88,7 +88,7 @@ class MdxAgent$MovieBrowseAgentCallback extends SimpleBrowseAgentCallback
             }
             this.this$0.mNotifier.movieMetaDataAvailable(this.this$0.mCurrentTargetUuid);
             if (this.triggeredByCommand) {
-                this.this$0.mVideoIds = new WebApiUtils$VideoIds(movieDetails.getPlayable().isPlayableEpisode(), null, movieDetails.getCatalogIdUrl(), 0, Integer.parseInt(movieDetails.getId()));
+                this.this$0.mVideoIds = new WebApiUtils$VideoIds(movieDetails.getPlayable().isPlayableEpisode(), (String)null, movieDetails.getCatalogIdUrl(), 0, Integer.parseInt(movieDetails.getId()));
                 this.this$0.mTargetManager.playerPlay(this.this$0.mCurrentTargetUuid, this.this$0.mVideoIds.catalogIdUrl, this.this$0.mTrackId, this.this$0.mVideoIds.episodeIdUrl, this.this$0.mStartTime);
                 this.this$0.logPlaystart(false);
             }

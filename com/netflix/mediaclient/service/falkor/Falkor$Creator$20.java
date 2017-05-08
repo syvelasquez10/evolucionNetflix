@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.model.branches.FalkorIrisNotification;
 import com.netflix.falkor.Func;

@@ -58,6 +58,6 @@ public class LoLoMoAdapter extends BaseLoLoMoAdapter<LoMo>
     @Override
     protected void updateLoMoData(final List<LoMo> list) {
         super.updateLoMoData(list);
-        Coppola2Utils.checkAndLogLolomo((Context)this.activity, list);
+        Coppola2Utils.checkAndLogLolomo((Context)this.activity, (List)list);
     }
 }

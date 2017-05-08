@@ -13,6 +13,6 @@ final class Falkor$Creator$7 implements Func<SummarizedList<Ref, LoLoMoSummary>>
 {
     @Override
     public SummarizedList<Ref, LoLoMoSummary> call() {
-        return new SummarizedList<Ref, LoLoMoSummary>(Falkor$Creator.Ref, Falkor$Creator.LoLoMoSummary);
+        return (SummarizedList<Ref, LoLoMoSummary>)new SummarizedList((Func)Falkor$Creator.Ref, (Func)Falkor$Creator.LoLoMoSummary);
     }
 }

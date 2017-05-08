@@ -37,9 +37,11 @@ import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.media.Subtitle;
 import android.content.Context;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.media.AudioSource;
 import android.util.Pair;
+import com.netflix.mediaclient.util.activitytracking.ActivityTracker;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
@@ -61,7 +63,7 @@ class OfflinePlaybackSession$1 implements OfflinePlaybackInterface$ManifestCallb
             return;
         }
         Log.d("OfflinePlayback_Session", "onManifestResponse error =" + status);
-        this.this$0.reportStartPlay(OfflinePlaybackState.MANIFEST_FETCH.toString(), "OfflinePlayback.ManifestRequestFailure", status.getMessage());
+        this.this$0.reportStartPlay(OfflinePlaybackState.MANIFEST_FETCH.toString(), "OfflinePlayback.ManifestRequestFailure", status.toString());
         this.this$0.mCallback.handleError(new ExoPlaybackError(ExoPlaybackError$ExoPlaybackErrorCode.MANIFEST_FAILURE, "onManifestResponse failed " + status, OfflinePlaybackState.MANIFEST_FETCH.toString(), null));
     }
 }

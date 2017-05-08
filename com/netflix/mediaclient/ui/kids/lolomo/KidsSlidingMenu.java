@@ -21,12 +21,12 @@ public class KidsSlidingMenu extends StandardSlidingMenu
     
     public KidsSlidingMenu(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
         super(netflixActivity, drawerLayout, false);
-        this.notificationsDivider.setBackgroundColor(netflixActivity.getResources().getColor(2131689630));
+        this.notificationsDivider.setBackgroundColor(netflixActivity.getResources().getColor(2131689631));
         this.notificationsDivider.setVisibility(0);
-        drawerLayout.findViewById(2131755910).setVisibility(8);
-        drawerLayout.findViewById(2131755917).setVisibility(8);
-        drawerLayout.findViewById(2131755904).getLayoutParams().height = netflixActivity.getResources().getDimensionPixelSize(2131427701);
-        this.kidsItemTextColor = netflixActivity.getResources().getColor(2131689595);
+        drawerLayout.findViewById(2131755930).setVisibility(8);
+        drawerLayout.findViewById(2131755937).setVisibility(8);
+        drawerLayout.findViewById(2131755924).getLayoutParams().height = netflixActivity.getResources().getDimensionPixelSize(2131427701);
+        this.kidsItemTextColor = netflixActivity.getResources().getColor(2131689596);
         this.profileName.setTextColor(this.kidsItemTextColor);
         ViewUtils.setTextViewToBold(this.profileName);
         this.homeText.setTextColor(this.kidsItemTextColor);
@@ -34,7 +34,7 @@ public class KidsSlidingMenu extends StandardSlidingMenu
         ((FrameLayout$LayoutParams)this.genresList.getLayoutParams()).bottomMargin = (int)netflixActivity.getResources().getDimension(2131427700);
         ViewUtils.removeShadow(this.homeText);
         this.homeText.setLayoutParams((ViewGroup$LayoutParams)new LinearLayout$LayoutParams(-1, netflixActivity.getResources().getDimensionPixelSize(2131427745)));
-        drawerLayout.findViewById(2131755899).setBackgroundResource(2131689594);
+        drawerLayout.findViewById(2131755919).setBackgroundResource(2131689595);
     }
     
     @Override

@@ -186,7 +186,7 @@ public class OfflineImageSubtitleParser extends ImageSubtitleParser implements O
     
     @Override
     public Subtitle getCurrentSubtitle() {
-        return this.mSubtitle;
+        return (Subtitle)this.mSubtitle;
     }
     
     @Override

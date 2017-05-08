@@ -543,7 +543,7 @@ public final class NetflixService extends Service implements INetflixService
     }
     
     public ImageLoader getImageLoader() {
-        return this.mResourceFetcher.getImageLoader((Context)this);
+        return (ImageLoader)this.mResourceFetcher.getImageLoader((Context)this);
     }
     
     public NetflixJobScheduler getJobScheduler() {

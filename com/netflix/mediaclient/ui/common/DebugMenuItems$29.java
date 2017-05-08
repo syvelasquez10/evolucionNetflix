@@ -35,9 +35,9 @@ class DebugMenuItems$29 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        Advisor.make(this.this$0.activity, new ProductPlacementAdvisory()).withMessage("This is the main message!").withSecondaryMessage("This is the secondary message!!!").withDelay(0.0f).forDuration(3.0f).withAnimation(2130968595).show();
-        Advisor.make(this.this$0.activity, new ExpiringContentAdvisory()).withMessage("This is the main message2! This is the main message2!").withSecondaryMessage("This is the secondary message2!!! This is the secondary message2!!! ").withDelay(0.0f).forDuration(3.0f).withAnimation(2130968595).show();
-        Advisor.make(this.this$0.activity, new ContentAdvisory()).withMessage("This is the main message3!").withSecondaryMessage("This is the secondary message3!!!").withDelay(0.0f).forDuration(3.0f).withAnimation(2130968595).show();
+        Advisor.make(this.this$0.activity, (Advisory)new ProductPlacementAdvisory()).withMessage("This is the main message!").withSecondaryMessage("This is the secondary message!!!").withDelay(0.0f).forDuration(3.0f).withAnimation(2130968595).show();
+        Advisor.make(this.this$0.activity, (Advisory)new ExpiringContentAdvisory()).withMessage("This is the main message2! This is the main message2!").withSecondaryMessage("This is the secondary message2!!! This is the secondary message2!!! ").withDelay(0.0f).forDuration(3.0f).withAnimation(2130968595).show();
+        Advisor.make(this.this$0.activity, (Advisory)new ContentAdvisory()).withMessage("This is the main message3!").withSecondaryMessage("This is the secondary message3!!!").withDelay(0.0f).forDuration(3.0f).withAnimation(2130968595).show();
         return true;
     }
 }

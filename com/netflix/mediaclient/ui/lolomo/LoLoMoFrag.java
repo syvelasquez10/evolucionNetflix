@@ -127,7 +127,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     }
     
     protected int getLayoutId() {
-        return 2130903180;
+        return 2130903181;
     }
     
     ListView getListView() {

@@ -167,14 +167,13 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
         return s3;
     }
     
-    @Override
     public OfflineAdapterData get(final int n) {
         return this.mOfflinePlayableUiItemList.get(n);
     }
     
     @Override
     public CharSequence getColoredStatusString(final Context context, int n, String s, final VideoType videoType) {
-        final int n2 = 2131689572;
+        final int n2 = 2131689573;
         final String s2 = "";
         if (videoType == VideoType.SHOW) {
             s = this.buildShowCompositeStatus(context, n);
@@ -205,7 +204,7 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                         case 4:
                         case 5: {
                             s = context.getString(2131296928);
-                            n = 2131689590;
+                            n = 2131689591;
                         }
                         case 1:
                         case 6: {
@@ -213,7 +212,7 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                         }
                         default: {
                             s = "";
-                            n = 2131689572;
+                            n = 2131689573;
                             break;
                         }
                         case 2: {
@@ -233,13 +232,13 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                                     n = (int)TimeUnit.MILLISECONDS.toMinutes(expiringInMillis);
                                     s = context.getResources().getQuantityString(2131361806, n, new Object[] { n });
                                 }
-                                n = 2131689590;
+                                n = 2131689591;
                                 break;
                             }
                             break;
                         }
                         case 7: {
-                            n = 2131689590;
+                            n = 2131689591;
                             s = context.getString(2131296929);
                             break;
                         }
@@ -607,7 +606,6 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
         this.mPlayableToTitleMap.clear();
     }
     
-    @Override
     public int size() {
         return this.mOfflinePlayableUiItemList.size();
     }

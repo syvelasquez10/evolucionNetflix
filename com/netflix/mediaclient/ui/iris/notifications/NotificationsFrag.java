@@ -88,11 +88,15 @@ public class NotificationsFrag extends NetflixFrag
         if (status.getStatusCode() == StatusCode.NETWORK_ERROR) {
             this.mNetworkErrorOccured = true;
             if (this.mAdapter != null) {
-                this.mAdapter.notifyDataSetChanged();
+                this.mAdapter.notifyDataSetChanged("checkForNetworkError " + this.mNetworkErrorOccured);
             }
             return true;
         }
-        return this.mNetworkErrorOccured = false;
+        this.mNetworkErrorOccured = false;
+        if (this.mAdapter != null) {
+            this.mAdapter.notifyDataSetChanged("checkForNetworkError " + this.mNetworkErrorOccured);
+        }
+        return false;
     }
     
     private void completeInitIfPossible() {
@@ -111,7 +115,7 @@ public class NotificationsFrag extends NetflixFrag
             return;
         }
         this.mIsLoadingData = false;
-        this.mAdapter.notifyDataSetChanged();
+        this.mAdapter.notifyDataSetChanged("completeInitIfPossible");
     }
     
     private void fetchNotificationsList(final boolean b) {
@@ -254,7 +258,7 @@ public class NotificationsFrag extends NetflixFrag
     }
     
     protected int getRowLayoutResourceId() {
-        return 2130903308;
+        return 2130903313;
     }
     
     protected int getUnreadVisibleNotificationsNumber() {
@@ -327,7 +331,7 @@ public class NotificationsFrag extends NetflixFrag
         if (bundle != null && bundle.containsKey("notifications_list")) {
             this.mLoadMoreAvailable = bundle.getBoolean("has_load_more_list");
             this.mNotifications = (IrisNotificationsList)bundle.getParcelable("notifications_list");
-            IrisUtils.castArrayToSet(bundle.getParcelableArray("notifications_list_to_be_read"), this.mNotificationsToBeRead);
+            IrisUtils.castArrayToSet(bundle.getParcelableArray("notifications_list_to_be_read"), (Set)this.mNotificationsToBeRead);
             this.mWereNotificationsFetched = bundle.getBoolean("were_notifications_fetched");
             this.mAreNotificationsPresent = bundle.getBoolean("are_there_noitifcations");
             this.refreshNotificationsListStatus();
@@ -337,8 +341,8 @@ public class NotificationsFrag extends NetflixFrag
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v(NotificationsFrag.TAG, "Creating new frag view...");
         this.mAreViewsCreated = true;
-        final View inflate = layoutInflater.inflate(2130903306, viewGroup, false);
-        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131755887)).setItemsCanFocus(true);
+        final View inflate = layoutInflater.inflate(2130903311, viewGroup, false);
+        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131755907)).setItemsCanFocus(true);
         this.mNotificationsList.setAsStatic(this.isListViewStatic());
         this.mIsLoadingData = true;
         this.completeInitIfPossible();

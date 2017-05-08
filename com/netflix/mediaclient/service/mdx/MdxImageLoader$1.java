@@ -23,12 +23,10 @@ class MdxImageLoader$1 implements ImageLoader$ImageLoaderListener
         this.this$0 = this$0;
     }
     
-    @Override
     public void onErrorResponse(final String s) {
         Log.e("nf_mdxImageLoader", "failed to downlod " + s);
     }
     
-    @Override
     public void onResponse(final Bitmap bitmap, final String s) {
         if (bitmap != null && !bitmap.isRecycled()) {
             this.this$0.mBitmap = bitmap.copy(bitmap.getConfig(), bitmap.isMutable());

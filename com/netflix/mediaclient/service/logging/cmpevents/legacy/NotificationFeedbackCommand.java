@@ -26,22 +26,18 @@ public class NotificationFeedbackCommand extends ResponseWebApiPostCommand
         }
     }
     
-    @Override
     public String getCommandPath() {
         return "/log";
     }
     
-    @Override
     protected HttpEntity getEntity() {
         return (HttpEntity)new StringEntity(this.mPayload, "UTF-8");
     }
     
-    @Override
     public Pair<String, String>[] getHeaders() {
         return (Pair<String, String>[])new Pair[] { new Pair((Object)"X-Netflix.ichnaea.request.type", (Object)"CMPMessageFeedbackRequest"), new Pair((Object)"Content-Type", (Object)"application/json") };
     }
     
-    @Override
     protected StringBuilder getUrl() {
         return this.getBaseCmsBeaconUrl();
     }

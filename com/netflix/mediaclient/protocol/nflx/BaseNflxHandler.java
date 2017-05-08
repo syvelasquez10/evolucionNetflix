@@ -30,11 +30,11 @@ abstract class BaseNflxHandler implements NflxHandler
     protected NflxProtocolUtils$VideoInfo getVideoInfo() {
         final String s = this.mParamsMap.get("movieid");
         if (!StringUtils.isEmpty(s)) {
-            final NflxProtocolUtils$VideoInfo videoInfoFromVideoIdUrl = NflxProtocolUtils.getVideoInfoFromVideoIdUrl(s, this.mParamsMap);
+            final NflxProtocolUtils$VideoInfo videoInfoFromVideoIdUrl = NflxProtocolUtils.getVideoInfoFromVideoIdUrl(s, (Map)this.mParamsMap);
             if (videoInfoFromVideoIdUrl == null && Log.isLoggable()) {
                 Log.w("NflxHandler", "This should NOT happen! VideoInfo object not returned for video id " + s + ". Default to regular workflow");
             }
-            final String episodeId = NflxProtocolUtils.getEpisodeId(this.mParamsMap);
+            final String episodeId = NflxProtocolUtils.getEpisodeId((Map)this.mParamsMap);
             if (StringUtils.isNotEmpty(episodeId) && videoInfoFromVideoIdUrl != null) {
                 final NflxProtocolUtils$VideoInfo nflxProtocolUtils$VideoInfo;
                 if ((nflxProtocolUtils$VideoInfo = NflxProtocolUtils$VideoInfo.createFromEpisode(videoInfoFromVideoIdUrl.getCatalogId(), episodeId)) != null) {
@@ -51,7 +51,7 @@ abstract class BaseNflxHandler implements NflxHandler
     }
     
     protected NflxProtocolUtils$VideoInfo getVideoInfoFromTinyUrl() {
-        final String targetUrl = NflxProtocolUtils.getTargetUrl(this.mParamsMap);
+        final String targetUrl = NflxProtocolUtils.getTargetUrl((Map)this.mParamsMap);
         if (StringUtils.isEmpty(targetUrl)) {
             Log.v("NflxHandler", "movie id uri and tiny url both doesn't exist in params map");
             return null;
@@ -98,7 +98,7 @@ abstract class BaseNflxHandler implements NflxHandler
                     nflxHandler$Response = this.handleEpisodeFromTinyUrl(substring, s, s2);
                 }
                 if (!NflxHandler$Response.HANDLING_WITH_DELAY.equals(nflxHandler$Response)) {
-                    NflxProtocolUtils.reportDelayedResponseHandled(this.mActivity);
+                    NflxProtocolUtils.reportDelayedResponseHandled((Activity)this.mActivity);
                 }
                 return;
             }

@@ -25,12 +25,10 @@ import java.util.Iterator;
 import com.netflix.msl.MslException;
 import com.netflix.msl.NetflixMslError;
 import com.netflix.android.org.json.JSONObject;
-import com.netflix.msl.entityauth.EntityAuthenticationFactory;
 import java.util.Map;
 import com.netflix.msl.entityauth.EntityAuthenticationData;
 import com.netflix.msl.entityauth.UnauthenticatedAuthenticationData;
 import com.netflix.msl.keyx.NetflixKeyExchangeScheme;
-import com.netflix.msl.keyx.KeyExchangeFactory;
 import com.netflix.msl.keyx.KeyExchangeScheme;
 import com.netflix.msl.entityauth.UnauthenticatedAuthenticationFactory;
 import com.netflix.msl.util.AuthenticationUtils;
@@ -79,20 +77,20 @@ public final class AndroidMslClient implements KeyRequestDataProvider<WidevineKe
     private ApiEndpointRegistry urlProvider;
     
     public AndroidMslClient(final Context context, final ServiceAgent$ConfigurationAgentInterface configuration, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface) {
-        Base64.setImpl(new AndroidBase64Impl());
+        Base64.setImpl((Base64$Base64Impl)new AndroidBase64Impl());
         this.context = context;
-        this.mslControl = new MslControl(0, new MessageStreamFactory(), new AndroidMessageRegistry(context));
+        this.mslControl = new MslControl(0, new MessageStreamFactory(), (ErrorMessageRegistry)new AndroidMessageRegistry(context));
         this.esnProvider = configuration.getEsnProvider();
         if (Log.isLoggable()) {
             Log.d("nf_msl", "ESN " + this.esnProvider.getEsn());
         }
         this.urlProvider = configuration.getApiEndpointRegistry();
-        this.rsaStore = new AndroidModifiableRsaStore(context);
-        this.messageDebugContext = new AndroidDebugContext();
+        this.rsaStore = (ModifiableRsaStore)new AndroidModifiableRsaStore(context);
+        this.messageDebugContext = (MessageDebugContext)new AndroidDebugContext();
         this.configuration = configuration;
         this.mslStore = new AndroidMslStore(context);
-        this.mslCtx = this.createMslContext(this.esnProvider.getEsn(), this.rsaStore, this.mslStore);
-        this.mslStore.init(this.mslCtx);
+        this.mslCtx = this.createMslContext(this.esnProvider.getEsn(), (RsaStore)this.rsaStore, (MslStore)this.mslStore);
+        this.mslStore.init((MslContext)this.mslCtx);
     }
     
     private AndroidMslClient$MslChannelWrapper createApiRequest(final byte[] array, final String s, final UserAuthenticationData userAuthenticationData) {
@@ -101,29 +99,29 @@ public final class AndroidMslClient implements KeyRequestDataProvider<WidevineKe
     
     private AndroidMslClient$MslChannelWrapper createApiRequest(final byte[] array, final String s, final UserAuthenticationData userAuthenticationData, final Boolean b) {
         final URL url = new URL(this.getApiUrl());
-        final ClientRequestMessageContext build = ClientRequestMessageContext.builder().userAuthData(userAuthenticationData).keyRequestDataProvider(this).payload(array).userId(s).nonReplayable(b).debugContext(this.messageDebugContext).build();
+        final ClientRequestMessageContext build = ClientRequestMessageContext.builder().userAuthData(userAuthenticationData).keyRequestDataProvider((KeyRequestDataProvider)this).payload(array).userId(s).nonReplayable(b).debugContext(this.messageDebugContext).build();
         final AndroidMslClient$MslChannelWrapper androidMslClient$MslChannelWrapper = new AndroidMslClient$MslChannelWrapper(null);
         androidMslClient$MslChannelWrapper.url = new MslUrlHttpURLConnectionImpl(this.configuration, url);
-        androidMslClient$MslChannelWrapper.future = this.mslControl.request(this.mslCtx, build, androidMslClient$MslChannelWrapper.url, 5000);
+        androidMslClient$MslChannelWrapper.future = (Future<MslControl$MslChannel>)this.mslControl.request((MslContext)this.mslCtx, (MessageContext)build, (Url)androidMslClient$MslChannelWrapper.url, 5000);
         return androidMslClient$MslChannelWrapper;
     }
     
     private AndroidMslClient$MslChannelWrapper createAppbootRequest(final URL url, final byte[] array) {
-        final ClientRequestMessageContext build = ClientRequestMessageContext.builder().encrypted(false).keyRequestDataProvider(this).payload(array).debugContext(this.messageDebugContext).build();
+        final ClientRequestMessageContext build = ClientRequestMessageContext.builder().encrypted(false).keyRequestDataProvider((KeyRequestDataProvider)this).payload(array).debugContext(this.messageDebugContext).build();
         final AndroidMslClient$MslChannelWrapper androidMslClient$MslChannelWrapper = new AndroidMslClient$MslChannelWrapper(null);
         androidMslClient$MslChannelWrapper.url = new MslUrlHttpURLConnectionImpl(this.configuration, url);
-        androidMslClient$MslChannelWrapper.future = this.mslControl.request(this.mslCtx, build, androidMslClient$MslChannelWrapper.url, 5000);
+        androidMslClient$MslChannelWrapper.future = (Future<MslControl$MslChannel>)this.mslControl.request((MslContext)this.mslCtx, (MessageContext)build, (Url)androidMslClient$MslChannelWrapper.url, 5000);
         return androidMslClient$MslChannelWrapper;
     }
     
     private ClientMslContext createMslContext(final String s, final RsaStore rsaStore, final MslStore mslStore) {
         final NullAuthenticationUtils nullAuthenticationUtils = new NullAuthenticationUtils();
         final HashMap<EntityAuthenticationScheme, RsaAuthenticationFactory> hashMap = new HashMap<EntityAuthenticationScheme, RsaAuthenticationFactory>();
-        hashMap.put(EntityAuthenticationScheme.RSA, new RsaAuthenticationFactory(rsaStore, nullAuthenticationUtils));
-        hashMap.put(EntityAuthenticationScheme.NONE, (RsaAuthenticationFactory)new UnauthenticatedAuthenticationFactory(nullAuthenticationUtils));
-        final HashMap<KeyExchangeScheme, KeyExchangeFactory> hashMap2 = new HashMap<KeyExchangeScheme, KeyExchangeFactory>();
-        hashMap2.put(NetflixKeyExchangeScheme.WIDEVINE, new WidevineKeyExchange(nullAuthenticationUtils));
-        return ClientMslContext.builder().entityAuthData(new UnauthenticatedAuthenticationData(s)).mslStore(mslStore).entityAuthFactories((Map<EntityAuthenticationScheme, EntityAuthenticationFactory>)hashMap).keyxFactories(hashMap2).build();
+        hashMap.put(EntityAuthenticationScheme.RSA, new RsaAuthenticationFactory(rsaStore, (AuthenticationUtils)nullAuthenticationUtils));
+        hashMap.put(EntityAuthenticationScheme.NONE, (RsaAuthenticationFactory)new UnauthenticatedAuthenticationFactory((AuthenticationUtils)nullAuthenticationUtils));
+        final HashMap<KeyExchangeScheme, WidevineKeyExchange> hashMap2 = new HashMap<KeyExchangeScheme, WidevineKeyExchange>();
+        hashMap2.put(NetflixKeyExchangeScheme.WIDEVINE, new WidevineKeyExchange((AuthenticationUtils)nullAuthenticationUtils));
+        return ClientMslContext.builder().entityAuthData((EntityAuthenticationData)new UnauthenticatedAuthenticationData(s)).mslStore(mslStore).entityAuthFactories((Map)hashMap).keyxFactories((Map)hashMap2).build();
     }
     
     private void extractMslTrustStore(JSONObject jsonObject, final ModifiableRsaStore modifiableRsaStore) {
@@ -198,7 +196,7 @@ public final class AndroidMslClient implements KeyRequestDataProvider<WidevineKe
         }
         catch (MalformedURLException ex) {
             androidMslClient$MslChannelWrapper = appbootRequest;
-            throw new MslInternalException("Unable to parse our own url for " + appbootUri, ex);
+            throw new MslInternalException("Unable to parse our own url for " + appbootUri, (Throwable)ex);
         }
         finally {
             this.releaseResources(androidMslClient$MslChannelWrapper);
@@ -220,7 +218,6 @@ public final class AndroidMslClient implements KeyRequestDataProvider<WidevineKe
         return jsonObject;
     }
     
-    @Override
     public WidevineKeyRequestData get() {
         Log.d("nf_msl", "WidevineKeyRequestDataProvider::get:");
         return CryptoManagerRegistry.getCryptoManager().getKeyRequestData();
@@ -264,22 +261,21 @@ public final class AndroidMslClient implements KeyRequestDataProvider<WidevineKe
                     throw (RuntimeException)cause;
                 }
                 throw new RuntimeException(cause);
-                // iftrue(Label_0187:, errorHeader == null)
-                // iftrue(Label_0124:, !Log.isLoggable())
-                ErrorHeader errorHeader = null;
                 while (true) {
+                    final ErrorHeader errorHeader;
                     Log.e("nf_msl", "processRequest:: Error found: " + errorHeader.getErrorMessage());
-                    throw new MslErrorException(errorHeader);
+                    Label_0124: {
+                        throw new MslErrorException(errorHeader);
+                    }
                     final MslControl$MslChannel mslControl$MslChannel;
                     input = mslControl$MslChannel.input;
                     Log.d("nf_msl", "processRequest:: check input stream for error... ");
                     errorHeader = input.getErrorHeader();
                     continue;
                 }
-                Label_0124: {
-                    throw new MslErrorException(errorHeader);
-                }
             }
+            // iftrue(Label_0124:, !Log.isLoggable())
+            // iftrue(Label_0187:, errorHeader == null)
             catch (InterruptedException ex2) {
                 Log.e("nf_msl", ex2, "Interrupted exception found ", new Object[0]);
                 throw new RuntimeException(ex2);
@@ -288,7 +284,7 @@ public final class AndroidMslClient implements KeyRequestDataProvider<WidevineKe
         Label_0187: {
             Log.d("nf_msl", "processRequest:: response received... ");
         }
-        return IoUtil.readBytes(input, 2048);
+        return IoUtil.readBytes((InputStream)input, 2048);
     }
     
     public void removeUserData() {
@@ -305,9 +301,9 @@ public final class AndroidMslClient implements KeyRequestDataProvider<WidevineKe
         final JSONArray jsonArray = new JSONArray(new String(array, Charset.forName("UTF-8")));
         final String string = jsonArray.getJSONObject(0).getString("edgemsl-version");
         final JSONObject jsonObject = jsonArray.getJSONObject(1);
-        final Map<String, Object> map = JsonUtil.getMap(jsonObject, "headers");
+        final Map map = JsonUtil.getMap(jsonObject, "headers");
         final HashMap<String, String> hashMap = new HashMap<String, String>();
-        for (final Map.Entry<String, V> entry : map.entrySet()) {
+        for (final Map.Entry<Object, V> entry : map.entrySet()) {
             hashMap.put(entry.getKey(), entry.getValue().toString());
         }
         final int intValue = Integer.valueOf(jsonObject.getString("status"));

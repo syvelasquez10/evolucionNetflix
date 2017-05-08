@@ -66,7 +66,7 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
             ((MovieDetailsFrag)this.getPrimaryFrag()).setLayoutManagerSavedState(layoutManagerSavedState);
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
             this.addBackStackTransitionAnimation(primaryFrag, layoutManagerSavedState != null);
-            beginTransaction.replace(2131755307, this.getPrimaryFrag(), "primary");
+            beginTransaction.replace(2131755314, this.getPrimaryFrag(), "primary");
             if (!Coppola1Utils.shouldInjectPlayerFragment((Context)this)) {
                 beginTransaction.setTransition(4099);
             }

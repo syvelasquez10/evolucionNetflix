@@ -80,7 +80,7 @@ class WPCardLayout$5 extends SimpleManagerCallback
             }
             final Context context = this.this$0.getContext();
             IkoLogUtils.reportIkoVideoPlaybackStarted(context, this.val$videoUrl);
-            IkoLogUtils.reportIkoVideoLoadEnded(context, IClientLogging$CompletionReason.success, null);
+            IkoLogUtils.reportIkoVideoLoadEnded(context, IClientLogging$CompletionReason.success, (UIError)null);
             this.this$0.mediaPlayerWrapper.setDataSource(s2, n, n2);
             this.this$0.showVideo();
         }

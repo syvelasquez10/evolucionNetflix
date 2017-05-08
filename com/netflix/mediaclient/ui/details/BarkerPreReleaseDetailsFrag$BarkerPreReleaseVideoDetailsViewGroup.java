@@ -63,13 +63,13 @@ class BarkerPreReleaseDetailsFrag$BarkerPreReleaseVideoDetailsViewGroup extends 
     @Override
     protected void findViews() {
         super.findViews();
-        this.playButton = (Button)this.findViewById(2131755957);
-        LocalizationUtils.setLayoutDirection((View)(this.supplementalMessage = (TextView)this.findViewById(2131755954)));
+        this.playButton = (Button)this.findViewById(2131755977);
+        LocalizationUtils.setLayoutDirection((View)(this.supplementalMessage = (TextView)this.findViewById(2131755974)));
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903334;
+        return 2130903339;
     }
     
     @Override
@@ -105,7 +105,7 @@ class BarkerPreReleaseDetailsFrag$BarkerPreReleaseVideoDetailsViewGroup extends 
             Log.d("BarkerPreReleaseVideoDetailsViewGroup", "logoImg -> " + s2);
             Log.d("BarkerPreReleaseVideoDetailsViewGroup", "bgImg -> " + storyUrl);
         }
-        NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.horzDispImg, s2, IClientLogging$AssetType.boxArt, s, BrowseExperience.getImageLoaderConfig(), true);
+        NetflixActivity.getImageLoader((Context)netflixActivity).showImg((AdvancedImageView)this.horzDispImg, s2, IClientLogging$AssetType.boxArt, s, BrowseExperience.getImageLoaderConfig(), true);
         NetflixActivity.getImageLoader((Context)netflixActivity).showImg(advancedImageView, storyUrl, IClientLogging$AssetType.heroImage, s, BrowseExperience.getImageLoaderConfig(), true);
         this.setupImageClicks(videoDetails, netflixActivity);
     }

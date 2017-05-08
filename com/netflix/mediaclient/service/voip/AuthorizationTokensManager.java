@@ -211,32 +211,25 @@ class AuthorizationTokensManager
             if (voipAuthorizationData != null) {
                 break Label_0018;
             }
-        Label_0090_Outer:
             while (true) {
-            Label_0090:
+            Label_0054_Outer:
                 while (true) {
                     while (true) {
                         try {
                             Log.w("nf_voip", "VOIP authorization data not found!");
                             return;
+                            this.dumpTokens();
+                            this.save();
+                            return;
+                            this.dumpTokens();
                             // iftrue(Label_0106:, voipAuthorizationData.getNonMemberVoipAuthorization() != null)
-                            // iftrue(Label_0222:, voipAuthorizationData.getUserVoipAuthorization() != null)
-                        Block_7:
-                            while (true) {
-                                Log.w("nf_voip", "VOIP user authorization data not found!");
-                                this.mAuthorizationTokensMap.remove(IVoip$UserType.CS_MEMBER.name());
-                                break Label_0090;
-                                this.dumpTokens();
-                                break Block_7;
-                                this.dumpTokens();
-                                this.save();
-                                return;
-                                this.dumpTokens();
-                                continue Label_0090_Outer;
-                            }
                             Log.w("nf_voip", "VOIP non member authorization data not found!");
                             this.mAuthorizationTokensMap.remove(IVoip$UserType.CS_NON_MEMBER.name());
-                            continue;
+                            this.dumpTokens();
+                            // iftrue(Label_0222:, voipAuthorizationData.getUserVoipAuthorization() != null)
+                            Log.w("nf_voip", "VOIP user authorization data not found!");
+                            this.mAuthorizationTokensMap.remove(IVoip$UserType.CS_MEMBER.name());
+                            continue Label_0054_Outer;
                         }
                         finally {
                         }
@@ -265,7 +258,7 @@ class AuthorizationTokensManager
                         Log.d("nf_voip", "VOIP member token created: " + voip$AuthorizationTokens2);
                     }
                     this.mAuthorizationTokensMap.put(voip$AuthorizationTokens2.getUserType().name(), voip$AuthorizationTokens2);
-                    continue Label_0090;
+                    continue Label_0054_Outer;
                 }
             }
         }

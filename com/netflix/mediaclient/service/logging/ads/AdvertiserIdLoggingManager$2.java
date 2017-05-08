@@ -41,7 +41,7 @@ class AdvertiserIdLoggingManager$2 implements AdvertiserIdLoggingCallback
         final NetflixPreference netflixPreference = new NetflixPreference(this.this$0.mContext);
         netflixPreference.putStringPref("advertisement_id", this.val$id);
         netflixPreference.putLongPref("advertisement_id_ts", currentTimeMillis);
-        netflixPreference.putBooleanPref("advertisement_id_opted_in", this.val$optedIn);
+        netflixPreference.putBooleanPref("advertisement_id_opted_in", (boolean)this.val$optedIn);
         netflixPreference.commit();
         this.this$0.mAdIdReported = this.val$id;
         this.this$0.mAdIdReportedTimestamp = currentTimeMillis;

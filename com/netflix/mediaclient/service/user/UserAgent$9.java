@@ -103,7 +103,7 @@ class UserAgent$9 implements IMSLClient$MSLUserCredentialRegistry
             return null;
         }
         Log.d("nf_service_useragent", "getMSLUserCredentialRegistry:: Authorization cookies known for profile %s", userId);
-        return new NetflixIdAuthenticationData(netflixID, secureNetflixID);
+        return (UserAuthenticationData)new NetflixIdAuthenticationData(netflixID, secureNetflixID);
     }
     
     @Override

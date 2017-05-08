@@ -142,8 +142,8 @@ public class Payload
                                                     Label_0816: {
                                                         try {
                                                             final JSONObject jsonObject = new JSONObject((String)o);
-                                                            this.renoCause = JsonUtils.getString(jsonObject, "cause", null);
-                                                            this.renoMessageGuid = JsonUtils.getString(jsonObject, "messageGUID", null);
+                                                            this.renoCause = JsonUtils.getString(jsonObject, "cause", (String)null);
+                                                            this.renoMessageGuid = JsonUtils.getString(jsonObject, "messageGUID", (String)null);
                                                             this.renoCreationTimestamp = JsonUtils.getLong(jsonObject, "creationTS", System.currentTimeMillis());
                                                             this.originator = extractOriginator(this.defaultActionPayload);
                                                             int i = 0;
@@ -173,10 +173,10 @@ public class Payload
                                                                 Log.e("nf_push", "Invalid action: " + o);
                                                             }
                                                             break;
-                                                            long1 = 0L;
-                                                            break Label_0367;
                                                             int1 = 0;
                                                             break Label_0217;
+                                                            long1 = 0L;
+                                                            break Label_0367;
                                                         }
                                                         catch (JSONException ex) {
                                                             Log.e("nf_push", String.format("invalid renoPayload %s", o), (Throwable)ex);

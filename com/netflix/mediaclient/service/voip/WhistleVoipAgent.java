@@ -448,7 +448,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                 Log.d("nf_voip", "Outbound call disconnected on line " + n);
             }
             this.onCallDisconnected(n);
-            CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), CustomerServiceLogging$TerminationReason.canceledByNetflix, IClientLogging$CompletionReason.canceled, null);
+            CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), CustomerServiceLogging$TerminationReason.canceledByNetflix, IClientLogging$CompletionReason.canceled, (Error)null);
             this.callCleanup();
         }
     }
@@ -484,7 +484,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
             break;
         }
         this.stopEngine();
-        CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), CustomerServiceLogging$TerminationReason.canceledByNetflix, IClientLogging$CompletionReason.success, null);
+        CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), CustomerServiceLogging$TerminationReason.canceledByNetflix, IClientLogging$CompletionReason.success, (Error)null);
         this.callCleanup();
     }
     // monitorexit(this)
@@ -904,7 +904,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                             deepErrorElement.setFatal(true);
                             deepErrorElement.setErrorCode("networkFailed");
                             final DeepErrorElement$Debug debug = new DeepErrorElement$Debug();
-                        Block_7_Outer:
+                        Block_8_Outer:
                             while (true) {
                                 try {
                                     final JSONObject message = new JSONObject();
@@ -916,29 +916,28 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                     CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), (CustomerServiceLogging$TerminationReason)o2, IClientLogging$CompletionReason.failed, (Error)o);
                                     this.callCleanup();
                                     return;
-                                    // iftrue(Label_0096:, !o2.hasNext())
                                     // iftrue(Label_0274:, WhistleVoipAgent$WhistleCall.access$400(this.mCurrentCall) != n)
                                     while (true) {
+                                    Label_0244:
                                         while (true) {
-                                            ((Iterator<IVoip$OutboundCallListener>)o2).next().networkFailed(this.mCurrentCall);
-                                            Label_0244: {
-                                                break Label_0244;
-                                                o2 = this.mListeners.iterator();
-                                                break Label_0244;
-                                                Label_0274: {
-                                                    Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received network failed on line " + n);
-                                                }
-                                                return;
+                                            o2 = this.mListeners.iterator();
+                                            break Label_0244;
+                                            Label_0274: {
+                                                Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received network failed on line " + n);
                                             }
-                                            continue Block_7_Outer;
+                                            return;
+                                            ((Iterator<IVoip$OutboundCallListener>)o2).next().networkFailed(this.mCurrentCall);
+                                            break Label_0244;
+                                            Log.e("nf_voip", "Engine is null and we received network failed! Should not happen!");
+                                            break;
+                                            o2 = CustomerServiceLogging$TerminationReason.failedBeforeConnected;
+                                            continue Label_0187_Outer;
+                                            continue Block_8_Outer;
                                         }
-                                        o2 = CustomerServiceLogging$TerminationReason.failedBeforeConnected;
-                                        continue Label_0187_Outer;
                                         continue;
                                     }
-                                    Log.e("nf_voip", "Engine is null and we received network failed! Should not happen!");
-                                    break;
                                 }
+                                // iftrue(Label_0096:, !o2.hasNext())
                                 catch (JSONException ex) {
                                     continue;
                                 }
@@ -1062,7 +1061,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
             else {
                 customerServiceLogging$TerminationReason = CustomerServiceLogging$TerminationReason.canceledByUserBeforeConnected;
             }
-            CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), customerServiceLogging$TerminationReason, IClientLogging$CompletionReason.canceled, null);
+            CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), customerServiceLogging$TerminationReason, IClientLogging$CompletionReason.canceled, (Error)null);
             boolean b;
             if (this.mEngine == null) {
                 Log.e("nf_voip", "Engine is null, unable to terminate call!");

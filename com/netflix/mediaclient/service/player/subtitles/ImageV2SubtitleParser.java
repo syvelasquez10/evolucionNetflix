@@ -648,7 +648,6 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
                         if (index >= segmentCount) {
                             break Label_0281;
                         }
-                    Label_0293:
                         while (true) {
                             try {
                                 iscSegment = new ISCSegment(new BoxHeader(dataInputStream), n2, n, dataInputStream);
@@ -664,26 +663,25 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
                                 while (true) {
                                     Log.e("nf_subtitles_imv2", "Failed to close segment indexes input stream", t);
                                     return b;
-                                    try {
-                                        dataInputStream.close();
-                                        ((InputStream)t).close();
-                                        return true;
-                                    }
-                                    catch (Throwable t2) {}
-                                    break Label_0293;
                                     Label_0311: {
                                         Log.e("nf_subtitles_imv2", "Failed to parse segment index", t);
                                     }
                                     return b;
                                     Log.d("nf_subtitles_imv2", "Expected data, start parsing...");
                                     continue Label_0149_Outer;
+                                    try {
+                                        dataInputStream.close();
+                                        ((InputStream)t).close();
+                                        return true;
+                                    }
+                                    catch (Throwable t2) {}
                                     continue Label_0293_Outer;
                                 }
                             }
                             // iftrue(Label_0311:, !b)
                             catch (Throwable t) {
                                 b = false;
-                                continue Label_0293;
+                                continue;
                             }
                             break;
                         }

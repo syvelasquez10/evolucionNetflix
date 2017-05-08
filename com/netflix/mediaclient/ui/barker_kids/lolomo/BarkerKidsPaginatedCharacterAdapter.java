@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.barker_kids.lolomo;
 
-import com.netflix.mediaclient.ui.lomo.VideoViewGroup;
 import com.netflix.mediaclient.android.widget.ObjectRecycler;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.util.ViewUtils;
@@ -25,17 +24,14 @@ public class BarkerKidsPaginatedCharacterAdapter extends PaginatedLoMoAdapter
         super(context);
     }
     
-    @Override
     protected int computeNumItemsPerPage() {
         return MathUtils.divideIntsWithRounding(LoMoViewPager.computeViewPagerWidth(this.activity, true, LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW), this.getActivity().getResources().getDimensionPixelSize(2131427496) + this.getActivity().getResources().getDimensionPixelSize(2131427495));
     }
     
-    @Override
     public int getRowHeightInPx() {
         return this.getActivity().getResources().getDimensionPixelSize(2131427777) + this.getActivity().getResources().getDimensionPixelSize(2131427776) + this.getActivity().getResources().getDimensionPixelSize(2131427496);
     }
     
-    @Override
     protected View getView(final ObjectRecycler$ViewRecycler objectRecycler$ViewRecycler, final List<Video> list, final int n, final int n2, final BasicLoMo basicLoMo) {
         BarkerKidsCharacterViewGroup barkerKidsCharacterViewGroup;
         if ((barkerKidsCharacterViewGroup = ((ObjectRecycler<BarkerKidsCharacterViewGroup>)objectRecycler$ViewRecycler).pop(BarkerKidsCharacterViewGroup.class)) == null) {
@@ -44,7 +40,7 @@ public class BarkerKidsPaginatedCharacterAdapter extends PaginatedLoMoAdapter
             ViewUtils.setPaddingBottom((View)barkerKidsCharacterViewGroup, this.getActivity().getResources().getDimensionPixelSize(2131427776));
             barkerKidsCharacterViewGroup.init(n);
         }
-        ((VideoViewGroup<Video, V>)barkerKidsCharacterViewGroup).updateDataThenViews(list, n, n2, this.getListViewPos(), basicLoMo);
+        barkerKidsCharacterViewGroup.updateDataThenViews((List)list, n, n2, this.getListViewPos(), (Trackable)basicLoMo);
         return (View)barkerKidsCharacterViewGroup;
     }
 }

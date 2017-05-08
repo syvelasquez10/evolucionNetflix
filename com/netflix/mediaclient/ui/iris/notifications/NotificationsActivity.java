@@ -46,7 +46,7 @@ public class NotificationsActivity extends FragmentHostActivity
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903141;
+        return 2130903142;
     }
     
     @Override

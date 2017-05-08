@@ -4,10 +4,6 @@
 
 package com.netflix.mediaclient.service.offline.agent;
 
-import com.netflix.mediaclient.servicemgr.interface_.Playable;
-import com.netflix.mediaclient.servicemgr.interface_.PlaybackBookmark;
-import com.netflix.mediaclient.media.BookmarkStore;
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
 import com.netflix.mediaclient.javabridge.ui.LogArguments;
 import com.netflix.mediaclient.service.logging.logblob.LogBlobType;
@@ -154,31 +150,5 @@ class OfflineAgentHelper
     
     static void setLastMaintenanceJobStartTime(final Context context, final long n) {
         PreferenceUtils.putLongPref(context, "pref_offline_maintenance_job_start_time", n);
-    }
-    
-    static void updateBookmarkIfNewer(final String s, final VideoDetails videoDetails, final String s2) {
-        int n = 1;
-        if (videoDetails != null) {
-            final Playable playable = videoDetails.getPlayable();
-            if (playable != null) {
-                final int playableBookmarkPosition = playable.getPlayableBookmarkPosition();
-                final long playableBookmarkUpdateTime = playable.getPlayableBookmarkUpdateTime();
-                final PlaybackBookmark bookmark = BookmarkStore.getInstance().getBookmark(s2, s);
-                if (bookmark == null) {
-                    Log.i("nf_offlineAgent", "updateBookmarkIfNewer bookmarkStore has no bookmark");
-                }
-                else if (bookmark.mBookmarkUpdateTimeInUTCMs < playableBookmarkUpdateTime) {
-                    Log.i("nf_offlineAgent", "updateBookmarkIfNewer bookmarkStore is older");
-                }
-                else {
-                    Log.i("nf_offlineAgent", "updateBookmarkIfNewer bookmarkStore is newer");
-                    n = 0;
-                }
-                if (n != 0) {
-                    Log.i("nf_offlineAgent", "updateBookmarkIfNewer calling BookmarkStore.setBookmark");
-                    BookmarkStore.getInstance().setBookmark(s2, new PlaybackBookmark(playableBookmarkPosition, playableBookmarkUpdateTime, s2));
-                }
-            }
-        }
     }
 }

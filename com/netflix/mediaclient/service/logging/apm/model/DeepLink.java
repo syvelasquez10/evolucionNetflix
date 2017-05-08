@@ -29,8 +29,8 @@ public class DeepLink
     
     public static DeepLink createInstance(final JSONObject jsonObject) {
         if (jsonObject != null) {
-            final String string = JsonUtils.getString(jsonObject, "source", null);
-            final String string2 = JsonUtils.getString(jsonObject, "deeplinkParams", null);
+            final String string = JsonUtils.getString(jsonObject, "source", (String)null);
+            final String string2 = JsonUtils.getString(jsonObject, "deeplinkParams", (String)null);
             if (string != null || string2 != null) {
                 return new DeepLink(string, string2);
             }

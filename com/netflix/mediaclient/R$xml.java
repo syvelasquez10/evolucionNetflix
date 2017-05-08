@@ -8,6 +8,7 @@ public final class R$xml
 {
     public static final int about = 2131165184;
     public static final int preapp_provider = 2131165185;
-    public static final int searchable = 2131165186;
-    public static final int settings = 2131165187;
+    public static final int preferences = 2131165186;
+    public static final int searchable = 2131165187;
+    public static final int settings = 2131165188;
 }

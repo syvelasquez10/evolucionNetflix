@@ -92,7 +92,7 @@ public class BarkerShowDetailsFrag$HeroSlideshow
     
     private void animateSlideshow() {
         if (this.horzDispImg != null && this.context != null && this.this$0.getActivity() != null && this.slideShowImageUrls != null && this.currentSlideshowIndex < this.slideShowImageUrls.size()) {
-            NetflixActivity.getImageLoader((Context)this.context).getImg(this.slideShowImageUrls.get(this.currentSlideshowIndex), IClientLogging$AssetType.boxArt, this.horzDispImg.getMeasuredWidth(), this.horzDispImg.getMeasuredHeight(), new BarkerShowDetailsFrag$HeroSlideshow$2(this));
+            NetflixActivity.getImageLoader((Context)this.context).getImg((String)this.slideShowImageUrls.get(this.currentSlideshowIndex), IClientLogging$AssetType.boxArt, this.horzDispImg.getMeasuredWidth(), this.horzDispImg.getMeasuredHeight(), (ImageLoader$ImageLoaderListener)new BarkerShowDetailsFrag$HeroSlideshow$2(this));
             ++this.currentSlideshowIndex;
             if (this.currentSlideshowIndex >= this.slideShowImageUrls.size()) {
                 this.currentSlideshowIndex = 0;

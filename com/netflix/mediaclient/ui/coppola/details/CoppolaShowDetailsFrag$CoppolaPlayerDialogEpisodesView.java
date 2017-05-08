@@ -83,7 +83,7 @@ public class CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView extends Bark
         if (this.title == null) {
             return;
         }
-        this.title.setTextColor(this.getResources().getColor(2131689656));
+        this.title.setTextColor(this.getResources().getColor(2131689657));
         this.title.setText((CharSequence)(AbsEpisodeView.createTitleText(episodeDetails, (Context)this.this$0.getActivity()) + " "));
     }
 }

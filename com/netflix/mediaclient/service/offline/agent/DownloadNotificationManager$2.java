@@ -19,12 +19,10 @@ class DownloadNotificationManager$2 implements ImageLoader$ImageLoaderListener
         this.val$notificationData = val$notificationData;
     }
     
-    @Override
     public void onErrorResponse(final String s) {
         this.val$notificationData.mBoxShot = null;
     }
     
-    @Override
     public void onResponse(final Bitmap bitmap, final String s) {
         boolean b = true;
         if (bitmap == null) {

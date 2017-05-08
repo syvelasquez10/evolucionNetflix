@@ -50,7 +50,7 @@ public interface IMedia
     
     void changePlayer(final PlayerType p0);
     
-    void close(final String p0, final PlaybackVolumeMetric p1, final JSONObject p2);
+    void close(final String p0, final PlaybackVolumeMetric p1, final JSONObject p2, final JSONObject p3);
     
     AudioSubtitleDefaultOrderInfo[] getAudioSubtitleDefaultOrderInfo();
     

@@ -346,7 +346,7 @@ public class ExoPlayback extends ServiceAgent implements ConfigurationAgent$Conf
         if (this.mOfflineSession != null) {
             this.close();
         }
-        this.mOfflineSession = new OfflinePlaybackSession(this.mContext, this.mMainHanlder, this, this.mOfflineAgent, this.mLoggingAgent, this.getPdsAgentForPlay(), this.mSubtitles, n, n2, playContext);
+        this.mOfflineSession = new OfflinePlaybackSession(this.mContext, this.mMainHanlder, this, this.getConfigurationAgent(), this.mOfflineAgent, this.mLoggingAgent, this.getPdsAgentForPlay(), this.mSubtitles, n, n2, playContext);
     }
     
     @Override

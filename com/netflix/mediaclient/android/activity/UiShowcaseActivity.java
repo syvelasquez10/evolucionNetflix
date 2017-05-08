@@ -16,6 +16,6 @@ public class UiShowcaseActivity extends AppCompatActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903153);
+        this.setContentView(2130903154);
     }
 }

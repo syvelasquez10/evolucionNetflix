@@ -17,7 +17,7 @@ public class BarkerKidsLoLoMoAdapter extends LoLoMoAdapter
     }
     
     static void updateTitleStyle(final TextView textViewToBold) {
-        ViewUtils.setTextViewColor(textViewToBold, 2131689605);
+        ViewUtils.setTextViewColor(textViewToBold, 2131689606);
         ViewUtils.setTextViewSizeByRes(textViewToBold, 2131427422);
         ViewUtils.setTextViewToBold(textViewToBold);
         ViewUtils.removeShadow(textViewToBold);

@@ -67,7 +67,6 @@ class IntegratedClientLoggingManager$1$1 implements DataRepository$LoadedCallbac
         this.this$1 = this$1;
     }
     
-    @Override
     public void onLoaded(final DataRepository$Entry[] array) {
         if (array != null && array.length > 0) {
             this.this$1.this$0.deliverSavedPayloads(array, false);

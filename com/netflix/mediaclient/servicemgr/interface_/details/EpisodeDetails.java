@@ -24,6 +24,8 @@ public interface EpisodeDetails extends PostPlayVideo
     
     String getNextEpisodeTitle();
     
+    long getPlayableBookmarkUpdateTime();
+    
     String getSeasonAbbrSeqLabel();
     
     String getSeasonId();

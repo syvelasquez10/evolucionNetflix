@@ -61,10 +61,10 @@ class OfflinePlayableImpl$8 implements OfflineLicenseManager$DownloadCompleteAnd
     @Override
     public void onDownloadCompleteAndActivateDone(final String s, final String s2, final Status status) {
         if (status.isSucces()) {
-            OfflineLogUtils.reportDownloadEnded(this.this$0.mContext, this.this$0.mOfflinePlayablePersistentData.mDxId, null, IClientLogging$CompletionReason.success, null);
+            OfflineLogUtils.reportDownloadEnded(this.this$0.mContext, this.this$0.mOfflinePlayablePersistentData.mDxId, (IClientLogging$ModalView)null, IClientLogging$CompletionReason.success, (Error)null);
         }
         else {
-            OfflineLogUtils.reportDownloadEnded(this.this$0.mContext, this.this$0.mOfflinePlayablePersistentData.mDxId, null, IClientLogging$CompletionReason.failed, status.getError());
+            OfflineLogUtils.reportDownloadEnded(this.this$0.mContext, this.this$0.mOfflinePlayablePersistentData.mDxId, (IClientLogging$ModalView)null, IClientLogging$CompletionReason.failed, status.getError());
             if (Log.isLoggable()) {
                 Log.i("nf_offlinePlayable", "handleDownloadComplete failed " + status);
             }

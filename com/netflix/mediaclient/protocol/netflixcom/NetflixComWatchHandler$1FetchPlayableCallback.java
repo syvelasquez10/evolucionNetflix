@@ -35,7 +35,7 @@ class NetflixComWatchHandler$1FetchPlayableCallback extends SimpleManagerCallbac
         if (status.isSucces()) {
             this.this$0.resolveSceneAndPlay(this.val$activity, this.val$videoType, episodeDetails.getPlayable(), this.val$targetDialUuid, NflxProtocolUtils.getPlayContext(this.trackId));
         }
-        NflxProtocolUtils.reportDelayedResponseHandled(this.val$activity);
+        NflxProtocolUtils.reportDelayedResponseHandled((Activity)this.val$activity);
     }
     
     @Override
@@ -43,7 +43,7 @@ class NetflixComWatchHandler$1FetchPlayableCallback extends SimpleManagerCallbac
         if (status.isSucces()) {
             this.this$0.resolveSceneAndPlay(this.val$activity, this.val$videoType, movieDetails.getPlayable(), this.val$targetDialUuid, NflxProtocolUtils.getPlayContext(this.trackId));
         }
-        NflxProtocolUtils.reportDelayedResponseHandled(this.val$activity);
+        NflxProtocolUtils.reportDelayedResponseHandled((Activity)this.val$activity);
     }
     
     @Override
@@ -51,6 +51,6 @@ class NetflixComWatchHandler$1FetchPlayableCallback extends SimpleManagerCallbac
         if (status.isSucces()) {
             this.this$0.resolveSceneAndPlay(this.val$activity, this.val$videoType, showDetails.getPlayable(), this.val$targetDialUuid, NflxProtocolUtils.getPlayContext(this.trackId));
         }
-        NflxProtocolUtils.reportDelayedResponseHandled(this.val$activity);
+        NflxProtocolUtils.reportDelayedResponseHandled((Activity)this.val$activity);
     }
 }

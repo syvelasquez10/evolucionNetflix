@@ -146,7 +146,7 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
         else {
             videoType = this.details.getType();
         }
-        final RatingDialogFrag create = RatingDialogFrag.create(parentId, videoType, "", this.rate, 2130903287, false);
+        final RatingDialogFrag create = RatingDialogFrag.create(parentId, videoType, "", this.rate, 2130903288, false);
         final FragmentTransaction beginTransaction = ((NetflixActivity)this.getContext()).getFragmentManager().beginTransaction();
         beginTransaction.add(0, (Fragment)create, "frag_dialog");
         beginTransaction.commitAllowingStateLoss();
@@ -180,7 +180,7 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         final IconFontTextView hdIcon = this.hdIcon;
         int visibility;
-        if (DeviceUtils.shouldShowHdIcon(netflixActivity, kubrickVideo)) {
+        if (DeviceUtils.shouldShowHdIcon(netflixActivity, (FeatureEnabledProvider)kubrickVideo)) {
             visibility = 0;
         }
         else {
@@ -264,30 +264,30 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
     @Override
     protected void findViews() {
         super.findViews();
-        this.dataSelectorEpisodes = (RadioButton)this.findViewById(2131755196);
-        this.dataSelectorRelated = (RadioButton)this.findViewById(2131755198);
-        this.dataSelectorEpisodesTop = this.findViewById(2131755197);
-        this.titleImg = (AdvancedImageView)this.findViewById(2131755214);
-        this.dataSelectorRelatedTop = this.findViewById(2131755199);
-        this.certification = (TextView)this.findViewById(2131755169);
-        this.hdIcon = (IconFontTextView)this.findViewById(2131755171);
-        this.basicSupplementalInfo = (TextView)this.findViewById(2131755170);
-        this.dataSelectorGroup = (RadioGroup)this.findViewById(2131755195);
-        this.horzDispImg2 = (AdvancedImageView)this.findViewById(2131755201);
-        this.myList = (IconFontTextView)this.findViewById(2131755312);
-        this.download = (DownloadButton)this.findViewById(2131755190);
-        this.year = (TextView)this.findViewById(2131755168);
-        this.leftGroup = this.findViewById(2131755207);
-        this.shadow = this.findViewById(2131755202);
-        this.rate = this.findViewById(2131755167);
-        this.bookmarkGroup = (ViewGroup)this.findViewById(2131755209);
-        this.bookmarkDuration = (TextView)this.findViewById(2131755191);
-        this.bookmarkProgressBar = (ProgressBar)this.findViewById(2131755192);
-        this.credits = this.findViewById(2131755212);
-        this.actions = this.findViewById(2131755204);
-        this.detailFlipper = (LinearLayout)this.findViewById(2131755206);
-        this.detailSpacer = this.findViewById(2131755211);
-        this.ratingContainer = this.findViewById(2131755166);
+        this.dataSelectorEpisodes = (RadioButton)this.findViewById(2131755203);
+        this.dataSelectorRelated = (RadioButton)this.findViewById(2131755205);
+        this.dataSelectorEpisodesTop = this.findViewById(2131755204);
+        this.titleImg = (AdvancedImageView)this.findViewById(2131755221);
+        this.dataSelectorRelatedTop = this.findViewById(2131755206);
+        this.certification = (TextView)this.findViewById(2131755176);
+        this.hdIcon = (IconFontTextView)this.findViewById(2131755178);
+        this.basicSupplementalInfo = (TextView)this.findViewById(2131755177);
+        this.dataSelectorGroup = (RadioGroup)this.findViewById(2131755202);
+        this.horzDispImg2 = (AdvancedImageView)this.findViewById(2131755208);
+        this.myList = (IconFontTextView)this.findViewById(2131755319);
+        this.download = (DownloadButton)this.findViewById(2131755197);
+        this.year = (TextView)this.findViewById(2131755175);
+        this.leftGroup = this.findViewById(2131755214);
+        this.shadow = this.findViewById(2131755209);
+        this.rate = this.findViewById(2131755174);
+        this.bookmarkGroup = (ViewGroup)this.findViewById(2131755216);
+        this.bookmarkDuration = (TextView)this.findViewById(2131755198);
+        this.bookmarkProgressBar = (ProgressBar)this.findViewById(2131755199);
+        this.credits = this.findViewById(2131755219);
+        this.actions = this.findViewById(2131755211);
+        this.detailFlipper = (LinearLayout)this.findViewById(2131755213);
+        this.detailSpacer = this.findViewById(2131755218);
+        this.ratingContainer = this.findViewById(2131755173);
     }
     
     @Override
@@ -333,12 +333,12 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
     
     protected void setEpisodesTextAsSelected() {
         if (this.dataSelectorEpisodes != null) {
-            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131689730));
+            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131689731));
             this.dataSelectorEpisodesTop.setVisibility(0);
             this.dataSelectorEpisodes.setTypeface(Typeface.DEFAULT_BOLD);
         }
         if (this.dataSelectorRelated != null) {
-            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131689609));
+            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131689610));
             this.dataSelectorRelatedTop.setVisibility(4);
             this.dataSelectorRelated.setTypeface(Typeface.DEFAULT);
         }
@@ -449,14 +449,14 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
         if (StringUtils.isEmpty(tag)) {
             tag = videoDetails.getStoryUrl();
         }
-        NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.horzDispImg, tag, IClientLogging$AssetType.boxArt, s, BrowseExperience.getImageLoaderConfig(), true, 1, Bitmap$Config.ARGB_8888);
+        NetflixActivity.getImageLoader((Context)netflixActivity).showImg((AdvancedImageView)this.horzDispImg, tag, IClientLogging$AssetType.boxArt, s, BrowseExperience.getImageLoaderConfig(), true, 1, Bitmap$Config.ARGB_8888);
         this.horzDispImg.setTag((Object)tag);
         this.setupImageClicks(videoDetails, netflixActivity);
     }
     
     protected void updateImage(final String tag, final NetflixActivity netflixActivity, final String s, final Bitmap$Config bitmap$Config) {
         if (netflixActivity != null && netflixActivity.getServiceManager() != null && !StringUtils.isEmpty(tag)) {
-            NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.horzDispImg, tag, IClientLogging$AssetType.boxArt, s, BrowseExperience.getImageLoaderConfig(), true, 1, bitmap$Config);
+            NetflixActivity.getImageLoader((Context)netflixActivity).showImg((AdvancedImageView)this.horzDispImg, tag, IClientLogging$AssetType.boxArt, s, BrowseExperience.getImageLoaderConfig(), true, 1, bitmap$Config);
             this.horzDispImg.setTag((Object)tag);
             this.setupImageClicks(this.details, netflixActivity);
         }

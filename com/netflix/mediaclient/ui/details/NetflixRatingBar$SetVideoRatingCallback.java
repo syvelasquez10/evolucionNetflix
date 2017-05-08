@@ -69,7 +69,7 @@ class NetflixRatingBar$SetVideoRatingCallback extends LoggingManagerCallback
             Log.w("NetflixRatingBar", "Invalid status code");
             Toast.makeText(this.this$0.getContext(), 2131296655, 1).show();
             this.this$0.setRating((float)this.this$0.currRating);
-            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131296655), ActionOnUIError.displayedError), null, this.this$0.currRating);
+            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131296655), ActionOnUIError.displayedError), (Integer)null, this.this$0.currRating);
             return;
         }
         Log.v("NetflixRatingBar", "Rating has been updated");
@@ -85,6 +85,6 @@ class NetflixRatingBar$SetVideoRatingCallback extends LoggingManagerCallback
         this.this$0.setRating((float)this.this$0.currRating);
         this.this$0.dispatchSystemUiVisibilityChanged(0);
         Log.d("NetflixRatingBar", "Report rate action ended");
-        UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.success, null, null, this.this$0.currRating);
+        UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.success, (UIError)null, (Integer)null, this.this$0.currRating);
     }
 }

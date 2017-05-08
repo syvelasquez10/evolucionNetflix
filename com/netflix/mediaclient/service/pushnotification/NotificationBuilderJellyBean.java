@@ -21,7 +21,7 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
 {
     private static void addBigPicture(final Context context, final Payload payload, final Notification$BigPictureStyle notification$BigPictureStyle, final int n, final ImageLoader imageLoader) {
         if (!StringUtils.isEmpty(payload.largeIcon) && imageLoader != null) {
-            imageLoader.getImg(payload.bigViewPicture, IClientLogging$AssetType.merchStill, 0, 0, new NotificationBuilderJellyBean$2(payload, notification$BigPictureStyle, context, n));
+            imageLoader.getImg(payload.bigViewPicture, IClientLogging$AssetType.merchStill, 0, 0, (ImageLoader$ImageLoaderListener)new NotificationBuilderJellyBean$2(payload, notification$BigPictureStyle, context, n));
             return;
         }
         Log.d("nf_push", "Large picture view was not set");
@@ -91,7 +91,7 @@ public class NotificationBuilderJellyBean extends NotificationBuilderHoneycomb
             break;
         }
         if (!StringUtils.isEmpty(payload.largeIcon) && imageLoader != null) {
-            imageLoader.getImg(payload.largeIcon, IClientLogging$AssetType.boxArt, 0, 0, new NotificationBuilderJellyBean$1(payload, notification$Builder, context, n, imageLoader));
+            imageLoader.getImg(payload.largeIcon, IClientLogging$AssetType.boxArt, 0, 0, (ImageLoader$ImageLoaderListener)new NotificationBuilderJellyBean$1(payload, notification$Builder, context, n, imageLoader));
             return;
         }
         Log.d("nf_push", "Icon was not set");

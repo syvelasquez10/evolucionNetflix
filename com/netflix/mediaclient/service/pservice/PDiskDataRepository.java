@@ -40,7 +40,7 @@ public final class PDiskDataRepository
         if (!file.isDirectory()) {
             file.mkdirs();
         }
-        return new FileSystemDataRepositoryImpl(file);
+        return (DataRepository)new FileSystemDataRepositoryImpl(file);
     }
     
     private static void initFromDiskData(final DataRepository dataRepository, final DataRepository$Entry[] array, final PDiskDataRepository$LoadCallback pDiskDataRepository$LoadCallback) {
@@ -56,7 +56,7 @@ public final class PDiskDataRepository
         if (Log.isLoggable()) {
             Log.d("nf_preapp_dataRepo", "Load data for " + key);
         }
-        dataRepository.load(key, new PDiskDataRepository$2(pDiskDataRepository$LoadCallback));
+        dataRepository.load(key, (DataRepository$DataLoadedCallback)new PDiskDataRepository$2(pDiskDataRepository$LoadCallback));
     }
     
     public static void saveData(final Context context, final String s, final DataRepository$DataSavedCallback dataRepository$DataSavedCallback) {
@@ -78,7 +78,7 @@ public final class PDiskDataRepository
         final DataRepository dataRepository = getDataRepository(context);
         final PDiskDataRepository$1 pDiskDataRepository$1 = new PDiskDataRepository$1(dataRepository, pDiskDataRepository$LoadCallback, pDiskDataRepository$LoadCallback);
         synchronized (PDiskDataRepository.repoLock) {
-            dataRepository.loadAll(pDiskDataRepository$1);
+            dataRepository.loadAll((DataRepository$LoadedCallback)pDiskDataRepository$1);
         }
     }
 }

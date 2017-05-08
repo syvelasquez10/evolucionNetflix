@@ -13,6 +13,6 @@ final class Falkor$Creator$8 implements Func<SummarizedList<Ref, SearchTrackable
 {
     @Override
     public SummarizedList<Ref, SearchTrackableListSummary> call() {
-        return new SummarizedList<Ref, SearchTrackableListSummary>(Falkor$Creator.Ref, Falkor$Creator.SearchTrackableListSummary);
+        return (SummarizedList<Ref, SearchTrackableListSummary>)new SummarizedList((Func)Falkor$Creator.Ref, (Func)Falkor$Creator.SearchTrackableListSummary);
     }
 }

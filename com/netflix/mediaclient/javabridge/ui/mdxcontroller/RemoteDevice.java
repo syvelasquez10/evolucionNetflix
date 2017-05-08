@@ -49,15 +49,15 @@ public class RemoteDevice
     
     public static RemoteDevice toRemoteDevice(final JSONObject jsonObject) {
         final RemoteDevice remoteDevice = new RemoteDevice();
-        remoteDevice.usn = JsonUtils.getString(jsonObject, "usn", JsonUtils.getString(jsonObject, "USN", null));
-        remoteDevice.dialUsn = JsonUtils.getString(jsonObject, "dialUsn", null);
-        remoteDevice.uuid = JsonUtils.getString(jsonObject, "uuid", JsonUtils.getString(jsonObject, "UUID", null));
-        remoteDevice.dialUuid = JsonUtils.getString(jsonObject, "dialUuid", null);
-        remoteDevice.pairingContext = JsonUtils.getString(jsonObject, "pairingContext", null);
+        remoteDevice.usn = JsonUtils.getString(jsonObject, "usn", JsonUtils.getString(jsonObject, "USN", (String)null));
+        remoteDevice.dialUsn = JsonUtils.getString(jsonObject, "dialUsn", (String)null);
+        remoteDevice.uuid = JsonUtils.getString(jsonObject, "uuid", JsonUtils.getString(jsonObject, "UUID", (String)null));
+        remoteDevice.dialUuid = JsonUtils.getString(jsonObject, "dialUuid", (String)null);
+        remoteDevice.pairingContext = JsonUtils.getString(jsonObject, "pairingContext", (String)null);
         remoteDevice.activated = JsonUtils.getBoolean(jsonObject, "activated", true);
-        remoteDevice.location = JsonUtils.getString(jsonObject, "location", null);
-        remoteDevice.friendlyName = JsonUtils.getString(jsonObject, "friendlyName", null);
-        remoteDevice.serviceType = JsonUtils.getString(jsonObject, "serviceType", null);
+        remoteDevice.location = JsonUtils.getString(jsonObject, "location", (String)null);
+        remoteDevice.friendlyName = JsonUtils.getString(jsonObject, "friendlyName", (String)null);
+        remoteDevice.serviceType = JsonUtils.getString(jsonObject, "serviceType", (String)null);
         remoteDevice.registrationAcceptance = JsonUtils.getInt(jsonObject, "registrationAcceptance", 0);
         remoteDevice.launchStatus = JsonUtils.getInt(jsonObject, "launchStatus", 0);
         try {

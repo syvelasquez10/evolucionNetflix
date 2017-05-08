@@ -24,7 +24,7 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     
     public DiagnosisActivity$ResultsAdapter(final DiagnosisActivity this$0, final Context context) {
         this.this$0 = this$0;
-        super(context, 2130903118, 2131755336);
+        super(context, 2130903118, 2131755343);
         this.context = context;
     }
     
@@ -45,9 +45,9 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     
     public View getView(final int n, View inflate, final ViewGroup viewGroup) {
         inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903118, viewGroup, false);
-        final TextView textView = (TextView)inflate.findViewById(2131755338);
-        final TextView textView2 = (TextView)inflate.findViewById(2131755339);
-        final ImageView imageView = (ImageView)inflate.findViewById(2131755337);
+        final TextView textView = (TextView)inflate.findViewById(2131755345);
+        final TextView textView2 = (TextView)inflate.findViewById(2131755346);
+        final ImageView imageView = (ImageView)inflate.findViewById(2131755344);
         imageView.setImageResource(2130837954);
         final UrlNetworkState urlNetworkState = this.this$0.mUrlList.get(n);
         this.setTitleText(textView, urlNetworkState.getUrl(), n);

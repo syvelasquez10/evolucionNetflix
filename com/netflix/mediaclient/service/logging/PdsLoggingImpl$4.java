@@ -36,7 +36,6 @@ class PdsLoggingImpl$4 implements DataRepository$DataLoadedCallback
         this.val$deliveryRequestId = val$deliveryRequestId;
     }
     
-    @Override
     public void onDataLoaded(String s, final byte[] array, final long n) {
         if (array == null || array.length < 1) {
             Log.e("nf_pds_logs", "We failed to retrieve payload. Trying to delete it");

@@ -107,13 +107,13 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
             this.logException(itemBackgroundResource);
         }
         if (viewGroup instanceof SeasonsSpinner) {
-            itemBackgroundResource = 2131689713;
+            itemBackgroundResource = 2131689714;
         }
         else {
             itemBackgroundResource = this.itemBackgroundResource;
         }
         textView.setBackgroundResource(itemBackgroundResource);
-        textView.setTextColor(ContextCompat.getColor(viewGroup.getContext(), 2131689670));
+        textView.setTextColor(ContextCompat.getColor(viewGroup.getContext(), 2131689671));
         return (View)textView;
     }
     

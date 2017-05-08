@@ -15,13 +15,13 @@ import java.util.Iterator;
 import com.netflix.mediaclient.service.offline.agent.PlayabilityEnforcer;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
-import java.util.List;
 import com.netflix.mediaclient.service.logging.client.model.FalkorPathResult;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
+import java.util.List;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.FetchErrorUtils;
@@ -93,7 +93,7 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
                 FetchErrorUtils.notifyOthersOfAccountErrors(this.mContext, status.getStatusCode());
             }
             else {
-                ApmLogUtils.reportDataRequestEnded(this.mContext, String.valueOf(this.mUuid), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.toFalkorPathResultList(this.getPQLQueries()), ConsolidatedLoggingUtils.toError(volleyError), ConsolidatedLoggingUtils.createHttpResponse(durationTimeMs, this.getResponseSizeInBytes()));
+                ApmLogUtils.reportDataRequestEnded(this.mContext, String.valueOf(this.mUuid), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.toFalkorPathResultList((List)this.getPQLQueries()), ConsolidatedLoggingUtils.toError(volleyError), ConsolidatedLoggingUtils.createHttpResponse(durationTimeMs, this.getResponseSizeInBytes()));
             }
         }
         this.onFailure(status);
@@ -128,7 +128,7 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
                     list.add(new FalkorPathResult(iterator.next(), true, null));
                 }
             }
-            ApmLogUtils.reportDataRequestEnded(this.mContext, String.valueOf(this.mUuid), IClientLogging$CompletionReason.success, (List<FalkorPathResult>)list, null, httpResponse);
+            ApmLogUtils.reportDataRequestEnded(this.mContext, String.valueOf(this.mUuid), IClientLogging$CompletionReason.success, (List)list, (Error)null, httpResponse);
             PlayabilityEnforcer.updateLastContactNetflix(this.mContext);
         }
     }

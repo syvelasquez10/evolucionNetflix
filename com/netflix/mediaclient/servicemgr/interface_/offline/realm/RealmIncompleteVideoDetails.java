@@ -19,7 +19,7 @@ public class RealmIncompleteVideoDetails extends RealmObject implements RealmInc
     private int videoType;
     
     static {
-        TAG = LogUtils.getTag(RealmIncompleteVideoDetails.class);
+        TAG = LogUtils.getTag((Class)RealmIncompleteVideoDetails.class);
     }
     
     public static void insertInRealm(final Realm realm, final String s, final VideoType videoType, final String s2) {

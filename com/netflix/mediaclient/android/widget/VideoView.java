@@ -50,9 +50,9 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130838134);
+        this.setBackgroundResource(2130838136);
         this.useCallbackAnimation = BrowseExperience.showKidsExperience();
-        this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this, this.useCallbackAnimation);
+        this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), (PlayContextProvider)this, this.useCallbackAnimation);
         this.setPressedStateHandlerEnabled(this.useCallbackAnimation);
     }
     
@@ -60,7 +60,7 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
         if (this.mTitleDrawable == null) {
             final int dimensionPixelSize = this.getContext().getResources().getDimensionPixelSize(2131427924);
             (this.mTitleDrawable = new TitleDrawable()).setMaxLines(this.getResources().getInteger(2131558434));
-            this.mTitleDrawable.setTextColor(this.getContext().getResources().getColor(2131689719));
+            this.mTitleDrawable.setTextColor(this.getContext().getResources().getColor(2131689720));
             this.mTitleDrawable.setTextPadding(0, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
             this.mTitleDrawable.setTextSize(this.getContext().getResources().getDimensionPixelSize(2131427928));
             this.mTitleDrawable.setBackground(this.getContext(), BrowseExperience.getImageLoaderConfig().getPlaceholderResId());
@@ -69,7 +69,6 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
         this.setImageDrawable(this.mTitleDrawable);
     }
     
-    @Override
     public String getImageUrl(final Video video, final boolean b) {
         int n = 0;
         if (this.isHorizontal) {
@@ -78,14 +77,12 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
         return BrowseExperience.getLomoVideoViewImageUrl(this.getContext(), video, VideoView.class, n);
     }
     
-    @Override
     public PlayContext getPlayContext() {
         return this.playContext;
     }
     
-    @Override
     public void hide() {
-        NetflixActivity.getImageLoader(this.getContext()).clear(this);
+        NetflixActivity.getImageLoader(this.getContext()).clear((AdvancedImageView)this);
         this.setVisibility(4);
         this.clicker.remove((View)this);
     }
@@ -98,7 +95,6 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
         this.isHorizontal = isHorizontal;
     }
     
-    @Override
     public void update(final Video video, final Trackable trackable, int visibility, final boolean b, final boolean b2) {
         if (trackable != null) {
             this.playContext = new PlayContextImp(trackable, visibility);
@@ -122,7 +118,7 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
         else {
             visibility = 0;
         }
-        imageLoader.showImg(this, imageUrl, boxArt, title, imageLoaderConfig, true, visibility);
+        imageLoader.showImg((AdvancedImageView)this, imageUrl, boxArt, title, imageLoaderConfig, true, visibility);
         if (AimLowTextPlaceholderABTestUtils.shouldShowTextOnPlaceholder(this.getContext()) && !this.isImageLoaded() && !TextUtils.equals((CharSequence)this.mTitle, (CharSequence)video.getTitle())) {
             this.mTitle = video.getTitle();
             this.renderTextOnPlaceholder();

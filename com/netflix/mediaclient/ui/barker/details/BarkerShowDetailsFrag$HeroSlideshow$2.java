@@ -38,7 +38,6 @@ class BarkerShowDetailsFrag$HeroSlideshow$2 implements ImageLoader$ImageLoaderLi
         this.this$1.isHorzDispImgShowing = !this.this$1.isHorzDispImgShowing;
     }
     
-    @Override
     public void onErrorResponse(final String s) {
         this.this$1.currentSlideshowIndex = 0;
         if (Log.isLoggable()) {
@@ -46,7 +45,6 @@ class BarkerShowDetailsFrag$HeroSlideshow$2 implements ImageLoader$ImageLoaderLi
         }
     }
     
-    @Override
     public void onResponse(final Bitmap bitmap, final String s) {
         if (bitmap != null && !this.this$1.stopRequested) {
             if (!this.this$1.isHorzDispImgShowing) {

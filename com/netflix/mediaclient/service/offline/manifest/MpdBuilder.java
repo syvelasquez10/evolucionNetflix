@@ -120,7 +120,7 @@ class MpdBuilder
         String s3 = s2;
         while (iterator.hasNext()) {
             final String s4 = iterator.next();
-            if (s.equals(s4)) {
+            if (s != null && s.equals(s4)) {
                 Log.d("nf_offline_mpd_builder", "setDefaultAudio:: default audio track found %s", s4);
                 s3 = s4;
             }

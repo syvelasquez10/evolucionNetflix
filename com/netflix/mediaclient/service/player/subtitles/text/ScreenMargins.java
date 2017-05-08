@@ -29,11 +29,11 @@ public class ScreenMargins
             if (Log.isLoggable()) {
                 Log.d("nf_subtitles", "Calculate AspectDiff using extent " + s);
             }
-            final Pair<Integer, Integer> numberPair = StringUtils.extractNumberPair(s);
+            final Pair numberPair = StringUtils.extractNumberPair(s);
             float n2;
             float n3;
             if (numberPair != null) {
-                final Pair<Integer, Integer> numberPair2 = StringUtils.extractNumberPair(s2);
+                final Pair numberPair2 = StringUtils.extractNumberPair(s2);
                 if (numberPair2 != null) {
                     n2 = (int)numberPair2.first * (int)numberPair.first;
                     n3 = (int)numberPair2.first * (int)numberPair.second;

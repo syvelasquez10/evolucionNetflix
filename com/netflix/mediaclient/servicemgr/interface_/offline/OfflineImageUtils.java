@@ -18,7 +18,7 @@ public class OfflineImageUtils
     private static final String TAG = "offlineImageUtils";
     
     private static void cacheImageLocally(final NetflixService netflixService, final String s, final String s2) {
-        netflixService.getImageLoader().getImg(s, IClientLogging$AssetType.boxArt, 0, 0, new OfflineImageUtils$1(netflixService, s, s2));
+        netflixService.getImageLoader().getImg(s, IClientLogging$AssetType.boxArt, 0, 0, (ImageLoader$ImageLoaderListener)new OfflineImageUtils$1(netflixService, s, s2));
     }
     
     public static void cacheProfileImage(final NetflixService netflixService, final String s, final String s2) {

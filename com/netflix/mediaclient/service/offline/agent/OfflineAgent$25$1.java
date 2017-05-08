@@ -82,9 +82,10 @@ import android.os.HandlerThread;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.IntentCommandHandler;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
@@ -105,13 +106,13 @@ class OfflineAgent$25$1 extends SimpleBrowseAgentCallback
     @Override
     public void onShowDetailsAndSeasonsFetched(final ShowDetails showDetails, final List<SeasonDetails> list, final Status status) {
         super.onShowDetailsAndSeasonsFetched(showDetails, list, status);
-        if (status.isError()) {
-            handleFetchDetailsError(status);
+        if (status.isError() || showDetails == null) {
+            handleFetchDetailsError(status, showDetails);
         }
         else {
             Log.d("nf_offlineAgent", "Saving episode details and season details");
             RealmVideoDetails.insertInRealm(this.this$1.this$0.mRealm, this.this$1.this$0.getService(), this.val$episodeDetails, this.this$1.val$profileId);
-            OfflineAgentHelper.updateBookmarkIfNewer(this.this$1.val$playableId, this.val$episodeDetails, this.this$1.val$profileId);
+            BookmarkStore.getInstance().createOrUpdateBookmark(this.val$episodeDetails, this.this$1.val$profileId);
             RealmVideoDetails.insertInRealm(this.this$1.this$0.mRealm, this.this$1.this$0.getService(), showDetails, list, this.this$1.val$profileId);
             if (this.this$1.val$callback != null) {
                 this.this$1.val$callback.run();

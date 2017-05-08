@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.logging.logblob;
 import org.json.JSONException;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import org.json.JSONObject;
 import android.content.Context;
@@ -27,14 +28,14 @@ public class Boot extends BaseLogblob
         try {
             final JSONObject jsonObject = new JSONObject();
             jsonObject.put("appid", (Object)s);
-            jsonObject.put("buildDate", (Object)"20170123");
-            jsonObject.put("buildTime", (Object)"230842");
+            jsonObject.put("buildDate", (Object)"20170206");
+            jsonObject.put("buildTime", (Object)"200751");
             jsonObject.put("build_id", AndroidManifestUtils.getVersionCode(context));
             jsonObject.put("crashReportClient", (Object)"on");
             jsonObject.put("debug", false);
             jsonObject.put("production", true);
             jsonObject.put("version", (Object)AndroidManifestUtils.getVersion(context));
-            jsonObject.put("versionString", (Object)AndroidManifestUtils.getVersionName(context));
+            jsonObject.put("versionString", (Object)StringUtils.notEmpty(AndroidManifestUtils.getVersionName(context), ""));
             final WindowManager windowManager = (WindowManager)context.getSystemService("window");
             if (windowManager != null) {
                 final JSONObject jsonObject2 = new JSONObject();

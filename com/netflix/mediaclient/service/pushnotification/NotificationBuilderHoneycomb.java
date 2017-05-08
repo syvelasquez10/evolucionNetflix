@@ -35,7 +35,7 @@ public class NotificationBuilderHoneycomb extends NotificationBuilder
                 try {
                     notification$Builder.setSound(NotificationBuilder.getSound(payload.sound), 5);
                     if (!StringUtils.isEmpty(payload.largeIcon) && imageLoader != null) {
-                        imageLoader.getImg(payload.largeIcon, IClientLogging$AssetType.boxArt, 0, 0, new NotificationBuilderHoneycomb$1(payload, notification$Builder, context, n));
+                        imageLoader.getImg(payload.largeIcon, IClientLogging$AssetType.boxArt, 0, 0, (ImageLoader$ImageLoaderListener)new NotificationBuilderHoneycomb$1(payload, notification$Builder, context, n));
                         return;
                     }
                 }

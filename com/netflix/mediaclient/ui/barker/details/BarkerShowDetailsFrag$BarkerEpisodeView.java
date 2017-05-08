@@ -68,7 +68,7 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
         final Resources resources = this.getResources();
         int n;
         if (this.isCurrentEpisode && b) {
-            n = 2131689730;
+            n = 2131689731;
         }
         else {
             n = 2131689493;
@@ -127,11 +127,11 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
     @Override
     protected void findViews() {
         super.findViews();
-        this.image = (AdvancedImageView)this.findViewById(2131755174);
-        this.progressBarBackground = this.findViewById(2131755185);
-        this.unavailable = this.findViewById(2131755176);
-        this.episodePreviewContainer = this.findViewById(2131755173);
-        this.badgeContainer = this.findViewById(2131755179);
+        this.image = (AdvancedImageView)this.findViewById(2131755181);
+        this.progressBarBackground = this.findViewById(2131755192);
+        this.unavailable = this.findViewById(2131755183);
+        this.episodePreviewContainer = this.findViewById(2131755180);
+        this.badgeContainer = this.findViewById(2131755186);
     }
     
     @Override
@@ -230,7 +230,7 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
     protected void updateTitle(final EpisodeDetails episodeDetails) {
         if (this.this$0.getActivity() != null) {
             if (this.title != null) {
-                this.title.setTextColor(this.getResources().getColor(2131689656));
+                this.title.setTextColor(this.getResources().getColor(2131689657));
             }
             if (this.episodeNumber != null) {
                 ViewUtils.setVisibleOrGone((View)this.episodeNumber, !episodeDetails.isNSRE());

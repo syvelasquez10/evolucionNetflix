@@ -74,19 +74,19 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
             default: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837601);
             }
-            case 2131689607: {
+            case 2131689608: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837605);
             }
-            case 2131689599: {
+            case 2131689600: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837601);
             }
-            case 2131689602: {
+            case 2131689603: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837602);
             }
-            case 2131689604: {
+            case 2131689605: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837604);
             }
-            case 2131689603: {
+            case 2131689604: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837603);
             }
         }
@@ -102,23 +102,23 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
                 imageResource = 2130837615;
                 break;
             }
-            case 2131689607: {
+            case 2131689608: {
                 imageResource = 2130837619;
                 break;
             }
-            case 2131689599: {
+            case 2131689600: {
                 imageResource = 2130837614;
                 break;
             }
-            case 2131689602: {
+            case 2131689603: {
                 imageResource = 2130837616;
                 break;
             }
-            case 2131689604: {
+            case 2131689605: {
                 imageResource = 2130837618;
                 break;
             }
-            case 2131689603: {
+            case 2131689604: {
                 imageResource = 2130837617;
                 break;
             }
@@ -162,14 +162,14 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
     @Override
     protected void findViews() {
         super.findViews();
-        this.characterView = (AdvancedImageView)this.findViewById(2131755418);
-        this.playView = (ImageView)this.findViewById(2131755421);
-        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131755419);
+        this.characterView = (AdvancedImageView)this.findViewById(2131755426);
+        this.playView = (ImageView)this.findViewById(2131755429);
+        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131755427);
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903148;
+        return 2130903149;
     }
     
     @Override
@@ -181,7 +181,7 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
             return;
         }
         final String storyUrl = kidsCharacterDetails.getStoryUrl();
-        NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.horzDispImg, storyUrl, IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131296447), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
+        NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg((AdvancedImageView)this.horzDispImg, storyUrl, IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131296447), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
         this.horzDispImg.setTag((Object)storyUrl);
     }
     

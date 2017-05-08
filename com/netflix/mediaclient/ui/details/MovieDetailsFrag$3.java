@@ -58,13 +58,11 @@ class MovieDetailsFrag$3 extends TransitionListenerAdapter
         this.this$0 = this$0;
     }
     
-    @Override
     public void onTransitionEnd(final Transition transition) {
-        this.this$0.setBackgroundResource(2131689713);
+        this.this$0.setBackgroundResource(2131689714);
     }
     
-    @Override
     public void onTransitionStart(final Transition transition) {
-        this.this$0.setBackgroundResource(2131689731);
+        this.this$0.setBackgroundResource(2131689732);
     }
 }

@@ -99,7 +99,7 @@ class CachedModelProxy$CmpTask$1 extends FalkorVolleyWebClientRequest<Void>
         this.val$requestPql = val$requestPql;
         super(context);
         this.notOnMain = ThreadUtils.assertNotOnMain();
-        this.pqls = DataUtil.createStringListFromList(this.val$requestPql);
+        this.pqls = (List<String>)DataUtil.createStringListFromList(this.val$requestPql);
         this.useCallMethod = this.this$1.shouldUseCallMethod();
         this.useAuthorization = this.this$1.shouldUseAuthorization();
         this.optionalRequestParams = this.this$1.getOptionalRequestParams();

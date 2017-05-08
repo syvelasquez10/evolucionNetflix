@@ -81,7 +81,7 @@ public class DataContext
             this.setTrackId(trackable.getTrackId());
         }
         this.setRank(rank);
-        this.setVideoId(NumberUtils.toIntegerSafely(s, null));
+        this.setVideoId(NumberUtils.toIntegerSafely(s, (Integer)null));
     }
     
     public DataContext(final PlayContext playContext, final String s) {
@@ -139,9 +139,9 @@ public class DataContext
             value4 = int4;
         }
         dataContext.trackId = value4;
-        dataContext.requestId = JsonUtils.getString(jsonObject, "requestId", null);
-        dataContext.xid = JsonUtils.getString(jsonObject, "xid", null);
-        dataContext.trackingInfo = JsonUtils.getString(jsonObject, "trackingInfo", null);
+        dataContext.requestId = JsonUtils.getString(jsonObject, "requestId", (String)null);
+        dataContext.xid = JsonUtils.getString(jsonObject, "xid", (String)null);
+        dataContext.trackingInfo = JsonUtils.getString(jsonObject, "trackingInfo", (String)null);
         return dataContext;
     }
     

@@ -47,7 +47,6 @@ public abstract class BaseProgressiveRowAdapter<T extends Video> implements Fetc
     
     protected abstract void fetchMoreData(final int p0, final int p1);
     
-    @Override
     public int getCount() {
         return this.paginatedAdapter.getCount();
     }
@@ -65,12 +64,10 @@ public abstract class BaseProgressiveRowAdapter<T extends Video> implements Fetc
         return this.requestId;
     }
     
-    @Override
     public int getRowHeightInPx() {
         return this.paginatedAdapter.getRowHeightInPx();
     }
     
-    @Override
     public View getView(final int n) {
         if (this.hasMoreData() && this.paginatedAdapter.isLastItem(n)) {
             this.fetchMoreData();
@@ -86,12 +83,10 @@ public abstract class BaseProgressiveRowAdapter<T extends Video> implements Fetc
         DPPrefetchABTestUtils.prefetchDPForLomoRow(this.manager, this.lomo, list, this.paginatedAdapter.computeNumItemsPerPage());
     }
     
-    @Override
     public boolean hasMoreData() {
         return this.hasMoreData;
     }
     
-    @Override
     public void invalidateRequestId() {
         this.requestId = -1L;
     }
@@ -110,7 +105,6 @@ public abstract class BaseProgressiveRowAdapter<T extends Video> implements Fetc
         this.adapterCallbacks.notifyParentOfDataSetChange();
     }
     
-    @Override
     public final void refreshData(final BasicLoMo lomo, final int listViewPos) {
         if (Log.isLoggable()) {
             final StringBuilder append = new StringBuilder().append(this.getClass().getSimpleName()).append(" refreshing data for: ");
@@ -131,7 +125,6 @@ public abstract class BaseProgressiveRowAdapter<T extends Video> implements Fetc
         this.fetchMoreData();
     }
     
-    @Override
     public void restoreFromMemento(final Object o) {
         final BaseProgressiveRowAdapter$Memento baseProgressiveRowAdapter$Memento = (BaseProgressiveRowAdapter$Memento)o;
         this.invalidateRequestId();
@@ -144,17 +137,14 @@ public abstract class BaseProgressiveRowAdapter<T extends Video> implements Fetc
         }
     }
     
-    @Override
     public BaseProgressiveRowAdapter$Memento saveToMemento() {
         return new BaseProgressiveRowAdapter$Memento(this.lomo, this.hasMoreData, this.currDataIndex, this.paginatedAdapter);
     }
     
-    @Override
     public boolean shouldOverlapPages() {
         return true;
     }
     
-    @Override
     public void trackPresentation(final int n) {
         this.paginatedAdapter.trackPresentation(this.manager, this.lomo, n, this instanceof ProgressiveGenreVideoAdapter);
     }

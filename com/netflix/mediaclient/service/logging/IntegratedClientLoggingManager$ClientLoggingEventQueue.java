@@ -68,7 +68,6 @@ class IntegratedClientLoggingManager$ClientLoggingEventQueue extends EventQueue<
         super("nf_icl_queue", 30, 60000L, true, true);
     }
     
-    @Override
     protected void doFlush(final List<Event> list, final boolean b) {
         this.this$0.validateActiveSessions(list);
         this.this$0.sendEvents(list, b);

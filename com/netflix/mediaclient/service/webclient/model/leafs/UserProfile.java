@@ -53,19 +53,19 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.interface
             else {
                 jsonObject = new JSONObject(s);
             }
-            this.summary.profileToken = JsonUtils.getString(jsonObject, "userId", null);
-            this.summary.profileGuid = JsonUtils.getString(jsonObject, "profileId", null);
-            this.summary.profileName = JsonUtils.getString(jsonObject, "profileName", null);
-            this.summary.firstName = JsonUtils.getString(jsonObject, "firstName", null);
-            this.summary.lastName = JsonUtils.getString(jsonObject, "lastName", null);
-            this.summary.email = JsonUtils.getString(jsonObject, "email", null);
+            this.summary.profileToken = JsonUtils.getString(jsonObject, "userId", (String)null);
+            this.summary.profileGuid = JsonUtils.getString(jsonObject, "profileId", (String)null);
+            this.summary.profileName = JsonUtils.getString(jsonObject, "profileName", (String)null);
+            this.summary.firstName = JsonUtils.getString(jsonObject, "firstName", (String)null);
+            this.summary.lastName = JsonUtils.getString(jsonObject, "lastName", (String)null);
+            this.summary.email = JsonUtils.getString(jsonObject, "email", (String)null);
             this.summary.maturityLevel = JsonUtils.getInt(jsonObject, "maturityLevel", -1);
             this.summary.isIqEnabled = JsonUtils.getBoolean(jsonObject, "isIqEnabled", false);
             this.summary.isPrimaryProfile = JsonUtils.getBoolean(jsonObject, "isPrimaryProfile", false);
             this.summary.isAutoPlayEnabled = JsonUtils.getBoolean(jsonObject, "autoPlayOn", false);
-            this.summary.experienceType = JsonUtils.getString(jsonObject, "experienceType", null);
-            this.summary.avatarUrl = JsonUtils.getString(jsonObject, "avatarUrl", null);
-            final String string = JsonUtils.getString(jsonObject, "languages", null);
+            this.summary.experienceType = JsonUtils.getString(jsonObject, "experienceType", (String)null);
+            this.summary.avatarUrl = JsonUtils.getString(jsonObject, "avatarUrl", (String)null);
+            final String string = JsonUtils.getString(jsonObject, "languages", (String)null);
             if (StringUtils.isNotEmpty(string)) {
                 for (String[] split = TextUtils.split(string, ","); i < split.length; ++i) {
                     this.summary.languages.add(new UserProfile$Language(this, split[i]));
@@ -76,7 +76,7 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.interface
             Log.d("UserProfile", "failed to create json string=" + s + " exception =" + ex);
             return;
         }
-        final String string2 = JsonUtils.getString(jsonObject, "subtitleOverride", null);
+        final String string2 = JsonUtils.getString(jsonObject, "subtitleOverride", (String)null);
         SubtitlePreference subtitlePreference2;
         if (StringUtils.isEmpty(string2)) {
             subtitlePreference2 = subtitlePreference;

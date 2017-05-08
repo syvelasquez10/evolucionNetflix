@@ -22,32 +22,28 @@ public class CustomerEventCommand extends ResponseWebApiPostCommand
     
     CustomerEventCommand(final String s, final AuthorizationCredentials authorizationCredentials, final String mPayload) {
         super(s, authorizationCredentials, CommonRequestParameters.getInstanceWithCredentials());
-        this.verifyNotNull(mPayload, "Payload");
+        this.verifyNotNull((Object)mPayload, "Payload");
         this.mPayload = mPayload;
     }
     
-    @Override
     public String getCommandPath() {
         return "/users/customerevents";
     }
     
-    @Override
     public Pair<String, String>[] getHeaders() {
         return (Pair<String, String>[])new Pair[] { new Pair((Object)"Content-Type", (Object)"application/x-www-form-urlencoded") };
     }
     
-    @Override
     protected List<NameValuePair> getParameters() {
         final ArrayList<NameValuePair> list = new ArrayList<NameValuePair>(1);
         final String string = this.mPayload.toString();
         if (Log.isLoggable()) {
             Log.d("nf_rest", "Payload: " + string);
         }
-        this.addIfNotNull(list, "data", string);
+        this.addIfNotNull((List)list, "data", string);
         return list;
     }
     
-    @Override
     protected StringBuilder getUrl() {
         return this.getBaseCustomerEventBeaconUrl();
     }

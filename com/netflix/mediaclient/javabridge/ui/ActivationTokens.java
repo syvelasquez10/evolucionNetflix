@@ -58,8 +58,8 @@ public final class ActivationTokens
             Log.e("nf_reg", "Tokens are null");
         }
         else {
-            this.netflixId = JsonUtils.getString(json, "NetflixId", null);
-            this.secureNetflixId = JsonUtils.getString(json, "SecureNetflixId", null);
+            this.netflixId = JsonUtils.getString(json, "NetflixId", (String)null);
+            this.secureNetflixId = JsonUtils.getString(json, "SecureNetflixId", (String)null);
             if (Log.isLoggable()) {
                 Log.d("nf_reg", "NetflixID: " + this.netflixId + ", SecureNetlixId: " + this.secureNetflixId);
             }

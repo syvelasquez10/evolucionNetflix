@@ -16,6 +16,7 @@ import java.util.Collections;
 import io.realm.BaseRealm$MigrationCallback;
 import io.realm.Realm$3;
 import io.realm.internal.ColumnInfo;
+import java.util.Iterator;
 import java.util.Set;
 import io.realm.internal.RealmProxyMediator;
 import io.realm.Realm$1;
@@ -41,8 +42,6 @@ import java.util.Map;
 import io.realm.BaseRealm;
 import android.content.Context;
 import io.realm.RealmModel;
-import java.util.Iterator;
-import io.realm.RealmResults;
 import java.util.List;
 import io.realm.Realm$Transaction;
 import io.realm.Realm;
@@ -114,15 +113,9 @@ public class RealmUtils
     public static RealmVideoDetails getOfflineVideoDetails(final String s) {
         final Realm realmInstance = getRealmInstance();
         try {
-            final RealmResults all = realmInstance.where(RealmVideoDetails.class).equalTo("id", s).findAll();
-            final int size = all.size();
-            if (size != 1) {
-                ErrorLoggingManager.logHandledException(String.format("SPY-10228 - Found %d records for the following video id: %s", size, s));
-            }
-            for (final RealmVideoDetails realmVideoDetails : all) {
-                if (realmVideoDetails.getPlayable() != null) {
-                    return realmVideoDetails;
-                }
+            final RealmVideoDetails realmVideoDetails = (RealmVideoDetails)realmInstance.where(RealmVideoDetails.class).equalTo("id", s).findFirst();
+            if (realmVideoDetails != null && realmVideoDetails.getPlayable() != null) {
+                return realmVideoDetails;
             }
             return null;
         }

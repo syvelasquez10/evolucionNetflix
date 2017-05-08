@@ -51,8 +51,8 @@ public class SeasonsSpinner extends Spinner
     }
     
     private void init() {
-        this.drawableMultipleSeasons = this.getResources().getDrawable(2130838142);
-        this.drawableOneSeason = this.getResources().getDrawable(2131689713);
+        this.drawableMultipleSeasons = this.getResources().getDrawable(2130838144);
+        this.drawableOneSeason = this.getResources().getDrawable(2131689714);
         Api16Util.setBackgroundDrawableCompat((View)this, this.drawableMultipleSeasons);
         this.setId(2131755029);
         ScalePressedStateHandler pressedHandler;

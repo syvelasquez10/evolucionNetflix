@@ -92,7 +92,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     }
     
     private void restoreLayoutManagerState() {
-        if (DataUtil.areAnyNull("MovieDetailsFrag", "can't restore layout manager", this.layoutManagerSavedState, this.recyclerView, this.parallaxScroller)) {
+        if (DataUtil.areAnyNull("MovieDetailsFrag", "can't restore layout manager", new Object[] { this.layoutManagerSavedState, this.recyclerView, this.parallaxScroller })) {
             return;
         }
         if (Log.isLoggable()) {
@@ -137,7 +137,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     protected void findViews(final View view) {
         this.recyclerView = (RecyclerView)this.primaryView;
-        this.rootContainer = view.findViewById(2131755446);
+        this.rootContainer = view.findViewById(2131755454);
     }
     
     @Override
@@ -147,7 +147,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     @Override
     protected int getLayoutId() {
-        return 2130903290;
+        return 2130903291;
     }
     
     @Override
@@ -192,7 +192,6 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
         return this.isLoading;
     }
     
-    @Override
     public void onCreate(final Bundle bundle) {
         this.videoId = this.getArguments().getString("video_id");
         super.onCreate(bundle);
@@ -215,13 +214,11 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
         return onCreateView;
     }
     
-    @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         super.onManagerReady(serviceManager, status);
         this.fetchMovieData();
     }
     
-    @Override
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
     }
     
@@ -253,7 +250,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     public void setExitTransition(final Transition exitTransition) {
         super.setExitTransition(exitTransition);
-        this.setBackgroundResource(2131689731);
+        this.setBackgroundResource(2131689732);
         if (exitTransition != null) {
             exitTransition.addListener((Transition$TransitionListener)new MovieDetailsFrag$3(this));
         }
@@ -299,7 +296,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     }
     
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427629), this.numColumns));
+        this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427629), this.numColumns));
     }
     
     protected void setupRecyclerViewLayoutManager() {
@@ -307,13 +304,12 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
         this.recyclerView.setLayoutManager(this.gridLayoutManager);
     }
     
-    @Override
     public Tooltip setupTutorial(final UserProfile userProfile) {
         final DownloadButton downloadButton = this.getVideoDetailsViewGroup().getDownloadButton();
         if (downloadButton == null) {
             return null;
         }
-        return TutorialHelper.buildDownloadButtonTutorial(downloadButton.findViewById(2131755351), this.getActivity(), userProfile);
+        return TutorialHelper.buildDownloadButtonTutorial(downloadButton.findViewById(2131755358), this.getActivity(), userProfile);
     }
     
     @Override
@@ -323,7 +319,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
         this.showSimsItems(movieDetails);
         if (this.recyclerView != null) {
             this.recyclerView.setVisibility(0);
-            this.getNetflixActivity().getTutorialHelper().showTutorialForVideoWithScroll(this, movieDetails, this.recyclerView, this.getServiceManager());
+            this.getNetflixActivity().getTutorialHelper().showTutorialForVideoWithScroll((TutorialHelper$Tutorialable)this, (VideoDetails)movieDetails, this.recyclerView, this.getServiceManager());
         }
         this.addFooter(movieDetails);
         this.restoreLayoutManagerState();

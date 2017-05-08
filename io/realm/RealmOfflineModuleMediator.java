@@ -13,11 +13,11 @@ import java.io.Serializable;
 import io.realm.internal.RealmObjectProxy;
 import java.util.Map;
 import java.util.Collections;
+import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmSeason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmIncompleteVideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmPlayable;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmProfile;
-import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmSeason;
 import java.util.HashSet;
 import java.util.Set;
 import io.realm.annotations.RealmModule;
@@ -30,11 +30,11 @@ class RealmOfflineModuleMediator extends RealmProxyMediator
     
     static {
         final HashSet<Class<? extends RealmModel>> set = new HashSet<Class<? extends RealmModel>>();
-        set.add(RealmSeason.class);
-        set.add((Class<RealmSeason>)RealmProfile.class);
-        set.add((Class<RealmSeason>)RealmPlayable.class);
-        set.add((Class<RealmSeason>)RealmVideoDetails.class);
-        set.add((Class<RealmSeason>)RealmIncompleteVideoDetails.class);
+        set.add(RealmProfile.class);
+        set.add((Class<RealmProfile>)RealmPlayable.class);
+        set.add((Class<RealmProfile>)RealmVideoDetails.class);
+        set.add((Class<RealmProfile>)RealmIncompleteVideoDetails.class);
+        set.add((Class<RealmProfile>)RealmSeason.class);
         MODEL_CLASSES = Collections.unmodifiableSet((Set<?>)set);
     }
     
@@ -45,9 +45,6 @@ class RealmOfflineModuleMediator extends RealmProxyMediator
         }
         else {
             s = e.getClass();
-        }
-        if (s.equals(RealmSeason.class)) {
-            return ((Class<E>)s).cast(RealmSeasonRealmProxy.copyOrUpdate(realm, (RealmSeason)e, b, (Map)map));
         }
         if (s.equals(RealmProfile.class)) {
             return ((Class<E>)s).cast(RealmProfileRealmProxy.copyOrUpdate(realm, (RealmProfile)e, b, (Map)map));
@@ -61,14 +58,14 @@ class RealmOfflineModuleMediator extends RealmProxyMediator
         if (s.equals(RealmIncompleteVideoDetails.class)) {
             return ((Class<E>)s).cast(RealmIncompleteVideoDetailsRealmProxy.copyOrUpdate(realm, (RealmIncompleteVideoDetails)e, b, (Map)map));
         }
+        if (s.equals(RealmSeason.class)) {
+            return ((Class<E>)s).cast(RealmSeasonRealmProxy.copyOrUpdate(realm, (RealmSeason)e, b, (Map)map));
+        }
         throw getMissingProxyClassException((Class)s);
     }
     
     public RealmObjectSchema createRealmObjectSchema(final Class<? extends RealmModel> clazz, final RealmSchema realmSchema) {
         checkClass((Class)clazz);
-        if (clazz.equals(RealmSeason.class)) {
-            return RealmSeasonRealmProxy.createRealmObjectSchema(realmSchema);
-        }
         if (clazz.equals(RealmProfile.class)) {
             return RealmProfileRealmProxy.createRealmObjectSchema(realmSchema);
         }
@@ -81,14 +78,14 @@ class RealmOfflineModuleMediator extends RealmProxyMediator
         if (clazz.equals(RealmIncompleteVideoDetails.class)) {
             return RealmIncompleteVideoDetailsRealmProxy.createRealmObjectSchema(realmSchema);
         }
+        if (clazz.equals(RealmSeason.class)) {
+            return RealmSeasonRealmProxy.createRealmObjectSchema(realmSchema);
+        }
         throw getMissingProxyClassException((Class)clazz);
     }
     
     public Table createTable(final Class<? extends RealmModel> clazz, final SharedRealm sharedRealm) {
         checkClass((Class)clazz);
-        if (clazz.equals(RealmSeason.class)) {
-            return RealmSeasonRealmProxy.initTable(sharedRealm);
-        }
         if (clazz.equals(RealmProfile.class)) {
             return RealmProfileRealmProxy.initTable(sharedRealm);
         }
@@ -101,6 +98,9 @@ class RealmOfflineModuleMediator extends RealmProxyMediator
         if (clazz.equals(RealmIncompleteVideoDetails.class)) {
             return RealmIncompleteVideoDetailsRealmProxy.initTable(sharedRealm);
         }
+        if (clazz.equals(RealmSeason.class)) {
+            return RealmSeasonRealmProxy.initTable(sharedRealm);
+        }
         throw getMissingProxyClassException((Class)clazz);
     }
     
@@ -110,9 +110,6 @@ class RealmOfflineModuleMediator extends RealmProxyMediator
     
     public String getTableName(final Class<? extends RealmModel> clazz) {
         checkClass((Class)clazz);
-        if (clazz.equals(RealmSeason.class)) {
-            return RealmSeasonRealmProxy.getTableName();
-        }
         if (clazz.equals(RealmProfile.class)) {
             return RealmProfileRealmProxy.getTableName();
         }
@@ -125,6 +122,9 @@ class RealmOfflineModuleMediator extends RealmProxyMediator
         if (clazz.equals(RealmIncompleteVideoDetails.class)) {
             return RealmIncompleteVideoDetailsRealmProxy.getTableName();
         }
+        if (clazz.equals(RealmSeason.class)) {
+            return RealmSeasonRealmProxy.getTableName();
+        }
         throw getMissingProxyClassException((Class)clazz);
     }
     
@@ -133,9 +133,6 @@ class RealmOfflineModuleMediator extends RealmProxyMediator
         try {
             baseRealm$RealmObjectContext.set((BaseRealm)o, row, columnInfo, b, (List)list);
             checkClass((Class)clazz);
-            if (clazz.equals(RealmSeason.class)) {
-                return clazz.cast(new RealmSeasonRealmProxy());
-            }
             if (clazz.equals(RealmProfile.class)) {
                 return clazz.cast(new RealmProfileRealmProxy());
             }
@@ -147,6 +144,9 @@ class RealmOfflineModuleMediator extends RealmProxyMediator
             }
             if (clazz.equals(RealmIncompleteVideoDetails.class)) {
                 return clazz.cast(new RealmIncompleteVideoDetailsRealmProxy());
+            }
+            if (clazz.equals(RealmSeason.class)) {
+                return clazz.cast(new RealmSeasonRealmProxy());
             }
             throw getMissingProxyClassException((Class)clazz);
         }
@@ -161,9 +161,6 @@ class RealmOfflineModuleMediator extends RealmProxyMediator
     
     public ColumnInfo validateTable(final Class<? extends RealmModel> clazz, final SharedRealm sharedRealm, final boolean b) {
         checkClass((Class)clazz);
-        if (clazz.equals(RealmSeason.class)) {
-            return (ColumnInfo)RealmSeasonRealmProxy.validateTable(sharedRealm, b);
-        }
         if (clazz.equals(RealmProfile.class)) {
             return (ColumnInfo)RealmProfileRealmProxy.validateTable(sharedRealm, b);
         }
@@ -175,6 +172,9 @@ class RealmOfflineModuleMediator extends RealmProxyMediator
         }
         if (clazz.equals(RealmIncompleteVideoDetails.class)) {
             return (ColumnInfo)RealmIncompleteVideoDetailsRealmProxy.validateTable(sharedRealm, b);
+        }
+        if (clazz.equals(RealmSeason.class)) {
+            return (ColumnInfo)RealmSeasonRealmProxy.validateTable(sharedRealm, b);
         }
         throw getMissingProxyClassException((Class)clazz);
     }

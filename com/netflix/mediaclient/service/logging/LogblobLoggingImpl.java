@@ -85,7 +85,7 @@ public class LogblobLoggingImpl implements LogblobLogging
         Log.d("nf_logblob", "::init data repository started ");
         final File file = new File(this.mContext.getFilesDir(), "logblobs");
         file.mkdirs();
-        this.mDataRepository = new FileSystemDataRepositoryImpl(file);
+        this.mDataRepository = (DataRepository)new FileSystemDataRepositoryImpl(file);
         this.mExecutor.execute(new LogblobLoggingImpl$1(this));
         Log.d("nf_logblob", "::init data repository done ");
     }
@@ -94,7 +94,7 @@ public class LogblobLoggingImpl implements LogblobLogging
         if (Log.isLoggable()) {
             Log.d("nf_logblob", "Load logblobs " + s);
         }
-        this.mDataRepository.load(s, new LogblobLoggingImpl$4(this, s));
+        this.mDataRepository.load(s, (DataRepository$DataLoadedCallback)new LogblobLoggingImpl$4(this, s));
     }
     
     private void removeSavedLogblobs(final String s) {
@@ -209,7 +209,7 @@ public class LogblobLoggingImpl implements LogblobLogging
                 }
                 try {
                     ((BaseLogblob)logblob).init(this.mOwner.getContext(), applicationId, userSessionId);
-                    if (!this.mEventQueue.post(logblob) && logblob.shouldSendNow()) {
+                    if (!this.mEventQueue.post((Object)logblob) && logblob.shouldSendNow()) {
                         this.mEventQueue.flushEvents(true);
                     }
                     return;

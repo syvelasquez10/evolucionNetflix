@@ -48,12 +48,12 @@ class NetflixComVideoDetailsHandler$1 extends SimpleManagerCallback
                         clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking(sb.toString());
                     }
                 }
-                DetailsActivityLauncher.show(this.val$activity, video$Summary, NflxProtocolUtils.getPlayContext(this.val$trackId), this.this$0.getAction(), this.this$0.getActionToken(), "DeepLink");
+                DetailsActivityLauncher.show(this.val$activity, (Video)video$Summary, NflxProtocolUtils.getPlayContext(this.val$trackId), this.this$0.getAction(), this.this$0.getActionToken(), "DeepLink");
             }
         }
         else {
             ErrorLoggingManager.logHandledException(new Throwable("SPY-7518 - got error trying to fetch video summary for: " + this.val$videoId));
         }
-        NflxProtocolUtils.reportDelayedResponseHandled(this.val$activity);
+        NflxProtocolUtils.reportDelayedResponseHandled((Activity)this.val$activity);
     }
 }

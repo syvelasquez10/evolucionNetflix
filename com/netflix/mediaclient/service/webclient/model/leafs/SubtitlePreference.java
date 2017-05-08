@@ -45,16 +45,16 @@ public class SubtitlePreference
             else {
                 jsonObject = new JSONObject(s);
             }
-            this.setCharOpacity(JsonUtils.getString(jsonObject, "charOpacity", null));
-            this.setBackgroundOpacity(JsonUtils.getString(jsonObject, "backgroundOpacity", null));
-            this.setWindowOpacity(JsonUtils.getString(jsonObject, "windowOpacity", null));
-            this.setCharColor(JsonUtils.getString(jsonObject, "charColor", null));
-            this.setBackgroundColor(JsonUtils.getString(jsonObject, "backgroundColor", null));
-            this.setWindowColor(JsonUtils.getString(jsonObject, "windowColor", null));
-            this.setCharEdgeColor(JsonUtils.getString(jsonObject, "charEdgeColor", null));
-            this.setCharEdgeAttrs(JsonUtils.getString(jsonObject, "charEdgeAttrs", null));
-            this.setCharSize(JsonUtils.getString(jsonObject, "charSize", null));
-            this.setCharStyle(JsonUtils.getString(jsonObject, "charStyle", null));
+            this.setCharOpacity(JsonUtils.getString(jsonObject, "charOpacity", (String)null));
+            this.setBackgroundOpacity(JsonUtils.getString(jsonObject, "backgroundOpacity", (String)null));
+            this.setWindowOpacity(JsonUtils.getString(jsonObject, "windowOpacity", (String)null));
+            this.setCharColor(JsonUtils.getString(jsonObject, "charColor", (String)null));
+            this.setBackgroundColor(JsonUtils.getString(jsonObject, "backgroundColor", (String)null));
+            this.setWindowColor(JsonUtils.getString(jsonObject, "windowColor", (String)null));
+            this.setCharEdgeColor(JsonUtils.getString(jsonObject, "charEdgeColor", (String)null));
+            this.setCharEdgeAttrs(JsonUtils.getString(jsonObject, "charEdgeAttrs", (String)null));
+            this.setCharSize(JsonUtils.getString(jsonObject, "charSize", (String)null));
+            this.setCharStyle(JsonUtils.getString(jsonObject, "charStyle", (String)null));
         }
         catch (JSONException ex) {
             Log.d("nf_subtitlePreference", "failed to create json string=" + s + " exception =" + ex);

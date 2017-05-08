@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.home;
 
+import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
@@ -75,7 +76,7 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
     
     private void displayOfflineTutorialIfNeeded() {
         if (this.shouldDisplayOfflineTutorialDialog()) {
-            this.mOwner.showDialog(new OfflineTutorialDialogFrag());
+            this.mOwner.showDialog((DialogFragment)new OfflineTutorialDialogFrag());
         }
     }
     
@@ -84,8 +85,8 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
         if (this.shouldDisplayOptInDialog()) {
             Log.d("DialogManager", "Displaying opt-in dialog");
             final SocialOptInDialogFrag instance = SocialOptInDialogFrag.newInstance();
-            instance.setCancelable(false);
-            if (this.canDialogBeDisplayedSafely() && this.mOwner.showDialog(instance)) {
+            ((NetflixDialogFrag)instance).setCancelable(false);
+            if (this.canDialogBeDisplayedSafely() && this.mOwner.showDialog((DialogFragment)instance)) {
                 ApmLogUtils.reportUiModalViewChanged((Context)this.mOwner, IClientLogging$ModalView.optInDialog);
             }
             b = true;
@@ -120,7 +121,6 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
         return this.displayGooglePlayServicesDialogIfNeeded();
     }
     
-    @Override
     public void onAccept() {
         if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.mOwner)) {
             return;
@@ -133,7 +133,6 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
         this.displayGooglePlayServicesDialogIfNeeded();
     }
     
-    @Override
     public void onDecline() {
         if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.mOwner)) {
             return;

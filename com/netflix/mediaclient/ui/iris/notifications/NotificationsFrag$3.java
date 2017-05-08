@@ -75,7 +75,7 @@ class NotificationsFrag$3 implements View$OnClickListener
                 serviceManager.getBrowse().markNotificationAsRead(this.val$summary);
             }
             DetailsActivityLauncher.show(this.this$0.getNetflixActivity(), this.val$videoType, this.val$videoId, this.val$summary.getVideoTitle(), new PlayContextImp(this.val$requestId, this.val$listSummary.getMDPTrackId(), 0, 0), "SocialNotif");
-            UIViewLogUtils.reportUIViewCommandStarted((Context)this.this$0.getActivity(), UIViewLogging$UIViewCommandName.viewTitleDetails, IClientLogging$ModalView.menuPanel, null, null, this.this$0.getModelObject(this.val$summary, this.val$position));
+            UIViewLogUtils.reportUIViewCommandStarted((Context)this.this$0.getActivity(), UIViewLogging$UIViewCommandName.viewTitleDetails, IClientLogging$ModalView.menuPanel, (DataContext)null, (String)null, this.this$0.getModelObject(this.val$summary, this.val$position));
             UIViewLogUtils.reportUIViewCommandEnded((Context)this.this$0.getActivity());
         }
         else if (Log.isLoggable()) {

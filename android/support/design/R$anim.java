@@ -16,10 +16,10 @@ public final class R$anim
     public static final int abc_slide_in_top = 2130968583;
     public static final int abc_slide_out_bottom = 2130968584;
     public static final int abc_slide_out_top = 2130968585;
-    public static final int design_bottom_sheet_slide_in = 2130968596;
-    public static final int design_bottom_sheet_slide_out = 2130968597;
-    public static final int design_fab_in = 2130968598;
-    public static final int design_fab_out = 2130968599;
-    public static final int design_snackbar_in = 2130968600;
-    public static final int design_snackbar_out = 2130968601;
+    public static final int design_bottom_sheet_slide_in = 2130968598;
+    public static final int design_bottom_sheet_slide_out = 2130968599;
+    public static final int design_fab_in = 2130968600;
+    public static final int design_fab_out = 2130968601;
+    public static final int design_snackbar_in = 2130968602;
+    public static final int design_snackbar_out = 2130968603;
 }

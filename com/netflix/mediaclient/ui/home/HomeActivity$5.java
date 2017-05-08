@@ -78,7 +78,7 @@ class HomeActivity$5 extends NetflixActivity$ServiceManagerRunnable
     @Override
     public void run(final ServiceManager serviceManager) {
         if (serviceManager.isOfflineFeatureAvailable() && serviceManager.getOfflineAgent().getLatestOfflinePlayableList().getTitleCount(serviceManager.getCurrentProfile()) > 0) {
-            this.this$0.getTutorialHelper().showTutorial(this.this$0, serviceManager);
+            this.this$0.getTutorialHelper().showTutorial((TutorialHelper$Tutorialable)this.this$0, serviceManager);
         }
         this.this$0.showDialogsIfApplicable();
     }

@@ -46,12 +46,10 @@ class MslUrlHttpURLConnectionImpl$HttpConnection implements Url$Connection
         }
     }
     
-    @Override
     public InputStream getInputStream() {
         return this.mURLConnection.getInputStream();
     }
     
-    @Override
     public OutputStream getOutputStream() {
         return this.mURLConnection.getOutputStream();
     }

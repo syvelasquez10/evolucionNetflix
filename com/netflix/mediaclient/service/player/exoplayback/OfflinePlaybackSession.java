@@ -44,15 +44,18 @@ import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.media.Subtitle;
 import android.content.Context;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.media.AudioSource;
 import android.util.Pair;
+import com.netflix.mediaclient.util.activitytracking.ActivityTracker;
 
 public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
 {
     private static final long CALLBACK_INTERVAL_MS = 1000L;
     private static final String TAG = "OfflinePlayback_Session";
     private long mABitrate;
+    private ActivityTracker mActivityTracker;
     private String mAdlid;
     private Pair<Integer, Integer> mAspectRatio;
     private AudioSource[] mAudioSource;
@@ -60,6 +63,7 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
     private BatteryStats mBatteryStats;
     private final long mBookmark;
     private final IPlaybackSession$PlaybackSessionCallback mCallback;
+    private ServiceAgent$ConfigurationAgentInterface mConfigAgent;
     private final Context mContext;
     private Subtitle mCurrentSubtitleTrack;
     private String mDxid;
@@ -91,13 +95,14 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
     private List<VideoTrack> mVideoTracks;
     private String mXid;
     
-    OfflinePlaybackSession(final Context mContext, final Handler mMainHandler, final IPlaybackSession$PlaybackSessionCallback mCallback, final OfflinePlaybackInterface mOfflineAgent, final IClientLogging mLoggingAgent, final PdsPlayInterface pdsPlayInterface, final SubtitleOfflineManager mSubtitles, final long mMovieId, final long mBookmark, final PlayContext mPlayContext) {
+    OfflinePlaybackSession(final Context mContext, final Handler mMainHandler, final IPlaybackSession$PlaybackSessionCallback mCallback, final ServiceAgent$ConfigurationAgentInterface mConfigAgent, final OfflinePlaybackInterface mOfflineAgent, final IClientLogging mLoggingAgent, final PdsPlayInterface pdsPlayInterface, final SubtitleOfflineManager mSubtitles, final long mMovieId, final long mBookmark, final PlayContext mPlayContext) {
         this.mResumePlayReason = OfflinePlaybackSession$ResumePlayReason.none;
         this.mPlaybackTS = 0L;
         this.mPeriodicCallback = new OfflinePlaybackSession$2(this);
         this.mContext = mContext;
         this.mMainHandler = mMainHandler;
         this.mCallback = mCallback;
+        this.mConfigAgent = mConfigAgent;
         this.mOfflineAgent = mOfflineAgent;
         this.mLoggingAgent = mLoggingAgent;
         this.mXid = NetflixTransactionIdGenerator.generateXid();
@@ -112,6 +117,16 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("android.intent.action.ACTION_POWER_CONNECTED");
         mContext.registerReceiver((BroadcastReceiver)(this.mPowerStatusRcvr = new PowerStatusReceiver(this.mBatteryStats)), intentFilter);
+    }
+    
+    private String getActivityData() {
+        String string = "";
+        if (this.mActivityTracker != null) {
+            this.mActivityTracker.stopTrackingActivityUpdates();
+            string = this.mActivityTracker.getActivityData().toString();
+            this.mActivityTracker = null;
+        }
+        return string;
     }
     
     private JSONObject getPlayTimeJson() {
@@ -142,9 +157,9 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
         this.mAspectRatio = offlinePlaybackInterface$OfflineManifest.getAspectWidthHeight();
         final byte[] offlineKeySetId = offlinePlaybackInterface$OfflineManifest.getOfflineKeySetId();
         while (true) {
-            Label_0474: {
+            Label_0473: {
                 if (offlineKeySetId == null || offlineKeySetId.length <= 0) {
-                    break Label_0474;
+                    break Label_0473;
                 }
                 Log.logByteArrayRaw("OfflinePlayback_Session", "has KeySetId", offlineKeySetId);
                 try {
@@ -234,7 +249,7 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
         return (Pair<Integer, Integer>)Pair.create((Object)n3, (Object)n2);
     }
     
-    private void reportEndPlay(final OfflinePlaybackSession$EndPlayReason offlinePlaybackSession$EndPlayReason, final String s, final String s2, final String s3) {
+    private void reportEndPlay(final OfflinePlaybackSession$EndPlayReason offlinePlaybackSession$EndPlayReason, final String s, final String s2, final String s3, final String s4) {
         Log.d("OfflinePlayback_Session", "reportEndPlay: ");
         if (this.mEndPlayLogged || this.mErrorLogged) {
             Log.d("OfflinePlayback_Session", "reportEndPlay: Already logged or error reported");
@@ -257,7 +272,7 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
         Log.d("OfflinePlayback_Session", "reportEndPlay: BatteryStat:" + this.mBatteryStats.getJSON());
         Log.d("OfflinePlayback_Session", "reportEndPlay: PlayTimeTracker" + this.mPlayTracker);
         try {
-            this.sendBlob(new EndPlay(logArguments$LogLevel, this.mMovieId, this.mPlayContext.getTrackId(), this.mXid, this.mOxid, this.mDxid, mono - mUserPlay, currentPosition, this.mPlayTracker.getMovieTotalInMs() / 1000L, offlinePlaybackSession$EndPlayReason.name(), connectedOrConnecting, playbackStatJSON, this.mBatteryStats.getJSON(), s, s2, s3));
+            this.sendBlob(new EndPlay(logArguments$LogLevel, this.mMovieId, this.mPlayContext.getTrackId(), this.mXid, this.mOxid, this.mDxid, mono - mUserPlay, currentPosition, this.mPlayTracker.getMovieTotalInMs() / 1000L, offlinePlaybackSession$EndPlayReason.name(), connectedOrConnecting, playbackStatJSON, this.mBatteryStats.getJSON(), s, s2, s3, s4));
             this.mEndPlayLogged = true;
         }
         catch (JSONException ex) {
@@ -288,13 +303,17 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
                 if (s != null) {
                     this.mErrorLogged = true;
                 }
+                else if (ActivityTracker.canUseActivityTracker(this.mConfigAgent, this.mContext)) {
+                    this.mActivityTracker = new ActivityTracker(this.mContext);
+                }
                 this.mStartPlayLogged = true;
+                return;
             }
             catch (JSONException ex) {
                 ex.printStackTrace();
                 continue;
             }
-            break;
+            continue;
         }
     }
     
@@ -463,7 +482,7 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
     @Override
     public void playerError(final ExoPlaybackError exoPlaybackError) {
         if (this.mStartPlayLogged) {
-            this.reportEndPlay(OfflinePlaybackSession$EndPlayReason.error, exoPlaybackError.getUiDisplayErrorCode(), "OfflinePlayback.PlaybackFailed", exoPlaybackError.getExceptionStack());
+            this.reportEndPlay(OfflinePlaybackSession$EndPlayReason.error, exoPlaybackError.getUiDisplayErrorCode(), "OfflinePlayback.PlaybackFailed", exoPlaybackError.getExceptionStack(), this.getActivityData());
             this.mPdsPlaySession.stop(this.getPlayTimeJson(), exoPlaybackError.getUiDisplayErrorCode(), "OfflinePlayback.PlaybackFailed");
         }
         else {
@@ -506,7 +525,7 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
     
     @Override
     public void playerStopped() {
-        this.reportEndPlay(OfflinePlaybackSession$EndPlayReason.ended, null, null, null);
+        this.reportEndPlay(OfflinePlaybackSession$EndPlayReason.ended, null, null, null, this.getActivityData());
         this.mPdsPlaySession.stop(this.getPlayTimeJson(), null, null);
         this.mOfflineAgent.notifyStop(this.mMovieId);
         this.mCallback.handleStopped();
@@ -618,7 +637,7 @@ public class OfflinePlaybackSession implements IPlaybackSession, IPlayerListener
             this.mOfflinePlayer.stop();
             this.mMainHandler.removeCallbacks(this.mPeriodicCallback);
             this.mOfflineAgent.notifyStop(this.mMovieId);
-            this.reportEndPlay(OfflinePlaybackSession$EndPlayReason.stopped, null, null, null);
+            this.reportEndPlay(OfflinePlaybackSession$EndPlayReason.stopped, null, null, null, this.getActivityData());
             Log.d("OfflinePlayback_Session", "stop: " + this.getPlayTimeJson());
             this.mPdsPlaySession.stop(this.getPlayTimeJson(), null, null);
             return;
