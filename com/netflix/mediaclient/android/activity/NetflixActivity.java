@@ -17,6 +17,9 @@ import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import android.app.FragmentManager;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$InteractiveListener;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTracker;
 import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
@@ -166,6 +169,7 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
     private final BroadcastReceiver closeCastPlayerReceiver;
     private final BroadcastReceiver expandCastPlayerReceiver;
     protected Handler handler;
+    private boolean hasSavedInstance;
     protected final AtomicBoolean instanceStateSaved;
     private boolean isVisible;
     private final BroadcastReceiver localBroadcastReceiver;
@@ -688,14 +692,15 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
                     return;
                     // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
                     // iftrue(Label_0144:, !Log.isLoggable())
-                Label_0144:
                     while (true) {
+                        Block_10: {
+                            break Block_10;
+                            this.displayDialog(dialog);
+                            return;
+                        }
                         Log.d("NetflixActivity", "displayServiceAgentDialog " + s);
-                        break Label_0144;
                         continue;
                     }
-                    this.displayDialog(dialog);
-                    return;
                 }
                 finally {
                 }
@@ -937,6 +942,10 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
         }
     }
     
+    public boolean hasSavedInstance() {
+        return this.hasSavedInstance;
+    }
+    
     protected boolean hasUpAction() {
         return true;
     }
@@ -1104,6 +1113,7 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
         super.onCreate(bundle);
         this.setInstanceStateSaved(false);
         this.actionBarHeight = ViewUtils.getDefaultActionBarHeight((Context)this);
+        this.hasSavedInstance = (bundle != null);
         if (Log.isLoggable()) {
             Log.v("NetflixActivity", "Creating activity: " + this.getClass().getSimpleName() + ", hash: " + this.hashCode());
         }
@@ -1576,6 +1586,22 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
             return;
         }
         this.castPlayerFrag = (ICastPlayerFrag)this.getFragmentManager().findFragmentByTag("cast_player");
+    }
+    
+    public void setupInteractiveTracking(InteractiveTracker interactiveTracker, final InteractiveTracker$InteractiveListener listener) {
+        Log.v("InteractiveTracker", "setupInteractiveTracking -> " + interactiveTracker.getId());
+        if (this.getServiceManager() == null || !this.getServiceManager().isReady()) {
+            LogUtils.reportErrorSafely("setupInteractiveTracking -- Service not ready");
+        }
+        else {
+            if (!this.hasSavedInstance()) {
+                getImageLoader((Context)this).setInteractiveTracker(interactiveTracker);
+            }
+            interactiveTracker = getImageLoader((Context)this).getInteractiveTracker(interactiveTracker.getId());
+            if (listener != null && interactiveTracker != null) {
+                interactiveTracker.setListener(listener);
+            }
+        }
     }
     
     protected void setupServicemanager() {

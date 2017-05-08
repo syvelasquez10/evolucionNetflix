@@ -4,6 +4,13 @@
 
 package com.netflix.mediaclient.service.logging.perf;
 
+import com.android.volley.Request$Priority;
+import android.view.View;
+import com.netflix.mediaclient.service.resfetcher.volley.ImageLoader$Type;
+import com.netflix.mediaclient.service.resfetcher.volley.ImageLoader$ImageInteractionTrackingListener;
+import java.util.HashSet;
+import com.netflix.mediaclient.service.resfetcher.volley.ImageLoader$ImageListener;
+import java.util.Set;
 import com.netflix.mediaclient.Log;
 import android.widget.ImageView;
 import android.view.ViewTreeObserver$OnPreDrawListener;

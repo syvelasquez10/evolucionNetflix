@@ -29,8 +29,11 @@ import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import android.media.UnsupportedSchemeException;
-import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.service.error.crypto.ErrorSource;
 import com.netflix.mediaclient.service.error.crypto.CryptoErrorManager;
+import com.netflix.mediaclient.util.MediaDrmUtils;
+import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.PreviewContentConfigData;
@@ -62,7 +65,6 @@ import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import com.netflix.mediaclient.Log;
-import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.android.app.Status;
@@ -78,7 +80,7 @@ class ConfigurationAgent$1 implements DrmManager$DrmReadyCallback
     
     @Override
     public void drmError(final Status status) {
-        PerformanceProfiler.getInstance().endSession(Sessions.DRM_LOADED, null);
+        PerformanceProfiler.getInstance().endSession(Sessions.DRM_LOADED);
         if (Log.isLoggable()) {
             Log.e("nf_configurationagent", "DRM failed to initialize, Error code: " + status.getStatusCode());
         }
@@ -88,7 +90,7 @@ class ConfigurationAgent$1 implements DrmManager$DrmReadyCallback
     @Override
     public void drmReady() {
         Log.d("nf_configurationagent", "DRM manager is ready");
-        PerformanceProfiler.getInstance().endSession(Sessions.DRM_LOADED, null);
+        PerformanceProfiler.getInstance().endSession(Sessions.DRM_LOADED);
         if (DrmManagerRegistry.hasEsnChanged(this.this$0.mESN.getEsn())) {
             this.this$0.mNeedEsMigration = true;
         }

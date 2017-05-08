@@ -57,82 +57,124 @@ public final class OfflineErrorLogblob extends OfflineBaseLogblob
         }
     }
     
-    public static void sendDownloadStopError(final LogblobLogging logblobLogging, final String s, final String s2, final String s3, final StopReason stopReason) {
+    public static void sendDownloadStopError(final LogblobLogging logblobLogging, final String s, final String s2, final String s3, final StopReason stopReason, final String debugMessage) {
         if (logblobLogging != null) {
+        Label_0112_Outer:
             while (true) {
                 while (true) {
-                    Label_0280: {
-                        try {
-                            final Logblob$Severity error = Logblob$Severity.error;
-                            switch (OfflineErrorLogblob$1.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$offline$StopReason[stopReason.ordinal()]) {
-                                case 1:
-                                case 2:
-                                case 3:
-                                case 4: {
-                                    goto Label_0162;
-                                    goto Label_0162;
+                    Label_0296: {
+                        while (true) {
+                            Label_0293: {
+                                try {
+                                    final Logblob$Severity error = Logblob$Severity.error;
+                                    switch (OfflineErrorLogblob$1.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$offline$StopReason[stopReason.ordinal()]) {
+                                        case 1:
+                                        case 2:
+                                        case 3: {
+                                            goto Label_0170;
+                                            goto Label_0170;
+                                        }
+                                        case 4: {
+                                            goto Label_0176;
+                                            goto Label_0176;
+                                        }
+                                        case 8: {
+                                            goto Label_0187;
+                                            goto Label_0187;
+                                        }
+                                        case 9: {
+                                            goto Label_0198;
+                                            goto Label_0198;
+                                        }
+                                        case 10: {
+                                            goto Label_0209;
+                                            goto Label_0209;
+                                        }
+                                        case 11: {
+                                            goto Label_0220;
+                                            goto Label_0220;
+                                        }
+                                        case 12: {
+                                            goto Label_0231;
+                                            goto Label_0231;
+                                        }
+                                        case 13: {
+                                            goto Label_0242;
+                                            goto Label_0242;
+                                        }
+                                        case 14: {
+                                            goto Label_0253;
+                                            goto Label_0253;
+                                        }
+                                        case 15: {
+                                            goto Label_0264;
+                                            goto Label_0264;
+                                        }
+                                        default: {
+                                            break Label_0293;
+                                        }
+                                        case 5:
+                                        case 6:
+                                        case 7: {
+                                            break Label_0296;
+                                        }
+                                    }
+                                    Log.d("offlineErrorLogBlob", " onDownloadStopped stopReason: %s, no-op", stopReason);
+                                    final int n = 0;
+                                    // iftrue(Label_0004:, n == 0)
+                                    final OfflineErrorLogblob offlineErrorLogblob = new OfflineErrorLogblob(error, s, s2, s3, UserVisibleErrorCodeGenerator.getOfflineErrorCodeForStoppedDownload(stopReason), "downloadStopError", true);
+                                    offlineErrorLogblob.setDebugMessage(debugMessage);
+                                    logblobLogging.sendLogblob(offlineErrorLogblob);
+                                    return;
                                 }
-                                case 5:
-                                case 6:
-                                case 7: {
-                                    goto Label_0168;
-                                    goto Label_0168;
+                                catch (JSONException ex) {
+                                    Log.i("offlineErrorLogBlob", "JSONException:", ex);
+                                    return;
                                 }
-                                case 8: {
-                                    goto Label_0174;
-                                    goto Label_0174;
-                                }
-                                case 9: {
-                                    goto Label_0185;
-                                    goto Label_0185;
-                                }
-                                case 10: {
-                                    goto Label_0196;
-                                    goto Label_0196;
-                                }
-                                case 11: {
-                                    goto Label_0207;
-                                    goto Label_0207;
-                                }
-                                case 12: {
-                                    goto Label_0218;
-                                    goto Label_0218;
-                                }
-                                case 13: {
-                                    goto Label_0229;
-                                    goto Label_0229;
-                                }
-                                case 14: {
-                                    goto Label_0240;
-                                    goto Label_0240;
-                                }
-                                case 15: {
-                                    goto Label_0251;
-                                    goto Label_0251;
-                                }
-                                default: {
-                                    break Label_0280;
+                                catch (Exception ex2) {
+                                    Log.i("offlineErrorLogBlob", "Exception:", ex2);
+                                    return;
                                 }
                             }
-                            Log.d("offlineErrorLogBlob", " onDownloadStopped stopReason: %s, no-op", stopReason);
-                            // iftrue(Label_0004:, !false)
-                            logblobLogging.sendLogblob(new OfflineErrorLogblob(error, s, s2, s3, UserVisibleErrorCodeGenerator.getOfflineErrorCodeForStoppedDownload(stopReason), "downloadStopError", true));
-                            return;
-                        }
-                        catch (JSONException ex) {
-                            Log.i("offlineErrorLogBlob", "JSONException:", ex);
-                            return;
-                        }
-                        catch (Exception ex2) {
-                            Log.i("offlineErrorLogBlob", "Exception:", ex2);
-                            return;
+                            continue Label_0112_Outer;
                         }
                     }
+                    final int n = 0;
                     continue;
                 }
             }
         }
         Label_0004:;
+    }
+    
+    public static void sendManifestNotFound(final LogblobLogging logblobLogging, final String s, final String s2, final String s3, final String s4) {
+        if (logblobLogging == null) {
+            return;
+        }
+        try {
+            logblobLogging.sendLogblob(new OfflineErrorLogblob(Logblob$Severity.info, s, s2, s3, "manifestNotFound", s4, false));
+        }
+        catch (JSONException ex) {
+            Log.i("offlineErrorLogBlob", "JSONException:", ex);
+        }
+        catch (Exception ex2) {
+            Log.i("offlineErrorLogBlob", "Exception:", ex2);
+        }
+    }
+    
+    public static void sendManifestSaved(final LogblobLogging logblobLogging, final String s, final String s2, final String s3, final String s4) {
+        if (logblobLogging == null) {
+            return;
+        }
+        try {
+            logblobLogging.sendLogblob(new OfflineErrorLogblob(Logblob$Severity.info, s, s2, s3, "manifestSaved", s4, false));
+        }
+        catch (JSONException ex) {
+            Log.i("offlineErrorLogBlob", "JSONException:", ex);
+        }
+        catch (Exception ex2) {
+            Log.i("offlineErrorLogBlob", "Exception:", ex2);
+        }
     }
     
     public static void sendNetflixJobStartLogBlob(final LogblobLogging logblobLogging, final NetflixJob$NetflixJobId netflixJob$NetflixJobId) {
@@ -158,6 +200,21 @@ public final class OfflineErrorLogblob extends OfflineBaseLogblob
             final OfflineErrorLogblob offlineErrorLogblob = new OfflineErrorLogblob(Logblob$Severity.warn, s, s2, s3, LogUtils.getErrorCodeForServerLogs(status), LogUtils.getErrorMessageForServerLogs(status), false);
             offlineErrorLogblob.setDebugMessage(status.getDebugMessageForServerLogs());
             logblobLogging.sendLogblob(offlineErrorLogblob);
+        }
+        catch (JSONException ex) {
+            Log.i("offlineErrorLogBlob", "JSONException:", ex);
+        }
+        catch (Exception ex2) {
+            Log.i("offlineErrorLogBlob", "Exception:", ex2);
+        }
+    }
+    
+    public static void sendStorageAddedOrRemoved(final LogblobLogging logblobLogging, final int n) {
+        if (logblobLogging == null) {
+            return;
+        }
+        try {
+            logblobLogging.sendLogblob(new OfflineErrorLogblob(Logblob$Severity.info, "-1", "-1", "-1", "storageAddedOrRemoved", "volumeCount=" + n, false));
         }
         catch (JSONException ex) {
             Log.i("offlineErrorLogBlob", "JSONException:", ex);

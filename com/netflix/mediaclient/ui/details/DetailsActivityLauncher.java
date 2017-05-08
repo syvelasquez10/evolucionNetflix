@@ -5,9 +5,6 @@
 package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
-import java.util.Map;
-import com.netflix.mediaclient.service.logging.perf.Sessions;
-import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
 import com.netflix.mediaclient.util.Coppola1Utils;
 import android.os.Bundle;
@@ -210,7 +207,6 @@ public class DetailsActivityLauncher
             return;
         }
         netflixActivity.startActivity(episodeDetailsIntent);
-        PerformanceProfiler.getInstance().startSession(Sessions.TDP, null);
     }
     
     public static void showMemento(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext) {
@@ -258,7 +254,6 @@ public class DetailsActivityLauncher
             intent.addFlags(n);
         }
         netflixActivity.startActivity(intent);
-        PerformanceProfiler.getInstance().startSession(Sessions.TDP, null);
     }
     
     static boolean validateAndlogVideoType(final VideoType videoType, final NetflixActivity netflixActivity) {

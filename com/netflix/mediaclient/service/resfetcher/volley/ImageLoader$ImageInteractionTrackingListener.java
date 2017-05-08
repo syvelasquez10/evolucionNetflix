@@ -5,7 +5,10 @@
 package com.netflix.mediaclient.service.resfetcher.volley;
 
 import android.widget.ImageView;
+import android.view.View;
 import com.android.volley.Request$Priority;
+import java.util.Iterator;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTracker;
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 
@@ -22,24 +25,36 @@ public abstract class ImageLoader$ImageInteractionTrackingListener implements Im
         this.imgUrl = imgUrl;
     }
     
+    public String getImgUrl() {
+        return this.imgUrl;
+    }
+    
     @Override
     public void onErrorResponse(final VolleyError volleyError) {
         if (this.hasRegistered) {
-            this.this$0.mTTRTracker.onImageLoaded(this, ImageLoader$Type.NETWORK);
+            final Iterator<InteractiveTracker> iterator = this.this$0.mInteractiveTrackers.values().iterator();
+            while (iterator.hasNext()) {
+                iterator.next().onImageLoaded(this, ImageLoader$Type.NETWORK);
+            }
         }
     }
     
     @Override
     public void onResponse(final ImageLoader$ImageContainer imageLoader$ImageContainer, final ImageLoader$Type imageLoader$Type) {
         if (this.hasRegistered) {
-            this.this$0.mTTRTracker.onImageLoaded(this, imageLoader$Type);
+            final Iterator<InteractiveTracker> iterator = this.this$0.mInteractiveTrackers.values().iterator();
+            while (iterator.hasNext()) {
+                iterator.next().onImageLoaded(this, imageLoader$Type);
+            }
         }
     }
     
-    public void registerForTTR(final Request$Priority request$Priority) {
-        if (this.this$0.mTTRTracker.shouldTrack(this.view, request$Priority)) {
-            this.this$0.mTTRTracker.registerListener(this, this.view);
-            this.hasRegistered = true;
+    public void register(final Request$Priority request$Priority) {
+        for (final InteractiveTracker interactiveTracker : this.this$0.mInteractiveTrackers.values()) {
+            if (interactiveTracker.shouldTrack((View)this.view, request$Priority)) {
+                interactiveTracker.registerListener(this, this.view);
+            }
         }
+        this.hasRegistered = true;
     }
 }

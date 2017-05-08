@@ -6,6 +6,8 @@ package com.netflix.falkor.task;
 
 import com.netflix.mediaclient.service.falkor.FalkorAgentStatus;
 import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.model.branches.FalkorVideo;
 import com.netflix.falkor.CachedModelProxy$GetResult;
 import com.netflix.falkor.CachedModelProxy;
@@ -46,10 +48,23 @@ public class FetchVideoVolatileNodesTask extends BaseCmpTask
     @Override
     public void fetchResultsAndCallbackForSuccess(final CachedModelProxy cachedModelProxy, final BrowseAgentCallback browseAgentCallback, final CachedModelProxy$GetResult cachedModelProxy$GetResult) {
         final FalkorVideo falkorVideo = (FalkorVideo)cachedModelProxy.getVideo(PQL.create(this.rootBranchName, this.videoId));
-        if (falkorVideo != null) {
-            cachedModelProxy.updateBookmarkIfExists(this.videoId, falkorVideo.getBookmark());
-            browseAgentCallback.onMovieDetailsFetched((MovieDetails)falkorVideo, new FalkorAgentStatus(StatusCode.OK, false));
+        if (falkorVideo == null || StringUtils.isEmpty(falkorVideo.getId())) {
+            final StringBuilder append = new StringBuilder().append("SPY-12098: FetchVideoVolatileNodesTask bad ").append(this.rootBranchName).append(" id. Requested: ").append(this.videoId).append(", got: ");
+            String id;
+            if (falkorVideo == null) {
+                id = "rtn=null";
+            }
+            else {
+                id = falkorVideo.getId();
+            }
+            final String string = append.append(id).toString();
+            cachedModelProxy.logHandledException(string);
+            Log.e("CachedModelProxy", string);
+            browseAgentCallback.onMovieDetailsFetched(null, new FalkorAgentStatus(StatusCode.INT_ERR_CMP_RESP_NULL, false));
+            return;
         }
+        cachedModelProxy.updateBookmarkIfExists(this.videoId, falkorVideo.getBookmark());
+        browseAgentCallback.onMovieDetailsFetched((MovieDetails)falkorVideo, new FalkorAgentStatus(StatusCode.OK, false));
     }
     
     @Override

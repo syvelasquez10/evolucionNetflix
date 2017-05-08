@@ -28,8 +28,8 @@ public class Boot extends BaseLogblob
         try {
             final JSONObject jsonObject = new JSONObject();
             jsonObject.put("appid", (Object)s);
-            jsonObject.put("buildDate", (Object)"20170427");
-            jsonObject.put("buildTime", (Object)"150050");
+            jsonObject.put("buildDate", (Object)"20170502");
+            jsonObject.put("buildTime", (Object)"181400");
             jsonObject.put("build_id", AndroidManifestUtils.getVersionCode(context));
             jsonObject.put("crashReportClient", (Object)"on");
             jsonObject.put("debug", false);

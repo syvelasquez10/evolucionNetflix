@@ -27,7 +27,6 @@ public enum Sessions
     PROFILE_GATE, 
     RESOURCE_FETCHER_LOAD, 
     SIGN_UP, 
-    TDP, 
     TTI, 
     TTR, 
     USER_AGENT_LOADED;

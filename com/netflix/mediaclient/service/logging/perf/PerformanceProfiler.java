@@ -11,6 +11,7 @@ import java.io.Serializable;
 import android.os.SystemClock;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
+import java.util.Iterator;
 import android.widget.Toast;
 import com.netflix.mediaclient.util.FileUtils;
 import org.json.JSONException;
@@ -18,7 +19,6 @@ import android.support.v4.app.ActivityCompat;
 import android.content.Context;
 import com.netflix.mediaclient.util.PermissionUtils;
 import android.app.Activity;
-import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import java.util.Collections;
 import java.util.Map;
@@ -38,6 +38,7 @@ public class PerformanceProfiler
     private static final String GRAPH_PARAM_DURATION = "duration";
     private static final String GRAPH_PARAM_EPOCH = "epoch";
     private static final String OUTPUT_FILENAME = "perf_dump.txt";
+    private static final boolean SHOULD_WARN_OPEN_SESSIONS = false;
     private static final String TAG = "PerformanceProfiler";
     private static PerformanceProfiler instance;
     ArrayList<DiscreteEvent> events;
@@ -100,11 +101,6 @@ public class PerformanceProfiler
     }
     
     private void warnOfOpenSessions() {
-        for (final PerfSession perfSession : this.sessions.values()) {
-            if (!perfSession.isComplete() && Log.isLoggable()) {
-                Log.e("PerformanceProfiler", "Session not closed!! :" + perfSession.toString());
-            }
-        }
     }
     
     public void clear() {
@@ -150,11 +146,7 @@ public class PerformanceProfiler
     }
     
     public void endSession(final Sessions sessions) {
-        for (final PerfSession perfSession : this.sessions.values()) {
-            if (perfSession.getEndEvent() == null && perfSession.getStartEvent().getSessionName().equals(sessions.name())) {
-                this.endSession(sessions, null, perfSession.getStringId());
-            }
-        }
+        this.endSession(sessions, null);
     }
     
     public void endSession(final Sessions sessions, final Map<String, String> map) {
@@ -171,7 +163,7 @@ public class PerformanceProfiler
             if (perfSession != null) {
                 perfSession.closeSession(map);
                 if (Log.isLoggable()) {
-                    Log.v("PerformanceProfiler", "endSession: " + sessions.toString() + " duration = " + perfSession.getEndEvent().getDuration());
+                    Log.i("PerformanceProfiler", "endSession: " + sessions.toString() + " duration = " + perfSession.getEndEvent().getDuration());
                 }
             }
             return;
@@ -180,25 +172,28 @@ public class PerformanceProfiler
     }
     
     public void flushApmEvents(final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging) {
-        if (applicationPerformanceMetricsLogging == null) {
-            return;
-        }
-        this.warnOfOpenSessions();
-        final Iterator<DiscreteEvent> iterator = this.events.iterator();
-        while (iterator.hasNext()) {
-            ApmLogUtils.reportPerformanceEvent((DiscreteEvent)iterator.next(), applicationPerformanceMetricsLogging);
-        }
-        for (final PerfSession perfSession : this.sessions.values()) {
-            if (perfSession.isComplete()) {
-                final String name = perfSession.getStartEvent().getName();
-                if (name == null || name.startsWith(Sessions.IMAGE_FETCH.name())) {
-                    continue;
+        if (applicationPerformanceMetricsLogging != null) {
+            Log.i("PerformanceProfiler", "flushApmEvents()");
+            this.warnOfOpenSessions();
+            final Iterator<DiscreteEvent> iterator = this.events.iterator();
+            while (iterator.hasNext()) {
+                ApmLogUtils.reportPerformanceEvent((DiscreteEvent)iterator.next(), applicationPerformanceMetricsLogging);
+            }
+            this.events.clear();
+            final Iterator<PerfSession> iterator2 = this.sessions.values().iterator();
+            while (iterator2.hasNext()) {
+                final PerfSession perfSession = iterator2.next();
+                if (perfSession.isComplete()) {
+                    iterator2.remove();
+                    final String name = perfSession.getStartEvent().getName();
+                    if (name == null || name.startsWith(Sessions.IMAGE_FETCH.name())) {
+                        continue;
+                    }
+                    ApmLogUtils.startPerformanceSession(perfSession, applicationPerformanceMetricsLogging);
+                    ApmLogUtils.endPerformanceSession(perfSession, applicationPerformanceMetricsLogging);
                 }
-                ApmLogUtils.startPerformanceSession(perfSession, applicationPerformanceMetricsLogging);
-                ApmLogUtils.endPerformanceSession(perfSession, applicationPerformanceMetricsLogging);
             }
         }
-        this.clear();
     }
     
     public long getEpoch() {
@@ -208,27 +203,26 @@ public class PerformanceProfiler
         return SystemClock.elapsedRealtime();
     }
     
+    public void logEvent(final Events events) {
+        this.logEvent(events, null);
+    }
+    
     public void logEvent(final Events events, final Map<String, String> map) {
         this.events.add(createEvent(events, map));
         if (Log.isLoggable()) {
-            Log.v("PerformanceProfiler", "logEvent: " + events.toString());
+            Log.i("PerformanceProfiler", "log discreteEvent: " + events.toString());
         }
     }
     
     public String startSession(final Sessions sessions) {
-        final PerfSession session = PerfSession.createSession(sessions, null);
-        this.sessions.put(String.valueOf(session.getId().getValue()), session);
-        if (Log.isLoggable()) {
-            Log.v("PerformanceProfiler", "startSession: " + session.toString());
-        }
-        return String.valueOf(session.getId().getValue());
+        return this.startSession(sessions, null);
     }
     
     public String startSession(final Sessions sessions, final Map<String, String> map) {
         final PerfSession session = PerfSession.createSession(sessions, map);
         this.sessions.put(String.valueOf(session.getId().getValue()), session);
         if (Log.isLoggable()) {
-            Log.v("PerformanceProfiler", "startSession: " + session.toString());
+            Log.i("PerformanceProfiler", "startSession: " + session.toString());
         }
         return String.valueOf(session.getId().getValue());
     }
@@ -237,7 +231,7 @@ public class PerformanceProfiler
         final PerfSession session = PerfSession.createSession(sessions, map);
         this.sessions.put(s, session);
         if (Log.isLoggable()) {
-            Log.v("PerformanceProfiler", "startSession: " + session.toString());
+            Log.i("PerformanceProfiler", "startSession: " + session.toString());
         }
     }
 }

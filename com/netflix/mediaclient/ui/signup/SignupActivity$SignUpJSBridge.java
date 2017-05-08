@@ -14,7 +14,6 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.ArrayList;
 import com.netflix.mediaclient.partner.playbilling.PlayBillingCallback;
-import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import org.json.JSONException;
@@ -213,7 +212,7 @@ public class SignupActivity$SignUpJSBridge
     public void notifyReady() {
         Log.d("SignupActivity", "Signup UI ready to interact");
         this.this$0.getHandler().removeCallbacks(this.this$0.mJumpToSignInTask);
-        PerformanceProfiler.getInstance().endSession(Sessions.NON_MEMBER_TTI, null);
+        PerformanceProfiler.getInstance().endSession(Sessions.NON_MEMBER_TTI);
         this.this$0.runOnUiThread((Runnable)new SignupActivity$SignUpJSBridge$1(this));
     }
     

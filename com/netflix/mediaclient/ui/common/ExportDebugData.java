@@ -286,7 +286,7 @@ public class ExportDebugData
                                 s2 = "Enter_JIRA_summary_here";
                             }
                             intent.putExtra("android.intent.extra.SUBJECT", s2);
-                            final StringBuilder append = new StringBuilder().append("\n\nEnter_JIRA_description_here\n\n\n\n\npackage=com.netflix.mediaclient\nversion=4.16.0 build 15122\ncode=15122\nandroid=").append(Build$VERSION.SDK_INT).append("\nbrand=").append(Build.BRAND).append("\nmanufacturer=").append(Build.MANUFACTURER).append("\nmodel=").append(Build.MODEL).append("\ndevice=").append(Build.DEVICE).append("\ndevice.locale=").append(Locale.getDefault().getCountry()).append("_").append(Locale.getDefault().getLanguage()).append("\n").append(string2).append("\n");
+                            final StringBuilder append = new StringBuilder().append("\n\nEnter_JIRA_description_here\n\n\n\n\npackage=com.netflix.mediaclient\nversion=4.16.1 build 15145\ncode=15145\nandroid=").append(Build$VERSION.SDK_INT).append("\nbrand=").append(Build.BRAND).append("\nmanufacturer=").append(Build.MANUFACTURER).append("\nmodel=").append(Build.MODEL).append("\ndevice=").append(Build.DEVICE).append("\ndevice.locale=").append(Locale.getDefault().getCountry()).append("_").append(Locale.getDefault().getLanguage()).append("\n").append(string2).append("\n");
                             if (s == null) {
                                 string = "";
                                 intent.putExtra("android.intent.extra.TEXT", append.append(string).toString());

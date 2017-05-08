@@ -679,10 +679,10 @@ final class UserActionLoggingImpl implements UserActionLogging
                                                     return;
                                                 }
                                                 break Label_0180;
-                                                value2 = n;
-                                                continue Label_0099_Outer;
                                                 value = n;
                                                 break;
+                                                value2 = n;
+                                                continue Label_0099_Outer;
                                             }
                                             catch (JSONException ex) {
                                                 Log.e("nf_log", "Failed JSON", (Throwable)ex);

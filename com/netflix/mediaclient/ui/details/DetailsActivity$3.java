@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import android.view.MenuItem;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import android.app.Activity;
@@ -22,6 +23,7 @@ import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import java.util.HashMap;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
@@ -29,39 +31,33 @@ import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$Interacti
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
-import android.content.Intent;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import java.util.Map;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
-import com.netflix.mediaclient.service.logging.client.model.UIError;
-import android.content.Context;
-import com.netflix.mediaclient.util.log.UserActionLogUtils;
-import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.Log;
-import java.util.Map;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
+import com.netflix.mediaclient.util.AndroidUtils;
+import android.content.Intent;
+import android.content.Context;
+import android.content.BroadcastReceiver;
 
-class DetailsActivity$2 implements LoadingStatus$LoadingStatusCallback
+class DetailsActivity$3 extends BroadcastReceiver
 {
     final /* synthetic */ DetailsActivity this$0;
     
-    DetailsActivity$2(final DetailsActivity this$0) {
+    DetailsActivity$3(final DetailsActivity this$0) {
         this.this$0 = this$0;
     }
     
-    @Override
-    public void onDataLoaded(final Status status) {
-        this.this$0.endDPTTISession(null);
-        this.this$0.setLoadingStatusCallback(null);
-        if (!this.this$0.isFinishing()) {
-            Log.d("DetailsActivity", "DetailsPage is loaded, reporting navigate.ended for movieDetails");
-            UserActionLogUtils.reportNavigationActionEnded((Context)this.this$0, this.this$0.getUiScreen(), IClientLogging$CompletionReason.success, (UIError)null);
-            if (status.isError()) {
-                this.this$0.handleFalkorAgentErrors(status);
+    public void onReceive(final Context context, final Intent intent) {
+        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0)) {
+            Log.v("DetailsActivity", "Received request to reload data");
+            if (this.this$0.getServiceManager() != null && this.this$0.getServiceManager().isReady()) {
+                this.this$0.reloadData();
             }
         }
     }

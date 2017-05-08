@@ -13,12 +13,12 @@ import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleOutputMode;
 
 public enum SubtitleConfiguration
 {
-    BINARY_IMAGE(ISubtitleDef$SubtitleProfile.IMAGE, ISubtitleDef$SubtitleOutputMode.BINARY_IMAGE, 3, 2131297150);
+    BINARY_IMAGE(ISubtitleDef$SubtitleProfile.IMAGE, ISubtitleDef$SubtitleOutputMode.BINARY_IMAGE, 3, 2131297138);
     
     public static SubtitleConfiguration DEFAULT;
     
-    ENHANCED_XML(ISubtitleDef$SubtitleProfile.ENHANCED, ISubtitleDef$SubtitleOutputMode.DATA_XML, 1, 2131297149), 
-    SIMPLE_XML(ISubtitleDef$SubtitleProfile.SIMPLE, ISubtitleDef$SubtitleOutputMode.DATA_XML, 2, 2131297151);
+    ENHANCED_XML(ISubtitleDef$SubtitleProfile.ENHANCED, ISubtitleDef$SubtitleOutputMode.DATA_XML, 1, 2131297137), 
+    SIMPLE_XML(ISubtitleDef$SubtitleProfile.SIMPLE, ISubtitleDef$SubtitleOutputMode.DATA_XML, 2, 2131297139);
     
     private static final String TAG = "nf_conf";
     private int mLabelId;

@@ -244,9 +244,7 @@ public final class ServiceManager implements IServiceManagerAccess
                         return b;
                     }
                     Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
-                    Label_0073: {
-                        continue;
-                    }
+                    continue;
                 }
                 Label_0103: {
                     Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");

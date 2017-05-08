@@ -12,6 +12,7 @@ import com.netflix.mediaclient.servicemgr.LogblobLogging;
 import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import java.util.List;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
@@ -245,6 +246,7 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     @Override
     public void flushLoggingEvents() {
         com.netflix.mediaclient.Log.d("nf_log", "Flush events");
+        PerformanceProfiler.getInstance().flushApmEvents(this.getApplicationPerformanceMetricsLogging());
         this.mIntegratedClientLoggingManager.flush(true);
         this.mPresentationTrackingManager.flush(true);
     }
@@ -394,6 +396,8 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     @Override
     public void onProfileSwitch() {
         com.netflix.mediaclient.Log.d("nf_log", "Flush events");
+        PerformanceProfiler.getInstance().flushApmEvents(this.getApplicationPerformanceMetricsLogging());
+        PerformanceProfiler.getInstance().clear();
         this.mIntegratedClientLoggingManager.flush(true);
         this.mPresentationTrackingManager.flush(true);
     }
@@ -401,6 +405,8 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     @Override
     public void onUserLogout() {
         com.netflix.mediaclient.Log.d("nf_log", "onUserLogout");
+        PerformanceProfiler.getInstance().flushApmEvents(this.getApplicationPerformanceMetricsLogging());
+        PerformanceProfiler.getInstance().clear();
         this.mIntegratedClientLoggingManager.endAllActiveSessions();
         this.mIntegratedClientLoggingManager.flush(false);
         this.getNrdController().getNrdp().getLog().resetAppID();

@@ -107,11 +107,11 @@ class EpisodesFrag$FetchVideoVolatileNodesCallback extends LoggingManagerCallbac
                 Log.v("EpisodesFrag", "Volatile data no details in response");
                 return;
             }
-            if (!movieDetails.getId().equals(this.videoId)) {
-                Log.v("EpisodesFrag", "Ignoring stale volatile data callback");
+            if (!TextUtils.equals((CharSequence)movieDetails.getId(), (CharSequence)this.videoId)) {
+                Log.w("EpisodesFrag", "Ignoring stale volatile data callback");
                 return;
             }
-            if (!TextUtils.equals((CharSequence)movieDetails.getId(), (CharSequence)this.videoId) || this.matchPercentage != movieDetails.getMatchPercentage() || this.inQueue != movieDetails.isInQueue()) {
+            if (this.matchPercentage != movieDetails.getMatchPercentage() || this.inQueue != movieDetails.isInQueue()) {
                 this.this$0.updateVolatileDataInView((ShowDetails)movieDetails);
             }
         }

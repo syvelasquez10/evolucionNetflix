@@ -4,6 +4,7 @@
 
 package com.netflix.falkor.task;
 
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.falkor.CachedModelProxy$GetResult;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
@@ -37,16 +38,16 @@ public abstract class RefreshLomoTask extends CmpTask
     @Override
     protected void callbackForFailure(final BrowseAgentCallback browseAgentCallback, final Status status) {
         Log.d("CachedModelProxy", "RefreshLomoTask finished onFailure statusCode=" + status);
-        this.notifyOfRefresh();
+        this.notifyOfRefresh(status);
     }
     
     @Override
     protected void fetchResultsAndCallbackForSuccess(final BrowseAgentCallback browseAgentCallback, final CachedModelProxy$GetResult cachedModelProxy$GetResult) {
         Log.d("CachedModelProxy", "RefreshLomoTask finished onSuccess");
-        this.notifyOfRefresh();
+        this.notifyOfRefresh(CommonStatus.OK);
     }
     
-    protected void notifyOfRefresh() {
+    protected void notifyOfRefresh(final Status status) {
     }
     
     @Override

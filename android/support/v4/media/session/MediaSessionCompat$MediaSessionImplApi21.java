@@ -85,7 +85,8 @@ class MediaSessionCompat$MediaSessionImplApi21 implements MediaSessionCompat$Med
     
     @Override
     public void sendSessionEvent(final String s, final Bundle bundle) {
-        Label_0058: {
+    Label_0018_Outer:
+        while (true) {
             if (Build$VERSION.SDK_INT >= 23) {
                 break Label_0058;
             }
@@ -102,8 +103,10 @@ class MediaSessionCompat$MediaSessionImplApi21 implements MediaSessionCompat$Med
                             mediaControllerCallback.onEvent(s, bundle);
                             --n;
                             continue Label_0044_Outer;
-                            this.mExtraControllerCallbacks.finishBroadcast();
                             MediaSessionCompatApi21.sendSessionEvent(this.mSessionObj, s, bundle);
+                            return;
+                            this.mExtraControllerCallbacks.finishBroadcast();
+                            continue Label_0018_Outer;
                         }
                         catch (RemoteException ex) {
                             continue;
@@ -113,6 +116,7 @@ class MediaSessionCompat$MediaSessionImplApi21 implements MediaSessionCompat$Med
                 }
                 break;
             }
+            break;
         }
     }
     
@@ -186,22 +190,24 @@ class MediaSessionCompat$MediaSessionImplApi21 implements MediaSessionCompat$Med
                             mediaControllerCallback.onPlaybackStateChanged(playbackState);
                             --n;
                             continue Label_0046_Outer;
-                            final Object mSessionObj = this.mSessionObj;
-                            // iftrue(Label_0077:, playbackState != null)
-                            Label_0071: {
+                            Label_0077: {
+                                playbackState = (PlaybackStateCompat)playbackState.getPlaybackState();
+                            }
+                            while (true) {
+                                final Object mSessionObj;
+                                MediaSessionCompatApi21.setPlaybackState(mSessionObj, playbackState);
+                                return;
+                                mSessionObj = this.mSessionObj;
                                 Block_5: {
                                     break Block_5;
                                     this.mExtraControllerCallbacks.finishBroadcast();
                                     continue Label_0023_Outer;
-                                    Label_0077: {
-                                        playbackState = (PlaybackStateCompat)playbackState.getPlaybackState();
-                                    }
-                                    break Label_0071;
                                 }
                                 playbackState = null;
+                                continue;
                             }
-                            MediaSessionCompatApi21.setPlaybackState(mSessionObj, playbackState);
                         }
+                        // iftrue(Label_0077:, playbackState != null)
                         catch (RemoteException ex) {
                             continue;
                         }

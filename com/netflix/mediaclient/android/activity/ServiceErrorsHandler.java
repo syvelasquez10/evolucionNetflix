@@ -113,6 +113,10 @@ public class ServiceErrorsHandler
                 provideDialogWithHelpButton(activity, buildNetflixConnectivityErrorMessage(activity, statusCode));
                 return true;
             }
+            case 13: {
+                Log.d("ServiceErrorsHandler", "Handled by CryptoErrorManager...");
+                return true;
+            }
         }
     }
     

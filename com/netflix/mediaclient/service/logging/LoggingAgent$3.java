@@ -11,6 +11,7 @@ import com.netflix.mediaclient.servicemgr.LogblobLogging;
 import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import java.util.List;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;

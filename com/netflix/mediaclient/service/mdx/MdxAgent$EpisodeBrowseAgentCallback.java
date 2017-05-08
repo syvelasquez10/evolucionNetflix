@@ -101,8 +101,15 @@ class MdxAgent$EpisodeBrowseAgentCallback extends SimpleBrowseAgentCallback
         if (status.isError()) {
             return;
         }
-        if (episodeDetails == null) {
-            this.this$0.getService().getClientLogging().getErrorLogging().logHandledException("SPY-7909: FetchEpisode got bad id: " + String.valueOf(this.episodeId));
+        if (episodeDetails == null || episodeDetails.getId() == null) {
+            String id;
+            if (episodeDetails != null) {
+                id = episodeDetails.getId();
+            }
+            else {
+                id = null;
+            }
+            this.this$0.getService().getClientLogging().getErrorLogging().logHandledException("SPY-7909: SPY-12099 FetchEpisode got bad id: " + String.valueOf(this.episodeId) + " episodeDetailsNull=" + (episodeDetails == null) + " getId()= " + id);
             return;
         }
         this.assignVideoDetails(episodeDetails);

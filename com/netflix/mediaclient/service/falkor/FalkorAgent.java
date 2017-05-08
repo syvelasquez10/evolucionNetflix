@@ -221,11 +221,11 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         //    49: invokestatic    com/netflix/mediaclient/util/log/UserActionLogUtils.reportDeserializeLolomoStarted:(Landroid/content/Context;Lcom/netflix/mediaclient/servicemgr/UserActionLogging$CommandName;Lcom/netflix/mediaclient/servicemgr/IClientLogging$ModalView;)V
         //    52: aload_0        
         //    53: invokevirtual   com/netflix/mediaclient/service/falkor/FalkorAgent.getContext:()Landroid/content/Context;
-        //    56: ldc_w           "prefs_prefetch_json_last_write_system_time_ms"
+        //    56: ldc_w           "prefs_prefetch_lolomo_fetch_time_ms"
         //    59: ldc2_w          -1
         //    62: invokestatic    com/netflix/mediaclient/util/PreferenceUtils.getLongPref:(Landroid/content/Context;Ljava/lang/String;J)J
         //    65: lstore          4
-        //    67: invokestatic    android/os/SystemClock.elapsedRealtime:()J
+        //    67: invokestatic    java/lang/System.currentTimeMillis:()J
         //    70: lload           4
         //    72: lsub           
         //    73: lstore          6
@@ -1107,7 +1107,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        PerformanceProfiler.getInstance().startSession(Sessions.LOLOMO_PREFETCH, null);
+        PerformanceProfiler.getInstance().startSession(Sessions.LOLOMO_PREFETCH);
         this.cmp.prefetchLoLoMo(n, n2, n3, n4, n5, n6, b, b2, b3, b4, new FalkorAgent$3(this, browseAgentCallback));
     }
     
@@ -1122,12 +1122,6 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     public void refreshCw(final boolean b, final boolean b2) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
-        }
-        if (BrowseExperience.showKidsExperience()) {
-            if (Log.isLoggable()) {
-                Log.v("FalkorAgent", "Showing Kids experience - refresh popular titles...");
-            }
-            this.cmp.refreshPopularTitlesLomo();
         }
         if (this.cmp.doesCwExist()) {
             this.cmp.refreshCw();
@@ -1258,7 +1252,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         //   141: invokevirtual   com/netflix/falkor/CachedModelProxy.serialize:(Ljava/io/Writer;)V
         //   144: aload           6
         //   146: astore          5
-        //   148: invokestatic    android/os/SystemClock.elapsedRealtime:()J
+        //   148: invokestatic    java/lang/System.currentTimeMillis:()J
         //   151: putstatic       com/netflix/mediaclient/service/falkor/FalkorAgent.sLastSerializeTimeToDisk:J
         //   154: aload           6
         //   156: astore          5
@@ -1268,7 +1262,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         //   164: astore          5
         //   166: aload_0        
         //   167: invokevirtual   com/netflix/mediaclient/service/falkor/FalkorAgent.getContext:()Landroid/content/Context;
-        //   170: ldc_w           "prefs_prefetch_json_last_write_system_time_ms"
+        //   170: ldc_w           "prefs_prefetch_lolomo_fetch_time_ms"
         //   173: ldc2_w          -1
         //   176: invokestatic    com/netflix/mediaclient/util/PreferenceUtils.getLongPref:(Landroid/content/Context;Ljava/lang/String;J)J
         //   179: lstore_3       
@@ -1411,6 +1405,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.requestId = System.nanoTime();
         final long requestId = this.requestId;
         final CountDownLatch countDownLatch = new CountDownLatch(2);
+        this.flushCaches(true);
         this.prefetchLoLoMo(0, LoLoMoFrag.getNumberRowsToFetch((Context)this.getService()) - 1, 0, LomoConfig.computeNumVideosToFetchPerBatch((Context)this.getService(), LoMoType.STANDARD) - 1, 0, LomoConfig.computeNumVideosToFetchPerBatch((Context)this.getService(), LoMoType.CONTINUE_WATCHING) - 1, BrowseExperience.shouldLoadExtraCharacterLeaves(), BrowseExperience.shouldLoadKubrickLeavesInLolomo(), false, true, new FalkorAgent$12(this, requestId, countDownLatch));
         this.notifyJobSchedulerFinishedAsync(countDownLatch);
         return true;

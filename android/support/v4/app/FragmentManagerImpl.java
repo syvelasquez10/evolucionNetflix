@@ -1923,9 +1923,10 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                     ViewGroup viewGroup;
                     String resourceName;
                     boolean mIsNewlyAdded;
-                    Label_0695:Label_1243_Outer:Label_1273_Outer:Label_1259_Outer:
+                    Label_0695:Label_1259_Outer:
                     while (true) {
                         Label_0650: {
+                            Label_1243_Outer:Label_1273_Outer:
                             while (true) {
                                 while (true) {
                                     Label_0583: {
@@ -2076,16 +2077,16 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                                                                                             mState2 = n3;
                                                                                         }
                                                                                         break Label_0191;
+                                                                                        fragment.mView = (View)NoSaveStateFrameLayout.wrap(fragment.mView);
+                                                                                        break Label_0650;
+                                                                                        fragment.mParentFragment.onAttachFragment(fragment);
+                                                                                        break Label_1047;
                                                                                         fragment.restoreChildFragmentState(fragment.mSavedFragmentState);
                                                                                         fragment.mState = 1;
                                                                                         break Label_0583;
-                                                                                        fragment.mParentFragment.onAttachFragment(fragment);
-                                                                                        break Label_1047;
                                                                                         fragment.mInnerView = null;
                                                                                         n2 = n3;
                                                                                         continue Label_0695;
-                                                                                        fragment.mView = (View)NoSaveStateFrameLayout.wrap(fragment.mView);
-                                                                                        break Label_0650;
                                                                                     }
                                                                                     catch (Resources$NotFoundException ex) {
                                                                                         resourceName = "unknown";
@@ -2109,7 +2110,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                                                                 continue Label_1163_Outer;
                                                             }
                                                             case 4: {
-                                                                continue Label_1243_Outer;
+                                                                continue Label_1259_Outer;
                                                             }
                                                         }
                                                         break;
@@ -2134,13 +2135,13 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                                     }
                                     fragment.mView = fragment.performCreateView(fragment.getLayoutInflater(fragment.mSavedFragmentState), null, fragment.mSavedFragmentState);
                                     if (fragment.mView == null) {
-                                        continue Label_1259_Outer;
+                                        continue;
                                     }
                                     break;
                                 }
                                 fragment.mInnerView = fragment.mView;
                                 if (Build$VERSION.SDK_INT < 11) {
-                                    continue;
+                                    continue Label_1243_Outer;
                                 }
                                 break;
                             }

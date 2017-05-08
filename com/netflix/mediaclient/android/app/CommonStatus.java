@@ -37,6 +37,7 @@ public interface CommonStatus
     public static final NetflixImmutableStatus INT_ERR_RESOURCE_URL_NULL = new NetflixImmutableStatus(StatusCode.INT_ERR_RESOURCE_URL_NULL);
     public static final NetflixImmutableStatus MSL_FAILED_TO_CREATE_CLIENT = new NetflixImmutableStatus(StatusCode.MSL_FAILED_TO_CREATE_CLIENT);
     public static final NetflixImmutableStatus MSL_LEGACY_CRYPTO = new NetflixImmutableStatus(StatusCode.MSL_LEGACY_CRYPTO);
+    public static final NetflixImmutableStatus MSL_LEGACY_CRYPTO_BUT_USED_WIDEVINE_BEFORE = new NetflixImmutableStatus(StatusCode.MSL_LEGACY_CRYPTO_BUT_USED_WIDEVINE_BEFORE);
     public static final NetflixImmutableStatus NON_RECOMMENDED_APP_VERSION = new NetflixImmutableStatus(StatusCode.NON_RECOMMENDED_APP_VERSION);
     public static final NetflixImmutableStatus NON_SUPPORTED_LOCALE = new NetflixImmutableStatus(StatusCode.NON_SUPPORTED_LOCALE);
     public static final NetflixImmutableStatus NOT_IMPLEMENTED = new NetflixImmutableStatus(StatusCode.NOT_IMPLEMENTED);

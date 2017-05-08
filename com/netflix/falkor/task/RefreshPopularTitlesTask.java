@@ -5,6 +5,7 @@
 package com.netflix.falkor.task;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.falkor.PQL;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.DataUtil$StringPair;
@@ -29,7 +30,7 @@ public class RefreshPopularTitlesTask extends RefreshLomoTask
     }
     
     @Override
-    protected void notifyOfRefresh() {
+    protected void notifyOfRefresh(final Status status) {
         ServiceManager.sendPopularTitlesRefreshBrodcast(this.modelProxy.getContext());
     }
 }

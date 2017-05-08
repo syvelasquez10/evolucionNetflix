@@ -20,7 +20,9 @@ import com.netflix.mediaclient.ui.kids.lolomo.KidsParityLightSlidingMenu;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.lomo.CwTestVTwoView;
 import com.netflix.mediaclient.ui.lomo.CwTestView;
+import com.netflix.mediaclient.service.configuration.persistent.Config_Ab7994;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
+import com.netflix.mediaclient.ui.lomo.TrailerView;
 import com.netflix.mediaclient.ui.lomo.CwView;
 import com.netflix.model.leafs.originals.BillboardSummary;
 import com.netflix.mediaclient.Log;
@@ -258,7 +260,7 @@ public enum BrowseExperience implements IExperience
         
         @Override
         public SlidingMenuAdapter createSlidingMenuAdapter(final NetflixActivity netflixActivity, final DrawerLayout drawerLayout) {
-            return new StandardSlidingMenu(netflixActivity, drawerLayout, true);
+            return (SlidingMenuAdapter)new StandardSlidingMenu(netflixActivity, drawerLayout, true);
         }
         
         @Override
@@ -340,8 +342,14 @@ public enum BrowseExperience implements IExperience
         public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
             String s = null;
             if (CwView.class.isAssignableFrom(clazz)) {
-                if (video instanceof CWVideo) {
+                if (clazz == TrailerView.class) {
                     s = ((CWVideo)video).createModifiedStillUrl();
+                }
+                else if (video instanceof CWVideo) {
+                    if (Config_Ab7994.isInTest(context)) {
+                        return ((CWVideo)video).createModifiedSmallStillUrl();
+                    }
+                    return ((CWVideo)video).createModifiedStillUrl();
                 }
             }
             else {

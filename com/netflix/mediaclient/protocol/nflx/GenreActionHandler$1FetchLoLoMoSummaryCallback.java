@@ -30,7 +30,7 @@ class GenreActionHandler$1FetchLoLoMoSummaryCallback extends SimpleManagerCallba
     @Override
     public void onLoLoMoSummaryFetched(final LoLoMo loLoMo, final Status status) {
         if (status.isSucces()) {
-            HomeActivity.showGenreList(this.activity, new ListOfGenreSummary(loLoMo.getNumLoMos(), -1, -1, "", loLoMo.getTitle(), this.genreId, GenreList$GenreType.LOLOMO.name()));
+            HomeActivity.showGenreList(this.activity, (GenreList)new ListOfGenreSummary(loLoMo.getNumLoMos(), -1, -1, "", loLoMo.getTitle(), this.genreId, GenreList$GenreType.LOLOMO.name()));
         }
         NflxProtocolUtils.reportDelayedResponseHandled((Activity)this.activity);
     }

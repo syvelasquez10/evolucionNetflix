@@ -380,6 +380,10 @@ public class OfflineRegistry
         return this.mMetaRegistry.mGeoCountryCode;
     }
     
+    public int getOfflineStorageVolumeListCount() {
+        return this.mOfflineStorageVolumeList.size();
+    }
+    
     public String getPrimaryProfileGuid() {
         return this.mMetaRegistry.mPrimaryProfileGuid;
     }

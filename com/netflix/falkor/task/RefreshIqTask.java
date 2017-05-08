@@ -6,6 +6,7 @@ package com.netflix.falkor.task;
 
 import com.netflix.mediaclient.service.preapp.PreAppAgent;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.falkor.PQL;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.DataUtil$StringPair;
@@ -30,7 +31,7 @@ public class RefreshIqTask extends RefreshLomoTask
     }
     
     @Override
-    protected void notifyOfRefresh() {
+    protected void notifyOfRefresh(final Status status) {
         ServiceManager.sendIqRefreshBrodcast(this.modelProxy.getContext());
         PreAppAgent.informIqUpdated(this.modelProxy.getContext());
     }

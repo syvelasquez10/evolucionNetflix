@@ -8,9 +8,13 @@ public interface CWVideo extends ArtworkUrlProvider, CleanBoxart, Playable, Vide
 {
     String createModifiedBigStillUrl();
     
+    String createModifiedSmallStillUrl();
+    
     String createModifiedStillUrl();
     
     String getCurrentEpisodeTitle();
+    
+    String getInterestingSmallUrl();
     
     String getInterestingUrl();
     

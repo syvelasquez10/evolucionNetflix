@@ -8,6 +8,7 @@ import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import android.app.Notification;
 import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
+import com.netflix.mediaclient.service.error.crypto.CryptoErrorManager;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
 import com.netflix.mediaclient.util.AndroidManifestUtils;

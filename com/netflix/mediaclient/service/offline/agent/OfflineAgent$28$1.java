@@ -15,6 +15,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.NoCache;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmProfile;
+import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
@@ -61,8 +62,8 @@ import com.netflix.mediaclient.service.offline.registry.OfflineRegistry$Registry
 import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.NetflixService;
 import java.util.HashMap;
 import java.util.ArrayList;

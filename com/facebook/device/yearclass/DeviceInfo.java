@@ -146,7 +146,7 @@ public class DeviceInfo
             final byte[] array = new byte[1024];
         Label_0020_Outer:
             while (true) {
-                int n3 = 0;
+                int n4 = 0;
             Label_0129:
                 while (true) {
                     int read = 0;
@@ -155,21 +155,25 @@ public class DeviceInfo
                         read = fileInputStream.read(array);
                         n = 0;
                         break Label_0087;
-                        final int n2;
                         Label_0073: {
-                            ++n2;
+                            final int n2 = n2 + 1;
                         }
-                        final int n4;
-                        n3 = n4;
-                        // iftrue(Label_0129:, n2 >= read)
-                        final int n5 = n2 - n4;
-                        // iftrue(Label_0053:, array[n2] == s.charAt(n5))
-                        n3 = n4;
-                        break Label_0129;
+                        break Label_0020;
                         Label_0053:
-                        // iftrue(Label_0073:, n5 != s.length() - 1)
+                        // iftrue(Label_0073:, n3 != s.length() - 1)
+                        final int n2;
                         return extractValue(array, n2);
+                        while (true) {
+                            final int n5;
+                            n4 = n5;
+                            break Label_0129;
+                            n4 = n5;
+                            final int n3 = n2 - n5;
+                            continue;
+                        }
                     }
+                    // iftrue(Label_0129:, n2 >= read)
+                    // iftrue(Label_0053:, array[n2] == s.charAt(n3))
                     catch (NumberFormatException ex) {}
                     catch (IOException ex2) {
                         goto Label_0081;
@@ -177,17 +181,17 @@ public class DeviceInfo
                     if (n >= read) {
                         goto Label_0081;
                     }
-                    if (array[n] == 10 || (n3 = n) == 0) {
-                        int n4 = n;
+                    if (array[n] == 10 || (n4 = n) == 0) {
+                        int n5 = n;
                         if (array[n] == 10) {
-                            n4 = n + 1;
+                            n5 = n + 1;
                         }
-                        final int n2 = n4;
+                        final int n2 = n5;
                         continue;
                     }
                     break;
                 }
-                int n = n3 + 1;
+                int n = n4 + 1;
                 continue Label_0020_Outer;
             }
         }

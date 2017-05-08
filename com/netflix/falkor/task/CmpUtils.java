@@ -203,7 +203,6 @@ public final class CmpUtils
         }
         list.add(PQL.create("shows", s, PQL.array("inQueue", "rating")));
         list.add(PQL.create("shows", s, "seasons", "summary"));
-        list.add(PQL.create("shows", s, "episodes", "current", PQL.array("detail", "bookmark")));
     }
     
     public static PQL getSeasonsPQL(final List<String> list) {

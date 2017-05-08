@@ -70,7 +70,15 @@ public class EpisodesAdapter extends RecyclerViewHeaderAdapter implements Adapte
             Log.v("EpisodesAdapter", "curr season number of episodes: " + this.currSeasonDetails.getNumOfEpisodes());
         }
         this.requestId = System.nanoTime();
-        final int n = this.episodeStartIndex + 40 - 1;
+        if (this.episodeStartIndex >= this.currSeasonDetails.getNumOfEpisodes()) {
+            Log.w("EpisodesAdapter", "nothing more to fetch");
+            this.hasMoreData = false;
+            return;
+        }
+        int n;
+        if ((n = this.episodeStartIndex + 40 - 1) >= this.currSeasonDetails.getNumOfEpisodes()) {
+            n = this.currSeasonDetails.getNumOfEpisodes() - 1;
+        }
         final String id = this.currSeasonDetails.getId();
         if (Log.isLoggable()) {
             Log.v("EpisodesAdapter", "Fetching data for: " + id + ", start: " + this.episodeStartIndex + ", end: " + n);

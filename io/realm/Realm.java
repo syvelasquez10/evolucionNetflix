@@ -419,11 +419,11 @@ public class Realm extends BaseRealm
                             }
                             realm.cancelTransaction();
                             return;
+                            realm.cancelTransaction();
+                            throw realmProxyMediator;
                             n = 0;
                             continue;
                         }
-                        realm.cancelTransaction();
-                        throw realmProxyMediator;
                     }
                     finally {
                         continue;

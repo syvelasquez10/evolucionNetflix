@@ -7,6 +7,7 @@ package com.netflix.falkor.task;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Map;
 import com.netflix.falkor.PQL;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class RefreshDiscoveryTask extends RefreshLomoTask
     }
     
     @Override
-    protected void notifyOfRefresh() {
+    protected void notifyOfRefresh(final Status status) {
         Log.i("CachedModelProxy", "RefreshDiscoveryTask was finished. DISCOVERY_LIST_UPDATED broadcast sent");
         LocalBroadcastManager.getInstance(this.modelProxy.getContext()).sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.DISCOVERY_LIST_UPDATED"));
     }

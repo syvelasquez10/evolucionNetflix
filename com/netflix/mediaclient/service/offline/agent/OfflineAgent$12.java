@@ -15,6 +15,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.NoCache;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmProfile;
+import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;

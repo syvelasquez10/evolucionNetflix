@@ -9,8 +9,8 @@ import android.view.MenuItem;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import android.app.Activity;
 import com.netflix.mediaclient.util.Coppola1Utils;
-import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
-import java.util.HashMap;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTracker;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$DPTTRTracker;
 import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.mdx.CastMenu;
@@ -23,9 +23,11 @@ import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import java.util.HashMap;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
-import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$InteractiveListener;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
@@ -37,6 +39,7 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import java.util.Map;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
@@ -47,6 +50,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     private static final String NOTIFICATION_BEACON_SENT = "notification_beacon_sent";
     private static final String TAG = "DetailsActivity";
     public static final boolean USE_DUMMY_DATA = false;
+    private Map<String, String> deferredTTRparams;
     protected String episodeId;
     private DetailsActivity$Action mAction;
     private String mActionToken;
@@ -56,10 +60,11 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     private ServiceManager serviceMan;
     private boolean shareMenuCreated;
     private boolean startDPTTISession;
+    private boolean startDPTTRSession;
     protected String videoId;
     
     public DetailsActivity() {
-        this.reloadReceiver = new DetailsActivity$2(this);
+        this.reloadReceiver = new DetailsActivity$3(this);
     }
     
     public static void finishAllDetailsActivities(final Context context) {
@@ -141,15 +146,48 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         return this;
     }
     
+    protected InteractiveTracker$InteractiveListener createTTRListener() {
+        return new DetailsActivity$1(this);
+    }
+    
     public void endDPTTISession(final Map<String, String> map) {
         this.startDPTTISession = false;
-        PerformanceProfiler.getInstance().endSession(Sessions.DP_TTI, this.populateDPTTISession(map));
+        PerformanceProfiler.getInstance().endSession(Sessions.DP_TTI, this.populateDPSession(map));
+        PerformanceProfiler.getInstance().flushApmEvents(this.getApmSafely());
+        if (this.deferredTTRparams != null) {
+            this.endDPTTRSession(map);
+        }
+    }
+    
+    public void endDPTTRSession(final Map<String, String> deferredTTRparams) {
+        if (this.startDPTTISession) {
+            Log.i("InteractiveTracker", "TTR deferred... (was before TTI)");
+            this.deferredTTRparams = deferredTTRparams;
+            return;
+        }
+        this.startDPTTRSession = false;
+        PerformanceProfiler.getInstance().endSession(Sessions.DP_TTR, this.populateDPSession(deferredTTRparams));
         PerformanceProfiler.getInstance().flushApmEvents(this.getApmSafely());
     }
     
     protected void fillVideoAndEpisodeIds() {
         this.videoId = this.getIntent().getStringExtra("extra_video_id");
         this.episodeId = this.getIntent().getStringExtra("extra_episode_id");
+    }
+    
+    @Override
+    public void finish() {
+        if (this.startDPTTRSession || this.startDPTTISession) {
+            final HashMap<String, String> hashMap = new HashMap<String, String>();
+            hashMap.put("reason", IClientLogging$CompletionReason.canceled.name());
+            if (this.startDPTTISession) {
+                this.endDPTTISession(hashMap);
+            }
+            if (this.startDPTTRSession) {
+                this.endDPTTRSession(hashMap);
+            }
+        }
+        super.finish();
     }
     
     public DetailsActivity$Action getAction() {
@@ -221,6 +259,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         }
         else {
             this.startDPTTISession();
+            this.startDPTTRSession();
         }
         this.fillVideoAndEpisodeIds();
         this.mAction = (DetailsActivity$Action)this.getIntent().getSerializableExtra("extra_action");
@@ -248,12 +287,10 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        if (this.startDPTTISession) {
-            final HashMap<String, String> hashMap = new HashMap<String, String>();
-            hashMap.put("reason", IClientLogging$CompletionReason.canceled.name());
-            this.endDPTTISession(hashMap);
+        if (this.getServiceManager() != null && this.getServiceManager().isReady() && NetflixActivity.getImageLoader((Context)this).getInteractiveTracker(InteractiveTracker$DPTTRTracker.ID) != null) {
+            NetflixActivity.getImageLoader((Context)this).getInteractiveTracker(InteractiveTracker$DPTTRTracker.ID).setListener(null);
         }
+        super.onDestroy();
     }
     
     @Override
@@ -263,6 +300,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         if (this.shareMenuCreated) {
             this.invalidateOptionsMenu();
         }
+        this.setupInteractiveTracking(new InteractiveTracker$DPTTRTracker(), this.createTTRListener());
         Coppola1Utils.injectPlayerFragmentIfNeeded((Activity)this, this.videoId, this.getVideoType(), this.getPlayContext(), serviceMan, status);
         Coppola1Utils.forceToPortraitIfNeeded((Activity)this);
         ((ManagerStatusListener)this.getPrimaryFrag()).onManagerReady(serviceMan, status);
@@ -305,7 +343,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         super.onSaveInstanceState(bundle);
     }
     
-    public Map<String, String> populateDPTTISession(final Map<String, String> map) {
+    public Map<String, String> populateDPSession(final Map<String, String> map) {
         Map<String, String> map2 = map;
         if (this.getVideoType() != null) {
             if ((map2 = map) == null) {
@@ -317,7 +355,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     public void registerLoadingStatusCallback() {
-        this.setLoadingStatusCallback(new DetailsActivity$1(this));
+        this.setLoadingStatusCallback(new DetailsActivity$2(this));
     }
     
     @Override
@@ -354,5 +392,10 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     public void startDPTTISession() {
         this.startDPTTISession = true;
         PerformanceProfiler.getInstance().startSession(Sessions.DP_TTI);
+    }
+    
+    public void startDPTTRSession() {
+        this.startDPTTRSession = true;
+        PerformanceProfiler.getInstance().startSession(Sessions.DP_TTR);
     }
 }

@@ -4,8 +4,10 @@
 
 package com.netflix.falkor.task;
 
+import com.netflix.mediaclient.ui.lolomo.PrefetchLolomoABTestUtils;
 import com.netflix.mediaclient.service.preapp.PreAppAgent;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.Map;
 import com.netflix.falkor.PQL;
 import java.util.ArrayList;
@@ -35,9 +37,10 @@ public class RefreshCwTask extends RefreshLomoTask
     }
     
     @Override
-    protected void notifyOfRefresh() {
+    protected void notifyOfRefresh(final Status status) {
         ServiceManager.sendCwRefreshBrodcast(this.modelProxy.getContext());
         this.modelProxy.sendDetailPageReloadBroadcast();
         PreAppAgent.informCwUpdated(this.modelProxy.getContext());
+        PrefetchLolomoABTestUtils.handleCWRefreshBroadcast(this.modelProxy.getContext(), status);
     }
 }

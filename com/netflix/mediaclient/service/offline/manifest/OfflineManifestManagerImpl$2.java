@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.service.offline.manifest;
 
+import com.netflix.mediaclient.android.app.BaseStatus;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.LogUtils;
 import java.io.File;
-import com.netflix.mediaclient.android.app.BaseStatus;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;

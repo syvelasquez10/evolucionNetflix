@@ -29,11 +29,13 @@ import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import android.media.UnsupportedSchemeException;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.service.error.crypto.ErrorSource;
+import com.netflix.mediaclient.service.error.crypto.CryptoErrorManager;
+import com.netflix.mediaclient.util.MediaDrmUtils;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
-import com.netflix.mediaclient.service.error.crypto.CryptoErrorManager;
-import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
@@ -450,20 +452,26 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             return;
         }
         final ConfigurationAgent$1 configurationAgent$1 = new ConfigurationAgent$1(this);
-        PerformanceProfiler.getInstance().startSession(Sessions.DRM_LOADED, null);
-        CryptoErrorManager.INSTANCE.init(this.getContext(), this.getMainHandler(), this.getService().getStartedTimeInMs(), this.getUserAgent(), this.getConfigurationAgent(), this.getOfflineAgent(), this.getErrorHandler(), this.getService().getClientLogging().getErrorLogging());
+        PerformanceProfiler.getInstance().startSession(Sessions.DRM_LOADED);
         this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), this.getErrorHandler(), configurationAgent$1);
         try {
             this.mESN = EsnProviderRegistry.createESN(this.getContext(), this.mDrmManager, this);
             this.initVoipSettings();
             Log.d("nf_configurationagent", "Inject ESN to PlayerTypeFactory");
             PlayerTypeFactory.initialize(this.mESN);
-            this.mDrmManager.init();
+            if (MediaDrmUtils.isDeviceNotReportingSupportForWidevineWhenItWasUsedBefore(this.getContext(), (ServiceAgent$ConfigurationAgentInterface)this)) {
+                Log.w("nf_configurationagent", "Widevine not supported, but Widevine was used before, we may be able to recover");
+                CryptoErrorManager.INSTANCE.mediaDrmFailure(ErrorSource.msl, StatusCode.MSL_LEGACY_CRYPTO_BUT_USED_WIDEVINE_BEFORE, null);
+                this.initCompleted(CommonStatus.MSL_LEGACY_CRYPTO_BUT_USED_WIDEVINE_BEFORE);
+                return;
+            }
         }
         catch (UnsupportedSchemeException ex) {
             Log.e("nf_configurationagent", "Failed to create ESN", (Throwable)ex);
             this.initCompleted(CommonStatus.DRM_FAILURE_CDM);
+            return;
         }
+        this.mDrmManager.init();
     }
     
     @Override

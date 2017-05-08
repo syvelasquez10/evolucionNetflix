@@ -184,6 +184,7 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
     public void onExecutorDestroyed(final ExecutorToken executorToken) {
     Label_0030_Outer:
         while (true) {
+        Label_0030:
             while (true) {
                 Label_0105: {
                     synchronized (this.mTimerGuard) {
@@ -192,26 +193,27 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
                             return;
                         }
                         break Label_0105;
-                        Label_0072: {
-                            final Object mIdleCallbackGuard = this.mIdleCallbackGuard;
-                        }
-                        // monitorexit(this.mTimerGuard)
-                        synchronized (this.mTimerGuard) {
-                            final Throwable t;
-                            this.mSendIdleEventsExecutorTokens.remove(t);
-                            return;
-                        }
                         while (true) {
                             final int n;
                             this.mTimers.remove(sparseArray.get(sparseArray.keyAt(n)));
                             ++n;
+                            break Label_0030;
+                            Label_0072: {
+                                final Object mIdleCallbackGuard = this.mIdleCallbackGuard;
+                            }
+                            synchronized (this.mTimerGuard) {
+                                final Throwable t;
+                                this.mSendIdleEventsExecutorTokens.remove(t);
+                                return;
+                            }
                             continue Label_0030_Outer;
                         }
                     }
+                    // monitorexit(this.mTimerGuard)
                     // iftrue(Label_0072:, n >= sparseArray.size())
                 }
                 int n = 0;
-                continue;
+                continue Label_0030;
             }
         }
     }

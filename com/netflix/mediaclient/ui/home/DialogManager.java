@@ -64,7 +64,7 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
                     return false;
                 }
                 try {
-                    GooglePlayServicesUtil.showErrorDialogFragment(googlePlayServicesAvailable, this.mOwner, 1001);
+                    GooglePlayServicesUtil.showErrorDialogFragment(googlePlayServicesAvailable, (Activity)this.mOwner, 1001);
                     return false;
                 }
                 catch (Throwable t) {

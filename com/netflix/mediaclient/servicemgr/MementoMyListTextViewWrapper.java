@@ -19,14 +19,14 @@ public class MementoMyListTextViewWrapper extends TextViewWrapper
     @Override
     protected void setAsInList() {
         if (this.textView != null) {
-            this.textView.setText(2131297108);
+            this.textView.setText(2131297096);
         }
     }
     
     @Override
     protected void setAsNotInList() {
         if (this.textView != null) {
-            this.textView.setText(2131297090);
+            this.textView.setText(2131297078);
         }
     }
 }

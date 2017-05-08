@@ -4,35 +4,34 @@
 
 package com.netflix.mediaclient.service.logging.perf;
 
+import com.android.volley.Request$Priority;
+import android.view.View;
 import android.view.ViewTreeObserver$OnPreDrawListener;
 import android.widget.ImageView;
 import com.netflix.mediaclient.service.resfetcher.volley.ImageLoader$Type;
+import com.netflix.mediaclient.service.resfetcher.volley.ImageLoader$ImageInteractionTrackingListener;
 import com.netflix.mediaclient.Log;
 import java.util.HashSet;
 import com.netflix.mediaclient.service.resfetcher.volley.ImageLoader$ImageListener;
 import java.util.Set;
 
-public class InteractiveTracker
+public abstract class InteractiveTracker
 {
     public static final String TAG = "InteractiveTracker";
     private boolean hasCompleted;
     private InteractiveTracker$InteractiveListener interactiveListener;
-    Set<ImageLoader$ImageListener> onscreenListeners;
+    private Set<ImageLoader$ImageListener> onscreenListeners;
     
     public InteractiveTracker() {
         this.onscreenListeners = new HashSet<ImageLoader$ImageListener>();
     }
     
-    public void clearImageListeners() {
+    private void clearImageListeners() {
         this.onscreenListeners.clear();
     }
     
-    public boolean isComplete() {
-        return this.hasCompleted;
-    }
-    
-    public void isNowInteractive() {
-        Log.d("InteractiveTracker", "isNowInteractive()");
+    private void isNowInteractive() {
+        Log.d("InteractiveTracker", "isNowInteractive() -> " + this.getId());
         if (this.interactiveListener == null) {
             Log.d("InteractiveTracker", "... but there was no listener attached so tracking has not completed");
             return;
@@ -41,10 +40,16 @@ public class InteractiveTracker
         this.interactiveListener.onInteractive();
     }
     
-    public void onImageLoaded(final ImageLoader$ImageListener imageLoader$ImageListener, final ImageLoader$Type imageLoader$Type) {
-        Log.d("InteractiveTracker", "onImageLoaded -- " + imageLoader$ImageListener + " ... type? " + imageLoader$Type);
+    public abstract String getId();
+    
+    public boolean isComplete() {
+        return this.hasCompleted;
+    }
+    
+    public void onImageLoaded(final ImageLoader$ImageInteractionTrackingListener imageLoader$ImageInteractionTrackingListener, final ImageLoader$Type imageLoader$Type) {
+        Log.v("InteractiveTracker", "onImageLoaded -- " + imageLoader$ImageInteractionTrackingListener.getImgUrl() + " ... type? " + imageLoader$Type);
         if (imageLoader$Type != ImageLoader$Type.PLACEHOLDER) {
-            if (!this.onscreenListeners.remove(imageLoader$ImageListener)) {
+            if (!this.onscreenListeners.remove(imageLoader$ImageInteractionTrackingListener)) {
                 Log.d("InteractiveTracker", ".... wasn't in onscreenListeners");
                 return;
             }
@@ -55,19 +60,27 @@ public class InteractiveTracker
         }
     }
     
-    public ImageLoader$ImageListener registerListener(final ImageLoader$ImageListener imageLoader$ImageListener, final ImageView imageView) {
-        Log.d("InteractiveTracker", "registerListener -- " + imageLoader$ImageListener);
-        this.onscreenListeners.add(imageLoader$ImageListener);
+    public ImageLoader$ImageListener registerListener(final ImageLoader$ImageInteractionTrackingListener imageLoader$ImageInteractionTrackingListener, final ImageView imageView) {
+        Log.d("InteractiveTracker", "registerListener -- " + imageLoader$ImageInteractionTrackingListener.getImgUrl());
+        this.onscreenListeners.add(imageLoader$ImageInteractionTrackingListener);
         imageView.getViewTreeObserver().addOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)new InteractiveTracker$1(this, imageView));
-        return imageLoader$ImageListener;
+        return imageLoader$ImageInteractionTrackingListener;
     }
     
     public void setListener(final InteractiveTracker$InteractiveListener interactiveListener) {
+        this.clearImageListeners();
         this.interactiveListener = interactiveListener;
-        Log.d("InteractiveTracker", "-------------- Listener set --------------");
+        String s;
+        if (interactiveListener == null) {
+            s = " CLEARED";
+        }
+        else {
+            s = "SET";
+        }
+        Log.d("InteractiveTracker", "-------------- Listener %s -> %s --------------", s, this.getId());
     }
     
-    public boolean shouldTrack(final ImageView imageView) {
-        return imageView != null && !this.isComplete();
+    public boolean shouldTrack(final View view, final Request$Priority request$Priority) {
+        return view != null && !this.isComplete();
     }
 }

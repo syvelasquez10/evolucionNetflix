@@ -7,6 +7,7 @@ package com.netflix.mediaclient;
 import com.netflix.mediaclient.service.NetflixService;
 import java.util.HashMap;
 import java.net.URLDecoder;
+import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;
@@ -19,45 +20,42 @@ public class InstallReferrerReceiver extends BroadcastReceiver
     private static final String TAG = "nf_install";
     
     private void handleInstallation(final Context context, final Intent intent) {
-        final String s = "";
-        String s2;
         if (!intent.hasExtra("referrer")) {
-            Log.e("nf_install", "Refferer property not found in intent, do default");
-            s2 = s;
+            Log.e("nf_install", "Refferer property not found in intent, just exit");
+            return;
         }
-        else {
-            final String decode = URLDecoder.decode(intent.getStringExtra("referrer"));
-            if (Log.isLoggable()) {
-                Log.d("nf_install", "Refferer: " + decode);
-            }
-            final HashMap<Object, String> hashMap = new HashMap<Object, String>();
-            final String[] split = decode.split("&");
-            if (split != null && split.length > 0) {
-                for (int length = split.length, i = 0; i < length; ++i) {
-                    final String[] split2 = split[i].split("=");
-                    if (split2 != null && split2.length >= 2) {
-                        hashMap.put(split2[0], split2[1]);
-                        if (Log.isLoggable()) {
-                            Log.d("nf_install", "Key: " + split2[0] + ", value: " + split2[1]);
-                        }
-                    }
+        final String stringExtra = intent.getStringExtra("referrer");
+        if (StringUtils.isEmpty(stringExtra)) {
+            Log.e("nf_install", "Refferer property is empty in intent, just exit");
+            return;
+        }
+        final String decode = URLDecoder.decode(stringExtra);
+        Log.d("nf_install", "Refferer: %s", decode);
+        final HashMap<Object, String> hashMap = new HashMap<Object, String>();
+        final String[] split = decode.split("&");
+        if (split != null && split.length > 0) {
+            for (int length = split.length, i = 0; i < length; ++i) {
+                final String[] split2 = split[i].split("=");
+                if (split2 != null && split2.length >= 2) {
+                    hashMap.put(split2[0], split2[1]);
+                    Log.d("nf_install", "Key: %s, value: %s", split2[0], split2[1]);
                 }
             }
-            if (!hashMap.containsKey("token")) {
-                Log.e("nf_install", "Token not found, do default!");
-                s2 = "";
-            }
-            else {
-                s2 = (String)hashMap.get("token");
-            }
         }
-        if (Log.isLoggable()) {
-            Log.d("nf_install", "Token: " + s2 + ", start service...");
+        if (!hashMap.containsKey("token")) {
+            Log.e("nf_install", "Token not found, exit!");
+            return;
         }
+        final String s = hashMap.get("token");
+        if (StringUtils.isEmpty(s)) {
+            Log.w("nf_install", "Token is empty, exit!");
+            return;
+        }
+        Log.d("nf_install", "Token: %s, start service...", s);
         final Intent intent2 = new Intent("com.netflix.mediaclient.intent.action.USER_AUTOLOGIN");
         intent2.setClass(context, (Class)NetflixService.class);
         intent2.addCategory("com.netflix.mediaclient.intent.category.USER");
-        intent2.putExtra("token", s2);
+        intent2.putExtra("token", s);
         context.startService(intent2);
     }
     

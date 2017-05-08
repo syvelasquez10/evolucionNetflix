@@ -15,7 +15,6 @@ import com.google.android.gms.auth.api.credentials.CredentialRequest$Builder;
 import android.os.Bundle;
 import com.netflix.mediaclient.util.LoginUtils;
 import com.netflix.mediaclient.ui.login.AccountActivity;
-import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -402,7 +401,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         else {
             Log.d("LaunchActivity", "Redirect to home with profile %s, %s", serviceManager.getCurrentProfile().getProfileName(), serviceManager.getCurrentProfile().getProfileGuid());
-            this.startNextActivity(HomeActivity.createStartIntent(this).putExtra("com.netflix.mediaclient._TRANSITION_ANIMATION", false));
+            this.startNextActivity(HomeActivity.createStartIntent((NetflixActivity)this).putExtra("com.netflix.mediaclient._TRANSITION_ANIMATION", false));
         }
         if (EogUtils.shouldShowEogAlert(serviceManager)) {
             this.startNextActivity(EndOfGrandfatheringActivity.createStartIntent((NetflixActivity)this, EndOfGrandfatheringActivity.shouldBlockUser(serviceManager.getEndOfGrandfatheringAlert().isBlocking())));
@@ -431,13 +430,13 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
-        PerformanceProfiler.getInstance().startSession(Sessions.LAUNCH_ACTIVITY_MANAGER_LOAD, null);
+        PerformanceProfiler.getInstance().startSession(Sessions.LAUNCH_ACTIVITY_MANAGER_LOAD);
         return (ManagerStatusListener)new LaunchActivity$1(this);
     }
     
     @Override
     public void finish() {
-        PerformanceProfiler.getInstance().endSession(Sessions.LAUNCH_ACTIVITY_LIFE, null);
+        PerformanceProfiler.getInstance().endSession(Sessions.LAUNCH_ACTIVITY_LIFE);
         super.finish();
     }
     
@@ -524,11 +523,11 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         if (bundle == null) {
             if (this.shouldStartPerformanceLogging()) {
                 PerformanceProfiler.getInstance().clear();
-                PerformanceProfiler.getInstance().startSession(Sessions.TTI, null);
-                PerformanceProfiler.getInstance().startSession(Sessions.TTR, null);
-                PerformanceProfiler.getInstance().startSession(Sessions.NON_MEMBER_TTI, null);
+                PerformanceProfiler.getInstance().startSession(Sessions.TTI);
+                PerformanceProfiler.getInstance().startSession(Sessions.TTR);
+                PerformanceProfiler.getInstance().startSession(Sessions.NON_MEMBER_TTI);
             }
-            PerformanceProfiler.getInstance().startSession(Sessions.LAUNCH_ACTIVITY_LIFE, null);
+            PerformanceProfiler.getInstance().startSession(Sessions.LAUNCH_ACTIVITY_LIFE);
         }
         if (Log.isLoggable()) {
             Log.d("LaunchActivity", this.getIntent());

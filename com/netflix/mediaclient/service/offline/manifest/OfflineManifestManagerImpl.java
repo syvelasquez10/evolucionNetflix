@@ -6,11 +6,11 @@ package com.netflix.mediaclient.service.offline.manifest;
 
 import com.netflix.mediaclient.service.player.bladerunnerclient.BladeRunnerWebCallback;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQuality;
+import com.netflix.mediaclient.android.app.BaseStatus;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.LogUtils;
 import java.io.File;
-import com.netflix.mediaclient.android.app.BaseStatus;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;
@@ -59,10 +59,10 @@ public class OfflineManifestManagerImpl implements OfflineManifestManager
         this.mOfflineManifestCache.put(s, nfManifest);
     }
     
-    private NfManifest getManifestFromMemoryOrPersistentStore(final String s, final String s2) {
+    private NfManifest getManifestFromMemoryOrPersistentStore(final String s, final String s2, final String s3, final String s4) {
         NfManifest nfManifest;
         if ((nfManifest = this.mOfflineManifestCache.get(s)) == null) {
-            final NfManifest manifestFromPersistentStore = this.readManifestFromPersistentStore(s, s2);
+            final NfManifest manifestFromPersistentStore = this.readManifestFromPersistentStore(s, s2, s3, s4);
             if ((nfManifest = manifestFromPersistentStore) != null) {
                 this.addManifestToCache(s, manifestFromPersistentStore);
                 nfManifest = manifestFromPersistentStore;
@@ -84,7 +84,7 @@ public class OfflineManifestManagerImpl implements OfflineManifestManager
             status = manifest.mStatus;
             final NfManifest mNfManifest = manifest.mNfManifest;
             if (status.isSucces()) {
-                status = this.persistManifest(s, s2, jsonObject);
+                status = this.persistManifest(s, s3, s4, s2, jsonObject);
             }
             if (status.isSucces()) {
                 this.addManifestToCache(s, manifest.mNfManifest);
@@ -116,42 +116,43 @@ public class OfflineManifestManagerImpl implements OfflineManifestManager
         return offlineManifestManagerImpl$ManifestParseResult;
     }
     
-    private Status persistManifest(final String s, String filePathOfflineManifest, final JSONObject jsonObject) {
+    private Status persistManifest(final String s, final String s2, final String s3, String filePathOfflineManifest, final JSONObject jsonObject) {
         final NetflixImmutableStatus ok = CommonStatus.OK;
         filePathOfflineManifest = OfflinePathUtils.getFilePathOfflineManifest(filePathOfflineManifest, s);
         Log.i("nf_offlineManifestMgr", "filepath for manifest= " + filePathOfflineManifest);
-        BaseStatus baseStatus = ok;
         if (!FileUtils.writeBytesToFile(filePathOfflineManifest, jsonObject.toString().getBytes())) {
-            baseStatus = new NetflixStatus(StatusCode.DL_CANT_PERSIST_MANIFEST);
+            return new NetflixStatus(StatusCode.DL_CANT_PERSIST_MANIFEST);
         }
-        return baseStatus;
+        OfflineErrorLogblob.sendManifestSaved(this.mLoggingAgent.getLogblobLogging(), s, s2, s3, filePathOfflineManifest);
+        return ok;
     }
     
-    private NfManifest readManifestFromPersistentStore(String string, final String s) {
-        final File file = new File(OfflinePathUtils.getFilePathOfflineManifest(s, string));
+    private NfManifest readManifestFromPersistentStore(String string, final String s, final String s2, final String s3) {
+        final File file = new File(OfflinePathUtils.getFilePathOfflineManifest(s3, string));
         if (!file.exists()) {
             LogUtils.reportErrorSafely("readManifestFromPersistentStore file not found " + file.getAbsolutePath());
             Log.e("nf_offlineManifestMgr", "readManifestFromPersistentStore file not found=" + file.getAbsolutePath());
+            OfflineErrorLogblob.sendManifestNotFound(this.mLoggingAgent.getLogblobLogging(), string, s, s2, file.getAbsolutePath());
             return null;
         }
         NfManifest nfManifest = null;
-    Label_0150_Outer:
+    Label_0176_Outer:
         while (true) {
             while (true) {
                 while (true) {
                     List<NfManifest> manifestResponse = null;
-                    Label_0202: {
+                    Label_0228: {
                         try {
                             manifestResponse = NfManifest.parseManifestResponse(new JSONObject(StringUtils.byteArrayToString(FileUtils.readFileToByteArray(file), "utf-8")));
                             if (manifestResponse != null && manifestResponse.size() > 0) {
                                 nfManifest = manifestResponse.get(0);
                                 break;
                             }
-                            break Label_0202;
+                            break Label_0228;
                             LogUtils.reportErrorSafely("readManifestFromPersistentStore " + string);
                             return null;
                             string = "nfManifestList size=" + manifestResponse.size();
-                            continue Label_0150_Outer;
+                            continue Label_0176_Outer;
                         }
                         catch (Exception ex) {
                             LogUtils.reportErrorSafely("readManifestFromPersistentStore Exception:", (Throwable)ex);
@@ -162,7 +163,7 @@ public class OfflineManifestManagerImpl implements OfflineManifestManager
                     }
                     if (manifestResponse == null) {
                         string = "nfManifestList is null";
-                        continue Label_0150_Outer;
+                        continue Label_0176_Outer;
                     }
                     break;
                 }
@@ -221,10 +222,10 @@ public class OfflineManifestManagerImpl implements OfflineManifestManager
     }
     
     @Override
-    public void requestOfflineManifestFromCache(final String s, final String s2, final OfflineManifestCallback offlineManifestCallback) {
+    public void requestOfflineManifestFromCache(final String s, final String s2, final String s3, final String s4, final OfflineManifestCallback offlineManifestCallback) {
         Log.i("nf_offlineManifestMgr", "requestOfflineManifestFromCache playableId=" + s);
         final NetflixImmutableStatus ok = CommonStatus.OK;
-        final NfManifest manifestFromMemoryOrPersistentStore = this.getManifestFromMemoryOrPersistentStore(s, s2);
+        final NfManifest manifestFromMemoryOrPersistentStore = this.getManifestFromMemoryOrPersistentStore(s, s2, s3, s4);
         BaseStatus baseStatus = ok;
         if (manifestFromMemoryOrPersistentStore == null) {
             baseStatus = new NetflixStatus(StatusCode.DL_MANIFEST_NOT_FOUND_IN_CACHE);
@@ -245,6 +246,6 @@ public class OfflineManifestManagerImpl implements OfflineManifestManager
     @Override
     public void requestOfflineManifestRefreshFromServer(final String s, final String s2, final String s3, final String s4, final DownloadVideoQuality downloadVideoQuality, final OfflineManifestCallback offlineManifestCallback) {
         Log.i("nf_offlineManifestMgr", "requestOfflineManifestRefreshFromServer playableId=" + s);
-        this.requestOfflineManifestFromCache(s, s4, new OfflineManifestManagerImpl$2(this, s, offlineManifestCallback, s2, s3, downloadVideoQuality, s4));
+        this.requestOfflineManifestFromCache(s, s2, s3, s4, new OfflineManifestManagerImpl$2(this, s, offlineManifestCallback, s2, s3, downloadVideoQuality, s4));
     }
 }

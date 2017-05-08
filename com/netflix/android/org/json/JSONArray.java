@@ -414,9 +414,9 @@ public class JSONArray
             int length = 0;
             int n4;
             int n5;
-            Block_8_Outer:Block_6_Outer:Label_0044_Outer:
+            Block_7_Outer:Label_0044_Outer:
             while (true) {
-                Label_0044:Block_5_Outer:
+                Label_0044:Label_0062_Outer:Block_5_Outer:
                 while (true) {
                     Label_0135: {
                         try {
@@ -428,37 +428,36 @@ public class JSONArray
                                 return writer;
                             }
                             break Label_0135;
-                            // iftrue(Label_0117:, n <= 0)
-                            // iftrue(Label_0062:, n5 == 0)
                             // iftrue(Label_0072:, n <= 0)
+                            // iftrue(Label_0062:, n5 == 0)
+                            // iftrue(Label_0117:, n <= 0)
                             while (true) {
                                 while (true) {
-                                Label_0062:
+                                Block_6:
                                     while (true) {
-                                        while (true) {
-                                            writer.write(10);
-                                            Label_0117: {
-                                                break Label_0117;
-                                                writer.write(44);
-                                                break Label_0062;
-                                                while (true) {
+                                        Label_0117: {
+                                            while (true) {
+                                                writer.write(10);
+                                                Label_0072: {
                                                     JSONObject.indent(writer, n4);
-                                                    JSONObject.writeValue(writer, this.myArrayList.get(n3), n, n4);
-                                                    ++n3;
-                                                    n5 = 1;
-                                                    break Label_0044;
-                                                    writer.write(10);
-                                                    continue Label_0044_Outer;
                                                 }
+                                                JSONObject.writeValue(writer, this.myArrayList.get(n3), n, n4);
+                                                ++n3;
+                                                n5 = 1;
+                                                break Label_0044;
+                                                writer.write(10);
+                                                break Label_0117;
+                                                continue Label_0044_Outer;
                                             }
-                                            JSONObject.indent(writer, n2);
-                                            continue Block_8_Outer;
-                                            Label_0107: {
-                                                continue Block_6_Outer;
-                                            }
+                                            break Block_6;
                                         }
-                                        continue Label_0044_Outer;
+                                        JSONObject.indent(writer, n2);
+                                        continue Block_7_Outer;
+                                        Label_0107: {
+                                            continue Label_0062_Outer;
+                                        }
                                     }
+                                    writer.write(44);
                                     continue Block_5_Outer;
                                 }
                                 continue;

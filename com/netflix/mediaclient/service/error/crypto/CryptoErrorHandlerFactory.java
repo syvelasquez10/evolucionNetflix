@@ -40,6 +40,9 @@ final class CryptoErrorHandlerFactory
         if (MslWidevineProvideKeyRestoreFailedErrorHandler.canHandle(statusCode)) {
             return new MslWidevineProvideKeyRestoreFailedErrorHandler();
         }
+        if (LegacyCryptoWhenWidevineWasUsedBeforeErrorHandler.canHandle(statusCode)) {
+            return new LegacyCryptoWhenWidevineWasUsedBeforeErrorHandler();
+        }
         return null;
     }
     

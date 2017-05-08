@@ -20,6 +20,7 @@ import android.view.View;
 import com.netflix.mediaclient.android.widget.NetflixActionBar$LogoType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$InteractiveListener;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.ui.details.DetailsActivity;

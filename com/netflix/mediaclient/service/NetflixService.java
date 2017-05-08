@@ -8,6 +8,7 @@ import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import android.app.Notification;
 import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
+import com.netflix.mediaclient.service.error.crypto.CryptoErrorManager;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
@@ -686,7 +687,7 @@ public final class NetflixService extends Service implements INetflixService
     
     public void onCreate() {
         Log.i("NetflixService", "NetflixService.onCreate.");
-        PerformanceProfiler.getInstance().startSession(Sessions.NETFLIX_SERVICE_LOADED, null);
+        PerformanceProfiler.getInstance().startSession(Sessions.NETFLIX_SERVICE_LOADED);
         super.onCreate();
         NetflixService.isCreated = true;
         this.mServiceStartedTimeInMs = System.currentTimeMillis();
@@ -712,6 +713,7 @@ public final class NetflixService extends Service implements INetflixService
         this.mPdsAgent = new PdsAgent(this.mOfflineAgent);
         this.mNetflixPowerManager = new NetflixPowerManager(this.getApplicationContext());
         this.mBookmarkStore = new BookmarkStore(this.getApplicationContext());
+        CryptoErrorManager.INSTANCE.init(this.getApplicationContext(), this.handler, this.getStartedTimeInMs(), this.mUserAgent, this.mConfigurationAgent, this.getOfflineAgent(), this.getErrorHandler(), this.getClientLogging().getErrorLogging());
         this.init();
     }
     
@@ -778,7 +780,7 @@ public final class NetflixService extends Service implements INetflixService
     }
     
     public int onStartCommand(final Intent intent, final int n, final int n2) {
-        PerformanceProfiler.getInstance().logEvent(Events.NETFLIX_SERVICE_STARTED_COMMAND, null);
+        PerformanceProfiler.getInstance().logEvent(Events.NETFLIX_SERVICE_STARTED_COMMAND);
         if (intent != null) {
             if (this.mInitComplete) {
                 this.doStartCommand(intent, n, n2);

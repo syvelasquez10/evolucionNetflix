@@ -837,7 +837,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     
     @Override
     public void getOfflinePdsData(final OfflineAgentInterface$OfflinePdsDataCallback offlineAgentInterface$OfflinePdsDataCallback) {
-        this.mOfflineManifestManager.requestOfflineManifestFromCache(this.getPlayableId(), this.mDirPathOfPlayable, new OfflinePlayableImpl$9(this, offlineAgentInterface$OfflinePdsDataCallback));
+        this.mOfflineManifestManager.requestOfflineManifestFromCache(this.getPlayableId(), this.getOxId(), this.getDxId(), this.mDirPathOfPlayable, new OfflinePlayableImpl$9(this, offlineAgentInterface$OfflinePdsDataCallback));
     }
     
     @Override
@@ -1020,7 +1020,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     public void refreshLicenseIfNeeded(final IBladeRunnerClient$OfflineRefreshInvoke bladeRunnerClient$OfflineRefreshInvoke, final OfflineAgentInterface$PlayableRefreshLicenseCallBack offlineAgentInterface$PlayableRefreshLicenseCallBack) {
         if (PlayabilityEnforcer.shouldRefreshLicense(this.mOfflinePlayablePersistentData.mLicenseData) && this.canRefreshOrDeleteLicense()) {
             Log.i("nf_offlinePlayable", "refreshLicenseIfNeeded playableId=%s", this.getPlayableId());
-            this.mOfflineManifestManager.requestOfflineManifestFromCache(this.getPlayableId(), this.mDirPathOfPlayable, new OfflinePlayableImpl$8(this, bladeRunnerClient$OfflineRefreshInvoke, offlineAgentInterface$PlayableRefreshLicenseCallBack));
+            this.mOfflineManifestManager.requestOfflineManifestFromCache(this.getPlayableId(), this.getOxId(), this.getDxId(), this.mDirPathOfPlayable, new OfflinePlayableImpl$8(this, bladeRunnerClient$OfflineRefreshInvoke, offlineAgentInterface$PlayableRefreshLicenseCallBack));
         }
         else {
             Log.i("nf_offlinePlayable", "refreshLicenseIfNeeded not refreshing");
@@ -1032,7 +1032,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     
     @Override
     public void requestManifestForPlayback(final OfflinePlayable$PlayableManifestCallBack offlinePlayable$PlayableManifestCallBack) {
-        this.mOfflineManifestManager.requestOfflineManifestFromCache(this.getPlayableId(), this.mDirPathOfPlayable, new OfflinePlayableImpl$4(this, offlinePlayable$PlayableManifestCallBack));
+        this.mOfflineManifestManager.requestOfflineManifestFromCache(this.getPlayableId(), this.getOxId(), this.getDxId(), this.mDirPathOfPlayable, new OfflinePlayableImpl$4(this, offlinePlayable$PlayableManifestCallBack));
     }
     
     @Override
@@ -1057,7 +1057,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
             return;
         }
         this.doStopDownload();
-        this.mOfflineManifestManager.requestOfflineManifestFromCache(this.getPlayableId(), this.mDirPathOfPlayable, new OfflinePlayableImpl$3(this));
+        this.mOfflineManifestManager.requestOfflineManifestFromCache(this.getPlayableId(), this.getOxId(), this.getDxId(), this.mDirPathOfPlayable, new OfflinePlayableImpl$3(this));
     }
     
     @Override

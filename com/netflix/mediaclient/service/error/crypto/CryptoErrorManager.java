@@ -268,7 +268,7 @@ public enum CryptoErrorManager
         else if (cryptoProvider == CryptoProvider.WIDEVINE_L3) {
             s = "MediaDrm failed for Widevine L3, fail back to legacy crypto scheme ";
             com.netflix.mediaclient.Log.d(CryptoErrorManager.TAG, "MediaDrm failed for Widevine L3, fail back to legacy crypto scheme ");
-            PreferenceUtils.putBooleanPref(this.mContext, "nff_disable_widevine_l3", true);
+            PreferenceUtils.putBooleanPref(this.mContext, "nf_disable_widevine_l3_v3", true);
             this.resetErrorCounter();
             this.removeOfflineContent(lastFatalCryptoError);
         }

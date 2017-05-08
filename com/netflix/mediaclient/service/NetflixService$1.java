@@ -8,6 +8,7 @@ import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import android.app.Notification;
 import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
+import com.netflix.mediaclient.service.error.crypto.CryptoErrorManager;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
@@ -69,6 +70,7 @@ import com.netflix.mediaclient.service.offline.agent.OfflineAgent;
 import com.netflix.mediaclient.service.job.NetflixJobScheduler;
 import com.netflix.mediaclient.service.job.NetflixJobExecutor;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
+import java.util.Map;
 import com.netflix.mediaclient.service.msl.MSLAgent;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
@@ -87,7 +89,6 @@ import java.util.Iterator;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.ThreadUtils;
-import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.android.app.Status;
@@ -109,7 +110,7 @@ class NetflixService$1 implements ServiceAgent$InitCallback
     
     @Override
     public void onInitComplete(final ServiceAgent serviceAgent, final Status status) {
-        PerformanceProfiler.getInstance().endSession(Sessions.NETFLIX_SERVICE_LOADED, null);
+        PerformanceProfiler.getInstance().endSession(Sessions.NETFLIX_SERVICE_LOADED);
         ThreadUtils.assertOnMain();
         if (status.isError()) {
             Log.e("NetflixService", "NetflixService init failed with ServiceAgent " + serviceAgent.getClass().getSimpleName() + " statusCode=" + status.getStatusCode());

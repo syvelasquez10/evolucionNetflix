@@ -15,7 +15,7 @@ public interface OfflineManifestManager
     
     void onTrimMemory(final int p0);
     
-    void requestOfflineManifestFromCache(final String p0, final String p1, final OfflineManifestCallback p2);
+    void requestOfflineManifestFromCache(final String p0, final String p1, final String p2, final String p3, final OfflineManifestCallback p4);
     
     void requestOfflineManifestFromServer(final String p0, final String p1, final String p2, final DownloadContext p3, final String p4, final DownloadVideoQuality p5, final OfflineManifestCallback p6);
     

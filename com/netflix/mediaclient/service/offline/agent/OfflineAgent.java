@@ -15,6 +15,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.NoCache;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmProfile;
+import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
@@ -63,8 +64,8 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.HashMap;
@@ -680,9 +681,14 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         this.mAgentListenerHelper.onDownloadResumedByUser(this.getMainHandler(), offlinePlayable);
     }
     
-    private void sendDownloadStopped(final OfflinePlayableViewData offlinePlayableViewData) {
-        OfflineErrorLogblob.sendDownloadStopError(this.getLoggingAgent().getLogblobLogging(), offlinePlayableViewData.getPlayableId(), offlinePlayableViewData.getOxId(), offlinePlayableViewData.getDxId(), offlinePlayableViewData.getStopReason());
-        this.mAgentListenerHelper.onDownloadStopped(this.getMainHandler(), offlinePlayableViewData, offlinePlayableViewData.getStopReason());
+    private void sendDownloadStopped(final OfflinePlayable offlinePlayable) {
+        final StopReason stopReason = offlinePlayable.getStopReason();
+        String json = null;
+        if (stopReason == StopReason.EncodesAreNotAvailableAnyMore || stopReason == StopReason.ManifestError) {
+            json = NetflixApplication.getGson().toJson(offlinePlayable.getOfflineViewablePersistentData());
+        }
+        OfflineErrorLogblob.sendDownloadStopError(this.getLoggingAgent().getLogblobLogging(), offlinePlayable.getPlayableId(), offlinePlayable.getOxId(), offlinePlayable.getDxId(), offlinePlayable.getStopReason(), json);
+        this.mAgentListenerHelper.onDownloadStopped(this.getMainHandler(), offlinePlayable, stopReason);
     }
     
     private void sendError(final Status status) {

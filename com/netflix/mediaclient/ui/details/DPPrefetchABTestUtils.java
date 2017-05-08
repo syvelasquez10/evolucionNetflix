@@ -40,9 +40,9 @@ public final class DPPrefetchABTestUtils
     private static final int CELL_FIVE_PREFETCH_COUNT = 3;
     private static final int CELL_FOUR_PREFETCH_COUNT = 1;
     public static final int DP_PREFETCH_REQUEST_LATCH_TIMEOUT_MS = 20000;
-    public static final String DP_TTI_COMPLETION_REASON_PARAM_KEY = "reason";
     public static final int MAX_PARALLEL_PREFETCH_REQUEST_COUNT = 2;
     public static final String PARAM_KEY_IS_FROM_CACHE = "isFromCache";
+    public static final String PARAM_KEY_REASON = "reason";
     private static final Object REQUEST_TAG;
     private static final String TAG = "DPPrefetchABTestUtils";
     private static volatile Map<String, List<CountDownLatch>> pendingDetailsRequestsMap;
@@ -149,9 +149,9 @@ public final class DPPrefetchABTestUtils
         if (DPPrefetchABTestUtils.pendingDetailsRequestsMap == null) {
             DPPrefetchABTestUtils.pendingDetailsRequestsMap = Collections.synchronizedMap(new HashMap<String, List<CountDownLatch>>());
         }
-        Label_0159: {
+        Label_0158: {
             if (!DPPrefetchABTestUtils.pendingDetailsRequestsMap.containsKey(s)) {
-                break Label_0159;
+                break Label_0158;
             }
             List<CountDownLatch> list;
             if ((list = DPPrefetchABTestUtils.pendingDetailsRequestsMap.get(s)) == null) {
@@ -163,7 +163,7 @@ public final class DPPrefetchABTestUtils
                     if (Log.isLoggable()) {
                         Log.d("DPPrefetchABTestUtils", "Waiting on prefetch DP response for videoId - " + s);
                     }
-                    PerformanceProfiler.getInstance().logEvent(Events.DP_PREFETCH_REQUEST_IN_FLIGHT_EVENT, null);
+                    PerformanceProfiler.getInstance().logEvent(Events.DP_PREFETCH_REQUEST_IN_FLIGHT_EVENT);
                     countDownLatch.await(20000L, TimeUnit.MILLISECONDS);
                     Log.d("DPPrefetchABTestUtils", "latchToPendingRequestsIfExists: latch timed out");
                     return;

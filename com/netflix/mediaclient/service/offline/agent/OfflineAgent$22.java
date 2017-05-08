@@ -15,6 +15,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.NoCache;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmProfile;
+import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
@@ -28,7 +29,6 @@ import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import java.util.concurrent.TimeUnit;
-import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.BaseStatus;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
@@ -60,8 +60,8 @@ import com.netflix.mediaclient.service.offline.registry.OfflineRegistry$Registry
 import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.HashMap;
@@ -87,6 +87,7 @@ import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.IntentCommandHandler;
 import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.service.offline.registry.ChecksumException;
+import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.offline.registry.OfflineStorageMonitor$StorageChangeListener;
@@ -117,6 +118,14 @@ class OfflineAgent$22 implements OfflineStorageMonitor$StorageChangeListener
                 if (access$4800) {
                     this.this$0.startDownloadIfAllowed();
                 }
+                int offlineStorageVolumeListCount;
+                if (this.this$0.mOfflineRegistry != null) {
+                    offlineStorageVolumeListCount = this.this$0.mOfflineRegistry.getOfflineStorageVolumeListCount();
+                }
+                else {
+                    offlineStorageVolumeListCount = -1;
+                }
+                OfflineErrorLogblob.sendStorageAddedOrRemoved(this.this$0.getLoggingAgent().getLogblobLogging(), offlineStorageVolumeListCount);
                 this.this$0.mAgentListenerHelper.sendStorageAddedOrRemoved(this.this$0.getMainHandler(), this.this$0.mAvailable);
             }
             catch (ChecksumException ex) {
