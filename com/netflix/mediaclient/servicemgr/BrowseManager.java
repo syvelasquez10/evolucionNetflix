@@ -12,7 +12,7 @@ import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.mediaclient.util.LogUtils;
-import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
+import com.netflix.falkor.task.CmpTaskDetails;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.service.browse.DataDumper;
@@ -680,14 +680,14 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public void fetchTask(final CachedModelProxy$CmpTaskDetails cachedModelProxy$CmpTaskDetails, final ManagerCallback managerCallback) {
+    public void fetchTask(final CmpTaskDetails cmpTaskDetails, final ManagerCallback managerCallback) {
         final int requestId = this.mgr.getRequestId(managerCallback);
         if (Log.isLoggable()) {
-            Log.v("ServiceManagerBrowse", "Fetching for task: " + cachedModelProxy$CmpTaskDetails);
+            Log.v("ServiceManagerBrowse", "Fetching for task: " + cmpTaskDetails);
         }
         final INetflixService service = this.mgr.getService();
         if (service != null) {
-            service.getBrowse().fetchTask(cachedModelProxy$CmpTaskDetails, this.mgr.getClientId(), requestId);
+            service.getBrowse().fetchTask(cmpTaskDetails, this.mgr.getClientId(), requestId);
             return;
         }
         Log.w("ServiceManagerBrowse", "fetchTask:: service is not available");

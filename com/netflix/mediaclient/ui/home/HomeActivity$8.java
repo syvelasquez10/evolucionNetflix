@@ -9,6 +9,7 @@ import com.netflix.mediaclient.ui.offline.TutorialHelper;
 import com.netflix.android.tooltips.Tooltip;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.view.View;
+import android.os.PersistableBundle;
 import java.io.Serializable;
 import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
 import android.content.IntentFilter;

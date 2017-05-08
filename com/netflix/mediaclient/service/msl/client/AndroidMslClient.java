@@ -262,14 +262,10 @@ public final class AndroidMslClient implements KeyRequestDataProvider<WidevineKe
                     throw (RuntimeException)cause;
                 }
                 throw new RuntimeException(cause);
+                // iftrue(Label_0187:, errorHeader == null)
+                // iftrue(Label_0124:, !Log.isLoggable())
+                ErrorHeader errorHeader = null;
                 while (true) {
-                    final ErrorHeader errorHeader;
-                    Block_6: {
-                        break Block_6;
-                        Label_0124: {
-                            throw new MslErrorException(errorHeader);
-                        }
-                    }
                     Log.e("nf_msl", "processRequest:: Error found: " + errorHeader.getErrorMessage());
                     throw new MslErrorException(errorHeader);
                     final MslControl$MslChannel mslControl$MslChannel;
@@ -278,9 +274,10 @@ public final class AndroidMslClient implements KeyRequestDataProvider<WidevineKe
                     errorHeader = input.getErrorHeader();
                     continue;
                 }
+                Label_0124: {
+                    throw new MslErrorException(errorHeader);
+                }
             }
-            // iftrue(Label_0124:, !Log.isLoggable())
-            // iftrue(Label_0187:, errorHeader == null)
             catch (InterruptedException ex2) {
                 Log.e("nf_msl", ex2, "Interrupted exception found ", new Object[0]);
                 throw new RuntimeException(ex2);

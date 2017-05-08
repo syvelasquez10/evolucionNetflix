@@ -65,7 +65,7 @@ public class BarkerKidsDetailsActivity extends DetailsActivity implements PlayCo
                 return BarkerKidsShowDetailsFrag.create(this.videoId);
             }
             case 3: {
-                return BarkerKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color_id", 2131755145));
+                return BarkerKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color_id", 2131755146));
             }
         }
     }

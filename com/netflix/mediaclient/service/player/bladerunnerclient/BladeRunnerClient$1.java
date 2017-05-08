@@ -23,7 +23,7 @@ import org.json.JSONObject;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import java.util.Date;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Locale;
 import com.netflix.mediaclient.servicemgr.IMSLClient;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;

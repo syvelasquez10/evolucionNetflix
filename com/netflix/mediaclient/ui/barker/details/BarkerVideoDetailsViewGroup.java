@@ -241,7 +241,7 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
             n = 0.0f;
         }
         else {
-            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131427774);
+            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131427775);
         }
         final int n2 = (int)n;
         this.alignHeroImage();
@@ -335,12 +335,12 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
     
     protected void setEpisodesTextAsSelected() {
         if (this.dataSelectorEpisodes != null) {
-            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131755283));
+            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131755284));
             this.dataSelectorEpisodesTop.setVisibility(0);
             this.dataSelectorEpisodes.setTypeface(Typeface.DEFAULT_BOLD);
         }
         if (this.dataSelectorRelated != null) {
-            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131755153));
+            this.dataSelectorRelated.setTextColor(this.getResources().getColor(2131755154));
             this.dataSelectorRelatedTop.setVisibility(4);
             this.dataSelectorRelated.setTypeface(Typeface.DEFAULT);
         }

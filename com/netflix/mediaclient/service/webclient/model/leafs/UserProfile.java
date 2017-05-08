@@ -23,6 +23,7 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.interface
     private static final String FIELD_EMAIL = "email";
     private static final String FIELD_EPERIENCE = "experienceType";
     private static final String FIELD_FIRST_NAME = "firstName";
+    private static final String FIELD_GEO_COUNTRY = "geoCountry";
     private static final String FIELD_IQ_ENABLED = "isIqEnabled";
     private static final String FIELD_IS_PRIMARY = "isPrimaryProfile";
     private static final String FIELD_LANGUAGES = "languages";
@@ -31,6 +32,7 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.interface
     private static final String FIELD_PROFILE_GUID = "profileId";
     private static final String FIELD_PROFILE_NAME = "profileName";
     private static final String FIELD_PROFILE_TOKEN = "userId";
+    private static final String FIELD_REQ_COUNTRY = "reqCountry";
     private static final String TAG = "UserProfile";
     public UserProfile$Operation operation;
     public SubtitlePreference subtitlePreference;
@@ -65,6 +67,8 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.interface
             this.summary.isAutoPlayEnabled = JsonUtils.getBoolean(jsonObject, "autoPlayOn", false);
             this.summary.experienceType = JsonUtils.getString(jsonObject, "experienceType", (String)null);
             this.summary.avatarUrl = JsonUtils.getString(jsonObject, "avatarUrl", (String)null);
+            this.summary.geoCountry = JsonUtils.getString(jsonObject, "geoCountry", (String)null);
+            this.summary.reqCountry = JsonUtils.getString(jsonObject, "reqCountry", (String)null);
             final String string = JsonUtils.getString(jsonObject, "languages", (String)null);
             if (StringUtils.isNotEmpty(string)) {
                 for (String[] split = TextUtils.split(string, ","); i < split.length; ++i) {
@@ -263,6 +267,8 @@ public class UserProfile implements com.netflix.mediaclient.servicemgr.interface
                 jsonObject.put("experienceType", (Object)this.getEperienceType());
                 jsonObject.put("avatarUrl", (Object)this.getAvatarUrl());
                 jsonObject.put("languages", (Object)this.getLanguagesInCsv());
+                jsonObject.put("geoCountry", (Object)this.getGeoCountry());
+                jsonObject.put("reqCountry", (Object)this.getReqCountry());
                 if (this.subtitlePreference != null) {
                     jsonObject.put("subtitleOverride", (Object)this.subtitlePreference.toString());
                 }

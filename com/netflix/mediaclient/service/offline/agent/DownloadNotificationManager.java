@@ -97,7 +97,7 @@ abstract class DownloadNotificationManager extends SimpleOfflineAgentListener
         notification$Builder.setOnlyAlertOnce(true);
         if (Build$VERSION.SDK_INT >= 21) {
             notification$Builder.setVisibility(1);
-            notification$Builder.setColor(ContextCompat.getColor(this.mContext, 2131755174));
+            notification$Builder.setColor(ContextCompat.getColor(this.mContext, 2131755175));
         }
         if (largeIcon != null) {
             notification$Builder.setLargeIcon(largeIcon);

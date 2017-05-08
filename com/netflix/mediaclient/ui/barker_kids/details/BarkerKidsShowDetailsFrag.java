@@ -62,25 +62,25 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
         if (detailsPageContentWidth > 0) {
             n = (KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) - detailsPageContentWidth) / 2;
         }
-        return n + (int)this.getResources().getDimension(2131427787);
+        return n + (int)this.getResources().getDimension(2131427788);
     }
     
     @SuppressLint({ "ResourceAsColor" })
     @Override
     protected ViewGroup createSeasonsSelectorGroup() {
         final ViewGroup seasonsSelectorGroup = super.createSeasonsSelectorGroup();
-        this.setSpinnerBackground(this.getResources().getColor(2131755145));
+        this.setSpinnerBackground(this.getResources().getColor(2131755146));
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131755283);
-            seasonsSpinnerAdapter.setDropDownTextColor(2131755145);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131755284);
+            seasonsSpinnerAdapter.setDropDownTextColor(2131755146);
         }
         return seasonsSelectorGroup;
     }
     
     @Override
     protected int getBackgroundResource() {
-        return 2131755264;
+        return 2131755265;
     }
     
     @Override
@@ -90,7 +90,7 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427776) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427777) * 2;
     }
     
     @Override
@@ -159,7 +159,7 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     @Override
     protected void setupRecyclerViewItemDecoration() {
         this.recyclerView.removeItemDecoration((RecyclerView$ItemDecoration)this.itemDecoration);
-        this.itemDecoration = new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427751), this.getNumColumns());
+        this.itemDecoration = new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427752), this.getNumColumns());
         this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)this.itemDecoration);
     }
     
@@ -173,7 +173,7 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     @Override
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new BarkerKidsShowDetailsFrag$3(this));
-        adapter.setItemBackgroundColor(2131755145);
+        adapter.setItemBackgroundColor(2131755146);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     

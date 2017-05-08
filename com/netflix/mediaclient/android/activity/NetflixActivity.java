@@ -680,7 +680,7 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
             if (!b) {
                 break Label_0095;
             }
-        Block_9_Outer:
+        Block_10_Outer:
             while (true) {
                 try {
                     if (Log.isLoggable()) {
@@ -688,21 +688,21 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
                     }
                     this.displayDialog(dialog);
                     return;
-                    // iftrue(Label_0144:, !Log.isLoggable())
                     // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
-                    Label_0144: {
-                        while (true) {
+                    while (true) {
+                        Block_9: {
+                            break Block_9;
                             while (true) {
+                                this.displayDialog(dialog);
+                                return;
                                 Log.d("NetflixActivity", "displayServiceAgentDialog " + s);
-                                break Label_0144;
-                                continue Block_9_Outer;
+                                continue Block_10_Outer;
                             }
-                            continue;
                         }
+                        continue;
                     }
-                    this.displayDialog(dialog);
-                    return;
                 }
+                // iftrue(Label_0144:, !Log.isLoggable())
                 finally {
                 }
                 // monitorexit(visibleDialogLock)
@@ -960,8 +960,8 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
                 ((CastPlayerControlsFrag)this.castPlayerFrag).setIsShowing(false);
             }
         }
-        if (DeviceUtils.isNotTabletByContext((Context)this) && this.getRequestedOrientation() != 4) {
-            this.setRequestedOrientation(4);
+        if (DeviceUtils.isNotTabletByContext((Context)this) && this.getRequestedOrientation() != -1 && !this.lockScreenOrientationForBrowseExperience()) {
+            this.setRequestedOrientation(-1);
         }
         this.postActionBarUpdate();
     }
@@ -974,7 +974,7 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
                 return;
             }
             this.slidingPanel.setDragView(this.castPlayerFrag.getSlidingPanelDragView());
-            this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131427596));
+            this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131427597));
             this.slidingPanel.setPanelSlideListener(this.panelSlideListener);
             if (this.shouldApplyPaddingToSlidingPanel()) {
                 final View child = this.slidingPanel.getChildAt(0);
@@ -1021,10 +1021,12 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
         return this.mIsTablet;
     }
     
-    protected void lockScreenOrientation() {
+    protected boolean lockScreenOrientationForBrowseExperience() {
         if (Coppola1Utils.isCoppolaExperience((Context)this) && Coppola1Utils.shouldLockActivitiesToPortrait((Activity)this) && !(this instanceof DetailsActivity)) {
             this.setRequestedOrientation(1);
+            return true;
         }
+        return false;
     }
     
     public void mdxStatusUpdatedByMdxReceiver() {
@@ -1066,7 +1068,12 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
     @Override
     protected void onActivityResult(final int n, final int n2, final Intent intent) {
         if (n == NetflixActivity.DL_REQUEST_CODE && n2 == -1 && intent != null) {
-            getOfflineAgentOrNull(this).requestOfflineViewing(intent.getStringExtra("playableId"), VideoType.create(intent.getStringExtra("videoTYpe")), PlayContext.OFFLINE_MY_DOWNLOADS_CONTEXT);
+            final String stringExtra = intent.getStringExtra("playableId");
+            final String stringExtra2 = intent.getStringExtra("videoTYpe");
+            final OfflineAgentInterface offlineAgentOrNull = getOfflineAgentOrNull(this);
+            if (offlineAgentOrNull != null) {
+                offlineAgentOrNull.requestOfflineViewing(stringExtra, VideoType.create(stringExtra2), PlayContext.OFFLINE_MY_DOWNLOADS_CONTEXT);
+            }
         }
     }
     
@@ -1107,7 +1114,7 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
             Log.v("NetflixActivity", "Creating activity: " + this.getClass().getSimpleName() + ", hash: " + this.hashCode());
         }
         if (this.shouldShowKidsBackground()) {
-            this.getWindow().setBackgroundDrawableResource(2131755283);
+            this.getWindow().setBackgroundDrawableResource(2131755284);
         }
         else if (this.canApplyBrowseExperience() && KidsUtils.isKidsParity((Context)this)) {
             this.getWindow().setBackgroundDrawable((Drawable)new ColorDrawable(KidsUtils.getTheme().getBackgroundColor()));
@@ -1139,7 +1146,7 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
         if (AndroidUtils.getAndroidVersion() >= 23) {
             this.setAssistBlocked(this.findViewById(16908290), true);
         }
-        this.lockScreenOrientation();
+        this.lockScreenOrientationForBrowseExperience();
         if (this.mCallback != null) {
             this.mCallback.onActivityCreated((Activity)this, bundle);
         }
@@ -1646,7 +1653,7 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
     
     protected void showCastPlayer() {
         if (this.castPlayerFrag != null && this.slidingPanel != null) {
-            this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131427596));
+            this.slidingPanel.setPanelHeight(this.getResources().getDimensionPixelSize(2131427597));
             this.slidingPanel.showPane();
             final View viewById = this.findViewById(2131820807);
             if (viewById != null) {

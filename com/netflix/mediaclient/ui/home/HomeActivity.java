@@ -9,6 +9,7 @@ import com.netflix.mediaclient.ui.offline.TutorialHelper;
 import com.netflix.android.tooltips.Tooltip;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.view.View;
+import android.os.PersistableBundle;
 import java.io.Serializable;
 import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
 import android.content.IntentFilter;
@@ -74,6 +75,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     private static final String EXTRA_BACK_STACK_INTENTS = "extra_back_stack_intents";
     private static final String EXTRA_GENRE_ID = "genre_id";
     private static final String EXTRA_GENRE_PARCEL = "genre_parcel";
+    private static final String EXTRA_HAS_CHECKED_ONRAMP = "extra_has_checked_onramp";
     private static final String EXTRA_NOTIFICATION_LIST_STATUS = "extra_notification_list_status";
     public static final String REFRESH_HOME_LOLOMO = "com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO";
     static final int REQUEST_RESOLVE_ERROR = 1001;
@@ -394,6 +396,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         if (bundle != null) {
             this.backStackIntents.addAll((Collection<? extends Intent>)bundle.getSerializable("extra_back_stack_intents"));
             this.notificationsListStatus = (IrisUtils$NotificationsListStatus)bundle.getSerializable("extra_notification_list_status");
+            this.hasCheckedOnRampEligibility = bundle.getBoolean("extra_has_checked_onramp", false);
         }
         this.handleNewIntent(this.getIntent());
         this.viewRecycler = new ObjectRecycler$ViewRecycler();
@@ -488,6 +491,11 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         super.onSaveInstanceState(bundle);
         bundle.putSerializable("extra_back_stack_intents", (Serializable)this.backStackIntents);
         bundle.putSerializable("extra_notification_list_status", (Serializable)this.notificationsListStatus);
+    }
+    
+    public void onSaveInstanceState(final Bundle bundle, final PersistableBundle persistableBundle) {
+        super.onSaveInstanceState(bundle, persistableBundle);
+        bundle.putBoolean("extra_has_checked_onramp", this.hasCheckedOnRampEligibility);
     }
     
     protected void onSlidingPanelCollapsed(final View view) {

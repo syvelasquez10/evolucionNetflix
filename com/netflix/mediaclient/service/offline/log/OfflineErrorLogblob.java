@@ -45,7 +45,9 @@ public final class OfflineErrorLogblob extends OfflineBaseLogblob
             return;
         }
         try {
-            logblobLogging.sendLogblob(new OfflineErrorLogblob(Logblob$Severity.error, s, s2, s3, LogUtils.getErrorCodeForServerLogs(status), LogUtils.getErrorMessageForServerLogs(status), true));
+            final OfflineErrorLogblob offlineErrorLogblob = new OfflineErrorLogblob(Logblob$Severity.error, s, s2, s3, LogUtils.getErrorCodeForServerLogs(status), LogUtils.getErrorMessageForServerLogs(status), true);
+            offlineErrorLogblob.setDebugMessage(status.getDebugMessageForServerLogs());
+            logblobLogging.sendLogblob(offlineErrorLogblob);
         }
         catch (JSONException ex) {
             Log.i("offlineErrorLogBlob", "JSONException:", ex);
@@ -57,6 +59,7 @@ public final class OfflineErrorLogblob extends OfflineBaseLogblob
     
     public static void sendDownloadStopError(final LogblobLogging logblobLogging, final String s, final String s2, final String s3, final StopReason stopReason) {
         if (logblobLogging != null) {
+        Label_0092_Outer:
             while (true) {
                 while (true) {
                     Label_0280: {
@@ -112,11 +115,14 @@ public final class OfflineErrorLogblob extends OfflineBaseLogblob
                                     break Label_0280;
                                 }
                             }
-                            Log.d("offlineErrorLogBlob", " onDownloadStopped stopReason: %s, no-op", stopReason);
-                            // iftrue(Label_0004:, !false)
-                            logblobLogging.sendLogblob(new OfflineErrorLogblob(error, s, s2, s3, UserVisibleErrorCodeGenerator.getOfflineErrorCodeForStoppedDownload(stopReason), "downloadStopError", true));
-                            return;
+                            while (true) {
+                                logblobLogging.sendLogblob(new OfflineErrorLogblob(error, s, s2, s3, UserVisibleErrorCodeGenerator.getOfflineErrorCodeForStoppedDownload(stopReason), "downloadStopError", true));
+                                return;
+                                Log.d("offlineErrorLogBlob", " onDownloadStopped stopReason: %s, no-op", stopReason);
+                                continue Label_0092_Outer;
+                            }
                         }
+                        // iftrue(Label_0004:, !false)
                         catch (JSONException ex) {
                             Log.i("offlineErrorLogBlob", "JSONException:", ex);
                             return;
@@ -153,13 +159,27 @@ public final class OfflineErrorLogblob extends OfflineBaseLogblob
             return;
         }
         try {
-            logblobLogging.sendLogblob(new OfflineErrorLogblob(Logblob$Severity.warn, s, s2, s3, LogUtils.getErrorCodeForServerLogs(status), LogUtils.getErrorMessageForServerLogs(status), false));
+            final OfflineErrorLogblob offlineErrorLogblob = new OfflineErrorLogblob(Logblob$Severity.warn, s, s2, s3, LogUtils.getErrorCodeForServerLogs(status), LogUtils.getErrorMessageForServerLogs(status), false);
+            offlineErrorLogblob.setDebugMessage(status.getDebugMessageForServerLogs());
+            logblobLogging.sendLogblob(offlineErrorLogblob);
         }
         catch (JSONException ex) {
             Log.i("offlineErrorLogBlob", "JSONException:", ex);
         }
         catch (Exception ex2) {
             Log.i("offlineErrorLogBlob", "Exception:", ex2);
+        }
+    }
+    
+    private void setDebugMessage(final String s) {
+        if (!StringUtils.isNotEmpty(s)) {
+            return;
+        }
+        try {
+            this.mJson.put("dbgmsg", (Object)s);
+        }
+        catch (JSONException ex) {
+            Log.i("offlineErrorLogBlob", "JSONException:", ex);
         }
     }
     

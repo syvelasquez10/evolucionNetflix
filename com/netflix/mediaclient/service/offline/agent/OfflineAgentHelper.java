@@ -9,14 +9,13 @@ import com.netflix.mediaclient.javabridge.ui.LogArguments;
 import com.netflix.mediaclient.service.logging.logblob.LogBlobType;
 import com.netflix.mediaclient.javabridge.ui.LogArguments$LogLevel;
 import android.os.Environment;
+import java.io.File;
 import android.os.Build$VERSION;
 import com.netflix.mediaclient.service.NrdController;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry;
 import com.netflix.mediaclient.service.user.UserAgent;
 import java.util.ArrayList;
-import com.netflix.mediaclient.util.AndroidUtils;
-import java.io.File;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -51,18 +50,17 @@ class OfflineAgentHelper
         return System.currentTimeMillis() - PreferenceUtils.getLongPref(context, "pref_offline_license_sync_time", 0L) > TimeUnit.HOURS.toMillis(24L);
     }
     
-    static boolean ensureEnoughDiskSpaceForNewRequest(final String s, final List<OfflinePlayable> list) {
+    static boolean ensureEnoughDiskSpaceForNewRequest(final long n, final List<OfflinePlayable> list) {
         final Iterator<OfflinePlayable> iterator = list.iterator();
-        long n = 50000000L;
+        long n2 = 50000000L;
         while (iterator.hasNext()) {
             final OfflinePlayable offlinePlayable = iterator.next();
             if (offlinePlayable.getDownloadState() != DownloadState.Complete) {
-                n += offlinePlayable.getTotalEstimatedSpace() - offlinePlayable.getCurrentEstimatedSpace();
+                n2 += offlinePlayable.getTotalEstimatedSpace() - offlinePlayable.getCurrentEstimatedSpace();
             }
         }
-        final long freeSpaceOnFileSystem = AndroidUtils.getFreeSpaceOnFileSystem(new File(s));
-        if (n > freeSpaceOnFileSystem) {
-            Log.e("nf_offlineAgent", "ensureEnoughDiskSpaceForNewRequest freeSpaceNeeded=" + n + " freeSpaceOnFileSystem=" + freeSpaceOnFileSystem);
+        if (n2 > n) {
+            Log.e("nf_offlineAgent", "ensureEnoughDiskSpaceForNewRequest freeSpaceNeeded=" + n2 + " freeSpace=" + n);
             return false;
         }
         return true;
@@ -134,15 +132,15 @@ class OfflineAgentHelper
         return false;
     }
     
-    static void sendOfflineDlRequestStorageInfoLogblob(final NrdController nrdController, final String s, final String s2) {
+    static void sendOfflineDlRequestStorageInfoLogblob(final NrdController nrdController, final String s, final long n, final String s2, final String s3) {
         if (nrdController != null) {
             final Nrdp nrdp = nrdController.getNrdp();
             if (nrdp != null) {
                 boolean externalStorageRemovable = false;
                 if (Build$VERSION.SDK_INT >= 21) {
-                    externalStorageRemovable = Environment.isExternalStorageRemovable(new File(s2));
+                    externalStorageRemovable = Environment.isExternalStorageRemovable(new File(s3));
                 }
-                nrdp.getLog().log(new LogArguments(LogArguments$LogLevel.INFO, "DlRequestStorageInfo playableId=" + s + " isRemovable=" + externalStorageRemovable, LogBlobType.OFFLINE_LOGBLOB_TYPE.getValue(), null));
+                nrdp.getLog().log(new LogArguments(LogArguments$LogLevel.INFO, "DlRequestStorageInfo playableId=" + s + " freeSpace=" + n + " oxId=" + s2 + " isRemovable=" + externalStorageRemovable, LogBlobType.OFFLINE_LOGBLOB_TYPE.getValue(), null));
             }
         }
     }

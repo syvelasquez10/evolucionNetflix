@@ -17,6 +17,8 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
+import com.netflix.mediaclient.util.LogUtils;
+import java.util.Random;
 import com.netflix.mediaclient.util.VolleyUtils;
 import com.android.volley.NetworkError;
 import com.android.volley.TimeoutError;
@@ -214,7 +216,15 @@ public abstract class MSLVolleyRequest<T> extends Request<T> implements IMSLClie
         }
         NetflixStatus netflixStatus;
         if ((netflixStatus = status) == null) {
-            netflixStatus = new NetflixStatus(StatusCode.INT_ERR_FETCH_ERROR);
+            final NetflixStatus netflixStatus2 = netflixStatus = new NetflixStatus(StatusCode.INT_ERR_FETCH_ERROR);
+            if (volleyError != null) {
+                netflixStatus2.setDebugMessageForServerLogs(volleyError.getMessage());
+                netflixStatus = netflixStatus2;
+                if (new Random().nextInt(100) == 31) {
+                    LogUtils.reportErrorSafely(volleyError.getMessage(), (Throwable)volleyError);
+                    netflixStatus = netflixStatus2;
+                }
+            }
         }
         if (netflixStatus.getError() == null) {
             Log.d("nf_volleyrequest", "Error is not set yet, add it.");

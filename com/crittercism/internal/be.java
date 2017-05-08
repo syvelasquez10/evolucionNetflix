@@ -421,13 +421,10 @@ public final class be extends Transaction implements cf
                 try {
                     dw.b("Ignoring Transaction.setValue(int) call. Negative parameter provided.");
                     return;
-                    while (true) {
-                        this.g = n;
-                        return;
-                        continue;
-                    }
+                    // iftrue(Label_0038:, this.b != be$a.a)
+                    this.g = n;
+                    return;
                 }
-                // iftrue(Label_0038:, this.b != be$a.a)
                 finally {
                 }
                 // monitorexit(this)

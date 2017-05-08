@@ -185,10 +185,10 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             final Resources resources = this.getResources();
             int n;
             if (episodeDetails.isAvailableToStream()) {
-                n = 2131755196;
+                n = 2131755197;
             }
             else {
-                n = 2131755212;
+                n = 2131755213;
             }
             title.setTextColor(resources.getColor(n));
             this.title.setClickable(false);

@@ -32,7 +32,7 @@ class UnpackingSoSource$1 implements Runnable
         // Original Bytecode:
         // 
         //     0: aconst_null    
-        //     1: astore_1       
+        //     1: astore_2       
         //     2: aconst_null    
         //     3: astore_3       
         //     4: ldc             "fb-UnpackingSoSource"
@@ -144,20 +144,20 @@ class UnpackingSoSource$1 implements Runnable
         //   233: aload           4
         //   235: invokevirtual   java/io/RandomAccessFile.close:()V
         //   238: goto            60
-        //   241: astore_1       
-        //   242: aload_1        
+        //   241: astore_2       
+        //   242: aload_2        
         //   243: athrow         
-        //   244: astore_2       
+        //   244: astore_1       
         //   245: aload           4
         //   247: ifnull          259
-        //   250: aload_1        
+        //   250: aload_2        
         //   251: ifnull          270
         //   254: aload           4
         //   256: invokevirtual   java/io/RandomAccessFile.close:()V
-        //   259: aload_2        
+        //   259: aload_1        
         //   260: athrow         
         //   261: astore_3       
-        //   262: aload_1        
+        //   262: aload_2        
         //   263: aload_3        
         //   264: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
         //   267: goto            259
@@ -172,31 +172,31 @@ class UnpackingSoSource$1 implements Runnable
         //   287: aload_3        
         //   288: invokevirtual   java/io/RandomAccessFile.close:()V
         //   291: goto            106
-        //   294: astore_1       
-        //   295: aload_1        
+        //   294: astore_2       
+        //   295: aload_2        
         //   296: athrow         
-        //   297: astore_2       
+        //   297: astore_1       
         //   298: aload_3        
         //   299: ifnull          310
-        //   302: aload_1        
+        //   302: aload_2        
         //   303: ifnull          321
         //   306: aload_3        
         //   307: invokevirtual   java/io/RandomAccessFile.close:()V
-        //   310: aload_2        
+        //   310: aload_1        
         //   311: athrow         
         //   312: astore_3       
-        //   313: aload_1        
+        //   313: aload_2        
         //   314: aload_3        
         //   315: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
         //   318: goto            310
         //   321: aload_3        
         //   322: invokevirtual   java/io/RandomAccessFile.close:()V
         //   325: goto            310
-        //   328: astore_2       
+        //   328: astore_1       
         //   329: goto            298
-        //   332: astore_2       
+        //   332: astore_1       
         //   333: aload_3        
-        //   334: astore_1       
+        //   334: astore_2       
         //   335: goto            245
         //    Exceptions:
         //  Try           Handler

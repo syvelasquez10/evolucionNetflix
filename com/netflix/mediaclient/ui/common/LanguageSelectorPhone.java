@@ -108,7 +108,7 @@ public final class LanguageSelectorPhone extends LanguageSelector implements Tab
         final Resources resources = this.mController.getResources();
         final int n = (int)resources.getDimension(2131427483);
         final int n2 = (int)resources.getDimension(2131427389);
-        final int n3 = (int)resources.getDimension(2131427805);
+        final int n3 = (int)resources.getDimension(2131427806);
         final int n4 = this.calculateMaxNumberOfItems() * n3;
         if (Log.isLoggable()) {
             Log.d("nf_language_selector", "Max height " + n2 + " px, item height " + n3 + " px, proposed list height " + n4 + " px");

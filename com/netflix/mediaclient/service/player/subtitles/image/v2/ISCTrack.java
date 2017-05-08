@@ -35,13 +35,13 @@ public class ISCTrack extends Box
     }
     
     private void loadBoxes(final DataInputStream dataInputStream) {
-    Label_0158_Outer:
+    Label_0044_Outer:
         while (true) {
             while (true) {
-            Label_0044_Outer:
+            Label_0093:
                 while (true) {
-                    long n3 = 0L;
-                Label_0177:
+                    long n = 0L;
+                Label_0044:
                     while (true) {
                         Label_0172: {
                             try {
@@ -50,36 +50,39 @@ public class ISCTrack extends Box
                                     Log.d("nf_subtitles_imv2", "Content to be parsed: " + contentSizeInBytes);
                                 }
                                 break Label_0172;
-                                final int n2;
-                                int n = n2;
-                                contentSizeInBytes = n3;
-                                // iftrue(Label_0044:, !Log.isLoggable())
-                                Log.d("nf_subtitles_imv2", "Left to parse: " + n3);
-                                n = n2;
-                                contentSizeInBytes = n3;
-                                break Label_0044;
                                 while (true) {
-                                    Log.d("nf_subtitles_imv2", "Content left to be parsed: " + n3);
-                                    break Label_0177;
-                                    n3 = contentSizeInBytes - this.readBox(dataInputStream);
-                                    continue Label_0158_Outer;
+                                    Log.d("nf_subtitles_imv2", "Content left to be parsed: " + n);
+                                    break Label_0044;
+                                    Block_4: {
+                                        break Block_4;
+                                        final int n3;
+                                        int n2 = n3;
+                                        contentSizeInBytes = n;
+                                        Log.d("nf_subtitles_imv2", "Left to parse: " + n);
+                                        n2 = n3;
+                                        contentSizeInBytes = n;
+                                        continue Label_0044;
+                                    }
+                                    n = contentSizeInBytes - this.readBox(dataInputStream);
+                                    continue Label_0044_Outer;
                                 }
                             }
-                            // iftrue(Label_0163:, n == 0)
+                            // iftrue(Label_0163:, n2 == 0)
+                            // iftrue(Label_0044:, !Log.isLoggable())
                             // iftrue(Label_0177:, !Log.isLoggable())
                             catch (Throwable t) {
                                 Log.w("nf_subtitles_imv2", "Either error or we do not have anything else to read!", t);
                                 return;
                             }
-                            final int n2 = 0;
-                            continue Label_0044_Outer;
+                            final int n3 = 0;
+                            continue Label_0093;
                         }
-                        int n = 1;
-                        continue Label_0158_Outer;
+                        int n2 = 1;
+                        continue Label_0044;
                     }
-                    if (n3 > 0L) {
-                        final int n2 = 1;
-                        continue Label_0044_Outer;
+                    if (n > 0L) {
+                        final int n3 = 1;
+                        continue Label_0093;
                     }
                     break;
                 }

@@ -68,7 +68,7 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
         final Resources resources = this.getResources();
         int n;
         if (this.isCurrentEpisode && b) {
-            n = 2131755283;
+            n = 2131755284;
         }
         else {
             n = 2131755029;
@@ -93,7 +93,7 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
             this.episodePreviewContainer.getLayoutParams().height = (int)(this.episodePreviewContainer.getLayoutParams().width * 0.5625f);
             return;
         }
-        this.image.getLayoutParams().height = (int)((BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - (this.this$0.getNumColumns() + 1.0f) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427762)) / this.this$0.getNumColumns() * 0.5625f);
+        this.image.getLayoutParams().height = (int)((BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - (this.this$0.getNumColumns() + 1.0f) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427763)) / this.this$0.getNumColumns() * 0.5625f);
     }
     
     protected void adjustEpisodeImageWidth() {
@@ -230,7 +230,7 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
     protected void updateTitle(final EpisodeDetails episodeDetails) {
         if (this.this$0.getActivity() != null) {
             if (this.title != null) {
-                this.title.setTextColor(this.getResources().getColor(2131755196));
+                this.title.setTextColor(this.getResources().getColor(2131755197));
             }
             if (this.episodeNumber != null) {
                 ViewUtils.setVisibleOrGone((View)this.episodeNumber, !episodeDetails.isNSRE());

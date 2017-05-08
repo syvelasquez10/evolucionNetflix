@@ -182,7 +182,6 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
     }
     
     public void onExecutorDestroyed(final ExecutorToken executorToken) {
-    Label_0030_Outer:
         while (true) {
             while (true) {
                 Label_0105: {
@@ -192,13 +191,6 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
                             return;
                         }
                         break Label_0105;
-                        // iftrue(Label_0072:, n >= sparseArray.size())
-                        while (true) {
-                            final int n;
-                            this.mTimers.remove(sparseArray.get(sparseArray.keyAt(n)));
-                            ++n;
-                            continue Label_0030_Outer;
-                        }
                         Label_0072: {
                             final Object mIdleCallbackGuard = this.mIdleCallbackGuard;
                         }
@@ -208,6 +200,11 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
                             this.mSendIdleEventsExecutorTokens.remove(t);
                             return;
                         }
+                        // iftrue(Label_0072:, n >= sparseArray.size())
+                        final int n;
+                        this.mTimers.remove(sparseArray.get(sparseArray.keyAt(n)));
+                        ++n;
+                        continue;
                     }
                 }
                 int n = 0;

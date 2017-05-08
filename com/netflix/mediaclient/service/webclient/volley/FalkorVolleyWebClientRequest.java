@@ -204,7 +204,7 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
         if (StringUtils.isNotEmpty(optionalParams)) {
             sb.append(optionalParams);
         }
-        this.storeReqNetflixId(this.getCurrentNetflixId());
+        this.storeReqProfileGuid(this.getCurrentProfileGuid());
         string = sb.toString();
         if (Log.isLoggable()) {
             Log.v("FalkorVolleyWebClientRequest", "VolleyWebClientRequest URL = " + string);

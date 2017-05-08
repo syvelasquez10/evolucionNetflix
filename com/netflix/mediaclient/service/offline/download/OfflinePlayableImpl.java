@@ -342,6 +342,10 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
         return null;
     }
     
+    private String getNotEnoughSpaceDebugString() {
+        return "freeSpaceOnFileSystem=" + AndroidUtils.getFreeSpaceOnFileSystem(this.mDirPathOfPlayableFileObject) + " freeSpaceNeeded=" + (this.getTotalEstimatedSpace() - this.getCurrentEstimatedSpace() + 25000000L);
+    }
+    
     private DownloadableProgressInfo getProgressInfoForDownloadable(final DownloadablePersistentData downloadablePersistentData, final DownloadableType downloadableType) {
         DownloadableProgressInfo downloadableProgressInfo;
         if ((downloadableProgressInfo = this.mPlayableProgressInfo.mDownloadableProgressInfoMap.get(downloadablePersistentData.mDownloadableId)) == null) {
@@ -360,6 +364,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
     }
     
     private void handleCdnUrlDownloadSessionEnd(final CdnUrlDownloader cdnUrlDownloader) {
+        boolean ensureEnoughDiskSpace = true;
         this.updateActiveAndCompleteDownloadableCount();
         Log.i("nf_offlinePlayable", " completeTrackCount=%d activeTrackCount=%d downloadableId=%s", this.mCompletedDownloadableCount, this.mActiveDownloadableCount, cdnUrlDownloader.getDownloadableId());
         if (this.mCompletedDownloadableCount == this.mCdnUrlDownloaderList.size()) {
@@ -368,14 +373,16 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
             this.mPlayableProgressInfo.markComplete();
             this.mOfflinePlayableListener.onDownloadCompletedSuccess(this);
         }
-        else if (this.mActiveDownloadableCount > 0) {
-            Log.i("nf_offlinePlayable", "still waiting for other tracks to download");
-        }
         else {
             Log.i("nf_offlinePlayable", "completeTrackCount=%d activeTrackCount=%d", this.mCompletedDownloadableCount, this.mActiveDownloadableCount);
+            ensureEnoughDiskSpace = this.ensureEnoughDiskSpace();
         }
-        this.mOfflinePlayableListener.requestSaveToRegistry();
-        PlayabilityEnforcer.updateLastContactNetflix(this.mContext);
+        if (ensureEnoughDiskSpace) {
+            this.mOfflinePlayableListener.requestSaveToRegistry();
+            PlayabilityEnforcer.updateLastContactNetflix(this.mContext);
+            return;
+        }
+        this.stopAndSendStorageError(new NetflixStatus(StatusCode.DL_NOT_ENOUGH_FREE_SPACE), StopReason.NotEnoughSpace);
     }
     
     private void handleCdnUrlExpiredOrMoved(final Status status) {
@@ -383,7 +390,11 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
             Log.e("nf_offlinePlayable", "handleCdnUrlExpiredOrMoved status=" + status);
         }
         this.doStopDownload();
-        this.refreshManifestFromServerAndContinue();
+        if (this.ensureEnoughDiskSpace()) {
+            this.refreshManifestFromServerAndContinue();
+            return;
+        }
+        this.stopAndSendStorageError(new NetflixStatus(StatusCode.DL_NOT_ENOUGH_FREE_SPACE), StopReason.NotEnoughSpace);
     }
     
     private void handleCdnUrlGeoCheckError(final Status status) {
@@ -432,6 +443,7 @@ public class OfflinePlayableImpl implements CdnUrlDownloadListener, OfflinePlaya
                 }
                 else {
                     status2 = new NetflixStatus(StatusCode.DL_NOT_ENOUGH_FREE_SPACE);
+                    ((NetflixStatus)status2).setDebugMessageForServerLogs(this.getNotEnoughSpaceDebugString());
                     OfflineErrorLogblob.sendNotEnoughSpaceLogBlob(this.mClientLogging.getLogblobLogging(), this.getPlayableId(), this.getOxId(), this.getDxId(), status2);
                     Log.e("nf_offlinePlayable", "handleFirstTimeManifestReceived not enough space");
                 }

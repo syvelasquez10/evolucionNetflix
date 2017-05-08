@@ -93,17 +93,17 @@ public final class dz
                 final FileInputStream fileInputStream3 = fileInputStream;
                 fileInputStream3.close();
                 return s;
+                // iftrue(Label_0031:, fileInputStream == null)
                 final Throwable t;
-                Label_0031: {
-                    throw t;
+                Block_6: {
+                    break Block_6;
+                    Label_0031: {
+                        throw t;
+                    }
                 }
-                while (true) {
-                    fileInputStream.close();
-                    throw t;
-                    continue;
-                }
+                fileInputStream.close();
+                throw t;
             }
-            // iftrue(Label_0031:, fileInputStream == null)
             finally {
                 continue;
             }

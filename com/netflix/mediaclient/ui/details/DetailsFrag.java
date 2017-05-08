@@ -29,7 +29,6 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag implements ErrorWrapper$Callback, DetailsActivity$Reloader, VideoDetailsViewGroup$VideoDetailsViewGroupProvider
 {
     public static final String EXTRA_IS_MOVIE = "extra_is_movie";
-    protected static final String EXTRA_VIDEO_ID = "extra_video_id";
     private static final String TAG = "DetailsFrag";
     private AddToListData$StateListener addToListWrapper;
     public VideoDetailsViewGroup detailsViewGroup;
@@ -37,7 +36,6 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     protected LoadingAndErrorWrapper leWrapper;
     private T mVideoDetails;
     protected View primaryView;
-    protected long requestId;
     
     public DetailsFrag() {
         this.errorCallback = new DetailsFrag$2(this);

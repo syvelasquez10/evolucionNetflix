@@ -12,6 +12,8 @@ public interface Status extends Serializable
 {
     public static final int REQUEST_ID_NOT_AVAILABLE = Integer.MAX_VALUE;
     
+    String getDebugMessageForServerLogs();
+    
     Error getError();
     
     String getMessage();

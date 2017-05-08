@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.webclient;
 public class UserCredentialRegistryWrapper implements UserCredentialRegistry
 {
     private String mNetflixId;
+    private String mProfileGuid;
     private String mSecureNetflixId;
     private UserCredentialRegistry mUserCredentialRegistry;
     
@@ -15,7 +16,13 @@ public class UserCredentialRegistryWrapper implements UserCredentialRegistry
         if (mUserCredentialRegistry != null) {
             this.mNetflixId = mUserCredentialRegistry.getNetflixID();
             this.mSecureNetflixId = mUserCredentialRegistry.getSecureNetflixID();
+            this.mProfileGuid = mUserCredentialRegistry.getCurrentProfileGuid();
         }
+    }
+    
+    @Override
+    public String getCurrentProfileGuid() {
+        return this.mProfileGuid;
     }
     
     @Override

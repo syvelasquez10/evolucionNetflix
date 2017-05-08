@@ -32,7 +32,7 @@ public class CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView extends Bark
     
     @Override
     protected void adjustEpisodeImageHeight() {
-        final int n = DeviceUtils.getScreenWidthInPixels(this.getContext()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427707);
+        final int n = DeviceUtils.getScreenWidthInPixels(this.getContext()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427708);
         final int height = (int)(n * 0.5625f);
         this.image.getLayoutParams().width = n;
         this.image.getLayoutParams().height = height;
@@ -83,7 +83,7 @@ public class CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView extends Bark
         if (this.title == null) {
             return;
         }
-        this.title.setTextColor(this.getResources().getColor(2131755196));
+        this.title.setTextColor(this.getResources().getColor(2131755197));
         this.title.setText((CharSequence)(AbsEpisodeView.createTitleText(episodeDetails, (Context)this.this$0.getActivity()) + " "));
     }
 }

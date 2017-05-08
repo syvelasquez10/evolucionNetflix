@@ -202,7 +202,7 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                         case 4:
                         case 5: {
                             s = context.getString(2131296934);
-                            n = 2131755134;
+                            n = 2131755135;
                         }
                         case 1:
                         case 6: {
@@ -230,13 +230,13 @@ public class OfflinePlayableUiListImpl implements OfflinePlayableUiList
                                     n = (int)TimeUnit.MILLISECONDS.toMinutes(expiringInMillis);
                                     s = context.getResources().getQuantityString(2131361807, n, new Object[] { n });
                                 }
-                                n = 2131755134;
+                                n = 2131755135;
                                 break;
                             }
                             break;
                         }
                         case 7: {
-                            n = 2131755134;
+                            n = 2131755135;
                             s = context.getString(2131296935);
                             break;
                         }

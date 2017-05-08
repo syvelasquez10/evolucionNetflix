@@ -58,7 +58,6 @@ public abstract class ClientLoggingVolleyWebClientRequest<T> extends VolleyWebCl
     
     @Override
     protected String getUrl(final String s) {
-        this.storeReqNetflixId(this.getCurrentNetflixId());
         if (Log.isLoggable()) {
             Log.v("nf_volleyrequest", "ClientLoggingVolleyWebClientReques URL = " + s);
         }

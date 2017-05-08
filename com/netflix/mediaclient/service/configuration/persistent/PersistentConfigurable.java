@@ -67,14 +67,18 @@ public abstract class PersistentConfigurable
     
     public void update(final Context context, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
         final ABTestConfig$Cell defaultCell = this.getDefaultCell();
-        final ABTestConfig configuration = this.getConfiguration(serviceAgent$ConfigurationAgentInterface.getABTestConfig());
+        final ABTestConfigData abTestConfig = serviceAgent$ConfigurationAgentInterface.getABTestConfig();
         ABTestConfig$Cell mCell = defaultCell;
-        if (configuration != null) {
-            final ABTestConfig$Cell cell = configuration.getCell();
-            if ((mCell = cell) != null) {
-                PreferenceUtils.putIntPref(context, this.getPrefKey(), cell.getCellId());
-                ApmLogUtils.reportABTestReceivedEvent(context, this.getTestId(), cell.getCellId());
-                mCell = cell;
+        if (abTestConfig != null) {
+            final ABTestConfig configuration = this.getConfiguration(abTestConfig);
+            mCell = defaultCell;
+            if (configuration != null) {
+                final ABTestConfig$Cell cell = configuration.getCell();
+                if ((mCell = cell) != null) {
+                    PreferenceUtils.putIntPref(context, this.getPrefKey(), cell.getCellId());
+                    ApmLogUtils.reportABTestReceivedEvent(context, this.getTestId(), cell.getCellId());
+                    mCell = cell;
+                }
             }
         }
         if (this.shouldForceUpdateMemory()) {

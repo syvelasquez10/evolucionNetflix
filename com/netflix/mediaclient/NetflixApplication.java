@@ -13,6 +13,7 @@ import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.cstatssamurai.ClientStats;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -61,6 +62,7 @@ public class NetflixApplication extends MultiDexApplication
     private UserLocale mServiceLocale;
     private boolean mSignedUpOnce;
     private final UserInputManager mUserInput;
+    private boolean ttrComplete;
     private boolean wasInBackground;
     
     static {
@@ -71,6 +73,7 @@ public class NetflixApplication extends MultiDexApplication
     
     public NetflixApplication() {
         this.mSignedUpOnce = false;
+        this.ttrComplete = false;
         this.mUserInput = new UserInputManager();
         this.MAX_ACTIVITY_TRANSITION_TIME_MS = 600L;
         this.mIsNetflixServiceReady = new AtomicBoolean(false);
@@ -183,6 +186,10 @@ public class NetflixApplication extends MultiDexApplication
     public static void setEnableSmartLock(final boolean b) {
     }
     
+    private void setupClientStats() {
+        ClientStats.getInstance().setEnabled(true);
+    }
+    
     public void clearSignedInOnce() {
         this.mSignedUpOnce = false;
         PreferenceUtils.putStringPref((Context)this, "useragent_userprofiles_data", null);
@@ -208,6 +215,10 @@ public class NetflixApplication extends MultiDexApplication
         return this.mIsNetflixServiceReady.get();
     }
     
+    public boolean isTTRComplete() {
+        return this.ttrComplete;
+    }
+    
     public void onConfigurationChanged(final Configuration configuration) {
         super.onConfigurationChanged(configuration);
         if (Log.isLoggable()) {
@@ -228,6 +239,7 @@ public class NetflixApplication extends MultiDexApplication
         Realm.init((Context)this);
         this.registerActivityLifecycleCallbacks((Application$ActivityLifecycleCallbacks)this.mUserInput);
         this.registerReceiver();
+        this.setupClientStats();
     }
     
     public void onTrimMemory(final int n) {
@@ -285,6 +297,10 @@ public class NetflixApplication extends MultiDexApplication
     
     public void setSignedInOnce() {
         this.mSignedUpOnce = true;
+    }
+    
+    public void setTTRComplete() {
+        this.ttrComplete = true;
     }
     
     public void startActivityTransitionTimer() {

@@ -73,19 +73,19 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
             default: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837610);
             }
-            case 2131755151: {
+            case 2131755152: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837614);
             }
-            case 2131755143: {
+            case 2131755144: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837610);
             }
-            case 2131755146: {
+            case 2131755147: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837611);
             }
-            case 2131755148: {
+            case 2131755149: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837613);
             }
-            case 2131755147: {
+            case 2131755148: {
                 return this.this$0.getActivity().getResources().getDrawable(2130837612);
             }
         }
@@ -101,23 +101,23 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
                 imageResource = 2130837624;
                 break;
             }
-            case 2131755151: {
+            case 2131755152: {
                 imageResource = 2130837628;
                 break;
             }
-            case 2131755143: {
+            case 2131755144: {
                 imageResource = 2130837623;
                 break;
             }
-            case 2131755146: {
+            case 2131755147: {
                 imageResource = 2130837625;
                 break;
             }
-            case 2131755148: {
+            case 2131755149: {
                 imageResource = 2130837627;
                 break;
             }
-            case 2131755147: {
+            case 2131755148: {
                 imageResource = 2130837626;
                 break;
             }

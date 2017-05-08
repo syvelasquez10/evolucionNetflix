@@ -36,16 +36,7 @@ public class PreReleaseDetailsActivity extends MovieDetailsActivity
     
     @Override
     protected Fragment createPrimaryFrag() {
-        final Bundle extras = this.getIntent().getExtras();
-        Fragment create = null;
-        final String videoId = this.getVideoId();
-        if (extras != null) {
-            if (!extras.getBoolean("extra_is_movie", false)) {
-                return PreReleaseShowDetailsFrag.create(videoId);
-            }
-            create = PreReleaseMovieDetailsFrag.create(videoId);
-        }
-        return create;
+        return PreReleaseDetailsFrag.create(this.getVideoId(), this.getIntent().getExtras().getBoolean("extra_is_movie", false));
     }
     
     @Override

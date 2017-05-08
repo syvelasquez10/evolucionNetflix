@@ -63,7 +63,7 @@ public class SearchActionBar extends NetflixActionBar
         this.editTextView = (EditText)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_src_text", (String)null, (String)null));
         if (this.editTextView != null) {
             final int color = this.searchView.getResources().getColor(this.getSearchViewTextColorResId());
-            final int color2 = this.searchView.getResources().getColor(2131755273);
+            final int color2 = this.searchView.getResources().getColor(2131755274);
             this.editTextView.setTextSize((float)this.activity.getResources().getInteger(2131558430));
             this.editTextView.setHintTextColor(color2);
             this.editTextView.setTextColor(color);
@@ -179,11 +179,11 @@ public class SearchActionBar extends NetflixActionBar
         if (this.showVoiceSearch) {
             return 2130838129;
         }
-        return 2131755265;
+        return 2131755266;
     }
     
     protected int getSearchViewTextColorResId() {
-        return 2131755196;
+        return 2131755197;
     }
     
     protected Integer getSearchVoiceButtonTint() {

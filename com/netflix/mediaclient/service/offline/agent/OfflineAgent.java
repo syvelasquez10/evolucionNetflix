@@ -20,6 +20,8 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmIncompleteVideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
+import com.netflix.mediaclient.util.AndroidUtils;
+import java.io.File;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.ThreadUtils;
@@ -343,7 +345,6 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
             final OfflinePlayable offlineViewable = this.createOfflineViewable(this.mOfflineRegistry.getCurrentOfflineStorageDirPath(), offlineContentPersistentData);
             this.mOfflineRegistry.addToCurrentRegistryData(offlineContentPersistentData);
             this.mOfflinePlayableList.add(offlineViewable);
-            OfflineAgentHelper.sendOfflineDlRequestStorageInfoLogblob(this.getNrdController(), mPlayableId, this.mOfflineRegistry.getCurrentOfflineStorageDirPath());
             this.processNextCreateRequest();
             return;
         }
@@ -618,7 +619,9 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
                     this.sendResponseForCreate(this.mPlayableIdInFlight, new NetflixStatus(StatusCode.DL_USER_NOT_LOGGED_IN));
                 }
                 else {
-                    if (!OfflineAgentHelper.ensureEnoughDiskSpaceForNewRequest(this.mOfflineRegistry.getCurrentOfflineStorageDirPath(), this.mOfflinePlayableList)) {
+                    final long freeSpaceOnFileSystem = AndroidUtils.getFreeSpaceOnFileSystem(new File(this.mOfflineRegistry.getCurrentOfflineStorageDirPath()));
+                    OfflineAgentHelper.sendOfflineDlRequestStorageInfoLogblob(this.getNrdController(), nextCreatingStatePlayable.getPlayableId(), freeSpaceOnFileSystem, nextCreatingStatePlayable.getOxId(), this.mOfflineRegistry.getCurrentOfflineStorageDirPath());
+                    if (!OfflineAgentHelper.ensureEnoughDiskSpaceForNewRequest(freeSpaceOnFileSystem, this.mOfflinePlayableList)) {
                         Log.e("nf_offlineAgent", "handleCreateRequest not enough space");
                         this.sendResponseForCreate(this.mPlayableIdInFlight, new NetflixStatus(StatusCode.DL_NOT_ENOUGH_FREE_SPACE));
                         return;

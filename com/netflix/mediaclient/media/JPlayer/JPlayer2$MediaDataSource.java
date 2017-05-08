@@ -68,22 +68,18 @@ public class JPlayer2$MediaDataSource implements MediaDecoderBase$InputDataSourc
                             return mediaDecoderBase$InputDataSource$BufferMeta;
                         }
                         break Label_0228;
+                        Log.e("NF_JPlayer2", "WITH NON-DIRECT BYTEBUFFER");
+                        final byte[] array2 = byteBuffer.array();
+                        // iftrue(Label_0270:, array2 != null)
+                        mediaDecoderBase$InputDataSource$BufferMeta.size = 0;
+                        mediaDecoderBase$InputDataSource$BufferMeta.flags = 4;
+                        Log.e("NF_JPlayer2", "can't get bytearray");
+                        return mediaDecoderBase$InputDataSource$BufferMeta;
                         Label_0270: {
-                            final byte[] array2;
                             this.this$0.getBuffer(array2, this.mIsAudio, mediaDecoderBase$InputDataSource$BufferMeta);
                         }
                         continue Label_0221_Outer;
-                        while (true) {
-                            mediaDecoderBase$InputDataSource$BufferMeta.size = 0;
-                            mediaDecoderBase$InputDataSource$BufferMeta.flags = 4;
-                            Log.e("NF_JPlayer2", "can't get bytearray");
-                            return mediaDecoderBase$InputDataSource$BufferMeta;
-                            Log.e("NF_JPlayer2", "WITH NON-DIRECT BYTEBUFFER");
-                            final byte[] array2 = byteBuffer.array();
-                            continue;
-                        }
                     }
-                    // iftrue(Label_0270:, array2 != null)
                     catch (Exception ex) {
                         Log.w("NF_JPlayer2", "reconfig audio decoder failed");
                         continue;

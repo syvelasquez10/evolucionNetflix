@@ -10,7 +10,7 @@ import com.netflix.model.leafs.social.IrisNotificationSummary;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
-import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
+import com.netflix.falkor.task.CmpTaskDetails;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.io.File;
@@ -78,7 +78,7 @@ public interface IBrowseManager
     
     boolean fetchSimilarVideosForQuerySuggestion(final String p0, final int p1, final ManagerCallback p2, final String p3);
     
-    void fetchTask(final CachedModelProxy$CmpTaskDetails p0, final ManagerCallback p1);
+    void fetchTask(final CmpTaskDetails p0, final ManagerCallback p1);
     
     boolean fetchVideoSummary(final String p0, final ManagerCallback p1);
     

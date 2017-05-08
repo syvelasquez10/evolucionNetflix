@@ -13,7 +13,7 @@ import java.util.Map;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
-import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
+import com.netflix.falkor.task.CmpTaskDetails;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import java.io.File;
@@ -189,8 +189,8 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void fetchTask(final CachedModelProxy$CmpTaskDetails cachedModelProxy$CmpTaskDetails, final int n, final int n2) {
-        this.mBrowseAgent.fetchTask(cachedModelProxy$CmpTaskDetails, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
+    public void fetchTask(final CmpTaskDetails cmpTaskDetails, final int n, final int n2) {
+        this.mBrowseAgent.fetchTask(cmpTaskDetails, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override

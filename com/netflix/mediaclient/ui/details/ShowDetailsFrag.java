@@ -23,9 +23,11 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 public class ShowDetailsFrag extends DetailsFrag<ShowDetails>
 {
     private static final String EXTRA_EPISODE_ID = "extra_episode_id";
+    private static final String EXTRA_VIDEO_ID = "extra_video_id";
     private static final String TAG = "ShowDetailsFrag";
     private String episodeId;
     private boolean isLoading;
+    private long requestId;
     private String videoId;
     
     public ShowDetailsFrag() {

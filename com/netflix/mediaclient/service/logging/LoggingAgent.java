@@ -71,6 +71,7 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     private ConnectionClassManager$ConnectionClassStateChangeListener connectionClassManagerListener;
     private AdvertiserIdLoggingManager mAdvertiserIdLoggingManager;
     private BreadcrumbLogging mBreadcrumbLogging;
+    private ClientStatsLogHandlerImpl mClientStatsLogHandler;
     private CmpEventLogging mCmpEventLogging;
     private CustomerEventLogging mCustomerEventLogging;
     private ErrorLogging mErrorLogging;
@@ -222,6 +223,7 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
         this.mPresentationTrackingManager = new PresentationTrackingManager(this.getContext(), this, this.getUser());
         this.mAdvertiserIdLoggingManager = new AdvertiserIdLoggingManager(this.getContext(), this);
         this.mLogblobLogging = new LogblobLoggingImpl(this);
+        this.mClientStatsLogHandler = new ClientStatsLogHandlerImpl(this.getContext());
         com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent::init create executor thread start ");
         this.mExecutor = Executors.newSingleThreadScheduledExecutor(LoggingAgent.sThreadFactory);
         com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent::init create executor thread done ");
@@ -235,6 +237,7 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
         ErrorLoggingManager.onConfigurationChanged(this.getContext(), LoggingAgent.gCritSessionId, this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
         this.addConfigurationChangeListener();
         (this.mNrdpLog = this.getNrdController().getNrdp().getLog()).setAppIdChangedListener(this);
+        this.mClientStatsLogHandler.init(this.mExecutor, this.mNrdpLog);
         this.initCompleted(CommonStatus.OK);
         com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent::init done ");
     }

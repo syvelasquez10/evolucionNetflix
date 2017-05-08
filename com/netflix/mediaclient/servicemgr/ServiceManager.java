@@ -233,18 +233,25 @@ public final class ServiceManager implements IServiceManagerAccess
             try {
                 Log.d("ServiceManager", "fetchAndCacheResource:: resourceUrl is null");
                 return b;
-                Label_0103: {
-                    Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
-                }
-                return b;
+            Block_4_Outer:
                 while (true) {
                     final int addCallback;
-                    this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
-                    b = true;
-                    return b;
-                    addCallback = this.addCallback(managerCallback);
                     Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
-                    continue;
+                    while (true) {
+                        Label_0073: {
+                            break Label_0073;
+                            this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
+                            b = true;
+                            return b;
+                            Label_0103: {
+                                Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
+                            }
+                            return b;
+                        }
+                        continue;
+                    }
+                    addCallback = this.addCallback(managerCallback);
+                    continue Block_4_Outer;
                 }
             }
             // iftrue(Label_0103:, !this.validateService())

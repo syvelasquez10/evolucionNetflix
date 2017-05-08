@@ -37,8 +37,8 @@ public class InterfaceChanged extends BaseInvoke
     }
     
     private void setArguments(final Context context) {
-    Label_0122_Outer:
         while (true) {
+        Label_0180_Outer:
             while (true) {
                 String ssid = null;
                 Label_0216: {
@@ -65,30 +65,32 @@ public class InterfaceChanged extends BaseInvoke
                                 break Label_0216;
                             }
                             break Label_0214;
+                            final String s;
+                            jsonObject.put("ssid", (Object)s);
+                            final String localIP4Address = ConnectivityUtils.getLocalIP4Address(context);
                             // iftrue(Label_0190:, localIP4Address == null)
-                            // iftrue(Label_0171:, !Log.isLoggable())
+                        Block_8_Outer:
                             while (true) {
-                                String localIP4Address = null;
-                                Label_0171: {
-                                    while (true) {
-                                        Log.d("nf_invoke", "LocalIPAddress:" + localIP4Address);
-                                        break Label_0171;
-                                        final String s;
-                                        jsonObject.put("ssid", (Object)s);
-                                        localIP4Address = ConnectivityUtils.getLocalIP4Address(context);
-                                        continue Label_0122_Outer;
+                                while (true) {
+                                    Block_7: {
+                                        break Block_7;
+                                        while (true) {
+                                            jsonObject.put("ipaddress", (Object)localIP4Address);
+                                            this.arguments = jsonObject.toString();
+                                            return;
+                                            Log.d("nf_invoke", "LocalIPAddress:" + localIP4Address);
+                                            continue Label_0180_Outer;
+                                        }
                                     }
-                                    this.arguments = jsonObject.toString();
-                                    return;
+                                    continue;
                                 }
-                                jsonObject.put("ipaddress", (Object)localIP4Address);
-                                continue;
                                 Label_0190: {
                                     jsonObject.put("ipaddress", (Object)"");
                                 }
-                                continue;
+                                continue Block_8_Outer;
                             }
                         }
+                        // iftrue(Label_0171:, !Log.isLoggable())
                         catch (JSONException ex) {
                             Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
                             return;
@@ -107,57 +109,57 @@ public class InterfaceChanged extends BaseInvoke
     }
     
     private void setArguments(final boolean b, final boolean b2, final String s, final String s2) {
+        JSONObject jsonObject = null;
+        String s3;
+        Label_0097_Outer:Label_0040_Outer:
         while (true) {
-        Label_0097_Outer:
             while (true) {
-                Label_0157: {
-                    while (true) {
-                        JSONObject jsonObject = null;
-                        Label_0131: {
-                            try {
-                                jsonObject = new JSONObject();
-                                if (b) {
-                                    jsonObject.put("newInterface", (Object)"MOBILE");
-                                }
-                                else {
-                                    jsonObject.put("newInterface", (Object)"WIFI");
-                                }
-                                if (b2) {
-                                    jsonObject.put("connected", (Object)"true");
-                                    break Label_0157;
-                                }
-                                break Label_0131;
-                                final String s3;
-                                jsonObject.put("ssid", (Object)s3);
-                                // iftrue(Label_0144:, s2 == null)
-                                // iftrue(Label_0087:, !Log.isLoggable())
-                            Label_0087:
-                                while (true) {
-                                    Block_5: {
-                                        break Block_5;
-                                        Log.d("nf_invoke", "LocalIPAddress:" + s2);
-                                        break Label_0087;
-                                    }
-                                    continue Label_0097_Outer;
-                                }
+            Label_0097:
+                while (true) {
+                    Label_0131: {
+                        try {
+                            jsonObject = new JSONObject();
+                            if (b) {
+                                jsonObject.put("newInterface", (Object)"MOBILE");
+                            }
+                            else {
+                                jsonObject.put("newInterface", (Object)"WIFI");
+                            }
+                            if (b2) {
+                                jsonObject.put("connected", (Object)"true");
+                                break Label_0097;
+                            }
+                            break Label_0131;
+                            while (true) {
                                 jsonObject.put("ipaddress", (Object)s2);
-                                this.arguments = jsonObject.toString();
-                                return;
-                            }
-                            catch (JSONException ex) {
-                                Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
-                                return;
+                                break Label_0097;
+                            Block_6:
+                                while (true) {
+                                    break Block_6;
+                                    this.arguments = jsonObject.toString();
+                                    return;
+                                    jsonObject.put("ssid", (Object)s3);
+                                    continue Label_0040_Outer;
+                                }
+                                Log.d("nf_invoke", "LocalIPAddress:" + s2);
+                                continue Label_0097_Outer;
                             }
                         }
-                        jsonObject.put("connected", (Object)"false");
-                        break Label_0157;
-                        Label_0144: {
-                            jsonObject.put("ipaddress", (Object)"");
+                        // iftrue(Label_0087:, !Log.isLoggable())
+                        // iftrue(Label_0144:, s2 == null)
+                        catch (JSONException ex) {
+                            Log.e("nf_invoke", "Failed to create JSON object", (Throwable)ex);
+                            return;
                         }
-                        continue;
                     }
+                    jsonObject.put("connected", (Object)"false");
+                    break Label_0097;
+                    Label_0144: {
+                        jsonObject.put("ipaddress", (Object)"");
+                    }
+                    continue Label_0097;
                 }
-                String s3 = s;
+                s3 = s;
                 if (s == null) {
                     s3 = "";
                     continue;

@@ -27,7 +27,7 @@ class BarkerKidsShowDetailsFrag$BarkerKidsEpisodeView extends BarkerShowDetailsF
     
     @Override
     protected void adjustEpisodeImageHeight() {
-        this.image.getLayoutParams().height = (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427762) * (this.this$0.getNumColumns() + 1.0f)) / this.this$0.getNumColumns() * 0.5625f);
+        this.image.getLayoutParams().height = (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427763) * (this.this$0.getNumColumns() + 1.0f)) / this.this$0.getNumColumns() * 0.5625f);
     }
     
     @Override
@@ -68,7 +68,7 @@ class BarkerKidsShowDetailsFrag$BarkerKidsEpisodeView extends BarkerShowDetailsF
     protected void updateTitle(final EpisodeDetails episodeDetails) {
         if (this.title != null) {
             super.updateTitle(episodeDetails);
-            this.title.setTextColor(this.getResources().getColor(2131755149));
+            this.title.setTextColor(this.getResources().getColor(2131755150));
             final View view = (View)this.getParent();
             if (view != null) {
                 view.setTag(2131820565, (Object)episodeDetails.getSeasonNumber());

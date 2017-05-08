@@ -138,12 +138,11 @@ public class NfDrmSession
             try {
                 // iftrue(Label_0150:, this.state == 4 || !this.mLicenseType.equals((Object)NfDrmManagerInterface$LicenseType.LICENSE_TYPE_LDL))
                 while (true) {
-                    this.mLicenseContext.setChallenge(this.mediaDrm.getKeyRequest(this.sessionId, this.mLicenseContext.getDrmHeader(), new String(), n, new HashMap()).getData());
-                    this.mCallbackHandler.obtainMessage(n2, this.mIdHigh, this.mIdLow, (Object)this.mLicenseContext).sendToTarget();
-                    Log.d("NfPlayerDrmManager", "postKeyRequest succeeds.");
-                    return;
-                    Block_4: {
-                        break Block_4;
+                    while (true) {
+                        this.mLicenseContext.setChallenge(this.mediaDrm.getKeyRequest(this.sessionId, this.mLicenseContext.getDrmHeader(), new String(), n, new HashMap()).getData());
+                        this.mCallbackHandler.obtainMessage(n2, this.mIdHigh, this.mIdLow, (Object)this.mLicenseContext).sendToTarget();
+                        Log.d("NfPlayerDrmManager", "postKeyRequest succeeds.");
+                        return;
                         Label_0150: {
                             this.mLicenseContext.setmLicenseType(NfDrmManagerInterface$LicenseType.LICENSE_TYPE_STANDARD);
                         }
@@ -151,11 +150,12 @@ public class NfDrmSession
                         n2 = 2;
                         n = 1;
                         continue;
+                        this.mLicenseContext.setmLicenseType(NfDrmManagerInterface$LicenseType.LICENSE_TYPE_LDL);
+                        Log.d("NfPlayerDrmManager", "request LDL.");
+                        n2 = 3;
+                        n = 1;
+                        continue;
                     }
-                    this.mLicenseContext.setmLicenseType(NfDrmManagerInterface$LicenseType.LICENSE_TYPE_LDL);
-                    Log.d("NfPlayerDrmManager", "request LDL.");
-                    n2 = 3;
-                    n = 1;
                     continue;
                 }
             }

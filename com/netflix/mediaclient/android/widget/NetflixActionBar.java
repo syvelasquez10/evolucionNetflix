@@ -57,7 +57,7 @@ public class NetflixActionBar
                 Log.v("NetflixActionBar", "Applying tint to navIcon: " + navigationIcon);
             }
             if (navigationIcon != null) {
-                if (BrowseExperience.showKidsExperience()) {
+                if (!BrowseExperience.showKidsExperience()) {
                     DrawableCompat.setTint(navigationIcon, -1);
                 }
                 KidsUtils.manageActionBarIcon(this.getActivity(), navigationIcon);

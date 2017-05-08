@@ -220,24 +220,23 @@ public final class AudioTrack
                                     Block_14: {
                                         break Block_14;
                                         break Block_12;
-                                        Label_0408: {
-                                            final String string;
-                                            Log.w("AudioTrack", string);
-                                        }
-                                        this.audioTimestampSet = false;
-                                        continue Label_0315_Outer;
                                     }
-                                    final String string2 = "Spurious audio timestamp (frame position mismatch): " + timestampFramePosition + ", " + n2 + ", " + n + ", " + playbackHeadPositionUs;
-                                    throw new AudioTrack$InvalidAudioTrackTimestampException(string2);
-                                    Label_0514: {
-                                        Log.w("AudioTrack", string2);
-                                    }
-                                    this.audioTimestampSet = false;
-                                    continue Label_0315_Outer;
+                                    final String string = "Spurious audio timestamp (frame position mismatch): " + timestampFramePosition + ", " + n2 + ", " + n + ", " + playbackHeadPositionUs;
+                                    throw new AudioTrack$InvalidAudioTrackTimestampException(string);
                                 }
-                                final String string = "Spurious audio timestamp (system clock mismatch): " + timestampFramePosition + ", " + n2 + ", " + n + ", " + playbackHeadPositionUs;
+                                final String string2 = "Spurious audio timestamp (system clock mismatch): " + timestampFramePosition + ", " + n2 + ", " + n + ", " + playbackHeadPositionUs;
                                 // iftrue(Label_0408:, !AudioTrack.failOnSpuriousAudioTimestamp)
-                                throw new AudioTrack$InvalidAudioTrackTimestampException(string);
+                                throw new AudioTrack$InvalidAudioTrackTimestampException(string2);
+                                Label_0408: {
+                                    Log.w("AudioTrack", string2);
+                                }
+                                this.audioTimestampSet = false;
+                                continue Label_0315_Outer;
+                                final String string;
+                                Label_0514:
+                                Log.w("AudioTrack", string);
+                                this.audioTimestampSet = false;
+                                continue Label_0315_Outer;
                             }
                             catch (Exception ex) {
                                 this.getLatencyMethod = null;

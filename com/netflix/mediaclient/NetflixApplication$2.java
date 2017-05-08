@@ -13,6 +13,7 @@ import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.cstatssamurai.ClientStats;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;

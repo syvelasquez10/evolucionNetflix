@@ -40,7 +40,7 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
     protected long mDurationTimeInMs;
     protected ErrorLogging mErrorLogger;
     private final Map<String, String> mHeaders;
-    private String mReqNetflixId;
+    private String mReqProfileGuid;
     protected int mResponseSizeInBytes;
     private String mUrl;
     private UserCredentialRegistry mUserCredentialRegistry;
@@ -103,6 +103,13 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
             return null;
         }
         return this.mUserCredentialRegistry.getNetflixID();
+    }
+    
+    protected String getCurrentProfileGuid() {
+        if (this.mUserCredentialRegistry == null || StringUtils.isEmpty(this.mUserCredentialRegistry.getCurrentProfileGuid())) {
+            return null;
+        }
+        return this.mUserCredentialRegistry.getCurrentProfileGuid();
     }
     
     protected long getDurationTimeMs() {
@@ -180,12 +187,21 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
         return true;
     }
     
-    protected boolean isResponseValid() {
-        final boolean safeEquals = StringUtils.safeEquals(this.mReqNetflixId, this.getCurrentNetflixId());
-        if (!safeEquals) {
-            Log.d("nf_volleyrequest", String.format("response not valid - reqNetflixId %s, currentNetflixId  %s", this.mReqNetflixId, this.getCurrentNetflixId()));
+    protected boolean isResponseForSameProfile() {
+        final String currentProfileGuid = this.getCurrentProfileGuid();
+        boolean equalsIgnoreCase;
+        if (StringUtils.isEmpty(this.mReqProfileGuid) || StringUtils.isEmpty(currentProfileGuid)) {
+            Log.d("nf_volleyrequest", String.format("isResponseForSameProfile: one of mReqProfileGuid %s, getCurrentProfileGuid  %s is empty. Ignore validity check", this.mReqProfileGuid, currentProfileGuid));
+            equalsIgnoreCase = true;
         }
-        return safeEquals;
+        else {
+            final boolean b = equalsIgnoreCase = this.mReqProfileGuid.equalsIgnoreCase(currentProfileGuid);
+            if (!b) {
+                Log.d("nf_volleyrequest", String.format("response not valid - mReqProfileGuid %s, getCurrentProfileGuid  %s", this.mReqProfileGuid, currentProfileGuid));
+                return b;
+            }
+        }
+        return equalsIgnoreCase;
     }
     
     protected abstract void onFailure(final Status p0);
@@ -198,12 +214,12 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
             this.mResponseSizeInBytes = networkResponse.data.length;
         }
         T response = null;
-        Label_0389: {
-            Label_0308: {
+        Label_0391: {
+            Label_0310: {
                 if (!this.isAuthorizationRequired() || !this.shouldSkipProcessingOnInvalidUser()) {
-                    break Label_0308;
+                    break Label_0310;
                 }
-                boolean responseValid = this.isResponseValid();
+                boolean responseForSameProfile = this.isResponseForSameProfile();
             Label_0116_Outer:
                 while (true) {
                     final String s = networkResponse.headers.get("Set-Cookie");
@@ -227,34 +243,35 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                             final String[] split2 = split[n].split("=");
                             String s4 = s2;
                             String s5 = s3;
-                            Label_0314: {
+                            Label_0316: {
                                 if (split2.length >= 2) {
                                     if (!this.mUserCredentialRegistry.getNetflixIdName().equalsIgnoreCase(split2[0].trim())) {
-                                        break Label_0314;
+                                        break Label_0316;
                                     }
                                     s5 = split2[1];
                                     s4 = s2;
                                 }
                             Label_0273_Outer:
                                 while (true) {
-                                    Label_0357: {
+                                    Label_0359: {
                                         if (!StringUtils.isNotEmpty(s5) || !StringUtils.isNotEmpty(s4)) {
-                                            break Label_0357;
+                                            break Label_0359;
                                         }
-                                        Log.d("nf_volleyrequest", String.format("update cookies ? %b - currentNetflixId %s, newId %s", responseValid, this.getCurrentNetflixId(), s5));
-                                        if (responseValid) {
+                                        Log.d("nf_volleyrequest", String.format("update cookies ? %b - currentNetflixId %s, newId %s", responseForSameProfile, this.getCurrentNetflixId(), s5));
+                                        if (responseForSameProfile) {
                                             this.mUserCredentialRegistry.updateUserCredentials(s5, s4);
                                         }
                                         while (true) {
                                             try {
                                                 networkResponse = (NetworkResponse)new String(networkResponse.data, HttpHeaderParser.parseCharset(networkResponse.headers));
-                                                if (!responseValid) {
+                                                if (!this.isResponseForSameProfile()) {
                                                     networkResponse = (NetworkResponse)new String("wrong state ");
                                                     Log.d("nf_volleyrequest", (String)networkResponse);
                                                     return Response.error(new ParseException((String)networkResponse));
                                                 }
-                                                break Label_0389;
-                                                // iftrue(Label_0179:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
+                                                break Label_0391;
+                                                responseForSameProfile = true;
+                                                continue Label_0116_Outer;
                                                 while (true) {
                                                     s4 = split2[1];
                                                     s5 = s3;
@@ -267,9 +284,8 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
                                                     s5 = s3;
                                                     continue;
                                                 }
-                                                responseValid = true;
-                                                continue Label_0116_Outer;
                                             }
+                                            // iftrue(Label_0179:, !this.mUserCredentialRegistry.getSecureNetflixIdName().equalsIgnoreCase(split2[0].trim()))
                                             catch (UnsupportedEncodingException ex2) {
                                                 networkResponse = (NetworkResponse)new String(networkResponse.data);
                                                 continue;
@@ -320,9 +336,9 @@ public abstract class VolleyWebClientRequest<T> extends Request<T>
         return true;
     }
     
-    protected void storeReqNetflixId(final String s) {
-        if (StringUtils.isNotEmpty(s)) {
-            this.mReqNetflixId = new String(s);
+    protected void storeReqProfileGuid(final String mReqProfileGuid) {
+        if (StringUtils.isNotEmpty(mReqProfileGuid)) {
+            this.mReqProfileGuid = mReqProfileGuid;
         }
     }
 }

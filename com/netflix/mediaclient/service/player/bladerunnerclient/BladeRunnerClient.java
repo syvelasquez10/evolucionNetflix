@@ -23,7 +23,7 @@ import org.json.JSONObject;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import java.util.Date;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.Locale;
@@ -57,7 +57,7 @@ public class BladeRunnerClient implements IBladeRunnerClient
     }
     
     private String buildYearlyWarningMessage(final Context context, final long n, final Locale locale) {
-        final String string = context.getString(2131296887, new Object[] { 1, new SimpleDateFormat("MMMM d, yyyy", locale).format(new Date(n)) });
+        final String string = context.getString(2131296887, new Object[] { 1, DateFormat.getDateInstance(1, locale).format(new Date(n)) });
         Log.d(BladeRunnerClient.TAG, "yearly warning msg: %s", string);
         return string;
     }

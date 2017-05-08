@@ -29,7 +29,7 @@ public class BarkerPreReleaseDetailsFrag extends BarkerMovieDetailsFrag
     public static BarkerPreReleaseDetailsFrag create(final String s, final boolean b) {
         final BarkerPreReleaseDetailsFrag barkerPreReleaseDetailsFrag = new BarkerPreReleaseDetailsFrag();
         final Bundle arguments = new Bundle();
-        arguments.putString("extra_video_id", s);
+        arguments.putString("video_id", s);
         arguments.putBoolean("extra_is_movie", b);
         barkerPreReleaseDetailsFrag.setArguments(arguments);
         return barkerPreReleaseDetailsFrag;

@@ -113,7 +113,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     
     private void setupCaret() {
         if (this.this$0.caret != null) {
-            this.this$0.caret.setTranslationX((float)(-(BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427593))));
+            this.this$0.caret.setTranslationX((float)(-(BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427594))));
             this.this$0.caret.setOnClickListener((View$OnClickListener)new RoleDetailsFrag$ActorDetailsView$1(this));
         }
     }

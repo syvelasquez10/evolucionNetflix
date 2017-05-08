@@ -12,6 +12,11 @@ public abstract class BaseStatus implements Status
     public StatusCode mStatusCode;
     
     @Override
+    public String getDebugMessageForServerLogs() {
+        return null;
+    }
+    
+    @Override
     public abstract Error getError();
     
     @Override

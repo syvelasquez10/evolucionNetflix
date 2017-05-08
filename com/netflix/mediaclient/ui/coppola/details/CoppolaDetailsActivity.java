@@ -87,7 +87,7 @@ public class CoppolaDetailsActivity extends DetailsActivity implements NetflixDi
             final ImageView imageView = new ImageView((Context)this);
             imageView.setImageResource(2130838145);
             imageView.setId(2131820556);
-            frameLayout.addView((View)imageView, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, (int)this.getResources().getDimension(2131427707), 48));
+            frameLayout.addView((View)imageView, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, (int)this.getResources().getDimension(2131427708), 48));
         }
     }
     

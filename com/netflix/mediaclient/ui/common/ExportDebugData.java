@@ -276,7 +276,7 @@ public class ExportDebugData
                                 s2 = "Enter_JIRA_summary_here";
                             }
                             intent.putExtra("android.intent.extra.SUBJECT", s2);
-                            final StringBuilder append = new StringBuilder().append("\n\nEnter_JIRA_description_here\n\n\n\n\npackage=com.netflix.mediaclient\nversion=4.15.0 build 14924\ncode=14924\nandroid=").append(Build$VERSION.SDK_INT).append("\nbrand=").append(Build.BRAND).append("\nmanufacturer=").append(Build.MANUFACTURER).append("\nmodel=").append(Build.MODEL).append("\ndevice=").append(Build.DEVICE).append("\ndevice.locale=").append(Locale.getDefault().getCountry()).append("_").append(Locale.getDefault().getLanguage()).append("\n").append(string2).append("\n");
+                            final StringBuilder append = new StringBuilder().append("\n\nEnter_JIRA_description_here\n\n\n\n\npackage=com.netflix.mediaclient\nversion=4.15.1 build 14947\ncode=14947\nandroid=").append(Build$VERSION.SDK_INT).append("\nbrand=").append(Build.BRAND).append("\nmanufacturer=").append(Build.MANUFACTURER).append("\nmodel=").append(Build.MODEL).append("\ndevice=").append(Build.DEVICE).append("\ndevice.locale=").append(Locale.getDefault().getCountry()).append("_").append(Locale.getDefault().getLanguage()).append("\n").append(string2).append("\n");
                             if (s == null) {
                                 string = "";
                                 intent.putExtra("android.intent.extra.TEXT", append.append(string).toString());
@@ -477,20 +477,20 @@ public class ExportDebugData
         //    85: aload_2        
         //    86: invokevirtual   java/io/FileWriter.close:()V
         //    89: goto            61
-        //    92: astore_0       
-        //    93: aload_0        
+        //    92: astore_1       
+        //    93: aload_1        
         //    94: athrow         
-        //    95: astore_1       
+        //    95: astore_0       
         //    96: aload_2        
         //    97: ifnull          108
-        //   100: aload_0        
+        //   100: aload_1        
         //   101: ifnull          119
         //   104: aload_2        
         //   105: invokevirtual   java/io/FileWriter.close:()V
-        //   108: aload_1        
+        //   108: aload_0        
         //   109: athrow         
         //   110: astore_2       
-        //   111: aload_0        
+        //   111: aload_1        
         //   112: aload_2        
         //   113: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
         //   116: goto            108
@@ -513,9 +513,9 @@ public class ExportDebugData
         //   160: pop            
         //   161: aconst_null    
         //   162: areturn        
-        //   163: astore_1       
+        //   163: astore_0       
         //   164: aconst_null    
-        //   165: astore_0       
+        //   165: astore_1       
         //   166: goto            96
         //    Exceptions:
         //  Try           Handler

@@ -218,7 +218,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private int getBadgesPadding() {
-        return this.getResources().getDimensionPixelSize(2131427707);
+        return this.getResources().getDimensionPixelSize(2131427708);
     }
     
     private String getIfValidOrFallback(final String s, final String s2) {
@@ -264,7 +264,7 @@ public class VideoDetailsViewGroup extends LinearLayout
         this.onCWClickListener = (View$OnClickListener)new VideoDetailsViewGroup$2(this);
         if (this.infoContainer != null && KidsUtils.shouldPadInfo(this.getContext())) {
             final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams = (ViewGroup$MarginLayoutParams)this.infoContainer.getLayoutParams();
-            viewGroup$MarginLayoutParams.topMargin += this.getResources().getDimensionPixelSize(2131427636);
+            viewGroup$MarginLayoutParams.topMargin += this.getResources().getDimensionPixelSize(2131427637);
             this.infoContainer.invalidate();
             if (this.title != null) {
                 this.title.setSingleLine();
@@ -348,7 +348,7 @@ public class VideoDetailsViewGroup extends LinearLayout
             if (this.videoActionsContainer.getChildCount() != 3) {
                 throw new IllegalStateException("Only 3 buttons expected in the video actions");
             }
-            final int max = Math.max(Math.min(this.getMeasuredWidth() / 4, this.getResources().getDimensionPixelSize(2131427937)), this.getResources().getDimensionPixelSize(2131427938));
+            final int max = Math.max(Math.min(this.getMeasuredWidth() / 4, this.getResources().getDimensionPixelSize(2131427938)), this.getResources().getDimensionPixelSize(2131427939));
             for (int i = 0; i < this.videoActionsContainer.getChildCount(); ++i) {
                 this.videoActionsContainer.getChildAt(i).setVisibility(4);
             }

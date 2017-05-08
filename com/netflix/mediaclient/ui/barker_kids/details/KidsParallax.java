@@ -25,8 +25,8 @@ class KidsParallax extends DetailsPageParallaxScrollListener
     private View toolbarView;
     
     public KidsParallax(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] array, final View view, final View view2) {
-        super(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131755259), 0, 0, view2);
-        this.finalTrackingPosition = recyclerView.getContext().getResources().getDimensionPixelSize(2131427752);
+        super(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131755260), 0, 0, view2);
+        this.finalTrackingPosition = recyclerView.getContext().getResources().getDimensionPixelSize(2131427753);
         this.setApplyToolBarGradientTransform(false);
     }
     

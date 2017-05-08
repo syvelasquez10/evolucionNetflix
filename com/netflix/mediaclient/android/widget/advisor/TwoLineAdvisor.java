@@ -38,7 +38,7 @@ public class TwoLineAdvisor extends Advisor
         final View rootView = this.getRootView();
         this.netflixBarView = rootView.findViewById(2131821518);
         this.container = rootView.findViewById(2131821515);
-        this.translationY = rootView.getResources().getDimensionPixelSize(2131427635);
+        this.translationY = rootView.getResources().getDimensionPixelSize(2131427636);
         this.container.setVisibility(0);
     }
     

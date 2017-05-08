@@ -58,11 +58,11 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
     
     private void renderTextOnPlaceholder() {
         if (this.mTitleDrawable == null) {
-            final int dimensionPixelSize = this.getContext().getResources().getDimensionPixelSize(2131427940);
+            final int dimensionPixelSize = this.getContext().getResources().getDimensionPixelSize(2131427941);
             (this.mTitleDrawable = new TitleDrawable()).setMaxLines(this.getResources().getInteger(2131558435));
-            this.mTitleDrawable.setTextColor(this.getContext().getResources().getColor(2131755272));
+            this.mTitleDrawable.setTextColor(this.getContext().getResources().getColor(2131755273));
             this.mTitleDrawable.setTextPadding(0, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
-            this.mTitleDrawable.setTextSize(this.getContext().getResources().getDimensionPixelSize(2131427944));
+            this.mTitleDrawable.setTextSize(this.getContext().getResources().getDimensionPixelSize(2131427945));
             this.mTitleDrawable.setBackground(this.getContext(), BrowseExperience.getImageLoaderConfig().getPlaceholderResId());
         }
         this.mTitleDrawable.setVideoTitle(this.mTitle);

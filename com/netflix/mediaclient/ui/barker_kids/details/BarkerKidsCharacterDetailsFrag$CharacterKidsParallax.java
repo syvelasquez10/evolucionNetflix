@@ -74,19 +74,19 @@ class BarkerKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
             default: {
                 return view.getResources().getDrawable(2130838017);
             }
-            case 2131755151: {
+            case 2131755152: {
                 return view.getResources().getDrawable(2130838021);
             }
-            case 2131755143: {
+            case 2131755144: {
                 return view.getResources().getDrawable(2130838016);
             }
-            case 2131755146: {
+            case 2131755147: {
                 return view.getResources().getDrawable(2130838018);
             }
-            case 2131755148: {
+            case 2131755149: {
                 return view.getResources().getDrawable(2130838020);
             }
-            case 2131755147: {
+            case 2131755148: {
                 return view.getResources().getDrawable(2130838019);
             }
         }

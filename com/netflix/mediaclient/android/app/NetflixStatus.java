@@ -10,6 +10,7 @@ import com.netflix.mediaclient.service.logging.client.model.Error;
 public class NetflixStatus extends BaseStatus
 {
     private static final long serialVersionUID = 5121797712426793309L;
+    private String mDebugMessageForServerLogs;
     protected boolean mDisplayMessage;
     protected transient Error mError;
     protected String mMessage;
@@ -28,6 +29,11 @@ public class NetflixStatus extends BaseStatus
     }
     
     @Override
+    public String getDebugMessageForServerLogs() {
+        return this.mDebugMessageForServerLogs;
+    }
+    
+    @Override
     public Error getError() {
         return this.mError;
     }
@@ -40,6 +46,10 @@ public class NetflixStatus extends BaseStatus
     @Override
     public int getRequestId() {
         return this.mRequestId;
+    }
+    
+    public void setDebugMessageForServerLogs(final String mDebugMessageForServerLogs) {
+        this.mDebugMessageForServerLogs = mDebugMessageForServerLogs;
     }
     
     public void setDisplayMessage(final boolean mDisplayMessage) {

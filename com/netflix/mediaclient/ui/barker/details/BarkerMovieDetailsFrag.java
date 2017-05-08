@@ -66,7 +66,7 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
     public static BarkerMovieDetailsFrag create(final String s) {
         final BarkerMovieDetailsFrag barkerMovieDetailsFrag = new BarkerMovieDetailsFrag();
         final Bundle arguments = new Bundle();
-        arguments.putString("extra_video_id", s);
+        arguments.putString("video_id", s);
         barkerMovieDetailsFrag.setArguments(arguments);
         return barkerMovieDetailsFrag;
     }
@@ -129,7 +129,7 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
     }
     
     protected int getBackgroundResource() {
-        return 2131755260;
+        return 2131755261;
     }
     
     @Override
@@ -141,7 +141,7 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
         if (this.getActivity() == null) {
             return 0;
         }
-        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427776) * 2;
+        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427777) * 2;
     }
     
     @Override

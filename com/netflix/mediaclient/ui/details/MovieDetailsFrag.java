@@ -52,6 +52,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayoutManager, TutorialHelper$Tutorialable
 {
     private static final String EXTRA_LAYOUT_MANAGER_STATE = "layout_manager_state";
+    protected static final String EXTRA_VIDEO_ID = "video_id";
     private static final String TAG = "MovieDetailsFrag";
     protected RecyclerViewHeaderAdapter adapter;
     private GridLayoutManager gridLayoutManager;
@@ -60,6 +61,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     protected int numColumns;
     protected DetailsPageParallaxScrollListener parallaxScroller;
     protected RecyclerView recyclerView;
+    protected long requestId;
     private View rootContainer;
     protected String videoId;
     
@@ -78,13 +80,13 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
             create.getView().setVisibility(0);
             return;
         }
-        this.adapter.addFooterView(ViewUtils.createActionBarDummyView(this.getNetflixActivity(), this.getResources().getDimensionPixelOffset(2131427902)));
+        this.adapter.addFooterView(ViewUtils.createActionBarDummyView(this.getNetflixActivity(), this.getResources().getDimensionPixelOffset(2131427903)));
     }
     
     public static MovieDetailsFrag create(final String s) {
         final MovieDetailsFrag movieDetailsFrag = new MovieDetailsFrag();
         final Bundle arguments = new Bundle();
-        arguments.putString("extra_video_id", s);
+        arguments.putString("video_id", s);
         movieDetailsFrag.setArguments(arguments);
         return movieDetailsFrag;
     }
@@ -178,7 +180,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     }
     
     public void onCreate(final Bundle bundle) {
-        this.videoId = this.getArguments().getString("extra_video_id");
+        this.videoId = this.getArguments().getString("video_id");
         super.onCreate(bundle);
     }
     
@@ -235,7 +237,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     public void setExitTransition(final Transition exitTransition) {
         super.setExitTransition(exitTransition);
-        this.setBackgroundResource(2131755284);
+        this.setBackgroundResource(2131755285);
         if (exitTransition != null) {
             exitTransition.addListener((Transition$TransitionListener)new MovieDetailsFrag$3(this));
         }
@@ -281,7 +283,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     }
     
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427636), this.numColumns));
+        this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427637), this.numColumns));
     }
     
     protected void setupRecyclerViewLayoutManager() {

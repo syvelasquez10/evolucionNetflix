@@ -7,20 +7,20 @@ package com.netflix.mediaclient.ui.home;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.android.app.Status;
 import android.support.v4.content.LocalBroadcastManager;
+import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.content.ContextCompat;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.os.Build$VERSION;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.widget.ListAdapter;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
-import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.ViewUtils;
 import java.util.List;
@@ -56,7 +56,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     private StandardSlidingMenu$AppListAdapter appAdapter;
     private final StaticListView appList;
     private final boolean canLoadNotifications;
-    private LinearLayout contentLayout;
+    protected LinearLayout contentLayout;
     private final DrawerLayout drawerLayout;
     private StandardSlidingMenu$GenresListAdapter genresAdapter;
     private final ErrorWrapper$Callback genresErrorCallback;
@@ -140,7 +140,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     
     private void applyGenreSelectionStyle(final StandardSlidingMenu$GenreRowHolder standardSlidingMenu$GenreRowHolder) {
         ViewUtils.setTextViewToBold(standardSlidingMenu$GenreRowHolder.tv);
-        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131755223));
+        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131755224));
         standardSlidingMenu$GenreRowHolder.selectionIndicator.setVisibility(0);
     }
     
@@ -194,44 +194,6 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
         return inflate;
     }
     
-    private void createOfflineRowIfNeeded() {
-        if (this.activity.showOfflineInMenu() && this.activity.getServiceManager().isOfflineFeatureAvailable()) {
-            final View viewById = this.contentLayout.findViewById(2131821474);
-            final View viewById2 = viewById.findViewById(2131821482);
-            final View viewById3 = viewById.findViewById(2131821476);
-            viewById2.setVisibility(0);
-            if (BrowseExperience.showKidsExperience()) {
-                viewById2.getLayoutParams().height = this.activity.getResources().getDimensionPixelSize(2131427708);
-                viewById3.getLayoutParams().height = this.activity.getResources().getDimensionPixelSize(2131427708);
-            }
-            final TextView textView = (TextView)viewById.findViewById(2131821205);
-            textView.setPadding(0, 0, 0, 0);
-            textView.setText((CharSequence)this.activity.getString(2131296635));
-            if (BrowseExperience.showKidsExperience()) {
-                textView.setTextColor(ContextCompat.getColor((Context)this.activity, 2131755139));
-            }
-            else {
-                KidsUtils.setTextColorIfApplicable(textView);
-            }
-            final ImageView imageView = (ImageView)viewById.findViewById(2131821475);
-            Drawable imageDrawable = ContextCompat.getDrawable((Context)this.activity, 2130837702);
-            if (BrowseExperience.showKidsExperience()) {
-                imageDrawable = DrawableCompat.wrap(imageDrawable.mutate());
-                final int color = ContextCompat.getColor((Context)this.activity, 2131755139);
-                textView.setTextColor(color);
-                DrawableCompat.setTint(imageDrawable, color);
-            }
-            else {
-                KidsUtils.setIconIfApplicable(imageDrawable, (Context)this.activity);
-                KidsUtils.setTextColorIfApplicable(textView);
-            }
-            imageView.setImageDrawable(imageDrawable);
-            viewById.setBackgroundResource(2130838135);
-            viewById.setOnClickListener((View$OnClickListener)new StandardSlidingMenu$5(this));
-            viewById.setVisibility(0);
-        }
-    }
-    
     private void fetchGenresDataIfReady() {
         if (this.managerNotReady()) {
             return;
@@ -250,7 +212,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     
     private void removeGenreSelectionStyle(final StandardSlidingMenu$GenreRowHolder standardSlidingMenu$GenreRowHolder) {
         ViewUtils.setTextViewToNormal(standardSlidingMenu$GenreRowHolder.tv);
-        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131755224));
+        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131755225));
         KidsUtils.setTextColorIfApplicable(standardSlidingMenu$GenreRowHolder.tv);
         standardSlidingMenu$GenreRowHolder.selectionIndicator.setVisibility(8);
     }
@@ -375,6 +337,44 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
             n = 0L;
         }
         drawerLayout.postDelayed((Runnable)standardSlidingMenu$6, n);
+    }
+    
+    protected void createOfflineRowIfNeeded() {
+        if (this.activity.showOfflineInMenu() && this.activity.getServiceManager().isOfflineFeatureAvailable()) {
+            final View viewById = this.contentLayout.findViewById(2131821474);
+            final View viewById2 = viewById.findViewById(2131821482);
+            final View viewById3 = viewById.findViewById(2131821476);
+            viewById2.setVisibility(0);
+            if (BrowseExperience.showKidsExperience()) {
+                viewById2.getLayoutParams().height = this.activity.getResources().getDimensionPixelSize(2131427709);
+                viewById3.getLayoutParams().height = this.activity.getResources().getDimensionPixelSize(2131427709);
+            }
+            final TextView textView = (TextView)viewById.findViewById(2131821205);
+            textView.setPadding(0, 0, 0, 0);
+            textView.setText((CharSequence)this.activity.getString(2131296635));
+            if (BrowseExperience.showKidsExperience()) {
+                textView.setTextColor(ContextCompat.getColor((Context)this.activity, 2131755140));
+            }
+            else {
+                KidsUtils.setTextColorIfApplicable(textView);
+            }
+            final ImageView imageView = (ImageView)viewById.findViewById(2131821475);
+            Drawable imageDrawable = ContextCompat.getDrawable((Context)this.activity, 2130837702);
+            if (BrowseExperience.showKidsExperience()) {
+                imageDrawable = DrawableCompat.wrap(imageDrawable.mutate());
+                final int color = ContextCompat.getColor((Context)this.activity, 2131755140);
+                textView.setTextColor(color);
+                DrawableCompat.setTint(imageDrawable, color);
+            }
+            else {
+                KidsUtils.setIconIfApplicable(imageDrawable, (Context)this.activity);
+                KidsUtils.setTextColorIfApplicable(textView);
+            }
+            imageView.setImageDrawable(imageDrawable);
+            viewById.setBackgroundResource(2130838135);
+            viewById.setOnClickListener((View$OnClickListener)new StandardSlidingMenu$5(this));
+            viewById.setVisibility(0);
+        }
     }
     
     public void markNotificationsAsRead() {

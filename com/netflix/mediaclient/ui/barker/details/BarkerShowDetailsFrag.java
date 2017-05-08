@@ -189,7 +189,7 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     }
     
     protected int calculateSpinnerLeftPosition() {
-        return -this.getActivity().getResources().getDimensionPixelOffset(2131427636);
+        return -this.getActivity().getResources().getDimensionPixelOffset(2131427637);
     }
     
     @Override
@@ -230,7 +230,7 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     }
     
     protected int getBackgroundResource() {
-        return 2131755260;
+        return 2131755261;
     }
     
     protected int getNumColumns() {
@@ -247,7 +247,7 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
         if (this.getActivity() == null) {
             return 0;
         }
-        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427776) * 2;
+        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427777) * 2;
     }
     
     @Override
@@ -316,7 +316,7 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     public void onStart() {
         super.onStart();
         if (!this.showDetailsOnLaunch) {
-            this.getDialog().getWindow().setLayout(-1, (int)this.getResources().getDimension(2131427779));
+            this.getDialog().getWindow().setLayout(-1, (int)this.getResources().getDimension(2131427780));
         }
     }
     

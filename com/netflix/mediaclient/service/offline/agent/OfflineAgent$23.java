@@ -20,6 +20,8 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmIncompleteVideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
+import com.netflix.mediaclient.util.AndroidUtils;
+import java.io.File;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;

@@ -22,7 +22,6 @@ public abstract class PresentationVolleyWebClientRequest<T> extends VolleyWebCli
     
     @Override
     protected String getUrl(final String s) {
-        this.storeReqNetflixId(this.getCurrentNetflixId());
         if (Log.isLoggable()) {
             Log.v("nf_presentation", "PresentationVolleyWebClientRequest URL = " + s);
         }

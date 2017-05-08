@@ -6,7 +6,7 @@ package com.netflix.mediaclient.service;
 
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
-import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
+import com.netflix.falkor.task.CmpTaskDetails;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
@@ -41,7 +41,7 @@ public interface ServiceAgent$BrowseAgentInterface
     
     void fetchShowDetailsAndSeasons(final String p0, final String p1, final boolean p2, final boolean p3, final BrowseAgentCallback p4);
     
-    void fetchTask(final CachedModelProxy$CmpTaskDetails p0, final BrowseAgentCallback p1);
+    void fetchTask(final CmpTaskDetails p0, final BrowseAgentCallback p1);
     
     void fetchVideoSummary(final String p0, final BrowseAgentCallback p1);
     

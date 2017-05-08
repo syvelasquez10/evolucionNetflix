@@ -6,6 +6,8 @@ package com.netflix.mediaclient.service.webclient;
 
 public interface UserCredentialRegistry
 {
+    String getCurrentProfileGuid();
+    
     String getNetflixID();
     
     String getNetflixIdName();

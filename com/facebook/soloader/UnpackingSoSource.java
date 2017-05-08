@@ -262,17 +262,17 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //   360: dup            
         //   361: invokespecial   java/lang/NullPointerException.<init>:()V
         //   364: athrow         
-        //   365: astore_1       
-        //   366: aload_1        
+        //   365: astore_3       
+        //   366: aload_3        
         //   367: athrow         
-        //   368: astore_3       
+        //   368: astore_1       
         //   369: aload           9
         //   371: ifnull          383
-        //   374: aload_1        
+        //   374: aload_3        
         //   375: ifnull          493
         //   378: aload           9
         //   380: invokevirtual   com/facebook/soloader/UnpackingSoSource$Unpacker.close:()V
-        //   383: aload_3        
+        //   383: aload_1        
         //   384: athrow         
         //   385: astore_1       
         //   386: aload_1        
@@ -289,9 +289,9 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //   405: aload           12
         //   407: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDsoIterator.close:()V
         //   410: goto            249
-        //   413: astore_3       
+        //   413: astore_1       
         //   414: aconst_null    
-        //   415: astore_1       
+        //   415: astore_3       
         //   416: goto            369
         //   419: astore_1       
         //   420: aload_1        
@@ -326,7 +326,7 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //   477: astore          6
         //   479: goto            271
         //   482: astore          6
-        //   484: aload_1        
+        //   484: aload_3        
         //   485: aload           6
         //   487: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
         //   490: goto            383
@@ -517,7 +517,7 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //    70: invokestatic    com/facebook/soloader/UnpackingSoSource$DsoManifest.read:(Ljava/io/DataInput;)Lcom/facebook/soloader/UnpackingSoSource$DsoManifest;
         //    73: astore          7
         //    75: aload           7
-        //    77: ifnonnull       396
+        //    77: ifnonnull       398
         //    80: new             Lcom/facebook/soloader/UnpackingSoSource$DsoManifest;
         //    83: dup            
         //    84: iconst_0       
@@ -530,34 +530,34 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //    98: invokespecial   com/facebook/soloader/UnpackingSoSource.deleteUnmentionedFiles:([Lcom/facebook/soloader/UnpackingSoSource$Dso;)V
         //   101: ldc_w           32768
         //   104: newarray        B
-        //   106: astore          10
-        //   108: aload_3        
-        //   109: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDsoIterator.hasNext:()Z
-        //   112: ifeq            343
-        //   115: aload_3        
-        //   116: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDsoIterator.next:()Lcom/facebook/soloader/UnpackingSoSource$InputDso;
-        //   119: astore          8
-        //   121: aconst_null    
-        //   122: astore_2       
+        //   106: astore_2       
+        //   107: aload_3        
+        //   108: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDsoIterator.hasNext:()Z
+        //   111: ifeq            342
+        //   114: aload_3        
+        //   115: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDsoIterator.next:()Lcom/facebook/soloader/UnpackingSoSource$InputDso;
+        //   118: astore          10
+        //   120: aconst_null    
+        //   121: astore          8
         //   123: iconst_1       
-        //   124: istore          4
+        //   124: istore          5
         //   126: iconst_0       
         //   127: istore_1       
-        //   128: iload           4
+        //   128: iload           5
         //   130: ifeq            257
         //   133: iload_1        
         //   134: aload           7
         //   136: getfield        com/facebook/soloader/UnpackingSoSource$DsoManifest.dsos:[Lcom/facebook/soloader/UnpackingSoSource$Dso;
         //   139: arraylength    
         //   140: if_icmpge       257
-        //   143: iload           4
-        //   145: istore          5
+        //   143: iload           5
+        //   145: istore          4
         //   147: aload           7
         //   149: getfield        com/facebook/soloader/UnpackingSoSource$DsoManifest.dsos:[Lcom/facebook/soloader/UnpackingSoSource$Dso;
         //   152: iload_1        
         //   153: aaload         
         //   154: getfield        com/facebook/soloader/UnpackingSoSource$Dso.name:Ljava/lang/String;
-        //   157: aload           8
+        //   157: aload           10
         //   159: getfield        com/facebook/soloader/UnpackingSoSource$InputDso.dso:Lcom/facebook/soloader/UnpackingSoSource$Dso;
         //   162: getfield        com/facebook/soloader/UnpackingSoSource$Dso.name:Ljava/lang/String;
         //   165: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
@@ -567,23 +567,23 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //   176: iload_1        
         //   177: aaload         
         //   178: getfield        com/facebook/soloader/UnpackingSoSource$Dso.hash:Ljava/lang/String;
-        //   181: aload           8
+        //   181: aload           10
         //   183: getfield        com/facebook/soloader/UnpackingSoSource$InputDso.dso:Lcom/facebook/soloader/UnpackingSoSource$Dso;
         //   186: getfield        com/facebook/soloader/UnpackingSoSource$Dso.hash:Ljava/lang/String;
         //   189: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
         //   192: istore          6
-        //   194: iload           4
-        //   196: istore          5
+        //   194: iload           5
+        //   196: istore          4
         //   198: iload           6
         //   200: ifeq            206
         //   203: iconst_0       
-        //   204: istore          5
+        //   204: istore          4
         //   206: iload_1        
         //   207: iconst_1       
         //   208: iadd           
         //   209: istore_1       
-        //   210: iload           5
-        //   212: istore          4
+        //   210: iload           4
+        //   212: istore          5
         //   214: goto            128
         //   217: astore          7
         //   219: ldc             "fb-UnpackingSoSource"
@@ -594,132 +594,134 @@ public abstract class UnpackingSoSource extends DirectorySoSource
         //   230: aload           8
         //   232: astore          7
         //   234: goto            75
-        //   237: astore_3       
-        //   238: aload_3        
+        //   237: astore_2       
+        //   238: aload_2        
         //   239: athrow         
-        //   240: astore_2       
+        //   240: astore_3       
         //   241: aload           9
         //   243: ifnull          255
-        //   246: aload_3        
-        //   247: ifnull          384
+        //   246: aload_2        
+        //   247: ifnull          383
         //   250: aload           9
         //   252: invokevirtual   java/io/RandomAccessFile.close:()V
-        //   255: aload_2        
+        //   255: aload_3        
         //   256: athrow         
-        //   257: iload           4
-        //   259: ifeq            270
+        //   257: iload           5
+        //   259: ifeq            269
         //   262: aload_0        
-        //   263: aload           8
-        //   265: aload           10
-        //   267: invokespecial   com/facebook/soloader/UnpackingSoSource.extractDso:(Lcom/facebook/soloader/UnpackingSoSource$InputDso;[B)V
-        //   270: aload           8
-        //   272: ifnull          108
-        //   275: iconst_0       
-        //   276: ifeq            296
-        //   279: aload           8
-        //   281: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDso.close:()V
-        //   284: goto            108
-        //   287: astore_2       
-        //   288: new             Ljava/lang/NullPointerException;
-        //   291: dup            
-        //   292: invokespecial   java/lang/NullPointerException.<init>:()V
-        //   295: athrow         
-        //   296: aload           8
-        //   298: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDso.close:()V
-        //   301: goto            108
-        //   304: astore_2       
-        //   305: aload_2        
-        //   306: athrow         
-        //   307: astore_3       
-        //   308: aload           8
-        //   310: ifnull          322
-        //   313: aload_2        
-        //   314: ifnull          335
-        //   317: aload           8
-        //   319: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDso.close:()V
-        //   322: aload_3        
-        //   323: athrow         
-        //   324: astore          7
-        //   326: aload_2        
-        //   327: aload           7
-        //   329: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
-        //   332: goto            322
-        //   335: aload           8
-        //   337: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDso.close:()V
-        //   340: goto            322
-        //   343: aload           9
-        //   345: ifnull          357
-        //   348: iconst_0       
-        //   349: ifeq            367
-        //   352: aload           9
-        //   354: invokevirtual   java/io/RandomAccessFile.close:()V
-        //   357: return         
-        //   358: astore_2       
-        //   359: new             Ljava/lang/NullPointerException;
-        //   362: dup            
-        //   363: invokespecial   java/lang/NullPointerException.<init>:()V
-        //   366: athrow         
-        //   367: aload           9
-        //   369: invokevirtual   java/io/RandomAccessFile.close:()V
-        //   372: return         
-        //   373: astore          7
-        //   375: aload_3        
-        //   376: aload           7
-        //   378: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
-        //   381: goto            255
-        //   384: aload           9
-        //   386: invokevirtual   java/io/RandomAccessFile.close:()V
-        //   389: goto            255
-        //   392: astore_3       
-        //   393: goto            308
-        //   396: goto            93
-        //   399: astore_2       
-        //   400: aconst_null    
+        //   263: aload           10
+        //   265: aload_2        
+        //   266: invokespecial   com/facebook/soloader/UnpackingSoSource.extractDso:(Lcom/facebook/soloader/UnpackingSoSource$InputDso;[B)V
+        //   269: aload           10
+        //   271: ifnull          107
+        //   274: iconst_0       
+        //   275: ifeq            295
+        //   278: aload           10
+        //   280: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDso.close:()V
+        //   283: goto            107
+        //   286: astore_2       
+        //   287: new             Ljava/lang/NullPointerException;
+        //   290: dup            
+        //   291: invokespecial   java/lang/NullPointerException.<init>:()V
+        //   294: athrow         
+        //   295: aload           10
+        //   297: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDso.close:()V
+        //   300: goto            107
+        //   303: astore_3       
+        //   304: aload_3        
+        //   305: athrow         
+        //   306: astore_2       
+        //   307: aload           10
+        //   309: ifnull          321
+        //   312: aload_3        
+        //   313: ifnull          334
+        //   316: aload           10
+        //   318: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDso.close:()V
+        //   321: aload_2        
+        //   322: athrow         
+        //   323: astore          7
+        //   325: aload_3        
+        //   326: aload           7
+        //   328: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
+        //   331: goto            321
+        //   334: aload           10
+        //   336: invokevirtual   com/facebook/soloader/UnpackingSoSource$InputDso.close:()V
+        //   339: goto            321
+        //   342: aload           9
+        //   344: ifnull          356
+        //   347: iconst_0       
+        //   348: ifeq            366
+        //   351: aload           9
+        //   353: invokevirtual   java/io/RandomAccessFile.close:()V
+        //   356: return         
+        //   357: astore_2       
+        //   358: new             Ljava/lang/NullPointerException;
+        //   361: dup            
+        //   362: invokespecial   java/lang/NullPointerException.<init>:()V
+        //   365: athrow         
+        //   366: aload           9
+        //   368: invokevirtual   java/io/RandomAccessFile.close:()V
+        //   371: return         
+        //   372: astore          7
+        //   374: aload_2        
+        //   375: aload           7
+        //   377: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
+        //   380: goto            255
+        //   383: aload           9
+        //   385: invokevirtual   java/io/RandomAccessFile.close:()V
+        //   388: goto            255
+        //   391: astore_2       
+        //   392: aload           8
+        //   394: astore_3       
+        //   395: goto            307
+        //   398: goto            93
         //   401: astore_3       
-        //   402: goto            241
+        //   402: aconst_null    
+        //   403: astore_2       
+        //   404: goto            241
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
         //  68     75     217    237    Ljava/lang/Exception;
         //  68     75     237    241    Ljava/lang/Throwable;
-        //  68     75     399    405    Any
+        //  68     75     401    407    Any
         //  80     93     237    241    Ljava/lang/Throwable;
-        //  80     93     399    405    Any
-        //  93     108    237    241    Ljava/lang/Throwable;
-        //  93     108    399    405    Any
-        //  108    121    237    241    Ljava/lang/Throwable;
-        //  108    121    399    405    Any
-        //  133    143    304    308    Ljava/lang/Throwable;
-        //  133    143    392    396    Any
-        //  147    194    304    308    Ljava/lang/Throwable;
-        //  147    194    392    396    Any
+        //  80     93     401    407    Any
+        //  93     107    237    241    Ljava/lang/Throwable;
+        //  93     107    401    407    Any
+        //  107    120    237    241    Ljava/lang/Throwable;
+        //  107    120    401    407    Any
+        //  133    143    303    307    Ljava/lang/Throwable;
+        //  133    143    391    398    Any
+        //  147    194    303    307    Ljava/lang/Throwable;
+        //  147    194    391    398    Any
         //  219    230    237    241    Ljava/lang/Throwable;
-        //  219    230    399    405    Any
+        //  219    230    401    407    Any
         //  238    240    240    241    Any
-        //  250    255    373    384    Ljava/lang/Throwable;
-        //  262    270    304    308    Ljava/lang/Throwable;
-        //  262    270    392    396    Any
-        //  279    284    287    296    Ljava/lang/Throwable;
-        //  279    284    399    405    Any
-        //  288    296    237    241    Ljava/lang/Throwable;
-        //  288    296    399    405    Any
-        //  296    301    237    241    Ljava/lang/Throwable;
-        //  296    301    399    405    Any
-        //  305    307    307    308    Any
-        //  317    322    324    335    Ljava/lang/Throwable;
-        //  317    322    399    405    Any
-        //  322    324    237    241    Ljava/lang/Throwable;
-        //  322    324    399    405    Any
-        //  326    332    237    241    Ljava/lang/Throwable;
-        //  326    332    399    405    Any
-        //  335    340    237    241    Ljava/lang/Throwable;
-        //  335    340    399    405    Any
-        //  352    357    358    367    Ljava/lang/Throwable;
+        //  250    255    372    383    Ljava/lang/Throwable;
+        //  262    269    303    307    Ljava/lang/Throwable;
+        //  262    269    391    398    Any
+        //  278    283    286    295    Ljava/lang/Throwable;
+        //  278    283    401    407    Any
+        //  287    295    237    241    Ljava/lang/Throwable;
+        //  287    295    401    407    Any
+        //  295    300    237    241    Ljava/lang/Throwable;
+        //  295    300    401    407    Any
+        //  304    306    306    307    Any
+        //  316    321    323    334    Ljava/lang/Throwable;
+        //  316    321    401    407    Any
+        //  321    323    237    241    Ljava/lang/Throwable;
+        //  321    323    401    407    Any
+        //  325    331    237    241    Ljava/lang/Throwable;
+        //  325    331    401    407    Any
+        //  334    339    237    241    Ljava/lang/Throwable;
+        //  334    339    401    407    Any
+        //  351    356    357    366    Ljava/lang/Throwable;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IndexOutOfBoundsException: Index: 195, Size: 195
+        // java.lang.IndexOutOfBoundsException: Index: 197, Size: 197
         //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
         //     at java.util.ArrayList.get(ArrayList.java:429)
         //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)

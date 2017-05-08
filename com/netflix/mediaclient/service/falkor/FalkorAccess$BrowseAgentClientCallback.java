@@ -10,7 +10,7 @@ import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.falkor.ModelProxy;
-import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
+import com.netflix.falkor.task.CmpTaskDetails;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import java.io.File;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
