@@ -103,7 +103,7 @@ public final class UserLocaleRepository
     
     private void initSupportedLocales() {
         final int n = 0;
-        this.supportedLocales = new UserLocale[28];
+        this.supportedLocales = new UserLocale[30];
         this.defaultAppLocale = new UserLocale(Locale.ENGLISH.getLanguage(), null, "English");
         this.supportedLocales[0] = this.defaultAppLocale;
         this.supportedLocales[1] = new UserLocale(Locale.FRENCH.getLanguage(), null, "Fran\u00e7ais");
@@ -133,6 +133,8 @@ public final class UserLocaleRepository
         this.supportedLocales[25] = new UserLocale(Locale.TRADITIONAL_CHINESE.getLanguage(), "HK", "\u6b63\u9ad4\u5b57/\u7e41\u9ad4\u5b57;");
         this.supportedLocales[26] = new UserLocale(Locale.CHINESE.getLanguage(), null, "\u7b80\u5316\u5b57");
         this.supportedLocales[27] = new UserLocale("es", "AD", "espa\u00f1ol-AD");
+        this.supportedLocales[28] = new UserLocale("tr", null, "T\u00fcrk\u00e7e");
+        this.supportedLocales[29] = new UserLocale("pl", null, "polszczyzna");
         if (Log.isLoggable()) {
             final StringBuilder sb = new StringBuilder();
             final UserLocale[] supportedLocales = this.supportedLocales;

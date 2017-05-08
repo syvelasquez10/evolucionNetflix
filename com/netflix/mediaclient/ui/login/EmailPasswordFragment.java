@@ -130,11 +130,9 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
             if (googleApiClient != null) {
                 break Label_0023;
             }
-            Object o;
-            String string;
-            final GoogleApiClient googleApiClient2;
-            Label_0044_Outer:Block_7_Outer:
             while (true) {
+                Object o;
+                String string;
                 try {
                     if (Log.isLoggable()) {
                         Log.d("LoginBaseFragment", "GPS client is null, unable to try to save credentials");
@@ -142,31 +140,29 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
                     Label_0020: {
                         return;
                     }
-                    // iftrue(Label_0044:, !Log.isLoggable())
-                    // iftrue(Label_0118:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
                     // iftrue(Label_0020:, !this.mSaveCredentials)
+                    // iftrue(Label_0118:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
                     while (true) {
-                    Label_0095:
-                        while (true) {
-                            Block_5: {
-                                while (true) {
-                                    break Block_5;
+                        Block_5: {
+                            Label_0095: {
+                                Block_4: {
+                                    break Block_4;
                                     SignInLogUtils.reportCredentialStoreSessionStarted((Context)this.getNetflixActivity(), SignInLogging$CredentialService.GooglePlayService);
                                     this.mSaveCredentials = false;
                                     o = this.mEmailEditText.getText().toString();
                                     string = this.mPasswordEditText.getText().toString();
                                     break Label_0095;
-                                    continue Label_0044_Outer;
                                 }
-                                Log.w("LoginBaseFragment", "Credential is empty, do not save it.");
-                                return;
+                                break Block_5;
                             }
-                            Log.d("LoginBaseFragment", "Trying to save credentials to GPS");
-                            continue Block_7_Outer;
+                            Log.w("LoginBaseFragment", "Credential is empty, do not save it.");
+                            return;
                         }
+                        Log.d("LoginBaseFragment", "Trying to save credentials to GPS");
                         continue;
                     }
                 }
+                // iftrue(Label_0044:, !Log.isLoggable())
                 // iftrue(Label_0020:, !Log.isLoggable())
                 finally {
                 }
@@ -174,6 +170,7 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
                 Label_0118: {
                     o = new Credential$Builder((String)o).setPassword(string).build();
                 }
+                final GoogleApiClient googleApiClient2;
                 Auth.CredentialsApi.save(googleApiClient2, (Credential)o).setResultCallback(new EmailPasswordFragment$6(this));
             }
         }

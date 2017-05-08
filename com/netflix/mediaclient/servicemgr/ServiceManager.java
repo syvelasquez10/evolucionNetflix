@@ -189,26 +189,28 @@ public final class ServiceManager implements IServiceManagerAccess
             try {
                 Log.d("ServiceManager", "fetchAndCacheResource:: resourceUrl is null");
                 return b;
-                Label_0103: {
-                    Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
-                }
-                return b;
-                final int addCallback = this.addCallback(managerCallback);
-                // iftrue(Label_0073:, !Log.isLoggable())
                 // iftrue(Label_0103:, !this.validateService())
-            Block_4:
                 while (true) {
-                    Block_3: {
-                        break Block_3;
-                        break Block_4;
+                    while (true) {
+                        Block_4: {
+                            break Block_4;
+                            Label_0103: {
+                                Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
+                            }
+                            return b;
+                        }
+                        final int addCallback;
+                        this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
+                        b = true;
+                        return b;
+                        Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
+                        continue;
                     }
-                    Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
+                    final int addCallback = this.addCallback(managerCallback);
                     continue;
                 }
-                this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
-                b = true;
-                return b;
             }
+            // iftrue(Label_0073:, !Log.isLoggable())
             finally {
             }
             // monitorexit(this)
