@@ -19,6 +19,7 @@ public interface CustomerServiceLogging
     public static final String EXTRA_ACTION = "action";
     public static final String EXTRA_CALL_QUALITY = "call_quality";
     public static final String EXTRA_DIALOG_TYPE = "dialog_type";
+    public static final String EXTRA_DISPLAYED = "displayed";
     public static final String EXTRA_ENTRY = "entry";
     public static final String EXTRA_ERROR = "error";
     public static final String EXTRA_ORIENTATION = "orientation";
@@ -44,7 +45,7 @@ public interface CustomerServiceLogging
     
     void endHelpRequestSession(final CustomerServiceLogging$Action p0, final String p1, final IClientLogging$CompletionReason p2, final Error p3);
     
-    void startCustomerSupportCallSession();
+    void startCustomerSupportCallSession(final String p0, final boolean p1);
     
     void startHelpRequestSession(final CustomerServiceLogging$EntryPoint p0);
 }

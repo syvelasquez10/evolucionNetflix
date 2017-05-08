@@ -4,10 +4,65 @@
 
 package com.netflix.mediaclient.ui.login;
 
-import com.netflix.mediaclient.android.app.Status;
+import android.view.View$OnClickListener;
+import android.widget.TextView$OnEditorActionListener;
+import android.view.View$OnFocusChangeListener;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
+import java.util.Locale;
+import com.google.android.gms.common.api.Api$ApiOptions$NotRequiredOptions;
+import com.google.android.gms.common.api.Api;
+import com.google.android.gms.common.api.GoogleApiClient$Builder;
+import com.netflix.mediaclient.util.AndroidUtils;
+import com.google.android.gms.common.ConnectionResult;
+import android.os.Bundle;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
+import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import android.widget.Toast;
+import com.netflix.mediaclient.NetflixApplication;
+import android.content.IntentSender$SendIntentException;
+import android.app.Activity;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
+import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
+import java.util.List;
+import com.netflix.mediaclient.service.logging.client.model.UIError;
+import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
+import com.netflix.mediaclient.service.logging.client.model.RootCause;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
+import com.netflix.mediaclient.service.webclient.model.leafs.SignInConfigData;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.credentials.Credential$Builder;
+import java.io.Serializable;
+import com.netflix.mediaclient.util.StringUtils;
+import com.google.android.gms.auth.api.credentials.Credential;
+import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.util.ConnectivityUtils;
+import android.os.Handler;
+import android.widget.TextView;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
+import android.view.View;
+import android.widget.EditText;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
+import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import android.content.Context;
+import com.netflix.mediaclient.util.log.SignInLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.SignInLogging$CredentialService;
+import com.netflix.mediaclient.Log;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.api.ResultCallback;
 
-class LoginActivity$5 extends SimpleManagerCallback
+class LoginActivity$5 implements ResultCallback<Status>
 {
     final /* synthetic */ LoginActivity this$0;
     
@@ -16,7 +71,14 @@ class LoginActivity$5 extends SimpleManagerCallback
     }
     
     @Override
-    public void onLoginComplete(final Status status) {
-        this.this$0.runOnUiThread((Runnable)new LoginActivity$5$1(this, status));
+    public void onResult(final Status status) {
+        if (status.isSuccess()) {
+            Log.d("LoginActivity", "SAVE: OK");
+            this.this$0.showDebugToast("Credential Saved");
+            SignInLogUtils.reportCredentialStoreSessionEnded((Context)this.this$0, SignInLogging$CredentialService.GooglePlayService, IClientLogging$CompletionReason.success, null);
+            this.this$0.handleBackToRegularWorkflow();
+            return;
+        }
+        this.this$0.resolveResult(status);
     }
 }

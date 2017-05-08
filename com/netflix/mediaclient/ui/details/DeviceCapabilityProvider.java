@@ -10,7 +10,11 @@ public interface DeviceCapabilityProvider
     
     boolean is5dot1Supported();
     
+    boolean isDolbyVisionSupported();
+    
     boolean isHdSupported();
+    
+    boolean isHdr10Supported();
     
     boolean isUltraHdSupported();
 }

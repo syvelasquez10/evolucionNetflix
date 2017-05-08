@@ -12,6 +12,7 @@ import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import com.netflix.mediaclient.service.logging.apm.model.DeepLink;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import java.util.Locale;
@@ -128,7 +129,8 @@ public final class NflxHandlerFactory
         final String lowerCase = action.toLowerCase(Locale.US);
         NflxHandler$Response nflxHandler$Response = NflxHandler$Response.HANDLING;
         final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
-        NflxProtocolUtils.reportApplicationLaunchedFromDeepLinking(netflixActivity, map, lowerCase);
+        final DeepLink deepLink = NflxProtocolUtils.createDeepLink(map);
+        NflxProtocolUtils.reportApplicationLaunchedFromDeepLinking(netflixActivity, lowerCase, deepLink);
         NflxHandler nflxHandler;
         IClientLogging$ModalView clientLogging$ModalView;
         if ("home".equalsIgnoreCase(lowerCase)) {
@@ -192,7 +194,7 @@ public final class NflxHandlerFactory
             b = false;
             clientLogging$ModalView = null;
         }
-        NflxProtocolUtils.reportUiSessions(netflixActivity, nflxHandler$Response, b, clientLogging$ModalView, n);
+        NflxProtocolUtils.reportUiSessions(netflixActivity, nflxHandler$Response, b, clientLogging$ModalView, n, deepLink);
         return nflxHandler;
     }
     
@@ -213,7 +215,7 @@ public final class NflxHandlerFactory
         }
         final HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("u", s);
-        NflxProtocolUtils.reportUiSessions(netflixActivity, NflxHandler$Response.HANDLING, false, IClientLogging$ModalView.movieDetails, n);
+        NflxProtocolUtils.reportUiSessions(netflixActivity, NflxHandler$Response.HANDLING, false, IClientLogging$ModalView.movieDetails, n, null);
         if (contains) {
             UserActionLogUtils.reportShareSheetOpenActionEnded((Context)netflixActivity, IClientLogging$CompletionReason.success, null);
         }

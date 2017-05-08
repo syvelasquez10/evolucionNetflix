@@ -32,9 +32,9 @@ class MediaDecoderPipe2$2 extends Handler
         this.frameDecoded = 0L;
     }
     
-    public void handleMessage(Message access$1300) {
+    public void handleMessage(Message access$1400) {
         int n = 4;
-        switch (((Message)access$1300).what) {
+        switch (((Message)access$1400).what) {
             default: {
                 Log.d(this.this$0.mTag, "outputthread handler had unknown message");
             }
@@ -115,7 +115,7 @@ class MediaDecoderPipe2$2 extends Handler
             case 2: {
                 synchronized (this.this$0.mOutputState) {
                     this.this$0.mOutputState.notify();
-                    // monitorexit(MediaDecoderPipe2.access$1300(this.this$0))
+                    // monitorexit(MediaDecoderPipe2.access$1400(this.this$0))
                     this.frameDecoded = 0L;
                     Log.d(this.this$0.mTag, "flush output done");
                 }
@@ -128,13 +128,13 @@ class MediaDecoderPipe2$2 extends Handler
                 while (true) {
                     try {
                         this.this$0.mDecoder.stop();
-                        access$1300 = (Exception)this.this$0.mOutputState;
-                        // monitorenter(access$1300)
+                        access$1400 = (Exception)this.this$0.mOutputState;
+                        // monitorenter(access$1400)
                         final MediaDecoderPipe2$2 mediaDecoderPipe2$2 = this;
                         final MediaDecoderPipe2 mediaDecoderPipe2 = mediaDecoderPipe2$2.this$0;
                         final MediaDecoderPipe2$LocalStateNotifier mediaDecoderPipe2$LocalStateNotifier = mediaDecoderPipe2.mOutputState;
                         mediaDecoderPipe2$LocalStateNotifier.notify();
-                        final Exception ex2 = access$1300;
+                        final Exception ex2 = access$1400;
                         // monitorexit(ex2)
                         final MediaDecoderPipe2$2 mediaDecoderPipe2$3 = this;
                         final MediaDecoderPipe2 mediaDecoderPipe3 = mediaDecoderPipe2$3.this$0;
@@ -143,8 +143,8 @@ class MediaDecoderPipe2$2 extends Handler
                         Log.d(s, s2);
                         return;
                     }
-                    catch (Exception access$1300) {
-                        Log.d(this.this$0.mTag, "get un-documented exception as a result of stop() " + access$1300.getMessage());
+                    catch (Exception access$1400) {
+                        Log.d(this.this$0.mTag, "get un-documented exception as a result of stop() " + access$1400.getMessage());
                         continue;
                     }
                     break;
@@ -154,7 +154,7 @@ class MediaDecoderPipe2$2 extends Handler
                     final MediaDecoderPipe2 mediaDecoderPipe2 = mediaDecoderPipe2$2.this$0;
                     final MediaDecoderPipe2$LocalStateNotifier mediaDecoderPipe2$LocalStateNotifier = mediaDecoderPipe2.mOutputState;
                     mediaDecoderPipe2$LocalStateNotifier.notify();
-                    final Exception ex2 = access$1300;
+                    final Exception ex2 = access$1400;
                     // monitorexit(ex2)
                     final MediaDecoderPipe2$2 mediaDecoderPipe2$3 = this;
                     final MediaDecoderPipe2 mediaDecoderPipe3 = mediaDecoderPipe2$3.this$0;
@@ -165,7 +165,7 @@ class MediaDecoderPipe2$2 extends Handler
                 }
                 finally {
                 }
-                // monitorexit(access$1300)
+                // monitorexit(access$1400)
                 break;
             }
         }

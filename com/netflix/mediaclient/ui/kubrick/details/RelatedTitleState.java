@@ -4,28 +4,43 @@
 
 package com.netflix.mediaclient.ui.kubrick.details;
 
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.Log;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 import android.os.Parcelable;
 
 public class RelatedTitleState implements Parcelable
 {
-    public final Parcelable$Creator<RelatedTitleState> CREATOR;
+    public static final Parcelable$Creator<RelatedTitleState> CREATOR;
+    private static final String TAG = "RelatedTitleState";
     int orientation;
     Parcelable recyclerViewState;
     int seasonSelectIndex;
     String titleId;
     
+    static {
+        CREATOR = (Parcelable$Creator)new RelatedTitleState$1();
+    }
+    
     private RelatedTitleState(final Parcel parcel) {
-        this.CREATOR = (Parcelable$Creator<RelatedTitleState>)new RelatedTitleState$1(this);
-        this.recyclerViewState = parcel.readParcelable(Parcelable.class.getClassLoader());
-        this.seasonSelectIndex = parcel.readInt();
-        this.orientation = parcel.readInt();
-        this.titleId = parcel.readString();
+        while (true) {
+            try {
+                this.recyclerViewState = parcel.readParcelable(Parcelable.class.getClassLoader());
+                this.seasonSelectIndex = parcel.readInt();
+                this.orientation = parcel.readInt();
+                this.titleId = parcel.readString();
+            }
+            catch (Throwable t) {
+                Log.e("RelatedTitleState", "SPY-9006: Failed to load layout manager state", t);
+                ErrorLoggingManager.logHandledException(t);
+                continue;
+            }
+            break;
+        }
     }
     
     RelatedTitleState(final String titleId, final Parcelable recyclerViewState, final int seasonSelectIndex, final int orientation) {
-        this.CREATOR = (Parcelable$Creator<RelatedTitleState>)new RelatedTitleState$1(this);
         this.seasonSelectIndex = seasonSelectIndex;
         this.recyclerViewState = recyclerViewState;
         this.orientation = orientation;

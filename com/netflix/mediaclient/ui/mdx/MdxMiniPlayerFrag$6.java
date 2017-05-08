@@ -63,12 +63,12 @@ class MdxMiniPlayerFrag$6 implements MdxMiniPlayerViews$MdxMiniPlayerViewCallbac
     
     @Override
     public ServiceManager getManager() {
-        return this.this$0.manager;
+        return this.this$0.getServiceManager();
     }
     
     @Override
     public IMdx getMdx() {
-        return this.this$0.manager.getMdx();
+        return this.this$0.getServiceManager().getMdx();
     }
     
     @Override

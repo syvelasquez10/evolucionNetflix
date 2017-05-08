@@ -13,7 +13,8 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import android.widget.Toast;
+import com.netflix.mediaclient.service.NetflixService;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
@@ -33,6 +34,8 @@ import com.netflix.mediaclient.util.ViewUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.app.Activity;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
@@ -173,7 +176,9 @@ class NetflixActivity$DefaultManagerStatusListener implements ManagerStatusListe
         if (this.listener != null) {
             this.listener.onManagerUnavailable(serviceManager, status);
         }
-        this.this$0.startLaunchActivityIfVisible();
+        if (this.this$0.shouldStartLaunchActivityIfVisibleOnManagerUnavailable()) {
+            this.this$0.startLaunchActivityIfVisible();
+        }
         if (this.this$0.shouldFinishOnManagerError()) {
             if (Log.isLoggable()) {
                 Log.d("NetflixActivity", this.this$0.getClass().getSimpleName() + ": Finishing activity because manager error occured...");

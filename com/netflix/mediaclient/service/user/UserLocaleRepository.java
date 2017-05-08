@@ -17,7 +17,7 @@ import com.netflix.mediaclient.util.PreferenceUtils;
 import java.util.List;
 import android.content.Context;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.repository.UserLocale;
+import com.netflix.mediaclient.util.l10n.UserLocale;
 
 public final class UserLocaleRepository
 {
@@ -103,7 +103,7 @@ public final class UserLocaleRepository
     
     private void initSupportedLocales() {
         final int n = 0;
-        this.supportedLocales = new UserLocale[27];
+        this.supportedLocales = new UserLocale[28];
         this.defaultAppLocale = new UserLocale(Locale.ENGLISH.getLanguage(), null, "English");
         this.supportedLocales[0] = this.defaultAppLocale;
         this.supportedLocales[1] = new UserLocale(Locale.FRENCH.getLanguage(), null, "Fran\u00e7ais");
@@ -124,14 +124,15 @@ public final class UserLocaleRepository
         this.supportedLocales[16] = new UserLocale(Locale.ITALY.getLanguage(), Locale.ITALY.getCountry(), "italiano");
         this.supportedLocales[17] = new UserLocale("pt", "PT", "Portugu\u00eas-PT");
         this.supportedLocales[18] = new UserLocale("es", "ES", "espa\u00f1ol-ES");
-        this.supportedLocales[19] = new UserLocale(Locale.KOREAN.getLanguage(), null, "\ud55c\uad6d\uc5b4/\uc870\uc120\ub9d0");
-        this.supportedLocales[20] = new UserLocale(Locale.SIMPLIFIED_CHINESE.getLanguage(), Locale.SIMPLIFIED_CHINESE.getCountry(), "\u7b80\u5316\u5b57");
-        this.supportedLocales[21] = new UserLocale(Locale.TRADITIONAL_CHINESE.getLanguage(), Locale.TRADITIONAL_CHINESE.getCountry(), "\u6b63\u9ad4\u5b57/\u7e41\u9ad4\u5b57;");
-        this.supportedLocales[22] = new UserLocale(Locale.SIMPLIFIED_CHINESE.getLanguage(), "SG", "\u7b80\u5316\u5b57");
-        this.supportedLocales[23] = new UserLocale(Locale.TRADITIONAL_CHINESE.getLanguage(), "MO", "\u6b63\u9ad4\u5b57/\u7e41\u9ad4\u5b57;");
-        this.supportedLocales[24] = new UserLocale(Locale.TRADITIONAL_CHINESE.getLanguage(), "HK", "\u6b63\u9ad4\u5b57/\u7e41\u9ad4\u5b57;");
-        this.supportedLocales[25] = new UserLocale(Locale.CHINESE.getLanguage(), null, "\u7b80\u5316\u5b57");
-        this.supportedLocales[26] = new UserLocale("es", "AD", "espa\u00f1ol-AD");
+        this.supportedLocales[19] = new UserLocale("ar", "MA", "Arabic");
+        this.supportedLocales[20] = new UserLocale(Locale.KOREAN.getLanguage(), null, "\ud55c\uad6d\uc5b4/\uc870\uc120\ub9d0");
+        this.supportedLocales[21] = new UserLocale(Locale.SIMPLIFIED_CHINESE.getLanguage(), Locale.SIMPLIFIED_CHINESE.getCountry(), "\u7b80\u5316\u5b57");
+        this.supportedLocales[22] = new UserLocale(Locale.TRADITIONAL_CHINESE.getLanguage(), Locale.TRADITIONAL_CHINESE.getCountry(), "\u6b63\u9ad4\u5b57/\u7e41\u9ad4\u5b57;");
+        this.supportedLocales[23] = new UserLocale(Locale.SIMPLIFIED_CHINESE.getLanguage(), "SG", "\u7b80\u5316\u5b57");
+        this.supportedLocales[24] = new UserLocale(Locale.TRADITIONAL_CHINESE.getLanguage(), "MO", "\u6b63\u9ad4\u5b57/\u7e41\u9ad4\u5b57;");
+        this.supportedLocales[25] = new UserLocale(Locale.TRADITIONAL_CHINESE.getLanguage(), "HK", "\u6b63\u9ad4\u5b57/\u7e41\u9ad4\u5b57;");
+        this.supportedLocales[26] = new UserLocale(Locale.CHINESE.getLanguage(), null, "\u7b80\u5316\u5b57");
+        this.supportedLocales[27] = new UserLocale("es", "AD", "espa\u00f1ol-AD");
         if (Log.isLoggable()) {
             final StringBuilder sb = new StringBuilder();
             final UserLocale[] supportedLocales = this.supportedLocales;

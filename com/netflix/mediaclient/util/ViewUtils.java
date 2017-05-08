@@ -6,13 +6,22 @@ package com.netflix.mediaclient.util;
 
 import java.util.Iterator;
 import java.util.Collection;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.view.MenuItem;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import android.view.ViewGroup;
 import android.view.View$OnLongClickListener;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.app.FragmentTransaction;
+import android.app.FragmentManager;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 import com.netflix.mediaclient.util.api.Api16Util;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.text.Spannable;
 import android.text.SpannableString;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import android.app.DialogFragment;
 import android.util.Pair;
 import android.widget.ScrollView;
 import com.netflix.mediaclient.android.widget.StaticGridView;
@@ -399,6 +408,12 @@ public class ViewUtils
         return view != null && view.getVisibility() == 0;
     }
     
+    private static void logSafeShowDialogFragmentError(String format, final DialogFragment dialogFragment) {
+        format = String.format("SPY-8702, tried to add %s frag %s twice", dialogFragment.getClass().getName(), format);
+        Log.e("ViewUtils", format);
+        ErrorLoggingManager.logHandledException(format);
+    }
+    
     public static void modifyExitingWebLinks(final TextView textView) {
         if (textView == null) {
             throw new IllegalArgumentException("Text view is null!");
@@ -422,6 +437,54 @@ public class ViewUtils
         textView.setShadowLayer(0.0f, 0.0f, 0.0f, 0);
     }
     
+    public static void resetImageDrawable(final ImageView imageView) {
+        if (imageView == null && Log.isLoggable()) {
+            Log.d("ViewUtils", "Request to resetImageDrawable with a null ImageView");
+            return;
+        }
+        imageView.setImageDrawable((Drawable)null);
+    }
+    
+    public static void safeShowDialogFragment(final DialogFragment dialogFragment, final FragmentManager fragmentManager, final FragmentTransaction fragmentTransaction, final String s) {
+        if (dialogFragment == null || fragmentManager == null || StringUtils.isEmpty(s) || fragmentTransaction == null) {
+            return;
+        }
+        fragmentManager.executePendingTransactions();
+        if (fragmentManager.findFragmentByTag(s) == null) {
+            dialogFragment.show(fragmentTransaction, s);
+            return;
+        }
+        logSafeShowDialogFragmentError(s, dialogFragment);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
+    
+    public static void safeShowDialogFragment(final DialogFragment dialogFragment, final FragmentManager fragmentManager, final String s) {
+        if (dialogFragment == null || fragmentManager == null || StringUtils.isEmpty(s)) {
+            return;
+        }
+        fragmentManager.executePendingTransactions();
+        if (fragmentManager.findFragmentByTag(s) == null) {
+            dialogFragment.show(fragmentManager, s);
+            return;
+        }
+        logSafeShowDialogFragmentError(s, dialogFragment);
+    }
+    
+    public static void setDrawableTint(final Drawable drawable, final int n) {
+        DrawableCompat.setTint(DrawableCompat.wrap(drawable), n);
+    }
+    
+    public static void setLayerType(final View view, final int n) {
+        if (view == null) {
+            if (Log.isLoggable()) {
+                Log.d("ViewUtils", "Request to set layer type for a view that was null");
+            }
+        }
+        else if (view.getLayerType() != n) {
+            view.setLayerType(n, (Paint)null);
+        }
+    }
+    
     public static void setLongTapListenersRecursivelyToShowContentDescriptionToast(final View view) {
         final CharSequence contentDescription = view.getContentDescription();
         if (StringUtils.isNotEmpty(contentDescription)) {
@@ -439,12 +502,20 @@ public class ViewUtils
         view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), n);
     }
     
-    public static void setPaddingLeft(final View view, final int n) {
-        view.setPadding(n, view.getPaddingTop(), view.getPaddingRight(), view.getPaddingBottom());
+    public static void setPaddingEnd(final View view, final int n) {
+        if (LocalizationUtils.isCurrentLocaleRTL()) {
+            view.setPadding(n, view.getPaddingTop(), view.getPaddingLeft(), view.getPaddingBottom());
+            return;
+        }
+        view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), n, view.getPaddingBottom());
     }
     
-    public static void setPaddingRight(final View view, final int n) {
-        view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), n, view.getPaddingBottom());
+    public static void setPaddingStart(final View view, final int n) {
+        if (LocalizationUtils.isCurrentLocaleRTL()) {
+            view.setPadding(view.getPaddingRight(), view.getPaddingTop(), n, view.getPaddingBottom());
+            return;
+        }
+        view.setPadding(n, view.getPaddingTop(), view.getPaddingRight(), view.getPaddingBottom());
     }
     
     public static void setPaddingTop(final View view, final int n) {
@@ -506,7 +577,37 @@ public class ViewUtils
         setVisibility(view, viewUtils$Visibility);
     }
     
+    public static void setVisibleOrGoneAnimation(final View view, final boolean b, final boolean b2) {
+        if (b2) {
+            AnimationUtils.startViewAppearanceAnimation(view, b);
+            return;
+        }
+        ViewUtils$Visibility viewUtils$Visibility;
+        if (b) {
+            viewUtils$Visibility = ViewUtils$Visibility.VISIBLE;
+        }
+        else {
+            viewUtils$Visibility = ViewUtils$Visibility.GONE;
+        }
+        setVisibility(view, viewUtils$Visibility);
+    }
+    
     public static void setVisibleOrInvisible(final View view, final boolean b) {
+        ViewUtils$Visibility viewUtils$Visibility;
+        if (b) {
+            viewUtils$Visibility = ViewUtils$Visibility.VISIBLE;
+        }
+        else {
+            viewUtils$Visibility = ViewUtils$Visibility.INVISIBLE;
+        }
+        setVisibility(view, viewUtils$Visibility);
+    }
+    
+    public static void setVisibleOrInvisibleAnimation(final View view, final boolean b, final boolean b2) {
+        if (b2) {
+            AnimationUtils.startViewAppearanceAnimation(view, b);
+            return;
+        }
         ViewUtils$Visibility viewUtils$Visibility;
         if (b) {
             viewUtils$Visibility = ViewUtils$Visibility.VISIBLE;

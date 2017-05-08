@@ -46,6 +46,8 @@ public class PVideo
     public String playableParentTitle;
     @SerializedName("playableRuntime")
     public int playableRuntime;
+    @SerializedName("playableSeasonNumAbbrLabel")
+    public String playableSeasonNumAbbrLabel;
     @SerializedName("playableSeasonNumber")
     public int playableSeasonNumber;
     @SerializedName("playableTitle")
@@ -102,6 +104,7 @@ public class PVideo
         pVideo.playableParentTitle = playable.getParentTitle();
         pVideo.playableEpisodeNumber = playable.getEpisodeNumber();
         pVideo.playableSeasonNumber = playable.getSeasonNumber();
+        pVideo.playableSeasonNumAbbrLabel = playable.getSeasonAbbrSeqLabel();
         return pVideo;
     }
 }

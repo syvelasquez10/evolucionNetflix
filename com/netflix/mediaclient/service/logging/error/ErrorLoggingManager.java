@@ -21,7 +21,7 @@ import android.annotation.TargetApi;
 @TargetApi(4)
 public final class ErrorLoggingManager
 {
-    private static final String CRITTER_VERSION_NAME = "3.16.1";
+    private static final String CRITTER_VERSION_NAME = "4.5.1";
     private static final boolean ENABLE_CRITTERCISM = true;
     private static final String TAG = "nf_log_crit";
     private static boolean sBreadcrumbLoggingEnabled;
@@ -99,10 +99,11 @@ public final class ErrorLoggingManager
                 crittercismConfig.setNdkCrashReportingEnabled(false);
                 crittercismConfig.setServiceMonitoringEnabled(false);
                 crittercismConfig.setLogcatReportingEnabled(false);
-                crittercismConfig.setCustomVersionName("3.16.1");
+                crittercismConfig.setCustomVersionName("4.5.1");
                 try {
                     final Context context2;
                     Crittercism.initialize(context2, SecurityRepository.getCrittercismAppId(), crittercismConfig);
+                    Thread.setDefaultUncaughtExceptionHandler((Thread.UncaughtExceptionHandler)new ErrorLoggingManager$1(context2.getApplicationContext(), Thread.getDefaultUncaughtExceptionHandler()));
                     final JSONObject metadata = new JSONObject();
                     metadata.put("android", Build$VERSION.SDK_INT);
                     putValueOrNotAvailable(metadata, "oem", Build.MANUFACTURER);

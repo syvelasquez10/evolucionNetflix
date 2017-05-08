@@ -20,6 +20,7 @@ import android.content.res.Resources;
 import java.util.ArrayList;
 import java.util.Collection;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;

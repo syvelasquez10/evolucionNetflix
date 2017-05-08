@@ -10,7 +10,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.SystemClock;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClientFactory;
 import com.netflix.mediaclient.util.DeviceUtils;
-import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.SignInLogging;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
@@ -31,6 +31,8 @@ import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import java.util.concurrent.TimeUnit;
+import com.netflix.mediaclient.util.AndroidUtils;
+import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$EndReason;
 import com.netflix.mediaclient.Log;
@@ -55,7 +57,7 @@ import android.content.Context;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClient;
 import com.netflix.mediaclient.android.app.ApplicationStateListener;
 
-class IntegratedClientLoggingManager implements ApplicationStateListener, EventHandler
+public class IntegratedClientLoggingManager implements ApplicationStateListener, EventHandler
 {
     private static final int CL_MAX_TIME_THAN_EVENT_CAN_STAY_IN_QUEUE_MS = 60000;
     private static final int CL_MIN_NUMBER_OF_EVENTS_TO_POST = 30;
@@ -79,6 +81,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
     private SearchLogging mSearchLogging;
     private final AtomicLong mSequence;
     private final NetflixService mService;
+    private SignInLoggingImpl mSignInLogging;
     private SuspendLoggingImpl mSuspendLogging;
     private UIViewLoggingImpl mUIViewLogging;
     private final ServiceAgent$UserAgentInterface mUser;
@@ -120,6 +123,21 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
                 this.mApmLogging.startUserSession(ApplicationPerformanceMetricsLogging$Trigger.inputEvent);
             }
         }
+    }
+    
+    private void createSession(final Intent intent) {
+        if (AndroidUtils.isApplicationInForeground(this.mContext)) {
+            Log.d("nf_log", "UI is in foreground when service was started, create foreground session");
+            this.mSuspendLogging.startForegroundSession(intent);
+            return;
+        }
+        if (this.mInputManager.getNumberOfActivities() > 0) {
+            Log.d("nf_log", "UI exist, but app is background");
+            this.mSuspendLogging.startBackgroundingSession();
+            return;
+        }
+        Log.d("nf_log", "UI does not exist, app is in suspend state");
+        this.mSuspendLogging.startSuspendSession();
     }
     
     private void deliverSavedPayloads(final DataRepository$Entry[] array) {
@@ -370,6 +388,7 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
                 this.mSearchLogging.endAllActiveSessions();
                 this.mCustomerServiceLogging.endAllActiveSessions();
                 this.mApmLogging.endAllActiveSessions();
+                this.mSignInLogging.endAllActiveSessions();
                 this.resumeDelivery(false);
             }
             catch (Throwable t) {
@@ -426,6 +445,10 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         return this.mOwner.getNrdController().getNrdp().getLog().getSessionId();
     }
     
+    public SignInLogging getmSignInLogging() {
+        return this.mSignInLogging;
+    }
+    
     public void handleConnectivityChange(final Intent intent) {
         this.mApmLogging.handleConnectivityChange(this.mContext);
     }
@@ -448,12 +471,12 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
             Log.d("nf_log", "Handled by Search logger");
             return;
         }
-        if (this.mSuspendLogging.handleIntent(intent)) {
-            Log.d("nf_log", "Handled by suspend logging logger");
-            return;
-        }
         if (this.mCustomerServiceLogging.handleIntent(intent)) {
             Log.d("nf_log", "Handled by customer service logging logger");
+            return;
+        }
+        if (this.mSignInLogging.handleIntent(intent)) {
+            Log.d("nf_log", "Handled by signIn logger");
             return;
         }
         Log.w("nf_log", "Action not handled!");
@@ -468,14 +491,17 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         this.mApmLogging = new ApmLoggingImpl(this);
         this.mActionLogging = new UserActionLoggingImpl(this, this.mOwner.getUser());
         this.mUIViewLogging = new UIViewLoggingImpl(this);
+        final Intent andClearCachedIntent = this.mInputManager.getAndClearCachedIntent();
         Log.d("nf_log", "Add ICL manager as listener on user input...");
         this.mInputManager.addListener(this);
         Log.d("nf_log", "Add ICL manager as listener on user input done.");
         this.mSuspendLogging = new SuspendLoggingImpl(this);
         this.mSearchLogging = new SearchLogging(this, this.mOwner.getUser());
         this.mCustomerServiceLogging = new CustomerServiceLoggingImpl(this);
+        this.mSignInLogging = new SignInLoggingImpl(this);
         this.initDataRepository();
         this.registerReceivers();
+        this.createSession(andClearCachedIntent);
     }
     
     public boolean isConsolidatedLoggingSessionEnabled(String sessionLookupKey, final String s) {
@@ -536,13 +562,27 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
     @Override
     public void onBackground(final UserInputManager userInputManager) {
         Log.d("nf_log", "App in background");
+        this.mSuspendLogging.endUnfocusedSession();
         this.mSuspendLogging.startBackgroundingSession();
         this.mSuspendLogging.endBackgroundingSession();
+        this.mSuspendLogging.endForegroundSession();
         this.mSuspendLogging.startBackgroundSession();
     }
     
     @Override
-    public void onForeground(final UserInputManager userInputManager) {
+    public void onFocusGain(final UserInputManager userInputManager) {
+        Log.d("nf_log", "App ui gains focus");
+        this.mSuspendLogging.endUnfocusedSession();
+    }
+    
+    @Override
+    public void onFocusLost(final UserInputManager userInputManager) {
+        Log.d("nf_log", "App ui lost focus");
+        this.mSuspendLogging.startUnfocusedSession();
+    }
+    
+    @Override
+    public void onForeground(final UserInputManager userInputManager, final Intent intent) {
         Log.d("nf_log", "App in foreground");
         final long n = SystemClock.elapsedRealtime() - userInputManager.getTimeSinceLastUserInteraction();
         if (n > 0L) {
@@ -554,11 +594,17 @@ class IntegratedClientLoggingManager implements ApplicationStateListener, EventH
         this.mSuspendLogging.startResumingSession();
         this.mSuspendLogging.endResumingSession();
         this.mSuspendLogging.endBackgroundSession();
+        this.mSuspendLogging.endSuspendSession();
+        this.mSuspendLogging.startForegroundSession(intent);
+        this.mSuspendLogging.endUnfocusedSession();
     }
     
     @Override
     public void onUiGone(final UserInputManager userInputManager) {
         Log.d("nf_log", "App ui gone");
+        this.mSuspendLogging.endUnfocusedSession();
+        this.mSuspendLogging.endBackgroundingSession();
+        this.mSuspendLogging.startSuspendSession();
     }
     
     @Override

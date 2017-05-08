@@ -23,6 +23,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import android.content.res.Resources;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import java.util.StringTokenizer;
 import android.util.Pair;
 import android.text.Html;
@@ -81,18 +82,14 @@ public final class StringUtils
         return createBoldLabeledText(context, context.getString(n), s);
     }
     
-    public static CharSequence createBoldLabeledText(final Context context, String string, final String s) {
-        if (context == null) {
+    public static CharSequence createBoldLabeledText(final Context context, final String s, final String s2) {
+        if (context == null || isEmpty(s2)) {
             return "";
         }
-        final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder((CharSequence)string);
-        spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, string.length(), 0);
-        string = s;
-        if (isEmpty(s)) {
-            string = context.getString(2131165562);
-        }
+        final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder((CharSequence)s);
+        spannableStringBuilder.setSpan((Object)new StyleSpan(1), 0, s.length(), 0);
         spannableStringBuilder.append((CharSequence)" ");
-        spannableStringBuilder.append((CharSequence)string);
+        spannableStringBuilder.append((CharSequence)s2);
         return (CharSequence)spannableStringBuilder;
     }
     
@@ -175,13 +172,19 @@ public final class StringUtils
             return "";
         }
         final StringBuilder sb = new StringBuilder();
+        LocalizationUtils.addMarkerForRtLocale(sb, '\u200f');
         if (n > 0) {
             sb.append(n).append("   ");
         }
         if (isNotEmpty(s)) {
-            sb.append(s).append("   ");
+            LocalizationUtils.addMarkerForRtLocale(sb, '\u202a');
+            sb.append(s);
+            LocalizationUtils.addMarkerForRtLocale(sb, '\u202b');
+            sb.append("   ");
         }
-        sb.append(resources.getString(2131165566, new Object[] { TimeUtils.convertSecondsToMinutes(n2) }));
+        if (n2 > 0) {
+            sb.append(LocalizationUtils.forceLayoutDirectionIfNeeded(resources.getString(2131165586, new Object[] { TimeUtils.convertSecondsToMinutes(n2) })));
+        }
         return sb.toString();
     }
     
@@ -199,24 +202,27 @@ public final class StringUtils
         return getBasicMovieInfoString(context, videoDetails.getYear(), videoDetails.getCertification(), videoDetails.getPlayable().getRuntime());
     }
     
-    public static CharSequence getBasicShowInfoString(final Context context, final int n, final String s, final int n2) {
+    public static CharSequence getBasicShowInfoString(final Context context, final int n, final String s, final String s2) {
         if (context == null) {
             return "";
         }
-        final Resources resources = context.getResources();
-        if (resources == null) {
+        if (context.getResources() == null) {
             return "";
         }
-        final String quantityString = resources.getQuantityString(2131230721, n2, new Object[] { n2 });
         final StringBuilder sb = new StringBuilder();
+        LocalizationUtils.addMarkerForRtLocale(sb, '\u200f');
         if (n > 0) {
             sb.append(n).append("   ");
         }
         if (isNotEmpty(s)) {
-            sb.append(s).append("   ");
+            LocalizationUtils.addMarkerForRtLocale(sb, '\u202a');
+            sb.append(s);
+            LocalizationUtils.addMarkerForRtLocale(sb, '\u202b');
+            sb.append("   ");
         }
-        if (isNotEmpty(quantityString)) {
-            sb.append(quantityString);
+        if (isNotEmpty(s2)) {
+            LocalizationUtils.addMarkerForRtLocale(sb, '\u200f');
+            sb.append(s2);
         }
         return sb.toString();
     }
@@ -225,7 +231,7 @@ public final class StringUtils
         if (context == null) {
             return "";
         }
-        return getBasicShowInfoString(context, showDetails.getYear(), showDetails.getCertification(), showDetails.getNumOfSeasons());
+        return getBasicShowInfoString(context, showDetails.getYear(), showDetails.getCertification(), showDetails.getNumSeasonsLabel());
     }
     
     public static int getCsvCount(final String s) {
@@ -311,7 +317,12 @@ public final class StringUtils
         final int lastIndex = s.lastIndexOf("/");
         String s2;
         if (lastIndex > 0 && lastIndex < s.length() - 1) {
-            s2 = s.substring(lastIndex + 1);
+            final String substring = s.substring(lastIndex + 1);
+            final int index = substring.indexOf(63);
+            s2 = substring;
+            if (index > 0) {
+                s2 = substring.substring(0, index);
+            }
         }
         else {
             Log.w("StringUtils", "No filename found in URI - using hashcode: " + s);
@@ -606,6 +617,23 @@ public final class StringUtils
         //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
         // 
         throw new IllegalStateException("An error occurred while decompiling this method.");
+    }
+    
+    public static String getSubStringSafely(final String s, final int n) {
+        String s2;
+        if (s == null) {
+            s2 = null;
+        }
+        else {
+            s2 = s;
+            if (n >= 0) {
+                s2 = s;
+                if (s.length() > n) {
+                    return s.substring(0, n);
+                }
+            }
+        }
+        return s2;
     }
     
     public static boolean isEmpty(final CharSequence charSequence) {

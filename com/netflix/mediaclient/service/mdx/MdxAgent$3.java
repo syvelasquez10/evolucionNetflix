@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.mdx;
 
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
+import java.util.List;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import android.text.TextUtils;
@@ -24,6 +25,7 @@ import android.os.PowerManager;
 import android.net.wifi.WifiManager;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.Iterator;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.service.mdx.notification.MdxNotificationManagerFactory;
 import android.app.PendingIntent;
 import com.netflix.mediaclient.javabridge.ui.Mdx$Events;
@@ -71,7 +73,7 @@ class MdxAgent$3 extends BroadcastReceiver
     
     private void doMDXPlayBackEnd(final Intent intent) {
         if (!MdxAgent$Utils.isInPostPlay(intent)) {
-            Log.d("nf_mdx_agent", "MdxAgent: receive MDXUPDATE_PLAYBACKEND");
+            Log.d("nf_mdx_MdxAgent", "MdxAgent: receive MDXUPDATE_PLAYBACKEND");
             this.this$0.mMdxSessionWatchDog.stop();
             this.this$0.clearVideoDetails();
             this.this$0.stopAllNotifications();
@@ -86,7 +88,7 @@ class MdxAgent$3 extends BroadcastReceiver
     }
     
     private void doMDXPlaybackStart() {
-        Log.d("nf_mdx_agent", "MdxAgent: receive MDXUPDATE_PLAYBACKSTART");
+        Log.d("nf_mdx_MdxAgent", "MdxAgent: receive MDXUPDATE_PLAYBACKSTART");
         this.this$0.mMdxSessionWatchDog.start();
         this.this$0.lockWiFi();
         this.this$0.ensureManagers();
@@ -146,7 +148,7 @@ class MdxAgent$3 extends BroadcastReceiver
         final boolean booleanExtra2 = intent.getBooleanExtra("transitioning", false);
         final boolean inPostPlay = MdxAgent$Utils.isInPostPlay(intent);
         if (Log.isLoggable()) {
-            Log.d("nf_mdx_agent", "MdxAgent: simplePlaybackState : paused " + booleanExtra + ", transitioning " + booleanExtra2);
+            Log.d("nf_mdx_MdxAgent", "MdxAgent: simplePlaybackState : paused " + booleanExtra + ", transitioning " + booleanExtra2);
         }
         this.this$0.ensureManagers();
         if (AndroidUtils.getAndroidVersion() < 21) {
@@ -215,12 +217,12 @@ class MdxAgent$3 extends BroadcastReceiver
                                     b = true;
                                 }
                                 if (intExtra >= 100 && intExtra < 200 && b) {
-                                    Log.d("nf_mdx_agent", "MdxAgent: received error, clear video detail");
+                                    Log.d("nf_mdx_MdxAgent", "MdxAgent: received error, clear video detail");
                                     this.this$0.clearVideoDetails();
                                 }
                             }
                         }
-                        if (intExtra >= 100 && intExtra < 200) {
+                        if ((intExtra >= 100 && intExtra < 200) || intExtra == 201) {
                             this.this$0.resetTargetSelection();
                         }
                     }

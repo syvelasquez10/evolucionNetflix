@@ -8,16 +8,41 @@ import com.netflix.mediaclient.service.player.subtitles.BaseSubtitleBlock;
 
 public class ImageSubtitleBlock extends BaseSubtitleBlock
 {
-    private SegmentIndex$ImageDescriptor mImage;
+    private ImageDescriptor mImage;
     
-    public ImageSubtitleBlock(final SegmentIndex$ImageDescriptor mImage) {
+    public ImageSubtitleBlock(final ImageDescriptor mImage) {
         this.mImage = mImage;
         this.mStart = mImage.getStartTime();
         this.mEnd = mImage.getEndTime();
         this.mId = mImage.getName();
     }
     
-    public SegmentIndex$ImageDescriptor getImage() {
+    @Override
+    public void displayed() {
+        this.mImage.displayed();
+    }
+    
+    public ImageDescriptor getImage() {
         return this.mImage;
+    }
+    
+    @Override
+    public int getNumberOfDisplays() {
+        return this.mImage.getNumberOfDisplays();
+    }
+    
+    @Override
+    public void seeked(final long n) {
+        this.mImage.seeked(n);
+    }
+    
+    @Override
+    public String toString() {
+        return "ImageSubtitleBlock{mImage=" + this.mImage + super.toString() + "} ";
+    }
+    
+    @Override
+    public boolean wasDisplayed() {
+        return this.mImage.wasDisplayed();
     }
 }

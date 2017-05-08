@@ -12,6 +12,7 @@ import org.json.JSONObject;
 public final class ActivationTokens
 {
     private static final String TAG = "nf_reg";
+    public boolean autoLoginSource;
     private JSONObject json;
     public String netflixId;
     public String secureNetflixId;

@@ -25,6 +25,13 @@ class MdxImageLoader$2 implements ResourceFetcherCallback
     }
     
     @Override
+    public void onResourceCached(final String s, final String s2, final long n, final long n2, final Status status) {
+        if (Log.isLoggable()) {
+            Log.e("nf_mdxImageLoader", "ERROR resource cached from " + s);
+        }
+    }
+    
+    @Override
     public void onResourceFetched(final String s, final String s2, final Status status) {
         if (status.isSucces()) {
             if (Log.isLoggable()) {
@@ -39,14 +46,14 @@ class MdxImageLoader$2 implements ResourceFetcherCallback
     @Override
     public void onResourcePrefetched(final String s, final int n, final Status status) {
         if (Log.isLoggable()) {
-            Log.d("nf_mdxImageLoader", "ERROR resource prefetched from " + s);
+            Log.e("nf_mdxImageLoader", "ERROR resource prefetched from " + s);
         }
     }
     
     @Override
     public void onResourceRawFetched(final String s, final byte[] array, final Status status) {
         if (Log.isLoggable()) {
-            Log.d("nf_mdxImageLoader", "ERROR resource raw fetched from " + s);
+            Log.e("nf_mdxImageLoader", "ERROR resource raw fetched from " + s);
         }
     }
 }

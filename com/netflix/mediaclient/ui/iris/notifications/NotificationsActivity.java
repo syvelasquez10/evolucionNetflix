@@ -46,7 +46,7 @@ public class NotificationsActivity extends FragmentHostActivity
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903098;
+        return 2130903114;
     }
     
     @Override
@@ -65,7 +65,7 @@ public class NotificationsActivity extends FragmentHostActivity
         final NetflixActionBar netflixActionBar = this.getNetflixActionBar();
         if (netflixActionBar != null) {
             netflixActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
-            netflixActionBar.setTitle(this.getResources().getString(2131165665));
+            netflixActionBar.setTitle(this.getResources().getString(2131165698));
         }
         if (bundle != null) {
             this.mNotificationOpenedReportAlreadySent = bundle.getBoolean("notification_beacon_sent");

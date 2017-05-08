@@ -22,6 +22,7 @@ import com.netflix.model.leafs.ListOfMoviesSummary;
 import com.netflix.model.branches.SummarizedList;
 import com.netflix.model.leafs.ListOfListOfGenres;
 import com.netflix.model.branches.UnsummarizedList;
+import com.netflix.model.branches.FalkorExpiringContent;
 import com.netflix.falkor.Ref;
 import com.netflix.model.branches.FalkorEvidenceList;
 import com.netflix.model.branches.FalkorEpisode;
@@ -36,6 +37,7 @@ public class Root implements BranchNode, Flushable
     private BranchMap<FalkorKidsCharacter> characters;
     private BranchMap<FalkorEpisode> episodes;
     private BranchMap<FalkorEvidenceList<Ref>> evidenceLists;
+    private BranchMap<FalkorExpiringContent> expiringContent;
     private BranchMap<UnsummarizedList<Ref>> flatGenres;
     private ListOfListOfGenres genreList;
     private BranchMap<SummarizedList<Ref, ListOfMoviesSummary>> lists;
@@ -128,6 +130,9 @@ public class Root implements BranchNode, Flushable
             case "nonMemberVideos": {
                 return this.nonMemberVideos;
             }
+            case "expiringContentNotice": {
+                return this.expiringContent;
+            }
         }
     }
     
@@ -190,6 +195,9 @@ public class Root implements BranchNode, Flushable
         }
         if (this.nonMemberVideos != null) {
             set.add("nonMemberVideos");
+        }
+        if (this.expiringContent != null) {
+            set.add("expiringContentNotice");
         }
         return set;
     }
@@ -261,6 +269,9 @@ public class Root implements BranchNode, Flushable
             case "nonMemberVideos": {
                 return this.nonMemberVideos = new BranchMap<Ref>(Falkor$Creator.Ref);
             }
+            case "expiringContentNotice": {
+                return this.expiringContent = new BranchMap<FalkorExpiringContent>(Falkor$Creator.FalkorExpiringContent(this.proxy));
+            }
         }
     }
     
@@ -325,6 +336,9 @@ public class Root implements BranchNode, Flushable
             }
             case "nonMemberVideos": {
                 this.nonMemberVideos = (BranchMap<Ref>)o;
+            }
+            case "expiringContentNotice": {
+                this.expiringContent = (BranchMap<FalkorExpiringContent>)o;
             }
             case "notifications": {
                 this.notifications = (BranchMap<FalkorIrisNotification>)o;

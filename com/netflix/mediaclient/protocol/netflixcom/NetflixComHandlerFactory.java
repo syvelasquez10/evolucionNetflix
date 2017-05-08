@@ -31,6 +31,7 @@ public class NetflixComHandlerFactory
     public static final String HANDLER_PREFIX = "www.netflix.com";
     public static final String HANDLER_SCHEME = "http";
     private static final String HOME_SUFFIX = "";
+    protected static final String PROFILES_SUFFIX = "profiles";
     protected static final String SEARCH_SUFFIX = "search";
     protected static final String SYNC_SUFFIX = "sync";
     private static final String TAG = "NetflixComHandlerFactory";
@@ -55,7 +56,7 @@ public class NetflixComHandlerFactory
         return b2;
     }
     
-    private static List<String> getActionParts(final Uri uri) {
+    public static List<String> getActionParts(final Uri uri) {
         final List pathSegments = uri.getPathSegments();
         if (pathSegments.size() > 1 && pathSegments.get(0).length() == 2) {
             return pathSegments.subList(1, pathSegments.size());
@@ -71,19 +72,29 @@ public class NetflixComHandlerFactory
         else {
             s = "";
         }
-        if (netflixActivity != null) {
-            String s2;
-            if (StringUtils.isNotEmpty(s)) {
+        String s2 = s;
+        if ("title".equals(s)) {
+            s2 = s;
+            if (map.containsKey("fromWatch")) {
                 s2 = s;
+                if (map.get("fromWatch").equals("true")) {
+                    s2 = "watch";
+                }
+            }
+        }
+        if (netflixActivity != null) {
+            String s3;
+            if (StringUtils.isNotEmpty(s2)) {
+                s3 = s2;
             }
             else {
-                s2 = "home";
+                s3 = "home";
             }
-            NflxProtocolUtils.reportApplicationLaunchedFromDeepLinking(netflixActivity, map, s2);
+            NflxProtocolUtils.reportApplicationLaunchedFromDeepLinking(netflixActivity, s3, NflxProtocolUtils.createDeepLink(map));
         }
-        switch (s) {
+        switch (s2) {
             default: {
-                final String string = "SPY-7518 - got unsupported suffix: " + s;
+                final String string = "SPY-7518 - got unsupported suffix: " + s2;
                 Log.e("NetflixComHandlerFactory", string);
                 ErrorLoggingManager.logHandledException(string);
                 return null;
@@ -95,7 +106,7 @@ public class NetflixComHandlerFactory
                 return new NetflixComVideoDetailsHandler();
             }
             case "watch": {
-                return new NetflixComWatchHandler(NetflixComUtils.getStartTimeFromParams(map));
+                return new NetflixComWatchHandler(NetflixComUtils.getStartTimeFromParams(map), NetflixComUtils.getSceneFromParams(map));
             }
             case "browse": {
                 return new NetflixComBrowseHandler();
@@ -108,6 +119,9 @@ public class NetflixComHandlerFactory
             }
             case "sync": {
                 return new NetflixComSyncHandler();
+            }
+            case "profiles": {
+                return new NetflixComProfilesHandler();
             }
         }
     }

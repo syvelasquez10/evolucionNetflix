@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.settings;
 
+import com.netflix.mediaclient.util.PreferenceUtils;
+import android.content.SharedPreferences;
 import com.netflix.mediaclient.android.app.Status;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -19,13 +21,8 @@ import android.preference.ListPreference;
 import android.preference.Preference$OnPreferenceChangeListener;
 import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import android.preference.Preference;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
-import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
-import com.netflix.mediaclient.util.PreferenceUtils;
 import android.preference.Preference$OnPreferenceClickListener;
-import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthSaving;
-import com.netflix.mediaclient.util.ConnectivityUtils;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData$Cell;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
 import android.app.Fragment;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import android.content.DialogInterface$OnClickListener;
@@ -37,14 +34,16 @@ import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import android.content.SharedPreferences$OnSharedPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 
-public class SettingsFragment extends PreferenceFragment implements ManagerStatusListener
+public class SettingsFragment extends PreferenceFragment implements SharedPreferences$OnSharedPreferenceChangeListener, ManagerStatusListener
 {
     private static final String FAKE_KEY_BW_SAVE = "nf.bw_save";
     private static final String FAKE_KEY_ENABLE_NOTIFICATIONS = "nf_notification_enable";
     private static final String FAKE_KEY_PLAYER_TYPE = "ui.playertype";
     private static final String FAKE_KEY_SUBTITLE_CONFIG = "ui.subtitleConfig";
+    private static final String FAKE_KEY_WIFI_ONLY = "nf_play_no_wifi_warning";
     private static final String KEY_PREF_NOTIFICATION = "pref.notification";
     private static final String PLAYER_TYPE_DEFAULT = "DEFAULT";
     private static final String PLAYER_TYPE_JPLAYER = "JPLAYER";
@@ -63,10 +62,10 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
     private void changePlayer(final PlayerType playerType) {
         if (playerType == null) {
             Log.w("SettingsFragment", "Invalid player type choosen! This should not happen, report it.");
-            new AlertDialog$Builder((Context)this.activity).setTitle((CharSequence)"").setMessage(2131165749).setPositiveButton(2131165568, (DialogInterface$OnClickListener)null).show();
+            new AlertDialog$Builder((Context)this.activity).setTitle((CharSequence)"").setMessage(2131165792).setPositiveButton(2131165588, (DialogInterface$OnClickListener)null).show();
             return;
         }
-        new BackgroundTask().execute(new SettingsFragment$5(this, playerType));
+        new BackgroundTask().execute(new SettingsFragment$4(this, playerType));
     }
     
     public static Fragment create() {
@@ -74,13 +73,7 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
     }
     
     private void handleBandwidthSaveSettings() {
-        final DataSaveConfigData bwSaveConfigData = this.serviceManager.getConfiguration().getBWSaveConfigData();
-        if (bwSaveConfigData == null) {
-            this.removeBwSettings();
-            return;
-        }
-        final ABTestConfigData abTestConfig_6733 = bwSaveConfigData.abTestConfig_6733;
-        if (abTestConfig_6733 == null || abTestConfig_6733.getCell().equals(ABTestConfigData$Cell.CELL_ONE)) {
+        if (!BandwidthUtility.canShowDataSavingPreference((Context)this.serviceManager.getActivity())) {
             this.removeBwSettings();
             return;
         }
@@ -89,28 +82,15 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
             this.removeBwSettings();
             return;
         }
-        if (!ConnectivityUtils.hasCellular((Context)this.serviceManager.getActivity()) && !this.serviceManager.getConfiguration().shouldForceBwSettingsInWifi()) {
-            Log.d("SettingsFragment", "no cellular!!");
-            this.removeBwSettings();
-            return;
-        }
-        int summary;
-        if (BandwidthSaving.isDataSavingEnabled((Context)this.serviceManager.getActivity(), bwSaveConfigData)) {
-            summary = 2131165425;
-        }
-        else {
-            summary = 2131165424;
-        }
-        preference.setSummary(summary);
-        preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new SettingsFragment$3(this));
-        preference.setEnabled(!PreferenceUtils.getBooleanPref((Context)this.getActivity(), "nf_play_no_wifi_warning", false));
+        this.setDataSaverDescription((Context)this.serviceManager.getActivity(), preference);
+        preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new SettingsFragment$2(this));
     }
     
     private void handleCastAppIdSettings() {
         final Preference preference = this.findPreference((CharSequence)"ui.castAppId");
         if (preference != null) {
-            preference.setSummary((CharSequence)((Object)this.getText(2131165431) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
-            preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$7(this));
+            preference.setSummary((CharSequence)((Object)this.getText(2131165446) + SettingsConfiguration.getCastApplicationId((Context)this.activity)));
+            preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$6(this));
         }
     }
     
@@ -143,7 +123,7 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
         final CheckBoxPreference checkBoxPreference = (CheckBoxPreference)this.findPreference((CharSequence)"nf_notification_enable");
         if (checkBoxPreference != null) {
             checkBoxPreference.setChecked(registeredForPushNotifications);
-            checkBoxPreference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new SettingsFragment$6(this));
+            checkBoxPreference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new SettingsFragment$5(this));
             return;
         }
         this.removeNotificationGroup();
@@ -156,7 +136,7 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
             return;
         }
         Log.d("SettingsFragment", "Debug: subtitle config");
-        preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$4(this));
+        preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$3(this));
         if (preference instanceof ListPreference) {
             this.populateSubtitleConfig((ListPreference)preference);
             return;
@@ -165,11 +145,12 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
     }
     
     private void handleWifiOnlySetting() {
-        final Preference preference = this.findPreference((CharSequence)"nf_play_no_wifi_warning");
-        if (preference == null) {
-            return;
+        if (this.findPreference((CharSequence)"nf_play_no_wifi_warning") != null) {
+            BandwidthUtility.migrateWifiOnlySetting((Context)this.serviceManager.getActivity());
+            if (BandwidthUtility.canShowDataSavingPreference((Context)this.serviceManager.getActivity())) {
+                this.removeWiFiOnlySettings();
+            }
         }
-        preference.setOnPreferenceChangeListener((Preference$OnPreferenceChangeListener)new SettingsFragment$2(this));
     }
     
     private boolean isGcmSupported() {
@@ -192,14 +173,14 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
         final PlayerType currentType = PlayerTypeFactory.getCurrentType((Context)this.activity);
         final boolean default1 = PlayerTypeFactory.isDefault((Context)this.activity);
         final StringBuilder sb = new StringBuilder();
-        sb.append(this.getString(2131165748)).append(" ");
+        sb.append(this.getString(2131165791)).append(" ");
         sb.append(PlayerTypeFactory.findDefaultPlayerType().getDescription());
         final ArrayList<String> list = new ArrayList<String>();
         final ArrayList<String> list2 = new ArrayList<String>();
         list.add(sb.toString());
         list2.add("DEFAULT");
         if (AndroidUtils.isOpenMaxALSupported()) {
-            list.add((String)this.getText(2131165753));
+            list.add((String)this.getText(2131165796));
             list2.add("XAL");
             if (PlayerTypeFactory.isXalPlayer(currentType)) {
                 if (!default1) {
@@ -207,7 +188,7 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
                 }
                 listPreference.setValue("XAL");
             }
-            list.add((String)this.getText(2131165754));
+            list.add((String)this.getText(2131165797));
             list2.add("XALAMP");
             if (PlayerTypeFactory.isXalmpPlayer(currentType)) {
                 if (!default1) {
@@ -217,7 +198,7 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device10)) {
-            list.add((String)this.getText(2131165750));
+            list.add((String)this.getText(2131165793));
             list2.add("JPLAYER");
             if (PlayerTypeFactory.isJPlayer(currentType)) {
                 if (!default1) {
@@ -227,7 +208,7 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device11)) {
-            list.add((String)this.getText(2131165752));
+            list.add((String)this.getText(2131165795));
             list2.add("JPLAYERBASE");
             if (PlayerTypeFactory.isJPlayerBase(currentType)) {
                 if (!default1) {
@@ -237,7 +218,7 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
             }
         }
         if (PlayerTypeFactory.isPlayerTypeSupported(PlayerType.device12)) {
-            list.add((String)this.getText(2131165751));
+            list.add((String)this.getText(2131165794));
             list2.add("JPLAYER2");
             if (PlayerTypeFactory.isJPlayer2(currentType)) {
                 if (!default1) {
@@ -254,11 +235,11 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
         final SubtitleConfiguration loadQaLocalOverride = SubtitleConfiguration.loadQaLocalOverride((Context)this.activity);
         final ArrayList<CharSequence> list = new ArrayList<CharSequence>();
         final ArrayList<String> list2 = new ArrayList<String>();
-        list.add(this.getText(2131165758));
+        list.add(this.getText(2131165801));
         list2.add("DEFAULT");
-        list.add(this.getText(2131165759));
+        list.add(this.getText(2131165802));
         list2.add("ENHANCED_XML");
-        list.add(this.getText(2131165761));
+        list.add(this.getText(2131165804));
         list2.add("SIMPLE_XML");
         listPreference.setDefaultValue((Object)"DEFAULT");
         if (loadQaLocalOverride == SubtitleConfiguration.SIMPLE_XML) {
@@ -291,6 +272,18 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
         }
     }
     
+    private void removeWiFiOnlySettings() {
+        Log.d("SettingsFragment", "removing WiFiOnly settings");
+        ((PreferenceGroup)this.findPreference((CharSequence)"video.playback")).removePreference(this.findPreference((CharSequence)"nf_play_no_wifi_warning"));
+    }
+    
+    private void setDataSaverDescription(final Context context, final Preference preference) {
+        if (context == null || preference == null) {
+            return;
+        }
+        preference.setSummary(BandwidthUtility.getDataSaverDescription(context));
+    }
+    
     private void updateSubtitleConfig(final SubtitleConfiguration subtitleConfiguration) {
         Log.d("SettingsFragment", "Update subtitle config");
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PLAYER_SUBTITLE_CONFIG_CHANGED");
@@ -299,23 +292,12 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
         LocalBroadcastManager.getInstance((Context)this.activity).sendBroadcast(intent);
     }
     
-    public void onBandwidthSettingsDone(final ServiceManager serviceManager) {
-        final DataSaveConfigData bwSaveConfigData = serviceManager.getConfiguration().getBWSaveConfigData();
-        if (bwSaveConfigData != null) {
-            final Preference preference = this.findPreference((CharSequence)"nf.bw_save");
-            if (preference != null) {
-                final boolean dataSavingEnabled = BandwidthSaving.isDataSavingEnabled((Context)serviceManager.getActivity(), bwSaveConfigData);
-                Log.d("SettingsFragment", String.format("onBandwidthSettingsDone called - dataSavingEnabled: %b, ", dataSavingEnabled));
-                int summary;
-                if (dataSavingEnabled) {
-                    summary = 2131165425;
-                }
-                else {
-                    summary = 2131165424;
-                }
-                preference.setSummary(summary);
-            }
+    public void onBandwidthSettingsDone(final Context context) {
+        final Preference preference = this.findPreference((CharSequence)"nf.bw_save");
+        if (preference == null) {
+            return;
         }
+        this.setDataSaverDescription(context, preference);
     }
     
     public void onCreate(final Bundle bundle) {
@@ -325,16 +307,32 @@ public class SettingsFragment extends PreferenceFragment implements ManagerStatu
         this.getPreferenceManager().setSharedPreferencesName("nfxpref");
         this.addPreferencesFromResource(2131034115);
         ((PreferenceGroup)this.findPreference((CharSequence)"pref.screen")).removePreference(this.findPreference((CharSequence)"pref.qa.debugonly"));
-        this.handleWifiOnlySetting();
         this.handlePushNotificationsSettings();
     }
     
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         Log.d("SettingsFragment", "onManagerReady");
         this.serviceManager = serviceManager;
+        this.handleWifiOnlySetting();
         this.handleBandwidthSaveSettings();
     }
     
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
+    }
+    
+    public void onPause() {
+        super.onPause();
+        this.getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener((SharedPreferences$OnSharedPreferenceChangeListener)this);
+    }
+    
+    public void onResume() {
+        super.onResume();
+        this.getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener((SharedPreferences$OnSharedPreferenceChangeListener)this);
+    }
+    
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String s) {
+        if ("nf_play_no_wifi_warning".equals(s)) {
+            PreferenceUtils.putBooleanPref((Context)this.getActivity(), "nf_play_user_no_wifi_warned_already", false);
+        }
     }
 }

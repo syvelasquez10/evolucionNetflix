@@ -43,12 +43,12 @@ public class TargetSelector
         }
         this.mCallback.onTargetSelectorLoaded(this.mCurrentTarget, this.mTaregtUuid, this.mTargetDialUuid, this.mTargetFriendlyName);
         if (Log.isLoggable()) {
-            Log.d("nf_mdxTargetSelector", "TragetSelector: init complete.  mCurrentTarget is " + this.mCurrentTarget + " : " + this.mTaregtUuid + " : " + this.mTargetDialUuid + " : " + this.mTargetFriendlyName);
+            Log.d("nf_mdxTargetSelector", "TargetSelector: init complete.  mCurrentTarget is " + this.mCurrentTarget + " : " + this.mTaregtUuid + " : " + this.mTargetDialUuid + " : " + this.mTargetFriendlyName);
         }
     }
     
     private void startCountDown(final long n) {
-        Log.d("nf_mdxTargetSelector", "TragetSelector: startCountDown " + n);
+        Log.d("nf_mdxTargetSelector", "TargetSelector: startCountDown " + n);
         this.mHandler.removeMessages(1);
         this.mHandler.sendEmptyMessageDelayed(1, n);
     }

@@ -1,0 +1,22 @@
+// 
+// Decompiled by Procyon v0.5.30
+// 
+
+package com.netflix.mediaclient.android.activity;
+
+import android.content.DialogInterface;
+import android.app.Activity;
+import android.content.DialogInterface$OnClickListener;
+
+final class ServiceErrorsHandler$5 implements DialogInterface$OnClickListener
+{
+    final /* synthetic */ Activity val$activity;
+    
+    ServiceErrorsHandler$5(final Activity val$activity) {
+        this.val$activity = val$activity;
+    }
+    
+    public void onClick(final DialogInterface dialogInterface, final int n) {
+        this.val$activity.finish();
+    }
+}

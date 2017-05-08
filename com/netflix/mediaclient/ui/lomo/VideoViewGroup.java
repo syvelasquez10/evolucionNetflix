@@ -5,10 +5,11 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.util.DataUtil;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import java.util.List;
 import android.widget.LinearLayout$LayoutParams;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
@@ -19,21 +20,34 @@ import com.netflix.mediaclient.servicemgr.interface_.Video;
 public abstract class VideoViewGroup<T extends Video, V extends View> extends LinearLayout
 {
     protected static final String TAG = "VideoViewGroup";
+    protected boolean isRtlLocale;
     
     public VideoViewGroup(final Context context, final boolean b) {
         super(context);
-        this.setId(2131623957);
+        this.setId(2131623958);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         this.setOrientation(0);
         if (b) {
             LoMoUtils.applyContentOverlapPadding((NetflixActivity)this.getContext(), (View)this, this.getLomoWidthType());
         }
+        this.isRtlLocale = LocalizationUtils.isCurrentLocaleRTL();
+    }
+    
+    private int calculatePosition(final int n, final int n2) {
+        int n3 = n;
+        if (this.isRtlLocale) {
+            n3 = n2 - n - 1;
+            if (Log.isLoggable()) {
+                Log.v("VideoViewGroup", "Calculate position for RTL: " + n3 + ", for original position " + n + ", items per page: " + n2);
+            }
+        }
+        return n3;
     }
     
     protected abstract V createChildView(final Context p0);
     
     protected int getChildPaddingDimenResId() {
-        return 2131296551;
+        return 2131296631;
     }
     
     protected LoMoUtils$LoMoWidthType getLomoWidthType() {
@@ -67,10 +81,22 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
             else {
                 this.updateViewIds((V)child, n3, n4, i);
                 if (list != null && i < list.size()) {
-                    ((VideoViewGroup$IVideoView<Object>)child).update(list.get(i), trackable, n4 + i, n2 == 0, false);
+                    final int calculatePosition = this.calculatePosition(i, n);
+                    if (calculatePosition < list.size()) {
+                        final Video video = (T)list.get(calculatePosition);
+                        if (video != null) {
+                            ((VideoViewGroup$IVideoView<Video>)child).update(video, trackable, n4 + i, n2 == 0, false);
+                        }
+                        else {
+                            ((VideoViewGroup$IVideoView<Video>)child).hide();
+                        }
+                    }
+                    else {
+                        ((VideoViewGroup$IVideoView<Video>)child).hide();
+                    }
                 }
                 else {
-                    ((VideoViewGroup$IVideoView<Object>)child).hide();
+                    ((VideoViewGroup$IVideoView<Video>)child).hide();
                 }
             }
         }

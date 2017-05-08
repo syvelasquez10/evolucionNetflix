@@ -34,8 +34,8 @@ public final class BandwidthLogging
         return new BandwidthLogging(bandwidthLogging$SettingType, !b, b, bandwidthLogging$InvokeLocation);
     }
     
-    public static void reportBandwidthSettingChange(final Context context, final BandwidthLogging$SettingType bandwidthLogging$SettingType, final boolean b, final BandwidthLogging$InvokeLocation bandwidthLogging$InvokeLocation) {
-        ApmLogUtils.reportLocalSettingsChange(context, createInstance(context, bandwidthLogging$SettingType, b, bandwidthLogging$InvokeLocation).toJsonString());
+    public static void reportBandwidthSettingChange(final Context context, final BandwidthLogging$SettingType bandwidthLogging$SettingType, final boolean b) {
+        ApmLogUtils.reportLocalSettingsChange(context, createInstance(context, bandwidthLogging$SettingType, b, null).toJsonString());
     }
     
     public String toJsonString() {

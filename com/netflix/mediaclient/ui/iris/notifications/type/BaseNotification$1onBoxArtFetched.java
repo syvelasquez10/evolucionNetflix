@@ -61,9 +61,9 @@ class BaseNotification$1onBoxArtFetched implements ImageLoader$ImageLoaderListen
     @Override
     public void onResponse(final Bitmap bitmap, final String s) {
         if (bitmap != null) {
-            final int color = this.val$context.getResources().getColor(2131558520);
+            final int color = this.val$context.getResources().getColor(2131558529);
             final NotificationCompat$BigPictureStyle bigPicture = new NotificationCompat$BigPictureStyle().bigPicture(bitmap);
-            final NotificationCompat$Builder setColor = new NotificationCompat$Builder(this.val$context).setSmallIcon(2130837732).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
+            final NotificationCompat$Builder setColor = new NotificationCompat$Builder(this.val$context).setSmallIcon(2130837751).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
             setColor.setGroup("iris_notifications");
             setColor.setGroupSummary(true);
             setColor.setAutoCancel(true);

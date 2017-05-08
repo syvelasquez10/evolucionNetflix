@@ -17,8 +17,11 @@ import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
@@ -38,6 +41,6 @@ class PostToHandlerCallbackWrapper$22 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.callback.onVideoHide(this.val$res);
+        this.this$0.callback.onQueueAdd(this.val$res);
     }
 }

@@ -80,23 +80,43 @@ public class AnimationUtils
     }
     
     @TargetApi(18)
+    public static Animator startViewAnimation(final View view, final int n, final float n2, final float n3) {
+        if (Log.isLoggable()) {
+            Log.i("AnimationUtils", "startViewAppearanceAnimation() duration: " + n + "; alpha: " + n2 + " - " + n3);
+        }
+        final ObjectAnimator ofFloat = ObjectAnimator.ofFloat((Object)view, "alpha", new float[] { n2, n3 });
+        ofFloat.setDuration((long)n);
+        if (Build$VERSION.SDK_INT >= 18) {
+            ofFloat.setAutoCancel(true);
+        }
+        ofFloat.setInterpolator((TimeInterpolator)new LinearInterpolator());
+        ofFloat.start();
+        return (Animator)ofFloat;
+    }
+    
+    @TargetApi(18)
     public static Animator startViewAppearanceAnimation(final View view, final boolean b) {
-        float n = 1.0f;
+        return startViewAppearanceAnimation(view, b, 300);
+    }
+    
+    @TargetApi(18)
+    public static Animator startViewAppearanceAnimation(final View view, final boolean b, final int n) {
+        float n2 = 1.0f;
         if (Log.isLoggable()) {
             Log.i("AnimationUtils", "startViewAppearanceAnimation() shouldAppear: " + b);
         }
-        float n2;
+        float n3;
         if (b) {
-            n2 = 0.0f;
+            n3 = 0.0f;
         }
         else {
-            n2 = 1.0f;
+            n3 = 1.0f;
         }
         if (!b) {
-            n = 0.0f;
+            n2 = 0.0f;
         }
-        final ObjectAnimator ofFloat = ObjectAnimator.ofFloat((Object)view, "alpha", new float[] { n2, n });
-        ofFloat.setDuration(300L);
+        final ObjectAnimator ofFloat = ObjectAnimator.ofFloat((Object)view, "alpha", new float[] { n3, n2 });
+        ofFloat.setDuration((long)n);
         if (Build$VERSION.SDK_INT >= 18) {
             ofFloat.setAutoCancel(true);
         }

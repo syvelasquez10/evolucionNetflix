@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.util.NetflixPreference;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
@@ -12,12 +13,12 @@ import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
 
 public enum SubtitleConfiguration
 {
-    BINARY_IMAGE(IMedia$SubtitleProfile.IMAGE, IMedia$SubtitleOutputMode.BINARY_IMAGE, 3, 2131165760);
+    BINARY_IMAGE(IMedia$SubtitleProfile.IMAGE, IMedia$SubtitleOutputMode.BINARY_IMAGE, 3, 2131165803);
     
     public static SubtitleConfiguration DEFAULT;
     
-    ENHANCED_XML(IMedia$SubtitleProfile.ENHANCED, IMedia$SubtitleOutputMode.DATA_XML, 1, 2131165759), 
-    SIMPLE_XML(IMedia$SubtitleProfile.SIMPLE, IMedia$SubtitleOutputMode.DATA_XML, 2, 2131165761);
+    ENHANCED_XML(IMedia$SubtitleProfile.ENHANCED, IMedia$SubtitleOutputMode.DATA_XML, 1, 2131165802), 
+    SIMPLE_XML(IMedia$SubtitleProfile.SIMPLE, IMedia$SubtitleOutputMode.DATA_XML, 2, 2131165804);
     
     private static final String TAG = "nf_conf";
     private int mLabelId;
@@ -80,7 +81,7 @@ public enum SubtitleConfiguration
         return SubtitleConfiguration.ENHANCED_XML;
     }
     
-    public static SubtitleConfiguration update(final Context context, final String s) {
+    public static SubtitleConfiguration update(final Context context, final NetflixPreference netflixPreference, final String s) {
         final SubtitleConfiguration enhanced_XML = SubtitleConfiguration.ENHANCED_XML;
         SubtitleConfiguration lookup;
         if (s == null) {
@@ -90,7 +91,7 @@ public enum SubtitleConfiguration
         else {
             lookup = lookup(Integer.parseInt(s));
         }
-        PreferenceUtils.putIntPref(context, "nf_subtitle_configuraton", lookup.getLookupType());
+        netflixPreference.putIntPref("nf_subtitle_configuraton", lookup.getLookupType());
         return load(context);
     }
     

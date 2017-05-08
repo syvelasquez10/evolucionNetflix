@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
+import java.util.List;
 import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
 import android.util.Pair;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
@@ -77,6 +78,10 @@ public class DummyMdx implements IMdx
     @Override
     public boolean isTargetLaunchingOrLaunched() {
         return false;
+    }
+    
+    @Override
+    public void prefetchVideo(final List<Pair<String, Integer>> list) {
     }
     
     @Override

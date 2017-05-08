@@ -25,6 +25,7 @@ public final class R$integer
     public static final int profile_name_max_length = 2131427346;
     public static final int ripple_anim_time_ms = 2131427347;
     public static final int search_result_people_title_max_lines = 2131427328;
+    public static final int search_view_text_size = 2131427348;
     public static final int snackbar_text_max_lines = 2131427332;
-    public static final int status_bar_notification_info_maxnum = 2131427348;
+    public static final int status_bar_notification_info_maxnum = 2131427349;
 }

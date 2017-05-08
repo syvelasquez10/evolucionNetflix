@@ -10,6 +10,7 @@ import android.app.Activity;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
@@ -19,10 +20,12 @@ class NetflixComWatchHandler$1FetchPlayableCallback extends SimpleManagerCallbac
     private final String trackId;
     final /* synthetic */ NetflixActivity val$activity;
     final /* synthetic */ String val$targetDialUuid;
+    final /* synthetic */ VideoType val$videoType;
     
-    NetflixComWatchHandler$1FetchPlayableCallback(final NetflixComWatchHandler this$0, final String trackId, final NetflixActivity val$activity, final String val$targetDialUuid) {
+    NetflixComWatchHandler$1FetchPlayableCallback(final NetflixComWatchHandler this$0, final String trackId, final NetflixActivity val$activity, final VideoType val$videoType, final String val$targetDialUuid) {
         this.this$0 = this$0;
         this.val$activity = val$activity;
+        this.val$videoType = val$videoType;
         this.val$targetDialUuid = val$targetDialUuid;
         this.trackId = trackId;
     }
@@ -30,7 +33,7 @@ class NetflixComWatchHandler$1FetchPlayableCallback extends SimpleManagerCallbac
     @Override
     public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
         if (status.isSucces()) {
-            this.this$0.play(this.val$activity, episodeDetails.getPlayable(), this.val$targetDialUuid, NflxProtocolUtils.getPlayContext(this.trackId));
+            this.this$0.resolveSceneAndPlay(this.val$activity, this.val$videoType, episodeDetails.getPlayable(), this.val$targetDialUuid, NflxProtocolUtils.getPlayContext(this.trackId));
         }
         NflxProtocolUtils.reportDelayedResponseHandled(this.val$activity);
     }
@@ -38,7 +41,7 @@ class NetflixComWatchHandler$1FetchPlayableCallback extends SimpleManagerCallbac
     @Override
     public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
         if (status.isSucces()) {
-            this.this$0.play(this.val$activity, movieDetails.getPlayable(), this.val$targetDialUuid, NflxProtocolUtils.getPlayContext(this.trackId));
+            this.this$0.resolveSceneAndPlay(this.val$activity, this.val$videoType, movieDetails.getPlayable(), this.val$targetDialUuid, NflxProtocolUtils.getPlayContext(this.trackId));
         }
         NflxProtocolUtils.reportDelayedResponseHandled(this.val$activity);
     }
@@ -46,7 +49,7 @@ class NetflixComWatchHandler$1FetchPlayableCallback extends SimpleManagerCallbac
     @Override
     public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
         if (status.isSucces()) {
-            this.this$0.play(this.val$activity, showDetails.getPlayable(), this.val$targetDialUuid, NflxProtocolUtils.getPlayContext(this.trackId));
+            this.this$0.resolveSceneAndPlay(this.val$activity, this.val$videoType, showDetails.getPlayable(), this.val$targetDialUuid, NflxProtocolUtils.getPlayContext(this.trackId));
         }
         NflxProtocolUtils.reportDelayedResponseHandled(this.val$activity);
     }

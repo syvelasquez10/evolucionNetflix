@@ -11,4 +11,8 @@ public interface SearchVideo extends Video
     String getCertification();
     
     int getYear();
+    
+    boolean isOriginal();
+    
+    boolean isPreRelease();
 }

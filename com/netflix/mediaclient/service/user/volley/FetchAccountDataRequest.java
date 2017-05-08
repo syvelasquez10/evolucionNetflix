@@ -9,6 +9,7 @@ import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import com.google.gson.JsonObject;
 import java.util.List;
+import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.webclient.model.leafs.User$Summary;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitlePreference;
@@ -41,7 +42,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
         this.responseCallback = responseCallback;
         this.pqlQuery1 = new StringBuilder("['profilesList', 'summary']").toString();
         this.pqlQuery2 = "['profilesList', {'to':" + 5 + "}, ['summary', 'subtitlePreference']]";
-        this.pqlQuery3 = new StringBuilder("['user', ['summary', 'subtitleDefaults']]").toString();
+        this.pqlQuery3 = new StringBuilder("['user', ['summary', 'subtitleDefaults', 'umaEog']]").toString();
         if (Log.isLoggable()) {
             Log.v("nf_service_user_fetchaccountdatarequest", "PQL = " + this.pqlQuery1);
             Log.v("nf_service_user_fetchaccountdatarequest", "PQL = " + this.pqlQuery2);
@@ -57,7 +58,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
         ArrayList<UserProfile> userProfiles;
         while (true) {
             while (true) {
-                Label_0414: {
+                Label_0431: {
                     while (true) {
                         int n = 0;
                         Label_0240: {
@@ -66,7 +67,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
                             try {
                                 final JsonObject asJsonObject = dataObj.getAsJsonObject("profilesList");
                                 if (!asJsonObject.has("summary")) {
-                                    break Label_0414;
+                                    break Label_0431;
                                 }
                                 final int length = FalkorParseUtils.getPropertyObject(asJsonObject, "summary", ListSummary.class).getLength();
                                 userProfiles = new ArrayList<UserProfile>();
@@ -116,6 +117,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
                 throw new FalkorException("response missing user json objects", ex2);
             }
             user.subtitleDefaults = FalkorParseUtils.getPropertyObject(asJsonObject3, "subtitleDefaults", SubtitlePreference.class);
+            user.eogAlert = FalkorParseUtils.getPropertyObject(asJsonObject3, "umaEog", EogAlert.class);
             accountData.setUser(user);
         }
         accountData.setUserProfiles(userProfiles);

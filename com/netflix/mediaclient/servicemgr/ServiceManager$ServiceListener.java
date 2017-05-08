@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
@@ -32,6 +33,7 @@ import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
@@ -39,7 +41,10 @@ import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import com.netflix.mediaclient.service.webclient.model.leafs.AvatarInfo;
 import java.util.List;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.android.app.NetflixStatus;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.android.app.Status;
@@ -55,7 +60,7 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     private void logShowDetailsInfo(final Status status, final int n, final ShowDetails showDetails) {
         Log.d("ServiceManager", "onShowDetailsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
         Log.d("ServiceManager", "onShowDetailsFetched requestedSdp=" + showDetails);
-        if (showDetails != null && showDetails.getSimilars() != null) {
+        if (showDetails != null && StringUtils.isNotEmpty(showDetails.getId()) && showDetails.getSimilars() != null) {
             Log.d("ServiceManager", "onShowDetailsFetched sims size=" + showDetails.getSimilars().size());
             Log.d("ServiceManager", "onShowDetailsFetched sims track id=" + showDetails.getSimilarsTrackId());
         }
@@ -65,6 +70,20 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
         if (status instanceof NetflixStatus) {
             ((NetflixStatus)status).setRequestId(requestId);
         }
+    }
+    
+    @Override
+    public void expiringContent(final int n, final IExpiringContentWarning expiringContentWarning, final Status status, final ExpiringContentAction expiringContentAction) {
+        this.updateStatusRequestId(status, n);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManager", "expiringContentWarningAction requestId=" + n + " erroCode=" + status.getStatusCode());
+        }
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for expiringContentWarningAction requestId " + n);
+            return;
+        }
+        access$400.onExpiringContentWarning(expiringContentWarning, status, expiringContentAction);
     }
     
     @Override
@@ -209,6 +228,21 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             return;
         }
         access$400.onGenresFetched(list, status);
+    }
+    
+    @Override
+    public void onInteractiveMomentsFetched(final int n, final InteractiveMoments interactiveMoments, final Status status) {
+        this.updateStatusRequestId(status, n);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManager", "onInteractiveMomentsFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onInteractiveMomentsFetched requestedMoments=" + interactiveMoments);
+        }
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for onInteractiveMomentsFetched requestId " + n);
+            return;
+        }
+        access$400.onInteractiveMomentsFetched(interactiveMoments, status);
     }
     
     @Override
@@ -398,6 +432,20 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
     }
     
     @Override
+    public void onResourceCached(final int n, final String s, final String s2, final long n2, final long n3, final Status status) {
+        this.updateStatusRequestId(status, n);
+        if (Log.isLoggable()) {
+            Log.v("ServiceManager", "onResourceCached requestId=" + n + " requestedUrl=" + s + " size=" + n3 + " res.getStatusCode()=" + status.getStatusCode());
+        }
+        final ManagerCallback demuxCallback = this.this$0.mCallbackMuxer.demuxCallback(n);
+        if (demuxCallback == null) {
+            Log.d("ServiceManager", "No callback for onResourceCached requestId " + n);
+            return;
+        }
+        demuxCallback.onResourceCached(s, s2, n2, n3, status);
+    }
+    
+    @Override
     public void onResourceFetched(final int n, final String s, final String s2, final Status status) {
         this.updateStatusRequestId(status, n);
         if (Log.isLoggable()) {
@@ -422,6 +470,21 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             return;
         }
         demuxCallback.onResourceRawFetched(s, array, status);
+    }
+    
+    @Override
+    public void onScenePositionFetched(final int n, final int n2, final Status status) {
+        this.updateStatusRequestId(status, n);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManager", "onScenePositionFetched requestId=" + n + " erroCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onScenePositionFetched position=" + n2);
+        }
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for onScenePositionFetched requestId " + n);
+            return;
+        }
+        access$400.onScenePositionFetched(n2, status);
     }
     
     @Override

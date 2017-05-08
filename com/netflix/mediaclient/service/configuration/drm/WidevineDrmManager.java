@@ -214,6 +214,23 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
         return accountKeyMap$KeyIds != null && StringUtils.isNotEmpty(accountKeyMap$KeyIds.getKceKeyId()) && StringUtils.isNotEmpty(accountKeyMap$KeyIds.getKchKeyId()) && StringUtils.isNotEmpty(accountKeyMap$KeyIds.getKeySetId()) && ((StringUtils.isEmpty(s2) && StringUtils.isEmpty(s)) || (accountKeyMap$KeyIds.getKchKeyId().equals(s2) && accountKeyMap$KeyIds.getKceKeyId().equals(s)));
     }
     
+    public static boolean isValidKitKatWidevineL3SystemID() {
+        try {
+            final String propertyString = new MediaDrm(WidevineDrmManager.WIDEVINE_SCHEME).getPropertyString("systemId");
+            if (Log.isLoggable()) {
+                Log.d(WidevineDrmManager.TAG, "MediaDrm system ID is: " + propertyString);
+            }
+            if ("L1".equalsIgnoreCase(getMediaDrmMaxSecurityLevel())) {
+                return false;
+            }
+            if (!propertyString.equalsIgnoreCase("4266")) {
+                return true;
+            }
+        }
+        catch (UnsupportedSchemeException ex) {}
+        return false;
+    }
+    
     private boolean isWidevinePluginChanged() {
         final String stringPref = PreferenceUtils.getStringPref(this.mContext, "nf_drm_system_id", null);
         final String deviceType = this.getDeviceType();
@@ -247,7 +264,7 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
             // monitorenter(this)
             final WidevineDrmManager$2 widevineDrmManager$2 = null;
             while (true) {
-                Label_0114: {
+                Label_0117: {
                     try {
                         this.mErrorLogging.logHandledException(this.createMediaDrmErrorMessage(statusCode, t));
                         Runnable runnable;
@@ -257,12 +274,12 @@ public class WidevineDrmManager implements MediaDrm$OnEventListener, DrmManager
                         }
                         else {
                             if (StatusCode.DRM_FAILURE_MEDIADRM_PROVIDE_KEY_RESPONSE != statusCode && StatusCode.DRM_FAILURE_MEDIADRM_KEYS_RESTORE_FAILED != statusCode) {
-                                break Label_0114;
+                                break Label_0117;
                             }
                             Log.d(WidevineDrmManager.TAG, "MediaDrm provide key update failed or restore keys failed. Unregister device, logout user, and kill app process after error is displayed.");
                             runnable = new WidevineDrmManager$3(this);
                         }
-                        this.mErrorHandler.addError(new WidevineErrorDescriptor(this.mContext, statusCode, runnable));
+                        this.mErrorHandler.addError(new WidevineErrorDescriptor(this.mContext, statusCode, runnable, 2131165525));
                         return;
                     }
                     finally {

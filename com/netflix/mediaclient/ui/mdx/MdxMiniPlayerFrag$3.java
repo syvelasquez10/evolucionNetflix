@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.mdx;
 
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
@@ -32,7 +33,6 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.mdx.MdxKeyEventHandler;
 import com.netflix.mediaclient.service.mdx.MdxKeyEventHandler$MdxKeyEventCallbacks;
 import com.netflix.mediaclient.service.mdx.MdxErrorHandler;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
 import com.netflix.mediaclient.ui.common.LanguageSelector;
 import android.os.Handler;

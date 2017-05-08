@@ -181,10 +181,13 @@ public final class i
                     a(ad);
                     // iftrue(Label_0158:, class1 == null)
                     while (true) {
-                        this.d = ad;
-                        return true;
-                        ad = new ad(class1, this.h, this.i);
-                        Socket.setSocketImplFactory(ad);
+                        while (true) {
+                            this.d = ad;
+                            return true;
+                            ad = new ad(class1, this.h, this.i);
+                            Socket.setSocketImplFactory(ad);
+                            continue;
+                        }
                         continue;
                     }
                     // iftrue(Label_0079:, !socketImplFactory instanceof ad)

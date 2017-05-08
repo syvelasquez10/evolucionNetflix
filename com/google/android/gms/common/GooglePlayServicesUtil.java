@@ -13,6 +13,7 @@ import android.os.UserManager;
 import android.content.pm.ApplicationInfo;
 import android.text.TextUtils;
 import android.os.Bundle;
+import android.content.pm.PackageManager$NameNotFoundException;
 import android.app.NotificationManager;
 import android.util.Log;
 import android.support.v4.app.FragmentManager;
@@ -29,8 +30,6 @@ import android.app.Dialog;
 import android.support.v4.app.Fragment;
 import android.content.DialogInterface$OnCancelListener;
 import android.app.Activity;
-import android.content.res.Resources;
-import android.content.pm.PackageManager$NameNotFoundException;
 import android.content.Context;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -57,25 +56,6 @@ public final class GooglePlayServicesUtil
         GooglePlayServicesUtil.zzaap = null;
         zzaaq = new AtomicBoolean();
         zzaar = new AtomicBoolean();
-    }
-    
-    public static Context getRemoteContext(Context packageContext) {
-        try {
-            packageContext = packageContext.createPackageContext("com.google.android.gms", 3);
-            return packageContext;
-        }
-        catch (PackageManager$NameNotFoundException ex) {
-            return null;
-        }
-    }
-    
-    public static Resources getRemoteResource(final Context context) {
-        try {
-            return context.getPackageManager().getResourcesForApplication("com.google.android.gms");
-        }
-        catch (PackageManager$NameNotFoundException ex) {
-            return null;
-        }
     }
     
     @Deprecated
@@ -488,28 +468,31 @@ public final class GooglePlayServicesUtil
                 Label_0028: {
                     return b2;
                 }
-                // iftrue(Label_0028:, s == null)
                 // iftrue(Label_0028:, packagesForUid == null)
+                // iftrue(Label_0028:, s == null)
                 // iftrue(Label_0076:, !s.equals((Object)packagesForUid[n]))
+                // iftrue(Label_0028:, n >= packagesForUid.length)
                 while (true) {
-                    Label_0055: {
-                        while (true) {
-                            n = 0;
-                            break Label_0055;
-                            final String[] packagesForUid = context.getPackageManager().getPackagesForUid(n);
-                            b2 = b;
-                            b2 = b;
-                            continue;
+                    while (true) {
+                        Block_5: {
+                            while (true) {
+                                b2 = b;
+                                break Block_5;
+                                final String[] packagesForUid = context.getPackageManager().getPackagesForUid(n);
+                                b2 = b;
+                                continue;
+                            }
+                            return true;
                         }
-                        return true;
-                        Label_0076:
-                        ++n;
+                        n = 0;
+                        b2 = b;
+                        continue;
                     }
-                    b2 = b;
+                    Label_0076:
+                    ++n;
                     continue;
                 }
             }
-            // iftrue(Label_0028:, n >= packagesForUid.length)
             catch (SecurityException ex) {
                 return false;
             }

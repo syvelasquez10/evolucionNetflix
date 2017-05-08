@@ -4,17 +4,16 @@
 
 package com.netflix.mediaclient.ui.settings;
 
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.Context;
 import android.content.Intent;
 import android.app.Activity;
-import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthDialog$BandwidthSavingCallback;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthPreferenceDialog$BandwidthSavingCallback;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 
-public class SettingsActivity extends FragmentHostActivity implements BandwidthDialog$BandwidthSavingCallback
+public class SettingsActivity extends FragmentHostActivity implements BandwidthPreferenceDialog$BandwidthSavingCallback
 {
     private static final String TAG = "nf_settings";
     
@@ -34,7 +33,7 @@ public class SettingsActivity extends FragmentHostActivity implements BandwidthD
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903098;
+        return 2130903114;
     }
     
     @Override
@@ -43,8 +42,8 @@ public class SettingsActivity extends FragmentHostActivity implements BandwidthD
     }
     
     @Override
-    public void onBandwidthSettingsDone(final ServiceManager serviceManager) {
-        ((SettingsFragment)this.getPrimaryFrag()).onBandwidthSettingsDone(serviceManager);
+    public void onBandwidthSettingsDone(final Context context) {
+        ((SettingsFragment)this.getPrimaryFrag()).onBandwidthSettingsDone(context);
     }
     
     @Override

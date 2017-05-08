@@ -9,6 +9,9 @@ import com.netflix.mediaclient.service.pservice.logging.PServiceWidgetLogEvent$W
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.LinkedList;
+import com.netflix.mediaclient.ui.player.PlayerActivity;
+import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.pservice.logging.PreAppWidgetLogActionData$PreAppWidgetActionName;
 import android.annotation.TargetApi;
 import android.os.Bundle;

@@ -20,6 +20,8 @@ public class ScalePressedStateHandler extends PressedStateHandler
     private static final float RESET_SCALE_FACTOR = 1.0f;
     private static final Interpolator UNPRESSED_INTERPOLATOR;
     private boolean shouldPerformCompleteAnimation;
+    private float viewScaleX;
+    private float viewScaleY;
     
     static {
         PRESSED_INTERPOLATOR = (Interpolator)new DecelerateInterpolator(1.5f);
@@ -28,11 +30,13 @@ public class ScalePressedStateHandler extends PressedStateHandler
     
     public ScalePressedStateHandler(final View view) {
         super(view);
+        this.viewScaleX = 1.0f;
+        this.viewScaleY = 1.0f;
     }
     
     private void performResetAnimation(final View view) {
         this.log("Performing reset animation");
-        view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(75L).setInterpolator((TimeInterpolator)ScalePressedStateHandler.UNPRESSED_INTERPOLATOR).setListener((Animator$AnimatorListener)new ScalePressedStateHandler$EndAnimationCompleteListener(this, null)).start();
+        view.animate().scaleX(this.viewScaleX * 1.0f).scaleY(this.viewScaleY * 1.0f).setDuration(75L).setInterpolator((TimeInterpolator)ScalePressedStateHandler.UNPRESSED_INTERPOLATOR).setListener((Animator$AnimatorListener)new ScalePressedStateHandler$EndAnimationCompleteListener(this, null)).start();
     }
     
     private void resetView(final View view) {
@@ -57,6 +61,8 @@ public class ScalePressedStateHandler extends PressedStateHandler
     @Override
     protected void handlePressStarted(final View view) {
         this.shouldPerformCompleteAnimation = false;
-        view.animate().scaleX(0.93f).scaleY(0.93f).setDuration(150L).setInterpolator((TimeInterpolator)ScalePressedStateHandler.PRESSED_INTERPOLATOR).setListener((Animator$AnimatorListener)new ScalePressedStateHandler$StartAnimationCompleteListener(this, view)).start();
+        this.viewScaleX = view.getScaleX();
+        this.viewScaleY = view.getScaleY();
+        view.animate().scaleX(this.viewScaleX * 0.93f).scaleY(this.viewScaleY * 0.93f).setDuration(150L).setInterpolator((TimeInterpolator)ScalePressedStateHandler.PRESSED_INTERPOLATOR).setListener((Animator$AnimatorListener)new ScalePressedStateHandler$StartAnimationCompleteListener(this, view)).start();
     }
 }

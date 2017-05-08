@@ -79,12 +79,14 @@ public final class CustomerServiceLogUtils extends ConsolidatedLoggingUtils
         }
     }
     
-    public static void reportCallSessionStarted(final Context context) {
+    public static void reportCallSessionStarted(final Context context, final String s, final boolean b) {
         if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
             return;
         }
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_CS_CALL_SESSION_START");
         intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("uuid", s);
+        intent.putExtra("displayed", b);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     

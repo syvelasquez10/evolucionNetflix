@@ -106,6 +106,11 @@ public class Error implements JsonSerializer
     
     @Override
     public String toString() {
-        return "Error [rootCause=" + this.rootCause + "]";
+        try {
+            return "Error: " + this.toJSONObject().toString();
+        }
+        catch (Throwable t) {
+            return "Error [rootCause=" + this.rootCause + "]";
+        }
     }
 }

@@ -21,6 +21,7 @@ public class Video$KubrickSummary implements JsonPopulator
     public float predictedRating;
     public int runtime;
     public int seasonCount;
+    public String seasonNumLabel;
     public String storyImgUrl;
     public String titleUrl;
     public int year;
@@ -35,75 +36,82 @@ public class Video$KubrickSummary implements JsonPopulator
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0186: {
+            Label_0194: {
                 switch (s.hashCode()) {
                     case 3704893: {
                         if (s.equals("year")) {
                             n = 0;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case 1750452338: {
                         if (s.equals("narrative")) {
                             n = 1;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case -644524870: {
                         if (s.equals("certification")) {
                             n = 2;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case 1550962648: {
                         if (s.equals("runtime")) {
                             n = 3;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case -885502996: {
                         if (s.equals("seasonCount")) {
                             n = 4;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case -1551264767: {
                         if (s.equals("storyImgUrl")) {
                             n = 5;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case -1217996834: {
                         if (s.equals("horzDispUrl")) {
                             n = 6;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case 3240902: {
                         if (s.equals("isHd")) {
                             n = 7;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case -263240971: {
                         if (s.equals("predictedRating")) {
                             n = 8;
-                            break Label_0186;
+                            break Label_0194;
                         }
                         break;
                     }
                     case -1870009353: {
                         if (s.equals("titleUrl")) {
                             n = 9;
-                            break Label_0186;
+                            break Label_0194;
+                        }
+                        break;
+                    }
+                    case -1865391343: {
+                        if (s.equals("seasonNumLabel")) {
+                            n = 10;
+                            break Label_0194;
                         }
                         break;
                     }
@@ -152,6 +160,10 @@ public class Video$KubrickSummary implements JsonPopulator
                 }
                 case 9: {
                     this.titleUrl = jsonElement2.getAsString();
+                    continue;
+                }
+                case 10: {
+                    this.seasonNumLabel = jsonElement2.getAsString();
                     continue;
                 }
             }

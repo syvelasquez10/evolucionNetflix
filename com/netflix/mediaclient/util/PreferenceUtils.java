@@ -13,7 +13,7 @@ import android.content.Context;
 
 public final class PreferenceUtils
 {
-    private static final String PREFS_NAME = "nfxpref";
+    static final String PREFS_NAME = "nfxpref";
     
     public static boolean containsPref(final Context context, final String s) {
         if (!validate(context, s)) {
@@ -41,7 +41,7 @@ public final class PreferenceUtils
         }
     }
     
-    public static CrashReport getCrashReport(final Context context) {
+    private static CrashReport getCrashReport(final Context context) {
         final SharedPreferences sharedPreferences = context.getSharedPreferences("nfxpref", 0);
         final int int1 = sharedPreferences.getInt("NF_CrashReport.signal", -1);
         final long long1 = sharedPreferences.getLong("NF_CrashReport.sigNumber", -1L);
@@ -203,7 +203,7 @@ public final class PreferenceUtils
         edit.commit();
     }
     
-    public static boolean removeCrashReport(final Context context) {
+    private static boolean removeCrashReport(final Context context) {
         try {
             removeCrashReport(context.getSharedPreferences("nfxpref", 0));
             return true;

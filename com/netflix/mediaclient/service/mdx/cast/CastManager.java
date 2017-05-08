@@ -4,8 +4,12 @@
 
 package com.netflix.mediaclient.service.mdx.cast;
 
+import android.widget.Toast;
+import com.google.android.gms.cast.CastMediaControlIntent;
+import android.support.v7.media.MediaRouteSelector$Builder;
 import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
 import org.json.JSONArray;
+import java.util.Iterator;
 import android.support.v7.media.MediaRouter$ProviderInfo;
 import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONException;
@@ -61,6 +65,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
         this.mWorkerHandler = mWorkerHandler;
         this.mMyUuid = mMyUuid;
         this.mMdxNrdpLogger = mMdxNrdpLogger;
+        this.mMediaRouter = MediaRouter.getInstance(this.mContext);
         this.nativeInit();
     }
     
@@ -241,6 +246,10 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
         }
     }
     
+    private void sendMessageToBackgroundReceiver(final CastDevice castDevice, final String s) {
+        this.mWorkerHandler.post((Runnable)new CastManager$11(this, castDevice, s));
+    }
+    
     private void startDiscovery() {
         if (Log.isLoggable()) {
             Log.d(CastManager.TAG, "startDiscovery() AppId: " + this.mApplicationId);
@@ -260,6 +269,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
         this.mSelectedRoute = null;
         this.mMapOfRoutes.clear();
         if (this.mMediaRouter != null) {
+            this.mMediaRouter.unselect(3);
             this.mMediaRouter.removeCallback(this);
         }
         Log.d(CastManager.TAG, "stopDiscovery done");
@@ -286,7 +296,7 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
             this.mMdxNrdpLogger.logDebug(this.mSelectedRoute.getName() + ": netflix stopped, " + uuid);
             uuid = this.getUuid(this.mSelectedRoute.getId());
             this.notifySessionend();
-            this.mWorkerHandler.postDelayed((Runnable)new CastManager$11(this, uuid), 50L);
+            this.mWorkerHandler.postDelayed((Runnable)new CastManager$12(this, uuid), 50L);
         }
     }
     
@@ -472,6 +482,16 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
         this.mSelectedRoute = null;
     }
     
+    public void prefetchVideo(final String s) {
+        Log.d(CastManager.TAG, "sending prefetch message, " + s);
+        final Iterator<MediaRouter$RouteInfo> iterator = this.mMapOfRoutes.values().iterator();
+        while (iterator.hasNext()) {
+            final CastDevice fromBundle = CastDevice.getFromBundle(iterator.next().getExtras());
+            Log.d(CastManager.TAG, "schedule sending message to cast device, " + fromBundle);
+            this.sendMessageToBackgroundReceiver(fromBundle, s);
+        }
+    }
+    
     public void restartCastDiscoveryIfNeeded() {
         Log.d(CastManager.TAG, "restartCastDiscoveryIfNeeded");
         final long currentTimeMillis = System.currentTimeMillis();
@@ -516,8 +536,20 @@ public class CastManager extends MediaRouter$Callback implements MdxCastApplicat
         if (StringUtils.isNotEmpty(SettingsConfiguration.getNewCastApplicationId(this.mContext))) {
             this.mApplicationId = SettingsConfiguration.getNewCastApplicationId(this.mContext);
         }
+        if (Log.isLoggable()) {
+            Log.d(CastManager.TAG, "ApplicationId is: " + this.mApplicationId);
+        }
         SettingsConfiguration.setCastApplicationId(this.mContext, this.mApplicationId);
-        this.mMainHandler.post((Runnable)new CastManager$1(this));
+        try {
+            this.mMediaRouteSelector = new MediaRouteSelector$Builder().addControlCategory(CastMediaControlIntent.categoryForCast(this.mApplicationId)).build();
+            this.mMainHandler.post((Runnable)new CastManager$1(this));
+        }
+        catch (IllegalArgumentException ex) {
+            Log.e(CastManager.TAG, "MediaRouteSelector: " + ex);
+            SettingsConfiguration.setCastApplicationId(this.mContext, "==invalid ApplicationId==");
+            Toast.makeText(this.mContext, (CharSequence)"Invalid ApplicationId, Enter New One", 1).show();
+            throw new IllegalArgumentException("Invalid ApplicationId!");
+        }
     }
     
     public void stop() {

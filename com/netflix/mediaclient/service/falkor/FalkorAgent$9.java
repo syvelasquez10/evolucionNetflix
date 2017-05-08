@@ -4,11 +4,9 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
+import com.netflix.mediaclient.service.pushnotification.MessageData;
 
-class FalkorAgent$9 extends SimpleBrowseAgentCallback
+class FalkorAgent$9 implements Runnable
 {
     final /* synthetic */ FalkorAgent this$0;
     
@@ -17,7 +15,9 @@ class FalkorAgent$9 extends SimpleBrowseAgentCallback
     }
     
     @Override
-    public void onLoLoMoPrefetched(final Status status) {
-        Log.d("FalkorAgent", "fetchPreAppData - prefetch done");
+    public void run() {
+        if (this.this$0.getService() != null) {
+            this.this$0.refreshSocialNotifications(true, true, null);
+        }
     }
 }

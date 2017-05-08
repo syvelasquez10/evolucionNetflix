@@ -32,6 +32,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.EditText;
 import java.util.ArrayList;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.widget.ListAdapter;
 import android.widget.GridView;
@@ -42,7 +43,6 @@ import com.netflix.mediaclient.ui.common.SearchSimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.android.widget.LoggingScrollView;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import android.widget.ProgressBar;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.FlowLayout;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.StaticGridView;
@@ -72,7 +72,6 @@ public class SearchResultsFrag extends NetflixFrag
     private TextView labelVideos;
     private FlowLayout layoutPeople;
     private FlowLayout layoutSuggestions;
-    private ServiceManager manager;
     private int maxResultsPeople;
     private int maxResultsSuggestions;
     private int maxResultsVideos;
@@ -99,11 +98,11 @@ public class SearchResultsFrag extends NetflixFrag
     }
     
     private void addToClickHistory(final SearchResultsFrag$SearchCategory searchResultsFrag$SearchCategory, final View view, final int n, final long n2) {
-        final Object tag = view.getTag(2131623946);
+        final Object tag = view.getTag(2131623947);
         if ((tag == null || tag == Boolean.FALSE) && (this.clickPresseHistory.size() == 0 || (this.clickPresseHistory.size() > 0 && this.clickPresseHistory.peek().position != n))) {
             this.clickPresseHistory.push(new SearchItemClick(searchResultsFrag$SearchCategory, n, n2, ((SearchResultView)view).getDisplayName()));
         }
-        view.setTag(2131623946, (Object)Boolean.TRUE);
+        view.setTag(2131623947, (Object)Boolean.TRUE);
     }
     
     private void clearGridSelections() {
@@ -144,7 +143,8 @@ public class SearchResultsFrag extends NetflixFrag
     }
     
     private void fetchPeopleVideoData(final String s) {
-        if (this.manager == null || !this.manager.isReady()) {
+        final ServiceManager serviceManager = this.getServiceManager();
+        if (serviceManager == null) {
             Log.w("SearchResultsFrag", "Manager is null/notReady - can't load data");
             return;
         }
@@ -153,11 +153,12 @@ public class SearchResultsFrag extends NetflixFrag
             this.gridViewVideos.setAdapter((ListAdapter)this.simAdapter);
             this.setupGridViewObserverForTitles(this.gridViewVideos);
         }
-        this.manager.getBrowse().fetchSimilarVideosForPerson(s, 40, new SearchResultsFrag$OnSimsFetchedCallback(this, System.nanoTime(), s, SearchResultsFrag$SearchCategory.PEOPLE), this.query);
+        serviceManager.getBrowse().fetchSimilarVideosForPerson(s, 40, new SearchResultsFrag$OnSimsFetchedCallback(this, System.nanoTime(), s, SearchResultsFrag$SearchCategory.PEOPLE), this.query);
     }
     
     private void fetchSuggestedVideoData(final String s) {
-        if (this.manager == null || !this.manager.isReady()) {
+        final ServiceManager serviceManager = this.getServiceManager();
+        if (serviceManager == null) {
             Log.w("SearchResultsFrag", "Manager is null/notReady - can't load data");
             return;
         }
@@ -166,22 +167,22 @@ public class SearchResultsFrag extends NetflixFrag
             this.gridViewVideos.setAdapter((ListAdapter)this.simAdapter);
             this.setupGridViewObserverForTitles(this.gridViewVideos);
         }
-        this.manager.getBrowse().fetchSimilarVideosForQuerySuggestion(s, 40, new SearchResultsFrag$OnSimsFetchedCallback(this, System.nanoTime(), s, SearchResultsFrag$SearchCategory.SUGGESTIONS), this.query);
+        serviceManager.getBrowse().fetchSimilarVideosForQuerySuggestion(s, 40, new SearchResultsFrag$OnSimsFetchedCallback(this, System.nanoTime(), s, SearchResultsFrag$SearchCategory.SUGGESTIONS), this.query);
     }
     
     private void findViews(final View view) {
-        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131624490);
-        this.layoutSuggestions = (FlowLayout)view.findViewById(2131624491);
-        this.gridViewVideos = (StaticGridView)view.findViewById(2131624486);
-        this.gridViewPeople = (StaticGridView)view.findViewById(2131624488);
-        this.labelSuggestions = (TextView)view.findViewById(2131624489);
-        this.scrollView2 = (LoggingScrollView)view.findViewById(2131624493);
-        this.layoutPeople = (FlowLayout)view.findViewById(2131624492);
-        this.scrollView = (LoggingScrollView)view.findViewById(2131624484);
-        this.relatedlabel = (TextView)view.findViewById(2131624189);
-        this.labelVideos = (TextView)view.findViewById(2131624485);
-        this.labelPeople = (TextView)view.findViewById(2131624487);
-        this.progressBar = (ProgressBar)view.findViewById(2131624134);
+        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131624636);
+        this.layoutSuggestions = (FlowLayout)view.findViewById(2131624637);
+        this.gridViewVideos = (StaticGridView)view.findViewById(2131624632);
+        this.gridViewPeople = (StaticGridView)view.findViewById(2131624634);
+        this.labelSuggestions = (TextView)view.findViewById(2131624635);
+        this.scrollView2 = (LoggingScrollView)view.findViewById(2131624639);
+        this.layoutPeople = (FlowLayout)view.findViewById(2131624638);
+        this.scrollView = (LoggingScrollView)view.findViewById(2131624630);
+        this.relatedlabel = (TextView)view.findViewById(2131624175);
+        this.labelVideos = (TextView)view.findViewById(2131624631);
+        this.labelPeople = (TextView)view.findViewById(2131624633);
+        this.progressBar = (ProgressBar)view.findViewById(2131624136);
     }
     
     public static Object getItem(final ISearchResults searchResults, final SearchResultsFrag$SearchCategory searchResultsFrag$SearchCategory, final int n) {
@@ -365,7 +366,7 @@ public class SearchResultsFrag extends NetflixFrag
             final int numPeopleGridCols = SearchUtils.getNumPeopleGridCols((Context)this.getActivity());
             if (SearchUtils.getSearchExperience() == SearchUtils$SearchExperience.PHONE && numPeopleGridCols > 0) {
                 this.imgHeightPeople = (int)(n / numPeopleGridCols * SearchUtils.getPeopleImageAspectRatio() + 0.5);
-                this.imgHeightPeople += (int)this.getActivity().getResources().getDimension(2131296615);
+                this.imgHeightPeople += (int)this.getActivity().getResources().getDimension(2131296702);
                 Log.v("SearchResultsFrag", "imgHeightPeople: " + this.imgHeightPeople);
             }
         }
@@ -376,10 +377,10 @@ public class SearchResultsFrag extends NetflixFrag
             final TextView labelSuggestions = this.labelSuggestions;
             String text;
             if (SearchUtils.shouldUpperCaseTitleLabels()) {
-                text = this.getString(2131165638).toUpperCase(Locale.US);
+                text = this.getString(2131165668).toUpperCase(Locale.US);
             }
             else {
-                text = this.getString(2131165638);
+                text = this.getString(2131165668);
             }
             labelSuggestions.setText((CharSequence)text);
         }
@@ -387,15 +388,15 @@ public class SearchResultsFrag extends NetflixFrag
             final TextView labelPeople = this.labelPeople;
             String text2;
             if (SearchUtils.shouldUpperCaseTitleLabels()) {
-                text2 = this.getString(2131165574).toUpperCase(Locale.US);
+                text2 = this.getString(2131165594).toUpperCase(Locale.US);
             }
             else {
-                text2 = this.getString(2131165574);
+                text2 = this.getString(2131165594);
             }
             labelPeople.setText((CharSequence)text2);
         }
         if (this.labelVideos != null) {
-            this.labelVideos.setText((CharSequence)this.getString(2131165552).toUpperCase(Locale.US));
+            this.labelVideos.setText((CharSequence)this.getString(2131165572).toUpperCase(Locale.US));
         }
     }
     
@@ -603,10 +604,6 @@ public class SearchResultsFrag extends NetflixFrag
         this.notifyAdapters();
     }
     
-    public void setServiceManager(final ServiceManager manager) {
-        this.manager = manager;
-    }
-    
     public boolean showLastSelectedItem() {
         View view = null;
         while (!this.clickPresseHistory.isEmpty()) {
@@ -674,30 +671,32 @@ public class SearchResultsFrag extends NetflixFrag
     public void update(final ISearchResults results, final String query) {
         Log.v("SearchResultsFrag", "Updating...");
         this.results = results;
-        if (SearchUtils.getSearchExperience() == SearchUtils$SearchExperience.TABLET && DeviceUtils.isLandscape((Context)this.getActivity())) {
-            ViewUtils.setVisibleOrGone((View)this.scrollView, this.results.getNumResultsPeople() > 0 || this.results.getNumResultsSuggestions() > 0);
-        }
-        this.secondarySearch = SearchResultsFrag$SearchCategory.VIDEOS;
-        if (this.progressBar != null) {
-            this.progressBar.setVisibility(8);
-        }
-        if (this.query.compareToIgnoreCase(query) != 0) {
-            this.query = query;
-            this.clearSelectedStack();
-        }
-        if (this.relatedlabel != null) {
-            this.relatedlabel.setVisibility(8);
-        }
-        this.setupImageDimensions();
-        this.updateMaxResults();
-        this.updateLabelVisibilty();
-        this.resetGridViews();
-        this.resetPeopleLayout(query);
-        this.resetSuggestionsLayout(query);
-        this.notifyAdapters();
-        this.resetScrollPosition();
-        if (this.progressBar != null) {
-            this.progressBar.setVisibility(8);
+        if (this.getActivity() != null) {
+            if (SearchUtils.getSearchExperience() == SearchUtils$SearchExperience.TABLET && DeviceUtils.isLandscape((Context)this.getActivity())) {
+                ViewUtils.setVisibleOrGone((View)this.scrollView, this.results.getNumResultsPeople() > 0 || this.results.getNumResultsSuggestions() > 0);
+            }
+            this.secondarySearch = SearchResultsFrag$SearchCategory.VIDEOS;
+            if (this.progressBar != null) {
+                this.progressBar.setVisibility(8);
+            }
+            if (this.query.compareToIgnoreCase(query) != 0) {
+                this.query = query;
+                this.clearSelectedStack();
+            }
+            if (this.relatedlabel != null) {
+                this.relatedlabel.setVisibility(8);
+            }
+            this.setupImageDimensions();
+            this.updateMaxResults();
+            this.updateLabelVisibilty();
+            this.resetGridViews();
+            this.resetPeopleLayout(query);
+            this.resetSuggestionsLayout(query);
+            this.notifyAdapters();
+            this.resetScrollPosition();
+            if (this.progressBar != null) {
+                this.progressBar.setVisibility(8);
+            }
         }
     }
 }

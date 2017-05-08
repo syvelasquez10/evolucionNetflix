@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.configuration.drm;
 
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.NetflixPreference;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
 import org.json.JSONException;

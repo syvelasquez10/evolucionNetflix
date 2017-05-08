@@ -12,6 +12,7 @@ public class Display
     public static final String ASPECT_RATIO = "aspectRatio";
     public static final String CONNECTOR = "connector";
     public static final String HEIGHT = "height";
+    public static final String HORIZONTAL_DPI = "horizontalDpi";
     public static final String REFRESH_RATE = "refreshRate";
     public static final String RESOLUTION = "resolution";
     public static final String SCAN_MODE = "scanMode";
@@ -19,6 +20,7 @@ public class Display
     private Display$AspectRatio aspectRatio;
     private Display$Connector connector;
     private Integer height;
+    private int horizontalDpi;
     private Integer refreshRate;
     private Display$ScanMode scanMode;
     private Integer width;
@@ -26,13 +28,14 @@ public class Display
     private Display() {
     }
     
-    public Display(final Display$Connector connector, final Display$AspectRatio aspectRatio, final Integer width, final Integer height, final Integer refreshRate, final Display$ScanMode scanMode) {
+    public Display(final Display$Connector connector, final Display$AspectRatio aspectRatio, final Integer width, final Integer height, final Integer refreshRate, final Display$ScanMode scanMode, final int horizontalDpi) {
         this.connector = connector;
         this.aspectRatio = aspectRatio;
         this.width = width;
         this.height = height;
         this.refreshRate = refreshRate;
         this.scanMode = scanMode;
+        this.horizontalDpi = horizontalDpi;
     }
     
     public static Display createInstance(final JSONObject jsonObject) {
@@ -94,6 +97,7 @@ public class Display
         if (this.refreshRate != null) {
             jsonObject.put("refreshRate", (int)this.refreshRate);
         }
+        jsonObject.put("horizontalDpi", this.horizontalDpi);
         return jsonObject;
     }
 }

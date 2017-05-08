@@ -4,11 +4,14 @@
 
 package com.netflix.mediaclient.ui.verifyplay;
 
+import android.app.DialogFragment;
+import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 
 public class AgeVerifier
 {
+    public static final boolean FORCE_AGE_VERIFY = false;
     public static final String TAG = "nf_age";
     private static AgeVerifier sAgeVerifyInstance;
     
@@ -37,6 +40,6 @@ public class AgeVerifier
         if (!this.shouldHandleNewRequest(playVerifierVault)) {
             return;
         }
-        AgeDialog.createAgeDialog(playVerifierVault).show(netflixActivity.getFragmentManager(), "frag_dialog");
+        ViewUtils.safeShowDialogFragment(AgeDialog.createAgeDialog(playVerifierVault), netflixActivity.getFragmentManager(), "frag_dialog");
     }
 }

@@ -24,6 +24,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.EditText;
 import java.util.ArrayList;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.widget.GridView;
 import com.netflix.mediaclient.Log;
@@ -31,7 +32,6 @@ import com.netflix.mediaclient.ui.common.SearchSimilarItemsGridViewAdapter;
 import com.netflix.mediaclient.android.widget.LoggingScrollView;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import android.widget.ProgressBar;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.FlowLayout;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.StaticGridView;
@@ -109,7 +109,7 @@ class SearchResultsFrag$SearchResultsAdapter extends BaseAdapter implements Adap
     private void setResid() {
         switch (SearchResultsFrag$7.$SwitchMap$com$netflix$mediaclient$ui$search$SearchResultsFrag$SearchCategory[this.searchCategory.ordinal()]) {
             default: {
-                this.resId = 2130903203;
+                this.resId = 2130903231;
             }
             case 2: {
                 this.resId = SearchUtils.getSearchViewLayoutPeople();

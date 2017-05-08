@@ -6,9 +6,11 @@ package com.netflix.mediaclient.servicemgr;
 
 import java.util.List;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
+import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 
 public interface IBrowseManager
@@ -19,9 +21,13 @@ public interface IBrowseManager
     
     void dumpHomeLoLoMosAndVideos(final String p0, final String p1);
     
+    void endBrowsePlaySession(final long p0, final int p1, final int p2, final int p3);
+    
+    void expiringContent(final String p0, final ManagerCallback p1, final ExpiringContentAction p2);
+    
     boolean fetchCWVideos(final int p0, final int p1, final ManagerCallback p2);
     
-    boolean fetchEpisodeDetails(final String p0, final ManagerCallback p1);
+    boolean fetchEpisodeDetails(final String p0, final String p1, final ManagerCallback p2);
     
     boolean fetchEpisodes(final String p0, final VideoType p1, final int p2, final int p3, final ManagerCallback p4);
     
@@ -33,17 +39,21 @@ public interface IBrowseManager
     
     boolean fetchIQVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final ManagerCallback p4);
     
+    boolean fetchInteractiveVideoMoments(final VideoType p0, final String p1, final ManagerCallback p2);
+    
     boolean fetchKidsCharacterDetails(final String p0, final ManagerCallback p1);
     
     boolean fetchLoLoMoSummary(final String p0, final ManagerCallback p1);
     
     boolean fetchLoMos(final int p0, final int p1, final ManagerCallback p2);
     
-    boolean fetchMovieDetails(final String p0, final ManagerCallback p1);
+    boolean fetchMovieDetails(final String p0, final String p1, final ManagerCallback p2);
     
     boolean fetchNotificationsList(final int p0, final int p1, final ManagerCallback p2);
     
     boolean fetchPostPlayVideos(final String p0, final VideoType p1, final ManagerCallback p2);
+    
+    boolean fetchScenePosition(final VideoType p0, final String p1, final String p2, final ManagerCallback p3);
     
     boolean fetchSeasonDetails(final String p0, final ManagerCallback p1);
     
@@ -67,7 +77,7 @@ public interface IBrowseManager
     
     void invalidateCachedEpisodes(final String p0, final VideoType p1);
     
-    void logBillboardActivity(final Video p0, final BillboardInteractionType p1);
+    void logBillboardActivity(final Video p0, final BillboardInteractionType p1, final Map<String, String> p2);
     
     void markNotificationAsRead(final IrisNotificationSummary p0);
     

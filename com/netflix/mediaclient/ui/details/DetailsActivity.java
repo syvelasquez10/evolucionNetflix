@@ -5,8 +5,10 @@
 package com.netflix.mediaclient.ui.details;
 
 import android.view.MenuItem;
+import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
-import com.netflix.mediaclient.android.app.Status;
+import android.app.Activity;
+import com.netflix.mediaclient.util.CoppolaUtils;
 import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
@@ -25,6 +27,7 @@ import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -38,18 +41,18 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     private static final String NOTIFICATION_BEACON_SENT = "notification_beacon_sent";
     private static final String TAG = "DetailsActivity";
     public static final boolean USE_DUMMY_DATA = false;
-    private DetailsMenu detailsMenu;
-    private String episodeId;
+    protected String episodeId;
     private DetailsActivity$Action mAction;
     private String mActionToken;
     private boolean mNotificationOpenedReportAlreadySent;
     protected PlayContext playContext;
     private final BroadcastReceiver reloadReceiver;
     private ServiceManager serviceMan;
+    private boolean shareMenuCreated;
     protected String videoId;
     
     public DetailsActivity() {
-        this.reloadReceiver = new DetailsActivity$1(this);
+        this.reloadReceiver = new DetailsActivity$2(this);
     }
     
     public static void finishAllDetailsActivities(final Context context) {
@@ -132,6 +135,11 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         return this;
     }
     
+    protected void fillVideoAndEpisodeIds() {
+        this.videoId = this.getIntent().getStringExtra("extra_video_id");
+        this.episodeId = this.getIntent().getStringExtra("extra_episode_id");
+    }
+    
     public DetailsActivity$Action getAction() {
         return this.mAction;
     }
@@ -198,8 +206,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         if (bundle != null) {
             this.mNotificationOpenedReportAlreadySent = bundle.getBoolean("notification_beacon_sent");
         }
-        this.videoId = this.getIntent().getStringExtra("extra_video_id");
-        this.episodeId = this.getIntent().getStringExtra("extra_episode_id");
+        this.fillVideoAndEpisodeIds();
         this.mAction = (DetailsActivity$Action)this.getIntent().getSerializableExtra("extra_action");
         this.mActionToken = this.getIntent().getStringExtra("extra_action_token");
         final PlayContextImp playContext = (PlayContextImp)this.getIntent().getParcelableExtra("extra_playcontext");
@@ -214,8 +221,9 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     @Override
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         MdxMenu.addSelectPlayTarget(this, menu, false);
-        IrisUtils.addShareIcon(menu, (Context)this);
-        this.detailsMenu = new DetailsMenu(this, menu, false);
+        IrisUtils.addShareIcon(this.serviceMan, menu, (Context)this);
+        this.shareMenuCreated = true;
+        DetailsMenu.addItems(this, menu, false);
         super.onCreateOptionsMenu(menu, menu2);
     }
     
@@ -223,9 +231,11 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     public void onManagerReady(final ServiceManager serviceMan, final Status status) {
         Log.v("DetailsActivity", "ServiceManager ready");
         this.serviceMan = serviceMan;
-        if (this.detailsMenu != null) {
+        if (this.shareMenuCreated) {
             this.invalidateOptionsMenu();
         }
+        CoppolaUtils.injectPlayerFragmentIfNeeded(this, this.videoId, this.getVideoType(), this.getPlayContext(), serviceMan, status);
+        CoppolaUtils.forceToPortraitIfNeeded(this);
         ((ManagerStatusListener)this.getPrimaryFrag()).onManagerReady(serviceMan, status);
         final Fragment secondaryFrag = this.getSecondaryFrag();
         if (secondaryFrag != null) {
@@ -237,6 +247,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
             NflxProtocolUtils.reportUserOpenedNotification(this.serviceMan, this.getIntent());
         }
         this.handleAction();
+        this.setLoadingStatusCallback(new DetailsActivity$1(this));
     }
     
     @Override

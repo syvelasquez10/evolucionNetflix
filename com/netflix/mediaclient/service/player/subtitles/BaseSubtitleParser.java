@@ -5,35 +5,30 @@
 package com.netflix.mediaclient.service.player.subtitles;
 
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.SubtitleUtils;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.service.player.PlayerAgent;
-import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
 
 public abstract class BaseSubtitleParser implements SubtitleParser
 {
     protected static final String TAG = "nf_subtitles";
     protected SubtitleParser$DownloadFailedCallback mCallback;
-    protected final TextStyle mDefault;
-    protected final TextStyle mDeviceDefault;
     protected int mIndexOfLastSearch;
+    protected long mLastRenderedPositionInTitleInMs;
+    protected int mNumberOfSubtitlesExpectedToBeDisplayed;
     protected PlayerAgent mPlayer;
     protected boolean mReady;
-    protected final TextStyle mRegionDefault;
+    protected long mStartPlayPositionInTitleInMs;
     protected SubtitleUrl mSubtitleData;
-    protected final TextStyle mUserDefaults;
-    protected final float mVideoAspectRatio;
     
-    public BaseSubtitleParser(final PlayerAgent mPlayer, final SubtitleUrl mSubtitleData, final TextStyle mUserDefaults, final TextStyle mRegionDefault, final float mVideoAspectRatio, final SubtitleParser$DownloadFailedCallback mCallback) {
+    public BaseSubtitleParser(final PlayerAgent mPlayer, final SubtitleUrl mSubtitleData, final SubtitleParser$DownloadFailedCallback mCallback, final long n) {
         this.mIndexOfLastSearch = -1;
-        this.mDefault = new TextStyle();
-        this.mSubtitleData = mSubtitleData;
         this.mPlayer = mPlayer;
-        this.mVideoAspectRatio = mVideoAspectRatio;
-        this.mUserDefaults = mUserDefaults;
-        this.mRegionDefault = mRegionDefault;
-        this.mDeviceDefault = SubtitleUtils.getDeviceDefaultTextStyle(mUserDefaults, mRegionDefault);
         this.mCallback = mCallback;
+        this.mStartPlayPositionInTitleInMs = n;
+        this.mLastRenderedPositionInTitleInMs = n;
+        this.mSubtitleData = mSubtitleData;
     }
     
     protected String getCacheName() {
@@ -183,22 +178,33 @@ public abstract class BaseSubtitleParser implements SubtitleParser
     }
     
     @Override
+    public SubtitleUrl getSubtitleUrl() {
+        return this.mSubtitleData;
+    }
+    
+    @Override
     public boolean isReady() {
         return this.mReady;
     }
     
-    protected boolean onError() {
+    protected boolean onError(final String s, final IMedia$SubtitleFailure media$SubtitleFailure, final Status status) {
+        boolean downloadFailed = false;
         if (this.mCallback != null) {
             Log.d("nf_subtitles", "onError: callback");
-            return this.mCallback.downloadFailed(this.mSubtitleData);
+            downloadFailed = this.mCallback.downloadFailed(this.mSubtitleData, media$SubtitleFailure, s);
         }
-        Log.w("nf_subtitles", "onError: no callback");
-        return false;
+        else {
+            Log.w("nf_subtitles", "onError: no callback");
+        }
+        this.mPlayer.reportFailedSubtitle(s, this.mSubtitleData, media$SubtitleFailure, downloadFailed, status);
+        return downloadFailed;
     }
     
     @Override
     public void seeked(final int n) {
-        Log.d("nf_subtitles", "Seeked to...");
-        this.mIndexOfLastSearch = -1;
+        synchronized (this) {
+            Log.d("nf_subtitles", "Seeked to...");
+            this.mIndexOfLastSearch = -1;
+        }
     }
 }

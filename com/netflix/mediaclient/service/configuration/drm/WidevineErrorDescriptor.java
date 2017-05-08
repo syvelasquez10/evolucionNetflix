@@ -28,16 +28,8 @@ public class WidevineErrorDescriptor implements ErrorDescriptor
     private StatusCode mStatusCode;
     private Runnable mTask;
     
-    public WidevineErrorDescriptor(final Context context, final StatusCode statusCode) {
-        this(context, statusCode, null, Integer.MAX_VALUE, null, Integer.MAX_VALUE, null, null);
-    }
-    
-    public WidevineErrorDescriptor(final Context context, final StatusCode statusCode, final Runnable runnable) {
-        this(context, statusCode, null, Integer.MAX_VALUE, null, Integer.MAX_VALUE, null, runnable);
-    }
-    
-    public WidevineErrorDescriptor(final Context context, final StatusCode statusCode, final Runnable runnable, final int n, final String s, final Runnable runnable2) {
-        this(context, statusCode, null, Integer.MAX_VALUE, runnable, n, s, runnable2);
+    public WidevineErrorDescriptor(final Context context, final StatusCode statusCode, final Runnable runnable, final int n) {
+        this(context, statusCode, null, Integer.MAX_VALUE, null, n, null, runnable);
     }
     
     public WidevineErrorDescriptor(final Context mContext, final StatusCode mStatusCode, final Throwable mCause, final int mPriority, final Runnable mTask, final int mMessageId, final String mLink, final Runnable mOkTask) {
@@ -67,7 +59,7 @@ public class WidevineErrorDescriptor implements ErrorDescriptor
             mOkTask = new WidevineErrorDescriptor$1(this);
         }
         if (uri != null) {
-            this.mData = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", message, null, mOkTask, this.mContext.getString(2131165507), new LaunchBrowser(this.mContext, uri));
+            this.mData = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", message, null, mOkTask, this.mContext.getString(2131165523), new LaunchBrowser(this.mContext, uri));
             return;
         }
         this.mData = new AlertDialogFactory$AlertDialogDescriptor("", message, null, mOkTask);
@@ -76,7 +68,7 @@ public class WidevineErrorDescriptor implements ErrorDescriptor
     private String getMessage(final int n, final StatusCode statusCode) {
         String string;
         if (n == Integer.MAX_VALUE) {
-            string = this.mContext.getString(2131165516);
+            string = this.mContext.getString(2131165535);
         }
         else {
             String s;
@@ -88,7 +80,7 @@ public class WidevineErrorDescriptor implements ErrorDescriptor
             }
             string = s;
             if (s == null) {
-                return this.mContext.getString(2131165516);
+                return this.mContext.getString(2131165535);
             }
         }
         return string;

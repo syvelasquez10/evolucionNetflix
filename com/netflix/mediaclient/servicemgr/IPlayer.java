@@ -66,6 +66,8 @@ public interface IPlayer
     
     int getVideoWidth();
     
+    String getXid();
+    
     boolean isBufferingCompleted();
     
     boolean isManifestCacheEnabled();
@@ -80,11 +82,13 @@ public interface IPlayer
     
     void removePlayerListener(final IPlayer$PlayerListener p0);
     
+    void reportSubtitleQoe(final String p0, final int p1, final int p2);
+    
     void seekTo(final int p0, final boolean p1);
     
     void seekWithFuzzRange(final int p0, final int p1);
     
-    boolean selectTracks(final AudioSource p0, final Subtitle p1);
+    boolean selectTracks(final AudioSource p0, final Subtitle p1, final boolean p2);
     
     void setJPlayerListener(final JPlayer$JplayerListener p0);
     

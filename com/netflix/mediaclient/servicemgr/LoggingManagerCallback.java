@@ -18,9 +18,12 @@ import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
@@ -119,6 +122,13 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
+    public void onExpiringContentWarning(final IExpiringContentWarning expiringContentWarning, final Status status, final ExpiringContentAction expiringContentAction) {
+        if (Log.isLoggable()) {
+            Log.v(this.tag, String.format("onExpiringContentWarning, status: %d", status.getStatusCode().getValue()));
+        }
+    }
+    
+    @Override
     public void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> list, final Status status) {
         if (Log.isLoggable()) {
             Log.v(this.tag, String.format("onFriendsForRecommendationsListFetched, status: %d", status.getStatusCode().getValue()));
@@ -159,6 +169,13 @@ public class LoggingManagerCallback implements ManagerCallback
                 size = list.size();
             }
             Log.v(tag, String.format("onGenresFetched, num: %d, status: %d", size, status.getStatusCode().getValue()));
+        }
+    }
+    
+    @Override
+    public void onInteractiveMomentsFetched(final InteractiveMoments interactiveMoments, final Status status) {
+        if (Log.isLoggable()) {
+            Log.v(this.tag, String.format("onInteractiveMomentsFetched, status: %d", status.getStatusCode().getValue()));
         }
     }
     
@@ -292,6 +309,13 @@ public class LoggingManagerCallback implements ManagerCallback
     }
     
     @Override
+    public void onResourceCached(final String s, final String s2, final long n, final long n2, final Status status) {
+        if (Log.isLoggable()) {
+            Log.v(this.tag, String.format("onResourceCached, remoteUrl: %s, localUrl: %s, byteOffset: %l, byteSize: %l, , status: %d", s, s2, n, n2, status.getStatusCode().getValue()));
+        }
+    }
+    
+    @Override
     public void onResourceFetched(final String s, final String s2, final Status status) {
         if (Log.isLoggable()) {
             Log.v(this.tag, String.format("onResourceFetched, remoteUrl: %s, status: %d", s, status.getStatusCode().getValue()));
@@ -302,6 +326,13 @@ public class LoggingManagerCallback implements ManagerCallback
     public void onResourceRawFetched(final String s, final byte[] array, final Status status) {
         if (Log.isLoggable()) {
             Log.v(this.tag, String.format("onResourceRawFetched, remoteUrl: %s, status: %d", s, status.getStatusCode().getValue()));
+        }
+    }
+    
+    @Override
+    public void onScenePositionFetched(final int n, final Status status) {
+        if (Log.isLoggable()) {
+            Log.v(this.tag, String.format("onScenePositionFetched, status: %d", status.getStatusCode().getValue()));
         }
     }
     

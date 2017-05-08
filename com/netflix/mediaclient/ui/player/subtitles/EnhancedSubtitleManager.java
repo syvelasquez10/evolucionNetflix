@@ -15,7 +15,7 @@ import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
 import com.netflix.mediaclient.service.player.subtitles.DoubleLength;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
 import com.netflix.mediaclient.service.player.subtitles.text.ColorMapping;
-import com.netflix.mediaclient.service.player.subtitles.text.TextSubtitleParser;
+import com.netflix.mediaclient.service.player.subtitles.TextSubtitleParser;
 import android.graphics.Rect;
 import com.netflix.mediaclient.util.SubtitleUtils$Margins;
 import java.util.ArrayList;
@@ -63,10 +63,10 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         this.mDefaultsInitiated = new AtomicBoolean(false);
         this.mDoNotDraw = (ViewTreeObserver$OnPreDrawListener)new EnhancedSubtitleManager$1(this);
         if (playerFragment.getNetflixActivity().isTablet()) {
-            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131296576);
+            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131296662);
         }
         else {
-            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131296575);
+            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131296660);
         }
         this.mTransparent = playerFragment.getActivity().getResources().getColor(17170445);
     }
@@ -703,6 +703,7 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         final Pair<Integer, Integer> calculateRegionSize = this.calculateRegionSize(textSubtitleBlock, linearLayout);
         this.updatePositionIfNeeded(regionLayout, textSubtitleBlock, (int)calculateRegionSize.first, (int)calculateRegionSize.second);
         this.setBackgroundColorToRegion(linearLayout, textSubtitleBlock);
+        textSubtitleBlock.displayed();
     }
     
     private void showSubtitleBlocks(final List<SubtitleBlock> list) {
@@ -827,7 +828,7 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
     
     @Override
     public boolean canHandleSubtitleProfile(final IMedia$SubtitleProfile media$SubtitleProfile) {
-        return media$SubtitleProfile != null && media$SubtitleProfile != IMedia$SubtitleProfile.IMAGE;
+        return media$SubtitleProfile != null && media$SubtitleProfile != IMedia$SubtitleProfile.IMAGE && media$SubtitleProfile != IMedia$SubtitleProfile.IMAGE_ENC;
     }
     
     @Override
@@ -905,33 +906,39 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
                 }
             }
             final SubtitleScreen subtitleScreen2;
-            this.mParser = subtitleScreen2.getParser();
-            if (!this.mDefaultsInitiated.get()) {
-                Log.d("nf_subtitles_render", "Try to set defaults. They were not initialized before");
-                this.setDefaults();
+            if (subtitleScreen2.getParser() instanceof TextSubtitleParser) {
+                this.mParser = subtitleScreen2.getParser();
                 if (!this.mDefaultsInitiated.get()) {
-                    Log.w("nf_subtitles_render", "Initialization was NOT ok, exit.");
-                    return;
+                    Log.d("nf_subtitles_render", "Try to set defaults. They were not initialized before");
+                    this.setDefaults();
+                    if (!this.mDefaultsInitiated.get()) {
+                        Log.w("nf_subtitles_render", "Initialization was NOT ok, exit.");
+                        return;
+                    }
+                    Log.d("nf_subtitles_render", "Initialization was ok, proceed with subtitles.");
                 }
-                Log.d("nf_subtitles_render", "Initialization was ok, proceed with subtitles.");
-            }
-            this.removeAll(false);
-            final int hashCode = subtitleScreen2.getParser().hashCode();
-            if (this.mSubtitleParserId != null && this.mSubtitleParserId == hashCode) {
-                if (Log.isLoggable()) {
-                    Log.v("nf_subtitles_render", "Same subtitles file " + this.mSubtitleParserId);
+                this.removeAll(false);
+                final int hashCode = subtitleScreen2.getParser().hashCode();
+                if (this.mSubtitleParserId != null && this.mSubtitleParserId == hashCode) {
+                    if (Log.isLoggable()) {
+                        Log.v("nf_subtitles_render", "Same subtitles file " + this.mSubtitleParserId);
+                    }
                 }
-            }
-            else {
-                if (Log.isLoggable()) {
-                    Log.v("nf_subtitles_render", "Subtitles file changed. Was " + this.mSubtitleParserId + ", now " + hashCode + ". (Re) create regions!");
+                else {
+                    if (Log.isLoggable()) {
+                        Log.v("nf_subtitles_render", "Subtitles file changed. Was " + this.mSubtitleParserId + ", now " + hashCode + ". (Re) create regions!");
+                    }
+                    this.mSubtitleParserId = subtitleScreen2.getParser().hashCode();
+                    this.removeRegions();
+                    this.createRegions(((TextSubtitleParser)subtitleScreen2.getParser()).getRegions());
                 }
-                this.mSubtitleParserId = subtitleScreen2.getParser().hashCode();
-                this.removeRegions();
-                this.createRegions(((TextSubtitleParser)subtitleScreen2.getParser()).getRegions());
+                this.showSubtitleBlocks(subtitleScreen2.getDisplayNowBlocks());
+                this.handleDelayedSubtitleBlocks(subtitleScreen2.getDisplayLaterBlocks(), true);
+                return;
             }
-            this.showSubtitleBlocks(subtitleScreen2.getDisplayNowBlocks());
-            this.handleDelayedSubtitleBlocks(subtitleScreen2.getDisplayLaterBlocks(), true);
+            if (Log.isLoggable()) {
+                Log.w("nf_subtitles_render", "Drop subtitle change! Timing issue, subtitles are supposed to be text based and parser is not, but " + subtitleScreen2.getParser());
+            }
         }
     }
     

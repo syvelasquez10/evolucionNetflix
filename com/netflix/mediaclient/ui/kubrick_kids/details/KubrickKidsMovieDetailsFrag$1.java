@@ -4,13 +4,10 @@
 
 package com.netflix.mediaclient.ui.kubrick_kids.details;
 
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
-import com.netflix.mediaclient.ui.details.IHandleBackPress;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationEdgePadding;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
 import com.netflix.mediaclient.ui.details.SeasonsSpinner;
-import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickVideoDetailsViewGroup;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -36,7 +33,7 @@ class KubrickKidsMovieDetailsFrag$1 implements RecyclerViewHeaderAdapter$IViewCr
     }
     
     private int getImageHeight() {
-        return (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296503) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
+        return (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131296577) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
     }
     
     @Override

@@ -5,9 +5,9 @@
 package com.netflix.mediaclient.service.pservice;
 
 import android.os.IBinder;
-import com.netflix.mediaclient.util.AndroidUtils;
 import android.os.SystemClock;
 import java.util.Iterator;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.NetflixService;
@@ -31,6 +31,7 @@ public class PService extends Service
     public static final String ACTION_INSTALLED_FROM_PREAPP_WIDGET = "com.netflix.mediaclient.intent.action.INSTALLED_FROM_PREAPP_WIDGET";
     public static final String ACTION_IQ_UPDATED_FROM_PREAPP_AGENT = "com.netflix.mediaclient.intent.action.IQ_UPDATED_FROM_PREAPP_AGENT";
     public static final String ACTION_NON_MEMBER_UPDATED_FROM_PREAPP_AGENT = "com.netflix.mediaclient.intent.action.NON_MEMBER_UPDATED_FROM_PREAPP_AGENT";
+    public static final String ACTION_PLAYER_STATE_CHANGE = "com.netflix.mediaclient.intent.action.ACTION_PLAYER_STATE_CHANGE";
     public static final String ACTION_PLAY_1_FROM_PREAPP_WIDGET = "com.netflix.mediaclient.intent.action.PLAY_1_FROM_PREAPP_WIDGET";
     public static final String ACTION_PLAY_2_FROM_PREAPP_WIDGET = "com.netflix.mediaclient.intent.action.PLAY_2_FROM_PREAPP_WIDGET";
     public static final String ACTION_PLAY_3_FROM_PREAPP_WIDGET = "com.netflix.mediaclient.intent.action.PLAY_3_FROM_PREAPP_WIDGET";
@@ -44,6 +45,7 @@ public class PService extends Service
     public static final String CATEGORY_FROM_PREAPP_PSERVICE = "com.netflix.mediaclient.intent.category.CATEGORY_FROM_PREAPP_PSERVICE";
     public static final String CATEGORY_FROM_PREAPP_WIDGET = "com.netflix.mediaclient.intent.category.CATEGORY_FROM_PREAPP_WIDGET";
     public static final String EXTRA_ACTION_NAME = "actionName";
+    public static final String EXTRA_IS_PLAYER_PAUSED = "isPlayerPaused";
     public static final String EXTRA_LIST_TYPE = "listType";
     public static final String EXTRA_VIDEO_ID = "videoId";
     public static final String EXTRA_WIDGET_ID = "widgetId";
@@ -100,9 +102,14 @@ public class PService extends Service
                 return;
             }
             if (intent.hasCategory("com.netflix.mediaclient.intent.category.CATEGORY_FROM_PREAPP_AGENT")) {
-                Log.d("nf_preapp_service", "PREAPP_AGENT command intent ");
-                this.handleCommandFromNetflixService(intent);
-                this.updateWidgetRefreshAlarm(7200000L);
+                Log.d("nf_preapp_service", "PREAPP_AGENT command intent :%s ", intent);
+                if (intent != null && "com.netflix.mediaclient.intent.action.ACTION_PLAYER_STATE_CHANGE".equals(intent.getAction())) {
+                    this.mWidgetAgent.handlePlayerStateChange(intent);
+                }
+                else {
+                    this.handleCommandFromNetflixService(intent);
+                    this.updateWidgetRefreshAlarm(7200000L);
+                }
             }
             if (intent.hasCategory("com.netflix.mediaclient.intent.category.CATEGORY_FROM_PREAPP_WIDGET")) {
                 Log.d("nf_preapp_service", String.format("PREAPP_WIDGET command intent ..action:%s ", intent.getAction()));
@@ -241,7 +248,7 @@ public class PService extends Service
         }
         this.mInitCallbacks.clear();
         this.mInitComplete = true;
-        if (!this.isWidgetInstalled() && !isRemoteUiDevice()) {
+        if (!AndroidUtils.isWidgetInstalled((Context)this) && !isRemoteUiDevice()) {
             Log.d("nf_preapp_service", "stopping service - !widgetInstalled & !isRemoteUiDevice & !TestCode");
             this.stopSelf();
             return;
@@ -264,7 +271,7 @@ public class PService extends Service
         if (Log.isLoggable()) {
             Log.v("nf_preapp_service", String.format("updating widget refresh alarm - fireIn %d ms, time sinceBoot %d (ms), widgetRefreshMs: %d ms", n2, elapsedRealtime, n));
         }
-        alarmManager.set(2, n2, this.createTileExpiryAlarmPendingIntent());
+        alarmManager.set(3, n2, this.createTileExpiryAlarmPendingIntent());
     }
     
     public void handleCommandFromNetflixService(final Intent intent) {
@@ -288,10 +295,6 @@ public class PService extends Service
             return;
         }
         this.mFetchAgent.refreshDataAndNotify(intent);
-    }
-    
-    public boolean isWidgetInstalled() {
-        return AndroidUtils.isWidgetInstalled((Context)this);
     }
     
     protected void notifyToFetchData() {

@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.player;
 
 import com.netflix.mediaclient.Log;
 import android.widget.TextView;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AlphaAnimation;
@@ -40,7 +41,7 @@ public abstract class Section
     }
     
     protected void enableButton(final View disableOverlayForImageButton, final boolean enabled) {
-        if (disableOverlayForImageButton != null) {
+        if (ViewUtils.isVisible(disableOverlayForImageButton)) {
             disableOverlayForImageButton.setEnabled(enabled);
             if (!enabled) {
                 this.setDisableOverlayForImageButton(disableOverlayForImageButton);

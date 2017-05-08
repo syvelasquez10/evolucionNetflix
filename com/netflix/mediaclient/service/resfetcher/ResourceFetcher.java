@@ -6,11 +6,13 @@ package com.netflix.mediaclient.service.resfetcher;
 
 import com.netflix.mediaclient.service.resfetcher.volley.PrefetchResourceRequest;
 import com.netflix.mediaclient.service.webclient.WebClient;
+import com.netflix.mediaclient.service.resfetcher.volley.RawFileDownloadRequest;
 import com.netflix.mediaclient.service.resfetcher.volley.FileDownloadRequest;
 import com.android.volley.Request$Priority;
+import com.netflix.mediaclient.service.resfetcher.volley.HttpRangeRequest;
 import com.android.volley.Request;
 import com.android.volley.Response$ErrorListener;
-import com.netflix.mediaclient.service.resfetcher.volley.HttpRangeRequest;
+import com.netflix.mediaclient.service.resfetcher.volley.DownloadAndCacheRequest;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.app.Status;
@@ -52,6 +54,7 @@ public class ResourceFetcher extends ServiceAgent
     private File mDownloadsDir;
     private ImageLoader mImageLoader;
     private RequestQueue mRequestQueue;
+    private VolleyCacheWrapper mVolleyCacheWrapper;
     private final FalkorVolleyWebClient mWebClient;
     
     public ResourceFetcher() {
@@ -178,6 +181,7 @@ public class ResourceFetcher extends ServiceAgent
             this.mDownloadsDir.mkdirs();
         }
         this.mWebClient.init(new NetflixWebClientInitParameters(this.getConfigurationAgent().getApiEndpointRegistry(), this.getUserAgent().getUserCredentialRegistry(), this.getService().getClientLogging().getErrorLogging(), this.mRequestQueue));
+        this.mVolleyCacheWrapper = new VolleyCacheWrapper((DiskBasedCache)this.mRequestQueue.getCache());
         final int dataRequestTimeout = this.getConfigurationAgent().getDataRequestTimeout();
         if (Log.isLoggable()) {
             Log.i("nf_service_resourcefetcher", "Setting default timeout value for data request to " + dataRequestTimeout + "ms");
@@ -186,13 +190,29 @@ public class ResourceFetcher extends ServiceAgent
         this.initCompleted(CommonStatus.OK);
     }
     
+    public void fetchAndCacheResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ResourceFetcherCallback resourceFetcherCallback) {
+        if (Log.isLoggable()) {
+            Log.d("nf_service_resourcefetcher", "Request to download or retrieve resourceMetaData at URL " + s);
+        }
+        ApmLogUtils.reportAssetRequest(s, clientLogging$AssetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
+        final ResourceFetcherCallback resourceFetcherCallback2 = this.getResourceFetcherCallback(resourceFetcherCallback);
+        final VolleyCacheWrapper$CachedResourceMetaData entryMetaData = this.mVolleyCacheWrapper.getEntryMetaData(StringUtils.getPathFromUri(s));
+        if (entryMetaData != null) {
+            if (resourceFetcherCallback2 != null) {
+                resourceFetcherCallback2.onResourceCached(s, entryMetaData.getLocalPath(), entryMetaData.getByteOffset(), entryMetaData.getByteLength(), CommonStatus.OK);
+            }
+            return;
+        }
+        this.mRequestQueue.add(new DownloadAndCacheRequest(s, resourceFetcherCallback2, new ResourceFetcher$3(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout(), this.mVolleyCacheWrapper));
+    }
+    
     public void fetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final long n, final long n2, final ResourceFetcherCallback resourceFetcherCallback) {
         if (Log.isLoggable()) {
             Log.i("nf_service_resourcefetcher", "Received request to fetch resource at " + s);
         }
         ApmLogUtils.reportAssetRequest(s, clientLogging$AssetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
         final ResourceFetcherCallback resourceFetcherCallback2 = this.getResourceFetcherCallback(resourceFetcherCallback);
-        this.mRequestQueue.add(new HttpRangeRequest(s, n, n2, resourceFetcherCallback2, new ResourceFetcher$2(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout()));
+        this.mRequestQueue.add(new HttpRangeRequest(s, n, n2, resourceFetcherCallback2, new ResourceFetcher$4(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout()));
     }
     
     public void fetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final Request$Priority request$Priority, final ResourceFetcherCallback resourceFetcherCallback) {
@@ -201,7 +221,7 @@ public class ResourceFetcher extends ServiceAgent
         }
         ApmLogUtils.reportAssetRequest(s, clientLogging$AssetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
         final ResourceFetcherCallback resourceFetcherCallback2 = this.getResourceFetcherCallback(resourceFetcherCallback);
-        this.mRequestQueue.add(new FileDownloadRequest(s, resourceFetcherCallback2, new ResourceFetcher$1(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout(), request$Priority, this.mDownloadsDir));
+        this.mRequestQueue.add(new FileDownloadRequest(s, resourceFetcherCallback2, new ResourceFetcher$2(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout(), request$Priority, this.mDownloadsDir));
     }
     
     public void fetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ResourceFetcherCallback resourceFetcherCallback) {
@@ -209,6 +229,19 @@ public class ResourceFetcher extends ServiceAgent
             Log.i("nf_service_resourcefetcher", "Received request to fetch resource at " + s);
         }
         this.fetchResource(s, clientLogging$AssetType, Request$Priority.NORMAL, resourceFetcherCallback);
+    }
+    
+    public void fetchResourceDirectly(final String s, final IClientLogging$AssetType clientLogging$AssetType, final Request$Priority request$Priority, final ResourceFetcherCallback resourceFetcherCallback) {
+        if (Log.isLoggable()) {
+            Log.d("nf_service_resourcefetcher", "Received request to fetch resource directly at " + s);
+        }
+        ApmLogUtils.reportAssetRequest(s, clientLogging$AssetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
+        final ResourceFetcherCallback resourceFetcherCallback2 = this.getResourceFetcherCallback(resourceFetcherCallback);
+        this.mRequestQueue.add(new RawFileDownloadRequest(s, resourceFetcherCallback2, new ResourceFetcher$1(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout(), request$Priority));
+    }
+    
+    public void fetchResourceDirectly(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ResourceFetcherCallback resourceFetcherCallback) {
+        this.fetchResourceDirectly(s, clientLogging$AssetType, Request$Priority.NORMAL, resourceFetcherCallback);
     }
     
     public WebClient getApiNextWebClient() {
@@ -233,7 +266,7 @@ public class ResourceFetcher extends ServiceAgent
     public void prefetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ResourceFetcherCallback resourceFetcherCallback) {
         if (s == null) {
             Log.w("nf_service_resourcefetcher", String.format("Request to prefetch resource with null URL", new Object[0]));
-            this.getMainHandler().post((Runnable)new ResourceFetcher$3(this, resourceFetcherCallback, s));
+            this.getMainHandler().post((Runnable)new ResourceFetcher$5(this, resourceFetcherCallback, s));
             return;
         }
         if (Log.isLoggable()) {
@@ -241,6 +274,6 @@ public class ResourceFetcher extends ServiceAgent
         }
         ApmLogUtils.reportAssetRequest(s, clientLogging$AssetType, this.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
         final ResourceFetcherCallback resourceFetcherCallback2 = this.getResourceFetcherCallback(resourceFetcherCallback);
-        this.mRequestQueue.add(new PrefetchResourceRequest(s, resourceFetcherCallback2, new ResourceFetcher$4(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout()));
+        this.mRequestQueue.add(new PrefetchResourceRequest(s, resourceFetcherCallback2, new ResourceFetcher$6(this, resourceFetcherCallback2, s), this.getConfigurationAgent().getResourceRequestTimeout()));
     }
 }

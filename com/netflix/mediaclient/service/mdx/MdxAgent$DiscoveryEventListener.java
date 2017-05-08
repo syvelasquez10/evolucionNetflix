@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.mdx;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import android.app.Service;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
+import java.util.List;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import android.text.TextUtils;
@@ -27,6 +28,7 @@ import android.os.PowerManager;
 import android.net.wifi.WifiManager;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.Iterator;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.mdx.notification.MdxNotificationManagerFactory;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -103,7 +105,7 @@ class MdxAgent$DiscoveryEventListener implements EventListener
                         this.this$0.mMdxNrdpLogger.logDebug("current target device lost");
                     }
                     else if (Log.isLoggable()) {
-                        Log.d("nf_mdx_agent", "MdxAgent: mTargetRestartingList has " + s + ", ignore device lost");
+                        Log.d("nf_mdx_MdxAgent", "MdxAgent: mTargetRestartingList has " + s + ", ignore device lost");
                     }
                 }
                 this.this$0.getService().getClientLogging().getCustomerEventLogging().logMdxTarget("lost", s, null, null);
@@ -116,13 +118,17 @@ class MdxAgent$DiscoveryEventListener implements EventListener
             final RemoteDeviceReadyEvent remoteDeviceReadyEvent = (RemoteDeviceReadyEvent)uiEvent;
             if (this.this$0.isSameDevice(remoteDeviceReadyEvent.getUuid(), this.this$0.mCurrentTargetUuid)) {
                 if (remoteDeviceReadyEvent.getLaunchStatus() == 1) {
-                    Log.d("nf_mdx_agent", "MdxAgent: RemoteDeviceReadyEvent, app's launched");
+                    Log.d("nf_mdx_MdxAgent", "MdxAgent: RemoteDeviceReadyEvent, app's launched");
                     this.this$0.mTargetManager.targetLaunched(this.this$0.mCurrentTargetUuid, true);
                     this.this$0.mMdxNrdpLogger.logDebug("current target device launched");
                     return;
                 }
-                Log.d("nf_mdx_agent", "MdxAgent: RemoteDeviceReadyEvent, app's launch failed");
+                Log.d("nf_mdx_MdxAgent", "MdxAgent: RemoteDeviceReadyEvent, app's launch failed");
                 this.this$0.mTargetManager.targetLaunched(this.this$0.mCurrentTargetUuid, false);
+                if (this.this$0.mTargetManager.isCurrentSessionEnded()) {
+                    this.this$0.mTargetManager.targetGone(this.this$0.mCurrentTargetUuid);
+                    return;
+                }
                 if (this.this$0.mNotifier != null) {
                     final RemoteDevice access$2001 = this.this$0.getDeviceFromUuid(this.this$0.mCurrentTargetUuid);
                     String friendlyName = new String();

@@ -4,10 +4,9 @@
 
 package com.netflix.mediaclient.service.logging.apm.model;
 
-import com.netflix.mediaclient.util.AndroidUtils;
 import java.util.Iterator;
-import java.util.HashMap;
-import com.netflix.mediaclient.util.JsonUtils;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.AndroidUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DeviceUniqueId;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
@@ -26,6 +25,7 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
     public static final String PLAYER_TYPE = "playerType";
     public static final String SEARCH_TERM = "searchTerm";
     public static final String SUCCESS = "success";
+    private static final String TAG = "UIStartupSessionEndedEvent";
     public static final String TRACK_ID = "trackId";
     public static final String TRIGGER = "trigger";
     private static final String UI_STARTUP_SESSION_NAME = "uiStartup";
@@ -33,6 +33,8 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
     public static final String VERSION_OS = "os";
     public static final String VOICE_ENABLED = "voiceEnabled";
     private Map<String, Integer> activeABTests;
+    private UIBrowseStartupSessionCustomData customData;
+    private DeepLink deepLink;
     private IClientLogging$ModalView destinationView;
     private Display display;
     private UIError error;
@@ -43,7 +45,7 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
     private ApplicationPerformanceMetricsLogging$UiStartupTrigger trigger;
     private boolean voiceEnabled;
     
-    public UIStartupSessionEndedEvent(final long n, final ApplicationPerformanceMetricsLogging$UiStartupTrigger trigger, final IClientLogging$ModalView destinationView, final boolean success, final PlayerType playerType) {
+    public UIStartupSessionEndedEvent(final long n, final ApplicationPerformanceMetricsLogging$UiStartupTrigger trigger, final IClientLogging$ModalView destinationView, final boolean success, final PlayerType playerType, final DeepLink deepLink, final UIBrowseStartupSessionCustomData customData) {
         super("uiStartup", new DeviceUniqueId(), n);
         this.success = true;
         if (trigger == null) {
@@ -56,45 +58,20 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
         this.destinationView = destinationView;
         this.success = success;
         this.playerType = playerType;
-    }
-    
-    public UIStartupSessionEndedEvent(JSONObject jsonObject) {
-        super(jsonObject);
-        this.success = true;
-        jsonObject = JsonUtils.getJSONObject(jsonObject, "data", null);
-        if (jsonObject != null) {
-            final String string = JsonUtils.getString(jsonObject, "trigger", null);
-            if (string != null) {
-                this.trigger = ApplicationPerformanceMetricsLogging$UiStartupTrigger.valueOf(string);
-            }
-            final String string2 = JsonUtils.getString(jsonObject, "destinationView", null);
-            if (string2 != null) {
-                this.destinationView = IClientLogging$ModalView.valueOf(string2);
-            }
-            this.display = Display.createInstance(jsonObject.getJSONObject("display"));
-            this.success = JsonUtils.getBoolean(jsonObject, "success", true);
-            this.voiceEnabled = JsonUtils.getBoolean(jsonObject, "voiceEnabled", false);
-            this.error = UIError.createInstance(JsonUtils.getJSONObject(jsonObject, "error", null));
-            this.trackId = JsonUtils.getString(jsonObject, "trackId", null);
-            this.searchTerm = JsonUtils.getString(jsonObject, "searchTerm", null);
-            final JSONObject jsonObject2 = JsonUtils.getJSONObject(jsonObject, "activeABTests", null);
-            if (jsonObject2 != null) {
-                this.activeABTests = new HashMap<String, Integer>();
-                final Iterator keys = jsonObject2.keys();
-                while (keys.hasNext()) {
-                    final String s = keys.next();
-                    this.activeABTests.put(s, this.activeABTests.get(s));
-                }
-            }
-            jsonObject = JsonUtils.getJSONObject(jsonObject, "version", null);
-            if (jsonObject != null) {
-                this.playerType = PlayerType.toPlayerType(JsonUtils.getInt(jsonObject, "playerType", -1));
-            }
-        }
+        this.deepLink = deepLink;
+        this.customData = customData;
     }
     
     public Map<String, Integer> getActiveABTests() {
         return this.activeABTests;
+    }
+    
+    @Override
+    protected JSONObject getCustomData() {
+        if (this.customData == null) {
+            return null;
+        }
+        return this.customData.toJson();
     }
     
     @Override
@@ -128,9 +105,15 @@ public final class UIStartupSessionEndedEvent extends SessionEndedEvent
         }
         final JSONObject jsonObject2 = new JSONObject();
         data.put("version", (Object)jsonObject2);
+        if (this.deepLink != null) {
+            data.put("deeplinkMsgParams", (Object)this.deepLink.toJSONObject());
+        }
         jsonObject2.put("os", (Object)String.valueOf(AndroidUtils.getAndroidVersion()));
         if (this.playerType != null) {
             data.put("playerType", (Object)PlayerType.mapPlayerTypeForLogging(this.playerType));
+        }
+        if (Log.isLoggable()) {
+            Log.v("UIStartupSessionEndedEvent", "getData(): " + data);
         }
         return data;
     }

@@ -19,6 +19,9 @@ import com.netflix.mediaclient.util.log.CustomerServiceLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$Action;
 import com.netflix.mediaclient.util.PermissionUtils;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory$TwoButtonAlertDialogDescriptor;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -28,9 +31,9 @@ import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$ReturnToDialScr
 import android.widget.ViewFlipper;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
 import android.view.View;
+import com.netflix.mediaclient.servicemgr.IVoip$OutboundCallListener;
 import android.support.v4.app.ActivityCompat$OnRequestPermissionsResultCallback;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.servicemgr.IVoip$OutboundCallListener;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -47,18 +50,12 @@ class ContactUsActivity$1 implements ManagerStatusListener
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         Log.d("VoipActivity", "Manager is here!");
-        this.this$0.mServiceManager = serviceManager;
-        this.this$0.mVoip = this.this$0.mServiceManager.getVoip();
-        this.this$0.initUI();
-        if (this.this$0.mVoip != null) {
-            this.this$0.mVoip.addOutboundCallListener(this.this$0);
-        }
-        this.this$0.reportEvent();
+        this.this$0.init(serviceManager, status);
     }
     
     @Override
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-        Log.e("VoipActivity", "Manager isn't available!");
-        this.this$0.mServiceManager = null;
+        Log.e("VoipActivity", "Netflix service is not fully initialized, but we still need to provide help!");
+        this.this$0.init(serviceManager, status);
     }
 }

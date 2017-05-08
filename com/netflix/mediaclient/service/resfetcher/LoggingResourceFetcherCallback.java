@@ -12,6 +12,16 @@ public class LoggingResourceFetcherCallback implements ResourceFetcherCallback
     private static final String TAG = "nf_service_resfetcher_callback";
     
     @Override
+    public void onResourceCached(final String s, final String s2, final long n, final long n2, final Status status) {
+        if (Log.isLoggable()) {
+            Log.d("nf_service_resfetcher_callback", String.format("Resource %s fetched and cached, status %d", s, status.getStatusCode().getValue()));
+        }
+        if (status.isError() && Log.isLoggable()) {
+            Log.w("nf_service_resfetcher_callback", String.format("Resource %s could not be fetched or retrieved from cache, status %d", s, status.getStatusCode().getValue()));
+        }
+    }
+    
+    @Override
     public void onResourceFetched(final String s, final String s2, final Status status) {
         if (Log.isLoggable()) {
             Log.i("nf_service_resfetcher_callback", String.format("Resource %s fetched and saved at %s, status %d", s, s2, status.getStatusCode().getValue()));

@@ -105,6 +105,25 @@ public final class Log
         return 0;
     }
     
+    public static String getStackTraceString(final Throwable t) {
+        if (t == null) {
+            return "";
+        }
+        return android.util.Log.getStackTraceString(t);
+    }
+    
+    public static String getStackTraceString(final Throwable t, final int n) {
+        String s2;
+        final String s = s2 = getStackTraceString(t);
+        if (n >= 0) {
+            s2 = s;
+            if (s.length() > n) {
+                s2 = s.substring(0, n);
+            }
+        }
+        return s2;
+    }
+    
     public static void handleException(final String s, final Exception ex) {
         e(s, "Exception msg: " + ex.getMessage(), ex);
     }

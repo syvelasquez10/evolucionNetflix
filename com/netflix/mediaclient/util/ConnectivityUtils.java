@@ -185,7 +185,7 @@ public final class ConnectivityUtils
                         }
                         final String hostAddress = inetAddress.getHostAddress();
                         if (localWifiIP4Address != null && localWifiIP4Address.equals(hostAddress)) {
-                            Log.d("nf_net", "WiFi interface found in all network interaces, skip!");
+                            Log.d("nf_net", "WiFi interface found in all network interfaces, skip!");
                             continue Label_0046;
                         }
                         return hostAddress;

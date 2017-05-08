@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.launch;
 
+import com.netflix.mediaclient.android.activity.ServiceErrorsHandler;
 import android.support.v7.app.ActionBar;
 import android.view.View;
 import com.netflix.mediaclient.android.fragment.LoadingView;
@@ -20,6 +21,8 @@ import android.app.Activity;
 import com.netflix.mediaclient.util.IntentUtils;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.widget.ProgressBar;
+import com.netflix.mediaclient.ui.ums.EndOfGrandfatheringActivity;
+import com.netflix.mediaclient.ui.ums.EogUtils;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
@@ -28,13 +31,20 @@ import com.google.android.gms.common.api.Api;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient$Builder;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.servicemgr.SignInLogging$CredentialService;
 import com.netflix.mediaclient.service.logging.apm.model.Display;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.login.LoginActivity;
+import com.netflix.mediaclient.service.logging.apm.model.DeepLink;
+import com.netflix.mediaclient.service.logging.apm.model.UIBrowseStartupSessionCustomData;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.util.log.SignInLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.ImageView;
@@ -44,10 +54,10 @@ import android.content.Context;
 import com.netflix.mediaclient.protocol.nflx.NflxHandlerFactory;
 import com.netflix.mediaclient.protocol.netflixcom.NetflixComHandlerFactory;
 import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
@@ -67,7 +77,9 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     private boolean isLoading;
     private GoogleApiClient mCredentialsApiClient;
     private String mHint;
+    private boolean mIsErrorDialogVisible;
     private AtomicBoolean mLoginWorkflowInProgress;
+    private Status mManagerStatus;
     private final Runnable mSmartLockTimeoutTask;
     private long mSplashScreenStarted;
     private long mStarted;
@@ -101,14 +113,14 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void createContentView() {
-        this.setContentView(2130903218);
-        final ImageView imageView = (ImageView)this.findViewById(2131624504);
+        this.setContentView(2130903246);
+        final ImageView imageView = (ImageView)this.findViewById(2131624650);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837919;
+            imageResource = 2130837939;
         }
         else {
-            imageResource = 2130837918;
+            imageResource = 2130837938;
         }
         imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi((Context)this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
@@ -116,23 +128,26 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
     }
     
-    private void handleLoginComplete(final com.netflix.mediaclient.android.app.Status status, final Credential credential) {
+    private void handleLoginComplete(final Status status, final Credential credential) {
         if (Log.isLoggable()) {
             Log.d("LaunchActivity", "Login Complete - Status: " + status);
         }
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showDebugToast(this.getString(2131165619));
+            this.showDebugToast(this.getString(2131165639));
+            SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.smartLock, IClientLogging$CompletionReason.success, null);
             return;
         }
         Log.e("LaunchActivity", "Login failed, redirect to LoginActivity with credential and status");
         this.handleUserLoginWithError(this.getServiceManager(), credential, status);
+        SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.smartLock, IClientLogging$CompletionReason.failed, status.getError());
     }
     
     private void handleManagerReady(final ServiceManager serviceManager) {
         if (this.isFinishing()) {
             return;
         }
+        Log.d("LaunchActivity", "LaunchActivity::handleManagerReady: starts ");
         final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = serviceManager.getClientLogging().getApplicationPerformanceMetricsLogging();
         final boolean userLoggedIn = serviceManager.isUserLoggedIn();
         if (this.mSplashScreenStarted > 0L) {
@@ -140,9 +155,11 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
             applicationPerformanceMetricsLogging.uiViewChanged(DeviceUtils.isPortrait((Context)this), IClientLogging$ModalView.appLoading, this.mSplashScreenStarted);
         }
         if (!userLoggedIn) {
+            Log.d("LaunchActivity", "LaunchActivity::handleManagerReady: user not logged in ");
             this.handleUserNotSignedIn(serviceManager);
             return;
         }
+        Log.d("LaunchActivity", "LaunchActivity::handleManagerReady: user logged in ");
         this.handleUserSignedIn(serviceManager);
     }
     
@@ -151,7 +168,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         final Display display = ConsolidatedLoggingUtils.getDisplay((Context)this);
         Log.d("LaunchActivity", "User is NOT logged in, redirect to Login screen");
         if (this.shouldCreateUiSessions()) {
-            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.login, this.mStarted, display);
+            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.login, this.mStarted, display, null, UIBrowseStartupSessionCustomData.create((Context)this));
         }
         final Intent startIntent = LoginActivity.createStartIntent((Context)this);
         if (StringUtils.isNotEmpty(this.mHint)) {
@@ -165,21 +182,22 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void handleUserLoginWithCredentials(final Credential credential) {
+        SignInLogUtils.reportCredentialRetrievalSessionEnded((Context)this, SignInLogging$CredentialService.GooglePlayService, IClientLogging$CompletionReason.success, null);
         final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = this.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging();
         final Display display = ConsolidatedLoggingUtils.getDisplay((Context)this);
         Log.d("LaunchActivity", "User is NOT logged in, redirect to Login screen with login credentials");
         if (this.shouldCreateUiSessions()) {
-            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.login, this.mStarted, display);
+            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.login, this.mStarted, display, null, UIBrowseStartupSessionCustomData.create((Context)this));
         }
         this.getServiceManager().loginUser(credential.getId(), credential.getPassword(), new LaunchActivity$6(this, credential));
     }
     
-    private void handleUserLoginWithError(final ServiceManager serviceManager, final Credential credential, final com.netflix.mediaclient.android.app.Status status) {
+    private void handleUserLoginWithError(final ServiceManager serviceManager, final Credential credential, final Status status) {
         final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = serviceManager.getClientLogging().getApplicationPerformanceMetricsLogging();
         final Display display = ConsolidatedLoggingUtils.getDisplay((Context)this);
         Log.d("LaunchActivity", "User is NOT logged in, redirect to Login screen");
         if (this.shouldCreateUiSessions()) {
-            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.login, this.mStarted, display);
+            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.login, this.mStarted, display, null, UIBrowseStartupSessionCustomData.create((Context)this));
         }
         this.startNextActivity(LoginActivity.createStartIntent((Context)this, credential, status));
         if (this.shouldCreateUiSessions()) {
@@ -189,8 +207,11 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void handleUserNotSignedIn(final ServiceManager serviceManager) {
+        Log.d("LaunchActivity", "handleUserNotSignedIn starts");
         if (this.shouldUseAutoLogin()) {
             Log.d("LaunchActivity", "Google Play Services are available, try to retrieve credentials");
+            SignInLogUtils.reportSignInRequestSessionStarted((Context)this, SignInLogging$SignInType.smartLock);
+            SignInLogUtils.reportCredentialRetrievalSessionStarted((Context)this, SignInLogging$CredentialService.GooglePlayService);
             (this.mCredentialsApiClient = new GoogleApiClient$Builder((Context)this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(Auth.CREDENTIALS_API).build()).connect();
             this.handler.postDelayed(this.mSmartLockTimeoutTask, 30000L);
             return;
@@ -213,7 +234,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = serviceManager.getClientLogging().getApplicationPerformanceMetricsLogging();
         final Display display = ConsolidatedLoggingUtils.getDisplay((Context)this);
         if (this.shouldCreateUiSessions()) {
-            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.signupPrompt, this.mStarted, display);
+            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.signupPrompt, this.mStarted, display, null, UIBrowseStartupSessionCustomData.create((Context)this));
         }
         this.startNextActivity(SignupActivity.createStartIntent((Context)this, this.getIntent()));
         if (this.shouldCreateUiSessions()) {
@@ -225,9 +246,12 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     private void handleUserSignedIn(final ServiceManager serviceManager) {
         final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = serviceManager.getClientLogging().getApplicationPerformanceMetricsLogging();
         final Display display = ConsolidatedLoggingUtils.getDisplay((Context)this);
-        NflxHandler$Response canHandleIntent = null;
+        NflxHandler$Response canHandleIntent;
         if (serviceManager.getCurrentProfile() != null) {
             canHandleIntent = this.canHandleIntent();
+        }
+        else {
+            canHandleIntent = null;
         }
         if (canHandleIntent != null && canHandleIntent == NflxHandler$Response.HANDLING) {
             Log.d("LaunchActivity", "Handled by nflx workflow");
@@ -240,7 +264,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         if (serviceManager.getCurrentProfile() == null || this.shouldProfileGateBeShown(serviceManager)) {
             if (this.shouldCreateUiSessions()) {
-                applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.profilesGate, this.mStarted, display);
+                applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.profilesGate, this.mStarted, display, null, UIBrowseStartupSessionCustomData.create((Context)this));
                 applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
             }
             this.startNextActivity(ProfileSelectionActivity.createStartIntentForAppRestart((Context)this));
@@ -249,20 +273,23 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         Log.d("LaunchActivity", String.format("Redirect to home with profile %s, %s", serviceManager.getCurrentProfile().getProfileName(), serviceManager.getCurrentProfile().getProfileGuid()));
         this.startNextActivity(HomeActivity.createStartIntent(this));
+        if (EogUtils.shouldShowEogAlert(serviceManager)) {
+            this.startNextActivity(EndOfGrandfatheringActivity.createStartIntent(this, EndOfGrandfatheringActivity.shouldBlockUser(serviceManager.getEndOfGrandfatheringAlert().isBlocking)));
+        }
         if (this.shouldCreateUiSessions()) {
-            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.homeScreen, this.mStarted, display);
+            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.homeScreen, this.mStarted, display, null, UIBrowseStartupSessionCustomData.create((Context)this));
             applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
         }
         this.finish();
     }
     
     private boolean isSignUpEnabled(final ServiceManager serviceManager) {
-        return serviceManager != null && serviceManager.getSignUpParams() != null && serviceManager.getSignUpParams().isSignUpEnabled();
+        return serviceManager != null && serviceManager.getSignUpParams() != null && serviceManager.isReady() && serviceManager.getSignUpParams().isSignUpEnabled();
     }
     
     private void manipulateSplashBackground() {
-        final ImageView imageView = (ImageView)this.findViewById(2131624504);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$1(this, imageView, (ImageView)this.findViewById(2131624191), (ProgressBar)this.findViewById(2131624192)));
+        final ImageView imageView = (ImageView)this.findViewById(2131624650);
+        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$1(this, imageView, (ImageView)this.findViewById(2131624259), (ProgressBar)this.findViewById(2131624260)));
     }
     
     private void onCredentialRetrieved(final Credential credential) {
@@ -286,21 +313,24 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         this.handler.removeCallbacks(this.mSmartLockTimeoutTask);
     }
     
-    private void resolveResult(final Status status) {
+    private void resolveResult(com.google.android.gms.common.api.Status credentialRequestResultToError) {
         if (Log.isLoggable()) {
-            Log.d("LaunchActivity", "Google Play Services: Resolving: " + status);
+            Log.d("LaunchActivity", "Google Play Services: Resolving: " + credentialRequestResultToError);
         }
         int n = 0;
         while (true) {
-            Label_0098: {
-                if (status == null || !status.hasResolution()) {
-                    break Label_0098;
+            Label_0125: {
+                if (credentialRequestResultToError == null || !credentialRequestResultToError.hasResolution()) {
+                    break Label_0125;
                 }
                 Log.d("LaunchActivity", "Google Play Services: STATUS: RESOLVING");
                 try {
-                    status.startResolutionForResult(this, 2);
+                    credentialRequestResultToError.startResolutionForResult(this, 2);
                     if (n != 0) {
                         Log.d("LaunchActivity", "Failed to initiate resolve, start regular user not signed in workflow");
+                        credentialRequestResultToError = (com.google.android.gms.common.api.Status)SignInLogUtils.credentialRequestResultToError(credentialRequestResultToError);
+                        SignInLogUtils.reportCredentialRetrievalSessionEnded((Context)this, SignInLogging$CredentialService.GooglePlayService, IClientLogging$CompletionReason.failed, (Error)credentialRequestResultToError);
+                        SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.smartLock, IClientLogging$CompletionReason.failed, (Error)credentialRequestResultToError);
                         this.handleUserNotSignedInWithoutCredentials(this.getServiceManager());
                     }
                     return;
@@ -407,6 +437,9 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         if (n != 2) {
             Log.e("LaunchActivity", "onActivityResult: uknown request code" + n);
+            final Error credentialRequestResultToError = SignInLogUtils.credentialRequestResultToError(n);
+            SignInLogUtils.reportCredentialRetrievalSessionEnded((Context)this, SignInLogging$CredentialService.GooglePlayService, IClientLogging$CompletionReason.failed, credentialRequestResultToError);
+            SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.smartLock, IClientLogging$CompletionReason.failed, credentialRequestResultToError);
             this.handleUserNotSignedInWithoutCredentials(this.getServiceManager());
             return;
         }
@@ -417,6 +450,9 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         Log.e("LaunchActivity", "Credential Read: NOT OK");
         this.showDebugToast("Google Play Services: Credential Read Failed");
+        final Error credentialRequestResultToError2 = SignInLogUtils.credentialRequestResultToError(n2);
+        SignInLogUtils.reportCredentialRetrievalSessionEnded((Context)this, SignInLogging$CredentialService.GooglePlayService, IClientLogging$CompletionReason.failed, credentialRequestResultToError2);
+        SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.smartLock, IClientLogging$CompletionReason.failed, credentialRequestResultToError2);
         this.handleUserNotSignedInWithoutCredentials(this.getServiceManager());
     }
     
@@ -473,9 +509,9 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     @Override
-    protected void onNewIntent(final Intent intent) {
-        Log.d("LaunchActivity", "Received new intent:", intent);
-        super.onNewIntent(intent);
+    protected void onPause() {
+        super.onPause();
+        this.mIsErrorDialogVisible = false;
     }
     
     @Override
@@ -484,6 +520,14 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         final ActionBar supportActionBar = this.getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.hide();
+        }
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (this.mManagerStatus != null && this.mManagerStatus.isError() && !this.mIsErrorDialogVisible) {
+            this.mIsErrorDialogVisible = ServiceErrorsHandler.handleManagerResponse(this, this.mManagerStatus);
         }
     }
     

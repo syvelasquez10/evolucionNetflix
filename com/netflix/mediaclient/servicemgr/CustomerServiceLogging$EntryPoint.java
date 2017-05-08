@@ -7,6 +7,7 @@ package com.netflix.mediaclient.servicemgr;
 public enum CustomerServiceLogging$EntryPoint
 {
     appMenu, 
+    errorDialog, 
     login, 
     nonMemberLanding, 
     notification, 

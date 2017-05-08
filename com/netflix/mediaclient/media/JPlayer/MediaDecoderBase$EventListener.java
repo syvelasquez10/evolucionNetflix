@@ -12,6 +12,8 @@ public interface MediaDecoderBase$EventListener
     
     void onEndOfStream(final boolean p0);
     
+    void onError(final boolean p0, final int p1, final String p2);
+    
     void onFlushed(final boolean p0);
     
     void onPasued(final boolean p0);

@@ -36,9 +36,10 @@ public class SafeSubtitleManager implements SubtitleManager
         }
     }
     
-    private boolean shouldCreateNewSubtitleManager(final IMedia$SubtitleProfile media$SubtitleProfile, final IMedia$SubtitleProfile media$SubtitleProfile2) {
+    private boolean shouldCreateNewSubtitleManager(final IMedia$SubtitleProfile media$SubtitleProfile) {
+        final IMedia$SubtitleProfile subtitleProfile = this.getSubtitleProfile();
         if (Log.isLoggable()) {
-            Log.d("nf_subtitles", "Old profile " + media$SubtitleProfile2 + ", newProfile " + media$SubtitleProfile);
+            Log.d("nf_subtitles", "Old profile " + subtitleProfile + ", newProfile " + media$SubtitleProfile);
         }
         final boolean b = this.mSubtitleManager != null && this.mSubtitleManager.canHandleSubtitleProfile(media$SubtitleProfile);
         if (Log.isLoggable()) {
@@ -97,7 +98,7 @@ public class SafeSubtitleManager implements SubtitleManager
     public void onSubtitleChange(final SubtitleScreen subtitleScreen) {
         synchronized (this) {
             final IMedia$SubtitleProfile subtitleProfile = subtitleScreen.getParser().getSubtitleProfile();
-            if (this.shouldCreateNewSubtitleManager(subtitleProfile, this.getSubtitleProfile())) {
+            if (this.shouldCreateNewSubtitleManager(subtitleProfile)) {
                 Log.d("nf_subtitles", "========> Create new subtitle manager!");
                 if (this.mSubtitleManager != null) {
                     this.mSubtitleManager.clear();

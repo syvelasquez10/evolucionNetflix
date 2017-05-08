@@ -8,7 +8,8 @@ import com.netflix.mediaclient.ui.mdx.RemotePlayer;
 import com.netflix.mediaclient.ui.mdx.MdxTarget;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.servicemgr.Asset;
-import com.netflix.mediaclient.ui.player.PlayerActivity;
+import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
+import android.content.Context;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,13 +50,18 @@ final class MdxUtils$1 implements AdapterView$OnItemClickListener
                 Log.d("MdxUtils", "Same MDX target selected. Do nothing and dismiss dialog");
             }
         }
+        else if (CoppolaUtils.isCoppolaContext((Context)this.val$activity) && CoppolaUtils.isNewPlayerExperience((Context)this.val$activity)) {
+            Log.d("MdxUtils", "For Coppola - delegating MDX target icon click to PlayerFragment");
+            this.val$serviceManager.getMdx().setCurrentTarget(selectedTarget.getUUID());
+            ((CoppolaDetailsActivity)this.val$activity).handleMDXIconClick();
+        }
         else if (selectedTarget.isLocal()) {
             if (this.val$callbacks.isPlayingRemotely()) {
                 Log.d("MdxUtils", "We were playing remotely - switching to playback locally");
                 this.val$serviceManager.getMdx().switchPlaybackFromTarget(null, 0);
-                final Asset create = Asset.create(this.val$callbacks.getPlayable(), this.val$callbacks.getPlayContext(), PlayerActivity.PIN_VERIFIED);
+                final Asset create = Asset.create(this.val$callbacks.getPlayable(), this.val$callbacks.getPlayContext(), true);
                 create.setPlaybackBookmark((int)(this.val$callbacks.getCurrentPositionMs() / 1000L));
-                PlaybackLauncher.startPlaybackForceLocal(this.val$activity, create);
+                PlaybackLauncher.startPlaybackForceLocal(this.val$activity, create, -1);
                 this.val$callbacks.notifyPlayingBackLocal();
             }
             else {

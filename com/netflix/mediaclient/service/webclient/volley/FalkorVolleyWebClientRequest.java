@@ -51,9 +51,19 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
     protected long mServerExecTimeInMs;
     protected UUID mUuid;
     
-    protected FalkorVolleyWebClientRequest(final Context mContext) {
+    protected FalkorVolleyWebClientRequest(final Context context) {
         super(0);
         this.mServerExecTimeInMs = -1L;
+        this.initParam(context);
+    }
+    
+    protected FalkorVolleyWebClientRequest(final Context context, final int n) {
+        super(n);
+        this.mServerExecTimeInMs = -1L;
+        this.initParam(context);
+    }
+    
+    private void initParam(final Context mContext) {
         this.mUuid = UUID.randomUUID();
         this.mContext = mContext;
     }

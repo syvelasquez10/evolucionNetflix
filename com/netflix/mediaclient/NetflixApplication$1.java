@@ -4,11 +4,6 @@
 
 package com.netflix.mediaclient;
 
-import android.util.DisplayMetrics;
-import android.content.res.Resources;
-import com.netflix.mediaclient.util.StringUtils;
-import java.util.Locale;
-import com.netflix.mediaclient.repository.UserLocale;
 import com.netflix.mediaclient.event.UIEvent;
 import android.app.Application$ActivityLifecycleCallbacks;
 import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
@@ -20,10 +15,12 @@ import android.app.PendingIntent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat$Builder;
 import com.netflix.mediaclient.util.IntentUtils;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.ui.launch.LaunchActivity;
 import com.netflix.mediaclient.android.app.UserInputManager;
+import com.netflix.mediaclient.util.l10n.UserLocale;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.util.gfx.BitmapLruCache;
 import java.util.TimerTask;

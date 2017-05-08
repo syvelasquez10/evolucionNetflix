@@ -7,13 +7,14 @@ package com.netflix.mediaclient.ui.common;
 import android.app.Fragment;
 import com.netflix.mediaclient.android.app.Status;
 import android.view.LayoutInflater;
+import android.annotation.SuppressLint;
 import java.io.Serializable;
 import android.os.Bundle;
 import android.view.View;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.falkor.PQL;
 import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import com.netflix.mediaclient.Log;
-import android.annotation.SuppressLint;
 import android.view.WindowManager$LayoutParams;
 import android.view.Window;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -22,7 +23,6 @@ import android.widget.TextView;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.details.NetflixRatingBar;
 import com.netflix.mediaclient.ui.details.NetflixRatingBar$RatingBarDataProvider;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
 import com.netflix.mediaclient.ui.details.NetflixRatingBar$OnNetflixRatingBarChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
@@ -39,7 +39,6 @@ public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRating
     private static final String TAG = "RatingDialogFrag";
     private boolean mAutoDismiss;
     private int mLayoutId;
-    private ServiceManager mManager;
     private int mParentXLoc;
     private int mParentYLoc;
     private NetflixRatingBar$RatingBarDataProvider mProvider;
@@ -50,11 +49,10 @@ public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRating
     private String mVideoTitle;
     private VideoType mVideoType;
     
-    @SuppressLint({ "RtlHardcoded" })
     private void alignViewsToAnchor() {
         if (this.mRatingGroup != null) {
             final Window window = this.getDialog().getWindow();
-            window.setGravity(51);
+            window.setGravity(8388659);
             final WindowManager$LayoutParams attributes = window.getAttributes();
             attributes.x = this.mParentXLoc;
             attributes.y = (int)(this.mParentYLoc - this.getResources().getDimension(2131296287));
@@ -63,7 +61,8 @@ public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRating
     }
     
     private void completeInitIfPossible() {
-        if (this.mManager == null) {
+        final ServiceManager serviceManager = this.getServiceManager();
+        if (serviceManager == null) {
             Log.v("RatingDialogFrag", "Can't complete init - service manager is null");
             return;
         }
@@ -72,7 +71,7 @@ public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRating
             return;
         }
         Log.v("RatingDialogFrag", "Updating ratings bar with ratable");
-        this.mRatingBar.update(this.mProvider, (Ratable)this.mManager.getBrowse().getModelProxy().getValue(PQL.create(this.mVideoType.getValue(), this.mVideoId, "summary")));
+        this.mRatingBar.update(this.mProvider, (Ratable)serviceManager.getBrowse().getModelProxy().getValue(PQL.create(this.mVideoType.getValue(), this.mVideoId, "summary")));
     }
     
     @SuppressLint({ "InlinedApi" })
@@ -126,12 +125,12 @@ public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRating
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View inflate = layoutInflater.inflate(this.mLayoutId, viewGroup, false);
-        this.mRatingBar = (NetflixRatingBar)inflate.findViewById(2131624476);
-        this.mTitle = (TextView)inflate.findViewById(2131624475);
-        this.mRatingGroup = (ViewGroup)inflate.findViewById(2131624477);
+        this.mRatingBar = (NetflixRatingBar)inflate.findViewById(2131624621);
+        this.mTitle = (TextView)inflate.findViewById(2131624620);
+        this.mRatingGroup = (ViewGroup)inflate.findViewById(2131624622);
         this.mRatingBar.setOnNetflixRatingBarChangeListener(this);
         if (this.mTitle != null) {
-            this.mTitle.setText((CharSequence)this.getString(2131165581, new Object[] { this.mVideoTitle }));
+            this.mTitle.setText((CharSequence)this.getString(2131165602, new Object[] { this.mVideoTitle }));
         }
         this.alignViewsToAnchor();
         this.completeInitIfPossible();
@@ -139,9 +138,8 @@ public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRating
     }
     
     @Override
-    public void onManagerReady(final ServiceManager mManager, final Status status) {
-        super.onManagerReady(mManager, status);
-        this.mManager = mManager;
+    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
+        super.onManagerReady(serviceManager, status);
         this.completeInitIfPossible();
     }
     

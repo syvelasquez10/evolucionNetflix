@@ -16,6 +16,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import android.view.ViewGroup;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.TextView;

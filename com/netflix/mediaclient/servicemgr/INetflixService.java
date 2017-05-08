@@ -6,6 +6,7 @@ package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import android.os.Handler;
+import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
@@ -26,6 +27,8 @@ public interface INetflixService
     boolean deleteLocalResource(final String p0);
     
     void editProfile(final String p0, final String p1, final boolean p2, final String p3, final int p4, final int p5);
+    
+    void fetchAndCacheResource(final String p0, final IClientLogging$AssetType p1, final int p2, final int p3);
     
     void fetchResource(final String p0, final IClientLogging$AssetType p1, final int p2, final int p3);
     
@@ -61,6 +64,8 @@ public interface INetflixService
     
     EsnProvider getESN();
     
+    EogAlert getEndOfGrandfatheringAlert();
+    
     IErrorHandler getErrorHandler();
     
     Handler getHandler();
@@ -68,6 +73,8 @@ public interface INetflixService
     IMdx getMdx();
     
     IPlayer getNflxPlayer();
+    
+    String getNrdDeviceModel();
     
     String getNrdpComponentVersion(final NrdpComponent p0);
     
@@ -98,6 +105,10 @@ public interface INetflixService
     void loginUserByTokens(final ActivationTokens p0, final int p1, final int p2);
     
     void logoutUser(final int p0, final int p1);
+    
+    void recordEndOfGrandfatheringImpression(final String p0, final String p1);
+    
+    void recordPlanSelection(final String p0, final String p1);
     
     void refreshProfileSwitchingStatus();
     

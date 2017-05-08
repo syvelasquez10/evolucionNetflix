@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
+import com.netflix.mediaclient.util.CoppolaUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.Log;
@@ -22,7 +24,7 @@ public class DetailsActivityLauncher
 {
     static final String EXTRA_ACTION = "extra_action";
     static final String EXTRA_ACTION_TOKEN = "extra_action_token";
-    static final String EXTRA_EPISODE_ID = "extra_episode_id";
+    public static final String EXTRA_EPISODE_ID = "extra_episode_id";
     public static final String EXTRA_PLAY_CONTEXT = "extra_playcontext";
     public static final String EXTRA_SAME_ACTIVITY_TYPE = "extra_same_activity_type";
     public static final String EXTRA_VIDEO_ID = "extra_video_id";
@@ -105,8 +107,24 @@ public class DetailsActivityLauncher
         netflixActivity.getServiceManager().getClientLogging().getErrorLogging().logHandledException(format);
     }
     
+    public static void show(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s, final String s2) {
+        if (validateAndlogVideoType(video.getType(), netflixActivity)) {
+            if (!video.isOriginal() || !video.isPreRelease()) {
+                show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, detailsActivity$Action, s, s2, null, 0);
+                return;
+            }
+            showPreReleaseDP(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, detailsActivity$Action, s, s2, null, 0);
+        }
+    }
+    
     public static void show(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext, final String s) {
-        show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, null, null, s, null, 0);
+        if (validateAndlogVideoType(video.getType(), netflixActivity)) {
+            if (!video.isOriginal() || !video.isPreRelease()) {
+                show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, null, null, s, null, 0);
+                return;
+            }
+            showPreReleaseDP(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, null, null, s, null, 0);
+        }
     }
     
     public static void show(final NetflixActivity netflixActivity, final Video video, final PlayContext playContext, final String s, final int n) {
@@ -117,6 +135,16 @@ public class DetailsActivityLauncher
         show(netflixActivity, video.getType(), video.getId(), video.getTitle(), playContext, null, null, s, bundle, 0);
     }
     
+    public static void show(final NetflixActivity netflixActivity, final Video video, final String s, final String s2, final PlayContext playContext, final String s3) {
+        if (validateAndlogVideoType(video.getType(), netflixActivity)) {
+            if (!video.isOriginal() || !video.isPreRelease()) {
+                show(netflixActivity, video.getType(), s, s2, playContext, null, null, s3, null, 0);
+                return;
+            }
+            showPreReleaseDP(netflixActivity, video.getType(), s, s2, playContext, null, null, s3, null, 0);
+        }
+    }
+    
     public static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4) {
         if (validateAndlogVideoType(videoType, netflixActivity)) {
             show(netflixActivity, videoType, s, s2, playContext, detailsActivity$Action, s3, s4, null, 0);
@@ -125,28 +153,28 @@ public class DetailsActivityLauncher
     
     private static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4, final Bundle bundle, final int n) {
         final BrowseExperience value = BrowseExperience.get();
-        final Class<? extends DetailsActivity> detailsClassTypeForVideo = value.getDetailsClassTypeForVideo(videoType);
+        Class<? extends DetailsActivity> detailsClassTypeForVideo;
+        if (CoppolaUtils.isCoppolaExperience((Context)netflixActivity)) {
+            detailsClassTypeForVideo = CoppolaDetailsActivity.class;
+        }
+        else {
+            detailsClassTypeForVideo = value.getDetailsClassTypeForVideo(videoType);
+        }
         if (detailsClassTypeForVideo == null) {
             logInvalidVideoType(netflixActivity, value, s, null, videoType, playContext, s4);
             return;
         }
-        if (Log.isLoggable()) {
-            Log.v("DetailsActivityLauncher", String.format("Creating details class: %s, videoType: %s, video ID: %s", detailsClassTypeForVideo.getSimpleName(), videoType, s));
-        }
-        final Intent intent = getIntent((Context)netflixActivity, detailsClassTypeForVideo, videoType, s, s2, playContext, detailsActivity$Action, s3);
-        if (bundle != null) {
-            intent.putExtras(bundle);
-        }
-        if (n > 0) {
-            intent.addFlags(n);
-        }
-        netflixActivity.startActivity(intent);
+        startActivity(netflixActivity, videoType, s, s2, playContext, detailsActivity$Action, s3, bundle, n, detailsClassTypeForVideo);
     }
     
     public static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final String s3) {
         if (validateAndlogVideoType(videoType, netflixActivity)) {
             show(netflixActivity, videoType, s, s2, playContext, null, null, s3, null, 0);
         }
+    }
+    
+    public static void show(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final String s3, final Bundle bundle) {
+        show(netflixActivity, videoType, s, s2, playContext, null, null, s3, bundle, 0);
     }
     
     public static void showEpisodeDetails(final NetflixActivity netflixActivity, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3) {
@@ -156,6 +184,32 @@ public class DetailsActivityLauncher
             return;
         }
         netflixActivity.startActivity(episodeDetailsIntent);
+    }
+    
+    private static void showPreReleaseDP(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final String s4, final Bundle bundle, final int n) {
+        Bundle bundle2;
+        if (bundle == null) {
+            bundle2 = new Bundle();
+        }
+        else {
+            bundle2 = bundle;
+        }
+        bundle2.putBoolean("extra_is_movie", videoType == VideoType.MOVIE);
+        startActivity(netflixActivity, videoType, s, s2, playContext, detailsActivity$Action, s3, bundle2, n, PreReleaseDetailsActivity.class);
+    }
+    
+    private static void startActivity(final NetflixActivity netflixActivity, final VideoType videoType, final String s, final String s2, final PlayContext playContext, final DetailsActivity$Action detailsActivity$Action, final String s3, final Bundle bundle, final int n, final Class<?> clazz) {
+        if (Log.isLoggable()) {
+            Log.v("DetailsActivityLauncher", String.format("Creating details class: %s, videoType: %s, video ID: %s", clazz.getSimpleName(), videoType, s));
+        }
+        final Intent intent = getIntent((Context)netflixActivity, clazz, videoType, s, s2, playContext, detailsActivity$Action, s3);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+        if (n > 0) {
+            intent.addFlags(n);
+        }
+        netflixActivity.startActivity(intent);
     }
     
     static boolean validateAndlogVideoType(final VideoType videoType, final NetflixActivity netflixActivity) {

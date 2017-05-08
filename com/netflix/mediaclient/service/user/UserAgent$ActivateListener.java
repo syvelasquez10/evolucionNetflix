@@ -11,13 +11,19 @@ import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.util.PrivacyUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
-import com.netflix.mediaclient.repository.UserLocale;
+import com.netflix.mediaclient.util.l10n.UserLocale;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import java.util.Iterator;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.util.NetflixPreference;
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
+import com.netflix.mediaclient.util.log.SignInLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
@@ -66,10 +72,10 @@ class UserAgent$ActivateListener implements EventListener
             final ActivateEvent activateEvent = (ActivateEvent)uiEvent;
             if (!activateEvent.failed()) {
                 final String cookies = activateEvent.getCookies();
-                final String access$600 = this.this$0.extractToken(this.this$0.getNetflixIdName() + "=", cookies);
-                final String access$601 = this.this$0.extractToken(this.this$0.getSecureNetflixIdName() + "=", cookies);
-                if (StringUtils.isNotEmpty(access$600) && StringUtils.isNotEmpty(access$601)) {
-                    this.this$0.mUserAgentStateManager.accountOrProfileActivated(true, access$600, access$601);
+                final String access$700 = this.this$0.extractToken(this.this$0.getNetflixIdName() + "=", cookies);
+                final String access$701 = this.this$0.extractToken(this.this$0.getSecureNetflixIdName() + "=", cookies);
+                if (StringUtils.isNotEmpty(access$700) && StringUtils.isNotEmpty(access$701)) {
+                    this.this$0.mUserAgentStateManager.accountOrProfileActivated(true, access$700, access$701);
                 }
             }
             else {

@@ -4,8 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration.drm;
 
-import android.media.NotProvisionedException;
-import android.media.DeniedByServerException;
+import com.netflix.mediaclient.util.LogUtils;
 import android.media.MediaCryptoException;
 import java.util.List;
 import com.netflix.mediaclient.Log;
@@ -408,12 +407,8 @@ public class WidevineMediaDrmEngine
             WidevineMediaDrmEngine.mKeyAdded = true;
             return this.mSessionId;
         }
-        catch (DeniedByServerException ex) {
-            Log.i("WidevineMediaDrmEngine", "fail to storeLicense DeniedByServerException " + ex.getMessage());
-            return new byte[0];
-        }
-        catch (NotProvisionedException ex2) {
-            Log.i("WidevineMediaDrmEngine", "fail to storeLicense NotProvisionedException " + ex2.getMessage());
+        catch (Throwable t) {
+            LogUtils.reportErrorSafely("fail to storeLicense", t);
             return new byte[0];
         }
     }

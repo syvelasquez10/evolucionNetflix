@@ -24,12 +24,12 @@ import com.netflix.mediaclient.android.app.Status;
 import org.json.JSONObject;
 import java.util.HashSet;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import java.util.Set;
 import com.netflix.mediaclient.android.widget.StaticListView;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import android.content.Context;
@@ -66,16 +66,17 @@ class NotificationsFrag$3 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        if (this.this$0.mServiceManager != null && this.this$0.mServiceManager.getBrowse() != null && this.val$summary != null && this.this$0.mNotifications != null) {
+        final ServiceManager serviceManager = this.this$0.getServiceManager();
+        if (serviceManager != null && serviceManager.getBrowse() != null && this.val$summary != null && this.this$0.mNotifications != null) {
             if (!this.val$summary.getWasRead()) {
-                this.this$0.mServiceManager.getBrowse().markNotificationAsRead(this.val$summary);
+                serviceManager.getBrowse().markNotificationAsRead(this.val$summary);
             }
             DetailsActivityLauncher.show(this.this$0.getNetflixActivity(), this.val$videoType, this.val$videoId, this.val$summary.getVideoTitle(), new PlayContextImp(this.val$requestId, this.val$listSummary.getMDPTrackId(), 0, 0), "SocialNotif");
             UIViewLogUtils.reportUIViewCommandStarted((Context)this.this$0.getActivity(), UIViewLogging$UIViewCommandName.viewTitleDetails, IClientLogging$ModalView.menuPanel, null, null, this.this$0.getModelObject(this.val$summary, this.val$position));
             UIViewLogUtils.reportUIViewCommandEnded((Context)this.this$0.getActivity());
         }
         else if (Log.isLoggable()) {
-            Log.e(NotificationsFrag.TAG, "onClick() got weird use case when mServiceManager is: " + this.this$0.mServiceManager);
+            Log.e(NotificationsFrag.TAG, "onClick() got weird use case when mServiceManager is: " + serviceManager);
         }
     }
 }

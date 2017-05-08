@@ -28,6 +28,8 @@ public interface WhistleEngineDelegate
     
     void incomingCall(final int p0, final String p1, final String p2);
     
+    void networkFailure(final int p0);
+    
     void registrationSuccessful();
     
     void selectedCodec(final int p0, final String p1, final int p2);

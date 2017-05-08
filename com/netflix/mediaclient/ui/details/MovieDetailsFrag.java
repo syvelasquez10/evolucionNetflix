@@ -4,14 +4,13 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
+import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableObject;
-import android.support.v7.widget.RecyclerView$LayoutManager;
 import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.support.v7.widget.RecyclerView$Adapter;
@@ -24,28 +23,35 @@ import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.support.v7.widget.RecyclerView$LayoutManager;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.support.v7.widget.RecyclerView;
+import android.os.Parcelable;
+import android.support.v7.widget.GridLayoutManager;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 
 public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
 {
+    private static final String EXTRA_LAYOUT_MANAGER_STATE = "layout_manager_state";
     protected static final String EXTRA_VIDEO_ID = "video_id";
     private static final String TAG = "MovieDetailsFrag";
     protected RecyclerViewHeaderAdapter adapter;
     private CopyrightView copyrightView;
-    private boolean isLoading;
+    private GridLayoutManager gridLayoutManager;
+    protected boolean isLoading;
+    private Parcelable layoutManagerSavedState;
     protected int numColumns;
+    private DetailsPageParallaxScrollListener parallaxScroller;
     protected RecyclerView recyclerView;
-    private long requestId;
-    private int targetScrollYOffset;
+    protected long requestId;
     protected String videoId;
     
     public MovieDetailsFrag() {
@@ -53,11 +59,13 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     }
     
     private void addCopyrightAsFooter() {
-        if (this.adapter == null) {
-            return;
+        if (this.adapter != null) {
+            this.copyrightView = CopyrightView.create(null, (Context)this.getActivity());
+            if (this.copyrightView != null) {
+                this.copyrightView.setGravityAsCenter();
+                this.adapter.addFooterView(this.copyrightView.getView());
+            }
         }
-        (this.copyrightView = CopyrightView.create(null, (Context)this.getActivity())).setGravityAsCenter();
-        this.adapter.addFooterView(this.copyrightView.getView());
     }
     
     public static MovieDetailsFrag create(final String s) {
@@ -68,11 +76,17 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         return movieDetailsFrag;
     }
     
-    private void scrollTo(final int n) {
-        if (this.primaryView != null) {
-            Log.v("MovieDetailsFrag", "Posting scroll to mdp frag, offset: " + n);
-            this.primaryView.post((Runnable)new MovieDetailsFrag$5(this, n));
+    private void restoreLayoutManagerState() {
+        if (DataUtil.areAnyNull("MovieDetailsFrag", "can't restore layout manager", this.layoutManagerSavedState, this.recyclerView, this.parallaxScroller)) {
+            return;
         }
+        if (Log.isLoggable()) {
+            Log.v("MovieDetailsFrag", "Restoring layout manager state: " + this.layoutManagerSavedState);
+        }
+        this.recyclerView.getLayoutManager().onRestoreInstanceState(this.layoutManagerSavedState);
+        this.layoutManagerSavedState = null;
+        Log.v("MovieDetailsFrag", "Posting message to reset parallax views");
+        this.recyclerView.post((Runnable)new MovieDetailsFrag$6(this));
     }
     
     protected void fetchMovieData() {
@@ -84,28 +98,33 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         this.isLoading = true;
         this.requestId = System.nanoTime();
         Log.v("MovieDetailsFrag", "Fetching data for movie ID: " + this.videoId);
-        serviceManager.getBrowse().fetchMovieDetails(this.videoId, new MovieDetailsFrag$FetchMovieDetailsCallback(this, this.requestId));
+        serviceManager.getBrowse().fetchMovieDetails(this.videoId, null, new MovieDetailsFrag$FetchMovieDetailsCallback(this, this.requestId));
     }
     
     protected void findViews(final View view) {
-        this.recyclerView = (RecyclerView)view.findViewById(16908298);
+        this.recyclerView = (RecyclerView)this.primaryView;
     }
     
     @Override
     protected VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final MovieDetails movieDetails) {
-        return new MovieDetailsFrag$4(this, movieDetails);
+        return new MovieDetailsFrag$5(this, movieDetails);
     }
     
     @Override
     protected int getLayoutId() {
-        return 2130903200;
+        return 2130903228;
     }
     
-    public int getScrollYOffset() {
-        if (this.primaryView == null) {
-            return 0;
+    public RecyclerView$LayoutManager getLayoutManager() {
+        if (this.recyclerView == null) {
+            return null;
         }
-        return this.primaryView.getScrollY();
+        return this.recyclerView.getLayoutManager();
+    }
+    
+    @Override
+    protected int getPrimaryViewId() {
+        return 16908298;
     }
     
     @Override
@@ -135,8 +154,14 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         this.findViews(onCreateView);
         this.numColumns = this.retrieveNumColumns();
         this.initDetailsViewGroup(onCreateView);
+        if (bundle != null) {
+            final Parcelable parcelable = bundle.getParcelable("layout_manager_state");
+            if (parcelable != null) {
+                this.setLayoutManagerSavedState(parcelable);
+            }
+        }
         this.setupRecyclerView();
-        this.detailsViewGroup.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new MovieDetailsFrag$1(this));
+        this.detailsViewGroup.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new MovieDetailsFrag$2(this));
         return onCreateView;
     }
     
@@ -156,6 +181,13 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         SimilarItemsGridViewAdapter.refreshImagesIfNecessary(this.recyclerView);
     }
     
+    public void onSaveInstanceState(final Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        if (this.gridLayoutManager != null) {
+            bundle.putParcelable("layout_manager_state", this.gridLayoutManager.onSaveInstanceState());
+        }
+    }
+    
     @Override
     protected void reloadData() {
         this.fetchMovieData();
@@ -165,21 +197,28 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
         return LomoConfig.computeStandardNumVideosPerPage(this.getNetflixActivity(), false);
     }
     
-    public void setScrollYOffset(final int targetScrollYOffset) {
-        this.targetScrollYOffset = targetScrollYOffset;
+    public void scrollTop() {
+        this.recyclerView.post((Runnable)new MovieDetailsFrag$1(this));
     }
     
-    protected DetailsPageParallaxScrollListener setupDetailsPageParallaxScrollListener() {
+    public void setLayoutManagerSavedState(final Parcelable layoutManagerSavedState) {
+        this.layoutManagerSavedState = layoutManagerSavedState;
+    }
+    
+    public void setVideoId(final String videoId) {
+        this.videoId = videoId;
+    }
+    
+    protected void setupDetailsPageParallaxScrollListener() {
         if (this.getActivity() != null && this.recyclerView != null) {
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
-                final DetailsPageParallaxScrollListener onScrollListener = new DetailsPageParallaxScrollListener(null, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, this.recyclerView.getResources().getColor(2131558581), 0, null);
-                this.recyclerView.setOnScrollListener(onScrollListener);
-                return onScrollListener;
+                Log.v("MovieDetailsFrag", "Attaching parallax scroll listener to recyclerView");
+                this.parallaxScroller = new DetailsPageParallaxScrollListener(null, this.recyclerView, new View[] { this.detailsViewGroup.getHeroImage() }, null, this.recyclerView.getResources().getColor(2131558591), 0, null);
+                this.recyclerView.setOnScrollListener(this.parallaxScroller);
             }
         }
-        return null;
     }
     
     protected void setupRecyclerView() {
@@ -194,32 +233,26 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
     }
     
     protected void setupRecyclerViewAdapter() {
-        this.adapter = new SimilarItemsGridViewAdapter(true, this.numColumns, new MovieDetailsFrag$2(this));
+        this.adapter = new SimilarItemsGridViewAdapter(true, this.numColumns, new MovieDetailsFrag$3(this));
         this.addCopyrightAsFooter();
         this.adapter.addHeaderView((View)this.detailsViewGroup);
         this.recyclerView.setAdapter(this.adapter);
     }
     
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296458), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296497), this.numColumns));
     }
     
     protected void setupRecyclerViewLayoutManager() {
-        final GridLayoutManager layoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns);
-        layoutManager.setSpanSizeLookup(new MovieDetailsFrag$3(this));
-        this.recyclerView.setLayoutManager(layoutManager);
+        (this.gridLayoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns)).setSpanSizeLookup(new MovieDetailsFrag$4(this));
+        this.recyclerView.setLayoutManager(this.gridLayoutManager);
     }
     
     @Override
     protected void showDetailsView(final MovieDetails movieDetails) {
         super.showDetailsView(movieDetails);
         this.adapter.setTrackable(new TrackableObject(movieDetails.getSimilarsRequestId(), movieDetails.getSimilarsTrackId(), movieDetails.getSimilarsListPos()));
-        if (movieDetails.getSimilars().size() != 0) {
-            this.adapter.setItems(movieDetails.getSimilars());
-        }
-        else if (this.getVideoDetailsViewGroup() != null) {
-            this.getVideoDetailsViewGroup().hideRelatedTitle();
-        }
+        this.showSimsItems(movieDetails);
         if (this.recyclerView != null) {
             this.recyclerView.setVisibility(0);
         }
@@ -227,7 +260,16 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails>
             this.copyrightView.update(movieDetails);
             this.copyrightView.getView().setVisibility(0);
         }
-        this.scrollTo(this.targetScrollYOffset);
-        this.targetScrollYOffset = 0;
+        this.restoreLayoutManagerState();
+        this.onLoaded(CommonStatus.OK);
+    }
+    
+    protected void showSimsItems(final MovieDetails movieDetails) {
+        if (movieDetails.getSimilars().size() != 0) {
+            this.adapter.setItems(movieDetails.getSimilars());
+        }
+        else if (this.getVideoDetailsViewGroup() != null) {
+            this.getVideoDetailsViewGroup().hideRelatedTitle();
+        }
     }
 }

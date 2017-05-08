@@ -29,4 +29,9 @@ public class ConfigurationVolleyWebClient implements ConfigurationWebClient
     public boolean isSynchronous() {
         return this.webclient.isSynchronous();
     }
+    
+    @Override
+    public void verifyLogin(final String s, final String s2, final ConfigurationAgentWebCallback configurationAgentWebCallback) {
+        this.webclient.sendConfigRequest(new VerifyLoginRequest(this.service.getApplicationContext(), this.service.getConfiguration(), s, s2, configurationAgentWebCallback));
+    }
 }

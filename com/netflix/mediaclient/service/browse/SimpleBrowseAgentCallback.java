@@ -17,8 +17,11 @@ import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.android.app.Status;
@@ -29,6 +32,10 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
 {
     @Override
     public void onBBVideosFetched(final List<Billboard> list, final Status status) {
+    }
+    
+    @Override
+    public void onBrowsePlaySessionEnd(final boolean b, final Status status) {
     }
     
     @Override
@@ -44,6 +51,10 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     }
     
     @Override
+    public void onExpiringContentWarning(final IExpiringContentWarning expiringContentWarning, final Status status, final ExpiringContentAction expiringContentAction) {
+    }
+    
+    @Override
     public void onGenreListsFetched(final List<GenreList> list, final Status status) {
     }
     
@@ -53,6 +64,10 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     
     @Override
     public void onGenresFetched(final List<Genre> list, final Status status) {
+    }
+    
+    @Override
+    public void onInteractiveMomentsFetched(final InteractiveMoments interactiveMoments, final Status status) {
     }
     
     @Override
@@ -93,6 +108,10 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     
     @Override
     public void onQueueRemove(final Status status) {
+    }
+    
+    @Override
+    public void onScenePositionFetched(final int n, final Status status) {
     }
     
     @Override

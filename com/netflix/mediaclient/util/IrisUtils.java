@@ -18,15 +18,17 @@ import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import android.app.NotificationManager;
 import android.support.v4.content.LocalBroadcastManager;
 import java.io.Serializable;
-import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.content.res.Resources;
 import java.util.Set;
 import android.os.Parcelable;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.Log;
 import android.content.Context;
 import android.view.Menu;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.iris.notifications.SlidingMenuNotificationsFrag;
 
 public class IrisUtils
@@ -41,9 +43,25 @@ public class IrisUtils
         PAGE_NOTIFICATIONS_SIZE = SlidingMenuNotificationsFrag.MAX_NUM_NOTIFICATIONS;
     }
     
-    public static void addShareIcon(final Menu menu, final Context context) {
-        if (context instanceof DetailsActivity) {
-            menu.add(0, 2131623953, 0, 2131165700).setIcon(2130837694).setShowAsAction(2);
+    public static void addShareIcon(final ServiceManager serviceManager, final Menu menu, final Context context) {
+        boolean b2;
+        final boolean b = b2 = true;
+        if (serviceManager != null) {
+            b2 = b;
+            if (serviceManager.isReady()) {
+                b2 = b;
+                if (serviceManager.getCurrentProfile() != null) {
+                    b2 = b;
+                    if (serviceManager.getCurrentProfile().isKidsProfile()) {
+                        Log.v("SocialUtils", "We have a kids profile - hide share icon");
+                        b2 = false;
+                    }
+                }
+            }
+        }
+        if (context instanceof DetailsActivity && b2) {
+            Log.v("SocialUtils", "Adding share icon");
+            menu.add(0, 2131623954, 0, 2131165733).setIcon(2130837711).setShowAsAction(2);
         }
     }
     
@@ -54,7 +72,11 @@ public class IrisUtils
     }
     
     private static String getShareText(final Resources resources, final String s, final String s2) {
-        return resources.getString(2131165701, new Object[] { s, s2 });
+        if (s.length() < 1) {
+            ErrorLoggingManager.logHandledException("SPY-9064 - Video title was not ready - showing no title share msg.");
+            return resources.getString(2131165735, new Object[] { s2 });
+        }
+        return resources.getString(2131165734, new Object[] { s, s2 });
     }
     
     private static String getShareUrl(final String s, final VideoType videoType) {
@@ -125,12 +147,12 @@ public class IrisUtils
         intent.setFlags(268435456);
         intent.setType("text/plain");
         intent.putExtra("android.intent.extra.TEXT", getShareText(resources, s, shareUrl));
-        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131165702)));
+        context.startActivity(Intent.createChooser(intent, (CharSequence)resources.getString(2131165736)));
         UserActionLogUtils.reportShareSheetActionEnded(context, IClientLogging$CompletionReason.success, null);
     }
     
     public static boolean tryHandleMenuItemClick(final MenuItem menuItem, final Context context) {
-        if (context instanceof DetailsActivity && menuItem.getItemId() == 2131623953) {
+        if (context instanceof DetailsActivity && menuItem.getItemId() == 2131623954) {
             final DetailsActivity detailsActivity = (DetailsActivity)context;
             final String videoId = detailsActivity.getVideoId();
             final VideoType videoType = detailsActivity.getVideoType();

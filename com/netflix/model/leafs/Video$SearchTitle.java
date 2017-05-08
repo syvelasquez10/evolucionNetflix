@@ -17,6 +17,8 @@ public final class Video$SearchTitle implements JsonPopulator
     private static final String TAG = "SearchTitle";
     public String certification;
     public String horzDispUrl;
+    public boolean isOriginal;
+    public boolean isPreRelease;
     public int releaseYear;
     public String title;
     
@@ -30,33 +32,47 @@ public final class Video$SearchTitle implements JsonPopulator
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0138: {
+            Label_0154: {
                 switch (s.hashCode()) {
                     case 110371416: {
                         if (s.equals("title")) {
                             n = 0;
-                            break Label_0138;
+                            break Label_0154;
                         }
                         break;
                     }
                     case -644524870: {
                         if (s.equals("certification")) {
                             n = 1;
-                            break Label_0138;
+                            break Label_0154;
                         }
                         break;
                     }
                     case -1217996834: {
                         if (s.equals("horzDispUrl")) {
                             n = 2;
-                            break Label_0138;
+                            break Label_0154;
                         }
                         break;
                     }
                     case 213502180: {
                         if (s.equals("releaseYear")) {
                             n = 3;
-                            break Label_0138;
+                            break Label_0154;
+                        }
+                        break;
+                    }
+                    case 585773339: {
+                        if (s.equals("isOriginal")) {
+                            n = 4;
+                            break Label_0154;
+                        }
+                        break;
+                    }
+                    case 135683246: {
+                        if (s.equals("isPreRelease")) {
+                            n = 5;
+                            break Label_0154;
                         }
                         break;
                     }
@@ -81,6 +97,14 @@ public final class Video$SearchTitle implements JsonPopulator
                 }
                 case 3: {
                     this.releaseYear = jsonElement2.getAsInt();
+                    continue;
+                }
+                case 4: {
+                    this.isOriginal = jsonElement2.getAsBoolean();
+                    continue;
+                }
+                case 5: {
+                    this.isPreRelease = jsonElement2.getAsBoolean();
                     continue;
                 }
             }

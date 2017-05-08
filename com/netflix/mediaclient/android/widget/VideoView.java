@@ -44,7 +44,7 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130837905);
+        this.setBackgroundResource(2130837925);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
     }
     

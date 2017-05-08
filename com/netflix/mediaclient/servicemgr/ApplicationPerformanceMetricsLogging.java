@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.mediaclient.service.logging.apm.model.UIBrowseStartupSessionCustomData;
+import com.netflix.mediaclient.service.logging.apm.model.DeepLink;
 import com.netflix.mediaclient.service.logging.apm.model.Display;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
@@ -88,9 +90,9 @@ public interface ApplicationPerformanceMetricsLogging
     
     void startUiModelessViewSession(final boolean p0, final IClientLogging$ModalView p1, final String p2);
     
-    void startUiStartupSession(final ApplicationPerformanceMetricsLogging$UiStartupTrigger p0, final IClientLogging$ModalView p1, final int p2, final String p3, final Map<String, Integer> p4, final Long p5, final Display p6);
+    void startUiStartupSession(final ApplicationPerformanceMetricsLogging$UiStartupTrigger p0, final IClientLogging$ModalView p1, final int p2, final String p3, final Map<String, Integer> p4, final Long p5, final Display p6, final DeepLink p7, final UIBrowseStartupSessionCustomData p8);
     
-    void startUiStartupSession(final ApplicationPerformanceMetricsLogging$UiStartupTrigger p0, final IClientLogging$ModalView p1, final Long p2, final Display p3);
+    void startUiStartupSession(final ApplicationPerformanceMetricsLogging$UiStartupTrigger p0, final IClientLogging$ModalView p1, final Long p2, final Display p3, final DeepLink p4, final UIBrowseStartupSessionCustomData p5);
     
     void startUserSession(final ApplicationPerformanceMetricsLogging$Trigger p0);
     

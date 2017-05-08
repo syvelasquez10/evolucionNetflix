@@ -10,36 +10,39 @@ import com.netflix.mediaclient.servicemgr.interface_.UserRating;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
-import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import java.util.List;
 import android.os.Handler;
+import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 
 class PostToHandlerCallbackWrapper$25 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
-    final /* synthetic */ PostPlayVideosProvider val$postPlayVideosProvider;
     final /* synthetic */ Status val$res;
+    final /* synthetic */ ISearchResults val$searchResults;
     
-    PostToHandlerCallbackWrapper$25(final PostToHandlerCallbackWrapper this$0, final PostPlayVideosProvider val$postPlayVideosProvider, final Status val$res) {
+    PostToHandlerCallbackWrapper$25(final PostToHandlerCallbackWrapper this$0, final ISearchResults val$searchResults, final Status val$res) {
         this.this$0 = this$0;
-        this.val$postPlayVideosProvider = val$postPlayVideosProvider;
+        this.val$searchResults = val$searchResults;
         this.val$res = val$res;
     }
     
     @Override
     public void run() {
-        this.this$0.callback.onPostPlayVideosFetched(this.val$postPlayVideosProvider, this.val$res);
+        this.this$0.callback.onSearchResultsFetched(this.val$searchResults, this.val$res);
     }
 }

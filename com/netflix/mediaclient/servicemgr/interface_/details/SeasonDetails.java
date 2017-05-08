@@ -4,16 +4,15 @@
 
 package com.netflix.mediaclient.servicemgr.interface_.details;
 
-import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.BasicVideo;
 
 public interface SeasonDetails extends BasicVideo
 {
     int getNumOfEpisodes();
     
-    int getSeasonNumber();
+    String getSeasonLongSeqLabel();
     
-    String getSeasonNumberTitle(final Context p0);
+    int getSeasonNumber();
     
     int getYear();
 }

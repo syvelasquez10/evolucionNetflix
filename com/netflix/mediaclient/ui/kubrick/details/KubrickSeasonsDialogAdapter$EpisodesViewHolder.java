@@ -27,8 +27,8 @@ public class KubrickSeasonsDialogAdapter$EpisodesViewHolder extends RecyclerView
     public KubrickSeasonsDialogAdapter$EpisodesViewHolder(final KubrickSeasonsDialogAdapter this$0, final View view) {
         this.this$0 = this$0;
         super(view);
-        this.text = (TextView)view.findViewById(2131624211);
-        this.selectIndicator = view.findViewById(2131624210);
+        this.text = (TextView)view.findViewById(2131624288);
+        this.selectIndicator = view.findViewById(2131624287);
         if (view != null) {
             view.setOnClickListener((View$OnClickListener)this);
         }

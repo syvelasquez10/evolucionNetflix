@@ -4,26 +4,33 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import android.content.Intent;
+
 public interface SuspendLogging
 {
-    public static final String BACKGROUNDING_ENDED = "com.netflix.mediaclient.intent.action.LOG_SUS_BACKGROUNDING_ENDED";
-    public static final String BACKGROUNDING_START = "com.netflix.mediaclient.intent.action.LOG_SUS_BACKGROUNDING_START";
-    public static final String BACKGROUND_ENDED = "com.netflix.mediaclient.intent.action.LOG_SUS_BACKGROUND_ENDED";
-    public static final String BACKGROUND_START = "com.netflix.mediaclient.intent.action.LOG_SUS_BACKGROUND_START";
-    public static final String RESUMING_ENDED = "com.netflix.mediaclient.intent.action.LOG_SUS_RESUMING_ENDED";
-    public static final String RESUMING_START = "com.netflix.mediaclient.intent.action.LOG_SUS_RESUMING_START";
-    
     void endAllActiveSessions();
     
     void endBackgroundSession();
     
     void endBackgroundingSession();
     
+    void endForegroundSession();
+    
     void endResumingSession();
+    
+    void endSuspendSession();
+    
+    void endUnfocusedSession();
     
     void startBackgroundSession();
     
     void startBackgroundingSession();
     
+    void startForegroundSession(final Intent p0);
+    
     void startResumingSession();
+    
+    void startSuspendSession();
+    
+    void startUnfocusedSession();
 }

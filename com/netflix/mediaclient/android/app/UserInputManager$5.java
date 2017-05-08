@@ -4,13 +4,16 @@
 
 package com.netflix.mediaclient.android.app;
 
+import com.netflix.mediaclient.ui.launch.LaunchActivity;
+import com.netflix.mediaclient.ui.launch.UIWebViewActivity;
+import com.netflix.mediaclient.ui.launch.NetflixComLaunchActivity;
 import android.os.Bundle;
 import android.app.Activity;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
-import android.app.ActivityManager$RunningTaskInfo;
-import android.app.ActivityManager;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Context;
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
+import com.netflix.mediaclient.service.logging.IntegratedClientLoggingManager;
+import com.netflix.mediaclient.Log;
 import java.util.concurrent.Executors;
 import java.util.Collections;
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ import android.os.SystemClock;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import android.content.Intent;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ThreadFactory;
 import android.app.Application$ActivityLifecycleCallbacks;

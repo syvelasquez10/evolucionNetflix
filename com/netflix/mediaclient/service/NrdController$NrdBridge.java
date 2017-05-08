@@ -25,7 +25,7 @@ import com.netflix.mediaclient.util.AppStoreHelper;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import android.view.WindowManager;
 import android.view.Display;
-import com.netflix.mediaclient.repository.UserLocale;
+import com.netflix.mediaclient.util.l10n.UserLocale;
 import java.util.Locale;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;

@@ -4,22 +4,26 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import com.netflix.mediaclient.ui.lomo.LoMoUtils;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import android.content.Context;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import android.content.res.Configuration;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
+import android.view.ViewGroup$MarginLayoutParams;
+import android.content.Context;
+import com.netflix.mediaclient.util.CoppolaUtils;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.ViewUtils$Visibility;
 import android.app.Activity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.widget.TextView;
 import android.view.View;
+import android.widget.TextView;
 import com.netflix.mediaclient.Log;
 
 class PostPlayForEpisodes$1 implements Runnable
@@ -37,9 +41,7 @@ class PostPlayForEpisodes$1 implements Runnable
             return;
         }
         this.this$0.mTimer--;
-        if (this.this$0.mTimerView != null) {
-            this.this$0.mTimerView.setText((CharSequence)String.valueOf(this.this$0.mTimer));
-        }
+        this.this$0.refreshTimerText();
         if (this.this$0.mTimer <= 0) {
             Log.d("nf_postplay", "Timer counter to 0, play next episode");
             this.this$0.onTimerEnd();

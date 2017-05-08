@@ -222,6 +222,7 @@ public class JPlayer2
     
     private void videoToBackground() {
         if (this.mVideoPipe != null) {
+            this.mVideoPipe.pause();
             this.mVideoPipe.stop();
         }
         this.mVideoPipe = null;
@@ -242,7 +243,7 @@ public class JPlayer2
                 }
             }
             catch (Exception ex) {
-                this.nativeNotifyError(-1, android.util.Log.getStackTraceString((Throwable)ex));
+                this.mDecoderListener.onError(false, -1, android.util.Log.getStackTraceString((Throwable)ex));
                 continue;
             }
             break;
@@ -350,7 +351,7 @@ public class JPlayer2
             }
             catch (Exception ex) {
                 ex.printStackTrace();
-                this.nativeNotifyError(-1, android.util.Log.getStackTraceString((Throwable)ex));
+                this.mDecoderListener.onError(false, -1, android.util.Log.getStackTraceString((Throwable)ex));
                 continue;
             }
             break;

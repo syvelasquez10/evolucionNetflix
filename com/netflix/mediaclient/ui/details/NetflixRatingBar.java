@@ -4,13 +4,13 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import android.annotation.SuppressLint;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.view.MotionEvent;
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.Shader;
@@ -160,7 +160,6 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         Log.w("NetflixRatingBar", "Could not read mIsDragging field");
     }
     
-    @SuppressLint({ "RtlHardcoded" })
     private Drawable tileify(final Drawable drawable, final boolean b) {
         int level = 1;
         final int n = 0;
@@ -242,11 +241,11 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
     }
     
     protected int getNetflixStarRatingDrawableId() {
-        return 2130837925;
+        return 2130837947;
     }
     
     protected int getUserStarRatingDrawableId() {
-        return 2130837927;
+        return 2130837950;
     }
     
     public void onRatingChanged(final RatingBar ratingBar, final float n, final boolean b) {
@@ -255,7 +254,7 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
         if (Log.isLoggable()) {
             Log.v("NetflixRatingBar", "Rating changed: " + currRating + ", from user: " + b);
         }
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131165358), currRating));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131165357), currRating));
         if (b && this.getUserRating() != currRating) {
             final int progress = (int)(currRating * this.getProgressPerStar());
             Log.v("NetflixRatingBar", "Setting progress: " + progress);
@@ -272,7 +271,9 @@ public class NetflixRatingBar extends RatingBar implements RatingBar$OnRatingBar
     @SuppressLint({ "ClickableViewAccessibility" })
     public boolean onTouchEvent(final MotionEvent motionEvent) {
         final boolean dragging = this.isDragging();
-        Log.v("NetflixRatingBar", "isDragging: " + dragging);
+        if (Log.isLoggable()) {
+            Log.v("NetflixRatingBar", "isDragging: " + dragging);
+        }
         this.dispatchedCallback = false;
         final boolean onTouchEvent = super.onTouchEvent(motionEvent);
         if (!this.dispatchedCallback) {

@@ -16,10 +16,11 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
-import android.view.View;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
+import android.view.View;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.TextView;
@@ -57,17 +58,40 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
         this.init();
     }
     
+    private String getText(final String s) {
+        String string = s;
+        if (s != null) {
+            string = s;
+            if (LocalizationUtils.isCurrentLocaleRTL()) {
+                string = '\u200f' + s;
+            }
+        }
+        return string;
+    }
+    
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837905);
+        this.setBackgroundResource(2130837925);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
         netflixActivity.getLayoutInflater().inflate(2130903080, (ViewGroup)this);
-        this.title = (TextView)this.findViewById(2131624145);
-        this.img = (AdvancedImageView)this.findViewById(2131624143);
-        this.progress = (ProgressBar)this.findViewById(2131624147);
-        this.info = (ImageView)this.findViewById(2131624146);
+        LocalizationUtils.setLayoutDirection((View)this);
+        this.title = (TextView)this.findViewById(2131624151);
+        this.img = (AdvancedImageView)this.findViewById(2131624149);
+        this.progress = (ProgressBar)this.findViewById(2131624153);
+        this.info = (ImageView)this.findViewById(2131624152);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
+    }
+    
+    private void setTitle(final CharSequence charSequence) {
+        CharSequence string = charSequence;
+        if (LocalizationUtils.isCurrentLocaleRTL()) {
+            final StringBuilder sb = new StringBuilder();
+            LocalizationUtils.addMarkerForRtLocale(sb, '\u200f');
+            sb.append(charSequence);
+            string = sb.toString();
+        }
+        this.title.setText(string);
     }
     
     public PlayContext getPlayContext() {
@@ -90,13 +114,18 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
         }
         this.playContext = new PlayContextImp(trackable, progress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131165355), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131165354), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.title.setText((CharSequence)this.getContext().getString(2131165495, new Object[] { cwVideo.getTitle(), cwVideo.getSeasonNumber(), cwVideo.getEpisodeNumber() }));
+            if (cwVideo.isNSRE()) {
+                this.setTitle(this.getContext().getString(2131165511, new Object[] { this.getText(cwVideo.getTitle()), this.getText(cwVideo.getCurrentEpisodeTitle()) }));
+            }
+            else {
+                this.setTitle(this.getContext().getString(2131165510, new Object[] { this.getText(cwVideo.getTitle()), cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
+            }
         }
         else {
-            this.title.setText((CharSequence)cwVideo.getTitle());
+            this.setTitle(cwVideo.getTitle());
         }
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView img = this.img;
@@ -117,9 +146,9 @@ public class CwView extends RelativeLayout implements VideoViewGroup$IVideoView<
             progress = 0;
         }
         this.progress.setProgress(progress);
-        ServiceManagerUtils.cacheManifestIfEnabled(((NetflixActivity)this.getContext()).getServiceManager(), cwVideo, this.playContext);
+        ServiceManagerUtils.castPrefetchAndCacheManifestIfEnabled(((NetflixActivity)this.getContext()).getServiceManager(), cwVideo, this.playContext);
         this.setOnClickListener((View$OnClickListener)new CwView$1(this, cwVideo));
-        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131165496), cwVideo.getTitle()));
+        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131165512), cwVideo.getTitle()));
         this.clicker.update((View)this.info, cwVideo, this.img.getPressedStateHandler());
     }
 }

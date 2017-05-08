@@ -11,7 +11,7 @@ import java.util.Locale;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.javabridge.invoke.Invoke;
 import com.netflix.mediaclient.javabridge.invoke.mdx.InterfaceChanged;
-import com.netflix.mediaclient.repository.UserLocale;
+import com.netflix.mediaclient.util.l10n.UserLocale;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.javabridge.ui.android.NrdpWrapper;
@@ -39,6 +39,9 @@ class NrdController$1$1 implements Runnable
         Log.d("nf_nrdcontroller", "Bridge is initialized");
         this.this$1.this$0.nrdp.removeEventListener("init", this.val$el);
         this.this$1.this$0.nrdp.getDevice().setUIVersion(this.this$1.this$0.getConfigurationAgent().getSoftwareVersion());
+        if (this.this$1.this$0.getConfigurationAgent() != null && this.this$1.this$0.getConfigurationAgent().getPlaybackConfiguration() != null) {
+            this.this$1.this$0.nrdp.getMedia().setPreviewContentConfig(this.this$1.this$0.getConfigurationAgent().getPreviewContentConfiguration());
+        }
         this.this$1.this$0.initCompleted(CommonStatus.OK);
     }
 }

@@ -4,11 +4,18 @@
 
 package com.netflix.mediaclient.service.player.subtitles;
 
+import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 
 public interface SubtitleParser
 {
+    int getNumberOfDisplayedSubtitles();
+    
+    int getNumberOfSubtitlesExpectedToBeDisplayed();
+    
     IMedia$SubtitleProfile getSubtitleProfile();
+    
+    SubtitleUrl getSubtitleUrl();
     
     SubtitleScreen getSubtitlesForPosition(final long p0);
     

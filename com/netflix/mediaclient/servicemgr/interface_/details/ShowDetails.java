@@ -11,9 +11,17 @@ public interface ShowDetails extends EvidenceDetails, VideoDetails
 {
     String getCreators();
     
+    List<String> getCurrentEpisodeBadges();
+    
+    String getCurrentEpisodeHorzDispUrl();
+    
     String getCurrentEpisodeId();
     
     int getCurrentEpisodeNumber();
+    
+    String getCurrentEpisodeStoryImgUrl();
+    
+    String getCurrentEpisodeSynopsis();
     
     String getCurrentEpisodeTitle();
     
@@ -22,6 +30,8 @@ public interface ShowDetails extends EvidenceDetails, VideoDetails
     int getNumOfEpisodes();
     
     int getNumOfSeasons();
+    
+    String getNumSeasonsLabel();
     
     List<Video> getSimilars();
     

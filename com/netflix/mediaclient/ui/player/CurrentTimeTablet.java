@@ -84,9 +84,8 @@ public class CurrentTimeTablet extends CurrentTime
         if (!this.playerFragment.isActivityValid() || this.currentTime == null) {
             return;
         }
-        final BottomPanel bottomPanel = this.playerFragment.getScreen().getBottomPanel();
         final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)this.currentTime.getLayoutParams();
-        layoutParams.setMargins(bottomPanel.getTimeXAndUpdateHandler(this.currentTime), 0, 0, layoutParams.bottomMargin);
+        layoutParams.setMargins(this.playerFragment.getScreen().getTimeXAndUpdateHandler(this.currentTime), 0, 0, layoutParams.bottomMargin);
         this.currentTime.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
     }
 }

@@ -16,7 +16,9 @@ public class PlayScreenJB extends PlayScreen
     
     PlayScreenJB(final PlayerFragment playerFragment, final PlayScreen$Listeners playScreen$Listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         super(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
-        playerFragment.getWindow().getDecorView().setSystemUiVisibility(1792);
+        if (!this.mController.isInPortrait()) {
+            playerFragment.getWindow().getDecorView().setSystemUiVisibility(1792);
+        }
     }
     
     @Override
@@ -29,6 +31,9 @@ public class PlayScreenJB extends PlayScreen
     @Override
     protected void playerOverlayVisibility(final boolean b) {
         super.playerOverlayVisibility(b);
+        if (this.mController.isInPortrait()) {
+            return;
+        }
         if (b) {
             this.showNavigationBar();
             return;
@@ -40,6 +45,5 @@ public class PlayScreenJB extends PlayScreen
     void showNavigationBar() {
         Log.d("screen", "show nav JB");
         this.mController.getWindow().getDecorView().setSystemUiVisibility(1792);
-        this.showQuickActions();
     }
 }

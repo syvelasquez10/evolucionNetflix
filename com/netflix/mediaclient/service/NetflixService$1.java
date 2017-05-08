@@ -15,6 +15,7 @@ import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
+import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.servicemgr.IDiagnosis;
 import com.netflix.mediaclient.util.DeviceCategory;
@@ -69,12 +70,14 @@ class NetflixService$1 implements ServiceAgent$InitCallback
 {
     private final ArrayList<ServiceAgent> agentsToInitBatch1;
     private final ArrayList<ServiceAgent> agentsToInitBatch2;
+    private final ArrayList<ServiceAgent> agentsToInitOnError;
     final /* synthetic */ NetflixService this$0;
     
     NetflixService$1(final NetflixService this$0) {
         this.this$0 = this$0;
         this.agentsToInitBatch1 = new NetflixService$1$1(this);
         this.agentsToInitBatch2 = new NetflixService$1$2(this);
+        this.agentsToInitOnError = new NetflixService$1$3(this);
     }
     
     @Override
@@ -83,24 +86,29 @@ class NetflixService$1 implements ServiceAgent$InitCallback
         if (status.isError()) {
             Log.e("NetflixService", "NetflixService init failed with ServiceAgent " + serviceAgent.getClass().getSimpleName() + " statusCode=" + status.getStatusCode());
             this.this$0.mInitStatusCode = status;
+            for (final ServiceAgent serviceAgent2 : this.agentsToInitOnError) {
+                if (!serviceAgent2.isInitCalled()) {
+                    serviceAgent2.init(this.this$0.agentContext, this);
+                }
+            }
             this.this$0.initCompleted();
             this.this$0.stopSelf();
         }
         else {
             Log.i("NetflixService", "NetflixService successfully inited ServiceAgent " + serviceAgent.getClass().getSimpleName());
             if (serviceAgent == this.this$0.mConfigurationAgent) {
-                final Iterator<ServiceAgent> iterator = this.agentsToInitBatch1.iterator();
-                while (iterator.hasNext()) {
-                    iterator.next().init(this.this$0.agentContext, this);
+                final Iterator<ServiceAgent> iterator2 = this.agentsToInitBatch1.iterator();
+                while (iterator2.hasNext()) {
+                    iterator2.next().init(this.this$0.agentContext, this);
                 }
             }
             else if (this.agentsToInitBatch1.contains(serviceAgent)) {
                 this.agentsToInitBatch1.remove(serviceAgent);
                 if (this.agentsToInitBatch1.isEmpty()) {
                     Log.d("NetflixService", "NetflixService successfully inited batch1 of ServiceAgents");
-                    final Iterator<ServiceAgent> iterator2 = this.agentsToInitBatch2.iterator();
-                    while (iterator2.hasNext()) {
-                        iterator2.next().init(this.this$0.agentContext, this);
+                    final Iterator<ServiceAgent> iterator3 = this.agentsToInitBatch2.iterator();
+                    while (iterator3.hasNext()) {
+                        iterator3.next().init(this.this$0.agentContext, this);
                     }
                     this.this$0.enableMdxAgentAndInit(this.this$0.agentContext, this);
                 }
@@ -122,9 +130,9 @@ class NetflixService$1 implements ServiceAgent$InitCallback
                     }
                     this.this$0.initCompleted();
                 }
-                for (final ServiceAgent serviceAgent2 : this.agentsToInitBatch2) {
-                    if (!serviceAgent2.isReady()) {
-                        Log.d("NetflixService", "NetflixService still waiting for init of ServiceAgent " + serviceAgent2.getClass().getSimpleName());
+                for (final ServiceAgent serviceAgent3 : this.agentsToInitBatch2) {
+                    if (!serviceAgent3.isReady()) {
+                        Log.d("NetflixService", "NetflixService still waiting for init of ServiceAgent " + serviceAgent3.getClass().getSimpleName());
                     }
                 }
             }

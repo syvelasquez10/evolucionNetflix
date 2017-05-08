@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.javabridge.ui.android;
 
+import com.netflix.mediaclient.javabridge.invoke.media.VolumeChange;
 import com.netflix.mediaclient.javabridge.invoke.media.Unpause;
 import com.netflix.mediaclient.javabridge.invoke.media.Stop;
 import com.netflix.mediaclient.javabridge.invoke.media.SetVideoResolutionRangeToPlayer;
@@ -13,6 +14,8 @@ import com.netflix.mediaclient.javabridge.invoke.android.InitVisualOn;
 import com.netflix.mediaclient.javabridge.invoke.android.SetVideoSurface;
 import android.view.Surface;
 import com.netflix.mediaclient.javabridge.invoke.SetConfigData;
+import com.netflix.mediaclient.javabridge.invoke.android.SetPreviewContentConfiguration;
+import com.netflix.mediaclient.service.webclient.model.leafs.PreviewContentConfigData;
 import com.netflix.mediaclient.javabridge.invoke.media.SetStreamingBuffer;
 import com.netflix.mediaclient.javabridge.invoke.media.SetMaxCacheSize;
 import com.netflix.mediaclient.javabridge.invoke.media.SetMaxCacheByteSize;
@@ -21,8 +24,10 @@ import com.netflix.mediaclient.javabridge.invoke.android.SetBytesReport;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.javabridge.invoke.media.SelectTracks;
 import com.netflix.mediaclient.javabridge.invoke.media.Swim;
+import com.netflix.mediaclient.javabridge.invoke.android.SendSubtitleQoe;
 import com.netflix.mediaclient.javabridge.invoke.android.SendSubtitleError;
 import com.netflix.mediaclient.javabridge.invoke.android.SetFailedSubtitleDownloadUrl;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.javabridge.invoke.media.Play;
@@ -32,6 +37,7 @@ import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetTy
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.javabridge.invoke.media.Close;
+import com.netflix.mediaclient.util.PlaybackVolumeMetric;
 import com.netflix.mediaclient.javabridge.invoke.android.ChangePlayer;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.javabridge.invoke.media.CacheSchedule;
@@ -44,6 +50,7 @@ import com.netflix.mediaclient.javabridge.invoke.media.CacheFlush;
 import com.netflix.mediaclient.event.nrdp.media.BaseMediaEvent;
 import com.netflix.mediaclient.event.UIEvent;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
+import com.netflix.mediaclient.event.nrdp.media.OpenComplete;
 import com.netflix.mediaclient.event.nrdp.media.GenericMediaEvent;
 import com.netflix.mediaclient.event.nrdp.media.Warning;
 import com.netflix.mediaclient.event.nrdp.media.UpdateVideoBitrate;
@@ -70,6 +77,7 @@ import org.json.JSONArray;
 import android.view.Display;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.javabridge.Bridge;
+import com.netflix.mediaclient.media.Watermark;
 import com.netflix.mediaclient.media.TrickplayUrl;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
@@ -104,6 +112,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     private Subtitle[] mSubtitleTrackList;
     private StreamInfo mTargetVideoStream;
     private TrickplayUrl[] mTrickplayUrlList;
+    private Watermark mWatermark;
     
     public NativeMedia(final Bridge bridge) {
         super(bridge);
@@ -369,7 +378,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
                             }
                             else if ("openComplete".equalsIgnoreCase(string)) {
                                 Log.d("nf-bridge", "Media::processUpdate: Event found openComplete");
-                                baseMediaEvent = new GenericMediaEvent("openComplete");
+                                baseMediaEvent = new OpenComplete(jsonObject);
+                                this.mWatermark = ((OpenComplete)baseMediaEvent).getWatermark();
                             }
                             else if ("endOfStream".equalsIgnoreCase(string)) {
                                 Log.d("nf-bridge", "Media::processUpdate: Event found endOfStream");
@@ -590,8 +600,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void close() {
-        this.bridge.getNrdProxy().invokeMethod(new Close());
+    public void close(final String s, final PlaybackVolumeMetric playbackVolumeMetric) {
+        this.bridge.getNrdProxy().invokeMethod(new Close(s, playbackVolumeMetric));
     }
     
     @Override
@@ -770,8 +780,13 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void open(final long n, final PlayContext playContext, final AuthorizationParams$NetType authorizationParams$NetType, final long n2) {
-        this.bridge.getNrdProxy().invokeMethod(new Open(n, new AuthorizationParams(playContext, authorizationParams$NetType), n2));
+    public Watermark getWatermark() {
+        return this.mWatermark;
+    }
+    
+    @Override
+    public void open(final long n, final PlayContext playContext, final AuthorizationParams$NetType authorizationParams$NetType, final long n2, final boolean b, final PlaybackVolumeMetric playbackVolumeMetric, final long n3) {
+        this.bridge.getNrdProxy().invokeMethod(new Open(n, new AuthorizationParams(this.bridge.getContext(), playContext, authorizationParams$NetType, b), n2, playbackVolumeMetric, n3));
         Log.d("nf-bridge", "invokeMethod just called...");
     }
     
@@ -808,9 +823,14 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b) {
+    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Status status) {
         this.bridge.getNrdProxy().invokeMethod(new SetFailedSubtitleDownloadUrl(s, media$SubtitleFailure));
-        this.bridge.getNrdProxy().invokeMethod(new SendSubtitleError(s, subtitleUrl, media$SubtitleFailure, b, this.mCurrentSubtitleTrack));
+        this.bridge.getNrdProxy().invokeMethod(new SendSubtitleError(s, subtitleUrl, media$SubtitleFailure, b, this.mCurrentSubtitleTrack, status));
+    }
+    
+    @Override
+    public void reportSubtitleQoe(final String s, final int n, final int n2) {
+        this.bridge.getNrdProxy().invokeMethod(new SendSubtitleQoe(s, n, n2));
     }
     
     @Override
@@ -877,6 +897,11 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     @Override
     public void setNetworkProfile(final int n) {
         this.bridge.getNrdProxy().setProperty("nrdp.media", "networkProfile", String.valueOf(n));
+    }
+    
+    @Override
+    public void setPreviewContentConfig(final PreviewContentConfigData previewContentConfigData) {
+        this.bridge.getNrdProxy().invokeMethod(new SetPreviewContentConfiguration(previewContentConfigData));
     }
     
     public boolean setProperty(final String s, final String s2) {
@@ -964,5 +989,13 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     @Override
     public void unpause() {
         this.bridge.getNrdProxy().invokeMethod(new Unpause());
+    }
+    
+    @Override
+    public void volumeChange(final PlaybackVolumeMetric playbackVolumeMetric, final PlaybackVolumeMetric playbackVolumeMetric2) {
+        if (playbackVolumeMetric == null || playbackVolumeMetric2 == null || playbackVolumeMetric.equals(playbackVolumeMetric2)) {
+            return;
+        }
+        this.bridge.getNrdProxy().invokeMethod(new VolumeChange(playbackVolumeMetric, playbackVolumeMetric2));
     }
 }

@@ -24,6 +24,10 @@ public class DebugMenuItems
         this.activity = activity;
     }
     
+    private void addCrashItem(final Context context, final Menu menu) {
+        menu.add((CharSequence)"Crash").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$12(this, context));
+    }
+    
     private void addCreateAutoLoginToken(final Context context, final Menu menu) {
         menu.add((CharSequence)"Create AutoLogin Token").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$2(this, context));
     }
@@ -40,7 +44,7 @@ public class DebugMenuItems
     }
     
     private void addFlushDataCacheItem(final Menu menu) {
-        menu.add((CharSequence)"Flush Data Cache").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$14(this));
+        menu.add((CharSequence)"Flush Data Cache").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$15(this));
     }
     
     private void addHprofDumpItem(final Menu menu) {
@@ -72,7 +76,7 @@ public class DebugMenuItems
     }
     
     private void addToggleFetchErrorsItem(final Menu menu) {
-        menu.add((CharSequence)"Toggle Fetch Errors").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$13(this));
+        menu.add((CharSequence)"Toggle Fetch Errors").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$14(this));
     }
     
     private void addTraceviewItem(final Menu menu) {
@@ -84,7 +88,7 @@ public class DebugMenuItems
         Log.i(this.logTag, "Starting method trace...");
         Log.i(this.logTag, "**********************************************************************");
         Debug.startMethodTracing("nflx");
-        new Handler().postDelayed((Runnable)new DebugMenuItems$12(this), 5000L);
+        new Handler().postDelayed((Runnable)new DebugMenuItems$13(this), 5000L);
     }
     
     public void addItems(final NetflixActivity netflixActivity, final Menu menu) {
@@ -101,5 +105,6 @@ public class DebugMenuItems
         this.addMakeRefreshIqRemoteCall(menu);
         this.addMakeRefreshLolomoRemoteCall(menu);
         this.addCreateAutoLoginToken((Context)netflixActivity, menu);
+        this.addCrashItem((Context)netflixActivity, menu);
     }
 }

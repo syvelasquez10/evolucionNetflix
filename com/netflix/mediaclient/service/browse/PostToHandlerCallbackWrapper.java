@@ -17,8 +17,11 @@ import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.android.app.Status;
@@ -42,13 +45,18 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     }
     
     @Override
+    public void onBrowsePlaySessionEnd(final boolean b, final Status status) {
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$31(this, b, status));
+    }
+    
+    @Override
     public void onCWVideosFetched(final List<CWVideo> list, final Status status) {
         this.handler.post((Runnable)new PostToHandlerCallbackWrapper$4(this, list, status));
     }
     
     @Override
     public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$13(this, episodeDetails, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$14(this, episodeDetails, status));
     }
     
     @Override
@@ -57,8 +65,13 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     }
     
     @Override
+    public void onExpiringContentWarning(final IExpiringContentWarning expiringContentWarning, final Status status, final ExpiringContentAction expiringContentAction) {
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$30(this, expiringContentWarning, status, expiringContentAction));
+    }
+    
+    @Override
     public void onGenreListsFetched(final List<GenreList> list, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$17(this, list, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$19(this, list, status));
     }
     
     @Override
@@ -68,17 +81,22 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     
     @Override
     public void onGenresFetched(final List<Genre> list, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$18(this, list, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$20(this, list, status));
+    }
+    
+    @Override
+    public void onInteractiveMomentsFetched(final InteractiveMoments interactiveMoments, final Status status) {
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$15(this, interactiveMoments, status));
     }
     
     @Override
     public void onIrisNotificationsMarkedAsRead(final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$27(this, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$29(this, status));
     }
     
     @Override
     public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$12(this, kidsCharacterDetails, b, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$13(this, kidsCharacterDetails, b, status));
     }
     
     @Override
@@ -103,32 +121,37 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     
     @Override
     public void onNotificationsListFetched(final IrisNotificationsList list, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$26(this, list, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$28(this, list, status));
     }
     
     @Override
     public void onPostPlayVideosFetched(final PostPlayVideosProvider postPlayVideosProvider, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$25(this, postPlayVideosProvider, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$27(this, postPlayVideosProvider, status));
     }
     
     @Override
     public void onQueueAdd(final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$20(this, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$22(this, status));
     }
     
     @Override
     public void onQueueRemove(final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$21(this, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$23(this, status));
+    }
+    
+    @Override
+    public void onScenePositionFetched(final int n, final Status status) {
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$12(this, n, status));
     }
     
     @Override
     public void onSearchResultsFetched(final ISearchResults searchResults, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$23(this, searchResults, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$25(this, searchResults, status));
     }
     
     @Override
     public void onSeasonDetailsFetched(final SeasonDetails seasonDetails, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$14(this, seasonDetails, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$16(this, seasonDetails, status));
     }
     
     @Override
@@ -138,27 +161,27 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     
     @Override
     public void onShowDetailsAndSeasonsFetched(final ShowDetails showDetails, final List<SeasonDetails> list, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$16(this, showDetails, list, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$18(this, showDetails, list, status));
     }
     
     @Override
     public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$15(this, showDetails, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$17(this, showDetails, status));
     }
     
     @Override
     public void onSimilarVideosFetched(final SearchVideoListProvider searchVideoListProvider, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$24(this, searchVideoListProvider, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$26(this, searchVideoListProvider, status));
     }
     
     @Override
     public void onVideoHide(final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$22(this, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$24(this, status));
     }
     
     @Override
     public void onVideoRatingSet(final UserRating userRating, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$19(this, userRating, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$21(this, userRating, status));
     }
     
     @Override

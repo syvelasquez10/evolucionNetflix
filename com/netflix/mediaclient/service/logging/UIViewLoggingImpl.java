@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging;
 
+import com.netflix.mediaclient.service.logging.uiview.model.CommandEndedEvent$InputMethod;
 import com.netflix.mediaclient.service.logging.uiview.model.ImpressionEvent;
 import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONException;
@@ -161,7 +162,7 @@ public final class UIViewLoggingImpl implements UIViewLogging
         //     6: astore_2       
         //     7: aload_2        
         //     8: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
-        //    11: ifne            197
+        //    11: ifne            228
         //    14: aload_2        
         //    15: invokestatic    com/netflix/mediaclient/servicemgr/UIViewLogging$UIViewCommandName.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/UIViewLogging$UIViewCommandName;
         //    18: astore_2       
@@ -171,98 +172,112 @@ public final class UIViewLoggingImpl implements UIViewLogging
         //    25: astore_3       
         //    26: aload_3        
         //    27: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
-        //    30: ifeq            192
+        //    30: ifeq            223
         //    33: aload_3        
         //    34: invokestatic    com/netflix/mediaclient/servicemgr/IClientLogging$ModalView.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/IClientLogging$ModalView;
         //    37: astore_3       
         //    38: aload_1        
-        //    39: ldc             "dataContext"
+        //    39: ldc             "inputMethod"
         //    41: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    44: astore          5
-        //    46: aload           5
-        //    48: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
-        //    51: ifeq            143
-        //    54: new             Lorg/json/JSONObject;
-        //    57: dup            
-        //    58: aload           5
-        //    60: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
-        //    63: invokestatic    com/netflix/mediaclient/service/logging/client/model/DataContext.createInstance:(Lorg/json/JSONObject;)Lcom/netflix/mediaclient/service/logging/client/model/DataContext;
-        //    66: astore          4
-        //    68: aload_1        
-        //    69: ldc             "url"
-        //    71: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    74: astore          6
-        //    76: aload_1        
-        //    77: ldc             "model"
-        //    79: invokevirtual   android/content/Intent.hasExtra:(Ljava/lang/String;)Z
-        //    82: ifeq            187
-        //    85: new             Lorg/json/JSONObject;
-        //    88: dup            
-        //    89: aload_1        
-        //    90: ldc             "model"
-        //    92: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    95: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
-        //    98: astore          5
-        //   100: aload           5
-        //   102: astore_1       
-        //   103: aload_0        
-        //   104: aload_2        
-        //   105: aload_3        
-        //   106: aload           4
-        //   108: aload           6
-        //   110: aload_1        
-        //   111: invokevirtual   com/netflix/mediaclient/service/logging/UIViewLoggingImpl.startCommandSession:(Lcom/netflix/mediaclient/servicemgr/UIViewLogging$UIViewCommandName;Lcom/netflix/mediaclient/servicemgr/IClientLogging$ModalView;Lcom/netflix/mediaclient/service/logging/client/model/DataContext;Ljava/lang/String;Lorg/json/JSONObject;)V
-        //   114: return         
-        //   115: astore          4
-        //   117: ldc             "nf_log"
-        //   119: new             Ljava/lang/StringBuilder;
-        //   122: dup            
-        //   123: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   126: ldc             "failed to create dataContext: "
-        //   128: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    44: astore          4
+        //    46: aload           4
+        //    48: invokestatic    com/netflix/mediaclient/util/StringUtils.isEmpty:(Ljava/lang/String;)Z
+        //    51: ifne            217
+        //    54: aload           4
+        //    56: invokestatic    com/netflix/mediaclient/service/logging/uiview/model/CommandEndedEvent$InputMethod.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/service/logging/uiview/model/CommandEndedEvent$InputMethod;
+        //    59: astore          4
+        //    61: aload_1        
+        //    62: ldc             "dataContext"
+        //    64: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //    67: astore          6
+        //    69: aload           6
+        //    71: invokestatic    com/netflix/mediaclient/util/StringUtils.isNotEmpty:(Ljava/lang/String;)Z
+        //    74: ifeq            168
+        //    77: new             Lorg/json/JSONObject;
+        //    80: dup            
+        //    81: aload           6
+        //    83: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
+        //    86: invokestatic    com/netflix/mediaclient/service/logging/client/model/DataContext.createInstance:(Lorg/json/JSONObject;)Lcom/netflix/mediaclient/service/logging/client/model/DataContext;
+        //    89: astore          5
+        //    91: aload_1        
+        //    92: ldc             "url"
+        //    94: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //    97: astore          7
+        //    99: aload_1        
+        //   100: ldc             "model"
+        //   102: invokevirtual   android/content/Intent.hasExtra:(Ljava/lang/String;)Z
+        //   105: ifeq            212
+        //   108: new             Lorg/json/JSONObject;
+        //   111: dup            
+        //   112: aload_1        
+        //   113: ldc             "model"
+        //   115: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //   118: invokespecial   org/json/JSONObject.<init>:(Ljava/lang/String;)V
+        //   121: astore          6
+        //   123: aload           6
+        //   125: astore_1       
+        //   126: aload_0        
+        //   127: aload_2        
+        //   128: aload_3        
+        //   129: aload           4
         //   131: aload           5
-        //   133: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   136: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   139: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
-        //   142: pop            
-        //   143: aconst_null    
-        //   144: astore          4
-        //   146: goto            68
-        //   149: astore          5
-        //   151: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
-        //   154: ifeq            187
-        //   157: ldc             "nf_log"
-        //   159: new             Ljava/lang/StringBuilder;
-        //   162: dup            
-        //   163: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   166: ldc             "Couldn't construct JSON model from the following String: "
-        //   168: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   171: aload_1        
-        //   172: ldc             "model"
-        //   174: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //   177: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   180: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   183: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   186: pop            
-        //   187: aconst_null    
-        //   188: astore_1       
-        //   189: goto            103
-        //   192: aconst_null    
-        //   193: astore_3       
-        //   194: goto            38
-        //   197: aconst_null    
-        //   198: astore_2       
-        //   199: goto            19
+        //   133: aload           7
+        //   135: aload_1        
+        //   136: invokevirtual   com/netflix/mediaclient/service/logging/UIViewLoggingImpl.startCommandSession:(Lcom/netflix/mediaclient/servicemgr/UIViewLogging$UIViewCommandName;Lcom/netflix/mediaclient/servicemgr/IClientLogging$ModalView;Lcom/netflix/mediaclient/service/logging/uiview/model/CommandEndedEvent$InputMethod;Lcom/netflix/mediaclient/service/logging/client/model/DataContext;Ljava/lang/String;Lorg/json/JSONObject;)V
+        //   139: return         
+        //   140: astore          5
+        //   142: ldc             "nf_log"
+        //   144: new             Ljava/lang/StringBuilder;
+        //   147: dup            
+        //   148: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   151: ldc             "failed to create dataContext: "
+        //   153: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   156: aload           6
+        //   158: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   161: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   164: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   167: pop            
+        //   168: aconst_null    
+        //   169: astore          5
+        //   171: goto            91
+        //   174: astore          6
+        //   176: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   179: ifeq            212
+        //   182: ldc             "nf_log"
+        //   184: new             Ljava/lang/StringBuilder;
+        //   187: dup            
+        //   188: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   191: ldc             "Couldn't construct JSON model from the following String: "
+        //   193: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   196: aload_1        
+        //   197: ldc             "model"
+        //   199: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //   202: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   205: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   208: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   211: pop            
+        //   212: aconst_null    
+        //   213: astore_1       
+        //   214: goto            126
+        //   217: aconst_null    
+        //   218: astore          4
+        //   220: goto            61
+        //   223: aconst_null    
+        //   224: astore_3       
+        //   225: goto            38
+        //   228: aconst_null    
+        //   229: astore_2       
+        //   230: goto            19
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                    
         //  -----  -----  -----  -----  ------------------------
-        //  54     68     115    143    Lorg/json/JSONException;
-        //  85     100    149    187    Lorg/json/JSONException;
+        //  77     91     140    168    Lorg/json/JSONException;
+        //  108    123    174    212    Lorg/json/JSONException;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0103:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0126:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
@@ -440,14 +455,14 @@ public final class UIViewLoggingImpl implements UIViewLogging
     }
     
     @Override
-    public void startCommandSession(final UIViewLogging$UIViewCommandName uiViewLogging$UIViewCommandName, final IClientLogging$ModalView clientLogging$ModalView, final DataContext mDataContext, final String mUrl, final JSONObject jsonObject) {
+    public void startCommandSession(final UIViewLogging$UIViewCommandName uiViewLogging$UIViewCommandName, final IClientLogging$ModalView clientLogging$ModalView, final CommandEndedEvent$InputMethod commandEndedEvent$InputMethod, final DataContext mDataContext, final String mUrl, final JSONObject jsonObject) {
         synchronized (this) {
             if (this.mCommandSession != null) {
                 Log.e("nf_log", "uiView command session already started!");
             }
             else {
                 Log.d("nf_log", "uiView command session starting...");
-                final CommandSession mCommandSession = new CommandSession(uiViewLogging$UIViewCommandName, clientLogging$ModalView, mUrl, CommandEndedEvent$InputValue.touch, jsonObject);
+                final CommandSession mCommandSession = new CommandSession(uiViewLogging$UIViewCommandName, clientLogging$ModalView, mUrl, commandEndedEvent$InputMethod, CommandEndedEvent$InputValue.touch, jsonObject);
                 this.mEventHandler.addSession(mCommandSession);
                 this.mCommandSession = mCommandSession;
                 this.mDataContext = mDataContext;

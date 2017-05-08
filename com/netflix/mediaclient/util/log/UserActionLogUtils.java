@@ -8,10 +8,11 @@ import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$RememberProfile;
 import com.netflix.mediaclient.service.pservice.logging.PreAppWidgetLogActionData;
 import com.netflix.mediaclient.service.pservice.logging.PreAppWidgetLogData;
+import com.netflix.mediaclient.ui.common.PlayLocationType;
 import com.netflix.mediaclient.media.PlayerType;
-import com.netflix.mediaclient.util.StringUtils;
 import java.io.Serializable;
 import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
@@ -102,6 +103,44 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
     public static void reportAddToQueueActionStarted(final Context context, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (!ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") && !ConsolidatedLoggingUtils.isNull(clientLogging$ModalView, "View can not be null!")) {
             final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_ADD_TO_PLAYLIST_START");
+            intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+            intent.putExtra("view", clientLogging$ModalView.name());
+            if (userActionLogging$CommandName != null) {
+                intent.putExtra("cmd", userActionLogging$CommandName.name());
+            }
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        }
+    }
+    
+    public static void reportChangeValueActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final String s) {
+        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") || ConsolidatedLoggingUtils.isNull(clientLogging$CompletionReason, "Reason can not be null!")) {
+            return;
+        }
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_CHANGE_VALUE_ENDED");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("reason", clientLogging$CompletionReason.name());
+        while (true) {
+            if (uiError == null) {
+                break Label_0069;
+            }
+            try {
+                intent.putExtra("error", uiError.toJSONObject().toString());
+                if (StringUtils.isNotEmpty(s)) {
+                    intent.putExtra("new_value", s);
+                }
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            }
+            catch (JSONException ex) {
+                Log.e("nf_log", "Failed to get JSON string from UIError", (Throwable)ex);
+                continue;
+            }
+            break;
+        }
+    }
+    
+    public static void reportChangeValueActionStarted(final Context context, final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (!ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") && !ConsolidatedLoggingUtils.isNull(clientLogging$ModalView, "View can not be null!")) {
+            final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_UIA_CHANGE_VALUE_START");
             intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
             intent.putExtra("view", clientLogging$ModalView.name());
             if (userActionLogging$CommandName != null) {
@@ -354,7 +393,7 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
-    public static void reportPlayActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final PlayerType playerType) {
+    public static void reportPlayActionEnded(final Context context, final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final PlayerType playerType, final PlayLocationType playLocationType) {
         if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!") || ConsolidatedLoggingUtils.isNull(clientLogging$CompletionReason, "Reason can not be null!")) {
             return;
         }
@@ -372,6 +411,9 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
                 }
                 if (playerType != null) {
                     intent.putExtra("playerType", playerType.getValue());
+                }
+                if (playLocationType != null) {
+                    intent.putExtra("playLocation", playLocationType.getValue());
                 }
                 LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
@@ -404,7 +446,7 @@ public final class UserActionLogUtils extends ConsolidatedLoggingUtils
         intent.putExtra("reason", clientLogging$CompletionReason.name());
         while (true) {
             if (uiError == null) {
-                break Label_0065;
+                break Label_0066;
             }
             try {
                 intent.putExtra("error", uiError.toJSONObject().toString());

@@ -41,15 +41,15 @@ public class PaginatedBillboardAdapter extends BasePaginatedAdapter<Billboard>
             n = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, false) * 0.5625f);
         }
         else {
-            final int computeViewPagerWidth = LoMoViewPager.computeViewPagerWidth(this.activity, false);
-            int n2;
+            final float n2 = LoMoViewPager.computeViewPagerWidth(this.activity, false);
+            float n3;
             if (DeviceUtils.isLandscape((Context)this.activity)) {
-                n2 = 3;
+                n3 = 2.39f;
             }
             else {
-                n2 = 2;
+                n3 = 1.778f;
             }
-            n = computeViewPagerWidth / n2;
+            n = (int)(n2 / n3);
         }
         Log.v("PaginatedBillboardAdapter", "Computed view height: " + n);
         return n;

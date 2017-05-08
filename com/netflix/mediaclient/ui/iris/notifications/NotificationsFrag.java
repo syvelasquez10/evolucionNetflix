@@ -15,13 +15,14 @@ import java.util.List;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.IrisUtils;
 import android.content.IntentFilter;
-import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
+import android.content.Context;
 import com.netflix.mediaclient.ui.player.PlayerActivity;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import org.json.JSONException;
 import com.netflix.model.leafs.social.IrisNotificationsListSummary;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.Log;
@@ -33,7 +34,6 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import android.view.View$OnClickListener;
 import java.util.HashSet;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
 import java.util.Set;
 import com.netflix.mediaclient.android.widget.StaticListView;
@@ -61,7 +61,6 @@ public class NotificationsFrag extends NetflixFrag
     private IrisNotificationsList mNotifications;
     protected StaticListView mNotificationsList;
     private final Set<IrisNotificationSummary> mNotificationsToBeRead;
-    private ServiceManager mServiceManager;
     private boolean mWasRefreshForTopViewScheduled;
     private boolean mWereNotificationsFetched;
     private final BroadcastReceiver socialNotificationsListUpdateReceiver;
@@ -98,7 +97,7 @@ public class NotificationsFrag extends NetflixFrag
             Log.v(NotificationsFrag.TAG, "Can't complete init - views not created");
             return;
         }
-        if (this.mServiceManager == null) {
+        if (this.getServiceManager() == null) {
             Log.v(NotificationsFrag.TAG, "Can't complete init - manager not ready");
             return;
         }
@@ -113,9 +112,10 @@ public class NotificationsFrag extends NetflixFrag
     }
     
     private void fetchNotificationsList(final boolean b) {
-        if (this.mServiceManager != null) {
+        final ServiceManager serviceManager = this.getServiceManager();
+        if (serviceManager != null) {
             this.mIsLoadingData = true;
-            this.mServiceManager.getBrowse().fetchNotificationsList(0, this.getNumNotificationsPerPage() - 1, new NotificationsFrag$4(this, NotificationsFrag.TAG));
+            serviceManager.getBrowse().fetchNotificationsList(0, this.getNumNotificationsPerPage() - 1, new NotificationsFrag$4(this, NotificationsFrag.TAG));
         }
     }
     
@@ -182,22 +182,24 @@ public class NotificationsFrag extends NetflixFrag
     }
     
     private void loadMoreNotifications() {
-        if (this.mServiceManager != null && this.mNotifications != null && this.mNotifications.getSocialNotifications() != null) {
+        final ServiceManager serviceManager = this.getServiceManager();
+        if (serviceManager != null && this.mNotifications != null && this.mNotifications.getSocialNotifications() != null) {
             this.mIsLoadingData = true;
-            this.mServiceManager.getBrowse().fetchNotificationsList(this.mNotifications.getSocialNotifications().size(), this.mNotifications.getSocialNotifications().size() + this.getNumNotificationsPerPage() - 1, new NotificationsFrag$5(this, NotificationsFrag.TAG));
+            serviceManager.getBrowse().fetchNotificationsList(this.mNotifications.getSocialNotifications().size(), this.mNotifications.getSocialNotifications().size() + this.getNumNotificationsPerPage() - 1, new NotificationsFrag$5(this, NotificationsFrag.TAG));
         }
     }
     
     private void playVideo(final String s, final PlayContext playContext, final VideoType videoType) {
-        this.startActivity(PlayerActivity.createColdStartIntent(this.getActivity(), s, videoType, playContext));
+        this.startActivity(PlayerActivity.createColdStartIntent((Context)this.getActivity(), s, videoType, playContext));
     }
     
     private void refreshNotificationMyListButtons() {
-        if (this.mServiceManager != null) {
+        final ServiceManager serviceManager = this.getServiceManager();
+        if (serviceManager != null) {
             for (int i = this.mNotificationsList.getFirstVisiblePosition(); i <= this.mNotificationsList.getLastVisiblePosition(); ++i) {
                 if (this.mAdapter != null && this.mAdapter.getItem(i) != null) {
                     final IrisNotificationSummary item = this.mAdapter.getItem(i);
-                    this.mServiceManager.updateMyListState(item.getVideoId(), item.getInQueueValue());
+                    serviceManager.updateMyListState(item.getVideoId(), item.getInQueueValue());
                 }
                 else if (Log.isLoggable()) {
                     Log.e(NotificationsFrag.TAG, "refreshNotificationMyListButtons() got null details for position: " + i);
@@ -249,7 +251,7 @@ public class NotificationsFrag extends NetflixFrag
     }
     
     protected int getRowLayoutResourceId() {
-        return 2130903217;
+        return 2130903245;
     }
     
     protected boolean isListViewStatic() {
@@ -270,7 +272,7 @@ public class NotificationsFrag extends NetflixFrag
                 }
             }
             if (list.size() > 0) {
-                this.mServiceManager.getBrowse().markNotificationsAsRead(list);
+                this.getServiceManager().getBrowse().markNotificationsAsRead(list);
             }
         }
     }
@@ -297,8 +299,8 @@ public class NotificationsFrag extends NetflixFrag
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v(NotificationsFrag.TAG, "Creating new frag view...");
         this.mAreViewsCreated = true;
-        final View inflate = layoutInflater.inflate(2130903216, viewGroup, false);
-        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131624497)).setItemsCanFocus(true);
+        final View inflate = layoutInflater.inflate(2130903244, viewGroup, false);
+        (this.mNotificationsList = (StaticListView)inflate.findViewById(2131624643)).setItemsCanFocus(true);
         this.mNotificationsList.setAsStatic(this.isListViewStatic());
         this.mIsLoadingData = true;
         this.completeInitIfPossible();
@@ -312,9 +314,8 @@ public class NotificationsFrag extends NetflixFrag
     }
     
     @Override
-    public void onManagerReady(final ServiceManager mServiceManager, final Status status) {
-        super.onManagerReady(mServiceManager, status);
-        this.mServiceManager = mServiceManager;
+    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
+        super.onManagerReady(serviceManager, status);
         this.completeInitIfPossible();
     }
     

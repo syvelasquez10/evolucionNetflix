@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
@@ -81,6 +82,17 @@ public final class ServiceManager implements IServiceManagerAccess
         return new Intent((Context)this.mActivity, (Class)NetflixService.class);
     }
     
+    public static ServiceManager getServiceManager(final NetflixActivity netflixActivity) {
+        if (netflixActivity == null || netflixActivity.isFinishing()) {
+            return null;
+        }
+        final ServiceManager serviceManager = netflixActivity.getServiceManager();
+        if (serviceManager != null && serviceManager.isReady()) {
+            return serviceManager;
+        }
+        return null;
+    }
+    
     public static void sendCwRefreshBrodcast(final Context context) {
         context.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.BA_CW_REFRESH"));
         Log.v("ServiceManager", "Intent CW_REFRESH sent");
@@ -103,7 +115,7 @@ public final class ServiceManager implements IServiceManagerAccess
     
     private boolean validateService() {
         if (!this.isReady() || this.mClientId < 0) {
-            ErrorLoggingManager.logHandledException("SPY-8020 - ServiceMgr called before NetflixService is not ready " + this.mService);
+            ErrorLoggingManager.logHandledException("SPY-8020 - ServiceMgr called before NetflixService is ready " + this.mService);
             return false;
         }
         return true;
@@ -160,6 +172,45 @@ public final class ServiceManager implements IServiceManagerAccess
             return;
         }
         Log.w("ServiceManager", "editProfile:: service is not available");
+    }
+    
+    public boolean fetchAndCacheResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ManagerCallback managerCallback) {
+        boolean b = false;
+        // monitorenter(this)
+        Label_0023: {
+            if (s != null) {
+                break Label_0023;
+            }
+            try {
+                Log.d("ServiceManager", "fetchAndCacheResource:: resourceUrl is null");
+                return b;
+            Block_4_Outer:
+                while (true) {
+                    final int addCallback;
+                    Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
+                    while (true) {
+                        Label_0073: {
+                            break Label_0073;
+                            this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
+                            b = true;
+                            return b;
+                            Label_0103: {
+                                Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
+                            }
+                            return b;
+                        }
+                        continue;
+                    }
+                    addCallback = this.addCallback(managerCallback);
+                    continue Block_4_Outer;
+                }
+            }
+            // iftrue(Label_0103:, !this.validateService())
+            // iftrue(Label_0073:, !Log.isLoggable())
+            finally {
+            }
+            // monitorexit(this)
+        }
     }
     
     public boolean fetchAvailableAvatarsList(final ManagerCallback managerCallback) {
@@ -275,6 +326,14 @@ public final class ServiceManager implements IServiceManagerAccess
         return null;
     }
     
+    public EogAlert getEndOfGrandfatheringAlert() {
+        if (this.validateService()) {
+            return this.mService.getEndOfGrandfatheringAlert();
+        }
+        Log.w("ServiceManager", "getEndOfGrandfatheringAlert:: service is not available");
+        return null;
+    }
+    
     public IErrorHandler getErrorHandler() {
         final INetflixService mService = this.mService;
         if (mService != null) {
@@ -298,6 +357,14 @@ public final class ServiceManager implements IServiceManagerAccess
             return mService.getMdx();
         }
         Log.w("ServiceManager", "getMdx:: service is not available");
+        return null;
+    }
+    
+    public String getNrdDeviceModel() {
+        if (this.validateService()) {
+            return this.mService.getNrdDeviceModel();
+        }
+        Log.w("ServiceManager", "getNrdDeviceModel:: service is not available");
         return null;
     }
     
@@ -457,6 +524,22 @@ public final class ServiceManager implements IServiceManagerAccess
         }
         Log.w("ServiceManager", "logoutUser:: service is not available");
         return false;
+    }
+    
+    public void recordEndOfGrandfatheringImpression(final String s, final String s2) {
+        if (this.validateService()) {
+            this.mService.recordEndOfGrandfatheringImpression(s, s2);
+            return;
+        }
+        Log.w("ServiceManager", "recordEndOfGrandfatheringImpression:: service is not available");
+    }
+    
+    public void recordPlanSelection(final String s, final String s2) {
+        if (this.validateService()) {
+            this.mService.recordPlanSelection(s, s2);
+            return;
+        }
+        Log.w("ServiceManager", "recordPlanSelection:: service is not available");
     }
     
     public void refreshProfileSwitchingStatus() {

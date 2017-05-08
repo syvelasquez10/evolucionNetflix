@@ -34,13 +34,13 @@ public class MdxErrorHandler
     private AlertDialog$Builder getDialogBuilder(final int n, final String s) {
         switch (n) {
             default: {
-                return new AlertDialog$Builder((Context)this.activity, 2131361924).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131165568, (DialogInterface$OnClickListener)null);
+                return new AlertDialog$Builder((Context)this.activity, 2131361916).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131165588, (DialogInterface$OnClickListener)null);
             }
             case 100: {
-                return new AlertDialog$Builder((Context)this.activity, 2131361924).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131165568, (DialogInterface$OnClickListener)null).setNegativeButton(2131165507, this.kblaunch_16001);
+                return new AlertDialog$Builder((Context)this.activity, 2131361916).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131165588, (DialogInterface$OnClickListener)null).setNegativeButton(2131165523, this.kblaunch_16001);
             }
             case 105: {
-                return new AlertDialog$Builder((Context)this.activity, 2131361924).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131165568, (DialogInterface$OnClickListener)null).setNegativeButton(2131165507, this.kblaunch_16003);
+                return new AlertDialog$Builder((Context)this.activity, 2131361916).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131165588, (DialogInterface$OnClickListener)null).setNegativeButton(2131165523, this.kblaunch_16003);
             }
         }
     }
@@ -58,22 +58,22 @@ public class MdxErrorHandler
                 return s;
             }
             case 100: {
-                return this.activity.getString(2131165544);
+                return this.activity.getString(2131165563);
             }
             case 104: {
-                return this.activity.getString(2131165542);
+                return this.activity.getString(2131165561);
             }
             case 105: {
-                return this.activity.getString(2131165543);
+                return this.activity.getString(2131165562);
             }
             case 200: {
-                return this.activity.getString(2131165545);
+                return this.activity.getString(2131165564);
             }
             case 106: {
-                return String.format(this.activity.getString(2131165541), s);
+                return String.format(this.activity.getString(2131165560), s);
             }
             case 201: {
-                return this.activity.getString(2131165546);
+                return this.activity.getString(2131165565);
             }
         }
     }

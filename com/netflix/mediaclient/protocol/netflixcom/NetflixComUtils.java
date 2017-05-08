@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.protocol.netflixcom;
 
+import android.content.Context;
+import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.pm.ActivityInfo;
@@ -15,7 +17,6 @@ import android.content.Intent;
 import android.app.Activity;
 import com.netflix.mediaclient.util.NumberUtils;
 import java.util.Iterator;
-import java.util.Set;
 import com.netflix.mediaclient.util.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,9 +27,11 @@ public class NetflixComUtils
     private static final String TAG = "NetflixComUtils";
     
     public static Map<String, String> getParameters(final Uri uri) {
-        final Set queryParameterNames = uri.getQueryParameterNames();
         final HashMap<String, String> hashMap = new HashMap<String, String>();
-        for (final String s : queryParameterNames) {
+        if (uri == null) {
+            return hashMap;
+        }
+        for (final String s : uri.getQueryParameterNames()) {
             if (StringUtils.isNotEmpty(s)) {
                 final String queryParameter = uri.getQueryParameter(s);
                 if (!StringUtils.isNotEmpty(queryParameter)) {
@@ -40,6 +43,10 @@ public class NetflixComUtils
         return hashMap;
     }
     
+    public static String getSceneFromParams(final Map<String, String> map) {
+        return map.get("scene");
+    }
+    
     public static int getStartTimeFromParams(final Map<String, String> map) {
         final String s = map.get("t");
         if (NumberUtils.isPositiveWholeNumber(s)) {
@@ -49,7 +56,11 @@ public class NetflixComUtils
     }
     
     public static String getTrackId(final Uri uri) {
-        return uri.getQueryParameter("trkid");
+        String s;
+        if (StringUtils.isEmpty(s = uri.getQueryParameter("trkid"))) {
+            s = uri.getQueryParameter("trkId");
+        }
+        return s;
     }
     
     public static void launchBrowser(final Activity activity, final Uri uri) {
@@ -115,6 +126,11 @@ public class NetflixComUtils
     
     public static void startHomeActivity(final NetflixActivity netflixActivity) {
         netflixActivity.startActivity(HomeActivity.createStartIntent(netflixActivity));
+        netflixActivity.overridePendingTransition(0, 0);
+    }
+    
+    public static void startProfilesActivity(final NetflixActivity netflixActivity) {
+        netflixActivity.startActivity(ProfileSelectionActivity.createStartIntentSingleTop((Context)netflixActivity));
         netflixActivity.overridePendingTransition(0, 0);
     }
 }

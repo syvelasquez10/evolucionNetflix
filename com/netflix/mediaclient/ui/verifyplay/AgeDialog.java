@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.verifyplay;
 
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
 import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -18,11 +19,10 @@ import android.util.TypedValue;
 import android.view.WindowManager$LayoutParams;
 import android.content.Context;
 import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.os.Parcelable;
 import android.os.Bundle;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ProgressBar;
 import android.app.AlertDialog;
 import android.widget.TextView;
@@ -33,7 +33,7 @@ public class AgeDialog extends NetflixDialogFrag
     private static final int AGE_DIALOG_WIDTH_PHONE_DP = 320;
     private static final int AGE_DIALOG_WIDTH_TABLET_DP = 400;
     private static final String AGE_PROGRESS = "age_progress";
-    private static final String AGE_VERIFY_URL = "http://www.netflix.com/verifyage";
+    private static final String AGE_VERIFY_URL = "https://www.netflix.com/verifyage";
     private static final String TAG = "nf_age";
     private boolean mActive;
     private TextView mAgeMessage;
@@ -50,12 +50,8 @@ public class AgeDialog extends NetflixDialogFrag
         final Bundle arguments = new Bundle();
         arguments.putParcelable(PlayVerifierVault.NAME, (Parcelable)playVerifierVault);
         ageDialog.setArguments(arguments);
-        ageDialog.setStyle(1, 2131361924);
+        ageDialog.setStyle(1, 2131361916);
         return ageDialog;
-    }
-    
-    private ServiceManager getServiceManager() {
-        return ((NetflixActivity)this.getActivity()).getServiceManager();
     }
     
     private void notifyCallerAgeCancelled() {
@@ -128,8 +124,8 @@ public class AgeDialog extends NetflixDialogFrag
         this.mVault = (PlayVerifierVault)this.getArguments().getParcelable(PlayVerifierVault.NAME);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
         final View inflate = this.getActivity().getLayoutInflater().inflate(2130903068, (ViewGroup)null);
-        this.mSpinner = (ProgressBar)inflate.findViewById(2131624062);
-        this.mAgeMessage = (TextView)inflate.findViewById(2131624061);
+        this.mSpinner = (ProgressBar)inflate.findViewById(2131624063);
+        this.mAgeMessage = (TextView)inflate.findViewById(2131624062);
         int mDialogWidthInDp;
         if (DeviceUtils.isTabletByContext((Context)this.getActivity())) {
             mDialogWidthInDp = 400;
@@ -141,8 +137,8 @@ public class AgeDialog extends NetflixDialogFrag
         alertDialog$Builder.setView(inflate);
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);
-        create.setButton(-2, (CharSequence)this.getString(2131165430), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnCancel(this, null));
-        create.setButton(-1, (CharSequence)this.getString(2131165410), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnVerify(this, null));
+        create.setButton(-2, (CharSequence)this.getString(2131165445), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnCancel(this, null));
+        create.setButton(-1, (CharSequence)this.getString(2131165416), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnVerify(this, null));
         this.mActive = true;
         return (Dialog)(this.mDialog = create);
     }
@@ -191,10 +187,10 @@ public class AgeDialog extends NetflixDialogFrag
         final TextView mAgeMessage = this.mAgeMessage;
         int text;
         if (mInProgress) {
-            text = 2131165409;
+            text = 2131165415;
         }
         else {
-            text = 2131165411;
+            text = 2131165417;
         }
         mAgeMessage.setText(text);
         if (!mInProgress) {

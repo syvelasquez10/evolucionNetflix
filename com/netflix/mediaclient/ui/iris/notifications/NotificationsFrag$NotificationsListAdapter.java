@@ -26,7 +26,6 @@ import org.json.JSONObject;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import java.util.HashSet;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import java.util.Set;
 import com.netflix.mediaclient.android.widget.StaticListView;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
@@ -36,6 +35,7 @@ import com.netflix.model.leafs.social.IrisNotificationSummary$NotificationTypes;
 import android.content.Context;
 import android.view.View$OnClickListener;
 import android.view.ViewGroup;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.TextView;
 import com.netflix.model.leafs.social.IrisNotificationsListSummary;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -64,9 +64,10 @@ class NotificationsFrag$NotificationsListAdapter extends BaseAdapter
         final VideoType videoType = irisNotificationSummary.getVideoType();
         final IrisNotificationsListSummary socialNotificationsListSummary = this.this$0.mNotifications.getSocialNotificationsListSummary();
         final TextView addToMyListButton = baseNotification.getAddToMyListButton(notificationViewHolder);
-        if (addToMyListButton != null && this.this$0.mServiceManager != null && netflixActivity != null) {
-            this.this$0.mServiceManager.registerAddToMyListListener(videoId, this.this$0.mServiceManager.createAddToMyListWrapper(netflixActivity, addToMyListButton, videoId, videoType, socialNotificationsListSummary.getBaseTrackId(), true));
-            this.this$0.mServiceManager.updateMyListState(videoId, irisNotificationSummary.getInQueueValue());
+        final ServiceManager serviceManager = this.this$0.getServiceManager();
+        if (addToMyListButton != null && serviceManager != null) {
+            serviceManager.registerAddToMyListListener(videoId, serviceManager.createAddToMyListWrapper(netflixActivity, addToMyListButton, videoId, videoType, socialNotificationsListSummary.getBaseTrackId(), true));
+            serviceManager.updateMyListState(videoId, irisNotificationSummary.getInQueueValue());
         }
         final View playMovieButton = baseNotification.getPlayMovieButton(notificationViewHolder);
         if (this.this$0.shouldShowPlayButtonFromNotifications() && playMovieButton != null) {
@@ -110,12 +111,12 @@ class NotificationsFrag$NotificationsListAdapter extends BaseAdapter
         }
         final NotificationViewHolder notificationViewHolder = (NotificationViewHolder)inflate.getTag();
         if (!this.this$0.areMoreNotificationsAvailable() && !this.this$0.mAreNotificationsPresent) {
-            BaseNotification.showSingleLineText(notificationViewHolder, 2131165399);
+            BaseNotification.showSingleLineText(notificationViewHolder, 2131165405);
             inflate.setOnClickListener((View$OnClickListener)null);
         }
         else {
             if (this.this$0.areMoreNotificationsAvailable() && n == this.getCount() - 1) {
-                BaseNotification.showSingleLineText(notificationViewHolder, 2131165397);
+                BaseNotification.showSingleLineText(notificationViewHolder, 2131165403);
                 inflate.setOnClickListener((View$OnClickListener)null);
                 this.this$0.loadMoreNotifications();
                 return inflate;
@@ -124,7 +125,7 @@ class NotificationsFrag$NotificationsListAdapter extends BaseAdapter
                 if (Log.isLoggable()) {
                     Log.e(NotificationsFrag.TAG, "Got null notification for type: " + item.getType());
                 }
-                BaseNotification.showSingleLineText(notificationViewHolder, 2131165666);
+                BaseNotification.showSingleLineText(notificationViewHolder, 2131165699);
                 inflate.setOnClickListener((View$OnClickListener)null);
                 return inflate;
             }

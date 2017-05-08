@@ -8,10 +8,11 @@ import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.util.LanguageChoice;
-import com.netflix.mediaclient.ui.common.PlaybackLauncher;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
@@ -20,19 +21,25 @@ import java.util.List;
 import java.io.Serializable;
 import android.media.AudioManager;
 import android.widget.Toast;
+import com.netflix.mediaclient.media.Watermark;
 import android.view.MenuItem;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
-import com.netflix.mediaclient.util.DeviceUtils;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
-import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
+import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
 import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.util.MdxUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
 import com.netflix.mediaclient.service.net.LogMobileType;
 import android.view.Window;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
 import android.util.Pair;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifier;
@@ -42,6 +49,7 @@ import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
@@ -59,12 +67,9 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
@@ -72,29 +77,35 @@ import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
+import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.media.PlayerType;
-import android.content.Context;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
 import android.view.View;
 import android.view.KeyEvent;
+import com.netflix.mediaclient.ui.common.PlayLocationType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.os.Parcelable;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import com.netflix.mediaclient.service.configuration.PersistentConfig;
+import android.content.Context;
+import com.netflix.mediaclient.util.CoppolaUtils;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.event.nrdp.media.Error;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
 import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
 import com.netflix.mediaclient.media.JPlayer.SecondSurface;
 import com.netflix.mediaclient.service.player.subtitles.SafeSubtitleManager;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.ViewGroup;
 import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
@@ -109,6 +120,7 @@ import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.media.Language;
 import android.view.View$OnClickListener;
 import android.widget.SeekBar$OnSeekBarChangeListener;
+import com.netflix.mediaclient.ui.details.DetailsActivity$Reloader;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
@@ -140,35 +152,45 @@ class PlayerFragment$9 implements SurfaceHolder$Callback
     }
     
     public void surfaceCreated(final SurfaceHolder surfaceHolder) {
-        synchronized (this) {
-            Log.d("PlayerFragment", "Surface created");
-            if (surfaceHolder != null && surfaceHolder.getSurface() != null && this.this$0.mScreen != null) {
-                this.this$0.mIsSurfaceReady = true;
-                this.this$0.mScreen.getSurfaceView().setVisibility(0);
-                if (Log.isLoggable()) {
-                    Log.d("PlayerFragment", "Native surface: " + surfaceHolder.getSurface());
-                }
-                this.this$0.completeInitIfReady();
-                if (this.this$0.mPlayer != null) {
-                    this.this$0.mPlayer.setSurface(surfaceHolder.getSurface());
-                }
-                if (this.this$0.mPlayerBackgrounded) {
-                    this.this$0.removeDialogFragmentIfShown();
-                    this.this$0.doUnpause();
+        while (true) {
+            synchronized (this) {
+                Log.d("PlayerFragment", "Surface created");
+                if (surfaceHolder != null && surfaceHolder.getSurface() != null && this.this$0.mScreen != null) {
+                    this.this$0.mIsSurfaceReady = true;
+                    this.this$0.mScreen.getSurfaceView().setVisibility(0);
+                    if (Log.isLoggable()) {
+                        Log.d("PlayerFragment", "Native surface: " + surfaceHolder.getSurface());
+                    }
+                    this.this$0.completeInitIfReady();
+                    if (this.this$0.mPlayer != null) {
+                        this.this$0.mPlayer.setSurface(surfaceHolder.getSurface());
+                    }
+                    if (this.this$0.mPlayerBackgrounded) {
+                        this.this$0.removeDialogFragmentIfShown();
+                        if (this.this$0.isInteractivePostPlay()) {
+                            Log.d("PlayerFragment", "Do not un-pause player until user exits out of interactive post play.");
+                        }
+                        else {
+                            this.this$0.doUnpause();
+                        }
+                    }
+                    return;
                 }
             }
-            else {
-                this.this$0.mIsSurfaceReady = false;
-                if (this.this$0.mAsset == null) {
-                    Log.e("PlayerFragment", "surfaceCreated again, playout already set to null");
-                }
-                Log.d("PlayerFragment", "SurfaceCreated again, no playback");
+            this.this$0.mIsSurfaceReady = false;
+            if (this.this$0.mAsset == null) {
+                Log.e("PlayerFragment", "surfaceCreated again, playout already set to null");
             }
+            Log.d("PlayerFragment", "SurfaceCreated again, no playback");
         }
     }
     
     public void surfaceDestroyed(final SurfaceHolder surfaceHolder) {
         this.this$0.mIsSurfaceReady = false;
+        if (this.this$0.isCoppolaWithOldPlayer()) {
+            this.this$0.mPlayerBackgrounded = true;
+            return;
+        }
         if (this.this$0.mPlayer != null && this.this$0.canPlayerBeBackgrounded()) {
             Log.d("PlayerFragment", "Surface destroyed,, background player");
             this.this$0.mPlayer.setSurface(null);

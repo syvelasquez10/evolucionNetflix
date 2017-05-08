@@ -754,7 +754,7 @@ public class ViewPager extends ViewGroup
         }
     }
     
-    ViewPager$ItemInfo addNewItem(final int position, final int n) {
+    protected ViewPager$ItemInfo addNewItem(final int position, final int n) {
         final ViewPager$ItemInfo viewPager$ItemInfo = new ViewPager$ItemInfo();
         viewPager$ItemInfo.position = position;
         viewPager$ItemInfo.object = this.mAdapter.instantiateItem(this, position);
@@ -1191,6 +1191,10 @@ public class ViewPager extends ViewGroup
     
     public int getCurrentItem() {
         return this.mCurItem;
+    }
+    
+    protected ArrayList<ViewPager$ItemInfo> getItems() {
+        return this.mItems;
     }
     
     public int getOffscreenPageLimit() {
@@ -1961,45 +1965,67 @@ public class ViewPager extends ViewGroup
                                 else {
                                     viewPager$ItemInfo5 = null;
                                 }
-                                for (int k = this.mCurItem + 1; k < count; ++k) {
+                                int k = this.mCurItem + 1;
+                                int n6 = i;
+                                ViewPager$ItemInfo viewPager$ItemInfo6 = viewPager$ItemInfo5;
+                                while (k < count) {
+                                    ViewPager$ItemInfo viewPager$ItemInfo7;
+                                    float n7;
                                     if (widthFactor2 >= 2.0f && k > min) {
-                                        if (viewPager$ItemInfo5 == null) {
+                                        if (viewPager$ItemInfo6 == null) {
                                             break;
                                         }
-                                        if (k == viewPager$ItemInfo5.position && !viewPager$ItemInfo5.scrolling) {
-                                            this.mItems.remove(i);
-                                            this.mAdapter.destroyItem(this, k, viewPager$ItemInfo5.object);
-                                            if (i < this.mItems.size()) {
-                                                viewPager$ItemInfo5 = this.mItems.get(i);
-                                            }
-                                            else {
-                                                viewPager$ItemInfo5 = null;
+                                        viewPager$ItemInfo7 = viewPager$ItemInfo6;
+                                        n7 = widthFactor2;
+                                        i = n6;
+                                        if (k == viewPager$ItemInfo6.position) {
+                                            viewPager$ItemInfo7 = viewPager$ItemInfo6;
+                                            n7 = widthFactor2;
+                                            i = n6;
+                                            if (!viewPager$ItemInfo6.scrolling) {
+                                                this.mItems.remove(n6);
+                                                this.mAdapter.destroyItem(this, k, viewPager$ItemInfo6.object);
+                                                if (n6 < this.mItems.size()) {
+                                                    viewPager$ItemInfo7 = this.mItems.get(n6);
+                                                    i = n6;
+                                                    n7 = widthFactor2;
+                                                }
+                                                else {
+                                                    viewPager$ItemInfo7 = null;
+                                                    n7 = widthFactor2;
+                                                    i = n6;
+                                                }
                                             }
                                         }
                                     }
-                                    else if (viewPager$ItemInfo5 != null && k == viewPager$ItemInfo5.position) {
-                                        final float widthFactor3 = viewPager$ItemInfo5.widthFactor;
-                                        ++i;
+                                    else if (viewPager$ItemInfo6 != null && k == viewPager$ItemInfo6.position) {
+                                        n7 = widthFactor2 + viewPager$ItemInfo6.widthFactor;
+                                        i = n6 + 1;
                                         if (i < this.mItems.size()) {
-                                            viewPager$ItemInfo5 = this.mItems.get(i);
+                                            viewPager$ItemInfo7 = this.mItems.get(i);
                                         }
                                         else {
-                                            viewPager$ItemInfo5 = null;
+                                            viewPager$ItemInfo7 = null;
                                         }
-                                        widthFactor2 += widthFactor3;
                                     }
                                     else {
-                                        final ViewPager$ItemInfo addNewItem2 = this.addNewItem(k, i);
-                                        ++i;
-                                        final float widthFactor4 = addNewItem2.widthFactor;
+                                        final ViewPager$ItemInfo addNewItem2 = this.addNewItem(k, n6);
+                                        i = n6 + 1;
+                                        n7 = widthFactor2;
+                                        if (addNewItem2 != null) {
+                                            n7 = addNewItem2.widthFactor + widthFactor2;
+                                        }
                                         if (i < this.mItems.size()) {
-                                            viewPager$ItemInfo5 = this.mItems.get(i);
+                                            viewPager$ItemInfo7 = this.mItems.get(i);
                                         }
                                         else {
-                                            viewPager$ItemInfo5 = null;
+                                            viewPager$ItemInfo7 = null;
                                         }
-                                        widthFactor2 += widthFactor4;
                                     }
+                                    ++k;
+                                    viewPager$ItemInfo6 = viewPager$ItemInfo7;
+                                    widthFactor2 = n7;
+                                    n6 = i;
                                 }
                             }
                             this.calculatePageOffsets(addNewItem, n3, infoForPosition);

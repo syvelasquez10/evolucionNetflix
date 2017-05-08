@@ -17,9 +17,12 @@ import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
@@ -58,6 +61,10 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     }
     
     @Override
+    public void onExpiringContentWarning(final IExpiringContentWarning expiringContentWarning, final Status status, final ExpiringContentAction expiringContentAction) {
+    }
+    
+    @Override
     public void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> list, final Status status) {
     }
     
@@ -71,6 +78,10 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     
     @Override
     public void onGenresFetched(final List<Genre> list, final Status status) {
+    }
+    
+    @Override
+    public void onInteractiveMomentsFetched(final InteractiveMoments interactiveMoments, final Status status) {
     }
     
     @Override
@@ -122,11 +133,19 @@ public abstract class SimpleManagerCallback implements ManagerCallback
     }
     
     @Override
+    public void onResourceCached(final String s, final String s2, final long n, final long n2, final Status status) {
+    }
+    
+    @Override
     public void onResourceFetched(final String s, final String s2, final Status status) {
     }
     
     @Override
     public void onResourceRawFetched(final String s, final byte[] array, final Status status) {
+    }
+    
+    @Override
+    public void onScenePositionFetched(final int n, final Status status) {
     }
     
     @Override

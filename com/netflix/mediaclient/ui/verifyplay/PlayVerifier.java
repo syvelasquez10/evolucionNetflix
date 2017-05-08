@@ -15,11 +15,11 @@ public class PlayVerifier
             return;
         }
         Log.v("nf_age", String.format(" isAgeProtected: %b, isAgeVerified: %b", b, netflixActivity.getServiceManager().isUserAgeVerified()));
-        if (b && !netflixActivity.getServiceManager().isUserAgeVerified()) {
-            AgeVerifier.getInstance().verify(netflixActivity, playVerifierVault);
+        if (!b || netflixActivity.getServiceManager().isUserAgeVerified()) {
+            verifyPinToContinue(netflixActivity, playVerifierVault);
             return;
         }
-        verifyPinToContinue(netflixActivity, playVerifierVault);
+        AgeVerifier.getInstance().verify(netflixActivity, playVerifierVault);
     }
     
     public static void verifyPinToContinue(final NetflixActivity netflixActivity, final PlayVerifierVault playVerifierVault) {

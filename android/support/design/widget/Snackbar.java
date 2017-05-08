@@ -130,6 +130,10 @@ public class Snackbar
         SnackbarManager.getInstance().dismiss(this.mManagerCallback);
     }
     
+    public View getView() {
+        return (View)this.mView;
+    }
+    
     final void hideView() {
         if (this.mView.getVisibility() != 0 || this.isBeingDragged()) {
             this.onViewHidden();

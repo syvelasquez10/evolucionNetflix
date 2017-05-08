@@ -75,7 +75,7 @@ public final class DrmManagerRegistry
                                             DrmManagerRegistry.widevineInstanceL3 = false;
                                         }
                                         else {
-                                            if (androidVersion < 21 || !isWidevineDrmAllowed() || (!DrmManagerRegistry.enableWidevineL3 && !DrmManagerRegistry.enableWidevineL3_ABTest)) {
+                                            if (androidVersion < 19 || !isWidevineDrmAllowed() || (!DrmManagerRegistry.enableWidevineL3 && !DrmManagerRegistry.enableWidevineL3_ABTest)) {
                                                 break;
                                             }
                                             Log.d("nf_drm", "WidevineDrmManager L3 created");
@@ -236,11 +236,17 @@ public final class DrmManagerRegistry
             }
             return true;
         }
-        if ((!DrmManagerRegistry.enableWidevineL3 && !DrmManagerRegistry.enableWidevineL3_ABTest) || androidVersion < 21 || !WidevineDrmManager.isWidewineSupported()) {
-            Log.d("nf_drm", "isWidevineDrmAllowed: false");
-            return false;
+        if (DrmManagerRegistry.enableWidevineL3 || DrmManagerRegistry.enableWidevineL3_ABTest) {
+            if (androidVersion == 19 && WidevineDrmManager.isWidewineSupported() && WidevineDrmManager.isValidKitKatWidevineL3SystemID()) {
+                Log.d("nf_drm", "isWidevineDrmAllowed for kitkat: true");
+                return true;
+            }
+            if (androidVersion >= 21 && WidevineDrmManager.isWidewineSupported()) {
+                return true;
+            }
         }
-        return true;
+        Log.d("nf_drm", "isWidevineDrmAllowed: false");
+        return false;
     }
     
     private static boolean isWidevineLevel1Supported() {

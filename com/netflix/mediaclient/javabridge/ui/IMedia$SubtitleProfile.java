@@ -8,16 +8,21 @@ import com.netflix.mediaclient.util.StringUtils;
 
 public enum IMedia$SubtitleProfile
 {
-    ENHANCED(1, "dfxp-ls-sdh"), 
-    IMAGE(2, "nflx-cmisc"), 
-    SIMPLE(0, "simplesdh");
+    ENHANCED(1, "dfxp-ls-sdh", false), 
+    ENHANCED_ENC(4, "dfxp-ls-sdh-enc", true), 
+    IMAGE(2, "nflx-cmisc", false), 
+    IMAGE_ENC(5, "nflx-cmisc-enc", true), 
+    SIMPLE(0, "simplesdh", false), 
+    SIMPLE_ENC(3, "simplesdh-enc", true);
     
+    private final boolean mEncrypted;
     private final String mNccpCode;
     private final int mValue;
     
-    private IMedia$SubtitleProfile(final int mValue, final String mNccpCode) {
+    private IMedia$SubtitleProfile(final int mValue, final String mNccpCode, final boolean mEncrypted) {
         this.mValue = mValue;
         this.mNccpCode = mNccpCode;
+        this.mEncrypted = mEncrypted;
     }
     
     public static IMedia$SubtitleProfile fromNccpCode(final String s) {
@@ -41,5 +46,9 @@ public enum IMedia$SubtitleProfile
     
     public final int getValue() {
         return this.mValue;
+    }
+    
+    public boolean isEncrypted() {
+        return this.mEncrypted;
     }
 }

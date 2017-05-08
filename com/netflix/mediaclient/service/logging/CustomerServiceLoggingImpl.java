@@ -141,7 +141,7 @@ class CustomerServiceLoggingImpl implements CustomerServiceLogging
         }
         if ("com.netflix.mediaclient.intent.action.LOG_CS_CALL_SESSION_START".equals(action)) {
             Log.d("nf_log_cs", "CALL_SESSION_START");
-            this.startCustomerSupportCallSession();
+            this.startCustomerSupportCallSession(intent.getStringExtra("uuid"), intent.getBooleanExtra("displayed", false));
             return true;
         }
         if ("com.netflix.mediaclient.intent.action.LOG_CS_CALL_SESSION_ENDED".equals(action)) {
@@ -215,13 +215,13 @@ class CustomerServiceLoggingImpl implements CustomerServiceLogging
     }
     
     @Override
-    public void startCustomerSupportCallSession() {
+    public void startCustomerSupportCallSession(final String s, final boolean b) {
         Log.d("nf_log_cs", "Call session start started");
         if (this.mCustomerSupportCallSession != null) {
             Log.w("nf_log_cs", "Call session existed before! It should not happen!");
             return;
         }
-        this.mCustomerSupportCallSession = new CustomerSupportCallSession();
+        this.mCustomerSupportCallSession = new CustomerSupportCallSession(s, b);
         this.mEventHandler.addSession(this.mCustomerSupportCallSession);
         Log.d("nf_log_cs", "Call session start done.");
     }

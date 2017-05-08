@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.mdx;
 
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
@@ -28,7 +29,6 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.mdx.MdxKeyEventHandler;
 import com.netflix.mediaclient.service.mdx.MdxKeyEventHandler$MdxKeyEventCallbacks;
 import com.netflix.mediaclient.service.mdx.MdxErrorHandler;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
 import com.netflix.mediaclient.ui.common.LanguageSelector;
 import android.os.Handler;
@@ -131,7 +131,7 @@ class MdxMiniPlayerFrag$5 implements RemotePlayer$RemoteTargetUiListener
             this.this$0.log("showDialog, " + remoteDialog.toString());
         }
         final ShowMessageDialogFrag instance = ShowMessageDialogFrag.newInstance(remoteDialog);
-        instance.onManagerReady(this.this$0.manager, CommonStatus.OK);
+        instance.onManagerReady(this.this$0.getServiceManager(), CommonStatus.OK);
         instance.setCancelable(true);
         this.this$0.activity.showDialog(instance);
     }
@@ -203,7 +203,7 @@ class MdxMiniPlayerFrag$5 implements RemotePlayer$RemoteTargetUiListener
     @Override
     public void updateVideoMetadata() {
         this.this$0.log("updateVideoMetadata");
-        if (this.this$0.manager == null) {
+        if (this.this$0.getServiceManager() == null) {
             return;
         }
         final IMdx mdx = this.this$0.mdxMiniPlayerViewCallbacks.getMdx();

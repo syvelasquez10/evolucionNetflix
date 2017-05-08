@@ -89,6 +89,12 @@ public class WhistleEngine extends Service
         this.eventHandler.post(runnable);
     }
     
+    private void configureThresholds(final WhistleEngineThresholds whistleEngineThresholds) {
+        if (whistleEngineThresholds != null) {
+            this.setConnectivityThresholds(whistleEngineThresholds.getSIPThreshold().getYellow(), whistleEngineThresholds.getSIPThreshold().getRed(), whistleEngineThresholds.getRTTThreshold().getYellow(), whistleEngineThresholds.getRTTThreshold().getRed(), whistleEngineThresholds.getJitterThreshold().getYellow(), whistleEngineThresholds.getJitterThreshold().getRed(), whistleEngineThresholds.getPacketLossThreshold().getYellow(), whistleEngineThresholds.getPacketLossThreshold().getRed());
+        }
+    }
+    
     private void connectivityUpdate(final int n, final int n2) {
         WhistleEngineDelegate$ConnectivityState whistleEngineDelegate$ConnectivityState = null;
         switch (n2) {
@@ -163,6 +169,10 @@ public class WhistleEngine extends Service
     
     private static native void loadInitialization();
     
+    private void networkFailure(final int n) {
+        this.callbackEvent(new WhistleEngine$14(this, n));
+    }
+    
     private void newCallActive() {
         synchronized (this) {
             final int callsActive = this.callsActive + 1;
@@ -192,6 +202,8 @@ public class WhistleEngine extends Service
     private static native void setAudioConfiguration(final int p0, final boolean p1);
     
     private native void setBindAddress(final String p0, final String p1);
+    
+    private native void setConnectivityThresholds(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final int p6, final int p7);
     
     private native void setJNIEngine(final int p0);
     
@@ -297,6 +309,7 @@ public class WhistleEngine extends Service
         this.setAccountInfo(whistleEngineConfig.getAccount(), whistleEngineConfig.getPassword(), whistleEngineConfig.getProxy(), whistleEngineConfig.getRegistrationEnabled());
         this.setApplicationIdentifier(whistleEngineConfig.getApplicationIdentifier());
         this.initNetworking(whistleEngineConfig);
+        this.configureThresholds(whistleEngineConfig.getConnectivityThresholds());
     }
     
     public native void startDTMF(final char p0);

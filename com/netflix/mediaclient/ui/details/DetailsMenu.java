@@ -10,7 +10,7 @@ import android.view.Menu;
 
 public class DetailsMenu
 {
-    public DetailsMenu(final DetailsActivity detailsActivity, final Menu menu, final boolean b) {
+    public static void addItems(final DetailsActivity detailsActivity, final Menu menu, final boolean b) {
         SearchMenu.addSearchNavigation(detailsActivity, menu, b);
     }
 }

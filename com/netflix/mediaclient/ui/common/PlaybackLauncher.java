@@ -11,6 +11,8 @@ import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
 import android.util.Pair;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.Log;
@@ -89,7 +91,15 @@ public final class PlaybackLauncher
         if (asset == null) {
             return;
         }
-        netflixActivity.startActivity(getOldPlaybackIntent(netflixActivity, asset, n));
+        if (DeviceUtils.isTabletByContext((Context)netflixActivity) || !CoppolaUtils.isNewPlayerExperience((Context)netflixActivity)) {
+            netflixActivity.startActivity(getOldPlaybackIntent(netflixActivity, asset, n));
+            return;
+        }
+        CoppolaUtils.launchCoppolaDetails(netflixActivity, asset, b, n);
+    }
+    
+    public static void playVideo(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext) {
+        playVideo(netflixActivity, playable, playContext, -1);
     }
     
     public static void playVideo(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext, final int n) {
@@ -112,39 +122,47 @@ public final class PlaybackLauncher
     }
     
     public static void startPlaybackAfterPIN(final NetflixActivity netflixActivity, final Asset asset) {
+        startPlaybackAfterPIN(netflixActivity, asset, -1);
+    }
+    
+    public static void startPlaybackAfterPIN(final NetflixActivity netflixActivity, final Asset asset, final int n) {
         switch (PlaybackLauncher$2.$SwitchMap$com$netflix$mediaclient$ui$common$PlaybackLauncher$PlaybackTarget[whereToPlay(netflixActivity.getServiceManager()).ordinal()]) {
             default: {}
             case 1: {
-                verifyAgeAndPinToPlay(netflixActivity, asset, false);
+                verifyAgeAndPinToPlay(netflixActivity, asset, false, n);
             }
             case 2: {
-                verifyAgeAndPinToPlay(netflixActivity, asset, true);
+                verifyAgeAndPinToPlay(netflixActivity, asset, true, n);
             }
             case 3: {
-                displayErrorDialog(netflixActivity, 2131165654);
+                displayErrorDialog(netflixActivity, 2131165687);
             }
             case 4: {
-                displayErrorDialog(netflixActivity, 2131165655);
+                displayErrorDialog(netflixActivity, 2131165688);
             }
         }
     }
     
     public static void startPlaybackAfterPIN(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext) {
-        startPlaybackAfterPIN(netflixActivity, Asset.create(playable, playContext, PlayerActivity.PIN_VERIFIED));
+        startPlaybackAfterPIN(netflixActivity, Asset.create(playable, playContext, true), -1);
     }
     
-    public static void startPlaybackForceLocal(final NetflixActivity netflixActivity, final Asset asset) {
-        verifyAgeAndPinToPlay(netflixActivity, asset, false);
+    public static void startPlaybackAfterPIN(final NetflixActivity netflixActivity, final Playable playable, final PlayContext playContext, final int n) {
+        startPlaybackAfterPIN(netflixActivity, Asset.create(playable, playContext, true), n);
+    }
+    
+    public static void startPlaybackForceLocal(final NetflixActivity netflixActivity, final Asset asset, final int n) {
+        verifyAgeAndPinToPlay(netflixActivity, asset, false, n);
     }
     
     public static void startPlaybackForceRemote(final NetflixActivity netflixActivity, final Asset asset) {
-        verifyAgeAndPinToPlay(netflixActivity, asset, true);
+        verifyAgeAndPinToPlay(netflixActivity, asset, true, -1);
     }
     
-    public static void startPlaybackOnPINSuccess(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
+    public static void startPlaybackOnPINSuccess(final NetflixActivity netflixActivity, final Asset asset, final boolean b, final int n) {
         if (b) {
             Log.d("nf_play", "Starting MDX remote playback");
-            if (!MdxAgent$Utils.playVideo(netflixActivity, asset, false)) {
+            if (!MdxAgent$Utils.playVideo(netflixActivity, asset, n, false)) {
                 return;
             }
             new Handler(netflixActivity.getMainLooper()).postDelayed((Runnable)new PlaybackLauncher$1((Context)netflixActivity.getApplication()), 250L);
@@ -152,17 +170,17 @@ public final class PlaybackLauncher
         else {
             if (netflixActivity.getServiceManager().getConfiguration().getPlaybackConfiguration().isLocalPlaybackEnabled()) {
                 Log.d("nf_play", "Start local playback");
-                playVideo(netflixActivity, asset, true, -1);
+                playVideo(netflixActivity, asset, true, n);
                 return;
             }
             Log.w("nf_play", "Local playback is disabled, we can not start playback!");
-            displayErrorDialog(netflixActivity, 2131165654);
+            displayErrorDialog(netflixActivity, 2131165687);
         }
     }
     
-    private static void verifyAgeAndPinToPlay(final NetflixActivity netflixActivity, final Asset asset, final boolean b) {
+    private static void verifyAgeAndPinToPlay(final NetflixActivity netflixActivity, final Asset asset, final boolean b, final int n) {
         Log.d("nf_play", String.format("nf_pin verifyPinAndPlay - %s ageProtected: %b, pinProtected:%b", asset.getPlayableId(), asset.isAgeProtected(), asset.isPinProtected()));
-        PlayVerifier.verify(netflixActivity, asset.isAgeProtected(), asset.isPinProtected(), new PlayVerifierVault(PlayVerifierVault$PlayInvokedFrom.PLAY_LAUNCHER.getValue(), asset, b));
+        PlayVerifier.verify(netflixActivity, asset.isAgeProtected(), asset.isPinProtected(), new PlayVerifierVault(PlayVerifierVault$PlayInvokedFrom.PLAY_LAUNCHER.getValue(), asset, b, n));
     }
     
     public static PlaybackLauncher$PlaybackTarget whereToPlay(final ServiceManager serviceManager) {

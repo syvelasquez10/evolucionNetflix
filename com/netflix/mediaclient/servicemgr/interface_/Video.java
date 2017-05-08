@@ -14,9 +14,15 @@ public interface Video extends BasicVideo
     
     String getHorzDispUrl();
     
-    String getSquareUrl();
-    
     String getStoryDispUrl();
     
     String getTvCardUrl();
+    
+    boolean hasWatched();
+    
+    boolean isNSRE();
+    
+    boolean isOriginal();
+    
+    boolean isPreRelease();
 }

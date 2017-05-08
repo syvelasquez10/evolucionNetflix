@@ -6,12 +6,29 @@ package com.netflix.mediaclient.ui.mdx;
 
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import java.util.ArrayList;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 
 class DummyMdxVideoDetails implements EpisodeDetails
 {
     @Override
     public String getActors() {
+        return null;
+    }
+    
+    @Override
+    public String getAdvisoryDescription() {
+        return null;
+    }
+    
+    @Override
+    public int getAdvisoryDisplayDuration() {
+        return 0;
+    }
+    
+    @Override
+    public String getAdvisoryRating() {
         return null;
     }
     
@@ -51,6 +68,16 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
+    public String getDefaultTrailer() {
+        return null;
+    }
+    
+    @Override
+    public List<String> getEpisodeBadges() {
+        return new ArrayList<String>(3);
+    }
+    
+    @Override
     public String getEpisodeIdUrl() {
         return null;
     }
@@ -63,6 +90,11 @@ class DummyMdxVideoDetails implements EpisodeDetails
     @Override
     public VideoType getErrorType() {
         return null;
+    }
+    
+    @Override
+    public long getExpirationTime() {
+        return 0L;
     }
     
     @Override
@@ -93,6 +125,11 @@ class DummyMdxVideoDetails implements EpisodeDetails
     @Override
     public String getId() {
         return "70178217";
+    }
+    
+    @Override
+    public String getInterestingSmallUrl() {
+        return null;
     }
     
     @Override
@@ -136,6 +173,11 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
+    public String getSeasonAbbrSeqLabel() {
+        return null;
+    }
+    
+    @Override
     public String getSeasonId() {
         return "70178217";
     }
@@ -151,17 +193,17 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
-    public String getSquareUrl() {
-        return null;
-    }
-    
-    @Override
     public String getStoryDispUrl() {
         return null;
     }
     
     @Override
     public String getStoryUrl() {
+        return null;
+    }
+    
+    @Override
+    public String getSupplementalMessage() {
         return null;
     }
     
@@ -201,12 +243,42 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
+    public boolean hasTrailers() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasWatched() {
+        return false;
+    }
+    
+    @Override
     public boolean isAvailableToStream() {
         return true;
     }
     
     @Override
     public boolean isInQueue() {
+        return false;
+    }
+    
+    @Override
+    public boolean isNSRE() {
+        return false;
+    }
+    
+    @Override
+    public boolean isOriginal() {
+        return false;
+    }
+    
+    @Override
+    public boolean isPreRelease() {
+        return false;
+    }
+    
+    @Override
+    public boolean isSupplementalVideo() {
         return false;
     }
     
@@ -221,8 +293,18 @@ class DummyMdxVideoDetails implements EpisodeDetails
     }
     
     @Override
+    public boolean isVideoDolbyVision() {
+        return false;
+    }
+    
+    @Override
     public boolean isVideoHd() {
         return true;
+    }
+    
+    @Override
+    public boolean isVideoHdr10() {
+        return false;
     }
     
     @Override

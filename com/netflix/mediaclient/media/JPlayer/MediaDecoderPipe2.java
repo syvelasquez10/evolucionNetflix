@@ -31,6 +31,7 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
     private static final String TAG = "MediaDecoder2";
     protected static final long TIME_TO_NEXT_RETRY = 20L;
     protected static final boolean USE_ANDROID_L_API;
+    AesCencDecryptor mAesCencDecryptor;
     private final MediaDecoderBase$InputDataSource mDataSource;
     protected MediaCodec mDecoder;
     private boolean mDecoderPause;
@@ -328,6 +329,33 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
         return null;
     }
     
+    private void processAudioIfEncrypted(final ByteBuffer byteBuffer, final MediaDecoderBase$InputDataSource$BufferMeta mediaDecoderBase$InputDataSource$BufferMeta) {
+        if (mediaDecoderBase$InputDataSource$BufferMeta.key.length == 0 || mediaDecoderBase$InputDataSource$BufferMeta.iv.length == 0) {
+            return;
+        }
+        if (this.mAesCencDecryptor == null) {
+            this.mAesCencDecryptor = new AesCencDecryptor(mediaDecoderBase$InputDataSource$BufferMeta.key);
+        }
+        int[] nByteInClear = { 0 };
+        int[] nByteEncrypted = { mediaDecoderBase$InputDataSource$BufferMeta.size };
+        if (mediaDecoderBase$InputDataSource$BufferMeta.nSubsample > 0) {
+            nByteInClear = mediaDecoderBase$InputDataSource$BufferMeta.nByteInClear;
+            nByteEncrypted = mediaDecoderBase$InputDataSource$BufferMeta.nByteEncrypted;
+        }
+        else if (this.getMime().equals("audio/mp4a-latm")) {
+            final ByteBuffer duplicate = byteBuffer.duplicate();
+            if ((duplicate.get(0) & 0xFF) == 0xFF && (duplicate.get(1) & 0xF0) == 0xF0) {
+                int n = 7;
+                if ((duplicate.get(1) & 0x1) == 0x0) {
+                    n = 9;
+                }
+                nByteInClear[0] = n;
+                nByteEncrypted[0] = mediaDecoderBase$InputDataSource$BufferMeta.size - n;
+            }
+        }
+        this.mAesCencDecryptor.decrypt(byteBuffer, mediaDecoderBase$InputDataSource$BufferMeta.iv, nByteInClear, nByteEncrypted);
+    }
+    
     private boolean startDecoder() {
         this.mDecoder.start();
         this.mInputBuffers = this.mDecoder.getInputBuffers();
@@ -496,10 +524,19 @@ public abstract class MediaDecoderPipe2 extends MediaDecoderBase
     
     abstract void flushRenderer();
     
-    void hexprint(final byte[] array) {
+    void hexprint(ByteBuffer duplicate, final int n) {
+        duplicate = duplicate.duplicate();
         final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < array.length; ++i) {
-            sb.append(String.format("%02x  ", array[i]));
+        for (int i = 0; i < n; ++i) {
+            sb.append(String.format("%02x  ", duplicate.get()));
+        }
+        Log.d(this.mTag, sb.toString());
+    }
+    
+    void hexprint(final byte[] array, final int n, final int n2) {
+        final StringBuilder sb = new StringBuilder();
+        for (int n3 = n; n3 < array.length && n3 < n + n2; ++n3) {
+            sb.append(String.format("%02x  ", array[n3]));
         }
         Log.d(this.mTag, sb.toString());
     }

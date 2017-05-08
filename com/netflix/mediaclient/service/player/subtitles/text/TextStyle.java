@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.player.subtitles.text;
 import com.netflix.mediaclient.util.SubtitleUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.player.subtitles.TextSubtitleParser;
 import org.w3c.dom.Element;
 import com.netflix.mediaclient.service.player.subtitles.SizeMapping;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitlePreference;

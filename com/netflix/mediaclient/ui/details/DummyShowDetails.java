@@ -5,11 +5,11 @@
 package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.servicemgr.interface_.Video;
-import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.servicemgr.interface_.IconFontGlyph;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import java.util.Random;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 
 public class DummyShowDetails implements ShowDetails
@@ -22,6 +22,21 @@ public class DummyShowDetails implements ShowDetails
     
     @Override
     public String getActors() {
+        return null;
+    }
+    
+    @Override
+    public String getAdvisoryDescription() {
+        return null;
+    }
+    
+    @Override
+    public int getAdvisoryDisplayDuration() {
+        return 0;
+    }
+    
+    @Override
+    public String getAdvisoryRating() {
         return null;
     }
     
@@ -56,6 +71,16 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
+    public List<String> getCurrentEpisodeBadges() {
+        return null;
+    }
+    
+    @Override
+    public String getCurrentEpisodeHorzDispUrl() {
+        return null;
+    }
+    
+    @Override
     public String getCurrentEpisodeId() {
         return null;
     }
@@ -66,6 +91,16 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
+    public String getCurrentEpisodeStoryImgUrl() {
+        return null;
+    }
+    
+    @Override
+    public String getCurrentEpisodeSynopsis() {
+        return null;
+    }
+    
+    @Override
     public String getCurrentEpisodeTitle() {
         return null;
     }
@@ -73,6 +108,11 @@ public class DummyShowDetails implements ShowDetails
     @Override
     public int getCurrentSeasonNumber() {
         return new Random().nextInt(this.getNumOfSeasons());
+    }
+    
+    @Override
+    public String getDefaultTrailer() {
+        return null;
     }
     
     @Override
@@ -88,6 +128,11 @@ public class DummyShowDetails implements ShowDetails
     @Override
     public String getEvidenceText() {
         return null;
+    }
+    
+    @Override
+    public long getExpirationTime() {
+        return 0L;
     }
     
     @Override
@@ -136,6 +181,11 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
+    public String getNumSeasonsLabel() {
+        return null;
+    }
+    
+    @Override
     public Playable getPlayable() {
         return new DummyPlayable();
     }
@@ -171,17 +221,17 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
-    public String getSquareUrl() {
-        return null;
-    }
-    
-    @Override
     public String getStoryDispUrl() {
         return null;
     }
     
     @Override
     public String getStoryUrl() {
+        return null;
+    }
+    
+    @Override
+    public String getSupplementalMessage() {
         return null;
     }
     
@@ -221,12 +271,42 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
+    public boolean hasTrailers() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasWatched() {
+        return false;
+    }
+    
+    @Override
     public boolean isAvailableToStream() {
         return true;
     }
     
     @Override
     public boolean isInQueue() {
+        return false;
+    }
+    
+    @Override
+    public boolean isNSRE() {
+        return false;
+    }
+    
+    @Override
+    public boolean isOriginal() {
+        return false;
+    }
+    
+    @Override
+    public boolean isPreRelease() {
+        return false;
+    }
+    
+    @Override
+    public boolean isSupplementalVideo() {
         return false;
     }
     
@@ -241,8 +321,18 @@ public class DummyShowDetails implements ShowDetails
     }
     
     @Override
+    public boolean isVideoDolbyVision() {
+        return false;
+    }
+    
+    @Override
     public boolean isVideoHd() {
         return true;
+    }
+    
+    @Override
+    public boolean isVideoHdr10() {
+        return false;
     }
     
     @Override

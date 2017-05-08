@@ -11,6 +11,7 @@ import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 public class SubtitleUrl
 {
     private static final String ATTR_CDN_ID = "cdnId";
+    private static final String ATTR_DECRYPTION_KEY = "decryptionKey";
     private static final String ATTR_DOWNLOADABLE_ID = "downloadableId";
     private static final String ATTR_HEIGHT = "height";
     private static final String ATTR_MASTER_INDEX_OFFSET = "masterIndexOffset";
@@ -20,6 +21,7 @@ public class SubtitleUrl
     private static final String ATTR_WIDTH = "width";
     private static final String ATTR_XID = "xid";
     private long mCdnId;
+    private String mDecryptionKey;
     private String mDownloadableId;
     private int mHeight;
     private int mMasterIndexOffset;
@@ -94,6 +96,10 @@ public class SubtitleUrl
         return this.mCdnId;
     }
     
+    public String getDecryptionKey() {
+        return this.mDecryptionKey;
+    }
+    
     public String getDownloadableId() {
         return this.mDownloadableId;
     }
@@ -161,16 +167,17 @@ public class SubtitleUrl
         this.mXid = JsonUtils.getLong(jsonObject, "xid", 0L);
         this.mCdnId = JsonUtils.getLong(jsonObject, "cdnId", 0L);
         this.mDownloadableId = JsonUtils.getString(jsonObject, "downloadableId", null);
-        if (this.mProfile == IMedia$SubtitleProfile.IMAGE) {
+        if (this.mProfile == IMedia$SubtitleProfile.IMAGE || this.mProfile == IMedia$SubtitleProfile.IMAGE_ENC) {
             this.mHeight = JsonUtils.getInt(jsonObject, "height", 0);
             this.mWidth = JsonUtils.getInt(jsonObject, "width", 0);
             this.mMasterIndexSize = JsonUtils.getInt(jsonObject, "masterIndexSize", 0);
             this.mMasterIndexOffset = JsonUtils.getInt(jsonObject, "masterIndexOffset", 0);
         }
+        this.mDecryptionKey = JsonUtils.getString(jsonObject, "decryptionKey", null);
     }
     
     @Override
     public String toString() {
-        return "SubtitleUrl{mUrl='" + this.mUrl + '\'' + ", mDownloadableId='" + this.mDownloadableId + '\'' + ", mCdnId='" + this.mCdnId + '\'' + ", mXid='" + this.mXid + '\'' + ", mHeight=" + this.mHeight + ", mWidth=" + this.mWidth + ", mMasterIndexSize=" + this.mMasterIndexSize + ", mMasterIndexOffset=" + this.mMasterIndexOffset + ", mProfile=" + this.mProfile + '}';
+        return "SubtitleUrl{mUrl='" + this.mUrl + '\'' + ", mDownloadableId='" + this.mDownloadableId + '\'' + ", mCdnId=" + this.mCdnId + ", mXid=" + this.mXid + ", mHeight=" + this.mHeight + ", mWidth=" + this.mWidth + ", mMasterIndexSize=" + this.mMasterIndexSize + ", mMasterIndexOffset=" + this.mMasterIndexOffset + ", mDecryptionKey='" + this.mDecryptionKey + '\'' + ", mProfile=" + this.mProfile + '}';
     }
 }

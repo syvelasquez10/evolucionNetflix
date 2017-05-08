@@ -10,7 +10,7 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
-import com.netflix.mediaclient.util.ItemDecorationEdgePadding;
+import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.support.v7.widget.RecyclerView$LayoutManager;
 import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
 import android.content.Context;
@@ -50,6 +50,8 @@ public class KidsGenresLoMoFrag extends LoLoMoFrag
     
     private void setupRecyclerViewAdapter() {
         (this.adapter = new KidsGenresLoMoFrag$ProgressiveAdapter(this, false, this.numColumns, new KidsGenresLoMoFrag$2(this))).addHeaderView(ViewUtils.createActionBarDummyView(this.getNetflixActivity()));
+        final int dimensionPixelSize = this.getActivity().getResources().getDimensionPixelSize(2131296606);
+        this.recyclerView.setPadding(dimensionPixelSize, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
         this.recyclerView.setAdapter(this.adapter);
     }
     
@@ -57,15 +59,15 @@ public class KidsGenresLoMoFrag extends LoLoMoFrag
         final GridLayoutManager layoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns);
         layoutManager.setSpanSizeLookup(new KidsGenresLoMoFrag$1(this));
         this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.addItemDecoration(new ItemDecorationEdgePadding(this.getActivity().getResources().getDimensionPixelOffset(2131296531), this.numColumns, 2));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296604), this.numColumns));
     }
     
     @Override
     protected int getLayoutId() {
-        if (BrowseExperience.isKubrickKids()) {
-            return 2130903115;
+        if (BrowseExperience.showKidsExperience()) {
+            return 2130903136;
         }
-        return 2130903200;
+        return 2130903228;
     }
     
     @Override
@@ -74,9 +76,8 @@ public class KidsGenresLoMoFrag extends LoLoMoFrag
     }
     
     @Override
-    public void onManagerReady(final ServiceManager manager, final Status status) {
+    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         Log.v("KidsGenresLoMoFrag", "onManagerReady");
-        this.manager = manager;
         if (status.isError()) {
             Log.w("KidsGenresLoMoFrag", "Manager status code not okay");
             return;

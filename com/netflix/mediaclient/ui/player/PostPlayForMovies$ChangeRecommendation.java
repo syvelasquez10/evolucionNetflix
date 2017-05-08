@@ -12,6 +12,7 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import com.netflix.mediaclient.ui.details.NetflixRatingBar$RatingBarDataProvider;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.util.ViewUtils$Visibility;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;

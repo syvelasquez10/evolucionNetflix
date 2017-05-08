@@ -8,13 +8,16 @@ import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.util.CoppolaUtils;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import java.util.Map;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.Asset;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
@@ -66,7 +69,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     public FalkorAgent() {
         this.playReceiver = new FalkorAgent$1(this);
         this.userAgentIntentReceiver = new FalkorAgent$2(this);
-        this.refreshNotificationsRunnable = new FalkorAgent$8(this);
+        this.refreshNotificationsRunnable = new FalkorAgent$9(this);
     }
     
     private static boolean canDoDataFetches() {
@@ -144,6 +147,20 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.dumpCacheToDisk();
     }
     
+    public void endBrowsePlaySession(final long n, final int n2, final int n3, final int n4) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.endBrowsePlaySession(n, n2, n3, n4, new FalkorAgent$7(this));
+    }
+    
+    public void expiringContent(final String s, final BrowseAgentCallback browseAgentCallback, final ExpiringContentAction expiringContentAction) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.expiringContent(s, browseAgentCallback, expiringContentAction);
+    }
+    
     @Override
     public void fetchBillboards(final int n, final boolean b, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
@@ -168,11 +185,11 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     }
     
     @Override
-    public void fetchEpisodeDetails(final String s, final BrowseAgentCallback browseAgentCallback) {
+    public void fetchEpisodeDetails(final String s, final String s2, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchEpisodeDetails(s, browseAgentCallback);
+        this.cmp.fetchEpisodeDetails(s, s2, browseAgentCallback);
     }
     
     public void fetchEpisodes(final String s, final VideoType videoType, final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
@@ -241,6 +258,14 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.fetchIQVideos(loMo, n, n2, FalkorAgent.USE_CACHE_AND_REMOTE, b, browseAgentCallback);
     }
     
+    @Override
+    public void fetchInteractiveVideoMoments(final VideoType videoType, final String s, final BrowseAgentCallback browseAgentCallback) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.fetchInteractiveVideoMoments(videoType, s, browseAgentCallback);
+    }
+    
     public void fetchKidsCharacterDetails(final String s, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
@@ -264,11 +289,11 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     }
     
     @Override
-    public void fetchMovieDetails(final String s, final BrowseAgentCallback browseAgentCallback) {
+    public void fetchMovieDetails(final String s, final String s2, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchMovieDetails(s, browseAgentCallback);
+        this.cmp.fetchMovieDetails(s, s2, browseAgentCallback);
     }
     
     @Override
@@ -295,9 +320,9 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
     }
     
     public void fetchPreAppData(final int n, int n2) {
-        final FalkorAgent$9 falkorAgent$9 = new FalkorAgent$9(this);
+        final FalkorAgent$10 falkorAgent$10 = new FalkorAgent$10(this);
         --n2;
-        this.prefetchLoLoMo(0, n - 1, 0, n2, 0, n2, false, false, false, falkorAgent$9);
+        this.prefetchLoLoMo(0, n - 1, 0, n2, 0, n2, false, false, false, falkorAgent$10);
     }
     
     @Override
@@ -305,7 +330,14 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchLoMos(0, 10, new FalkorAgent$10(this, n, n2, b, browseAgentCallback));
+        this.cmp.fetchLoMos(0, 10, new FalkorAgent$11(this, n, n2, b, browseAgentCallback));
+    }
+    
+    public void fetchScenePosition(final VideoType videoType, final String s, final String s2, final BrowseAgentCallback browseAgentCallback) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.fetchScenePosition(videoType, s, s2, browseAgentCallback);
     }
     
     public void fetchSeasonDetails(final String s, final BrowseAgentCallback browseAgentCallback) {
@@ -392,11 +424,11 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.invalidateEpisodes(s, videoType);
     }
     
-    public void logBillboardActivity(final Video video, final BillboardInteractionType billboardInteractionType) {
+    public void logBillboardActivity(final Video video, final BillboardInteractionType billboardInteractionType, final Map<String, String> map) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.logBillboardActivity(video, billboardInteractionType);
+        this.cmp.logBillboardActivity(video, billboardInteractionType, map);
     }
     
     public void markNotificationAsRead(final IrisNotificationSummary irisNotificationSummary) {
@@ -427,22 +459,22 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.prefetchLoLoMo(n, n2, n3, n4, n5, n6, b, b2, b3, new FalkorAgent$3(this, browseAgentCallback));
     }
     
-    public void refreshCw() {
+    public void refreshCw(final boolean b) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        if (BrowseExperience.isKubrickKids()) {
+        if (BrowseExperience.showKidsExperience()) {
             if (Log.isLoggable()) {
-                Log.v("FalkorAgent", "Showing Kubrick Kids experience - redirecting refresh CW call to refresh popular titles...");
+                Log.v("FalkorAgent", "Showing Kids experience - refresh popular titles...");
             }
             this.cmp.refreshPopularTitlesLomo();
-            return;
         }
         if (this.cmp.doesCwExist()) {
             this.cmp.refreshCw();
-            return;
         }
-        this.refreshLolomo();
+        else if (!CoppolaUtils.isCoppolaExperience(this.getContext()) || !b) {
+            this.refreshLolomo();
+        }
     }
     
     public void refreshIq() {
@@ -464,7 +496,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchNotifications(0, IrisUtils.PAGE_NOTIFICATIONS_SIZE - 1, b, new FalkorAgent$7(this, b2, messageData));
+        this.cmp.fetchNotifications(0, IrisUtils.PAGE_NOTIFICATIONS_SIZE - 1, b, new FalkorAgent$8(this, b2, messageData));
         if (this.getService() != null && this.getService().getCurrentProfile() != null) {
             this.rescheduleNotificationsRefresh();
         }

@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.media.JPlayer;
 
+import android.media.MediaCodecInfo;
+import java.util.Arrays;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import android.media.MediaCodecList;
@@ -24,7 +26,7 @@ public final class DolbyDigitalHelper
     
     public static boolean isEAC3supported() {
         if (AndroidUtils.getAndroidVersion() < 21) {
-            return false;
+            return isEAC3supportedL();
         }
         final MediaCodecList list = new MediaCodecList(1);
         final MediaFormat mediaFormat = new MediaFormat();
@@ -34,5 +36,28 @@ public final class DolbyDigitalHelper
             Log.d(DolbyDigitalHelper.TAG, "device has DD+ decoder " + decoderForFormat);
         }
         return StringUtils.isNotEmpty(decoderForFormat);
+    }
+    
+    private static boolean isEAC3supportedL() {
+        final boolean b = false;
+        final int codecCount = MediaCodecList.getCodecCount();
+        int n = 0;
+        boolean b2;
+        while (true) {
+            b2 = b;
+            if (n >= codecCount) {
+                break;
+            }
+            final MediaCodecInfo codecInfo = MediaCodecList.getCodecInfoAt(n);
+            if (!codecInfo.isEncoder() && Arrays.asList(codecInfo.getSupportedTypes()).indexOf("audio/eac3") >= 0) {
+                if (Log.isLoggable()) {
+                    Log.d(DolbyDigitalHelper.TAG, "L or Lower device has DD+ decoder " + codecInfo.getName());
+                }
+                b2 = true;
+                break;
+            }
+            ++n;
+        }
+        return b2;
     }
 }

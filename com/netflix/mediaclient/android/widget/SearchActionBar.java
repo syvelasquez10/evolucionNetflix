@@ -4,39 +4,49 @@
 
 package com.netflix.mediaclient.android.widget;
 
-import android.view.View$OnTouchListener;
 import android.widget.SearchView$OnQueryTextListener;
 import android.view.View$OnFocusChangeListener;
-import android.support.v4.graphics.drawable.DrawableCompat;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.app.SearchManager;
-import com.netflix.mediaclient.Log;
 import android.annotation.SuppressLint;
 import android.view.View;
 import android.support.v7.app.ActionBar$LayoutParams;
 import android.view.ViewGroup;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
+import android.view.View$OnTouchListener;
+import android.view.GestureDetector$OnGestureListener;
+import com.netflix.mediaclient.util.ViewUtils$ClickGestureDetector;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.Log;
+import android.content.Context;
+import com.netflix.mediaclient.ui.search.VoiceSearchABTestUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.ProgressBar;
+import android.widget.EditText;
+import android.view.GestureDetector;
 
 public class SearchActionBar extends NetflixActionBar
 {
     private static final String TAG = "SearchActionBar";
+    private GestureDetector clickDetector;
+    private EditText editTextView;
     private ProgressBar progressSpinner;
     protected SearchView searchView;
-    private TextView textView;
+    private boolean showVoiceSearch;
+    private ImageView voiceSearchBtn;
     
     public SearchActionBar(final NetflixActivity netflixActivity) {
         super(netflixActivity, true);
+        this.showVoiceSearch = VoiceSearchABTestUtils.showVoiceSearchInActionBar((Context)netflixActivity);
         this.initViews();
         this.setupSearchView();
         this.setupSearchManager(netflixActivity);
         this.configureSearchViewTextView();
         this.configureSearchViewIcon();
+        this.configureVoiceSearchExperience();
         this.updateBackgroundDrawables();
         this.systemActionBar.setDisplayShowCustomEnabled(true);
         this.systemActionBar.setDisplayUseLogoEnabled(false);
@@ -50,13 +60,31 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     private void configureSearchViewTextView() {
-        this.textView = (TextView)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_src_text", (String)null, (String)null));
-        if (this.textView != null) {
+        this.editTextView = (EditText)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_src_text", (String)null, (String)null));
+        if (this.editTextView != null) {
             final int color = this.searchView.getResources().getColor(this.getSearchViewTextColorResId());
-            this.textView.setHintTextColor(color);
-            this.textView.setTextColor(color);
-            this.textView.setImeOptions(33554432);
+            final int color2 = this.searchView.getResources().getColor(2131558598);
+            this.editTextView.setTextSize((float)this.activity.getResources().getInteger(2131427348));
+            this.editTextView.setHintTextColor(color2);
+            this.editTextView.setTextColor(color);
+            this.editTextView.setImeOptions(33554432);
         }
+    }
+    
+    private void configureVoiceSearchExperience() {
+        this.voiceSearchBtn = (ImageView)this.searchView.findViewById(this.getActivity().getResources().getIdentifier("android:id/search_voice_btn", (String)null, (String)null));
+        if (this.voiceSearchBtn == null) {
+            Log.w("SearchActionBar", "SPY-8468 - Voice search not available. SearchView doesn't have view with id search_voice_btn");
+            ErrorLoggingManager.logHandledException("SPY-8468 - Voice search not available. SearchView doesn't have view with id search_voice_btn");
+            return;
+        }
+        if (this.showVoiceSearch) {
+            this.clickDetector = new GestureDetector((Context)this.getActivity(), (GestureDetector$OnGestureListener)new ViewUtils$ClickGestureDetector());
+            this.voiceSearchBtn.setOnTouchListener((View$OnTouchListener)new SearchActionBar$1(this));
+            return;
+        }
+        this.voiceSearchBtn.setEnabled(false);
+        this.voiceSearchBtn.setImageDrawable((Drawable)null);
     }
     
     private Drawable getDrawableFromSystemId(final String s) {
@@ -75,9 +103,9 @@ public class SearchActionBar extends NetflixActionBar
     private void initViews() {
         final View inflate = LayoutInflater.from((Context)this.activity).inflate(2130903067, (ViewGroup)null);
         if (inflate != null) {
-            this.searchView = (SearchView)inflate.findViewById(2131624059);
+            this.searchView = (SearchView)inflate.findViewById(2131624060);
             final ActionBar$LayoutParams actionBar$LayoutParams = new ActionBar$LayoutParams(-1, -2, 8388613);
-            this.progressSpinner = (ProgressBar)inflate.findViewById(2131624060);
+            this.progressSpinner = (ProgressBar)inflate.findViewById(2131624061);
             this.systemActionBar.setCustomView(inflate, actionBar$LayoutParams);
         }
     }
@@ -100,7 +128,7 @@ public class SearchActionBar extends NetflixActionBar
             return;
         }
         this.searchView.setImeOptions(33554435);
-        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131165696));
+        this.searchView.setQueryHint((CharSequence)this.getActivity().getString(2131165729));
         this.searchView.setInputType(8192);
         this.searchView.setQueryRefinementEnabled(true);
         this.searchView.setSubmitButtonEnabled(false);
@@ -115,14 +143,14 @@ public class SearchActionBar extends NetflixActionBar
         if (searchCloseButtonTint != null) {
             final Drawable drawableFromSystemId = this.getDrawableFromSystemId("android:id/search_close_btn");
             if (drawableFromSystemId != null) {
-                DrawableCompat.setTint(drawableFromSystemId, searchCloseButtonTint);
+                ViewUtils.setDrawableTint(drawableFromSystemId, searchCloseButtonTint);
             }
         }
         final Integer searchVoiceButtonTint = this.getSearchVoiceButtonTint();
         if (searchVoiceButtonTint != null) {
             final Drawable drawableFromSystemId2 = this.getDrawableFromSystemId("android:id/search_voice_btn");
             if (drawableFromSystemId2 != null) {
-                DrawableCompat.setTint(drawableFromSystemId2, searchVoiceButtonTint);
+                ViewUtils.setDrawableTint(drawableFromSystemId2, searchVoiceButtonTint);
             }
         }
     }
@@ -136,7 +164,7 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getActiveSearchIconResId() {
-        return 2130837735;
+        return 2130837754;
     }
     
     protected Integer getSearchCloseButtonTint() {
@@ -144,19 +172,26 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     protected int getSearchViewBgResId() {
-        return 2130837890;
+        return 2130837910;
     }
     
     protected int getSearchViewRightBgResId() {
-        return 2130837892;
+        if (this.showVoiceSearch) {
+            return 2130837912;
+        }
+        return 2131558596;
     }
     
     protected int getSearchViewTextColorResId() {
-        return 2131558538;
+        return 2131558547;
     }
     
     protected Integer getSearchVoiceButtonTint() {
         return null;
+    }
+    
+    public ImageView getVoiceSearchBtn() {
+        return this.voiceSearchBtn;
     }
     
     public void hideProgressSpinner() {
@@ -170,8 +205,8 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     public void setOnFocusChangeListener(final View$OnFocusChangeListener onFocusChangeListener) {
-        if (this.textView != null) {
-            this.textView.setOnFocusChangeListener(onFocusChangeListener);
+        if (this.editTextView != null) {
+            this.editTextView.setOnFocusChangeListener(onFocusChangeListener);
         }
     }
     
@@ -180,13 +215,19 @@ public class SearchActionBar extends NetflixActionBar
     }
     
     public void setOnTouchTextListener(final View$OnTouchListener onTouchListener) {
-        if (this.textView != null) {
-            this.textView.setOnTouchListener(onTouchListener);
+        if (this.editTextView != null) {
+            this.editTextView.setOnTouchListener(onTouchListener);
         }
     }
     
     public void setQuery(final String s, final boolean b) {
         this.searchView.setQuery((CharSequence)s, b);
+    }
+    
+    public void setSearchQueryHint(final String queryHint) {
+        if (this.searchView != null) {
+            this.searchView.setQueryHint((CharSequence)queryHint);
+        }
     }
     
     public void showProgressSpinner() {

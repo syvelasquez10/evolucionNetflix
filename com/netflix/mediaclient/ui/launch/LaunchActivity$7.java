@@ -35,11 +35,6 @@ final class LaunchActivity$7 implements Video
     }
     
     @Override
-    public String getSquareUrl() {
-        return null;
-    }
-    
-    @Override
     public String getStoryDispUrl() {
         return null;
     }
@@ -57,5 +52,25 @@ final class LaunchActivity$7 implements Video
     @Override
     public VideoType getType() {
         return VideoType.SHOW;
+    }
+    
+    @Override
+    public boolean hasWatched() {
+        return false;
+    }
+    
+    @Override
+    public boolean isNSRE() {
+        return false;
+    }
+    
+    @Override
+    public boolean isOriginal() {
+        return false;
+    }
+    
+    @Override
+    public boolean isPreRelease() {
+        return false;
     }
 }

@@ -5,11 +5,11 @@
 package com.netflix.mediaclient.android.fragment;
 
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.app.Status;
 import android.content.DialogInterface;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -24,6 +24,10 @@ public abstract class NetflixDialogFrag extends DialogFragment implements Loadin
     
     protected NetflixActivity getNetflixActivity() {
         return (NetflixActivity)this.getActivity();
+    }
+    
+    public ServiceManager getServiceManager() {
+        return ServiceManager.getServiceManager(this.getNetflixActivity());
     }
     
     protected boolean isDestroyed() {

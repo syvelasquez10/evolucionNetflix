@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.verifyplay;
 
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
 import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.util.DeviceUtils;
@@ -19,7 +20,6 @@ import android.content.Context;
 import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import android.os.Parcelable;
 import android.os.Bundle;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.ProgressBar;
 import android.app.AlertDialog;
 import android.widget.TextView;

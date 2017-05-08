@@ -5,11 +5,12 @@
 package com.netflix.mediaclient.android.fragment;
 
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.app.Status;
 import android.os.Bundle;
 import com.netflix.mediaclient.Log;
 import android.app.Activity;
+import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -26,9 +27,12 @@ public abstract class NetflixFrag extends Fragment implements LoadingStatus, Man
         return (NetflixActivity)this.getActivity();
     }
     
+    public ServiceManager getServiceManager() {
+        return ServiceManager.getServiceManager(this.getNetflixActivity());
+    }
+    
     public boolean isActivityValid() {
-        final Activity activity = this.getActivity();
-        return activity != null && !activity.isFinishing();
+        return !AndroidUtils.isActivityFinishedOrDestroyed(this.getActivity());
     }
     
     protected boolean isDestroyed() {

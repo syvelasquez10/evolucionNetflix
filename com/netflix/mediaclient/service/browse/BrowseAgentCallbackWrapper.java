@@ -17,8 +17,11 @@ import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
@@ -56,6 +59,12 @@ public class BrowseAgentCallbackWrapper implements BrowseAgentCallback
     }
     
     @Override
+    public void onBrowsePlaySessionEnd(final boolean b, final Status status) {
+        this.handleResultTiming("onBrowsePlaySessionEnd");
+        this.callback.onBrowsePlaySessionEnd(b, this.wrapStatus(status));
+    }
+    
+    @Override
     public void onCWVideosFetched(final List<CWVideo> list, final Status status) {
         this.handleResultTiming("onCWVideosFetched");
         this.callback.onCWVideosFetched(list, this.wrapStatus(status));
@@ -74,6 +83,12 @@ public class BrowseAgentCallbackWrapper implements BrowseAgentCallback
     }
     
     @Override
+    public void onExpiringContentWarning(final IExpiringContentWarning expiringContentWarning, final Status status, final ExpiringContentAction expiringContentAction) {
+        this.handleResultTiming("onExpiringContentWarning");
+        this.callback.onExpiringContentWarning(expiringContentWarning, this.wrapStatus(status), expiringContentAction);
+    }
+    
+    @Override
     public void onGenreListsFetched(final List<GenreList> list, final Status status) {
         this.handleResultTiming("onGenreListsFetched");
         this.callback.onGenreListsFetched(list, this.wrapStatus(status));
@@ -89,6 +104,12 @@ public class BrowseAgentCallbackWrapper implements BrowseAgentCallback
     public void onGenresFetched(final List<Genre> list, final Status status) {
         this.handleResultTiming("onGenresFetched");
         this.callback.onGenresFetched(list, this.wrapStatus(status));
+    }
+    
+    @Override
+    public void onInteractiveMomentsFetched(final InteractiveMoments interactiveMoments, final Status status) {
+        this.handleResultTiming("onInteractiveMomentsFetched");
+        this.callback.onInteractiveMomentsFetched(interactiveMoments, this.wrapStatus(status));
     }
     
     @Override
@@ -149,6 +170,12 @@ public class BrowseAgentCallbackWrapper implements BrowseAgentCallback
     public void onQueueRemove(final Status status) {
         this.handleResultTiming("onQueueRemove");
         this.callback.onQueueRemove(this.wrapStatus(status));
+    }
+    
+    @Override
+    public void onScenePositionFetched(final int n, final Status status) {
+        this.handleResultTiming("onScenePositionFetched");
+        this.callback.onScenePositionFetched(n, this.wrapStatus(status));
     }
     
     @Override

@@ -5,9 +5,10 @@
 package com.netflix.mediaclient.service.mdx;
 
 import com.netflix.mediaclient.util.StringUtils;
-import android.content.Context;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import android.content.Context;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.NetflixPreference;
 import android.os.Message;
 import android.os.Handler;
 
@@ -20,36 +21,41 @@ class TargetSelector$1 extends Handler
     }
     
     public void handleMessage(final Message message) {
+        final NetflixPreference netflixPreference = new NetflixPreference(this.this$0.mContext);
         switch (message.what) {
             default: {
-                Log.e("nf_mdxTargetSelector", "TragetSelector: unknown message");
+                Log.e("nf_mdxTargetSelector", "TargetSelector: unknown message");
             }
             case 1: {
-                Log.d("nf_mdxTargetSelector", "TragetSelector: target stickiness expired");
-                PreferenceUtils.putLongPref(this.this$0.mContext, "mdx_target_lastactive", System.currentTimeMillis());
-                PreferenceUtils.putStringPref(this.this$0.mContext, "mdx_target_uuid", new String());
-                PreferenceUtils.putStringPref(this.this$0.mContext, "mdx_selected_uuid", new String());
-                PreferenceUtils.putStringPref(this.this$0.mContext, "mdx_selected_dialuuid", new String());
-                PreferenceUtils.putStringPref(this.this$0.mContext, "mdx_selected_fname", new String());
+                Log.d("nf_mdxTargetSelector", "TargetSelector: target stickiness expired");
+                netflixPreference.putLongPref("mdx_target_lastactive", System.currentTimeMillis());
+                netflixPreference.putStringPref("mdx_target_uuid", new String());
+                netflixPreference.putStringPref("mdx_selected_uuid", new String());
+                netflixPreference.putStringPref("mdx_selected_dialuuid", new String());
+                netflixPreference.putStringPref("mdx_selected_fname", new String());
+                netflixPreference.commit();
                 this.this$0.mCallback.onStickinessExpired();
             }
             case 2: {
                 if (Log.isLoggable()) {
-                    Log.d("nf_mdxTargetSelector", "TragetSelector: new target is selected " + this.this$0.mCurrentTarget);
+                    Log.d("nf_mdxTargetSelector", "TargetSelector: new target is selected " + this.this$0.mCurrentTarget);
                 }
-                PreferenceUtils.putLongPref(this.this$0.mContext, "mdx_target_lastactive", System.currentTimeMillis());
+                netflixPreference.putLongPref("mdx_target_lastactive", System.currentTimeMillis());
+                netflixPreference.commit();
             }
             case 4: {
                 if (Log.isLoggable()) {
-                    Log.d("nf_mdxTargetSelector", "TragetSelector: upadte selected target " + this.this$0.mCurrentTarget + " : " + this.this$0.mTaregtUuid + " : " + this.this$0.mTargetDialUuid + " : " + this.this$0.mTargetFriendlyName);
+                    Log.d("nf_mdxTargetSelector", "TargetSelector: upadte selected target " + this.this$0.mCurrentTarget + " : " + this.this$0.mTaregtUuid + " : " + this.this$0.mTargetDialUuid + " : " + this.this$0.mTargetFriendlyName);
                 }
-                PreferenceUtils.putStringPref(this.this$0.mContext, "mdx_target_uuid", this.this$0.mCurrentTarget);
-                PreferenceUtils.putStringPref(this.this$0.mContext, "mdx_selected_uuid", this.this$0.mTaregtUuid);
-                PreferenceUtils.putStringPref(this.this$0.mContext, "mdx_selected_dialuuid", this.this$0.mTargetDialUuid);
-                PreferenceUtils.putStringPref(this.this$0.mContext, "mdx_selected_fname", this.this$0.mTargetFriendlyName);
+                netflixPreference.putStringPref("mdx_target_uuid", this.this$0.mCurrentTarget);
+                netflixPreference.putStringPref("mdx_selected_uuid", this.this$0.mTaregtUuid);
+                netflixPreference.putStringPref("mdx_selected_dialuuid", this.this$0.mTargetDialUuid);
+                netflixPreference.putStringPref("mdx_selected_fname", this.this$0.mTargetFriendlyName);
+                netflixPreference.commit();
             }
             case 3: {
-                PreferenceUtils.putLongPref(this.this$0.mContext, "mdx_target_lastactive", System.currentTimeMillis());
+                netflixPreference.putLongPref("mdx_target_lastactive", System.currentTimeMillis());
+                netflixPreference.commit();
             }
         }
     }

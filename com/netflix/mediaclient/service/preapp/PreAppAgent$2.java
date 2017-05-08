@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.preapp;
 
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.android.app.Status;

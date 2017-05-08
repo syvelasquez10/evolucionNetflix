@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.ui.experience;
 
-import java.io.Serializable;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import java.io.Serializable;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
@@ -17,10 +17,6 @@ public enum PersistentExperience
 {
     KUBRICK_HERO_IMGS, 
     KUBRICK_HIGH_DENSITY, 
-    KUBRICK_KIDS_CONTROL_FLAT_GENRES, 
-    KUBRICK_KIDS_HERO_IMGS, 
-    KUBRICK_KIDS_HIGH_DENSITY, 
-    KUBRICK_KIDS_HIGH_DENSITY_VERT, 
     LOLOMO_TITLE_ART_LARGE_HORIZONTAL, 
     LOLOMO_TITLE_ART_LARGE_PORTRAIT_BOXART, 
     LOLOMO_TITLE_ART_SMALL_BOXART, 
@@ -31,21 +27,33 @@ public enum PersistentExperience
     private static final String TAG = "PersistentExperience";
     
     static PersistentExperience get(final Context context) {
-        final String stringPref = PreferenceUtils.getStringPref(context, "persistent_experience_key", null);
-        PersistentExperience persistentExperience;
-        if (StringUtils.isEmpty(stringPref)) {
+        Serializable s = PreferenceUtils.getStringPref(context, "persistent_experience_key", null);
+        if (StringUtils.isEmpty((String)s)) {
             Log.w("PersistentExperience", "SPY-7682: found null string for PERSISTENT_EXPERIENCE_PREFS_KEY - falling back to non-kubrick");
             ErrorLoggingManager.logHandledException("SPY-7682: found null string for PERSISTENT_EXPERIENCE_PREFS_KEY - falling back to non-kubrick");
-            persistentExperience = PersistentExperience.NON_KUBRICK;
+            s = PersistentExperience.NON_KUBRICK;
         }
         else {
-            final PersistentExperience persistentExperience2 = persistentExperience = valueOf(stringPref);
-            if (Log.isLoggable()) {
-                Log.v("PersistentExperience", "got experience: " + persistentExperience2);
-                return persistentExperience2;
+            while (true) {
+                try {
+                    final PersistentExperience persistentExperience = valueOf((String)s);
+                    s = persistentExperience;
+                    if (Log.isLoggable()) {
+                        Log.v("PersistentExperience", "got experience: " + persistentExperience);
+                        return persistentExperience;
+                    }
+                }
+                catch (IllegalArgumentException ex) {
+                    if (Log.isLoggable()) {
+                        Log.d("PersistentExperience", "Couldn't parse experience string: " + (String)s + ". Setting to default experience...");
+                    }
+                    final PersistentExperience persistentExperience = PersistentExperience.NON_KUBRICK;
+                    continue;
+                }
+                break;
             }
         }
-        return persistentExperience;
+        return (PersistentExperience)s;
     }
     
     public static void update(final Context context, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
@@ -58,10 +66,7 @@ public enum PersistentExperience
                 if (serviceAgent$ConfigurationAgentInterface.getKubrickConfiguration() != null) {
                     persistentExperience2 = updateKubrickConfiguration(serviceAgent$ConfigurationAgentInterface);
                 }
-                if (serviceAgent$ConfigurationAgentInterface.getABTestConfiguration_6538() != null) {
-                    persistentExperience2 = updateABTest_6538(serviceAgent$ConfigurationAgentInterface);
-                }
-                else if (serviceAgent$ConfigurationAgentInterface.getABTestConfiguration_6725() != null) {
+                if (serviceAgent$ConfigurationAgentInterface.getABTestConfiguration_6725() != null) {
                     persistentExperience2 = updateABTest_6725(serviceAgent$ConfigurationAgentInterface);
                 }
             }
@@ -85,28 +90,8 @@ public enum PersistentExperience
         PreferenceUtils.putStringPref(context, "persistent_experience_key", persistentExperience2.toString());
     }
     
-    private static PersistentExperience updateABTest_6538(final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
-        switch (PersistentExperience$1.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$ABTestConfigData$Cell[serviceAgent$ConfigurationAgentInterface.getABTestConfiguration_6538().getCell().ordinal()]) {
-            default: {
-                return PersistentExperience.NON_KUBRICK;
-            }
-            case 1: {
-                return PersistentExperience.KUBRICK_KIDS_CONTROL_FLAT_GENRES;
-            }
-            case 2: {
-                return PersistentExperience.KUBRICK_KIDS_HERO_IMGS;
-            }
-            case 3: {
-                return PersistentExperience.KUBRICK_KIDS_HIGH_DENSITY;
-            }
-            case 4: {
-                return PersistentExperience.KUBRICK_KIDS_HIGH_DENSITY_VERT;
-            }
-        }
-    }
-    
     private static PersistentExperience updateABTest_6725(final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
-        switch (PersistentExperience$1.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$ABTestConfigData$Cell[serviceAgent$ConfigurationAgentInterface.getABTestConfiguration_6725().getCell().ordinal()]) {
+        switch (PersistentExperience$1.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$ABTestConfig$Cell[serviceAgent$ConfigurationAgentInterface.getABTestConfiguration_6725().getCell().ordinal()]) {
             default: {
                 return PersistentExperience.NON_KUBRICK;
             }

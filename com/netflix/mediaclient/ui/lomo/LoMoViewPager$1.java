@@ -29,6 +29,7 @@ import android.annotation.SuppressLint;
 import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter$LoMoRowContent;
 import com.netflix.mediaclient.android.fragment.CustomViewPager;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 
 class LoMoViewPager$1 implements Runnable
 {
@@ -44,7 +45,12 @@ class LoMoViewPager$1 implements Runnable
             return;
         }
         int n;
-        if ((n = this.this$0.getCurrentItem() + 1) >= this.this$0.adapter.getCount()) {
+        if (LocalizationUtils.isCurrentLocaleRTL()) {
+            if ((n = this.this$0.getCurrentItem() - 1) < 0) {
+                n = this.this$0.adapter.getCount() - 1;
+            }
+        }
+        else if ((n = this.this$0.getCurrentItem() + 1) >= this.this$0.adapter.getCount()) {
             n = 0;
         }
         if (Log.isLoggable()) {

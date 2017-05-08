@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
+import com.netflix.mediaclient.android.fragment.LoadingView;
 import android.view.ViewGroup;
 import android.widget.LinearLayout$LayoutParams;
 import android.content.IntentFilter;

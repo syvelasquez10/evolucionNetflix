@@ -34,11 +34,6 @@ public class zzb
         parcel.writeDouble(n2);
     }
     
-    public static void zza(final Parcel parcel, final int n, final float n2) {
-        zzb(parcel, n, 4);
-        parcel.writeFloat(n2);
-    }
-    
     public static void zza(final Parcel parcel, final int n, final long n2) {
         zzb(parcel, n, 8);
         parcel.writeLong(n2);

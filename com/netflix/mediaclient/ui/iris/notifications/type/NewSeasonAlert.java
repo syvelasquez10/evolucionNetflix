@@ -79,7 +79,7 @@ public class NewSeasonAlert extends BaseNotification
             notificationViewHolder.getNSAPlayButton().setVisibility(0);
         }
         if (StringUtils.isNotEmpty(irisNotificationSummary.getBodyText())) {
-            notificationViewHolder.getMiddleTextView().setGravity(3);
+            notificationViewHolder.getMiddleTextView().setGravity(8388611);
             notificationViewHolder.getMiddleTextView().setText((CharSequence)Html.fromHtml(irisNotificationSummary.getBodyText()));
         }
         if (notificationViewHolder.getRightButton() != null) {

@@ -89,12 +89,14 @@ public abstract class BaseProgressiveRowAdapter<T extends Video> implements Fetc
     
     @Override
     public void onErrorResponse() {
+        Log.v("BaseProgressiveRowAdapter", "onErrorResponse(), hasMoreData now false");
         this.hasMoreData = false;
         this.adapterCallbacks.notifyParentOfError();
     }
     
     @Override
     public void onNoVideosInResponse() {
+        Log.v("BaseProgressiveRowAdapter", "onNoVideosInResponse(), hasMoreData now false");
         this.hasMoreData = false;
         this.adapterCallbacks.notifyParentOfDataSetChange();
     }
@@ -128,6 +130,9 @@ public abstract class BaseProgressiveRowAdapter<T extends Video> implements Fetc
         this.hasMoreData = baseProgressiveRowAdapter$Memento.hasMoreData;
         this.currDataIndex = baseProgressiveRowAdapter$Memento.currDataIndex;
         this.paginatedAdapter.restoreFromMemento(baseProgressiveRowAdapter$Memento.adapterMemento);
+        if (Log.isLoggable()) {
+            Log.v("BaseProgressiveRowAdapter", "Restored state from memento, lomo: " + this.lomo.getTitle() + ", hasMoreData: " + this.hasMoreData);
+        }
     }
     
     @Override
@@ -147,15 +152,15 @@ public abstract class BaseProgressiveRowAdapter<T extends Video> implements Fetc
     
     @Override
     public void updateDataSet(final List<T> list, final String s, final int n, final int n2) {
-        if (Log.isLoggable()) {
-            Log.v("BaseProgressiveRowAdapter", "Updating data set, videos size: " + list.size() + ", videos per batch: " + this.getNumVideosToFetchPerBatch(this.currDataIndex));
-        }
         this.hasMoreData = (list.size() == this.getNumVideosToFetchPerBatch(this.currDataIndex));
+        if (Log.isLoggable()) {
+            Log.v("BaseProgressiveRowAdapter", "Updating data set, videos size: " + list.size() + ", videos per batch: " + this.getNumVideosToFetchPerBatch(this.currDataIndex) + ", hasMoreData: " + this.hasMoreData);
+        }
         this.currDataIndex = n2 + 1;
         if (Log.isLoggable()) {
             Log.v("BaseProgressiveRowAdapter", s + ": updated start index to: " + this.currDataIndex);
         }
-        this.paginatedAdapter.appendData(list, s, n, n2);
+        this.paginatedAdapter.appendData(list, s, n, n2, this.hasMoreData);
         this.adapterCallbacks.notifyParentOfDataSetChange();
     }
 }

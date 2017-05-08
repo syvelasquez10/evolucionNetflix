@@ -6,10 +6,7 @@ package com.netflix.mediaclient.service.player;
 
 import android.view.SurfaceHolder;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
-import com.netflix.mediaclient.media.Subtitle;
 import java.nio.ByteBuffer;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
@@ -19,21 +16,32 @@ import com.netflix.mediaclient.javabridge.ui.EventListener;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.TimerTask;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.util.CoppolaUtils;
+import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
+import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.media.Subtitle;
 import android.content.Intent;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.media.JPlayer2Helper;
-import android.media.AudioManager;
+import com.netflix.mediaclient.service.preapp.PreAppAgentDataHandler;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
+import android.content.Context;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import com.netflix.mediaclient.javabridge.ui.IMedia$MediaEventEnum;
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
+import android.annotation.SuppressLint;
+import android.media.AudioDeviceInfo;
+import com.netflix.mediaclient.util.AndroidUtils;
+import android.media.AudioManager;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.media.PlayoutMetadata;
-import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthSaving;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
 import com.netflix.mediaclient.event.nrdp.media.Warning;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.event.nrdp.media.BufferRange;
@@ -41,10 +49,12 @@ import com.netflix.mediaclient.event.nrdp.media.Statechanged;
 import com.netflix.mediaclient.event.nrdp.media.AudioTrackChanged;
 import com.netflix.mediaclient.event.nrdp.media.SubtitleData;
 import com.netflix.mediaclient.event.nrdp.media.Buffering;
+import com.netflix.mediaclient.event.nrdp.media.OpenComplete;
 import com.netflix.mediaclient.event.nrdp.media.GenericMediaEvent;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import android.os.PowerManager$WakeLock;
 import android.content.BroadcastReceiver;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.Timer;
 import android.view.Surface;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleDownloadManager;
@@ -52,6 +62,7 @@ import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.servicemgr.IPlayerFileCache;
 import java.util.concurrent.ExecutorService;
+import com.netflix.mediaclient.util.PlaybackVolumeMetric;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
 import com.netflix.mediaclient.javabridge.ui.IMedia;
@@ -72,12 +83,13 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private static final int DELAY_SEEKCOMPLETE_MS = 300;
     private static final int EOS_DELTA = 10000;
     private static final int IntialLowBRThreshold = 200;
-    private static final int MAX_BR_THRESHOLD_DEFAULT_KBPS = 20000;
+    public static final int MAX_BR_THRESHOLD_DEFAULT_KBPS = 20000;
     private static final int MAX_CELLULAR_DOWNLOAD_LIMIT = 150000;
     private static final int MAX_WIFI_DOWNLOAD_LIMIT = 300000;
     private static int MaxBRThreshold = 0;
     private static final int NETWORK_CHECK_INTERVAL = 1000;
     private static final int NETWORK_CHECK_TIMEOUT = 30000;
+    private static final int SEEKTO_DELTA_IN_MS = 60000;
     private static final int STATE_CLOSED = 4;
     private static final int STATE_CREATED = -1;
     private static final int STATE_OPENING = 0;
@@ -89,7 +101,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private static final int STATE_PRESTOP = 7;
     private static final int STATE_STOPPED = 3;
     private static final String TAG;
-    private static final int TimeToWaitBeforeLowBRStreamsEnabled = 15000;
+    private static int TimeToWaitBeforeLowBRStreamsEnabled = 0;
     private static final int TimeToWaitBeforeShutdown = 30000;
     private static final int TimeToWaitBeforeUnmute = 10000;
     private boolean ignoreErrorsWhileActionId12IsProcessed;
@@ -100,7 +112,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private long mBookmark;
     private boolean mBufferingCompleted;
     private PlayerAgent$CloseTimeoutTask mCloseTimeoutTask;
-    private BandwidthDelayedBifDownload mDelayedBifDowloadFor6733;
+    private BandwidthDelayedBifDownload mDelayedBifDowloadForDataSaver;
     private boolean mForcedRebuffer;
     private int mFuzz;
     private MediaPlayerHelper mHelper;
@@ -116,12 +128,14 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private Nrdp mNrdp;
     private PlayContext mPlayContext;
     private PlayParamsReceiver mPlayParamsRecvr;
+    private PlaybackVolumeMetric mPlaybackVolumeMetric;
     private ExecutorService mPlayerExecutor;
     private IPlayerFileCache mPlayerFileManager;
     private PlayerListenerManager mPlayerListenerManager;
     private PlayerType mPlayerType;
     private int mRelativeSeekPosition;
     private boolean mScreenOnWhilePlaying;
+    private long mStartPlayPositionInTitleInMs;
     private PlayerAgent$StartPlayTimeoutTask mStartPlayTimeoutTask;
     private volatile int mState;
     private boolean mStayAwake;
@@ -129,8 +143,10 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private SubtitleDownloadManager mSubtitles;
     private Surface mSurface;
     private Timer mTimer;
+    private AtomicBoolean mUpdatePlaybackVolumeMetric;
     private final BroadcastReceiver mUserAgentReceiver;
     private final PowerManager$WakeLock mWakeLock;
+    private String mXid;
     private boolean muted;
     private final Runnable onCloseRunnable;
     private final Runnable onOpenRunnable;
@@ -153,6 +169,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     static {
         TAG = PlayerAgent.class.getSimpleName();
+        PlayerAgent.TimeToWaitBeforeLowBRStreamsEnabled = 15000;
         PlayerAgent.MaxBRThreshold = 20000;
     }
     
@@ -171,6 +188,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.toOpenAfterClose = false;
         this.toCancelOpen = false;
         this.mAudioBitrateRange = new AudioBitrateRange(0, 64);
+        this.mUpdatePlaybackVolumeMetric = new AtomicBoolean(false);
         this.onOpenRunnable = new PlayerAgent$1(this);
         this.onPlayRunnable = new PlayerAgent$2(this);
         this.onSeekRunnable = new PlayerAgent$3(this);
@@ -188,8 +206,8 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 if (playoutMetadata.targetBitRate >= 500) {
                     return true;
                 }
-                if (this.mDelayedBifDowloadFor6733 != null && BandwidthSaving.isBWSavingEnabledForPlay(this.getContext(), this.getConfigurationAgent().getBWSaveConfigData(), this.getConfigurationAgent().shouldForceBwSettingsInWifi())) {
-                    return this.mDelayedBifDowloadFor6733.shouldDownloadBif(this.isBufferingCompleted());
+                if (this.mDelayedBifDowloadForDataSaver != null && BandwidthUtility.shouldDelayBifForPlay(this.getContext())) {
+                    return this.mDelayedBifDowloadForDataSaver.shouldDownloadBif(this.isBufferingCompleted());
                 }
             }
         }
@@ -214,7 +232,16 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 Log.d(PlayerAgent.TAG, "Bytes Rx: " + n);
             }
             this.mMedia.setBytesReport(n2, n);
-            this.mMedia.close();
+            final String audioSinkType = this.getAudioSinkType();
+            if (Log.isLoggable()) {
+                Log.d(PlayerAgent.TAG, "has audioSinkType: " + audioSinkType);
+            }
+            if (this.mPlaybackVolumeMetric == null) {
+                Log.w(PlayerAgent.TAG, "playbackVolumeMetric is null, create a new one even if may not be correct if we reeleased media stream when loosing focus");
+                new PlaybackVolumeMetric(this.getContext());
+            }
+            this.mUpdatePlaybackVolumeMetric.set(false);
+            this.mMedia.close(audioSinkType, this.mPlaybackVolumeMetric);
             this.mNrdp.getLog().flush();
         }
     }
@@ -230,6 +257,148 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             default1 = SubtitleConfiguration.DEFAULT;
         }
         return default1;
+    }
+    
+    @SuppressLint({ "NewApi" })
+    private String getAudioSinkType() {
+        int n = 0;
+        if (this.getContext() != null) {
+            final AudioManager audioManager = (AudioManager)this.getContext().getSystemService("audio");
+            if (AndroidUtils.getAndroidVersion() > 22) {
+                final AudioDeviceInfo[] devices = audioManager.getDevices(2);
+                if (devices == null || devices.length == 0) {
+                    return PlayerAgent$AudioSinkType.AUDIOSINK_DEAULT.getDecriptionString();
+                }
+                final int length = devices.length;
+                int i = 0;
+                int n2 = 0;
+                int n3 = 0;
+                int n4 = 0;
+                int n5 = 0;
+                while (i < length) {
+                    final AudioDeviceInfo audioDeviceInfo = devices[i];
+                    int n6 = n2;
+                    int n7 = n;
+                    int n8 = n3;
+                    int n9 = n4;
+                    int n10 = n5;
+                    if (audioDeviceInfo.isSink()) {
+                        n6 = n2;
+                        n7 = n;
+                        n8 = n3;
+                        n9 = n4;
+                        n10 = n5;
+                        switch (audioDeviceInfo.getType()) {
+                            default: {
+                                n10 = n5;
+                                n9 = n4;
+                                n8 = n3;
+                                n7 = n;
+                                n6 = n2;
+                                break;
+                            }
+                            case 11:
+                            case 12: {
+                                n7 = 1;
+                                n6 = n2;
+                                n8 = n3;
+                                n9 = n4;
+                                n10 = n5;
+                                break;
+                            }
+                            case 13: {
+                                n6 = 1;
+                                n7 = n;
+                                n8 = n3;
+                                n9 = n4;
+                                n10 = n5;
+                                break;
+                            }
+                            case 1:
+                            case 2: {
+                                n9 = 1;
+                                n6 = n2;
+                                n7 = n;
+                                n8 = n3;
+                                n10 = n5;
+                                break;
+                            }
+                            case 3:
+                            case 4: {
+                                n8 = 1;
+                                n6 = n2;
+                                n7 = n;
+                                n9 = n4;
+                                n10 = n5;
+                                break;
+                            }
+                            case 7:
+                            case 8: {
+                                n10 = 1;
+                                n6 = n2;
+                                n7 = n;
+                                n8 = n3;
+                                n9 = n4;
+                            }
+                            case 5:
+                            case 6:
+                            case 9:
+                            case 10: {
+                                break;
+                            }
+                        }
+                    }
+                    ++i;
+                    n2 = n6;
+                    n = n7;
+                    n3 = n8;
+                    n4 = n9;
+                    n5 = n10;
+                }
+                if (n5 != 0) {
+                    return PlayerAgent$AudioSinkType.AUDIOSINK_BT.getDecriptionString();
+                }
+                if (n3 != 0) {
+                    return PlayerAgent$AudioSinkType.AUDIOSINK_HEADPHONE.getDecriptionString();
+                }
+                if (n2 != 0) {
+                    return PlayerAgent$AudioSinkType.AUDIOSINK_DOCK.getDecriptionString();
+                }
+                if (n != 0) {
+                    return PlayerAgent$AudioSinkType.AUDIOSINK_USB.getDecriptionString();
+                }
+                if (n4 != 0) {
+                    return PlayerAgent$AudioSinkType.AUDIOSINK_BUILTIN.getDecriptionString();
+                }
+                return PlayerAgent$AudioSinkType.AUDIOSINK_OTHERS.getDecriptionString();
+            }
+            else {
+                if (audioManager.isBluetoothA2dpOn()) {
+                    return PlayerAgent$AudioSinkType.AUDIOSINK_BT.getDecriptionString();
+                }
+                if (audioManager.isBluetoothScoOn()) {
+                    return PlayerAgent$AudioSinkType.AUDIOSINK_BT.getDecriptionString();
+                }
+                if (audioManager.isSpeakerphoneOn()) {
+                    return PlayerAgent$AudioSinkType.AUDIOSINK_BUILTIN.getDecriptionString();
+                }
+                if (audioManager.isWiredHeadsetOn()) {
+                    return PlayerAgent$AudioSinkType.AUDIOSINK_HEADPHONE.getDecriptionString();
+                }
+            }
+        }
+        return PlayerAgent$AudioSinkType.AUDIOSINK_DEAULT.getDecriptionString();
+    }
+    
+    private long getPreferredPeakBpsForLogging() {
+        long n;
+        if (PlayerAgent.MaxBRThreshold != 20000) {
+            n = PlayerAgent.MaxBRThreshold + 100;
+        }
+        else {
+            n = PlayerAgent.MaxBRThreshold;
+        }
+        return n * 1000L;
     }
     
     private void handleAudioTrackChanged(final AudioTrackChanged audioTrackChanged) {
@@ -313,14 +482,10 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     private void handleGenericMediaEvent(final GenericMediaEvent genericMediaEvent) {
         final String type = genericMediaEvent.getType();
-        if (IMedia$MediaEventEnum.media_openComplete.getName().equalsIgnoreCase(type)) {
-            this.handlePrepare();
+        if (IMedia$MediaEventEnum.media_endOfStream.getName().equalsIgnoreCase(type)) {
+            this.handleEndOfPlayback();
         }
         else {
-            if (IMedia$MediaEventEnum.media_endOfStream.getName().equalsIgnoreCase(type)) {
-                this.handleEndOfPlayback();
-                return;
-            }
             if (IMedia$MediaEventEnum.media_bufferingComplete.getName().equalsIgnoreCase(type)) {
                 this.handleBufferingComplete();
                 return;
@@ -388,7 +553,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     }
     // monitorexit(playerListenerManager)
     
-    private void handlePrepare() {
+    private void handlePrepare(final OpenComplete openComplete) {
         synchronized (this) {
             if (this.preparedCompleted) {
                 Log.w(PlayerAgent.TAG, "openComplete already executed");
@@ -397,10 +562,11 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 Log.d(PlayerAgent.TAG, "handle openComplete starts...");
                 this.preparedCompleted = true;
                 if (!this.toCancelOpen) {
+                    this.mXid = openComplete.getSessionId();
                     Log.d(PlayerAgent.TAG, "handle openComplete notifying client");
-                    this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerPrepareHandler(), new Object[0]);
+                    this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerPrepareHandler(), openComplete.getWatermark());
                     if (Log.isLoggable()) {
-                        Log.d(PlayerAgent.TAG, "MEDIA_SET_VIDEO_SIZE 5, w " + this.mMedia.getVideoWidth() + ", h " + this.mMedia.getVideoHeight());
+                        Log.d(PlayerAgent.TAG, "MEDIA_SET_VIDEO_SIZE 5, w " + this.mMedia.getVideoWidth() + ", h " + this.mMedia.getVideoHeight() + ", watermark " + openComplete.getWatermark());
                     }
                     Log.d(PlayerAgent.TAG, "handle openComplete end");
                 }
@@ -409,70 +575,89 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     }
     
     private void handleStatechanged(final Statechanged statechanged) {
+    Label_0068_Outer:
         while (true) {
-            Label_0159: {
-                Label_0129: {
-                    Label_0103: {
-                        synchronized (this) {
-                            switch (statechanged.getState()) {
-                                case 0: {
-                                    Log.d(PlayerAgent.TAG, "State OPENING");
-                                    if (this.mState != 0) {
-                                        this.transitToOpeningState();
-                                        this.mState = 0;
+            boolean b = false;
+            while (true) {
+            Label_0230:
+                while (true) {
+                    Label_0227: {
+                        Label_0197: {
+                            Label_0167: {
+                                Label_0141: {
+                                    synchronized (this) {
+                                        switch (statechanged.getState()) {
+                                            case 0: {
+                                                Log.d(PlayerAgent.TAG, "State OPENING");
+                                                if (this.mState != 0) {
+                                                    this.transitToOpeningState();
+                                                    this.mState = 0;
+                                                }
+                                                final Context context = this.getContext();
+                                                if (this.mState != 2 && this.mState != 3) {
+                                                    this.notifyWidgetServiceOfPlayState(context, b, this.mMovieId);
+                                                    return;
+                                                }
+                                                break Label_0230;
+                                            }
+                                            case 1: {
+                                                break;
+                                            }
+                                            case 2: {
+                                                break Label_0141;
+                                            }
+                                            case 3: {
+                                                break Label_0167;
+                                            }
+                                            case 4: {
+                                                break Label_0197;
+                                            }
+                                            default: {
+                                                break Label_0227;
+                                            }
+                                        }
                                     }
-                                    return;
+                                    Log.d(PlayerAgent.TAG, "State PLAYING");
+                                    if (this.mState != 1) {
+                                        this.mState = 1;
+                                        continue Label_0068_Outer;
+                                    }
+                                    continue Label_0068_Outer;
                                 }
-                                case 1: {
-                                    break;
+                                Log.d(PlayerAgent.TAG, "State PAUSED");
+                                if (this.mState != 2) {
+                                    this.mState = 2;
+                                    continue Label_0068_Outer;
                                 }
-                                case 2: {
-                                    break Label_0103;
-                                }
-                                case 3: {
-                                    break Label_0129;
-                                }
-                                case 4: {
-                                    break Label_0159;
-                                }
-                                default: {
-                                    return;
-                                }
+                                continue Label_0068_Outer;
                             }
+                            Log.d(PlayerAgent.TAG, "State STOPPED");
+                            if (this.mState != 3) {
+                                this.transitToStoppedState();
+                                this.mState = 3;
+                                continue Label_0068_Outer;
+                            }
+                            continue Label_0068_Outer;
                         }
-                        Log.d(PlayerAgent.TAG, "State PLAYING");
-                        if (this.mState != 1) {
-                            this.mState = 1;
-                            return;
+                        Log.d(PlayerAgent.TAG, "State CLOSED");
+                        if (this.mState != 4) {
+                            this.transitToClosedState();
+                            this.mState = 4;
+                            continue Label_0068_Outer;
                         }
-                        return;
+                        continue Label_0068_Outer;
                     }
-                    Log.d(PlayerAgent.TAG, "State PAUSED");
-                    if (this.mState != 2) {
-                        this.mState = 2;
-                        return;
-                    }
-                    return;
+                    continue Label_0068_Outer;
                 }
-                Log.d(PlayerAgent.TAG, "State STOPPED");
-                if (this.mState != 3) {
-                    this.transitToStoppedState();
-                    this.mState = 3;
-                    return;
-                }
-                return;
-            }
-            Log.d(PlayerAgent.TAG, "State CLOSED");
-            if (this.mState != 4) {
-                this.transitToClosedState();
-                this.mState = 4;
+                b = true;
+                continue;
             }
         }
     }
     
     private void handleSubtitleData(final SubtitleData subtitleData) {
         Log.d(PlayerAgent.TAG, "MEDIA_SUBTITLE_DATA 100");
-        this.mSubtitles.changeSubtitle(subtitleData, this.mMedia.getDisplayAspectRatio(), this.mBookmark);
+        this.mSubtitles.changeSubtitle(subtitleData, this.mMedia.getDisplayAspectRatio(), this.mBookmark, this.mStartPlayPositionInTitleInMs);
     }
     
     private void handleSubtitleUpdate(final int n) {
@@ -533,7 +718,31 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             this.startBif();
         }
         this.handleSubtitleUpdate(n);
+        this.handleVolumeChange();
         this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnUpdatePtsHandler(), n);
+    }
+    
+    private void handleVolumeChange() {
+        if (!this.mUpdatePlaybackVolumeMetric.get()) {
+            Log.w(PlayerAgent.TAG, "Playback is not in progress, do not update volume!");
+            return;
+        }
+        final PlaybackVolumeMetric mPlaybackVolumeMetric = this.mPlaybackVolumeMetric;
+        if (mPlaybackVolumeMetric == null) {
+            Log.e(PlayerAgent.TAG, "handleVolumeChange:: This should not happen, playback metric should be created on open()");
+            this.mPlaybackVolumeMetric = new PlaybackVolumeMetric(this.getContext());
+            return;
+        }
+        final PlaybackVolumeMetric mPlaybackVolumeMetric2 = new PlaybackVolumeMetric(this.getContext());
+        if (mPlaybackVolumeMetric2.equals(this.mPlaybackVolumeMetric)) {
+            Log.d(PlayerAgent.TAG, "handleVolumeChange:: no change");
+            return;
+        }
+        if (Log.isLoggable()) {
+            Log.d(PlayerAgent.TAG, "handleVolumeChange:: change from " + mPlaybackVolumeMetric.getVolumeMetric() + " to " + mPlaybackVolumeMetric2.getVolumeMetric());
+        }
+        this.mMedia.volumeChange(mPlaybackVolumeMetric, mPlaybackVolumeMetric2);
+        this.mPlaybackVolumeMetric = mPlaybackVolumeMetric2;
     }
     
     private boolean isMPPlayerType() {
@@ -557,6 +766,13 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                 }
             }
         }
+    }
+    
+    private void notifyWidgetServiceOfPlayState(final Context context, final boolean b, final long n) {
+        if (Log.isLoggable()) {
+            Log.d(PlayerAgent.TAG, String.format(" notifyWidgetServiceOfPlayState - inPause:%b, playableId:%s", b, n));
+        }
+        PreAppAgentDataHandler.notifyPServiceOfPlayState(context, b, String.valueOf(n));
     }
     
     private void playWithBookmarkCheck() {
@@ -601,10 +817,13 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         }
         this.mBookmark = 0L;
         this.preparedCompleted = false;
+        this.mXid = "";
         this.splashScreenRemoved = false;
         this.seekedToPosition = 0;
         this.mBufferingCompleted = false;
         this.pendingError = null;
+        this.mPlaybackVolumeMetric = null;
+        this.mUpdatePlaybackVolumeMetric.set(false);
         this.muteAudio(false);
         this.clearBifs();
     }
@@ -631,6 +850,63 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_UNPAUSED");
         intent.addCategory("com.netflix.mediaclient.intent.category.PLAYER");
         LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(intent);
+    }
+    
+    private void reportSubtitleQoeIfSubtitleIsChanged(final Subtitle subtitle) {
+        while (true) {
+            while (true) {
+                Label_0166: {
+                    Label_0153: {
+                        synchronized (this) {
+                            if (this.shouldReportSubtitleQoe(subtitle)) {
+                                if (this.mSubtitles == null) {
+                                    Log.e(PlayerAgent.TAG, "Subtitles are null, can not get parser!");
+                                }
+                                else {
+                                    final SubtitleParser subtitleParser = this.mSubtitles.getSubtitleParser();
+                                    if (subtitleParser == null) {
+                                        break Label_0153;
+                                    }
+                                    final int numberOfSubtitlesExpectedToBeDisplayed = subtitleParser.getNumberOfSubtitlesExpectedToBeDisplayed();
+                                    final int numberOfDisplayedSubtitles = subtitleParser.getNumberOfDisplayedSubtitles();
+                                    final SubtitleUrl subtitleUrl = subtitleParser.getSubtitleUrl();
+                                    if (subtitleUrl == null) {
+                                        break Label_0166;
+                                    }
+                                    final String downloadableId = subtitleUrl.getDownloadableId();
+                                    if (!StringUtils.isNotEmpty(downloadableId)) {
+                                        break Label_0166;
+                                    }
+                                    if (Log.isLoggable()) {
+                                        Log.d(PlayerAgent.TAG, "QoE: for subtitle " + downloadableId + " we where expected to show " + numberOfSubtitlesExpectedToBeDisplayed + " and we showed " + numberOfDisplayedSubtitles + " subtitles.");
+                                    }
+                                    this.reportSubtitleQoe(downloadableId, numberOfSubtitlesExpectedToBeDisplayed, numberOfDisplayedSubtitles);
+                                }
+                            }
+                            return;
+                        }
+                    }
+                    Log.w(PlayerAgent.TAG, "Parser is null, nothing to report!");
+                    return;
+                }
+                final String downloadableId = "";
+                continue;
+            }
+        }
+    }
+    
+    private boolean shouldReportSubtitleQoe(final Subtitle subtitle) {
+        final Subtitle currentSubtitleTrack = this.mMedia.getCurrentSubtitleTrack();
+        if (currentSubtitleTrack == null) {
+            Log.d(PlayerAgent.TAG, "isNewSubtitle: current subtitle is null, can not report anything...");
+            return false;
+        }
+        if (currentSubtitleTrack.equals(subtitle)) {
+            Log.d(PlayerAgent.TAG, "isNewSubtitle: subtitle is not changed, do not report anything...");
+            return false;
+        }
+        Log.d(PlayerAgent.TAG, "isNewSubtitle: subtitle is changed, report QoE...");
+        return true;
     }
     
     private void startBif() {
@@ -669,8 +945,11 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             }
             this.reloadPlayer();
             this.clearBifs();
+            this.mUpdatePlaybackVolumeMetric.set(true);
+            final PlaybackVolumeMetric mPlaybackVolumeMetric = new PlaybackVolumeMetric(this.getContext());
             this.mMedia.setStreamingQoe(this.getConfigurationAgent().getStreamingQoe(), this.getConfigurationAgent().enableHTTPSAuth(), this.isMPPlayerType());
-            this.mMedia.open(this.mMovieId, this.mPlayContext, ConnectivityUtils.getCurrentNetType(this.getContext()), this.mBookmark);
+            this.mMedia.open(this.mMovieId, this.mPlayContext, ConnectivityUtils.getCurrentNetType(this.getContext()), this.mBookmark, this.getConfigurationAgent().isPreviewContentEnabled(), mPlaybackVolumeMetric, PlayerAgent.MaxBRThreshold * 1000);
+            this.mPlaybackVolumeMetric = mPlaybackVolumeMetric;
             return;
         }
         this.release();
@@ -690,10 +969,17 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         if (this.mState == 0) {
             this.mMedia.setAudioBitrateRange(this.mAudioBitrateRange);
             if (this.isMPPlayerType()) {
-                this.mMedia.setVideoBitrateRange(200, PlayerAgent.MaxBRThreshold);
+                if (ConnectivityUtils.isNetworkTypeCellular(this.getContext()) && CoppolaUtils.isLowBitratePlaybackOnMobileNetwork(this.getContext()) && DeviceUtils.isPortrait(this.getContext())) {
+                    this.mMedia.setVideoBitrateRange(0, 100);
+                    Log.i(PlayerAgent.TAG, "Pushing 100kbps bitrate for faster playback launch at Coppola portrait MDP in low bitrate test cell");
+                    PlayerAgent.TimeToWaitBeforeLowBRStreamsEnabled = 7000;
+                }
+                else {
+                    this.mMedia.setVideoBitrateRange(200, PlayerAgent.MaxBRThreshold);
+                }
                 if (this.mTimer != null) {
                     this.mInitVBRTimeoutTask = new PlayerAgent$InitialVideoBitrateRangeTimeoutTask(this, null);
-                    this.mTimer.schedule(this.mInitVBRTimeoutTask, 15000L);
+                    this.mTimer.schedule(this.mInitVBRTimeoutTask, PlayerAgent.TimeToWaitBeforeLowBRStreamsEnabled);
                 }
             }
             this.mMedia.setVideoResolutionRange(this.getConfigurationAgent().getVideoResolutionRange());
@@ -794,6 +1080,8 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     
     @Override
     public void close() {
+        this.mUpdatePlaybackVolumeMetric.set(false);
+        this.mPlaybackVolumeMetric = new PlaybackVolumeMetric(this.getContext());
         Log.d(PlayerAgent.TAG, "close()");
         this.mSurface = null;
         if (this.mSubtitles != null) {
@@ -904,24 +1192,30 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     @Override
     public int getCurrentProgress() {
         final int currentPosition = this.mMedia.getCurrentPosition();
-        int seekedToPosition;
         if (currentPosition < this.seekedToPosition) {
-            seekedToPosition = this.seekedToPosition;
-        }
-        else {
-            seekedToPosition = currentPosition;
-            if (!this.validPtsRecieved) {
-                if (this.prevEndPosition - 2000 > this.seekedToPosition && currentPosition >= this.seekedToPosition + 1500) {
-                    if (Log.isLoggable()) {
-                        Log.d(PlayerAgent.TAG, "pts [" + currentPosition + "] >= prevEndPosition [" + this.prevEndPosition + "] , invlalid PTS");
-                    }
-                    return this.seekedToPosition;
+            final int abs = Math.abs(this.seekedToPosition - currentPosition);
+            if (abs <= 60000) {
+                if (Log.isLoggable()) {
+                    Log.w(PlayerAgent.TAG, "Stick to seekToPosition" + this.seekedToPosition);
                 }
-                this.validPtsRecieved = true;
-                return currentPosition;
+                return this.seekedToPosition;
+            }
+            if (Log.isLoggable()) {
+                Log.d(PlayerAgent.TAG, "Gap is bigger than 1 minute" + abs);
             }
         }
-        return seekedToPosition;
+        else if (!this.validPtsRecieved) {
+            if (this.prevEndPosition - 2000 > this.seekedToPosition && currentPosition >= this.seekedToPosition + 1500) {
+                if (Log.isLoggable()) {
+                    Log.d(PlayerAgent.TAG, "pts [" + currentPosition + "] >= prevEndPosition [" + this.prevEndPosition + "] , invlalid PTS");
+                }
+                return this.seekedToPosition;
+            }
+            Log.d(PlayerAgent.TAG, "Valid PTS was received");
+            this.validPtsRecieved = true;
+            return currentPosition;
+        }
+        return currentPosition;
     }
     
     @Override
@@ -978,12 +1272,17 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         return this.mMedia.getVideoWidth();
     }
     
+    @Override
+    public String getXid() {
+        return this.mXid;
+    }
+    
     public void handleConnectivityChange(final Intent intent) {
         if (ConnectivityUtils.isNetworkTypeCellular(this.getContext())) {
-            if (BandwidthSaving.isBWSavingEnabledForUser(this.getConfigurationAgent().getBWSaveConfigData())) {
-                final int maxBandwidth = BandwidthSaving.getMaxBandwidth(this.getContext(), this.getConfigurationAgent().getBWSaveConfigData());
-                if (maxBandwidth > 0 && maxBandwidth < PlayerAgent.MaxBRThreshold) {
-                    this.setVideoBitrateRange(0, maxBandwidth);
+            if (BandwidthUtility.shouldLimitCellularVideoBitrate(this.getContext())) {
+                final int cellularVideoBitrateKbps = BandwidthUtility.getCellularVideoBitrateKbps(this.getContext(), this.getConfigurationAgent().getBWSaveConfigData());
+                if (cellularVideoBitrateKbps > 0 && cellularVideoBitrateKbps < PlayerAgent.MaxBRThreshold) {
+                    this.setVideoBitrateRange(0, cellularVideoBitrateKbps);
                 }
             }
             this.setVideoStreamingBufferSize(150000);
@@ -1021,29 +1320,51 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     }
     
     @Override
-    public void open(final long mMovieId, final PlayContext mPlayContext, final long mBookmark) {
-        synchronized (this) {
-            if (Log.isLoggable()) {
-                Log.d(PlayerAgent.TAG, "Open called movieId:" + mMovieId + " trackId:" + mPlayContext.getTrackId() + " bookmark:" + mBookmark);
-            }
-            if (BandwidthSaving.isBWSavingEnabledForPlay(this.getContext(), this.getConfigurationAgent().getBWSaveConfigData(), this.getConfigurationAgent().shouldForceBwSettingsInWifi())) {
-                this.mDelayedBifDowloadFor6733 = new BandwidthDelayedBifDownload();
-                int maxBRThreshold = BandwidthSaving.getMaxBandwidth(this.getContext(), this.getConfigurationAgent().getBWSaveConfigData());
-                Log.d(PlayerAgent.TAG, String.format("nf_bw bwOverride: %d,MaxBRThreshold : %d ", maxBRThreshold, PlayerAgent.MaxBRThreshold));
-                if (maxBRThreshold <= 0) {
-                    maxBRThreshold = PlayerAgent.MaxBRThreshold;
+    public void open(final long mMovieId, final PlayContext mPlayContext, final long n) {
+    Label_0203_Outer:
+        while (true) {
+        Label_0084_Outer:
+            while (true) {
+                while (true) {
+                    int maxBRThreshold = 0;
+                    Label_0257: {
+                        synchronized (this) {
+                            while (true) {
+                                if (!BandwidthUtility.isBWSavingEnabledForPlay(this.getContext())) {
+                                    PlayerAgent.MaxBRThreshold = 20000;
+                                    if (Log.isLoggable()) {
+                                        Log.d(PlayerAgent.TAG, String.format("nf_bw MaxBRThreshold : %d ", PlayerAgent.MaxBRThreshold));
+                                    }
+                                    this.mMovieId = mMovieId;
+                                    this.mPlayContext = mPlayContext;
+                                    this.mBookmark = n;
+                                    this.mStartPlayPositionInTitleInMs = n;
+                                    if (Log.isLoggable()) {
+                                        Log.d(PlayerAgent.TAG, "Open called movieId:" + mMovieId + " trackId:" + mPlayContext.getTrackId() + " bookmark:" + n + " StartPlayPositionInTitleInMs:" + this.mStartPlayPositionInTitleInMs);
+                                    }
+                                    this.mPlayerExecutor.execute(this.onOpenRunnable);
+                                    this.reportPlaybackStarted();
+                                    return;
+                                }
+                                this.mDelayedBifDowloadForDataSaver = new BandwidthDelayedBifDownload();
+                                maxBRThreshold = BandwidthUtility.getCellularVideoBitrateKbps(this.getContext(), this.getConfigurationAgent().getBWSaveConfigData());
+                                if (Log.isLoggable()) {
+                                    Log.d(PlayerAgent.TAG, String.format("nf_bw bwOverride: %d,MaxBRThreshold : %d ", maxBRThreshold, PlayerAgent.MaxBRThreshold));
+                                }
+                                break Label_0257;
+                                maxBRThreshold = PlayerAgent.MaxBRThreshold;
+                                PlayerAgent.MaxBRThreshold = maxBRThreshold;
+                                continue Label_0203_Outer;
+                            }
+                        }
+                    }
+                    if (maxBRThreshold > 0) {
+                        continue;
+                    }
+                    break;
                 }
-                PlayerAgent.MaxBRThreshold = maxBRThreshold;
+                continue Label_0084_Outer;
             }
-            else {
-                PlayerAgent.MaxBRThreshold = 20000;
-                Log.d(PlayerAgent.TAG, String.format("nf_bw MaxBRThreshold : %d ", PlayerAgent.MaxBRThreshold));
-            }
-            this.mMovieId = mMovieId;
-            this.mPlayContext = mPlayContext;
-            this.mBookmark = mBookmark;
-            this.mPlayerExecutor.execute(this.onOpenRunnable);
-            this.reportPlaybackStarted();
         }
     }
     
@@ -1227,17 +1548,27 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.mPlayerListenerManager.removePlayerListener(player$PlayerListener);
     }
     
-    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b) {
+    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Status status) {
         if (Log.isLoggable()) {
-            Log.e(PlayerAgent.TAG, "Failed to download subtitles metadata from " + s + ", because " + media$SubtitleFailure);
+            if (status != null) {
+                Log.e(PlayerAgent.TAG, "Failed to download subtitles metadata from " + s + ", because " + media$SubtitleFailure + ", details: " + status);
+            }
+            else {
+                Log.e(PlayerAgent.TAG, "Failed to download subtitles metadata from " + s + ", because " + media$SubtitleFailure);
+            }
         }
         this.getService().getClientLogging().getErrorLogging().logHandledException("Failed to download subtitle metadata");
-        this.mMedia.reportFailedSubtitle(s, subtitleUrl, media$SubtitleFailure, b);
+        this.mMedia.reportFailedSubtitle(s, subtitleUrl, media$SubtitleFailure, b, status);
         this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleFailedHandler(), new Object[0]);
     }
     
     public void reportHandledException(final Exception ex) {
         this.getService().getClientLogging().getErrorLogging().logHandledException(ex);
+    }
+    
+    @Override
+    public void reportSubtitleQoe(final String s, final int n, final int n2) {
+        this.mMedia.reportSubtitleQoe(s, n, n2);
     }
     
     @Override
@@ -1265,13 +1596,17 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     }
     
     @Override
-    public boolean selectTracks(final AudioSource audioSource, final Subtitle subtitle) {
+    public boolean selectTracks(final AudioSource audioSource, final Subtitle subtitle, final boolean b) {
         synchronized (this) {
             if (Log.isLoggable()) {
                 Log.d(PlayerAgent.TAG, "Selected track Audio: " + audioSource);
                 Log.d(PlayerAgent.TAG, "Selected track Subtitle: " + subtitle);
             }
             this.mMedia.selectTracks(audioSource, subtitle);
+            if (b) {
+                this.reportSubtitleQoeIfSubtitleIsChanged(subtitle);
+                this.mStartPlayPositionInTitleInMs = this.mMedia.getCurrentPosition();
+            }
             if (subtitle == null) {
                 Log.d(PlayerAgent.TAG, "Removing subtitles");
             }

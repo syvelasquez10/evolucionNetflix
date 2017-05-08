@@ -7,12 +7,15 @@ package com.netflix.mediaclient.service.falkor;
 import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.util.CoppolaUtils;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import java.util.Map;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
@@ -63,7 +66,7 @@ class FalkorAgent$1 extends BroadcastReceiver
                 if ("com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP".equals(action)) {
                     Log.i("FalkorAgent", "Refreshing CW for LOCAL_PLAYER_PLAY_STOP...");
                     this.this$0.cmp.updateBookmarkPosition(Asset.fromIntent(intent));
-                    this.this$0.refreshCw();
+                    this.this$0.refreshCw(true);
                 }
             }
         }

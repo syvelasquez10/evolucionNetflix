@@ -6,5 +6,7 @@ package com.netflix.mediaclient.servicemgr.interface_.details;
 
 public interface InterestingVideoDetails extends VideoDetails
 {
+    String getInterestingSmallUrl();
+    
     String getInterestingUrl();
 }

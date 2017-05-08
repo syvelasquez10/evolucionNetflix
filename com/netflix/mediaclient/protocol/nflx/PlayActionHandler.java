@@ -7,9 +7,8 @@ package com.netflix.mediaclient.protocol.nflx;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.IMdx;
-import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.servicemgr.Asset;
-import com.netflix.mediaclient.ui.player.PlayerActivity;
+import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import org.json.JSONObject;
@@ -94,7 +93,7 @@ class PlayActionHandler extends BaseNflxHandler
     protected void play(final Playable playable, final String dialUuidAsCurrentTarget, final PlayContext playContext) {
         if (StringUtils.isEmpty(dialUuidAsCurrentTarget)) {
             Log.d("NflxHandler", "Starting local playback");
-            PlayerActivity.playVideo(this.mActivity, playable, playContext);
+            PlaybackLauncher.playVideo(this.mActivity, playable, playContext);
             return;
         }
         if (Log.isLoggable()) {
@@ -108,12 +107,12 @@ class PlayActionHandler extends BaseNflxHandler
             Log.d("NflxHandler", "MDX exist, check if target is available");
             if (mdx.setDialUuidAsCurrentTarget(dialUuidAsCurrentTarget)) {
                 this.handleHomeAction();
-                PlaybackLauncher.startPlaybackForceRemote(this.mActivity, Asset.create(playable, playContext, !PlayerActivity.PIN_VERIFIED));
+                PlaybackLauncher.startPlaybackForceRemote(this.mActivity, Asset.create(playable, playContext, false));
                 return;
             }
             Log.d("NflxHandler", "MDX does not know target dial UUID, go local playback");
         }
-        PlayerActivity.playVideo(this.mActivity, playable, playContext);
+        PlaybackLauncher.playVideo(this.mActivity, playable, playContext);
     }
     
     protected void playVideo(final String s, final VideoType videoType, final String s2, final String s3) {
@@ -121,11 +120,11 @@ class PlayActionHandler extends BaseNflxHandler
             Log.v("NflxHandler", String.format("Playing video: %s, videoType: %s", s, videoType));
         }
         if (VideoType.MOVIE.equals(videoType)) {
-            this.mActivity.getServiceManager().getBrowse().fetchMovieDetails(s, new PlayActionHandler$1FetchPlayableCallback(s2));
+            this.mActivity.getServiceManager().getBrowse().fetchMovieDetails(s, null, new PlayActionHandler$1FetchPlayableCallback(s2));
         }
         else {
             if (VideoType.EPISODE.equals(videoType)) {
-                this.mActivity.getServiceManager().getBrowse().fetchEpisodeDetails(s, new PlayActionHandler$1FetchPlayableCallback(s2));
+                this.mActivity.getServiceManager().getBrowse().fetchEpisodeDetails(s, null, new PlayActionHandler$1FetchPlayableCallback(s2));
                 return;
             }
             if (VideoType.SHOW.equals(videoType)) {

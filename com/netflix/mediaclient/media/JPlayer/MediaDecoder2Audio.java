@@ -6,6 +6,8 @@ package com.netflix.mediaclient.media.JPlayer;
 
 import java.util.concurrent.TimeUnit;
 import android.media.AudioTimestamp;
+import android.media.AudioFormat$Builder;
+import android.media.AudioAttributes$Builder;
 import com.netflix.mediaclient.Log;
 import java.nio.ByteBuffer;
 import android.media.MediaCodec$BufferInfo;
@@ -60,6 +62,7 @@ public class MediaDecoder2Audio extends MediaDecoderPipe2
         return this.mSampleCnt > this.mBufferSize / 2;
     }
     
+    @TargetApi(21)
     private void createAudioTrack() {
         if (this.mAudioTrack == null) {
             Log.d("MediaDecoder2Audio", "create audiotrack ... ");
@@ -67,7 +70,12 @@ public class MediaDecoder2Audio extends MediaDecoderPipe2
             if (this.mBufferSize < 32768) {
                 this.mBufferSize = 32768;
             }
-            this.mAudioTrack = new AudioTrack(3, this.mSampleRate, this.mChannelConfig, 2, this.mBufferSize, 1);
+            if (AndroidUtils.getAndroidVersion() >= 21) {
+                this.mAudioTrack = new AudioTrack(new AudioAttributes$Builder().setUsage(1).setContentType(3).build(), new AudioFormat$Builder().setChannelMask(this.mChannelConfig).setEncoding(2).setSampleRate(this.mSampleRate).build(), this.mBufferSize, 1, 0);
+            }
+            else {
+                this.mAudioTrack = new AudioTrack(3, this.mSampleRate, this.mChannelConfig, 2, this.mBufferSize, 1);
+            }
             if (Log.isLoggable()) {
                 Log.d("MediaDecoder2Audio", "mBufferSize = " + this.mBufferSize);
             }

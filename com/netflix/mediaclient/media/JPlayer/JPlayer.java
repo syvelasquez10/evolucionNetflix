@@ -42,6 +42,7 @@ public class JPlayer
     private Surface mSurface2;
     private SurfaceHolder mSurfaceHolder;
     private boolean mSwitchingPending;
+    private Thread mVideoConfigureThread;
     private MediaDecoderPipe mVideoPipe;
     private MediaDecoderPipe mVideoPipe1;
     private MediaDecoderPipe mVideoPipe2;
@@ -108,7 +109,24 @@ public class JPlayer
     
     private void configureVideoPipe() {
         Log.d("NF_JPlayer", "start video pipe");
-        new Thread(new JPlayer$1(this), "configure video pipe").start();
+        this.makeSureConfigureThreadStopped();
+        (this.mVideoConfigureThread = new Thread(new JPlayer$1(this), "configure video pipe")).setUncaughtExceptionHandler((Thread.UncaughtExceptionHandler)new JPlayer$2(this));
+        this.mVideoConfigureThread.start();
+    }
+    
+    private void makeSureConfigureThreadStopped() {
+        if (this.mVideoConfigureThread == null) {
+            return;
+        }
+        if (this.mVideoConfigureThread.isAlive()) {
+            this.mVideoConfigureThread.interrupt();
+        }
+        try {
+            this.mVideoConfigureThread.join();
+        }
+        catch (InterruptedException ex) {
+            Log.d("NF_JPlayer", "configureVideoPipe is interrupted");
+        }
     }
     
     private native int nativeGetBuffer(final byte[] p0, final boolean p1, final JPlayer$InputBufInfo p2);
@@ -203,8 +221,8 @@ public class JPlayer
                 else {
                     Log.e("NF_JPlayer", "mAudioPipe is null");
                 }
-                this.configureVideoPipe();
                 this.mState = 1;
+                this.configureVideoPipe();
                 break;
             }
         }
@@ -229,6 +247,7 @@ public class JPlayer
         this.mVideoPipe = null;
         this.mState = 0;
         this.mFlushed = false;
+        this.makeSureConfigureThreadStopped();
         Log.d("NF_JPlayer", "Stop called");
     }
     

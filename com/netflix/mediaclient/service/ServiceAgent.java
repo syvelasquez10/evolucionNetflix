@@ -151,6 +151,10 @@ public abstract class ServiceAgent
         }
     }
     
+    public boolean isInitCalled() {
+        return this.initCalled;
+    }
+    
     public boolean isReady() {
         synchronized (this) {
             return this.initErrorResult.isSucces();

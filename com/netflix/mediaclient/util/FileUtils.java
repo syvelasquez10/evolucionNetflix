@@ -352,6 +352,15 @@ public final class FileUtils
         return new String(array, charset);
     }
     
+    public static byte[] readFile(final String s) {
+        final File file = new File(s);
+        final FileInputStream fileInputStream = new FileInputStream(file);
+        final byte[] array = new byte[(int)file.length()];
+        fileInputStream.read(array);
+        fileInputStream.close();
+        return array;
+    }
+    
     public static byte[] readFileToByteArray(final File file) {
         Closeable openInputStream = null;
         try {

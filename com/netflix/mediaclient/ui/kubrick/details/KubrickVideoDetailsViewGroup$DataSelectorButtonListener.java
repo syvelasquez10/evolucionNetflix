@@ -16,11 +16,11 @@ class KubrickVideoDetailsViewGroup$DataSelectorButtonListener implements View$On
     }
     
     public void onClick(final View view) {
-        if (view.getId() == 2131624257) {
+        if (view.getId() == 2131624335) {
             ((KubrickShowDetailsFrag)((KubrickShowDetailsActivity)this.this$0.getContext()).getPrimaryFrag()).showRelatedTitles();
             this.this$0.setRelatedTextAsSelected();
         }
-        else if (view.getId() == 2131624255) {
+        else if (view.getId() == 2131624333) {
             ((KubrickShowDetailsFrag)((KubrickShowDetailsActivity)this.this$0.getContext()).getPrimaryFrag()).showCurrentSeason();
             this.this$0.setEpisodesTextAsSelected();
         }

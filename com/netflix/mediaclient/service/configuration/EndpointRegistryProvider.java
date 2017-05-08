@@ -21,7 +21,7 @@ import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 public class EndpointRegistryProvider implements ApiEndpointRegistry
 {
     private static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
-    private static final String ANDROID_ENDPOINT_FULL = "/android/3.16/api";
+    private static final String ANDROID_ENDPOINT_FULL = "/android/4.5/api";
     private static final boolean BROWSE_AUTO_REDIRECT_TRUE = true;
     private static final String BROWSE_RESP_AUTO_REDIRECT = "&routing=redirect";
     private static final String BROWSE_RESP_FORMAT = "responseFormat=json&progressive=false";
@@ -87,7 +87,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         }
         if (this.mUserAgent != null && KidsUtils.isKidsProfile(this.mUserAgent.getCurrentProfile())) {
             sb.append(this.buildUrlParam("prfType", this.mUserAgent.getCurrentProfile().getProfileType().toString()));
-            if (BrowseExperience.isKubrickKids()) {
+            if (BrowseExperience.showKidsExperience()) {
                 sb.append(this.buildUrlParam("kk", Boolean.TRUE.toString()));
             }
         }
@@ -174,7 +174,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             sb.append("http://");
         }
         sb.append(this.mEndpointHost);
-        sb.append("/android/3.16/api");
+        sb.append("/android/4.5/api");
         sb.append("?");
         sb.append("responseFormat=json&progressive=false");
         sb.append("&routing=reject");
@@ -189,7 +189,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     }
     
     public String getAppStartConfigUrl() {
-        return this.buildConfigUrl(true) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.streamingQoePqlDefault));
+        return this.buildConfigUrl(true) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.nrmInfoPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.signInConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.streamingQoePqlDefault));
     }
     
     @Override

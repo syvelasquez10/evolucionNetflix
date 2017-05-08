@@ -4,13 +4,21 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.model.leafs.social.IrisNotificationsListSummary;
+import com.netflix.falkor.BranchNode;
+import com.netflix.falkor.ModelProxy;
+import com.netflix.model.branches.FalkorIrisNotification;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$19 implements Func<IrisNotificationsListSummary>
+final class Falkor$Creator$19 implements Func<FalkorIrisNotification>
 {
+    final /* synthetic */ ModelProxy val$proxy;
+    
+    Falkor$Creator$19(final ModelProxy val$proxy) {
+        this.val$proxy = val$proxy;
+    }
+    
     @Override
-    public IrisNotificationsListSummary call() {
-        return new IrisNotificationsListSummary();
+    public FalkorIrisNotification call() {
+        return new FalkorIrisNotification(this.val$proxy);
     }
 }

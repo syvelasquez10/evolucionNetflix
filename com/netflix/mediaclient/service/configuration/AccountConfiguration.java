@@ -5,10 +5,12 @@
 package com.netflix.mediaclient.service.configuration;
 
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.webclient.model.leafs.PreviewContentConfigData;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig;
+import com.netflix.mediaclient.util.NetflixPreference;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.AccountConfigData;
@@ -29,9 +31,11 @@ public class AccountConfiguration
     }
     
     public void clear() {
-        PreferenceUtils.putStringPref(this.mContext, "accountConfig", null);
-        PreferenceUtils.putIntPref(this.mContext, "user_bw_override", -1);
-        PreferenceUtils.putIntPref(this.mContext, "user_bw_hd_override", -1);
+        final NetflixPreference netflixPreference = new NetflixPreference(this.mContext);
+        netflixPreference.putStringPref("accountConfig", null);
+        netflixPreference.putIntPref("bw_user_control_auto", -1);
+        netflixPreference.putIntPref("bw_user_manual_setting", -1);
+        netflixPreference.commit();
     }
     
     public boolean enableHTTPSAuth() {
@@ -46,14 +50,14 @@ public class AccountConfiguration
         return this.mAccountConfigData != null && this.mAccountConfigData.enableWidevineL3ABTest();
     }
     
-    public ABTestConfigData getABTestConfiguration_6538() {
+    public ABTestConfig getABTestConfiguration_6634() {
         if (this.mAccountConfigData == null) {
             return null;
         }
-        return this.mAccountConfigData.getABTestConfiguration_6538();
+        return this.mAccountConfigData.getABTestConfiguration_6634();
     }
     
-    public ABTestConfigData getABTestConfiguration_6725() {
+    public ABTestConfig getABTestConfiguration_6725() {
         if (this.mAccountConfigData == null) {
             return null;
         }
@@ -113,6 +117,13 @@ public class AccountConfiguration
         return this.mAccountConfigData.getPreAppWidgetExperience();
     }
     
+    public PreviewContentConfigData getPreviewContentConfigData() {
+        if (this.mAccountConfigData == null) {
+            return null;
+        }
+        return this.mAccountConfigData.getPreviewContentConfigData();
+    }
+    
     public int getVideoBufferSize() {
         if (this.mAccountConfigData == null) {
             return 0;
@@ -121,10 +132,11 @@ public class AccountConfiguration
     }
     
     public void persistAccountConfigOverride(final AccountConfigData mAccountConfigData) {
-        String jsonString = null;
-        if (mAccountConfigData != null) {
-            jsonString = mAccountConfigData.toJsonString();
+        if (mAccountConfigData == null) {
+            Log.e(AccountConfiguration.TAG, "accountConfig obj is null - ignore overwrite");
+            return;
         }
+        final String jsonString = mAccountConfigData.toJsonString();
         if (Log.isLoggable()) {
             Log.d(AccountConfiguration.TAG, "Persisting account config: " + jsonString);
         }
@@ -134,10 +146,6 @@ public class AccountConfiguration
     
     public boolean shouldDisableVoip() {
         return this.mAccountConfigData == null || !this.mAccountConfigData.isVoipEnabledOnAccount();
-    }
-    
-    public boolean shouldForceBwSettingsInWifi() {
-        return this.mAccountConfigData != null && this.mAccountConfigData.forceBwSettingsInWifi;
     }
     
     public boolean toDisableMcQueenV2() {

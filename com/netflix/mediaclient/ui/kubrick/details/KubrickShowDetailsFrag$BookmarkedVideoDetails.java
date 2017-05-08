@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.kubrick.details;
 
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
 import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
@@ -21,16 +22,16 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView$Adapter;
 import android.support.v7.widget.RecyclerView$LayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.Log;
 import android.widget.AdapterView$OnItemSelectedListener;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
-import com.netflix.mediaclient.android.widget.NetflixActionBar;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
+import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
@@ -48,6 +49,7 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
@@ -91,8 +93,9 @@ class KubrickShowDetailsFrag$BookmarkedVideoDetails extends KubrickVideoDetailsV
         super.updateDetails(videoDetails, provider);
         this.provider = provider;
         final String currentEpisodeId = this.this$0.showDetails.getCurrentEpisodeId();
-        if (this.this$0.manager != null && !StringUtils.isEmpty(currentEpisodeId)) {
-            this.this$0.manager.getBrowse().fetchEpisodeDetails(currentEpisodeId, new KubrickShowDetailsFrag$BookmarkedVideoDetails$FetchBookmarkCallback(this, "KubrickShowDetailsFrag"));
+        final ServiceManager serviceManager = this.this$0.getServiceManager();
+        if (serviceManager != null && !StringUtils.isEmpty(currentEpisodeId)) {
+            serviceManager.getBrowse().fetchEpisodeDetails(currentEpisodeId, null, new KubrickShowDetailsFrag$BookmarkedVideoDetails$FetchBookmarkCallback(this, "KubrickShowDetailsFrag"));
             return;
         }
         this.updateWithNoBookmark();

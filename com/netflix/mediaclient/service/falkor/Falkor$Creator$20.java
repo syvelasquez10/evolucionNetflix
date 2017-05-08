@@ -4,13 +4,13 @@
 
 package com.netflix.mediaclient.service.falkor;
 
-import com.netflix.model.leafs.originals.BillboardSummary;
+import com.netflix.model.leafs.social.IrisNotificationsListSummary;
 import com.netflix.falkor.Func;
 
-final class Falkor$Creator$20 implements Func<BillboardSummary>
+final class Falkor$Creator$20 implements Func<IrisNotificationsListSummary>
 {
     @Override
-    public BillboardSummary call() {
-        return new BillboardSummary();
+    public IrisNotificationsListSummary call() {
+        return new IrisNotificationsListSummary();
     }
 }

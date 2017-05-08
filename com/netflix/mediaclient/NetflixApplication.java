@@ -4,11 +4,6 @@
 
 package com.netflix.mediaclient;
 
-import android.util.DisplayMetrics;
-import android.content.res.Resources;
-import com.netflix.mediaclient.util.StringUtils;
-import java.util.Locale;
-import com.netflix.mediaclient.repository.UserLocale;
 import com.netflix.mediaclient.event.UIEvent;
 import android.app.Application$ActivityLifecycleCallbacks;
 import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
@@ -20,12 +15,14 @@ import android.app.PendingIntent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat$Builder;
 import com.netflix.mediaclient.util.IntentUtils;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.ui.launch.LaunchActivity;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.android.app.UserInputManager;
+import com.netflix.mediaclient.util.l10n.UserLocale;
 import java.util.concurrent.atomic.AtomicBoolean;
 import com.netflix.mediaclient.util.gfx.BitmapLruCache;
 import java.util.TimerTask;
@@ -46,6 +43,7 @@ public class NetflixApplication extends Application
     private static final String TAG = "NetflixApplication";
     private static final String TAG_LOCALE = "nf_locale";
     private static final Gson gson;
+    private static boolean isDebugToastEnabled;
     private static boolean sAactivityVisible;
     private static boolean sEnableSmartLock;
     private final long MAX_ACTIVITY_TRANSITION_TIME_MS;
@@ -55,7 +53,7 @@ public class NetflixApplication extends Application
     private TimerTask mActivityTransitionTimerTask;
     private BitmapLruCache mBitmapCache;
     private final AtomicBoolean mIsNetflixServiceReady;
-    private String mServiceLocale;
+    private UserLocale mServiceLocale;
     private boolean mSignedUpOnce;
     private final UserInputManager mUserInput;
     private boolean wasInBackground;
@@ -63,6 +61,7 @@ public class NetflixApplication extends Application
     static {
         gson = new Gson();
         NetflixApplication.sEnableSmartLock = true;
+        NetflixApplication.isDebugToastEnabled = false;
     }
     
     public NetflixApplication() {
@@ -91,6 +90,10 @@ public class NetflixApplication extends Application
     
     public static boolean isActivityVisible() {
         return NetflixApplication.sAactivityVisible;
+    }
+    
+    public static boolean isDebugToastEnabled() {
+        return NetflixApplication.isDebugToastEnabled;
     }
     
     public static boolean isSmartlockEnabled() {
@@ -140,6 +143,18 @@ public class NetflixApplication extends Application
         }
     }
     
+    private void refreshLocale(final UserLocale mServiceLocale) {
+        if (mServiceLocale == null) {
+            Log.d("nf_locale", "serviceLocale = null, exit");
+            return;
+        }
+        if (Log.isLoggable()) {
+            Log.d("nf_locale", "refreshLocale with language = " + mServiceLocale);
+        }
+        this.mServiceLocale = mServiceLocale;
+        LocalizationUtils.updateLocale(mServiceLocale.getLocale(), this);
+    }
+    
     private void registerReceiver() {
         Log.d("NetflixApplication", "Registering application broadcast receiver");
         IntentUtils.registerSafelyLocalBroadcastReceiver((Context)this, this.broadcastReceiver, "com.netflix.mediaclient.intent.category.NETFLIX_SERVICE", "com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_INIT_COMPLETE", "com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_DESTROYED");
@@ -147,7 +162,7 @@ public class NetflixApplication extends Application
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837757).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131165708, new Object[] { n })).setContentTitle(this.getString(2131165709, new Object[] { n })).setContentText(this.getString(2131165412, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837777).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131165742, new Object[] { n })).setContentTitle(this.getString(2131165743, new Object[] { n })).setContentText(this.getString(2131165418, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");
@@ -158,6 +173,10 @@ public class NetflixApplication extends Application
             return;
         }
         Log.e("NetflixApplication", "Can not send warning, notification manager is null!");
+    }
+    
+    public static void setEnableDebugToast(final boolean isDebugToastEnabled) {
+        NetflixApplication.isDebugToastEnabled = isDebugToastEnabled;
     }
     
     public static void setEnableSmartLock(final boolean b) {
@@ -216,47 +235,16 @@ public class NetflixApplication extends Application
         throw new IllegalStateException("TODO: Not implemented - move this to netflixService");
     }
     
-    public void refreshLocale(final String mServiceLocale) {
-        if (Log.isLoggable()) {
-            Log.d("nf_locale", "refreshLocale with language = " + mServiceLocale);
+    public void refreshLastKnownLocale() {
+        this.refreshLocale(this.mServiceLocale);
+    }
+    
+    public void refreshLocale(final String s) {
+        if (s == null) {
+            Log.d("nf_locale", "serviceLocale = null, exit");
+            return;
         }
-        if (mServiceLocale == null) {
-            Log.d("nf_locale", "serviceLocale = null");
-        }
-        else {
-            this.mServiceLocale = mServiceLocale;
-            final Locale locale = new UserLocale(this.mServiceLocale).getLocale();
-            final Locale default1 = Locale.getDefault();
-            if (locale.getLanguage().equals(default1.getLanguage()) && (StringUtils.isEmpty(locale.getCountry()) || locale.getCountry().equals(default1.getCountry()))) {
-                if (Log.isLoggable()) {
-                    Log.d("nf_locale", "No need to refreshLocale: serviceLocale=" + locale + " current Locale language=" + default1);
-                }
-            }
-            else {
-                if (Log.isLoggable()) {
-                    Log.i("nf_locale", "Changing language from " + default1 + " to " + locale);
-                }
-                Locale.setDefault(locale);
-                final Configuration configuration = new Configuration();
-                configuration.locale = locale;
-                final Resources resources = this.getResources();
-                if (resources == null) {
-                    Log.w("nf_locale", "NA::refreshLocale: Resources are NULL. It should NOT happen!");
-                    return;
-                }
-                final DisplayMetrics displayMetrics = resources.getDisplayMetrics();
-                if (displayMetrics == null) {
-                    Log.w("nf_locale", "NA::refreshLocale: DisplayMetrics is NULL. It should NOT happen!");
-                    return;
-                }
-                try {
-                    resources.updateConfiguration(configuration, displayMetrics);
-                }
-                catch (Exception ex) {
-                    Log.e("nf_locale", "NA::refreshLocale: Failed to update configuration", ex);
-                }
-            }
-        }
+        this.refreshLocale(new UserLocale(s));
     }
     
     public void releaseCurrentActivity(final NetflixActivity netflixActivity) {

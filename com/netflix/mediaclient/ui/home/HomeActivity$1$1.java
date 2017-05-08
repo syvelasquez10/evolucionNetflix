@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.home;
 
+import com.netflix.mediaclient.NetflixApplication;
 import android.view.View;
 import java.io.Serializable;
 import com.netflix.mediaclient.ui.search.SearchMenu;
@@ -44,6 +45,7 @@ import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;
 import java.util.LinkedList;
+import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag$OptInResponseHandler;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 

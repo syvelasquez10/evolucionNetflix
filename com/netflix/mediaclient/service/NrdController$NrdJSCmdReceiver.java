@@ -12,7 +12,7 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.javabridge.invoke.Invoke;
 import com.netflix.mediaclient.javabridge.invoke.mdx.InterfaceChanged;
-import com.netflix.mediaclient.repository.UserLocale;
+import com.netflix.mediaclient.util.l10n.UserLocale;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.javabridge.ui.EventListener;

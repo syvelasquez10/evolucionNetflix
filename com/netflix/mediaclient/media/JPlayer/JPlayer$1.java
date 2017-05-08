@@ -26,19 +26,22 @@ class JPlayer$1 implements Runnable
     public void run() {
         final MediaFormat mediaFormat = new MediaFormat();
         mediaFormat.setString("mime", "video/avc");
-    Label_0194_Outer:
+    Label_0216_Outer:
         while (true) {
             while (true) {
-                Label_0240: {
+                Label_0262: {
                     if (AndroidUtils.getAndroidVersion() <= 18) {
-                        break Label_0240;
+                        break Label_0262;
                     }
                     mediaFormat.setInteger("max-width", 720);
                     mediaFormat.setInteger("max-height", 480);
                     mediaFormat.setInteger("width", 720);
                     mediaFormat.setInteger("height", 480);
+                    if (this.this$0.mState != 1 && this.this$0.mState != 2) {
+                        break Label_0216;
+                    }
                     if (this.this$0.mVideoPipe1 != null && (this.this$0.mVideoPipe == this.this$0.mVideoPipe1 || !this.this$0.mVideoPipe1.isStopped())) {
-                        break Label_0240;
+                        break Label_0262;
                     }
                     Log.d("NF_JPlayer", "mVideoPipe1 is idle");
                     try {
@@ -52,11 +55,11 @@ class JPlayer$1 implements Runnable
                             this.this$0.mVideoPipe.setReferenceClock(clock);
                             return;
                         }
-                        break Label_0194_Outer;
+                        break Label_0216_Outer;
                         mediaFormat.setInteger("max-input-size", 163840);
                         mediaFormat.setInteger("width", 720);
                         mediaFormat.setInteger("height", 480);
-                        continue Label_0194_Outer;
+                        continue Label_0216_Outer;
                     }
                     catch (Exception ex) {
                         Log.e("NF_JPlayer", Log.getStackTraceString((Throwable)ex));
@@ -77,7 +80,7 @@ class JPlayer$1 implements Runnable
                             Log.d("NF_JPlayer", "TextureSurface is not ready, wait...");
                             try {
                                 Thread.sleep(10L);
-                                continue Label_0194_Outer;
+                                continue Label_0216_Outer;
                             }
                             catch (InterruptedException ex3) {
                                 Log.d("NF_JPlayer", "configureVideoPipe interrupted");
@@ -100,7 +103,7 @@ class JPlayer$1 implements Runnable
                 try {
                     Thread.sleep(50L);
                     Log.d("NF_JPlayer", "video pipe is not ready, wait...");
-                    continue Label_0194_Outer;
+                    continue Label_0216_Outer;
                 }
                 catch (InterruptedException ex4) {
                     Log.d("NF_JPlayer", "configureVideoPipe interrupted");

@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.kubrick.details;
 
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
+import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
 import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
@@ -21,20 +22,20 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView$Adapter;
 import android.support.v7.widget.RecyclerView$LayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import com.netflix.mediaclient.Log;
 import android.widget.AdapterView$OnItemSelectedListener;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.ui.kubrick.KubrickUtils;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
-import com.netflix.mediaclient.android.widget.NetflixActionBar;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
+import com.netflix.mediaclient.android.app.Status;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import android.support.v7.widget.RecyclerView;
@@ -55,12 +56,16 @@ import android.widget.TextView;
 
 public class KubrickShowDetailsFrag$KubrickPlayerDialogEpisodesView extends KubrickShowDetailsFrag$KubrickEpisodeView
 {
-    private TextView nowPlaying;
+    protected TextView nowPlaying;
     final /* synthetic */ KubrickShowDetailsFrag this$0;
     
-    public KubrickShowDetailsFrag$KubrickPlayerDialogEpisodesView(final KubrickShowDetailsFrag this$0, final Context context) {
+    public KubrickShowDetailsFrag$KubrickPlayerDialogEpisodesView(final KubrickShowDetailsFrag kubrickShowDetailsFrag, final Context context) {
+        this(kubrickShowDetailsFrag, context, 2130903128);
+    }
+    
+    public KubrickShowDetailsFrag$KubrickPlayerDialogEpisodesView(final KubrickShowDetailsFrag this$0, final Context context, final int n) {
         this.this$0 = this$0;
-        super(this$0, context, 2130903108);
+        super(this$0, context, n);
     }
     
     @Override
@@ -70,7 +75,7 @@ public class KubrickShowDetailsFrag$KubrickPlayerDialogEpisodesView extends Kubr
     @Override
     protected void findViews() {
         super.findViews();
-        this.nowPlaying = (TextView)this.findViewById(2131624206);
+        this.nowPlaying = (TextView)this.findViewById(2131624163);
     }
     
     @Override

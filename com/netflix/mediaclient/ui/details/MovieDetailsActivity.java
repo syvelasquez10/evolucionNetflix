@@ -4,20 +4,22 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import android.os.Parcel;
-import android.os.Parcelable$Creator;
 import android.content.Intent;
 import java.util.Iterator;
-import android.os.Parcelable;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import android.content.Context;
+import com.netflix.mediaclient.util.CoppolaUtils;
+import android.os.Parcelable;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
+import android.support.v7.widget.GridLayoutManager;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -34,9 +36,17 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
         this.backStack = new ArrayList<MovieDetailsActivity$BackStackData>();
     }
     
+    private static ClassLoader getClassLoaderForLayoutManager() {
+        final ClassLoader classLoader = GridLayoutManager.class.getClassLoader();
+        if (classLoader != null) {
+            return classLoader;
+        }
+        return ClassLoader.getSystemClassLoader();
+    }
+    
     private void handleNewVideoId() {
         if (StringUtils.isNotEmpty(this.getVideoId())) {
-            final MovieDetailsActivity$BackStackData movieDetailsActivity$BackStackData = new MovieDetailsActivity$BackStackData(this.getVideoId(), this.getPlayContext(), ((MovieDetailsFrag)this.getPrimaryFrag()).getScrollYOffset());
+            final MovieDetailsActivity$BackStackData movieDetailsActivity$BackStackData = new MovieDetailsActivity$BackStackData(this.getVideoId(), this.getPlayContext(), ((MovieDetailsFrag)this.getPrimaryFrag()).getLayoutManager());
             if (Log.isLoggable()) {
                 Log.v("MovieDetailsActivity", "Adding curr video to back stack: " + movieDetailsActivity$BackStackData);
             }
@@ -47,11 +57,15 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
         this.setAction((DetailsActivity$Action)this.getIntent().getSerializableExtra("extra_action"), this.getIntent().getStringExtra("extra_action_token"));
     }
     
-    private void showNewDetailsFrag(final int scrollYOffset) {
+    private void showNewDetailsFrag(final Parcelable layoutManagerSavedState) {
         if (this.manager != null) {
             this.setPrimaryFrag(this.createPrimaryFrag());
-            ((MovieDetailsFrag)this.getPrimaryFrag()).setScrollYOffset(scrollYOffset);
-            this.getFragmentManager().beginTransaction().replace(2131624177, this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+            ((MovieDetailsFrag)this.getPrimaryFrag()).setLayoutManagerSavedState(layoutManagerSavedState);
+            final FragmentTransaction replace = this.getFragmentManager().beginTransaction().replace(2131624157, this.getPrimaryFrag(), "primary");
+            if (!CoppolaUtils.shouldInjectPlayerFragment((Context)this)) {
+                replace.setTransition(4099);
+            }
+            replace.commit();
             this.getFragmentManager().executePendingTransactions();
             ((ManagerStatusListener)this.getPrimaryFrag()).onManagerReady(this.manager, CommonStatus.OK);
         }
@@ -72,12 +86,12 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
         Log.v("MovieDetailsActivity", "Back pressed, backStack size: " + this.backStack.size());
         if (this.backStack.size() > 0) {
             final MovieDetailsActivity$BackStackData movieDetailsActivity$BackStackData = this.backStack.remove(this.backStack.size() - 1);
+            if (Log.isLoggable()) {
+                Log.v("MovieDetailsActivity", "Back stack data: " + movieDetailsActivity$BackStackData);
+            }
             this.setVideoId(movieDetailsActivity$BackStackData.videoId);
             this.setPlayContext(movieDetailsActivity$BackStackData.playContext);
-            if (Log.isLoggable()) {
-                Log.v("MovieDetailsActivity", "Video id from back stack: " + movieDetailsActivity$BackStackData);
-            }
-            this.showNewDetailsFrag(movieDetailsActivity$BackStackData.scrollYOffset);
+            this.showNewDetailsFrag(movieDetailsActivity$BackStackData.layoutManagerState);
             return true;
         }
         Log.v("MovieDetailsActivity", "No more videos in back stack, finishing...");
@@ -101,7 +115,7 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
         super.onManagerReady(manager, status);
         this.manager = manager;
         if (this.showDetailsFragInFuture && manager != null) {
-            this.showNewDetailsFrag(0);
+            this.showNewDetailsFrag(null);
             this.showDetailsFragInFuture = false;
         }
     }
@@ -122,7 +136,7 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
             this.showDetailsFragInFuture = true;
             return;
         }
-        this.showNewDetailsFrag(0);
+        this.showNewDetailsFrag(null);
     }
     
     @Override

@@ -19,7 +19,9 @@ import android.view.LayoutInflater;
 import android.content.res.Resources;
 import java.util.ArrayList;
 import java.util.Collection;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -36,10 +38,8 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.view.animation.Interpolator;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.TimeFormatterHelper;
-import android.media.AudioManager;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.ui.common.VolumeDialogFrag;
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import android.view.View;
 import android.view.View$OnClickListener;
@@ -61,12 +61,8 @@ class MdxMiniPlayerViews$11 implements View$OnClickListener
             Log.w("MdxMiniPlayerViews", "Remote player is not ready - can't get/set volume");
             return;
         }
-        if (AndroidUtils.getAndroidVersion() < 21) {
-            final VolumeDialogFrag instance = VolumeDialogFrag.newInstance();
-            instance.setCancelable(true);
-            this.this$0.activity.showDialog(instance);
-            return;
-        }
-        ((AudioManager)this.this$0.activity.getSystemService("audio")).adjustSuggestedStreamVolume(0, Integer.MIN_VALUE, 1);
+        final VolumeDialogFrag instance = VolumeDialogFrag.newInstance();
+        instance.setCancelable(true);
+        this.this$0.activity.showDialog(instance);
     }
 }

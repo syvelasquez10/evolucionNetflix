@@ -4,16 +4,23 @@
 
 package com.netflix.mediaclient.ui.search;
 
-import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.ui.kubrick_kids.search.KubrickKidsSearchActionBar;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.app.Fragment;
-import android.app.Activity;
+import android.view.View$OnFocusChangeListener;
+import com.netflix.mediaclient.util.log.UIViewLogUtils;
+import com.netflix.mediaclient.service.logging.uiview.model.CommandEndedEvent$InputMethod;
+import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import java.util.Iterator;
+import android.app.Activity;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import android.content.Context;
 import android.content.Intent;
 import android.annotation.SuppressLint;
 import android.view.View$OnTouchListener;
@@ -29,12 +36,10 @@ import android.view.ViewGroup;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.annotation.TargetApi;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.content.Context;
-import com.netflix.mediaclient.service.logging.search.utils.SearchLogUtils;
 import android.view.View;
-import android.view.View$OnFocusChangeListener;
+import android.view.View$OnClickListener;
 
-class SearchActivity$1 implements View$OnFocusChangeListener
+class SearchActivity$1 implements View$OnClickListener
 {
     final /* synthetic */ SearchActivity this$0;
     
@@ -42,12 +47,7 @@ class SearchActivity$1 implements View$OnFocusChangeListener
         this.this$0 = this$0;
     }
     
-    public void onFocusChange(final View view, final boolean b) {
-        if (b) {
-            this.this$0.focusSessionId = SearchLogUtils.reportSearchFocusSessionStarted(this.this$0.requestId, (Context)this.this$0, this.this$0.getUiScreen(), this.this$0.query);
-        }
-        else if (this.this$0.focusSessionId != 0L) {
-            SearchLogUtils.reportSearchFocusSessionEnded(this.this$0.requestId, (Context)this.this$0, this.this$0.focusSessionId);
-        }
+    public void onClick(final View view) {
+        this.this$0.onVoiceClicked();
     }
 }

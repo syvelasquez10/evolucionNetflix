@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.javabridge.ui.android;
 
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.repository.UserLocale;
+import com.netflix.mediaclient.util.l10n.UserLocale;
 import java.util.Locale;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.javabridge.ui.Callback;

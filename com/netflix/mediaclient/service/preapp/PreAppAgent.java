@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.preapp;
 
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.android.app.Status;
@@ -49,6 +48,10 @@ public class PreAppAgent extends ServiceAgent implements ServiceAgent$PreAppAgen
     
     public static void informIqUpdated(final Context context) {
         sendLocalBroadcast(context, "com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_IQ_UPDATED");
+    }
+    
+    public static void informMemberUpdated(final Context context) {
+        sendLocalBroadcast(context, "com.netflix.mediaclient.intent.action.PREAPP_AGENT_TO_ALL_MEMBER_UPDATED");
     }
     
     public static void informNonMemberVideosUpdated(final Context context) {
@@ -154,10 +157,5 @@ public class PreAppAgent extends ServiceAgent implements ServiceAgent$PreAppAgen
     public void informPrefetched(final Context context) {
         this.getService().getHandler().removeCallbacks(this.informPrefetchRunnable);
         this.getService().getHandler().postDelayed(this.informPrefetchRunnable, 5000L);
-    }
-    
-    @Override
-    public boolean isWidgetInstalled() {
-        return AndroidUtils.isWidgetInstalled(this.getContext());
     }
 }

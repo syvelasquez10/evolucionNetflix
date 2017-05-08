@@ -5,15 +5,15 @@
 package com.netflix.mediaclient.ui.details;
 
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable$Orientation;
-import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import android.widget.FrameLayout$LayoutParams;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup$LayoutParams;
 import android.support.v7.widget.Toolbar$LayoutParams;
-import android.support.v7.widget.Toolbar;
 import java.util.Date;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;

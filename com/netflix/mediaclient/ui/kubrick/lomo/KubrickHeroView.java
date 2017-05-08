@@ -82,26 +82,26 @@ public class KubrickHeroView extends RelativeLayout implements VideoViewGroup$IV
     }
     
     private void findViews() {
-        this.heroImg = (TopCropImageView)this.findViewById(2131624212);
-        this.title = (TextView)this.findViewById(2131624215);
-        this.titleImg = (AdvancedImageView)this.findViewById(2131624186);
-        this.rating = (NetflixRatingBar)this.findViewById(2131624193);
-        this.year = (TextView)this.findViewById(2131624194);
-        this.certification = (TextView)this.findViewById(2131624195);
-        this.durationInfo = (TextView)this.findViewById(2131624196);
-        this.hdIcon = this.findViewById(2131624197);
-        this.synopsis = (TextView)this.findViewById(2131624217);
-        this.infoGroup = this.findViewById(2131624214);
-        this.shadow = this.findViewById(2131624213);
+        this.heroImg = (TopCropImageView)this.findViewById(2131624289);
+        this.title = (TextView)this.findViewById(2131624292);
+        this.titleImg = (AdvancedImageView)this.findViewById(2131624257);
+        this.rating = (NetflixRatingBar)this.findViewById(2131624169);
+        this.year = (TextView)this.findViewById(2131624276);
+        this.certification = (TextView)this.findViewById(2131624277);
+        this.durationInfo = (TextView)this.findViewById(2131624278);
+        this.hdIcon = this.findViewById(2131624279);
+        this.synopsis = (TextView)this.findViewById(2131624294);
+        this.infoGroup = this.findViewById(2131624291);
+        this.shadow = this.findViewById(2131624290);
     }
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837905);
-        ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelOffset(2131296636));
+        this.setBackgroundResource(2130837925);
+        ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelOffset(2131296726));
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        netflixActivity.getLayoutInflater().inflate(2130903111, (ViewGroup)this);
+        netflixActivity.getLayoutInflater().inflate(2130903131, (ViewGroup)this);
         this.findViews();
         this.heroImg.setCropPointYOffsetPx(0);
         ((RelativeLayout$LayoutParams)this.heroImg.getLayoutParams()).height = (int)(DeviceUtils.getScreenWidthInPixels((Context)netflixActivity) * 0.5625f);
@@ -115,7 +115,7 @@ public class KubrickHeroView extends RelativeLayout implements VideoViewGroup$IV
         }
         this.synopsis.getLayoutParams().width = (int)(n2 * n);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
-        ViewUtils.setPaddingLeft(this.infoGroup, LoMoUtils.getLomoFragImageOffsetLeftPx(netflixActivity));
+        ViewUtils.setPaddingStart(this.infoGroup, LoMoUtils.getLomoFragImageOffsetLeftPx(netflixActivity));
         this.infoGroup.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new KubrickHeroView$1(this));
     }
     
@@ -152,9 +152,8 @@ public class KubrickHeroView extends RelativeLayout implements VideoViewGroup$IV
     private void updateDuration(final KubrickVideo kubrickVideo) {
         final Resources resources = this.getResources();
         if (kubrickVideo.getType() == VideoType.SHOW) {
-            final int seasonCount = kubrickVideo.getSeasonCount();
-            if (seasonCount > 0) {
-                this.durationInfo.setText((CharSequence)resources.getQuantityString(2131230721, seasonCount, new Object[] { seasonCount }));
+            if (kubrickVideo.getSeasonCount() > 0) {
+                this.durationInfo.setText((CharSequence)kubrickVideo.getNumSeasonsLabel());
                 this.durationInfo.setVisibility(0);
                 return;
             }
@@ -163,7 +162,7 @@ public class KubrickHeroView extends RelativeLayout implements VideoViewGroup$IV
         else {
             final int runtime = kubrickVideo.getRuntime();
             if (runtime > 0) {
-                this.durationInfo.setText((CharSequence)resources.getString(2131165566, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
+                this.durationInfo.setText((CharSequence)resources.getString(2131165586, new Object[] { TimeUtils.convertSecondsToMinutes(runtime) }));
                 this.durationInfo.setVisibility(0);
                 return;
             }

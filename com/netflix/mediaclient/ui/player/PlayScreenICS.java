@@ -19,12 +19,17 @@ public class PlayScreenICS extends PlayScreen
     
     @Override
     void hideNavigationBar() {
-        this.mController.getWindow().getDecorView().setSystemUiVisibility(5);
+        if (!this.mController.isInPortrait()) {
+            this.mController.getWindow().getDecorView().setSystemUiVisibility(5);
+        }
     }
     
     @Override
     protected void playerOverlayVisibility(final boolean b) {
         super.playerOverlayVisibility(b);
+        if (this.mController.isInPortrait()) {
+            return;
+        }
         if (b) {
             this.showNavigationBar();
             return;

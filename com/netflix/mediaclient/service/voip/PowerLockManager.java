@@ -4,18 +4,21 @@
 
 package com.netflix.mediaclient.service.voip;
 
-import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.annotation.TargetApi;
+import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.Log;
 import android.os.PowerManager;
 import android.os.PowerManager$WakeLock;
 import android.content.Context;
+import com.netflix.mediaclient.service.ServiceAgent;
 
 class PowerLockManager
 {
     private static final String TAG = "nf_voip";
+    private ServiceAgent mAgent;
     private PowerLockManager$AudioRoutingChangedReceiver mAudioRoutingChangedReceiver;
     private boolean mCallInProgress;
     private boolean mConnectedHeadphones;
@@ -24,12 +27,13 @@ class PowerLockManager
     private PowerManager$WakeLock mProximityWakeLock;
     private boolean mSpeakerOn;
     
-    PowerLockManager(final Context mContex) {
+    PowerLockManager(final Context mContex, final ServiceAgent mAgent) {
         this.mAudioRoutingChangedReceiver = new PowerLockManager$AudioRoutingChangedReceiver(this, null);
         if (mContex == null) {
             throw new IllegalArgumentException("Context can not be null");
         }
         this.mContex = mContex;
+        this.mAgent = mAgent;
     }
     
     private void acquireCpuLock() {
@@ -64,6 +68,11 @@ class PowerLockManager
         if (this.mProximityWakeLock != null && this.mProximityWakeLock.isHeld()) {
             this.mProximityWakeLock.release();
         }
+        if (this.mAgent.getConfigurationAgent().getDeviceCategory() == DeviceCategory.TABLET) {
+            Log.d("nf_voip", "Device is tablet, do NOT acquire screen lock!");
+            return;
+        }
+        Log.d("nf_voip", "Device is phone, do acquire screen lock!");
         final PowerManager powerManager = (PowerManager)this.mContex.getSystemService("power");
         if (powerManager == null) {
             Log.w("nf_voip", "Power manager is not available!");
@@ -161,17 +170,66 @@ class PowerLockManager
     }
     
     public void callEnded() {
-        synchronized (this) {
-            this.mCallInProgress = false;
-            this.releaseScreenLock();
-            this.releaseCpuLock();
-            try {
-                this.mContex.unregisterReceiver((BroadcastReceiver)this.mAudioRoutingChangedReceiver);
-            }
-            catch (Throwable t) {
-                Log.e("nf_voip", "Failed to register audio jack receiver", t);
-            }
-        }
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_0        
+        //     1: monitorenter   
+        //     2: aload_0        
+        //     3: iconst_0       
+        //     4: putfield        com/netflix/mediaclient/service/voip/PowerLockManager.mCallInProgress:Z
+        //     7: aload_0        
+        //     8: invokespecial   com/netflix/mediaclient/service/voip/PowerLockManager.releaseScreenLock:()V
+        //    11: aload_0        
+        //    12: invokespecial   com/netflix/mediaclient/service/voip/PowerLockManager.releaseCpuLock:()V
+        //    15: aload_0        
+        //    16: getfield        com/netflix/mediaclient/service/voip/PowerLockManager.mContex:Landroid/content/Context;
+        //    19: aload_0        
+        //    20: getfield        com/netflix/mediaclient/service/voip/PowerLockManager.mAudioRoutingChangedReceiver:Lcom/netflix/mediaclient/service/voip/PowerLockManager$AudioRoutingChangedReceiver;
+        //    23: invokevirtual   android/content/Context.unregisterReceiver:(Landroid/content/BroadcastReceiver;)V
+        //    26: aload_0        
+        //    27: monitorexit    
+        //    28: return         
+        //    29: astore_1       
+        //    30: aload_0        
+        //    31: monitorexit    
+        //    32: aload_1        
+        //    33: athrow         
+        //    34: astore_1       
+        //    35: goto            26
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type                 
+        //  -----  -----  -----  -----  ---------------------
+        //  2      15     29     34     Any
+        //  15     26     34     38     Ljava/lang/Throwable;
+        //  15     26     29     34     Any
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0026:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
     public void callStarted() {

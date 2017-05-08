@@ -7,6 +7,7 @@ package com.netflix.mediaclient.servicemgr;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.content.Intent;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
 import android.content.Context;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
@@ -25,11 +26,14 @@ class TextViewWrapper$2 implements View$OnClickListener
     public void onClick(final View view) {
         String actionToken = null;
         this.this$0.setAsInList();
-        Toast.makeText(this.this$0.textView.getContext(), (CharSequence)this.this$0.textView.getContext().getString(2131165712), 0).show();
+        Toast.makeText(this.this$0.textView.getContext(), (CharSequence)this.this$0.textView.getContext().getString(2131165747), 0).show();
         UserActionLogUtils.reportAddToQueueActionStarted((Context)this.this$0.activity, null, this.this$0.activity.getUiScreen());
         if (this.this$0.activity instanceof DetailsActivity) {
             actionToken = ((DetailsActivity)this.this$0.activity).getActionToken();
         }
         this.this$0.addToMyListWrapper.addVideoToMyList(this.this$0.videoId, this.this$0.videoType, this.this$0.trackId, actionToken);
+        final Intent intent = new Intent();
+        intent.setAction("com.netflix.mediaclient.mylist.intent.action.ADD");
+        this.this$0.textView.getContext().sendBroadcast(intent);
     }
 }

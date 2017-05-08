@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.mdx;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import android.app.Service;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
+import java.util.List;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import android.text.TextUtils;
@@ -25,6 +26,7 @@ import android.annotation.SuppressLint;
 import android.os.PowerManager;
 import android.net.wifi.WifiManager;
 import java.util.Iterator;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.mdx.notification.MdxNotificationManagerFactory;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -96,7 +98,7 @@ class MdxAgent$EpisodeBrowseAgentCallback extends SimpleBrowseAgentCallback
     @Override
     public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
         if (Log.isLoggable()) {
-            Log.v("nf_mdx_agent", "onEpisodeDetailsFetched, res: " + status);
+            Log.v("nf_mdx_MdxAgent", "onEpisodeDetailsFetched, res: " + status);
         }
         if (status.isError()) {
             return;
@@ -121,6 +123,10 @@ class MdxAgent$EpisodeBrowseAgentCallback extends SimpleBrowseAgentCallback
             this.this$0.logPlaystart(false);
         }
         this.this$0.updateMdxRemoteClient(this.isPostPlay);
-        this.this$0.updateMdxNotification(true, this.vidDetails.getPlayable().getParentTitle(), this.this$0.getContext().getString(2131165510, new Object[] { this.vidDetails.getPlayable().getSeasonNumber(), this.vidDetails.getPlayable().getEpisodeNumber(), this.vidDetails.getTitle() }), this.isPostPlay);
+        String s = this.this$0.getContext().getString(2131165526, new Object[] { this.vidDetails.getPlayable().getSeasonAbbrSeqLabel(), this.vidDetails.getPlayable().getEpisodeNumber(), this.vidDetails.getTitle() });
+        if (this.vidDetails.isNSRE()) {
+            s = this.this$0.getContext().getString(2131165527, new Object[] { this.vidDetails.getTitle() });
+        }
+        this.this$0.updateMdxNotification(true, this.vidDetails.getPlayable().getParentTitle(), s, this.isPostPlay);
     }
 }

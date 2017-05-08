@@ -8,6 +8,7 @@ import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import java.util.Locale;
 import com.netflix.mediaclient.servicemgr.interface_.IconFontGlyph;
@@ -50,7 +51,7 @@ public class Video$Evidence implements JsonPopulator
     @Override
     public void populate(JsonElement value) {
         final JsonObject asJsonObject = value.getAsJsonObject();
-        if (Log.isLoggable()) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
             Log.v("Evidence", "Populating with: " + asJsonObject);
         }
         value = asJsonObject.get("value");

@@ -5,6 +5,7 @@
 package com.netflix.model.branches;
 
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import java.util.List;
 import com.netflix.model.leafs.Video$Detail;
 import com.netflix.falkor.BranchNode;
 import com.netflix.falkor.ModelProxy;
@@ -50,6 +51,14 @@ public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetai
     }
     
     @Override
+    public List<String> getEpisodeBadges() {
+        if (this.episodeDetail == null) {
+            return null;
+        }
+        return this.episodeDetail.getEpisodeBadges();
+    }
+    
+    @Override
     public String getEpisodeIdUrl() {
         if (this.episodeDetail == null) {
             return null;
@@ -63,6 +72,14 @@ public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetai
             return -1;
         }
         return this.episodeDetail.getEpisodeNumber();
+    }
+    
+    @Override
+    public long getExpirationTime() {
+        if (this.episodeDetail == null) {
+            return -1L;
+        }
+        return this.episodeDetail.expirationTime;
     }
     
     @Override
@@ -134,6 +151,17 @@ public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetai
     }
     
     @Override
+    public String getSeasonAbbrSeqLabel() {
+        if (this.episodeDetail == null) {
+            return "";
+        }
+        if (this.episodeDetail.abbrSeqLabel == null) {
+            return "";
+        }
+        return this.episodeDetail.abbrSeqLabel;
+    }
+    
+    @Override
     public String getSeasonId() {
         if (this.episodeDetail == null) {
             return null;
@@ -187,6 +215,11 @@ public class FalkorEpisode extends FalkorVideo implements Playable, EpisodeDetai
     @Override
     public boolean isPlayableEpisode() {
         return true;
+    }
+    
+    @Override
+    public boolean isPreRelease() {
+        return false;
     }
     
     @Override

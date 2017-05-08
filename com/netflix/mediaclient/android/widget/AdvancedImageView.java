@@ -34,7 +34,7 @@ public class AdvancedImageView extends LoggingImageView
     
     private void init() {
         PressedStateHandler pressedHandler;
-        if (BrowseExperience.isKubrickKids()) {
+        if (BrowseExperience.showKidsExperience()) {
             pressedHandler = new ScalePressedStateHandler((View)this);
         }
         else {
@@ -51,7 +51,7 @@ public class AdvancedImageView extends LoggingImageView
     }
     
     public AdvancedImageView$ImageLoaderInfo getImageLoaderInfo() {
-        return (AdvancedImageView$ImageLoaderInfo)this.getTag(2131623947);
+        return (AdvancedImageView$ImageLoaderInfo)this.getTag(2131623948);
     }
     
     @Override
@@ -71,7 +71,7 @@ public class AdvancedImageView extends LoggingImageView
     }
     
     public void setImageLoaderInfo(final AdvancedImageView$ImageLoaderInfo advancedImageView$ImageLoaderInfo) {
-        this.setTag(2131623947, (Object)advancedImageView$ImageLoaderInfo);
+        this.setTag(2131623948, (Object)advancedImageView$ImageLoaderInfo);
     }
     
     public void setPressedStateHandlerEnabled(final boolean enabled) {

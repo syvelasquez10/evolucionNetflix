@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;

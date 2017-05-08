@@ -186,7 +186,7 @@ public abstract class ConsolidatedLoggingUtils
                 }
                 final Point point = new Point();
                 defaultDisplay.getSize(point);
-                return new Display(Display$Connector.internal, null, point.x, point.y, (int)refreshRate, null);
+                return new Display(Display$Connector.internal, null, point.x, point.y, (int)refreshRate, null, context.getResources().getDisplayMetrics().densityDpi);
             }
         }
         return null;
@@ -260,7 +260,6 @@ public abstract class ConsolidatedLoggingUtils
                         break Label_0241;
                         while (true) {
                             final JSONObject message = new JSONObject();
-                        Block_11_Outer:
                             while (true) {
                                 DeepErrorElement deepErrorElement = null;
                                 Label_0307: {
@@ -277,25 +276,21 @@ public abstract class ConsolidatedLoggingUtils
                                             return error;
                                         }
                                         break Label_0307;
-                                        // iftrue(Label_0109:, !volleyError instanceof NetworkError)
-                                        // iftrue(Label_0258:, !volleyError instanceof ServerError)
                                         while (true) {
-                                            while (true) {
-                                                error.setRootCause(RootCause.serverFailure);
-                                                break;
-                                                error.setRootCause(RootCause.tcpConnectionTimeout);
-                                                break;
-                                                Label_0275: {
-                                                    error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
-                                                }
-                                                break;
-                                                continue Block_11_Outer;
+                                            error.setRootCause(RootCause.tcpConnectionTimeout);
+                                            break;
+                                            Label_0275: {
+                                                error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
                                             }
-                                            Label_0258: {
-                                                continue;
-                                            }
+                                            break;
+                                            error.setRootCause(RootCause.serverFailure);
+                                            break;
+                                            Label_0258:
+                                            continue;
                                         }
                                     }
+                                    // iftrue(Label_0109:, !volleyError instanceof NetworkError)
+                                    // iftrue(Label_0258:, !volleyError instanceof ServerError)
                                     // iftrue(Label_0275:, !volleyError instanceof TimeoutError)
                                     catch (Throwable t) {
                                         Log.e("nf_log", "Failed to add body response to JSON object", t);

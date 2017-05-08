@@ -6,10 +6,13 @@ package com.netflix.mediaclient.ui.details;
 
 import java.util.Collection;
 import android.support.v4.content.ContextCompat;
-import com.netflix.mediaclient.Log;
 import android.widget.TextView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.app.Fragment;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 import java.util.ArrayList;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
@@ -35,11 +38,22 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         this.viewCreator = viewCreator;
     }
     
+    private void logException(final int n) {
+        if (this.context instanceof FragmentHostActivity) {
+            final Fragment primaryFrag = ((FragmentHostActivity)this.context).getPrimaryFrag();
+            if (primaryFrag instanceof EpisodesFrag) {
+                final String format = String.format("SPY-8698, null season found, show id = %s , position = %d", ((EpisodesFrag)primaryFrag).getShowId(), n);
+                Log.e("SeasonsSpinnerAdapter", format);
+                ErrorLoggingManager.logHandledException(format);
+            }
+        }
+    }
+    
     private void setIdForTest(final ViewGroup viewGroup) {
         if (viewGroup == null) {
             return;
         }
-        viewGroup.setId(2131623952);
+        viewGroup.setId(2131623953);
     }
     
     public int getCount() {
@@ -59,7 +73,7 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         if (this.dropDownTextColor != -1) {
             textView.setTextColor(idForTest.getResources().getColor(this.dropDownTextColor));
         }
-        textView.setText((CharSequence)this.getItem(n).getSeasonNumberTitle(this.context));
+        textView.setText((CharSequence)this.getItem(n).getSeasonLongSeqLabel());
         return (View)textView;
     }
     
@@ -85,16 +99,21 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
             textView = (TextView)this.viewCreator.createItemView();
         }
         final SeasonDetails item = this.getItem(itemBackgroundResource);
-        textView.setTag((Object)item.getSeasonNumber());
-        textView.setText((CharSequence)item.getSeasonNumberTitle(this.context));
+        if (item != null) {
+            textView.setTag((Object)item.getSeasonNumber());
+            textView.setText((CharSequence)item.getSeasonLongSeqLabel());
+        }
+        else {
+            this.logException(itemBackgroundResource);
+        }
         if (viewGroup instanceof SeasonsSpinner) {
-            itemBackgroundResource = 2131558585;
+            itemBackgroundResource = 2131558596;
         }
         else {
             itemBackgroundResource = this.itemBackgroundResource;
         }
         textView.setBackgroundResource(itemBackgroundResource);
-        textView.setTextColor(ContextCompat.getColor(viewGroup.getContext(), 2131558552));
+        textView.setTextColor(ContextCompat.getColor(viewGroup.getContext(), 2131558561));
         return (View)textView;
     }
     

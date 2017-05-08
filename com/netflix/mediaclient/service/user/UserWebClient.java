@@ -28,6 +28,10 @@ public interface UserWebClient
     
     void recordNrmInfo(final String p0);
     
+    void recordPlanSelection(final String p0, final String p1);
+    
+    void recordUmsImpression(final String p0, final String p1);
+    
     void removeWebUserProfile(final String p0, final UserAgentWebCallback p1);
     
     void switchWebUserProfile(final String p0, final UserAgentWebCallback p1);

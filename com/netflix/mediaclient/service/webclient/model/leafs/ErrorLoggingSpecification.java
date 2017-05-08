@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
+import com.netflix.mediaclient.util.NetflixPreference;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
@@ -69,13 +70,13 @@ public class ErrorLoggingSpecification
         return (ErrorLoggingSpecification)default1;
     }
     
-    public static ErrorLoggingSpecification saveToPreferences(final Context context, final ErrorLoggingSpecification errorLoggingSpecification) {
+    public static ErrorLoggingSpecification saveToPreferences(final NetflixPreference netflixPreference, final ErrorLoggingSpecification errorLoggingSpecification) {
         if (errorLoggingSpecification == null) {
-            PreferenceUtils.removePref(context, "error_log_configuration");
+            netflixPreference.removePref("error_log_configuration");
             Log.d(ErrorLoggingSpecification.TAG, "Breadcrumb logging spec not found, return default");
             return getDefault();
         }
-        PreferenceUtils.putStringPref(context, "error_log_configuration", FalkorParseUtils.getGson().toJson(errorLoggingSpecification));
+        netflixPreference.putStringPref("error_log_configuration", FalkorParseUtils.getGson().toJson(errorLoggingSpecification));
         return errorLoggingSpecification;
     }
     

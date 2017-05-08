@@ -8,10 +8,13 @@ import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
 import android.widget.AdapterView;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.widget.ScalePressedStateHandler;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.View;
 import com.netflix.mediaclient.util.api.Api16Util;
 import android.util.AttributeSet;
 import android.content.Context;
+import com.netflix.mediaclient.android.widget.PressedStateHandler;
 import android.widget.AdapterView$OnItemSelectedListener;
 import android.graphics.drawable.Drawable;
 import android.widget.Spinner;
@@ -24,6 +27,7 @@ public class SeasonsSpinner extends Spinner
     private Drawable drawableMultipleSeasons;
     private Drawable drawableOneSeason;
     private AdapterView$OnItemSelectedListener itemSelectedListener;
+    protected PressedStateHandler pressedHandler;
     private AdapterView$OnItemSelectedListener touchListener;
     
     public SeasonsSpinner(final Context context) {
@@ -47,10 +51,29 @@ public class SeasonsSpinner extends Spinner
     }
     
     private void init() {
-        this.drawableMultipleSeasons = this.getResources().getDrawable(2130837913);
-        this.drawableOneSeason = this.getResources().getDrawable(2131558585);
+        this.drawableMultipleSeasons = this.getResources().getDrawable(2130837933);
+        this.drawableOneSeason = this.getResources().getDrawable(2131558596);
         Api16Util.setBackgroundDrawableCompat((View)this, this.drawableMultipleSeasons);
-        this.setId(2131623951);
+        this.setId(2131623952);
+        ScalePressedStateHandler pressedHandler;
+        if (BrowseExperience.showKidsExperience()) {
+            pressedHandler = new ScalePressedStateHandler((View)this);
+        }
+        else {
+            pressedHandler = null;
+        }
+        this.pressedHandler = pressedHandler;
+    }
+    
+    protected void dispatchSetPressed(final boolean b) {
+        if (this.shouldDispatchToPressHandler() && this.pressedHandler != null) {
+            this.pressedHandler.handleSetPressed(b);
+        }
+        super.dispatchSetPressed(b);
+    }
+    
+    public PressedStateHandler getPressedStateHandler() {
+        return this.pressedHandler;
     }
     
     public void setBackground(final Drawable drawableMultipleSeasons, final Drawable drawableOneSeason) {
@@ -74,6 +97,12 @@ public class SeasonsSpinner extends Spinner
         this.touchListener = touchListener;
     }
     
+    public void setPressedStateHandlerEnabled(final boolean enabled) {
+        if (this.pressedHandler != null) {
+            this.pressedHandler.setEnabled(enabled);
+        }
+    }
+    
     public void setSelection(final int selection) {
         Log.v("SeasonsSpinner", "Setting selection to position: " + selection);
         super.setSelection(selection);
@@ -83,6 +112,10 @@ public class SeasonsSpinner extends Spinner
         if (this.touchListener != null) {
             this.touchListener.onItemSelected((AdapterView)this, (View)this, selection, this.getSelectedItemId());
         }
+    }
+    
+    protected boolean shouldDispatchToPressHandler() {
+        return true;
     }
     
     public int tryGetSeasonIndexBySeasonNumber(final int n) {

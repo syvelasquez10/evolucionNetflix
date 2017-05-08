@@ -65,7 +65,7 @@ public final class MdxReceiver extends BroadcastReceiver
     private void showNextEpisodeInSeries(final MdxPostplayState mdxPostplayState) {
         final WebApiUtils$VideoIds videoIdsPostplay = ((MdxAgent)this.mActivity.getServiceManager().getMdx()).getVideoIdsPostplay();
         if (videoIdsPostplay != null && videoIdsPostplay.episodeId > 0) {
-            this.mActivity.getServiceManager().getBrowse().fetchEpisodeDetails(String.valueOf(videoIdsPostplay.episodeId), new MdxReceiver$FetchPostPlayForPlaybackCallback("nf_mdx", this.mActivity));
+            this.mActivity.getServiceManager().getBrowse().fetchEpisodeDetails(String.valueOf(videoIdsPostplay.episodeId), null, new MdxReceiver$FetchPostPlayForPlaybackCallback("nf_mdx", this.mActivity));
         }
     }
     

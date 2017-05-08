@@ -40,6 +40,7 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
     private String mAudioSubtitleSettingBlob;
     private final Object mAudioSubtitleSettingBlobLock;
     private final MdxController mController;
+    private boolean mCurrentSeesionEnded;
     private String mDialUsn;
     private String mDialUuid;
     private String mFriendlyName;
@@ -241,6 +242,10 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
             }
         }
         return false;
+    }
+    
+    public boolean isCurrentSessionEnded() {
+        return this.mCurrentSeesionEnded;
     }
     
     public boolean isThisSession(final int n) {
@@ -649,9 +654,10 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
     }
     
     public void sessionEnd() {
-        Label_0079: {
+        this.mCurrentSeesionEnded = true;
+        Label_0084: {
             if (!StringUtils.isNotEmpty(this.mDialUuid)) {
-                break Label_0079;
+                break Label_0084;
             }
             final String mDialUuid = this.mDialUuid;
             while (true) {
@@ -671,6 +677,7 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
     }
     
     public void sessionStarted(final int mSessionId) {
+        this.mCurrentSeesionEnded = false;
         this.mSessionId = mSessionId;
         final Message message = new Message();
         message.what = 1;

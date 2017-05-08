@@ -5,15 +5,15 @@
 package com.netflix.mediaclient.ui.details;
 
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable$Orientation;
-import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import android.widget.FrameLayout$LayoutParams;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup$LayoutParams;
 import android.support.v7.widget.Toolbar$LayoutParams;
-import android.support.v7.widget.Toolbar;
 import java.util.Date;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -31,7 +31,7 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     static final int ACTION_BAR_GRADIENT_RANGE = 76;
     static final int OPAQUE = 255;
     static final float PARALLAX_EFFECT_PERCENT = 40.0f;
-    private static final String TAG = "detailsScroller";
+    private static final String TAG = "DetailsPageParallaxScrollListener";
     private static final int TRACKER_VIEW_FADE_INTO_ACTIONBAR_DURATION_FASTSCROLL = 100;
     private static final int TRACKER_VIEW_FADE_INTO_ACTIONBAR_FADEIN_DURATION = 300;
     private static final int TRACKER_VIEW_FADE_INTO_ACTIONBAR_FADEOUT_DURATION = 300;
@@ -41,7 +41,6 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     private View anchorView;
     private boolean animating;
     private boolean applyToolBarGradientTransform;
-    private int currentScrollPos;
     private long currentVelocity;
     private int fadeOutDuration;
     protected int initialBottomColor;
@@ -106,7 +105,7 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     
     private void detachTrackingViewFromOriginalParent() {
         if (this.trackingView != null) {
-            final Toolbar toolbar = (Toolbar)((NetflixActivity)this.recyclerView.getContext()).getNetflixActionBar().getToolbar();
+            final Toolbar toolbar = ((NetflixActivity)this.recyclerView.getContext()).getNetflixActionBar().getToolbar();
             final ViewGroup viewGroup = (ViewGroup)this.trackingView.getParent();
             if (viewGroup != null) {
                 viewGroup.removeView(this.trackingView);
@@ -125,6 +124,44 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
         final int[] array = new int[2];
         netflixActionBar.getToolbar().getLocationOnScreen(array);
         this.actionBarPosition = array[1];
+    }
+    
+    private int getScrollY() {
+        int max = 0;
+        if (this.recyclerView != null) {
+            int n;
+            if (this.recyclerView.getChildCount() > 0) {
+                final View child = this.recyclerView.getChildAt(0);
+                if (!((RecyclerViewHeaderAdapter)this.recyclerView.getAdapter()).isViewHeader(child, this.recyclerView)) {
+                    if (this.seasonsSpinner != null && child.getTag(2131623951) != null) {
+                        this.postSetSpinnerSelectionRunnable((int)child.getTag(2131623951));
+                    }
+                    this.onItemsShown();
+                    n = 76;
+                }
+                else {
+                    final int n2 = (int)(-child.getTop() * this.actionBarFadeRatio);
+                    final View[] parallaxViews = this.parallaxViews;
+                    for (int length = parallaxViews.length, i = 0; i < length; ++i) {
+                        final View view = parallaxViews[i];
+                        if (view != null) {
+                            this.adjustForParallax(view, child.getTop());
+                        }
+                    }
+                    this.onHeaderShown();
+                    n = n2;
+                }
+            }
+            else {
+                n = 0;
+            }
+            final int n3 = max = Math.max(0, Math.min(n, 76));
+            if (Log.isLoggable()) {
+                Log.v("DetailsPageParallaxScrollListener", "scrollY: " + n3);
+                return n3;
+            }
+        }
+        return max;
     }
     
     private void init() {
@@ -154,10 +191,6 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
         }
     }
     
-    private void saveScrollPosition(final int n) {
-        this.currentScrollPos += n;
-    }
-    
     private void setLatchPosition() {
         this.latchPosition = this.getLatchPosition();
     }
@@ -181,39 +214,6 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
             return ((NetflixActivity)this.trackingView.getContext()).getActionBarHeight() + this.actionBarPosition;
         }
         return 0;
-    }
-    
-    protected int getScrollY() {
-        if (this.recyclerView == null) {
-            return 0;
-        }
-        int n;
-        if (this.recyclerView.getChildCount() > 0) {
-            final View child = this.recyclerView.getChildAt(0);
-            if (!((RecyclerViewHeaderAdapter)this.recyclerView.getAdapter()).isViewHeader(child, this.recyclerView)) {
-                if (this.seasonsSpinner != null && child.getTag(2131623950) != null) {
-                    this.postSetSpinnerSelectionRunnable((int)child.getTag(2131623950));
-                }
-                this.onItemsShown();
-                n = 76;
-            }
-            else {
-                final int n2 = (int)(-child.getTop() * this.actionBarFadeRatio);
-                final View[] parallaxViews = this.parallaxViews;
-                for (int length = parallaxViews.length, i = 0; i < length; ++i) {
-                    final View view = parallaxViews[i];
-                    if (view != null) {
-                        this.adjustForParallax(view, child.getTop());
-                    }
-                }
-                this.onHeaderShown();
-                n = n2;
-            }
-        }
-        else {
-            n = 0;
-        }
-        return Math.max(0, Math.min(n, 76));
     }
     
     protected int getTrackerViewFinalXPosition() {
@@ -256,7 +256,6 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     @Override
     public void onScrolled(final RecyclerView recyclerView, final int n, final int n2) {
         super.onScrolled(recyclerView, n, n2);
-        this.saveScrollPosition(n2);
         this.calculateScrollVelocity(n2);
         if (this.applyToolBarGradientTransform) {
             this.setToolbarColor();
@@ -276,6 +275,7 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
         if (this.recyclerView.getChildCount() < 1 || this.parallaxViews.length < 1) {
             return;
         }
+        Log.v("DetailsPageParallaxScrollListener", "Resetting dynamic views' Y-position");
         final View child = this.recyclerView.getChildAt(0);
         for (View[] parallaxViews = this.parallaxViews; i < parallaxViews.length; ++i) {
             final View view = parallaxViews[i];
@@ -330,14 +330,8 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
         final int[] array = { initialTopColor, initialBottomColor };
         final GradientDrawable backgroundDrawable = new GradientDrawable(GradientDrawable$Orientation.TOP_BOTTOM, array);
         final int scrollY = this.getScrollY();
-        final int n = initialTopColor + (scrollY << 24);
-        final int n2 = initialBottomColor + (scrollY << 24);
-        if (Log.isLoggable("detailsScroller", 3)) {
-            Log.d("detailsScroller", "actionBar top colour: " + Integer.toHexString(n));
-            Log.d("detailsScroller", "actionBar bottom colour: " + Integer.toHexString(n2));
-        }
-        array[0] = n;
-        array[1] = n2;
+        array[0] = initialTopColor + (scrollY << 24);
+        array[1] = initialBottomColor + (scrollY << 24);
         ((NetflixActivity)this.recyclerView.getContext()).getSupportActionBar().setBackgroundDrawable((Drawable)backgroundDrawable);
     }
     

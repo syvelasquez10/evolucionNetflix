@@ -6,26 +6,37 @@ package com.netflix.mediaclient.service.voip;
 
 import com.netflix.mediaclient.servicemgr.IVoip$CallState;
 import com.netflix.mediaclient.service.webclient.model.leafs.VoipAuthorizationData;
-import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import org.json.JSONException;
+import com.netflix.mediaclient.service.logging.client.model.RootCause;
+import org.json.JSONObject;
+import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement$Debug;
+import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.vailsys.whistleengine.WhistleEngineDelegate$ConnectivityState;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$TerminationReason;
 import com.netflix.mediaclient.util.log.CustomerServiceLogUtils;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$CallQuality;
+import android.os.Process;
 import android.media.AudioManager;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.IVoip$Call;
+import com.netflix.mediaclient.service.webclient.model.leafs.VoipConfiguration;
+import com.vailsys.whistleengine.WhistleEngineThresholds;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.IVoip$AuthorizationTokens;
 import com.netflix.mediaclient.util.FileUtils;
 import com.vailsys.whistleengine.WhistleEngineConfig$TransportMode;
 import com.vailsys.whistleengine.WhistleEngineConfig;
+import com.netflix.mediaclient.service.user.UserLocaleRepository;
 import com.netflix.mediaclient.Log;
 import android.app.Service;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import com.netflix.mediaclient.util.l10n.UserLocale;
 import com.netflix.mediaclient.service.NetflixService;
 import java.util.Collections;
 import java.util.ArrayList;
@@ -66,6 +77,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     AudioManager$OnAudioFocusChangeListener mOnAudioFocusChangeListener;
     private AtomicBoolean mReady;
     private WhistleVoipAgent$ServiceState mServiceState;
+    private String mSharedSessionId;
     private long mStartTime;
     private final BroadcastReceiver mVoipReceiver;
     
@@ -86,7 +98,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         this.mVoipReceiver = new WhistleVoipAgent$5(this);
         this.mOnAudioFocusChangeListener = (AudioManager$OnAudioFocusChangeListener)new WhistleVoipAgent$7(this);
         this.mAuthorizationTokensManager = new AuthorizationTokensManager(context, serviceAgent$UserAgentInterface);
-        this.mLockManager = new PowerLockManager(context);
+        this.mLockManager = new PowerLockManager(context, this);
         this.mNotificationManager = new CallNotificationManager(context);
     }
     
@@ -142,6 +154,13 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         return -1;
     }
     
+    private UserLocale getAppLocale() {
+        if (this.getUserAgent() != null && ((ServiceAgent)this.getUserAgent()).isReady()) {
+            return this.getUserAgent().getCurrentAppLocale();
+        }
+        return UserLocaleRepository.getDeviceLocale();
+    }
+    
     private WhistleEngineConfig getConfiguration() {
         final IVoip$AuthorizationTokens authorizationTokens = this.mAuthorizationTokensManager.getAuthorizationTokens();
         if (authorizationTokens == null) {
@@ -155,11 +174,14 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
         whistleEngineConfig.setApplicationIdentifier("samurai");
         whistleEngineConfig.setPassword(authorizationTokens.getEncToken());
         whistleEngineConfig.setTransportMode(WhistleEngineConfig$TransportMode.TLS);
-        final int voipSampleRate = this.getConfigurationAgent().getVoipSampleRate();
+        whistleEngineConfig.setEchoCanceler(true);
+        whistleEngineConfig.setConnectivityThresholds(this.getWhistleEngineThresholds());
+        this.getConfigurationAgent();
+        final int voipSampleRateInHz = this.getVoipSampleRateInHz();
         if (Log.isLoggable()) {
-            Log.d("nf_voip", "Sets sample rate of " + voipSampleRate + " Hz...");
+            Log.d("nf_voip", "Sets sample rate of " + voipSampleRateInHz + " Hz...");
         }
-        whistleEngineConfig.setSamplerate(voipSampleRate);
+        whistleEngineConfig.setSamplerate(voipSampleRateInHz);
         Log.d("nf_voip", "SSL proxy server validation is enabled, set root certificate(s)...");
         try {
             final String rawString = FileUtils.readRawString(this.getContext(), 2131099650);
@@ -177,6 +199,48 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     
     private Intent getServiceIntent() {
         return new Intent(this.getContext(), (Class)WhistleEngine.class);
+    }
+    
+    private int getVoipSampleRateInHz() {
+        final ServiceAgent$ConfigurationAgentInterface configurationAgent = this.getConfigurationAgent();
+        if (configurationAgent == null || configurationAgent.getVoipConfiguration() == null) {
+            return 8000;
+        }
+        return configurationAgent.getVoipConfiguration().getSampleRateInHz();
+    }
+    
+    private WhistleEngineThresholds getWhistleEngineThresholds() {
+        WhistleEngineThresholds whistleEngineThresholds = null;
+        final ServiceAgent$ConfigurationAgentInterface configurationAgent = this.getConfigurationAgent();
+        if (configurationAgent == null || configurationAgent.getVoipConfiguration() == null) {
+            Log.w("nf_voip", "ConfigAgent null or VOIP config is null. Not expected!");
+        }
+        else {
+            final VoipConfiguration voipConfiguration = configurationAgent.getVoipConfiguration();
+            if (voipConfiguration.getJitterThresholdInMs() == null && voipConfiguration.getPacketLosThresholdInPercent() == null && voipConfiguration.getRttThresholdInMs() == null && voipConfiguration.getSipThresholdInMs() == null) {
+                Log.d("nf_voip", "Thresholds not found, do not set them!");
+                return null;
+            }
+            final WhistleEngineThresholds whistleEngineThresholds2 = new WhistleEngineThresholds();
+            if (voipConfiguration.getJitterThresholdInMs() != null) {
+                whistleEngineThresholds2.setJitterThreshold(voipConfiguration.getJitterThresholdInMs().getYellow(), voipConfiguration.getJitterThresholdInMs().getRed());
+            }
+            if (voipConfiguration.getSipThresholdInMs() != null) {
+                whistleEngineThresholds2.setSIPThreshold(voipConfiguration.getSipThresholdInMs().getYellow(), voipConfiguration.getSipThresholdInMs().getRed());
+            }
+            if (voipConfiguration.getRttThresholdInMs() != null) {
+                whistleEngineThresholds2.setRTTThreshold(voipConfiguration.getRttThresholdInMs().getYellow(), voipConfiguration.getRttThresholdInMs().getRed());
+            }
+            if (voipConfiguration.getPacketLosThresholdInPercent() != null) {
+                whistleEngineThresholds2.setPacketLossThreshold(voipConfiguration.getPacketLosThresholdInPercent().getYellow(), voipConfiguration.getPacketLosThresholdInPercent().getRed());
+            }
+            whistleEngineThresholds = whistleEngineThresholds2;
+            if (Log.isLoggable()) {
+                Log.d("nf_voip", "Sets threshholds " + voipConfiguration);
+                return whistleEngineThresholds2;
+            }
+        }
+        return whistleEngineThresholds;
     }
     
     private boolean isServiceStarted() {
@@ -255,6 +319,11 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                 }
             }
         }
+    }
+    
+    private static void setUrgentAudioThreadPriority() {
+        Process.setThreadPriority(10);
+        Process.setThreadPriority(-19);
     }
     
     private boolean startEngine() {
@@ -717,17 +786,18 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     @Override
     public boolean dial() {
         while (true) {
-            Label_0072: {
+            Label_0092: {
                 synchronized (this) {
                     if (this.mDialRequested.get()) {
                         Log.d("nf_voip", "Request for dial is already in progress!");
                     }
                     else {
-                        CustomerServiceLogUtils.reportCallSessionStarted(this.getContext());
+                        this.mSharedSessionId = ConsolidatedLoggingUtils.createGUID();
+                        CustomerServiceLogUtils.reportCallSessionStarted(this.getContext(), this.mSharedSessionId, this.getConfigurationAgent().shouldDisplayVoipDialConfirmationDialog());
                         this.mDialRequested.set(true);
                         this.start();
                         if (this.mReady.get()) {
-                            break Label_0072;
+                            break Label_0092;
                         }
                         Log.d("nf_voip", "Wait to start dial when callback that VOIP service is started returns!");
                     }
@@ -805,25 +875,91 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     
     @Override
     public boolean isConnected() {
-        return this.mConnectivityState != IVoip$ConnectivityState.NO_CONNECTION && !this.getConfigurationAgent().shouldDisableVoip();
+        return this.mConnectivityState != IVoip$ConnectivityState.NO_CONNECTION && this.isEnabled();
     }
     
     @Override
     public boolean isEnabled() {
-        boolean b = false;
-        if (this.getConfigurationAgent() != null) {
-            b = b;
-            if (!this.getConfigurationAgent().shouldDisableVoip()) {
-                b = true;
-            }
-        }
-        return b;
+        final ServiceAgent$ConfigurationAgentInterface configurationAgent = this.getConfigurationAgent();
+        return configurationAgent == null || !((ServiceAgent)configurationAgent).isReady() || !this.getConfigurationAgent().shouldDisableVoip();
     }
     
     @Override
     public boolean isReady() {
         synchronized (this) {
             return this.mReady.get() && this.mEngine != null;
+        }
+    }
+    
+    @Override
+    public void networkFailure(final int n) {
+        if (Log.isLoggable()) {
+            Log.d("nf_voip", "Network failure for line " + n);
+        }
+        this.getService().getErrorHandler().addError(VoipErrorDialogDescriptorFactory.getHandlerForCallFailed(this.getContext(), this.cancelAction));
+        while (true) {
+            while (true) {
+                Label_0317: {
+                    if (this.mEngine == null) {
+                        break Label_0317;
+                    }
+                    if (this.mCurrentCall == null) {
+                        Log.w("nf_voip", "Call was NOT in progress and we received network failure on line " + n);
+                        break Label_0317;
+                    }
+                    Label_0223: {
+                        break Label_0223;
+                        while (true) {
+                            Object o = new ArrayList<DeepErrorElement>();
+                            final DeepErrorElement deepErrorElement = new DeepErrorElement();
+                            ((List<DeepErrorElement>)o).add(deepErrorElement);
+                            deepErrorElement.setFatal(true);
+                            deepErrorElement.setErrorCode("networkFailed");
+                            final DeepErrorElement$Debug debug = new DeepErrorElement$Debug();
+                            while (true) {
+                                try {
+                                    final JSONObject message = new JSONObject();
+                                    message.put("reason", (Object)"networkFailed");
+                                    debug.setMessage(message);
+                                    deepErrorElement.setDebug(debug);
+                                    o = new Error(RootCause.networkFailure, (List<DeepErrorElement>)o);
+                                    Object o2 = null;
+                                    CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), (CustomerServiceLogging$TerminationReason)o2, IClientLogging$CompletionReason.failed, (Error)o);
+                                    this.callCleanup();
+                                    return;
+                                    // iftrue(Label_0274:, WhistleVoipAgent$WhistleCall.access$400(this.mCurrentCall) != n)
+                                    o2 = this.mListeners.iterator();
+                                    // iftrue(Label_0096:, !o2.hasNext())
+                                    while (true) {
+                                        Label_0244: {
+                                            break Label_0244;
+                                            ((Iterator<IVoip$OutboundCallListener>)o2).next().networkFailed(this.mCurrentCall);
+                                        }
+                                        continue;
+                                    }
+                                    Label_0274: {
+                                        Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received network failed on line " + n);
+                                    }
+                                    return;
+                                    Log.e("nf_voip", "Engine is null and we received network failed! Should not happen!");
+                                    break;
+                                    o2 = CustomerServiceLogging$TerminationReason.failedBeforeConnected;
+                                }
+                                catch (JSONException ex) {
+                                    continue;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (this.mConnectivityState != IVoip$ConnectivityState.NO_CONNECTION) {
+                    final Object o2 = CustomerServiceLogging$TerminationReason.failedAfterConnected;
+                    continue;
+                }
+                break;
+            }
+            continue;
         }
     }
     
@@ -878,22 +1014,22 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     
     @Override
     public boolean start() {
-        final ServiceAgent$ConfigurationAgentInterface configurationAgent = this.getConfigurationAgent();
-        boolean b;
-        if (configurationAgent != null && !configurationAgent.shouldDisableVoip()) {
-            b = true;
-        }
-        else {
-            b = false;
-        }
-        if (b && !this.isServiceStartedOrStarting()) {
+        final boolean enabled = this.isEnabled();
+        final boolean serviceStartedOrStarting = this.isServiceStartedOrStarting();
+        if (enabled && !serviceStartedOrStarting) {
             Log.d("nf_voip", "VOIP service is enabled and it is not ready, start it.");
             this.mServiceState = WhistleVoipAgent$ServiceState.STARTING;
             this.getApplication().bindService(this.getServiceIntent(), this.mConnection, 1);
         }
-        else if (b) {
-            Log.d("nf_voip", "VOIP service is NOT enabled or it started or starting, no need to start it.");
-            return true;
+        else {
+            if (enabled) {
+                Log.d("nf_voip", "VOIP service is NOT enabled or it started or starting, no need to start it.");
+                return true;
+            }
+            if (Log.isLoggable()) {
+                Log.w("nf_voip", "We should NOT be here: VOIP service is enabled " + enabled + " or it started or starting " + serviceStartedOrStarting + ", state: " + this.mServiceState);
+                return false;
+            }
         }
         return false;
     }
@@ -907,17 +1043,13 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     
     @Override
     public void stop() {
-        final boolean b = true;
         if (this.mReady.get() && this.isServiceStoppedOrStopping() && this.mConnection != null) {
             Log.d("nf_voip", "Stop VOIP service");
             this.mServiceState = WhistleVoipAgent$ServiceState.STOPPING;
             this.getService().unbindService(this.mConnection);
         }
-        else {
-            final ServiceAgent$ConfigurationAgentInterface configurationAgent = this.getConfigurationAgent();
-            if (Log.isLoggable() && configurationAgent != null) {
-                Log.w("nf_voip", "VOIP service is enabled " + !configurationAgent.shouldDisableVoip() + ", ready " + this.mReady.get() + ", connection is null " + (this.mConnection == null && b) + ", skip stop!");
-            }
+        else if (Log.isLoggable()) {
+            Log.w("nf_voip", "VOIP service is enabled " + this.isEnabled() + ", ready " + this.mReady.get() + ", connection is null " + (this.mConnection == null) + ", skip stop!");
         }
     }
     

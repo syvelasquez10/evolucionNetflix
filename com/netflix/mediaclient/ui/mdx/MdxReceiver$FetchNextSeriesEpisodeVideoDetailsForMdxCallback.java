@@ -32,7 +32,7 @@ class MdxReceiver$FetchNextSeriesEpisodeVideoDetailsForMdxCallback extends Loggi
             if (postPlayVideos != null && postPlayVideos.size() > 0) {
                 final String id = postPlayVideos.get(0).getId();
                 if (!TextUtils.isEmpty((CharSequence)id)) {
-                    this.mActivity.getServiceManager().getBrowse().fetchEpisodeDetails(id, new MdxReceiver$FetchPostPlayForPlaybackCallback("nf_mdx", this.mActivity));
+                    this.mActivity.getServiceManager().getBrowse().fetchEpisodeDetails(id, null, new MdxReceiver$FetchPostPlayForPlaybackCallback("nf_mdx", this.mActivity));
                     this.processed = true;
                 }
             }

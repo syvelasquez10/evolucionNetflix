@@ -14,6 +14,7 @@ import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.View;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.widget.AbsListView$OnScrollListener;
@@ -27,7 +28,6 @@ import java.util.HashMap;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import java.util.Map;
 import android.widget.AbsListView$RecyclerListener;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.ListView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
@@ -48,10 +48,10 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     protected final ErrorWrapper$Callback leCallback;
     protected LoadingAndErrorWrapper leWrapper;
     protected ListView listView;
-    protected ServiceManager manager;
     private final AbsListView$RecyclerListener recycleListener;
     private final Map<String, Object> stateMap;
     private ObjectRecycler$ViewRecycler viewRecycler;
+    private boolean wasInitPerformed;
     
     public LoLoMoFrag() {
         this.stateMap = new HashMap<String, Object>();
@@ -72,12 +72,20 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     }
     
     private void handleInitIfReady() {
+        if (this.wasInitPerformed) {
+            return;
+        }
         if (this.getActivity() == null) {
             Log.d("LoLoMoFrag", "Activity is null - can't continue init");
             return;
         }
-        if (this.manager == null || !this.manager.isReady()) {
+        final ServiceManager serviceManager = this.getServiceManager();
+        if (serviceManager == null) {
             Log.d("LoLoMoFrag", "Manager not available - can't continue init");
+            return;
+        }
+        if (this.listView == null) {
+            Log.d("LoLoMoFrag", "Views are not initialized - can't continue init");
             return;
         }
         if (this.adapter != null && this.focusHandler != null) {
@@ -89,7 +97,8 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         }
         this.listView.setAdapter((ListAdapter)this.adapter);
         this.listView.setOnScrollListener((AbsListView$OnScrollListener)this.adapter);
-        this.adapter.onManagerReady(this.manager, CommonStatus.OK);
+        this.adapter.onManagerReady(serviceManager, CommonStatus.OK);
+        this.wasInitPerformed = true;
     }
     
     private void setupErrorWrapper(final View view) {
@@ -105,7 +114,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     }
     
     protected int getLayoutId() {
-        return 2130903139;
+        return 2130903160;
     }
     
     ListView getListView() {
@@ -150,7 +159,6 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
             Log.v("LoLoMoFrag", "Clearing all frag state");
             this.stateMap.clear();
         }
-        this.handleInitIfReady();
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
@@ -159,6 +167,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         this.setupMainView(inflate);
         this.setupFocushandler();
         this.setupErrorWrapper(inflate);
+        this.handleInitIfReady();
         return inflate;
     }
     
@@ -171,9 +180,8 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     }
     
     @Override
-    public void onManagerReady(final ServiceManager manager, final Status status) {
+    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         Log.v("LoLoMoFrag", "onManagerReady");
-        this.manager = manager;
         if (status.isError()) {
             Log.w("LoLoMoFrag", "Manager status code not okay");
             return;
@@ -220,7 +228,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
         (this.listView = (ListView)view.findViewById(16908298)).setDivider((Drawable)null);
         this.listView.setFocusable(false);
         this.listView.setRecyclerListener(this.recycleListener);
-        if (BrowseExperience.isKubrickKids()) {
+        if (BrowseExperience.showKidsExperience()) {
             KidsUtils.configureListViewForKids(this.listView);
         }
     }

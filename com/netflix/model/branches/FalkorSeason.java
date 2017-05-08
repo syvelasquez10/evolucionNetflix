@@ -5,7 +5,6 @@
 package com.netflix.model.branches;
 
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import android.content.Context;
 import com.netflix.mediaclient.service.falkor.Falkor$Creator;
 import java.util.HashSet;
 import java.util.Set;
@@ -90,16 +89,19 @@ public class FalkorSeason extends BaseFalkorObject implements BasicVideo, Season
     }
     
     @Override
+    public String getSeasonLongSeqLabel() {
+        if (this.detail == null) {
+            return null;
+        }
+        return this.detail.longSeqLabel;
+    }
+    
+    @Override
     public int getSeasonNumber() {
         if (this.detail == null) {
             return -1;
         }
         return this.detail.number;
-    }
-    
-    @Override
-    public String getSeasonNumberTitle(final Context context) {
-        return String.format(context.getString(2131165614), this.getSeasonNumber());
     }
     
     @Override
@@ -146,6 +148,6 @@ public class FalkorSeason extends BaseFalkorObject implements BasicVideo, Season
     
     @Override
     public String toString() {
-        return "FalkorSeason [getKeys()=" + this.getKeys() + ", getId()=" + this.getId() + ", getTitle()=" + this.getTitle() + ", getType()=" + this.getType() + ", getNumOfEpisodes()=" + this.getNumOfEpisodes() + ", getSeasonNumber()=" + this.getSeasonNumber() + ", getYear()=" + this.getYear() + "]";
+        return "FalkorSeason [getKeys()=" + this.getKeys() + ", getId()=" + this.getId() + ", getTitle()=" + this.getTitle() + ", getType()=" + this.getType() + ", getNumOfEpisodes()=" + this.getNumOfEpisodes() + ", getSeasonNumber()=" + this.getSeasonNumber() + ", getYear()=" + this.getYear() + ", longSeqLabel=" + this.getSeasonLongSeqLabel() + "]";
     }
 }

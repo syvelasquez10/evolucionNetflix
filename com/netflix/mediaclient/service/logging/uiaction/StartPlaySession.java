@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.logging.uiaction;
 
 import com.netflix.mediaclient.service.logging.uiaction.model.StartPlayEndedEvent;
+import com.netflix.mediaclient.ui.common.PlayLocationType;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
@@ -19,8 +20,8 @@ public final class StartPlaySession extends BaseUIActionSession
         super(userActionLogging$CommandName, clientLogging$ModalView);
     }
     
-    public StartPlayEndedEvent createEndedEvent(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final PlayerType playerType) {
-        final StartPlayEndedEvent startPlayEndedEvent = new StartPlayEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.mView, this.mAction, clientLogging$CompletionReason, uiError, n, playerType);
+    public StartPlayEndedEvent createEndedEvent(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final PlayerType playerType, final PlayLocationType playLocationType) {
+        final StartPlayEndedEvent startPlayEndedEvent = new StartPlayEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.mView, this.mAction, clientLogging$CompletionReason, uiError, n, playerType, playLocationType);
         startPlayEndedEvent.setCategory(this.getCategory());
         startPlayEndedEvent.setSessionId(this.mId);
         return startPlayEndedEvent;

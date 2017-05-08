@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.android.fragment.LoadingView;
 import android.view.ViewGroup;
 import android.widget.LinearLayout$LayoutParams;
 import android.content.IntentFilter;
@@ -20,6 +21,7 @@ import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.EnumMap;
 import android.support.v4.view.PagerAdapter;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
@@ -38,15 +40,40 @@ class LoMoViewPagerAdapter$3 implements RowAdapterCallbacks
     
     @Override
     public void notifyParentOfDataSetChange() {
-        if (Log.isLoggable()) {
-            Log.v("LoMoViewPagerAdapter", "Notified parent of data set change");
+        Log.v("LoMoViewPagerAdapter", "Notified parent of data set change");
+        if (LocalizationUtils.isCurrentLocaleRTL()) {
+            final int n = this.this$0.currentAdapter.getCount() - 1;
+            if (Log.isLoggable()) {
+                Log.d("LoMoViewPagerAdapter", "Current locale is RTL, we got oour first data, set to last page " + n);
+                Log.d("LoMoViewPagerAdapter", "Current page " + this.this$0.pager.getCurrentItem());
+                Log.d("LoMoViewPagerAdapter", "Previous last page " + this.this$0.previousLastPage);
+            }
+            if (this.this$0.pager.getCurrentItem() == this.this$0.previousLastPage) {
+                Log.d("LoMoViewPagerAdapter", "LOMO stayed on same last page, just adjust");
+                this.this$0.pager.setCurrentItem(n, false, false);
+            }
+            else {
+                final int n2 = this.this$0.pager.getCurrentItem() + n - this.this$0.previousLastPage;
+                if (Log.isLoggable()) {
+                    Log.d("LoMoViewPagerAdapter", "User moved from last page, adjust to page " + n2);
+                }
+                if (n2 >= 0) {
+                    this.this$0.pager.setCurrentItem(n2, false, false);
+                }
+                else {
+                    Log.d("LoMoViewPagerAdapter", "Wrong position, reset to end");
+                    this.this$0.pager.setCurrentItem(n, false, false);
+                }
+            }
+            this.this$0.previousLastPage = n;
+        }
+        else {
+            Log.d("LoMoViewPagerAdapter", "Current locale is LTR...");
         }
         this.this$0.notifyDataSetChanged();
         this.this$0.pager.notifyDataSetChanged();
         if (this.this$0.pager.getCurrentItem() == 0) {
-            if (Log.isLoggable()) {
-                Log.v("LoMoViewPagerAdapter", "Data loaded for page 0 - saving state");
-            }
+            Log.v("LoMoViewPagerAdapter", "Data loaded for page 0 - saving state");
             this.this$0.pager.saveStateAndTrackPresentation(0);
         }
     }

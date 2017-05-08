@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.webclient.volley;
 import java.util.Locale;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonObject;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.NetflixApplication;
@@ -17,6 +18,7 @@ public class FalkorParseUtils
     private static final String FIELD_VALUE = "value";
     public static final String METHOD_TYPE_CALL = "call";
     public static final String METHOD_TYPE_GET = "get";
+    private static final String TAG = "FalkorParseUtils";
     public static final String URL_PARAM_KEY_PARAM = "param";
     private static final Gson gson;
     
@@ -28,14 +30,21 @@ public class FalkorParseUtils
         if (Log.isLoggable()) {
             Log.v(s, "Creating object from json of type: " + clazz);
         }
-        return FalkorParseUtils.gson.fromJson(jsonElement, clazz);
+        try {
+            return FalkorParseUtils.gson.fromJson(jsonElement, clazz);
+        }
+        catch (IncompatibleClassChangeError incompatibleClassChangeError) {
+            Log.e("FalkorParseUtils", "spy-8880: IncompatibleClassChangeError - gson reflection fail", incompatibleClassChangeError);
+            ErrorLoggingManager.logHandledException("spy-8880: IncompatibleClassChangeError - gson reflection fail");
+            return null;
+        }
     }
     
     public static JsonObject getDataObj(final String s, final String s2) {
         JsonObject asJsonObject;
         try {
             asJsonObject = new JsonParser().parse(s2).getAsJsonObject();
-            if (hasErrors(asJsonObject)) {
+            if (hasErrors(asJsonObject) && Log.isLoggable()) {
                 throw new FalkorException(getErrorMessage(asJsonObject, s));
             }
         }
@@ -68,7 +77,14 @@ public class FalkorParseUtils
     
     public static <T> T getPropertyObject(final JsonObject jsonObject, final String s, final Class<T> clazz) {
         if (jsonObject.has(s)) {
-            return FalkorParseUtils.gson.fromJson(jsonObject.get(s), clazz);
+            final JsonElement value = jsonObject.get(s);
+            try {
+                return FalkorParseUtils.gson.fromJson(value, clazz);
+            }
+            catch (IncompatibleClassChangeError incompatibleClassChangeError) {
+                Log.e("FalkorParseUtils", "spy-8880: IncompatibleClassChangeError - gson reflection fail", incompatibleClassChangeError);
+                ErrorLoggingManager.logHandledException("spy-8880: IncompatibleClassChangeError - gson reflection fail");
+            }
         }
         return null;
     }

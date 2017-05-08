@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
@@ -25,8 +26,9 @@ class KidsGenresLoMoFrag$ProgressiveAdapter extends SimilarItemsGridViewAdapter
     }
     
     public void fetchData() {
-        if (this.this$0.manager != null && this.this$0.manager.isReady()) {
-            this.this$0.manager.getBrowse().fetchGenreVideos(new KidsGenresLoMoFrag$FlatGenre(this.this$0, null), this.startIndex, this.endIndex, false, new KidsGenresLoMoFrag$GenresVideoFetchCallback(this.this$0, "KidsGenresLoMoFrag"));
+        final ServiceManager serviceManager = this.this$0.getServiceManager();
+        if (serviceManager != null) {
+            serviceManager.getBrowse().fetchGenreVideos(new KidsGenresLoMoFrag$FlatGenre(this.this$0, null), this.startIndex, this.endIndex, false, new KidsGenresLoMoFrag$GenresVideoFetchCallback(this.this$0, "KidsGenresLoMoFrag"));
         }
     }
     

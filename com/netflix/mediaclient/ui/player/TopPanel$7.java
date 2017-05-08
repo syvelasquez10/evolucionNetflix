@@ -4,32 +4,6 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.servicemgr.ServiceManager;
-import android.app.Dialog;
-import com.netflix.mediaclient.media.Subtitle;
-import com.netflix.mediaclient.media.AudioSource;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
-import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
-import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthSaving;
-import android.view.Menu;
-import com.netflix.mediaclient.servicemgr.IPlayer;
-import android.content.DialogInterface$OnCancelListener;
-import android.widget.AdapterView$OnItemClickListener;
-import android.content.Context;
-import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog$Builder;
-import android.app.AlertDialog;
-import com.netflix.mediaclient.util.ViewUtils;
-import com.netflix.mediaclient.util.gfx.AnimationUtils;
-import com.netflix.mediaclient.media.Language;
-import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
-import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
-import com.netflix.mediaclient.ui.common.LanguageSelector;
-import android.animation.Animator;
-import android.view.View$OnClickListener;
-import android.support.v7.app.ActionBar;
-import android.view.View;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -42,7 +16,10 @@ class TopPanel$7 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        this.this$0.mListeners.episodeSelectorListener.onClick((View)null);
+        if (this.this$0.playerFragment.isActivityValid()) {
+            this.this$0.playerFragment.extendTimeoutTimer();
+            this.this$0.displayMdxTargets();
+        }
         return true;
     }
 }

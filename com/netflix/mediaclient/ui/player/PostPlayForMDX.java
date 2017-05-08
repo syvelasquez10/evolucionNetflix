@@ -79,7 +79,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     public void fetchPostPlayVideos(final String s, final VideoType videoType) {
         if (!TextUtils.isEmpty((CharSequence)s) && this.mNetflixActivity.getServiceManager() != null) {
             Log.d("nf_postplay", "Fetch postplay videos...");
-            this.mNetflixActivity.getServiceManager().getBrowse().fetchEpisodeDetails(s, new PostPlayForMDX$FetchPostPlayForPlaybackCallback(this));
+            this.mNetflixActivity.getServiceManager().getBrowse().fetchEpisodeDetails(s, null, new PostPlayForMDX$FetchPostPlayForPlaybackCallback(this));
             return;
         }
         Log.e("nf_postplay", "Unable to fetch postplay videos!");
@@ -90,9 +90,10 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
         this.fetchPostPlayVideos(s, videoType);
     }
     
+    @Override
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mNetflixActivity.findViewById(2131624405);
-        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131624403);
+        this.mTargetNameView = (TextView)this.mNetflixActivity.findViewById(2131624521);
+        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131624519);
     }
     
     @Override
@@ -127,7 +128,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void handlePlayNow(final boolean b) {
         if (this.episodeDetails != null) {
-            final Asset create = Asset.create(this.episodeDetails.getPlayable(), PlayContext.DFLT_MDX_CONTEXT, PlayerActivity.PIN_VERIFIED);
+            final Asset create = Asset.create(this.episodeDetails.getPlayable(), PlayContext.DFLT_MDX_CONTEXT, true);
             this.stopAllNotifications();
             MdxAgent$Utils.playVideo(this.mNetflixActivity, create, true);
         }
@@ -168,7 +169,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void initInfoContainer(final Activity activity) {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(activity.getText(2131165586));
+            this.mInfoTitleView.setText(activity.getText(2131165607));
             this.mInfoTitleView.setVisibility(4);
         }
         if (this.mTimerView != null) {

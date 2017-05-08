@@ -13,6 +13,12 @@ public interface VideoDetails extends FeatureEnabledProvider, Ratable, Video
 {
     String getActors();
     
+    String getAdvisoryDescription();
+    
+    int getAdvisoryDisplayDuration();
+    
+    String getAdvisoryRating();
+    
     String getBifUrl();
     
     String getCatalogIdUrl();
@@ -20,6 +26,10 @@ public interface VideoDetails extends FeatureEnabledProvider, Ratable, Video
     String getCertification();
     
     String getCopyright();
+    
+    String getDefaultTrailer();
+    
+    long getExpirationTime();
     
     String getGenres();
     
@@ -35,6 +45,8 @@ public interface VideoDetails extends FeatureEnabledProvider, Ratable, Video
     
     String getStoryUrl();
     
+    String getSupplementalMessage();
+    
     String getSynopsis();
     
     String getTitleImgUrl();
@@ -43,7 +55,17 @@ public interface VideoDetails extends FeatureEnabledProvider, Ratable, Video
     
     int getYear();
     
+    boolean hasTrailers();
+    
+    boolean hasWatched();
+    
     boolean isAvailableToStream();
     
     boolean isInQueue();
+    
+    boolean isNSRE();
+    
+    boolean isOriginal();
+    
+    boolean isSupplementalVideo();
 }

@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.protocol.netflixcom;
 
+import android.app.Activity;
+import com.netflix.mediaclient.util.NflxProtocolUtils;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.model.leafs.Video$Summary;
@@ -33,5 +35,6 @@ class NetflixComWatchHandler$1 extends SimpleManagerCallback
             return;
         }
         ErrorLoggingManager.logHandledException(new Throwable("SPY-7518 - got error trying to fetch video summary for: " + this.val$videoId));
+        NflxProtocolUtils.reportDelayedResponseHandled(this.val$activity);
     }
 }

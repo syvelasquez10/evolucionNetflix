@@ -5,6 +5,9 @@
 package com.netflix.mediaclient.android.fragment;
 
 import android.view.MotionEvent;
+import android.view.ViewGroup;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
+import com.viewpagerindicator.android.osp.ViewPager$ItemInfo;
 import com.netflix.mediaclient.Log;
 import android.widget.ListView;
 import android.view.ViewParent;
@@ -38,6 +41,33 @@ public class CustomViewPager extends ViewPager
     
     private void init() {
         Log.v("CustomViewPager", "Created view pager");
+    }
+    
+    @Override
+    protected ViewPager$ItemInfo addNewItem(final int position, final int n) {
+        if (!LocalizationUtils.isCurrentLocaleRTL()) {
+            return super.addNewItem(position, n);
+        }
+        final ViewPager$ItemInfo viewPager$ItemInfo = new ViewPager$ItemInfo();
+        viewPager$ItemInfo.position = position;
+        viewPager$ItemInfo.object = this.getAdapter().instantiateItem(this, position);
+        viewPager$ItemInfo.widthFactor = this.getAdapter().getPageWidth(position);
+        if (viewPager$ItemInfo.object instanceof LoadingView && LocalizationUtils.isCurrentLocaleRTL()) {
+            if (Log.isLoggable()) {
+                Log.d("CustomViewPager", "Adding loading page for RTL locale, pos: " + position);
+            }
+            return null;
+        }
+        if (n < 0 || n >= this.getItems().size()) {
+            Log.d("CustomViewPager", "Add to end");
+            this.getItems().add(viewPager$ItemInfo);
+            return viewPager$ItemInfo;
+        }
+        if (Log.isLoggable()) {
+            Log.d("CustomViewPager", "Add to index " + n);
+        }
+        this.getItems().add(n, viewPager$ItemInfo);
+        return viewPager$ItemInfo;
     }
     
     public ViewPager$OnPageChangeListener getOnPageChangeListener() {

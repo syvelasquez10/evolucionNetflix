@@ -27,6 +27,21 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
+    public String getAdvisoryDescription() {
+        return null;
+    }
+    
+    @Override
+    public int getAdvisoryDisplayDuration() {
+        return 0;
+    }
+    
+    @Override
+    public String getAdvisoryRating() {
+        return null;
+    }
+    
+    @Override
     public String getBifUrl() {
         return null;
     }
@@ -52,6 +67,11 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
+    public String getDefaultTrailer() {
+        return null;
+    }
+    
+    @Override
     public String getDirectors() {
         return "Director 1, Director 2";
     }
@@ -69,6 +89,11 @@ public class DummyMovieDetails implements MovieDetails
     @Override
     public String getEvidenceText() {
         return null;
+    }
+    
+    @Override
+    public long getExpirationTime() {
+        return 0L;
     }
     
     @Override
@@ -147,17 +172,17 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
-    public String getSquareUrl() {
-        return null;
-    }
-    
-    @Override
     public String getStoryDispUrl() {
         return null;
     }
     
     @Override
     public String getStoryUrl() {
+        return null;
+    }
+    
+    @Override
+    public String getSupplementalMessage() {
         return null;
     }
     
@@ -197,12 +222,42 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
+    public boolean hasTrailers() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasWatched() {
+        return false;
+    }
+    
+    @Override
     public boolean isAvailableToStream() {
         return true;
     }
     
     @Override
     public boolean isInQueue() {
+        return false;
+    }
+    
+    @Override
+    public boolean isNSRE() {
+        return false;
+    }
+    
+    @Override
+    public boolean isOriginal() {
+        return false;
+    }
+    
+    @Override
+    public boolean isPreRelease() {
+        return false;
+    }
+    
+    @Override
+    public boolean isSupplementalVideo() {
         return false;
     }
     
@@ -217,8 +272,18 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
+    public boolean isVideoDolbyVision() {
+        return false;
+    }
+    
+    @Override
     public boolean isVideoHd() {
         return true;
+    }
+    
+    @Override
+    public boolean isVideoHdr10() {
+        return false;
     }
     
     @Override

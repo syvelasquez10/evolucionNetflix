@@ -28,10 +28,6 @@ public enum PreAppAgentEventType
         return PreAppAgentEventType.IQ_UPDATED.equals(preAppAgentEventType) || PreAppAgentEventType.ALL_MEMBER_UPDATED.equals(preAppAgentEventType);
     }
     
-    public static boolean isListInfoUpdated(final PreAppAgentEventType preAppAgentEventType) {
-        return PreAppAgentEventType.ALL_MEMBER_UPDATED.equals(preAppAgentEventType);
-    }
-    
     public static boolean isNonMemberListUpdated(final PreAppAgentEventType preAppAgentEventType) {
         return PreAppAgentEventType.NON_MEMBER_UPDATED.equals(preAppAgentEventType);
     }

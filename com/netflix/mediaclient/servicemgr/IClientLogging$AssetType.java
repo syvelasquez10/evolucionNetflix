@@ -12,6 +12,7 @@ public enum IClientLogging$AssetType
     imageSubtitlesMasterIndex, 
     imageSubtitlesSegment, 
     imageSubtitlesSegmentIndex, 
+    interactiveContent, 
     merchStill, 
     motionBillboard, 
     profileAvatar, 

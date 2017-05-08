@@ -18,6 +18,8 @@ public interface EpisodeDetails extends PostPlayVideo
     
     String getNextEpisodeTitle();
     
+    String getSeasonAbbrSeqLabel();
+    
     String getSeasonId();
     
     int getSeasonNumber();

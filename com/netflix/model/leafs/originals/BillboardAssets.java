@@ -16,6 +16,7 @@ public class BillboardAssets implements JsonPopulator
 {
     private static final String TAG = "Assets";
     private BillboardBackground background;
+    private BillboardDateBadge dateBadge;
     private BillboardLogo logo;
     
     public BillboardAssets(final JsonElement jsonElement) {
@@ -24,6 +25,10 @@ public class BillboardAssets implements JsonPopulator
     
     public BillboardBackground getBackground() {
         return this.background;
+    }
+    
+    public BillboardDateBadge getDateBadge() {
+        return this.dateBadge;
     }
     
     public BillboardLogo getLogo() {
@@ -40,19 +45,26 @@ public class BillboardAssets implements JsonPopulator
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0122: {
+            Label_0130: {
                 switch (s.hashCode()) {
                     case 3327403: {
                         if (s.equals("logo")) {
                             n = 0;
-                            break Label_0122;
+                            break Label_0130;
                         }
                         break;
                     }
                     case -1332194002: {
                         if (s.equals("background")) {
                             n = 1;
-                            break Label_0122;
+                            break Label_0130;
+                        }
+                        break;
+                    }
+                    case -276211563: {
+                        if (s.equals("dateBadge")) {
+                            n = 2;
+                            break Label_0130;
                         }
                         break;
                     }
@@ -69,6 +81,10 @@ public class BillboardAssets implements JsonPopulator
                 }
                 case 1: {
                     this.background = new BillboardBackground(jsonElement2);
+                    continue;
+                }
+                case 2: {
+                    this.dateBadge = new BillboardDateBadge(jsonElement2);
                     continue;
                 }
             }

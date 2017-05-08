@@ -49,7 +49,7 @@ public class NetflixActionBar
             Log.e("NetflixActionBar", "actionBarGroup is null");
         }
         else {
-            this.toolbar = (Toolbar)this.actionBarGroup.findViewById(2131624043);
+            this.toolbar = (Toolbar)this.actionBarGroup.findViewById(2131624044);
             if (this.toolbar == null) {
                 Log.e("NetflixActionBar", "toolBar is null");
                 return;
@@ -139,8 +139,8 @@ public class NetflixActionBar
         return 2130903064;
     }
     
-    public View getToolbar() {
-        return (View)this.toolbar;
+    public Toolbar getToolbar() {
+        return this.toolbar;
     }
     
     public boolean handleHomeButtonSelected(final MenuItem menuItem) {
@@ -210,10 +210,10 @@ public class NetflixActionBar
         final Toolbar toolbar = this.toolbar;
         int navigationIcon;
         if (b) {
-            navigationIcon = 2130837693;
+            navigationIcon = 2130837710;
         }
         else {
-            navigationIcon = 2130837692;
+            navigationIcon = 2130837708;
         }
         toolbar.setNavigationIcon(navigationIcon);
     }
@@ -237,7 +237,7 @@ public class NetflixActionBar
     }
     
     protected void showDropShadowIfAvailable() {
-        final View viewById = this.actionBarGroup.findViewById(2131624058);
+        final View viewById = this.actionBarGroup.findViewById(2131624059);
         if (viewById != null) {
             viewById.setVisibility(0);
         }

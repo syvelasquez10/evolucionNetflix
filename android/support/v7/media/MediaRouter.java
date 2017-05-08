@@ -93,6 +93,11 @@ public final class MediaRouter
         }
     }
     
+    public MediaRouter$RouteInfo getDefaultRoute() {
+        checkCallingThread();
+        return MediaRouter.sGlobal.getDefaultRoute();
+    }
+    
     public MediaRouter$RouteInfo getSelectedRoute() {
         checkCallingThread();
         return MediaRouter.sGlobal.getSelectedRoute();
@@ -122,5 +127,13 @@ public final class MediaRouter
             Log.d("MediaRouter", "selectRoute: " + mediaRouter$RouteInfo);
         }
         MediaRouter.sGlobal.selectRoute(mediaRouter$RouteInfo);
+    }
+    
+    public void unselect(final int n) {
+        if (n < 0 || n > 3) {
+            throw new IllegalArgumentException("Unsupported reason to unselect route");
+        }
+        checkCallingThread();
+        MediaRouter.sGlobal.selectRoute(this.getDefaultRoute(), n);
     }
 }

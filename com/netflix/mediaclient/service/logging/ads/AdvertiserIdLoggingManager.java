@@ -49,7 +49,11 @@ public final class AdvertiserIdLoggingManager implements AdvertiserIdLogging
                 }
             }
         }
-        this.mLoggingWebClient.sendLoggingEvent(new AdvertiserIdRequest(s, b, advertiserIdLogging$EventType, deviceModel).toJson(), new AdvertiserIdLoggingManager$2(this, s, b));
+        final AdvertiserIdRequest advertiserIdRequest = new AdvertiserIdRequest(s, b, advertiserIdLogging$EventType, deviceModel);
+        final AdvertiserIdLoggingManager$2 advertiserIdLoggingManager$2 = new AdvertiserIdLoggingManager$2(this, s, b);
+        if (this.mLoggingWebClient != null) {
+            this.mLoggingWebClient.sendLoggingEvent(advertiserIdRequest.toJson(), advertiserIdLoggingManager$2);
+        }
     }
     
     private void initProvider() {

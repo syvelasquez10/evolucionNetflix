@@ -10,7 +10,7 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
-import com.netflix.mediaclient.util.ItemDecorationEdgePadding;
+import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.support.v7.widget.RecyclerView$LayoutManager;
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;

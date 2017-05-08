@@ -17,27 +17,34 @@ import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
-import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
+import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
-import java.util.List;
 import android.os.Handler;
+import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
+import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.app.Status;
+import java.util.List;
 
 class PostToHandlerCallbackWrapper$20 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
+    final /* synthetic */ List val$requestedGenres;
     final /* synthetic */ Status val$res;
     
-    PostToHandlerCallbackWrapper$20(final PostToHandlerCallbackWrapper this$0, final Status val$res) {
+    PostToHandlerCallbackWrapper$20(final PostToHandlerCallbackWrapper this$0, final List val$requestedGenres, final Status val$res) {
         this.this$0 = this$0;
+        this.val$requestedGenres = val$requestedGenres;
         this.val$res = val$res;
     }
     
     @Override
     public void run() {
-        this.this$0.callback.onQueueAdd(this.val$res);
+        ThreadUtils.assertOnMain();
+        this.this$0.callback.onGenresFetched(this.val$requestedGenres, this.val$res);
     }
 }

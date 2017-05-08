@@ -8,11 +8,14 @@ public class Falkor$Leafs
 {
     public static final String BILLBOARD_SUMMARY = "billboardSummary";
     public static final String BOOKMARK = "bookmark";
-    public static final String BOOKMARK_STILL = "bookmarkStill";
     public static final String COPYRIGHT = "copyright";
+    public static final String DEFAULT_TRAILER = "defaultTrailer";
     public static final String DETAIL = "detail";
     public static final String EVIDENCE = "evidence";
     public static final String HERO_IMGS = "heroImgs";
+    public static final String INTERACTIVE_DETAILS = "details";
+    public static final String INTERACTIVE_PLAYBACK_MOMENTS = "moments";
+    public static final String INTERACTIVE_POSTPLAY_DATA = "postplay";
     public static final String IN_QUEUE = "inQueue";
     public static final String KUBRICK = "kubrick";
     public static final String NOTIFICATION_VIDEO = "notificationVideo";

@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.details.SeasonsSpinner;
@@ -39,6 +38,7 @@ import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
@@ -53,7 +53,8 @@ class KubrickKidsCharacterDetailsFrag$FetchCharacterDetailsCallback extends Logg
     }
     
     private void fetchMovieDetails() {
-        if (this.this$0.manager == null) {
+        final ServiceManager serviceManager = this.this$0.getServiceManager();
+        if (serviceManager == null) {
             Log.w("KidsCharacterDetailsFrag", "Manager is null - can't get movie details");
             return;
         }
@@ -70,7 +71,7 @@ class KubrickKidsCharacterDetailsFrag$FetchCharacterDetailsCallback extends Logg
         if (Log.isLoggable()) {
             Log.v("KidsCharacterDetailsFrag", "Fetching data for show ID: " + this.this$0.getShowId());
         }
-        this.this$0.manager.getBrowse().fetchMovieDetails(this.this$0.showId, new KubrickKidsCharacterDetailsFrag$FetchCharacterDetailsCallback$FetchMovieDataCallback(this, this.this$0.requestId));
+        serviceManager.getBrowse().fetchMovieDetails(this.this$0.showId, null, new KubrickKidsCharacterDetailsFrag$FetchCharacterDetailsCallback$FetchMovieDataCallback(this, this.this$0.requestId));
     }
     
     Video getRecommendedMovie(final List<Video> list) {
@@ -102,6 +103,7 @@ class KubrickKidsCharacterDetailsFrag$FetchCharacterDetailsCallback extends Logg
     @Override
     public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
         super.onKidsCharacterDetailsFetched(kidsCharacterDetails, b, status);
+        this.this$0.isLoading = false;
         if (status.isError()) {
             Log.w("KidsCharacterDetailsFrag", "Invalid status code");
             this.this$0.showErrorView();

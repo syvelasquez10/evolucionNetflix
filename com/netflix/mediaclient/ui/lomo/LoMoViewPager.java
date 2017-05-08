@@ -64,7 +64,7 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         this.handler = new Handler();
         this.pageIndicator = pageIndicator;
         this.setAdapter(this.adapter = new LoMoViewPagerAdapter(this, serviceManager, objectRecycler$ViewRecycler, view, b));
-        if (BrowseExperience.isKubrickKids()) {
+        if (BrowseExperience.showKidsExperience()) {
             this.setTouchSlop((int)(this.getTouchSlop() * 0.75f));
         }
     }
@@ -162,7 +162,7 @@ public class LoMoViewPager extends CustomViewPager implements BaseLoLoMoAdapter$
         if (loMoViewPagerAdapter$Type == LoMoViewPagerAdapter$Type.KUBRICK_KIDS_TOP_TEN && BrowseExperience.shouldShowLargePeakForKidsTopTen()) {
             loMoUtils$LoMoWidthType = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_TOP_TEN_ROW;
         }
-        else if (BrowseExperience.isKubrickKids() && loMoType == LoMoType.CHARACTERS) {
+        else if (BrowseExperience.showKidsExperience() && loMoType == LoMoType.CHARACTERS) {
             loMoUtils$LoMoWidthType = LoMoUtils$LoMoWidthType.KUBRICK_KIDS_CHARACTER_ROW;
         }
         else {

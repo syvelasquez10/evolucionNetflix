@@ -6,6 +6,7 @@ package com.netflix.mediaclient.protocol.netflixcom;
 
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
 import android.app.Activity;
@@ -47,7 +48,7 @@ class NetflixComVideoDetailsHandler$1 extends SimpleManagerCallback
                         clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking(sb.toString());
                     }
                 }
-                DetailsActivityLauncher.show(this.val$activity, video$Summary.getType(), this.val$videoId, video$Summary.getTitle(), NflxProtocolUtils.getPlayContext(this.val$trackId), this.this$0.getAction(), this.this$0.getActionToken(), "DeepLink");
+                DetailsActivityLauncher.show(this.val$activity, video$Summary, NflxProtocolUtils.getPlayContext(this.val$trackId), this.this$0.getAction(), this.this$0.getActionToken(), "DeepLink");
             }
         }
         else {

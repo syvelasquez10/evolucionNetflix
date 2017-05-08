@@ -4,31 +4,23 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import android.os.Handler;
-import android.app.Activity;
-import com.netflix.mediaclient.ui.home.HomeActivity;
-import android.view.MenuItem$OnMenuItemClickListener;
-import android.view.Menu;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.content.BroadcastReceiver;
+import android.view.MenuItem;
 import android.content.Context;
-import android.widget.Toast;
-import com.netflix.mediaclient.Log;
-import android.os.Debug;
+import android.view.MenuItem$OnMenuItemClickListener;
 
-class DebugMenuItems$12 implements Runnable
+class DebugMenuItems$12 implements MenuItem$OnMenuItemClickListener
 {
     final /* synthetic */ DebugMenuItems this$0;
+    final /* synthetic */ Context val$context;
     
-    DebugMenuItems$12(final DebugMenuItems this$0) {
+    DebugMenuItems$12(final DebugMenuItems this$0, final Context val$context) {
         this.this$0 = this$0;
+        this.val$context = val$context;
     }
     
-    @Override
-    public void run() {
-        Debug.stopMethodTracing();
-        Log.i(this.this$0.logTag, "**********************************************************************");
-        Log.i(this.this$0.logTag, "Trace complete.  Get with: adb pull /sdcard/nflx.trace");
-        Log.i(this.this$0.logTag, "**********************************************************************");
-        Toast.makeText((Context)this.this$0.activity, (CharSequence)"Trace: /sdcard/nflx.trace", 1).show();
+    public boolean onMenuItemClick(final MenuItem menuItem) {
+        this.val$context.unregisterReceiver((BroadcastReceiver)null);
+        return true;
     }
 }

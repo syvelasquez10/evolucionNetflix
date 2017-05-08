@@ -4,41 +4,15 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import android.text.Html;
-import com.netflix.mediaclient.util.gfx.ImageLoader;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import java.util.Iterator;
-import java.util.Map;
-import android.view.View$OnClickListener;
-import com.netflix.mediaclient.android.widget.PressedStateHandler$DelayedOnClickListener;
-import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
-import com.netflix.mediaclient.servicemgr.interface_.Ratable;
-import android.view.LayoutInflater;
-import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
-import com.netflix.mediaclient.servicemgr.interface_.FeatureEnabledProvider;
-import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.util.MdxUtils;
+import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.util.StringUtils;
-import android.util.AttributeSet;
-import android.content.Context;
-import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.android.widget.AdvancedImageView;
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.ImageView;
-import android.widget.Button;
-import java.util.EnumMap;
-import android.widget.LinearLayout;
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.common.PlayLocationType;
+import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import android.view.View;
-import com.netflix.mediaclient.util.ViewUtils;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
+import android.view.View$OnClickListener;
 
-class VideoDetailsViewGroup$2 implements ViewTreeObserver$OnGlobalLayoutListener
+class VideoDetailsViewGroup$2 implements View$OnClickListener
 {
     final /* synthetic */ VideoDetailsViewGroup this$0;
     
@@ -46,11 +20,9 @@ class VideoDetailsViewGroup$2 implements ViewTreeObserver$OnGlobalLayoutListener
         this.this$0 = this$0;
     }
     
-    public void onGlobalLayout() {
-        ViewUtils.removeGlobalLayoutListener((View)this.this$0, (ViewTreeObserver$OnGlobalLayoutListener)this);
-        if (Log.isLoggable() && this.this$0.imgGroup != null) {
-            Log.v("VideoDetailsViewGroup", "img group width: " + this.this$0.imgGroup.getWidth() + ", height: " + this.this$0.imgGroup.getHeight());
-        }
-        this.this$0.alignViews();
+    public void onClick(final View view) {
+        final PlayContext playContext = ((PlayContextProvider)this.this$0.getContext()).getPlayContext();
+        playContext.setPlayLocation(PlayLocationType.STORY_ART);
+        PlaybackLauncher.startPlaybackAfterPIN((NetflixActivity)this.this$0.getContext(), this.this$0.details.getPlayable(), playContext);
     }
 }

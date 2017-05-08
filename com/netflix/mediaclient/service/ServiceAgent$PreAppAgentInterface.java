@@ -9,6 +9,4 @@ import android.content.Context;
 public interface ServiceAgent$PreAppAgentInterface
 {
     void informPrefetched(final Context p0);
-    
-    boolean isWidgetInstalled();
 }

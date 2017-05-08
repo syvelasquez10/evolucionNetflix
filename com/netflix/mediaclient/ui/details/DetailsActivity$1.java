@@ -6,7 +6,8 @@ package com.netflix.mediaclient.ui.details;
 
 import android.view.MenuItem;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
-import com.netflix.mediaclient.android.app.Status;
+import android.app.Activity;
+import com.netflix.mediaclient.util.CoppolaUtils;
 import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.mdx.MdxMenu;
@@ -21,18 +22,22 @@ import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
-import com.netflix.mediaclient.util.log.UserActionLogUtils;
-import com.netflix.mediaclient.Log;
+import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
-import android.content.Intent;
+import com.netflix.mediaclient.service.logging.client.model.UIError;
 import android.content.Context;
-import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 
-class DetailsActivity$1 extends BroadcastReceiver
+class DetailsActivity$1 implements LoadingStatus$LoadingStatusCallback
 {
     final /* synthetic */ DetailsActivity this$0;
     
@@ -40,7 +45,15 @@ class DetailsActivity$1 extends BroadcastReceiver
         this.this$0 = this$0;
     }
     
-    public void onReceive(final Context context, final Intent intent) {
-        this.this$0.reloadData();
+    @Override
+    public void onDataLoaded(final Status status) {
+        this.this$0.setLoadingStatusCallback(null);
+        if (!this.this$0.isFinishing()) {
+            Log.d("DetailsActivity", "DetailsPage is loaded, reporting navigate.ended for movieDetails");
+            UserActionLogUtils.reportNavigationActionEnded((Context)this.this$0, this.this$0.getUiScreen(), IClientLogging$CompletionReason.success, null);
+            if (status.isError()) {
+                this.this$0.handleFalkorAgentErrors(status);
+            }
+        }
     }
 }

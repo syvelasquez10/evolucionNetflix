@@ -7,6 +7,8 @@ package com.netflix.mediaclient.service.logging;
 import com.netflix.mediaclient.service.logging.apm.model.UIModalViewChangedEvent;
 import com.netflix.mediaclient.javabridge.ui.Log$ResetSessionIdCallback;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
+import com.netflix.mediaclient.service.logging.apm.model.UIBrowseStartupSessionCustomData;
+import com.netflix.mediaclient.service.logging.apm.model.DeepLink;
 import com.netflix.mediaclient.service.logging.apm.model.Display;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionStartedEvent;

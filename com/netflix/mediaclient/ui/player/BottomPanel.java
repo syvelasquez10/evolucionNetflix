@@ -7,16 +7,16 @@ package com.netflix.mediaclient.ui.player;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.widget.SeekBar;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
+import com.netflix.mediaclient.android.widget.NetflixSeekBar;
+import com.netflix.mediaclient.util.ViewUtils;
+import android.view.View$OnTouchListener;
 import android.animation.TimeInterpolator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.animation.Animator$AnimatorListener;
 import android.animation.ValueAnimator$AnimatorUpdateListener;
 import android.animation.ValueAnimator;
-import com.netflix.mediaclient.util.gfx.AnimationUtils;
-import com.netflix.mediaclient.android.widget.NetflixSeekBar;
-import android.widget.RelativeLayout$LayoutParams;
-import com.netflix.mediaclient.util.ViewUtils;
-import android.view.View$OnTouchListener;
+import android.view.ViewGroup$MarginLayoutParams;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.widget.SeekBar$OnSeekBarChangeListener;
@@ -53,25 +53,38 @@ public final class BottomPanel extends PlayerSection
         this.init(playScreen$Listeners);
     }
     
+    public static int calculateTimelineMargin(final TimelineSeekBar timelineSeekBar, final int n) {
+        final int[] array = new int[2];
+        timelineSeekBar.getLocationOnScreen(array);
+        return (int)(array[0] + timelineSeekBar.getPaddingLeft() + timelineSeekBar.computeXOffsetFromProgress(n));
+    }
+    
     private void init(final PlayScreen$Listeners playScreen$Listeners) {
         final View view = this.playerFragment.getView();
-        this.durationLabel = (TextView)view.findViewById(2131624390);
-        this.bottomPanel = view.findViewById(2131624386);
-        this.bottomGradient = view.findViewById(2131624383);
-        this.timeline = (TimelineSeekBar)view.findViewById(2131624389);
+        this.durationLabel = (TextView)view.findViewById(2131624506);
+        this.bottomPanel = view.findViewById(2131624502);
+        this.bottomGradient = view.findViewById(2131624498);
+        this.timeline = (TimelineSeekBar)view.findViewById(2131624505);
         this.videoPositionListener = playScreen$Listeners.videoPositionListener;
         this.timeline.setThumbOffset(AndroidUtils.dipToPixels((Context)this.playerFragment.getNetflixActivity(), this.playerFragment.getUiResources().timelineThumbOffsetInDip));
-        (this.media = (ImageButton)view.findViewById(2131624387)).setOnClickListener(playScreen$Listeners.playPauseListener);
-        (this.skipBack = (ImageButton)view.findViewById(2131624388)).setOnClickListener(playScreen$Listeners.skipBackListener);
-        (this.zoom = (ImageButton)view.findViewById(2131624391)).setOnClickListener(playScreen$Listeners.zoomListener);
-        this.extraSeekbarHandler = view.findViewById(2131624398);
+        (this.media = (ImageButton)view.findViewById(2131624503)).setOnClickListener(playScreen$Listeners.playPauseListener);
+        (this.skipBack = (ImageButton)view.findViewById(2131624504)).setOnClickListener(playScreen$Listeners.skipBackListener);
+        (this.zoom = (ImageButton)view.findViewById(2131624507)).setOnClickListener(playScreen$Listeners.zoomListener);
+        this.extraSeekbarHandler = view.findViewById(2131624514);
         this.currentTime = CurrentTime.newInstance(this.playerFragment);
     }
     
-    public int calculateTimelineMargin(final int n) {
-        final int[] array = new int[2];
-        this.timeline.getLocationOnScreen(array);
-        return (int)(array[0] + this.timeline.getPaddingLeft() + this.timeline.computeXOffsetFromProgress(n));
+    public static void playExtraHandlerAnimation(int calculateTimelineMargin, final Runnable runnable, final CurrentTime currentTime, final View view, final TimelineSeekBar timelineSeekBar) {
+        final int leftMargin = ((ViewGroup$MarginLayoutParams)view.getLayoutParams()).leftMargin;
+        calculateTimelineMargin = calculateTimelineMargin(timelineSeekBar, calculateTimelineMargin);
+        final int n = view.getWidth() / 2;
+        final ViewGroup$MarginLayoutParams viewGroup$MarginLayoutParams = (ViewGroup$MarginLayoutParams)view.getLayoutParams();
+        final ValueAnimator ofInt = ValueAnimator.ofInt(new int[] { leftMargin, calculateTimelineMargin - n });
+        ofInt.addUpdateListener((ValueAnimator$AnimatorUpdateListener)new BottomPanel$2(viewGroup$MarginLayoutParams, view));
+        ofInt.addListener((Animator$AnimatorListener)new BottomPanel$3(currentTime, view, runnable));
+        ofInt.setInterpolator((TimeInterpolator)new AccelerateDecelerateInterpolator());
+        ofInt.setDuration(200L);
+        ofInt.start();
     }
     
     @Override
@@ -86,10 +99,10 @@ public final class BottomPanel extends PlayerSection
         }
         int n;
         if (enabled) {
-            n = 2131558596;
+            n = 2131558608;
         }
         else {
-            n = 2131558467;
+            n = 2131558471;
         }
         this.durationLabel.setTextColor(this.playerFragment.getResources().getColor(n));
     }
@@ -133,8 +146,8 @@ public final class BottomPanel extends PlayerSection
     }
     
     public int getTimeXAndUpdateHandler(final View view) {
-        final int calculateTimelineMargin = this.calculateTimelineMargin(this.currentTimeProgress);
-        ((RelativeLayout$LayoutParams)this.extraSeekbarHandler.getLayoutParams()).leftMargin = calculateTimelineMargin - this.extraSeekbarHandler.getWidth() / 2;
+        final int calculateTimelineMargin = calculateTimelineMargin(this.timeline, this.currentTimeProgress);
+        ((ViewGroup$MarginLayoutParams)this.extraSeekbarHandler.getLayoutParams()).leftMargin = calculateTimelineMargin - this.extraSeekbarHandler.getWidth() / 2;
         view.measure(0, 0);
         return calculateTimelineMargin - view.getMeasuredWidth() / 2;
     }
@@ -161,17 +174,8 @@ public final class BottomPanel extends PlayerSection
         }
     }
     
-    public void playExtraHandlerAnimation(int calculateTimelineMargin, final Runnable runnable) {
-        final int leftMargin = ((RelativeLayout$LayoutParams)this.extraSeekbarHandler.getLayoutParams()).leftMargin;
-        calculateTimelineMargin = this.calculateTimelineMargin(calculateTimelineMargin);
-        final int n = this.extraSeekbarHandler.getWidth() / 2;
-        final RelativeLayout$LayoutParams relativeLayout$LayoutParams = (RelativeLayout$LayoutParams)this.extraSeekbarHandler.getLayoutParams();
-        final ValueAnimator ofInt = ValueAnimator.ofInt(new int[] { leftMargin, calculateTimelineMargin - n });
-        ofInt.addUpdateListener((ValueAnimator$AnimatorUpdateListener)new BottomPanel$2(this, relativeLayout$LayoutParams));
-        ofInt.addListener((Animator$AnimatorListener)new BottomPanel$3(this, runnable));
-        ofInt.setInterpolator((TimeInterpolator)new AccelerateDecelerateInterpolator());
-        ofInt.setDuration(200L);
-        ofInt.start();
+    public void playExtraHandlerAnimation(final int n, final Runnable runnable) {
+        playExtraHandlerAnimation(n, runnable, this.currentTime, this.extraSeekbarHandler, this.timeline);
     }
     
     public void setMediaImage(final boolean b) {
@@ -184,6 +188,10 @@ public final class BottomPanel extends PlayerSection
             imageResource = this.playerFragment.getUiResources().pause;
         }
         media.setImageResource(imageResource);
+    }
+    
+    public void setPlayPauseVisibility(final int visibility) {
+        this.media.setVisibility(visibility);
     }
     
     public int setProgress(final int n, int n2, final boolean b, final boolean b2) {
@@ -237,6 +245,11 @@ public final class BottomPanel extends PlayerSection
             imageResource = this.playerFragment.getUiResources().zoomOut;
         }
         zoom.setImageResource(imageResource);
+    }
+    
+    public void setZoomVisibility(final int visibility) {
+        this.zoom.setVisibility(visibility);
+        this.mZoomEnabled = (visibility == 0);
     }
     
     @Override

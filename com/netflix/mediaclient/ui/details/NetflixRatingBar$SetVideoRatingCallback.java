@@ -4,12 +4,12 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import android.annotation.SuppressLint;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.view.MotionEvent;
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ClipDrawable;
 import android.graphics.Shader;
@@ -67,13 +67,13 @@ class NetflixRatingBar$SetVideoRatingCallback extends LoggingManagerCallback
         this.this$0.setEnabled(true);
         if (status.isError()) {
             Log.w("NetflixRatingBar", "Invalid status code");
-            Toast.makeText(this.this$0.getContext(), 2131165519, 1).show();
+            Toast.makeText(this.this$0.getContext(), 2131165538, 1).show();
             this.this$0.setRating((float)this.this$0.currRating);
-            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131165519), ActionOnUIError.displayedError), null, this.this$0.currRating);
+            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131165538), ActionOnUIError.displayedError), null, this.this$0.currRating);
             return;
         }
         Log.v("NetflixRatingBar", "Rating has been updated");
-        Toast.makeText(this.this$0.getContext(), 2131165603, 1).show();
+        Toast.makeText(this.this$0.getContext(), 2131165624, 1).show();
         this.this$0.currRating = this.rating;
         if (this.this$0.ratableObject != null) {
             this.this$0.ratableObject.setUserRating(this.rating);

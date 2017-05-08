@@ -15,6 +15,7 @@ public class WhistleEngineConfig
     private String applicationIdentifier;
     private String certificateAuthorityFile;
     private String certificateChain;
+    private WhistleEngineThresholds connectivityThresholds;
     private boolean echoCanceler;
     private String password;
     private String privateKey;
@@ -30,6 +31,7 @@ public class WhistleEngineConfig
         this.account = account;
         this.transport = WhistleEngineConfig$TransportMode.UDP;
         this.registrationEnabled = true;
+        this.echoCanceler = true;
         this.tlsPort = 5061;
         this.sampleRate = 8000;
     }
@@ -48,6 +50,10 @@ public class WhistleEngineConfig
     
     public String getCertificateChain() {
         return this.certificateChain;
+    }
+    
+    public WhistleEngineThresholds getConnectivityThresholds() {
+        return this.connectivityThresholds;
     }
     
     public boolean getEchoCanceler() {
@@ -96,6 +102,10 @@ public class WhistleEngineConfig
     
     public void setCertificateChain(final String certificateChain) {
         this.certificateChain = certificateChain;
+    }
+    
+    public void setConnectivityThresholds(final WhistleEngineThresholds connectivityThresholds) {
+        this.connectivityThresholds = connectivityThresholds;
     }
     
     public void setEchoCanceler(final boolean echoCanceler) {

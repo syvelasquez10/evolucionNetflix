@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.signup;
 
+import android.widget.Toast;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory$TwoButtonAlertDialogDescriptor;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
+import com.netflix.mediaclient.partner.playbilling.PlayBilling$OnSetupFinishedListener;
 import com.google.android.gms.common.api.Api$ApiOptions$NotRequiredOptions;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient$Builder;
@@ -23,7 +25,6 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import com.netflix.mediaclient.util.PreferenceUtils;
-import com.netflix.mediaclient.util.DeviceUtils;
 import android.webkit.WebSettings;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import android.view.View$OnTouchListener;
@@ -31,16 +32,22 @@ import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
 import android.content.IntentSender$SendIntentException;
 import android.app.Activity;
+import android.os.Build;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.StatusCode;
 import android.annotation.TargetApi;
 import android.os.Build$VERSION;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.auth.api.credentials.Credential$Builder;
 import com.google.android.gms.auth.api.Auth;
+import com.netflix.mediaclient.servicemgr.SignInLogging$CredentialService;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import android.webkit.WebView;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
+import com.netflix.mediaclient.partner.playbilling.PlayBilling;
 import android.os.Handler;
 import android.widget.ViewFlipper;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
@@ -52,20 +59,25 @@ import com.netflix.mediaclient.ui.login.AccountActivity;
 import com.netflix.mediaclient.ui.login.LoginActivity;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.NetflixApplication;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import java.util.ArrayList;
+import com.netflix.mediaclient.partner.playbilling.PlayBillingCallback;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import org.json.JSONException;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.util.log.SignInLogUtils;
+import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
-import org.json.JSONObject;
 import com.netflix.mediaclient.util.ConnectivityUtils;
-import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.net.Uri;
 import java.util.Locale;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.webkit.JavascriptInterface;
+import com.netflix.mediaclient.Log;
+import org.json.JSONObject;
 
 public class SignupActivity$NFAndroidJS
 {
@@ -73,6 +85,13 @@ public class SignupActivity$NFAndroidJS
     
     public SignupActivity$NFAndroidJS(final SignupActivity this$0) {
         this.this$0 = this$0;
+    }
+    
+    private void invokeJsCallback(final String s, final JSONObject jsonObject) {
+        if (Log.isLoggable()) {
+            Log.d("SignupActivity", String.format("invokeJsCallbackQuery - func: %s, data: %s", s, jsonObject));
+        }
+        this.this$0.mWebView.loadUrl("javascript:" + s + "('" + jsonObject + "')");
     }
     
     @JavascriptInterface
@@ -121,6 +140,24 @@ public class SignupActivity$NFAndroidJS
     }
     
     @JavascriptInterface
+    public String isPlayBillingEnabled() {
+        final boolean b = false;
+        final ServiceManager serviceManager = this.this$0.getServiceManager();
+        final boolean b2 = serviceManager != null && serviceManager.isReady() && this.this$0.getServiceManager().getConfiguration() != null && this.this$0.getServiceManager().getConfiguration().isPlayBillingDisabled();
+        boolean b3 = b;
+        if (!b2) {
+            b3 = b;
+            if (!AndroidUtils.isNetflixPreloaded((Context)this.this$0)) {
+                b3 = true;
+            }
+        }
+        if (b3) {
+            return "true";
+        }
+        return "false";
+    }
+    
+    @JavascriptInterface
     public void launchUrl(String s) {
         if (s == null) {
             s = "http://netflix.com";
@@ -160,6 +197,7 @@ public class SignupActivity$NFAndroidJS
             final ActivationTokens activationTokens = new ActivationTokens(jsonObject);
             final ServiceManager serviceManager = this.this$0.getServiceManager();
             if (serviceManager != null && serviceManager.isReady()) {
+                SignInLogUtils.reportSignInRequestSessionStarted((Context)this.this$0, SignInLogging$SignInType.tokenActivate);
                 serviceManager.loginUserByTokens(activationTokens, this.this$0.loginQueryCallback);
                 this.this$0.mSignupOngoing = true;
                 this.this$0.runOnUiThread((Runnable)new SignupActivity$NFAndroidJS$2(this));
@@ -169,7 +207,7 @@ public class SignupActivity$NFAndroidJS
         catch (JSONException ex) {
             Log.e("SignupActivity", "Failed to LoginToApp", (Throwable)ex);
             this.this$0.mSignupOngoing = false;
-            this.this$0.provideDialog(this.this$0.getString(2131165704), this.this$0.mHandleError);
+            this.this$0.provideDialog(this.this$0.getString(2131165738), this.this$0.mHandleError);
             return;
         }
         Log.d("SignupActivity", "loginToApp, invalid state to Login, bailing out");
@@ -192,8 +230,8 @@ public class SignupActivity$NFAndroidJS
                 Log.d("SignupActivity", "nmab: " + jsonObject.getString("nmab"));
             }
             final JSONObject jsonObject2 = new JSONObject(jsonObject.getString("nrmCookies"));
-            if (StringUtils.isEmpty(s = jsonObject2.getString("NetflixId"))) {
-                s = jsonObject2.getString("NetflixIdTest");
+            if (StringUtils.isEmpty(s = jsonObject2.optString("NetflixId"))) {
+                s = jsonObject2.optString("NetflixIdTest");
             }
             this.this$0.storeNrmNetflixIdInPref(s);
         }
@@ -201,6 +239,63 @@ public class SignupActivity$NFAndroidJS
             this.this$0.storeNrmNetflixIdInPref("");
             Log.e("SignupActivity", "Failed to parse passNonMemberInfo", ex);
         }
+    }
+    
+    @JavascriptInterface
+    public void playBillingGetPurchaseHistory(String access$2500, final String s) {
+        access$2500 = this.this$0.sanitizeInputString(access$2500);
+        Log.d("SignupActivity", "playBillingGetPurchaseHistory");
+        if (!this.this$0.canProceedWithPlayBilling()) {
+            Log.e("SignupActivity", "playBillingGetPurchaseHistory - playBillingNotReady");
+            this.invokeJsCallback(s, null);
+            return;
+        }
+        this.this$0.mPlayBilling.getPurchaseHistory(access$2500, new SignupActivity$NFAndroidJS$6(this, s));
+    }
+    
+    @JavascriptInterface
+    public void playBillingGetPurchases(String access$2500, final String s) {
+        access$2500 = this.this$0.sanitizeInputString(access$2500);
+        Log.d("SignupActivity", "playBillingGetPurchases");
+        if (!this.this$0.canProceedWithPlayBilling()) {
+            Log.e("SignupActivity", "playBillingGetPurchases - playBillingNotReady");
+            this.invokeJsCallback(s, null);
+            return;
+        }
+        this.this$0.mPlayBilling.getPurchases(access$2500, new SignupActivity$NFAndroidJS$5(this, s));
+    }
+    
+    @JavascriptInterface
+    public void playBillingGetSkuDetails(final String s, final String s2) {
+        final String[] split = s.split(",");
+        final ArrayList<String> list = new ArrayList<String>();
+        for (int length = split.length, i = 0; i < length; ++i) {
+            list.add(split[i].trim());
+        }
+        if (Log.isLoggable()) {
+            Log.d("SignupActivity", String.format("playBillingGetSkuDetails, input:%s,  List:%s", s, list));
+        }
+        if (!this.this$0.canProceedWithPlayBilling()) {
+            Log.e("SignupActivity", "playBillingGetSkuDetails - playBillingNotReady");
+            this.invokeJsCallback(s2, null);
+            return;
+        }
+        this.this$0.mPlayBilling.getSkuDetails(list, new SignupActivity$NFAndroidJS$4(this, s2));
+    }
+    
+    @JavascriptInterface
+    public void playBillingPurchase(final String s, String access$2500, final int n, String access$2501, final String s2) {
+        access$2501 = this.this$0.sanitizeInputString(access$2501);
+        access$2500 = this.this$0.sanitizeInputString(access$2500);
+        if (Log.isLoggable()) {
+            Log.d("SignupActivity", String.format("playBillingPurchase sku:%s, callbackFunc:%s", s, s2));
+        }
+        if (!this.this$0.canProceedWithPlayBilling()) {
+            Log.e("SignupActivity", "playBillingPurchase - playBillingNotReady");
+            this.invokeJsCallback(s2, null);
+            return;
+        }
+        this.this$0.mPlayBilling.purchase(this.this$0, s, access$2500, n, access$2501, 2, new SignupActivity$NFAndroidJS$7(this, s2));
     }
     
     @JavascriptInterface

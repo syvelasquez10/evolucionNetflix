@@ -10,10 +10,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Iterator;
 import java.util.Collection;
-import java.util.Collections;
-import com.netflix.mediaclient.Log;
 import java.util.ArrayList;
 import com.netflix.falkor.CachedModelProxy;
+import java.util.Collections;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.List;
 import com.netflix.falkor.Undefined;
@@ -49,11 +50,11 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
         super(modelProxy);
     }
     
-    private String getCharacterSquareUrl() {
+    private String getCharacterFullBodyUrl() {
         if (this.kidsSummary == null) {
             return null;
         }
-        return this.kidsSummary.getSquareUrl();
+        return this.kidsSummary.getCharacterImageUrl();
     }
     
     private boolean getHasWatchedRecently() {
@@ -87,7 +88,7 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
         if (this.getWatchNextVideo() == null) {
             return null;
         }
-        return this.getWatchNextVideo().getSquareUrl();
+        return this.getWatchNextVideo().getStoryUrl();
     }
     
     private VideoType getWatchNextType() {
@@ -152,6 +153,33 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     }
     
     @Override
+    public String getAdvisoryDescription() {
+        final Video$Detail watchNextDetails = this.getWatchNextDetails();
+        if (watchNextDetails == null) {
+            return null;
+        }
+        return watchNextDetails.advisoryDescription;
+    }
+    
+    @Override
+    public int getAdvisoryDisplayDuration() {
+        final Video$Detail watchNextDetails = this.getWatchNextDetails();
+        if (watchNextDetails == null) {
+            return -1;
+        }
+        return watchNextDetails.advisoryDisplayDuration;
+    }
+    
+    @Override
+    public String getAdvisoryRating() {
+        final Video$Detail watchNextDetails = this.getWatchNextDetails();
+        if (watchNextDetails == null) {
+            return null;
+        }
+        return watchNextDetails.advisoryRating;
+    }
+    
+    @Override
     public String getBifUrl() {
         final Video$Detail watchNextDetails = this.getWatchNextDetails();
         if (watchNextDetails == null) {
@@ -183,6 +211,14 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
             return null;
         }
         return this.kidsSummary.getId();
+    }
+    
+    @Override
+    public String getCharacterImageUrl() {
+        if (this.kidsSummary == null) {
+            return null;
+        }
+        return this.kidsSummary.getCharacterImageUrl();
     }
     
     @Override
@@ -219,7 +255,16 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     }
     
     @Override
+    public long getExpirationTime() {
+        return -1L;
+    }
+    
+    @Override
     public List<Video> getGallery() {
+        if (StringUtils.isEmpty(this.getCharacterId())) {
+            Log.e("FalkorKidsCharacter", "getGallery() kidsCharacterId is null");
+            return (List<Video>)Collections.EMPTY_LIST;
+        }
         final List<FalkorVideo> itemsAsList = (List<FalkorVideo>)this.getModelProxy().getItemsAsList(CachedModelProxy.buildKidsCharacterVideoGalleryPql(this.getCharacterId()));
         final ArrayList list = new ArrayList<Object>(itemsAsList.size());
         final ArrayList list2 = new ArrayList<Object>(itemsAsList.size());
@@ -428,19 +473,22 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     }
     
     @Override
+    public String getSeasonAbbrSeqLabel() {
+        if (!VideoType.EPISODE.equals(this.getWatchNextType())) {
+            return null;
+        }
+        if (this.getWatchNextVideoAsEpisode() == null) {
+            return "";
+        }
+        return this.getWatchNextVideoAsEpisode().getSeasonAbbrSeqLabel();
+    }
+    
+    @Override
     public int getSeasonNumber() {
         if (!VideoType.EPISODE.equals(this.getWatchNextType()) || this.getWatchNextVideoAsEpisode() == null) {
             return 0;
         }
         return this.getWatchNextVideoAsEpisode().getSeasonNumber();
-    }
-    
-    @Override
-    public String getSquareUrl() {
-        if (this.kidsSummary == null) {
-            return null;
-        }
-        return this.kidsSummary.getSquareUrl();
     }
     
     @Override
@@ -493,9 +541,20 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
             Log.d("FalkorKidsCharacter", String.format("[%s %s], firstPlay:%b (watchedRecently:%b), S%d:E%d, pos:%d", this.getWatchNextType(), this.getPlayableId(), this.isFirstPlay(), this.getHasWatchedRecently(), this.getSeasonNumber(), this.getEpisodeNumber(), this.getPlayableBookmarkPosition()));
         }
         if (this.isFirstPlay()) {
-            return this.getCharacterSquareUrl();
+            return this.getCharacterFullBodyUrl();
         }
         return this.getWatchNextSquareUrl();
+    }
+    
+    @Override
+    public boolean hasWatched() {
+        final Video$Detail watchNextDetails = this.getWatchNextDetails();
+        return watchNextDetails != null && watchNextDetails.hasWatched;
+    }
+    
+    @Override
+    public boolean isAdvisoryDisabled() {
+        return false;
     }
     
     @Override
@@ -511,9 +570,25 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     }
     
     @Override
+    public boolean isAvailableToStream() {
+        final Playable playable = this.getPlayable();
+        return playable != null && playable.isAvailableToStream();
+    }
+    
+    @Override
+    public boolean isNSRE() {
+        return false;
+    }
+    
+    @Override
     public boolean isNextPlayableEpisode() {
         final Video$Detail watchNextDetails = this.getWatchNextDetails();
         return watchNextDetails != null && watchNextDetails.isNextPlayableEpisode;
+    }
+    
+    @Override
+    public boolean isOriginal() {
+        return false;
     }
     
     @Override
@@ -525,6 +600,11 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     @Override
     public boolean isPlayableEpisode() {
         return this.getWatchNextVideo() != null && this.getWatchNextVideo().isEpisode();
+    }
+    
+    @Override
+    public boolean isPreRelease() {
+        return false;
     }
     
     @Override

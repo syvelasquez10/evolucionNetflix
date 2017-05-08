@@ -12,7 +12,7 @@ public class KubrickHomeActionBar extends NetflixActionBar
     public KubrickHomeActionBar(final NetflixActivity netflixActivity, final boolean b) {
         super(netflixActivity, b);
         if (this.toolbar != null) {
-            this.toolbar.setBackgroundResource(2131558416);
+            this.toolbar.setBackgroundResource(2131558417);
         }
         this.showDropShadowIfAvailable();
     }

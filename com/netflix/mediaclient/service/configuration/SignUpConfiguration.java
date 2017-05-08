@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.util.NetflixPreference;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
@@ -31,8 +32,10 @@ public final class SignUpConfiguration
     }
     
     public static void clearRecords(final Context context) {
-        PreferenceUtils.removePref(context, "signup_enabled");
-        PreferenceUtils.removePref(context, "signup_timeout");
+        final NetflixPreference netflixPreference = new NetflixPreference(context);
+        netflixPreference.removePref("signup_enabled");
+        netflixPreference.removePref("signup_timeout");
+        netflixPreference.commit();
     }
     
     public String getSignUpBootloader() {
@@ -55,20 +58,20 @@ public final class SignUpConfiguration
         this.mSignUpTimeout = mSignUpTimeout;
     }
     
-    public void update(final Context context, final String s, final String s2) {
+    public void update(final NetflixPreference netflixPreference, final String s, final String s2) {
         if (s != null) {
-            PreferenceUtils.putBooleanPref(context, "signup_enabled", this.mIsSignUpEnabled = Boolean.parseBoolean(s));
+            netflixPreference.putBooleanPref("signup_enabled", this.mIsSignUpEnabled = Boolean.parseBoolean(s));
         }
         else {
             this.mIsSignUpEnabled = SignUpConfiguration.DEFAULT_SIGNUP_ENABLED;
-            PreferenceUtils.removePref(context, "signup_enabled");
+            netflixPreference.removePref("signup_enabled");
         }
         if (s2 != null) {
-            PreferenceUtils.putLongPref(context, "signup_timeout", this.mSignUpTimeout = Long.parseLong(s2));
+            netflixPreference.putLongPref("signup_timeout", this.mSignUpTimeout = Long.parseLong(s2));
         }
         else {
             this.mSignUpTimeout = 40000L;
-            PreferenceUtils.removePref(context, "signup_timeout");
+            netflixPreference.removePref("signup_timeout");
         }
         Log.d("nf_service_configuration_signuppref", "SignUp parameters overriden SignUpEnabled: " + s + " timeout:" + s2);
     }

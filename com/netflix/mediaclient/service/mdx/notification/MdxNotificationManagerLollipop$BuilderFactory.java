@@ -40,18 +40,18 @@ class MdxNotificationManagerLollipop$BuilderFactory
     @SuppressLint({ "InlinedApi" })
     private Notification$Builder createPlayerBuilder() {
         Log.i("nf_mdxnotification", "createPlayerBuilder");
-        return new Notification$Builder(this.this$0.context).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setShowWhen(false).setSmallIcon(2130837732).setStyle((Notification$Style)this.this$0.getStyle()).addAction(2130837842, (CharSequence)"Rewind", this.this$0.mdxAgent.getSkipbackIntent(-30)).addAction(2130837846, (CharSequence)"Pause", this.this$0.mdxAgent.getResumeIntent()).addAction(2130837848, (CharSequence)"Stop", this.this$0.mdxAgent.getStopIntent());
+        return new Notification$Builder(this.this$0.context).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setShowWhen(false).setSmallIcon(2130837751).setStyle((Notification$Style)this.this$0.getStyle()).addAction(2130837862, (CharSequence)"Rewind", this.this$0.mdxAgent.getSkipbackIntent(-30)).addAction(2130837866, (CharSequence)"Pause", this.this$0.mdxAgent.getResumeIntent()).addAction(2130837868, (CharSequence)"Stop", this.this$0.mdxAgent.getStopIntent());
     }
     
     @SuppressLint({ "InlinedApi" })
     private Notification$Builder createPlayerPausedBuilder() {
         Log.i("nf_mdxnotification", "createPlayerPausedBuilder");
-        return new Notification$Builder(this.this$0.context).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setShowWhen(false).setSmallIcon(2130837732).setStyle((Notification$Style)this.this$0.getStyle()).addAction(2130837842, (CharSequence)"Rewind", this.this$0.mdxAgent.getSkipbackIntent(-30)).addAction(2130837844, (CharSequence)"Play", this.this$0.mdxAgent.getPauseIntent()).addAction(2130837848, (CharSequence)"Stop", this.this$0.mdxAgent.getStopIntent());
+        return new Notification$Builder(this.this$0.context).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setShowWhen(false).setSmallIcon(2130837751).setStyle((Notification$Style)this.this$0.getStyle()).addAction(2130837862, (CharSequence)"Rewind", this.this$0.mdxAgent.getSkipbackIntent(-30)).addAction(2130837864, (CharSequence)"Play", this.this$0.mdxAgent.getPauseIntent()).addAction(2130837868, (CharSequence)"Stop", this.this$0.mdxAgent.getStopIntent());
     }
     
     @SuppressLint({ "InlinedApi" })
     private Notification$Builder createPostPlayerBuilder() {
-        return new Notification$Builder(this.this$0.context).setOngoing(true).setVisibility(1).setShowWhen(false).setOnlyAlertOnce(true).setSmallIcon(2130837732).setStyle((Notification$Style)this.this$0.getStyle()).addAction(2130837846, (CharSequence)"Play", this.this$0.mdxAgent.getPlayNextIntent()).addAction(2130837848, (CharSequence)"Stop", this.this$0.mdxAgent.getStopIntent());
+        return new Notification$Builder(this.this$0.context).setOngoing(true).setVisibility(1).setShowWhen(false).setOnlyAlertOnce(true).setSmallIcon(2130837751).setStyle((Notification$Style)this.this$0.getStyle()).addAction(2130837866, (CharSequence)"Play", this.this$0.mdxAgent.getPlayNextIntent()).addAction(2130837868, (CharSequence)"Stop", this.this$0.mdxAgent.getStopIntent());
     }
     
     Notification$Builder getBuilder(final boolean b, final boolean b2) {

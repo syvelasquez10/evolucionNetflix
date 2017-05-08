@@ -12,15 +12,21 @@ import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.util.PrivacyUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
-import com.netflix.mediaclient.repository.UserLocale;
+import com.netflix.mediaclient.util.l10n.UserLocale;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import java.util.Iterator;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.util.NetflixPreference;
 import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
+import com.netflix.mediaclient.util.log.SignInLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
@@ -87,8 +93,8 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     public UserAgent() {
         this.localeSupportStatus = CommonStatus.OK;
-        this.commonProfilesUpdateCallback = new UserAgent$3(this);
-        this.configDataCallback = new UserAgent$4(this);
+        this.commonProfilesUpdateCallback = new UserAgent$4(this);
+        this.configDataCallback = new UserAgent$5(this);
     }
     
     private List<UserProfile> buildListOfUserProfiles(final String s) {
@@ -132,6 +138,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     private void doLoginComplete() {
+        SignInLogUtils.reportSignInRequestSessionEnded(this.getContext(), null, IClientLogging$CompletionReason.success, null);
         this.notifyLoginComplete(new NetflixStatus(StatusCode.OK));
         this.getApplication().setSignedInOnce();
         PreferenceUtils.putBooleanPref(this.getContext(), "nf_user_status_loggedin", true);
@@ -146,11 +153,13 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         this.mUser = null;
         this.mSubtitleSettings = null;
         this.mSubtitleDefaults = null;
-        PreferenceUtils.removePref(this.getContext(), "useragent_userprofiles_data");
-        PreferenceUtils.removePref(this.getContext(), "useragent_user_data");
-        PreferenceUtils.putBooleanPref(this.getContext(), "nf_user_status_loggedin", false);
+        final NetflixPreference netflixPreference = new NetflixPreference(this.getContext());
+        netflixPreference.removePref("useragent_userprofiles_data");
+        netflixPreference.removePref("useragent_user_data");
+        netflixPreference.putBooleanPref("nf_user_status_loggedin", false);
         PartnerReceiver.broadcastUserStatus(this.getContext(), false);
-        PreferenceUtils.putBooleanPref(this.getContext(), "user_profile_was_selected", false);
+        netflixPreference.putBooleanPref("user_profile_was_selected", false);
+        netflixPreference.commit();
     }
     
     private String extractToken(final String s, final String s2) {
@@ -179,7 +188,8 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             Log.e("nf_service_useragent", "User is already logged in, autologin is NOT possible!");
             return;
         }
-        this.mUserWebClient.autoLogin(stringExtra, new UserAgent$6(this));
+        SignInLogUtils.reportSignInRequestSessionStarted(this.getContext(), SignInLogging$SignInType.autologin);
+        this.mUserWebClient.autoLogin(stringExtra, new UserAgent$7(this));
     }
     
     private void handleCreateAutoLoginToken(final Intent intent) {
@@ -217,11 +227,11 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     private void notifyLoginComplete(final Status status) {
-        this.getMainHandler().post((Runnable)new UserAgent$1(this, status));
+        this.getMainHandler().post((Runnable)new UserAgent$2(this, status));
     }
     
     private void notifyLogoutComplete(final StatusCode statusCode) {
-        this.getMainHandler().post((Runnable)new UserAgent$2(this));
+        this.getMainHandler().post((Runnable)new UserAgent$3(this));
     }
     
     private void notifyOtherOfProfileActivated() {
@@ -330,6 +340,10 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             UserProfile userProfile2 = null;
             continue;
         }
+    }
+    
+    private void verifyLoginViaDynecom(final String s, final String s2, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
+        this.getConfigurationAgent().verifyLoginViaDynecom(s, s2, new UserAgent$1(this, userAgent$UserAgentCallback));
     }
     
     public void addWebUserProfile(final String s, final boolean b, final String s2, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
@@ -475,7 +489,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         else {
             s = currentAppLocale.getRaw();
         }
-        Log.d("nf_service_useragent", String.format("nf_loc **ravi* userPref:%s appLocaleRaw:%s - picking %s", raw, raw2, s));
+        Log.d("nf_service_useragent", String.format("nf_loc userPref:%s appLocaleRaw:%s - picking %s", raw, raw2, s));
         if (currentAppLocale.equalsByLanguage(userLocale)) {
             return userLocale.getRaw();
         }
@@ -539,6 +553,13 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     public String getEmail() {
         if (this.mUser != null) {
             return this.mUser.getEmail();
+        }
+        return null;
+    }
+    
+    public EogAlert getEogAlert() {
+        if (this.mUser != null) {
+            return this.mUser.eogAlert;
         }
         return null;
     }
@@ -687,9 +708,16 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             this.notifyLoginComplete(StatusUtils.createStatus(StatusCode.NRD_ERROR, "UserAgent: activateAccByEmailPassword fails, UserAgentStateManager is null", true, RootCause.clientFailure));
             return;
         }
-        if (!this.mUserAgentStateManager.activateAccByEmailPassword(s, s2)) {
-            this.notifyLoginComplete(StatusUtils.createStatus(StatusCode.NRD_REGISTRATION_EXISTS, "UserAgent: activateAccByEmailPassword fails, NRD registration exist", false, RootCause.clientFailure));
-            return;
+        if (this.getConfigurationAgent().isDynecomSignInEnabled()) {
+            Log.d("nf_service_useragent", "Login via Dynecom");
+            this.verifyLoginViaDynecom(s, s2, mLoginCallback);
+        }
+        else {
+            Log.d("nf_service_useragent", "Login via NCCP");
+            if (!this.mUserAgentStateManager.activateAccByEmailPassword(s, s2)) {
+                this.notifyLoginComplete(StatusUtils.createStatus(StatusCode.NRD_REGISTRATION_EXISTS, "UserAgent: activateAccByEmailPassword fails, NRD registration exist", false, RootCause.clientFailure));
+                return;
+            }
         }
         this.mLoginCallback = mLoginCallback;
     }
@@ -763,6 +791,28 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         UserAgentBroadcastIntents.signalProfileReady2Select(this.getContext());
     }
     
+    public void recordPlanSelection(final String s, final String s2) {
+        if (StringUtils.isNotEmpty(s) && StringUtils.isNotEmpty(s2)) {
+            if (Log.isLoggable()) {
+                Log.d("nf_service_useragent", String.format("record ums planSelection plandId: %s, priceTier:%s", s, s2));
+            }
+            this.launchWebTask(new UserAgent$RecordPlanSelection(this, s, s2));
+            return;
+        }
+        Log.d("nf_service_useragent", "planId or priceTier is null - skip reporting");
+    }
+    
+    public void recordUmsImpression(final String s, final String s2) {
+        if (StringUtils.isNotEmpty(s) && StringUtils.isNotEmpty(s2)) {
+            if (Log.isLoggable()) {
+                Log.d("nf_service_useragent", String.format("record ums impression msgType: %s, impressionType:%s", s, s2));
+            }
+            this.launchWebTask(new UserAgent$RecordUmsImpression(this, s, s2));
+            return;
+        }
+        Log.d("nf_service_useragent", "msgName or impressionType is null - skip reporting");
+    }
+    
     @Override
     public void refreshProfileSwitchingStatus() {
         if (AndroidUtils.getAndroidVersion() >= 18) {
@@ -805,13 +855,22 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     public void tokenActivate(final ActivationTokens activationTokens, final UserAgent$UserAgentCallback mLoginCallback) {
         Log.d("nf_service_useragent", "loginUser tokenActivate");
+        SignInLogging$SignInType signInLogging$SignInType;
+        if (activationTokens.autoLoginSource) {
+            signInLogging$SignInType = SignInLogging$SignInType.autologin;
+        }
+        else {
+            signInLogging$SignInType = SignInLogging$SignInType.tokenActivate;
+        }
         if (this.mUserAgentStateManager == null) {
+            SignInLogUtils.reportSignInRequestSessionEnded(this.getContext(), signInLogging$SignInType, IClientLogging$CompletionReason.failed, null);
             this.notifyLoginComplete(StatusUtils.createStatus(StatusCode.NRD_ERROR, "UserAgent: activateAccByToken fails UserAgentStateManager is null", true, RootCause.clientFailure));
             return;
         }
         if (!this.mUserAgentStateManager.activateAccByToken(activationTokens)) {
             this.notifyLoginComplete(StatusUtils.createStatus(StatusCode.NRD_REGISTRATION_EXISTS, "UserAgent: activateAccByToken fails, NRD registration exist", false, RootCause.clientFailure));
             this.notifyLoginComplete(new NetflixStatus(StatusCode.NRD_REGISTRATION_EXISTS));
+            SignInLogUtils.reportSignInRequestSessionEnded(this.getContext(), signInLogging$SignInType, IClientLogging$CompletionReason.failed, null);
             return;
         }
         this.mLoginCallback = mLoginCallback;

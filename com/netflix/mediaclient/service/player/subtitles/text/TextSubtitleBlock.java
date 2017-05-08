@@ -13,6 +13,7 @@ import org.w3c.dom.NodeList;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
 import com.netflix.mediaclient.Log;
 import java.util.ArrayList;
+import com.netflix.mediaclient.service.player.subtitles.TextSubtitleParser;
 import org.w3c.dom.Element;
 import java.util.List;
 import com.netflix.mediaclient.service.player.subtitles.BaseSubtitleBlock;
@@ -23,12 +24,14 @@ public class TextSubtitleBlock extends BaseSubtitleBlock
     public static final String END = "end";
     public static final String ID = "xml:id";
     public static final String REGION = "region";
+    protected boolean mDisplayed;
+    protected int mNumberOfDisplays;
     private Region mRegion;
     private TextStyle mStyle;
     private List<SubtitleTextNode> mTextNodes;
     private int mTotalNumberOfLines;
     
-    TextSubtitleBlock(final Element element, final TextSubtitleParser textSubtitleParser, final TextStyle textStyle, final Region region) {
+    public TextSubtitleBlock(final Element element, final TextSubtitleParser textSubtitleParser, final TextStyle textStyle, final Region region) {
         this.mTextNodes = new ArrayList<SubtitleTextNode>();
         if (element == null) {
             throw new IllegalArgumentException("P can not be null!");
@@ -195,6 +198,21 @@ public class TextSubtitleBlock extends BaseSubtitleBlock
     }
     
     @Override
+    public void displayed() {
+        if (this.mDisplayed) {
+            if (Log.isLoggable()) {
+                Log.d("nf_subtitles", "Subtitle " + this.mId + " is already visible, do not count it again as displayed.");
+            }
+            return;
+        }
+        if (Log.isLoggable()) {
+            Log.d("nf_subtitles", "Subtitle " + this.mId + " was not visible, count it as displayed.");
+        }
+        this.mDisplayed = true;
+        ++this.mNumberOfDisplays;
+    }
+    
+    @Override
     public boolean equals(final Object o) {
         if (this != o) {
             if (o == null) {
@@ -214,6 +232,11 @@ public class TextSubtitleBlock extends BaseSubtitleBlock
             }
         }
         return true;
+    }
+    
+    @Override
+    public int getNumberOfDisplays() {
+        return this.mNumberOfDisplays;
     }
     
     public Region getRegion() {
@@ -245,7 +268,26 @@ public class TextSubtitleBlock extends BaseSubtitleBlock
     }
     
     @Override
+    public void seeked(final long n) {
+        int n2;
+        if (n < this.mEnd) {
+            n2 = 1;
+        }
+        else {
+            n2 = 0;
+        }
+        if (n2 != 0) {
+            this.mDisplayed = false;
+        }
+    }
+    
+    @Override
     public String toString() {
         return "TextSubtitleBlock [mId=" + this.mId + ", mRegion=" + this.mRegion + ", mTextNodes=" + this.mTextNodes + ", mStart=" + this.mStart + ", mEnd=" + this.mEnd + ", mStyle=" + this.mStyle + ", mTotalNumberOfLines=" + this.mTotalNumberOfLines + ", mMaxFontSizeMultiplier=" + this.mMaxFontSizeMultiplier + "]";
+    }
+    
+    @Override
+    public boolean wasDisplayed() {
+        return this.mDisplayed;
     }
 }

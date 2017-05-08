@@ -17,4 +17,6 @@ public interface IVoip$OutboundCallListener
     void callRinging(final IVoip$Call p0);
     
     void engineStatusChanged(final boolean p0);
+    
+    void networkFailed(final IVoip$Call p0);
 }

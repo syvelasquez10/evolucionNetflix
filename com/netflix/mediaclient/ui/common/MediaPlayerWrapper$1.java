@@ -4,24 +4,23 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import android.graphics.SurfaceTexture;
 import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.File;
 import android.text.TextUtils;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import android.view.TextureView;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.graphics.SurfaceTexture;
+import com.netflix.mediaclient.Log;
 import android.view.Surface;
 import android.media.MediaPlayer;
+import android.view.TextureView;
+import android.os.Handler;
 import android.view.TextureView$SurfaceTextureListener;
+import android.media.MediaPlayer$OnVideoSizeChangedListener;
 import android.media.MediaPlayer$OnPreparedListener;
 import android.media.MediaPlayer$OnErrorListener;
 import android.media.MediaPlayer$OnCompletionListener;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
-class MediaPlayerWrapper$1 extends SimpleManagerCallback
+class MediaPlayerWrapper$1 implements Runnable
 {
     final /* synthetic */ MediaPlayerWrapper this$0;
     
@@ -30,15 +29,7 @@ class MediaPlayerWrapper$1 extends SimpleManagerCallback
     }
     
     @Override
-    public void onResourceFetched(final String s, final String s2, final Status status) {
-        super.onResourceFetched(s, s2, status);
-        if (status.isError()) {
-            if (Log.isLoggable()) {
-                Log.e("MediaPlayerWrapper", "Failed to download video: " + s);
-            }
-            return;
-        }
-        this.this$0.localUrl = s2;
-        this.this$0.prepareMediaPlayer();
+    public void run() {
+        this.this$0.startPlayback();
     }
 }

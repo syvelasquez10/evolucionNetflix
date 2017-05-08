@@ -4,10 +4,13 @@
 
 package com.netflix.mediaclient.servicemgr;
 
-import android.util.Pair;
 import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams;
 import android.content.Context;
 import com.netflix.mediaclient.util.ConnectivityUtils;
+import java.util.List;
+import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
+import android.util.Pair;
+import java.util.ArrayList;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
@@ -16,18 +19,38 @@ public class ServiceManagerUtils
 {
     private static final String TAG = "ServiceManagerUtils";
     
-    public static void cacheManifestIfEnabled(final ServiceManager serviceManager, final Playable playable, final PlayContext playContext) {
-        if (!serviceManager.getPlayer().isManifestCacheEnabled()) {
-            return;
+    public static void castPrefetchAndCacheManifestIfEnabled(final ServiceManager serviceManager, final Playable playable, final PlayContext playContext) {
+        if (serviceManager == null) {
+            Log.w("ServiceManagerUtils", "manager is null - can't cache manifest");
         }
-        if (Log.isLoggable()) {
-            Log.d("ServiceManagerUtils", "schedule manifest pre-fectiion for " + playable);
-        }
-        try {
-            serviceManager.getPlayer().getManifestCache().cacheSchedule(new IManifestCache$CacheScheduleRequest[] { new IManifestCache$CacheScheduleRequest(Integer.parseInt(playable.getPlayableId()), 0L, 1L) }, new AuthorizationParams(playContext, ConnectivityUtils.getCurrentNetType((Context)serviceManager.getActivity())));
-        }
-        catch (NumberFormatException ex) {
-            Log.w("ServiceManagerUtils", "schedule manifest pre-fectiion gets invalid playableId, ignored");
+        else {
+            if (!playable.isAvailableToStream()) {
+                Log.w("ServiceManagerUtils", "video is not available for streaming - can't cache manifest");
+                return;
+            }
+            if (!serviceManager.getConfiguration().isDisableCastFaststart()) {
+                final ArrayList<Pair<String, Integer>> list = new ArrayList<Pair<String, Integer>>();
+                list.add((Pair<String, Integer>)Pair.create((Object)playable.getPlayableId(), (Object)0));
+                MdxAgent$Utils.attemptMdxPrefetch(serviceManager, list);
+            }
+            else {
+                Log.d("ServiceManagerUtils", "CastFaststart is disabled");
+            }
+            if (serviceManager.getPlayer() == null) {
+                Log.w("ServiceManagerUtils", "player is null - can't cache manifest");
+                return;
+            }
+            if (serviceManager.getPlayer().isManifestCacheEnabled()) {
+                if (Log.isLoggable()) {
+                    Log.d("ServiceManagerUtils", "schedule manifest pre-fectiion for " + playable);
+                }
+                try {
+                    serviceManager.getPlayer().getManifestCache().cacheSchedule(new IManifestCache$CacheScheduleRequest[] { new IManifestCache$CacheScheduleRequest(Integer.parseInt(playable.getPlayableId()), 0L, 1L) }, new AuthorizationParams((Context)serviceManager.getActivity(), playContext, ConnectivityUtils.getCurrentNetType((Context)serviceManager.getActivity()), serviceManager.getConfiguration().isPreviewContentEnabled()));
+                }
+                catch (NumberFormatException ex) {
+                    Log.w("ServiceManagerUtils", "schedule manifest pre-fectiion gets invalid playableId, ignored");
+                }
+            }
         }
     }
     

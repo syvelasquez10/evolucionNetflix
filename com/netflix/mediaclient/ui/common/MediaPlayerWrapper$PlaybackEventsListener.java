@@ -6,9 +6,5 @@ package com.netflix.mediaclient.ui.common;
 
 public interface MediaPlayerWrapper$PlaybackEventsListener
 {
-    void onCompletion();
-    
-    void onPrepared();
-    
-    void updateBookmarks(final int p0, final int p1);
+    void onPlaybackFinished();
 }

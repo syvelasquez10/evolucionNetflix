@@ -17,8 +17,9 @@ import android.view.LayoutInflater;
 import android.content.res.Resources;
 import java.util.ArrayList;
 import java.util.Collection;
-import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
@@ -94,7 +95,7 @@ class MdxMiniPlayerViews$10 implements View$OnClickListener
             else {
                 videoType = currentVideo.getType();
             }
-            final RatingDialogFrag create = RatingDialogFrag.create(playableVideoId, videoType, s, null, 2130903198, true);
+            final RatingDialogFrag create = RatingDialogFrag.create(playableVideoId, videoType, s, null, 2130903226, true);
             create.setCancelable(true);
             this.this$0.activity.showDialog(create);
             if (this.this$0.activity != null && this.this$0.activity.getServiceManager() != null) {

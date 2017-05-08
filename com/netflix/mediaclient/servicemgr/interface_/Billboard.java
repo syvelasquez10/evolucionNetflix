@@ -16,9 +16,13 @@ public interface Billboard extends Playable, Video
     
     int getNumOfSeasons();
     
+    String getNumSeasonsLabel();
+    
     String getStoryUrl();
     
     String getSynopsis();
     
     int getYear();
+    
+    boolean hasTrailers();
 }

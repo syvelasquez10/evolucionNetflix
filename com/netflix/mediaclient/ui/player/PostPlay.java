@@ -9,6 +9,7 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View$OnClickListener;
 import android.view.View$OnTouchListener;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import android.content.res.Configuration;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
@@ -32,7 +33,9 @@ import java.util.List;
 import android.view.animation.DecelerateInterpolator;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
+import com.netflix.model.leafs.InteractivePostplay;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import com.netflix.mediaclient.ui.iko.InteractivePostPlayManager;
 
 public abstract class PostPlay
 {
@@ -43,9 +46,13 @@ public abstract class PostPlay
     private static final int INTERRUPTER_VALUE_IN_MS = 120000;
     private static final double SIXTY_PERCENT = 0.6;
     protected static final String TAG = "nf_postplay";
+    protected InteractivePostPlayManager interactivePostPlayManager;
+    public boolean isInteractivePostPlay;
     protected AdvancedImageView mBackground;
+    protected PostPlay$FetchPostPlayForPlaybackCallback mFetchPostPlayForPlaybackCallback;
     protected int mFetchPostplayOffsetMs;
     protected boolean mInPostPlay;
+    private InteractivePostplay mInteractivePostPlay;
     protected int mInterrputerTimeoutOffset;
     protected View mInterrupter;
     protected View mInterrupterContinue;
@@ -192,6 +199,9 @@ public abstract class PostPlay
     }
     
     public void destroy() {
+        if (this.isInteractivePostPlay && this.interactivePostPlayManager != null) {
+            this.interactivePostPlayManager.onDestroy();
+        }
         this.mNetflixActivity.getHandler().removeCallbacks(this.onInterrupterStart);
         this.mNetflixActivity.getHandler().removeCallbacks(this.onInterrupterDismiss);
         Log.d("nf_postplay", "User exist playback and postplay if it was in progress, report as such");
@@ -208,53 +218,66 @@ public abstract class PostPlay
             Log.e("nf_postplay", "endOfPlay() - called with null PlayerFragment!");
             return;
         }
+        if (this.isInteractivePostPlay && this.interactivePostPlayManager != null && this.interactivePostPlayManager.waitUntilEndOfPlay()) {
+            this.startInteractivePostPlay(true);
+        }
         this.mPlayerFragment.getSubtitleManager().clear();
     }
     
     public void fetchPostPlayVideos(final String s, final VideoType videoType) {
-        if (!TextUtils.isEmpty((CharSequence)s) && this.mNetflixActivity.getServiceManager() != null) {
-            Log.d("nf_postplay", "Fetch postplay videos...");
-            this.mNetflixActivity.getServiceManager().getBrowse().fetchPostPlayVideos(s, videoType, new PostPlay$FetchPostPlayForPlaybackCallback(this));
-            return;
+        synchronized (this) {
+            if (!TextUtils.isEmpty((CharSequence)s) && this.mNetflixActivity.getServiceManager() != null) {
+                Log.d("nf_postplay", "Fetch postplay videos...");
+                final PostPlay$FetchPostPlayForPlaybackCallback mFetchPostPlayForPlaybackCallback = new PostPlay$FetchPostPlayForPlaybackCallback(this);
+                this.mNetflixActivity.getServiceManager().getBrowse().fetchPostPlayVideos(s, videoType, mFetchPostPlayForPlaybackCallback);
+                this.mFetchPostPlayForPlaybackCallback = mFetchPostPlayForPlaybackCallback;
+            }
+            else {
+                Log.e("nf_postplay", "Unable to fetch postplay videos!");
+            }
         }
-        Log.e("nf_postplay", "Unable to fetch postplay videos!");
     }
     
     public void fetchPostPlayVideosIfNeeded(final String s, final VideoType videoType) {
+        Log.d("nf_postplay", "fetchPostPlayVideosIfNeeded starts");
         if (this.mPostPlayDataFetchStatus == PostPlay$PostPlayDataFetchStatus.started) {
-            Log.d("nf_postplay", "Fetch of postplay data already in progress, do nothing.");
+            Log.d("nf_postplay", "fetchPostPlayVideosIfNeeded: Fetch of postplay data already in progress, do nothing.");
             return;
         }
         if (this.mPostPlayDataFetchStatus != PostPlay$PostPlayDataFetchStatus.notStarted) {
-            Log.d("nf_postplay", "Fetching postplay was postponed, go and fetch it...");
+            Log.d("nf_postplay", "fetchPostPlayVideosIfNeeded: Fetching postplay was postponed, go and fetch it...");
             this.fetchPostPlayVideos(s, videoType);
             return;
         }
-        Log.d("nf_postplay", "First time, postplaydata not fetched, check if we need to postpone data retrieval...");
+        Log.d("nf_postplay", "fetchPostPlayVideosIfNeeded: First time, postplaydata not fetched, check if we need to postpone data retrieval...");
         if (this.shouldPostponeFetchPostPlayData()) {
-            Log.d("nf_postplay", "Postponing fetch of postplay data until playback starts...");
+            Log.d("nf_postplay", "fetchPostPlayVideosIfNeeded: Postponing fetch of postplay data until playback starts...");
             this.mPostPlayDataFetchStatus = PostPlay$PostPlayDataFetchStatus.postponed;
             return;
         }
-        Log.d("nf_postplay", "Fetching postplay data now, too close to start of postplay...");
+        Log.d("nf_postplay", "fetchPostPlayVideosIfNeeded: Fetching postplay data now, too close to start of postplay...");
         this.fetchPostPlayVideos(s, videoType);
     }
     
-    abstract void findViews();
+    protected abstract void findViews();
     
     protected void findViewsCommon() {
-        this.mInterrupterPlayFromStart = this.mNetflixActivity.findViewById(2131624373);
-        this.mInterrupterContinue = this.mNetflixActivity.findViewById(2131624372);
-        this.mBackground = (AdvancedImageView)this.mNetflixActivity.findViewById(2131624413);
-        this.mSynopsis = (TextView)this.mNetflixActivity.findViewById(2131624411);
-        this.mInterrupterStop = this.mNetflixActivity.findViewById(2131624374);
-        this.mPostPlayIgnoreTap = this.mNetflixActivity.findViewById(2131624409);
-        this.mMoreButton = this.mNetflixActivity.findViewById(2131624401);
-        this.mPlayButton = this.mNetflixActivity.findViewById(2131624399);
-        this.mStopButton = this.mNetflixActivity.findViewById(2131624400);
-        this.mTitle = (TextView)this.mNetflixActivity.findViewById(2131624410);
-        this.mInterrupter = this.mNetflixActivity.findViewById(2131624371);
-        this.mPostPlay = this.mNetflixActivity.findViewById(2131624406);
+        this.mInterrupterPlayFromStart = this.mNetflixActivity.findViewById(2131624450);
+        this.mInterrupterContinue = this.mNetflixActivity.findViewById(2131624449);
+        this.mBackground = (AdvancedImageView)this.mNetflixActivity.findViewById(2131624530);
+        this.mSynopsis = (TextView)this.mNetflixActivity.findViewById(2131624528);
+        this.mInterrupterStop = this.mNetflixActivity.findViewById(2131624451);
+        this.mPostPlayIgnoreTap = this.mNetflixActivity.findViewById(2131624525);
+        this.mMoreButton = this.mNetflixActivity.findViewById(2131624517);
+        this.mPlayButton = this.mNetflixActivity.findViewById(2131624515);
+        this.mStopButton = this.mNetflixActivity.findViewById(2131624516);
+        this.mTitle = (TextView)this.mNetflixActivity.findViewById(2131624527);
+        this.mInterrupter = this.mNetflixActivity.findViewById(2131624448);
+        this.mPostPlay = this.mNetflixActivity.findViewById(2131624522);
+    }
+    
+    public PlayerFragment getController() {
+        return this.mPlayerFragment;
     }
     
     protected abstract int getLengthOfAutoPlayCountdow();
@@ -269,6 +292,12 @@ public abstract class PostPlay
             return;
         }
         this.mPlayerFragment.finish();
+    }
+    
+    public void hide() {
+        if (this.mPostPlay != null) {
+            this.mPostPlay.setVisibility(8);
+        }
     }
     
     protected boolean isAutoPlayEnabled() {
@@ -326,7 +355,7 @@ public abstract class PostPlay
     }
     
     protected boolean isPostPlayEnabled() {
-        return this.mPostPlayDataExist;
+        return this.mPostPlayDataExist || this.isInteractivePostPlay;
     }
     
     void moveFromInterruptedToPlaying() {
@@ -354,10 +383,31 @@ public abstract class PostPlay
         this.mPlayerFragment.doSeek(0);
     }
     
+    protected void onConfigurationChanged(final Configuration configuration) {
+    }
+    
     public void onPause() {
+        if (this.isInPostPlay() && this.isInteractivePostPlay && this.interactivePostPlayManager != null) {
+            this.interactivePostPlayManager.onPause();
+        }
     }
     
     public void onResume() {
+        if (this.isInPostPlay() && this.isInteractivePostPlay && this.interactivePostPlayManager != null) {
+            this.interactivePostPlayManager.onResume();
+        }
+    }
+    
+    public void onStart() {
+        if (this.isInPostPlay() && this.isInteractivePostPlay && this.interactivePostPlayManager != null) {
+            this.interactivePostPlayManager.onStart();
+        }
+    }
+    
+    public void onStop() {
+        if (this.isInPostPlay() && this.isInteractivePostPlay && this.interactivePostPlayManager != null) {
+            this.interactivePostPlayManager.onStop();
+        }
     }
     
     public void postPlayDismissed() {
@@ -371,11 +421,18 @@ public abstract class PostPlay
         }
     }
     
-    protected void reportNextPlayFailed(final boolean b) {
+    public void reportNextPlayFailed(final boolean b) {
         if (this.shouldReportPostplay()) {
             Log.d("nf_postplay", "User starts next play and it failed, report as such");
             UserActionLogUtils.reportEndPostPlay((Context)this.mNetflixActivity, IClientLogging$CompletionReason.failed, IClientLogging$ModalView.playback, null, b, false, null, null, 0);
         }
+    }
+    
+    public void reset() {
+        this.mPostPlayVideos = null;
+        this.mPostPlayDataFetchStatus = PostPlay$PostPlayDataFetchStatus.postponed;
+        this.mPostPlayDataExist = false;
+        this.interactivePostPlayManager = null;
     }
     
     public void setBackgroundImageVisible(final boolean b) {
@@ -457,6 +514,12 @@ public abstract class PostPlay
         }
     }
     
+    public void startInteractivePostPlay(final boolean b) {
+        if (this.isInteractivePostPlay && this.interactivePostPlayManager != null) {
+            this.interactivePostPlayManager.startPostPlay(b);
+        }
+    }
+    
     void transitionFromPostPlay() {
         Log.d("nf_postplay", "Transition from post play execute!");
         this.mInPostPlay = false;
@@ -472,12 +535,20 @@ public abstract class PostPlay
         this.doTransitionFromPostPlay();
     }
     
-    void transitionToPostPlay() {
+    public void transitionToPostPlay() {
         Log.d("nf_postplay", "Transition to post play execute!");
         this.mInPostPlay = true;
+        if (this.mPostPlay != null && (this.mPlayerFragment == null || !this.mPlayerFragment.isInPortrait())) {
+            this.mPostPlay.setFitsSystemWindows(true);
+        }
+        if (this.isInteractivePostPlay && this.interactivePostPlayManager != null) {
+            if (!this.interactivePostPlayManager.waitUntilEndOfPlay()) {
+                this.startInteractivePostPlay(false);
+            }
+            return;
+        }
         if (this.mPostPlay != null) {
             this.mPostPlay.setVisibility(0);
-            this.mPostPlay.setFitsSystemWindows(true);
         }
         if (this.shouldReportPostplay()) {
             UserActionLogUtils.reportStartPostPlay((Context)this.mNetflixActivity, this.isAutoPlayUsed(), this.getLengthOfAutoPlayCountdow(), this.getPostPlayExpirience());

@@ -38,14 +38,15 @@ public class PlayerFileManager implements IPlayerFileCache
     
     private String getKey(final String s, final String s2) {
         if (StringUtils.isEmpty(s) || StringUtils.isEmpty(s2)) {
-            throw new IllegalArgumentException("BAd playable id and or language.");
+            Log.e("nf_subtitles", "Bad playable id and or language.");
+            return null;
         }
         return s + "_" + s2;
     }
     
     public String existSubtitleCache(String key, final String s) {
         key = this.getKey(key, s);
-        if (this.mSubtitles.get(key) != null) {
+        if (key != null && this.mSubtitles.get(key) != null) {
             return key;
         }
         return null;
@@ -57,12 +58,15 @@ public class PlayerFileManager implements IPlayerFileCache
             Log.d("nf_subtitles", "Get file from cache " + s + " with name " + s2);
         }
         if (StringUtils.isEmpty(s) || StringUtils.isEmpty(s2)) {
-            throw new IllegalArgumentException("Bad arguments!");
+            Log.w("nf_subtitles", "Bad arguments: key or name not found");
+            return null;
         }
         final File file = this.mSubtitles.get(s);
         if (file == null) {
-            Log.e("nf_subtitles", "Subtitle cache for " + s + " does not exist!");
-            throw new IllegalStateException("Subtitle cache for " + s + " does not exist!");
+            if (Log.isLoggable()) {
+                Log.e("nf_subtitles", "Subtitle cache for " + s + " does not exist!");
+            }
+            return null;
         }
         final File file2 = new File(file, s2);
         if (file2.exists()) {
@@ -108,18 +112,23 @@ public class PlayerFileManager implements IPlayerFileCache
         if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Move file  " + s + "to cache " + string + " with name " + s2);
         }
+        boolean moveFile;
         if (StringUtils.isEmpty(string) || StringUtils.isEmpty(s) || StringUtils.isEmpty(s2)) {
-            throw new IllegalArgumentException("Bad arguments!");
+            Log.w("nf_subtitles", "Bad arguments: key or source or destination not found!");
+            moveFile = false;
         }
-        final File file = this.mSubtitles.get(string);
-        if (file == null) {
-            Log.e("nf_subtitles", "Subtitle cache for " + string + " does not exist!");
-            throw new IllegalStateException("Subtitle cache for " + string + " does not exist!");
-        }
-        string = file.getAbsolutePath() + "/" + s2;
-        final boolean moveFile = FileUtils.moveFile(s, string);
-        if (Log.isLoggable()) {
-            Log.d("nf_subtitles", "Move file  " + s + " to " + string + " was success " + moveFile);
+        else {
+            final File file = this.mSubtitles.get(string);
+            if (file == null) {
+                Log.e("nf_subtitles", "Subtitle cache for " + string + " does not exist!");
+                return false;
+            }
+            string = file.getAbsolutePath() + "/" + s2;
+            final boolean b = moveFile = FileUtils.moveFile(s, string);
+            if (Log.isLoggable()) {
+                Log.d("nf_subtitles", "Move file  " + s + " to " + string + " was success " + b);
+                return b;
+            }
         }
         return moveFile;
     }
@@ -130,12 +139,13 @@ public class PlayerFileManager implements IPlayerFileCache
             Log.d("nf_subtitles", "Save data as file to cache " + s + " with name " + s2);
         }
         if (StringUtils.isEmpty(s) || StringUtils.isEmpty(s2) || array == null) {
-            throw new IllegalArgumentException("Bad arguments!");
+            Log.e("nf_subtitles", "Bad arguments! Key or name are null or bytes are null!");
+            return null;
         }
         final File file = this.mSubtitles.get(s);
         if (file == null) {
             Log.e("nf_subtitles", "Subtitle cache for " + s + " does not exist!");
-            throw new IllegalStateException("Subtitle cache for " + s + " does not exist!");
+            return null;
         }
         File file2 = new File(file, s2);
         while (true) {

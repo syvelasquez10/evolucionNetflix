@@ -4,9 +4,14 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.VoipConfiguration;
 import com.netflix.mediaclient.media.VideoResolutionRange;
+import com.netflix.mediaclient.service.webclient.model.leafs.SubtitleDownloadRetryPolicy;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
+import com.netflix.mediaclient.service.webclient.model.leafs.SignInConfigData;
+import com.netflix.mediaclient.service.webclient.model.leafs.PreviewContentConfigData;
 import com.netflix.mediaclient.service.configuration.PlaybackConfiguration;
+import com.netflix.mediaclient.service.webclient.model.leafs.NrmConfigData;
 import com.netflix.mediaclient.service.configuration.MdxConfiguration;
 import com.netflix.mediaclient.service.configuration.KubrickConfiguration;
 import org.json.JSONObject;
@@ -16,11 +21,13 @@ import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecifi
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
+import android.util.Pair;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
 
 public interface ServiceAgent$ConfigurationAgentInterface
@@ -35,9 +42,9 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     void fetchAccountConfigData(final ConfigurationAgentWebCallback p0);
     
-    ABTestConfigData getABTestConfiguration_6538();
+    ABTestConfig getABTestConfiguration_6634();
     
-    ABTestConfigData getABTestConfiguration_6725();
+    ABTestConfig getABTestConfiguration_6725();
     
     String getAlertMsgForMissingLocale();
     
@@ -51,7 +58,11 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification();
     
+    Pair<String, byte[]> getCastPrefetchSharedSecret();
+    
     ConsolidatedLoggingSessionSpecification getConsolidatedLoggingSessionSpecification(final String p0);
+    
+    ABTestConfig$Cell getCoppola1Experience();
     
     PlayerType getCurrentPlayerType();
     
@@ -81,6 +92,12 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     MdxConfiguration getMdxConfiguration();
     
+    ABTestConfig$Cell getMotionBBTestConfig();
+    
+    NrmConfigData getNrmConfigData();
+    
+    ABTestConfig$Cell getPhoneOrientationConfig();
+    
     PlaybackConfiguration getPlaybackConfiguration();
     
     String getPreAppPartnerExperience();
@@ -88,6 +105,10 @@ public interface ServiceAgent$ConfigurationAgentInterface
     String getPreAppWidgetExperience();
     
     int getPresentationTrackingAggregationSize();
+    
+    PreviewContentConfigData getPreviewContentConfiguration();
+    
+    ABTestConfig$Cell getPushNotifOptInConfig();
     
     int getRateLimitForGcmBrowseEvents();
     
@@ -97,29 +118,45 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     int getResourceRequestTimeout();
     
+    SignInConfigData getSignInConfigData();
+    
     String getSoftwareVersion();
     
     String getStreamingQoe();
     
     SubtitleConfiguration getSubtitleConfiguration();
     
+    SubtitleDownloadRetryPolicy getSubtitleDownloadRetryPolicy();
+    
     int getVideoBufferSize();
     
     VideoResolutionRange getVideoResolutionRange();
     
-    int getVoipSampleRate();
+    ABTestConfig$Cell getVoiceSearchABTestConfig();
+    
+    VoipConfiguration getVoipConfiguration();
+    
+    boolean ignorePreloadForPlayBilling();
     
     boolean isCurrentDrmWidevine();
     
     boolean isDeviceLowMem();
     
+    boolean isDisableCastFaststart();
+    
     boolean isDisableMcQueenV2();
     
     boolean isDolbyDigitalPlus51Supported();
     
+    boolean isDynecomSignInEnabled();
+    
     boolean isEsnMigrationRequired();
     
     boolean isLogoutRequired();
+    
+    boolean isPlayBillingDisabled();
+    
+    boolean isPreviewContentEnabled();
     
     boolean isWidevineL1Enabled();
     
@@ -131,7 +168,9 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     boolean shouldDisableVoip();
     
-    boolean shouldForceBwSettingsInWifi();
+    boolean shouldDisplayVoipDialConfirmationDialog();
     
     void userAgentLogoutComplete();
+    
+    void verifyLoginViaDynecom(final String p0, final String p1, final ConfigurationAgentWebCallback p2);
 }

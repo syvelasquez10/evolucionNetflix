@@ -8,10 +8,12 @@ import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.servicemgr.Asset;
 import java.util.List;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
+import java.util.Map;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallbackWrapper;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
@@ -44,13 +46,23 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
+    public void endBrowsePlaySession(final long n, final int n2, final int n3, final int n4) {
+        this.mBrowseAgent.endBrowsePlaySession(n, n2, n3, n4);
+    }
+    
+    @Override
+    public void expiringContent(final String s, final int n, final int n2, final ExpiringContentAction expiringContentAction) {
+        this.mBrowseAgent.expiringContent(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)), expiringContentAction);
+    }
+    
+    @Override
     public void fetchCWVideos(final int n, final int n2, final int n3, final int n4) {
         this.mBrowseAgent.fetchCWVideos(n, n2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n3, n4)));
     }
     
     @Override
-    public void fetchEpisodeDetails(final String s, final int n, final int n2) {
-        this.mBrowseAgent.fetchEpisodeDetails(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
+    public void fetchEpisodeDetails(final String s, final String s2, final int n, final int n2) {
+        this.mBrowseAgent.fetchEpisodeDetails(s, s2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override
@@ -79,6 +91,11 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
+    public void fetchInteractiveVideoMoments(final VideoType videoType, final String s, final int n, final int n2) {
+        this.mBrowseAgent.fetchInteractiveVideoMoments(videoType, s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
+    }
+    
+    @Override
     public void fetchKidsCharacterDetails(final String s, final int n, final int n2) {
         this.mBrowseAgent.fetchKidsCharacterDetails(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
@@ -94,8 +111,8 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void fetchMovieDetails(final String s, final int n, final int n2) {
-        this.mBrowseAgent.fetchMovieDetails(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
+    public void fetchMovieDetails(final String s, final String s2, final int n, final int n2) {
+        this.mBrowseAgent.fetchMovieDetails(s, s2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override
@@ -111,6 +128,11 @@ public class FalkorAccess implements IBrowseInterface
     @Override
     public void fetchPreAppData(final int n, final int n2) {
         this.mBrowseAgent.fetchPreAppData(n, n2);
+    }
+    
+    @Override
+    public void fetchScenePosition(final VideoType videoType, final String s, final String s2, final int n, final int n2) {
+        this.mBrowseAgent.fetchScenePosition(videoType, s, s2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override
@@ -174,8 +196,8 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void logBillboardActivity(final Video video, final BillboardInteractionType billboardInteractionType) {
-        this.mBrowseAgent.logBillboardActivity(video, billboardInteractionType);
+    public void logBillboardActivity(final Video video, final BillboardInteractionType billboardInteractionType, final Map<String, String> map) {
+        this.mBrowseAgent.logBillboardActivity(video, billboardInteractionType, map);
     }
     
     @Override
@@ -200,7 +222,7 @@ public class FalkorAccess implements IBrowseInterface
     
     @Override
     public void refreshCw() {
-        this.mBrowseAgent.refreshCw();
+        this.mBrowseAgent.refreshCw(false);
     }
     
     @Override

@@ -39,14 +39,11 @@ class PartnerJSObject$4 implements Runnable
                     Log.e("nf_partner", "Service not found!");
                     this.this$0.returnResultToJS("nrdpPartner.Signup._handleExternalUserConfirmation", getErrorForPartner(null, this.val$idx, this.val$service, "101", "Service not found!"));
                     return;
-                    while (true) {
-                        Log.e("nf_partner", "Service does not support Signup!");
-                        this.this$0.returnResultToJS("nrdpPartner.Signup._handleExternalUserConfirmation", getErrorForPartner(this.val$userId, this.val$idx, this.val$service, "102", "Service does not support Signup!"));
-                        return;
-                        continue;
-                    }
+                    // iftrue(Label_0132:, partner.getSignup() != null)
+                    Log.e("nf_partner", "Service does not support Signup!");
+                    this.this$0.returnResultToJS("nrdpPartner.Signup._handleExternalUserConfirmation", getErrorForPartner(this.val$userId, this.val$idx, this.val$service, "102", "Service does not support Signup!"));
+                    return;
                 }
-                // iftrue(Label_0132:, partner.getSignup() != null)
                 catch (Exception ex) {
                     Log.e("nf_partner", "Failed to work with JSON", ex);
                     return;

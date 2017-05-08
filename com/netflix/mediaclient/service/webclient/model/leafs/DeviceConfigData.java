@@ -20,8 +20,16 @@ public class DeviceConfigData
     private List<ConsolidatedLoggingSessionSpecification> consolidated_logging_specification;
     private String current_version;
     private String device_category;
+    @SerializedName("disableCastFaststart")
+    private boolean disableCastFaststart;
+    @SerializedName("disableDataSaver")
+    public boolean disableDataSaver;
+    @SerializedName("disablePlayBilling")
+    private boolean disablePlayBilling;
     private String disable_mdx;
     private String disable_websocket;
+    @SerializedName("enableDynecomSignIn")
+    private boolean enableDynecomSignIn;
     @SerializedName("enableLocalPlayback")
     private String enableLocalPlayback;
     @SerializedName("enableMdxRemoteControlLockScreen")
@@ -38,6 +46,8 @@ public class DeviceConfigData
     private int gcmBrowseEventRateLimit;
     @SerializedName("gcmNListChangeEventRateLimitInSecs")
     private int gcmNListChangeEventRateLimit;
+    @SerializedName("ignorePreloadForPlayBilling")
+    private boolean ignorePreloadForPlayBilling;
     private String image_pref;
     @SerializedName("ip_connectivity_policy")
     private int ip_connectivity_policy;
@@ -49,22 +59,27 @@ public class DeviceConfigData
     private boolean shouldAlertForLocaleSupport;
     private String signup_enabled;
     private String signup_timeout;
+    @SerializedName("subtitleDownloadRetryPolicy")
+    private SubtitleDownloadRetryPolicy subtitleDownloadRetryPolicy;
     private String subtitle_configuration;
     private String type;
     @SerializedName("user_session_timeout_duration")
     private int user_session_timeout_duration;
     @SerializedName("videoResolutionOverride")
     private int videoResolutionOverride;
+    @SerializedName("voipConfig")
+    private VoipConfiguration voipConfig;
+    @SerializedName("voipConfirmationDialogAllocationPercentage")
+    private int voipConfirmationDialogAllocationPercentage;
     @SerializedName("voipEnabledOnDevice")
     private boolean voipEnabledOnDevice;
-    @SerializedName("voipSampleRateInHz")
-    private int voipSampleRateInHz;
     
     public DeviceConfigData() {
         this.consolidated_logging_specification = new ArrayList<ConsolidatedLoggingSessionSpecification>();
         this.ip_connectivity_policy = -1;
         this.user_session_timeout_duration = -1;
         this.jPlayerRestartOnStreamErrors = 2;
+        this.voipConfirmationDialogAllocationPercentage = 25;
     }
     
     public String getAlertMsgForLocaleSupport() {
@@ -93,6 +108,14 @@ public class DeviceConfigData
     
     public String getDeviceCategory() {
         return this.device_category;
+    }
+    
+    public boolean getDisableCastFaststart() {
+        return this.disableCastFaststart;
+    }
+    
+    public boolean getDisableDataSaver() {
+        return this.disableDataSaver;
     }
     
     public String getEnableLocalPlayback() {
@@ -155,6 +178,10 @@ public class DeviceConfigData
         return this.subtitle_configuration;
     }
     
+    public SubtitleDownloadRetryPolicy getSubtitleDownloadRetryPolicy() {
+        return this.subtitleDownloadRetryPolicy;
+    }
+    
     public int getUserSessionTimeoutDuration() {
         return this.user_session_timeout_duration;
     }
@@ -163,12 +190,24 @@ public class DeviceConfigData
         return this.videoResolutionOverride;
     }
     
-    public int getVoipSampleRateInHz() {
-        return this.voipSampleRateInHz;
+    public VoipConfiguration getVoipConfiguration() {
+        return this.voipConfig;
+    }
+    
+    public int getVoipConfirmationDialogAllocationPercentage() {
+        return this.voipConfirmationDialogAllocationPercentage;
     }
     
     public String getWebsocketDisabled() {
         return this.disable_websocket;
+    }
+    
+    public boolean isDynecomSignInEnabled() {
+        return this.enableDynecomSignIn;
+    }
+    
+    public boolean isPlayBillingDisabled() {
+        return this.disablePlayBilling;
     }
     
     public boolean isVoipEnabledOnDevice() {
@@ -185,5 +224,9 @@ public class DeviceConfigData
     
     public boolean shouldAlertForMissingLocale() {
         return this.shouldAlertForLocaleSupport;
+    }
+    
+    public boolean toIgnorePrelaodForPlayBilling() {
+        return this.ignorePreloadForPlayBilling;
     }
 }

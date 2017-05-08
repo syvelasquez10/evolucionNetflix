@@ -16,6 +16,8 @@ public interface KidsCharacterDetails extends Video
     
     String getCharacterId();
     
+    String getCharacterImageUrl();
+    
     String getCharacterName();
     
     List<Video> getGallery();

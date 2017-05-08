@@ -8,16 +8,15 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.Log;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
@@ -26,13 +25,13 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 
 public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag implements ErrorWrapper$Callback, DetailsActivity$Reloader, VideoDetailsViewGroup$VideoDetailsViewGroupProvider
 {
+    public static final String EXTRA_IS_MOVIE = "extra_is_movie";
     private static final String TAG = "DetailsFrag";
     private AddToListData$StateListener addToListWrapper;
     public VideoDetailsViewGroup detailsViewGroup;
     protected final ErrorWrapper$Callback errorCallback;
     protected LoadingAndErrorWrapper leWrapper;
-    protected T mVideoDetails;
-    private ServiceManager manager;
+    private T mVideoDetails;
     protected View primaryView;
     
     public DetailsFrag() {
@@ -41,31 +40,43 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     
     protected static AddToListData$StateListener addToMyListWrapper(final VideoDetailsViewGroup videoDetailsViewGroup, final NetflixActivity netflixActivity, final ServiceManager serviceManager, final String s) {
         final TextView addToMyListButton = videoDetailsViewGroup.getAddToMyListButton();
-        if (serviceManager != null && netflixActivity != null && addToMyListButton != null) {
-            if (serviceManager.getCurrentProfile() == null) {
-                ErrorLoggingManager.logHandledException("SPY-8691 - current profile is null");
+        if (Log.isLoggable()) {
+            final StringBuilder append = new StringBuilder().append("Manager: ").append(serviceManager);
+            String string;
+            if (serviceManager == null) {
+                string = "";
             }
             else {
-                if (serviceManager.getCurrentProfile().isKidsProfile()) {
-                    addToMyListButton.setVisibility(4);
-                    return null;
-                }
-                final AddToListData$StateListener addToMyListWrapper = serviceManager.createAddToMyListWrapper((DetailsActivity)netflixActivity, addToMyListButton, videoDetailsViewGroup.getAddToMyListButtonLabel(), false);
-                serviceManager.registerAddToMyListListener(s, addToMyListWrapper);
-                return addToMyListWrapper;
+                string = ", current profile: " + serviceManager.getCurrentProfile();
             }
+            Log.v("DetailsFrag", append.append(string).toString());
+            Log.v("DetailsFrag", "Activity: " + netflixActivity + ", btnMyList: " + addToMyListButton);
         }
-        return null;
+        if (serviceManager == null || serviceManager.getCurrentProfile() == null || netflixActivity == null || addToMyListButton == null) {
+            return null;
+        }
+        if (serviceManager.getCurrentProfile() == null) {
+            ErrorLoggingManager.logHandledException("SPY-8691 - current profile is null");
+            Log.w("DetailsFrag", "SPY-8691 - current profile is null");
+            return null;
+        }
+        if (serviceManager.getCurrentProfile().isKidsProfile()) {
+            addToMyListButton.setVisibility(8);
+            return null;
+        }
+        final AddToListData$StateListener addToMyListWrapper = serviceManager.createAddToMyListWrapper((DetailsActivity)netflixActivity, addToMyListButton, videoDetailsViewGroup.getAddToMyListButtonLabel(), false);
+        serviceManager.registerAddToMyListListener(s, addToMyListWrapper);
+        return addToMyListWrapper;
     }
     
     protected abstract VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final T p0);
     
     protected int getLayoutId() {
-        return 2130903230;
+        return 2130903258;
     }
     
-    protected ServiceManager getServiceManager() {
-        return this.manager;
+    protected int getPrimaryViewId() {
+        return 2131624672;
     }
     
     public String getTitle() {
@@ -73,6 +84,10 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
             return null;
         }
         return this.mVideoDetails.getTitle();
+    }
+    
+    protected VideoDetails getVideoDetails() {
+        return this.mVideoDetails;
     }
     
     @Override
@@ -89,7 +104,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         final View inflate = layoutInflater.inflate(this.getLayoutId(), (ViewGroup)null, false);
         this.initDetailsViewGroup(inflate);
         this.leWrapper = new LoadingAndErrorWrapper(inflate, this.errorCallback);
-        this.primaryView = inflate.findViewById(2131624527);
+        this.primaryView = inflate.findViewById(this.getPrimaryViewId());
         if (this.primaryView != null) {
             this.primaryView.setVerticalScrollBarEnabled(false);
         }
@@ -99,35 +114,24 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (this.manager != null && this.addToListWrapper != null) {
-            this.manager.unregisterAddToMyListListener(this.getVideoId(), this.addToListWrapper);
+        final ServiceManager serviceManager = this.getServiceManager();
+        if (serviceManager != null && this.addToListWrapper != null) {
+            serviceManager.unregisterAddToMyListListener(this.getVideoId(), this.addToListWrapper);
         }
-        this.manager = null;
-    }
-    
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        this.manager = null;
-    }
-    
-    @Override
-    public void onManagerReady(final ServiceManager manager, final Status status) {
-        super.onManagerReady(manager, status);
-        this.manager = manager;
     }
     
     public void onResume() {
         super.onResume();
-        if (this.manager != null) {
+        final ServiceManager serviceManager = this.getServiceManager();
+        if (serviceManager != null) {
             if (this.detailsViewGroup != null) {
                 this.detailsViewGroup.refreshImagesIfNecessary();
             }
             if (this.mVideoDetails instanceof VideoDetails) {
-                this.manager.updateMyListState(this.getVideoId(), this.mVideoDetails.isInQueue());
+                serviceManager.updateMyListState(this.getVideoId(), this.mVideoDetails.isInQueue());
             }
             else if (Log.isLoggable()) {
-                Log.e("DetailsFrag", "onResume() got weird videoDetails class: " + this.mVideoDetails);
+                Log.d("DetailsFrag", "onResume() got weird videoDetails class: " + this.mVideoDetails);
             }
         }
     }
@@ -156,9 +160,9 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         if (this.getActivity() instanceof PlayContextProvider) {
             playContext = ((PlayContextProvider)this.getActivity()).getPlayContext();
         }
-        ServiceManagerUtils.cacheManifestIfEnabled(this.getServiceManager(), this.mVideoDetails.getPlayable(), playContext);
+        ServiceManagerUtils.castPrefetchAndCacheManifestIfEnabled(this.getServiceManager(), this.mVideoDetails.getPlayable(), playContext);
         this.detailsViewGroup.updateDetails(mVideoDetails, this.getDetailsStringProvider(mVideoDetails));
-        this.addToListWrapper = addToMyListWrapper(this.detailsViewGroup, (NetflixActivity)this.getActivity(), this.manager, this.getVideoId());
+        this.addToListWrapper = addToMyListWrapper(this.detailsViewGroup, (NetflixActivity)this.getActivity(), this.getServiceManager(), this.getVideoId());
     }
     
     protected void showErrorView() {

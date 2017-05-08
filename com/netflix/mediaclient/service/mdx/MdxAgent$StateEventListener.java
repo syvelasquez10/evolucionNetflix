@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.mdx;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import android.app.Service;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
+import java.util.List;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import android.text.TextUtils;
@@ -28,6 +29,7 @@ import android.net.wifi.WifiManager;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.mdx.notification.MdxNotificationManagerFactory;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -123,11 +125,11 @@ class MdxAgent$StateEventListener implements EventListener
             final String fromUuid = targetRestartingEvent.getFromUuid();
             final int duration = targetRestartingEvent.getDuration();
             if (Log.isLoggable()) {
-                Log.d("nf_mdx_agent", "MdxAgent: TargetRestartingEvent " + fromUuid + ", " + duration);
+                Log.d("nf_mdx_MdxAgent", "MdxAgent: TargetRestartingEvent " + fromUuid + ", " + duration);
             }
             if (!this.this$0.mTargetRestartingList.contains(fromUuid)) {
                 this.this$0.mTargetRestartingList.add(fromUuid);
-                Log.d("nf_mdx_agent", "MdxAgent: add to mTargetRestartingList");
+                Log.d("nf_mdx_MdxAgent", "MdxAgent: add to mTargetRestartingList");
             }
         }
     }

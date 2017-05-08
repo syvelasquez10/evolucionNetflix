@@ -12,6 +12,8 @@ public interface KubrickVideo extends FeatureEnabledProvider, Ratable, Video
     
     String getNarrative();
     
+    String getNumSeasonsLabel();
+    
     int getRuntime();
     
     int getSeasonCount();

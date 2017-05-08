@@ -22,10 +22,10 @@ import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.content.Context;
 import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import android.view.inputmethod.InputMethodManager;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.os.Parcelable;
 import android.os.Bundle;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ProgressBar;
@@ -65,7 +65,7 @@ public class PinDialog extends NetflixDialogFrag
         final Bundle arguments = new Bundle();
         arguments.putParcelable(PlayVerifierVault.NAME, (Parcelable)playVerifierVault);
         pinDialog.setArguments(arguments);
-        pinDialog.setStyle(1, 2131361924);
+        pinDialog.setStyle(1, 2131361916);
         return pinDialog;
     }
     
@@ -79,13 +79,6 @@ public class PinDialog extends NetflixDialogFrag
             return null;
         }
         return (InputMethodManager)serviceManager.getActivity().getSystemService("input_method");
-    }
-    
-    private ServiceManager getServiceManager() {
-        if (this.getActivity() == null) {
-            return null;
-        }
-        return ((NetflixActivity)this.getActivity()).getServiceManager();
     }
     
     private void notifyCallerPinCancelled() {
@@ -105,14 +98,16 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     protected static void notifyCallerPinVerified(final NetflixActivity netflixActivity, final PlayVerifierVault playVerifierVault) {
-        if (playVerifierVault == null || netflixActivity == null) {
-            Log.d("nf_pin", "mValut is null - cannot start playback");
+        if (playVerifierVault == null || netflixActivity == null || playVerifierVault.getAsset() == null) {
+            Log.d("nf_pin", "mValut/activity/asset is null - cannot start playback");
         }
         else {
-            Log.d("nf_pin", String.format("%s onVerified  , vault: %s", NetflixActivity.class.getSimpleName(), playVerifierVault));
+            if (Log.isLoggable()) {
+                Log.d("nf_pin", String.format("%s onVerified  , vault: %s", NetflixActivity.class.getSimpleName(), playVerifierVault));
+            }
             playVerifierVault.getAsset().setPinVerified(true);
             if (PlayVerifierVault$PlayInvokedFrom.PLAY_LAUNCHER.getValue().equals(playVerifierVault.getInvokeLocation())) {
-                PlaybackLauncher.startPlaybackOnPINSuccess(netflixActivity, playVerifierVault.getAsset(), playVerifierVault.isRemotePlayback());
+                PlaybackLauncher.startPlaybackOnPINSuccess(netflixActivity, playVerifierVault.getAsset(), playVerifierVault.isRemotePlayback(), playVerifierVault.getmBookmark());
                 return;
             }
             if (PlayVerifierVault$PlayInvokedFrom.MDX.getValue().equals(playVerifierVault.getInvokeLocation())) {
@@ -146,7 +141,7 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     private static void showConnectivityErrorDialog(final NetflixActivity netflixActivity, final Status status) {
-        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage((CharSequence)String.format("%s (%d)", netflixActivity.getString(2131165664), status.getStatusCode().getValue())).setPositiveButton(2131165568, (DialogInterface$OnClickListener)new PinDialog$2()).show();
+        new AlertDialog$Builder((Context)netflixActivity).setCancelable(false).setMessage((CharSequence)String.format("%s (%d)", netflixActivity.getString(2131165697), status.getStatusCode().getValue())).setPositiveButton(2131165588, (DialogInterface$OnClickListener)new PinDialog$2()).show();
     }
     
     private void showErrorIcon(final boolean mInError) {
@@ -193,7 +188,7 @@ public class PinDialog extends NetflixDialogFrag
         }
         mPinForgotView.setVisibility(visibility3);
         if (mInProgress) {
-            this.mPinMessage.setText(2131165579);
+            this.mPinMessage.setText(2131165599);
         }
     }
     
@@ -244,14 +239,14 @@ public class PinDialog extends NetflixDialogFrag
         }
         this.mVault = (PlayVerifierVault)this.getArguments().getParcelable(PlayVerifierVault.NAME);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903175, (ViewGroup)null);
-        this.mSpinner = (ProgressBar)inflate.findViewById(2131624370);
-        (this.mPinEditText = (EditText)inflate.findViewById(2131624367)).setOnEditorActionListener((TextView$OnEditorActionListener)new PinDialog$PinDialogOnDone(this, null));
+        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903197, (ViewGroup)null);
+        this.mSpinner = (ProgressBar)inflate.findViewById(2131624447);
+        (this.mPinEditText = (EditText)inflate.findViewById(2131624444)).setOnEditorActionListener((TextView$OnEditorActionListener)new PinDialog$PinDialogOnDone(this, null));
         this.mPinEditText.setOnKeyListener((View$OnKeyListener)new PinDialog$PinDialogOnKeyPress(this, null));
-        this.mPinMessage = (TextView)inflate.findViewById(2131624366);
-        (this.mPinForgotView = (TextView)inflate.findViewById(2131624369)).setMovementMethod((MovementMethod)new PinDialog$1(this));
+        this.mPinMessage = (TextView)inflate.findViewById(2131624443);
+        (this.mPinForgotView = (TextView)inflate.findViewById(2131624446)).setMovementMethod((MovementMethod)new PinDialog$1(this));
         this.mPinForgotView.setFocusable(false);
-        this.mErrorIcon = (ImageView)inflate.findViewById(2131624368);
+        this.mErrorIcon = (ImageView)inflate.findViewById(2131624445);
         int mDialogWidthInDp;
         if (DeviceUtils.isTabletByContext((Context)this.getActivity())) {
             mDialogWidthInDp = 400;
@@ -265,7 +260,7 @@ public class PinDialog extends NetflixDialogFrag
         alertDialog$Builder.setView(inflate);
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);
-        create.setButton(-2, (CharSequence)this.getString(2131165430), (DialogInterface$OnClickListener)new PinDialog$PinDialogOnCancel(this, null));
+        create.setButton(-2, (CharSequence)this.getString(2131165445), (DialogInterface$OnClickListener)new PinDialog$PinDialogOnCancel(this, null));
         this.mActive = true;
         return (Dialog)create;
     }
@@ -307,7 +302,7 @@ public class PinDialog extends NetflixDialogFrag
     }
     
     public void retryOnPinFailure() {
-        this.mPinMessage.setText(2131165575);
+        this.mPinMessage.setText(2131165595);
         this.mPinEditText.getText().clear();
         this.showErrorIcon(true);
         this.showSoftKeyboard(this.getServiceManager(), this.mPinEditText);

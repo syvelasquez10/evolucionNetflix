@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.falkor;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
+import java.util.Map;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -26,10 +27,14 @@ import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
 import com.netflix.mediaclient.android.app.Status;
@@ -57,6 +62,15 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
             return;
         }
         netflixServiceCallback.onBBVideosFetched(this.requestId, list, status);
+    }
+    
+    @Override
+    public void onBrowsePlaySessionEnd(final boolean b, final Status status) {
+        if (Log.isLoggable()) {
+            final String string = "SPY-8604 - No client callback found for onBrowsePlaySessionEnd: " + status;
+            Log.w("FalkorAccess", string);
+            ErrorLoggingManager.logHandledException(string);
+        }
     }
     
     @Override
@@ -90,6 +104,16 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
     }
     
     @Override
+    public void onExpiringContentWarning(final IExpiringContentWarning expiringContentWarning, final Status status, final ExpiringContentAction expiringContentAction) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("FalkorAccess", "No client callback found for onExpiringContentWarning");
+            return;
+        }
+        netflixServiceCallback.expiringContent(this.requestId, expiringContentWarning, status, expiringContentAction);
+    }
+    
+    @Override
     public void onGenreListsFetched(final List<GenreList> list, final Status status) {
         final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
         if (netflixServiceCallback == null) {
@@ -117,6 +141,16 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
             return;
         }
         netflixServiceCallback.onGenresFetched(this.requestId, list, status);
+    }
+    
+    @Override
+    public void onInteractiveMomentsFetched(final InteractiveMoments interactiveMoments, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("FalkorAccess", "No client callback found for onInteractiveVideoMomentsFetched");
+            return;
+        }
+        netflixServiceCallback.onInteractiveMomentsFetched(this.requestId, interactiveMoments, status);
     }
     
     @Override
@@ -214,6 +248,16 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
             return;
         }
         netflixServiceCallback.onQueueRemove(this.requestId, status);
+    }
+    
+    @Override
+    public void onScenePositionFetched(final int n, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("FalkorAccess", "No client callback found for onScenePositionFetched");
+            return;
+        }
+        netflixServiceCallback.onScenePositionFetched(this.requestId, n, status);
     }
     
     @Override

@@ -33,15 +33,15 @@ public class KubrickGalleryViewGroup extends RecyclerView
     
     public KubrickGalleryViewGroup(final Context context, final int n) {
         super(context);
-        this.setId(2131623957);
+        this.setId(2131623958);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         final KubrickGalleryViewGroup$1 layoutManager = new KubrickGalleryViewGroup$1(this, context, 2, 0, false);
         layoutManager.setSpanSizeLookup(new KubrickGalleryViewGroup$2(this));
         this.setLayoutManager(layoutManager);
         this.setAdapter(this.adapter = new KubrickGalleryViewGroup$GridAdapter(this, n));
         LoMoUtils.applyContentOverlapPadding((NetflixActivity)this.getContext(), (View)this, LoMoUtils$LoMoWidthType.STANDARD);
-        if (BrowseExperience.isKubrickKids()) {
-            ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelSize(2131296533));
+        if (BrowseExperience.showKidsExperience()) {
+            ViewUtils.setPaddingBottom((View)this, this.getResources().getDimensionPixelSize(2131296613));
         }
     }
     

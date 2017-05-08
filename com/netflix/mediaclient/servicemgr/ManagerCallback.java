@@ -17,9 +17,12 @@ import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
@@ -43,6 +46,8 @@ public interface ManagerCallback
     
     void onEpisodesFetched(final List<EpisodeDetails> p0, final Status p1);
     
+    void onExpiringContentWarning(final IExpiringContentWarning p0, final Status p1, final ExpiringContentAction p2);
+    
     void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> p0, final Status p1);
     
     void onGenreListsFetched(final List<GenreList> p0, final Status p1);
@@ -50,6 +55,8 @@ public interface ManagerCallback
     void onGenreLoLoMoPrefetched(final Status p0);
     
     void onGenresFetched(final List<Genre> p0, final Status p1);
+    
+    void onInteractiveMomentsFetched(final InteractiveMoments p0, final Status p1);
     
     void onKidsCharacterDetailsFetched(final KidsCharacterDetails p0, final Boolean p1, final Status p2);
     
@@ -75,9 +82,13 @@ public interface ManagerCallback
     
     void onQueueRemove(final Status p0);
     
+    void onResourceCached(final String p0, final String p1, final long p2, final long p3, final Status p4);
+    
     void onResourceFetched(final String p0, final String p1, final Status p2);
     
     void onResourceRawFetched(final String p0, final byte[] p1, final Status p2);
+    
+    void onScenePositionFetched(final int p0, final Status p1);
     
     void onSearchResultsFetched(final ISearchResults p0, final Status p1);
     

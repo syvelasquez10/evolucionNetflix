@@ -27,10 +27,10 @@ class MediaDecoder2Audio$1 extends Handler
         //     1: getfield        android/os/Message.what:I
         //     4: tableswitch {
         //                2: 49
-        //                3: 444
-        //                4: 362
-        //                5: 594
-        //                6: 618
+        //                3: 442
+        //                4: 360
+        //                5: 592
+        //                6: 616
         //          default: 40
         //        }
         //    40: ldc             "MediaDecoder2Audio"
@@ -75,7 +75,7 @@ class MediaDecoder2Audio$1 extends Handler
         //   117: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
         //   120: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBuffersQ:Ljava/util/LinkedList;
         //   123: invokevirtual   java/util/LinkedList.isEmpty:()Z
-        //   126: ifne            673
+        //   126: ifne            671
         //   129: aload_0        
         //   130: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
         //   133: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBuffersQ:Ljava/util/LinkedList;
@@ -98,12 +98,12 @@ class MediaDecoder2Audio$1 extends Handler
         //   167: aload           6
         //   169: monitorexit    
         //   170: aload_1        
-        //   171: ifnull          268
+        //   171: ifnull          228
         //   174: aload_1        
         //   175: getfield        android/media/MediaCodec$BufferInfo.flags:I
         //   178: iconst_4       
         //   179: iand           
-        //   180: ifeq            268
+        //   180: ifeq            228
         //   183: ldc             "MediaDecoder2Audio"
         //   185: ldc             "renderer got buffer BUFFER_FLAG_END_OF_STREAM"
         //   187: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
@@ -111,272 +111,272 @@ class MediaDecoder2Audio$1 extends Handler
         //   191: aload_0        
         //   192: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
         //   195: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
-        //   198: ifnull          214
+        //   198: ifnull          48
         //   201: aload_0        
         //   202: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
         //   205: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
         //   208: iconst_1       
         //   209: invokeinterface com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener.onEndOfStream:(Z)V
-        //   214: aload_0        
-        //   215: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   218: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-        //   221: astore_1       
-        //   222: aload_1        
-        //   223: monitorenter   
-        //   224: aload_0        
-        //   225: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   228: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-        //   231: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier.isPlaying:()Z
-        //   234: ifne            344
-        //   237: ldc             "MediaDecoder2Audio"
-        //   239: ldc             "render state is not play"
-        //   241: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   244: pop            
-        //   245: aload_1        
-        //   246: monitorexit    
-        //   247: return         
-        //   248: astore          5
-        //   250: aload_1        
-        //   251: monitorexit    
-        //   252: aload           5
-        //   254: athrow         
-        //   255: astore          5
-        //   257: aload_1        
-        //   258: monitorexit    
-        //   259: aload           5
-        //   261: athrow         
-        //   262: astore_1       
-        //   263: aload           6
-        //   265: monitorexit    
-        //   266: aload_1        
-        //   267: athrow         
-        //   268: aload_0        
-        //   269: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   272: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.startRenderer:()V
-        //   275: aload_0        
-        //   276: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   279: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$100:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)J
-        //   282: lstore_3       
-        //   283: iload_2        
-        //   284: iflt            299
-        //   287: aload_0        
-        //   288: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   291: iload_2        
-        //   292: aload_1        
-        //   293: aload           5
-        //   295: lload_3        
-        //   296: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$200:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;ILandroid/media/MediaCodec$BufferInfo;Ljava/nio/ByteBuffer;J)V
-        //   299: aload_0        
-        //   300: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   303: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBuffersQ:Ljava/util/LinkedList;
-        //   306: invokevirtual   java/util/LinkedList.isEmpty:()Z
-        //   309: ifeq            102
-        //   312: goto            214
-        //   315: astore_1       
-        //   316: ldc             "MediaDecoder2Audio"
-        //   318: new             Ljava/lang/StringBuilder;
-        //   321: dup            
-        //   322: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   325: ldc             "getAudioHeaderPosition() has Exception"
-        //   327: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   330: aload_1        
-        //   331: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
-        //   334: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   337: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   340: pop            
-        //   341: goto            214
-        //   344: aload_0        
-        //   345: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   348: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$300:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Landroid/os/Handler;
-        //   351: iconst_1       
-        //   352: ldc2_w          20
-        //   355: invokevirtual   android/os/Handler.sendEmptyMessageDelayed:(IJ)Z
-        //   358: pop            
-        //   359: goto            245
-        //   362: aload_0        
-        //   363: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   366: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
-        //   369: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.pause:()J
-        //   372: pop2           
-        //   373: aload_0        
-        //   374: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   377: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-        //   380: astore_1       
-        //   381: aload_1        
-        //   382: monitorenter   
-        //   383: aload_0        
-        //   384: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   387: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-        //   390: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier.onPaused:()V
-        //   393: aload_0        
-        //   394: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   397: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-        //   400: invokevirtual   java/lang/Object.notify:()V
-        //   403: aload_1        
-        //   404: monitorexit    
-        //   405: ldc             "MediaDecoder2Audio"
-        //   407: ldc             "render state pause"
-        //   409: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   412: pop            
-        //   413: aload_0        
-        //   414: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   417: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
-        //   420: ifnull          48
-        //   423: aload_0        
-        //   424: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   427: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
-        //   430: iconst_1       
-        //   431: invokeinterface com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener.onPasued:(Z)V
-        //   436: return         
-        //   437: astore          5
-        //   439: aload_1        
-        //   440: monitorexit    
-        //   441: aload           5
-        //   443: athrow         
-        //   444: ldc             "MediaDecoder2Audio"
-        //   446: ldc             "render state flushing"
-        //   448: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   451: pop            
-        //   452: aload_0        
-        //   453: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   456: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
-        //   459: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.flush:()V
-        //   462: aload_0        
-        //   463: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   466: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBuffersQ:Ljava/util/LinkedList;
-        //   469: astore_1       
-        //   470: aload_1        
-        //   471: monitorenter   
-        //   472: aload_0        
-        //   473: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   476: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBuffersQ:Ljava/util/LinkedList;
-        //   479: invokevirtual   java/util/LinkedList.clear:()V
-        //   482: aload_1        
-        //   483: monitorexit    
-        //   484: aload_0        
-        //   485: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   488: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$400:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Landroid/media/AudioTrack;
-        //   491: ifnull          523
-        //   494: aload_0        
-        //   495: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   498: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$400:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Landroid/media/AudioTrack;
-        //   501: invokevirtual   android/media/AudioTrack.stop:()V
-        //   504: aload_0        
-        //   505: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   508: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$400:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Landroid/media/AudioTrack;
-        //   511: invokevirtual   android/media/AudioTrack.release:()V
-        //   514: aload_0        
-        //   515: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   518: aconst_null    
-        //   519: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$402:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;Landroid/media/AudioTrack;)Landroid/media/AudioTrack;
-        //   522: pop            
-        //   523: aload_0        
-        //   524: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   527: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$500:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)V
-        //   530: aload_0        
-        //   531: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   534: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.startRenderer:()V
-        //   537: aload_0        
-        //   538: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   541: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-        //   544: astore_1       
-        //   545: aload_1        
-        //   546: monitorenter   
-        //   547: aload_0        
-        //   548: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   551: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-        //   554: invokevirtual   java/lang/Object.notify:()V
-        //   557: aload_1        
-        //   558: monitorexit    
-        //   559: ldc             "MediaDecoder2Audio"
-        //   561: ldc             "render state flushed"
-        //   563: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   566: pop            
-        //   567: return         
-        //   568: astore          5
-        //   570: aload_1        
-        //   571: monitorexit    
-        //   572: aload           5
-        //   574: athrow         
-        //   575: astore_1       
-        //   576: ldc             "MediaDecoder2Audio"
-        //   578: ldc             "mAudioTrack already stopped/uninitialized"
-        //   580: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   583: pop            
-        //   584: goto            504
-        //   587: astore          5
-        //   589: aload_1        
-        //   590: monitorexit    
-        //   591: aload           5
-        //   593: athrow         
-        //   594: aload_0        
-        //   595: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   598: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
-        //   601: ifnull          48
-        //   604: aload_0        
-        //   605: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   608: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
-        //   611: iconst_1       
-        //   612: invokeinterface com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener.onFlushed:(Z)V
-        //   617: return         
-        //   618: aload_0        
-        //   619: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   622: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$600:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)V
-        //   625: aload_0        
-        //   626: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   629: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-        //   632: astore_1       
-        //   633: aload_1        
-        //   634: monitorenter   
-        //   635: aload_0        
-        //   636: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   639: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-        //   642: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier.onStopped:()V
-        //   645: aload_0        
-        //   646: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
-        //   649: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
-        //   652: invokevirtual   java/lang/Object.notify:()V
-        //   655: aload_1        
-        //   656: monitorexit    
-        //   657: ldc             "MediaDecoder2Audio"
-        //   659: ldc             "render state stop"
-        //   661: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   664: pop            
-        //   665: return         
-        //   666: astore          5
-        //   668: aload_1        
-        //   669: monitorexit    
-        //   670: aload           5
-        //   672: athrow         
-        //   673: aconst_null    
-        //   674: astore          5
-        //   676: aconst_null    
-        //   677: astore_1       
-        //   678: goto            167
+        //   214: return         
+        //   215: astore          5
+        //   217: aload_1        
+        //   218: monitorexit    
+        //   219: aload           5
+        //   221: athrow         
+        //   222: astore_1       
+        //   223: aload           6
+        //   225: monitorexit    
+        //   226: aload_1        
+        //   227: athrow         
+        //   228: aload_0        
+        //   229: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   232: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.startRenderer:()V
+        //   235: aload_0        
+        //   236: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   239: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$100:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)J
+        //   242: lstore_3       
+        //   243: iload_2        
+        //   244: iflt            259
+        //   247: aload_0        
+        //   248: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   251: iload_2        
+        //   252: aload_1        
+        //   253: aload           5
+        //   255: lload_3        
+        //   256: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$200:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;ILandroid/media/MediaCodec$BufferInfo;Ljava/nio/ByteBuffer;J)V
+        //   259: aload_0        
+        //   260: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   263: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBuffersQ:Ljava/util/LinkedList;
+        //   266: invokevirtual   java/util/LinkedList.isEmpty:()Z
+        //   269: ifeq            102
+        //   272: aload_0        
+        //   273: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   276: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+        //   279: astore_1       
+        //   280: aload_1        
+        //   281: monitorenter   
+        //   282: aload_0        
+        //   283: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   286: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+        //   289: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier.isPlaying:()Z
+        //   292: ifne            342
+        //   295: ldc             "MediaDecoder2Audio"
+        //   297: ldc             "render state is not play"
+        //   299: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   302: pop            
+        //   303: aload_1        
+        //   304: monitorexit    
+        //   305: return         
+        //   306: astore          5
+        //   308: aload_1        
+        //   309: monitorexit    
+        //   310: aload           5
+        //   312: athrow         
+        //   313: astore_1       
+        //   314: ldc             "MediaDecoder2Audio"
+        //   316: new             Ljava/lang/StringBuilder;
+        //   319: dup            
+        //   320: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   323: ldc             "getAudioHeaderPosition() has Exception"
+        //   325: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   328: aload_1        
+        //   329: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   332: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   335: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   338: pop            
+        //   339: goto            272
+        //   342: aload_0        
+        //   343: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   346: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$300:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Landroid/os/Handler;
+        //   349: iconst_1       
+        //   350: ldc2_w          20
+        //   353: invokevirtual   android/os/Handler.sendEmptyMessageDelayed:(IJ)Z
+        //   356: pop            
+        //   357: goto            303
+        //   360: aload_0        
+        //   361: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   364: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
+        //   367: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.pause:()J
+        //   370: pop2           
+        //   371: aload_0        
+        //   372: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   375: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+        //   378: astore_1       
+        //   379: aload_1        
+        //   380: monitorenter   
+        //   381: aload_0        
+        //   382: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   385: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+        //   388: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier.onPaused:()V
+        //   391: aload_0        
+        //   392: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   395: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+        //   398: invokevirtual   java/lang/Object.notify:()V
+        //   401: aload_1        
+        //   402: monitorexit    
+        //   403: ldc             "MediaDecoder2Audio"
+        //   405: ldc             "render state pause"
+        //   407: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   410: pop            
+        //   411: aload_0        
+        //   412: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   415: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
+        //   418: ifnull          48
+        //   421: aload_0        
+        //   422: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   425: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
+        //   428: iconst_1       
+        //   429: invokeinterface com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener.onPasued:(Z)V
+        //   434: return         
+        //   435: astore          5
+        //   437: aload_1        
+        //   438: monitorexit    
+        //   439: aload           5
+        //   441: athrow         
+        //   442: ldc             "MediaDecoder2Audio"
+        //   444: ldc             "render state flushing"
+        //   446: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   449: pop            
+        //   450: aload_0        
+        //   451: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   454: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mClock:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock;
+        //   457: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$Clock.flush:()V
+        //   460: aload_0        
+        //   461: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   464: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBuffersQ:Ljava/util/LinkedList;
+        //   467: astore_1       
+        //   468: aload_1        
+        //   469: monitorenter   
+        //   470: aload_0        
+        //   471: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   474: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mOutputBuffersQ:Ljava/util/LinkedList;
+        //   477: invokevirtual   java/util/LinkedList.clear:()V
+        //   480: aload_1        
+        //   481: monitorexit    
+        //   482: aload_0        
+        //   483: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   486: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$400:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Landroid/media/AudioTrack;
+        //   489: ifnull          521
+        //   492: aload_0        
+        //   493: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   496: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$400:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Landroid/media/AudioTrack;
+        //   499: invokevirtual   android/media/AudioTrack.stop:()V
+        //   502: aload_0        
+        //   503: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   506: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$400:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Landroid/media/AudioTrack;
+        //   509: invokevirtual   android/media/AudioTrack.release:()V
+        //   512: aload_0        
+        //   513: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   516: aconst_null    
+        //   517: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$402:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;Landroid/media/AudioTrack;)Landroid/media/AudioTrack;
+        //   520: pop            
+        //   521: aload_0        
+        //   522: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   525: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$500:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)V
+        //   528: aload_0        
+        //   529: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   532: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.startRenderer:()V
+        //   535: aload_0        
+        //   536: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   539: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+        //   542: astore_1       
+        //   543: aload_1        
+        //   544: monitorenter   
+        //   545: aload_0        
+        //   546: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   549: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+        //   552: invokevirtual   java/lang/Object.notify:()V
+        //   555: aload_1        
+        //   556: monitorexit    
+        //   557: ldc             "MediaDecoder2Audio"
+        //   559: ldc             "render state flushed"
+        //   561: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   564: pop            
+        //   565: return         
+        //   566: astore          5
+        //   568: aload_1        
+        //   569: monitorexit    
+        //   570: aload           5
+        //   572: athrow         
+        //   573: astore_1       
+        //   574: ldc             "MediaDecoder2Audio"
+        //   576: ldc             "mAudioTrack already stopped/uninitialized"
+        //   578: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   581: pop            
+        //   582: goto            502
+        //   585: astore          5
+        //   587: aload_1        
+        //   588: monitorexit    
+        //   589: aload           5
+        //   591: athrow         
+        //   592: aload_0        
+        //   593: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   596: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
+        //   599: ifnull          48
+        //   602: aload_0        
+        //   603: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   606: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.mEventListener:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener;
+        //   609: iconst_1       
+        //   610: invokeinterface com/netflix/mediaclient/media/JPlayer/MediaDecoderBase$EventListener.onFlushed:(Z)V
+        //   615: return         
+        //   616: aload_0        
+        //   617: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   620: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$600:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)V
+        //   623: aload_0        
+        //   624: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   627: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+        //   630: astore_1       
+        //   631: aload_1        
+        //   632: monitorenter   
+        //   633: aload_0        
+        //   634: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   637: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+        //   640: invokevirtual   com/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier.onStopped:()V
+        //   643: aload_0        
+        //   644: getfield        com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio$1.this$0:Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;
+        //   647: invokestatic    com/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio.access$000:(Lcom/netflix/mediaclient/media/JPlayer/MediaDecoder2Audio;)Lcom/netflix/mediaclient/media/JPlayer/MediaDecoderPipe2$LocalStateNotifier;
+        //   650: invokevirtual   java/lang/Object.notify:()V
+        //   653: aload_1        
+        //   654: monitorexit    
+        //   655: ldc             "MediaDecoder2Audio"
+        //   657: ldc             "render state stop"
+        //   659: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   662: pop            
+        //   663: return         
+        //   664: astore          5
+        //   666: aload_1        
+        //   667: monitorexit    
+        //   668: aload           5
+        //   670: athrow         
+        //   671: aconst_null    
+        //   672: astore          5
+        //   674: aconst_null    
+        //   675: astore_1       
+        //   676: goto            167
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                             
         //  -----  -----  -----  -----  ---------------------------------
-        //  59     100    255    262    Any
-        //  100    102    255    262    Any
-        //  116    167    262    268    Any
-        //  167    170    262    268    Any
-        //  224    245    248    255    Any
-        //  245    247    248    255    Any
-        //  250    252    248    255    Any
-        //  257    259    255    262    Any
-        //  263    266    262    268    Any
-        //  275    283    315    344    Ljava/lang/Exception;
-        //  344    359    248    255    Any
-        //  383    405    437    444    Any
-        //  439    441    437    444    Any
-        //  472    484    568    575    Any
-        //  494    504    575    587    Ljava/lang/IllegalStateException;
-        //  547    559    587    594    Any
-        //  570    572    568    575    Any
-        //  589    591    587    594    Any
-        //  635    657    666    673    Any
-        //  668    670    666    673    Any
+        //  59     100    215    222    Any
+        //  100    102    215    222    Any
+        //  116    167    222    228    Any
+        //  167    170    222    228    Any
+        //  217    219    215    222    Any
+        //  223    226    222    228    Any
+        //  235    243    313    342    Ljava/lang/Exception;
+        //  282    303    306    313    Any
+        //  303    305    306    313    Any
+        //  308    310    306    313    Any
+        //  342    357    306    313    Any
+        //  381    403    435    442    Any
+        //  437    439    435    442    Any
+        //  470    482    566    573    Any
+        //  492    502    573    585    Ljava/lang/IllegalStateException;
+        //  545    557    585    592    Any
+        //  568    570    566    573    Any
+        //  587    589    585    592    Any
+        //  633    655    664    671    Any
+        //  666    668    664    671    Any
         // 
         // The error that occurred was:
         // 

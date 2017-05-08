@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
@@ -29,7 +30,6 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.details.SeasonsSpinner;
@@ -62,11 +62,12 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
     }
     
     private void fetchCharacterDetails() {
-        if (this.manager == null) {
+        if (this.getServiceManager() == null) {
             Log.w("KidsCharacterDetailsFrag", "Manager is null - can't get character details");
             return;
         }
-        this.manager.getBrowse().fetchKidsCharacterDetails(this.characterId, new KubrickKidsCharacterDetailsFrag$FetchCharacterDetailsCallback(this));
+        this.isLoading = true;
+        this.getServiceManager().getBrowse().fetchKidsCharacterDetails(this.characterId, new KubrickKidsCharacterDetailsFrag$FetchCharacterDetailsCallback(this));
     }
     
     private void renderAsSDP(final ShowDetails showDetails) {
@@ -80,7 +81,6 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
         if (this.heroSlideshow != null) {
             this.heroSlideshow.start();
         }
-        this.postSetSpinnerSelectionRunnable();
     }
     
     private DetailsPageParallaxScrollListener setupDetailsPageParallaxScrollListenerLocal() {
@@ -111,7 +111,7 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
             seasonsSpinnerAdapter.setItemBackgroundColor(this.kidsColor);
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131558596);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131558608);
             seasonsSpinnerAdapter.setDropDownTextColor(this.kidsColor);
         }
         return seasonsSelectorGroup;
@@ -119,12 +119,12 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296517) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296591) * 2;
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903115;
+        return 2130903136;
     }
     
     @Override
@@ -141,6 +141,11 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
     }
     
     @Override
+    public boolean isLoadingData() {
+        return this.isLoading;
+    }
+    
+    @Override
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.characterId = this.getArguments().getString("extra_chararcter_id");
@@ -154,15 +159,35 @@ public class KubrickKidsCharacterDetailsFrag extends KubrickKidsShowDetailsFrag
         this.fetchCharacterDetails();
     }
     
+    @Override
+    public void reload() {
+        if (this.shouldRenderAsSDP) {
+            this.fetchShowDetailsAndSeasons();
+        }
+    }
+    
     protected void renderAsMDP(final VideoDetails videoDetails) {
         this.episodesAdapter.setItems(this.kidsCharacterDetails.getGallery());
-        ((KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup)this.detailsViewGroup).updateCharacterDetails(this.kidsCharacterDetails);
         this.detailsViewGroup.updateDetails(videoDetails, new KubrickKidsCharacterDetailsFrag$StringProvider((Context)this.getActivity(), videoDetails));
+        ((KubrickKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup)this.detailsViewGroup).updateCharacterDetails(this.kidsCharacterDetails);
         if (this.heroSlideshow != null) {
             this.heroSlideshow.start();
         }
         this.showViews();
         this.leWrapper.hide(false);
+    }
+    
+    @Override
+    protected void setSpinnerSelection() {
+        this.setSeasonIndex();
+        if (this.currSeasonIndex < 0) {
+            Log.v("KidsCharacterDetailsFrag", "No valid season index found");
+            return;
+        }
+        if (Log.isLoggable()) {
+            Log.v("KidsCharacterDetailsFrag", "Setting current season to: " + this.currSeasonIndex);
+        }
+        this.spinner.setNonTouchSelection(this.currSeasonIndex);
     }
     
     @Override

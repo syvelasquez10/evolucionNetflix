@@ -21,6 +21,7 @@ public class CommandEndedEvent extends BaseUIViewSessionEndedEvent
     public static final String KEY_NAME = "name";
     public static final String UIVIEW_SESSION_NAME = "command";
     private UIViewLogging$UIViewCommandName mCommandName;
+    private CommandEndedEvent$InputMethod mInputMethod;
     private CommandEndedEvent$InputValue mInputValue;
     private JSONObject mModel;
     private String mUrl;
@@ -43,17 +44,19 @@ public class CommandEndedEvent extends BaseUIViewSessionEndedEvent
         }
         if (this.mCommandName != null) {
             data.put("name", (Object)this.mCommandName.name());
-            if (this.mInputValue != null) {
-                data.put("inputMethod", (Object)CommandEndedEvent$InputMethod.gesture.name());
-                data.put("inputValue", (Object)this.mInputValue);
-            }
-            else if (StringUtils.isNotEmpty(this.mUrl)) {
+            if (StringUtils.isNotEmpty(this.mUrl)) {
                 data.put("inputMethod", (Object)CommandEndedEvent$InputMethod.url.name());
                 data.put("inputValue", (Object)this.mUrl);
             }
             else {
-                data.put("inputMethod", (Object)CommandEndedEvent$InputMethod.gesture.name());
-                data.put("inputValue", (Object)CommandEndedEvent$InputValue.touch.name());
+                if (this.mInputMethod == null) {
+                    this.mInputMethod = CommandEndedEvent$InputMethod.gesture;
+                }
+                data.put("inputMethod", (Object)this.mInputMethod.name());
+                if (this.mInputValue == null) {
+                    this.mInputValue = CommandEndedEvent$InputValue.touch;
+                }
+                data.put("inputValue", (Object)this.mInputValue.name());
             }
             data.put("isHotKey", (Object)"false");
             data.put("confidence", (Object)CommandEndedEvent.DEF_VALUE_CONFIDENCE);
@@ -62,6 +65,10 @@ public class CommandEndedEvent extends BaseUIViewSessionEndedEvent
             }
         }
         return data;
+    }
+    
+    public void setInputMethod(final CommandEndedEvent$InputMethod mInputMethod) {
+        this.mInputMethod = mInputMethod;
     }
     
     public void setInputValue(final CommandEndedEvent$InputValue mInputValue) {

@@ -26,6 +26,6 @@ class FalkorAgent$4 extends SimpleBrowseAgentCallback
             }
             return;
         }
-        this.this$0.fetchEpisodeDetails(showDetails.getCurrentEpisodeId(), new FalkorAgent$4$1(this, showDetails.getCurrentEpisodeNumber()));
+        this.this$0.fetchEpisodeDetails(showDetails.getCurrentEpisodeId(), null, new FalkorAgent$4$1(this, showDetails.getCurrentEpisodeNumber()));
     }
 }

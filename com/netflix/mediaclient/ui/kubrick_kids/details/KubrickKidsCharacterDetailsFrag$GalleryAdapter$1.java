@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
@@ -26,7 +27,6 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.details.VideoDetailsViewGroup;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.details.SeasonsSpinner;
@@ -52,7 +52,7 @@ class KubrickKidsCharacterDetailsFrag$GalleryAdapter$1 implements RecyclerViewHe
     }
     
     private int getImageHeight() {
-        return (int)((KidsUtils.getDetailsPageContentWidth((Context)this.val$this$0.getActivity()) - this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131296503) * (this.val$this$0.numColumns + 1.0f)) / this.val$this$0.numColumns * 0.5625f);
+        return (int)((KidsUtils.getDetailsPageContentWidth((Context)this.val$this$0.getActivity()) - this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131296577) * (this.val$this$0.numColumns + 1.0f)) / this.val$this$0.numColumns * 0.5625f);
     }
     
     @Override

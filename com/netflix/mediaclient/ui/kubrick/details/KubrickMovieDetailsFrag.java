@@ -107,12 +107,12 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag implements IHandle
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131624208);
-        this.fragBackground = view.findViewById(2131624221);
+        this.rootContainer = view.findViewById(2131624285);
+        this.fragBackground = view.findViewById(2131624299);
     }
     
     protected int getRecyclerViewShadowWidth() {
-        return KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296517) * 2;
+        return KubrickUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131296591) * 2;
     }
     
     @Override
@@ -152,6 +152,7 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag implements IHandle
         return onCreateView;
     }
     
+    @Override
     public void onSaveInstanceState(final Bundle bundle) {
         super.onSaveInstanceState(bundle);
         if (this.getActivity().isChangingConfigurations()) {
@@ -179,14 +180,14 @@ public class KubrickMovieDetailsFrag extends MovieDetailsFrag implements IHandle
     protected void setupRecyclerViewAdapter() {
         (this.adapter = new KubrickMovieDetailsFrag$KubrickSimilarItemsGridViewAdapter(this, true, this.numColumns)).addHeaderView((View)this.detailsViewGroup);
         final View view = new View((Context)this.getActivity());
-        view.setLayoutParams(new ViewGroup$LayoutParams(-2, this.getResources().getDimensionPixelOffset(2131296503) / 2));
+        view.setLayoutParams(new ViewGroup$LayoutParams(-2, this.getResources().getDimensionPixelOffset(2131296577) / 2));
         this.adapter.addFooterView(view);
         this.recyclerView.setAdapter(this.adapter);
     }
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296503), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131296577), this.numColumns));
     }
     
     @Override

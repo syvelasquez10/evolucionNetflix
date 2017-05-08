@@ -34,4 +34,8 @@ public enum LoMoType
         }
         return LoMoType.STANDARD;
     }
+    
+    public static boolean isRegularLomoForPreApp(final LoMoType loMoType) {
+        return LoMoType.STANDARD.equals(loMoType) || LoMoType.FLAT_GENRE.equals(loMoType) || LoMoType.POPULAR_TITLES.equals(loMoType) || LoMoType.TOP_TEN.equals(loMoType);
+    }
 }

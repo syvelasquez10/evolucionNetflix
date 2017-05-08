@@ -15,6 +15,7 @@ import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
+import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.servicemgr.IDiagnosis;
 import com.netflix.mediaclient.util.DeviceCategory;
@@ -64,7 +65,6 @@ import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
-import com.netflix.mediaclient.ui.player.PlayerActivity;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.Asset;
@@ -91,7 +91,7 @@ class NetflixService$5 extends BroadcastReceiver
         if (playable != null) {
             create = asset;
             if (StringUtils.isNotEmpty(playable.getPlayableId())) {
-                create = Asset.create(playable, PlayContext.EMPTY_CONTEXT, PlayerActivity.PIN_VERIFIED);
+                create = Asset.create(playable, PlayContext.EMPTY_CONTEXT, true);
             }
         }
         return create;

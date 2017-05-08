@@ -92,6 +92,10 @@ public class NativeTransport implements Transport
         native_enable_crash_handler();
     }
     
+    public static void enableDolbyDigitalPlus20() {
+        native_enableDolbyDigitalPlus20();
+    }
+    
     public static void enableDolbyDigitalPlus51() {
         native_enableDolbyDigitalPlus51();
     }
@@ -139,6 +143,8 @@ public class NativeTransport implements Transport
     }
     
     private synchronized native void native_connect(final String p0, final int p1, final String p2, final int p3);
+    
+    private static final synchronized native void native_enableDolbyDigitalPlus20();
     
     private static final synchronized native void native_enableDolbyDigitalPlus51();
     
@@ -356,19 +362,18 @@ public class NativeTransport implements Transport
             string = "nrdp";
             try {
                 // iftrue(Label_0090:, !string.startsWith("nrdp"))
-            Block_4_Outer:
                 while (true) {
-                    this.native_setProperty(string, s, s2);
-                    return;
                     while (true) {
+                        this.native_setProperty(string, s, s2);
+                        return;
                         Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                        continue Block_4_Outer;
+                        continue;
+                        Label_0090: {
+                            string = "nrdp." + string;
+                        }
                         continue;
                     }
-                    Label_0090: {
-                        string = "nrdp." + string;
-                    }
-                    continue Block_4_Outer;
+                    continue;
                 }
             }
             catch (Throwable t) {

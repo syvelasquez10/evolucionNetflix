@@ -72,6 +72,13 @@ public class JPlayer2$DecoderListener implements MediaDecoderBase$EventListener
     }
     
     @Override
+    public void onError(final boolean b, final int n, final String s) {
+        synchronized (this) {
+            this.this$0.nativeNotifyError(n, s);
+        }
+    }
+    
+    @Override
     public void onFlushed(final boolean b) {
         // monitorenter(this)
         Label_0024: {

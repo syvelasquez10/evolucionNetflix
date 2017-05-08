@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.util.NetflixPreference;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -34,12 +35,12 @@ public class ImagePrefRepository
         return this.mImagePref;
     }
     
-    public void update(final Context context, final String s) {
+    public void update(final NetflixPreference netflixPreference, final String s) {
         Log.d("nf_service_configuration_imagepref", String.format("override device image pref to %s", s));
         if (s != null) {
-            PreferenceUtils.putStringPref(context, "image_pref", s);
+            netflixPreference.putStringPref("image_pref", s);
             return;
         }
-        clearRecords(context);
+        netflixPreference.removePref("image_pref");
     }
 }

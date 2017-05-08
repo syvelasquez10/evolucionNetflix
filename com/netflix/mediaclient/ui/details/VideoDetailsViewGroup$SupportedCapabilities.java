@@ -6,7 +6,9 @@ package com.netflix.mediaclient.ui.details;
 
 enum VideoDetailsViewGroup$SupportedCapabilities
 {
+    DOLBY_VISION, 
     HD, 
+    HDR10, 
     UHD, 
     _3D, 
     _5dot1;

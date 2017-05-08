@@ -18,14 +18,14 @@ public class AccountConfigData
 {
     private static final KubrickConfigData DEFAULT_KUBRICK_CONFIG;
     private static final String TAG = "nf_config";
-    @SerializedName("kubrickKidsTabletConfig")
-    private ABTestConfigData abTestConfig_6538;
+    @SerializedName("expiringContentConfig")
+    private ABTestConfig abTestConfig_6634;
     @SerializedName("titleArtTabletConfig")
-    private ABTestConfigData abTestConfig_6725;
+    private ABTestConfig abTestConfig_6725;
     @SerializedName("castWhitelistTargets")
     private final String castWhitelist;
-    @SerializedName("bandwidthSaving")
-    private DataSaveConfigData dataSaveConfigData;
+    @SerializedName("dataSaveConfig")
+    private DataSaveConfigData dataSaveConfig;
     @SerializedName("disableMcQueenV2")
     private boolean disableMcQueenV2;
     @SerializedName("disableSuspendPlay")
@@ -38,8 +38,6 @@ public class AccountConfigData
     private boolean enableLowBitrateStreams;
     @SerializedName("enableWidevineL3ABTest")
     private boolean enableWidevineL3ABTest;
-    @SerializedName("forceBwSettingsInWifi")
-    public boolean forceBwSettingsInWifi;
     @SerializedName("JPlayerConfig")
     private String jPlayerConfig;
     @SerializedName("kubrickConfig")
@@ -56,6 +54,8 @@ public class AccountConfigData
     private String preAppPartnerExperience;
     @SerializedName("preAppWidgetExperience")
     private String preAppWidgetExperience;
+    @SerializedName("previewContent")
+    public PreviewContentConfigData previewContent;
     @SerializedName("videoBufferSize")
     private final int videoBufferSize;
     @SerializedName("voipEnabledOnAccount")
@@ -74,6 +74,7 @@ public class AccountConfigData
         this.mMdxBlacklistTargetsJSONArray = null;
         this.kubrickConfig = AccountConfigData.DEFAULT_KUBRICK_CONFIG;
         this.mJPlayerConfigJSON = null;
+        this.previewContent = PreviewContentConfigData.getDefault();
     }
     
     public static AccountConfigData fromJsonString(final String s) {
@@ -110,16 +111,16 @@ public class AccountConfigData
         return this.enableWidevineL3ABTest;
     }
     
-    public ABTestConfigData getABTestConfiguration_6538() {
-        return this.abTestConfig_6538;
+    public ABTestConfig getABTestConfiguration_6634() {
+        return this.abTestConfig_6634;
     }
     
-    public ABTestConfigData getABTestConfiguration_6725() {
+    public ABTestConfig getABTestConfiguration_6725() {
         return this.abTestConfig_6725;
     }
     
     public DataSaveConfigData getBWSaveConfigData() {
-        return this.dataSaveConfigData;
+        return this.dataSaveConfig;
     }
     
     public String getCastBlacklist() {
@@ -213,6 +214,10 @@ public class AccountConfigData
     
     public String getPreAppWidgetExperience() {
         return this.preAppWidgetExperience;
+    }
+    
+    public PreviewContentConfigData getPreviewContentConfigData() {
+        return this.previewContent;
     }
     
     public int getVideoBufferSize() {

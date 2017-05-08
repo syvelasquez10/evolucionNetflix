@@ -21,7 +21,7 @@ public final class SubtitleManagerFactory
         if (media$SubtitleProfile == null) {
             throw new IllegalArgumentException("Subtitle profile can not be null!");
         }
-        if (IMedia$SubtitleProfile.IMAGE.equals(media$SubtitleProfile)) {
+        if (IMedia$SubtitleProfile.IMAGE.equals(media$SubtitleProfile) || IMedia$SubtitleProfile.IMAGE_ENC.equals(media$SubtitleProfile)) {
             return new ImageBasedSubtitleManager(playerFragment);
         }
         return new EnhancedSubtitleManager(playerFragment);
@@ -31,10 +31,10 @@ public final class SubtitleManagerFactory
         String string = "";
         final NetflixActivity context = subtitleManager.getContext();
         if (subtitleManager instanceof EnhancedSubtitleManager) {
-            string = ((Context)context).getString(2131165764);
+            string = ((Context)context).getString(2131165807);
         }
         else if (subtitleManager instanceof ImageBasedSubtitleManager) {
-            return ((Context)context).getString(2131165763);
+            return ((Context)context).getString(2131165806);
         }
         return string;
     }

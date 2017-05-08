@@ -17,8 +17,11 @@ import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
+import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.android.app.Status;
@@ -29,17 +32,23 @@ public interface BrowseAgentCallback
 {
     void onBBVideosFetched(final List<Billboard> p0, final Status p1);
     
+    void onBrowsePlaySessionEnd(final boolean p0, final Status p1);
+    
     void onCWVideosFetched(final List<CWVideo> p0, final Status p1);
     
     void onEpisodeDetailsFetched(final EpisodeDetails p0, final Status p1);
     
     void onEpisodesFetched(final List<EpisodeDetails> p0, final Status p1);
     
+    void onExpiringContentWarning(final IExpiringContentWarning p0, final Status p1, final ExpiringContentAction p2);
+    
     void onGenreListsFetched(final List<GenreList> p0, final Status p1);
     
     void onGenreLoLoMoPrefetched(final Status p0);
     
     void onGenresFetched(final List<Genre> p0, final Status p1);
+    
+    void onInteractiveMomentsFetched(final InteractiveMoments p0, final Status p1);
     
     void onIrisNotificationsMarkedAsRead(final Status p0);
     
@@ -60,6 +69,8 @@ public interface BrowseAgentCallback
     void onQueueAdd(final Status p0);
     
     void onQueueRemove(final Status p0);
+    
+    void onScenePositionFetched(final int p0, final Status p1);
     
     void onSearchResultsFetched(final ISearchResults p0, final Status p1);
     

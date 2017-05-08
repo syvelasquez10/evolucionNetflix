@@ -19,6 +19,7 @@ public class User implements com.netflix.mediaclient.servicemgr.interface_.user.
     private static final String FIELD_LAST_NAME = "lastName";
     private static final String FIELD_USER_TOKEN = "userId";
     private static final String TAG = "User";
+    public EogAlert eogAlert;
     public SubtitlePreference subtitleDefaults;
     public User$Summary summary;
     

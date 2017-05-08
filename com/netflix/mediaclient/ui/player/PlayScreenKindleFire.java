@@ -15,12 +15,17 @@ public class PlayScreenKindleFire extends PlayScreen
     
     @Override
     void hideNavigationBar() {
-        this.mController.getWindow().addFlags(-2147482624);
+        if (!this.mController.isInPortrait()) {
+            this.mController.getWindow().addFlags(-2147482624);
+        }
     }
     
     @Override
     protected void playerOverlayVisibility(final boolean b) {
         super.playerOverlayVisibility(b);
+        if (this.mController.isInPortrait()) {
+            return;
+        }
         if (b) {
             this.showNavigationBar();
             return;

@@ -8,9 +8,11 @@ import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.util.LanguageChoice;
-import com.netflix.mediaclient.ui.common.PlaybackLauncher;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
@@ -19,20 +21,25 @@ import java.util.List;
 import java.io.Serializable;
 import android.media.AudioManager;
 import android.widget.Toast;
+import com.netflix.mediaclient.media.Watermark;
 import android.view.MenuItem;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
-import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.Surface;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
-import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
+import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
 import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.util.MdxUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
 import com.netflix.mediaclient.service.net.LogMobileType;
 import android.view.Window;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
 import android.util.Pair;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifier;
@@ -42,6 +49,7 @@ import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
@@ -59,12 +67,9 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
@@ -72,28 +77,31 @@ import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
+import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.media.PlayerType;
-import android.content.Context;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
 import android.view.View;
 import android.view.KeyEvent;
+import com.netflix.mediaclient.ui.common.PlayLocationType;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.netflix.mediaclient.util.CoppolaUtils;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.event.nrdp.media.Error;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
 import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
 import android.view.SurfaceHolder$Callback;
 import com.netflix.mediaclient.media.JPlayer.SecondSurface;
 import com.netflix.mediaclient.service.player.subtitles.SafeSubtitleManager;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.ViewGroup;
 import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
@@ -105,6 +113,7 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.media.Language;
 import android.view.View$OnClickListener;
 import android.widget.SeekBar$OnSeekBarChangeListener;
+import com.netflix.mediaclient.ui.details.DetailsActivity$Reloader;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
@@ -112,9 +121,12 @@ import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import android.media.AudioManager$OnAudioFocusChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.os.Parcelable;
 import android.os.Bundle;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import android.content.Context;
+import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -131,33 +143,60 @@ class PlayerFragment$19 implements AbsEpisodeView$EpisodeRowListener
     
     @Override
     public void onEpisodeSelectedForPlayback(final EpisodeDetails episodeDetails, final PlayContext playContext) {
-        boolean b = false;
-        if (!this.this$0.isActivityValid()) {
-            return;
+        if (this.this$0.isActivityValid()) {
+            if (Log.isLoggable()) {
+                Log.d("PlayerFragment", "Start playback from episode selector " + episodeDetails);
+            }
+            if (this.this$0.isCoppolaWithOldPlayer()) {
+                this.this$0.mAsset = Asset.create(episodeDetails.getPlayable(), playContext, false);
+                this.this$0.launchPlayback();
+            }
+            if (this.this$0.isCoppolaPlayback() && !this.this$0.handleConnectivityCheck()) {
+                Log.w("PlayerFragment", "Playback is disabled for current network");
+                return;
+            }
+            this.this$0.removeDialogFragmentIfShown();
+            if (PersistentConfig.getCoppola1ABTestCell((Context)this.this$0.getActivity()).ordinal() != ABTestConfig$Cell.CELL_THREE.ordinal() && this.this$0.mAsset != null && this.this$0.mAsset.getPlayableId() != null && this.this$0.mAsset.getPlayableId().equals(episodeDetails.getPlayable().getPlayableId())) {
+                Log.d("PlayerFragment", "Request to play same episode, do nothing");
+                this.this$0.startScreenUpdateTask();
+                this.this$0.doUnpause();
+                return;
+            }
+            if (this.this$0.mScreen == null) {
+                Log.w("PlayerFragment", "SPY-8951 - mScreen is null inside onEpisodeSelectedForPlayback. Ignoring playback.");
+                ErrorLoggingManager.logHandledException("SPY-8951 - mScreen is null inside onEpisodeSelectedForPlayback. Ignoring playback.");
+                return;
+            }
+            if (!this.this$0.isCoppolaPlayback() || this.this$0.mState.videoLoaded) {
+                if (PersistentConfig.getCoppola1ABTestCell((Context)this.this$0.getActivity()).ordinal() != ABTestConfig$Cell.CELL_THREE.ordinal()) {
+                    this.this$0.allowCoppolaAutoplay = true;
+                }
+                this.this$0.doUnpause();
+                this.this$0.resetCurrentPlayback();
+                this.this$0.notifyOthersOfPlayStop();
+                this.this$0.mScreen.changeActionState(false);
+                this.this$0.mScreen.setSeekbarTrackingEnabled(false);
+                this.this$0.setCoppolaSeekbarEnabled(false);
+                this.this$0.mAsset = Asset.create(episodeDetails.getPlayable(), playContext, false);
+                this.this$0.mExternalBundle = new Bundle();
+                this.this$0.mExternalBundle.putParcelable("AssetExtra", (Parcelable)this.this$0.mAsset);
+                this.this$0.continueInitAfterPlayVerify();
+                final PostPlay postPlay = this.this$0.mScreen.getPostPlay();
+                if (postPlay.isInPostPlay()) {
+                    postPlay.postPlayDismissed();
+                }
+                postPlay.reset();
+                postPlay.hide();
+                return;
+            }
+            this.this$0.notifyOthersOfPlayStop();
+            this.this$0.mAsset = Asset.create(episodeDetails.getPlayable(), playContext, false);
+            this.this$0.launchPlayback();
+            this.this$0.mScreen.getPostPlay().reset();
+            this.this$0.mScreen.getPostPlay().hide();
+            if (this.this$0.mPlaybackStateListener != null) {
+                this.this$0.mPlaybackStateListener.onPlaybackRestarting();
+            }
         }
-        if (Log.isLoggable()) {
-            Log.d("PlayerFragment", "Start playback from episode selector " + episodeDetails);
-        }
-        this.this$0.removeDialogFragmentIfShown();
-        if (this.this$0.mAsset != null && this.this$0.mAsset.getPlayableId() != null && this.this$0.mAsset.getPlayableId().equals(episodeDetails.getPlayable().getPlayableId())) {
-            Log.d("PlayerFragment", "Request to play same episode, do nothing");
-            this.this$0.startScreenUpdateTask();
-            this.this$0.doUnpause();
-            return;
-        }
-        this.this$0.doUnpause();
-        this.this$0.resetCurrentPlayback();
-        this.this$0.notifyOthersOfPlayStop();
-        this.this$0.mScreen.changeActionState(false);
-        this.this$0.mScreen.getBottomPanel().setSeekbarTrackingEnabled(false);
-        final PlayerFragment this$0 = this.this$0;
-        final Playable playable = episodeDetails.getPlayable();
-        if (!PlayerActivity.PIN_VERIFIED) {
-            b = true;
-        }
-        this$0.mAsset = Asset.create(playable, playContext, b);
-        this.this$0.mExternalBundle = new Bundle();
-        this.this$0.mExternalBundle.putParcelable("AssetExtra", (Parcelable)this.this$0.mAsset);
-        this.this$0.continueInitAfterPlayVerify();
     }
 }

@@ -208,6 +208,10 @@ public class RequestQueue
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
+    public Cache getCache() {
+        return this.mCache;
+    }
+    
     public int getSequenceNumber() {
         return this.mSequenceGenerator.incrementAndGet();
     }

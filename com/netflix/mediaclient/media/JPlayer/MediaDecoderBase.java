@@ -6,6 +6,8 @@ package com.netflix.mediaclient.media.JPlayer;
 
 public abstract class MediaDecoderBase
 {
+    protected static final int AUDIO_DECODER_INPUT_ERROR = 1;
+    protected static final int AUDIO_DECODER_OUPUT_ERROR = 3;
     static final int BUFFER_FLAG_CSD = 2;
     static final int BUFFER_FLAG_EOS = 4;
     static final int BUFFER_FLAG_SYNC = 1;
@@ -16,6 +18,8 @@ public abstract class MediaDecoderBase
     static final int STATE_PAUSED = 2;
     static final int STATE_PLAYING = 1;
     static final int STATE_STOPPED = 0;
+    protected static final int VIDEO_DECODER_INPUT_ERROR = 2;
+    protected static final int VIDEO_DECODER_OUPUT_ERROR = 4;
     protected boolean mAudioUseGetTimestampAPI;
     protected MediaDecoderBase$Clock mClock;
     protected MediaDecoderBase$EventListener mEventListener;

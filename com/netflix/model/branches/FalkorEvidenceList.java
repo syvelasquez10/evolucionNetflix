@@ -39,7 +39,9 @@ public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorO
     public Object get(final String s) {
         switch (s) {
             default: {
-                Log.d("FalkorEvidenceList", "FalkorEvidenceLists:get: key:" + s);
+                if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                    Log.d("FalkorEvidenceList", "FalkorEvidenceLists:get: key:" + s);
+                }
                 return super.get(s);
             }
             case "summary": {
@@ -114,7 +116,9 @@ public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorO
         }
         switch (s) {
             default: {
-                Log.d("FalkorEvidenceList", "FalkorEvidenceLists:getOrCreate: key:" + s);
+                if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                    Log.d("FalkorEvidenceList", "FalkorEvidenceLists:getOrCreate: key:" + s);
+                }
                 return super.getOrCreate(s);
             }
             case "summary": {
@@ -175,7 +179,9 @@ public class FalkorEvidenceList<T> extends BranchMap<T> implements LoMo, FalkorO
     public void set(final String s, final Object o) {
         switch (s) {
             default: {
-                Log.d("FalkorEvidenceList", String.format("FalkorEvidenceList:set key: %s, value: %s", s, o));
+                if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                    Log.d("FalkorEvidenceList", String.format("FalkorEvidenceList:set key: %s, value: %s", s, o));
+                }
                 super.set(s, o);
             }
             case "summary": {

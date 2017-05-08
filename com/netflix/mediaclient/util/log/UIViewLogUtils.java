@@ -9,6 +9,7 @@ import com.netflix.mediaclient.service.logging.client.model.Error;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.logging.uiview.model.CommandEndedEvent$InputMethod;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
@@ -72,6 +73,11 @@ public final class UIViewLogUtils extends ConsolidatedLoggingUtils
         reportUIViewCommandEnded(context);
     }
     
+    public static void reportUIViewCommand(final Context context, final UIViewLogging$UIViewCommandName uiViewLogging$UIViewCommandName, final IClientLogging$ModalView clientLogging$ModalView, final CommandEndedEvent$InputMethod commandEndedEvent$InputMethod, final DataContext dataContext) {
+        reportUIViewCommandStarted(context, uiViewLogging$UIViewCommandName, clientLogging$ModalView, commandEndedEvent$InputMethod, dataContext, null, null);
+        reportUIViewCommandEnded(context);
+    }
+    
     public static void reportUIViewCommandEnded(final Context context) {
         if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
             return;
@@ -85,7 +91,11 @@ public final class UIViewLogUtils extends ConsolidatedLoggingUtils
         reportUIViewCommandStarted(context, uiViewLogging$UIViewCommandName, clientLogging$ModalView, dataContext, s, null);
     }
     
-    public static void reportUIViewCommandStarted(final Context context, UIViewLogging$UIViewCommandName string, final IClientLogging$ModalView clientLogging$ModalView, final DataContext dataContext, final String s, final JSONObject jsonObject) {
+    public static void reportUIViewCommandStarted(final Context context, final UIViewLogging$UIViewCommandName uiViewLogging$UIViewCommandName, final IClientLogging$ModalView clientLogging$ModalView, final DataContext dataContext, final String s, final JSONObject jsonObject) {
+        reportUIViewCommandStarted(context, uiViewLogging$UIViewCommandName, clientLogging$ModalView, null, dataContext, s, jsonObject);
+    }
+    
+    public static void reportUIViewCommandStarted(final Context context, UIViewLogging$UIViewCommandName string, final IClientLogging$ModalView clientLogging$ModalView, final CommandEndedEvent$InputMethod commandEndedEvent$InputMethod, final DataContext dataContext, final String s, final JSONObject jsonObject) {
         if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
             return;
         }
@@ -94,12 +104,15 @@ public final class UIViewLogUtils extends ConsolidatedLoggingUtils
         if (clientLogging$ModalView != null) {
             intent.putExtra("view", clientLogging$ModalView.name());
         }
+        if (commandEndedEvent$InputMethod != null) {
+            intent.putExtra("inputMethod", commandEndedEvent$InputMethod.name());
+        }
         if (string != null) {
             intent.putExtra("cmd", string.name());
         }
-        Label_0086: {
+        Label_0104: {
             if (dataContext == null) {
-                break Label_0086;
+                break Label_0104;
             }
             string = null;
             while (true) {

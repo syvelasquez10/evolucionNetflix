@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.configuration.drm;
 
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.util.NetflixPreference;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -46,17 +47,19 @@ class AccountKeyMap
     }
     
     private void buildKeyIdsMapFromLegacy() {
-        final String stringPref = PreferenceUtils.getStringPref(this.mContext, "nf_drm_cdm_keyset_id", null);
-        final String stringPref2 = PreferenceUtils.getStringPref(this.mContext, "nf_drm_kce_key_id", null);
-        final String stringPref3 = PreferenceUtils.getStringPref(this.mContext, "nf_drm_kch_key_id", null);
+        final NetflixPreference netflixPreference = new NetflixPreference(this.mContext);
+        final String stringPref = netflixPreference.getStringPref("nf_drm_cdm_keyset_id", null);
+        final String stringPref2 = netflixPreference.getStringPref("nf_drm_kce_key_id", null);
+        final String stringPref3 = netflixPreference.getStringPref("nf_drm_kch_key_id", null);
         if (Log.isLoggable()) {
             Log.d(AccountKeyMap.TAG, "has legacy ksid [" + stringPref + "], kce_id [" + stringPref2 + "], kch_id [" + stringPref3 + "]");
         }
         if (StringUtils.isNotEmpty(stringPref) && StringUtils.isNotEmpty(stringPref2) && StringUtils.isNotEmpty(stringPref3)) {
             this.mKeyIdsFromLegacy = new AccountKeyMap$KeyIds(this, stringPref, stringPref2, stringPref3);
-            PreferenceUtils.removePref(this.mContext, "nf_drm_cdm_keyset_id");
-            PreferenceUtils.removePref(this.mContext, "nf_drm_kce_key_id");
-            PreferenceUtils.removePref(this.mContext, "nf_drm_kch_key_id");
+            netflixPreference.removePref("nf_drm_cdm_keyset_id");
+            netflixPreference.removePref("nf_drm_kce_key_id");
+            netflixPreference.removePref("nf_drm_kch_key_id");
+            netflixPreference.commit();
         }
     }
     

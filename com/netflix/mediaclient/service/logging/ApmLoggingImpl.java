@@ -7,6 +7,8 @@ package com.netflix.mediaclient.service.logging;
 import com.netflix.mediaclient.service.logging.apm.model.UIModalViewChangedEvent;
 import com.netflix.mediaclient.javabridge.ui.Log$ResetSessionIdCallback;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
+import com.netflix.mediaclient.service.logging.apm.model.UIBrowseStartupSessionCustomData;
+import com.netflix.mediaclient.service.logging.apm.model.DeepLink;
 import com.netflix.mediaclient.service.logging.apm.model.Display;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
 import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionStartedEvent;
@@ -800,9 +802,9 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     }
     
     @Override
-    public void startUiStartupSession(final ApplicationPerformanceMetricsLogging$UiStartupTrigger applicationPerformanceMetricsLogging$UiStartupTrigger, final IClientLogging$ModalView clientLogging$ModalView, final int n, final String s, final Map<String, Integer> map, final Long n2, final Display display) {
+    public void startUiStartupSession(final ApplicationPerformanceMetricsLogging$UiStartupTrigger applicationPerformanceMetricsLogging$UiStartupTrigger, final IClientLogging$ModalView clientLogging$ModalView, final int n, final String s, final Map<String, Integer> map, final Long n2, final Display display, final DeepLink deepLink, final UIBrowseStartupSessionCustomData uiBrowseStartupSessionCustomData) {
         Log.d("nf_log_apm", "UI startup session created");
-        final UIStartupSession muiStartupSession = new UIStartupSession(applicationPerformanceMetricsLogging$UiStartupTrigger, clientLogging$ModalView, n, s, map, display);
+        final UIStartupSession muiStartupSession = new UIStartupSession(applicationPerformanceMetricsLogging$UiStartupTrigger, clientLogging$ModalView, n, s, map, display, deepLink, uiBrowseStartupSessionCustomData);
         if (n2 != null) {
             muiStartupSession.setStarted(n2);
         }
@@ -812,13 +814,13 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
     }
     
     @Override
-    public void startUiStartupSession(final ApplicationPerformanceMetricsLogging$UiStartupTrigger applicationPerformanceMetricsLogging$UiStartupTrigger, final IClientLogging$ModalView clientLogging$ModalView, final Long n, final Display display) {
+    public void startUiStartupSession(final ApplicationPerformanceMetricsLogging$UiStartupTrigger applicationPerformanceMetricsLogging$UiStartupTrigger, final IClientLogging$ModalView clientLogging$ModalView, final Long n, final Display display, final DeepLink deepLink, final UIBrowseStartupSessionCustomData uiBrowseStartupSessionCustomData) {
         if (this.mUIStartupSession != null) {
             Log.w("nf_log_apm", "UI startup session already exist, we do not recreate it!");
             return;
         }
         Log.d("nf_log_apm", "UI startup session created");
-        final UIStartupSession muiStartupSession = new UIStartupSession(applicationPerformanceMetricsLogging$UiStartupTrigger, clientLogging$ModalView, display);
+        final UIStartupSession muiStartupSession = new UIStartupSession(applicationPerformanceMetricsLogging$UiStartupTrigger, clientLogging$ModalView, display, deepLink, uiBrowseStartupSessionCustomData);
         if (n != null) {
             muiStartupSession.setStarted(n);
         }

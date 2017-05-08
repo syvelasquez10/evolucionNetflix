@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import java.util.List;
 import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.util.Pair;
@@ -125,6 +126,8 @@ public interface IMdx
     boolean isReady();
     
     boolean isTargetLaunchingOrLaunched();
+    
+    void prefetchVideo(final List<Pair<String, Integer>> p0);
     
     void setCurrentTarget(final String p0);
     

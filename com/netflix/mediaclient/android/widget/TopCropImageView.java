@@ -4,9 +4,12 @@
 
 package com.netflix.mediaclient.android.widget;
 
+import android.content.res.TypedArray;
 import com.netflix.mediaclient.Log;
 import android.graphics.Matrix;
+import com.netflix.mediaclient.R$styleable;
 import android.widget.ImageView$ScaleType;
+import com.netflix.mediaclient.util.StringUtils;
 import android.util.AttributeSet;
 import android.content.Context;
 
@@ -14,24 +17,48 @@ public class TopCropImageView extends AdvancedImageView
 {
     private static final String TAG = "TopCropImageView";
     private int cropPointYOffset;
+    private boolean isTopCropEnabled;
+    private String lastScaleType;
     
     public TopCropImageView(final Context context) {
         super(context);
-        this.init();
+        this.isTopCropEnabled = true;
+        this.init(null);
     }
     
     public TopCropImageView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.init();
+        this.isTopCropEnabled = true;
+        this.init(set);
     }
     
     public TopCropImageView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.init();
+        this.isTopCropEnabled = true;
+        this.init(set);
     }
     
-    private void init() {
-        this.setScaleType(ImageView$ScaleType.MATRIX);
+    private void init(AttributeSet obtainStyledAttributes) {
+        final String attributeValue = obtainStyledAttributes.getAttributeValue("http://schemas.android.com/apk/res/android", "scaleType");
+        Label_0059: {
+            if (!StringUtils.isEmpty(attributeValue)) {
+                break Label_0059;
+            }
+            this.setScaleType(ImageView$ScaleType.MATRIX);
+            this.isTopCropEnabled = true;
+            while (true) {
+                obtainStyledAttributes = (AttributeSet)this.getContext().obtainStyledAttributes(obtainStyledAttributes, R$styleable.TopCropImageView, 0, 0);
+                try {
+                    this.cropPointYOffset = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(0, 0);
+                    return;
+                    this.lastScaleType = attributeValue;
+                    this.isTopCropEnabled = false;
+                }
+                finally {
+                    ((TypedArray)obtainStyledAttributes).recycle();
+                }
+            }
+        }
     }
     
     protected void onLayout(final boolean b, final int n, final int n2, final int n3, final int n4) {
@@ -40,6 +67,9 @@ public class TopCropImageView extends AdvancedImageView
     }
     
     public void recomputeImgMatrix() {
+        if (!this.isTopCropEnabled) {
+            return;
+        }
         final Matrix imageMatrix = new Matrix(this.getImageMatrix());
         final int n = this.getWidth() - this.getPaddingLeft() - this.getPaddingRight();
         final int n2 = this.getHeight() - this.getPaddingTop() - this.getPaddingBottom();
@@ -79,5 +109,16 @@ public class TopCropImageView extends AdvancedImageView
     protected boolean setFrame(final int n, final int n2, final int n3, final int n4) {
         this.recomputeImgMatrix();
         return super.setFrame(n, n2, n3, n4);
+    }
+    
+    public void setTopCroppingEnabled(final boolean isTopCropEnabled) {
+        this.isTopCropEnabled = isTopCropEnabled;
+        if (isTopCropEnabled) {
+            this.setScaleType(ImageView$ScaleType.MATRIX);
+            this.recomputeImgMatrix();
+        }
+        else if (!StringUtils.isEmpty(this.lastScaleType)) {
+            this.setScaleType(ImageView$ScaleType.values()[Integer.valueOf(this.lastScaleType)]);
+        }
     }
 }

@@ -10,6 +10,7 @@ import com.netflix.mediaclient.ui.diagnosis.DiagnosisActivity;
 import android.preference.Preference$OnPreferenceClickListener;
 import android.content.Context;
 import android.os.Bundle;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import android.os.Build;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
@@ -42,25 +43,30 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
     private void updateAboutDevice() {
         String s;
         if ((s = AndroidManifestUtils.getVersion(this.activity.getApplicationContext())) == null) {
-            s = this.getString(2131165648);
+            s = this.getString(2131165678);
         }
         final int versionCode = AndroidManifestUtils.getVersionCode(this.activity.getApplicationContext());
-        final StringBuilder append = new StringBuilder(this.getString(2131165646)).append(": ").append(s);
+        final StringBuilder sb = new StringBuilder();
+        sb.append(this.getString(2131165676)).append(": ").append(s);
         if (versionCode > 0) {
-            append.append(" (").append(this.getString(2131165647)).append(" ").append(versionCode).append("), ");
+            sb.append(" (");
+            sb.append(this.getString(2131165677)).append(" ").append(versionCode).append("), ");
         }
-        append.append(this.getString(2131165572)).append(": ").append(AndroidUtils.getAndroidVersion());
-        append.append("\n");
-        append.append(this.getString(2131165550)).append(": ").append(Build.MODEL);
-        append.append("\n");
-        append.append(this.getString(2131165420)).append(": ").append(Build.DISPLAY);
+        sb.append(this.getString(2131165592)).append(": ").append(AndroidUtils.getAndroidVersion());
+        sb.append("\n");
+        sb.append(this.getString(2131165569)).append(": ").append(Build.MODEL);
+        sb.append("\n");
+        LocalizationUtils.addMarkerForRtLocale(sb, '\u200f');
+        sb.append(this.getString(2131165426)).append(": ").append(Build.DISPLAY);
         if (this.manager != null) {
-            append.append("\n");
-            append.append(this.getString(2131165522)).append(": ").append(this.manager.getESNProvider().getEsn());
+            sb.append("\n");
+            LocalizationUtils.addMarkerForRtLocale(sb, '\u200f');
+            sb.append(this.getString(2131165541)).append(": ");
+            sb.append(this.manager.getESNProvider().getEsn());
         }
-        this.findPreference((CharSequence)"ui.about.device").setSummary((CharSequence)append.toString());
+        this.findPreference((CharSequence)"ui.about.device").setSummary((CharSequence)sb.toString());
         if (this.manager != null) {
-            this.findPreference((CharSequence)"ui.account").setSummary((CharSequence)(this.getString(2131165388) + ": " + this.manager.getUserEmail()));
+            this.findPreference((CharSequence)"ui.account").setSummary((CharSequence)(this.getString(2131165394) + ": " + this.manager.getUserEmail()));
             this.findPreference((CharSequence)"ui.account").setSelectable(false);
         }
     }
@@ -69,7 +75,7 @@ public class AboutFragment extends PreferenceFragment implements ManagerStatusLi
         super.onCreate(bundle);
         this.activity = this.getActivity();
         this.addPreferencesFromResource(2131034112);
-        this.findPreference((CharSequence)this.getString(2131165769)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
+        this.findPreference((CharSequence)this.getString(2131165812)).setIntent(OpenSourceLicensesActivity.create((Context)this.activity));
         final Preference preference = this.findPreference((CharSequence)"pref.privacy");
         preference.setIntent(this.createViewPrivacyPolicyIntent());
         preference.setOnPreferenceClickListener((Preference$OnPreferenceClickListener)new AboutFragment$1(this));

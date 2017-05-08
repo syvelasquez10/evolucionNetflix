@@ -9,6 +9,7 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.View$OnClickListener;
 import android.view.View$OnTouchListener;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import android.content.res.Configuration;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
@@ -31,7 +32,9 @@ import java.util.List;
 import android.view.animation.DecelerateInterpolator;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
+import com.netflix.model.leafs.InteractivePostplay;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import com.netflix.mediaclient.ui.iko.InteractivePostPlayManager;
 import com.netflix.mediaclient.Log;
 
 class PostPlay$6 implements Runnable

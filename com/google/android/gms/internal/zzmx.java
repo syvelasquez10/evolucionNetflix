@@ -8,11 +8,6 @@ import android.os.Build$VERSION;
 
 public final class zzmx
 {
-    @Deprecated
-    public static boolean isAtLeastL() {
-        return zzqD();
-    }
-    
     private static boolean zzcd(final int n) {
         return Build$VERSION.SDK_INT >= n;
     }
@@ -39,9 +34,5 @@ public final class zzmx
     
     public static boolean zzqx() {
         return zzcd(14);
-    }
-    
-    public static boolean zzqz() {
-        return zzcd(17);
     }
 }

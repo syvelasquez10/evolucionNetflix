@@ -15,5 +15,13 @@ public interface PlayContext extends Parcelable, Trackable
     public static final int NFLX_MDX_3RD_PARTY_LAUNCHER_TRACKID = 13747225;
     public static final PlayContext NFLX_MDX_CONTEXT = new PlayContextImp(null, 13747225, 0, 0);
     
+    boolean getBrowsePlay();
+    
+    PlayLocationType getPlayLocation();
+    
     int getVideoPos();
+    
+    void setBrowsePlay(final boolean p0);
+    
+    void setPlayLocation(final PlayLocationType p0);
 }

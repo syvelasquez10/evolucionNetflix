@@ -15,6 +15,7 @@ import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
+import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.servicemgr.IDiagnosis;
 import com.netflix.mediaclient.util.DeviceCategory;
@@ -76,6 +77,17 @@ class NetflixService$ResourceFetcherClientCallback extends LoggingResourceFetche
         this.this$0 = this$0;
         this.clientId = clientId;
         this.requestId = requestId;
+    }
+    
+    @Override
+    public void onResourceCached(final String s, final String s2, final long n, final long n2, final Status status) {
+        super.onResourceCached(s, s2, n, n2, status);
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("NetflixService", "No client callback found for onResourceCached");
+            return;
+        }
+        netflixServiceCallback.onResourceCached(this.requestId, s, s2, n, n2, status);
     }
     
     @Override

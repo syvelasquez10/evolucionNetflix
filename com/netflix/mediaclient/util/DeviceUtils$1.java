@@ -26,8 +26,18 @@ final class DeviceUtils$1 implements DeviceCapabilityProvider
     }
     
     @Override
+    public boolean isDolbyVisionSupported() {
+        return false;
+    }
+    
+    @Override
     public boolean isHdSupported() {
         return this.val$serviceManager != null && this.val$serviceManager.isDeviceHd();
+    }
+    
+    @Override
+    public boolean isHdr10Supported() {
+        return false;
     }
     
     @Override

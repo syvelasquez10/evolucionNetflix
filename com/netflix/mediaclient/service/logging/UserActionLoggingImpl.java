@@ -20,9 +20,8 @@ import com.netflix.mediaclient.service.logging.uiaction.model.NavigationEndedEve
 import com.netflix.mediaclient.service.logging.uiaction.model.LoginEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.EditProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.DeleteProfileEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.ChangeValueEndedEvent;
 import java.util.Iterator;
-import java.util.Collection;
-import java.util.HashSet;
 import org.json.JSONObject;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$PaymentType;
 import com.netflix.mediaclient.service.logging.uiaction.model.AddToPlaylistEndedEvent;
@@ -31,6 +30,7 @@ import com.netflix.mediaclient.service.logging.uiaction.model.AcknowledgeSignupE
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$Streams;
+import com.netflix.mediaclient.ui.common.PlayLocationType;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$RememberProfile;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
@@ -39,12 +39,13 @@ import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import java.io.Serializable;
 import org.json.JSONException;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import android.content.Intent;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collection;
+import java.util.Arrays;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.logging.uiaction.UpgradeStreamsSession;
 import com.netflix.mediaclient.service.logging.uiaction.SubmitPaymentSession;
@@ -65,17 +66,22 @@ import com.netflix.mediaclient.service.logging.uiaction.LoginSession;
 import com.netflix.mediaclient.service.logging.uiaction.EditProfileSession;
 import com.netflix.mediaclient.service.logging.uiaction.DeleteProfileSession;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.service.logging.uiaction.model.ChangeValueSession;
 import com.netflix.mediaclient.service.logging.uiaction.AddToPlaylistSession;
 import com.netflix.mediaclient.service.logging.uiaction.AddProfileSession;
 import com.netflix.mediaclient.service.logging.uiaction.AcknowledgeSignupSession;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import java.util.HashSet;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
 
 final class UserActionLoggingImpl implements UserActionLogging
 {
     private static final String TAG = "nf_log";
+    private static final HashSet<IClientLogging$ModalView> excludedViewsSet;
     private AcknowledgeSignupSession mAcknowledgeSignup;
     private AddProfileSession mAddProfileSession;
     private AddToPlaylistSession mAddToPlaylistSession;
+    private ChangeValueSession mChangeValueSession;
     private DataContext mDataContext;
     private DeleteProfileSession mDeleteProfileSession;
     private EditProfileSession mEditProfileSession;
@@ -96,6 +102,10 @@ final class UserActionLoggingImpl implements UserActionLogging
     private SubmitPaymentSession mSubmitPaymentSession;
     private UpgradeStreamsSession mUpgradeStreamsSession;
     private ServiceAgent$UserAgentInterface mUserAgent;
+    
+    static {
+        excludedViewsSet = new HashSet<IClientLogging$ModalView>(Arrays.asList(IClientLogging$ModalView.movieDetails));
+    }
     
     UserActionLoggingImpl(final EventHandler mEventHandler, final ServiceAgent$UserAgentInterface mUserAgent) {
         this.mSearchSessions = new ConcurrentHashMap<Long, SearchSession>(5);
@@ -243,6 +253,46 @@ final class UserActionLoggingImpl implements UserActionLogging
             value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
         this.startAddToPlaylistSession(value, value2);
+    }
+    
+    private void handleChangeValueEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
+        final String stringExtra3 = intent.getStringExtra("new_value");
+        while (true) {
+            try {
+                final UIError instance = UIError.createInstance(stringExtra2);
+                if (StringUtils.isNotEmpty(stringExtra)) {
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
+                }
+                this.endChangeValueSession(value, instance, stringExtra3);
+            }
+            catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
+                final UIError instance = null;
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handleChangeValueStart(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
+        final String stringExtra = intent.getStringExtra("cmd");
+        UserActionLogging$CommandName value;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        this.startChangeValueSession(value, value2);
     }
     
     private void handleDeleteProfileEnded(Intent value) {
@@ -437,7 +487,7 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     private void handleNewLolomoEnded(final Intent intent) {
-    Label_0087_Outer:
+    Label_0092_Outer:
         while (true) {
             Serializable s = intent.getStringExtra("reason");
             final String stringExtra = intent.getStringExtra("error");
@@ -448,13 +498,13 @@ final class UserActionLoggingImpl implements UserActionLogging
             final String stringExtra4 = intent.getStringExtra("mercuryMessageGuid");
             final String stringExtra5 = intent.getStringExtra("mercuryEventGuid");
             while (true) {
-                Label_0142: {
+                Label_0147: {
                     while (true) {
                         while (true) {
                             try {
                                 final UIError instance = UIError.createInstance(stringExtra);
                                 if (!StringUtils.isNotEmpty((String)s)) {
-                                    break Label_0142;
+                                    break Label_0147;
                                 }
                                 s = IClientLogging$CompletionReason.valueOf((String)s);
                                 if (StringUtils.isNotEmpty((String)s2)) {
@@ -466,7 +516,7 @@ final class UserActionLoggingImpl implements UserActionLogging
                             catch (JSONException ex) {
                                 Log.e("nf_log", "Failed JSON", (Throwable)ex);
                                 final UIError instance = null;
-                                continue Label_0087_Outer;
+                                continue Label_0092_Outer;
                             }
                             break;
                         }
@@ -508,28 +558,28 @@ final class UserActionLoggingImpl implements UserActionLogging
         int n = intent.getIntExtra("chosenVideoId", -1);
         while (true) {
             while (true) {
-                Label_0067: {
+                Label_0068: {
                     if (n < 0) {
                         final Integer value = null;
-                        break Label_0067;
+                        break Label_0068;
                     }
-                    Label_0146: {
-                        break Label_0146;
+                    Label_0147: {
+                        break Label_0147;
                         Integer value = null;
                         UIError instance;
                         Integer value2 = null;
-                        Label_0098_Outer:Label_0113_Outer:
+                        Label_0099_Outer:Label_0114_Outer:
                         while (true) {
                             n = intent.getIntExtra("trackId", 0);
                             while (true) {
-                                Label_0185: {
+                                Label_0186: {
                                     while (true) {
-                                    Label_0179:
+                                    Label_0180:
                                         while (true) {
                                             try {
                                                 instance = UIError.createInstance(stringExtra);
                                                 if (!StringUtils.isNotEmpty((String)s)) {
-                                                    break Label_0185;
+                                                    break Label_0186;
                                                 }
                                                 s = IClientLogging$CompletionReason.valueOf((String)s);
                                                 if (StringUtils.isNotEmpty((String)s2)) {
@@ -537,16 +587,16 @@ final class UserActionLoggingImpl implements UserActionLogging
                                                     this.endPostPlaySession((IClientLogging$CompletionReason)s, (IClientLogging$ModalView)s2, instance, booleanExtra, booleanExtra2, value, value2, n);
                                                     return;
                                                 }
-                                                break Label_0179;
-                                                value2 = n;
-                                                continue Label_0098_Outer;
+                                                break Label_0180;
                                                 value = n;
                                                 break;
+                                                value2 = n;
+                                                continue Label_0099_Outer;
                                             }
                                             catch (JSONException ex) {
                                                 Log.e("nf_log", "Failed JSON", (Throwable)ex);
                                                 instance = null;
-                                                continue Label_0113_Outer;
+                                                continue Label_0114_Outer;
                                             }
                                             break;
                                         }
@@ -953,35 +1003,35 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     private void handleStartPlayEnded(final Intent intent) {
-    Label_0049_Outer:
+    Label_0046_Outer:
         while (true) {
-            Integer value = null;
             Serializable s = intent.getStringExtra("reason");
             final String stringExtra = intent.getStringExtra("error");
             final int intExtra = intent.getIntExtra("rank", Integer.MIN_VALUE);
             while (true) {
-                Label_0101: {
+                Label_0111: {
                     while (true) {
                         while (true) {
                             try {
                                 final UIError instance = UIError.createInstance(stringExtra);
                                 if (!StringUtils.isNotEmpty((String)s)) {
-                                    break Label_0101;
+                                    break Label_0111;
                                 }
                                 s = IClientLogging$CompletionReason.valueOf((String)s);
                                 if (intExtra == Integer.MIN_VALUE) {
-                                    this.endStartPlaySession((IClientLogging$CompletionReason)s, instance, value, PlayerType.toPlayerType(intent.getIntExtra("playerType", -1)));
+                                    final Integer value = null;
+                                    this.endStartPlaySession((IClientLogging$CompletionReason)s, instance, value, PlayerType.toPlayerType(intent.getIntExtra("playerType", -1)), PlayLocationType.create(intent.getStringExtra("playLocation")));
                                     return;
                                 }
                             }
                             catch (JSONException ex) {
                                 Log.e("nf_log", "Failed JSON", (Throwable)ex);
                                 final UIError instance = null;
-                                continue Label_0049_Outer;
+                                continue Label_0046_Outer;
                             }
                             break;
                         }
-                        value = intExtra;
+                        final Integer value = intExtra;
                         continue;
                     }
                 }
@@ -1286,7 +1336,7 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.endRegisterSession(IClientLogging$CompletionReason.canceled, null);
             this.endRemoveFromPlaylistSession(IClientLogging$CompletionReason.canceled, null);
             this.endSelectProfileSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
-            this.endStartPlaySession(IClientLogging$CompletionReason.canceled, null, 0, null);
+            this.endStartPlaySession(IClientLogging$CompletionReason.canceled, null, 0, null, null);
             this.endSubmitPaymentSession(IClientLogging$CompletionReason.canceled, null, false, null, null);
             this.endUpgradeStreamsSession(IClientLogging$CompletionReason.canceled, null, null);
             this.endShareSheetOpenSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
@@ -1302,6 +1352,25 @@ final class UserActionLoggingImpl implements UserActionLogging
         }
     }
     // monitorexit(this)
+    
+    @Override
+    public void endChangeValueSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final String s) {
+        if (this.mChangeValueSession == null) {
+            return;
+        }
+        Log.d("nf_log", "changeValue session ended");
+        final ChangeValueEndedEvent endedEvent = this.mChangeValueSession.createEndedEvent(clientLogging$CompletionReason, uiError, s);
+        if (endedEvent == null) {
+            Log.d("nf_log", "ChangeValue session still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mChangeValueSession.getView());
+        this.mEventHandler.removeSession(this.mChangeValueSession);
+        Log.d("nf_log", "changeValue session end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mChangeValueSession = null;
+        Log.d("nf_log", "changeValue session end event posted.");
+    }
     
     @Override
     public void endDeleteProfileSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError) {
@@ -1366,6 +1435,15 @@ final class UserActionLoggingImpl implements UserActionLogging
         final NavigationSession mNavigationSession = this.mNavigationSession;
         if (mNavigationSession == null) {
             return;
+        }
+        if (UserActionLoggingImpl.excludedViewsSet.contains(this.mNavigationSession.getView())) {
+            if (mNavigationSession.getStartingView() == null) {
+                mNavigationSession.setStartingView(clientLogging$ModalView);
+                return;
+            }
+            if (this.mNavigationSession.getView() != clientLogging$ModalView) {
+                mNavigationSession.setStartingView(clientLogging$ModalView);
+            }
         }
         Log.d("nf_log", "Navigation session ended");
         final NavigationEndedEvent endedEvent = mNavigationSession.createEndedEvent(clientLogging$ModalView, clientLogging$CompletionReason, uiError);
@@ -1570,12 +1648,12 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
-    public void endStartPlaySession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final PlayerType playerType) {
+    public void endStartPlaySession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final PlayerType playerType, final PlayLocationType playLocationType) {
         if (this.mStartPlaySession == null) {
             return;
         }
         Log.d("nf_log", "StartPlay session ended");
-        final StartPlayEndedEvent endedEvent = this.mStartPlaySession.createEndedEvent(clientLogging$CompletionReason, uiError, n, playerType);
+        final StartPlayEndedEvent endedEvent = this.mStartPlaySession.createEndedEvent(clientLogging$CompletionReason, uiError, n, playerType, playLocationType);
         if (endedEvent == null) {
             Log.d("nf_log", "StartPlay session still waits on session id, do not post at this time.");
             return;
@@ -1637,6 +1715,16 @@ final class UserActionLoggingImpl implements UserActionLogging
         if ("com.netflix.mediaclient.intent.action.LOG_UIA_ADD_TO_PLAYLIST_ENDED".equals(action)) {
             Log.d("nf_log", "ADD_TO_PLAYLIST_ENDED");
             this.handleAddToPlaylistEnded(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_CHANGE_VALUE_START".equals(action)) {
+            Log.d("nf_log", "CHANGE_VALUE_START");
+            this.handleChangeValueStart(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_CHANGE_VALUE_ENDED".equals(action)) {
+            Log.d("nf_log", "CHANGE_VALUE_ENDED");
+            this.handleChangeValueEnded(intent);
             return true;
         }
         if ("com.netflix.mediaclient.intent.action.LOG_UIA_LOGIN_START".equals(action)) {
@@ -1875,6 +1963,19 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.addSession(mAddToPlaylistSession);
         this.mAddToPlaylistSession = mAddToPlaylistSession;
         Log.d("nf_log", "AddToPlaylist session start done.");
+    }
+    
+    @Override
+    public void startChangeValueSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (this.mChangeValueSession != null) {
+            Log.e("nf_log", "changeValue session already started!");
+            return;
+        }
+        Log.d("nf_log", "changeValue session starting...");
+        final ChangeValueSession mChangeValueSession = new ChangeValueSession(userActionLogging$CommandName, clientLogging$ModalView);
+        this.mEventHandler.addSession(mChangeValueSession);
+        this.mChangeValueSession = mChangeValueSession;
+        Log.d("nf_log", "changeValue session start done.");
     }
     
     @Override

@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
@@ -39,13 +38,13 @@ public class DummySeasonDetails implements SeasonDetails
     }
     
     @Override
-    public int getSeasonNumber() {
-        return 0;
+    public String getSeasonLongSeqLabel() {
+        return null;
     }
     
     @Override
-    public String getSeasonNumberTitle(final Context context) {
-        return context.getString(2131165614, new Object[] { this.seasonNumber });
+    public int getSeasonNumber() {
+        return 0;
     }
     
     @Override

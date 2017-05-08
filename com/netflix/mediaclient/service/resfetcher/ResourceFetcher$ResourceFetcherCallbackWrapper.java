@@ -6,11 +6,13 @@ package com.netflix.mediaclient.service.resfetcher;
 
 import com.netflix.mediaclient.service.resfetcher.volley.PrefetchResourceRequest;
 import com.netflix.mediaclient.service.webclient.WebClient;
+import com.netflix.mediaclient.service.resfetcher.volley.RawFileDownloadRequest;
 import com.netflix.mediaclient.service.resfetcher.volley.FileDownloadRequest;
 import com.android.volley.Request$Priority;
+import com.netflix.mediaclient.service.resfetcher.volley.HttpRangeRequest;
 import com.android.volley.Request;
 import com.android.volley.Response$ErrorListener;
-import com.netflix.mediaclient.service.resfetcher.volley.HttpRangeRequest;
+import com.netflix.mediaclient.service.resfetcher.volley.DownloadAndCacheRequest;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.WebClientInitParameters;
@@ -51,6 +53,12 @@ class ResourceFetcher$ResourceFetcherCallbackWrapper implements ResourceFetcherC
             throw new IllegalArgumentException("Callback can not be null");
         }
         this.mCallback = mCallback;
+    }
+    
+    @Override
+    public void onResourceCached(final String s, final String s2, final long n, final long n2, final Status status) {
+        ApmLogUtils.reportAssetRequestResult(s, status.getStatusCode(), this.this$0.getService().getClientLogging().getApplicationPerformanceMetricsLogging());
+        this.mCallback.onResourceCached(s, s2, n, n2, status);
     }
     
     @Override

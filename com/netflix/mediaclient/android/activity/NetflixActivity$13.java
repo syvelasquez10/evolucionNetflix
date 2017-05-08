@@ -14,7 +14,8 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import android.widget.Toast;
+import com.netflix.mediaclient.service.NetflixService;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
@@ -35,6 +36,8 @@ import com.netflix.mediaclient.util.ViewUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.app.Activity;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
@@ -111,8 +114,10 @@ class NetflixActivity$13 extends BroadcastReceiver
     public void onReceive(final Context context, final Intent intent) {
         final String action = intent.getAction();
         if (action == null) {
-            Log.e("NetflixActivity", "Action is NULL, this should NOT happen");
             return;
+        }
+        if (Log.isLoggable()) {
+            Log.d("NetflixActivity", "Action: " + action);
         }
         switch (action) {
             default: {}

@@ -14,7 +14,8 @@ import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import android.widget.Toast;
+import com.netflix.mediaclient.service.NetflixService;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
@@ -24,7 +25,6 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
-import com.netflix.mediaclient.util.DeviceUtils;
 import java.util.Iterator;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.ui.common.DebugMenuItems;
@@ -35,6 +35,8 @@ import com.netflix.mediaclient.util.ViewUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.app.Activity;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
@@ -72,7 +74,6 @@ import android.view.View$OnClickListener;
 import android.view.ViewGroup$LayoutParams;
 import android.support.design.widget.CoordinatorLayout$LayoutParams;
 import android.view.ViewGroup;
-import android.content.Context;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.ui.voip.ContactUsActivity;
 import android.content.Intent;
@@ -98,6 +99,9 @@ import com.netflix.mediaclient.ui.mdx.ShowMessageDialogFrag$MessageResponseProvi
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListenerProvider;
 import com.netflix.mediaclient.android.app.LoadingStatus;
 import android.support.v7.app.AppCompatActivity;
+import com.netflix.mediaclient.util.DeviceUtils;
+import android.content.Context;
+import com.netflix.mediaclient.util.CoppolaUtils;
 import com.netflix.mediaclient.Log;
 
 class NetflixActivity$9 implements Runnable
@@ -120,7 +124,7 @@ class NetflixActivity$9 implements Runnable
                     this.this$0.netflixActionBar.hide(false);
                 }
             }
-            else if (!this.this$0.netflixActionBar.isShowing()) {
+            else if ((!CoppolaUtils.isCoppolaContext((Context)this.this$0) || DeviceUtils.isPortrait((Context)this.this$0)) && !this.this$0.netflixActionBar.isShowing()) {
                 Log.v("NetflixActivity", "Showing action bar since it should not be hidden");
                 this.this$0.netflixActionBar.show(false);
             }

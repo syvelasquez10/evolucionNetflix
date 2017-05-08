@@ -6,9 +6,17 @@ package com.netflix.mediaclient.servicemgr.interface_;
 
 public interface Playable
 {
+    String getAdvisoryDescription();
+    
+    int getAdvisoryDisplayDuration();
+    
+    String getAdvisoryRating();
+    
     int getEndtime();
     
     int getEpisodeNumber();
+    
+    long getExpirationTime();
     
     int getLogicalStart();
     
@@ -26,11 +34,19 @@ public interface Playable
     
     int getRuntime();
     
+    String getSeasonAbbrSeqLabel();
+    
     int getSeasonNumber();
+    
+    boolean isAdvisoryDisabled();
     
     boolean isAgeProtected();
     
     boolean isAutoPlayEnabled();
+    
+    boolean isAvailableToStream();
+    
+    boolean isNSRE();
     
     boolean isNextPlayableEpisode();
     

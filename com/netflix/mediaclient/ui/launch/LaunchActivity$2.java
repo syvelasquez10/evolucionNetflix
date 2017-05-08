@@ -18,6 +18,8 @@ import android.content.IntentSender$SendIntentException;
 import com.netflix.mediaclient.util.IntentUtils;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.widget.ProgressBar;
+import com.netflix.mediaclient.ui.ums.EndOfGrandfatheringActivity;
+import com.netflix.mediaclient.ui.ums.EogUtils;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
@@ -26,13 +28,20 @@ import com.google.android.gms.common.api.Api;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient$Builder;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.servicemgr.SignInLogging$CredentialService;
 import com.netflix.mediaclient.service.logging.apm.model.Display;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.login.LoginActivity;
+import com.netflix.mediaclient.service.logging.apm.model.DeepLink;
+import com.netflix.mediaclient.service.logging.apm.model.UIBrowseStartupSessionCustomData;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.util.log.SignInLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.widget.ImageView;
@@ -66,8 +75,10 @@ class LaunchActivity$2 implements ManagerStatusListener
     
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
+        this.this$0.mManagerStatus = status;
         this.this$0.isLoading = false;
         if (ServiceErrorsHandler.handleManagerResponse(this.this$0, status)) {
+            this.this$0.mIsErrorDialogVisible = true;
             return;
         }
         this.this$0.handleManagerReady(serviceManager);
@@ -76,6 +87,7 @@ class LaunchActivity$2 implements ManagerStatusListener
     @Override
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
         this.this$0.isLoading = false;
-        ServiceErrorsHandler.handleManagerResponse(this.this$0, status);
+        this.this$0.mManagerStatus = status;
+        this.this$0.mIsErrorDialogVisible = ServiceErrorsHandler.handleManagerResponse(this.this$0, status);
     }
 }

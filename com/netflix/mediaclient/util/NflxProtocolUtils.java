@@ -8,30 +8,35 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.service.pushnotification.UserFeedbackOnReceivedPushNotification;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.service.NetflixService;
-import com.netflix.mediaclient.service.logging.apm.model.Display;
-import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
+import com.netflix.mediaclient.service.logging.apm.model.UIBrowseStartupSessionCustomData;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
+import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
 import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
 import android.app.Activity;
-import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import java.util.Iterator;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Map;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.logging.apm.model.DeepLink;
+import java.util.Map;
 
 public final class NflxProtocolUtils
 {
     public static final String INTENT_RESULT = "com.netflix.mediaclient.intent.action.HANDLER_RESULT";
     public static final String PARAM_STATUS = "status";
     private static final String TAG = "NflxHandler";
+    
+    public static DeepLink createDeepLink(final Map<String, String> map) {
+        return DeepLink.createInstance(getSource(map), getParams(map));
+    }
     
     public static String extractId(final String s) {
         if (!StringUtils.isEmpty(s)) {
@@ -117,6 +122,29 @@ public final class NflxProtocolUtils
             Log.d("NflxHandler", "Encoded ID in tiny URL: " + s);
         }
         return s;
+    }
+    
+    public static String getParams(final Map<String, String> map) {
+        final StringBuilder sb = new StringBuilder();
+        final Iterator<String> iterator = map.keySet().iterator();
+        int n = 1;
+        while (iterator.hasNext()) {
+            final String s = iterator.next();
+            final String s2 = map.get(s);
+            int n2 = n;
+            if (StringUtils.isNotEmpty(s2)) {
+                if (n != 0) {
+                    n = 0;
+                }
+                else {
+                    sb.append('&');
+                }
+                sb.append(s).append('=').append(s2);
+                n2 = n;
+            }
+            n = n2;
+        }
+        return sb.toString();
     }
     
     public static PlayContext getPlayContext(final String s) {
@@ -224,34 +252,14 @@ public final class NflxProtocolUtils
         return "view_details".equalsIgnoreCase(s) || "v".equalsIgnoreCase(s);
     }
     
-    public static void reportApplicationLaunchedFromDeepLinking(final NetflixActivity netflixActivity, final Map<String, String> map, final String s) {
-        final String source = getSource(map);
+    public static void reportApplicationLaunchedFromDeepLinking(final NetflixActivity netflixActivity, final String s, final DeepLink deepLink) {
         final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
         if (clientLogging != null) {
             if (Log.isLoggable()) {
-                Log.d("NflxHandler", "Reporting that application is started from deep link. Source: " + source + ", action: " + s);
+                Log.d("NflxHandler", "Reporting that application is started from deep link. Deeplink: " + deepLink + ", action: " + s);
             }
-            if (clientLogging != null && clientLogging.getCustomerEventLogging() != null) {
-                final StringBuilder sb = new StringBuilder();
-                final Iterator<String> iterator = map.keySet().iterator();
-                int n = 1;
-                while (iterator.hasNext()) {
-                    final String s2 = iterator.next();
-                    final String s3 = map.get(s2);
-                    int n2 = n;
-                    if (StringUtils.isNotEmpty(s3)) {
-                        if (n != 0) {
-                            n = 0;
-                        }
-                        else {
-                            sb.append('&');
-                        }
-                        sb.append(s2).append('=').append(s3);
-                        n2 = n;
-                    }
-                    n = n2;
-                }
-                clientLogging.getCustomerEventLogging().reportApplicationLaunchedFromDeepLinking(source, s, sb.toString());
+            if (clientLogging != null && clientLogging.getCustomerEventLogging() != null && deepLink != null) {
+                clientLogging.getCustomerEventLogging().reportApplicationLaunchedFromDeepLinking(deepLink.getSource(), s, deepLink.getDeeplinkParams());
             }
             return;
         }
@@ -268,19 +276,17 @@ public final class NflxProtocolUtils
     }
     
     public static void reportOnProfileGate(final NetflixActivity netflixActivity, final Map<String, String> map, final long n) {
-        final Display display = ConsolidatedLoggingUtils.getDisplay((Context)netflixActivity);
-        final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
-        if (clientLogging != null) {
-            clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.profilesGate, n, display);
-            reportApplicationLaunchedFromDeepLinking(netflixActivity, map, "profileGate");
-            reportUiSessions(netflixActivity, NflxHandler$Response.HANDLING, true, IClientLogging$ModalView.profilesGate, n);
+        final DeepLink deepLink = createDeepLink(map);
+        if (netflixActivity.getServiceManager().getClientLogging() != null) {
+            reportApplicationLaunchedFromDeepLinking(netflixActivity, "profileGate", deepLink);
+            reportUiSessions(netflixActivity, NflxHandler$Response.HANDLING, true, IClientLogging$ModalView.profilesGate, n, deepLink);
         }
     }
     
-    public static void reportUiSessions(final NetflixActivity netflixActivity, final NflxHandler$Response nflxHandler$Response, final boolean b, final IClientLogging$ModalView clientLogging$ModalView, final long n) {
+    public static void reportUiSessions(final NetflixActivity netflixActivity, final NflxHandler$Response nflxHandler$Response, final boolean b, final IClientLogging$ModalView clientLogging$ModalView, final long n, final DeepLink deepLink) {
         final IClientLogging clientLogging = netflixActivity.getServiceManager().getClientLogging();
         if (clientLogging != null && (nflxHandler$Response == NflxHandler$Response.HANDLING || nflxHandler$Response == NflxHandler$Response.HANDLING_WITH_DELAY)) {
-            clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.externalControlProtocol, clientLogging$ModalView, n, ConsolidatedLoggingUtils.getDisplay((Context)netflixActivity));
+            clientLogging.getApplicationPerformanceMetricsLogging().startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.externalControlProtocol, clientLogging$ModalView, n, ConsolidatedLoggingUtils.getDisplay((Context)netflixActivity), deepLink, UIBrowseStartupSessionCustomData.create((Context)netflixActivity));
             if (b) {
                 clientLogging.getApplicationPerformanceMetricsLogging().startUiBrowseStartupSession(n);
             }

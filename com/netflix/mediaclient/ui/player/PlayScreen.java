@@ -4,25 +4,44 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.util.gfx.AnimationUtils;
-import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
-import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthSaving;
-import com.netflix.mediaclient.util.PreferenceUtils;
+import java.util.Date;
+import junit.framework.Assert;
+import android.view.View$OnClickListener;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
+import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
+import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.view.ViewGroup$LayoutParams;
-import android.widget.RelativeLayout$LayoutParams;
-import android.content.Context;
 import java.nio.ByteBuffer;
+import com.netflix.mediaclient.util.CoppolaUtils;
 import com.netflix.mediaclient.ui.player.subtitles.SubtitleManager;
-import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import android.content.res.Configuration;
 import android.app.Activity;
+import android.view.ViewGroup$LayoutParams;
+import com.netflix.mediaclient.media.Watermark$Anchor;
+import android.widget.RelativeLayout$LayoutParams;
+import com.netflix.mediaclient.util.SubtitleUtils;
+import android.content.Context;
+import com.netflix.mediaclient.android.widget.AutoResizeTextView;
+import com.netflix.mediaclient.media.Watermark;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import android.support.v7.widget.Toolbar;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.Build;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.servicemgr.Asset;
+import com.netflix.mediaclient.android.fragment.NetflixFrag;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView;
 import android.view.SurfaceHolder;
+import android.os.Handler;
 import android.widget.ViewFlipper;
 import android.widget.TextView;
 import android.view.View;
@@ -33,16 +52,25 @@ import android.widget.RelativeLayout;
 public class PlayScreen implements Screen
 {
     protected static final String TAG = "screen";
+    private final Runnable contentAdvisoryNoticeCompletionRunnable;
+    private final Runnable contentAdvisoryStartNoticeRunnable;
+    private int currentTimelineProgress;
     protected PlayScreen$Listeners listeners;
     protected RelativeLayout mBackground;
     protected ImageView mBif;
     private Animator mBifAnim;
     protected BottomPanel mBottomPanel;
     protected View mBufferingOverlay;
+    private ContentAdvisoryController mContentAdvisory;
     protected PlayerFragment mController;
     protected TextView mDebugData;
+    private PlayScreenDecorator mDecorator;
+    private PlayScreen$ExpiringContent mExpiringContent;
     protected ViewFlipper mFlipper;
+    private final Handler mHandler;
     protected SurfaceHolder mHolder;
+    private boolean mIsAdvisoryDisabled;
+    protected View mLoadingOverlay;
     protected boolean mNavigationBarSetVisibleInProgress;
     private PlayerUiState mPendingState;
     private String mPlaybackControlOverlayId;
@@ -52,12 +80,17 @@ public class PlayScreen implements Screen
     protected final TappableSurfaceView mSurface;
     protected View mTabletBifsLayout;
     protected TopPanel mTopPanel;
+    protected RelativeLayout mWatermarkDisplayArea;
     private boolean mZoomEnabled;
     
     PlayScreen(final PlayerFragment mController, final PlayScreen$Listeners listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         this.mState = PlayerUiState.Loading;
         this.mNavigationBarSetVisibleInProgress = false;
         this.mZoomEnabled = true;
+        this.mHandler = new Handler();
+        this.mContentAdvisory = null;
+        this.contentAdvisoryStartNoticeRunnable = new PlayScreen$1(this);
+        this.contentAdvisoryNoticeCompletionRunnable = new PlayScreen$2(this);
         if (mController == null || listeners == null) {
             throw new IllegalArgumentException("Argument can not be null!");
         }
@@ -66,7 +99,7 @@ public class PlayScreen implements Screen
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
         final View view = mController.getView();
-        this.mSurface = (TappableSurfaceView)view.findViewById(2131624375);
+        this.mSurface = (TappableSurfaceView)view.findViewById(2131624490);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -75,43 +108,74 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)view.findViewById(2131624172);
-        this.mBackground = (RelativeLayout)view.findViewById(2131624171);
-        this.mBufferingOverlay = view.findViewById(2131624396);
+        this.mFlipper = (ViewFlipper)view.findViewById(2131624245);
+        this.mBackground = (RelativeLayout)view.findViewById(2131624244);
+        this.mWatermarkDisplayArea = (RelativeLayout)view.findViewById(2131624493);
+        this.mBufferingOverlay = view.findViewById(2131624512);
+        this.mLoadingOverlay = view.findViewById(2131624494);
         int n;
         if (mController.getNetflixActivity().isTablet()) {
-            n = 2131624393;
+            n = 2131624509;
         }
         else {
-            n = 2131624376;
+            n = 2131624492;
         }
         this.mBif = (ImageView)view.findViewById(n);
-        this.mTabletBifsLayout = view.findViewById(2131624392);
-        this.mQuickActions = view.findViewById(2131624471);
+        this.mTabletBifsLayout = view.findViewById(2131624508);
+        this.mQuickActions = view.findViewById(2131624501);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
+        final Asset currentAsset = mController.getCurrentAsset();
+        if (currentAsset == null) {
+            Log.w("screen", "PlayerFragment getCurrentAsset() is null. Content advisory notice is disabled.");
+        }
+        else if (!(this.mIsAdvisoryDisabled = (currentAsset.isAdvisoryDisabled() || StringUtils.isEmpty(currentAsset.getAdvisoryRating()) || StringUtils.isEmpty(currentAsset.getAdvisoryDescription())))) {
+            (this.mContentAdvisory = ContentAdvisoryController.createInstance(mController)).setDisplayDuration(currentAsset.getAdvisoryDisplayDuration() * 1000);
+            this.mContentAdvisory.populateViews(currentAsset.getAdvisoryRating(), mController.getCurrentAsset().getAdvisoryDescription());
+        }
+        this.setupABTest();
     }
     
     static PlayScreen createInstance(final PlayerFragment playerFragment, final PlayScreen$Listeners playScreen$Listeners, final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
+        final PlayScreenJB playScreenJB = null;
         final int androidVersion = AndroidUtils.getAndroidVersion();
+        PlayScreen playScreen;
         if (androidVersion >= 16) {
             Log.d("screen", "PlayScreen for JB (Android 4.1+");
-            return new PlayScreenJB(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
+            playScreen = new PlayScreenJB(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
         }
-        if (Build.MANUFACTURER.equals("Amazon") && (Build.MODEL.equals("KFOT") || Build.MODEL.equals("KFTT") || Build.MODEL.equals("KFJWA") || Build.MODEL.equals("KFJWI"))) {
+        else if (Build.MANUFACTURER.equals("Amazon") && (Build.MODEL.equals("KFOT") || Build.MODEL.equals("KFTT") || Build.MODEL.equals("KFJWA") || Build.MODEL.equals("KFJWI"))) {
             Log.d("screen", "PlayScreen for Amazon Kindle HD");
-            return new PlayScreenKindleHD(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
+            playScreen = new PlayScreenKindleHD(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
         }
-        if (androidVersion >= 14) {
+        else if (androidVersion >= 14) {
             Log.d("screen", "PlayScreen for ICS (Android 4+");
-            return new PlayScreenICS(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
+            playScreen = new PlayScreenICS(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
         }
-        if (Build.MODEL.equals("Kindle Fire") && Build.MANUFACTURER.equals("Amazon")) {
-            Log.d("screen", "PlayScreen for Amazon Kindle Fire");
-            return new PlayScreenKindleFire(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
+        else {
+            playScreen = playScreenJB;
+            if (Build.MODEL.equals("Kindle Fire")) {
+                playScreen = playScreenJB;
+                if (Build.MANUFACTURER.equals("Amazon")) {
+                    Log.d("screen", "PlayScreen for Amazon Kindle Fire");
+                    playScreen = new PlayScreenKindleFire(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
+                }
+            }
         }
-        Log.d("screen", "PlayScreen for Froyo/Gingerbread (Android 2.2-2.3) - default");
-        return new PlayScreen(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
+        PlayScreen playScreen2;
+        if ((playScreen2 = playScreen) == null) {
+            Log.d("screen", "PlayScreen for Froyo/Gingerbread (Android 2.2-2.3) - default");
+            playScreen2 = new PlayScreen(playerFragment, playScreen$Listeners, postPlayFactory$PostPlayType);
+        }
+        playScreen2.setDecorator(new InteractiveMomentsDecorator(playScreen2));
+        if (playerFragment.isCoppolaPlayback()) {
+            playScreen2.setDecorator(new CoppolaLoadingDecorator(new CoppolaControlsDecorator(playScreen2.getDecorator())));
+        }
+        return playScreen2;
+    }
+    
+    private boolean isCoppolaPortrait() {
+        return this.mController.isCoppolaPlayback() && this.mController.isInPortrait();
     }
     
     private boolean isZoomEnabled() {
@@ -136,7 +200,7 @@ public class PlayScreen implements Screen
     private void moveToLoaded() {
         Log.d("screen", "STATE_LOADED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131558585);
+        final int color = this.mController.getResources().getColor(2131558596);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -153,7 +217,7 @@ public class PlayScreen implements Screen
     private void moveToLoadedTapped() {
         Log.d("screen", "STATE_LOADED_TAPPED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131558585);
+        final int color = this.mController.getResources().getColor(2131558596);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -168,33 +232,78 @@ public class PlayScreen implements Screen
         Log.d("screen", "STATE_LOADING, default");
     }
     
-    private void moveToPostPlay() {
-        this.mController.getNetflixActivity().removeVisibleDialog();
-        if (this.mController.getNetflixActivity().isDialogFragmentVisible()) {
-            this.mController.getNetflixActivity().removeDialogFrag();
-        }
-        this.clearPanel();
-        Log.d("screen", "POST_PLAY");
-        this.mNavigationBarSetVisibleInProgress = true;
-        this.mPostPlayManager.transitionToPostPlay();
-        this.showNavigationBar();
-    }
-    
     static int resolveContentView(final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForPhone) {
             Log.d("screen", "playout_phone_episode");
-            return 2130903177;
+            return 2130903202;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForTablet) {
             Log.d("screen", "playout_tablet_episode");
-            return 2130903181;
+            return 2130903206;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.RecommendationForTablet) {
             Log.d("screen", "playout_tablet_movie");
-            return 2130903182;
+            return 2130903207;
         }
         Log.d("screen", "playout_phone_movie");
-        return 2130903178;
+        return 2130903203;
+    }
+    
+    private void setToolbarVisibility(final boolean b) {
+        boolean b2 = false;
+        if (this.mController.getNetflixActivity().getNetflixActionBar() != null) {
+            final Toolbar toolbar = this.mController.getNetflixActivity().getNetflixActionBar().getToolbar();
+            if (b && !toolbar.isShown()) {
+                toolbar.setVisibility(0);
+            }
+            if (!this.isCoppolaPortrait() || this.getPlayerFragment().getPlayer().isPlaying() || b) {
+                if (toolbar.getAlpha() > 0.0f) {
+                    b2 = true;
+                }
+                if (b2 != b) {
+                    AnimationUtils.startViewAppearanceAnimation((View)toolbar, b);
+                }
+            }
+        }
+    }
+    
+    private void setupABTest() {
+        if (this.mController != null && this.mController.getServiceManager() != null) {
+            final ABTestConfig abTestConfiguration_6634 = this.mController.getServiceManager().getConfiguration().getABTestConfiguration_6634();
+            if (abTestConfiguration_6634 != null && abTestConfiguration_6634.getCell() == ABTestConfig$Cell.CELL_ONE) {
+                this.mExpiringContent = new PlayScreen$ExpiringContent(this);
+            }
+        }
+    }
+    
+    void addWatermark(final Watermark watermark) {
+        if (this.mWatermarkDisplayArea != null && watermark != null && StringUtils.isNotEmpty(watermark.getIdentifier())) {
+            if (Log.isLoggable()) {
+                Log.d("screen", "Display watermark " + watermark);
+            }
+            final AutoResizeTextView autoResizeTextView = new AutoResizeTextView((Context)this.mController.getActivity());
+            autoResizeTextView.setGravity(119);
+            final int dipToPixels = AndroidUtils.dipToPixels((Context)this.mController.getActivity(), 5);
+            autoResizeTextView.setPadding(dipToPixels, dipToPixels, dipToPixels, dipToPixels);
+            autoResizeTextView.setText((CharSequence)this.mController.getActivity().getString(2131165684, new Object[] { watermark.getIdentifier() }));
+            float n;
+            if (this.mController.getNetflixActivity().isTablet()) {
+                n = this.mController.getResources().getDimension(2131296663);
+            }
+            else {
+                n = this.mController.getResources().getDimension(2131296661);
+            }
+            SubtitleUtils.applyStyle(autoResizeTextView, watermark.getStyle((Context)this.mController.getActivity()), n);
+            final RelativeLayout$LayoutParams relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(-2, -2);
+            relativeLayout$LayoutParams.addRule(14);
+            if (Watermark$Anchor.top_center == watermark.getAnchor()) {
+                relativeLayout$LayoutParams.addRule(10);
+            }
+            else {
+                relativeLayout$LayoutParams.addRule(12);
+            }
+            this.mWatermarkDisplayArea.addView((View)autoResizeTextView, (ViewGroup$LayoutParams)relativeLayout$LayoutParams);
+        }
     }
     
     public boolean canExitPlaybackEndOfPlay() {
@@ -269,11 +378,28 @@ public class PlayScreen implements Screen
             if (this.mPostPlayManager != null) {
                 this.mPostPlayManager.destroy();
             }
+            if (this.mDecorator != null) {
+                this.mDecorator.onDestroy();
+            }
         }
     }
     
-    public BottomPanel getBottomPanel() {
-        return this.mBottomPanel;
+    public void enableButtons(final boolean b) {
+        if (!this.isCoppolaPortrait()) {
+            this.mBottomPanel.enableButtons(b);
+        }
+    }
+    
+    public void finishDragging() {
+        this.setTopPanelVisibility(true);
+        if (this.mDecorator != null) {
+            this.mDecorator.setDraggingState(false);
+        }
+        if (this.isCoppolaPortrait()) {
+            this.setToolbarVisibility(true);
+            return;
+        }
+        this.mBottomPanel.finishDragging();
     }
     
     @Override
@@ -281,12 +407,24 @@ public class PlayScreen implements Screen
         return this.mController.getNetflixActivity();
     }
     
+    public int getCurrentTimelineProgress() {
+        return this.currentTimelineProgress;
+    }
+    
+    public PlayScreenDecorator getDecorator() {
+        return this.mDecorator;
+    }
+    
     SurfaceHolder getHolder() {
         return this.mHolder;
     }
     
-    MdxTargetSelection getMdxTargetSelector() {
-        return this.mTopPanel.getMdxTargetSelector();
+    public PlayScreen$Listeners getListeners() {
+        return this.listeners;
+    }
+    
+    PlayerFragment getPlayerFragment() {
+        return this.mController;
     }
     
     PostPlay getPostPlay() {
@@ -301,8 +439,25 @@ public class PlayScreen implements Screen
         return this.mSurface;
     }
     
+    public String getTimeStringForMs() {
+        return this.mBottomPanel.getFormatter().getStringForMs(this.mBottomPanel.getCurrentProgress());
+    }
+    
+    public int getTimeXAndUpdateHandler(final View view) {
+        return this.mBottomPanel.getTimeXAndUpdateHandler(view);
+    }
+    
     public TopPanel getTopPanel() {
         return this.mTopPanel;
+    }
+    
+    void hideContentAdvisory() {
+        if (this.mContentAdvisory == null) {
+            return;
+        }
+        this.mContentAdvisory.hide(false);
+        this.mHandler.removeCallbacks(this.contentAdvisoryStartNoticeRunnable);
+        this.mHandler.removeCallbacks(this.contentAdvisoryNoticeCompletionRunnable);
     }
     
     void hideNavigationBar() {
@@ -330,11 +485,30 @@ public class PlayScreen implements Screen
         }
     }
     
-    void initProgress(final int n) {
-        this.mBottomPanel.initProgress(n);
+    void initProgress(final int timelineMaxProgress) {
+        this.mBottomPanel.initProgress(timelineMaxProgress);
+        if (this.mDecorator != null) {
+            this.mDecorator.setTimelineMaxProgress(timelineMaxProgress);
+        }
     }
     
-    protected void moveToState(final PlayerUiState playerUiState) {
+    boolean isAdvisoryDisabled() {
+        return this.mIsAdvisoryDisabled;
+    }
+    
+    public void moveToPostPlay() {
+        this.mController.getNetflixActivity().removeVisibleDialog();
+        if (this.mController.getNetflixActivity().isDialogFragmentVisible()) {
+            this.mController.getNetflixActivity().removeDialogFrag();
+        }
+        this.clearPanel();
+        Log.d("screen", "POST_PLAY");
+        this.mNavigationBarSetVisibleInProgress = true;
+        this.showNavigationBar();
+        this.mPostPlayManager.transitionToPostPlay();
+    }
+    
+    public void moveToState(final PlayerUiState playerUiState) {
         while (true) {
             Label_0079: {
                 synchronized (this) {
@@ -376,6 +550,21 @@ public class PlayScreen implements Screen
             if (Log.isLoggable()) {
                 Log.i("screen", "moveToState() finished moving to state: " + this.mState);
             }
+        }
+    }
+    
+    public void onAssetUpdated(final Asset asset) {
+        if (this.mDecorator != null) {
+            this.mDecorator.onAssetUpdated(asset);
+        }
+    }
+    
+    public void onConfigurationChanged(final Configuration configuration) {
+        if (this.mDecorator != null) {
+            this.mDecorator.onConfigurationChanged(configuration);
+        }
+        if (this.mPostPlayManager != null) {
+            this.mPostPlayManager.onConfigurationChanged(configuration);
         }
     }
     
@@ -429,9 +618,44 @@ public class PlayScreen implements Screen
         }
     }
     
-    protected void playerOverlayVisibility(final boolean b) {
-        if (b) {
-            if (AndroidUtils.getAndroidVersion() < 14 || AndroidUtils.getAndroidVersion() >= 16) {
+    public void onVideoDetailsFetched(final VideoDetails videoDetails) {
+        if (this.mDecorator != null) {
+            this.mDecorator.onVideoDetailsFetched(videoDetails);
+        }
+    }
+    
+    public void playExtraHandlerAnimation(final int n, final Runnable runnable) {
+        if (this.isCoppolaPortrait()) {
+            this.mDecorator.playExtraHandlerAnimation(n, runnable);
+            return;
+        }
+        this.mBottomPanel.playExtraHandlerAnimation(n, runnable);
+    }
+    
+    protected void playerOverlayVisibility(final boolean toolbarVisibility) {
+        boolean b;
+        if (DeviceUtils.isTabletByContext((Context)this.getController()) && (AndroidUtils.getAndroidVersion() < 14 || AndroidUtils.getAndroidVersion() >= 16)) {
+            b = true;
+        }
+        else {
+            b = false;
+        }
+        if (!toolbarVisibility || (toolbarVisibility && this.mController.isInPortrait())) {
+            if (b) {
+                this.mController.getWindow().setFlags(1024, 1024);
+            }
+            if (this.mBottomPanel != null) {
+                this.mBottomPanel.hide();
+            }
+            if (this.mTopPanel != null) {
+                this.mTopPanel.hide();
+            }
+            if (this.mExpiringContent != null) {
+                this.mExpiringContent.hideWarning();
+            }
+        }
+        else {
+            if (b) {
                 this.mController.getWindow().clearFlags(1024);
             }
             if (this.mBottomPanel != null) {
@@ -441,19 +665,19 @@ public class PlayScreen implements Screen
             if (this.mTopPanel != null) {
                 this.mTopPanel.show();
             }
-        }
-        else {
-            this.mController.getWindow().setFlags(1024, 1024);
-            if (this.mBottomPanel != null) {
-                this.mBottomPanel.hide();
-            }
-            if (this.mTopPanel != null) {
-                this.mTopPanel.hide();
+            if (this.mExpiringContent != null) {
+                this.mExpiringContent.tryShowWarning();
             }
         }
         final SubtitleManager subtitleManager = this.mController.getSubtitleManager();
-        if (subtitleManager != null) {
-            subtitleManager.onPlayerOverlayVisibiltyChange(b);
+        if (subtitleManager != null && (!toolbarVisibility || !this.mController.isInPortrait())) {
+            subtitleManager.onPlayerOverlayVisibiltyChange(toolbarVisibility);
+        }
+        if (this.mDecorator != null) {
+            this.mDecorator.playerOverlayVisibility(toolbarVisibility);
+        }
+        if (this.mController.isInPortrait()) {
+            this.setToolbarVisibility(toolbarVisibility);
         }
     }
     
@@ -464,6 +688,9 @@ public class PlayScreen implements Screen
                 this.mFlipper.showNext();
             }
             this.moveToState(PlayerUiState.PlayingWithTrickPlayOverlay);
+        }
+        else if (this.mState == PlayerUiState.PostPlay && this.mController.isCoppolaPlayback()) {
+            this.moveToState(PlayerUiState.Playing);
         }
     }
     
@@ -491,16 +718,38 @@ public class PlayScreen implements Screen
     void setDebugDataVisibility(final boolean b) {
     }
     
+    public void setDecorator(final PlayScreenDecorator mDecorator) {
+        this.mDecorator = mDecorator;
+    }
+    
+    public void setMediaImage(final boolean mediaImage) {
+        if (this.mDecorator != null) {
+            this.mDecorator.updatePlaybackStatus(mediaImage);
+        }
+        if (!CoppolaUtils.isCoppolaContext((Context)this.getController())) {
+            this.mBottomPanel.setMediaImage(mediaImage);
+        }
+    }
+    
+    public void setPlayPauseVisibility(final int playPauseVisibility) {
+        this.mBottomPanel.setPlayPauseVisibility(playPauseVisibility);
+    }
+    
     int setProgress(final int n, final int n2, final boolean b) {
         return this.setProgress(n, n2, b, true);
     }
     
-    int setProgress(final int n, final int n2, final boolean b, final boolean b2) {
-        final BottomPanel mBottomPanel = this.mBottomPanel;
-        if (mBottomPanel != null) {
-            return mBottomPanel.setProgress(n, n2, b, b2);
+    int setProgress(final int currentTimelineProgress, final int n, final boolean b, final boolean b2) {
+        this.currentTimelineProgress = currentTimelineProgress;
+        if (this.mDecorator != null) {
+            this.mDecorator.setTimelineProgress(currentTimelineProgress, b);
         }
-        return 0;
+        this.mBottomPanel.setProgress(currentTimelineProgress, n, b, b2);
+        return currentTimelineProgress;
+    }
+    
+    public void setSeekbarTrackingEnabled(final boolean seekbarTrackingEnabled) {
+        this.mBottomPanel.setSeekbarTrackingEnabled(seekbarTrackingEnabled);
     }
     
     void setTitle(final String title) {
@@ -511,17 +760,18 @@ public class PlayScreen implements Screen
     }
     
     public void setTopPanelVisibility(final boolean b) {
-        if (this.mTopPanel != null) {
-            if (!b) {
-                this.mTopPanel.hide();
-                return;
-            }
-            if (this.mState == PlayerUiState.PlayingWithTrickPlayOverlay) {
-                this.mTopPanel.show();
-                return;
-            }
-            Log.d("screen", "Player UI is NOT visible. Do not make top panel visible");
+        if (this.isCoppolaPortrait() || this.mTopPanel == null) {
+            return;
         }
+        if (!b) {
+            this.mTopPanel.hide();
+            return;
+        }
+        if (this.mState != PlayerUiState.PlayingWithTrickPlayOverlay) {
+            Log.d("screen", "Player UI is NOT visible. Do not make top panel visible");
+            return;
+        }
+        this.mTopPanel.show();
     }
     
     public void setZoom(final boolean b) {
@@ -538,6 +788,16 @@ public class PlayScreen implements Screen
         this.mZoomEnabled = mZoomEnabled;
     }
     
+    public void setZoomImage(final boolean zoomImage) {
+        if (!this.mController.isCoppolaPlayback()) {
+            this.mBottomPanel.setZoomImage(zoomImage);
+        }
+    }
+    
+    public void setZoomVisibility(final int zoomVisibility) {
+        this.mBottomPanel.setZoomVisibility(zoomVisibility);
+    }
+    
     protected boolean shouldPlaybackRelatedOptionBePossible() {
         return !this.mController.isStalled() && this.mState != PlayerUiState.Loading;
     }
@@ -552,7 +812,7 @@ public class PlayScreen implements Screen
             return;
         }
         if (this.mController.isTablet()) {
-            final int dipToPixels = AndroidUtils.dipToPixels((Context)this.getController(), 40);
+            final int dipToPixels = AndroidUtils.dipToPixels((Context)this.mController.getActivity(), 40);
             final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)this.mTabletBifsLayout.getLayoutParams();
             layoutParams.setMargins(this.mBottomPanel.getTimeXAndUpdateHandler(this.mTabletBifsLayout), 0, 0, dipToPixels);
             this.mTabletBifsLayout.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
@@ -565,19 +825,22 @@ public class PlayScreen implements Screen
         Log.d("screen", "bitmap is null");
     }
     
-    void showNavigationBar() {
-        Log.d("screen", "show nav noop");
+    public void showBottomPanel() {
+        if (!this.isCoppolaPortrait()) {
+            this.mBottomPanel.show();
+        }
     }
     
-    protected void showQuickActions() {
-        if (this.mQuickActions != null) {
-            final DataSaveConfigData bwSaveConfigData = this.mController.getNetflixActivity().getServiceManager().getConfiguration().getBWSaveConfigData();
-            final int intPref = PreferenceUtils.getIntPref((Context)this.mController.getActivity(), "user_bw_quick_action_shown", 0);
-            if (bwSaveConfigData != null && BandwidthSaving.isBWSavingEnabledForPlay((Context)this.mController.getActivity(), bwSaveConfigData, false) && intPref < 2) {
-                this.mQuickActions.setVisibility(0);
-                PreferenceUtils.putIntPref((Context)this.mController.getActivity(), "user_bw_quick_action_shown", intPref + 1);
-            }
+    void showContentAdvisory() {
+        if (this.mContentAdvisory == null || this.isAdvisoryDisabled()) {
+            return;
         }
+        this.mHandler.removeCallbacks(this.contentAdvisoryNoticeCompletionRunnable);
+        this.mHandler.postDelayed(this.contentAdvisoryStartNoticeRunnable, 500L);
+    }
+    
+    void showNavigationBar() {
+        Log.d("screen", "show nav noop");
     }
     
     void showSplashScreen() {
@@ -609,6 +872,19 @@ public class PlayScreen implements Screen
                 mBottomPanel.getCurrentTime().start(byteBuffer);
             }
         }
+    }
+    
+    public void startDragging() {
+        this.changeActionState(false, false);
+        this.setTopPanelVisibility(false);
+        if (this.mDecorator != null) {
+            this.mDecorator.setDraggingState(true);
+        }
+        if (this.isCoppolaPortrait()) {
+            this.setToolbarVisibility(false);
+            return;
+        }
+        this.mBottomPanel.startDragging();
     }
     
     public void stopBif() {

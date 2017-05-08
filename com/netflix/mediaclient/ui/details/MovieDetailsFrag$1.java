@@ -4,11 +4,7 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import android.view.View;
-import com.netflix.mediaclient.util.ViewUtils;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
-
-class MovieDetailsFrag$1 implements ViewTreeObserver$OnGlobalLayoutListener
+class MovieDetailsFrag$1 implements Runnable
 {
     final /* synthetic */ MovieDetailsFrag this$0;
     
@@ -16,8 +12,8 @@ class MovieDetailsFrag$1 implements ViewTreeObserver$OnGlobalLayoutListener
         this.this$0 = this$0;
     }
     
-    public void onGlobalLayout() {
-        ViewUtils.removeGlobalLayoutListener((View)this.this$0.detailsViewGroup, (ViewTreeObserver$OnGlobalLayoutListener)this);
-        this.this$0.setupDetailsPageParallaxScrollListener();
+    @Override
+    public void run() {
+        this.this$0.recyclerView.scrollToPosition(0);
     }
 }

@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.service.resfetcher;
 
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.android.app.NetworkErrorStatus;
 import com.netflix.mediaclient.Log;
 import com.android.volley.VolleyError;
 import com.android.volley.Response$ErrorListener;
@@ -26,7 +26,7 @@ class ResourceFetcher$2 implements Response$ErrorListener
     public void onErrorResponse(final VolleyError volleyError) {
         Log.e("nf_service_resourcefetcher", "FileDownloadRequest failed: ", volleyError);
         if (this.val$realCallback != null) {
-            this.val$realCallback.onResourceRawFetched(this.val$resourceUrl, null, CommonStatus.NETWORK_ERROR);
+            this.val$realCallback.onResourceFetched(this.val$resourceUrl, null, new NetworkErrorStatus(volleyError));
         }
     }
 }

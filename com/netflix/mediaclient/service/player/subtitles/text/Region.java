@@ -9,6 +9,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import com.netflix.mediaclient.Log;
 import org.w3c.dom.Element;
+import com.netflix.mediaclient.service.player.subtitles.TextSubtitleParser;
 import com.netflix.mediaclient.service.player.subtitles.DoubleLength;
 
 public class Region

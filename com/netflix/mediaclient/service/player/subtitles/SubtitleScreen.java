@@ -13,9 +13,10 @@ public class SubtitleScreen
     private List<SubtitleBlock> mDisplayNowBlocks;
     private String mId;
     private SubtitleParser mParser;
+    private long mPositionInMs;
     private int mUpdateTimeout;
     
-    public SubtitleScreen(final SubtitleParser mParser, final List<SubtitleBlock> mDisplayNowBlocks, final List<SubtitleBlock> mDisplayLaterBlocks, final int mUpdateTimeout) {
+    public SubtitleScreen(final SubtitleParser mParser, final List<SubtitleBlock> mDisplayNowBlocks, final List<SubtitleBlock> mDisplayLaterBlocks, final int mUpdateTimeout, final long mPositionInMs) {
         this.mId = String.valueOf(System.currentTimeMillis());
         this.mUpdateTimeout = 2000;
         this.mId = "" + this.hashCode();
@@ -23,6 +24,7 @@ public class SubtitleScreen
         this.mDisplayLaterBlocks = mDisplayLaterBlocks;
         this.mDisplayNowBlocks = mDisplayNowBlocks;
         this.mUpdateTimeout = mUpdateTimeout;
+        this.mPositionInMs = mPositionInMs;
     }
     
     public List<SubtitleBlock> getDisplayLaterBlocks() {
@@ -39,6 +41,10 @@ public class SubtitleScreen
     
     public SubtitleParser getParser() {
         return this.mParser;
+    }
+    
+    public long getPositionInMs() {
+        return this.mPositionInMs;
     }
     
     public int getUpdateTimeout() {

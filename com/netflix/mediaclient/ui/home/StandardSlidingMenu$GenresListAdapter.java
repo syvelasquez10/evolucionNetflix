@@ -9,6 +9,7 @@ import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.content.Context;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -66,8 +67,8 @@ class StandardSlidingMenu$GenresListAdapter extends BaseAdapter
     public View getView(final int n, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903224, (ViewGroup)null);
-            inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder((TextView)inflate.findViewById(2131624361), inflate.findViewById(2131624362)));
+            inflate = this.this$0.activity.getLayoutInflater().inflate(2130903252, (ViewGroup)null);
+            inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder((TextView)inflate.findViewById(2131624438), inflate.findViewById(2131624439)));
         }
         final StandardSlidingMenu$GenreRowHolder standardSlidingMenu$GenreRowHolder = (StandardSlidingMenu$GenreRowHolder)inflate.getTag();
         final GenreList item = this.getItem(n);

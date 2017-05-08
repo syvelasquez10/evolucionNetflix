@@ -10,7 +10,6 @@ public class GenericMediaEvent extends BaseMediaEvent
 {
     public static final String bufferingComplete = "bufferingComplete";
     public static final String endOfStream = "endOfStream";
-    public static final String openComplete = "openComplete";
     public static final String underflow = "underflow";
     
     public GenericMediaEvent(final String s) {

@@ -22,10 +22,10 @@ import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.content.Context;
 import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import android.view.inputmethod.InputMethodManager;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.os.Parcelable;
 import android.os.Bundle;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ProgressBar;
@@ -47,7 +47,7 @@ class PinDialog$1 extends LinkMovementMethod
     }
     
     public boolean onTouchEvent(final TextView textView, final Spannable spannable, final MotionEvent motionEvent) {
-        this.this$0.mPinForgotView.setLinkTextColor(this.this$0.getResources().getColor(2131558523));
+        this.this$0.mPinForgotView.setLinkTextColor(this.this$0.getResources().getColor(2131558532));
         return super.onTouchEvent(textView, spannable, motionEvent);
     }
 }

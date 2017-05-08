@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.util.NetflixPreference;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
@@ -33,7 +34,7 @@ public class DeviceRepository
         return this.category;
     }
     
-    public void update(final Context context, final String s) {
+    public void update(final NetflixPreference netflixPreference, final String s) {
         Log.d("nf_device", "Device category update start");
         if (this.category == null && s == null) {
             Log.d("nf_device", "Both new and old category are null! Do nothing.");
@@ -44,7 +45,7 @@ public class DeviceRepository
                     Log.d("nf_device", "Old category was " + this.category + " and new category is null! Remove saved category!");
                 }
                 this.category = null;
-                PreferenceUtils.removePref(context, "nf_device_category");
+                netflixPreference.removePref("nf_device_category");
                 return;
             }
             final DeviceCategory find = DeviceCategory.find(s);
@@ -53,7 +54,7 @@ public class DeviceRepository
                     Log.d("nf_device", "Old category was " + this.category + " and new category is now " + find);
                 }
                 this.category = find;
-                PreferenceUtils.putStringPref(context, "nf_device_category", find.getValue());
+                netflixPreference.putStringPref("nf_device_category", find.getValue());
                 return;
             }
             if (Log.isLoggable()) {

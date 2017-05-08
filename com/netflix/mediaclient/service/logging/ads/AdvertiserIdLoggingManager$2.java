@@ -14,7 +14,7 @@ import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging$EventType;
 import com.netflix.mediaclient.service.logging.LoggingAgent;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
-import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.util.NetflixPreference;
 import com.netflix.mediaclient.Log;
 
 class AdvertiserIdLoggingManager$2 implements AdvertiserIdLoggingCallback
@@ -38,9 +38,11 @@ class AdvertiserIdLoggingManager$2 implements AdvertiserIdLoggingCallback
     public void onSuccess() {
         Log.d("nf_adv_id", "Advertiser ID delivered");
         final long currentTimeMillis = System.currentTimeMillis();
-        PreferenceUtils.putStringPref(this.this$0.mContext, "advertisement_id", this.val$id);
-        PreferenceUtils.putLongPref(this.this$0.mContext, "advertisement_id_ts", currentTimeMillis);
-        PreferenceUtils.putBooleanPref(this.this$0.mContext, "advertisement_id_opted_in", this.val$optedIn);
+        final NetflixPreference netflixPreference = new NetflixPreference(this.this$0.mContext);
+        netflixPreference.putStringPref("advertisement_id", this.val$id);
+        netflixPreference.putLongPref("advertisement_id_ts", currentTimeMillis);
+        netflixPreference.putBooleanPref("advertisement_id_opted_in", this.val$optedIn);
+        netflixPreference.commit();
         this.this$0.mAdIdReported = this.val$id;
         this.this$0.mAdIdReportedTimestamp = currentTimeMillis;
         this.this$0.mAdIdReportedOptedIn = this.val$optedIn;

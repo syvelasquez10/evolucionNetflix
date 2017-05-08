@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.mdx;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import android.app.Service;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
+import java.util.List;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import android.text.TextUtils;
@@ -28,6 +29,7 @@ import android.net.wifi.WifiManager;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.mdx.notification.MdxNotificationManagerFactory;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -71,7 +73,7 @@ class MdxAgent$2 implements Runnable
     @Override
     public void run() {
         if (this.this$0.mMdxNativeExitCompleted.get()) {
-            Log.d("nf_mdx_agent", "notifyIsUserLogin: login, init native");
+            Log.d("nf_mdx_MdxAgent", "notifyIsUserLogin: login, init native");
             this.this$0.getMainHandler().removeCallbacks(this.this$0.mInitMdxNative);
             this.this$0.mReady.set(false);
             this.this$0.addStateEventListener();
@@ -83,7 +85,7 @@ class MdxAgent$2 implements Runnable
             this.this$0.mTargetRestartingList.clear();
             return;
         }
-        Log.d("nf_mdx_agent", "notifyIsUserLogin: login, already exited check back in 1 sec ");
+        Log.d("nf_mdx_MdxAgent", "notifyIsUserLogin: login, already exited check back in 1 sec ");
         this.this$0.getMainHandler().postDelayed(this.this$0.mInitMdxNative, 1000L);
     }
 }

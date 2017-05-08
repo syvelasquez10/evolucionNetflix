@@ -76,6 +76,16 @@ public final class UserVolleyWebClient implements UserWebClient
     }
     
     @Override
+    public void recordPlanSelection(final String s, final String s2) {
+        this.webclient.sendRequest(new RecordPlanSelection(this.service.getApplicationContext(), s, s2));
+    }
+    
+    @Override
+    public void recordUmsImpression(final String s, final String s2) {
+        this.webclient.sendRequest(new RecordUmsImpression(this.service.getApplicationContext(), s, s2));
+    }
+    
+    @Override
     public void removeWebUserProfile(final String s, final UserAgentWebCallback userAgentWebCallback) {
         this.webclient.sendRequest(new RemoveUserProfileRequest(this.service.getApplicationContext(), s, userAgentWebCallback));
     }

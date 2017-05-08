@@ -6,15 +6,19 @@ package com.netflix.mediaclient.javabridge.ui;
 
 import com.netflix.mediaclient.media.VideoResolutionRange;
 import android.view.Surface;
+import com.netflix.mediaclient.service.webclient.model.leafs.PreviewContentConfigData;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetType;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.media.Watermark;
 import com.netflix.mediaclient.media.TrickplayUrl;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
+import com.netflix.mediaclient.util.PlaybackVolumeMetric;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams;
 import com.netflix.mediaclient.servicemgr.IManifestCache$CacheScheduleRequest;
@@ -41,7 +45,7 @@ public interface IMedia
     
     void changePlayer(final PlayerType p0);
     
-    void close();
+    void close(final String p0, final PlaybackVolumeMetric p1);
     
     AudioSubtitleDefaultOrderInfo[] getAudioSubtitleDefaultOrderInfo();
     
@@ -75,7 +79,9 @@ public interface IMedia
     
     int getVideoWidth();
     
-    void open(final long p0, final PlayContext p1, final AuthorizationParams$NetType p2, final long p3);
+    Watermark getWatermark();
+    
+    void open(final long p0, final PlayContext p1, final AuthorizationParams$NetType p2, final long p3, final boolean p4, final PlaybackVolumeMetric p5, final long p6);
     
     void pause();
     
@@ -83,7 +89,9 @@ public interface IMedia
     
     void removeEventListener(final String p0, final EventListener p1);
     
-    void reportFailedSubtitle(final String p0, final SubtitleUrl p1, final IMedia$SubtitleFailure p2, final boolean p3);
+    void reportFailedSubtitle(final String p0, final SubtitleUrl p1, final IMedia$SubtitleFailure p2, final boolean p3, final Status p4);
+    
+    void reportSubtitleQoe(final String p0, final int p1, final int p2);
     
     void reset();
     
@@ -104,6 +112,8 @@ public interface IMedia
     void setMaxVideoBufferSize(final int p0);
     
     void setNetworkProfile(final int p0);
+    
+    void setPreviewContentConfig(final PreviewContentConfigData p0);
     
     void setStreamingQoe(final String p0, final boolean p1, final boolean p2);
     
@@ -126,4 +136,6 @@ public interface IMedia
     void swim(final int p0, final boolean p1, final int p2, final boolean p3);
     
     void unpause();
+    
+    void volumeChange(final PlaybackVolumeMetric p0, final PlaybackVolumeMetric p1);
 }

@@ -38,9 +38,8 @@ public class CurrentTimePhone extends CurrentTime
         if (this.playerFragment == null || this.currentTime == null) {
             return;
         }
-        final BottomPanel bottomPanel = this.playerFragment.getScreen().getBottomPanel();
         final RelativeLayout$LayoutParams layoutParams = (RelativeLayout$LayoutParams)this.currentTime.getLayoutParams();
-        layoutParams.setMargins(bottomPanel.getTimeXAndUpdateHandler(this.currentTime), 0, 0, 0);
+        layoutParams.setMargins(this.playerFragment.getScreen().getTimeXAndUpdateHandler(this.currentTime), 0, 0, 0);
         this.currentTime.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
         Log.d("screen", "moveCurrentTimeWithTimeline set layout parameter!");
     }

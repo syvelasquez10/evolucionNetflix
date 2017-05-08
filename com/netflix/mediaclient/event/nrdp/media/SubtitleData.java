@@ -54,6 +54,10 @@ public class SubtitleData extends BaseMediaEvent
         }
     }
     
+    public void reset() {
+        this.mPosition = 0;
+    }
+    
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("SubtitleData [\n");

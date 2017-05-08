@@ -6,6 +6,7 @@ package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.media.Language;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
+import com.netflix.mediaclient.media.Watermark;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 
@@ -29,7 +30,7 @@ public interface IPlayer$PlayerListener
     
     void onPlaying();
     
-    void onPrepared();
+    void onPrepared(final Watermark p0);
     
     void onSeekComplete();
     

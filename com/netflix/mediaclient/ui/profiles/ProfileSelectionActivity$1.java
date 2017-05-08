@@ -36,6 +36,8 @@ import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.app.Activity;
 import android.content.Intent;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
+import java.util.Locale;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;

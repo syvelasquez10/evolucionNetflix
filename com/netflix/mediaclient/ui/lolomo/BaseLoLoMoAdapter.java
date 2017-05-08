@@ -96,19 +96,19 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     
     private BaseLoLoMoAdapter$RowHolder createViewsAndHolder(final View view) {
         Log.v("BaseLoLoMoAdapter", "creating views and holder");
-        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131624232);
+        final LinearLayout linearLayout = (LinearLayout)view.findViewById(2131624310);
         linearLayout.setFocusable(false);
-        final TextView textView = (TextView)view.findViewById(2131624234);
+        final TextView textView = (TextView)view.findViewById(2131624312);
         final Resources resources = this.activity.getResources();
         int n;
-        if (BrowseExperience.isKubrickKids()) {
-            n = 2131558453;
+        if (BrowseExperience.showKidsExperience()) {
+            n = 2131558457;
         }
         else {
-            n = 2131558538;
+            n = 2131558547;
         }
         textView.setTextColor(resources.getColor(n));
-        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131624282));
+        return this.createHolder(view, linearLayout, this.initTitleView(view), this.createRowContent(linearLayout, (View)textView), view.findViewById(2131624360));
     }
     
     private void fetchMoreData() {
@@ -199,7 +199,7 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     protected int getShelfVisibility(final T t, final int n) {
-        if (this.isRowAfterBillboardOrCwRow(n, t.getType()) && !BrowseExperience.isKubrickKids()) {
+        if (this.isRowAfterBillboardOrCwRow(n, t.getType()) && !BrowseExperience.showKidsExperience()) {
             return 0;
         }
         return 8;
@@ -254,16 +254,16 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
     }
     
     protected int getViewLayoutId() {
-        return 2130903143;
+        return 2130903165;
     }
     
     protected TextView initTitleView(final View view) {
-        final TextView textView = (TextView)view.findViewById(2131624233);
+        final TextView textView = (TextView)view.findViewById(2131624311);
         if (Log.isLoggable()) {
             Log.v("BaseLoLoMoAdapter", "Manipulating title padding, view: " + textView);
         }
         if (textView != null) {
-            ViewUtils.setPaddingLeft((View)textView, LoMoUtils.getLomoFragImageOffsetLeftPx(this.activity));
+            ViewUtils.setPaddingStart((View)textView, LoMoUtils.getLomoFragImageOffsetLeftPx(this.activity));
         }
         return textView;
     }
@@ -357,14 +357,14 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         this.notifyDataSetChanged();
     }
     
-    protected void updateRowViews(final BaseLoLoMoAdapter$RowHolder baseLoLoMoAdapter$RowHolder, final T t, int dipToPixels) {
+    protected void updateRowViews(final BaseLoLoMoAdapter$RowHolder baseLoLoMoAdapter$RowHolder, final T t, final int n) {
         if (Log.isLoggable()) {
-            Log.v("BaseLoLoMoAdapter", "Updating LoMo row content: " + t.getTitle() + ", type: " + t.getType() + ", pos: " + dipToPixels);
+            Log.v("BaseLoLoMoAdapter", "Updating LoMo row content: " + t.getTitle() + ", type: " + t.getType() + ", pos: " + n);
         }
         final TextView title = baseLoLoMoAdapter$RowHolder.title;
         String text;
         if (t.getType() == LoMoType.BILLBOARD) {
-            text = this.activity.getString(2131165632);
+            text = this.activity.getString(2131165662);
         }
         else {
             text = t.getTitle();
@@ -372,25 +372,12 @@ public abstract class BaseLoLoMoAdapter<T extends BasicLoMo> extends BaseAdapter
         title.setText((CharSequence)text);
         baseLoLoMoAdapter$RowHolder.title.setVisibility(BrowseExperience.get().getLomoRowTitleVisibility(this.activity, t));
         if (baseLoLoMoAdapter$RowHolder.shelf != null) {
-            baseLoLoMoAdapter$RowHolder.shelf.setVisibility(this.getShelfVisibility(t, dipToPixels));
+            baseLoLoMoAdapter$RowHolder.shelf.setVisibility(this.getShelfVisibility(t, n));
         }
-        baseLoLoMoAdapter$RowHolder.rowContent.refresh(t, dipToPixels);
-        if (BrowseExperience.isKubrickKids()) {
+        baseLoLoMoAdapter$RowHolder.rowContent.refresh(t, n);
+        if (BrowseExperience.showKidsExperience()) {
             Api16Util.setBackgroundDrawableCompat(baseLoLoMoAdapter$RowHolder.contentGroup, null);
-            if (dipToPixels == this.getCount() - 1) {
-                dipToPixels = 1;
-            }
-            else {
-                dipToPixels = 0;
-            }
-            final View contentGroup = baseLoLoMoAdapter$RowHolder.contentGroup;
-            if (dipToPixels != 0) {
-                dipToPixels = AndroidUtils.dipToPixels((Context)this.activity, 24);
-            }
-            else {
-                dipToPixels = 0;
-            }
-            contentGroup.setPadding(0, 0, 0, dipToPixels);
+            baseLoLoMoAdapter$RowHolder.contentGroup.setPadding(0, 0, 0, this.activity.getResources().getDimensionPixelSize(2131296613));
             baseLoLoMoAdapter$RowHolder.title.setTextColor(baseLoLoMoAdapter$RowHolder.defaultTitleColors);
         }
     }

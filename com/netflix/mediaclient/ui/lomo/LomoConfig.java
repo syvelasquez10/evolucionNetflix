@@ -49,7 +49,7 @@ public final class LomoConfig
             return 10;
         }
         final int screenSizeCategory = DeviceUtils.getScreenSizeCategory((Context)netflixActivity);
-        if (BrowseExperience.isKubrick() || BrowseExperience.isKubrickKids()) {
+        if (BrowseExperience.isKubrick()) {
             if (loMoType == LoMoType.CONTINUE_WATCHING) {
                 return 6;
             }
@@ -104,10 +104,7 @@ public final class LomoConfig
                 return 8;
             }
             case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9: {
+            case 6: {
                 return 32;
             }
             case 2:

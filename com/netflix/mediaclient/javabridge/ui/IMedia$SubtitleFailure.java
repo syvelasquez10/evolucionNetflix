@@ -8,5 +8,6 @@ public enum IMedia$SubtitleFailure
 {
     badMasterIndex, 
     download, 
-    parsing;
+    parsing, 
+    parsingCachedMasterIndex;
 }

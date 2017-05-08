@@ -80,6 +80,10 @@ public class TargetManager implements EventListener, CommandInterface
         return this.mTarget != null && this.mTarget.hasActiveSession();
     }
     
+    public boolean isCurrentSessionEnded() {
+        return this.mTarget != null && this.mTarget.isCurrentSessionEnded();
+    }
+    
     public boolean isTargetHaveContext(final String s) {
         return this.mTarget != null && this.mTarget.isThisTargetUuid(s);
     }

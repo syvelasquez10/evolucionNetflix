@@ -11,8 +11,10 @@ public class Falkor$Branches
     public static final String CURRENT = "current";
     public static final String EPISODES = "episodes";
     public static final String EVIDENCE_LISTS = "evidenceLists";
+    public static final String EXPIRING_CONTENT = "expiringContentNotice";
     public static final String FLAT_GENRE = "flatGenre";
     public static final String GENRE_LIST = "genreList";
+    public static final String INTERACTIVE_INFO = "interactive";
     public static final String LISTS = "lists";
     public static final String LOLOMO = "lolomo";
     public static final String LOLOMOS = "lolomos";
@@ -23,6 +25,7 @@ public class Falkor$Branches
     public static final String PEOPLE = "people";
     public static final String POST_PLAY = "postplay";
     public static final String RELATED_VIDEOS = "relatedVideos";
+    public static final String SCENES = "scenes";
     public static final String SEARCH = "search";
     public static final String SEASONS = "seasons";
     public static final String SHOWS = "shows";

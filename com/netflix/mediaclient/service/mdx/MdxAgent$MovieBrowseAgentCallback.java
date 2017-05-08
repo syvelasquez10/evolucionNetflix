@@ -7,6 +7,7 @@ package com.netflix.mediaclient.service.mdx;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import android.app.Service;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
+import java.util.List;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import android.text.TextUtils;
@@ -26,6 +27,7 @@ import android.os.PowerManager;
 import android.net.wifi.WifiManager;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.Iterator;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.service.mdx.notification.MdxNotificationManagerFactory;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -73,7 +75,7 @@ class MdxAgent$MovieBrowseAgentCallback extends SimpleBrowseAgentCallback
     @Override
     public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
         if (Log.isLoggable()) {
-            Log.v("nf_mdx_agent", "onMovieDetailsFetched, res: " + status);
+            Log.v("nf_mdx_MdxAgent", "onMovieDetailsFetched, res: " + status);
         }
         if (status.isSucces()) {
             this.this$0.mVideoDetails = movieDetails;

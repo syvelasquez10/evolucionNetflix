@@ -15,6 +15,7 @@ public class PlayVerifierVault implements Parcelable
     public static final Parcelable$Creator<PlayVerifierVault> CREATOR;
     public static final String NAME;
     private Asset mAsset;
+    private int mBookmark;
     private String mInvokeLocation;
     private boolean mRemotePlayback;
     private String mUuid;
@@ -32,25 +33,31 @@ public class PlayVerifierVault implements Parcelable
         this.mUuid = ParcelUtils.readString(parcel);
         this.mRemotePlayback = ParcelUtils.readBoolean(parcel);
         this.mAsset = (Asset)parcel.readParcelable(Asset.class.getClassLoader());
+        this.mBookmark = ParcelUtils.readInt(parcel);
     }
     
     public PlayVerifierVault(final String s, final Asset asset) {
-        this(s, asset, false, null);
+        this(s, asset, false, null, -1);
     }
     
     public PlayVerifierVault(final String s, final Asset asset, final boolean b) {
-        this(s, asset, b, null);
+        this(s, asset, b, null, -1);
     }
     
-    PlayVerifierVault(final String mInvokeLocation, final Asset mAsset, final boolean mRemotePlayback, final String mUuid) {
+    public PlayVerifierVault(final String s, final Asset asset, final boolean b, final int n) {
+        this(s, asset, b, null, n);
+    }
+    
+    PlayVerifierVault(final String mInvokeLocation, final Asset mAsset, final boolean mRemotePlayback, final String mUuid, final int mBookmark) {
         this.mInvokeLocation = mInvokeLocation;
         this.mAsset = mAsset;
         this.mRemotePlayback = mRemotePlayback;
         this.mUuid = mUuid;
+        this.mBookmark = mBookmark;
     }
     
     public PlayVerifierVault(final String s, final String s2) {
-        this(s, null, false, s2);
+        this(s, null, false, s2, -1);
     }
     
     public int describeContents() {
@@ -69,13 +76,17 @@ public class PlayVerifierVault implements Parcelable
         return this.mUuid;
     }
     
+    public int getmBookmark() {
+        return this.mBookmark;
+    }
+    
     public boolean isRemotePlayback() {
         return this.mRemotePlayback;
     }
     
     @Override
     public String toString() {
-        return "PinDialogVault [mInvokeLocation=" + this.mInvokeLocation + ", mAsset=" + this.mAsset + ", mRemotePlayback=" + this.mRemotePlayback + ", mUuid=" + this.mUuid + "]";
+        return "PinDialogVault [mInvokeLocation=" + this.mInvokeLocation + ", mAsset=" + this.mAsset + ", mRemotePlayback=" + this.mRemotePlayback + ", mUuid=" + this.mUuid + ", mBookmark=" + this.mBookmark + "]";
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
@@ -83,5 +94,6 @@ public class PlayVerifierVault implements Parcelable
         ParcelUtils.writeString(parcel, this.mUuid);
         ParcelUtils.writeBoolean(parcel, this.mRemotePlayback);
         parcel.writeParcelable((Parcelable)this.mAsset, n);
+        ParcelUtils.writeInt(parcel, this.mBookmark);
     }
 }

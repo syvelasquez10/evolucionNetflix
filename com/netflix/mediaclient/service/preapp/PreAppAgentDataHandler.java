@@ -6,14 +6,15 @@ package com.netflix.mediaclient.service.preapp;
 
 import java.util.HashSet;
 import com.netflix.mediaclient.util.data.DataRepository$DataSavedCallback;
-import android.content.Intent;
-import com.netflix.mediaclient.service.pservice.PService;
 import com.netflix.mediaclient.service.pservice.PDiskDataRepository$LoadCallback;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.pservice.PServiceWidgetAgent;
 import com.netflix.mediaclient.service.pservice.PDiskData$ImageType;
 import com.netflix.mediaclient.service.resfetcher.LoggingResourceFetcherCallback;
 import com.netflix.mediaclient.service.ServiceAgent$BrowseAgentInterface;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
+import com.netflix.mediaclient.service.pservice.PService;
+import android.content.Intent;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.service.pservice.PVideo;
@@ -130,11 +131,11 @@ public class PreAppAgentDataHandler
             else if (LoMoType.INSTANT_QUEUE.equals(loMo.getType())) {
                 lomoMap.put(PDiskData$ListType.IQ.getValue(), loMo.getTitle());
             }
-            else if (LoMoType.STANDARD.equals(loMo.getType()) && lomoMap.get(PDiskData$ListType.STANDARD_FIRST.getValue()) == null) {
+            else if (LoMoType.isRegularLomoForPreApp(loMo.getType()) && lomoMap.get(PDiskData$ListType.STANDARD_FIRST.getValue()) == null) {
                 lomoMap.put(PDiskData$ListType.STANDARD_FIRST.getValue(), loMo.getTitle());
             }
             else {
-                if (!LoMoType.STANDARD.equals(loMo.getType()) || lomoMap.get(PDiskData$ListType.STANDARD_SECOND.getValue()) != null) {
+                if (!LoMoType.isRegularLomoForPreApp(loMo.getType()) || lomoMap.get(PDiskData$ListType.STANDARD_SECOND.getValue()) != null) {
                     continue;
                 }
                 lomoMap.put(PDiskData$ListType.STANDARD_SECOND.getValue(), loMo.getTitle());
@@ -165,6 +166,13 @@ public class PreAppAgentDataHandler
                 list2.add(new PVideo(iterator.next()));
             }
         }
+    }
+    
+    private static Intent createIntentToPService(final Context context, final String s) {
+        final Intent intent = new Intent(s);
+        intent.addCategory("com.netflix.mediaclient.intent.category.CATEGORY_FROM_PREAPP_AGENT");
+        intent.setClass(context, (Class)PService.class);
+        return intent;
     }
     
     private void fetchLists(final PreAppAgentEventType preAppAgentEventType, final SimpleBrowseAgentCallback simpleBrowseAgentCallback, final SimpleBrowseAgentCallback simpleBrowseAgentCallback2, final SimpleBrowseAgentCallback simpleBrowseAgentCallback3, final SimpleBrowseAgentCallback simpleBrowseAgentCallback4, final SimpleBrowseAgentCallback simpleBrowseAgentCallback5) {
@@ -319,6 +327,14 @@ public class PreAppAgentDataHandler
         return false;
     }
     
+    private static boolean isWorthWakingPService() {
+        final boolean b = AndroidUtils.isWidgetInstalled(PreAppAgentDataHandler.mContext) || PService.isRemoteUiDevice();
+        if (Log.isLoggable()) {
+            Log.d("nf_preappagentdatahandler", "isWorthWakingPService toWakeUp: " + b);
+        }
+        return b;
+    }
+    
     private void loadFromDisk(final PDiskDataRepository$LoadCallback pDiskDataRepository$LoadCallback) {
         new BackgroundTask().execute(new PreAppAgentDataHandler$12(this, pDiskDataRepository$LoadCallback));
     }
@@ -368,49 +384,65 @@ public class PreAppAgentDataHandler
     
     private void notifyOthers(final Context context, final PreAppAgentEventType preAppAgentEventType) {
         Log.d("nf_preappagentdatahandler", "notifyOthers updateType:" + preAppAgentEventType);
-        if (!PreAppAgentDataHandler.mServiceAgent.getPreAppAgent().isWidgetInstalled() && !PService.isRemoteUiDevice()) {
-            Log.d("nf_preappagentdatahandler", "skipNotiying others - !widgetInstalled & !isRemoteUiDevice & !TestCode");
-        }
-        else {
-            final String s = null;
-            String s2 = null;
-            switch (PreAppAgentDataHandler$15.$SwitchMap$com$netflix$mediaclient$service$preapp$PreAppAgentEventType[preAppAgentEventType.ordinal()]) {
-                default: {
-                    Log.d("nf_preappagentdatahandler", "unknown event type received");
-                    s2 = s;
-                    break;
-                }
-                case 1: {
-                    s2 = "com.netflix.mediaclient.intent.action.ALL_MEMBER_UPDATED_FROM_PREAPP_AGENT";
-                    break;
-                }
-                case 2: {
-                    s2 = "com.netflix.mediaclient.intent.action.CW_UPDATED_FROM_PREAPP_AGENT";
-                    break;
-                }
-                case 3: {
-                    s2 = "com.netflix.mediaclient.intent.action.IQ_UPDATED_FROM_PREAPP_AGENT";
-                    break;
-                }
-                case 4: {
-                    s2 = "com.netflix.mediaclient.intent.action.NON_MEMBER_UPDATED_FROM_PREAPP_AGENT";
-                    break;
-                }
-                case 5: {
-                    s2 = "com.netflix.mediaclient.intent.action.ACTION_ACCOUNT_DEACTIVATED_FROM_PREAPP_AGENT";
-                    break;
-                }
+        final String s = null;
+        String s2 = null;
+        switch (PreAppAgentDataHandler$15.$SwitchMap$com$netflix$mediaclient$service$preapp$PreAppAgentEventType[preAppAgentEventType.ordinal()]) {
+            default: {
+                Log.d("nf_preappagentdatahandler", "unknown event type received");
+                s2 = s;
+                break;
             }
-            if (!StringUtils.isEmpty(s2)) {
-                final Intent intent = new Intent(s2);
-                intent.addCategory("com.netflix.mediaclient.intent.category.CATEGORY_FROM_PREAPP_AGENT");
-                intent.setClass(context, (Class)PService.class);
-                if (Log.isLoggable()) {
-                    Log.d("nf_preappagentdatahandler", String.format("sending intent: %s", intent));
-                }
-                context.startService(intent);
+            case 1: {
+                s2 = "com.netflix.mediaclient.intent.action.ALL_MEMBER_UPDATED_FROM_PREAPP_AGENT";
+                break;
+            }
+            case 2: {
+                s2 = "com.netflix.mediaclient.intent.action.CW_UPDATED_FROM_PREAPP_AGENT";
+                break;
+            }
+            case 3: {
+                s2 = "com.netflix.mediaclient.intent.action.IQ_UPDATED_FROM_PREAPP_AGENT";
+                break;
+            }
+            case 4: {
+                s2 = "com.netflix.mediaclient.intent.action.NON_MEMBER_UPDATED_FROM_PREAPP_AGENT";
+                break;
+            }
+            case 5: {
+                s2 = "com.netflix.mediaclient.intent.action.ACTION_ACCOUNT_DEACTIVATED_FROM_PREAPP_AGENT";
+                break;
             }
         }
+        if (StringUtils.isEmpty(s2)) {
+            return;
+        }
+        this.notifyPService(context, s2);
+    }
+    
+    private void notifyPService(final Context context, final String s) {
+        if (!isWorthWakingPService()) {
+            return;
+        }
+        final Intent intentToPService = createIntentToPService(context, s);
+        if (Log.isLoggable()) {
+            Log.d("nf_preappagentdatahandler", String.format("sending intent: %s", intentToPService));
+        }
+        context.startService(intentToPService);
+    }
+    
+    public static void notifyPServiceOfPlayState(final Context context, final boolean b, final String s) {
+        if (!isWorthWakingPService()) {
+            return;
+        }
+        final Intent intentToPService = createIntentToPService(context, "com.netflix.mediaclient.intent.action.ACTION_PLAYER_STATE_CHANGE");
+        intentToPService.putExtra("isPlayerPaused", b);
+        if (StringUtils.isNotEmpty(s)) {
+            intentToPService.putExtra("videoId", s);
+        }
+        if (Log.isLoggable()) {
+            Log.d("nf_preappagentdatahandler", String.format("sending intent: %s", intentToPService));
+        }
+        context.startService(intentToPService);
     }
     
     private void proceedAfterFetchOfLists(final Set<PDiskData$ListType> set, final PDiskData pDiskData, final PreAppAgentEventType preAppAgentEventType) {
@@ -490,6 +522,16 @@ public class PreAppAgentDataHandler
         final HashSet<PDiskData$ListType> set = new HashSet<PDiskData$ListType>();
         this.setExperienceType(experienceType);
         this.collectFetchCallbacks(set, preAppAgentEventType);
-        PreAppAgentDataHandler.mServiceAgent.getBrowseAgent().fetchLoMos(0, 19, new PreAppAgentDataHandler$6(this, experienceType, set, preAppAgentEventType, new PreAppAgentDataHandler$1(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$2(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$3(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$4(this, experienceType, set, preAppAgentEventType), new PreAppAgentDataHandler$5(this, experienceType, set, preAppAgentEventType)));
+        final PreAppAgentDataHandler$1 preAppAgentDataHandler$1 = new PreAppAgentDataHandler$1(this, experienceType, set, preAppAgentEventType);
+        final PreAppAgentDataHandler$2 preAppAgentDataHandler$2 = new PreAppAgentDataHandler$2(this, experienceType, set, preAppAgentEventType);
+        final PreAppAgentDataHandler$3 preAppAgentDataHandler$3 = new PreAppAgentDataHandler$3(this, experienceType, set, preAppAgentEventType);
+        final PreAppAgentDataHandler$4 preAppAgentDataHandler$4 = new PreAppAgentDataHandler$4(this, experienceType, set, preAppAgentEventType);
+        final PreAppAgentDataHandler$5 preAppAgentDataHandler$5 = new PreAppAgentDataHandler$5(this, experienceType, set, preAppAgentEventType);
+        final PreAppAgentDataHandler$6 preAppAgentDataHandler$6 = new PreAppAgentDataHandler$6(this, experienceType, set, preAppAgentEventType, preAppAgentDataHandler$1, preAppAgentDataHandler$2, preAppAgentDataHandler$3, preAppAgentDataHandler$4, preAppAgentDataHandler$5);
+        if (PreAppAgentEventType.NON_MEMBER_UPDATED.equals(preAppAgentEventType)) {
+            this.fetchLists(preAppAgentEventType, preAppAgentDataHandler$1, preAppAgentDataHandler$2, preAppAgentDataHandler$3, preAppAgentDataHandler$4, preAppAgentDataHandler$5);
+            return;
+        }
+        PreAppAgentDataHandler.mServiceAgent.getBrowseAgent().fetchLoMos(0, 19, preAppAgentDataHandler$6);
     }
 }

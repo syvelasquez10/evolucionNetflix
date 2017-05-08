@@ -41,7 +41,7 @@ public abstract class BaseNotification
     }
     
     public static final NotificationViewHolder getViewHolder(final View view, final IrisNotificationSummary$NotificationTypes irisNotificationSummary$NotificationTypes) {
-        return new NotificationViewHolder((AdvancedImageView)view.findViewById(2131624499), (AdvancedImageView)view.findViewById(2131624241), (TextView)view.findViewById(2131624240), (TextView)view.findViewById(2131624238), (TextView)view.findViewById(2131624239), (TextView)view.findViewById(2131624501), (Button)view.findViewById(2131624502), (Button)view.findViewById(2131624503), view.findViewById(2131624500), view.findViewById(2131624498), (AdvancedImageView)view.findViewById(2131624237), view.findViewById(2131624236));
+        return new NotificationViewHolder((AdvancedImageView)view.findViewById(2131624645), (AdvancedImageView)view.findViewById(2131624319), (TextView)view.findViewById(2131624318), (TextView)view.findViewById(2131624316), (TextView)view.findViewById(2131624317), (TextView)view.findViewById(2131624647), (Button)view.findViewById(2131624648), (Button)view.findViewById(2131624649), view.findViewById(2131624646), view.findViewById(2131624644), (AdvancedImageView)view.findViewById(2131624315), view.findViewById(2131624314));
     }
     
     public static void showSingleLineText(final NotificationViewHolder notificationViewHolder, final int text) {
@@ -122,7 +122,7 @@ public abstract class BaseNotification
         if (irisNotificationSummary.getFriendProfile() != null) {
             notificationViewHolder.getTopTextView().setText((CharSequence)irisNotificationSummary.getFriendProfile().getFullName());
         }
-        notificationViewHolder.getMiddleTextView().setGravity(3);
+        notificationViewHolder.getMiddleTextView().setGravity(8388611);
         if (notificationViewHolder.getBottomTextView() != null) {
             if (irisNotificationSummary.getMessageString() == null || irisNotificationSummary.getMessageString().length() == 0) {
                 notificationViewHolder.getBottomTextView().setVisibility(8);

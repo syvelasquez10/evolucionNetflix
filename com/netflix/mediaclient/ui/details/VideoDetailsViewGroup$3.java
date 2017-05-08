@@ -4,26 +4,24 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.ui.common.PlaybackLauncher;
-import com.netflix.mediaclient.ui.common.PlayContextProvider;
+import com.netflix.mediaclient.Log;
 import android.view.View;
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.view.View$OnClickListener;
+import com.netflix.mediaclient.util.ViewUtils;
+import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 
-class VideoDetailsViewGroup$3 implements View$OnClickListener
+class VideoDetailsViewGroup$3 implements ViewTreeObserver$OnGlobalLayoutListener
 {
     final /* synthetic */ VideoDetailsViewGroup this$0;
-    final /* synthetic */ NetflixActivity val$activity;
-    final /* synthetic */ VideoDetails val$details;
     
-    VideoDetailsViewGroup$3(final VideoDetailsViewGroup this$0, final NetflixActivity val$activity, final VideoDetails val$details) {
+    VideoDetailsViewGroup$3(final VideoDetailsViewGroup this$0) {
         this.this$0 = this$0;
-        this.val$activity = val$activity;
-        this.val$details = val$details;
     }
     
-    public void onClick(final View view) {
-        PlaybackLauncher.startPlaybackAfterPIN(this.val$activity, this.val$details.getPlayable(), ((PlayContextProvider)this.val$activity).getPlayContext());
+    public void onGlobalLayout() {
+        ViewUtils.removeGlobalLayoutListener((View)this.this$0, (ViewTreeObserver$OnGlobalLayoutListener)this);
+        if (Log.isLoggable() && this.this$0.imgGroup != null) {
+            Log.v("VideoDetailsViewGroup", "img group width: " + this.this$0.imgGroup.getWidth() + ", height: " + this.this$0.imgGroup.getHeight());
+        }
+        this.this$0.alignViews();
     }
 }

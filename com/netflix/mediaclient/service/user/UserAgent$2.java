@@ -12,13 +12,21 @@ import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.util.PrivacyUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
-import com.netflix.mediaclient.repository.UserLocale;
+import com.netflix.mediaclient.util.l10n.UserLocale;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import java.util.Iterator;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.util.NetflixPreference;
+import com.netflix.mediaclient.android.app.NetflixStatus;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
+import com.netflix.mediaclient.util.log.SignInLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
@@ -30,6 +38,7 @@ import org.json.JSONTokener;
 import org.json.JSONArray;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
@@ -44,25 +53,23 @@ import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallba
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.app.NetflixStatus;
-import com.netflix.mediaclient.StatusCode;
 
 class UserAgent$2 implements Runnable
 {
     final /* synthetic */ UserAgent this$0;
+    final /* synthetic */ Status val$res;
     
-    UserAgent$2(final UserAgent this$0) {
+    UserAgent$2(final UserAgent this$0, final Status val$res) {
         this.this$0 = this$0;
+        this.val$res = val$res;
     }
     
     @Override
     public void run() {
-        if (this.this$0.mLogoutCallback != null) {
-            this.this$0.mLogoutCallback.onLogoutComplete(new NetflixStatus(StatusCode.OK));
-            Log.d("nf_service_useragent", "Received deactivate complete and notified UI");
-            this.this$0.mLogoutCallback = null;
+        if (this.this$0.mLoginCallback != null) {
+            this.this$0.mLoginCallback.onLoginComplete(this.val$res);
+            this.this$0.mLoginCallback = null;
         }
     }
 }

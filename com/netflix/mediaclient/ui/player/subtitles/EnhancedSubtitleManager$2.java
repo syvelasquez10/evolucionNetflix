@@ -15,7 +15,7 @@ import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
 import com.netflix.mediaclient.service.player.subtitles.DoubleLength;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
 import com.netflix.mediaclient.service.player.subtitles.text.ColorMapping;
-import com.netflix.mediaclient.service.player.subtitles.text.TextSubtitleParser;
+import com.netflix.mediaclient.service.player.subtitles.TextSubtitleParser;
 import android.graphics.Rect;
 import com.netflix.mediaclient.util.SubtitleUtils$Margins;
 import java.util.ArrayList;

@@ -5,8 +5,8 @@
 package com.netflix.mediaclient.javabridge.invoke.android;
 
 import org.json.JSONException;
-import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
 import com.netflix.mediaclient.javabridge.invoke.BaseInvoke;
@@ -20,13 +20,15 @@ public class SetFailedSubtitleDownloadUrl extends BaseInvoke
     
     public SetFailedSubtitleDownloadUrl(final String s, final IMedia$SubtitleFailure media$SubtitleFailure) {
         super("android", "setFailedSubtitleDownloadUrl");
+        String s2 = s;
         if (StringUtils.isEmpty(s)) {
-            throw new IllegalArgumentException("Url can not be empty!");
+            Log.e("nf_invoke", "Url can not be empty!");
+            s2 = "";
         }
         if (media$SubtitleFailure == null) {
             throw new IllegalArgumentException("Reason can not be empty!");
         }
-        this.setArguments(s, media$SubtitleFailure);
+        this.setArguments(s2, media$SubtitleFailure);
     }
     
     private void setArguments(final String s, final IMedia$SubtitleFailure media$SubtitleFailure) {

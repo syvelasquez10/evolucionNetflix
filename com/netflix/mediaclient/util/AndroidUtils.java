@@ -12,8 +12,12 @@ import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
 import android.appwidget.AppWidgetManager;
 import android.util.DisplayMetrics;
 import com.netflix.mediaclient.javabridge.transport.NativeTransport;
-import android.annotation.SuppressLint;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import java.util.Iterator;
+import java.util.List;
+import android.app.ActivityManager$RunningTaskInfo;
+import android.app.ActivityManager$RunningAppProcessInfo;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import android.app.ActivityManager;
 import android.app.Activity;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.media.PlayerType;
@@ -291,16 +295,8 @@ public final class AndroidUtils
         return sb.toString();
     }
     
-    @SuppressLint({ "NewApi" })
     public static boolean isActivityFinishedOrDestroyed(final Activity activity) {
-        boolean destroyed;
-        if (activity instanceof NetflixActivity) {
-            destroyed = ((NetflixActivity)activity).destroyed();
-        }
-        else {
-            destroyed = (getAndroidVersion() >= 17 && activity.isDestroyed());
-        }
-        return destroyed || activity.isFinishing();
+        return activity == null || activity.isFinishing() || activity.isDestroyed();
     }
     
     public static boolean isAppInstalled(final Context context, final String s) {
@@ -317,6 +313,61 @@ public final class AndroidUtils
             b = false;
             return b;
         }
+    }
+    
+    public static boolean isApplicationInBackground(final Context context) {
+        return !isApplicationInForeground(context);
+    }
+    
+    public static boolean isApplicationInForeground(final Context context) {
+        final ActivityManager activityManager = (ActivityManager)context.getSystemService("activity");
+        boolean equals;
+        if (Build$VERSION.SDK_INT > 20) {
+            final List runningAppProcesses = activityManager.getRunningAppProcesses();
+            if (runningAppProcesses == null) {
+                Log.w("nf_utils", "runningProcesses is null - can't determine if app in foreground");
+                ErrorLoggingManager.logHandledException("SPY-9029: getRunningAppProcesses() returned null");
+                return false;
+            }
+            final Iterator<ActivityManager$RunningAppProcessInfo> iterator = runningAppProcesses.iterator();
+            boolean b = false;
+            while (true) {
+                equals = b;
+                if (!iterator.hasNext()) {
+                    break;
+                }
+                final ActivityManager$RunningAppProcessInfo activityManager$RunningAppProcessInfo = iterator.next();
+                boolean b2;
+                if (activityManager$RunningAppProcessInfo.importance == 100) {
+                    if (activityManager$RunningAppProcessInfo.pkgList == null) {
+                        Log.w("nf_utils", "pkgList is null - can't determine if app in foreground");
+                        ErrorLoggingManager.logHandledException("SPY-9029: pkgList is null");
+                        return false;
+                    }
+                    final String[] pkgList = activityManager$RunningAppProcessInfo.pkgList;
+                    final int length = pkgList.length;
+                    int n = 0;
+                    while (true) {
+                        b2 = b;
+                        if (n >= length) {
+                            break;
+                        }
+                        if (pkgList[n].equals(context.getPackageName())) {
+                            b = true;
+                        }
+                        ++n;
+                    }
+                }
+                else {
+                    b2 = b;
+                }
+                b = b2;
+            }
+        }
+        else {
+            equals = activityManager.getRunningTasks(1).get(0).topActivity.getPackageName().equals(context.getPackageName());
+        }
+        return equals;
     }
     
     public static boolean isHd() {
@@ -372,11 +423,28 @@ public final class AndroidUtils
     }
     
     public static boolean isWidgetInstalled(final Context context) {
-        final int[] appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, (Class)PServiceWidgetProvider.class));
-        if (Log.isLoggable()) {
-            Log.d("nf_utils", String.format("found widget: %b, num widgets installed: %d", appWidgetIds.length > 0, appWidgetIds.length));
+        while (true) {
+            final boolean b = true;
+            final boolean b2 = false;
+            try {
+                if (AppWidgetManager.getInstance(context) != null) {
+                    final int[] appWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, (Class)PServiceWidgetProvider.class));
+                    if (Log.isLoggable()) {
+                        Log.d("nf_utils", String.format("found widget: %b, num widgets installed: %d", appWidgetIds.length > 0, appWidgetIds.length));
+                    }
+                    return appWidgetIds.length > 0 && b;
+                }
+            }
+            catch (Exception ex) {
+                final boolean b3 = b2;
+                if (Log.isLoggable()) {
+                    Log.e("nf_utils", "AppWidgetManager dead? " + ex);
+                    return false;
+                }
+                return b3;
+            }
+            return false;
         }
-        return appWidgetIds.length > 0;
     }
     
     public static void logDeviceDensity(final Activity activity) {

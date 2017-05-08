@@ -8,9 +8,11 @@ import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.util.LanguageChoice;
-import com.netflix.mediaclient.ui.common.PlaybackLauncher;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.home.HomeActivity;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
@@ -19,20 +21,25 @@ import java.util.List;
 import java.io.Serializable;
 import android.media.AudioManager;
 import android.widget.Toast;
+import com.netflix.mediaclient.media.Watermark;
 import android.view.MenuItem;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
-import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.Surface;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
-import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.content.res.Configuration;
 import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
+import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
 import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.util.MdxUtils;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
 import com.netflix.mediaclient.service.net.LogMobileType;
 import android.view.Window;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
 import android.util.Pair;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifier;
@@ -42,6 +49,7 @@ import android.annotation.SuppressLint;
 import android.view.TextureView;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
@@ -59,12 +67,9 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
 import com.netflix.mediaclient.ui.kubrick.details.KubrickShowDetailsFrag;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
@@ -72,30 +77,36 @@ import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
+import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.media.PlayerType;
-import android.content.Context;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.event.nrdp.media.NccpActionId;
 import android.view.View;
 import android.view.KeyEvent;
+import com.netflix.mediaclient.ui.common.PlayLocationType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.os.Parcelable;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import com.netflix.mediaclient.service.configuration.PersistentConfig;
+import android.content.Context;
+import com.netflix.mediaclient.util.CoppolaUtils;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.event.nrdp.media.Error;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
 import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
 import android.view.SurfaceHolder$Callback;
 import com.netflix.mediaclient.media.JPlayer.SecondSurface;
 import com.netflix.mediaclient.service.player.subtitles.SafeSubtitleManager;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.ViewGroup;
 import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.IPlayer;
@@ -109,6 +120,7 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.mediaclient.media.Language;
 import android.view.View$OnClickListener;
+import com.netflix.mediaclient.ui.details.DetailsActivity$Reloader;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
@@ -133,7 +145,7 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
     }
     
     private boolean inCancelProgressZone(final SeekBar seekBar, final float n) {
-        final float dimension = this.this$0.getResources().getDimension(2131296574);
+        final float dimension = this.this$0.getResources().getDimension(2131296658);
         int height;
         if (this.this$0.mIsTablet) {
             height = (int)(2.0f * dimension);
@@ -149,7 +161,7 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
         if (timelineSeekBar == null) {
             return false;
         }
-        if (timelineSeekBar.getProgress() == this.this$0.mScreen.getBottomPanel().getCurrentProgress()) {
+        if (timelineSeekBar.getProgress() == this.this$0.mScreen.getCurrentTimelineProgress()) {
             Log.d("PlayerFragment", "Back to start position after snap, do NOT seek!");
             this.this$0.mState.timelineExitOnSnap = true;
         }
@@ -167,7 +179,6 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
                 break;
             }
             case 1: {
-                this.this$0.mScreen.getBottomPanel().finishDragging();
                 if (this.inCancelProgressZone(seekBar, motionEvent.getY())) {
                     this.onProgressChanged(seekBar, seekBar.getProgress(), true);
                     this.this$0.mState.timelineExitOnSnap = true;
@@ -177,7 +188,6 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
             }
             case 0: {
                 this.mIsInCancelZone = false;
-                this.this$0.mScreen.getBottomPanel().startDragging();
                 this.onStartTrackingTouch(seekBar);
                 this.onProgressChanged(seekBar, n, true);
                 return true;
@@ -199,7 +209,7 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
     }
     
     void onProgressChangeCanceled(final SeekBar seekBar, final int n) {
-        this.this$0.mScreen.getBottomPanel().playExtraHandlerAnimation(n, new PlayerFragment$VideoPositionListener$1(this, seekBar, n));
+        this.this$0.mScreen.playExtraHandlerAnimation(n, new PlayerFragment$VideoPositionListener$1(this, seekBar, n));
     }
     
     public void onProgressChanged(final SeekBar seekBar, final int n, final boolean b) {
@@ -228,29 +238,25 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
             this.this$0.keepScreenOn();
             this.this$0.stopScreenUpdateTask();
             this.this$0.mScreen.startCurrentTime(this.this$0.mPlayer.getBifFrame(seekBar.getProgress()));
-            if (this.this$0.mScreen != null) {
-                this.this$0.mScreen.changeActionState(false, false);
-                this.this$0.mScreen.setTopPanelVisibility(false);
-            }
+            this.this$0.mScreen.startDragging();
         }
     }
     
     public void onStopTrackingTouch(final SeekBar seekBar) {
-        boolean b;
-        TimelineSeekBar timelineSeekBar;
-        PlayScreen access$800;
-        boolean b2;
-        int access$801;
-        Block_7_Outer:Label_0183_Outer:
+    Label_0169_Outer:
         while (true) {
-            b = true;
+            final boolean b = true;
         Label_0054:
             while (true) {
-            Label_0100_Outer:
+                TimelineSeekBar timelineSeekBar;
+                boolean b2;
+                PlayScreen access$800;
+                int access$801;
+                Label_0169:Label_0097_Outer:
                 while (true) {
-                Label_0100:
+                Label_0097:
                     while (true) {
-                        Label_0222: {
+                        Label_0208: {
                             synchronized (this) {
                                 this.this$0.mState.draggingInProgress = false;
                                 Log.d("PlayerFragment", "onStopTrackingTouch called");
@@ -261,56 +267,52 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
                                 }
                                 timelineSeekBar = (TimelineSeekBar)seekBar;
                                 if (!this.mIsInCancelZone && !this.skipSeek(timelineSeekBar)) {
-                                    break Label_0222;
+                                    break Label_0208;
                                 }
-                                break Label_0100_Outer;
-                                // iftrue(Label_0168:, !Log.isLoggable())
-                                // iftrue(Label_0246:, b2)
-                                // iftrue(Label_0227:, b2)
-                                // iftrue(Label_0121:, PlayerFragment.access$800(this.this$0) == null)
-                                Block_9: {
+                                break Label_0169;
+                                while (true) {
+                                    b2 = b;
+                                    break Label_0169;
+                                    Label_0154:Block_6_Outer:
                                     while (true) {
-                                        while (true) {
-                                            this.this$0.mSubtitleManager.setSubtitleVisibility(true);
-                                            ((TimelineSeekBar)access$800).hideThumb(false);
-                                            Log.d("PlayerFragment", "Stop current time " + b2);
-                                            Label_0168: {
-                                                access$800 = this.this$0.mScreen;
-                                            }
-                                            break Block_9;
-                                            this.this$0.mScreen.setTopPanelVisibility(true);
-                                            continue Block_7_Outer;
-                                        }
+                                        Log.d("PlayerFragment", "Stop current time " + b2);
+                                        break Label_0154;
                                         access$800.stopCurrentTime(b2);
                                         this.this$0.mState.resetTimeline();
                                         return;
                                         while (true) {
-                                            access$801 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getBottomPanel().getCurrentProgress());
+                                            access$801 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getCurrentTimelineProgress());
                                             ((TimelineSeekBar)access$800).setProgress(access$801);
                                             Log.d("PlayerFragment", "Seek!");
                                             this.this$0.doSeek(access$801);
-                                            break Label_0100;
-                                            continue Label_0100_Outer;
+                                            break Label_0097;
+                                            continue Label_0097_Outer;
                                         }
-                                        continue Label_0183_Outer;
+                                        this.this$0.mScreen.finishDragging();
+                                        this.this$0.mSubtitleManager.setSubtitleVisibility(true);
+                                        ((TimelineSeekBar)access$800).hideThumb(false);
+                                        continue Block_6_Outer;
                                     }
+                                    access$800 = this.this$0.mScreen;
+                                    continue Label_0169_Outer;
                                 }
-                                b2 = b;
-                                continue Label_0100_Outer;
                             }
+                            // iftrue(Label_0213:, b2)
+                            // iftrue(Label_0154:, !Log.isLoggable())
+                            // iftrue(Label_0232:, b2)
                         }
                         b2 = false;
                         continue Label_0054;
-                        Label_0227: {
+                        Label_0213: {
                             Log.d("PlayerFragment", "Do not seek!");
                         }
                         ((TimelineSeekBar)access$800).setProgress(((TimelineSeekBar)access$800).getProgress());
-                        continue Label_0100;
+                        continue Label_0097;
                     }
-                    Label_0246: {
+                    Label_0232: {
                         b2 = false;
                     }
-                    continue Label_0100_Outer;
+                    continue Label_0169;
                 }
                 b2 = true;
                 continue Label_0054;

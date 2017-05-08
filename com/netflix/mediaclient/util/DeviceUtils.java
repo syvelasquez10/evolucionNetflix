@@ -9,11 +9,12 @@ import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import com.netflix.mediaclient.repository.SecurityRepository;
-import android.util.DisplayMetrics;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.service.configuration.esn.BaseEsnProvider;
 import android.view.KeyCharacterMap;
 import android.annotation.SuppressLint;
+import android.view.Display;
+import android.util.DisplayMetrics;
 import android.content.pm.ApplicationInfo;
 import com.netflix.mediaclient.ui.details.DeviceCapabilityProvider;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -142,6 +143,13 @@ public final class DeviceUtils
             return applicationInfo.nativeLibraryDir;
         }
         return null;
+    }
+    
+    public static int getRealScreenHeightInPixels(final Activity activity) {
+        final Display defaultDisplay = activity.getWindowManager().getDefaultDisplay();
+        final DisplayMetrics displayMetrics = new DisplayMetrics();
+        defaultDisplay.getRealMetrics(displayMetrics);
+        return displayMetrics.heightPixels;
     }
     
     public static float getScreenAspectRatio(final Context context) {
@@ -459,12 +467,26 @@ public final class DeviceUtils
         return deviceCapabilityProvider.is5dot1Supported() && featureEnabledProvider.isVideo5dot1();
     }
     
+    public static boolean shouldShowDolbyVisionIcon(final DeviceCapabilityProvider deviceCapabilityProvider, final FeatureEnabledProvider featureEnabledProvider) {
+        if (Log.isLoggable()) {
+            Log.d("nf_device_utils", "isDolbyVisionSupported, device : " + deviceCapabilityProvider.isDolbyVisionSupported() + ", title : " + featureEnabledProvider.isVideoDolbyVision());
+        }
+        return deviceCapabilityProvider.isDolbyVisionSupported() && featureEnabledProvider.isVideoDolbyVision();
+    }
+    
     public static boolean shouldShowHdIcon(final NetflixActivity netflixActivity, final FeatureEnabledProvider featureEnabledProvider) {
         return isDeviceHd(netflixActivity) && featureEnabledProvider.isVideoHd();
     }
     
     public static boolean shouldShowHdIcon(final DeviceCapabilityProvider deviceCapabilityProvider, final FeatureEnabledProvider featureEnabledProvider) {
         return deviceCapabilityProvider.isHdSupported() && featureEnabledProvider.isVideoHd();
+    }
+    
+    public static boolean shouldShowHdr10Icon(final DeviceCapabilityProvider deviceCapabilityProvider, final FeatureEnabledProvider featureEnabledProvider) {
+        if (Log.isLoggable()) {
+            Log.d("nf_device_utils", "isHdr10Supported, device : " + deviceCapabilityProvider.isHdr10Supported() + ", title : " + featureEnabledProvider.isVideoHdr10());
+        }
+        return deviceCapabilityProvider.isHdr10Supported() && featureEnabledProvider.isVideoHdr10();
     }
     
     public static boolean shouldShowUhdIcon(final DeviceCapabilityProvider deviceCapabilityProvider, final FeatureEnabledProvider featureEnabledProvider) {

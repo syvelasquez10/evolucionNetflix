@@ -8,7 +8,6 @@ import java.util.Comparator;
 import java.util.Collections;
 import android.net.Uri;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
@@ -16,6 +15,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
+import com.netflix.mediaclient.Log;
 
 public class DataUtil
 {
@@ -29,6 +29,27 @@ public class DataUtil
     private static final String TAG = "DataUtil";
     public static final float UNDEFINED_FLOAT = -1.0f;
     public static final int UNDEFINED_INT = -1;
+    
+    public static boolean areAnyNull(final String s, final String s2, final Object... array) {
+        final boolean b = false;
+        if (array != null) {
+            int n = 0;
+            while (true) {
+                final boolean b2 = b;
+                if (n >= array.length) {
+                    return b2;
+                }
+                if (array[n] == null) {
+                    break;
+                }
+                ++n;
+            }
+            Log.v(s, "Object " + n + " is null - " + s2);
+            return true;
+        }
+        Log.v(s, "Objects array is null - " + s2);
+        return true;
+    }
     
     public static List<String> createStringListFromList(final List<?> list) {
         final ArrayList<String> list2 = new ArrayList<String>(list.size());

@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
+import com.netflix.mediaclient.util.NetflixPreference;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
@@ -69,13 +70,13 @@ public class BreadcrumbLoggingSpecification
         return (BreadcrumbLoggingSpecification)default1;
     }
     
-    public static BreadcrumbLoggingSpecification saveToPreferences(final Context context, final BreadcrumbLoggingSpecification breadcrumbLoggingSpecification) {
+    public static BreadcrumbLoggingSpecification saveToPreferences(final NetflixPreference netflixPreference, final BreadcrumbLoggingSpecification breadcrumbLoggingSpecification) {
         if (breadcrumbLoggingSpecification == null) {
-            PreferenceUtils.removePref(context, "breadcrumb_log_configuration");
+            netflixPreference.removePref("breadcrumb_log_configuration");
             Log.d(BreadcrumbLoggingSpecification.TAG, "Breadcrumb logging spec not found, return default");
             return getDefault();
         }
-        PreferenceUtils.putStringPref(context, "breadcrumb_log_configuration", FalkorParseUtils.getGson().toJson(breadcrumbLoggingSpecification));
+        netflixPreference.putStringPref("breadcrumb_log_configuration", FalkorParseUtils.getGson().toJson(breadcrumbLoggingSpecification));
         return breadcrumbLoggingSpecification;
     }
     

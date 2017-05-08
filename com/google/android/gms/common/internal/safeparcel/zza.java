@@ -138,11 +138,6 @@ public class zza
         return parcel.readLong();
     }
     
-    public static float zzl(final Parcel parcel, final int n) {
-        zza(parcel, n, 4);
-        return parcel.readFloat();
-    }
-    
     public static double zzn(final Parcel parcel, final int n) {
         zza(parcel, n, 8);
         return parcel.readDouble();

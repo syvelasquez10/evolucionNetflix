@@ -8,12 +8,15 @@ import com.netflix.mediaclient.service.webclient.model.leafs.DeviceConfigData;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
+import com.netflix.mediaclient.util.NetflixPreference;
 import java.util.Iterator;
 import java.util.List;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import java.util.HashMap;
+import com.netflix.mediaclient.service.webclient.model.leafs.VoipConfiguration;
+import com.netflix.mediaclient.service.webclient.model.leafs.SubtitleDownloadRetryPolicy;
 import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
 import android.content.Context;
@@ -23,12 +26,9 @@ import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSp
 
 public class DeviceConfiguration
 {
-    private static final int DEFAULT_SAMPLERATE = 8000;
     private static final boolean DISABLE_MDX_DEF = false;
     private static final boolean DISABLE_WEBSOCKET_DEF = true;
     private static final boolean FORCE_DISABLE_VOIP_IN_CODE = false;
-    private static final int MAX_SAMPLERATE_48K = 48000;
-    private static final int MIN_SAMPLERATE_8K = 8000;
     private static String TAG;
     private String mAlertMsgForMissingLocale;
     private int mAppMinimalVersion;
@@ -38,11 +38,16 @@ public class DeviceConfiguration
     private Map<String, ConsolidatedLoggingSessionSpecification> mConsolidatedLoggingSpecification;
     private Context mContext;
     private DeviceRepository mDeviceRepository;
+    private boolean mDisableCastFaststart;
+    private boolean mDisableDataSaver;
     private ErrorLoggingSpecification mErrorLoggingSpecification;
+    private boolean mIgnorePreloadForPlayBilling;
     private ImagePrefRepository mImagePrefRepository;
     private IpConnectivityPolicy mIpConnectivityPolicy;
     private boolean mIsDisableMdx;
     private boolean mIsDisableWebsocket;
+    private boolean mIsDynecomSignInEnabled;
+    private boolean mIsPlayBillingDisabled;
     private boolean mIsVoipEnabledOnDevice;
     private boolean mIsWidevineDisabled;
     private boolean mIsWidevineL1Enabled;
@@ -57,9 +62,11 @@ public class DeviceConfiguration
     private boolean mShouldAlertForMissingLocale;
     private SignUpConfiguration mSignUpConfig;
     private SubtitleConfiguration mSubtitleConfiguration;
+    private SubtitleDownloadRetryPolicy mSubtitleDownloadRetryPolicy;
     private int mUserSessionDurationInSeconds;
     private int mVideoResolutionOverride;
-    private int mVoipSampleRateInHz;
+    private VoipConfiguration mVoipConfiguration;
+    private int mVoipConfirmationDialogAllocationPercentage;
     
     static {
         DeviceConfiguration.TAG = "nf_configuration_device";
@@ -68,7 +75,6 @@ public class DeviceConfiguration
     public DeviceConfiguration(final Context mContext) {
         this.mSubtitleConfiguration = SubtitleConfiguration.ENHANCED_XML;
         this.mConsolidatedLoggingSpecification = new HashMap<String, ConsolidatedLoggingSessionSpecification>();
-        this.mVoipSampleRateInHz = 8000;
         this.mContext = mContext;
         this.mDeviceRepository = new DeviceRepository(this.mContext);
         this.mImagePrefRepository = new ImagePrefRepository(this.mContext);
@@ -93,6 +99,7 @@ public class DeviceConfiguration
             this.mIsWidevineL1Enabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_widevine_l1", false);
             this.mIsWidevineL3Enabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_widevine_l3", false);
         }
+        this.mIsDynecomSignInEnabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_dynecom_signin", false);
         this.mIsVoipEnabledOnDevice = PreferenceUtils.getBooleanPref(this.mContext, "enable_voip_on_device", false);
         this.mUserSessionDurationInSeconds = this.loadUserSessionTimeoutDuration();
         this.mBreadcrumbLoggingSpecification = BreadcrumbLoggingSpecification.loadFromPreferences(mContext);
@@ -106,10 +113,16 @@ public class DeviceConfiguration
         this.mJPlayerErrorRestartCount = PreferenceUtils.getIntPref(this.mContext, "jplayer_restart_count", 2);
         this.mShouldAlertForMissingLocale = PreferenceUtils.getBooleanPref(this.mContext, "device_locale_not_supported", false);
         this.mAlertMsgForMissingLocale = PreferenceUtils.getStringPref(this.mContext, "device_locale_not_supported_msg", null);
-        this.mVoipSampleRateInHz = PreferenceUtils.getIntPref(this.mContext, "voip_samplerate_hz", 8000);
+        this.mIsPlayBillingDisabled = PreferenceUtils.getBooleanPref(this.mContext, "disable_playbilling", false);
+        this.mIgnorePreloadForPlayBilling = PreferenceUtils.getBooleanPref(this.mContext, "ignore_preload_playbilling", false);
+        this.mVoipConfiguration = VoipConfiguration.loadFromPreferences(mContext);
+        this.mSubtitleDownloadRetryPolicy = SubtitleDownloadRetryPolicy.loadFromPreferences(mContext);
+        this.mVoipConfirmationDialogAllocationPercentage = PreferenceUtils.getIntPref(this.mContext, "voip_confirmation_dialog", 25);
         if (Log.isLoggable()) {
             Log.d(DeviceConfiguration.TAG, "constructor DeviceConfiguration: Disable mIsVoipEnabledOnDevice " + this.mIsVoipEnabledOnDevice + ", disabledInCode? " + false);
         }
+        this.mDisableCastFaststart = PreferenceUtils.getBooleanPref(this.mContext, "disable_cast_faststart", false);
+        this.mDisableDataSaver = PreferenceUtils.getBooleanPref(this.mContext, "disable_data_saver", false);
     }
     
     private Map<String, ConsolidatedLoggingSessionSpecification> loadConsolidateLoggingSpecification() {
@@ -219,64 +232,71 @@ public class DeviceConfiguration
         return hashMap;
     }
     
-    private void updateAudioFormat(final int mAudioFormat) {
-        PreferenceUtils.putIntPref(this.mContext, "supported_audio_format", mAudioFormat);
+    private void updateAudioFormat(final NetflixPreference netflixPreference, final int mAudioFormat) {
+        netflixPreference.putIntPref("supported_audio_format", mAudioFormat);
         this.mAudioFormat = mAudioFormat;
     }
     
-    private void updateConsolidatedLoggingSpecification(final List<ConsolidatedLoggingSessionSpecification> list) {
+    private void updateConsolidatedLoggingSpecification(final NetflixPreference netflixPreference, final List<ConsolidatedLoggingSessionSpecification> list) {
         this.mConsolidatedLoggingSpecification = toMap(list);
         if (list == null || list.size() < 1) {
-            PreferenceUtils.removePref(this.mContext, "cl_configuration");
+            netflixPreference.removePref("cl_configuration");
             return;
         }
-        PreferenceUtils.putStringPref(this.mContext, "cl_configuration", FalkorParseUtils.getGson().toJson(list));
+        netflixPreference.putStringPref("cl_configuration", FalkorParseUtils.getGson().toJson(list));
     }
     
-    private void updateDeviceConfigFlag(final boolean b) {
-        Log.d(DeviceConfiguration.TAG, "setting DeviceConfig preferences inCache= " + b);
-        PreferenceUtils.putBooleanPref(this.mContext, "nf_device_config_cached", b);
+    private void updateDeviceConfigFlag(final NetflixPreference netflixPreference, final boolean b) {
+        if (Log.isLoggable()) {
+            Log.d(DeviceConfiguration.TAG, "setting DeviceConfig preferences inCache= " + b);
+        }
+        netflixPreference.putBooleanPref("nf_device_config_cached", b);
     }
     
-    private void updateDeviceLocaleSupportAlert(final boolean mShouldAlertForMissingLocale, final String mAlertMsgForMissingLocale) {
+    private void updateDeviceLocaleSupportAlert(final NetflixPreference netflixPreference, final boolean mShouldAlertForMissingLocale, final String mAlertMsgForMissingLocale) {
         if (Log.isLoggable()) {
             Log.d(DeviceConfiguration.TAG, String.format("nf_loc shouldAlert: %b, alertMsg:%s", mShouldAlertForMissingLocale, mAlertMsgForMissingLocale));
         }
         if (mShouldAlertForMissingLocale != this.mShouldAlertForMissingLocale) {
-            PreferenceUtils.putBooleanPref(this.mContext, "device_locale_not_supported", mShouldAlertForMissingLocale);
+            netflixPreference.putBooleanPref("device_locale_not_supported", mShouldAlertForMissingLocale);
             this.mShouldAlertForMissingLocale = mShouldAlertForMissingLocale;
         }
         if (!StringUtils.safeEquals(mAlertMsgForMissingLocale, this.mAlertMsgForMissingLocale)) {
-            PreferenceUtils.putStringPref(this.mContext, "device_locale_not_supported_msg", mAlertMsgForMissingLocale);
+            netflixPreference.putStringPref("device_locale_not_supported_msg", mAlertMsgForMissingLocale);
             this.mAlertMsgForMissingLocale = mAlertMsgForMissingLocale;
         }
     }
     
-    private void updateDisableMdxFlag(final String s) {
+    private void updateDisableMdxFlag(final NetflixPreference netflixPreference, final String s) {
         final boolean mIsDisableMdx = StringUtils.isNotEmpty(s) && Boolean.parseBoolean(s);
-        PreferenceUtils.putBooleanPref(this.mContext, "disable_mdx", mIsDisableMdx);
+        netflixPreference.putBooleanPref("disable_mdx", mIsDisableMdx);
         this.mIsDisableMdx = mIsDisableMdx;
     }
     
-    private void updateDisableWebsocketFlag(final String s) {
+    private void updateDisableWebsocketFlag(final NetflixPreference netflixPreference, final String s) {
         final boolean mIsDisableWebsocket = !StringUtils.isNotEmpty(s) || Boolean.parseBoolean(s);
-        PreferenceUtils.putBooleanPref(this.mContext, "disable_websocket", mIsDisableWebsocket);
+        netflixPreference.putBooleanPref("disable_websocket", mIsDisableWebsocket);
         this.mIsDisableWebsocket = mIsDisableWebsocket;
     }
     
-    private void updateLocalPlaybackStatus(final String s) {
+    private void updateDynecomSignInFlag(final NetflixPreference netflixPreference, final boolean mIsDynecomSignInEnabled) {
+        netflixPreference.putBooleanPref("enable_dynecom_signin", mIsDynecomSignInEnabled);
+        this.mIsDynecomSignInEnabled = mIsDynecomSignInEnabled;
+    }
+    
+    private void updateLocalPlaybackStatus(final NetflixPreference netflixPreference, final String s) {
         if (StringUtils.isNotEmpty(s)) {
             final boolean boolean1 = Boolean.parseBoolean(s);
             if (Log.isLoggable()) {
                 Log.d(DeviceConfiguration.TAG, "Change in local playback status from " + this.mLocalPlaybackEnabled + " to " + boolean1);
             }
             if (this.mLocalPlaybackEnabled != boolean1) {
-                PreferenceUtils.putBooleanPref(this.mContext, "playback_configuration_local_playback_enabled", boolean1);
+                netflixPreference.putBooleanPref("playback_configuration_local_playback_enabled", boolean1);
                 this.mLocalPlaybackEnabled = boolean1;
             }
         }
         else {
-            PreferenceUtils.removePref(this.mContext, "playback_configuration_local_playback_enabled");
+            netflixPreference.removePref("playback_configuration_local_playback_enabled");
             this.mLocalPlaybackEnabled = DeviceUtils.isLocalPlaybackEnabled();
             if (Log.isLoggable()) {
                 Log.d(DeviceConfiguration.TAG, "Overide is not found, use default for local playback enabled " + this.mLocalPlaybackEnabled);
@@ -284,19 +304,19 @@ public class DeviceConfiguration
         }
     }
     
-    private void updateMdxRemoteControlLockScreenStatus(final String s) {
+    private void updateMdxRemoteControlLockScreenStatus(final NetflixPreference netflixPreference, final String s) {
         if (StringUtils.isNotEmpty(s)) {
             final boolean boolean1 = Boolean.parseBoolean(s);
             if (Log.isLoggable()) {
                 Log.d(DeviceConfiguration.TAG, "Change in MDX remote control lock screen be used status from " + this.mMdxRemoteControlLockScreenEnabled + " to " + boolean1);
             }
             if (this.mMdxRemoteControlLockScreenEnabled != boolean1) {
-                PreferenceUtils.putBooleanPref(this.mContext, "mdx_configuration_remote_lockscreen_enabled", boolean1);
+                netflixPreference.putBooleanPref("mdx_configuration_remote_lockscreen_enabled", boolean1);
                 this.mMdxRemoteControlLockScreenEnabled = boolean1;
             }
         }
         else {
-            PreferenceUtils.removePref(this.mContext, "mdx_configuration_remote_lockscreen_enabled");
+            netflixPreference.removePref("mdx_configuration_remote_lockscreen_enabled");
             this.mMdxRemoteControlLockScreenEnabled = DeviceUtils.isRemoteControlEnabled();
             if (Log.isLoggable()) {
                 Log.d(DeviceConfiguration.TAG, "Overide is not found, use default on device for MDX remote control lock screen  " + this.mMdxRemoteControlLockScreenEnabled);
@@ -304,19 +324,19 @@ public class DeviceConfiguration
         }
     }
     
-    private void updateMdxRemoteControlNotificationStatus(final String s) {
+    private void updateMdxRemoteControlNotificationStatus(final NetflixPreference netflixPreference, final String s) {
         if (StringUtils.isNotEmpty(s)) {
             final boolean boolean1 = Boolean.parseBoolean(s);
             if (Log.isLoggable()) {
                 Log.d(DeviceConfiguration.TAG, "Change in MDX remote control notification be used status from " + this.mMdxRemoteControlNotificationEnabled + " to " + boolean1);
             }
             if (this.mMdxRemoteControlNotificationEnabled != boolean1) {
-                PreferenceUtils.putBooleanPref(this.mContext, "mdx_configuration_remote_notification_enabled", boolean1);
+                netflixPreference.putBooleanPref("mdx_configuration_remote_notification_enabled", boolean1);
                 this.mMdxRemoteControlNotificationEnabled = boolean1;
             }
         }
         else {
-            PreferenceUtils.removePref(this.mContext, "mdx_configuration_remote_notification_enabled");
+            netflixPreference.removePref("mdx_configuration_remote_notification_enabled");
             this.mMdxRemoteControlNotificationEnabled = DeviceUtils.isRemoteControlEnabled();
             if (Log.isLoggable()) {
                 Log.d(DeviceConfiguration.TAG, "Overide is not found, use default on device for MDX remote control notification " + this.mMdxRemoteControlNotificationEnabled);
@@ -324,26 +344,13 @@ public class DeviceConfiguration
         }
     }
     
-    private void updateVoipEnabledOnDeviceFlag(final boolean mIsVoipEnabledOnDevice) {
-        PreferenceUtils.putBooleanPref(this.mContext, "enable_voip_on_device", mIsVoipEnabledOnDevice);
+    private void updateVoipEnabledOnDeviceFlag(final NetflixPreference netflixPreference, final boolean mIsVoipEnabledOnDevice) {
+        netflixPreference.putBooleanPref("enable_voip_on_device", mIsVoipEnabledOnDevice);
         this.mIsVoipEnabledOnDevice = mIsVoipEnabledOnDevice;
     }
     
-    private void updateVoipSampleRate(final int mVoipSampleRateInHz) {
-        if (mVoipSampleRateInHz >= 8000 && mVoipSampleRateInHz <= 48000) {
-            if (Log.isLoggable()) {
-                Log.d(DeviceConfiguration.TAG, "New sample rate of " + mVoipSampleRateInHz + " Hz is in range of 4KHz - 48KHz");
-            }
-            PreferenceUtils.putIntPref(this.mContext, "voip_samplerate_hz", mVoipSampleRateInHz);
-            this.mVoipSampleRateInHz = mVoipSampleRateInHz;
-        }
-        else if (Log.isLoggable()) {
-            Log.e(DeviceConfiguration.TAG, "New sample rate of " + mVoipSampleRateInHz + " Hz is NOT in range of 4KHz - 48KHz. Not changing existing sample rate...");
-        }
-    }
-    
-    private void updateWidevineL1Flag(final boolean mIsWidevineL1Enabled) {
-        PreferenceUtils.putBooleanPref(this.mContext, "enable_widevine_l1", mIsWidevineL1Enabled);
+    private void updateWidevineL1Flag(final NetflixPreference netflixPreference, final boolean mIsWidevineL1Enabled) {
+        netflixPreference.putBooleanPref("enable_widevine_l1", mIsWidevineL1Enabled);
         if (this.mIsWidevineDisabled) {
             Log.w(DeviceConfiguration.TAG, "Unable to enable Widevine L1 in runtime because of master Widevine disable");
             return;
@@ -351,8 +358,8 @@ public class DeviceConfiguration
         this.mIsWidevineL1Enabled = mIsWidevineL1Enabled;
     }
     
-    private void updateWidevineL3Flag(final boolean mIsWidevineL3Enabled) {
-        PreferenceUtils.putBooleanPref(this.mContext, "enable_widevine_l3", mIsWidevineL3Enabled);
+    private void updateWidevineL3Flag(final NetflixPreference netflixPreference, final boolean mIsWidevineL3Enabled) {
+        netflixPreference.putBooleanPref("enable_widevine_l3", mIsWidevineL3Enabled);
         if (this.mIsWidevineDisabled) {
             Log.w(DeviceConfiguration.TAG, "Unable to enable Widevine L3 in runtime because of master Widevine disable");
             return;
@@ -437,6 +444,10 @@ public class DeviceConfiguration
         return this.mSubtitleConfiguration;
     }
     
+    public SubtitleDownloadRetryPolicy getSubtitleDownloadRetryPolicy() {
+        return this.mSubtitleDownloadRetryPolicy;
+    }
+    
     public int getUserSessionDurationInSeconds() {
         return this.mUserSessionDurationInSeconds;
     }
@@ -445,16 +456,28 @@ public class DeviceConfiguration
         return this.mVideoResolutionOverride;
     }
     
-    public int getVoipSampleRate() {
-        return this.mVoipSampleRateInHz;
+    public VoipConfiguration getVoipConfiguration() {
+        return this.mVoipConfiguration;
+    }
+    
+    public int getVoipConfirmationDialogAllocationPercentage() {
+        return this.mVoipConfirmationDialogAllocationPercentage;
     }
     
     public int getmAudioFormat() {
         return this.mAudioFormat;
     }
     
+    public boolean ignorePreloadForPlayBilling() {
+        return this.mIgnorePreloadForPlayBilling;
+    }
+    
     public boolean isDeviceConfigInCache() {
         return PreferenceUtils.getBooleanPref(this.mContext, "nf_device_config_cached", false);
+    }
+    
+    public boolean isDisableCastFaststart() {
+        return this.mDisableCastFaststart;
     }
     
     public boolean isDisableMdx() {
@@ -463,6 +486,10 @@ public class DeviceConfiguration
     
     public boolean isDisableWebsocket() {
         return this.mIsDisableWebsocket;
+    }
+    
+    public boolean isDynecomSignInEnabled() {
+        return this.mIsDynecomSignInEnabled;
     }
     
     public boolean isLocalPlaybackEnabled() {
@@ -477,71 +504,84 @@ public class DeviceConfiguration
         return this.mMdxRemoteControlNotificationEnabled;
     }
     
+    public boolean isPlayBillingDisabled() {
+        return this.mIsPlayBillingDisabled;
+    }
+    
     public void persistDeviceConfigOverride(final DeviceConfigData deviceConfigData) {
         final int n = -1;
-        if (deviceConfigData != null) {
-            if (Log.isLoggable()) {
-                Log.d(DeviceConfiguration.TAG, String.format("writing configData to storage %s", deviceConfigData.toString()));
-            }
-            PlayerTypeFactory.updateDevicePlayerType(this.mContext, deviceConfigData.getPlayerType());
-            this.mDeviceRepository.update(this.mContext, deviceConfigData.getDeviceCategory());
-            this.mImagePrefRepository.update(this.mContext, deviceConfigData.getImagePref());
-            this.mSignUpConfig.update(this.mContext, deviceConfigData.getSignUpEnabled(), deviceConfigData.getSignUpTimeout());
-            this.updateDisableWebsocketFlag(deviceConfigData.getWebsocketDisabled());
-            this.updateDisableMdxFlag(deviceConfigData.getMdxDisabled());
-            this.updateWidevineL1Flag(deviceConfigData.isWidevineL1Enabled());
-            this.updateWidevineL3Flag(deviceConfigData.isWidevineL3Enabled());
-            this.updateVoipEnabledOnDeviceFlag(deviceConfigData.isVoipEnabledOnDevice());
-            this.updateAudioFormat(deviceConfigData.getAudioFormats());
-            this.updateConsolidatedLoggingSpecification(deviceConfigData.getConsolidatedloggingSpecification());
-            this.mSubtitleConfiguration = SubtitleConfiguration.update(this.mContext, deviceConfigData.getSubtitleConfiguration());
-            int int1;
-            if (deviceConfigData.getAppMinVresion() != null) {
-                int1 = Integer.parseInt(deviceConfigData.getAppMinVresion());
-            }
-            else {
-                int1 = -1;
-            }
-            this.mAppMinimalVersion = int1;
-            PreferenceUtils.putIntPref(this.mContext, "config_min_version", this.mAppMinimalVersion);
-            int int2;
-            if (deviceConfigData.getAppRecommendedVresion() != null) {
-                int2 = Integer.parseInt(deviceConfigData.getAppRecommendedVresion());
-            }
-            else {
-                int2 = -1;
-            }
-            this.mAppRecommendedVersion = int2;
-            PreferenceUtils.putIntPref(this.mContext, "config_recommended_version", this.mAppRecommendedVersion);
-            int int3 = n;
-            if (StringUtils.isNotEmpty(deviceConfigData.getPTAggregationSize())) {
-                int3 = Integer.parseInt(deviceConfigData.getPTAggregationSize());
-            }
-            this.mPTAggregationSize = int3;
-            PreferenceUtils.putIntPref(this.mContext, "pt_aggregation_size", this.mPTAggregationSize);
-            final int ipConnectivityPolicy = deviceConfigData.getIpConnectivityPolicy();
-            this.mIpConnectivityPolicy = IpConnectivityPolicy.from(ipConnectivityPolicy);
-            PreferenceUtils.putIntPref(this.mContext, "ip_connectivity_policy_overide", ipConnectivityPolicy);
-            this.mUserSessionDurationInSeconds = deviceConfigData.getUserSessionTimeoutDuration();
-            PreferenceUtils.putIntPref(this.mContext, "apm_user_session_timeout_duration_override", this.mUserSessionDurationInSeconds);
-            this.mBreadcrumbLoggingSpecification = BreadcrumbLoggingSpecification.saveToPreferences(this.mContext, deviceConfigData.getBreadcrumbLoggingSpecification());
-            this.mErrorLoggingSpecification = ErrorLoggingSpecification.saveToPreferences(this.mContext, deviceConfigData.getErrorLoggingSpecification());
-            this.mVideoResolutionOverride = deviceConfigData.getVideoResolutionOverride();
-            PreferenceUtils.putIntPref(this.mContext, "video_resolution_override", deviceConfigData.getVideoResolutionOverride());
-            this.mRateLimitForGcmBrowseEvents = deviceConfigData.getRateLimitForGcmBrowseEvents();
-            PreferenceUtils.putIntPref(this.mContext, "gcm_browse_rate_limit", deviceConfigData.getRateLimitForGcmBrowseEvents());
-            this.mRateLimitForNListChangeEvents = deviceConfigData.getRateLimitForGcmNListChangeEvents();
-            PreferenceUtils.putIntPref(this.mContext, "gcm_tray_change_rate_limit", deviceConfigData.getRateLimitForGcmNListChangeEvents());
-            PreferenceUtils.putIntPref(this.mContext, "jplayer_restart_count", deviceConfigData.getJPlayerStreamErrorRestartCount());
-            this.updateLocalPlaybackStatus(deviceConfigData.getEnableLocalPlayback());
-            this.updateMdxRemoteControlLockScreenStatus(deviceConfigData.getEnableMdxRemoteControlLockScreen());
-            this.updateMdxRemoteControlNotificationStatus(deviceConfigData.getEnableMdxRemoteControlNotification());
-            this.updateDeviceLocaleSupportAlert(deviceConfigData.shouldAlertForMissingLocale(), deviceConfigData.getAlertMsgForLocaleSupport());
-            this.updateVoipSampleRate(deviceConfigData.getVoipSampleRateInHz());
-            if (!this.isDeviceConfigInCache()) {
-                this.updateDeviceConfigFlag(true);
-            }
+        if (deviceConfigData == null) {
+            Log.e(DeviceConfiguration.TAG, "deviceConfig object is null - ignore overwrite");
+            return;
         }
+        if (Log.isLoggable()) {
+            Log.d(DeviceConfiguration.TAG, String.format("writing configData to storage %s", deviceConfigData.toString()));
+        }
+        final NetflixPreference netflixPreference = new NetflixPreference(this.mContext);
+        PlayerTypeFactory.updateDevicePlayerType(netflixPreference, deviceConfigData.getPlayerType());
+        this.mDeviceRepository.update(netflixPreference, deviceConfigData.getDeviceCategory());
+        this.mImagePrefRepository.update(netflixPreference, deviceConfigData.getImagePref());
+        this.mSignUpConfig.update(netflixPreference, deviceConfigData.getSignUpEnabled(), deviceConfigData.getSignUpTimeout());
+        this.updateDisableWebsocketFlag(netflixPreference, deviceConfigData.getWebsocketDisabled());
+        this.updateDisableMdxFlag(netflixPreference, deviceConfigData.getMdxDisabled());
+        this.updateWidevineL1Flag(netflixPreference, deviceConfigData.isWidevineL1Enabled());
+        this.updateWidevineL3Flag(netflixPreference, deviceConfigData.isWidevineL3Enabled());
+        this.updateDynecomSignInFlag(netflixPreference, deviceConfigData.isDynecomSignInEnabled());
+        this.updateVoipEnabledOnDeviceFlag(netflixPreference, deviceConfigData.isVoipEnabledOnDevice());
+        this.updateAudioFormat(netflixPreference, deviceConfigData.getAudioFormats());
+        this.updateConsolidatedLoggingSpecification(netflixPreference, deviceConfigData.getConsolidatedloggingSpecification());
+        this.mSubtitleConfiguration = SubtitleConfiguration.update(this.mContext, netflixPreference, deviceConfigData.getSubtitleConfiguration());
+        int int1;
+        if (deviceConfigData.getAppMinVresion() != null) {
+            int1 = Integer.parseInt(deviceConfigData.getAppMinVresion());
+        }
+        else {
+            int1 = -1;
+        }
+        netflixPreference.putIntPref("config_min_version", this.mAppMinimalVersion = int1);
+        int int2;
+        if (deviceConfigData.getAppRecommendedVresion() != null) {
+            int2 = Integer.parseInt(deviceConfigData.getAppRecommendedVresion());
+        }
+        else {
+            int2 = -1;
+        }
+        netflixPreference.putIntPref("config_recommended_version", this.mAppRecommendedVersion = int2);
+        int int3 = n;
+        if (StringUtils.isNotEmpty(deviceConfigData.getPTAggregationSize())) {
+            int3 = Integer.parseInt(deviceConfigData.getPTAggregationSize());
+        }
+        netflixPreference.putIntPref("pt_aggregation_size", this.mPTAggregationSize = int3);
+        final int ipConnectivityPolicy = deviceConfigData.getIpConnectivityPolicy();
+        this.mIpConnectivityPolicy = IpConnectivityPolicy.from(ipConnectivityPolicy);
+        netflixPreference.putIntPref("ip_connectivity_policy_overide", ipConnectivityPolicy);
+        netflixPreference.putIntPref("apm_user_session_timeout_duration_override", this.mUserSessionDurationInSeconds = deviceConfigData.getUserSessionTimeoutDuration());
+        this.mBreadcrumbLoggingSpecification = BreadcrumbLoggingSpecification.saveToPreferences(netflixPreference, deviceConfigData.getBreadcrumbLoggingSpecification());
+        this.mErrorLoggingSpecification = ErrorLoggingSpecification.saveToPreferences(netflixPreference, deviceConfigData.getErrorLoggingSpecification());
+        this.mVideoResolutionOverride = deviceConfigData.getVideoResolutionOverride();
+        netflixPreference.putIntPref("video_resolution_override", deviceConfigData.getVideoResolutionOverride());
+        this.mRateLimitForGcmBrowseEvents = deviceConfigData.getRateLimitForGcmBrowseEvents();
+        netflixPreference.putIntPref("gcm_browse_rate_limit", deviceConfigData.getRateLimitForGcmBrowseEvents());
+        this.mRateLimitForNListChangeEvents = deviceConfigData.getRateLimitForGcmNListChangeEvents();
+        netflixPreference.putIntPref("gcm_tray_change_rate_limit", deviceConfigData.getRateLimitForGcmNListChangeEvents());
+        netflixPreference.putIntPref("jplayer_restart_count", deviceConfigData.getJPlayerStreamErrorRestartCount());
+        this.updateLocalPlaybackStatus(netflixPreference, deviceConfigData.getEnableLocalPlayback());
+        this.updateMdxRemoteControlLockScreenStatus(netflixPreference, deviceConfigData.getEnableMdxRemoteControlLockScreen());
+        this.updateMdxRemoteControlNotificationStatus(netflixPreference, deviceConfigData.getEnableMdxRemoteControlNotification());
+        this.updateDeviceLocaleSupportAlert(netflixPreference, deviceConfigData.shouldAlertForMissingLocale(), deviceConfigData.getAlertMsgForLocaleSupport());
+        this.mSubtitleDownloadRetryPolicy = SubtitleDownloadRetryPolicy.saveToPreferences(netflixPreference, deviceConfigData.getSubtitleDownloadRetryPolicy());
+        this.mVoipConfiguration = VoipConfiguration.saveToPreferences(netflixPreference, deviceConfigData.getVoipConfiguration());
+        this.mIsPlayBillingDisabled = deviceConfigData.isPlayBillingDisabled();
+        netflixPreference.putBooleanPref("disable_playbilling", deviceConfigData.isPlayBillingDisabled());
+        this.mIgnorePreloadForPlayBilling = deviceConfigData.toIgnorePrelaodForPlayBilling();
+        netflixPreference.putBooleanPref("ignore_preload_playbilling", deviceConfigData.toIgnorePrelaodForPlayBilling());
+        netflixPreference.putIntPref("voip_confirmation_dialog", this.mVoipConfirmationDialogAllocationPercentage = deviceConfigData.getVoipConfirmationDialogAllocationPercentage());
+        netflixPreference.putBooleanPref("disable_cast_faststart", this.mDisableCastFaststart = deviceConfigData.getDisableCastFaststart());
+        netflixPreference.putBooleanPref("disable_data_saver", this.mDisableDataSaver = deviceConfigData.getDisableDataSaver());
+        if (!this.isDeviceConfigInCache()) {
+            this.updateDeviceConfigFlag(netflixPreference, true);
+        }
+        netflixPreference.commit();
     }
     
     public boolean shouldAlertForMissingLocale() {

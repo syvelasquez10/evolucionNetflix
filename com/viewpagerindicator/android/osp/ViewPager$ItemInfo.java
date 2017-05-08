@@ -4,11 +4,11 @@
 
 package com.viewpagerindicator.android.osp;
 
-class ViewPager$ItemInfo
+public class ViewPager$ItemInfo
 {
-    Object object;
-    float offset;
-    int position;
-    boolean scrolling;
-    float widthFactor;
+    public Object object;
+    public float offset;
+    public int position;
+    public boolean scrolling;
+    public float widthFactor;
 }

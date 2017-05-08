@@ -17,8 +17,9 @@ import android.app.Activity;
 import com.netflix.mediaclient.util.MathUtils;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.DataUtil;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import android.content.Context;
 import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -30,28 +31,69 @@ public abstract class BasePaginatedAdapter<T extends Video>
     protected final NetflixActivity activity;
     private String currTitle;
     protected List<T> data;
+    protected boolean isRtlLocale;
     private int listViewPos;
     protected final int numItemsPerPage;
     
     public BasePaginatedAdapter(final Context context) {
         this.activity = (NetflixActivity)context;
         this.numItemsPerPage = this.computeNumItemsPerPage();
+        this.isRtlLocale = LocalizationUtils.isCurrentLocaleRTL();
     }
     
-    private void appendOrUpdate(final List<T> list, final List<T> list2, final int n) {
-        for (int i = 0; i < list2.size(); ++i) {
-            final Video video = list2.get(i);
-            final int n2 = n + i;
-            if (n2 < list.size()) {
-                list.set(n2, (T)video);
+    private void appendOrUpdate(final List<T> list, final List<T> list2, int i, final boolean b) {
+        for (int j = 0; j < list2.size(); ++j) {
+            final Video video = list2.get(j);
+            final int n = i + j;
+            if (n < list.size()) {
+                int n3;
+                if (this.isRtlLocale) {
+                    final int n2 = list.size() - n - 1;
+                    if (Log.isLoggable()) {
+                        Log.d("BasePaginatedAdapter", "RTL locale, update to position " + j + ", item " + video);
+                    }
+                    if ((n3 = n2) < 0) {
+                        if (Log.isLoggable()) {
+                            Log.e("BasePaginatedAdapter", "Adjusted index for RTL is less than 0 " + n2 + ". Default to 0!");
+                        }
+                        n3 = 0;
+                    }
+                }
+                else {
+                    n3 = n;
+                    if (Log.isLoggable()) {
+                        Log.d("BasePaginatedAdapter", "LTR locale, update to position " + n + ", item " + video);
+                        n3 = n;
+                    }
+                }
+                list.set(n3, (T)video);
+            }
+            else if (this.isRtlLocale) {
+                if (Log.isLoggable()) {
+                    Log.d("BasePaginatedAdapter", "RTL locale, adding to start from " + j + ", item " + video);
+                }
+                list.add(0, (T)video);
             }
             else {
                 list.add((T)video);
             }
         }
+        if (!b && this.isRtlLocale) {
+            Log.d("BasePaginatedAdapter", "All data is retrieved and RTL locale is in force. Check if we need to add empty items, just to push items whole way up to right");
+            i = list.size() % this.numItemsPerPage;
+            if (i > 0) {
+                final int n4 = this.numItemsPerPage - i;
+                if (Log.isLoggable()) {
+                    Log.d("BasePaginatedAdapter", "We do not populate fully last page, just " + i + " video is there. Adding " + n4 + " more empty videos...");
+                }
+                for (i = 0; i < n4; ++i) {
+                    list.add(0, null);
+                }
+            }
+        }
     }
     
-    public void appendData(final List<T> list, final String s, final int n, final int n2) {
+    public void appendData(final List<T> list, final String s, final int n, final int n2, final boolean b) {
         if (StringUtils.isEmpty(this.currTitle)) {
             if (Log.isLoggable()) {
                 Log.v("BasePaginatedAdapter", this.getCurrTitleFormatted() + "new title: " + s);
@@ -66,7 +108,7 @@ public abstract class BasePaginatedAdapter<T extends Video>
         }
         if (list != null) {
             final int size = this.data.size();
-            this.appendOrUpdate(this.data, list, n);
+            this.appendOrUpdate(this.data, list, n, b);
             if (Log.isLoggable()) {
                 Log.v("BasePaginatedAdapter", this.getCurrTitleFormatted() + "appending data starting with item: " + DataUtil.getFirstItemSafely(list) + ", prev size: " + size + ", new size: " + this.data.size());
                 if (this.data.size() == size) {
@@ -187,7 +229,7 @@ public abstract class BasePaginatedAdapter<T extends Video>
         else {
             final ArrayList list = new ArrayList<String>(dataForPage.size());
             for (final Video video : dataForPage) {
-                if (VideoType.isPresentationTrackingType(video.getType())) {
+                if (video != null && VideoType.isPresentationTrackingType(video.getType())) {
                     list.add(video.getId());
                 }
             }

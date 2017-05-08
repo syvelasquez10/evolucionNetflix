@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.settings;
 
+import com.netflix.mediaclient.util.PreferenceUtils;
+import android.content.SharedPreferences;
 import com.netflix.mediaclient.android.app.Status;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -16,13 +18,8 @@ import com.google.android.gcm.GCMRegistrar;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import com.netflix.mediaclient.service.configuration.SettingsConfiguration;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
-import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
-import com.netflix.mediaclient.util.PreferenceUtils;
 import android.preference.Preference$OnPreferenceClickListener;
-import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthSaving;
-import com.netflix.mediaclient.util.ConnectivityUtils;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData$Cell;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
 import android.app.Fragment;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import android.content.DialogInterface$OnClickListener;
@@ -32,6 +29,7 @@ import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
+import android.content.SharedPreferences$OnSharedPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import android.content.Context;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;

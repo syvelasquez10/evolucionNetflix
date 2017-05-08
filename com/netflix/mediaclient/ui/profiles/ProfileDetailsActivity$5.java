@@ -67,7 +67,7 @@ class ProfileDetailsActivity$5 implements View$OnClickListener
             return;
         }
         if (this.this$0.mServiceManager.getCurrentProfile() != null && this.this$0.mInputProfile.getProfileGuid().equals(this.this$0.mServiceManager.getCurrentProfile().getProfileGuid())) {
-            this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131165679), this.this$0.getString(2131165568), null)));
+            this.this$0.displayDialog(AlertDialogFactory.createDialog((Context)this.this$0, this.this$0.handler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131165712), this.this$0.getString(2131165588), null)));
             return;
         }
         UserActionLogUtils.reportEditProfileActionEnded((Context)this.this$0, IClientLogging$CompletionReason.canceled, this.this$0.getUiScreen(), null, this.this$0.getProfileForLogging());

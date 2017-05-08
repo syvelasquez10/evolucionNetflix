@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.pushnotification;
 
+import android.content.Context;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.ParcelUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.Log;
@@ -138,7 +140,7 @@ public class InfoEventHandler
         }
         InfoEventHandler.mService = mService;
         final boolean boolean1 = ParcelUtils.readBoolean(intent, "isRunning");
-        final boolean widgetInstalled = mService.isWidgetInstalled();
+        final boolean widgetInstalled = AndroidUtils.isWidgetInstalled((Context)mService);
         if (!boolean1 && !widgetInstalled) {
             this.informServerAndKillSelf(mService);
             return;

@@ -15,6 +15,7 @@ import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
+import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.servicemgr.IDiagnosis;
 import com.netflix.mediaclient.util.DeviceCategory;
@@ -68,12 +69,14 @@ import android.app.Service;
 public final class NetflixService extends Service implements INetflixService
 {
     public static final String ACTION_EXPAND_MDX_MINI_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_EXPAND_MDX_MINI_PLAYER";
+    private static final String ACTION_REFRESH_WIDGET_CONTENT_ALARM_INTENT = "com.netflix.mediaclient.service.ACTION_REFRESH_WIDGET_CONTENT";
     private static final String ACTION_SHOW_MDX_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER";
     private static final String ACTION_SHUTDOWN_SERVICE_PENDING_INTENT = "com.netflix.mediaclient.service.ACTION_SHUTDOWN_SERVICE";
     public static final String INTENT_EXTRA_ALREADY_RUNNING = "isRunning";
     private static final long SERVICE_INIT_TIMEOUT_MS = 90000L;
     private static final long SERVICE_KILL_DELAY_MS = 28800000L;
     private static final String TAG = "NetflixService";
+    private static final long WIDGET_CONTENT_REFRESH_DELAY_MS = 172800000L;
     private static boolean fetchErrorsEnabled;
     private static boolean isCreated;
     private final ServiceAgent$AgentContext agentContext;
@@ -146,6 +149,10 @@ public final class NetflixService extends Service implements INetflixService
         return PendingIntent.getService((Context)this, 0, new Intent("com.netflix.mediaclient.service.ACTION_SHUTDOWN_SERVICE").setClass((Context)this, (Class)NetflixService.class), 134217728);
     }
     
+    private PendingIntent createWidgetContentRefreshPendingIntent() {
+        return PendingIntent.getService((Context)this, 0, new Intent("com.netflix.mediaclient.service.ACTION_REFRESH_WIDGET_CONTENT").setClass((Context)this, (Class)NetflixService.class), 134217728);
+    }
+    
     private void doStartCommand(final Intent intent, final int n, final int n2) {
         Log.d("NetflixService", "Received start command intent ", intent);
         final String action = intent.getAction();
@@ -176,6 +183,17 @@ public final class NetflixService extends Service implements INetflixService
             if (intent.hasCategory("com.netflix.mediaclient.intent.category.CATEGORY_FROM_PREAPP_PSERVICE")) {
                 Log.d("NetflixService", "Preapp service command intent ");
                 this.mPreAppAgent.handleCommand(intent);
+            }
+            if ("com.netflix.mediaclient.service.ACTION_REFRESH_WIDGET_CONTENT".equals(action)) {
+                Log.i("NetflixService", "handling widget content refresh alarm expiry...");
+                if (AndroidUtils.isWidgetInstalled(this.getApplicationContext())) {
+                    this.updateWidgetContentAlarm(172800000L);
+                    if (this.isUserLoggedIn()) {
+                        PreAppAgent.informMemberUpdated(this.getApplicationContext());
+                        return;
+                    }
+                    PreAppAgent.informNonMemberVideosUpdated(this.getApplicationContext());
+                }
             }
         }
     }
@@ -227,6 +245,12 @@ public final class NetflixService extends Service implements INetflixService
         }
         Log.i("NetflixService", "StopService runnable posted - service will die in " + 60 + " seconds unless bound to or started...");
         this.stopSelfInMs(60000);
+        if (AndroidUtils.isWidgetInstalled(this.getApplicationContext())) {
+            if (Log.isLoggable()) {
+                Log.d("NetflixService", "start alarm to wake up in WIDGET_CONTENT_REFRESH_DELAY_MS to refresh content ");
+            }
+            this.updateWidgetContentAlarm(172800000L);
+        }
     }
     
     private void initTimeout() {
@@ -304,11 +328,30 @@ public final class NetflixService extends Service implements INetflixService
         if (Log.isLoggable()) {
             Log.v("NetflixService", "Setting service shutdown alarm, current time (ms): " + elapsedRealtime + ", kill delay (ms): " + n + ", alarm set for (ms): " + n2);
         }
-        alarmManager.set(2, n2, this.createShutdownServiceAlarmPendingIntent());
+        try {
+            alarmManager.set(2, n2, this.createShutdownServiceAlarmPendingIntent());
+        }
+        catch (Exception ex) {
+            ErrorLoggingManager.logHandledException("SPY-8729 - Exception trying to schedule an AlarmManager: " + ex);
+        }
     }
     
     public static void toggleFetchErrorsEnabled() {
         NetflixService.fetchErrorsEnabled = !NetflixService.fetchErrorsEnabled;
+    }
+    
+    private void updateWidgetContentAlarm(final long n) {
+        final AlarmManager alarmManager = (AlarmManager)this.getSystemService("alarm");
+        if (alarmManager == null) {
+            Log.w("NetflixService", "Can't access alarm manager to set widget content refresh alarm");
+            return;
+        }
+        final long elapsedRealtime = SystemClock.elapsedRealtime();
+        final long n2 = elapsedRealtime + n;
+        if (Log.isLoggable()) {
+            Log.v("NetflixService", String.format("updating widget refresh alarm - fireIn %d ms, time sinceBoot %d (ms), widgetRefreshMs: %d ms", n2, elapsedRealtime, n));
+        }
+        alarmManager.set(2, n2, this.createWidgetContentRefreshPendingIntent());
     }
     
     public void addProfile(final String s, final boolean b, final String s2, final int n, final int n2) {
@@ -325,6 +368,10 @@ public final class NetflixService extends Service implements INetflixService
     
     public void editProfile(final String s, final String s2, final boolean b, final String s3, final int n, final int n2) {
         this.mUserAgent.editWebUserProfile(s, s2, b, s3, new NetflixService$UserAgentClientCallback(this, n, n2));
+    }
+    
+    public void fetchAndCacheResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final int n, final int n2) {
+        this.mResourceFetcher.fetchAndCacheResource(s, clientLogging$AssetType, new NetflixService$ResourceFetcherClientCallback(this, n, n2));
     }
     
     public void fetchResource(final String s, final IClientLogging$AssetType clientLogging$AssetType, final int n, final int n2) {
@@ -395,6 +442,10 @@ public final class NetflixService extends Service implements INetflixService
         return this.mConfigurationAgent.getEsnProvider();
     }
     
+    public EogAlert getEndOfGrandfatheringAlert() {
+        return this.mUserAgent.getEogAlert();
+    }
+    
     public IErrorHandler getErrorHandler() {
         return this.mErrorAgent;
     }
@@ -417,6 +468,10 @@ public final class NetflixService extends Service implements INetflixService
     
     public IPlayer getNflxPlayer() {
         return this.mPlayerAgent;
+    }
+    
+    public String getNrdDeviceModel() {
+        return this.mConfigurationAgent.getNrdDeviceModel();
     }
     
     public String getNrdpComponentVersion(final NrdpComponent nrdpComponent) {
@@ -474,10 +529,6 @@ public final class NetflixService extends Service implements INetflixService
     
     public boolean isUserLoggedIn() {
         return this.mUserAgent.isUserLoggedIn();
-    }
-    
-    public boolean isWidgetInstalled() {
-        return this.agentContext.getPreAppAgent().isWidgetInstalled();
     }
     
     public void loginUser(final String s, final String s2, final int n, final int n2) {
@@ -603,6 +654,14 @@ public final class NetflixService extends Service implements INetflixService
         }
         this.stopSelfInMs(28800000L);
         return true;
+    }
+    
+    public void recordEndOfGrandfatheringImpression(final String s, final String s2) {
+        this.mUserAgent.recordUmsImpression(s, s2);
+    }
+    
+    public void recordPlanSelection(final String s, final String s2) {
+        this.mUserAgent.recordPlanSelection(s, s2);
     }
     
     public void refreshProfileSwitchingStatus() {

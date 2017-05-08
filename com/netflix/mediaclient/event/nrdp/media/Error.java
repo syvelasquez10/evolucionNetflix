@@ -75,6 +75,34 @@ public class Error extends BaseMediaEvent
         }
     }
     
+    public boolean checkForStreamingFailureHttp420() {
+        boolean b = false;
+        if (this.mArray == null) {
+            return b;
+        }
+        final int n = 0;
+        b = b;
+        if (n >= this.mArray.length()) {
+            return b;
+        }
+        try {
+            final JSONObject jsonObject = this.mArray.getJSONObject(n);
+            if (jsonObject.getString("errorcode").equals("NFErr_HTTPErrorCode") && jsonObject.getString("httpcode").equals("420")) {
+                Log.d("nf_event", "checkForStreamingFailureHttp420 succeeds");
+                b = true;
+                return b;
+            }
+            goto Label_0090;
+        }
+        catch (JSONException ex) {
+            Log.e("nf_event", "checkForStreamingFailureHttp420: JSONException:", (Throwable)ex);
+        }
+        catch (Throwable t) {
+            Log.e("nf_event", "checkForStreamingFailureHttp420:", t);
+            goto Label_0090;
+        }
+    }
+    
     public int getError() {
         return this.error;
     }

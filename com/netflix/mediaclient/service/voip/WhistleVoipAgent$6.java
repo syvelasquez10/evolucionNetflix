@@ -17,8 +17,6 @@ final class WhistleVoipAgent$6 implements ThreadFactory
     
     @Override
     public Thread newThread(final Runnable runnable) {
-        final Thread thread = new Thread(runnable, "VoipTask #" + this.mCount.getAndIncrement());
-        thread.setPriority(10);
-        return thread;
+        return new Thread(runnable, "VoipTask #" + this.mCount.getAndIncrement());
     }
 }

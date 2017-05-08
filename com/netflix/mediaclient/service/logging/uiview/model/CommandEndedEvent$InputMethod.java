@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.logging.uiview.model;
 
-enum CommandEndedEvent$InputMethod
+public enum CommandEndedEvent$InputMethod
 {
     gesture, 
     key, 

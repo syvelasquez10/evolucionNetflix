@@ -34,7 +34,7 @@ public class IconFontTextView extends TextView
     
     private void init() {
         if (IconFontTextView.iconTypeface == null) {
-            IconFontTextView.iconTypeface = Typeface.createFromAsset(this.getContext().getAssets(), "nf-icon.ttf");
+            IconFontTextView.iconTypeface = Typeface.createFromAsset(this.getContext().getAssets(), "nf-icon.otf");
         }
         this.setTypeface(IconFontTextView.iconTypeface);
     }

@@ -20,7 +20,6 @@ import com.netflix.mediaclient.service.logging.uiaction.model.BaseUIActionSessio
 public class PreAppWidgetActionEndedEvent extends BaseUIActionSessionEndedEvent
 {
     private static final String TAG = "nf_preapp_actionEndedEvent";
-    boolean isMember;
     private String widgetActionData;
     private String widgetLogData;
     private PreAppWidgetLogData widgetLogObj;

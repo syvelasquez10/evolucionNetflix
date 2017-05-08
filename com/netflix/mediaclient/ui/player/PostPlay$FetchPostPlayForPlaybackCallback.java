@@ -4,6 +4,42 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import android.animation.TimeInterpolator;
+import com.netflix.mediaclient.util.DeviceUtils;
+import android.view.View$OnClickListener;
+import android.view.View$OnTouchListener;
+import com.netflix.mediaclient.ui.common.PlayContext;
+import android.content.res.Configuration;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import android.text.TextUtils;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.service.logging.client.model.Error;
+import com.netflix.mediaclient.util.log.UserActionLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
+import com.netflix.mediaclient.servicemgr.IPlayer;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import com.netflix.mediaclient.util.DeviceCategory;
+import android.widget.TextView;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideo;
+import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayContext;
+import java.util.List;
+import android.view.animation.DecelerateInterpolator;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.view.View;
+import com.netflix.model.leafs.InteractivePostplay;
+import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import com.netflix.mediaclient.ui.iko.InteractivePostPlayManager;
+import com.netflix.mediaclient.servicemgr.Asset;
+import com.netflix.mediaclient.ui.iko.model.InteractivePostplayModel;
+import android.content.Context;
+import android.widget.Toast;
+import com.netflix.mediaclient.NetflixApplication;
+import com.netflix.mediaclient.ui.iko.InteractivePostPlayFactory;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
@@ -26,28 +62,68 @@ class PostPlay$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
         if (Log.isLoggable()) {
             Log.v("nf_postplay", "postPlayVideosProvider: " + postPlayVideosProvider);
         }
-        if (this.this$0.mNetflixActivity.isFinishing()) {
-            return;
-        }
-        if (status.isError() || postPlayVideosProvider == null) {
+        this.this$0.mPostPlayDataFetchStatus = PostPlay$PostPlayDataFetchStatus.postponed;
+        if (!this.this$0.mNetflixActivity.isFinishing()) {
+            synchronized (this.this$0) {
+                if (this.this$0.mFetchPostPlayForPlaybackCallback != this) {
+                    Log.w("nf_postplay", "Not current callback");
+                    return;
+                }
+            }
+            // monitorexit(postPlay)
+            final PostPlayVideosProvider postPlayVideosProvider2;
+            if (!status.isError() && postPlayVideosProvider2 != null) {
+                if (Log.isLoggable() && postPlayVideosProvider2 != null) {
+                    Log.d("nf_postplay", "Postplay data retrieved " + postPlayVideosProvider2);
+                }
+                this.this$0.mPostPlayVideos = postPlayVideosProvider2.getPostPlayVideos();
+                this.this$0.mPostPlayDataExist = (this.this$0.mPostPlayVideos != null && this.this$0.mPostPlayVideos.size() > 0);
+                this.this$0.mPostPlayContexts = postPlayVideosProvider2.getPostPlayContexts();
+                this.this$0.mInteractivePostPlay = postPlayVideosProvider2.getInteractivePostplay();
+                if (this.this$0.mInteractivePostPlay != null) {
+                    final InteractivePostplayModel data = this.this$0.mInteractivePostPlay.getData();
+                    if (data == null || StringUtils.isEmpty(data.getType())) {
+                        if (Log.isLoggable()) {
+                            Log.d("nf_postplay", "Interactive post play data is empty.");
+                        }
+                    }
+                    else {
+                        final String type = data.getType();
+                        this.this$0.interactivePostPlayManager = InteractivePostPlayFactory.getManager(type, this.this$0, data);
+                        if (this.this$0.interactivePostPlayManager == null) {
+                            Log.e("nf_postplay", "Interactive post play manager is null. Unknown interactive post play type from endpoint - " + type);
+                        }
+                        else {
+                            this.this$0.interactivePostPlayManager.startPreCachingResources();
+                            this.this$0.isInteractivePostPlay = true;
+                            if (this.this$0.mPlayerFragment != null) {
+                                final Asset currentAsset = this.this$0.mPlayerFragment.getCurrentAsset();
+                                boolean b2 = b;
+                                if (currentAsset != null) {
+                                    b2 = b;
+                                    if (data.getInterrupterCount() >= currentAsset.getPostPlayVideoPlayed()) {
+                                        b2 = true;
+                                    }
+                                }
+                                if (b2 && this.this$0.mPlayerFragment.getHandler() != null) {
+                                    this.this$0.mPlayerFragment.getHandler().removeCallbacks(this.this$0.onInterrupterStart);
+                                    Log.d("nf_postplay", "Cancelling interrupter for interactive content until 8 post plays");
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (Log.isLoggable()) {
+                    Log.d("nf_postplay", "Interactive post play data is null.");
+                }
+                this.this$0.updateOnPostPlayVideosFetched();
+                return;
+            }
             Log.w("nf_postplay", "Error loading post play data");
             this.this$0.mPostPlayDataExist = false;
-            return;
-        }
-        if (Log.isLoggable() && postPlayVideosProvider != null) {
-            Log.d("nf_postplay", "Postplay data retrieved " + postPlayVideosProvider);
-        }
-        this.this$0.mPostPlayVideos = postPlayVideosProvider.getPostPlayVideos();
-        final PostPlay this$0 = this.this$0;
-        boolean mPostPlayDataExist = b;
-        if (this.this$0.mPostPlayVideos != null) {
-            mPostPlayDataExist = b;
-            if (this.this$0.mPostPlayVideos.size() > 0) {
-                mPostPlayDataExist = true;
+            if (NetflixApplication.isDebugToastEnabled()) {
+                Toast.makeText((Context)this.this$0.mNetflixActivity, (CharSequence)"[DEBUG] loading post play data failed", 1).show();
             }
         }
-        this$0.mPostPlayDataExist = mPostPlayDataExist;
-        this.this$0.mPostPlayContexts = postPlayVideosProvider.getPostPlayContexts();
-        this.this$0.updateOnPostPlayVideosFetched();
     }
 }

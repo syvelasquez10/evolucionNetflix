@@ -7,12 +7,12 @@ package com.netflix.mediaclient.ui.details;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable$Orientation;
-import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import android.widget.FrameLayout$LayoutParams;
+import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup$LayoutParams;
 import android.support.v7.widget.Toolbar$LayoutParams;
-import android.support.v7.widget.Toolbar;
 import java.util.Date;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -24,7 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.view.View;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
-import android.util.Log;
+import com.netflix.mediaclient.Log;
 
 class DetailsPageParallaxScrollListener$4 implements Runnable
 {
@@ -40,11 +40,11 @@ class DetailsPageParallaxScrollListener$4 implements Runnable
     public void run() {
         final int tryGetSeasonIndexBySeasonNumber = this.this$0.seasonsSpinner.tryGetSeasonIndexBySeasonNumber(this.val$seasonNumber);
         if (tryGetSeasonIndexBySeasonNumber < 0) {
-            Log.v("detailsScroller", "No valid season index found");
+            Log.v("DetailsPageParallaxScrollListener", "No valid season index found");
             return;
         }
-        if (Log.isLoggable("detailsScroller", 2)) {
-            Log.v("detailsScroller", "Setting current season to: " + tryGetSeasonIndexBySeasonNumber);
+        if (Log.isLoggable()) {
+            Log.v("DetailsPageParallaxScrollListener", "Setting current season to: " + tryGetSeasonIndexBySeasonNumber);
         }
         this.this$0.seasonsSpinner.setSelection(tryGetSeasonIndexBySeasonNumber, true);
     }

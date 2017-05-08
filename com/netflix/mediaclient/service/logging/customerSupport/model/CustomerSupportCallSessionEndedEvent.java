@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.logging.customerSupport.model;
 
 import java.util.Iterator;
 import org.json.JSONArray;
+import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.customerSupport.CustomerSupportCallSession;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$TerminationReason;
@@ -19,13 +20,17 @@ public class CustomerSupportCallSessionEndedEvent extends SessionEndedEvent
 {
     public static final String CALL_QUALITY = "callQuality";
     public static final String CONNECTION_TIME = "connectionTime";
+    public static final String DIAL_CONFIRMATION_SCREEN_DISPLAYED = "dialConfirmationDialogDisplayed";
     public static final String ERROR = "error";
     public static final String REASON = "reason";
     private static final String SESSION_NAME = "customerSupportCall";
+    public static final String SHARED_SESSION_UUID = "sessionID";
     public static final String TERMINATION_REASON = "terminationReason";
     private IClientLogging$CompletionReason mCompletionReason;
     private int mConnectionTimeInSec;
+    private boolean mDialConfirmationDialogDisplayed;
     private Error mError;
+    private String mSharedSessionId;
     private List<CustomerSupportCallSession$CallQualitySegment> mStates;
     private CustomerServiceLogging$TerminationReason mTerminationReason;
     
@@ -37,6 +42,8 @@ public class CustomerSupportCallSessionEndedEvent extends SessionEndedEvent
         this.category = customerSupportCallSession.getCategory();
         this.mConnectionTimeInSec = mConnectionTimeInSec;
         this.mStates = customerSupportCallSession.getQualityStates();
+        this.mSharedSessionId = customerSupportCallSession.getSharedSessionId();
+        this.mDialConfirmationDialogDisplayed = customerSupportCallSession.isDialConfirmationDialogDisplayed();
     }
     
     @Override
@@ -55,6 +62,10 @@ public class CustomerSupportCallSessionEndedEvent extends SessionEndedEvent
             data.put("error", (Object)this.mError.toJSONObject());
         }
         data.put("connectionTime", this.mConnectionTimeInSec);
+        data.put("dialConfirmationDialogDisplayed", this.mDialConfirmationDialogDisplayed);
+        if (StringUtils.isNotEmpty(this.mSharedSessionId)) {
+            data.put("sessionID", (Object)this.mSharedSessionId);
+        }
         if (this.mStates != null) {
             final JSONArray jsonArray = new JSONArray();
             data.put("callQuality", (Object)jsonArray);

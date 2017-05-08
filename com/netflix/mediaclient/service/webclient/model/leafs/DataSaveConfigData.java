@@ -8,14 +8,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class DataSaveConfigData
 {
-    @SerializedName("limitCellularBW")
-    public ABTestConfigData abTestConfig_6733;
-    @SerializedName("bitrateCapHdOn")
-    public int bitrateCapHdOn;
-    @SerializedName("bitrateCapSaveOff")
-    public int bitrateCapSaveOff;
-    @SerializedName("bitrateCapSaveOn")
-    public int bitrateCapSaveOn;
-    @SerializedName("dataSaveOn")
-    public boolean dataSaveOn;
+    @SerializedName("videoBitrateAuto")
+    public int videoBitrateAuto;
+    @SerializedName("videoBitrateHigh")
+    public int videoBitrateHigh;
+    @SerializedName("videoBitrateLow")
+    public int videoBitrateLow;
+    @SerializedName("videoBitrateMedium")
+    public int videoBitrateMedium;
 }

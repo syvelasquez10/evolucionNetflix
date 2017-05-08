@@ -66,7 +66,7 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
     }
     
     private Bitmap getDefaultBoxArt() {
-        return BitmapFactory.decodeResource(this.context.getResources(), 2130837701);
+        return BitmapFactory.decodeResource(this.context.getResources(), 2130837719);
     }
     
     private Notification$MediaStyle getStyle() {
@@ -103,12 +103,12 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
             this.builder.setSubText((CharSequence)this.secondTitle);
         }
         if (this.isPostplay) {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131165548));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131165567));
         }
         else {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131165667));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131165700));
         }
-        this.builder.setSmallIcon(2130837732);
+        this.builder.setSmallIcon(2130837751);
         this.notification = this.builder.build();
         this.notificationManager.notify(1, this.notification);
     }

@@ -4,29 +4,40 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.VoipConfiguration;
 import android.view.Display;
 import android.util.DisplayMetrics;
 import android.hardware.display.DisplayManager;
 import com.netflix.mediaclient.media.VideoResolutionRange;
+import com.netflix.mediaclient.service.webclient.model.leafs.SubtitleDownloadRetryPolicy;
+import com.netflix.mediaclient.service.webclient.model.leafs.SignInConfigData;
+import com.netflix.mediaclient.service.webclient.model.leafs.NrmConfigData;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
+import java.util.Arrays;
+import com.netflix.mediaclient.util.Base64;
+import android.util.Pair;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.PreviewContentConfigData;
 import com.netflix.mediaclient.ui.experience.PersistentExperience;
 import com.netflix.mediaclient.javabridge.transport.NativeTransport;
+import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.media.JPlayer.DolbyDigitalHelper;
 import android.content.pm.PackageManager;
 import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -76,8 +87,10 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     public static final int RESOURCE_REQUEST_TIMEOUT_MS = 1000;
     private static final String TAG = "nf_configurationagent";
     private static final String sMemLevel;
+    private ABTestConfiguration mABTestConfigOverride;
     private AccountConfiguration mAccountConfigOverride;
     private int mAppVersionCode;
+    private CastKeyConfiguration mCastKeyConfigOverride;
     private final List<ConfigurationAgent$ConfigAgentListener> mConfigAgentListeners;
     private Status mConfigRefreshStatus;
     private ConfigurationWebClient mConfigurationWebClient;
@@ -91,7 +104,9 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     private boolean mMicrophoneExist;
     private boolean mNeedEsMigration;
     private boolean mNeedLogout;
+    private NrmConfiguration mNrmConfigOverride;
     private final PlaybackConfiguration mPlaybackConfiguration;
+    private SignInConfiguration mSignInConfigOverride;
     private String mSoftwareVersion;
     private StreamingConfiguration mStreamingConfigOverride;
     private Handler refreshHandler;
@@ -175,16 +190,19 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
                 throw new IOException();
             }
         }
-        catch (Exception ex) {
-            s = ex.toString().toLowerCase(Locale.US);
+        catch (Throwable t) {
+            s = t.toString().toLowerCase(Locale.US);
             Log.e("nf_configurationagent", "Could not fetch configuration! " + s);
             if (s.contains("could not validate certificate") || s.contains("sslhandshakeexception")) {
                 return CommonStatus.HTTP_SSL_DATE_TIME_ERROR;
             }
-            return CommonStatus.CONFIG_DOWNLOAD_FAILED;
+            return CommonStatus.FATAL_CONFIG_DOWNLOAD_FAILED;
         }
         this.mDeviceConfigOverride.persistDeviceConfigOverride(configString.getDeviceConfig());
         this.mStreamingConfigOverride.persistStreamingOverride(configString.getStreamingConfig());
+        this.mNrmConfigOverride.persistNrmConfigOverride(configString.getNrmConfigData());
+        this.mCastKeyConfigOverride.persistCastConfigOverride(configString.getCastKeyData());
+        this.mSignInConfigOverride.persistSignInConfigOverride(configString.getSignInConfigData());
         return CommonStatus.OK;
     }
     
@@ -210,7 +228,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             if (s.contains("could not validate certificate") || s.contains("sslhandshakeexception")) {
                 return CommonStatus.HTTP_SSL_DATE_TIME_ERROR;
             }
-            return CommonStatus.CONFIG_DOWNLOAD_FAILED;
+            return CommonStatus.VOIP_CONFIG_DOWNLOAD_FAILED;
         }
     }
     
@@ -242,6 +260,10 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             return;
         }
         Log.d("nf_configurationagent", "VOIP was enabled, its settings retrieved.");
+    }
+    
+    private boolean isDolbyDigitalPlus20Supported() {
+        return (this.mDeviceConfigOverride.getmAudioFormat() & 0x4) != 0x0 && DolbyDigitalHelper.isEAC3supported();
     }
     
     private void launchTask(final ConfigurationAgent$FetchTask configurationAgent$FetchTask) {
@@ -283,24 +305,47 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         if (Log.isLoggable()) {
             Log.d("nf_configurationagent", String.format("persistConfigOverride configData %s", configData.toString()));
         }
+        PreviewContentConfigData previewContentConfigData;
+        if (this.mAccountConfigOverride != null) {
+            previewContentConfigData = this.mAccountConfigOverride.getPreviewContentConfigData();
+        }
+        else {
+            previewContentConfigData = null;
+        }
         this.mDeviceConfigOverride.persistDeviceConfigOverride(configData.getDeviceConfig());
         this.mStreamingConfigOverride.persistStreamingOverride(configData.getStreamingConfig());
         this.mAccountConfigOverride.persistAccountConfigOverride(configData.getAccountConfig());
+        this.mABTestConfigOverride.persistABTestConfigOverride(configData.getABTestConfigData());
+        this.mNrmConfigOverride.persistNrmConfigOverride(configData.getNrmConfigData());
+        this.mCastKeyConfigOverride.persistCastConfigOverride(configData.getCastKeyData());
+        this.mSignInConfigOverride.persistSignInConfigOverride(configData.getSignInConfigData());
         ((VoipAuthorizationTokensUpdater)this.getService().getVoip()).updateAuthorizationData(configData.getCustomerSupportVoipAuthorizations());
-        if (this.isDolbyDigitalPlus51Supported()) {
+        if (this.isDolbyDigitalPlus51Supported() && BandwidthUtility.canSupportDDPlus51(this.getContext())) {
             NativeTransport.enableDolbyDigitalPlus51();
+        }
+        if (this.isDolbyDigitalPlus20Supported()) {
+            NativeTransport.enableDolbyDigitalPlus20();
         }
         NativeTransport.setSupportMaxVideoHeight(this.getVideoResolutionRange().getMaxHeight());
         if (this.isDeviceHd()) {
             NativeTransport.enableHDPlayback();
         }
         PersistentExperience.update(this.getContext(), this);
+        PersistentConfig.update(this.getContext(), this);
+        this.setPreviewContentConfig(previewContentConfigData);
     }
     
     private void prepareConfigWebClient() {
         this.mEndpointRegistry.setUserAgentInterface(this.getUserAgent());
         if (this.mConfigurationWebClient == null) {
             this.mConfigurationWebClient = ConfigurationWebClientFactory.create(this.getService(), this.getResourceFetcher().getApiNextWebClient());
+        }
+    }
+    
+    private void setPreviewContentConfig(final PreviewContentConfigData previewContentConfigData) {
+        if (previewContentConfigData == null || !previewContentConfigData.equals(this.mAccountConfigOverride.getPreviewContentConfigData())) {
+            Log.d("nf_configurationagent", "Preview content config changed, update NrdLib");
+            this.getNrdController().getNrdp().getMedia().setPreviewContentConfig(this.getPreviewContentConfiguration());
         }
     }
     
@@ -324,6 +369,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public void clearAccountConfigData() {
         this.mAccountConfigOverride.clear();
+        this.mABTestConfigOverride.clear();
     }
     
     @Override
@@ -373,6 +419,10 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         this.mDeviceConfigOverride = new DeviceConfiguration(this.getContext());
         this.mAccountConfigOverride = new AccountConfiguration(this.getContext());
         this.mStreamingConfigOverride = new StreamingConfiguration(this.getContext());
+        this.mABTestConfigOverride = new ABTestConfiguration(this.getContext());
+        this.mSignInConfigOverride = new SignInConfiguration(this.getContext());
+        this.mNrmConfigOverride = new NrmConfiguration(this.getContext());
+        this.mCastKeyConfigOverride = new CastKeyConfiguration(this.getContext());
         this.mEndpointRegistry = new EndpointRegistryProvider(this.getContext(), deviceModel, this.isDeviceHd(), this.mDeviceConfigOverride.getImageRepository(), this.computeImageResolutionClass(this.getContext()));
         this.mMicrophoneExist = this.hasMicrophone();
         final Status loadConfigOverridesOnAppStart = this.loadConfigOverridesOnAppStart(this.mEndpointRegistry.getAppStartConfigUrl());
@@ -412,12 +462,12 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
-    public ABTestConfigData getABTestConfiguration_6538() {
-        return this.mAccountConfigOverride.getABTestConfiguration_6538();
+    public ABTestConfig getABTestConfiguration_6634() {
+        return this.mAccountConfigOverride.getABTestConfiguration_6634();
     }
     
     @Override
-    public ABTestConfigData getABTestConfiguration_6725() {
+    public ABTestConfig getABTestConfiguration_6725() {
         return this.mAccountConfigOverride.getABTestConfiguration_6725();
     }
     
@@ -456,8 +506,38 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public Pair<String, byte[]> getCastPrefetchSharedSecret() {
+        final String castKeyId = this.mCastKeyConfigOverride.getCastKeyId();
+        final String castKey = this.mCastKeyConfigOverride.getCastKey();
+        if (StringUtils.isEmpty(castKey) || StringUtils.isEmpty(castKeyId)) {
+            Log.d("nf_configurationagent", "cast sharedSecret are null");
+        }
+        else {
+            try {
+                final byte[] decode = Base64.decode(castKey);
+                if (Log.isLoggable()) {
+                    Log.d("nf_configurationagent", String.format("cast keyId: %s, key:%s, decodedKey: %s", castKeyId, castKey, Arrays.toString(decode)));
+                }
+                return (Pair<String, byte[]>)Pair.create((Object)castKeyId, (Object)decode);
+            }
+            catch (IOException ex) {
+                if (Log.isLoggable()) {
+                    Log.e("nf_configurationagent", "error decoding castkey" + castKey, ex);
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+    
+    @Override
     public ConsolidatedLoggingSessionSpecification getConsolidatedLoggingSessionSpecification(final String s) {
         return this.mDeviceConfigOverride.getConsolidatedLoggingSessionSpecification(s);
+    }
+    
+    @Override
+    public ABTestConfig$Cell getCoppola1Experience() {
+        return this.mABTestConfigOverride.getCoppola1TestCell();
     }
     
     @Override
@@ -541,6 +621,25 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public ABTestConfig$Cell getMotionBBTestConfig() {
+        return this.mABTestConfigOverride.getMotionBBTestConfig();
+    }
+    
+    public String getNrdDeviceModel() {
+        return this.getEsnProvider().getDeviceModel();
+    }
+    
+    @Override
+    public NrmConfigData getNrmConfigData() {
+        return this.mNrmConfigOverride.mNrmConfigData;
+    }
+    
+    @Override
+    public ABTestConfig$Cell getPhoneOrientationConfig() {
+        return this.mABTestConfigOverride.getPhoneOrientationConfig();
+    }
+    
+    @Override
     public PlaybackConfiguration getPlaybackConfiguration() {
         return this.mPlaybackConfiguration;
     }
@@ -558,6 +657,23 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public int getPresentationTrackingAggregationSize() {
         return this.mDeviceConfigOverride.getPTAggregationSize();
+    }
+    
+    @Override
+    public PreviewContentConfigData getPreviewContentConfiguration() {
+        if (this.getCurrentPlayerType() != PlayerType.device12) {
+            Log.d("nf_configurationagent", "Not JPLAYER2, preview content is not enabled");
+            return PreviewContentConfigData.getDisabledConfig();
+        }
+        if (this.mAccountConfigOverride == null) {
+            return null;
+        }
+        return this.mAccountConfigOverride.getPreviewContentConfigData();
+    }
+    
+    @Override
+    public ABTestConfig$Cell getPushNotifOptInConfig() {
+        return this.mABTestConfigOverride.getPushNotificationOptInConfig();
     }
     
     @Override
@@ -583,6 +699,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         return 1000;
     }
     
+    @Override
+    public SignInConfigData getSignInConfigData() {
+        return this.mSignInConfigOverride.mSignInConfigData;
+    }
+    
     public SignUpConfiguration getSignUpConfiguration() {
         return this.mDeviceConfigOverride.getSignUpConfiguration();
     }
@@ -600,6 +721,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public SubtitleConfiguration getSubtitleConfiguration() {
         return this.mDeviceConfigOverride.getSubtitleConfiguration();
+    }
+    
+    @Override
+    public SubtitleDownloadRetryPolicy getSubtitleDownloadRetryPolicy() {
+        return this.mDeviceConfigOverride.getSubtitleDownloadRetryPolicy();
     }
     
     @Override
@@ -656,8 +782,18 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
-    public int getVoipSampleRate() {
-        return this.mDeviceConfigOverride.getVoipSampleRate();
+    public ABTestConfig$Cell getVoiceSearchABTestConfig() {
+        return this.mABTestConfigOverride.getVoiceSearchABTestConfig();
+    }
+    
+    @Override
+    public VoipConfiguration getVoipConfiguration() {
+        return this.mDeviceConfigOverride.getVoipConfiguration();
+    }
+    
+    @Override
+    public boolean ignorePreloadForPlayBilling() {
+        return this.mDeviceConfigOverride.ignorePreloadForPlayBilling();
     }
     
     public boolean isAppVersionObsolete() {
@@ -691,13 +827,23 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public boolean isDisableCastFaststart() {
+        return this.mDeviceConfigOverride != null && this.mDeviceConfigOverride.isDisableCastFaststart();
+    }
+    
+    @Override
     public boolean isDisableMcQueenV2() {
         return this.mAccountConfigOverride.toDisableMcQueenV2();
     }
     
     @Override
     public boolean isDolbyDigitalPlus51Supported() {
-        return (this.mDeviceConfigOverride.getmAudioFormat() & 0x2) != 0x0;
+        return (this.mDeviceConfigOverride.getmAudioFormat() & 0x2) != 0x0 && DolbyDigitalHelper.isEAC3supported();
+    }
+    
+    @Override
+    public boolean isDynecomSignInEnabled() {
+        return this.mDeviceConfigOverride.isDynecomSignInEnabled();
     }
     
     @Override
@@ -708,6 +854,29 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public boolean isLogoutRequired() {
         return this.mNeedLogout;
+    }
+    
+    @Override
+    public boolean isPlayBillingDisabled() {
+        return this.mDeviceConfigOverride.isPlayBillingDisabled();
+    }
+    
+    @Override
+    public boolean isPreviewContentEnabled() {
+        if (this.getCurrentPlayerType() == PlayerType.device12) {
+            boolean previewContentEnabled;
+            final boolean b = previewContentEnabled = true;
+            if (this.mAccountConfigOverride != null) {
+                previewContentEnabled = b;
+                if (this.mAccountConfigOverride.getPreviewContentConfigData() != null) {
+                    previewContentEnabled = this.mAccountConfigOverride.getPreviewContentConfigData().isPreviewContentEnabled();
+                }
+            }
+            Log.d("nf_configurationagent", "JPLAYER2, preview content is enabled " + previewContentEnabled);
+            return previewContentEnabled;
+        }
+        Log.d("nf_configurationagent", "Not JPLAYER2, preview content is not enabled");
+        return false;
     }
     
     public boolean isTablet() {
@@ -758,23 +927,55 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     
     @Override
     public boolean shouldDisableVoip() {
-        final boolean b = !this.mMicrophoneExist || (this.mDeviceConfigOverride.shouldDisableVoip() && this.mAccountConfigOverride.shouldDisableVoip());
+        boolean b = true;
+        final boolean b2 = !this.mMicrophoneExist || !this.mDeviceConfigOverride.getVoipConfiguration().isEnableVoip() || (this.mDeviceConfigOverride.shouldDisableVoip() && this.mAccountConfigOverride.shouldDisableVoip());
         if (Log.isLoggable()) {
             Log.d("nf_configurationagent", "Microfon exist: " + this.mMicrophoneExist);
             Log.d("nf_configurationagent", "device overide: " + this.mDeviceConfigOverride.shouldDisableVoip());
             Log.d("nf_configurationagent", "account overide: " + this.mAccountConfigOverride.shouldDisableVoip());
-            Log.d("nf_configurationagent", "Real disable " + b);
+            final StringBuilder append = new StringBuilder().append("VOIP configuration overide: ");
+            if (this.mDeviceConfigOverride.getVoipConfiguration().isEnableVoip()) {
+                b = false;
+            }
+            Log.d("nf_configurationagent", append.append(b).toString());
+            Log.d("nf_configurationagent", "Real disable " + b2);
         }
-        return b;
+        return b2;
     }
     
     @Override
-    public boolean shouldForceBwSettingsInWifi() {
-        return this.mAccountConfigOverride.shouldForceBwSettingsInWifi();
+    public boolean shouldDisplayVoipDialConfirmationDialog() {
+        final int voipConfirmationDialogAllocationPercentage = this.mDeviceConfigOverride.getVoipConfirmationDialogAllocationPercentage();
+        if (Log.isLoggable()) {
+            Log.d("nf_configurationagent", "shouldDisplayVoipDialConfirmationDialog:: allocation percentage: " + voipConfirmationDialogAllocationPercentage);
+        }
+        boolean deviceEnabled;
+        if (voipConfirmationDialogAllocationPercentage <= 0) {
+            Log.d("nf_configurationagent", "Nobody will see confirmation dialog");
+            deviceEnabled = false;
+        }
+        else {
+            if (voipConfirmationDialogAllocationPercentage >= 100) {
+                Log.d("nf_configurationagent", "Everybody will see confirmation dialog");
+                return true;
+            }
+            final boolean b = deviceEnabled = DeviceUtils.isDeviceEnabled(this.getContext(), 100 - voipConfirmationDialogAllocationPercentage);
+            if (Log.isLoggable()) {
+                Log.d("nf_configurationagent", "shouldDisplayVoipDialConfirmationDialog:: This device will see confirmation dialog: " + b);
+                return b;
+            }
+        }
+        return deviceEnabled;
     }
     
     @Override
     public void userAgentLogoutComplete() {
         this.mNeedLogout = false;
+    }
+    
+    @Override
+    public void verifyLoginViaDynecom(final String s, final String s2, final ConfigurationAgentWebCallback configurationAgentWebCallback) {
+        this.prepareConfigWebClient();
+        this.launchTask(new ConfigurationAgent$VerifyLoginViaDynecomTask(this, s, s2, configurationAgentWebCallback));
     }
 }

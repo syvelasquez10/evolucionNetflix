@@ -6,6 +6,7 @@ package com.netflix.mediaclient.servicemgr;
 
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.service.logging.uiview.model.CommandEndedEvent$InputMethod;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 
 public interface UIViewLogging
@@ -17,6 +18,7 @@ public interface UIViewLogging
     public static final String EXTRA_DATA_CONTEXT = "dataContext";
     public static final String EXTRA_ERROR = "error";
     public static final String EXTRA_GUID = "guid";
+    public static final String EXTRA_INPUT_METHOD = "inputMethod";
     public static final String EXTRA_INPUT_VALUE = "inputValue";
     public static final String EXTRA_MODEL = "model";
     public static final String EXTRA_SUCCESS = "success";
@@ -41,7 +43,7 @@ public interface UIViewLogging
     
     void endImpressionSession(final boolean p0, final Error p1);
     
-    void startCommandSession(final UIViewLogging$UIViewCommandName p0, final IClientLogging$ModalView p1, final DataContext p2, final String p3, final JSONObject p4);
+    void startCommandSession(final UIViewLogging$UIViewCommandName p0, final IClientLogging$ModalView p1, final CommandEndedEvent$InputMethod p2, final DataContext p3, final String p4, final JSONObject p5);
     
     void startImpressionSession(final IClientLogging$ModalView p0, final String p1);
 }

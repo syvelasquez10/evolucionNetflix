@@ -15,6 +15,21 @@ class DummyMdxVideoDetails$1 implements Playable
     }
     
     @Override
+    public String getAdvisoryDescription() {
+        return null;
+    }
+    
+    @Override
+    public int getAdvisoryDisplayDuration() {
+        return 0;
+    }
+    
+    @Override
+    public String getAdvisoryRating() {
+        return null;
+    }
+    
+    @Override
     public int getEndtime() {
         return 0;
     }
@@ -22,6 +37,11 @@ class DummyMdxVideoDetails$1 implements Playable
     @Override
     public int getEpisodeNumber() {
         return 0;
+    }
+    
+    @Override
+    public long getExpirationTime() {
+        return 0L;
     }
     
     @Override
@@ -65,8 +85,18 @@ class DummyMdxVideoDetails$1 implements Playable
     }
     
     @Override
+    public String getSeasonAbbrSeqLabel() {
+        return null;
+    }
+    
+    @Override
     public int getSeasonNumber() {
         return 0;
+    }
+    
+    @Override
+    public boolean isAdvisoryDisabled() {
+        return false;
     }
     
     @Override
@@ -76,6 +106,16 @@ class DummyMdxVideoDetails$1 implements Playable
     
     @Override
     public boolean isAutoPlayEnabled() {
+        return false;
+    }
+    
+    @Override
+    public boolean isAvailableToStream() {
+        return false;
+    }
+    
+    @Override
+    public boolean isNSRE() {
         return false;
     }
     

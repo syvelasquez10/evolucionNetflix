@@ -22,6 +22,7 @@ public interface Nflx$Parameter
     public static final String PROMO_CODE = "promoCode";
     public static final String QUERY = "query";
     public static final String RESPONSE = "response";
+    public static final String SCENE = "scene";
     public static final String SOCIAL_NOTIFICATION_ID = "g";
     public static final String SOCIAL_NOTIFICATION_STORY_ID = "story_id";
     public static final String SOURCE = "source";
@@ -31,5 +32,6 @@ public interface Nflx$Parameter
     public static final String TARGET_URL_SHORT = "u";
     public static final String TIME_FROM_START = "t";
     public static final String TRACKID = "trkid";
+    public static final String TRACKID_CAMEL = "trkId";
     public static final String TYPE = "type";
 }

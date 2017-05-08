@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
+import com.netflix.mediaclient.android.fragment.LoadingView;
 import android.view.ViewGroup;
 import android.widget.LinearLayout$LayoutParams;
 import android.content.IntentFilter;
@@ -38,6 +40,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     private final LoMoViewPager pager;
     private final RowAdapterCallbacks pagerAdapterCallbacks;
     private LoMoViewPagerAdapter$Type preErrorState;
+    private int previousLastPage;
     private final View reloadView;
     private LoMoViewPagerAdapter$Type state;
     private final ObjectRecycler$ViewRecycler viewRecycler;
@@ -75,7 +78,7 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         if (basicLoMo instanceof KubrickLoMoDuplicate) {
             return LoMoViewPagerAdapter$Type.KUBRICK_HERO_DUPLICATE;
         }
-        if (BrowseExperience.isKubrickKids()) {
+        if (BrowseExperience.showKidsExperience()) {
             if (basicLoMo.getType() == LoMoType.TOP_TEN) {
                 return LoMoViewPagerAdapter$Type.KUBRICK_KIDS_TOP_TEN;
             }
@@ -193,11 +196,18 @@ public class LoMoViewPagerAdapter extends PagerAdapter
     @Override
     public void destroyItem(final ViewGroup viewGroup, final int n, final Object o) {
         if (Log.isLoggable()) {
-            Log.v("LoMoViewPagerAdapter", "destroying item: " + o.getClass().getSimpleName() + ", pos: " + n);
+            if (o != null) {
+                Log.v("LoMoViewPagerAdapter", "destroying item: " + o.getClass().getSimpleName() + ", pos: " + n);
+            }
+            else {
+                Log.v("LoMoViewPagerAdapter", "destroying item: null , pos: " + n);
+            }
         }
-        final View view = (View)o;
-        viewGroup.removeView(view);
-        this.viewRecycler.push(view);
+        if (o != null) {
+            final View view = (View)o;
+            viewGroup.removeView(view);
+            this.viewRecycler.push(view);
+        }
     }
     
     @Override
@@ -232,6 +242,13 @@ public class LoMoViewPagerAdapter extends PagerAdapter
             Log.v("LoMoViewPagerAdapter", "instantiateItem, pos: " + n);
         }
         final View view = this.getView(n);
+        if (view instanceof LoadingView && LocalizationUtils.isCurrentLocaleRTL()) {
+            if (Log.isLoggable()) {
+                Log.d("LoMoViewPagerAdapter", "Adding loading page for RTL locale, pos: " + n + ", pages: " + viewGroup.getChildCount() + ", layout direction " + viewGroup.getLayoutDirection());
+            }
+            viewGroup.addView(view, 0);
+            return view;
+        }
         viewGroup.addView(view);
         return view;
     }
@@ -285,9 +302,10 @@ public class LoMoViewPagerAdapter extends PagerAdapter
             else {
                 title = loMo.getTitle();
             }
-            Log.v("LoMoViewPagerAdapter", append.append(title).append(", new state: ").append(convertLomoTypeToAdapterType).toString());
+            Log.v("LoMoViewPagerAdapter", append.append(title).append(", new state: ").append(convertLomoTypeToAdapterType).append(", hashcode: ").append(this.hashCode()).toString());
         }
         this.listViewPos = listViewPos;
+        this.previousLastPage = 0;
         this.hideReloadViews();
         this.loMo = loMo;
         this.showLoading();

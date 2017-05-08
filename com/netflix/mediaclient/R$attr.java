@@ -53,8 +53,8 @@ public final class R$attr
     public static final int background = 2130771996;
     public static final int backgroundSplit = 2130771998;
     public static final int backgroundStacked = 2130771997;
-    public static final int backgroundTint = 2130772308;
-    public static final int backgroundTintMode = 2130772309;
+    public static final int backgroundTint = 2130772309;
+    public static final int backgroundTintMode = 2130772310;
     public static final int barLength = 2130772070;
     public static final int behavior_overlapTop = 2130772118;
     public static final int borderWidth = 2130772075;
@@ -141,9 +141,9 @@ public final class R$attr
     public static final int externalRouteEnabledDrawable = 2130772099;
     public static final int fabSize = 2130772073;
     public static final int fadeColor = 2130772137;
-    public static final int fadeDelay = 2130772302;
-    public static final int fadeLength = 2130772303;
-    public static final int fades = 2130772301;
+    public static final int fadeDelay = 2130772303;
+    public static final int fadeLength = 2130772304;
+    public static final int fades = 2130772302;
     public static final int fillColor = 2130772039;
     public static final int flingVelocity = 2130772138;
     public static final int footerColor = 2130772276;
@@ -229,8 +229,8 @@ public final class R$attr
     public static final int outerShadowDy = 2130772091;
     public static final int outerShadowRadius = 2130772089;
     public static final int overlapAnchor = 2130772110;
-    public static final int paddingEnd = 2130772306;
-    public static final int paddingStart = 2130772305;
+    public static final int paddingEnd = 2130772307;
+    public static final int paddingStart = 2130772306;
     public static final int pageColor = 2130772040;
     public static final int panelBackground = 2130772244;
     public static final int panelMenuListTheme = 2130772246;
@@ -315,7 +315,7 @@ public final class R$attr
     public static final int textAppearanceSmallPopupMenu = 2130772208;
     public static final int textColorAlertDialogListItem = 2130772261;
     public static final int textColorSearchUrl = 2130772233;
-    public static final int theme = 2130772307;
+    public static final int theme = 2130772308;
     public static final int thickness = 2130772071;
     public static final int thumbTextPadding = 2130772144;
     public static final int title = 2130771985;
@@ -335,15 +335,15 @@ public final class R$attr
     public static final int topPadding = 2130772285;
     public static final int track = 2130772143;
     public static final int typeface = 2130772092;
-    public static final int underline = 2130772304;
+    public static final int underline = 2130772305;
     public static final int unselectedColor = 2130771987;
     public static final int voiceIcon = 2130772127;
-    public static final int vpiCirclePageIndicatorStyle = 2130772310;
-    public static final int vpiIconPageIndicatorStyle = 2130772311;
-    public static final int vpiLinePageIndicatorStyle = 2130772312;
-    public static final int vpiTabPageIndicatorStyle = 2130772314;
-    public static final int vpiTitlePageIndicatorStyle = 2130772313;
-    public static final int vpiUnderlinePageIndicatorStyle = 2130772315;
+    public static final int vpiCirclePageIndicatorStyle = 2130772311;
+    public static final int vpiIconPageIndicatorStyle = 2130772312;
+    public static final int vpiLinePageIndicatorStyle = 2130772313;
+    public static final int vpiTabPageIndicatorStyle = 2130772315;
+    public static final int vpiTitlePageIndicatorStyle = 2130772314;
+    public static final int vpiUnderlinePageIndicatorStyle = 2130772316;
     public static final int windowActionBar = 2130772169;
     public static final int windowActionBarOverlay = 2130772171;
     public static final int windowActionModeOverlay = 2130772172;
@@ -354,4 +354,5 @@ public final class R$attr
     public static final int windowMinWidthMajor = 2130772177;
     public static final int windowMinWidthMinor = 2130772178;
     public static final int windowNoTitle = 2130772170;
+    public static final int yOffset = 2130772301;
 }

@@ -5,9 +5,9 @@
 package com.netflix.mediaclient.service.pservice;
 
 import android.os.IBinder;
-import com.netflix.mediaclient.util.AndroidUtils;
 import android.os.SystemClock;
 import java.util.Iterator;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.NetflixService;

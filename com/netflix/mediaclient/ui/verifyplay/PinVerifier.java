@@ -4,8 +4,11 @@
 
 package com.netflix.mediaclient.ui.verifyplay;
 
+import android.app.DialogFragment;
+import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.content.Intent;
 import com.netflix.mediaclient.android.app.UserInputManager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.ApplicationStateListener;
@@ -111,9 +114,17 @@ public class PinVerifier implements ApplicationStateListener
     }
     
     @Override
-    public void onForeground(final UserInputManager userInputManager) {
+    public void onFocusGain(final UserInputManager userInputManager) {
+    }
+    
+    @Override
+    public void onFocusLost(final UserInputManager userInputManager) {
+    }
+    
+    @Override
+    public void onForeground(final UserInputManager userInputManager, final Intent intent) {
         PinVerifier.sAppInBackground = false;
-        Log.d("nf_pin", String.format("app in foreground ", new Object[0]));
+        Log.d("nf_pin", "app in foreground ");
     }
     
     @Override
@@ -160,7 +171,7 @@ public class PinVerifier implements ApplicationStateListener
             }
             if (PinVerifier.sPinDialog == null || this.shouldHandleNewRequest(playVerifierVault)) {
                 ((NetflixApplication)netflixActivity.getApplication()).getUserInput().addListener(this);
-                (PinVerifier.sPinDialog = PinDialog.createPinDialog(playVerifierVault)).show(netflixActivity.getFragmentManager(), "frag_dialog");
+                ViewUtils.safeShowDialogFragment(PinVerifier.sPinDialog = PinDialog.createPinDialog(playVerifierVault), netflixActivity.getFragmentManager(), "frag_dialog");
             }
         }
     }

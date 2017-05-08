@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.home;
 
+import com.netflix.mediaclient.NetflixApplication;
 import android.view.View;
 import java.io.Serializable;
 import com.netflix.mediaclient.ui.search.SearchMenu;
@@ -44,6 +45,7 @@ import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.support.v4.widget.DrawerLayout;
 import android.content.Intent;
 import java.util.LinkedList;
+import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag$OptInResponseHandler;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 
@@ -105,16 +107,6 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         return createShowIntent(netflixActivity).putExtra("genre_id", "lolomo");
     }
     
-    private IClientLogging$ModalView getCurrentViewType() {
-        if (StringUtils.isEmpty(this.genreId)) {
-            return IClientLogging$ModalView.homeScreen;
-        }
-        if ("lolomo".equals(this.genreId)) {
-            return IClientLogging$ModalView.homeScreen;
-        }
-        return IClientLogging$ModalView.browseTitles;
-    }
-    
     private static Class<?> getHomeActivityClass() {
         return HomeActivity.class;
     }
@@ -170,7 +162,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131165604, 1).show();
+        Toast.makeText((Context)this, 2131165625, 1).show();
         this.clearAllStateAndRefresh();
     }
     
@@ -188,14 +180,14 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void setupViews() {
-        (this.drawerLayout = (DrawerLayout)this.findViewById(2131624179)).setDrawerListener(new HomeActivity$1(this));
+        (this.drawerLayout = (DrawerLayout)this.findViewById(2131624248)).setDrawerListener(new HomeActivity$1(this));
         this.unlockSlidingDrawerIfPossible();
         this.slidingMenuAdapter = BrowseExperience.get().createSlidingMenuAdapter(this, this.drawerLayout);
         if (Log.isLoggable()) {
             Log.v("HomeActivity", "Created sliding menu adapter of type: " + this.slidingMenuAdapter.getClass());
         }
         this.drawerLayout.setFocusable(false);
-        this.drawerLayout.setScrimColor(this.getResources().getColor(2131558470));
+        this.drawerLayout.setScrimColor(this.getResources().getColor(2131558474));
         this.updateActionBar();
         this.updateSlidingDrawer();
     }
@@ -208,20 +200,20 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131624177, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131624157, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
     
     @SuppressLint({ "RtlHardcoded" })
     private void toggleDrawer() {
-        if (this.drawerLayout.isDrawerOpen(3)) {
+        if (this.drawerLayout.isDrawerOpen(8388611)) {
             UIViewLogUtils.reportUIViewCommand((Context)this, UIViewLogging$UIViewCommandName.slidingMenuClosed, this.getUiScreen(), this.getDataContext());
             this.drawerLayout.closeDrawers();
             return;
         }
         UIViewLogUtils.reportUIViewCommand((Context)this, UIViewLogging$UIViewCommandName.slidingMenuOpened, this.getUiScreen(), this.getDataContext());
-        this.drawerLayout.openDrawer(3);
+        this.drawerLayout.openDrawer(8388611);
         this.bWasHamburgerClicked = true;
     }
     
@@ -290,12 +282,22 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     @Override
     public int getActionBarParentViewId() {
-        return 2131624174;
+        return 2131624247;
     }
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903100;
+        return 2130903116;
+    }
+    
+    public IClientLogging$ModalView getCurrentViewType() {
+        if (StringUtils.isEmpty(this.genreId)) {
+            return IClientLogging$ModalView.homeScreen;
+        }
+        if ("lolomo".equals(this.genreId)) {
+            return IClientLogging$ModalView.homeScreen;
+        }
+        return IClientLogging$ModalView.browseTitles;
     }
     
     public GenreList getGenre() {
@@ -324,9 +326,9 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     @SuppressLint({ "RtlHardcoded" })
     @Override
     protected boolean handleBackPressed() {
-        if (this.drawerLayout != null && this.drawerLayout.isDrawerOpen(3)) {
+        if (this.drawerLayout != null && this.drawerLayout.isDrawerOpen(8388611)) {
             Log.v("HomeActivity", "Sliding drawer was open, closing...");
-            this.drawerLayout.closeDrawer(3);
+            this.drawerLayout.closeDrawer(8388611);
             return true;
         }
         Log.v("HomeActivity", "Back pressed, backStack size: " + this.backStackIntents.size());
@@ -363,12 +365,12 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     @Override
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         if (this.getMdxMiniPlayerFrag() != null) {
-            MdxMenu.addSelectPlayTarget(this, menu, BrowseExperience.isKubrickKids());
+            MdxMenu.addSelectPlayTarget(this, menu, BrowseExperience.showKidsExperience());
         }
         else {
             Log.e("HomeActivity", "onCreateOptionsMenu got null MdxMiniPlayerFrag");
         }
-        SearchMenu.addSearchNavigation(this, menu, BrowseExperience.isKubrickKids());
+        SearchMenu.addSearchNavigation(this, menu, BrowseExperience.showKidsExperience());
         super.onCreateOptionsMenu(menu, menu2);
     }
     
@@ -439,5 +441,8 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     protected void showProfileToast() {
+        if (NetflixApplication.isDebugToastEnabled() && this.getServiceManager().getCurrentProfile() != null) {
+            Toast.makeText((Context)this, (CharSequence)String.format("DEBUG: Profile %s", this.getServiceManager().getCurrentProfile().getProfileName()), 1).show();
+        }
     }
 }

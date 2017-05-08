@@ -4,7 +4,6 @@
 
 package com.netflix.model;
 
-import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.falkor.Ref;
 import com.netflix.falkor.LinkedList;
 import com.netflix.falkor.ModelProxy;
@@ -38,10 +37,6 @@ public abstract class BaseFalkorObject implements BranchNode, Expires, ModelProx
     @Override
     public LinkedList<Ref> getReferences() {
         return this.references;
-    }
-    
-    protected NetflixService getService() {
-        return this.getModelProxy().getServiceProvider().getService();
     }
     
     @Override

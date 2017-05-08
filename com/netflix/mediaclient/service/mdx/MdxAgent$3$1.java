@@ -23,7 +23,7 @@ class MdxAgent$3$1 extends SimpleBrowseAgentCallback
     @Override
     public void onPostPlayVideosFetched(final PostPlayVideosProvider postPlayVideosProvider, final Status status) {
         if (Log.isLoggable()) {
-            Log.v("nf_mdx_agent", "onPostPlayVideosFetched, res: " + status);
+            Log.v("nf_mdx_MdxAgent", "onPostPlayVideosFetched, res: " + status);
         }
         if (status.isSucces() && postPlayVideosProvider != null) {
             final List<PostPlayVideo> postPlayVideos = postPlayVideosProvider.getPostPlayVideos();

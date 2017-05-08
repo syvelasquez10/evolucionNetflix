@@ -9,6 +9,9 @@ import com.netflix.mediaclient.service.pservice.logging.PServiceWidgetLogEvent$W
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.LinkedList;
+import com.netflix.mediaclient.ui.player.PlayerActivity;
+import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.pservice.logging.PreAppWidgetLogActionData$PreAppWidgetActionName;
 import android.annotation.TargetApi;
 import android.os.Bundle;
@@ -41,33 +44,38 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private static final int LOGO_HEADER_HEIGHT_DP = 40;
     private static final int MAX_IMAGES_IN_VIEW = 3;
     public static final String NFLX_WIDGET = "NetflixWidget";
-    private static final String PREAPP_NFLX_BASE = "nflx://www.netflix.com/Browse?q=source%3DNetflixWidget%26action%3D";
+    private static final String PREAPP_NFLX_BASE = "nflx://www.netflix.com/Browse?q=source%3DNetflixWidget%26trkid%3D14836231%26action%3D";
     private static final String PREAPP_NFLX_EPISODE_URL = "%26episodeid%3Dhttp%3A%2F%2Fapi-global.netflix.com%2Fcatalog%2Ftitles%2Fprograms%2F";
     private static final String PREAPP_NFLX_MOVIE_URL = "%26movieid%3Dhttp%3A%2F%2Fapi-global.netflix.com%2Fcatalog%2Ftitles%2Fmovies%2F";
     private static final String PREAPP_NFLX_SHOW_URL = "%26movieid%3Dhttp%3A%2F%2Fapi-global.netflix.com%2Fcatalog%2Ftitles%2Fseries%2F";
+    private static final String PREAPP_TRACKID = "14836231";
+    private static final String PREAP_TRACKID_PARAM = "%26trkid%3D14836231";
     private static final String TAG = "nf_preapp_widgetagent";
     private static final int TV_CARD_SCALE_UP = 3;
+    private static boolean mIsNflxServicePlayerInPauseState;
     private static PDiskData$ListType mListTypeOnWidget;
+    private static String mNflxServicePlayableId;
     private static String mVideoIdOnWidget;
     
     private RemoteViews adjustLogoAndRefreshIcon(final Context context, final RemoteViews remoteViews, int n, final PVideo pVideo, final PDiskData$ListType pDiskData$ListType, final int n2, final int n3, final String s, final List<PVideo> list) {
-        if (2130903189 == n3) {
-            remoteViews.setOnClickPendingIntent(2131624430, this.getWidgetRefreshIntent(pVideo, pDiskData$ListType, n2));
-            remoteViews.setViewVisibility(2131624428, 8);
+        remoteViews.setOnClickPendingIntent(2131624545, this.getWidgetHomeIntent(n2));
+        if (2130903214 == n3) {
+            remoteViews.setOnClickPendingIntent(2131624546, this.getWidgetRefreshIntent(pVideo, pDiskData$ListType, n2));
+            remoteViews.setViewVisibility(2131624544, 8);
             remoteViews.setViewVisibility(this.getGradientResourceId(1), 0);
         }
         else {
-            remoteViews.setOnClickPendingIntent(2131624428, this.getWidgetRefreshIntent(pVideo, pDiskData$ListType, n2));
+            remoteViews.setOnClickPendingIntent(2131624544, this.getWidgetRefreshIntent(pVideo, pDiskData$ListType, n2));
             if (this.canFitListName(context, n2)) {
                 if (PDiskData$ListType.NON_MEMBER.equals(pDiskData$ListType)) {
                     n = list.indexOf(pVideo) / n;
                     if (n <= 0) {
                         n = 0;
                     }
-                    remoteViews.setTextViewText(2131624428, (CharSequence)this.getPreAppAdString(context, n));
+                    remoteViews.setTextViewText(2131624544, (CharSequence)this.getPreAppAdString(context, n));
                     return remoteViews;
                 }
-                remoteViews.setTextViewText(2131624428, (CharSequence)s);
+                remoteViews.setTextViewText(2131624544, (CharSequence)s);
                 return remoteViews;
             }
         }
@@ -76,11 +84,11 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     
     private void adjustViews(final Context context, final RemoteViews remoteViews, int n) {
         final int n2 = 0;
-        remoteViews.setViewVisibility(2131624425, 8);
-        remoteViews.setViewVisibility(2131624435, 8);
-        remoteViews.setViewVisibility(2131624429, 0);
-        remoteViews.setViewVisibility(2131624432, 0);
-        remoteViews.setViewVisibility(2131624433, 0);
+        remoteViews.setViewVisibility(2131624541, 8);
+        remoteViews.setViewVisibility(2131624551, 8);
+        remoteViews.setViewVisibility(2131624545, 0);
+        remoteViews.setViewVisibility(2131624548, 0);
+        remoteViews.setViewVisibility(2131624549, 0);
         final int cellFromDp = cellFromDp(this.getWidgetHeight(context, n));
         final int cellFromDp2 = cellFromDp(this.getWidgetWidth(context, n));
         n = n2;
@@ -88,11 +96,11 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
             n = 1;
         }
         if (n != 0 && cellFromDp2 <= 3) {
-            remoteViews.setViewVisibility(2131624433, 8);
+            remoteViews.setViewVisibility(2131624549, 8);
         }
         if (cellFromDp <= 1) {
-            remoteViews.setViewVisibility(2131624432, 8);
-            remoteViews.setViewVisibility(2131624433, 8);
+            remoteViews.setViewVisibility(2131624548, 8);
+            remoteViews.setViewVisibility(2131624549, 8);
         }
     }
     
@@ -137,7 +145,7 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
                 return this.adjustLogoAndRefreshIcon(context, fillInRemoteView, numberOfImages, pVideo2, nextList, n, n2, s, list3);
             }
             if (this.listHasNextVideo(nextList, list3, pVideo2, pDiskData)) {
-                pVideo = this.getNextVideoInList(list3, pVideo2);
+                pVideo = this.getNextVideoInList(list3, pVideo2, nextList, pDiskData);
             }
             else {
                 nextList = this.getNextList(nextList, pDiskData);
@@ -163,20 +171,20 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     }
     
     private RemoteViews buildWidgetStaticImageRemoteView(final Context context, final int n) {
-        int n2 = 2130903190;
+        int n2 = 2130903215;
         if (this.toAlignByHeight(context, n) || this.isWidgetOneCellHigh(context, n)) {
-            n2 = 2130903189;
+            n2 = 2130903214;
         }
         Log.d("nf_preapp_widgetagent", "buildWidgetStaticImageRemoteView layoutId:" + n2);
         final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), n2);
         this.adjustViews(context, remoteViews, n);
-        remoteViews.setImageViewResource(2131624424, 2130837878);
-        remoteViews.setViewVisibility(2131624432, 0);
-        remoteViews.setViewVisibility(2131624433, 0);
-        remoteViews.setTextViewText(2131624432, context.getText(2131165672));
-        remoteViews.setOnClickPendingIntent(2131624424, this.getWidgetHomeIntent(n));
-        remoteViews.setOnClickPendingIntent(2131624428, this.getWidgetRefreshIntent(null, null, n));
-        remoteViews.setOnClickPendingIntent(2131624429, this.getWidgetHomeIntent(n));
+        remoteViews.setImageViewResource(2131624540, 2130837898);
+        remoteViews.setViewVisibility(2131624548, 0);
+        remoteViews.setViewVisibility(2131624549, 0);
+        remoteViews.setTextViewText(2131624548, context.getText(2131165705));
+        remoteViews.setOnClickPendingIntent(2131624540, this.getWidgetHomeIntent(n));
+        remoteViews.setOnClickPendingIntent(2131624544, this.getWidgetRefreshIntent(null, null, n));
+        remoteViews.setOnClickPendingIntent(2131624545, this.getWidgetHomeIntent(n));
         return remoteViews;
     }
     
@@ -206,8 +214,8 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     
     private boolean doesListHaveEnoughVideos(final PDiskData$ListType pDiskData$ListType, final PDiskData pDiskData, final int n, final int n2) {
         final List<PVideo> listByType = this.getListByType(pDiskData$ListType, pDiskData);
-        final boolean b = listByType != null && listByType.size() >= n + n2;
-        Log.d("nf_preapp_widgetagent", String.format("list:%s, size:%d, position:%d, need:%d, hasEnough:%b", pDiskData$ListType, listByType.size(), n, n2, b));
+        final boolean b = listByType != null && this.getListUpperBound(listByType, pDiskData$ListType, pDiskData) >= n + n2;
+        Log.d("nf_preapp_widgetagent", String.format("list:%s, size:%d, upperBound:%d, position:%d, need:%d, hasEnough:%b", pDiskData$ListType, listByType.size(), this.getListUpperBound(listByType, pDiskData$ListType, pDiskData), n, n2, b));
         return b;
     }
     
@@ -264,7 +272,7 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
             bitmap2 = null;
         }
         else {
-            Log.d("nf_preapp_widgetagent", String.format("bitmap decode took %d ms", TimeUtils.computeTimeInMsSinceStart(nanoTime)));
+            Log.d("nf_preapp_widgetagent", String.format("bitmap decode took (%s) %d ms", pDiskData$ImageType, TimeUtils.computeTimeInMsSinceStart(nanoTime)));
             Bitmap resizedBitmapForTrickplay = bitmap;
             if (PDiskData$ImageType.TRICKPLAY.equals(pDiskData$ImageType)) {
                 final long nanoTime2 = System.nanoTime();
@@ -292,13 +300,13 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private int getGradientResourceId(final int n) {
         switch (n) {
             default: {
-                return 2131624427;
+                return 2131624543;
             }
             case 2: {
-                return 2131624439;
+                return 2131624555;
             }
             case 3: {
-                return 2131624446;
+                return 2131624562;
             }
         }
     }
@@ -306,13 +314,13 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private int getImageGroupResourceId(final int n) {
         switch (n) {
             default: {
-                return 2131624450;
+                return 2131624566;
             }
             case 2: {
-                return 2131624436;
+                return 2131624552;
             }
             case 3: {
-                return 2131624443;
+                return 2131624559;
             }
         }
     }
@@ -320,23 +328,23 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private int getImageResourceId(final int n) {
         switch (n) {
             default: {
-                return 2131624424;
+                return 2131624540;
             }
             case 2: {
-                return 2131624437;
+                return 2131624553;
             }
             case 3: {
-                return 2131624444;
+                return 2131624560;
             }
         }
     }
     
     private PDiskData$ImageType getImageType(final PVideo pVideo, final PDiskData$ListType pDiskData$ListType, final int n, final int n2) {
-        Log.d("nf_preapp_widgetagent", String.format("layoutId:%d, listType:%s, videoPos:%d", n, pDiskData$ListType, n2));
-        if (2130903191 == n && n2 > 1) {
+        Log.d("nf_preapp_widgetagent", String.format("getImageType - getResizedBitmapForTrickplay%d, listType:%s, videoPos:%d", n, pDiskData$ListType, n2));
+        if (2130903216 == n && n2 > 1) {
             return PDiskData$ImageType.HORIZONTAL_ART;
         }
-        if (2130903189 == n) {
+        if (2130903214 == n) {
             return PDiskData$ImageType.TITLE_CARD;
         }
         if (PDiskData$ListType.CW.equals(pDiskData$ListType) && pVideo.isPlayable) {
@@ -377,20 +385,24 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     
     private int getLayoutId(final Context context, int n) {
         if (this.isWidgetOneCellHigh(context, n)) {
-            Log.d("nf_preapp_widgetagent", String.format("using preapp_widget_align_height %d", 2130903189));
-            return 2130903189;
+            Log.d("nf_preapp_widgetagent", String.format("using preapp_widget_align_height %d", 2130903214));
+            return 2130903214;
         }
         if (this.toAlignByWidth(context, n)) {
-            Log.d("nf_preapp_widgetagent", String.format("using preapp_widget_vertical %d", 2130903191));
-            return 2130903191;
+            Log.d("nf_preapp_widgetagent", String.format("using preapp_widget_vertical %d", 2130903216));
+            return 2130903216;
         }
+        final int cellFromDp = cellFromDp(this.getWidgetWidth(context, n));
         if (this.toAlignByHeight(context, n)) {
-            n = 2130903189;
+            n = 2130903214;
+        }
+        else if (cellFromDp > 2) {
+            n = 2130903217;
         }
         else {
-            n = 2130903192;
+            n = 2130903218;
         }
-        Log.d("nf_preapp_widgetagent", String.format("using %d, preapp_widget_align_height=%d,  preapp_width:%d", n, 2130903189, 2130903192));
+        Log.d("nf_preapp_widgetagent", String.format("using %d, preapp_widget_align_height=%d, preapp_width:%d, (widthInCell:%d) preapp_width_2cell:%d", n, 2130903214, 2130903217, cellFromDp, 2130903218));
         return n;
     }
     
@@ -453,6 +465,13 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
             }
         }
         return PDiskData$ListType.NON_MEMBER;
+    }
+    
+    private int getListUpperBound(final List<PVideo> list, final PDiskData$ListType pDiskData$ListType, final PDiskData pDiskData) {
+        if (list == null) {
+            return 0;
+        }
+        return Math.min(list.size(), PServiceABTest.getVideoCountOfListForWidgetExp(pDiskData$ListType, pDiskData));
     }
     
     private int getMaxNumOfImagesForAllWidgets(final Context context) {
@@ -600,16 +619,17 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
             return this.getFirstVideo(this.getListByType(pDiskData$ListType, pDiskData));
         }
         final int index = listByType.indexOf(pVideo);
-        if (index + 1 < Math.min(listByType.size(), PServiceABTest.getVideoCountOfListForWidgetExp(pDiskData$ListType, pDiskData))) {
+        final int listUpperBound = this.getListUpperBound(listByType, pDiskData$ListType, pDiskData);
+        if (index + 1 < listUpperBound) {
             return listByType.get(index + 1);
         }
-        Log.d("nf_preapp_widgetagent", String.format("next null - videoId: %s, is last in listType: %s, index: %d, size: %d", pVideo.id, pDiskData$ListType, index, listByType.size()));
+        Log.d("nf_preapp_widgetagent", String.format("next null - videoId: %s, is last in listType: %s, index: %d, size: %d, upperBound:%d", pVideo.id, pDiskData$ListType, index, listByType.size(), listUpperBound));
         return null;
     }
     
-    private PVideo getNextVideoInList(final List<PVideo> list, final PVideo pVideo) {
+    private PVideo getNextVideoInList(final List<PVideo> list, final PVideo pVideo, final PDiskData$ListType pDiskData$ListType, final PDiskData pDiskData) {
         final int n = list.indexOf(pVideo) + 1;
-        if (n > 0 && n < list.size()) {
+        if (n > 0 && n < this.getListUpperBound(list, pDiskData$ListType, pDiskData)) {
             return list.get(n);
         }
         Log.w("nf_preapp_widgetagent", "getNextVideoInList is null");
@@ -617,44 +637,46 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     }
     
     private String getNflxBaseReq(final String s) {
-        return "nflx://www.netflix.com/Browse?q=source%3DNetflixWidget%26action%3D" + s;
+        return "nflx://www.netflix.com/Browse?q=source%3DNetflixWidget%26trkid%3D14836231%26action%3D" + s;
     }
     
     private int getNumberOfImages(final Context context, int widgetHeight, final int n) {
-        if (2130903189 != widgetHeight) {
-            if (2130903191 == widgetHeight) {
-                return 3;
-            }
-            if (2130903192 == widgetHeight) {
-                widgetHeight = this.getWidgetHeight(context, n);
-                final float n2 = this.getWidgetWidth(context, n);
-                final float n3 = n2 / widgetHeight;
-                Log.d("nf_preapp_widgetagent", String.format("w-h(%f-%d) %f ", n2, widgetHeight, n3));
-                if (n3 < 1.8) {
-                    Log.d("nf_preapp_widgetagent", "1 image only");
-                    return 1;
-                }
-                if (n3 < 3.0f) {
-                    Log.d("nf_preapp_widgetagent", "2 image only");
-                    return 2;
-                }
-                Log.d("nf_preapp_widgetagent", "3 images");
-                return 3;
-            }
+        int n2 = 3;
+        if (2130903214 == widgetHeight || 2130903218 == widgetHeight) {
+            n2 = 1;
         }
-        return 1;
+        else if (2130903216 != widgetHeight) {
+            if (2130903217 != widgetHeight) {
+                return 1;
+            }
+            widgetHeight = this.getWidgetHeight(context, n);
+            final float n3 = this.getWidgetWidth(context, n);
+            final float n4 = n3 / widgetHeight;
+            Log.d("nf_preapp_widgetagent", String.format("w-h(%f-%d) %f ", n3, widgetHeight, n4));
+            if (n4 < 1.8) {
+                Log.d("nf_preapp_widgetagent", "1 image only");
+                return 1;
+            }
+            if (n4 < 3.0f) {
+                Log.d("nf_preapp_widgetagent", "2 image only");
+                return 2;
+            }
+            Log.d("nf_preapp_widgetagent", "3 images");
+            return 3;
+        }
+        return n2;
     }
     
     private int getPlayResourceId(final int n) {
         switch (n) {
             default: {
-                return 2131624425;
+                return 2131624541;
             }
             case 2: {
-                return 2131624438;
+                return 2131624554;
             }
             case 3: {
-                return 2131624445;
+                return 2131624561;
             }
         }
     }
@@ -663,15 +685,15 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
         String s = null;
         switch (n % 3) {
             default: {
-                s = context.getString(2131165672);
+                s = context.getString(2131165705);
                 break;
             }
             case 0: {
-                s = context.getString(2131165670);
+                s = context.getString(2131165703);
                 break;
             }
             case 1: {
-                s = context.getString(2131165671);
+                s = context.getString(2131165704);
                 break;
             }
         }
@@ -682,13 +704,13 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private int getProgressGroupResourceId(final int n) {
         switch (n) {
             default: {
-                return 2131624434;
+                return 2131624550;
             }
             case 2: {
-                return 2131624440;
+                return 2131624556;
             }
             case 3: {
-                return 2131624447;
+                return 2131624563;
             }
         }
     }
@@ -696,26 +718,46 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private int getProgressResourceId(final int n) {
         switch (n) {
             default: {
-                return 2131624435;
+                return 2131624551;
             }
             case 2: {
-                return 2131624442;
+                return 2131624558;
             }
             case 3: {
-                return 2131624449;
+                return 2131624565;
             }
         }
     }
     
     private Bitmap getResizedBitmapForTrickplay(final Bitmap bitmap) {
+        final boolean b = true;
+        final boolean b2 = true;
         final int width = bitmap.getWidth();
         final int height = bitmap.getHeight();
-        final int round = Math.round(height * 1.78f);
-        final int n = (width - round) / 2;
-        Bitmap bitmap2 = bitmap;
-        if (n + round < width) {
-            bitmap2 = Bitmap.createBitmap(bitmap, n, 0, round, height);
-            bitmap.recycle();
+        final float n = width / height;
+        final boolean b3 = n > 1.78f;
+        Log.d("nf_preapp_widgetagent", String.format("getResizedBitmapForTrickplay -  w-h: %d-%d, aspectRatio:%f(%f), cropWidth:%b", width, height, n, 1.78f, b3));
+        Bitmap bitmap2;
+        if (b3) {
+            final int round = Math.round(height * 1.78f);
+            final int n2 = (width - round) / 2;
+            Log.d("nf_preapp_widgetagent", String.format("getResizedBitmapForTrickplay - w-h: %d-%d, aspectWidth:%d, x:%d, shouldCropWidth:%b", width, height, round, n2, n2 + round < width && b2));
+            bitmap2 = bitmap;
+            if (n2 + round < width) {
+                bitmap2 = Bitmap.createBitmap(bitmap, n2, 0, round, height);
+                bitmap.recycle();
+            }
+        }
+        else {
+            final int round2 = Math.round(width / 1.78f);
+            final int n3 = (height - round2) / 2;
+            Log.d("nf_preapp_widgetagent", String.format("getResizedBitmapForTrickplay - w-h: %d-%d, aspectHeight:%d, y:%d, shouldCropHeight:%b", width, height, round2, n3, n3 + round2 < height && b));
+            bitmap2 = bitmap;
+            if (n3 + round2 < height) {
+                final Bitmap bitmap3 = Bitmap.createBitmap(bitmap, 0, n3, width, round2);
+                bitmap.recycle();
+                return bitmap3;
+            }
         }
         return bitmap2;
     }
@@ -766,7 +808,7 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     
     private String getVideoTitle(final Context context, final PDiskData$ListType pDiskData$ListType, final PVideo pVideo) {
         if (PDiskData$ListType.CW.equals(pDiskData$ListType) && VideoType.SHOW.equals(pVideo.videoType)) {
-            return context.getString(2131165593, new Object[] { pVideo.title, pVideo.playableSeasonNumber, pVideo.playableEpisodeNumber });
+            return context.getString(2131165614, new Object[] { pVideo.title, pVideo.playableSeasonNumAbbrLabel, pVideo.playableEpisodeNumber });
         }
         return pVideo.title;
     }
@@ -774,13 +816,13 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     private int getVideoTitleResourceId(final int n) {
         switch (n) {
             default: {
-                return 2131624432;
+                return 2131624548;
             }
             case 2: {
-                return 2131624441;
+                return 2131624557;
             }
             case 3: {
-                return 2131624448;
+                return 2131624564;
             }
         }
     }
@@ -841,12 +883,16 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
         return appWidgetOptions.getInt("appWidgetMinWidth");
     }
     
+    private boolean hasAtleastOneToShow(final PDiskData$ListType pDiskData$ListType, final PDiskData pDiskData, final int n) {
+        return this.doesListHaveEnoughVideos(pDiskData$ListType, pDiskData, n, 1);
+    }
+    
     private boolean hasListGotEnoughVideos(final PDiskData$ListType pDiskData$ListType, final PDiskData pDiskData) {
         return this.hasListGotEnoughVideos(pDiskData$ListType, pDiskData, 0, this.getMaxNumOfImagesForAllWidgets(this.getContext()));
     }
     
     private boolean hasListGotEnoughVideos(final PDiskData$ListType pDiskData$ListType, final PDiskData pDiskData, final int n, final int n2) {
-        return PDiskData$ListType.CW.equals(pDiskData$ListType) || PDiskData$ListType.IQ.equals(pDiskData$ListType) || this.doesListHaveEnoughVideos(pDiskData$ListType, pDiskData, n, n2);
+        return ((PDiskData$ListType.CW.equals(pDiskData$ListType) || PDiskData$ListType.IQ.equals(pDiskData$ListType)) && this.hasAtleastOneToShow(pDiskData$ListType, pDiskData, n)) || this.doesListHaveEnoughVideos(pDiskData$ListType, pDiskData, n, n2);
     }
     
     private boolean isWidgetOneCellHigh(final Context context, final int n) {
@@ -859,7 +905,13 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     }
     
     private void launchNetflixPlay(final Context context, final PVideo pVideo, final int n) {
-        Log.d("nf_preapp_widgetagent", "launching Netflix Play");
+        if (NetflixService.isInstanceCreated() && PServiceWidgetAgent.mIsNflxServicePlayerInPauseState && StringUtils.safeEquals(pVideo.playableId, PServiceWidgetAgent.mNflxServicePlayableId)) {
+            Log.d("nf_preapp_widgetagent", "Resuming paused playback");
+            this.resumeNetflixPlay(context, pVideo);
+            return;
+        }
+        PServiceWidgetAgent.mIsNflxServicePlayerInPauseState = false;
+        PServiceWidgetAgent.mNflxServicePlayableId = null;
         this.launchNflxAction(context, this.buildNflxUri("play", pVideo), n, PreAppWidgetLogActionData$PreAppWidgetActionName.START_PLAY.getValue());
     }
     
@@ -882,6 +934,23 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
         return index >= 0 && index + 1 < Math.min(list.size(), PServiceABTest.getVideoCountOfListForWidgetExp(pDiskData$ListType, pDiskData));
     }
     
+    private void resumeNetflixPlay(final Context context, final PVideo pVideo) {
+        final VideoType videoType = pVideo.videoType;
+        String s = pVideo.id;
+        VideoType episode = videoType;
+        if (VideoType.SHOW.equals(pVideo.videoType)) {
+            s = s;
+            episode = videoType;
+            if (StringUtils.isNotEmpty(pVideo.playableId)) {
+                episode = VideoType.EPISODE;
+                s = pVideo.playableId;
+            }
+        }
+        final Intent coldStartIntent = PlayerActivity.createColdStartIntent(context, s, episode, PlayContext.DFLT_MDX_CONTEXT);
+        coldStartIntent.addFlags(268435456);
+        context.startActivity(coldStartIntent);
+    }
+    
     private void sendVideoToWidget(final Context context, final PVideo pVideo, final PDiskData$ListType pDiskData$ListType, final PDiskData pDiskData) {
         if (pVideo == null) {
             Log.w("nf_preapp_widgetagent", "video == null, unable to notify widget");
@@ -892,16 +961,16 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
     }
     
     private void setViewsToDefault(final RemoteViews remoteViews) {
-        remoteViews.setTextViewText(2131624428, (CharSequence)"");
-        remoteViews.setViewVisibility(2131624425, 8);
-        remoteViews.setViewVisibility(2131624438, 8);
-        remoteViews.setViewVisibility(2131624445, 8);
-        remoteViews.setViewVisibility(2131624427, 8);
-        remoteViews.setViewVisibility(2131624439, 8);
-        remoteViews.setViewVisibility(2131624446, 8);
-        remoteViews.setViewVisibility(2131624434, 8);
-        remoteViews.setViewVisibility(2131624440, 8);
-        remoteViews.setViewVisibility(2131624447, 8);
+        remoteViews.setTextViewText(2131624544, (CharSequence)"");
+        remoteViews.setViewVisibility(2131624541, 8);
+        remoteViews.setViewVisibility(2131624554, 8);
+        remoteViews.setViewVisibility(2131624561, 8);
+        remoteViews.setViewVisibility(2131624543, 8);
+        remoteViews.setViewVisibility(2131624555, 8);
+        remoteViews.setViewVisibility(2131624562, 8);
+        remoteViews.setViewVisibility(2131624550, 8);
+        remoteViews.setViewVisibility(2131624556, 8);
+        remoteViews.setViewVisibility(2131624563, 8);
     }
     
     private boolean toAlignByHeight(final Context context, int cellFromDp) {
@@ -994,6 +1063,7 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
             final PDiskData diskData = fetchAgent.getDiskData();
             if (diskData == null) {
                 Log.w("nf_preapp_widgetagent", "pDiskData null. Ignoring refresh request");
+                this.getService().notifyToFetchData();
                 return;
             }
             final PDiskData$ListType nameOfListShownInWidget = this.getNameOfListShownInWidget(intent);
@@ -1007,6 +1077,14 @@ public class PServiceWidgetAgent extends PServiceAgent implements PServiceAgent$
                 }
                 this.launchNetflixVideoDetails(context, videoShownInWidget, this.getWidgetId(intent));
             }
+        }
+    }
+    
+    public void handlePlayerStateChange(final Intent intent) {
+        PServiceWidgetAgent.mIsNflxServicePlayerInPauseState = intent.getBooleanExtra("isPlayerPaused", false);
+        PServiceWidgetAgent.mNflxServicePlayableId = intent.getStringExtra("videoId");
+        if (Log.isLoggable()) {
+            Log.d("nf_preapp_widgetagent", String.format("handlePlayerStateChange mIsNflxServicePlayerInPauseState: %b, mNflxServicePlayableId:%s", PServiceWidgetAgent.mIsNflxServicePlayerInPauseState, PServiceWidgetAgent.mNflxServicePlayableId));
         }
     }
     

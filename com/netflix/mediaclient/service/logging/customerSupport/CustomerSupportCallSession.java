@@ -21,11 +21,15 @@ public final class CustomerSupportCallSession extends BaseCustomerSupportSession
     private long mCallStartedTimeInMs;
     private CustomerServiceLogging$CallQuality mCurrentCallQuality;
     private long mCurrentCallQualitySegmentStartTimeInMs;
+    private boolean mDialConfirmationDialogDisplayed;
+    private String mSharedSessionId;
     private List<CustomerSupportCallSession$CallQualitySegment> mStates;
     
-    public CustomerSupportCallSession() {
+    public CustomerSupportCallSession(final String mSharedSessionId, final boolean mDialConfirmationDialogDisplayed) {
         this.mStates = new ArrayList<CustomerSupportCallSession$CallQualitySegment>();
         this.mCallStartedTimeInMs = System.currentTimeMillis();
+        this.mSharedSessionId = mSharedSessionId;
+        this.mDialConfirmationDialogDisplayed = mDialConfirmationDialogDisplayed;
     }
     
     private void addCurrentQualitySegment() {
@@ -70,6 +74,14 @@ public final class CustomerSupportCallSession extends BaseCustomerSupportSession
     
     public List<CustomerSupportCallSession$CallQualitySegment> getQualityStates() {
         return this.mStates;
+    }
+    
+    public String getSharedSessionId() {
+        return this.mSharedSessionId;
+    }
+    
+    public boolean isDialConfirmationDialogDisplayed() {
+        return this.mDialConfirmationDialogDisplayed;
     }
     
     public void setCallQuality(final CustomerServiceLogging$CallQuality mCurrentCallQuality) {

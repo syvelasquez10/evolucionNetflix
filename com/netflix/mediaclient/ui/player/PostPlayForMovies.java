@@ -12,6 +12,7 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import com.netflix.mediaclient.ui.details.NetflixRatingBar$RatingBarDataProvider;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.util.ViewUtils$Visibility;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
@@ -66,7 +67,7 @@ public final class PostPlayForMovies extends PostPlay
             Log.e("nf_postplay", "Image not found for index " + n2);
             return;
         }
-        advancedImageView.setBackgroundResource(2130837584);
+        advancedImageView.setBackgroundResource(2130837586);
         advancedImageView.setOnTouchListener((View$OnTouchListener)new PostPlayForMovies$ChangeRecommendation(this, n2, null));
     }
     
@@ -105,12 +106,12 @@ public final class PostPlayForMovies extends PostPlay
             return;
         }
         this.mVideoWindow = VideoWindowForPostplayFactory.createVideoWindow(this.mPlayerFragment);
-        this.addBoxArt(2131624416, 0);
-        this.addBoxArt(2131624418, 1);
-        this.addBoxArt(2131624420, 2);
-        this.addPlayButton(2131624417, 0);
-        this.addPlayButton(2131624419, 1);
-        this.addPlayButton(2131624421, 2);
+        this.addBoxArt(2131624532, 0);
+        this.addBoxArt(2131624534, 1);
+        this.addBoxArt(2131624536, 2);
+        this.addPlayButton(2131624533, 0);
+        this.addPlayButton(2131624535, 1);
+        this.addPlayButton(2131624537, 2);
     }
     
     private void updateUi(final PostPlayVideo postPlayVideo, final int n) {
@@ -120,7 +121,7 @@ public final class PostPlayForMovies extends PostPlay
                 title = "";
             }
             final String storyUrl = postPlayVideo.getStoryUrl();
-            final String format = String.format(this.mNetflixActivity.getResources().getString(2131165357), title);
+            final String format = String.format(this.mNetflixActivity.getResources().getString(2131165356), title);
             if (!StringUtils.isEmpty(storyUrl)) {
                 NetflixActivity.getImageLoader((Context)this.mNetflixActivity).showImg(this.mBackground, storyUrl, IClientLogging$AssetType.merchStill, format, ImageLoader$StaticImgConfig.DARK, true, 1);
             }
@@ -137,7 +138,7 @@ public final class PostPlayForMovies extends PostPlay
                 Log.d("nf_postplay", "Title: " + title);
             }
             if (this.mTitle != null) {
-                this.mTitle.setText((CharSequence)title);
+                this.mTitle.setText(LocalizationUtils.forceLayoutDirectionIfNeeded(title));
             }
             if (this.mSynopsis != null) {
                 String narrative;
@@ -175,14 +176,27 @@ public final class PostPlayForMovies extends PostPlay
     @Override
     public void endOfPlay() {
         super.endOfPlay();
-        this.mVideoWindow.setVisible(false);
-        if (this.mSelected < 0) {
-            this.mSelected = 0;
+        if (this.isInteractivePostPlay) {
+            if (Log.isLoggable()) {
+                Log.d("nf_postplay", "End of play post play for interactive content will be handled in super class");
+            }
         }
-        this.updateUi(this.mPostPlayVideos.get(this.mSelected), this.mSelected);
-        this.setBackgroundImageVisible(true);
-        ViewUtils.setVisibleOrGone(this.mMetadata, true);
-        ViewUtils.setVisibleOrGone(this.mPlayButton, true);
+        else {
+            this.mVideoWindow.setVisible(false);
+            if (this.mSelected < 0) {
+                this.mSelected = 0;
+            }
+            if (this.mPostPlayVideos != null && this.mPostPlayVideos.size() > this.mSelected) {
+                this.updateUi(this.mPostPlayVideos.get(this.mSelected), this.mSelected);
+                this.setBackgroundImageVisible(true);
+                ViewUtils.setVisibleOrGone(this.mMetadata, true);
+                ViewUtils.setVisibleOrGone(this.mPlayButton, true);
+                return;
+            }
+            if (this.mPlayerFragment != null) {
+                this.mPlayerFragment.cleanupAndExit();
+            }
+        }
     }
     
     @Override
@@ -196,11 +210,11 @@ public final class PostPlayForMovies extends PostPlay
     }
     
     @Override
-    void findViews() {
-        this.mRatingBar = (NetflixRatingBar)this.mNetflixActivity.findViewById(2131624193);
-        this.mVideoDetails = (TextView)this.mNetflixActivity.findViewById(2131624415);
-        this.mBackgroundContainer = this.mNetflixActivity.findViewById(2131624422);
-        this.mMetadata = this.mNetflixActivity.findViewById(2131624414);
+    protected void findViews() {
+        this.mRatingBar = (NetflixRatingBar)this.mNetflixActivity.findViewById(2131624169);
+        this.mVideoDetails = (TextView)this.mNetflixActivity.findViewById(2131624170);
+        this.mBackgroundContainer = this.mNetflixActivity.findViewById(2131624538);
+        this.mMetadata = this.mNetflixActivity.findViewById(2131624531);
     }
     
     @Override
@@ -241,7 +255,13 @@ public final class PostPlayForMovies extends PostPlay
     
     @Override
     protected boolean isPostPlayEnabled() {
-        return super.isPostPlayEnabled() && this.mNetflixActivity.isTablet();
+        if (this.isInteractivePostPlay && this.interactivePostPlayManager != null && this.interactivePostPlayManager.waitUntilEndOfPlay()) {
+            this.postPlayDismissed();
+        }
+        else if (super.isPostPlayEnabled() && this.mNetflixActivity.isTablet()) {
+            return true;
+        }
+        return false;
     }
     
     @Override
@@ -284,7 +304,7 @@ public final class PostPlayForMovies extends PostPlay
                         if (postPlayVideo.getStoryUrl() != null) {
                             NetflixActivity.getImageLoader((Context)this.mNetflixActivity).getImg(postPlayVideo.getStoryUrl(), IClientLogging$AssetType.merchStill, 1920, 1080, this.mImageLoaderListener);
                         }
-                        final String format = String.format(this.mNetflixActivity.getResources().getString(2131165357), title);
+                        final String format = String.format(this.mNetflixActivity.getResources().getString(2131165356), title);
                         if (postPlayVideo.getHorzDispUrl() != null) {
                             NetflixActivity.getImageLoader((Context)this.mNetflixActivity).showImg(this.mRecommendationBoxArts.get(i), postPlayVideo.getHorzDispUrl(), IClientLogging$AssetType.merchStill, format, ImageLoader$StaticImgConfig.DARK, true, 1);
                         }

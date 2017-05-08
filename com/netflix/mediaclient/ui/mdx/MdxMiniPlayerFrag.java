@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.mdx;
 
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.common.PlaybackLauncher;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
@@ -32,7 +33,6 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.mdx.MdxKeyEventHandler;
 import com.netflix.mediaclient.service.mdx.MdxKeyEventHandler$MdxKeyEventCallbacks;
 import com.netflix.mediaclient.service.mdx.MdxErrorHandler;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
 import com.netflix.mediaclient.ui.common.LanguageSelector;
 import android.os.Handler;
@@ -63,7 +63,6 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
     private boolean isShowing;
     private LanguageSelector languageSelector;
     private final LanguageSelector$LanguageSelectorCallback languageSelectorCallback;
-    private ServiceManager manager;
     private MdxErrorHandler mdxErrorHandler;
     private final MdxKeyEventHandler$MdxKeyEventCallbacks mdxKeyEventCallbacks;
     private MdxKeyEventHandler mdxKeyEventHandler;
@@ -155,7 +154,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
             }
         }
         this.languageSelector = LanguageSelector.createInstance(this.activity, DeviceUtils.isTabletByContext((Context)this.activity), this.languageSelectorCallback);
-        this.views.onManagerReady(this.manager);
+        this.views.onManagerReady(this.getServiceManager());
     }
     
     private void log(final String s) {
@@ -220,13 +219,17 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         this.log("Updating metadata: " + this.currentVideo + ", hash: " + this.currentVideo.hashCode());
         if (this.currentVideo.getType() == VideoType.EPISODE) {
             this.views.updateTitleText(this.currentVideo.getPlayable().getParentTitle());
-            this.views.updateSubtitleText(this.activity.getString(2131165510, new Object[] { this.currentVideo.getPlayable().getSeasonNumber(), this.currentVideo.getPlayable().getEpisodeNumber(), this.currentVideo.getTitle() }));
+            String s = this.activity.getString(2131165526, new Object[] { this.currentVideo.getPlayable().getSeasonAbbrSeqLabel(), this.currentVideo.getPlayable().getEpisodeNumber(), this.currentVideo.getTitle() });
+            if (this.currentVideo.isNSRE()) {
+                s = this.activity.getString(2131165527, new Object[] { this.currentVideo.getTitle() });
+            }
+            this.views.updateSubtitleText(s);
         }
         else {
             this.views.updateTitleText(this.currentVideo.getTitle());
             this.views.updateSubtitleText("");
         }
-        this.views.updateDeviceNameText(ServiceManagerUtils.getCurrentDeviceFriendlyName(this.manager));
+        this.views.updateDeviceNameText(ServiceManagerUtils.getCurrentDeviceFriendlyName(this.getServiceManager()));
         this.views.setEpisodesButtonVisibile(this.currentVideo.getType() != VideoType.MOVIE);
         this.log("Setting seek bar max: " + this.currentVideo.getPlayable().getRuntime());
         this.views.setProgressMax(this.currentVideo.getPlayable().getRuntime());
@@ -261,7 +264,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         this.views.updateImage(this.currentVideo);
         if (this.currentVideo instanceof EpisodeDetails) {
             this.log("Video is instance of EpisodeDetails, fetching episodes...");
-            this.manager.getBrowse().fetchSeasonDetails(((EpisodeDetails)this.currentVideo).getSeasonId(), new MdxMiniPlayerFrag$FetchSeasonDetailsCallback(this));
+            this.getServiceManager().getBrowse().fetchSeasonDetails(((EpisodeDetails)this.currentVideo).getSeasonId(), new MdxMiniPlayerFrag$FetchSeasonDetailsCallback(this));
         }
         else {
             this.log("Video is not instance of EpisodeDetails");
@@ -276,6 +279,9 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         if (this.isShowing != b) {
             if (b) {
                 this.showSelf();
+                if (this.remotePlayer != null) {
+                    this.remotePlayer.sync();
+                }
             }
             else {
                 this.hideSelf();
@@ -300,7 +306,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
     }
     
     public boolean dispatchKeyEvent(final KeyEvent keyEvent) {
-        return this.mdxKeyEventHandler.handleKeyEvent(keyEvent, this.manager, this.remotePlayer);
+        return this.mdxKeyEventHandler.handleKeyEvent(keyEvent, this.getServiceManager(), this.remotePlayer);
     }
     
     @Override
@@ -326,11 +332,6 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
         return this.remotePlayer;
     }
     
-    @Override
-    public ServiceManager getServiceManager() {
-        return this.manager;
-    }
-    
     public View getSlidingPanelDragView() {
         return this.views.getSlidingPanelDragView();
     }
@@ -338,7 +339,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
     @Override
     public MdxTargetSelection getTargetSelection() {
         final IMdx mdx = this.mdxMiniPlayerViewCallbacks.getMdx();
-        return new MdxTargetSelection(mdx.getTargetList(), mdx.getCurrentTarget(), this.manager.getConfiguration().getPlaybackConfiguration().isLocalPlaybackEnabled());
+        return new MdxTargetSelection(mdx.getTargetList(), mdx.getCurrentTarget(), this.getServiceManager().getConfiguration().getPlaybackConfiguration().isLocalPlaybackEnabled());
     }
     
     @Override
@@ -435,21 +436,19 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
     }
     
     @Override
-    public void onManagerReady(final ServiceManager manager, final Status status) {
-        super.onManagerReady(manager, status);
+    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
+        super.onManagerReady(serviceManager, status);
         ThreadUtils.assertOnMain();
         if (this.activity == null || AndroidUtils.isActivityFinishedOrDestroyed(this.activity)) {
             this.log("Activity is null or destroyed - bailing early");
             return;
         }
-        this.manager = manager;
         this.log("manager ready");
         this.initMdxComponents();
     }
     
     @Override
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
-        this.manager = null;
         if (this.remotePlayer != null) {
             this.remotePlayer.destroy();
             this.remotePlayer = null;
@@ -482,7 +481,7 @@ public class MdxMiniPlayerFrag extends NetflixFrag implements AbsEpisodeView$Epi
     public void onResumeFragments() {
         this.log("onResumeFragments");
         this.isInBackground = false;
-        if (this.manager == null) {
+        if (this.getServiceManager() == null) {
             this.hideSelfInternal();
             return;
         }
