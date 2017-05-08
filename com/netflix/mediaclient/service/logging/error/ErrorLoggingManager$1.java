@@ -20,6 +20,7 @@ import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecifi
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import android.annotation.TargetApi;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.lolomo.PrefetchLolomoABTestUtils;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.content.Context;
 
@@ -40,6 +41,13 @@ final class ErrorLoggingManager$1 implements UncaughtExceptionHandler
                 Throwable t2;
                 if (PersistentConfig.inMementoTest(this.val$globalContext)) {
                     t2 = wrapThrowableWithPrefix(String.format("Memento_%d ", PersistentConfig.getMemento(this.val$globalContext).getCellId()), t);
+                }
+                else if (PrefetchLolomoABTestUtils.isInTest(this.val$globalContext)) {
+                    final String format = String.format("AimLow7480_%d ", PersistentConfig.getPrefetchLolomoConfig(this.val$globalContext).getCellId());
+                    if (Log.isLoggable()) {
+                        Log.d("nf_log_crit", "uncaughtException: message = " + format);
+                    }
+                    t2 = wrapThrowableWithPrefix(format, t);
                 }
                 else {
                     final int n = PersistentConfig.getCoppola1ABTestCell(this.val$globalContext).ordinal() + 1;

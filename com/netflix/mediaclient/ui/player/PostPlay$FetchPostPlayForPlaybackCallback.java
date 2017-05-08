@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.view.View$OnClickListener;
 import android.view.View$OnTouchListener;
 import android.content.res.Configuration;
@@ -76,39 +77,41 @@ class PostPlay$FetchPostPlayForPlaybackCallback extends LoggingManagerCallback
                 }
                 this.this$0.mPostPlayExperience = postPlayVideosProvider2.getPostPlayExperienceData();
                 this.this$0.mInteractivePostPlay = postPlayVideosProvider2.getInteractivePostplay();
-                if (this.this$0.mPostPlayExperience.getAutoplay() && this.this$0.mPostPlayExperience.getAutoplaySeconds() > 0) {
-                    final PostPlayItem postPlayItem = this.this$0.mPostPlayExperience.getItems().get(this.this$0.mPostPlayExperience.getItemsInitialIndex());
-                    if (postPlayItem != null) {
-                        postPlayItem.setAutoPlay(true);
-                        postPlayItem.setAutoPlaySeconds(this.this$0.mPostPlayExperience.getAutoplaySeconds());
-                        postPlayItem.setNextEpisodeAutoPlay(this.this$0.mPostPlayExperience.getType().equals("nextEpisode"));
-                    }
-                    else {
-                        Log.e("nf_postplay", "Could not find autoplay item");
-                    }
-                }
-                int i = 0;
-                int n = 0;
-                while (i < this.this$0.mPostPlayExperience.getItems().size()) {
-                    final PostPlayItem postPlayItem2 = this.this$0.mPostPlayExperience.getItems().get(i);
-                    postPlayItem2.setExperienceType(this.this$0.mPostPlayExperience.getType());
-                    for (final PostPlayAction postPlayAction : postPlayItem2.getActions()) {
-                        postPlayAction.setItemIndex(i);
-                        postPlayAction.setRequestId(this.this$0.mPostPlayExperience.getRequestId());
-                        postPlayAction.setAncestorTitle(postPlayItem2.getAncestorTitle());
-                        if (postPlayAction.getVideoType() == null) {
-                            postPlayAction.setVideoType(postPlayItem2.getType());
+                this.this$0.mPostPlayDataExist = (this.this$0.mPostPlayExperience != null);
+                if (this.this$0.mPostPlayDataExist) {
+                    if (this.this$0.mPostPlayExperience.getAutoplay() && this.this$0.mPostPlayExperience.getAutoplaySeconds() > 0) {
+                        final PostPlayItem postPlayItem = this.this$0.mPostPlayExperience.getItems().get(this.this$0.mPostPlayExperience.getItemsInitialIndex());
+                        if (postPlayItem != null) {
+                            postPlayItem.setAutoPlay(true);
+                            postPlayItem.setAutoPlaySeconds(this.this$0.mPostPlayExperience.getAutoplaySeconds());
+                            postPlayItem.setNextEpisodeAutoPlay(this.this$0.mPostPlayExperience.getType().equals("nextEpisode"));
+                        }
+                        else {
+                            Log.e("nf_postplay", "Could not find autoplay item");
                         }
                     }
-                    if (this.this$0.hasValidPlayAction(postPlayItem2)) {
-                        ++n;
+                    int i = 0;
+                    int n = 0;
+                    while (i < this.this$0.mPostPlayExperience.getItems().size()) {
+                        final PostPlayItem postPlayItem2 = this.this$0.mPostPlayExperience.getItems().get(i);
+                        postPlayItem2.setExperienceType(this.this$0.mPostPlayExperience.getType());
+                        for (final PostPlayAction postPlayAction : postPlayItem2.getActions()) {
+                            postPlayAction.setItemIndex(i);
+                            postPlayAction.setRequestId(this.this$0.mPostPlayExperience.getRequestId());
+                            postPlayAction.setAncestorTitle(postPlayItem2.getAncestorTitle());
+                            if (postPlayAction.getVideoType() == null) {
+                                postPlayAction.setVideoType(postPlayItem2.getType());
+                            }
+                        }
+                        if (this.this$0.hasValidPlayAction(postPlayItem2)) {
+                            ++n;
+                        }
+                        ++i;
                     }
-                    ++i;
-                }
-                this.this$0.mPostPlayDataExist = (this.this$0.mPostPlayExperience != null);
-                if (n == 0) {
-                    Log.e("nf_postplay", "No playable items in post play response");
-                    this.this$0.mPostPlayDataExist = false;
+                    if (n == 0) {
+                        Log.e("nf_postplay", "No playable items in post play response");
+                        this.this$0.mPostPlayDataExist = false;
+                    }
                 }
                 if (this.this$0.mInteractivePostPlay != null) {
                     final InteractivePostplayModel data = this.this$0.mInteractivePostPlay.getData();

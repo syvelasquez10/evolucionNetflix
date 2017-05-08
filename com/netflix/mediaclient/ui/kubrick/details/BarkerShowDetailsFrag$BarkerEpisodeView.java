@@ -229,7 +229,9 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
         if (this.title != null && this.this$0.getActivity() != null) {
             this.title.setTextColor(this.getResources().getColor(2131624102));
             this.title.setText((CharSequence)AbsEpisodeView.createTitleText(episodeDetails, (Context)this.this$0.getActivity()));
-            this.episodeNumber.setText((CharSequence)AbsEpisodeView.createEpisodeNumber(episodeDetails, (Context)this.this$0.getActivity()));
+            if (this.episodeNumber != null) {
+                this.episodeNumber.setText((CharSequence)AbsEpisodeView.createEpisodeNumber(episodeDetails, (Context)this.this$0.getActivity()));
+            }
             if (this.badgeContainer != null) {
                 this.badgeContainer.getLayoutParams().width = this.this$0.barker.getSynopsisWidth();
             }

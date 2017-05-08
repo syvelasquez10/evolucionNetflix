@@ -220,19 +220,25 @@ class AuthorizationTokensManager
                             Log.w("nf_voip", "VOIP authorization data not found!");
                             return;
                             this.dumpTokens();
-                            // iftrue(Label_0106:, voipAuthorizationData.getNonMemberVoipAuthorization() != null)
-                            Log.w("nf_voip", "VOIP non member authorization data not found!");
-                            this.mAuthorizationTokensMap.remove(IVoip$UserType.CS_NON_MEMBER.name());
-                            break Label_0054;
-                            this.dumpTokens();
-                            this.save();
-                            return;
-                            this.dumpTokens();
                             // iftrue(Label_0222:, voipAuthorizationData.getUserVoipAuthorization() != null)
-                            Log.w("nf_voip", "VOIP user authorization data not found!");
-                            this.mAuthorizationTokensMap.remove(IVoip$UserType.CS_MEMBER.name());
-                            continue Label_0090;
+                            while (true) {
+                                Block_8: {
+                                    break Block_8;
+                                    this.dumpTokens();
+                                    this.save();
+                                    return;
+                                    Log.w("nf_voip", "VOIP non member authorization data not found!");
+                                    this.mAuthorizationTokensMap.remove(IVoip$UserType.CS_NON_MEMBER.name());
+                                    continue Label_0090_Outer;
+                                }
+                                Log.w("nf_voip", "VOIP user authorization data not found!");
+                                this.mAuthorizationTokensMap.remove(IVoip$UserType.CS_MEMBER.name());
+                                continue Label_0090;
+                                this.dumpTokens();
+                                continue;
+                            }
                         }
+                        // iftrue(Label_0106:, voipAuthorizationData.getNonMemberVoipAuthorization() != null)
                         finally {
                         }
                         // monitorexit(this)

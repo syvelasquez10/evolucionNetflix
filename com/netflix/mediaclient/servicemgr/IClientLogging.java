@@ -21,6 +21,8 @@ public interface IClientLogging
     
     void NrdpLog(final LogArguments p0);
     
+    void flushLoggingEvents();
+    
     List<SessionKey> getActiveLoggingSessions();
     
     AdvertiserIdLogging getAdvertiserIdLogging();

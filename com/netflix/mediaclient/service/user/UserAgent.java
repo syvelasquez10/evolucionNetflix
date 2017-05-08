@@ -628,10 +628,13 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     @Override
     public String getNetflixID() {
-        if (!this.isUserLoggedIn()) {
-            return null;
+        if (this.isUserLoggedIn()) {
+            return this.mCurrentUserAccount.getNetflixId();
         }
-        return this.mCurrentUserAccount.getNetflixId();
+        if (this.getConfigurationAgent() != null && this.getConfigurationAgent().getNrmConfigData() != null) {
+            return this.getConfigurationAgent().getNrmConfigData().netflixId;
+        }
+        return null;
     }
     
     @Override
@@ -650,10 +653,13 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     @Override
     public String getSecureNetflixID() {
-        if (!this.isUserLoggedIn()) {
-            return null;
+        if (this.isUserLoggedIn()) {
+            return this.mCurrentUserAccount.getSecureId();
         }
-        return this.mCurrentUserAccount.getSecureId();
+        if (this.getConfigurationAgent() != null && this.getConfigurationAgent().getNrmConfigData() != null) {
+            return this.getConfigurationAgent().getNrmConfigData().secureNetflixId;
+        }
+        return null;
     }
     
     @Override

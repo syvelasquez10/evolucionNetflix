@@ -198,6 +198,13 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
         com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent::init done ");
     }
     
+    @Override
+    public void flushLoggingEvents() {
+        com.netflix.mediaclient.Log.d("nf_log", "Flush events");
+        this.mIntegratedClientLoggingManager.flush(true);
+        this.mPresentationTrackingManager.flush(true);
+    }
+    
     public String getAccountOwnerToken() {
         if (this.getService() != null) {
             return this.getService().getAccountOwnerToken();

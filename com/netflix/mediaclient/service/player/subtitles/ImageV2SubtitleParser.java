@@ -479,24 +479,21 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
                                 }
                                 ++index;
                                 continue Label_0293_Outer;
+                                Log.d("nf_subtitles_imv2", "Expected data, start parsing...");
+                                continue Label_0149_Outer;
+                                // iftrue(Label_0311:, !b)
+                                Log.e("nf_subtitles_imv2", "Failed to close segment indexes input stream", t);
+                                return b;
+                                try {
+                                    dataInputStream.close();
+                                    ((InputStream)t).close();
+                                    return true;
+                                }
+                                catch (Throwable t2) {}
+                                continue;
                                 Label_0311: {
                                     Log.e("nf_subtitles_imv2", "Failed to parse segment index", t);
                                 }
-                                return b;
-                                // iftrue(Label_0311:, !b)
-                                Block_9: {
-                                    break Block_9;
-                                    try {
-                                        dataInputStream.close();
-                                        ((InputStream)t).close();
-                                        return true;
-                                    }
-                                    catch (Throwable t2) {}
-                                    continue;
-                                    Log.d("nf_subtitles_imv2", "Expected data, start parsing...");
-                                    continue Label_0149_Outer;
-                                }
-                                Log.e("nf_subtitles_imv2", "Failed to close segment indexes input stream", t);
                                 return b;
                             }
                             catch (Throwable t) {

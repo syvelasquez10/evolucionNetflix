@@ -945,7 +945,7 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     
     @Override
     public PostPlayExperience getPostPlayExperienceData() {
-        if (this.postPlayExperience != null) {
+        if (this.postPlayExperience != null && this.getId() != null) {
             final List<PostPlayExperience> itemsAsList = (List<PostPlayExperience>)this.proxy.getItemsAsList(PQL.create("postPlayExperiences", this.getId(), "experienceData"));
             if (itemsAsList.size() != 0) {
                 return itemsAsList.get(0);

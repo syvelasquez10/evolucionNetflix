@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.view.View$OnClickListener;
 import android.view.View$OnTouchListener;
 import android.content.res.Configuration;

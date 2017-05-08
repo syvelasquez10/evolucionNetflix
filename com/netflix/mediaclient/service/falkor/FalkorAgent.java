@@ -1200,106 +1200,114 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         //   120: invokespecial   java/io/File.<init>:(Ljava/io/File;Ljava/lang/String;)V
         //   123: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
         //   126: invokespecial   java/io/FileWriter.<init>:(Ljava/lang/String;)V
-        //   129: astore          4
-        //   131: aload           4
-        //   133: astore_3       
-        //   134: aload_0        
-        //   135: getfield        com/netflix/mediaclient/service/falkor/FalkorAgent.cmp:Lcom/netflix/falkor/CachedModelProxy;
-        //   138: aload           4
-        //   140: invokevirtual   com/netflix/falkor/CachedModelProxy.serialize:(Ljava/io/Writer;)V
-        //   143: aload           4
-        //   145: astore_3       
-        //   146: invokestatic    android/os/SystemClock.elapsedRealtime:()J
-        //   149: putstatic       com/netflix/mediaclient/service/falkor/FalkorAgent.sLastSerializeTimeToDisk:J
-        //   152: aload           4
-        //   154: astore_3       
-        //   155: aload_0        
-        //   156: invokevirtual   com/netflix/mediaclient/service/falkor/FalkorAgent.getContext:()Landroid/content/Context;
-        //   159: ldc_w           "prefs_prefetch_json_last_write_system_time_ms"
-        //   162: ldc2_w          -1
-        //   165: invokestatic    com/netflix/mediaclient/util/PreferenceUtils.getLongPref:(Landroid/content/Context;Ljava/lang/String;J)J
-        //   168: lstore_1       
-        //   169: aload           4
-        //   171: astore_3       
-        //   172: aload_0        
-        //   173: invokevirtual   com/netflix/mediaclient/service/falkor/FalkorAgent.getContext:()Landroid/content/Context;
-        //   176: getstatic       com/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason.success:Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;
-        //   179: aconst_null    
-        //   180: lload_1        
-        //   181: invokestatic    com/netflix/mediaclient/util/log/UserActionLogUtils.reportSerializeLolomoEnded:(Landroid/content/Context;Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;Lcom/netflix/mediaclient/service/logging/client/model/UIError;J)V
-        //   184: aload           4
-        //   186: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
-        //   189: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
-        //   192: ifeq            22
-        //   195: ldc             "FalkorAgent"
-        //   197: ldc_w           "serializeFalkorMetadataAsync: end"
-        //   200: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   203: pop            
-        //   204: return         
-        //   205: astore          5
-        //   207: aconst_null    
-        //   208: astore          4
-        //   210: aload           4
-        //   212: astore_3       
-        //   213: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
-        //   216: ifeq            252
-        //   219: aload           4
-        //   221: astore_3       
-        //   222: ldc             "FalkorAgent"
-        //   224: new             Ljava/lang/StringBuilder;
-        //   227: dup            
-        //   228: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   231: ldc_w           "serializeFalkorMetadataAsync: serializing data to disk failed "
-        //   234: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   237: aload           5
-        //   239: invokevirtual   java/io/IOException.getMessage:()Ljava/lang/String;
-        //   242: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   245: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   248: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
-        //   251: pop            
-        //   252: aload           4
-        //   254: astore_3       
-        //   255: aload_0        
-        //   256: invokevirtual   com/netflix/mediaclient/service/falkor/FalkorAgent.getContext:()Landroid/content/Context;
-        //   259: getstatic       com/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason.failed:Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;
-        //   262: aconst_null    
-        //   263: ldc2_w          -1
-        //   266: invokestatic    com/netflix/mediaclient/util/log/UserActionLogUtils.reportSerializeLolomoEnded:(Landroid/content/Context;Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;Lcom/netflix/mediaclient/service/logging/client/model/UIError;J)V
-        //   269: aload           4
-        //   271: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
-        //   274: goto            189
-        //   277: astore          4
+        //   129: astore          6
+        //   131: aload           6
+        //   133: astore          5
+        //   135: aload_0        
+        //   136: getfield        com/netflix/mediaclient/service/falkor/FalkorAgent.cmp:Lcom/netflix/falkor/CachedModelProxy;
+        //   139: aload           6
+        //   141: invokevirtual   com/netflix/falkor/CachedModelProxy.serialize:(Ljava/io/Writer;)V
+        //   144: aload           6
+        //   146: astore          5
+        //   148: invokestatic    android/os/SystemClock.elapsedRealtime:()J
+        //   151: putstatic       com/netflix/mediaclient/service/falkor/FalkorAgent.sLastSerializeTimeToDisk:J
+        //   154: aload           6
+        //   156: astore          5
+        //   158: getstatic       com/netflix/mediaclient/service/falkor/FalkorAgent.sLastSerializeTimeToDisk:J
+        //   161: lstore_1       
+        //   162: aload           6
+        //   164: astore          5
+        //   166: aload_0        
+        //   167: invokevirtual   com/netflix/mediaclient/service/falkor/FalkorAgent.getContext:()Landroid/content/Context;
+        //   170: ldc_w           "prefs_prefetch_json_last_write_system_time_ms"
+        //   173: ldc2_w          -1
+        //   176: invokestatic    com/netflix/mediaclient/util/PreferenceUtils.getLongPref:(Landroid/content/Context;Ljava/lang/String;J)J
+        //   179: lstore_3       
+        //   180: aload           6
+        //   182: astore          5
+        //   184: aload_0        
+        //   185: invokevirtual   com/netflix/mediaclient/service/falkor/FalkorAgent.getContext:()Landroid/content/Context;
+        //   188: getstatic       com/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason.success:Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;
+        //   191: aconst_null    
+        //   192: lload_1        
+        //   193: lload_3        
+        //   194: lsub           
+        //   195: invokestatic    com/netflix/mediaclient/util/log/UserActionLogUtils.reportSerializeLolomoEnded:(Landroid/content/Context;Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;Lcom/netflix/mediaclient/service/logging/client/model/UIError;J)V
+        //   198: aload           6
+        //   200: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //   203: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   206: ifeq            22
+        //   209: ldc             "FalkorAgent"
+        //   211: ldc_w           "serializeFalkorMetadataAsync: end"
+        //   214: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   217: pop            
+        //   218: return         
+        //   219: astore          7
+        //   221: aconst_null    
+        //   222: astore          6
+        //   224: aload           6
+        //   226: astore          5
+        //   228: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   231: ifeq            268
+        //   234: aload           6
+        //   236: astore          5
+        //   238: ldc             "FalkorAgent"
+        //   240: new             Ljava/lang/StringBuilder;
+        //   243: dup            
+        //   244: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   247: ldc_w           "serializeFalkorMetadataAsync: serializing data to disk failed "
+        //   250: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   253: aload           7
+        //   255: invokevirtual   java/io/IOException.getMessage:()Ljava/lang/String;
+        //   258: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   261: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   264: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   267: pop            
+        //   268: aload           6
+        //   270: astore          5
+        //   272: aload_0        
+        //   273: invokevirtual   com/netflix/mediaclient/service/falkor/FalkorAgent.getContext:()Landroid/content/Context;
+        //   276: getstatic       com/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason.failed:Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;
         //   279: aconst_null    
-        //   280: astore_3       
-        //   281: aload_3        
-        //   282: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
-        //   285: aload           4
-        //   287: athrow         
-        //   288: astore          4
-        //   290: goto            281
-        //   293: astore          5
-        //   295: goto            210
+        //   280: ldc2_w          -1
+        //   283: invokestatic    com/netflix/mediaclient/util/log/UserActionLogUtils.reportSerializeLolomoEnded:(Landroid/content/Context;Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;Lcom/netflix/mediaclient/service/logging/client/model/UIError;J)V
+        //   286: aload           6
+        //   288: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //   291: goto            203
+        //   294: astore          6
+        //   296: aconst_null    
+        //   297: astore          5
+        //   299: aload           5
+        //   301: invokestatic    com/netflix/mediaclient/util/IoUtil.safeClose:(Ljava/io/Closeable;)V
+        //   304: aload           6
+        //   306: athrow         
+        //   307: astore          6
+        //   309: goto            299
+        //   312: astore          7
+        //   314: goto            224
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  102    131    205    210    Ljava/io/IOException;
-        //  102    131    277    281    Any
-        //  134    143    293    298    Ljava/io/IOException;
-        //  134    143    288    293    Any
-        //  146    152    293    298    Ljava/io/IOException;
-        //  146    152    288    293    Any
-        //  155    169    293    298    Ljava/io/IOException;
-        //  155    169    288    293    Any
-        //  172    184    293    298    Ljava/io/IOException;
-        //  172    184    288    293    Any
-        //  213    219    288    293    Any
-        //  222    252    288    293    Any
-        //  255    269    288    293    Any
+        //  102    131    219    224    Ljava/io/IOException;
+        //  102    131    294    299    Any
+        //  135    144    312    317    Ljava/io/IOException;
+        //  135    144    307    312    Any
+        //  148    154    312    317    Ljava/io/IOException;
+        //  148    154    307    312    Any
+        //  158    162    312    317    Ljava/io/IOException;
+        //  158    162    307    312    Any
+        //  166    180    312    317    Ljava/io/IOException;
+        //  166    180    307    312    Any
+        //  184    198    312    317    Ljava/io/IOException;
+        //  184    198    307    312    Any
+        //  228    234    307    312    Any
+        //  238    268    307    312    Any
+        //  272    286    307    312    Any
         // 
         // The error that occurred was:
         // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0189:
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0203:
         //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
         //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
         //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)

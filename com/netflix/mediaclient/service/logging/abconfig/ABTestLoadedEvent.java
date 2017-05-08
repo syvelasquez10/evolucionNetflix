@@ -9,14 +9,15 @@ import com.netflix.mediaclient.service.logging.client.model.DiscreteEvent;
 
 public class ABTestLoadedEvent extends DiscreteEvent
 {
-    private static final String AB_TEST_CELL_ID_KEY = "ABTestCellID";
-    private static final String AB_TEST_ID_KEY = "ABTestID";
+    private static final String NAME = "abTestLoaded";
     private final int cellId;
     private final String testId;
     
     public ABTestLoadedEvent(final String testId, final int cellId) {
         this.testId = testId;
         this.cellId = cellId;
+        this.category = "abTest";
+        this.name = "abTestLoaded";
     }
     
     @Override
@@ -25,8 +26,8 @@ public class ABTestLoadedEvent extends DiscreteEvent
         if ((data = super.getData()) == null) {
             data = new JSONObject();
         }
-        data.put("ABTestID", (Object)this.testId);
-        data.put("ABTestCellID", this.cellId);
+        data.put("abTestID", (Object)this.testId);
+        data.put("abTestCellID", this.cellId);
         return data;
     }
 }

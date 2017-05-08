@@ -931,22 +931,27 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                     return;
                                     o2 = CustomerServiceLogging$TerminationReason.failedBeforeConnected;
                                     continue Label_0187_Outer;
-                                    // iftrue(Label_0096:, !o2.hasNext())
-                                    // iftrue(Label_0274:, WhistleVoipAgent$WhistleCall.access$400(this.mCurrentCall) != n)
-                                    while (true) {
-                                        while (true) {
-                                            ((Iterator<IVoip$OutboundCallListener>)o2).next().networkFailed(this.mCurrentCall);
-                                            continue Label_0244_Outer;
-                                        }
-                                        Log.e("nf_voip", "Engine is null and we received network failed! Should not happen!");
-                                        break;
-                                        o2 = this.mListeners.iterator();
-                                        continue;
-                                    }
                                     Label_0274: {
                                         Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received network failed on line " + n);
                                     }
                                     return;
+                                    // iftrue(Label_0274:, WhistleVoipAgent$WhistleCall.access$400(this.mCurrentCall) != n)
+                                    // iftrue(Label_0096:, !o2.hasNext())
+                                Label_0244:
+                                    while (true) {
+                                        Block_7: {
+                                            while (true) {
+                                                ((Iterator<IVoip$OutboundCallListener>)o2).next().networkFailed(this.mCurrentCall);
+                                                break Label_0244;
+                                                break Block_7;
+                                                continue Label_0244_Outer;
+                                            }
+                                            Log.e("nf_voip", "Engine is null and we received network failed! Should not happen!");
+                                            break;
+                                        }
+                                        o2 = this.mListeners.iterator();
+                                        continue Label_0244;
+                                    }
                                 }
                                 catch (JSONException ex) {
                                     continue;

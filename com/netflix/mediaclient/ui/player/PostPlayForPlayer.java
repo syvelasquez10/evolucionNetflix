@@ -159,7 +159,7 @@ public final class PostPlayForPlayer extends PostPlay
     
     @Override
     protected boolean isAutoPlayUsed() {
-        return this.mPostPlayExperience.getAutoplay();
+        return this.mPostPlayExperience != null && this.mPostPlayExperience.getAutoplay();
     }
     
     @Override

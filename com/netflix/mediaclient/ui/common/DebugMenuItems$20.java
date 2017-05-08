@@ -7,6 +7,7 @@ package com.netflix.mediaclient.ui.common;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
+import android.content.Context;
 import com.netflix.mediaclient.util.PermissionUtils;
 import android.os.Handler;
 import android.os.Debug;
@@ -14,9 +15,6 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.content.Context;
-import android.widget.Toast;
-import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -29,8 +27,7 @@ class DebugMenuItems$20 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        this.this$0.activity.getServiceManager().getConfiguration().fetchAccountConfigData(new DebugMenuItems$20$1(this));
-        Toast.makeText((Context)this.this$0.activity, (CharSequence)"Requesting...", 0).show();
+        this.this$0.activity.getServiceManager().getClientLogging().flushLoggingEvents();
         return true;
     }
 }

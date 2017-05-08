@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.view.View$OnClickListener;
 import android.view.View$OnTouchListener;
 import android.content.res.Configuration;
@@ -565,15 +566,19 @@ public abstract class PostPlay
             }
             return;
         }
-        if (this.mPostPlay != null) {
-            this.mPostPlay.setVisibility(0);
+        if (this.mPostPlayExperience != null) {
+            if (this.mPostPlay != null) {
+                this.mPostPlay.setVisibility(0);
+            }
+            if (this.shouldReportPostplay()) {
+                UserActionLogUtils.reportStartPostPlay((Context)this.mNetflixActivity, this.isAutoPlayUsed(), this.getLengthOfAutoPlayCountdow(), this.getPostPlayExpirience());
+                final PostPlayItem postPlayItem = this.mPostPlayExperience.getItems().get(0);
+                this.logPostPlayImpression(String.valueOf(postPlayItem.getVideoId()), null, postPlayItem.getImpressionData());
+            }
+            this.doTransitionToPostPlay();
+            return;
         }
-        if (this.shouldReportPostplay()) {
-            UserActionLogUtils.reportStartPostPlay((Context)this.mNetflixActivity, this.isAutoPlayUsed(), this.getLengthOfAutoPlayCountdow(), this.getPostPlayExpirience());
-            final PostPlayItem postPlayItem = this.mPostPlayExperience.getItems().get(0);
-            this.logPostPlayImpression(String.valueOf(postPlayItem.getVideoId()), null, postPlayItem.getImpressionData());
-        }
-        this.doTransitionToPostPlay();
+        ErrorLoggingManager.logHandledException("SPY-10544 - Error transitioning to post play. No post play experience defined.");
     }
     
     protected abstract void updateOnPostPlayVideosFetched();

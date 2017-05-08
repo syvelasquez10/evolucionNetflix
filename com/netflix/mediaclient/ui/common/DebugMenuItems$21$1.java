@@ -22,11 +22,11 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConfigData;
 import com.netflix.mediaclient.service.configuration.SimpleConfigurationAgentWebCallback;
 
-class DebugMenuItems$20$1 extends SimpleConfigurationAgentWebCallback
+class DebugMenuItems$21$1 extends SimpleConfigurationAgentWebCallback
 {
-    final /* synthetic */ DebugMenuItems$20 this$1;
+    final /* synthetic */ DebugMenuItems$21 this$1;
     
-    DebugMenuItems$20$1(final DebugMenuItems$20 this$1) {
+    DebugMenuItems$21$1(final DebugMenuItems$21 this$1) {
         this.this$1 = this$1;
     }
     

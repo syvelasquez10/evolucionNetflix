@@ -84,6 +84,7 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     private static final String BOOTURL = "booturl";
     private static final String COOKIE_SUFFIX = "; ";
     private static final String DEFAULT_LOCALE = "en";
+    private static final String NETFLIX_DOMAIN = ".netflix.com";
     private static final int PLAYER_COMPLETE = 21;
     private static final int PLAYER_REQUEST = 20;
     private static final String PREFERENCE_NON_MEMBER_PLAYBACK = "prefs_non_member_playback";
@@ -216,15 +217,15 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
                         return;
                     }
                     while (true) {
-                        Log.w("SignupActivity", "Credential is empty, do not save it.");
-                        return;
                         Log.d("SignupActivity", "Trying to save credentials to GPS");
                         this.saveCredentials = false;
+                        Log.w("SignupActivity", "Credential is empty, do not save it.");
+                        return;
                         continue;
                     }
                 }
-                // iftrue(Label_0015:, !this.saveCredentials)
                 // iftrue(Label_0076:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
+                // iftrue(Label_0015:, !this.saveCredentials)
                 finally {
                 }
                 // monitorexit(this)
@@ -305,9 +306,6 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
         }
         this.mWebViewClient.clearHistory();
         this.mUiBoot.setUrl(this.mSignUpParams.getSignUpBootloader());
-        if (b && this.getServiceManager() != null) {
-            this.setNrmCookies(this.getServiceManager().getConfiguration().getNrmConfigData(), false);
-        }
         this.mWebView.loadUrl(this.mUiBoot.getUrl());
     }
     
@@ -368,22 +366,22 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
         }
     }
     
-    private void setCookieAndLoad(final String[] array) {
+    private void setCookieAndSync(final String[] array) {
         final CookieManager instance = CookieManager.getInstance();
         instance.removeAllCookie();
         for (int length = array.length, i = 0; i < length; ++i) {
-            instance.setCookie(this.mUiBoot.getUrl(), array[i]);
+            instance.setCookie(".netflix.com", array[i]);
         }
         CookieSyncManager.createInstance(this.mWebView.getContext()).sync();
     }
     
     private void setNrmCookies(final NrmConfigData nrmConfigData, final boolean b) {
-        final String cookie = CookieManager.getInstance().getCookie(this.mUiBoot.getUrl());
+        final String cookie = CookieManager.getInstance().getCookie(".netflix.com");
         if (nrmConfigData == null || (StringUtils.isNotEmpty(cookie) && this.cookiesIncludeNetflixId(cookie) && !b)) {
             Log.d("SignupActivity", "using existing cookies. ");
             return;
         }
-        this.setCookieAndLoad(this.appendCookies(cookie, this.buildNrmCookies(nrmConfigData)));
+        this.setCookieAndSync(this.appendCookies(cookie, this.buildNrmCookies(nrmConfigData)));
     }
     
     private void setUpSignInView(final ServiceManager serviceManager, final boolean b) {
@@ -409,7 +407,7 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
         this.mWebViewClient = new SignUpWebViewClient(this);
         this.mWebView.setWebViewClient((WebViewClient)this.mWebViewClient);
         this.mWebView.setOnTouchListener((View$OnTouchListener)new SignupActivity$8(this));
-        Log.d("SignupActivity", "All the cookies in a string:" + CookieManager.getInstance().getCookie(this.mUiBoot.getUrl()));
+        Log.d("SignupActivity", "All the cookies in a string:" + CookieManager.getInstance().getCookie(".netflix.com"));
         this.setNrmCookies(serviceManager.getConfiguration().getNrmConfigData(), Boolean.valueOf(extras != null && extras.getBoolean("useDynecomCookies")));
         this.mWebView.loadUrl(this.mUiBoot.getUrl());
         ApmLogUtils.reportStartSharedContext((Context)this, this.mSharedContextSessionUuid);

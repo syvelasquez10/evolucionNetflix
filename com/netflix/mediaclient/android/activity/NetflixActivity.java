@@ -542,7 +542,7 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
             if (!b) {
                 break Label_0095;
             }
-        Block_10_Outer:
+        Block_9_Outer:
             while (true) {
                 try {
                     if (Log.isLoggable()) {
@@ -550,20 +550,21 @@ public abstract class NetflixActivity extends AppCompatActivity implements Loadi
                     }
                     this.displayDialog(dialog);
                     return;
+                    // iftrue(Label_0144:, !Log.isLoggable())
                     // iftrue(Label_0159:, this.getVisibleDialog() == null || this.getVisibleDialog().isShowing())
-                    while (true) {
-                    Block_9:
+                    Label_0144: {
                         while (true) {
-                            this.displayDialog(dialog);
-                            return;
-                            break Block_9;
-                            Log.d("NetflixActivity", "displayServiceAgentDialog " + s);
-                            continue Block_10_Outer;
+                            while (true) {
+                                Log.d("NetflixActivity", "displayServiceAgentDialog " + s);
+                                break Label_0144;
+                                continue Block_9_Outer;
+                            }
+                            continue;
                         }
-                        continue;
                     }
+                    this.displayDialog(dialog);
+                    return;
                 }
-                // iftrue(Label_0144:, !Log.isLoggable())
                 finally {
                 }
                 // monitorexit(visibleDialogLock)

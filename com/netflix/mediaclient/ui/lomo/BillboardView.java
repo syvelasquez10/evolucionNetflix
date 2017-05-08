@@ -155,6 +155,7 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
         }
         else {
             this.showMyListButton(this.video.getId(), this.video.getType());
+            this.updateMyListState();
             this.cta2Button.setVisibility(8);
         }
         if (actions.size() >= 1) {
@@ -386,10 +387,13 @@ public class BillboardView extends RelativeLayout implements VideoViewGroup$IVid
     private void showMyListButton(final String s, final VideoType videoType) {
         this.myListButton.setVisibility(0);
         final ServiceManager serviceManager = ((NetflixActivity)this.getContext()).getServiceManager();
+        if (this.addToListWrapper != null && serviceManager != null) {
+            serviceManager.unregisterAddToMyListListener(s, this.addToListWrapper);
+            this.addToListWrapper = null;
+        }
         if (this.myListButton != null && serviceManager != null) {
             serviceManager.registerAddToMyListListener(s, this.addToListWrapper = serviceManager.createAddToMyListWrapper((NetflixActivity)this.getContext(), (TextView)this.myListButton, s, videoType, this.getTrackId(), false));
         }
-        this.updateMyListState();
     }
     
     private void updateAwardsHeadline(final BillboardSummary billboardSummary) {

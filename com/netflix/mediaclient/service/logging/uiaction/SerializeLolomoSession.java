@@ -12,14 +12,14 @@ import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 
 public class SerializeLolomoSession extends BaseUIActionSession
 {
-    public static final String NAME = "deserializeLolomo";
+    public static final String NAME = "serializeLolomo";
     
     public SerializeLolomoSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         super(userActionLogging$CommandName, clientLogging$ModalView);
     }
     
     public SerializeLolomoEndedEvent createEndedEvent(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final long n) {
-        final SerializeLolomoEndedEvent serializeLolomoEndedEvent = new SerializeLolomoEndedEvent("deserializeLolomo", this.mId, System.currentTimeMillis() - this.mStarted, this.mView, this.mAction, clientLogging$CompletionReason, uiError, n);
+        final SerializeLolomoEndedEvent serializeLolomoEndedEvent = new SerializeLolomoEndedEvent("serializeLolomo", this.mId, System.currentTimeMillis() - this.mStarted, this.mView, this.mAction, clientLogging$CompletionReason, uiError, n);
         serializeLolomoEndedEvent.setCategory(this.getCategory());
         serializeLolomoEndedEvent.setSessionId(this.mId);
         return serializeLolomoEndedEvent;
@@ -27,6 +27,6 @@ public class SerializeLolomoSession extends BaseUIActionSession
     
     @Override
     public String getName() {
-        return "deserializeLolomo";
+        return "serializeLolomo";
     }
 }

@@ -64,6 +64,7 @@ public class VerifyLoginRequest extends FalkorVolleyWebClientRequest<SignInData>
         }
         hashMap.put("email", this.mId);
         hashMap.put("password", this.mCode);
+        hashMap.put("esn", this.mConfigAgent.getEsnProvider().getEsn());
         Log.d("nf_login", "signInParams= " + hashMap.toString());
         return hashMap;
     }

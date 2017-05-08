@@ -1497,7 +1497,9 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
                 break;
             }
             case 1: {
-                this.mPlayer.setAudioDuck(false);
+                if (this.mPlayer != null) {
+                    this.mPlayer.setAudioDuck(false);
+                }
                 string = "AUDIOFOCUS_GAIN";
                 break;
             }
@@ -1518,7 +1520,9 @@ public class PlayerFragment extends NetflixFrag implements AudioManager$OnAudioF
                 break;
             }
             case -3: {
-                this.mPlayer.setAudioDuck(true);
+                if (this.mPlayer != null) {
+                    this.mPlayer.setAudioDuck(true);
+                }
                 string = "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK";
                 break;
             }

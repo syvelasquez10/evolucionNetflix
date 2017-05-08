@@ -27,6 +27,10 @@ public class BranchNodeUtils
         SERIALIZATION_IGNORE_KEYS_SET = new HashSet<String>();
         addToIgnoreSet("postPlayExperience");
         addToIgnoreSet("postPlayExperiences");
+        addToIgnoreSet("interactive");
+        addToIgnoreSet("interactiveMoments");
+        addToIgnoreSet("postplay");
+        addToIgnoreSet("details");
     }
     
     private static void addToIgnoreSet(final String s) {

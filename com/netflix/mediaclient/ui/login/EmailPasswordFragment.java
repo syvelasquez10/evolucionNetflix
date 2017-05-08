@@ -144,33 +144,31 @@ public class EmailPasswordFragment extends LoginBaseFragment implements GoogleAp
                     Label_0020: {
                         return;
                     }
-                Block_7_Outer:
+                    Label_0045_Outer:Block_5_Outer:
                     while (true) {
-                        Log.d("LoginBaseFragment", "Trying to save credentials to GPS");
-                    Block_4:
-                        while (true) {
-                            Label_0045: {
-                                break Label_0045;
-                                Log.w("LoginBaseFragment", "Credential is empty, do not save it.");
-                                return;
+                        Log.w("LoginBaseFragment", "Credential is empty, do not save it.");
+                        return;
+                        Label_0096: {
+                            while (true) {
+                                while (true) {
+                                    SignInLogUtils.reportCredentialStoreSessionStarted((Context)this.getNetflixActivity(), SignInLogging$CredentialService.GooglePlayService);
+                                    this.mSaveCredentials = false;
+                                    o = this.mEmailEditText.getText().toString();
+                                    string = this.mPasswordEditText.getText().toString();
+                                    break Label_0096;
+                                    Log.d("LoginBaseFragment", "Trying to save credentials to GPS");
+                                    continue Block_5_Outer;
+                                }
+                                continue;
                             }
-                            SignInLogUtils.reportCredentialStoreSessionStarted((Context)this.getNetflixActivity(), SignInLogging$CredentialService.GooglePlayService);
-                            this.mSaveCredentials = false;
-                            o = this.mEmailEditText.getText().toString();
-                            string = this.mPasswordEditText.getText().toString();
-                            Label_0096: {
-                                break Label_0096;
-                                break Block_4;
-                            }
-                            continue;
                         }
-                        continue Block_7_Outer;
+                        continue Label_0045_Outer;
                     }
                 }
                 // iftrue(Label_0119:, !StringUtils.isEmpty((String)o) && !StringUtils.isEmpty(string))
                 // iftrue(Label_0020:, !this.mSaveCredentials)
-                // iftrue(Label_0020:, !Log.isLoggable())
                 // iftrue(Label_0045:, !Log.isLoggable())
+                // iftrue(Label_0020:, !Log.isLoggable())
                 finally {
                 }
                 // monitorexit(this)
