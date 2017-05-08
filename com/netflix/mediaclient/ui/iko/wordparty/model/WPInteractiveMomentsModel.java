@@ -211,11 +211,19 @@ public class WPInteractiveMomentsModel extends InteractiveMomentsModel
                                 if (cardClosedImage != null) {
                                     this.addToCacheableResourceList(cardClosedImage.getUrl());
                                 }
-                                final WPInteractiveMomentsModel$WPAudio itemAudio = wpInteractiveMomentsModel$WPItem.getItemAudio();
-                                if (itemAudio == null) {
+                                final WPInteractiveMomentsModel$WPVideo cardVideo = wpInteractiveMomentsModel$WPItem.getCardVideo();
+                                if (cardVideo != null) {
+                                    this.addToCacheableResourceList(cardVideo.getUrl());
+                                }
+                                final WPInteractiveMomentsModel$WPImage cardOpenVideoMask = wpInteractiveMomentsModel$WPItem.getCardOpenVideoMask();
+                                if (cardOpenVideoMask != null) {
+                                    this.addToCacheableResourceList(cardOpenVideoMask.getUrl());
+                                }
+                                final WPInteractiveMomentsModel$WPAudio recapAudio = wpInteractiveMomentsModel$WPItem.getRecapAudio();
+                                if (recapAudio == null) {
                                     continue;
                                 }
-                                this.addToCacheableResourceList(itemAudio.getUrl());
+                                this.addToCacheableResourceList(recapAudio.getUrl());
                             }
                         }
                     }
@@ -233,11 +241,19 @@ public class WPInteractiveMomentsModel extends InteractiveMomentsModel
                             if (cardClosedImage2 != null) {
                                 this.addToCacheableResourceList(cardClosedImage2.getUrl());
                             }
-                            final WPInteractiveMomentsModel$WPAudio itemAudio2 = wpInteractiveMomentsModel$WPItem2.getItemAudio();
-                            if (itemAudio2 == null) {
+                            final WPInteractiveMomentsModel$WPVideo cardVideo2 = wpInteractiveMomentsModel$WPItem2.getCardVideo();
+                            if (cardVideo2 != null) {
+                                this.addToCacheableResourceList(cardVideo2.getUrl());
+                            }
+                            final WPInteractiveMomentsModel$WPImage cardOpenVideoMask2 = wpInteractiveMomentsModel$WPItem2.getCardOpenVideoMask();
+                            if (cardOpenVideoMask2 != null) {
+                                this.addToCacheableResourceList(cardOpenVideoMask2.getUrl());
+                            }
+                            final WPInteractiveMomentsModel$WPAudio itemAudio = wpInteractiveMomentsModel$WPItem2.getItemAudio();
+                            if (itemAudio == null) {
                                 continue;
                             }
-                            this.addToCacheableResourceList(itemAudio2.getUrl());
+                            this.addToCacheableResourceList(itemAudio.getUrl());
                         }
                     }
                 }

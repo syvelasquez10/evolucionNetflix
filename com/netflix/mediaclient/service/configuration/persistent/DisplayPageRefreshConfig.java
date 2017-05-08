@@ -20,4 +20,9 @@ public class DisplayPageRefreshConfig extends PersistentConfigurable
     public String getPrefKey() {
         return "display_page_refresh_key";
     }
+    
+    @Override
+    public String getTestId() {
+        return "7196";
+    }
 }

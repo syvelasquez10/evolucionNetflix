@@ -187,7 +187,7 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     }
     
     protected int calculateSpinnerLeftPosition() {
-        return -this.getActivity().getResources().getDimensionPixelOffset(2131362064);
+        return -this.getActivity().getResources().getDimensionPixelOffset(2131362067);
     }
     
     @Override
@@ -215,13 +215,13 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131689870);
+        this.rootContainer = view.findViewById(2131689871);
         if (!this.showDetailsOnLaunch) {
-            this.seasonsDialogRecyclerView = (RecyclerView)view.findViewById(2131689869);
-            this.fragBackground = view.findViewById(2131689870);
+            this.seasonsDialogRecyclerView = (RecyclerView)view.findViewById(2131689870);
+            this.fragBackground = view.findViewById(2131689871);
             return;
         }
-        this.fragBackground = view.findViewById(2131689882);
+        this.fragBackground = view.findViewById(2131689883);
     }
     
     protected int getNumColumns() {
@@ -231,20 +231,20 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
         if (this.showRelated) {
             return this.barker.getNumberOfSims();
         }
-        return this.getActivity().getResources().getInteger(2131492871);
+        return this.getActivity().getResources().getInteger(2131492872);
     }
     
     protected int getRecyclerViewShadowWidth() {
         if (this.getActivity() == null) {
             return 0;
         }
-        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362181) * 2;
+        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362183) * 2;
     }
     
     @Override
     protected int getlayoutId() {
         if (this.showDetailsOnLaunch) {
-            return 2130903255;
+            return 2130903250;
         }
         return 2130903145;
     }
@@ -307,7 +307,7 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     public void onStart() {
         super.onStart();
         if (!this.showDetailsOnLaunch) {
-            this.getDialog().getWindow().setLayout(-1, (int)this.getResources().getDimension(2131362184));
+            this.getDialog().getWindow().setLayout(-1, (int)this.getResources().getDimension(2131362186));
         }
     }
     

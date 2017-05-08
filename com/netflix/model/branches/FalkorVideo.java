@@ -627,9 +627,9 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     
     @Override
     public String getInterestingUrl() {
-        final Episode$Detail currentEpisodeDetail = this.getCurrentEpisodeDetail();
-        if (currentEpisodeDetail != null) {
-            return currentEpisodeDetail.getInterestingUrl();
+        final Video$Detail detail = this.getDetail();
+        if (detail != null) {
+            return detail.getInterestingUrl();
         }
         return null;
     }

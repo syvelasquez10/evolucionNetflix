@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.common;
 
 import com.netflix.mediaclient.util.PreferenceUtils;
+import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
 import android.content.Context;
 import com.netflix.mediaclient.util.PermissionUtils;
@@ -14,8 +15,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.home.HomeActivity;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.app.Activity;
-import com.netflix.mediaclient.ui.kubrick.details.BarkerRulerActivity;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -28,7 +28,10 @@ class DebugMenuItems$18 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        BarkerRulerActivity.showRuler(this.this$0.activity);
+        final ServiceManager serviceManager = this.this$0.activity.getServiceManager();
+        if (serviceManager != null) {
+            serviceManager.getBrowse().runPrefetchLolomoJob(true);
+        }
         return true;
     }
 }

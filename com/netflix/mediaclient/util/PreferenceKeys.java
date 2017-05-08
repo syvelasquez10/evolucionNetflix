@@ -9,6 +9,7 @@ public interface PreferenceKeys
     public static final String CONFIG_MINIMAL_VERSION = "config_min_version";
     public static final String CONFIG_RECOMMENDED_VERSION = "config_recommended_version";
     public static final String DISK_CACHE_SIZE = "disk_cache_size";
+    public static final String LOLOMO_GUID_FETCH_TIME_MS = "prefs_prefetch_json_last_write_system_time_ms";
     public static final String PARAM_DEVICE_CONFIG_CACHED = "nf_device_config_cached";
     public static final String PARAM_NOTIFICATION_ID_COUNTER = "nf_notification_id_counter";
     public static final String PARAM_RND_DEVICE_ID = "nf_rnd_device_id";
@@ -33,17 +34,19 @@ public interface PreferenceKeys
     public static final String PREFERENCE_DISABLE_MDX = "disable_mdx";
     public static final String PREFERENCE_DISABLE_PLAY_BILLING = "disable_playbilling";
     public static final String PREFERENCE_DISABLE_WEBSOCKET = "disable_websocket";
-    public static final String PREFERENCE_DISABLE_WIDEVINE = "disable_widevine";
+    public static final String PREFERENCE_DISABLE_WIDEVINE_L1 = "disable_widevine";
+    public static final String PREFERENCE_DISABLE_WIDEVINE_L3 = "disable_widevine_l3";
     public static final String PREFERENCE_DRM_ACCKEYMAP = "nf_drm_acckeymap";
     public static final String PREFERENCE_DRM_CDM_KEYSET_ID = "nf_drm_cdm_keyset_id";
+    public static final String PREFERENCE_DRM_CRYPTO_PROVIDER = "nf_drm_crypto_provider";
     public static final String PREFERENCE_DRM_KCE_KEY_ID = "nf_drm_kce_key_id";
     public static final String PREFERENCE_DRM_KCH_KEY_ID = "nf_drm_kch_key_id";
     public static final String PREFERENCE_DRM_SYSTEM_ID = "nf_drm_system_id";
     public static final String PREFERENCE_ENABLE_DYNECOM_SIGNIN = "enable_dynecom_signin";
     public static final String PREFERENCE_ENABLE_WIDEVINE_L1 = "enable_widevine_l1";
-    public static final String PREFERENCE_ENABLE_WIDEVINE_L3 = "enable_widevine_l3";
     public static final String PREFERENCE_ERROR_LOGGING_CONFIGURATION = "error_log_configuration";
     public static final String PREFERENCE_FIRST_APPLICATION_START_AFTER_INSTALLATION = "nf_first_start_after_install";
+    public static final String PREFERENCE_FORCE_LEGACY_CRYPTO = "force_legacy_crypto";
     public static final String PREFERENCE_GCM_BROWSE_EVENT_RATE_LIMIT = "gcm_browse_rate_limit";
     public static final String PREFERENCE_GCM_NOTIFIC_CHANGE_EVENT_RATE_LIMIT = "gcm_tray_change_rate_limit";
     public static final String PREFERENCE_HARDWARE_ACCELERATION = "nflx_hardwarer_acc";
@@ -63,6 +66,7 @@ public interface PreferenceKeys
     public static final String PREFERENCE_NOTIFICATION_SETTINGS = "notification_settings";
     public static final String PREFERENCE_NRM_INFO = "nrmInfo";
     public static final String PREFERENCE_NRM_NETFLIXID = "nrm_netflix_id";
+    public static final String PREFERENCE_PENDING_JOBS_PRE_L = "pending_jobs";
     public static final String PREFERENCE_PLAYBACK_CONFIGURATION_LOCAL_PLAYBACK_ENABLED = "playback_configuration_local_playback_enabled";
     public static final String PREFERENCE_PLAYER_TYPE = "nflx_player_type";
     public static final String PREFERENCE_PLAYER_TYPE_QA_OVERRIDE = "nflx_player_type_qa";
@@ -92,8 +96,10 @@ public interface PreferenceKeys
     public static final String PREFERENCE_VOIP_ENABLED_ON_DEVICE = "enable_voip_on_device";
     public static final String PREFERENCE_WARN_WHEN_PLAY_ON_NOWIFI = "nf_play_no_wifi_warning";
     public static final String PREFERENCE__PLAYEROVERLAY = "ui.playeroverlay";
+    public static final String PREFETCH_LOLOMO_JOB_LAST_START_TIME_MS = "prefs_prefetch_lolomo_job_last_start_time_ms";
     public static final String SHOULD_SHOWN_DATA_SAVER_NOTIFICATION = "should_show_ftc_data_saver_notification";
     public static final String UI_LOADING_WORKFLOW_TYPE = "ui_loading_workflow_type";
+    public static final String USERAGENT_CURRENT_USERPROFILE_GUID = "useragent_current_userprofile_guid";
     public static final String USERAGENT_USERPROFILES_DATA = "useragent_userprofiles_data";
     public static final String USERAGENT_USER_DATA = "useragent_user_data";
 }

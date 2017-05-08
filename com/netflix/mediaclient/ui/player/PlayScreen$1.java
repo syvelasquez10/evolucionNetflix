@@ -38,7 +38,7 @@ import android.os.Handler;
 import android.widget.ViewFlipper;
 import android.widget.TextView;
 import android.view.View;
-import android.animation.Animator;
+import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 

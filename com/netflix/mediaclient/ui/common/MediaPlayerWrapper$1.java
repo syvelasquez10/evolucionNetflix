@@ -14,9 +14,11 @@ import android.view.Surface;
 import android.media.MediaPlayer;
 import android.view.TextureView;
 import android.os.Handler;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import android.view.TextureView$SurfaceTextureListener;
 import android.media.MediaPlayer$OnVideoSizeChangedListener;
 import android.media.MediaPlayer$OnPreparedListener;
+import android.media.MediaPlayer$OnInfoListener;
 import android.media.MediaPlayer$OnErrorListener;
 import android.media.MediaPlayer$OnCompletionListener;
 

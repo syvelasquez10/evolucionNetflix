@@ -67,17 +67,17 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
     }
     
     private void findViews(final View view) {
-        this.episodeTitle = (TextView)view.findViewById(2131690122);
-        this.showTitle = (TextView)view.findViewById(2131690116);
-        this.targetName = (TextView)view.findViewById(2131690121);
-        this.synopsis = (TextView)view.findViewById(2131690123);
-        this.playButton = (Button)view.findViewById(2131690124);
-        this.stopButton = (ImageView)view.findViewById(2131690125);
-        this.episodesButton = (ImageView)view.findViewById(2131690126);
-        this.backToBrowsingButton = (TextView)view.findViewById(2131690118);
-        this.postPlayForTitleEndContainer = (ViewGroup)view.findViewById(2131690115);
-        this.postPlayForNextContainer = (ViewGroup)view.findViewById(2131690119);
-        this.rating = (NetflixRatingBar)view.findViewById(2131690117);
+        this.episodeTitle = (TextView)view.findViewById(2131690113);
+        this.showTitle = (TextView)view.findViewById(2131690107);
+        this.targetName = (TextView)view.findViewById(2131690112);
+        this.synopsis = (TextView)view.findViewById(2131690114);
+        this.playButton = (Button)view.findViewById(2131690115);
+        this.stopButton = (ImageView)view.findViewById(2131690116);
+        this.episodesButton = (ImageView)view.findViewById(2131690117);
+        this.backToBrowsingButton = (TextView)view.findViewById(2131690109);
+        this.postPlayForTitleEndContainer = (ViewGroup)view.findViewById(2131690106);
+        this.postPlayForNextContainer = (ViewGroup)view.findViewById(2131690110);
+        this.rating = (NetflixRatingBar)view.findViewById(2131690108);
     }
     
     private void handlePlayNow() {
@@ -157,7 +157,7 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
     
     private void updateDetails(final EpisodeDetails episodeDetails) {
         if (this.episodeTitle != null) {
-            this.episodeTitle.setText((CharSequence)this.getResources().getString(2131231063, new Object[] { this.episodeDetails.getSeasonAbbrSeqLabel(), this.episodeDetails.getEpisodeNumber(), this.episodeDetails.getTitle() }));
+            this.episodeTitle.setText((CharSequence)this.getResources().getString(2131231064, new Object[] { this.episodeDetails.getSeasonAbbrSeqLabel(), this.episodeDetails.getEpisodeNumber(), this.episodeDetails.getTitle() }));
         }
         if (this.synopsis != null) {
             this.synopsis.setText((CharSequence)episodeDetails.getSynopsis());
@@ -215,7 +215,7 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("PostPlayFrag", "Creating new frag view...");
-        final View inflate = layoutInflater.inflate(2130903233, (ViewGroup)null, false);
+        final View inflate = layoutInflater.inflate(2130903228, (ViewGroup)null, false);
         this.findViews(inflate);
         this.init();
         return inflate;

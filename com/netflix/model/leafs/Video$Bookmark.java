@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -11,8 +12,9 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public final class Video$Bookmark implements JsonPopulator
+public final class Video$Bookmark implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "Bookmark";
     private int bookmarkPosition;
@@ -81,6 +83,34 @@ public final class Video$Bookmark implements JsonPopulator
             this.bookmarkPosition = bookmarkPosition;
             this.lastModified = lastModified;
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("Bookmark", "Populating with: " + jsonParser);
+        }
+        final int bookmarkPosition = this.bookmarkPosition;
+        final long lastModified = this.lastModified;
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "bookmarkPosition": {
+                this.bookmarkPosition = jsonParser.getValueAsInt();
+                break;
+            }
+            case "lastModified": {
+                this.lastModified = jsonParser.getValueAsLong();
+                break;
+            }
+        }
+        if (lastModified > this.lastModified) {
+            Log.d("Bookmark", String.format("restoring bookmark and time (%d - %d) to older values (%d - %d)", this.bookmarkPosition, this.lastModified, bookmarkPosition, lastModified));
+            this.bookmarkPosition = bookmarkPosition;
+            this.lastModified = lastModified;
+        }
+        return true;
     }
     
     public void setBookmarkPosition(final int bookmarkPosition) {

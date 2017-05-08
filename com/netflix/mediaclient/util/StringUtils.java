@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import com.netflix.mediaclient.android.widget.InternalURLSpan;
 import android.text.style.URLSpan;
 import android.text.Spannable;
+import android.content.res.Resources;
 import android.net.Uri;
 import com.netflix.mediaclient.Log;
 import java.io.FileInputStream;
@@ -21,7 +22,6 @@ import java.io.File;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
-import android.content.res.Resources;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import java.util.StringTokenizer;
 import android.util.Pair;
@@ -172,12 +172,11 @@ public final class StringUtils
         return array;
     }
     
-    public static CharSequence getBasicMovieInfoString(final Context context, final int n, final String s, final int n2) {
+    private static CharSequence getBasicMovieInfoString(final Context context, final int n, final String s, final int n2) {
         if (context == null) {
             return "";
         }
-        final Resources resources = context.getResources();
-        if (resources == null) {
+        if (context.getResources() == null) {
             return "";
         }
         final StringBuilder sb = new StringBuilder();
@@ -192,7 +191,7 @@ public final class StringUtils
             sb.append("   ");
         }
         if (n2 > 0) {
-            sb.append(LocalizationUtils.forceLayoutDirectionIfNeeded(resources.getString(2131231123, new Object[] { TimeUtils.convertSecondsToMinutes(n2) })));
+            sb.append(LocalizationUtils.forceLayoutDirectionIfNeeded(TimeUtils.getFormattedTime(n2, context)));
         }
         return sb.toString();
     }
@@ -211,7 +210,7 @@ public final class StringUtils
         return getBasicMovieInfoString(context, videoDetails.getYear(), videoDetails.getCertification(), videoDetails.getPlayable().getRuntime());
     }
     
-    public static CharSequence getBasicShowInfoString(final Context context, final int n, final String s, final String s2) {
+    private static CharSequence getBasicShowInfoString(final Context context, final int n, final String s, final String s2) {
         if (context == null) {
             return "";
         }

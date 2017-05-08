@@ -18,16 +18,16 @@ import com.netflix.mediaclient.ui.iko.wordparty.WPConstants;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.ViewGroup;
-import android.content.Context;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.ui.iko.wordparty.model.WPInteractiveMomentsModel$WPImage;
 import android.animation.Animator;
-import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
-import com.netflix.mediaclient.util.log.UserActionLogUtils;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import org.json.JSONException;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import org.json.JSONObject;
+import android.content.Context;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import com.netflix.mediaclient.util.log.IkoLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.animation.TimeInterpolator;
 import android.animation.Animator$AnimatorListener;
 import android.animation.PropertyValuesHolder;
@@ -79,8 +79,8 @@ class WPInteractiveMomentsManager$3 implements Runnable
         }
         for (final WPInteractiveMomentsModel$WPMoment wpInteractiveMomentsModel$WPMoment : this.this$0.interactiveMoments) {
             if (wpInteractiveMomentsModel$WPMoment != null) {
-                this.this$0.pugBitmap = this.this$0.getBitmapFromCache(wpInteractiveMomentsModel$WPMoment.getPugDefaultImage());
-                this.this$0.pugSelectedBitmap = this.this$0.getBitmapFromCache(wpInteractiveMomentsModel$WPMoment.getPugSelectedImage());
+                this.this$0.pugBitmap = this.this$0.getBitmapFromCache(wpInteractiveMomentsModel$WPMoment.getPugDefaultImage(), true);
+                this.this$0.pugSelectedBitmap = this.this$0.getBitmapFromCache(wpInteractiveMomentsModel$WPMoment.getPugSelectedImage(), true);
             }
         }
     }

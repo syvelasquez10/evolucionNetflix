@@ -20,4 +20,9 @@ public class Memento extends PersistentConfigurable
     public String getPrefKey() {
         return "persistent_memento_key";
     }
+    
+    @Override
+    public String getTestId() {
+        return "7131";
+    }
 }

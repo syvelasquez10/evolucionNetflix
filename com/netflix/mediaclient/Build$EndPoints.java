@@ -8,7 +8,7 @@ public interface Build$EndPoints
 {
     public static final String ACCOUNT_URL = "https://www.netflix.com/youraccount";
     public static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
-    public static final String ANDROID_ENDPOINT_FULL = "/android/4.8.1/api";
+    public static final String ANDROID_ENDPOINT_FULL = "/android/4.9/api";
     public static final String BOOTLOADER_URL = "https://www.netflix.com/applanding/android";
     public static final String CLIENT_LOGGING_ENDPOINT = "ichnaea.netflix.com";
     public static final String CLIENT_LOGGING_PATH = "/log";

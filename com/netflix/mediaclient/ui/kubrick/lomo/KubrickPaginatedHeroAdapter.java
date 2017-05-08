@@ -37,7 +37,7 @@ public class KubrickPaginatedHeroAdapter extends BasePaginatedAdapter<KubrickVid
     
     @Override
     protected int computeNumVideosToFetchPerBatch(final int n) {
-        return LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD);
+        return LomoConfig.computeNumVideosToFetchPerBatch((Context)this.activity, LoMoType.STANDARD);
     }
     
     @Override

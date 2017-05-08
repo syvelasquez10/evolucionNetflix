@@ -171,18 +171,18 @@ public class SearchResultsFrag extends NetflixFrag
     }
     
     private void findViews(final View view) {
-        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131690266);
-        this.layoutSuggestions = (FlowLayout)view.findViewById(2131690267);
-        this.gridViewVideos = (StaticGridView)view.findViewById(2131690262);
-        this.gridViewPeople = (StaticGridView)view.findViewById(2131690264);
-        this.labelSuggestions = (TextView)view.findViewById(2131690265);
-        this.scrollView2 = (LoggingScrollView)view.findViewById(2131690269);
-        this.layoutPeople = (FlowLayout)view.findViewById(2131690268);
-        this.scrollView = (LoggingScrollView)view.findViewById(2131690260);
+        this.gridViewSuggestions = (StaticGridView)view.findViewById(2131690257);
+        this.layoutSuggestions = (FlowLayout)view.findViewById(2131690258);
+        this.gridViewVideos = (StaticGridView)view.findViewById(2131690253);
+        this.gridViewPeople = (StaticGridView)view.findViewById(2131690255);
+        this.labelSuggestions = (TextView)view.findViewById(2131690256);
+        this.scrollView2 = (LoggingScrollView)view.findViewById(2131690260);
+        this.layoutPeople = (FlowLayout)view.findViewById(2131690259);
+        this.scrollView = (LoggingScrollView)view.findViewById(2131690251);
         this.relatedlabel = (TextView)view.findViewById(2131689653);
-        this.labelVideos = (TextView)view.findViewById(2131690261);
-        this.labelPeople = (TextView)view.findViewById(2131690263);
-        this.progressBar = (ProgressBar)view.findViewById(2131689723);
+        this.labelVideos = (TextView)view.findViewById(2131690252);
+        this.labelPeople = (TextView)view.findViewById(2131690254);
+        this.progressBar = (ProgressBar)view.findViewById(2131689724);
     }
     
     public static Object getItem(final ISearchResults searchResults, final SearchResultsFrag$SearchCategory searchResultsFrag$SearchCategory, final int n) {
@@ -366,7 +366,7 @@ public class SearchResultsFrag extends NetflixFrag
             final int numPeopleGridCols = SearchUtils.getNumPeopleGridCols((Context)this.getActivity());
             if (SearchUtils.getSearchExperience() == SearchUtils$SearchExperience.PHONE && numPeopleGridCols > 0) {
                 this.imgHeightPeople = (int)(n / numPeopleGridCols * SearchUtils.getPeopleImageAspectRatio() + 0.5);
-                this.imgHeightPeople += (int)this.getActivity().getResources().getDimension(2131362287);
+                this.imgHeightPeople += (int)this.getActivity().getResources().getDimension(2131362290);
                 Log.v("SearchResultsFrag", "imgHeightPeople: " + this.imgHeightPeople);
             }
         }
@@ -378,10 +378,10 @@ public class SearchResultsFrag extends NetflixFrag
             final TextView labelSuggestions = this.labelSuggestions;
             String text;
             if (SearchUtils.shouldUpperCaseTitleLabels()) {
-                text = this.getString(2131231205).toUpperCase(default1);
+                text = this.getString(2131231206).toUpperCase(default1);
             }
             else {
-                text = this.getString(2131231205);
+                text = this.getString(2131231206);
             }
             labelSuggestions.setText((CharSequence)text);
         }
@@ -389,15 +389,15 @@ public class SearchResultsFrag extends NetflixFrag
             final TextView labelPeople = this.labelPeople;
             String text2;
             if (SearchUtils.shouldUpperCaseTitleLabels()) {
-                text2 = this.getString(2131231131).toUpperCase(default1);
+                text2 = this.getString(2131231132).toUpperCase(default1);
             }
             else {
-                text2 = this.getString(2131231131);
+                text2 = this.getString(2131231132);
             }
             labelPeople.setText((CharSequence)text2);
         }
         if (this.labelVideos != null) {
-            this.labelVideos.setText((CharSequence)this.getString(2131231108).toUpperCase(default1));
+            this.labelVideos.setText((CharSequence)this.getString(2131231109).toUpperCase(default1));
         }
     }
     

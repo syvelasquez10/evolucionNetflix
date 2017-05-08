@@ -20,4 +20,9 @@ public class ContinueWatchingProgBar extends PersistentConfigurable
     public String getPrefKey() {
         return "persistent_cw_prog_bar";
     }
+    
+    @Override
+    public String getTestId() {
+        return "7151";
+    }
 }

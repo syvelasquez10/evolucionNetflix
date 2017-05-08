@@ -52,7 +52,7 @@ public class PostPlayForEpisodes extends PostPlay
     }
     
     private void init() {
-        this.mTimerValue = this.mNetflixActivity.getResources().getInteger(2131492882);
+        this.mTimerValue = this.mNetflixActivity.getResources().getInteger(2131492883);
         this.mAutoPlayEnabled = this.isAutoPlayEnabled();
         if (Log.isLoggable()) {
             Log.d("nf_postplay", "PostPlayForEpisodes:: timer max value " + this.mTimerValue);
@@ -65,7 +65,7 @@ public class PostPlayForEpisodes extends PostPlay
     }
     
     private void init(final Activity activity) {
-        this.mTimerValue = activity.getResources().getInteger(2131492882);
+        this.mTimerValue = activity.getResources().getInteger(2131492883);
         this.mAutoPlayEnabled = this.isAutoPlayEnabled();
         if (Log.isLoggable()) {
             Log.d("nf_postplay", "PostPlayForEpisodes:: timer max value " + this.mTimerValue);
@@ -96,7 +96,7 @@ public class PostPlayForEpisodes extends PostPlay
             mTitle.setVisibility(visibility);
             this.mSynopsis.setVisibility(8);
             this.mPlayButton.getLayoutParams().width = -2;
-            ((ViewGroup$MarginLayoutParams)this.mPlayButton.getLayoutParams()).bottomMargin = (int)this.mNetflixActivity.getResources().getDimension(2131362267);
+            ((ViewGroup$MarginLayoutParams)this.mPlayButton.getLayoutParams()).bottomMargin = (int)this.mNetflixActivity.getResources().getDimension(2131362269);
         }
     }
     
@@ -137,10 +137,10 @@ public class PostPlayForEpisodes extends PostPlay
     
     @Override
     protected void findViews() {
-        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131690128);
-        this.mAutoPlayView = this.mNetflixActivity.findViewById(2131690127);
-        this.mTimerView = (TextView)this.mNetflixActivity.findViewById(2131690129);
-        this.episodeBadge = (TextView)this.mNetflixActivity.findViewById(2131690135);
+        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131690119);
+        this.mAutoPlayView = this.mNetflixActivity.findViewById(2131690118);
+        this.mTimerView = (TextView)this.mNetflixActivity.findViewById(2131690120);
+        this.episodeBadge = (TextView)this.mNetflixActivity.findViewById(2131690126);
     }
     
     @Override
@@ -221,7 +221,7 @@ public class PostPlayForEpisodes extends PostPlay
     
     protected void initInfoContainer(final Activity activity) {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(activity.getResources().getText(2131231145));
+            this.mInfoTitleView.setText(activity.getResources().getText(2131231146));
         }
         if (this.mTimerView != null) {
             this.mTimerView.setVisibility(0);
@@ -291,13 +291,13 @@ public class PostPlayForEpisodes extends PostPlay
         if ((title = postPlayVideo.getTitle()) == null) {
             title = "";
         }
-        final String string = this.mNetflixActivity.getResources().getString(2131231062, new Object[] { title });
+        final String string = this.mNetflixActivity.getResources().getString(2131231063, new Object[] { title });
         final String storyUrl = postPlayVideo.getStoryUrl();
         String s = postPlayVideo.getInterestingUrl();
         if (postPlayVideo.getType() != VideoType.EPISODE) {
             s = postPlayVideo.getStoryUrl();
         }
-        final String string2 = this.mNetflixActivity.getResources().getString(2131230892, new Object[] { string });
+        final String string2 = this.mNetflixActivity.getResources().getString(2131230894, new Object[] { string });
         if (this.mBackground != null) {
             if (!StringUtils.isEmpty(storyUrl) && this.mNetflixActivity.isTablet()) {
                 NetflixActivity.getImageLoader((Context)this.mNetflixActivity).showImg(this.mBackground, storyUrl, IClientLogging$AssetType.merchStill, string2, ImageLoader$StaticImgConfig.DARK, true, 1);
@@ -312,7 +312,7 @@ public class PostPlayForEpisodes extends PostPlay
             string3 = string;
         }
         else {
-            final String s2 = string3 = this.mNetflixActivity.getResources().getString(2131231150, new Object[] { postPlayVideo.getPlayable().getSeasonAbbrSeqLabel(), postPlayVideo.getPlayable().getEpisodeNumber(), string });
+            final String s2 = string3 = this.mNetflixActivity.getResources().getString(2131231151, new Object[] { postPlayVideo.getPlayable().getSeasonAbbrSeqLabel(), postPlayVideo.getPlayable().getEpisodeNumber(), string });
             if (this.episodeBadge != null) {
                 this.episodeBadge.setVisibility(8);
                 string3 = s2;

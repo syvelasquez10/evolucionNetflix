@@ -50,23 +50,23 @@ public class SurveyFragment extends Fragment
     private void makeSelection(final View view) {
         int n = 0;
         switch (view.getId()) {
-            case 2131690300: {
+            case 2131690291: {
                 n = 1;
                 break;
             }
-            case 2131690301: {
+            case 2131690292: {
                 n = 2;
                 break;
             }
-            case 2131690302: {
+            case 2131690293: {
                 n = 3;
                 break;
             }
-            case 2131690303: {
+            case 2131690294: {
                 n = 4;
                 break;
             }
-            case 2131690304: {
+            case 2131690295: {
                 n = 5;
                 break;
             }
@@ -111,17 +111,17 @@ public class SurveyFragment extends Fragment
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View inflate = layoutInflater.inflate(2130903130, viewGroup, false);
-        final TextView textView = (TextView)inflate.findViewById(2131689835);
+        final TextView textView = (TextView)inflate.findViewById(2131689836);
         final TextView textView2 = (TextView)inflate.findViewById(2131689565);
-        final TextView textView3 = (TextView)inflate.findViewById(2131689836);
-        final TextView textView4 = (TextView)inflate.findViewById(2131690305);
-        final TextView textView5 = (TextView)inflate.findViewById(2131690306);
-        final Button button = (Button)inflate.findViewById(2131689837);
-        final ImageView imageView = (ImageView)inflate.findViewById(2131690300);
-        final ImageView imageView2 = (ImageView)inflate.findViewById(2131690301);
-        final ImageView imageView3 = (ImageView)inflate.findViewById(2131690302);
-        final ImageView imageView4 = (ImageView)inflate.findViewById(2131690303);
-        final ImageView imageView5 = (ImageView)inflate.findViewById(2131690304);
+        final TextView textView3 = (TextView)inflate.findViewById(2131689837);
+        final TextView textView4 = (TextView)inflate.findViewById(2131690296);
+        final TextView textView5 = (TextView)inflate.findViewById(2131690297);
+        final Button button = (Button)inflate.findViewById(2131689838);
+        final ImageView imageView = (ImageView)inflate.findViewById(2131690291);
+        final ImageView imageView2 = (ImageView)inflate.findViewById(2131690292);
+        final ImageView imageView3 = (ImageView)inflate.findViewById(2131690293);
+        final ImageView imageView4 = (ImageView)inflate.findViewById(2131690294);
+        final ImageView imageView5 = (ImageView)inflate.findViewById(2131690295);
         this.survey = (Survey)this.getArguments().getParcelable("extra_survey");
         if (this.survey == null || this.survey.isEmpty()) {
             this.getActivity().finish();

@@ -121,8 +121,8 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131689870);
-        this.fragBackground = view.findViewById(2131689882);
+        this.rootContainer = view.findViewById(2131689871);
+        this.fragBackground = view.findViewById(2131689883);
     }
     
     @Override
@@ -134,7 +134,7 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
         if (this.getActivity() == null) {
             return 0;
         }
-        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362181) * 2;
+        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362183) * 2;
     }
     
     @Override

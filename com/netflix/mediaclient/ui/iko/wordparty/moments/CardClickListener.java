@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.iko.wordparty.moments;
 
 public interface CardClickListener
 {
-    void onCardClickEnd(final WPCardView p0);
+    void onCardClickEnd(final WPCardLayout p0);
     
-    void onCardClickStart(final WPCardView p0);
+    void onCardClickStart(final WPCardLayout p0);
 }

@@ -5,6 +5,9 @@
 package com.netflix.mediaclient.service.falkor;
 
 import java.util.Map;
+import android.content.Context;
+import com.netflix.mediaclient.util.PreferenceUtils;
+import android.os.SystemClock;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
@@ -35,7 +38,9 @@ class FalkorAgent$3 extends SimpleBrowseAgentCallback
             failedMap = PerformanceProfiler.createFailedMap();
         }
         instance.endSession(lolomo_PREFETCH, failedMap);
-        this.val$cb.onLoLoMoPrefetched(status);
+        if (this.val$cb != null) {
+            this.val$cb.onLoLoMoPrefetched(status);
+        }
         boolean wasAllDataLocalToCache = false;
         if (status instanceof FalkorAgentStatus) {
             wasAllDataLocalToCache = ((FalkorAgentStatus)status).wasAllDataLocalToCache();
@@ -48,6 +53,11 @@ class FalkorAgent$3 extends SimpleBrowseAgentCallback
             this.this$0.getPreAppAgent().informPrefetched(this.this$0.getContext());
             if (!StatusCode.OK.equals(status.getStatusCode())) {
                 Log.w("FalkorAgent", "nf_preapp prefetch failed");
+            }
+            final long elapsedRealtime = SystemClock.elapsedRealtime();
+            PreferenceUtils.putLongPref((Context)this.this$0.getService(), "prefs_prefetch_json_last_write_system_time_ms", elapsedRealtime);
+            if (Log.isLoggable()) {
+                Log.d("FalkorAgent", "onLoLoMoPrefetched: prefetch lolomo time = " + elapsedRealtime);
             }
         }
     }

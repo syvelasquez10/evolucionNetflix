@@ -52,7 +52,7 @@ class BarkerKidsCharacterDetailsFrag$GalleryAdapter$1 implements RecyclerViewHea
     }
     
     private int getImageHeight() {
-        return (int)((KidsUtils.getDetailsPageContentWidth((Context)this.val$this$0.getActivity()) - this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131362167) * (this.val$this$0.getNumColumns() + 1.0f)) / this.val$this$0.getNumColumns() * 0.5625f);
+        return (int)((KidsUtils.getDetailsPageContentWidth((Context)this.val$this$0.getActivity()) - this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131362169) * (this.val$this$0.getNumColumns() + 1.0f)) / this.val$this$0.getNumColumns() * 0.5625f);
     }
     
     @Override

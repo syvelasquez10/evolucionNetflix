@@ -13,27 +13,25 @@ import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import android.net.Uri;
-import android.content.Intent;
 import java.util.ArrayList;
 import android.os.Build$VERSION;
 import com.netflix.mediaclient.util.ViewUtils;
 import java.util.List;
 import com.netflix.mediaclient.ui.iris.notifications.NotificationsFrag$NotificationsListStatusListener;
-import android.view.ViewStub;
 import com.netflix.mediaclient.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.view.View$OnClickListener;
 import android.widget.AdapterView$OnItemClickListener;
+import android.view.ViewStub;
 import com.netflix.mediaclient.ui.iris.notifications.SlidingMenuNotificationsFrag;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.TextView;
+import android.view.View;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import android.support.v4.widget.DrawerLayout;
-import android.view.View;
 import com.netflix.mediaclient.android.widget.StaticListView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
@@ -47,7 +45,6 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     protected final NetflixActivity activity;
     private StandardSlidingMenu$AppListAdapter appAdapter;
     private final StaticListView appList;
-    private View appTitle;
     private final boolean canLoadNotifications;
     private final DrawerLayout drawerLayout;
     private StandardSlidingMenu$GenresListAdapter genresAdapter;
@@ -57,7 +54,9 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     private final View homeGenreRow;
     protected TextView homeText;
     private ServiceManager manager;
+    protected final View notificationsDivider;
     private SlidingMenuNotificationsFrag notificationsFrag;
+    private ViewStub notificationsStub;
     private final AdapterView$OnItemClickListener onAppRowClickListener;
     private final AdapterView$OnItemClickListener onGenreRowClickListener;
     private final View$OnClickListener onHomeClickListener;
@@ -81,37 +80,32 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
         this.activity = activity;
         this.drawerLayout = drawerLayout;
         this.canLoadNotifications = canLoadNotifications;
-        final View inflate = activity.getLayoutInflater().inflate(2130903278, (ViewGroup)drawerLayout);
-        final View viewById = drawerLayout.findViewById(2131690292);
+        final View inflate = activity.getLayoutInflater().inflate(2130903273, (ViewGroup)drawerLayout);
+        final View viewById = drawerLayout.findViewById(2131690283);
         viewById.setOnClickListener((View$OnClickListener)null);
-        this.genresLeWrapper = new LoadingAndErrorWrapper(drawerLayout.findViewById(2131690295), this.genresErrorCallback);
+        this.genresLeWrapper = new LoadingAndErrorWrapper(drawerLayout.findViewById(2131690286), this.genresErrorCallback);
+        this.notificationsDivider = drawerLayout.findViewById(2131690285);
         if (this.canLoadNotifications) {
             Log.v("StandardSlidingMenu", "Inflating notifications into layout");
-            final ViewStub viewStub = (ViewStub)inflate.findViewById(2131690293);
-            viewStub.inflate();
-            (this.notificationsFrag = (SlidingMenuNotificationsFrag)activity.getFragmentManager().findFragmentById(2131689896)).setNotificationsListStatusListener(new StandardSlidingMenu$1(this, viewStub));
+            (this.notificationsStub = (ViewStub)inflate.findViewById(2131690284)).inflate();
+            (this.notificationsFrag = (SlidingMenuNotificationsFrag)activity.getFragmentManager().findFragmentById(2131689897)).setNotificationsListStatusListener(new StandardSlidingMenu$1(this));
             if (Log.isLoggable()) {
                 Log.v("StandardSlidingMenu", "Notifications frag: " + this.notificationsFrag);
             }
-            int visibility;
-            if (this.notificationsFrag.areNotificationsPresent()) {
-                visibility = 0;
-            }
-            else {
-                visibility = 8;
-            }
-            viewStub.setVisibility(visibility);
+            this.setNotificationsVisible(this.notificationsFrag.areNotificationsPresent());
         }
-        (this.profilesGroup = inflate.findViewById(2131690287)).setOnClickListener(this.onSwitchProfileClickListener);
-        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131690288);
-        this.profileName = (TextView)this.profilesGroup.findViewById(2131690290);
-        (this.profileImg = (AdvancedImageView)this.profilesGroup.findViewById(2131690289)).setPressedStateHandlerEnabled(false);
-        (this.genresList = (StaticListView)viewById.findViewById(2131690296)).setFocusable(false);
+        else {
+            this.notificationsDivider.setVisibility(8);
+        }
+        (this.profilesGroup = inflate.findViewById(2131690278)).setOnClickListener(this.onSwitchProfileClickListener);
+        this.switchProfilesIcon = (ImageView)this.profilesGroup.findViewById(2131690279);
+        this.profileName = (TextView)this.profilesGroup.findViewById(2131690281);
+        (this.profileImg = (AdvancedImageView)this.profilesGroup.findViewById(2131690280)).setPressedStateHandlerEnabled(false);
+        (this.genresList = (StaticListView)viewById.findViewById(2131690287)).setFocusable(false);
         this.homeGenreRow = this.createHomeRow();
         this.genresList.addHeaderView(this.homeGenreRow, (Object)null, false);
         this.setSelectedGenre(StandardSlidingMenu.HOME_LOLOMO);
-        this.appTitle = viewById.findViewById(2131690297);
-        (this.appList = (StaticListView)viewById.findViewById(2131690298)).setFocusable(false);
+        (this.appList = (StaticListView)viewById.findViewById(2131690289)).setFocusable(false);
         this.setAppActions();
         this.fetchGenresDataIfReady();
     }
@@ -136,7 +130,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     }
     
     private static List<StandardSlidingMenu$AppAction> createActions(final NetflixActivity netflixActivity) {
-        final boolean b = false;
+        final boolean b = true;
         final ArrayList<StandardSlidingMenu$AppAction> list = new ArrayList<StandardSlidingMenu$AppAction>();
         if (netflixActivity.getServiceManager() == null) {
             Log.w("StandardSlidingMenu", "Service manager is null, no app section");
@@ -151,29 +145,24 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
             return list;
         }
         if (netflixActivity.showSettingsInMenu()) {
-            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131231184), new StandardSlidingMenu$7(netflixActivity)));
+            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131231185), new StandardSlidingMenu$7(netflixActivity)));
         }
         if (netflixActivity.showAccountInMenu()) {
-            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131231183), new StandardSlidingMenu$8(netflixActivity)));
+            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131231184), new StandardSlidingMenu$8(netflixActivity)));
         }
         if (netflixActivity.showAboutInMenu()) {
-            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131230957), new StandardSlidingMenu$9(netflixActivity)));
+            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131230958), new StandardSlidingMenu$9(netflixActivity)));
         }
         if (netflixActivity.showContactUsInSlidingMenu() && netflixActivity.getServiceManager().getVoip() != null && netflixActivity.getServiceManager().getVoip().isEnabled()) {
-            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131231000), new StandardSlidingMenu$10(netflixActivity)));
+            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131231001), new StandardSlidingMenu$10(netflixActivity)));
         }
         else if (Log.isLoggable()) {
             Log.w("StandardSlidingMenu", "Show Contact Us In SlidingMenu: " + netflixActivity.showContactUsInSlidingMenu());
             Log.w("StandardSlidingMenu", "VOIP is null: " + (netflixActivity.getServiceManager().getVoip() == null));
-            final StringBuilder append = new StringBuilder().append("VOIP is enabled: ");
-            boolean enabled = b;
-            if (netflixActivity.getServiceManager().getVoip() != null) {
-                enabled = netflixActivity.getServiceManager().getVoip().isEnabled();
-            }
-            Log.w("StandardSlidingMenu", append.append(enabled).toString());
+            Log.w("StandardSlidingMenu", "VOIP is enabled: " + (netflixActivity.getServiceManager().getVoip() != null && netflixActivity.getServiceManager().getVoip().isEnabled() && b));
         }
         if (netflixActivity.showSignOutInMenu()) {
-            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131231177), new StandardSlidingMenu$11(netflixActivity)));
+            list.add(new StandardSlidingMenu$AppAction(netflixActivity.getString(2131231178), new StandardSlidingMenu$11(netflixActivity)));
         }
         if (Log.isLoggable()) {
             Log.d("StandardSlidingMenu", "App section should exist " + list.size());
@@ -182,16 +171,12 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     }
     
     private View createHomeRow() {
-        final View inflate = this.activity.getLayoutInflater().inflate(2130903279, (ViewGroup)null);
-        (this.homeText = (TextView)inflate.findViewById(2131690036)).setText(2131231086);
-        inflate.setBackgroundResource(2130837930);
+        final View inflate = this.activity.getLayoutInflater().inflate(2130903274, (ViewGroup)null);
+        (this.homeText = (TextView)inflate.findViewById(2131690027)).setText(2131231087);
+        inflate.setBackgroundResource(2130837928);
         inflate.setOnClickListener(this.onHomeClickListener);
-        inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder(this.homeText, inflate.findViewById(2131690037)));
+        inflate.setTag((Object)new StandardSlidingMenu$GenreRowHolder(this.homeText, inflate.findViewById(2131690028)));
         return inflate;
-    }
-    
-    private static Intent createViewAccountIntent(final String s) {
-        return new Intent("android.intent.action.VIEW").setData(Uri.parse("https://www.netflix.com/TermsOfUse"));
     }
     
     private void fetchGenresDataIfReady() {
@@ -212,7 +197,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
     
     private void removeGenreSelectionStyle(final StandardSlidingMenu$GenreRowHolder standardSlidingMenu$GenreRowHolder) {
         ViewUtils.setTextViewToNormal(standardSlidingMenu$GenreRowHolder.tv);
-        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131624126));
+        standardSlidingMenu$GenreRowHolder.tv.setTextColor(this.activity.getResources().getColor(2131624125));
         standardSlidingMenu$GenreRowHolder.selectionIndicator.setVisibility(8);
     }
     
@@ -222,12 +207,25 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
             this.appAdapter = new StandardSlidingMenu$AppListAdapter(actions);
             this.appList.setAdapter((ListAdapter)this.appAdapter);
             this.appList.setOnItemClickListener(this.onAppRowClickListener);
-            this.appTitle.setVisibility(0);
             this.appList.setVisibility(0);
             return;
         }
-        this.appTitle.setVisibility(8);
         this.appList.setVisibility(8);
+    }
+    
+    private void setNotificationsVisible(final boolean b) {
+        if (this.notificationsStub == null) {
+            Log.v("StandardSlidingMenu", "notificationsStub is null - can't set visibility");
+        }
+        if (b) {
+            Log.v("StandardSlidingMenu", "Showing notifications header");
+            this.notificationsStub.setVisibility(0);
+            this.notificationsDivider.setVisibility(0);
+            return;
+        }
+        Log.v("StandardSlidingMenu", "Hiding notifications header");
+        this.notificationsStub.setVisibility(8);
+        this.notificationsDivider.setVisibility(8);
     }
     
     private void showGenreErrorView() {
@@ -386,7 +384,7 @@ public class StandardSlidingMenu implements SlidingMenuAdapter
             imageResource = 17301535;
         }
         else {
-            imageResource = 2130837694;
+            imageResource = 2130837693;
         }
         switchProfilesIcon.setImageResource(imageResource);
     }

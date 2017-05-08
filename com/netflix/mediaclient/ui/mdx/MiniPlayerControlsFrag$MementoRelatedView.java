@@ -82,12 +82,16 @@ class MiniPlayerControlsFrag$MementoRelatedView extends RelativeLayout implement
         this.this$0 = this$0;
         super(context);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        LayoutInflater.from(this.getContext()).inflate(2130903203, (ViewGroup)this, true);
+        LayoutInflater.from(this.getContext()).inflate(2130903198, (ViewGroup)this, true);
     }
     
     private void adjustDimensions() {
         this.getLayoutParams().width = this.this$0.relatedViewWidth;
         this.getLayoutParams().height = this.this$0.relatedViewHeight;
+    }
+    
+    public String getImageUrl(final Video video, final boolean b) {
+        return video.getBoxshotUrl();
     }
     
     public PlayContext getPlayContext() {
@@ -101,10 +105,10 @@ class MiniPlayerControlsFrag$MementoRelatedView extends RelativeLayout implement
         if (trackable != null) {
             this.playContext = new PlayContextImp(trackable, n);
         }
-        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131689995);
+        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131689986);
         if (advancedImageView != null) {
+            final String imageUrl = this.getImageUrl(video, b2);
             final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
-            final String boxshotUrl = video.getBoxshotUrl();
             final IClientLogging$AssetType boxArt = IClientLogging$AssetType.boxArt;
             final String title = video.getTitle();
             final ImageLoader$StaticImgConfig imageLoaderConfig = BrowseExperience.getImageLoaderConfig();
@@ -114,7 +118,7 @@ class MiniPlayerControlsFrag$MementoRelatedView extends RelativeLayout implement
             else {
                 n = 0;
             }
-            imageLoader.showImg(advancedImageView, boxshotUrl, boxArt, title, imageLoaderConfig, true, n);
+            imageLoader.showImg(advancedImageView, imageUrl, boxArt, title, imageLoaderConfig, true, n);
             this.adjustDimensions();
             advancedImageView.setOnClickListener((View$OnClickListener)new MiniPlayerControlsFrag$MementoRelatedView$1(this, video));
         }

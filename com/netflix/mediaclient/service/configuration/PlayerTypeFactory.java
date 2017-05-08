@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.configuration;
 
-import com.netflix.mediaclient.util.NetflixPreference;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.media.JPlayer.AdaptiveMediaDecoderHelper;
 import com.netflix.mediaclient.Log;
@@ -29,6 +28,10 @@ public final class PlayerTypeFactory
         final int androidVersion = AndroidUtils.getAndroidVersion();
         if (Log.isLoggable()) {
             Log.d("nf-playertypefactory", "Crypto factory type (CDM is 2): " + PlayerTypeFactory.cryptoFactoryType);
+        }
+        if (androidVersion >= 19) {
+            Log.d("nf-playertypefactory", "KK and above, Default to JPlayer2");
+            return PlayerType.device12;
         }
         if (androidVersion > 18 && AdaptiveMediaDecoderHelper.isAvcDecoderSupportsAdaptivePlayback()) {
             Log.d("nf-playertypefactory", "JB MR2+, Default to JPlayer2");
@@ -82,18 +85,8 @@ public final class PlayerTypeFactory
     }
     
     private static PlayerType getPlayerTypeFromPreferences(final Context context) {
-        Log.d("nf-playertypefactory", "Check for configuration override override");
-        final int intPref = PreferenceUtils.getIntPref(context, "nflx_player_type", -1);
-        if (intPref < 1) {
-            Log.d("nf-playertypefactory", "Player type was not saved in preferences before, no override.");
-            return null;
-        }
-        final PlayerType playerType = PlayerType.toPlayerType(intPref);
-        if (playerType == null) {
-            Log.e("nf-playertypefactory", "Player not found for type " + intPref);
-            return null;
-        }
-        return playerType;
+        Log.d("nf-playertypefactory", "Player type was not saved in preferences before, no override.");
+        return null;
     }
     
     public static PlayerType getXalPlayer() {
@@ -202,83 +195,6 @@ public final class PlayerTypeFactory
         }
     }
     
-    public static void setPlayerType(final Context context, final PlayerType currentType) {
-        // monitorenter(PlayerTypeFactory.class)
-        Label_0019: {
-            if (currentType != null) {
-                break Label_0019;
-            }
-            while (true) {
-                try {
-                    Log.w("nf-playertypefactory", "Type is null, do nothing!");
-                    return;
-                    // iftrue(Label_0050:, !Log.isLoggable())
-                Label_0050:
-                    while (true) {
-                        Log.d("nf-playertypefactory", "Updating player type " + currentType);
-                        break Label_0050;
-                        continue;
-                    }
-                    // iftrue(Label_0074:, isValidPlayerType(currentType))
-                    Log.e("nf-playertypefactory", "Invalid player type for this device. We should never be here!");
-                    return;
-                }
-                finally {
-                }
-                // monitorexit(PlayerTypeFactory.class)
-                Label_0074: {
-                    if (PlayerTypeFactory.currentType != null && PlayerTypeFactory.currentType.getValue() == currentType.getValue()) {
-                        Log.d("nf-playertypefactory", "Already known player type, used for playback currently. Do nothing");
-                        return;
-                    }
-                }
-                if (Log.isLoggable()) {
-                    Log.d("nf-playertypefactory", "Saving to persistence new player type " + currentType);
-                }
-                PlayerTypeFactory.currentType = currentType;
-                final Context context2;
-                PreferenceUtils.putIntPref(context2, "nflx_player_type", currentType.getValue());
-            }
-        }
-    }
-    
-    public static void setPlayerType(final NetflixPreference netflixPreference, final PlayerType currentType) {
-        // monitorenter(PlayerTypeFactory.class)
-        Label_0019: {
-            if (currentType != null) {
-                break Label_0019;
-            }
-            while (true) {
-                try {
-                    Log.w("nf-playertypefactory", "Type is null, do nothing!");
-                    return;
-                    // iftrue(Label_0050:, !Log.isLoggable())
-                    Log.d("nf-playertypefactory", "Updating player type " + currentType);
-                    Label_0050: {
-                        Log.e("nf-playertypefactory", "Invalid player type for this device. We should never be here!");
-                    }
-                    // iftrue(Label_0074:, isValidPlayerType(currentType))
-                    return;
-                }
-                finally {
-                }
-                // monitorexit(PlayerTypeFactory.class)
-                Label_0074: {
-                    if (PlayerTypeFactory.currentType != null && PlayerTypeFactory.currentType.getValue() == currentType.getValue()) {
-                        Log.d("nf-playertypefactory", "Already known player type, used for playback currently. Do nothing");
-                        return;
-                    }
-                }
-                if (Log.isLoggable()) {
-                    Log.d("nf-playertypefactory", "Saving to persistence new player type " + currentType);
-                }
-                PlayerTypeFactory.currentType = currentType;
-                final NetflixPreference netflixPreference2;
-                netflixPreference2.putIntPref("nflx_player_type", currentType.getValue());
-            }
-        }
-    }
-    
     public static void setPlayerTypeForQAOverride(final Context context, final PlayerType currentType) {
         // monitorenter(PlayerTypeFactory.class)
         Label_0019: {
@@ -289,21 +205,17 @@ public final class PlayerTypeFactory
                 try {
                     Log.w("nf-playertypefactory", "setPlayerTypeForQAOverride: Type is null, do nothing!");
                     return;
+                    // iftrue(Label_0050:, !Log.isLoggable())
+                Label_0050:
                     while (true) {
-                        Block_6: {
-                            Block_7: {
-                                break Block_7;
-                                break Block_6;
-                            }
-                            Log.e("nf-playertypefactory", "setPlayerTypeForQAOverride: Invalid player type for this device. We should never be here!");
-                            return;
-                        }
                         Log.d("nf-playertypefactory", "setPlayerTypeForQAOverride: Updating player type " + currentType);
+                        break Label_0050;
                         continue;
                     }
+                    // iftrue(Label_0074:, isValidPlayerType(currentType))
+                    Log.e("nf-playertypefactory", "setPlayerTypeForQAOverride: Invalid player type for this device. We should never be here!");
+                    return;
                 }
-                // iftrue(Label_0074:, isValidPlayerType(currentType))
-                // iftrue(Label_0050:, !Log.isLoggable())
                 finally {
                 }
                 // monitorexit(PlayerTypeFactory.class)
@@ -320,46 +232,6 @@ public final class PlayerTypeFactory
                 final Context context2;
                 PreferenceUtils.putIntPref(context2, "nflx_player_type_qa", currentType.getValue());
             }
-        }
-    }
-    
-    public static void updateDevicePlayerType(final Context context, final String s) {
-        // monitorenter(PlayerTypeFactory.class)
-        Label_0032: {
-            if (s == null) {
-                break Label_0032;
-            }
-            try {
-                if (PlayerType.toPlayerType(Integer.parseInt(s)) != null) {
-                    setPlayerType(context, PlayerType.toPlayerType(Integer.parseInt(s)));
-                }
-                else {
-                    clearRecords(context);
-                }
-            }
-            finally {
-            }
-            // monitorexit(PlayerTypeFactory.class)
-        }
-    }
-    
-    public static void updateDevicePlayerType(final NetflixPreference netflixPreference, final String s) {
-        // monitorenter(PlayerTypeFactory.class)
-        Label_0032: {
-            if (s == null) {
-                break Label_0032;
-            }
-            try {
-                if (PlayerType.toPlayerType(Integer.parseInt(s)) != null) {
-                    setPlayerType(netflixPreference, PlayerType.toPlayerType(Integer.parseInt(s)));
-                }
-                else {
-                    netflixPreference.removePref("nflx_player_type");
-                }
-            }
-            finally {
-            }
-            // monitorexit(PlayerTypeFactory.class)
         }
     }
 }

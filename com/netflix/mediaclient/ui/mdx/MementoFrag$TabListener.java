@@ -67,16 +67,16 @@ class MementoFrag$TabListener implements TabLayout$OnTabSelectedListener
     
     @Override
     public void onTabSelected(final TabLayout$Tab pagerPositionOnTabSelect) {
-        pagerPositionOnTabSelect.getCustomView().findViewById(2131689996).setVisibility(0);
-        final TextView textView = (TextView)pagerPositionOnTabSelect.getCustomView().findViewById(2131689997);
+        pagerPositionOnTabSelect.getCustomView().findViewById(2131689987).setVisibility(0);
+        final TextView textView = (TextView)pagerPositionOnTabSelect.getCustomView().findViewById(2131689988);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
         this.setPagerPositionOnTabSelect(pagerPositionOnTabSelect);
         if (this.this$0.isActivityValid()) {
-            if (this.this$0.getResources().getString(2131231052).compareToIgnoreCase(textView.getText().toString()) == 0) {
+            if (this.this$0.getResources().getString(2131231053).compareToIgnoreCase(textView.getText().toString()) == 0) {
                 UIViewLogUtils.reportUIViewCommand((Context)this.this$0.getActivity(), UIViewLogging$UIViewCommandName.mementoTabCast, IClientLogging$ModalView.memento, this.this$0.getNetflixActivity().getDataContext());
                 return;
             }
-            if (this.this$0.getResources().getString(2131231054).compareToIgnoreCase(textView.getText().toString()) == 0) {
+            if (this.this$0.getResources().getString(2131231055).compareToIgnoreCase(textView.getText().toString()) == 0) {
                 UIViewLogUtils.reportUIViewCommand((Context)this.this$0.getActivity(), UIViewLogging$UIViewCommandName.mementoTabRelated, IClientLogging$ModalView.memento, this.this$0.getNetflixActivity().getDataContext());
             }
         }
@@ -84,7 +84,7 @@ class MementoFrag$TabListener implements TabLayout$OnTabSelectedListener
     
     @Override
     public void onTabUnselected(final TabLayout$Tab tabLayout$Tab) {
-        tabLayout$Tab.getCustomView().findViewById(2131689996).setVisibility(4);
-        ((TextView)tabLayout$Tab.getCustomView().findViewById(2131689997)).setTypeface(Typeface.DEFAULT);
+        tabLayout$Tab.getCustomView().findViewById(2131689987).setVisibility(4);
+        ((TextView)tabLayout$Tab.getCustomView().findViewById(2131689988)).setTypeface(Typeface.DEFAULT);
     }
 }

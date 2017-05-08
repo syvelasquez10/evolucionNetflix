@@ -4,14 +4,16 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class Video$KubrickSummary implements JsonPopulator
+public class Video$KubrickSummary implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "KubrickSummary";
     public String certification;
@@ -168,5 +170,62 @@ public class Video$KubrickSummary implements JsonPopulator
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Log.isLoggable()) {
+            Log.v("KubrickSummary", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "year": {
+                this.year = jsonParser.getValueAsInt();
+                break;
+            }
+            case "narrative": {
+                this.narrative = jsonParser.getValueAsString();
+                break;
+            }
+            case "certification": {
+                this.certification = jsonParser.getValueAsString();
+                break;
+            }
+            case "runtime": {
+                this.runtime = jsonParser.getValueAsInt();
+                break;
+            }
+            case "seasonCount": {
+                this.seasonCount = jsonParser.getValueAsInt();
+                break;
+            }
+            case "storyImgUrl": {
+                this.storyImgUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "horzDispUrl": {
+                this.horzDispUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "isHd": {
+                this.isHd = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "predictedRating": {
+                this.predictedRating = (float)jsonParser.getValueAsDouble();
+                break;
+            }
+            case "titleUrl": {
+                this.titleUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "seasonNumLabel": {
+                this.seasonNumLabel = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return true;
     }
 }

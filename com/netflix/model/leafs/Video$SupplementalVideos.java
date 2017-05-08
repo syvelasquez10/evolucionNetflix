@@ -4,13 +4,15 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class Video$SupplementalVideos implements JsonPopulator
+public class Video$SupplementalVideos implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "SupplementalVideos";
     public String defaultTrailer;
@@ -27,6 +29,18 @@ public class Video$SupplementalVideos implements JsonPopulator
                 this.defaultTrailer = value.getAsString();
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("SupplementalVideos", "Populating with: " + jsonParser);
+        }
+        if (jsonParser != null && "id".equalsIgnoreCase(s)) {
+            this.defaultTrailer = jsonParser.getValueAsString();
+            return true;
+        }
+        return false;
     }
     
     @Override

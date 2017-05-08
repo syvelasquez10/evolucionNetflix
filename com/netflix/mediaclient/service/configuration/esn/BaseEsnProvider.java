@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.configuration.esn;
 
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.service.configuration.crypto.CryptoProvider;
 import java.util.Locale;
 import java.io.Serializable;
 import java.util.UUID;
@@ -38,6 +39,7 @@ public abstract class BaseEsnProvider implements EsnProvider
     protected String fesn;
     protected String fesn2;
     protected String fesnModelId;
+    protected String mEsnPrefix;
     protected String modelId;
     protected String nrdpDeviceModel;
     
@@ -383,8 +385,19 @@ public abstract class BaseEsnProvider implements EsnProvider
     
     protected abstract String findModelId();
     
+    protected void generateEsnPrefix() {
+        final int index = BaseEsnProvider.ESN_PREFIX.indexOf("-");
+        if (index > 0) {
+            this.mEsnPrefix = BaseEsnProvider.ESN_PREFIX.substring(0, index);
+            return;
+        }
+        this.mEsnPrefix = BaseEsnProvider.ESN_PREFIX;
+    }
+    
     @Override
     public abstract int getCryptoFactoryType();
+    
+    protected abstract CryptoProvider getCryptoProvider();
     
     @Override
     public String getDeviceId() {
@@ -398,7 +411,7 @@ public abstract class BaseEsnProvider implements EsnProvider
     
     @Override
     public String getESNPrefix() {
-        return BaseEsnProvider.ESN_PREFIX;
+        return this.mEsnPrefix;
     }
     
     @Override
@@ -440,5 +453,6 @@ public abstract class BaseEsnProvider implements EsnProvider
             this.initFutureEsn(context);
         }
         this.initFutureEsn2(context);
+        this.generateEsnPrefix();
     }
 }

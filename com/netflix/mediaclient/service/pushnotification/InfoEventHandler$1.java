@@ -28,7 +28,7 @@ class InfoEventHandler$1 implements Runnable
     public void run() {
         Log.i("nf_push_info", "Refreshing CW via runnable");
         if (InfoEventHandler.mService != null) {
-            InfoEventHandler.mService.getBrowse().refreshCw();
+            InfoEventHandler.mService.getBrowse().refreshCw(false);
         }
     }
 }

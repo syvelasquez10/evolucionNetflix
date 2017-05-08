@@ -217,6 +217,7 @@ public class CircleImageView extends AdvancedImageView
         }
     }
     
+    @Override
     protected void onMeasure(final int n, final int n2) {
         this.setMeasuredDimension(this.measureWidth(n), this.measureHeight(n2));
     }

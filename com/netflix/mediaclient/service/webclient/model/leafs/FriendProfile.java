@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -12,8 +13,9 @@ import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class FriendProfile implements JsonPopulator
+public class FriendProfile implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "FriendProfile";
     private String firstName;
@@ -201,5 +203,38 @@ public class FriendProfile implements JsonPopulator
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("FriendProfile", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "id": {
+                this.id = jsonParser.getValueAsString();
+                break;
+            }
+            case "firstName": {
+                this.firstName = jsonParser.getValueAsString();
+                break;
+            }
+            case "lastName": {
+                this.lastName = jsonParser.getValueAsString();
+                break;
+            }
+            case "imageUrl": {
+                this.imageUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "image145x145": {
+                this.image145x145 = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return true;
     }
 }

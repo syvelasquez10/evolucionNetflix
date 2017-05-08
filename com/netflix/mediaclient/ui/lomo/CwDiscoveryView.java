@@ -40,7 +40,7 @@ public class CwDiscoveryView extends CwView
     
     public void init() {
         super.init();
-        this.progress.setProgressDrawable(ContextCompat.getDrawable(this.getContext(), 2130837648));
+        this.progress.setProgressDrawable(ContextCompat.getDrawable(this.getContext(), 2130837647));
     }
     
     @Override
@@ -58,16 +58,16 @@ public class CwDiscoveryView extends CwView
         }
         this.progress.setProgress(progress);
         ServiceManagerUtils.castPrefetchAndCacheManifestIfEnabled(((NetflixActivity)this.getContext()).getServiceManager(), cwVideo, this.playContext);
-        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131231045), cwVideo.getTitle()));
+        this.info.setContentDescription((CharSequence)String.format(this.getResources().getString(2131231046), cwVideo.getTitle()));
         this.clicker.update((View)this.info, cwVideo, this.img.getPressedStateHandler());
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.setTitle(this.getContext().getString(2131231171, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
+            this.setTitle(this.getContext().getString(2131231172, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
             this.title.setVisibility(0);
         }
         else {
             this.title.setVisibility(8);
         }
-        final String format = String.format(this.getResources().getString(2131230891), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131230893), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView img = this.img;

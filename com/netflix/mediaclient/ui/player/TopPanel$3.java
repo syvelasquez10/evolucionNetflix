@@ -22,7 +22,7 @@ import android.view.View;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import com.netflix.mediaclient.ui.common.LanguageSelector;
-import android.animation.Animator;
+import android.view.ViewPropertyAnimator;
 import android.view.MenuItem;
 import android.view.View$OnClickListener;
 import android.support.v7.app.ActionBar;

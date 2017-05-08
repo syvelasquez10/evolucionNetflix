@@ -20,4 +20,9 @@ public class CoppolaOne extends PersistentConfigurable
     public String getPrefKey() {
         return "persistent_coppola1_experience_key";
     }
+    
+    @Override
+    public String getTestId() {
+        return "6729";
+    }
 }

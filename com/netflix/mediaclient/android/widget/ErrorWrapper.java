@@ -29,9 +29,9 @@ public class ErrorWrapper
         this.showRetry = true;
         this.retryClickListener = (View$OnClickListener)new ErrorWrapper$1(this);
         this.callback = callback;
-        (this.errorGroup = view.findViewById(2131689825)).setVisibility(0);
-        this.errorMsg = (TextView)view.findViewById(2131689826);
-        (this.retryBtn = (Button)this.errorGroup.findViewById(2131689827)).setOnClickListener(this.retryClickListener);
+        (this.errorGroup = view.findViewById(2131689826)).setVisibility(0);
+        this.errorMsg = (TextView)view.findViewById(2131689827);
+        (this.retryBtn = (Button)this.errorGroup.findViewById(2131689828)).setOnClickListener(this.retryClickListener);
         if (view.getContext() instanceof NetflixActivity) {
             final NetflixActivity netflixActivity = (NetflixActivity)view.getContext();
             if (BrowseExperience.showKidsExperience()) {
@@ -44,14 +44,14 @@ public class ErrorWrapper
     private void configureViewsForKidsExperience(final NetflixActivity netflixActivity) {
         final Resources resources = netflixActivity.getResources();
         this.errorMsg.setTextColor(resources.getColor(2131624002));
-        ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131361882);
+        ViewUtils.setTextViewSizeByRes(this.errorMsg, 2131361881);
         ViewUtils.setTextViewToBold(this.errorMsg);
         final ViewGroup$LayoutParams layoutParams = this.retryBtn.getLayoutParams();
-        layoutParams.height = resources.getDimensionPixelSize(2131362156);
-        layoutParams.width = resources.getDimensionPixelSize(2131362157);
+        layoutParams.height = resources.getDimensionPixelSize(2131362158);
+        layoutParams.width = resources.getDimensionPixelSize(2131362159);
         this.retryBtn.setAllCaps(false);
-        this.retryBtn.setBackgroundResource(2130837797);
-        this.retryBtn.setTextColor(resources.getColor(2131624162));
+        this.retryBtn.setBackgroundResource(2130837796);
+        this.retryBtn.setTextColor(resources.getColor(2131624161));
         ViewUtils.setTextViewSizeByRes((TextView)this.retryBtn, 2131361875);
     }
     

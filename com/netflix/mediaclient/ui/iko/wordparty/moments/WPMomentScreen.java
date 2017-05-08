@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.iko.wordparty.moments;
 
+import android.content.res.Resources;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.iko.wordparty.model.WPInteractiveMomentsModel$WPImage;
 import com.netflix.mediaclient.util.ThreadUtils;
 import android.animation.ValueAnimator$AnimatorUpdateListener;
@@ -11,7 +13,7 @@ import android.widget.ImageView$ScaleType;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.ui.iko.BaseInteractiveMomentsManager$PlaybackCompleteListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.util.ViewUtils;
@@ -26,15 +28,14 @@ import java.util.Iterator;
 import android.animation.Animator$AnimatorListener;
 import android.animation.TimeInterpolator;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.iko.BaseInteractiveMomentsManager$PlaybackCompleteListener;
 import com.netflix.mediaclient.ui.iko.wordparty.WPConstants;
 import com.netflix.mediaclient.util.DeviceUtils;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 import android.view.View;
 import com.netflix.mediaclient.ui.iko.wordparty.model.WPInteractiveMomentsModel$WPItem;
 import com.netflix.mediaclient.ui.iko.wordparty.model.WPInteractiveMomentsModel$WPAudio;
-import android.view.ViewGroup;
 import android.os.Handler;
 import java.util.ArrayList;
 import com.netflix.mediaclient.ui.iko.wordparty.model.WPInteractiveMomentsModel$WPMoment;
@@ -43,28 +44,28 @@ import android.view.View$OnClickListener;
 import android.widget.ImageView;
 import android.graphics.Bitmap;
 
-public class WPMomentScreen implements CardClickListener
+public class WPMomentScreen implements CardListener, WPCardVOPlayer
 {
     private static final String TAG = "WPMomentScreen";
-    private final int ANTIALIAS_BORDER;
     private Bitmap bgImageBitmap;
     private ImageView bgView;
-    private WPCardView card1;
-    private WPCardView card2;
-    private WPCardView card3;
-    private WPCardView card4;
+    private WPCardLayout card1;
+    private WPCardLayout card2;
+    private WPCardLayout card3;
+    private WPCardLayout card4;
     private View$OnClickListener cardClickListener;
     private List<Bitmap> cardClosedBitmapList;
     private List<Bitmap> cardOpenBitmapList;
-    private List<WPCardView> cardViewsList;
+    private List<Bitmap> cardVideoMaskBitmapList;
+    private List<WPCardLayout> cardViewsList;
     private boolean cardsEnabled;
-    private List<WPCardView> cardsList;
+    private List<WPCardLayout> cardsList;
     private int colorBlue;
     private int colorGreen;
     private int colorRed;
     private int colorWhite;
     private int colorYellow;
-    private WPCardView currentCard;
+    private WPCardLayout currentCard;
     private WPInteractiveMomentsModel$WPMoment currentMoment;
     private WPMomentScreen$WordPartyMomentState currentState;
     private ArrayList<String> currentlyPlayingAudioList;
@@ -73,7 +74,6 @@ public class WPMomentScreen implements CardClickListener
     private Bitmap fgImageBitmap;
     private ImageView fgView;
     private Handler handler;
-    private ViewGroup ikoContainer;
     private List<WPInteractiveMomentsModel$WPAudio> instructionVOList;
     private List<WPInteractiveMomentsModel$WPAudio> introVOList;
     private boolean isPendingStart;
@@ -91,54 +91,58 @@ public class WPMomentScreen implements CardClickListener
     private List<WPInteractiveMomentsModel$WPAudio> positiveLineVOList;
     private final Interpolator quintOutInterpolator;
     private List<Bitmap> recapBitmapList;
+    private int recapCounter;
     private List<WPInteractiveMomentsModel$WPItem> recapList;
     private List<WPInteractiveMomentsModel$WPAudio> recapVOList;
     private boolean resourcesLoaded;
     private boolean screenBackgrounded;
     private boolean screenPaused;
+    private WPCardLayout standardCard1Reference;
+    private WPCardLayout standardCard2Reference;
+    private WPCardLayout standardCard3Reference;
+    private WPCardLayout standardCard4Reference;
     private List<WPInteractiveMomentsModel$WPAudio> summaryVOList;
     private List<WPInteractiveMomentsModel$WPAudio> timeout2VOList;
     private int timeoutCounter;
     private Runnable timeoutRunnable;
     private List<WPInteractiveMomentsModel$WPAudio> timeoutVOList;
-    private float wallyCardHeight;
-    private float wallyCardWidth;
-    private float wordWallyCardHeightScale;
-    private float wordWallyCardWidthScale;
+    private WPCardLayout wordWallyCard1Reference;
+    private WPCardLayout wordWallyCard2Reference;
+    private WPCardLayout wordWallyCard3Reference;
+    private WPCardLayout wordWallyCard4Reference;
     private ViewGroup wpContainer;
     
     public WPMomentScreen(final WPInteractiveMomentsManager manager) {
         this.currentState = WPMomentScreen$WordPartyMomentState.INTRODUCTION;
-        this.panelList = new ArrayList<View>();
         this.openPanel = true;
         this.currentlyPlayingAudioList = new ArrayList<String>();
-        this.ANTIALIAS_BORDER = 1;
         this.cardOpenBitmapList = new ArrayList<Bitmap>();
         this.recapBitmapList = new ArrayList<Bitmap>();
         this.cardClosedBitmapList = new ArrayList<Bitmap>();
-        this.cardsList = new ArrayList<WPCardView>();
-        this.cardViewsList = new ArrayList<WPCardView>();
+        this.cardVideoMaskBitmapList = new ArrayList<Bitmap>();
+        this.cardsList = new ArrayList<WPCardLayout>();
+        this.cardViewsList = new ArrayList<WPCardLayout>();
         this.handler = new Handler();
         this.timeoutCounter = 0;
-        this.timeoutRunnable = new WPMomentScreen$7(this);
+        this.timeoutRunnable = new WPMomentScreen$6(this);
         this.manager = manager;
         this.deviceWidth = DeviceUtils.getScreenWidthInPixels(manager.getContext());
         this.deviceHeight = DeviceUtils.getScreenHeightInPixels(manager.getContext());
         this.quintOutInterpolator = WPConstants.getQuintOutInterpolator();
     }
     
-    private void animateCardReset(final WPCardView wpCardView) {
+    private void animateCardReset(final WPCardLayout wpCardLayout) {
         if (Log.isLoggable()) {
             Log.d("WPMomentScreen", "animateCardReset: animation start");
         }
-        wpCardView.animate().alpha(0.0f).setInterpolator((TimeInterpolator)this.quintOutInterpolator).setDuration(500L).setListener((Animator$AnimatorListener)new WPMomentScreen$6(this, wpCardView)).start();
+        wpCardLayout.animate().alpha(0.0f).setInterpolator((TimeInterpolator)this.quintOutInterpolator).setDuration(500L).setListener((Animator$AnimatorListener)new WPMomentScreen$5(this, wpCardLayout)).start();
     }
     
-    private void animateContainerReset(final WPCardView wpCardView) {
+    private void animateContainerReset(final WPCardLayout wpCardLayout) {
         if (Log.isLoggable()) {
             Log.d("WPMomentScreen", "animateContainerReset: animation start");
         }
-        this.wpContainer.animate().x(0.0f).y(0.0f).scaleX(1.0f).scaleY(1.0f).rotation(0.0f).setInterpolator((TimeInterpolator)this.quintOutInterpolator).setDuration(500L).setListener((Animator$AnimatorListener)new WPMomentScreen$5(this, wpCardView)).start();
+        this.wpContainer.animate().x(0.0f).y(0.0f).scaleX(1.0f).scaleY(1.0f).rotation(0.0f).setInterpolator((TimeInterpolator)this.quintOutInterpolator).setDuration(500L).setListener((Animator$AnimatorListener)new WPMomentScreen$4(this, wpCardLayout)).start();
     }
     
     private void animationRecapStartValues() {
@@ -148,10 +152,10 @@ public class WPMomentScreen implements CardClickListener
             }
             return;
         }
-        for (final WPCardView wpCardView : this.cardViewsList) {
-            wpCardView.setRotation(0.0f);
-            wpCardView.setRotationY(0.0f);
-            wpCardView.setTranslationX(-this.deviceWidth);
+        for (final WPCardLayout wpCardLayout : this.cardViewsList) {
+            wpCardLayout.setRotation(0.0f);
+            wpCardLayout.setRotationY(0.0f);
+            wpCardLayout.setTranslationX(-this.deviceWidth);
         }
         this.showHideCards(true);
     }
@@ -186,8 +190,21 @@ public class WPMomentScreen implements CardClickListener
             Log.d("WPMomentScreen", "bitmapWithBorder: Adding border to bitmap");
         }
         final Bitmap bitmap2 = Bitmap.createBitmap(bitmap.getWidth() + 2, bitmap.getHeight() + 2, Bitmap$Config.ARGB_8888);
-        new Canvas(bitmap2).drawBitmap(bitmap, 1.0f, 1.0f, (Paint)null);
+        new Canvas(bitmap2).drawBitmap(bitmap, (float)1, (float)1, (Paint)null);
         return new BitmapDrawable(this.manager.getContext().getResources(), bitmap2);
+    }
+    
+    private BitmapDrawable bitmapWithoutBorder(final Bitmap bitmap) {
+        if (bitmap == null) {
+            if (Log.isLoggable()) {
+                Log.d("WPMomentScreen", "bitmapWithoutBorder: received a null bitmap");
+            }
+            return null;
+        }
+        if (Log.isLoggable()) {
+            Log.d("WPMomentScreen", "bitmapWithoutBorder: Creating bitmapDrawable");
+        }
+        return new BitmapDrawable(this.manager.getContext().getResources(), bitmap);
     }
     
     private void cancelCurrentAudioPlaybacks() {
@@ -204,42 +221,56 @@ public class WPMomentScreen implements CardClickListener
         }
     }
     
-    private void cardClickAnimationComplete(final WPCardView wpCardView) {
-        if (wpCardView == null) {
+    private void cardClickAnimationComplete(final WPCardLayout wpCardLayout) {
+        if (wpCardLayout == null) {
             if (Log.isLoggable()) {
                 Log.d("WPMomentScreen", "cardClickAnimationComplete: card is null");
             }
-            return;
-        }
-        if (Log.isLoggable()) {
-            Log.d("WPMomentScreen", "cardClickAnimationComplete: card = " + wpCardView);
-        }
-        if (this.isLearnMoment()) {
-            if (this.cardsList == null || this.cardsList.size() <= 1) {
-                if (Log.isLoggable()) {
-                    Log.d("WPMomentScreen", "animateCardReset: cardsList is empty.");
-                }
-                this.cardsList.remove(wpCardView);
-                this.discardAnimationComplete();
-                return;
-            }
-            this.animateCardReset(wpCardView);
         }
         else {
-            if (this.isRevealMoment()) {
-                this.discardAnimation(wpCardView);
-                return;
+            if (Log.isLoggable()) {
+                Log.d("WPMomentScreen", "cardClickAnimationComplete: card = " + wpCardLayout);
             }
-            this.animateContainerReset(wpCardView);
+            if (!this.isMomentClosed()) {
+                if (this.isLearnMoment()) {
+                    if (this.cardsList == null) {
+                        if (Log.isLoggable()) {
+                            Log.d("WPMomentScreen", "animateCardReset: cardsList is null.");
+                        }
+                        this.discardAnimationComplete();
+                        return;
+                    }
+                    if (this.cardsList.size() <= 1) {
+                        if (Log.isLoggable()) {
+                            Log.d("WPMomentScreen", "animateCardReset: cardsList size=" + this.cardsList.size());
+                        }
+                        this.cardsList.remove(wpCardLayout);
+                        this.discardAnimationComplete();
+                        return;
+                    }
+                    this.animateCardReset(wpCardLayout);
+                }
+                else {
+                    if (this.currentState == WPMomentScreen$WordPartyMomentState.RECAP_ITEMS) {
+                        this.playNextRecapItem();
+                        return;
+                    }
+                    if (this.isRevealMoment()) {
+                        this.discardAnimation(wpCardLayout);
+                        return;
+                    }
+                    this.animateContainerReset(wpCardLayout);
+                }
+            }
         }
     }
     
-    private void discardAnimation(final WPCardView wpCardView) {
+    private void discardAnimation(final WPCardLayout wpCardLayout) {
         if (Log.isLoggable()) {
             Log.d("WPMomentScreen", "discardAnimation: started");
         }
-        this.cardsList.remove(wpCardView);
-        final AnimatorSet cardAnimation = wpCardView.getCardAnimation(this.deviceWidth, 0.0f, 90.0f, 1.0f);
+        this.cardsList.remove(wpCardLayout);
+        final AnimatorSet cardAnimation = wpCardLayout.getCardAnimation(this.deviceWidth, 0.0f, 90.0f, 1.0f);
         final List<Animator> revealCardAnimations = this.getRevealCardAnimations(this.cardsList, false);
         revealCardAnimations.add((Animator)cardAnimation);
         final AnimatorSet set = new AnimatorSet();
@@ -257,8 +288,8 @@ public class WPMomentScreen implements CardClickListener
         this.cardsEnabled = true;
     }
     
-    private void flipCard(final WPCardView wpCardView) {
-        if (wpCardView == null) {
+    private void flipCard(final WPCardLayout wpCardLayout) {
+        if (wpCardLayout == null) {
             if (Log.isLoggable()) {
                 Log.d("WPMomentScreen", "flipCard: card is null");
             }
@@ -270,7 +301,7 @@ public class WPMomentScreen implements CardClickListener
             if (this.cardsEnabled) {
                 this.timeoutCounter = 0;
                 this.startStopTimeoutTimer(false);
-                wpCardView.flip();
+                wpCardLayout.flip();
             }
         }
     }
@@ -296,7 +327,7 @@ public class WPMomentScreen implements CardClickListener
         }
     }
     
-    private List<Animator> getRecapAnimations(final List<WPCardView> list) {
+    private List<Animator> getRecapAnimations(final List<WPCardLayout> list) {
         if (list == null) {
             Log.d("WPMomentScreen", "getRecapAnimations: cardsList is null");
             return null;
@@ -307,19 +338,19 @@ public class WPMomentScreen implements CardClickListener
         final int size = list.size();
         final ArrayList<AnimatorSet> list2 = (ArrayList<AnimatorSet>)new ArrayList<Animator>();
         for (int i = 0; i < size; ++i) {
-            final WPCardView wpCardView = list.get(i);
-            if (wpCardView == null) {
+            final WPCardLayout wpCardLayout = list.get(i);
+            if (wpCardLayout == null) {
                 Log.d("WPMomentScreen", "CardView is null. returning without animation");
                 return null;
             }
-            final AnimatorSet calculateRecapAnimation = wpCardView.calculateRecapAnimation(i, size);
+            final AnimatorSet calculateRecapAnimation = wpCardLayout.calculateRecapAnimation(i, size);
             calculateRecapAnimation.setInterpolator((TimeInterpolator)this.quintOutInterpolator);
             list2.add((Animator)calculateRecapAnimation);
         }
         return (List<Animator>)list2;
     }
     
-    private List<Animator> getRecapEntryAnimations(final List<WPCardView> list) {
+    private List<Animator> getRecapEntryAnimations(final List<WPCardLayout> list) {
         if (list == null) {
             Log.d("WPMomentScreen", "getRecapEntryAnimations: cardsList is null");
             return null;
@@ -330,12 +361,12 @@ public class WPMomentScreen implements CardClickListener
         final int size = list.size();
         final ArrayList<AnimatorSet> list2 = (ArrayList<AnimatorSet>)new ArrayList<Animator>();
         for (int i = 0; i < size; ++i) {
-            final WPCardView wpCardView = list.get(i);
-            if (wpCardView == null) {
+            final WPCardLayout wpCardLayout = list.get(i);
+            if (wpCardLayout == null) {
                 Log.d("TAG", "CardView is null. returning without animation");
                 return null;
             }
-            final AnimatorSet calculateRecapInitAnimation = wpCardView.calculateRecapInitAnimation(i, size);
+            final AnimatorSet calculateRecapInitAnimation = wpCardLayout.calculateRecapInitAnimation(i, size);
             calculateRecapInitAnimation.setStartDelay((long)((size - i) * 200));
             calculateRecapInitAnimation.setInterpolator((TimeInterpolator)this.quintOutInterpolator);
             list2.add((Animator)calculateRecapInitAnimation);
@@ -343,7 +374,7 @@ public class WPMomentScreen implements CardClickListener
         return (List<Animator>)list2;
     }
     
-    private List<Animator> getRecapExitAnimations(final List<WPCardView> list) {
+    private List<Animator> getRecapExitAnimations(final List<WPCardLayout> list) {
         if (list == null) {
             Log.d("WPMomentScreen", "getRecapExitAnimations: cardsList is null");
             return null;
@@ -354,19 +385,19 @@ public class WPMomentScreen implements CardClickListener
         final int size = list.size();
         final ArrayList<AnimatorSet> list2 = (ArrayList<AnimatorSet>)new ArrayList<Animator>();
         for (int i = 0; i < size; ++i) {
-            final WPCardView wpCardView = list.get(i);
-            if (wpCardView == null) {
+            final WPCardLayout wpCardLayout = list.get(i);
+            if (wpCardLayout == null) {
                 Log.d("WPMomentScreen", "CardView is null. returning without animation");
                 return null;
             }
-            final AnimatorSet calculateRecapExitAnimation = wpCardView.calculateRecapExitAnimation(i, size);
+            final AnimatorSet calculateRecapExitAnimation = wpCardLayout.calculateRecapExitAnimation(i, size);
             calculateRecapExitAnimation.setInterpolator((TimeInterpolator)this.quintOutInterpolator);
             list2.add((Animator)calculateRecapExitAnimation);
         }
         return (List<Animator>)list2;
     }
     
-    private List<Animator> getRevealCardAnimations(final List<WPCardView> list, final boolean b) {
+    private List<Animator> getRevealCardAnimations(final List<WPCardLayout> list, final boolean b) {
         if (list == null) {
             Log.d("WPMomentScreen", "getRevealCardAnimations: cardsList is null");
             return null;
@@ -377,12 +408,12 @@ public class WPMomentScreen implements CardClickListener
         final int size = list.size();
         final ArrayList<AnimatorSet> list2 = (ArrayList<AnimatorSet>)new ArrayList<Animator>();
         for (int i = 0; i < size; ++i) {
-            final WPCardView wpCardView = list.get(i);
-            if (wpCardView == null) {
+            final WPCardLayout wpCardLayout = list.get(i);
+            if (wpCardLayout == null) {
                 Log.d("WPMomentScreen", "CardView is null. returning without animation");
                 return null;
             }
-            final AnimatorSet calculateRevealAnimation = wpCardView.calculateRevealAnimation(i, size);
+            final AnimatorSet calculateRevealAnimation = wpCardLayout.calculateRevealAnimation(i, size);
             if (b) {
                 calculateRevealAnimation.setStartDelay((long)(i * 333));
             }
@@ -396,7 +427,7 @@ public class WPMomentScreen implements CardClickListener
         return ViewUtils.getStatusBarHeight(this.manager.getContext());
     }
     
-    private void handleCardClicked(final WPCardView currentCard) {
+    private void handleCardClicked(final WPCardLayout currentCard) {
         if (currentCard == null) {
             if (Log.isLoggable()) {
                 Log.d("WPMomentScreen", "handleCardClicked: card is null");
@@ -486,14 +517,7 @@ public class WPMomentScreen implements CardClickListener
                     else {
                         clientLogging$CompletionReason = IClientLogging$CompletionReason.success;
                     }
-                    String s;
-                    if (this.timeoutCounter >= 2) {
-                        s = "PASSIVE_EXIT";
-                    }
-                    else {
-                        s = "ACTIVE_EXIT";
-                    }
-                    this.manager.reportMomentEnded(clientLogging$CompletionReason, s);
+                    this.manager.reportMomentEnded(clientLogging$CompletionReason);
                     this.manager.hide();
                 }
             }
@@ -517,17 +541,18 @@ public class WPMomentScreen implements CardClickListener
             this.moveToState(wpMomentScreen$WordPartyMomentState);
             return;
         }
-        this.playVO(list.get(n), new WPMomentScreen$13(this, wpMomentScreen$WordPartyMomentState, n, size, list));
+        this.playVO(list.get(n), new WPMomentScreen$12(this, wpMomentScreen$WordPartyMomentState, n, size, list));
     }
     
-    private void playRecapItem(final int n) {
+    private void playNextRecapItem() {
+        final int n = this.recapCounter++;
         if (Log.isLoggable()) {
-            Log.d("WPMomentScreen", "playRecapItem: Counter = " + n);
+            Log.d("WPMomentScreen", "playNextRecapItem: Counter = " + n);
         }
         if (!this.isMomentClosed()) {
             if (this.cardsList == null || this.cardsList.isEmpty()) {
                 if (Log.isLoggable()) {
-                    Log.d("WPMomentScreen", "playRecapItem: cardsList is null or empty");
+                    Log.d("WPMomentScreen", "playNextRecapItem: cardsList is null or empty");
                 }
             }
             else {
@@ -545,25 +570,8 @@ public class WPMomentScreen implements CardClickListener
     }
     
     private void playRecapItems() {
-        this.playRecapItem(0);
-    }
-    
-    private void playVO(final WPInteractiveMomentsModel$WPAudio wpInteractiveMomentsModel$WPAudio, final BaseInteractiveMomentsManager$PlaybackCompleteListener baseInteractiveMomentsManager$PlaybackCompleteListener) {
-        if (Log.isLoggable()) {
-            Log.d("WPMomentScreen", "playVO: invoked");
-        }
-        if (this.isMomentClosed()) {
-            return;
-        }
-        if (wpInteractiveMomentsModel$WPAudio == null || StringUtils.isEmpty(wpInteractiveMomentsModel$WPAudio.getUrl())) {
-            if (Log.isLoggable()) {
-                Log.d("WPMomentScreen", "playVO: audio is null or url is empty");
-            }
-            baseInteractiveMomentsManager$PlaybackCompleteListener.onComplete(null);
-            return;
-        }
-        this.manager.playAudio(wpInteractiveMomentsModel$WPAudio.getUrl(), wpInteractiveMomentsModel$WPAudio.getVolume(), false, baseInteractiveMomentsManager$PlaybackCompleteListener);
-        this.currentlyPlayingAudioList.add(wpInteractiveMomentsModel$WPAudio.getUrl());
+        this.recapCounter = 0;
+        this.playNextRecapItem();
     }
     
     private void playVOList(final List<WPInteractiveMomentsModel$WPAudio> list, final WPMomentScreen$WordPartyMomentState wpMomentScreen$WordPartyMomentState) {
@@ -593,6 +601,7 @@ public class WPMomentScreen implements CardClickListener
         }
         this.releaseBitmapList(this.cardOpenBitmapList);
         this.releaseBitmapList(this.cardClosedBitmapList);
+        this.releaseBitmapList(this.cardVideoMaskBitmapList);
         this.releaseBitmapList(this.recapBitmapList);
     }
     
@@ -600,14 +609,14 @@ public class WPMomentScreen implements CardClickListener
         if (Log.isLoggable()) {
             Log.d("WPMomentScreen", "resetCards: closeCard = " + b);
         }
-        final Iterator<WPCardView> iterator = this.cardViewsList.iterator();
+        final Iterator<WPCardLayout> iterator = this.cardViewsList.iterator();
         while (iterator.hasNext()) {
             iterator.next().reset(b);
         }
     }
     
-    private void scaleUpCard(final WPCardView wpCardView) {
-        if (wpCardView == null) {
+    private void scaleUpCard(final WPCardLayout wpCardLayout) {
+        if (wpCardLayout == null) {
             if (Log.isLoggable()) {
                 Log.d("WPMomentScreen", "scaleUpCard: card is null");
             }
@@ -619,12 +628,12 @@ public class WPMomentScreen implements CardClickListener
             if (this.cardsEnabled) {
                 this.timeoutCounter = 0;
                 this.startStopTimeoutTimer(false);
-                final ObjectAnimator ofPropertyValuesHolder = ObjectAnimator.ofPropertyValuesHolder((Object)wpCardView, new PropertyValuesHolder[] { PropertyValuesHolder.ofFloat(View.SCALE_X, new float[] { wpCardView.getScaleX() * 1.1f }), PropertyValuesHolder.ofFloat(View.SCALE_Y, new float[] { wpCardView.getScaleY() * 1.1f }) });
-                ofPropertyValuesHolder.addListener((Animator$AnimatorListener)new WPMomentScreen$3(this, wpCardView));
+                final ObjectAnimator ofPropertyValuesHolder = ObjectAnimator.ofPropertyValuesHolder((Object)wpCardLayout, new PropertyValuesHolder[] { PropertyValuesHolder.ofFloat(View.SCALE_X, new float[] { wpCardLayout.getScaleX() * 1.1f }), PropertyValuesHolder.ofFloat(View.SCALE_Y, new float[] { wpCardLayout.getScaleY() * 1.1f }) });
+                ofPropertyValuesHolder.addListener((Animator$AnimatorListener)new WPMomentScreen$2(this, wpCardLayout));
                 ofPropertyValuesHolder.setDuration(500L);
                 ofPropertyValuesHolder.setInterpolator((TimeInterpolator)this.quintOutInterpolator);
                 ofPropertyValuesHolder.start();
-                this.onCardClickStart(wpCardView);
+                this.onCardClickStart(wpCardLayout);
             }
         }
     }
@@ -638,10 +647,13 @@ public class WPMomentScreen implements CardClickListener
         else {
             this.currentCard = this.cardsList.get(0);
             if (this.currentCard != null) {
+                if (Log.isLoggable()) {
+                    Log.d("WPMomentScreen", "showCurrentLearnMomentCard: showing currentCard=" + this.currentCard);
+                }
                 this.currentCard.setTranslationX(0.0f);
                 this.currentCard.setTranslationY(0.0f);
                 this.currentCard.setRotation(0.0f);
-                final int cardHeight = this.currentCard.getCardHeight();
+                final int cardHeight = ((WPWordWallyCardLayout)this.currentCard).getCardHeight();
                 final float n = (this.deviceHeight - this.getStatusBarHeight()) * 0.62f / cardHeight;
                 final float translationY = cardHeight * n / 10.0f;
                 this.currentCard.setScaleX(n);
@@ -660,7 +672,7 @@ public class WPMomentScreen implements CardClickListener
         if (Log.isLoggable()) {
             Log.d("WPMomentScreen", "showHideCards: show = " + b);
         }
-        final Iterator<WPCardView> iterator = this.cardsList.iterator();
+        final Iterator<WPCardLayout> iterator = this.cardsList.iterator();
         while (iterator.hasNext()) {
             ViewUtils.setVisibleOrGone((View)iterator.next(), b);
         }
@@ -720,7 +732,7 @@ public class WPMomentScreen implements CardClickListener
         set.playTogether((Collection)this.getRevealCardAnimations(this.cardsList, true));
         set.setInterpolator((TimeInterpolator)this.quintOutInterpolator);
         set.setDuration(1000L);
-        set.addListener((Animator$AnimatorListener)new WPMomentScreen$10(this));
+        set.addListener((Animator$AnimatorListener)new WPMomentScreen$9(this));
         set.start();
     }
     
@@ -736,7 +748,7 @@ public class WPMomentScreen implements CardClickListener
             final int learnMomentPanelColor = this.getLearnMomentPanelColor(i);
             final View view = this.panelList.get(i);
             final ObjectAnimator ofPropertyValuesHolder = ObjectAnimator.ofPropertyValuesHolder((Object)view, new PropertyValuesHolder[] { PropertyValuesHolder.ofFloat(View.ROTATION_Y, new float[] { view.getRotationY() + 180.0f }), PropertyValuesHolder.ofFloat(View.ALPHA, WPConstants.CARD_FLIP_ALPHA_VALUE_LIST) });
-            ofPropertyValuesHolder.addUpdateListener((ValueAnimator$AnimatorUpdateListener)new WPMomentScreen$11(this, b, view, learnMomentPanelColor, i, size, ofPropertyValuesHolder));
+            ofPropertyValuesHolder.addUpdateListener((ValueAnimator$AnimatorUpdateListener)new WPMomentScreen$10(this, b, view, learnMomentPanelColor, i, size, ofPropertyValuesHolder));
             ofPropertyValuesHolder.setDuration(500L);
             ofPropertyValuesHolder.setStartDelay((i + 1) * 166L);
             list.add(ofPropertyValuesHolder);
@@ -744,7 +756,7 @@ public class WPMomentScreen implements CardClickListener
         final AnimatorSet set = new AnimatorSet();
         set.playTogether((Collection)list);
         set.setInterpolator((TimeInterpolator)this.quintOutInterpolator);
-        set.addListener((Animator$AnimatorListener)new WPMomentScreen$12(this, b));
+        set.addListener((Animator$AnimatorListener)new WPMomentScreen$11(this, b));
         set.start();
         this.manager.playPanelShuffleSound();
     }
@@ -774,7 +786,7 @@ public class WPMomentScreen implements CardClickListener
         final AnimatorSet set = new AnimatorSet();
         set.playTogether((Collection)this.getRecapAnimations(this.cardsList));
         set.setInterpolator((TimeInterpolator)this.quintOutInterpolator);
-        set.addListener((Animator$AnimatorListener)new WPMomentScreen$14(this, n));
+        set.addListener((Animator$AnimatorListener)new WPMomentScreen$14(this));
         set.start();
     }
     
@@ -824,17 +836,17 @@ public class WPMomentScreen implements CardClickListener
             final int size = this.cardsList.size();
             final ArrayList<ObjectAnimator> list = new ArrayList<ObjectAnimator>();
             for (int i = 0; i < size; ++i) {
-                final WPCardView wpCardView = this.cardsList.get(i);
-                if (wpCardView == null) {
+                final WPCardLayout wpCardLayout = this.cardsList.get(i);
+                if (wpCardLayout == null) {
                     Log.d("TAG", "CardView is null. returning without animation");
                     return;
                 }
-                list.add(wpCardView.getWiggleAnimation(i));
+                list.add(wpCardLayout.getWiggleAnimation(i));
             }
             final AnimatorSet set = new AnimatorSet();
             set.setDuration(500L);
             set.playTogether((Collection)list);
-            set.addListener((Animator$AnimatorListener)new WPMomentScreen$8(this));
+            set.addListener((Animator$AnimatorListener)new WPMomentScreen$7(this));
             set.setInterpolator((TimeInterpolator)this.quintOutInterpolator);
             set.start();
             this.cardsEnabled = false;
@@ -845,8 +857,8 @@ public class WPMomentScreen implements CardClickListener
         }
     }
     
-    private void zoomInCard(final WPCardView wpCardView) {
-        if (wpCardView == null && Log.isLoggable()) {
+    private void zoomInCard(final WPCardLayout wpCardLayout) {
+        if (wpCardLayout == null && Log.isLoggable()) {
             Log.d("WPMomentScreen", "zoomInCard: card is null");
         }
         if (!this.isMomentClosed()) {
@@ -856,14 +868,14 @@ public class WPMomentScreen implements CardClickListener
             if (this.cardsEnabled) {
                 this.timeoutCounter = 0;
                 this.startStopTimeoutTimer(false);
-                this.wpContainer.setPivotX(wpCardView.getX() + wpCardView.getPivotX());
-                this.wpContainer.setPivotY(wpCardView.getY() + wpCardView.getPivotY());
-                final ObjectAnimator ofPropertyValuesHolder = ObjectAnimator.ofPropertyValuesHolder((Object)this.wpContainer, new PropertyValuesHolder[] { PropertyValuesHolder.ofFloat(View.ROTATION, new float[] { this.wpContainer.getRotation(), -1.0f * wpCardView.getRotation() }), PropertyValuesHolder.ofFloat(View.SCALE_X, new float[] { this.wpContainer.getScaleX(), 2.0f }), PropertyValuesHolder.ofFloat(View.SCALE_Y, new float[] { this.wpContainer.getScaleY(), 2.0f }), PropertyValuesHolder.ofFloat(View.X, new float[] { this.wpContainer.getX(), this.wpContainer.getWidth() / 2 - (wpCardView.getX() + wpCardView.getPivotX()) }), PropertyValuesHolder.ofFloat(View.Y, new float[] { this.wpContainer.getY(), this.wpContainer.getHeight() / 2 - (wpCardView.getY() + wpCardView.getPivotY()) }) });
-                ofPropertyValuesHolder.addListener((Animator$AnimatorListener)new WPMomentScreen$4(this, wpCardView));
+                this.wpContainer.setPivotX(wpCardLayout.getX() + wpCardLayout.getPivotX());
+                this.wpContainer.setPivotY(wpCardLayout.getY() + wpCardLayout.getPivotY());
+                final ObjectAnimator ofPropertyValuesHolder = ObjectAnimator.ofPropertyValuesHolder((Object)this.wpContainer, new PropertyValuesHolder[] { PropertyValuesHolder.ofFloat(View.ROTATION, new float[] { this.wpContainer.getRotation(), -1.0f * wpCardLayout.getRotation() }), PropertyValuesHolder.ofFloat(View.SCALE_X, new float[] { this.wpContainer.getScaleX(), 2.0f }), PropertyValuesHolder.ofFloat(View.SCALE_Y, new float[] { this.wpContainer.getScaleY(), 2.0f }), PropertyValuesHolder.ofFloat(View.X, new float[] { this.wpContainer.getX(), this.wpContainer.getWidth() / 2 - (wpCardLayout.getX() + wpCardLayout.getPivotX()) }), PropertyValuesHolder.ofFloat(View.Y, new float[] { this.wpContainer.getY(), this.wpContainer.getHeight() / 2 - (wpCardLayout.getY() + wpCardLayout.getPivotY()) }) });
+                ofPropertyValuesHolder.addListener((Animator$AnimatorListener)new WPMomentScreen$3(this, wpCardLayout));
                 ofPropertyValuesHolder.setDuration(500L);
                 ofPropertyValuesHolder.setInterpolator((TimeInterpolator)this.quintOutInterpolator);
                 ofPropertyValuesHolder.start();
-                this.onCardClickStart(wpCardView);
+                this.onCardClickStart(wpCardLayout);
             }
         }
     }
@@ -885,6 +897,7 @@ public class WPMomentScreen implements CardClickListener
                 final int size = this.itemList.size();
                 this.cardOpenBitmapList.clear();
                 this.cardClosedBitmapList.clear();
+                this.cardVideoMaskBitmapList.clear();
                 this.recapBitmapList.clear();
                 if (Log.isLoggable()) {
                     Log.d("WPMomentScreen", "configureCards: itemsList size = " + size);
@@ -897,29 +910,35 @@ public class WPMomentScreen implements CardClickListener
                         Log.d("WPMomentScreen", "configureCards: card is null");
                     }
                     else {
-                        Bitmap bitmap = this.manager.getBitmapFromCache(wpInteractiveMomentsModel$WPItem.getCardClosedImage());
+                        Bitmap bitmap = this.manager.getBitmapFromCache(wpInteractiveMomentsModel$WPItem.getCardClosedImage(), false);
                         this.cardClosedBitmapList.add(bitmap);
                         final WPInteractiveMomentsModel$WPImage cardOpenImage = wpInteractiveMomentsModel$WPItem.getCardOpenImage();
                         if (cardOpenImage != null) {
-                            bitmap = this.manager.getBitmapFromCache(cardOpenImage);
+                            bitmap = this.manager.getBitmapFromCache(cardOpenImage, false);
                         }
                         this.cardOpenBitmapList.add(bitmap);
+                        final WPInteractiveMomentsModel$WPImage cardOpenVideoMask = wpInteractiveMomentsModel$WPItem.getCardOpenVideoMask();
+                        Bitmap bitmapFromCache = null;
+                        if (cardOpenVideoMask != null) {
+                            bitmapFromCache = this.manager.getBitmapFromCache(cardOpenVideoMask, false);
+                        }
+                        this.cardVideoMaskBitmapList.add(bitmapFromCache);
                     }
                 }
                 if (this.recapList != null) {
                     for (final WPInteractiveMomentsModel$WPItem wpInteractiveMomentsModel$WPItem2 : this.recapList) {
                         if (wpInteractiveMomentsModel$WPItem2 != null) {
-                            this.recapBitmapList.add(this.manager.getBitmapFromCache(wpInteractiveMomentsModel$WPItem2.getCardClosedImage()));
+                            this.recapBitmapList.add(this.manager.getBitmapFromCache(wpInteractiveMomentsModel$WPItem2.getCardClosedImage(), false));
                         }
                     }
                 }
                 final WPInteractiveMomentsModel$WPImage backgroundImage = wpInteractiveMomentsModel$WPMoment.getBackgroundImage();
                 if (backgroundImage != null) {
-                    this.bgImageBitmap = this.manager.getBitmapFromCache(backgroundImage);
+                    this.bgImageBitmap = this.manager.getBitmapFromCache(backgroundImage, true);
                 }
                 final WPInteractiveMomentsModel$WPImage foregroundImage = wpInteractiveMomentsModel$WPMoment.getForegroundImage();
                 if (foregroundImage != null) {
-                    this.fgImageBitmap = this.manager.getBitmapFromCache(foregroundImage);
+                    this.fgImageBitmap = this.manager.getBitmapFromCache(foregroundImage, true);
                 }
                 if (Log.isLoggable()) {
                     Log.d("WPMomentScreen", "configureCards: resourcesLoaded = true");
@@ -943,42 +962,18 @@ public class WPMomentScreen implements CardClickListener
         this.startStopTimeoutTimer(true);
     }
     
-    public void findViews(final View view) {
-        this.wpContainer = (ViewGroup)view.findViewById(2131690320);
-        this.ikoContainer = (ViewGroup)view.findViewById(2131689840);
-        this.card1 = (WPCardView)view.findViewById(2131690331);
-        this.card2 = (WPCardView)view.findViewById(2131690332);
-        this.card3 = (WPCardView)view.findViewById(2131690333);
-        this.card4 = (WPCardView)view.findViewById(2131690334);
-        ViewUtils.setVisibleOrGone((View)(this.panelContainer = (LinearLayout)view.findViewById(2131690326)), false);
-        this.panel1 = view.findViewById(2131690327);
-        this.panel2 = view.findViewById(2131690328);
-        this.panel3 = view.findViewById(2131690329);
-        this.panel4 = view.findViewById(2131690330);
-        this.bgView = (ImageView)view.findViewById(2131690325);
-        this.fgView = (ImageView)view.findViewById(2131690335);
-        this.cardClickListener = (View$OnClickListener)new WPMomentScreen$9(this);
-        this.cardViewsList.add(this.card1);
-        this.cardViewsList.add(this.card2);
-        this.cardViewsList.add(this.card3);
-        this.cardViewsList.add(this.card4);
-        this.panelList.add(this.panel1);
-        this.panelList.add(this.panel2);
-        this.panelList.add(this.panel3);
-        this.panelList.add(this.panel4);
-        this.colorYellow = this.manager.getContext().getResources().getColor(2131624167);
-        this.colorGreen = this.manager.getContext().getResources().getColor(2131624165);
-        this.colorRed = this.manager.getContext().getResources().getColor(2131624166);
-        this.colorBlue = this.manager.getContext().getResources().getColor(2131624164);
-        this.colorWhite = this.manager.getContext().getResources().getColor(2131624162);
-        for (final WPCardView wpCardView : this.cardViewsList) {
-            wpCardView.setOnClickListener(this.cardClickListener);
-            wpCardView.setCardClickListener(this);
+    public String getCurrentStateNameForLogging() {
+        String s = null;
+        if (this.currentState == WPMomentScreen$WordPartyMomentState.OUTRO) {
+            if (this.timeoutCounter < 2) {
+                return "ACTIVE_EXIT";
+            }
+            s = "PASSIVE_EXIT";
         }
-    }
-    
-    public WPMomentScreen$WordPartyMomentState getCurrentState() {
-        return this.currentState;
+        else if (this.currentState != null) {
+            return this.currentState.name();
+        }
+        return s;
     }
     
     public void hideScreen() {
@@ -988,13 +983,17 @@ public class WPMomentScreen implements CardClickListener
         this.timeoutCounter = 0;
         this.momentClosed = true;
         this.startStopTimeoutTimer(this.isPendingStart = false);
+        for (final WPCardLayout wpCardLayout : this.cardViewsList) {
+            ViewUtils.setVisibleOrGone((View)wpCardLayout, false);
+            wpCardLayout.releaseResources();
+        }
         ViewUtils.setVisibleOrGone((View)this.bgView, false);
         ViewUtils.setVisibleOrGone((View)this.fgView, false);
         ViewUtils.setVisibleOrGone((View)this.panelContainer, false);
-        final Iterator<WPCardView> iterator = this.cardViewsList.iterator();
-        while (iterator.hasNext()) {
-            ViewUtils.setVisibleOrGone((View)iterator.next(), false);
-        }
+        this.card1 = null;
+        this.card2 = null;
+        this.card3 = null;
+        this.card4 = null;
     }
     
     public boolean isLearnMoment() {
@@ -1010,25 +1009,25 @@ public class WPMomentScreen implements CardClickListener
     }
     
     @Override
-    public void onCardClickEnd(final WPCardView wpCardView) {
-        if (wpCardView == null) {
-            if (Log.isLoggable()) {
-                Log.d("WPMomentScreen", "onCardClickEnd: card is null");
-            }
-            return;
-        }
-        if (Log.isLoggable()) {
-            Log.d("WPMomentScreen", "onCardClickEnd: playing VO for card - " + wpCardView);
-        }
-        this.playVO(wpCardView.getAudio(), new WPMomentScreen$1(this, wpCardView));
-    }
-    
-    @Override
-    public void onCardClickStart(final WPCardView wpCardView) {
+    public void onCardClickStart(final WPCardLayout wpCardLayout) {
         if (Log.isLoggable()) {
             Log.d("WPMomentScreen", "onCardClickStart: cardsEnabled = false");
         }
         this.cardsEnabled = false;
+    }
+    
+    @Override
+    public void onCardRevealComplete(final WPCardLayout wpCardLayout) {
+        if (wpCardLayout == null) {
+            if (Log.isLoggable()) {
+                Log.d("WPMomentScreen", "onCardRevealComplete: card is null");
+            }
+            return;
+        }
+        if (Log.isLoggable()) {
+            Log.d("WPMomentScreen", "onCardRevealComplete: calling cardClickAnimationComplete");
+        }
+        this.cardClickAnimationComplete(wpCardLayout);
     }
     
     public void onDestroy() {
@@ -1036,7 +1035,7 @@ public class WPMomentScreen implements CardClickListener
             Log.d("WPMomentScreen", "onDestroy: invoked on PlayerFragment");
         }
         if (this.cardViewsList != null && !this.cardViewsList.isEmpty()) {
-            final Iterator<WPCardView> iterator = this.cardViewsList.iterator();
+            final Iterator<WPCardLayout> iterator = this.cardViewsList.iterator();
             while (iterator.hasNext()) {
                 iterator.next().releaseResources();
             }
@@ -1084,9 +1083,11 @@ public class WPMomentScreen implements CardClickListener
                         return;
                     }
                     if (Log.isLoggable()) {
-                        Log.d("WPMomentScreen", "onStart: Setting cardsEnabled to true");
+                        Log.d("WPMomentScreen", "onStart: calling currentCard.revealCard");
                     }
-                    this.onCardClickEnd(this.currentCard);
+                    if (this.currentCard != null) {
+                        this.currentCard.revealCard();
+                    }
                 }
             }
         }
@@ -1109,7 +1110,27 @@ public class WPMomentScreen implements CardClickListener
         }
     }
     
-    public boolean prepareAndStart(final WPInteractiveMomentsModel$WPMoment currentMoment) {
+    @Override
+    public void playVO(final WPInteractiveMomentsModel$WPAudio wpInteractiveMomentsModel$WPAudio, final BaseInteractiveMomentsManager$PlaybackCompleteListener baseInteractiveMomentsManager$PlaybackCompleteListener) {
+        if (Log.isLoggable()) {
+            Log.d("WPMomentScreen", "playVO: invoked");
+        }
+        if (this.isMomentClosed()) {
+            return;
+        }
+        if (wpInteractiveMomentsModel$WPAudio == null || StringUtils.isEmpty(wpInteractiveMomentsModel$WPAudio.getUrl())) {
+            if (Log.isLoggable()) {
+                Log.d("WPMomentScreen", "playVO: audio is null or url is empty");
+            }
+            baseInteractiveMomentsManager$PlaybackCompleteListener.onComplete(null);
+            return;
+        }
+        this.manager.playAudio(wpInteractiveMomentsModel$WPAudio.getUrl(), wpInteractiveMomentsModel$WPAudio.getVolume(), false, new WPMomentScreen$13(this, baseInteractiveMomentsManager$PlaybackCompleteListener));
+        this.currentlyPlayingAudioList.add(wpInteractiveMomentsModel$WPAudio.getUrl());
+    }
+    
+    public boolean prepareAndStart() {
+        final WPInteractiveMomentsModel$WPMoment currentMoment = this.currentMoment;
         if (currentMoment == null) {
             if (Log.isLoggable()) {
                 Log.d("WPMomentScreen", "prepareAndStart: moment is null");
@@ -1119,8 +1140,6 @@ public class WPMomentScreen implements CardClickListener
         if (Log.isLoggable()) {
             Log.d("WPMomentScreen", "prepareAndStart: moment = " + currentMoment.getSceneType());
         }
-        this.showHideCards(false);
-        this.currentMoment = currentMoment;
         this.momentClosed = false;
         final List<WPInteractiveMomentsModel$WPItem> items = currentMoment.getItems();
         if (Log.isLoggable()) {
@@ -1137,15 +1156,19 @@ public class WPMomentScreen implements CardClickListener
         this.cardsList.clear();
         this.currentlyPlayingAudioList.clear();
         for (int size = items.size(), i = 0; i < size; ++i) {
-            final WPCardView wpCardView = this.cardViewsList.get(i);
+            final WPCardLayout wpCardLayout = this.cardViewsList.get(i);
             final WPInteractiveMomentsModel$WPItem wpInteractiveMomentsModel$WPItem = items.get(i);
             if (wpInteractiveMomentsModel$WPItem != null) {
-                wpCardView.setAudio(wpInteractiveMomentsModel$WPItem.getItemAudio());
+                wpCardLayout.setAudio(wpInteractiveMomentsModel$WPItem.getItemAudio());
+                wpCardLayout.setVideo(wpInteractiveMomentsModel$WPItem.getCardVideo());
             }
-            this.cardsList.add(wpCardView);
+            this.cardsList.add(wpCardLayout);
             if (this.cardOpenBitmapList.size() > i && this.cardClosedBitmapList.size() > i) {
                 final Bitmap bitmap = this.cardClosedBitmapList.get(i);
-                final BitmapDrawable bitmapWithBorder = this.bitmapWithBorder(this.cardOpenBitmapList.get(i));
+                final Bitmap bitmap2 = this.cardOpenBitmapList.get(i);
+                final Bitmap bitmap3 = this.cardVideoMaskBitmapList.get(i);
+                final BitmapDrawable bitmapWithBorder = this.bitmapWithBorder(bitmap2);
+                final BitmapDrawable bitmapWithoutBorder = this.bitmapWithoutBorder(bitmap3);
                 BitmapDrawable bitmapWithBorder2;
                 if ("REVEAL".equalsIgnoreCase(currentMoment.getSceneType())) {
                     bitmapWithBorder2 = this.bitmapWithBorder(bitmap);
@@ -1153,9 +1176,10 @@ public class WPMomentScreen implements CardClickListener
                 else {
                     bitmapWithBorder2 = bitmapWithBorder;
                 }
-                wpCardView.setDrawables(bitmapWithBorder2, bitmapWithBorder);
+                wpCardLayout.setDrawables(bitmapWithBorder2, bitmapWithBorder, bitmapWithoutBorder);
             }
         }
+        this.showHideCards(false);
         if (this.isLearnMoment() && this.panelList != null) {
             for (int j = 0; j < this.panelList.size(); ++j) {
                 this.panelList.get(j).setBackgroundColor(this.getLearnMomentPanelColor(j));
@@ -1178,7 +1202,7 @@ public class WPMomentScreen implements CardClickListener
             Log.d("WPMomentScreen", "prepareAndStartIfPending: is pending start? = " + this.isPendingStart);
         }
         if (this.isPendingStart) {
-            this.handler.post((Runnable)new WPMomentScreen$2(this));
+            this.handler.post((Runnable)new WPMomentScreen$1(this));
         }
     }
     
@@ -1189,21 +1213,125 @@ public class WPMomentScreen implements CardClickListener
         if (this.recapList != null && !this.recapList.isEmpty()) {
             this.cardsList.clear();
             for (int i = 0; i < this.recapList.size(); ++i) {
-                final WPCardView wpCardView = this.cardViewsList.get(i);
+                final WPCardLayout wpCardLayout = this.cardViewsList.get(i);
                 final WPInteractiveMomentsModel$WPItem wpInteractiveMomentsModel$WPItem = this.recapList.get(i);
                 if (wpInteractiveMomentsModel$WPItem != null) {
-                    wpCardView.setAudio(wpInteractiveMomentsModel$WPItem.getRecapAudio());
+                    wpCardLayout.setAudio(wpInteractiveMomentsModel$WPItem.getRecapAudio());
                 }
-                this.cardsList.add(wpCardView);
+                this.cardsList.add(wpCardLayout);
                 if (this.recapBitmapList.size() <= i || this.cardClosedBitmapList.size() <= i) {
                     return false;
                 }
                 final BitmapDrawable bitmapWithBorder = this.bitmapWithBorder(this.recapBitmapList.get(i));
-                wpCardView.setDrawables(bitmapWithBorder, bitmapWithBorder);
+                wpCardLayout.setDrawables(bitmapWithBorder, bitmapWithBorder, this.bitmapWithoutBorder(this.cardVideoMaskBitmapList.get(i)));
             }
             return true;
         }
         return false;
+    }
+    
+    public void setInteractiveMomentAndFindViewsForMoment(final WPInteractiveMomentsModel$WPMoment currentMoment, final View view) {
+        this.currentMoment = currentMoment;
+        if (this.wpContainer == null) {
+            this.wpContainer = (ViewGroup)view.findViewById(2131690311);
+        }
+        if (this.isLearnMoment()) {
+            WPCardLayout wordWallyCard1Reference;
+            if ((wordWallyCard1Reference = this.wordWallyCard1Reference) == null) {
+                wordWallyCard1Reference = (WPWordWallyCardLayout)view.findViewById(2131690326);
+                this.wordWallyCard1Reference = wordWallyCard1Reference;
+            }
+            this.card1 = wordWallyCard1Reference;
+            WPCardLayout wordWallyCard2Reference;
+            if ((wordWallyCard2Reference = this.wordWallyCard2Reference) == null) {
+                wordWallyCard2Reference = (WPWordWallyCardLayout)view.findViewById(2131690327);
+                this.wordWallyCard2Reference = wordWallyCard2Reference;
+            }
+            this.card2 = wordWallyCard2Reference;
+            WPCardLayout wordWallyCard3Reference;
+            if ((wordWallyCard3Reference = this.wordWallyCard3Reference) == null) {
+                wordWallyCard3Reference = (WPWordWallyCardLayout)view.findViewById(2131690328);
+                this.wordWallyCard3Reference = wordWallyCard3Reference;
+            }
+            this.card3 = wordWallyCard3Reference;
+            WPCardLayout wordWallyCard4Reference;
+            if ((wordWallyCard4Reference = this.wordWallyCard4Reference) == null) {
+                wordWallyCard4Reference = (WPWordWallyCardLayout)view.findViewById(2131690329);
+                this.wordWallyCard4Reference = wordWallyCard4Reference;
+            }
+            this.card4 = wordWallyCard4Reference;
+        }
+        else {
+            WPCardLayout standardCard1Reference;
+            if ((standardCard1Reference = this.standardCard1Reference) == null) {
+                standardCard1Reference = (WPStandardCardLayout)view.findViewById(2131690322);
+                this.standardCard1Reference = standardCard1Reference;
+            }
+            this.card1 = standardCard1Reference;
+            WPCardLayout standardCard2Reference;
+            if ((standardCard2Reference = this.standardCard2Reference) == null) {
+                standardCard2Reference = (WPStandardCardLayout)view.findViewById(2131690323);
+                this.standardCard2Reference = standardCard2Reference;
+            }
+            this.card2 = standardCard2Reference;
+            WPCardLayout standardCard3Reference;
+            if ((standardCard3Reference = this.standardCard3Reference) == null) {
+                standardCard3Reference = (WPStandardCardLayout)view.findViewById(2131690324);
+                this.standardCard3Reference = standardCard3Reference;
+            }
+            this.card3 = standardCard3Reference;
+            WPCardLayout standardCard4Reference;
+            if ((standardCard4Reference = this.standardCard4Reference) == null) {
+                standardCard4Reference = (WPStandardCardLayout)view.findViewById(2131690325);
+                this.standardCard4Reference = standardCard4Reference;
+            }
+            this.card4 = standardCard4Reference;
+        }
+        if (this.panelContainer == null) {
+            this.panelContainer = (LinearLayout)view.findViewById(2131690317);
+        }
+        ViewUtils.setVisibleOrGone((View)this.panelContainer, false);
+        if (this.panel1 == null) {
+            this.panel1 = view.findViewById(2131690318);
+        }
+        if (this.panel2 == null) {
+            this.panel2 = view.findViewById(2131690319);
+        }
+        if (this.panel3 == null) {
+            this.panel3 = view.findViewById(2131690320);
+        }
+        if (this.panel4 == null) {
+            this.panel4 = view.findViewById(2131690321);
+        }
+        if (this.bgView == null) {
+            this.bgView = (ImageView)view.findViewById(2131690316);
+        }
+        if (this.fgView == null) {
+            this.fgView = (ImageView)view.findViewById(2131690330);
+        }
+        this.cardClickListener = (View$OnClickListener)new WPMomentScreen$8(this);
+        this.cardViewsList.clear();
+        this.cardViewsList.add(this.card1);
+        this.cardViewsList.add(this.card2);
+        this.cardViewsList.add(this.card3);
+        this.cardViewsList.add(this.card4);
+        if (this.panelList == null) {
+            (this.panelList = new ArrayList<View>()).add(this.panel1);
+            this.panelList.add(this.panel2);
+            this.panelList.add(this.panel3);
+            this.panelList.add(this.panel4);
+        }
+        final Resources resources = this.manager.getContext().getResources();
+        this.colorYellow = resources.getColor(2131624166);
+        this.colorGreen = resources.getColor(2131624164);
+        this.colorRed = resources.getColor(2131624165);
+        this.colorBlue = resources.getColor(2131624163);
+        this.colorWhite = resources.getColor(2131624161);
+        for (final WPCardLayout wpCardLayout : this.cardViewsList) {
+            wpCardLayout.setOnClickListener(this.cardClickListener);
+            wpCardLayout.setCardListener(this);
+            wpCardLayout.setVOPlayer(this);
+        }
     }
     
     public void start() {

@@ -28,16 +28,14 @@ import android.view.ViewTreeObserver$OnPreDrawListener;
 class DiscoveryPage$2 implements ViewTreeObserver$OnPreDrawListener
 {
     final /* synthetic */ DiscoveryPage this$0;
-    final /* synthetic */ int val$page;
     
-    DiscoveryPage$2(final DiscoveryPage this$0, final int val$page) {
+    DiscoveryPage$2(final DiscoveryPage this$0) {
         this.this$0 = this$0;
-        this.val$page = val$page;
     }
     
     public boolean onPreDraw() {
         if (Log.isLoggable()) {
-            Log.i("DiscoveryPage", "CwDiscoveryView height (" + this.val$page + ") -> " + this.this$0.playableView.getLayoutParams().height);
+            Log.i("DiscoveryPage", "CwDiscoveryView height  -> " + this.this$0.playableView.getMeasuredWidth());
         }
         this.this$0.playableView.getLayoutParams().height = (int)(this.this$0.playableView.getMeasuredWidth() * 0.5625f);
         this.this$0.playableView.getViewTreeObserver().removeOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)this);

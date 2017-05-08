@@ -468,34 +468,26 @@ public final class GooglePlayServicesUtil
                 Label_0028: {
                     return b2;
                 }
-                // iftrue(Label_0028:, packagesForUid == null)
-                // iftrue(Label_0028:, s == null)
-                // iftrue(Label_0028:, n >= packagesForUid.length)
-                Block_6: {
-                    String[] packagesForUid;
-                    Label_0055:Block_4_Outer:
+            Label_0055_Outer:
+                while (true) {
+                    b2 = b;
+                    n = 0;
                     while (true) {
-                        while (true) {
-                            while (true) {
-                                n = 0;
-                                break Label_0055;
-                                b2 = b;
-                                continue Block_4_Outer;
-                            }
-                            packagesForUid = context.getPackageManager().getPackagesForUid(n);
-                            b2 = b;
-                            continue;
-                        }
                         b2 = b;
-                        break Block_6;
+                        return true;
                         Label_0076:
                         ++n;
-                        continue Label_0055;
+                        continue;
                     }
+                    final String[] packagesForUid = context.getPackageManager().getPackagesForUid(n);
+                    b2 = b;
+                    continue Label_0055_Outer;
                 }
-                // iftrue(Label_0076:, !s.equals((Object)packagesForUid[n]))
-                return true;
             }
+            // iftrue(Label_0028:, packagesForUid == null)
+            // iftrue(Label_0028:, n >= packagesForUid.length)
+            // iftrue(Label_0076:, !s.equals((Object)packagesForUid[n]))
+            // iftrue(Label_0028:, s == null)
             catch (SecurityException ex) {
                 return false;
             }

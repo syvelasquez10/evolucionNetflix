@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.android.widget;
 
-import android.graphics.drawable.Drawable;
 import android.graphics.PorterDuff$Mode;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -15,6 +14,8 @@ import android.annotation.SuppressLint;
 import android.view.ViewGroup$LayoutParams;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import com.netflix.mediaclient.Log;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.ActionBar;
@@ -43,6 +44,18 @@ public class NetflixActionBar
         this.setToolBarAsActionBar(netflixActivity);
         this.init(netflixActivity, hasUpAction);
         this.findHomeView();
+    }
+    
+    private void applyUpButtonTint() {
+        if (this.toolbar != null) {
+            final Drawable navigationIcon = this.toolbar.getNavigationIcon();
+            if (Log.isLoggable()) {
+                Log.v("NetflixActionBar", "Applying tint to navIcon: " + navigationIcon);
+            }
+            if (navigationIcon != null) {
+                DrawableCompat.setTint(navigationIcon, -1);
+            }
+        }
     }
     
     private void attachToolBarToViewHierarchy() {
@@ -186,6 +199,9 @@ public class NetflixActionBar
         this.hasUpAction = b;
         this.systemActionBar.setDisplayHomeAsUpEnabled(b);
         this.findHomeView();
+        if (b) {
+            this.applyUpButtonTint();
+        }
     }
     
     public void setLogoType(final NetflixActionBar$LogoType netflixActionBar$LogoType) {
@@ -224,10 +240,10 @@ public class NetflixActionBar
         final Toolbar toolbar = this.toolbar;
         int navigationIcon;
         if (b) {
-            navigationIcon = 2130837718;
+            navigationIcon = 2130837717;
         }
         else {
-            navigationIcon = 2130837716;
+            navigationIcon = 2130837715;
         }
         toolbar.setNavigationIcon(navigationIcon);
     }

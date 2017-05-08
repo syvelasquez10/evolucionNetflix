@@ -61,7 +61,6 @@ public class Crittercism
             }
         Label_0097_Outer:
             while (true) {
-            Label_0097:
                 while (true) {
                     ax c;
                     try {
@@ -80,18 +79,14 @@ public class Crittercism
                     }
                     catch (ThreadDeath threadDeath) {
                         throw threadDeath;
-                        // iftrue(Label_0142:, Build$VERSION.SDK_INT >= 14)
-                        long nanoTime;
-                        while (true) {
-                            dw.b("Crittercism is not supported for Android API less than 14 (ICS).");
-                            break Label_0097;
-                            nanoTime = System.nanoTime();
-                            c = ax.C();
-                            continue Label_0097_Outer;
-                        }
-                        nanoTime = (System.nanoTime() - nanoTime) / 1000000L;
+                        long nanoTime = (System.nanoTime() - nanoTime) / 1000000L;
                         dw.d("Crittercism finished initializing in " + nanoTime + "ms");
                         return;
+                        nanoTime = System.nanoTime();
+                        c = ax.C();
+                        // iftrue(Label_0142:, Build$VERSION.SDK_INT >= 14)
+                        dw.b("Crittercism is not supported for Android API less than 14 (ICS).");
+                        continue;
                     }
                     catch (Throwable t2) {
                         dw.b(t2);
@@ -109,10 +104,10 @@ public class Crittercism
                     c.t = t;
                     if (c.g.a()) {
                         dw.d("User opted out. Not initializing Crittercism");
-                        continue Label_0097;
+                        continue;
                     }
                     c.D();
-                    continue Label_0097;
+                    continue;
                 }
             }
         }

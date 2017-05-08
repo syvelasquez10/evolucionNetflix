@@ -66,10 +66,10 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         this.mDefaultsInitiated = new AtomicBoolean(false);
         this.mDoNotDraw = (ViewTreeObserver$OnPreDrawListener)new EnhancedSubtitleManager$1(this);
         if (playerFragment.getNetflixActivity().isTablet()) {
-            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131362246);
+            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131362248);
         }
         else {
-            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131362244);
+            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131362246);
         }
         this.mTransparent = playerFragment.getActivity().getResources().getColor(17170445);
     }

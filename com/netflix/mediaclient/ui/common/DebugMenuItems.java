@@ -28,7 +28,7 @@ public class DebugMenuItems
     }
     
     private void addBarkerBars(final Menu menu) {
-        menu.add((CharSequence)"Show Barker Bars").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$18(this));
+        menu.add((CharSequence)"Show Barker Bars").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$20(this));
     }
     
     private void addCrashItem(final Menu menu) {
@@ -78,6 +78,14 @@ public class DebugMenuItems
         menu.add((CharSequence)"Make refreshLolomo Remote Call").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$10(this));
     }
     
+    private void addResetABConfigData(final Menu menu) {
+        menu.add((CharSequence)"Request config data").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$19(this));
+    }
+    
+    private void addRunPrefetchLolomoSchedulerJob(final Menu menu) {
+        menu.add((CharSequence)"Run Prefetch Lolomo JobScheduler").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$18(this));
+    }
+    
     private void addSendCwRefreshBroadcast(final Menu menu) {
         menu.add((CharSequence)"Send Cw Refresh Broadcast").setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new DebugMenuItems$7(this));
     }
@@ -115,6 +123,8 @@ public class DebugMenuItems
     }
     
     public void addItems(final Menu menu) {
+        this.addResetABConfigData(menu);
+        this.addRunPrefetchLolomoSchedulerJob(menu);
         this.addBarkerBars(menu);
         this.addDumpPerfData(menu);
         this.addLaunchNotificationsActivity(menu);

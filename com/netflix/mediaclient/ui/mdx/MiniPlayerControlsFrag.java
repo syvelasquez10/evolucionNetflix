@@ -129,9 +129,9 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
     }
     
     private void findViews(final View view) {
-        this.relatedRecyclerView = (RecyclerView)view.findViewById(2131690006);
-        this.relatedGridTitle = (TextView)view.findViewById(2131690005);
-        this.relatedGridGroup = view.findViewById(2131690004);
+        this.relatedRecyclerView = (RecyclerView)view.findViewById(2131689997);
+        this.relatedGridTitle = (TextView)view.findViewById(2131689996);
+        this.relatedGridGroup = view.findViewById(2131689995);
     }
     
     private void hideDialogFragmentIfNecessary() {
@@ -146,7 +146,7 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
         if (this.isActivityValid()) {
             final FragmentManager fragmentManager = this.getFragmentManager();
             if (fragmentManager != null) {
-                final MementoFrag mementoFrag = (MementoFrag)fragmentManager.findFragmentById(2131690002);
+                final MementoFrag mementoFrag = (MementoFrag)fragmentManager.findFragmentById(2131689993);
                 if (mementoFrag != null) {
                     mementoFrag.hideLoading();
                 }
@@ -268,7 +268,7 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
         this.log("Updating metadata: " + this.currentVideo + ", hash: " + this.currentVideo.hashCode());
         if (this.currentVideo.getType() == VideoType.EPISODE) {
             this.views.updateTitleText(this.currentVideo.getPlayable().getParentTitle());
-            this.views.updateSubtitleText(this.activity.getString(2131231061, new Object[] { this.currentVideo.getPlayable().getSeasonAbbrSeqLabel(), this.currentVideo.getPlayable().getEpisodeNumber(), this.currentVideo.getTitle() }));
+            this.views.updateSubtitleText(this.activity.getString(2131231062, new Object[] { this.currentVideo.getPlayable().getSeasonAbbrSeqLabel(), this.currentVideo.getPlayable().getEpisodeNumber(), this.currentVideo.getTitle() }));
         }
         else {
             this.views.updateTitleText(this.currentVideo.getTitle());
@@ -314,12 +314,12 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
         else {
             this.log("Video is not instance of EpisodeDetails");
         }
-        final MementoFrag mementoFrag = (MementoFrag)this.getFragmentManager().findFragmentById(2131690002);
+        final MementoFrag mementoFrag = (MementoFrag)this.getFragmentManager().findFragmentById(2131689993);
         if (mementoFrag != null) {
             mementoFrag.setVideoId(this.currentVideo.getPlayable().getParentId());
             mementoFrag.fetchData();
         }
-        final PostPlayFrag postPlayFrag = (PostPlayFrag)this.getFragmentManager().findFragmentById(2131690003);
+        final PostPlayFrag postPlayFrag = (PostPlayFrag)this.getFragmentManager().findFragmentById(2131689994);
         if (postPlayFrag != null) {
             postPlayFrag.setVideo(this.currentVideo);
         }
@@ -445,7 +445,7 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
             this.relatedGridGroup.startAnimation((Animation)alphaAnimation);
             return true;
         }
-        final PostPlayFrag postPlayFrag = (PostPlayFrag)this.getFragmentManager().findFragmentById(2131690003);
+        final PostPlayFrag postPlayFrag = (PostPlayFrag)this.getFragmentManager().findFragmentById(2131689994);
         if (postPlayFrag != null && postPlayFrag.isShowingTitleEnd()) {
             this.getActivity().sendBroadcast(new Intent("com.netflix.mediaclient.service.ACTION_CLOSE_MINI_PLAYER"));
             return true;
@@ -454,10 +454,10 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
     }
     
     public boolean hideRDP() {
-        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131690007);
+        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131689998);
         if (roleDetailsFrag != null && !roleDetailsFrag.isHidden() && roleDetailsFrag.isResumed()) {
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
-            beginTransaction.setCustomAnimations(2131034112, 2131034113);
+            beginTransaction.setCustomAnimations(2131034114, 2131034115);
             beginTransaction.hide((Fragment)roleDetailsFrag);
             roleDetailsFrag.resetScroll();
             beginTransaction.commitAllowingStateLoss();
@@ -579,7 +579,7 @@ public class MiniPlayerControlsFrag extends NetflixFrag implements AbsEpisodeVie
             this.log("Activity is null or destroyed - bailing early");
             return;
         }
-        final MementoFrag mementoFrag = (MementoFrag)this.getFragmentManager().findFragmentById(2131690002);
+        final MementoFrag mementoFrag = (MementoFrag)this.getFragmentManager().findFragmentById(2131689993);
         if (mementoFrag != null) {
             mementoFrag.onManagerReady(serviceManager, status);
         }

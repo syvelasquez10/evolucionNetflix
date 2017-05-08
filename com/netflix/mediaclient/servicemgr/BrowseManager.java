@@ -288,7 +288,7 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public boolean fetchInteractiveVideoMoments(final VideoType videoType, final String s, final String s2, final ManagerCallback managerCallback) {
+    public boolean fetchInteractiveVideoMoments(final VideoType videoType, final String s, final String s2, final int n, final int n2, final ManagerCallback managerCallback) {
         synchronized (this) {
             if (StringUtils.isEmpty(s)) {
                 throw new IllegalArgumentException("Parameter cannot be null");
@@ -302,7 +302,7 @@ public final class BrowseManager implements IBrowseManager
         boolean b;
         if (service != null) {
             final VideoType videoType2;
-            service.getBrowse().fetchInteractiveVideoMoments(videoType2, s, s2, this.mgr.getClientId(), requestId);
+            service.getBrowse().fetchInteractiveVideoMoments(videoType2, s, s2, n, n2, this.mgr.getClientId(), requestId);
             b = true;
         }
         else {
@@ -831,10 +831,10 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public void refreshCw() {
+    public void refreshCw(final boolean b) {
         final INetflixService service = this.mgr.getService();
         if (service != null) {
-            service.getBrowse().refreshCw();
+            service.getBrowse().refreshCw(b);
             return;
         }
         Log.w("ServiceManagerBrowse", "refreshCw:: service is not available");
@@ -885,6 +885,17 @@ public final class BrowseManager implements IBrowseManager
             return true;
         }
         Log.w("ServiceManagerBrowse", "removeFromQueue:: service is not available");
+        return false;
+    }
+    
+    @Override
+    public boolean runPrefetchLolomoJob(final boolean b) {
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().runPrefetchLolomoJob(b);
+            return true;
+        }
+        Log.w("ServiceManagerBrowse", "flushCaches:: service is not available");
         return false;
     }
     

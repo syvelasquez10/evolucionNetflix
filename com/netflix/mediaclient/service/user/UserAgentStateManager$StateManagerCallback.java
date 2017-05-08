@@ -21,6 +21,8 @@ public interface UserAgentStateManager$StateManagerCallback
     
     void selectProfileResult(final Status p0);
     
+    boolean shouldFetchAccountDataAsync();
+    
     void switchWebUserProfile(final String p0);
     
     void userAccountActivated(final DeviceAccount p0);

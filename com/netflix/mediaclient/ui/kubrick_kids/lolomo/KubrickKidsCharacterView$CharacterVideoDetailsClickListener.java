@@ -10,6 +10,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.widget.ImageView$ScaleType;
 import android.view.ViewGroup$LayoutParams;
 import android.view.View;

@@ -22,8 +22,8 @@ import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.net.Uri;
+import com.netflix.mediaclient.ui.common.MediaPlayerWrapper$PlaybackEventsListener;
 import com.netflix.model.leafs.originals.BillboardBackground;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.widget.RelativeLayout$LayoutParams;
@@ -31,7 +31,6 @@ import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
-import android.text.TextUtils;
 import com.netflix.model.leafs.originals.BillboardSummary;
 import android.view.View$OnClickListener;
 import java.util.List;
@@ -58,10 +57,12 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import android.widget.RelativeLayout;
+import android.text.TextUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.common.MediaPlayerWrapper$PlaybackEventsListener;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
-class BillboardView$4 implements MediaPlayerWrapper$PlaybackEventsListener
+class BillboardView$4 extends SimpleManagerCallback
 {
     final /* synthetic */ BillboardView this$0;
     
@@ -70,10 +71,19 @@ class BillboardView$4 implements MediaPlayerWrapper$PlaybackEventsListener
     }
     
     @Override
-    public void onPlaybackFinished() {
-        if (Log.isLoggable()) {
-            Log.d("BillboardView", "Video completed (or failed) - hiding TextureView");
+    public void onResourceCached(final String s, final String s2, final long n, final long n2, final Status status) {
+        super.onResourceCached(s, s2, n, n2, status);
+        if (status.isError()) {
+            if (Log.isLoggable()) {
+                Log.e("BillboardView", "Failed to retrieve video: " + s);
+            }
         }
-        this.this$0.hideMotionBB();
+        else if (this.this$0.mediaPlayerWrapper != null && !TextUtils.isEmpty((CharSequence)s2)) {
+            if (Log.isLoggable()) {
+                Log.v("BillboardView", "Downloaded video - localUrl: " + s2);
+            }
+            this.this$0.mediaPlayerWrapper.setDataSource(s2, n, n2);
+            this.this$0.showMotionBB();
+        }
     }
 }

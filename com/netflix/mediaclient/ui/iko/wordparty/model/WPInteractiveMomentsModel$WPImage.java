@@ -36,4 +36,9 @@ public class WPInteractiveMomentsModel$WPImage
     public int getWidth() {
         return this.width;
     }
+    
+    @Override
+    public String toString() {
+        return "WPImage{id='" + this.id + '\'' + ", url='" + this.url + '\'' + ", width=" + this.width + ", height=" + this.height + ", size='" + this.size + '\'' + '}';
+    }
 }

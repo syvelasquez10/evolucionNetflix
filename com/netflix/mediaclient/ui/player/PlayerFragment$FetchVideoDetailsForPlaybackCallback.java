@@ -99,6 +99,7 @@ import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
+import com.netflix.mediaclient.ui.player.error.PlayerErrorDialogDescriptorFactory;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$SurfaceMeasureListener;
@@ -157,7 +158,7 @@ class PlayerFragment$FetchVideoDetailsForPlaybackCallback extends LoggingManager
         }
         if (status.isError() || videoDetails == null) {
             Log.w("PlayerFragment", "Error loading video details for video playback");
-            Toast.makeText((Context)this.this$0.getActivity(), 2131231078, 1).show();
+            Toast.makeText((Context)this.this$0.getActivity(), 2131231079, 1).show();
             return;
         }
         if (Log.isLoggable()) {

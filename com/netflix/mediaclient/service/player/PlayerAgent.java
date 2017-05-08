@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.player;
 
 import android.view.SurfaceHolder;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
+import com.netflix.mediaclient.media.JPlayer.AdaptiveMediaDecoderHelper;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import android.graphics.Point;
 import java.nio.ByteBuffer;
@@ -88,6 +89,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     private static final int MAX_CELLULAR_DOWNLOAD_LIMIT = 150000;
     private static final int MAX_WIFI_DOWNLOAD_LIMIT = 300000;
     private static int MaxBRThreshold = 0;
+    private static int MaxNonAdaptiveThreshold = 0;
     private static final int NETWORK_CHECK_INTERVAL = 1000;
     private static final int NETWORK_CHECK_TIMEOUT = 30000;
     private static final int SEEKTO_DELTA_IN_MS = 60000;
@@ -172,6 +174,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         TAG = PlayerAgent.class.getSimpleName();
         PlayerAgent.TimeToWaitBeforeLowBRStreamsEnabled = 15000;
         PlayerAgent.MaxBRThreshold = 20000;
+        PlayerAgent.MaxNonAdaptiveThreshold = 1200;
     }
     
     public PlayerAgent() {
@@ -1124,6 +1127,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
             }
             this.mMedia.addEventListener(media$MediaEventEnum.getName(), this.mMediaEventListener);
         }
+        PlayerTypeFactory.clearRecords(this.getContext());
         this.mPlayerType = PlayerTypeFactory.getCurrentType(this.getContext());
         this.mState = -1;
         this.toCancelOpen = false;
@@ -1328,17 +1332,23 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     @Override
     public void open(final long mMovieId, final PlayContext mPlayContext, final long n) {
         int maxBRThreshold = 0;
-        Label_0084_Outer:Label_0203_Outer:
+        Label_0084_Outer:Label_0261_Outer:
         while (true) {
             while (true) {
                 while (true) {
-                    Label_0257: {
+                    Label_0315: {
                         synchronized (this) {
                             while (true) {
                                 if (!BandwidthUtility.isBWSavingEnabledForPlay(this.getContext())) {
                                     PlayerAgent.MaxBRThreshold = 20000;
                                     if (Log.isLoggable()) {
                                         Log.d(PlayerAgent.TAG, String.format("nf_bw MaxBRThreshold : %d ", PlayerAgent.MaxBRThreshold));
+                                    }
+                                    if (AndroidUtils.getAndroidVersion() >= 19 && !AdaptiveMediaDecoderHelper.isAvcDecoderSupportsAdaptivePlayback()) {
+                                        PlayerAgent.MaxBRThreshold = Math.min(PlayerAgent.MaxBRThreshold, PlayerAgent.MaxNonAdaptiveThreshold);
+                                        if (Log.isLoggable()) {
+                                            Log.d(PlayerAgent.TAG, String.format("nf_bw MaxBRThreshold nonAdaptive Override : %d ", PlayerAgent.MaxBRThreshold));
+                                        }
                                     }
                                     this.mMovieId = mMovieId;
                                     this.mPlayContext = mPlayContext;
@@ -1356,16 +1366,16 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
                                 if (Log.isLoggable()) {
                                     Log.d(PlayerAgent.TAG, String.format("nf_bw bwOverride: %d,MaxBRThreshold : %d ", maxBRThreshold, PlayerAgent.MaxBRThreshold));
                                 }
-                                break Label_0257;
+                                break Label_0315;
                                 PlayerAgent.MaxBRThreshold = maxBRThreshold;
                                 continue Label_0084_Outer;
                             }
                             maxBRThreshold = PlayerAgent.MaxBRThreshold;
-                            continue Label_0203_Outer;
+                            continue Label_0261_Outer;
                         }
                     }
                     if (maxBRThreshold > 0) {
-                        continue Label_0203_Outer;
+                        continue Label_0261_Outer;
                     }
                     break;
                 }

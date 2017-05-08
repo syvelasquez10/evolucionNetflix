@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import java.io.Serializable;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.android.fragment.LoadingView;
@@ -346,6 +348,17 @@ public class LoMoViewPagerAdapter extends PagerAdapter
         this.loMo = loMo;
         this.showLoading();
         this.setState(convertLomoTypeToAdapterType);
+        if (this.currentAdapter == null) {
+            final StringBuilder append2 = new StringBuilder().append("SPY-10196: Unsupported LoMo row type ");
+            Serializable type;
+            if (loMo == null) {
+                type = "null";
+            }
+            else {
+                type = loMo.getType();
+            }
+            ErrorLoggingManager.logHandledException(append2.append(type).toString());
+        }
         this.currentAdapter.refreshData(loMo, listViewPos);
     }
     

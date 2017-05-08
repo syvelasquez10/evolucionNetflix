@@ -4,15 +4,14 @@
 
 package com.netflix.mediaclient.util.gfx;
 
-import android.annotation.TargetApi;
 import android.animation.TimeInterpolator;
 import android.view.animation.LinearInterpolator;
-import android.os.Build$VERSION;
-import android.animation.ObjectAnimator;
 import com.netflix.mediaclient.Log;
-import android.animation.Animator;
+import android.view.ViewPropertyAnimator;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.animation.GridLayoutAnimationController;
 import android.view.animation.LayoutAnimationController;
 import android.content.Context;
@@ -50,6 +49,10 @@ public class AnimationUtils
         view.setVisibility(8);
     }
     
+    public static boolean isTransitionAnimationSupported(final Context context) {
+        return AndroidUtils.getAndroidVersion() >= 21 && DeviceUtils.isNotTabletByContext(context);
+    }
+    
     public static void setImageBitmapWithPropertyFade(final ImageView imageView, final Bitmap imageBitmap) {
         imageView.setAlpha(0.0f);
         imageView.setImageBitmap(imageBitmap);
@@ -79,50 +82,24 @@ public class AnimationUtils
         alphaAnimateView(view, 0.7f, 1.0f, 150, animator$AnimatorListener);
     }
     
-    @TargetApi(18)
-    public static Animator startViewAnimation(final View view, final int n, final float n2, final float n3) {
-        if (Log.isLoggable()) {
-            Log.i("AnimationUtils", "startViewAppearanceAnimation() duration: " + n + "; alpha: " + n2 + " - " + n3);
-        }
-        final ObjectAnimator ofFloat = ObjectAnimator.ofFloat((Object)view, "alpha", new float[] { n2, n3 });
-        ofFloat.setDuration((long)n);
-        if (Build$VERSION.SDK_INT >= 18) {
-            ofFloat.setAutoCancel(true);
-        }
-        ofFloat.setInterpolator((TimeInterpolator)new LinearInterpolator());
-        ofFloat.start();
-        return (Animator)ofFloat;
-    }
-    
-    @TargetApi(18)
-    public static Animator startViewAppearanceAnimation(final View view, final boolean b) {
+    public static ViewPropertyAnimator startViewAppearanceAnimation(final View view, final boolean b) {
         return startViewAppearanceAnimation(view, b, 300);
     }
     
-    @TargetApi(18)
-    public static Animator startViewAppearanceAnimation(final View view, final boolean b, final int n) {
-        float n2 = 1.0f;
+    public static ViewPropertyAnimator startViewAppearanceAnimation(final View view, final boolean b, final int n) {
         if (Log.isLoggable()) {
             Log.i("AnimationUtils", "startViewAppearanceAnimation() shouldAppear: " + b);
         }
-        float n3;
+        float n2;
         if (b) {
-            n3 = 0.0f;
+            n2 = 1.0f;
         }
         else {
-            n3 = 1.0f;
-        }
-        if (!b) {
             n2 = 0.0f;
         }
-        final ObjectAnimator ofFloat = ObjectAnimator.ofFloat((Object)view, "alpha", new float[] { n3, n2 });
-        ofFloat.setDuration((long)n);
-        if (Build$VERSION.SDK_INT >= 18) {
-            ofFloat.setAutoCancel(true);
-        }
-        ofFloat.setInterpolator((TimeInterpolator)new LinearInterpolator());
-        ofFloat.addListener((Animator$AnimatorListener)new AnimationUtils$1(b, view, ofFloat));
-        ofFloat.start();
-        return (Animator)ofFloat;
+        final ViewPropertyAnimator alpha = view.animate().alpha(n2);
+        alpha.setDuration((long)n).setInterpolator((TimeInterpolator)new LinearInterpolator()).setListener((Animator$AnimatorListener)new AnimationUtils$1(b, view, alpha));
+        alpha.start();
+        return alpha;
     }
 }

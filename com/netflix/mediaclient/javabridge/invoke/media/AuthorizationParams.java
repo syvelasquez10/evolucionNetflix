@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
 import android.content.Context;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.util.ConnectivityUtils$NetType;
 
 public class AuthorizationParams
 {
@@ -27,11 +28,11 @@ public class AuthorizationParams
     private static final String PARAM_PLAY_MOBILE_ASN_FILTERING = "filterBasedOnMobileASN";
     protected static final String TAG = "nf_invoke";
     private boolean mDontFilterForMobileAsn;
-    private AuthorizationParams$NetType mNetType;
+    private ConnectivityUtils$NetType mNetType;
     private PlayContext mPlayContext;
     private boolean mPreviewContentEnabled;
     
-    public AuthorizationParams(final Context context, final PlayContext mPlayContext, final AuthorizationParams$NetType mNetType, final boolean mPreviewContentEnabled) {
+    public AuthorizationParams(final Context context, final PlayContext mPlayContext, final ConnectivityUtils$NetType mNetType, final boolean mPreviewContentEnabled) {
         if (mPlayContext == null) {
             throw new IllegalArgumentException("Play context can not be null!");
         }
@@ -43,7 +44,7 @@ public class AuthorizationParams
         }
     }
     
-    public AuthorizationParams$NetType getNetType() {
+    public ConnectivityUtils$NetType getNetType() {
         return this.mNetType;
     }
     
@@ -57,11 +58,11 @@ public class AuthorizationParams
                     while (true) {
                         Label_0281: {
                             try {
-                                if (AuthorizationParams$NetType.mobile.equals(this.mNetType)) {
+                                if (ConnectivityUtils$NetType.mobile.equals(this.mNetType)) {
                                     jsonObject.put("nettype", (Object)"mobile");
                                 }
                                 else {
-                                    if (!AuthorizationParams$NetType.wifi.equals(this.mNetType)) {
+                                    if (!ConnectivityUtils$NetType.wifi.equals(this.mNetType)) {
                                         break Label_0281;
                                     }
                                     jsonObject.put("nettype", (Object)"wifi");
@@ -91,7 +92,7 @@ public class AuthorizationParams
                             catch (JSONException ex) {}
                             break;
                         }
-                        if (AuthorizationParams$NetType.wired.equals(this.mNetType)) {
+                        if (ConnectivityUtils$NetType.wired.equals(this.mNetType)) {
                             jsonObject.put("nettype", (Object)"wired");
                             continue;
                         }

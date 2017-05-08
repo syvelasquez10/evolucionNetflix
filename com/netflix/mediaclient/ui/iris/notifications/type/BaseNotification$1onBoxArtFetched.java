@@ -63,7 +63,7 @@ class BaseNotification$1onBoxArtFetched implements ImageLoader$ImageLoaderListen
         if (bitmap != null) {
             final int color = this.val$context.getResources().getColor(2131624081);
             final NotificationCompat$BigPictureStyle bigPicture = new NotificationCompat$BigPictureStyle().bigPicture(bitmap);
-            final NotificationCompat$Builder setColor = new NotificationCompat$Builder(this.val$context).setSmallIcon(2130837758).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
+            final NotificationCompat$Builder setColor = new NotificationCompat$Builder(this.val$context).setSmallIcon(2130837757).setLargeIcon(this.mSocialProfile).setContentTitle(this.val$notificationSummary.getFriendProfile().getFullName()).setStyle(bigPicture).setColor(color);
             setColor.setGroup("iris_notifications");
             setColor.setGroupSummary(true);
             setColor.setAutoCancel(true);

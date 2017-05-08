@@ -4,6 +4,9 @@
 
 package com.netflix.model.leafs.originals;
 
+import java.util.Collection;
+import com.netflix.falkor.BranchNodeUtils;
+import com.fasterxml.jackson.core.JsonParser;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.Log;
@@ -18,8 +21,9 @@ import com.netflix.model.leafs.Delivery;
 import java.util.List;
 import com.netflix.model.branches.FalkorObject;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class BillboardSummary implements JsonPopulator, FalkorObject
+public class BillboardSummary implements JsonMerger, JsonPopulator, FalkorObject
 {
     private static final String TAG = "BillboardSummary";
     private List<BillboardCTA> actions;
@@ -495,5 +499,110 @@ public class BillboardSummary implements JsonPopulator, FalkorObject
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("BillboardSummary", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "id": {
+                this.id = jsonParser.getValueAsString();
+                break;
+            }
+            case "ancestorId": {
+                this.ancestorId = jsonParser.getValueAsString();
+                break;
+            }
+            case "isOriginal": {
+                this.isOriginal = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "title": {
+                this.title = jsonParser.getValueAsString();
+                break;
+            }
+            case "synopsis": {
+                this.synopsis = jsonParser.getValueAsString();
+                break;
+            }
+            case "supplementalMessage": {
+                this.supplementalMessage = jsonParser.getValueAsString();
+                break;
+            }
+            case "imageDescriptor": {
+                this.imageDescriptor = jsonParser.getValueAsString();
+                break;
+            }
+            case "year": {
+                this.year = jsonParser.getValueAsString();
+                break;
+            }
+            case "maturityRating": {
+                this.maturityRating = jsonParser.getValueAsString();
+                break;
+            }
+            case "seasons": {
+                this.seasons = jsonParser.getValueAsString();
+                break;
+            }
+            case "runtime": {
+                this.runtime = jsonParser.getValueAsString();
+                break;
+            }
+            case "motionId": {
+                this.motionId = jsonParser.getValueAsString();
+                break;
+            }
+            case "motionUrl": {
+                this.motionUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "motionShouldLoop": {
+                this.motionShouldLoop = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "isAward": {
+                this.isAward = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "awardTrackId": {
+                this.awardTrackId = jsonParser.getValueAsString();
+                break;
+            }
+            case "billboardTheme": {
+                this.billboardTheme = jsonParser.getValueAsString();
+                break;
+            }
+            case "billboardType": {
+                this.billboardType = jsonParser.getValueAsString();
+                break;
+            }
+            case "badgeKeys": {
+                this.badgeKeys.addAll(BranchNodeUtils.getAsStringArray(jsonParser));
+                break;
+            }
+            case "assets": {
+                this.assets = new BillboardAssets(jsonParser);
+                break;
+            }
+            case "delivery": {
+                this.delivery = new Delivery(jsonParser);
+                break;
+            }
+            case "actions": {
+                this.actions = BillboardCTA.getListOfActions(jsonParser);
+                break;
+            }
+            case "rating": {
+                this.rating = new Rating(jsonParser);
+                break;
+            }
+        }
+        return true;
     }
 }

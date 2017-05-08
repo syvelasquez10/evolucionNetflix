@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.util.JsonUtils;
@@ -62,6 +63,23 @@ public class SearchTrackableListSummary extends TrackableListSummary implements 
                     this.reference = JsonUtils.getAsStringSafe(entry.getValue());
                     continue;
                 }
+            }
+        }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        super.set(s, jsonParser);
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("SearchTrackableListSummary", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "reference": {
+                this.reference = jsonParser.getValueAsString();
+                return true;
             }
         }
     }

@@ -63,8 +63,8 @@ class MementoFrag$ActorDetailsView extends RelativeLayout
     
     private void updateImage(final int n) {
         final FalkorPerson falkorPerson = this.this$0.actors.get(n);
-        final FocalPointImageView focalPointImageView = (FocalPointImageView)this.findViewById(2131689955);
-        final View viewById = this.findViewById(2131689956);
+        final FocalPointImageView focalPointImageView = (FocalPointImageView)this.findViewById(2131689946);
+        final View viewById = this.findViewById(2131689947);
         if (focalPointImageView != null) {
             final FalkorActorStill still = this.this$0.getStill(this.this$0.videoId, falkorPerson.detail.getId());
             focalPointImageView.setImageDrawable(null);
@@ -98,7 +98,7 @@ class MementoFrag$ActorDetailsView extends RelativeLayout
     }
     
     protected int getlayoutId() {
-        return 2130903189;
+        return 2130903184;
     }
     
     void updateDetails(final int n) {
@@ -108,7 +108,7 @@ class MementoFrag$ActorDetailsView extends RelativeLayout
     
     void updateTitle(final int n) {
         final FalkorPerson falkorPerson = this.this$0.actors.get(n);
-        final TextView textView = (TextView)this.findViewById(2131689959);
+        final TextView textView = (TextView)this.findViewById(2131689950);
         if (textView != null) {
             textView.setText((CharSequence)falkorPerson.detail.name);
         }

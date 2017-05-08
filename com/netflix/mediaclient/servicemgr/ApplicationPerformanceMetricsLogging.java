@@ -22,13 +22,19 @@ import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
 
 public interface ApplicationPerformanceMetricsLogging
 {
-    public static final String[] ACTIONS = { "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_DISPLAYED", "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_REMOVED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_CHANGED", "com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_IMPRESSION", "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_ADD_WIDGET", "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_DELETE_WIDGET", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_LOCAL_SETTINGS_BW" };
+    public static final String AB_CONFIG_DATA_LOADED_EVENT = "com.netflix.mediaclient.intent.action.LOG_APM_AB_CONFIG_DATA_LOADED_EVENT";
+    public static final String AB_CONFIG_DATA_RECEIVED_EVENT = "com.netflix.mediaclient.intent.action.LOG_APM_AB_CONFIG_DATA_RECEIVED_EVENT";
+    public static final String AB_TEST_LOADED_EVENT = "com.netflix.mediaclient.intent.action.LOG_APM_AB_TEST_LOADED_EVENT";
+    public static final String AB_TEST_RECEIVED_EVENT = "com.netflix.mediaclient.intent.action.LOG_APM_AB_TEST_RECEIVED_EVENT";
+    public static final String[] ACTIONS = { "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_DISPLAYED", "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_REMOVED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_CHANGED", "com.netflix.mediaclient.intent.action.LOG_APM_UI_MODAL_VIEW_IMPRESSION", "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_ADD_WIDGET", "com.netflix.mediaclient.intent.action.LOG_APM_PREAPP_DELETE_WIDGET", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_STARTED", "com.netflix.mediaclient.intent.action.LOG_APM_DATA_SHARED_CONTEXT_SESSION_ENDED", "com.netflix.mediaclient.intent.action.LOG_APM_LOCAL_SETTINGS_BW", "com.netflix.mediaclient.intent.action.LOG_APM_AB_TEST_LOADED_EVENT", "com.netflix.mediaclient.intent.action.LOG_APM_AB_TEST_RECEIVED_EVENT", "com.netflix.mediaclient.intent.action.LOG_APM_AB_CONFIG_DATA_RECEIVED_EVENT", "com.netflix.mediaclient.intent.action.LOG_APM_AB_CONFIG_DATA_LOADED_EVENT" };
     public static final String ASSET_REQUEST_ENDED = "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_ENDED";
     public static final String ASSET_REQUEST_STARTED = "com.netflix.mediaclient.intent.action.LOG_APM_ASSET_REQUEST_STARTED";
     public static final String DATA_REQUEST_ENDED = "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_ENDED";
     public static final String DATA_REQUEST_STARTED = "com.netflix.mediaclient.intent.action.LOG_APM_DATA_REQUEST_STARTED";
     public static final String DIALOG_DISPLAYED = "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_DISPLAYED";
     public static final String DIALOG_REMOVED = "com.netflix.mediaclient.intent.action.LOG_APM_DIALOG_REMOVED";
+    public static final String EXTRA_AB_TEST_CELL_ID_KEY = "ABTestCellID";
+    public static final String EXTRA_AB_TEST_ID_KEY = "ABTestID";
     public static final String EXTRA_ASSET_TYPE = "asset_type";
     public static final String EXTRA_DIALOG_ID = "dialog_id";
     public static final String EXTRA_DIALOG_TYPE = "dialog_type";
@@ -80,6 +86,14 @@ public interface ApplicationPerformanceMetricsLogging
     void preappAddWidget(final String p0, final long p1);
     
     void preappDeleteWidget(final String p0, final long p1);
+    
+    void reportABConfigDataLoadedEvent();
+    
+    void reportABConfigDataReceivedEvent();
+    
+    void reportABTestLoadedEvent(final String p0, final int p1);
+    
+    void reportABTestReceivedEvent(final String p0, final int p1);
     
     void reportPerformanceEvent(final Event p0);
     

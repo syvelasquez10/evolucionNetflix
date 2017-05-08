@@ -4,11 +4,22 @@
 
 package com.netflix.mediaclient.service.logging.error;
 
-import com.netflix.mediaclient.Log;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import com.netflix.mediaclient.util.StringUtils;
+import android.os.Build;
+import android.os.Build$VERSION;
+import org.json.JSONObject;
+import com.netflix.mediaclient.repository.SecurityRepository;
+import com.crittercism.app.CrittercismConfig;
+import com.crittercism.app.Crittercism;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
+import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
+import android.annotation.TargetApi;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.content.Context;
 
@@ -26,14 +37,22 @@ final class ErrorLoggingManager$1 implements UncaughtExceptionHandler
     public void uncaughtException(final Thread thread, final Throwable t) {
         while (true) {
             try {
-                final int n = PersistentConfig.getCoppola1ABTestCell(this.val$globalContext).ordinal() + 1;
-                Throwable t2 = t;
-                if (n > 1) {
-                    final ArrayList<StackTraceElement> list = new ArrayList<StackTraceElement>(Arrays.asList(t.getStackTrace()));
-                    final String format = String.format("Coppola_%d ", n);
-                    list.add(new StackTraceElement(format, "version", "n/a", 0));
-                    t.setStackTrace(list.toArray(new StackTraceElement[list.size()]));
-                    t2 = new IOException(format + t.getMessage(), t);
+                Throwable t2;
+                if (PersistentConfig.inMementoTest(this.val$globalContext)) {
+                    t2 = wrapThrowableWithPrefix(String.format("Memento_%d ", PersistentConfig.getMemento(this.val$globalContext).getCellId()), t);
+                }
+                else {
+                    final int n = PersistentConfig.getCoppola1ABTestCell(this.val$globalContext).ordinal() + 1;
+                    if (n > 1) {
+                        t2 = wrapThrowableWithPrefix(String.format("Coppola_%d ", n), t);
+                    }
+                    else {
+                        final int n2 = PersistentConfig.getCoppola2ABTestCell(this.val$globalContext).ordinal() + 1;
+                        t2 = t;
+                        if (n2 > 1) {
+                            t2 = wrapThrowableWithPrefix(String.format("Coppola2_%d ", n2), t);
+                        }
+                    }
                 }
                 this.val$critDefaultHandler.uncaughtException(thread, t2);
             }

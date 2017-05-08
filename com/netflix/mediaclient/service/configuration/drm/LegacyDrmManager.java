@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.configuration.drm;
 
+import com.netflix.mediaclient.service.configuration.crypto.CryptoProvider;
+
 public final class LegacyDrmManager implements DrmManager
 {
     private DrmManager$DrmReadyCallback mCallback;
@@ -17,6 +19,11 @@ public final class LegacyDrmManager implements DrmManager
     }
     
     @Override
+    public CryptoProvider getCryptoProvider() {
+        return CryptoProvider.LEGACY;
+    }
+    
+    @Override
     public byte[] getDeviceId() {
         return null;
     }
@@ -24,11 +31,6 @@ public final class LegacyDrmManager implements DrmManager
     @Override
     public String getDeviceType() {
         return null;
-    }
-    
-    @Override
-    public int getDrmType() {
-        return 0;
     }
     
     @Override

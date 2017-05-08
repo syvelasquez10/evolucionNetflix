@@ -6,6 +6,9 @@ package com.netflix.falkor;
 
 import com.netflix.model.leafs.Video$Bookmark;
 import com.netflix.mediaclient.servicemgr.Asset;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.GsonBuilder;
+import java.io.Writer;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
@@ -17,6 +20,12 @@ import java.io.Flushable;
 import com.netflix.mediaclient.service.falkor.Falkor$SimilarRequestType;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentAction;
 import com.netflix.mediaclient.util.StringUtils;
+import com.fasterxml.jackson.core.JsonFactory;
+import java.io.Reader;
+import java.util.Date;
+import java.lang.reflect.Type;
+import com.google.gson.stream.JsonWriter;
+import com.google.gson.Gson;
 import com.netflix.model.leafs.Video$InQueue;
 import com.netflix.model.branches.FalkorVideo;
 import android.content.Intent;
@@ -85,6 +94,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     private static final List<PQL> SEARCH_RESULT_TYPES;
     private static final String TAG = "CachedModelProxy";
     private static final String TAG_TIMING = "CachedModelProxy_Timing";
+    private static long sLastWriteTimeMS;
     private final JsonParser jsonParser;
     private int lastPrefetchFromVideo;
     private int lastPrefetchToVideo;
@@ -403,7 +413,15 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     }
     
     private List<GenreList> getGenreList() {
-        return (List<GenreList>)this.getValue(PQL.create("genreList"));
+        final Object value = this.getValue(PQL.create("genreList"));
+        if (value != null) {
+            return ((Sentinel<List<GenreList>>)value).getValue();
+        }
+        return null;
+    }
+    
+    public static long getLastWriteTimeToCacheMS() {
+        return CachedModelProxy.sLastWriteTimeMS;
     }
     
     private <LT extends LoMo> List<LT> getLists(final Collection<PQL> collection) {
@@ -522,84 +540,84 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     }
     
     private void merge(final JsonObject jsonObject, final BranchNode branchNode) {
-    Label_0142_Outer:
+    Label_0133_Outer:
         while (true) {
             while (true) {
-            Label_0527:
+            Label_0518:
                 while (true) {
                     Map.Entry<String, JsonElement> entry = null;
                     String s = null;
-                    Object orCreate = null;
-                    Label_0227: {
+                    BranchNode value = null;
+                    Label_0218: {
                         synchronized (this) {
                             final Iterator<Map.Entry<String, JsonElement>> iterator = jsonObject.entrySet().iterator();
                             while (iterator.hasNext()) {
                                 entry = (Map.Entry<String, JsonElement>)iterator.next();
                                 s = entry.getKey();
-                                if (!(branchNode.getOrCreate(s) instanceof Sentinel) || JsonUtils.isNull(entry.getValue())) {
-                                    break Label_0527;
+                                final Object orCreate = branchNode.getOrCreate(s);
+                                if (!(orCreate instanceof Sentinel) || JsonUtils.isNull(entry.getValue())) {
+                                    break Label_0518;
                                 }
                                 if (Log.isLoggable()) {
                                     Log.d("CachedModelProxy", "Found sentinel at key: " + s + ", will replace with json data: " + entry.getValue());
                                 }
-                                branchNode.remove(s);
-                                orCreate = branchNode.getOrCreate(s);
+                                value = ((Sentinel<BranchNode>)orCreate).getValue();
                                 if (Falkor.ENABLE_VERBOSE_LOGGING) {
                                     Log.v("CachedModelProxy", "Curr node: " + branchNode.getClass().getSimpleName() + ", merging: " + s);
                                 }
-                                if (!(orCreate instanceof BranchNode)) {
-                                    break Label_0227;
+                                if (!(value instanceof BranchNode)) {
+                                    break Label_0218;
                                 }
-                                this.merge(entry.getValue().getAsJsonObject(), (BranchNode)orCreate);
+                                this.merge(entry.getValue().getAsJsonObject(), value);
                             }
                             break;
                         }
                     }
-                    if (orCreate instanceof Ref) {
-                        final Ref ref = (Ref)orCreate;
+                    if (value instanceof Ref) {
+                        final Ref ref = (Ref)value;
                         final JsonElement jsonElement = entry.getValue();
                         if (jsonElement.isJsonArray()) {
                             ref.setRefPath(PQL.fromJsonArray(jsonElement.getAsJsonArray()));
-                            continue Label_0142_Outer;
+                            continue Label_0133_Outer;
                         }
                         if (!jsonElement.isJsonObject()) {
-                            continue Label_0142_Outer;
+                            continue Label_0133_Outer;
                         }
                         if (jsonElement.getAsJsonObject().has("_sentinel")) {
                             if (Falkor.ENABLE_VERBOSE_LOGGING) {
                                 Log.v("CachedModelProxy", "key points to sentinel: " + Undefined.getInstance());
                             }
                             branchNode.set(s, Undefined.getInstance());
-                            continue Label_0142_Outer;
+                            continue Label_0133_Outer;
                         }
                         if ("current".equals(s)) {
                             if (Falkor.ENABLE_VERBOSE_LOGGING) {
                                 Log.v("CachedModelProxy", "json ref points to an ignored 'current' object: " + entry);
-                                continue Label_0142_Outer;
+                                continue Label_0133_Outer;
                             }
-                            continue Label_0142_Outer;
+                            continue Label_0133_Outer;
                         }
                         else {
                             if (Log.isLoggable()) {
                                 Log.w("CachedModelProxy", "Don't know how to handle json: " + entry);
-                                continue Label_0142_Outer;
+                                continue Label_0133_Outer;
                             }
-                            continue Label_0142_Outer;
+                            continue Label_0133_Outer;
                         }
                     }
                     else {
-                        if (orCreate == null) {
-                            continue Label_0142_Outer;
+                        if (value == null) {
+                            continue Label_0133_Outer;
                         }
-                        if (orCreate instanceof JsonPopulator) {
-                            ((JsonPopulator)orCreate).populate(entry.getValue());
-                            continue Label_0142_Outer;
+                        if (value instanceof JsonPopulator) {
+                            ((JsonPopulator)value).populate(entry.getValue());
+                            continue Label_0133_Outer;
                         }
                         if (Log.isLoggable()) {
-                            Log.w("CachedModelProxy", "Creating duplicate Leaf object. JsonPopulator should be implemented by: " + ((JsonPopulator)orCreate).getClass());
+                            Log.w("CachedModelProxy", "Creating duplicate Leaf object. JsonPopulator should be implemented by: " + ((JsonPopulator)value).getClass());
                         }
-                        branchNode.set(s, FalkorParseUtils.createObjectFromJson("CachedModelProxy", entry.getValue(), ((JsonPopulator)orCreate).getClass()));
-                        continue Label_0142_Outer;
+                        branchNode.set(s, FalkorParseUtils.createObjectFromJson("CachedModelProxy", entry.getValue(), ((JsonPopulator)value).getClass()));
+                        continue Label_0133_Outer;
                     }
                     break;
                 }
@@ -622,6 +640,79 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
                     Log.v("CachedModelProxy", "Setting cached inQueue value to: " + b + ", for video: " + s);
                 }
                 falkorVideo.set("inQueue", new Video$InQueue(b));
+            }
+        }
+    }
+    
+    private void write(final Gson gson, final JsonWriter jsonWriter) {
+        write(gson, this.root, jsonWriter);
+    }
+    
+    private static void write(final Gson gson, Object value, final JsonWriter jsonWriter) {
+        if (value instanceof BranchNode) {
+            if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                Log.v("CachedModelProxy", "{");
+            }
+            final BranchNode branchNode = (BranchNode)value;
+            jsonWriter.beginObject();
+            for (final String s : branchNode.getKeys()) {
+                if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                    Log.v("CachedModelProxy", s + ":");
+                }
+                jsonWriter.name(s);
+                write(gson, branchNode.get(s), jsonWriter);
+            }
+            jsonWriter.endObject();
+            if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                Log.v("CachedModelProxy", "}");
+            }
+        }
+        else if (value instanceof Ref) {
+            final PQL refPath = ((Ref)value).getRefPath();
+            if (refPath == null) {
+                if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                    Log.v("CachedModelProxy", "null");
+                }
+                jsonWriter.nullValue();
+                return;
+            }
+            jsonWriter.beginArray();
+            if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                Log.v("CachedModelProxy", "[");
+            }
+            final Iterator<Object> iterator2 = refPath.getKeySegments().iterator();
+            while (iterator2.hasNext()) {
+                write(gson, iterator2.next(), jsonWriter);
+            }
+            jsonWriter.endArray();
+            if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                Log.v("CachedModelProxy", "]");
+            }
+        }
+        else {
+            if (value instanceof Sentinel) {
+                final Sentinel sentinel = (Sentinel)value;
+                jsonWriter.beginObject();
+                jsonWriter.name("_sentinel");
+                jsonWriter.value(true);
+                final Date expires = sentinel.getExpires();
+                if (expires != null) {
+                    jsonWriter.name("$expires");
+                    jsonWriter.value(expires.getTime());
+                }
+                value = sentinel.getValue();
+                if (value != null) {
+                    jsonWriter.name("value");
+                    gson.toJson(value, value.getClass(), jsonWriter);
+                }
+                jsonWriter.endObject();
+                return;
+            }
+            if (value != null) {
+                if (Falkor.ENABLE_VERBOSE_LOGGING) {
+                    Log.v("CachedModelProxy", value.getClass().toString());
+                }
+                gson.toJson(value, value.getClass(), jsonWriter);
             }
         }
     }
@@ -705,6 +796,16 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
         // 
         throw new IllegalStateException("An error occurred while decompiling this method.");
+    }
+    
+    public void deserializeStream(final Reader reader) {
+        final com.fasterxml.jackson.core.JsonParser parser = new JsonFactory().createParser(reader);
+        if (this.root instanceof BranchNode) {
+            BranchNodeUtils.merge(this.root, parser);
+        }
+        if (Log.isLoggable()) {
+            Log.d("CachedModelProxy", "deserializeStream: completed");
+        }
     }
     
     public boolean doesCwExist() {
@@ -1604,7 +1705,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public void fetchInteractiveVideoMoments(final VideoType p0, final String p1, final String p2, final BrowseAgentCallback p3) {
+    public void fetchInteractiveVideoMoments(final VideoType p0, final String p1, final String p2, final int p3, final int p4, final BrowseAgentCallback p5) {
         // 
         // This method could not be decompiled.
         // 
@@ -1617,10 +1718,12 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //     6: aload_1        
         //     7: aload_2        
         //     8: aload_3        
-        //     9: aload           4
-        //    11: invokespecial   invokespecial  !!! ERROR
-        //    14: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
-        //    17: return         
+        //     9: iload           4
+        //    11: iload           5
+        //    13: aload           6
+        //    15: invokespecial   invokespecial  !!! ERROR
+        //    18: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //    21: return         
         // 
         // The error that occurred was:
         // 
@@ -3212,7 +3315,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    public void prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final boolean p7, final boolean p8, final BrowseAgentCallback p9) {
+    public void prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final boolean p7, final boolean p8, final boolean p9, final BrowseAgentCallback p10) {
         // 
         // This method could not be decompiled.
         // 
@@ -3234,10 +3337,11 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    22: bipush          9
         //    24: iload           7
         //    26: iload           8
-        //    28: aload           10
-        //    30: invokespecial   invokespecial  !!! ERROR
-        //    33: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
-        //    36: return         
+        //    28: iload           10
+        //    30: aload           11
+        //    32: invokespecial   invokespecial  !!! ERROR
+        //    35: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //    38: return         
         // 
         // The error that occurred was:
         // 
@@ -3800,6 +3904,10 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
         // 
         throw new IllegalStateException("An error occurred while decompiling this method.");
+    }
+    
+    public void serialize(final Writer writer) {
+        this.write(new GsonBuilder().enableComplexMapKeySerialization().setPrettyPrinting().setVersion(1.0).addSerializationExclusionStrategy(new CachedModelProxy$SuperclassExclusionStrategy(this, null)).addDeserializationExclusionStrategy(new CachedModelProxy$SuperclassExclusionStrategy(this, null)).create(), new JsonWriter(writer));
     }
     
     public void setVideoRating(final String p0, final VideoType p1, final int p2, final int p3, final BrowseAgentCallback p4) {

@@ -6,7 +6,7 @@ package com.netflix.mediaclient.service;
 
 import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
-import java.util.Map;
+import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
@@ -49,12 +49,17 @@ import com.netflix.mediaclient.Log;
 import android.app.AlarmManager;
 import android.content.Intent;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import java.util.HashMap;
 import com.netflix.mediaclient.service.voip.WhistleVoipAgent;
 import com.netflix.mediaclient.service.user.UserAgent;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
 import com.netflix.mediaclient.service.pushnotification.PushNotificationAgent;
 import com.netflix.mediaclient.service.preapp.PreAppAgent;
 import com.netflix.mediaclient.service.player.PlayerAgent;
+import com.netflix.mediaclient.service.job.NetflixJobScheduler;
+import com.netflix.mediaclient.service.job.NetflixJobExecutor;
+import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
+import java.util.Map;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.android.app.Status;
@@ -84,6 +89,7 @@ public final class NetflixService extends Service implements INetflixService
     private static final long WIDGET_CONTENT_REFRESH_DELAY_MS = 172800000L;
     private static boolean fetchErrorsEnabled;
     private static boolean isCreated;
+    private static NetflixService$JobExecutionMonitor sJobExecutionMonitor;
     private final ServiceAgent$AgentContext agentContext;
     private Handler handler;
     boolean hasLoggedAgent;
@@ -103,6 +109,8 @@ public final class NetflixService extends Service implements INetflixService
     private boolean mMdxEnabled;
     private final BroadcastReceiver mMdxReceiver;
     private final BroadcastReceiver mMdxShowPlayerIntent;
+    private final Map<NetflixJob$NetflixJobId, NetflixJobExecutor> mNetflixJobMap;
+    private NetflixJobScheduler mNetflixJobScheduler;
     private final BroadcastReceiver mNetworkChangeReceiver;
     private NrdController mNrdController;
     private PlayerAgent mPlayerAgent;
@@ -117,6 +125,7 @@ public final class NetflixService extends Service implements INetflixService
     }
     
     public NetflixService() {
+        this.mNetflixJobMap = new HashMap<NetflixJob$NetflixJobId, NetflixJobExecutor>();
         this.mClientCallbacks = new NetflixService$ClientCallbacks();
         this.mInitComplete = false;
         this.mInitStatusCode = CommonStatus.UNKNOWN;
@@ -128,6 +137,9 @@ public final class NetflixService extends Service implements INetflixService
         this.mMdxReceiver = new NetflixService$5(this);
         this.mMdxShowPlayerIntent = new NetflixService$6(this);
         this.mNetworkChangeReceiver = new NetflixService$7(this);
+    }
+    
+    public static void TEST_ONLY_setJobExecutionMonitor(final NetflixService$JobExecutionMonitor netflixService$JobExecutionMonitor) {
     }
     
     public static boolean areFetchErrorsEnabled() {
@@ -471,6 +483,10 @@ public final class NetflixService extends Service implements INetflixService
         return this.mResourceFetcher.getImageLoader((Context)this);
     }
     
+    public NetflixJobScheduler getJobScheduler() {
+        return this.mNetflixJobScheduler;
+    }
+    
     public IMdx getMdx() {
         return this.mMdxAgent;
     }
@@ -568,6 +584,7 @@ public final class NetflixService extends Service implements INetflixService
         super.onCreate();
         NetflixService.isCreated = true;
         this.handler = new Handler();
+        this.mNetflixJobScheduler = NetflixJobSchedulerSelector.createNetflixJobScheduler(this.getApplicationContext());
         this.mConfigurationAgent = new ConfigurationAgent();
         this.mNrdController = new NrdController();
         this.mUserAgent = new UserAgent();
@@ -628,6 +645,8 @@ public final class NetflixService extends Service implements INetflixService
         if (this.mVoipAgent != null) {
             this.mVoipAgent.destroy();
         }
+        this.mNetflixJobScheduler = null;
+        this.mNetflixJobMap.clear();
         NetflixService.isCreated = false;
         final int myPid = Process.myPid();
         Log.d("NetflixService", "Destroying app process " + myPid + "...");
@@ -646,6 +665,26 @@ public final class NetflixService extends Service implements INetflixService
             }
         }
         return 2;
+    }
+    
+    public void onTaskRemoved(final Intent intent) {
+        super.onTaskRemoved(intent);
+        if (Log.isLoggable()) {
+            Log.d("NetflixService", "onTaskRemoved: Invoked on NetflixService");
+        }
+        if (this.mInitComplete) {
+            this.mFalkorAgent.serializeFalcorCache();
+        }
+    }
+    
+    public void onTrimMemory(final int n) {
+        super.onTrimMemory(n);
+        if (n >= 60 && this.mInitComplete) {
+            if (Log.isLoggable()) {
+                Log.d("NetflixService", "onTrimMemory: level - " + n);
+            }
+            this.mFalkorAgent.serializeFalkorMetadataAsync();
+        }
     }
     
     public boolean onUnbind(final Intent intent) {
@@ -702,6 +741,12 @@ public final class NetflixService extends Service implements INetflixService
         this.mInitCallbacks.add(new NetflixService$NotifyServiceReadyInitCallback(this, put));
     }
     
+    public void registerJobExecutor(final NetflixJob$NetflixJobId netflixJob$NetflixJobId, final NetflixJobExecutor netflixJobExecutor) {
+        synchronized (this.mNetflixJobMap) {
+            this.mNetflixJobMap.put(netflixJob$NetflixJobId, netflixJobExecutor);
+        }
+    }
+    
     public void removeProfile(final String s, final int n, final int n2) {
         this.mUserAgent.removeWebUserProfile(s, new NetflixService$UserAgentClientCallback(this, n, n2));
     }
@@ -716,6 +761,26 @@ public final class NetflixService extends Service implements INetflixService
     
     public void setCurrentAppLocale(final String currentAppLocale) {
         this.mUserAgent.setCurrentAppLocale(currentAppLocale);
+    }
+    
+    public void startJob(final NetflixJob$NetflixJobId netflixJob$NetflixJobId) {
+        synchronized (this.mNetflixJobMap) {
+            final NetflixJobExecutor netflixJobExecutor = this.mNetflixJobMap.get(netflixJob$NetflixJobId);
+            // monitorexit(this.mNetflixJobMap)
+            if (netflixJobExecutor != null) {
+                netflixJobExecutor.onNetflixStartJob(netflixJob$NetflixJobId);
+            }
+        }
+    }
+    
+    public void stopJob(final NetflixJob$NetflixJobId netflixJob$NetflixJobId) {
+        synchronized (this.mNetflixJobMap) {
+            final NetflixJobExecutor netflixJobExecutor = this.mNetflixJobMap.get(netflixJob$NetflixJobId);
+            // monitorexit(this.mNetflixJobMap)
+            if (netflixJobExecutor != null) {
+                netflixJobExecutor.onNetflixStopJob(netflixJob$NetflixJobId);
+            }
+        }
     }
     
     public void uiComingFromBackground() {

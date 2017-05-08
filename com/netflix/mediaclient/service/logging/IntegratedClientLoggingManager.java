@@ -73,6 +73,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
     private final Map<String, Random> mEventPerSessionRndGeneratorMap;
     private final IntegratedClientLoggingManager$ClientLoggingEventQueue mEventQueue;
     private ScheduledExecutorService mExecutor;
+    private IkoLoggingImpl mIkoLogging;
     private UserInputManager mInputManager;
     private final AtomicBoolean mLocalPlaybackInProgress;
     private final List<LoggingSession> mLoggingSessions;
@@ -389,6 +390,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
                 this.mCustomerServiceLogging.endAllActiveSessions();
                 this.mApmLogging.endAllActiveSessions();
                 this.mSignInLogging.endAllActiveSessions();
+                this.mIkoLogging.endAllActiveSessions();
                 this.resumeDelivery(false);
             }
             catch (Throwable t) {
@@ -479,6 +481,10 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
             Log.d("nf_log", "Handled by signIn logger");
             return;
         }
+        if (this.mIkoLogging.handleIntent(intent)) {
+            Log.d("nf_log", "Handled by Iko logger");
+            return;
+        }
         Log.w("nf_log", "Action not handled!");
     }
     
@@ -499,6 +505,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         this.mSearchLogging = new SearchLogging(this, this.mOwner.getUser());
         this.mCustomerServiceLogging = new CustomerServiceLoggingImpl(this);
         this.mSignInLogging = new SignInLoggingImpl(this);
+        this.mIkoLogging = new IkoLoggingImpl(this);
         this.initDataRepository();
         this.registerReceivers();
         this.createSession(andClearCachedIntent);
@@ -685,5 +692,6 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
     public void setDataContext(final DataContext dataContext) {
         this.mApmLogging.setDataContext(dataContext);
         this.mActionLogging.setDataContext(dataContext);
+        this.mIkoLogging.setDataContext(dataContext);
     }
 }

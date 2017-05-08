@@ -7,13 +7,10 @@ package com.netflix.mediaclient.ui.experience;
 import java.util.HashMap;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
-import java.io.Serializable;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerHelper;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
-import android.content.Context;
 import com.netflix.mediaclient.ui.search.SearchUtils$SearchExperience;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.ui.lomo.BillboardView;
@@ -31,6 +28,26 @@ import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickLoLoMoAdapter;
 import com.netflix.mediaclient.ui.kubrick.lolomo.KubrickGenreLoLoMoAdapter;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerShowDetailsActivity;
 import com.netflix.mediaclient.ui.kubrick.details.BarkerMovieDetailsActivity;
+import com.netflix.mediaclient.servicemgr.interface_.KubrickVideo;
+import com.netflix.mediaclient.ui.kubrick.lomo.KubrickHeroView;
+import com.netflix.mediaclient.ui.kubrick.lomo.KubrickVideoView;
+import com.netflix.mediaclient.ui.kubrick.lomo.KubrickCwGalleryView;
+import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
+import com.netflix.mediaclient.ui.kubrick.lomo.KubrickHighDensityCwView;
+import com.netflix.model.leafs.originals.BillboardSummary;
+import java.io.Serializable;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.interface_.Billboard;
+import com.netflix.mediaclient.ui.kubrick_kids.lolomo.KubrickKidsCharacterView;
+import com.netflix.mediaclient.ui.lomo.CwDiscoveryView;
+import com.netflix.mediaclient.ui.lomo.CwView;
+import com.netflix.mediaclient.ui.lomo.CwTestView;
+import com.netflix.mediaclient.util.CWTestUtil;
+import com.netflix.mediaclient.android.widget.VideoView;
+import java.util.ArrayList;
+import java.util.List;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.ui.details.ShowDetailsActivity;
@@ -94,6 +111,16 @@ public enum BrowseExperience implements IExperience
         public int getLomoRowTitleVisibility(final NetflixActivity netflixActivity, final BasicLoMo basicLoMo) {
             return BrowseExperience$4.STANDARD.getLomoRowTitleVisibility(netflixActivity, basicLoMo);
         }
+        
+        @Override
+        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
+            return BrowseExperience$4.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
+        }
+        
+        @Override
+        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
+            return BrowseExperience$4.STANDARD.getViewImageUrl(context, video, clazz, n);
+        }
     };
     
     protected static final String IMAGE_LOADER_CONFIG_ENUM = "IMAGE_LOADER_CONFIG_ENUM";
@@ -138,10 +165,20 @@ public enum BrowseExperience implements IExperience
                 default: {
                     return 0;
                 }
-                case 1: {
+                case 3: {
                     return 8;
                 }
             }
+        }
+        
+        @Override
+        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
+            return BrowseExperience$8.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
+        }
+        
+        @Override
+        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
+            return BrowseExperience$8.STANDARD.getViewImageUrl(context, video, clazz, n);
         }
     }, 
     KUBRICK_AB_TEST_HERO_IMAGES("KUBRICK_AB_TEST_HERO_IMAGES", 4, (BrowseExperience$ExperienceMap)new BrowseExperience$9()) {
@@ -171,6 +208,16 @@ public enum BrowseExperience implements IExperience
         @Override
         public int getLomoRowTitleVisibility(final NetflixActivity netflixActivity, final BasicLoMo basicLoMo) {
             return BrowseExperience$10.KUBRICK_PRODUCTIZED.getLomoRowTitleVisibility(netflixActivity, basicLoMo);
+        }
+        
+        @Override
+        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
+            return BrowseExperience$10.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
+        }
+        
+        @Override
+        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
+            return BrowseExperience$10.STANDARD.getViewImageUrl(context, video, clazz, n);
         }
     }, 
     KUBRICK_AB_TEST_HIGH_DENSITY("KUBRICK_AB_TEST_HIGH_DENSITY", 5, (BrowseExperience$ExperienceMap)new BrowseExperience$11()) {
@@ -203,6 +250,16 @@ public enum BrowseExperience implements IExperience
         @Override
         public int getLomoRowTitleVisibility(final NetflixActivity netflixActivity, final BasicLoMo basicLoMo) {
             return BrowseExperience$12.STANDARD.getLomoRowTitleVisibility(netflixActivity, basicLoMo);
+        }
+        
+        @Override
+        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
+            return BrowseExperience$12.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
+        }
+        
+        @Override
+        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
+            return BrowseExperience$12.STANDARD.getViewImageUrl(context, video, clazz, n);
         }
     }, 
     KUBRICK_PRODUCTIZED("KUBRICK_PRODUCTIZED", 2, (BrowseExperience$ExperienceMap)new BrowseExperience$5()) {
@@ -249,6 +306,16 @@ public enum BrowseExperience implements IExperience
             }
             return BrowseExperience$6.STANDARD.getLomoRowTitleVisibility(netflixActivity, basicLoMo);
         }
+        
+        @Override
+        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
+            return BrowseExperience$6.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
+        }
+        
+        @Override
+        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
+            return BrowseExperience$6.STANDARD.getViewImageUrl(context, video, clazz, n);
+        }
     };
     
     protected static final String LOMO_FRAG_OFFSET_LEFT_DIMEN_INT = "LOMO_FRAG_OFFSET_LEFT_DIMEN_INT";
@@ -263,6 +330,10 @@ public enum BrowseExperience implements IExperience
         
         {
             this.VALID_DETAIL_TYPES = new HashSet<VideoType>(Arrays.asList(VideoType.MOVIE, VideoType.SHOW));
+        }
+        
+        private boolean isFlagEnabled(final int n, final int n2) {
+            return (n & n2) == n2;
         }
         
         @Override
@@ -301,6 +372,105 @@ public enum BrowseExperience implements IExperience
                 return 0;
             }
             return 8;
+        }
+        
+        @Override
+        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
+            if (loMoType == null || video == null || context == null) {
+                return null;
+            }
+            final ArrayList<String> list = new ArrayList<String>();
+            switch (BrowseExperience$21.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$LoMoType[loMoType.ordinal()]) {
+                default: {
+                    list.add(this.getViewImageUrl(context, video, VideoView.class, 0));
+                    break;
+                }
+                case 1: {
+                    Serializable s;
+                    if (CWTestUtil.isInTest(context)) {
+                        s = CwTestView.class;
+                    }
+                    else {
+                        s = CwView.class;
+                    }
+                    list.add(this.getViewImageUrl(context, video, (Class)s, 0));
+                    break;
+                }
+                case 2: {
+                    list.add(this.getViewImageUrl(context, video, CwDiscoveryView.class, 0));
+                    break;
+                }
+                case 3: {
+                    list.add(this.getViewImageUrl(context, video, KubrickKidsCharacterView.class, 0));
+                    break;
+                }
+                case 4: {
+                    if (!(video instanceof Billboard)) {
+                        break;
+                    }
+                    final BillboardSummary billboardSummary = ((Billboard)video).getBillboardSummary();
+                    if (billboardSummary != null && billboardSummary.getLogo() != null && billboardSummary.getBackground() != null && billboardSummary.getBackgroundPortrait() != null) {
+                        final String url = billboardSummary.getBackgroundPortrait().getUrl();
+                        final String url2 = billboardSummary.getBackground().getUrl();
+                        final String url3 = billboardSummary.getLogo().getUrl();
+                        list.add(url);
+                        list.add(url2);
+                        list.add(url3);
+                        break;
+                    }
+                    if (Log.isLoggable()) {
+                        Log.d("BrowseExperience", "getPrefetchLolomoImageUrlList: Billboard summary is null");
+                        break;
+                    }
+                    break;
+                }
+            }
+            return list;
+        }
+        
+        @Override
+        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
+            String modifiedStillUrl = null;
+            if (clazz == CwView.class || clazz == KubrickHighDensityCwView.class) {
+                if (video instanceof CWVideo) {
+                    modifiedStillUrl = ((CWVideo)video).createModifiedStillUrl();
+                }
+            }
+            else {
+                if (clazz == CwTestView.class || clazz == KubrickKidsCharacterView.class) {
+                    return video.getBoxshotUrl();
+                }
+                if (clazz == CwDiscoveryView.class) {
+                    return video.getHorzDispUrl();
+                }
+                if (clazz == KubrickCwGalleryView.class) {
+                    if (video instanceof CWVideo) {
+                        final CWVideo cwVideo = (CWVideo)video;
+                        if (this.isFlagEnabled(n, 2)) {
+                            return cwVideo.createModifiedBigStillUrl();
+                        }
+                        return cwVideo.createModifiedStillUrl();
+                    }
+                }
+                else if (clazz == KubrickVideoView.class) {
+                    if (this.isFlagEnabled(n, 2)) {
+                        return video.getHorzDispUrl();
+                    }
+                    return video.getHorzDispSmallUrl();
+                }
+                else if (clazz == KubrickHeroView.class) {
+                    if (video instanceof KubrickVideo) {
+                        return ((KubrickVideo)video).getKubrickStoryImgUrl();
+                    }
+                }
+                else if (clazz == VideoView.class) {
+                    if (this.isFlagEnabled(n, 1)) {
+                        return video.getHorzDispUrl();
+                    }
+                    return video.getBoxshotUrl();
+                }
+            }
+            return modifiedStillUrl;
         }
     };
     
@@ -350,6 +520,16 @@ public enum BrowseExperience implements IExperience
             }
             return 8;
         }
+        
+        @Override
+        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
+            return BrowseExperience$14.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
+        }
+        
+        @Override
+        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
+            return BrowseExperience$14.STANDARD.getViewImageUrl(context, video, clazz, n);
+        }
     }, 
     TEST_LOLOMO_TITLE_ART_6725_CELL_3("TEST_LOLOMO_TITLE_ART_6725_CELL_3", 7, (BrowseExperience$ExperienceMap)new BrowseExperience$15()) {
         private final Set<VideoType> VALID_DETAIL_TYPES;
@@ -394,6 +574,16 @@ public enum BrowseExperience implements IExperience
                 return 0;
             }
             return 8;
+        }
+        
+        @Override
+        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
+            return BrowseExperience$16.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
+        }
+        
+        @Override
+        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
+            return BrowseExperience$16.STANDARD.getViewImageUrl(context, video, clazz, n);
         }
     }, 
     TEST_LOLOMO_TITLE_ART_6725_CELL_4("TEST_LOLOMO_TITLE_ART_6725_CELL_4", 8, (BrowseExperience$ExperienceMap)new BrowseExperience$17()) {
@@ -440,6 +630,16 @@ public enum BrowseExperience implements IExperience
             }
             return 8;
         }
+        
+        @Override
+        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
+            return BrowseExperience$18.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
+        }
+        
+        @Override
+        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
+            return BrowseExperience$18.STANDARD.getViewImageUrl(context, video, clazz, n);
+        }
     }, 
     TEST_LOLOMO_TITLE_ART_6725_CELL_5("TEST_LOLOMO_TITLE_ART_6725_CELL_5", 9, (BrowseExperience$ExperienceMap)new BrowseExperience$19()) {
         private final Set<VideoType> VALID_DETAIL_TYPES;
@@ -485,6 +685,16 @@ public enum BrowseExperience implements IExperience
             }
             return 8;
         }
+        
+        @Override
+        public List<String> getPrefetchLolomoImageUrlList(final Context context, final Video video, final LoMoType loMoType) {
+            return BrowseExperience$20.STANDARD.getPrefetchLolomoImageUrlList(context, video, loMoType);
+        }
+        
+        @Override
+        public String getViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
+            return BrowseExperience$20.STANDARD.getViewImageUrl(context, video, clazz, n);
+        }
     };
     
     protected static final String USE_KIDS_GENRES_LOMO = "USE_KIDS_GENRES_LOMO";
@@ -516,6 +726,11 @@ public enum BrowseExperience implements IExperience
     
     public static int getLomoFragOffsetLeftDimenId() {
         return ((HashMap<K, Integer>)BrowseExperience.currExperience.data).get("LOMO_FRAG_OFFSET_LEFT_DIMEN_INT");
+    }
+    
+    public static String getLomoVideoViewImageUrl(final Context context, final Video video, final Class clazz, final int n) {
+        final BrowseExperience currExperience = BrowseExperience.currExperience;
+        return get().getViewImageUrl(context, video, clazz, n);
     }
     
     public static SearchUtils$SearchExperience getSearchExperience() {

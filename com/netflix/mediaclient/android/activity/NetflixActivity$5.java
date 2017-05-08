@@ -65,6 +65,7 @@ import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.ui.kubrick_kids.KubrickKidsActionBar;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.view.View;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.android.widget.UpdateDialog;

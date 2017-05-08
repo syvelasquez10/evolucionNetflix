@@ -12,6 +12,6 @@ class CWExtendedDiscoveryFrag$DiscoveryItemDecoration extends ItemDecorationUnif
     
     public CWExtendedDiscoveryFrag$DiscoveryItemDecoration(final CWExtendedDiscoveryFrag this$0) {
         this.this$0 = this$0;
-        super(this$0.getActivity().getResources().getDimensionPixelOffset(2131362123), 1);
+        super(this$0.getActivity().getResources().getDimensionPixelOffset(2131362125), 1);
     }
 }

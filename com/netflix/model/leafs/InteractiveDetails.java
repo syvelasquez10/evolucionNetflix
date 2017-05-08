@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -11,8 +12,9 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class InteractiveDetails implements JsonPopulator
+public class InteractiveDetails implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "InteractiveDetails";
     
@@ -26,5 +28,13 @@ public class InteractiveDetails implements JsonPopulator
             final JsonElement jsonElement2 = entry.getValue();
             entry.getKey().getClass();
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("InteractiveDetails", "Populating with: " + jsonParser);
+        }
+        return false;
     }
 }

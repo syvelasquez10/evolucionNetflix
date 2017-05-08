@@ -11,9 +11,12 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
+import com.netflix.falkor.BranchNodeUtils;
+import com.fasterxml.jackson.core.JsonParser;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class Delivery implements JsonPopulator
+public class Delivery implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "Delivery";
     private Boolean has3D;
@@ -21,6 +24,10 @@ public class Delivery implements JsonPopulator
     private Boolean hasHD;
     private Boolean hasUltraHD;
     private String quality;
+    
+    public Delivery(final JsonParser jsonParser) {
+        BranchNodeUtils.merge(this, jsonParser, jsonParser.getCurrentToken(), false, 10);
+    }
     
     public Delivery(final JsonElement jsonElement) {
         this.populate(jsonElement);
@@ -122,5 +129,38 @@ public class Delivery implements JsonPopulator
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("Delivery", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "has3D": {
+                this.has3D = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "hasHD": {
+                this.hasHD = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "hasUltraHD": {
+                this.hasUltraHD = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "has51Audio": {
+                this.has51Audio = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "quality": {
+                this.quality = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return true;
     }
 }

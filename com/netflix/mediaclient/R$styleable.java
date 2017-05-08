@@ -53,6 +53,8 @@ public final class R$styleable
     public static final int AdsAttrs_adSize = 0;
     public static final int AdsAttrs_adSizes = 1;
     public static final int AdsAttrs_adUnitId = 2;
+    public static final int[] AdvancedImageView;
+    public static final int AdvancedImageView_android_foreground = 0;
     public static final int[] AlertDialog;
     public static final int AlertDialog_android_layout = 0;
     public static final int AlertDialog_buttonPanelSideLayout = 1;
@@ -527,6 +529,7 @@ public final class R$styleable
         ActionMode = new int[] { 2130771970, 2130771991, 2130771992, 2130771996, 2130771998, 2130772012 };
         ActivityChooserView = new int[] { 2130772013, 2130772014 };
         AdsAttrs = new int[] { 2130772015, 2130772016, 2130772017 };
+        AdvancedImageView = new int[] { 16843017 };
         AlertDialog = new int[] { 16842994, 2130772018, 2130772019, 2130772020, 2130772021, 2130772022 };
         AppBarLayout = new int[] { 16842964, 2130772010, 2130772023 };
         AppBarLayout_LayoutParams = new int[] { 2130772024, 2130772025 };

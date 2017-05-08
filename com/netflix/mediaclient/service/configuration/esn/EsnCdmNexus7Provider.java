@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration.esn;
 
+import com.netflix.mediaclient.service.configuration.crypto.CryptoProvider;
 import android.content.Context;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
 
@@ -42,5 +43,10 @@ public class EsnCdmNexus7Provider extends BaseEsnProvider
     @Override
     public int getCryptoFactoryType() {
         return 2;
+    }
+    
+    @Override
+    protected CryptoProvider getCryptoProvider() {
+        return CryptoProvider.WIDEVINE_L1;
     }
 }

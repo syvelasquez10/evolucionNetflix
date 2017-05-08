@@ -35,6 +35,10 @@ import com.netflix.mediaclient.service.mdx.message.controller.PinConfirmed;
 import com.netflix.mediaclient.service.mdx.message.controller.PinCancelled;
 import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
 import com.netflix.mediaclient.ui.mdx.MdxTargetCapabilities;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import android.text.TextUtils;
+import com.netflix.mediaclient.service.configuration.PersistentConfig;
+import com.netflix.mediaclient.NetflixApplication;
 import java.util.concurrent.atomic.AtomicLong;
 import com.netflix.mediaclient.javabridge.ui.mdxcontroller.MdxController;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
@@ -56,6 +60,17 @@ public class TargetManager implements EventListener, CommandInterface
         this.mController = mController;
         this.mEsn = mEsn;
         this.mRecentMessageTime.set(System.currentTimeMillis());
+    }
+    
+    private void logMementoErrors(final String s) {
+        if (PersistentConfig.inMementoTest(NetflixApplication.getContext())) {
+            final int cellId = PersistentConfig.getMemento(NetflixApplication.getContext()).getCellId();
+            String s2 = s;
+            if (TextUtils.isEmpty((CharSequence)s)) {
+                s2 = "NO ERROR CODE";
+            }
+            ErrorLoggingManager.logHandledException(String.format("Memento_%d MDX error %s", cellId, s2));
+        }
     }
     
     public MdxTargetCapabilities getTargetCapabilities() {
@@ -244,6 +259,7 @@ public class TargetManager implements EventListener, CommandInterface
                         return;
                     }
                     Log.d("nf_mdx", "TargetManager: pairingFail");
+                    this.logMementoErrors(pairingResponseEvent.getErrorCode());
                     this.mTarget.pairingFail(pairingResponseEvent.getErrorCode(), pairingResponseEvent.getErrorDesc());
                 }
             }
@@ -254,6 +270,7 @@ public class TargetManager implements EventListener, CommandInterface
                         this.mTarget.pairingSucceed(regPairResponseEvent.getPairingContext());
                         return;
                     }
+                    this.logMementoErrors(regPairResponseEvent.getErrorCode());
                     this.mTarget.pairingFail(regPairResponseEvent.getErrorCode(), regPairResponseEvent.getErrorDesc());
                 }
             }
@@ -282,7 +299,9 @@ public class TargetManager implements EventListener, CommandInterface
             }
             else if (uiEvent instanceof MessagingErrorEvent) {
                 final MessagingErrorEvent messagingErrorEvent = (MessagingErrorEvent)uiEvent;
-                if (this.mTarget.isThisTargetPairingContext(messagingErrorEvent.getPairingContext())) {
+                final String pairingContext = messagingErrorEvent.getPairingContext();
+                this.logMementoErrors(((MessagingErrorEvent)uiEvent).getError());
+                if (this.mTarget.isThisTargetPairingContext(pairingContext)) {
                     this.mTarget.messageError(messagingErrorEvent.getTransactionId(), messagingErrorEvent.getError().toString(), new String());
                 }
             }

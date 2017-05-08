@@ -34,7 +34,7 @@ import com.netflix.mediaclient.android.widget.TappableSurfaceView;
 import android.view.SurfaceHolder;
 import android.os.Handler;
 import android.widget.ViewFlipper;
-import android.animation.Animator;
+import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import com.netflix.mediaclient.servicemgr.Asset;
@@ -71,9 +71,9 @@ class PlayScreen$ExpiringContent
     }
     
     private void findViews() {
-        this.dismissButton = (TextView)this.this$0.mController.getView().findViewById(2131689830);
-        this.warningText = (TextView)this.this$0.mController.getView().findViewById(2131689829);
-        this.layoutContainer = this.this$0.mController.getView().findViewById(2131689828);
+        this.dismissButton = (TextView)this.this$0.mController.getView().findViewById(2131689831);
+        this.warningText = (TextView)this.this$0.mController.getView().findViewById(2131689830);
+        this.layoutContainer = this.this$0.mController.getView().findViewById(2131689829);
         if (this.layoutContainer != null) {
             LocalizationUtils.setLayoutDirection(this.layoutContainer);
         }
@@ -89,19 +89,19 @@ class PlayScreen$ExpiringContent
         int n = 0;
         switch (PlayScreen$3.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$ExpiringContentType[expiringContentWarning.getWarningType().ordinal()]) {
             default: {
-                n = 2131230941;
+                n = 2131230942;
                 break;
             }
             case 1: {
-                n = 2131230943;
-                break;
-            }
-            case 2: {
                 n = 2131230944;
                 break;
             }
+            case 2: {
+                n = 2131230945;
+                break;
+            }
             case 3: {
-                n = 2131230942;
+                n = 2131230943;
                 break;
             }
         }

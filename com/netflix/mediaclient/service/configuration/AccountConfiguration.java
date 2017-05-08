@@ -46,10 +46,6 @@ public class AccountConfiguration
         return this.mAccountConfigData != null && this.mAccountConfigData.enableLowBitrateStreams();
     }
     
-    public boolean enableWidevineL3ABTest() {
-        return this.mAccountConfigData != null && this.mAccountConfigData.enableWidevineL3ABTest();
-    }
-    
     public ABTestConfig getABTestConfiguration_6634() {
         if (this.mAccountConfigData == null) {
             return null;

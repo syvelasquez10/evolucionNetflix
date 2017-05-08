@@ -4,40 +4,29 @@
 
 package com.netflix.mediaclient.service.configuration.drm;
 
-import android.os.Build;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.MediaDrmUtils;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import android.content.Context;
+import com.netflix.mediaclient.service.configuration.crypto.CryptoProvider;
 
 public final class DrmManagerRegistry
 {
-    private static final String DRM_SYSTEM_ID_FORCE_LEGACY = "FORCE_LEGACY";
-    private static final String DRM_SYSTEM_ID_LEGACY = "LEGACY";
-    private static final String DRM_SYSTEM_ID_M_PLUS_MGK = "M_PLUS_MGK";
-    private static final String NEXUS7_DEB_DEVICE = "deb";
-    private static final String NEXUS7_FLO_DEVICE = "flo";
+    public static final String DRM_SYSTEM_ID_FORCE_LEGACY = "FORCE_LEGACY";
+    public static final String DRM_SYSTEM_ID_LEGACY = "LEGACY";
+    public static final String DRM_SYSTEM_ID_M_PLUS_MGK = "M_PLUS_MGK";
     protected static final String TAG = "nf_drm";
     private static String currentDrmSystem;
-    private static boolean enableWidevineL1;
-    private static boolean enableWidevineL3;
-    private static boolean enableWidevineL3_ABTest;
     private static DrmManager instance;
-    private static String mMaxSecurityLevel;
-    private static boolean mPlayerRequiredAdaptivePlayback;
     private static WidevineMediaDrmEngine mWidevineMediaDrmEngine;
+    private static CryptoProvider previousCryptoProvider;
     private static String previousDrmSystem;
-    private static boolean widevineInstanceL3;
-    
-    static {
-        DrmManagerRegistry.widevineInstanceL3 = false;
-    }
     
     private static void clearKeys(final String s) {
         getWidevineDrmManager().clearKeys(s);
@@ -48,72 +37,63 @@ public final class DrmManagerRegistry
     }
     
     public static DrmManager createDrmManager(Context instance, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface, final ErrorLogging errorLogging, final IErrorHandler errorHandler, final DrmManager$DrmReadyCallback drmManager$DrmReadyCallback) {
-    Label_0202_Outer:
+        CryptoProvider cryptoProvider;
+        String currentDrmSystem;
+        Label_0067_Outer:Label_0094_Outer:
         while (true) {
             while (true) {
-                Label_0405: {
+                Label_0312: {
                     while (true) {
-                    Label_0166:
+                    Label_0306:
                         while (true) {
-                            final int androidVersion;
-                            synchronized (DrmManagerRegistry.class) {
-                                androidVersion = AndroidUtils.getAndroidVersion();
-                                DrmManagerRegistry.previousDrmSystem = PreferenceUtils.getStringPref(instance, "nf_drm_system_id", null);
-                                if (androidVersion >= 19) {
-                                    DrmManagerRegistry.mMaxSecurityLevel = WidevineDrmManager.getMediaDrmMaxSecurityLevel();
-                                    DrmManagerRegistry.mPlayerRequiredAdaptivePlayback = PlayerTypeFactory.isJPlayer2(PlayerTypeFactory.getCurrentType(instance));
-                                }
-                                while (true) {
+                            Label_0258: {
+                                synchronized (DrmManagerRegistry.class) {
+                                    setPreviousDrm(instance);
+                                    cryptoProvider = MediaDrmUtils.getCryptoProvider(instance, serviceAgent$ConfigurationAgentInterface);
                                     try {
-                                        DrmManagerRegistry.enableWidevineL1 = serviceAgent$ConfigurationAgentInterface.isWidevineL1Enabled();
-                                        DrmManagerRegistry.enableWidevineL3 = serviceAgent$ConfigurationAgentInterface.isWidevineL3Enabled();
-                                        DrmManagerRegistry.enableWidevineL3_ABTest = serviceAgent$ConfigurationAgentInterface.isWidevineL3ABTestEnabled();
-                                        Log.d("nf_drm", "EnableWV L1: " + DrmManagerRegistry.enableWidevineL1 + " EnableWV L3: " + DrmManagerRegistry.enableWidevineL3 + " enableWidevineL3AB: " + DrmManagerRegistry.enableWidevineL3_ABTest);
-                                        if (androidVersion >= 18 && isWidevineDrmAllowed() && DrmManagerRegistry.enableWidevineL1) {
+                                        if (cryptoProvider == CryptoProvider.WIDEVINE_L1) {
                                             Log.d("nf_drm", "WidevineDrmManager L1 created");
-                                            DrmManagerRegistry.instance = new WidevineDrmManager(instance, serviceAgent$UserAgentInterface, errorLogging, errorHandler, drmManager$DrmReadyCallback, false);
-                                            DrmManagerRegistry.widevineInstanceL3 = false;
+                                            DrmManagerRegistry.instance = new WidevineL1DrmManager(instance, serviceAgent$UserAgentInterface, serviceAgent$ConfigurationAgentInterface, errorLogging, errorHandler, drmManager$DrmReadyCallback);
                                         }
                                         else {
-                                            if (androidVersion < 19 || !isWidevineDrmAllowed() || (!DrmManagerRegistry.enableWidevineL3 && !DrmManagerRegistry.enableWidevineL3_ABTest)) {
-                                                break;
+                                            if (cryptoProvider != CryptoProvider.WIDEVINE_L3) {
+                                                break Label_0258;
                                             }
                                             Log.d("nf_drm", "WidevineDrmManager L3 created");
-                                            DrmManagerRegistry.instance = new WidevineDrmManager(instance, serviceAgent$UserAgentInterface, errorLogging, errorHandler, drmManager$DrmReadyCallback, true);
-                                            DrmManagerRegistry.widevineInstanceL3 = true;
+                                            DrmManagerRegistry.instance = new WidevineL3DrmManager(instance, serviceAgent$UserAgentInterface, serviceAgent$ConfigurationAgentInterface, errorLogging, errorHandler, drmManager$DrmReadyCallback);
                                         }
-                                        if (DrmManagerRegistry.instance.getDrmType() != 0) {
-                                            break Label_0405;
+                                        if (cryptoProvider != CryptoProvider.LEGACY) {
+                                            break Label_0312;
                                         }
                                         if (AndroidUtils.getAndroidVersion() > 22) {
-                                            final String currentDrmSystem = "M_PLUS_MGK";
+                                            currentDrmSystem = "M_PLUS_MGK";
                                             PreferenceUtils.putStringPref(instance, "nf_drm_system_id", DrmManagerRegistry.currentDrmSystem = currentDrmSystem);
+                                            PreferenceUtils.putStringPref(instance, "nf_drm_crypto_provider", CryptoProvider.LEGACY.name());
                                             if (Log.isLoggable()) {
                                                 Log.d("nf_drm", "currentDrmSystem : " + DrmManagerRegistry.currentDrmSystem + ", previousDrmSystem : " + DrmManagerRegistry.previousDrmSystem);
+                                                Log.d("nf_drm", "current crypto : " + DrmManagerRegistry.instance.getCryptoProvider() + ", previous crypto : " + DrmManagerRegistry.previousCryptoProvider);
                                             }
                                             instance = (Context)DrmManagerRegistry.instance;
                                             return (DrmManager)instance;
                                         }
-                                        break Label_0166;
+                                        break Label_0306;
                                     }
                                     catch (Throwable t) {
                                         Log.e("nf_drm", "Unable to create WidevineDrmManager, default to LegacyDrmManager", t);
                                         DrmManagerRegistry.instance = new LegacyDrmManager(drmManager$DrmReadyCallback);
-                                        DrmManagerRegistry.widevineInstanceL3 = false;
-                                        continue Label_0166;
+                                        continue Label_0067_Outer;
                                     }
-                                    continue Label_0166;
+                                    continue Label_0067_Outer;
                                 }
                             }
                             if (Log.isLoggable()) {
-                                Log.d("nf_drm", "LegacyDrmManager for devices running android version = " + androidVersion);
+                                Log.d("nf_drm", "LegacyDrmManager for devices running android version = " + AndroidUtils.getAndroidVersion());
                             }
                             DrmManagerRegistry.instance = new LegacyDrmManager(drmManager$DrmReadyCallback);
-                            DrmManagerRegistry.widevineInstanceL3 = false;
-                            continue Label_0166;
+                            continue Label_0067_Outer;
                         }
-                        final String currentDrmSystem = "LEGACY";
-                        continue Label_0202_Outer;
+                        currentDrmSystem = "LEGACY";
+                        continue Label_0094_Outer;
                     }
                 }
                 DrmManagerRegistry.currentDrmSystem = PreferenceUtils.getStringPref(instance, "nf_drm_system_id", null);
@@ -123,7 +103,7 @@ public final class DrmManagerRegistry
     }
     
     private static void createWidevineMediaDrmEngine() {
-        DrmManagerRegistry.mWidevineMediaDrmEngine = new WidevineMediaDrmEngine(DrmManagerRegistry.widevineInstanceL3);
+        DrmManagerRegistry.mWidevineMediaDrmEngine = new WidevineMediaDrmEngine(DrmManagerRegistry.instance.getCryptoProvider() == CryptoProvider.WIDEVINE_L3);
     }
     
     private static byte[] decrypt(final byte[] array, final byte[] array2) {
@@ -131,7 +111,7 @@ public final class DrmManagerRegistry
     }
     
     public static boolean drmSupportsHd() {
-        return isCurrentDrmWidevine() && isWidevineLevel1Supported();
+        return isCurrentDrmWidevine() && MediaDrmUtils.isWidevineSecurityLevelL1();
     }
     
     private static byte[] encrypt(final byte[] array, final byte[] array2) {
@@ -146,18 +126,16 @@ public final class DrmManagerRegistry
         if (DrmManagerRegistry.instance == null) {
             return "";
         }
-        if (DrmManagerRegistry.instance.getDrmType() == 1) {
-            if (DrmManagerRegistry.widevineInstanceL3) {
-                return "WVL3";
-            }
+        if (DrmManagerRegistry.instance.getCryptoProvider() == CryptoProvider.WIDEVINE_L3) {
+            return "WVL3";
+        }
+        if (DrmManagerRegistry.instance.getCryptoProvider() == CryptoProvider.WIDEVINE_L1) {
             return "WVL1";
         }
-        else {
-            if (DrmManagerRegistry.instance.getDrmType() == 0) {
-                return "MGK";
-            }
-            return "X";
+        if (DrmManagerRegistry.instance.getCryptoProvider() == CryptoProvider.LEGACY) {
+            return "MGK";
         }
+        return "X";
     }
     
     private static byte[] getNccpSessionKeyRequest() {
@@ -169,14 +147,14 @@ public final class DrmManagerRegistry
     }
     
     private static WidevineDrmManager getWidevineDrmManager() {
-        if (isWidevineDrmAllowed()) {
+        if (MediaDrmUtils.isWidevineDrmAllowed()) {
             return (WidevineDrmManager)DrmManagerRegistry.instance;
         }
         throw new IllegalStateException("Private static method is called through JNI on non Widevine supported JB MR2+ device. That should not happen!");
     }
     
     public static WidevineMediaDrmEngine getWidevineMediaDrmEngine() {
-        if (isWidevineDrmAllowed() && DrmManagerRegistry.mWidevineMediaDrmEngine == null) {
+        if (MediaDrmUtils.isWidevineDrmAllowed() && DrmManagerRegistry.mWidevineMediaDrmEngine == null) {
             createWidevineMediaDrmEngine();
         }
         return DrmManagerRegistry.mWidevineMediaDrmEngine;
@@ -189,72 +167,54 @@ public final class DrmManagerRegistry
         if (StringUtils.isEmpty(DrmManagerRegistry.currentDrmSystem)) {
             Log.e("nf_drm", "DrmManager instance is not created");
         }
-        else if (!StringUtils.isEmpty(DrmManagerRegistry.previousDrmSystem) && !DrmManagerRegistry.currentDrmSystem.equals(DrmManagerRegistry.previousDrmSystem) && (!isLegacyDrmSystem(DrmManagerRegistry.currentDrmSystem) || !isLegacyDrmSystem(DrmManagerRegistry.previousDrmSystem))) {
-            Log.d("nf_drm", "DrmSystemChanged");
-            return true;
+        else if (!StringUtils.isEmpty(DrmManagerRegistry.previousDrmSystem)) {
+            int n;
+            if (isLegacyDrmSystem(DrmManagerRegistry.currentDrmSystem) && isLegacyDrmSystem(DrmManagerRegistry.previousDrmSystem)) {
+                n = 1;
+            }
+            else {
+                n = 0;
+            }
+            if (n != 0) {
+                Log.d("nf_drm", "Both previous and current DEM is legacy, ESN is NOT changed");
+                return false;
+            }
+            if (!DrmManagerRegistry.currentDrmSystem.equals(DrmManagerRegistry.previousDrmSystem)) {
+                Log.d("nf_drm", "Widevine System ID changed, ESN is changed");
+                return true;
+            }
+            Log.d("nf_drm", "Widevine System ID is NOT changed, verify if security level is changed");
+            if (DrmManagerRegistry.instance.getCryptoProvider() != DrmManagerRegistry.previousCryptoProvider) {
+                if (Log.isLoggable()) {
+                    Log.d("nf_drm", "Crypto provider is changed from " + DrmManagerRegistry.previousCryptoProvider + " to " + DrmManagerRegistry.instance.getCryptoProvider());
+                }
+                return true;
+            }
+            if (Log.isLoggable()) {
+                Log.d("nf_drm", "Same crypto provider " + DrmManagerRegistry.previousCryptoProvider + ". No change!");
+                return false;
+            }
         }
         return false;
     }
     
     public static boolean isCurrentDrmWidevine() {
-        return DrmManagerRegistry.instance != null && DrmManagerRegistry.instance.getDrmType() == 1;
+        boolean b = false;
+        if (DrmManagerRegistry.instance != null) {
+            b = b;
+            if (DrmManagerRegistry.instance.getCryptoProvider() != CryptoProvider.LEGACY) {
+                b = true;
+            }
+        }
+        return b;
     }
     
-    public static boolean isDevicePredeterminedToUseWV() {
-        return "flo".equals(Build.DEVICE) || "deb".equals(Build.DEVICE);
-    }
-    
-    private static boolean isLegacyDrmSystem(final String s) {
-        return StringUtils.isEmpty(s) || "LEGACY".equals(s) || "FORCE_LEGACY".equals(s);
+    public static boolean isLegacyDrmSystem(final String s) {
+        return StringUtils.isEmpty(s) || "LEGACY".equals(s) || "FORCE_LEGACY".equals(s) || "M_PLUS_MGK".equals(s);
     }
     
     private static boolean isPlatformDrmSupported() {
-        return isWidevineDrmAllowed();
-    }
-    
-    public static boolean isWidevineDrmAllowed() {
-        final int androidVersion = AndroidUtils.getAndroidVersion();
-        Label_0126: {
-            if (!DrmManagerRegistry.enableWidevineL1) {
-                break Label_0126;
-            }
-            if (androidVersion > 18) {
-                Log.d("nf_drm", "Widevine level 1 check");
-                if (!WidevineDrmManager.isWidewineSupported() || !isWidevineLevel1Supported() || !DrmManagerRegistry.mPlayerRequiredAdaptivePlayback) {
-                    return false;
-                }
-            }
-            else {
-                if (androidVersion != 18 || !isDevicePredeterminedToUseWV() || !WidevineDrmManager.isWidewineSupported()) {
-                    break Label_0126;
-                }
-                if (Log.isLoggable()) {
-                    Log.d("nf_drm", "API level = " + androidVersion + " and Build.DEVICE =" + Build.DEVICE + ". Using WidevineDrmManager");
-                    Log.d("nf_drm", "Flo/Deb devices running JB MR2  WITH Widevine support");
-                    return true;
-                }
-            }
-            return true;
-        }
-        if (DrmManagerRegistry.enableWidevineL3 || DrmManagerRegistry.enableWidevineL3_ABTest) {
-            if (androidVersion == 19 && WidevineDrmManager.isWidewineSupported() && WidevineDrmManager.isValidKitKatWidevineL3SystemID()) {
-                Log.d("nf_drm", "isWidevineDrmAllowed for kitkat: true");
-                return true;
-            }
-            if (androidVersion >= 21 && WidevineDrmManager.isWidewineSupported()) {
-                return true;
-            }
-        }
-        Log.d("nf_drm", "isWidevineDrmAllowed: false");
-        return false;
-    }
-    
-    public static boolean isWidevineInstanceL3() {
-        return DrmManagerRegistry.widevineInstanceL3;
-    }
-    
-    private static boolean isWidevineLevel1Supported() {
-        return "L1".equalsIgnoreCase(DrmManagerRegistry.mMaxSecurityLevel);
+        return MediaDrmUtils.isWidevineDrmAllowed();
     }
     
     private static void releaseSecureStops(final byte[] array) {
@@ -263,6 +223,20 @@ public final class DrmManagerRegistry
     
     private static boolean restoreKeys(final String s, final String s2, final String s3) {
         return getWidevineDrmManager().restoreKeys(s, s2, s3);
+    }
+    
+    private static void setPreviousDrm(final Context context) {
+        DrmManagerRegistry.previousDrmSystem = PreferenceUtils.getStringPref(context, "nf_drm_system_id", null);
+        DrmManagerRegistry.previousCryptoProvider = CryptoProvider.fromName(PreferenceUtils.getStringPref(context, "nf_drm_crypto_provider", null));
+        if (StringUtils.isNotEmpty(DrmManagerRegistry.previousDrmSystem) && DrmManagerRegistry.previousCryptoProvider == null) {
+            if (!isLegacyDrmSystem(DrmManagerRegistry.previousDrmSystem)) {
+                Log.d("nf_drm", "Previous crypto provider was Widevine L1...");
+                DrmManagerRegistry.previousCryptoProvider = CryptoProvider.WIDEVINE_L1;
+                return;
+            }
+            Log.d("nf_drm", "Previous crypto provider was legacy...");
+            DrmManagerRegistry.previousCryptoProvider = CryptoProvider.LEGACY;
+        }
     }
     
     private static byte[] sign(final byte[] array) {

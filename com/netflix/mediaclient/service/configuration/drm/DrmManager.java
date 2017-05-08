@@ -4,18 +4,17 @@
 
 package com.netflix.mediaclient.service.configuration.drm;
 
+import com.netflix.mediaclient.service.configuration.crypto.CryptoProvider;
+
 public interface DrmManager
 {
-    public static final int DRM_TYPE_NONE = 0;
-    public static final int DRM_TYPE_WIDEVINE = 1;
-    
     void destroy();
+    
+    CryptoProvider getCryptoProvider();
     
     byte[] getDeviceId();
     
     String getDeviceType();
-    
-    int getDrmType();
     
     void init();
 }

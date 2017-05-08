@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.util.JsonUtils;
@@ -25,7 +26,6 @@ public final class Episode$Detail extends Video$Detail
     private VideoType errorType;
     private String id;
     public String interestingSmallUrl;
-    public String interestingUrl;
     public boolean isNSRE;
     private String nextEpisodeId;
     private String nextEpisodeTitle;
@@ -63,10 +63,6 @@ public final class Episode$Detail extends Video$Detail
     
     public String getInterestingSmallUrl() {
         return this.interestingSmallUrl;
-    }
-    
-    public String getInterestingUrl() {
-        return this.interestingUrl;
     }
     
     public String getNextEpisodeId() {
@@ -151,131 +147,124 @@ public final class Episode$Detail extends Video$Detail
             final JsonElement jsonElement2 = entry.getValue();
             final String s = entry.getKey();
             int n = 0;
-            Label_0254: {
+            Label_0246: {
                 switch (s.hashCode()) {
                     case 3355: {
                         if (s.equals("id")) {
                             n = 0;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case 3575610: {
                         if (s.equals("type")) {
                             n = 1;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case 889931614: {
                         if (s.equals("seasonId")) {
                             n = 2;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case -903145224: {
                         if (s.equals("showId")) {
                             n = 3;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case -1913803429: {
                         if (s.equals("showTitle")) {
                             n = 4;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case 1485653822: {
                         if (s.equals("showRestUrl")) {
                             n = 5;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case 110371416: {
                         if (s.equals("title")) {
                             n = 6;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case 1153650071: {
                         if (s.equals("boxartUrl")) {
                             n = 7;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case -406164797: {
                         if (s.equals("nextEpisodeId")) {
                             n = 8;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case -1122171984: {
                         if (s.equals("nextEpisodeTitle")) {
                             n = 9;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case -1905664732: {
                         if (s.equals("episodeNumber")) {
                             n = 10;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case -1360577524: {
                         if (s.equals("seasonNumber")) {
                             n = 11;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case -1779904744: {
                         if (s.equals("availabilityDateMsg")) {
                             n = 12;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case 329552226: {
                         if (s.equals("errorType")) {
                             n = 13;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case -965087962: {
                         if (s.equals("abbrSeqLabel")) {
                             n = 14;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case -1180295454: {
                         if (s.equals("isNSRE")) {
                             n = 15;
-                            break Label_0254;
-                        }
-                        break;
-                    }
-                    case -23645737: {
-                        if (s.equals("interestingUrl")) {
-                            n = 16;
-                            break Label_0254;
+                            break Label_0246;
                         }
                         break;
                     }
                     case -1354835072: {
                         if (s.equals("interestingSmallUrl")) {
-                            n = 17;
-                            break Label_0254;
+                            n = 16;
+                            break Label_0246;
                         }
                         break;
                     }
@@ -352,13 +341,6 @@ public final class Episode$Detail extends Video$Detail
                 }
                 case 16: {
                     if (jsonElement2 != null && !jsonElement2.isJsonNull()) {
-                        this.interestingUrl = jsonElement2.getAsString();
-                        continue;
-                    }
-                    continue;
-                }
-                case 17: {
-                    if (jsonElement2 != null && !jsonElement2.isJsonNull()) {
                         this.interestingSmallUrl = jsonElement2.getAsString();
                         continue;
                     }
@@ -366,6 +348,99 @@ public final class Episode$Detail extends Video$Detail
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        boolean set = true;
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("Episode.Detail", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                set = super.set(s, jsonParser);
+                break;
+            }
+            case "id": {
+                this.id = jsonParser.getValueAsString();
+                return true;
+            }
+            case "type": {
+                this.type = jsonParser.getValueAsString();
+                return true;
+            }
+            case "seasonId": {
+                this.seasonId = jsonParser.getValueAsString();
+                return true;
+            }
+            case "showId": {
+                this.showId = jsonParser.getValueAsString();
+                return true;
+            }
+            case "showTitle": {
+                this.showTitle = jsonParser.getValueAsString();
+                return true;
+            }
+            case "showRestUrl": {
+                this.showRestUrl = jsonParser.getValueAsString();
+                return true;
+            }
+            case "title": {
+                this.title = jsonParser.getValueAsString();
+                return true;
+            }
+            case "boxartUrl": {
+                this.boxartUrl = jsonParser.getValueAsString();
+                return true;
+            }
+            case "nextEpisodeId": {
+                this.nextEpisodeId = jsonParser.getValueAsString();
+                return true;
+            }
+            case "nextEpisodeTitle": {
+                this.nextEpisodeTitle = jsonParser.getValueAsString();
+                return true;
+            }
+            case "episodeNumber": {
+                this.episodeNumber = jsonParser.getValueAsInt();
+                return true;
+            }
+            case "seasonNumber": {
+                this.seasonNumber = jsonParser.getValueAsInt();
+                return true;
+            }
+            case "availabilityDateMsg": {
+                this.availabilityDateMsg = jsonParser.getValueAsString();
+                return true;
+            }
+            case "errorType": {
+                this.errorType = VideoType.create(jsonParser.getValueAsString());
+                return true;
+            }
+            case "abbrSeqLabel": {
+                this.abbrSeqLabel = jsonParser.getValueAsString();
+                return true;
+            }
+            case "isNSRE": {
+                this.isNSRE = jsonParser.getValueAsBoolean();
+                return true;
+            }
+            case "interestingUrl": {
+                if (jsonParser != null) {
+                    this.interestingUrl = jsonParser.getValueAsString();
+                    return true;
+                }
+                break;
+            }
+            case "interestingSmallUrl": {
+                if (jsonParser != null) {
+                    this.interestingSmallUrl = jsonParser.getValueAsString();
+                    return true;
+                }
+                break;
+            }
+        }
+        return set;
     }
     
     @Override

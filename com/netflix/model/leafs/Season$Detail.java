@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -85,5 +86,35 @@ public final class Season$Detail extends Video$Summary
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        super.set(s, jsonParser);
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("Season.Detail", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "number": {
+                this.number = jsonParser.getValueAsInt();
+                break;
+            }
+            case "episodeCount": {
+                this.episodeCount = jsonParser.getValueAsInt();
+                break;
+            }
+            case "year": {
+                this.year = jsonParser.getValueAsInt();
+                break;
+            }
+            case "longSeqLabel": {
+                this.longSeqLabel = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return true;
     }
 }

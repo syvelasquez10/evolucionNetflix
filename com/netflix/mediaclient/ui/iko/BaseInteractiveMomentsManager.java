@@ -36,6 +36,7 @@ public abstract class BaseInteractiveMomentsManager implements InteractiveMoment
     private int failureCount;
     protected PlayerFragment fragment;
     private BitmapFactory$Options options;
+    private BitmapFactory$Options optionsWithSubSampling;
     private int resourceRequestCounter;
     private int resourceResponseCounter;
     protected Map<String, LocalCachedFileMetadata> resourceToLocalCacheFileMap;
@@ -45,6 +46,7 @@ public abstract class BaseInteractiveMomentsManager implements InteractiveMoment
     public BaseInteractiveMomentsManager() {
         this.resourceToLocalCacheFileMap = new HashMap<String, LocalCachedFileMetadata>();
         this.options = new BitmapFactory$Options();
+        this.optionsWithSubSampling = new BitmapFactory$Options();
         this.assetsRequestSet = new HashSet<String>();
         this.assetsResponseSet = new HashSet<String>();
     }
@@ -77,10 +79,6 @@ public abstract class BaseInteractiveMomentsManager implements InteractiveMoment
     }
     
     protected void cachingResourcesComplete() {
-    }
-    
-    protected Bitmap fetchImageFromCache(final String s) {
-        return this.fetchImageFromCache(s, this.options);
     }
     
     protected Bitmap fetchImageFromCache(final String s, final BitmapFactory$Options bitmapFactory$Options) {
@@ -116,6 +114,17 @@ public abstract class BaseInteractiveMomentsManager implements InteractiveMoment
         return null;
     }
     
+    protected Bitmap fetchImageFromCache(final String s, final boolean b) {
+        BitmapFactory$Options bitmapFactory$Options;
+        if (b) {
+            bitmapFactory$Options = this.optionsWithSubSampling;
+        }
+        else {
+            bitmapFactory$Options = this.options;
+        }
+        return this.fetchImageFromCache(s, bitmapFactory$Options);
+    }
+    
     public Context getContext() {
         if (this.fragment == null) {
             return null;
@@ -142,7 +151,7 @@ public abstract class BaseInteractiveMomentsManager implements InteractiveMoment
         else {
             n2 = 0;
         }
-        final MediaPlayerWrapper mediaPlayerWrapper = new MediaPlayerWrapper(null, b, n2, n, new BaseInteractiveMomentsManager$2(this, s, baseInteractiveMomentsManager$PlaybackCompleteListener));
+        final MediaPlayerWrapper mediaPlayerWrapper = new MediaPlayerWrapper(null, b, n2, n, IClientLogging$AssetType.interactiveContent, new BaseInteractiveMomentsManager$2(this, s, baseInteractiveMomentsManager$PlaybackCompleteListener));
         this.urlToMediaPlayerMap.put(s, mediaPlayerWrapper);
         return mediaPlayerWrapper;
     }
@@ -200,10 +209,10 @@ public abstract class BaseInteractiveMomentsManager implements InteractiveMoment
         this.assetsResponseSet.clear();
     }
     
-    public BitmapFactory$Options setBitmapFactoryOptions(final Context context) {
+    public void setBitmapFactoryOptions(final Context context) {
         int n = 1;
         if (context == null) {
-            return this.options;
+            return;
         }
         int n2;
         if (DeviceUtils.getScreenResolutionDpi(context) <= 160) {
@@ -223,8 +232,7 @@ public abstract class BaseInteractiveMomentsManager implements InteractiveMoment
         if (Log.isLoggable()) {
             Log.d("BaseInteractiveMomentsManager", "setBitmapFactoryOptions: inSampleSize = " + inSampleSize);
         }
-        this.options.inSampleSize = inSampleSize;
-        return this.options;
+        this.optionsWithSubSampling.inSampleSize = inSampleSize;
     }
     
     public void stopAudioPlayback(final String s) {

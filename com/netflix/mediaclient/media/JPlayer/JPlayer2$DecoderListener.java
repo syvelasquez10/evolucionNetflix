@@ -8,6 +8,7 @@ import android.util.Pair;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.media.MediaFormat;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
+import com.netflix.mediaclient.util.MediaDrmUtils;
 import java.nio.ByteBuffer;
 import android.view.Surface;
 import com.netflix.mediaclient.media.VideoResolutionRange;

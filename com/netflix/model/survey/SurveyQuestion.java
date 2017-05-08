@@ -10,22 +10,34 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
+import com.netflix.falkor.BranchNodeUtils;
+import com.fasterxml.jackson.core.JsonParser;
 import android.os.Parcel;
+import com.google.gson.annotations.SerializedName;
 import android.os.Parcelable$Creator;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 import android.os.Parcelable;
 
-public class SurveyQuestion implements Parcelable, JsonPopulator
+public class SurveyQuestion implements Parcelable, JsonMerger, JsonPopulator
 {
     public static final Parcelable$Creator CREATOR;
     private static final String TAG = "SurveyQuestion";
+    @SerializedName("positiveChoice")
     String agree;
+    @SerializedName("questionBody")
     String body;
+    @SerializedName("negativeChoice")
     String disagree;
+    @SerializedName("type")
     String header;
+    @SerializedName("id")
     String id;
+    @SerializedName("skipLabel")
     String skip;
+    @SerializedName("questionHeader")
     String title;
+    @SerializedName("surveyType")
     String type;
     
     static {
@@ -44,6 +56,10 @@ public class SurveyQuestion implements Parcelable, JsonPopulator
         this.agree = parcel.readString();
         this.disagree = parcel.readString();
         this.skip = parcel.readString();
+    }
+    
+    public SurveyQuestion(final JsonParser jsonParser) {
+        BranchNodeUtils.merge(this, jsonParser, jsonParser.getCurrentToken(), false, 10);
     }
     
     public SurveyQuestion(final JsonElement jsonElement) {
@@ -194,6 +210,50 @@ public class SurveyQuestion implements Parcelable, JsonPopulator
                 }
             }
         }
+    }
+    
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("SurveyQuestion", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "id": {
+                this.id = jsonParser.getValueAsString();
+                break;
+            }
+            case "surveyType": {
+                this.type = jsonParser.getValueAsString();
+                break;
+            }
+            case "header": {
+                this.header = jsonParser.getValueAsString();
+                break;
+            }
+            case "questionHeader": {
+                this.title = jsonParser.getValueAsString();
+                break;
+            }
+            case "questionBody": {
+                this.body = jsonParser.getValueAsString();
+                break;
+            }
+            case "positiveChoice": {
+                this.agree = jsonParser.getValueAsString();
+                break;
+            }
+            case "negativeChoice": {
+                this.disagree = jsonParser.getValueAsString();
+                break;
+            }
+            case "skipLabel": {
+                this.skip = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return true;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

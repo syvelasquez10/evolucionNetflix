@@ -18,17 +18,17 @@ import com.netflix.mediaclient.ui.iko.wordparty.WPConstants;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.ViewGroup;
-import android.content.Context;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.ui.iko.wordparty.model.WPInteractiveMomentsModel$WPImage;
 import android.animation.Animator;
 import java.util.Iterator;
-import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
-import com.netflix.mediaclient.util.log.UserActionLogUtils;
-import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import org.json.JSONException;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import org.json.JSONObject;
+import android.content.Context;
+import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
+import com.netflix.mediaclient.util.log.IkoLogUtils;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.animation.TimeInterpolator;
 import android.animation.Animator$AnimatorListener;
 import android.animation.PropertyValuesHolder;
@@ -114,6 +114,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
     private Bitmap pugSelectedBitmap;
     private int pugSelectedSoundId;
     private Interpolator quitOutInterpolator;
+    private ObjectAnimator revealAnimator;
     private SoundPoolManager soundPoolManager;
     private int tutorialBoingSoundId;
     private int victorySoundId;
@@ -219,17 +220,17 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
             }
             return;
         }
-        this.bottomPanel = view.findViewById(2131690099);
-        this.loadingProgressBar = (ProgressBar)view.findViewById(2131690336);
-        this.pugContainer = (FrameLayout)view.findViewById(2131690321);
-        this.wpContainer = (RelativeLayout)view.findViewById(2131690320);
-        this.pugImageView = (ImageView)view.findViewById(2131690324);
-        this.pugRevealView = view.findViewById(2131690322);
-        this.progressBar = (ProgressBar)view.findViewById(2131690323);
-        (this.closeButton = (IconFontTextView)view.findViewById(2131690064)).setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$10(this));
+        this.bottomPanel = view.findViewById(2131690090);
+        this.loadingProgressBar = (ProgressBar)view.findViewById(2131690331);
+        this.pugContainer = (FrameLayout)view.findViewById(2131690312);
+        this.wpContainer = (RelativeLayout)view.findViewById(2131690311);
+        this.pugImageView = (ImageView)view.findViewById(2131690315);
+        this.pugRevealView = view.findViewById(2131690313);
+        this.progressBar = (ProgressBar)view.findViewById(2131690314);
+        (this.closeButton = (IconFontTextView)view.findViewById(2131690055)).setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$10(this));
         this.progressBar.setOnClickListener((View$OnClickListener)new WPInteractiveMomentsManager$11(this));
         this.wpContainer.setOnTouchListener((View$OnTouchListener)null);
-        (this.momentScreen = new WPMomentScreen(this)).findViews(view);
+        this.momentScreen = new WPMomentScreen(this);
     }
     
     private void handlePlaybackPaused(final boolean playbackPaused, final int pausePosition) {
@@ -266,7 +267,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
             this.pugImageView.setImageBitmap(this.pugSelectedBitmap);
         }
         else {
-            this.pugImageView.setImageResource(2130837787);
+            this.pugImageView.setImageResource(2130837786);
         }
         this.pugPulsateAnimation(false);
     }
@@ -532,7 +533,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         //   203: pop            
         //   204: aload_0        
         //   205: getfield        com/netflix/mediaclient/ui/iko/wordparty/moments/WPInteractiveMomentsManager.pugImageView:Landroid/widget/ImageView;
-        //   208: ldc_w           2130837786
+        //   208: ldc_w           2130837785
         //   211: invokevirtual   android/widget/ImageView.setImageResource:(I)V
         //   214: iconst_1       
         //   215: ireturn        
@@ -633,6 +634,13 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         this.pugScaleAnimator.start();
     }
     
+    private void reportMomentStarted() {
+        final Context context = this.getContext();
+        if (context != null) {
+            IkoLogUtils.reportIkoMomentStarted(context, null, IClientLogging$ModalView.ikoMoment);
+        }
+    }
+    
     private void reportPugImpressionStarted(final int n) {
         final JSONObject jsonObject = new JSONObject();
         try {
@@ -661,7 +669,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
                 navigationBarHeight = 0;
             }
             this.closeButton.setPadding(0, statusBarHeight, navigationBarHeight, 0);
-            if (!this.momentScreen.prepareAndStart(this.currentInteractiveMoment)) {
+            if (!this.momentScreen.prepareAndStart()) {
                 this.showHideLoadingProgress(true);
             }
         }
@@ -719,21 +727,20 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
                 if (Log.isLoggable()) {
                     Log.d("WPInteractiveMomentsManager", "showPug: ready - " + preparePugView);
                 }
-                if (!preparePugView) {
-                    this.hide();
+                if (preparePugView) {
+                    this.isShowingInteractiveMoment = true;
+                    this.isPugAutoOptIn = currentInteractiveMoment.isPugAutoOptIn();
+                    this.currentInteractiveMoment = currentInteractiveMoment;
+                    this.momentScreen.setInteractiveMomentAndFindViewsForMoment(this.currentInteractiveMoment, this.fragment.getView());
+                    this.wpContainer.setOnTouchListener((View$OnTouchListener)null);
+                    this.showNavBar();
+                    this.playPugIntro(n2);
+                    this.loadMomentScreenResources();
+                    this.reportPugImpressionStarted(n);
+                    this.reportMomentStarted();
                     return;
                 }
-                this.isShowingInteractiveMoment = true;
-                this.isPugAutoOptIn = currentInteractiveMoment.isPugAutoOptIn();
-                this.currentInteractiveMoment = currentInteractiveMoment;
-                this.wpContainer.setOnTouchListener((View$OnTouchListener)null);
-                this.showNavBar();
-                this.playPugIntro(n2);
-                this.loadMomentScreenResources();
-                this.reportPugImpressionStarted(n);
-                if (this.getContext() != null) {
-                    UserActionLogUtils.reportIkoMomentStarted(this.getContext(), null, IClientLogging$ModalView.ikoMoment);
-                }
+                this.hide();
             }
         }
     }
@@ -793,11 +800,16 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         else {
             pugRevealScale = 1.0f;
         }
-        final ObjectAnimator ofPropertyValuesHolder = ObjectAnimator.ofPropertyValuesHolder((Object)this.pugRevealView, new PropertyValuesHolder[] { PropertyValuesHolder.ofFloat(View.SCALE_X, new float[] { pugRevealScale }), PropertyValuesHolder.ofFloat(View.SCALE_Y, new float[] { pugRevealScale }) });
-        ofPropertyValuesHolder.addListener((Animator$AnimatorListener)new WPInteractiveMomentsManager$7(this, b));
-        ofPropertyValuesHolder.setDuration(666L);
-        ofPropertyValuesHolder.setInterpolator((TimeInterpolator)this.quitOutInterpolator);
-        ofPropertyValuesHolder.start();
+        final PropertyValuesHolder ofFloat = PropertyValuesHolder.ofFloat(View.SCALE_X, new float[] { pugRevealScale });
+        final PropertyValuesHolder ofFloat2 = PropertyValuesHolder.ofFloat(View.SCALE_Y, new float[] { pugRevealScale });
+        if (this.revealAnimator != null && this.revealAnimator.isStarted()) {
+            this.revealAnimator.removeAllListeners();
+            this.revealAnimator.cancel();
+        }
+        (this.revealAnimator = ObjectAnimator.ofPropertyValuesHolder((Object)this.pugRevealView, new PropertyValuesHolder[] { ofFloat, ofFloat2 })).addListener((Animator$AnimatorListener)new WPInteractiveMomentsManager$7(this, b));
+        this.revealAnimator.setDuration(666L);
+        this.revealAnimator.setInterpolator((TimeInterpolator)this.quitOutInterpolator);
+        this.revealAnimator.start();
     }
     
     @Override
@@ -816,13 +828,13 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         }
     }
     
-    public Bitmap getBitmapFromCache(final WPInteractiveMomentsModel$WPImage wpInteractiveMomentsModel$WPImage) {
+    public Bitmap getBitmapFromCache(final WPInteractiveMomentsModel$WPImage wpInteractiveMomentsModel$WPImage, final boolean b) {
         ThreadUtils.assertNotOnMain();
         if (wpInteractiveMomentsModel$WPImage == null || StringUtils.isEmpty(wpInteractiveMomentsModel$WPImage.getUrl())) {
             Log.d("WPInteractiveMomentsManager", "getBitmapFromCache() failed. WPImage or its url is null.");
             return null;
         }
-        return this.fetchImageFromCache(wpInteractiveMomentsModel$WPImage.getUrl());
+        return this.fetchImageFromCache(wpInteractiveMomentsModel$WPImage.getUrl(), b);
     }
     
     @Override
@@ -847,7 +859,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         }
         this.fragment = fragment;
         final View view = fragment.getView();
-        this.ikoContainer = (RelativeLayout)view.findViewById(2131689840);
+        this.ikoContainer = (RelativeLayout)view.findViewById(2131689841);
         if (this.ikoContainer == null) {
             Log.d("WPInteractiveMomentsManager", "No interactive moments view container. Exiting the decorator.");
             return;
@@ -859,12 +871,12 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
             this.ikoContainer.removeAllViews();
         }
         this.hasInteractiveMoments = false;
-        LayoutInflater.from((Context)fragment.getNetflixActivity()).inflate(2130903296, (ViewGroup)this.ikoContainer, true);
+        LayoutInflater.from((Context)fragment.getNetflixActivity()).inflate(2130903291, (ViewGroup)this.ikoContainer, true);
         this.findAndConfigureViews(view);
         if (ViewUtils.isNavigationBarBelowContent(fragment.getActivity())) {
             this.bottomPanelHeight += ViewUtils.getNavigationBarHeight((Context)fragment.getActivity(), false);
         }
-        final int dimensionPixelSize = fragment.getResources().getDimensionPixelSize(2131361946);
+        final int dimensionPixelSize = fragment.getResources().getDimensionPixelSize(2131361945);
         this.deviceWidth = DeviceUtils.getScreenWidthInPixels(this.getContext());
         this.pugRevealScale = this.deviceWidth / dimensionPixelSize * 2.5f;
         if (Log.isLoggable()) {
@@ -907,7 +919,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         }
         this.cleanUpResources();
         if (this.getContext() != null) {
-            UserActionLogUtils.reportIkoModeEnded(this.getContext(), IClientLogging$CompletionReason.success, null);
+            IkoLogUtils.reportIkoModeEnded(this.getContext(), IClientLogging$CompletionReason.success, null);
         }
     }
     
@@ -924,7 +936,7 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
                     return;
                 }
                 if (this.getContext() != null) {
-                    UserActionLogUtils.reportIkoModeStarted(this.getContext(), null, IClientLogging$ModalView.ikoMode);
+                    IkoLogUtils.reportIkoModeStarted(this.getContext(), null, IClientLogging$ModalView.ikoMode);
                 }
                 this.data = (WPInteractiveMomentsModel)data;
                 this.interactiveMoments = this.data.getMoments();
@@ -961,12 +973,18 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         if (this.momentStarted && this.momentScreen != null) {
             this.momentScreen.onPause();
         }
+        if (this.isShowingInteractiveMoment) {
+            this.reportMomentEnded(IClientLogging$CompletionReason.canceled);
+        }
     }
     
     @Override
     public void onResume() {
         if (Log.isLoggable()) {
             Log.d("WPInteractiveMomentsManager", "onResume() called for fragment");
+        }
+        if (this.isShowingInteractiveMoment) {
+            this.reportMomentStarted();
         }
         if (this.urlToMediaPlayerMap != null && !this.urlToMediaPlayerMap.isEmpty()) {
             for (final MediaPlayerWrapper mediaPlayerWrapper : this.urlToMediaPlayerMap.values()) {
@@ -1127,9 +1145,29 @@ public class WPInteractiveMomentsManager extends BaseInteractiveMomentsManager
         }
     }
     
-    public void reportMomentEnded(final IClientLogging$CompletionReason clientLogging$CompletionReason, final String s) {
-        if (this.getContext() != null) {
-            UserActionLogUtils.reportIkoMomentEnded(this.getContext(), clientLogging$CompletionReason, null, this.currentInteractiveMoment.getMomentId(), this.currentInteractiveMoment.getSceneType(), this.currentInteractiveMoment.getMomentExpectedVideoOffset(), s);
+    public void reportMomentEnded(final IClientLogging$CompletionReason clientLogging$CompletionReason) {
+        String currentStateNameForLogging;
+        if (this.momentScreen != null) {
+            currentStateNameForLogging = this.momentScreen.getCurrentStateNameForLogging();
+        }
+        else {
+            currentStateNameForLogging = null;
+        }
+        final Context context = this.getContext();
+        if (context != null) {
+            int momentExpectedVideoOffset = -1;
+            String momentId;
+            String sceneType;
+            if (this.currentInteractiveMoment != null) {
+                momentId = this.currentInteractiveMoment.getMomentId();
+                sceneType = this.currentInteractiveMoment.getSceneType();
+                momentExpectedVideoOffset = this.currentInteractiveMoment.getMomentExpectedVideoOffset();
+            }
+            else {
+                sceneType = null;
+                momentId = null;
+            }
+            IkoLogUtils.reportIkoMomentEnded(context, clientLogging$CompletionReason, null, momentId, sceneType, momentExpectedVideoOffset, currentStateNameForLogging);
         }
     }
     

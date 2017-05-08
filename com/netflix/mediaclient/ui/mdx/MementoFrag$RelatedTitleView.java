@@ -59,7 +59,7 @@ class MementoFrag$RelatedTitleView extends RelativeLayout
     
     private void updateInsetImage(final int n) {
         final MementoVideoSwatch mementoVideoSwatch = this.this$0.relatedTitles.get(n);
-        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131689962);
+        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131689953);
         if (advancedImageView != null && mementoVideoSwatch != null) {
             NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(advancedImageView, mementoVideoSwatch.boxArtUrl, IClientLogging$AssetType.boxArt, "MementoRelatedTitleView", BrowseExperience.getImageLoaderConfig(), true);
             this.adjustInsetHeight(advancedImageView);
@@ -71,7 +71,7 @@ class MementoFrag$RelatedTitleView extends RelativeLayout
     
     private void updateMainImage(final int n) {
         final MementoVideoSwatch mementoVideoSwatch = this.this$0.relatedTitles.get(n);
-        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131689960);
+        final AdvancedImageView advancedImageView = (AdvancedImageView)this.findViewById(2131689951);
         if (advancedImageView != null && mementoVideoSwatch != null) {
             NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(advancedImageView, mementoVideoSwatch.storyArtUrl, IClientLogging$AssetType.boxArt, "MementoRelatedTitleView", BrowseExperience.getImageLoaderConfig(), true);
             advancedImageView.setOnClickListener((View$OnClickListener)new MementoFrag$RelatedTitleView$2(this, mementoVideoSwatch));
@@ -83,7 +83,7 @@ class MementoFrag$RelatedTitleView extends RelativeLayout
     }
     
     protected int getlayoutId() {
-        return 2130903190;
+        return 2130903185;
     }
     
     void updateDetails(final int n) {
@@ -93,10 +93,10 @@ class MementoFrag$RelatedTitleView extends RelativeLayout
     }
     
     void updateMoreInfo(final int n) {
-        final TextView textView = (TextView)this.findViewById(2131689961);
+        final TextView textView = (TextView)this.findViewById(2131689952);
         final MementoVideoSwatch mementoVideoSwatch = this.this$0.relatedTitles.get(n);
         if (textView != null && mementoVideoSwatch != null) {
-            textView.setText((CharSequence)textView.getResources().getString(2131231105, new Object[] { mementoVideoSwatch.collectionName }));
+            textView.setText((CharSequence)textView.getResources().getString(2131231106, new Object[] { mementoVideoSwatch.collectionName }));
             textView.setTag(2131689496, (Object)mementoVideoSwatch.collectionName);
             textView.setTag(2131689495, (Object)mementoVideoSwatch.collectionId);
             textView.setOnClickListener((View$OnClickListener)new MementoFrag$RelatedTitleView$1(this, textView));

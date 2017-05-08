@@ -11,6 +11,7 @@ public class NccpActionId extends NccpError
 {
     private int actionId;
     private String bcp47;
+    private int code;
     private String message;
     private int reasonCode;
     
@@ -37,6 +38,10 @@ public class NccpActionId extends NccpError
         return this.bcp47;
     }
     
+    public int getCode() {
+        return this.code;
+    }
+    
     public String getMessage() {
         return this.message;
     }
@@ -49,6 +54,7 @@ public class NccpActionId extends NccpError
     protected void populate(final JSONObject jsonObject) {
         this.actionId = BaseNccpEvent.getInt(jsonObject, "actionId", 0);
         this.reasonCode = BaseNccpEvent.getInt(jsonObject, "reasonCode", 0);
+        this.code = BaseNccpEvent.getInt(jsonObject, "code", 0);
         this.message = BaseNccpEvent.getString(jsonObject, "message", null);
         this.bcp47 = BaseNccpEvent.getString(jsonObject, "bcp47", null);
         this.origin = BaseNccpEvent.getString(jsonObject, "origin", null);
@@ -59,6 +65,6 @@ public class NccpActionId extends NccpError
     
     @Override
     public String toString() {
-        return "NccpActionId [actionId=" + this.actionId + ", bcp47=" + this.bcp47 + ", message=" + this.message + ", reasonCode=" + this.reasonCode + ", origin=" + this.origin + ", result=" + this.result + ", transaction=" + this.transaction + ", type=" + this.type + "]";
+        return "NccpActionId{actionId=" + this.actionId + ", bcp47='" + this.bcp47 + '\'' + ", message='" + this.message + '\'' + ", reasonCode=" + this.reasonCode + ", code=" + this.code + "} " + super.toString();
     }
 }

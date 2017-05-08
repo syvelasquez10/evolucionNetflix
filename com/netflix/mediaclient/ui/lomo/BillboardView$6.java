@@ -24,7 +24,6 @@ import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.net.Uri;
 import com.netflix.mediaclient.ui.common.MediaPlayerWrapper$PlaybackEventsListener;
 import com.netflix.model.leafs.originals.BillboardBackground;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.widget.RelativeLayout$LayoutParams;
@@ -34,6 +33,7 @@ import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import android.text.TextUtils;
 import com.netflix.model.leafs.originals.BillboardSummary;
+import android.view.View$OnClickListener;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.model.leafs.originals.BillboardCTA;
@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.Log;
 import android.util.AttributeSet;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import android.content.Context;
@@ -50,6 +49,7 @@ import com.netflix.mediaclient.android.widget.TopCropImageView;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import android.view.TextureView;
 import com.netflix.mediaclient.ui.common.MediaPlayerWrapper;
+import android.view.View;
 import java.util.Map;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
@@ -58,21 +58,42 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import android.widget.RelativeLayout;
-import android.view.View;
-import android.view.View$OnClickListener;
+import com.netflix.mediaclient.Log;
 
-class BillboardView$6 implements View$OnClickListener
+class BillboardView$6 implements Runnable
 {
     final /* synthetic */ BillboardView this$0;
+    final /* synthetic */ boolean val$hasWindowFocus;
     
-    BillboardView$6(final BillboardView this$0) {
+    BillboardView$6(final BillboardView this$0, final boolean val$hasWindowFocus) {
         this.this$0 = this$0;
+        this.val$hasWindowFocus = val$hasWindowFocus;
     }
     
-    public void onClick(final View view) {
-        if (this.this$0.mediaPlayerWrapper != null) {
-            this.this$0.mediaPlayerWrapper.toggleVolume();
+    @Override
+    public void run() {
+        if (this.this$0.mediaPlayerWrapper == null) {
+            Log.v("BillboardView", "null mediaPlayerWrapper - bailing");
         }
-        this.this$0.updateMuteButton();
+        else {
+            if (!this.val$hasWindowFocus) {
+                Log.v("BillboardView", "Losing window focus - pausing playback");
+                this.this$0.mediaPlayerWrapper.pausePlayback();
+                return;
+            }
+            if (this.this$0.mediaPlayerWrapper.isDonePlaying()) {
+                Log.v("BillboardView", "Received focus but media playback complete - skipping resume");
+                this.this$0.hideMotionBB();
+                return;
+            }
+            if (!this.this$0.mediaPlayerWrapper.resumePlayback()) {
+                Log.v("BillboardView", "Playback not ready yet, but showing motion BB");
+                this.this$0.showMotionBB();
+            }
+            if (this.this$0.myListButton.getVisibility() == 0) {
+                Log.v("BillboardView", "Playback ready, updating myList state");
+                this.this$0.updateMyListState();
+            }
+        }
     }
 }

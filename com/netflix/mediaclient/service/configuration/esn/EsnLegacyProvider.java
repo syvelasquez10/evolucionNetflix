@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration.esn;
 
+import com.netflix.mediaclient.service.configuration.crypto.CryptoProvider;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
@@ -43,5 +44,10 @@ public class EsnLegacyProvider extends BaseEsnProvider
     @Override
     public int getCryptoFactoryType() {
         return 1;
+    }
+    
+    @Override
+    protected CryptoProvider getCryptoProvider() {
+        return CryptoProvider.LEGACY;
     }
 }

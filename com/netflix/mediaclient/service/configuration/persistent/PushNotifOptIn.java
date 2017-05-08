@@ -20,4 +20,9 @@ public class PushNotifOptIn extends PersistentConfigurable
     public String getPrefKey() {
         return "persistent_push_opt_in_key";
     }
+    
+    @Override
+    public String getTestId() {
+        return "7035";
+    }
 }

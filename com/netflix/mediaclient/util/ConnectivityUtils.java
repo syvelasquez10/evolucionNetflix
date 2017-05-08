@@ -13,7 +13,6 @@ import java.util.Enumeration;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetType;
 import com.netflix.mediaclient.service.net.LogMobileType;
 import com.netflix.mediaclient.Log;
 import android.net.TrafficStats;
@@ -103,20 +102,20 @@ public final class ConnectivityUtils
         return LogMobileType.toLogMobileType(activeNetworkInfo);
     }
     
-    public static AuthorizationParams$NetType getCurrentNetType(final Context context) {
+    public static ConnectivityUtils$NetType getCurrentNetType(final Context context) {
         final NetworkInfo activeNetworkInfo = getActiveNetworkInfo(context);
         if (activeNetworkInfo == null) {
             return null;
         }
         switch (activeNetworkInfo.getType()) {
             default: {
-                return AuthorizationParams$NetType.mobile;
+                return ConnectivityUtils$NetType.mobile;
             }
             case 9: {
-                return AuthorizationParams$NetType.wired;
+                return ConnectivityUtils$NetType.wired;
             }
             case 1: {
-                return AuthorizationParams$NetType.wifi;
+                return ConnectivityUtils$NetType.wifi;
             }
         }
     }

@@ -10,9 +10,12 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
+import com.netflix.falkor.BranchNodeUtils;
+import com.fasterxml.jackson.core.JsonParser;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class BillboardAssets implements JsonPopulator
+public class BillboardAssets implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "Assets";
     private BillboardAwardsHeadline awardsHeadline;
@@ -20,6 +23,10 @@ public class BillboardAssets implements JsonPopulator
     private BillboardBackgroundPortrait backgroundPortrait;
     private BillboardDateBadge dateBadge;
     private BillboardLogo logo;
+    
+    public BillboardAssets(final JsonParser jsonParser) {
+        BranchNodeUtils.merge(this, jsonParser, jsonParser.getCurrentToken(), false, 10);
+    }
     
     public BillboardAssets(final JsonElement jsonElement) {
         this.populate(jsonElement);
@@ -121,5 +128,38 @@ public class BillboardAssets implements JsonPopulator
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("Assets", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "logo": {
+                this.logo = new BillboardLogo(jsonParser);
+                break;
+            }
+            case "background": {
+                this.background = new BillboardBackground(jsonParser);
+                break;
+            }
+            case "dateBadge": {
+                this.dateBadge = new BillboardDateBadge(jsonParser);
+                break;
+            }
+            case "backgroundPortrait": {
+                this.backgroundPortrait = new BillboardBackgroundPortrait(jsonParser);
+                break;
+            }
+            case "awardsHeadline": {
+                this.awardsHeadline = new BillboardAwardsHeadline(jsonParser);
+                break;
+            }
+        }
+        return true;
     }
 }

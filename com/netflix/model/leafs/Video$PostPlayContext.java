@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.util.JsonUtils;
@@ -14,8 +15,9 @@ import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class Video$PostPlayContext implements JsonPopulator, PostPlayContext, Trackable
+public class Video$PostPlayContext implements JsonMerger, JsonPopulator, PostPlayContext, Trackable
 {
     private static final String TAG = "PostPlayContext";
     private String requestId;
@@ -88,6 +90,27 @@ public class Video$PostPlayContext implements JsonPopulator, PostPlayContext, Tr
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("PostPlayContext", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "trackId": {
+                this.trackId = jsonParser.getValueAsInt();
+                break;
+            }
+            case "requestId": {
+                this.requestId = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return true;
     }
     
     @Override

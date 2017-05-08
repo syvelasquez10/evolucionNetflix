@@ -53,7 +53,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     private Button addToMyList;
     private ImageView backgroundImg;
     private int badgesPadding;
-    protected TextView basicInfo;
+    private TextView basicInfo;
     protected TextView basicInfoBadges;
     protected ViewGroup copyright;
     private TextView creators;
@@ -160,7 +160,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private int getBadgesPadding() {
-        return this.getResources().getDimensionPixelSize(2131362123);
+        return this.getResources().getDimensionPixelSize(2131362125);
     }
     
     private String getIfValidOrFallback(final String s, final String s2) {
@@ -179,7 +179,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     }
     
     private void hideDetailsGapView() {
-        final View viewById = this.findViewById(2131690315);
+        final View viewById = this.findViewById(2131690306);
         if (viewById != null) {
             viewById.setVisibility(8);
         }
@@ -233,7 +233,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void alignViews() {
         if (Coppola1Utils.isCoppolaContext(this.getContext())) {
-            final View viewById = this.findViewById(2131689748);
+            final View viewById = this.findViewById(2131689749);
             if (viewById != null) {
                 ((LinearLayout$LayoutParams)viewById.getLayoutParams()).topMargin = 0;
             }
@@ -260,22 +260,22 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void findViews() {
         this.ratingBar = (NetflixRatingBar)this.findViewById(2131689612);
-        this.addToMyList = (Button)this.findViewById(2131689751);
-        this.basicInfo = (TextView)this.findViewById(2131689749);
-        this.episodeBadge = (TextView)this.findViewById(2131689911);
-        this.episodeTitle = (TextView)this.findViewById(2131689912);
+        this.addToMyList = (Button)this.findViewById(2131689752);
+        this.basicInfo = (TextView)this.findViewById(2131689750);
+        this.episodeBadge = (TextView)this.findViewById(2131689907);
+        this.episodeTitle = (TextView)this.findViewById(2131689908);
         this.supplemental = (TextView)this.findViewById(2131689643);
         this.synopsis = (TextView)this.findViewById(2131689645);
-        this.starring = (TextView)this.findViewById(2131689913);
-        this.creators = (TextView)this.findViewById(2131689914);
+        this.starring = (TextView)this.findViewById(2131689909);
+        this.creators = (TextView)this.findViewById(2131689910);
         this.horzDispImg = (AdvancedImageView)this.findViewById(2131689636);
         this.title = (TextView)this.findViewById(2131689650);
-        this.imgGroup = (ViewGroup)this.findViewById(2131689752);
-        this.backgroundImg = (ImageView)this.findViewById(2131689841);
+        this.imgGroup = (ViewGroup)this.findViewById(2131689753);
+        this.backgroundImg = (ImageView)this.findViewById(2131689842);
         this.relatedTitle = (TextView)this.findViewById(2131689653);
-        this.basicInfoBadges = (TextView)this.findViewById(2131689750);
+        this.basicInfoBadges = (TextView)this.findViewById(2131689751);
         this.footerViewGroup = (ViewGroup)this.findViewById(2131689652);
-        this.copyright = (ViewGroup)this.findViewById(2131690308);
+        this.copyright = (ViewGroup)this.findViewById(2131690299);
         this.play = this.findViewById(2131689651);
         LocalizationUtils.setLayoutDirection((View)this.ratingBar);
         LocalizationUtils.setLayoutDirection((View)this.addToMyList);
@@ -315,7 +315,7 @@ public class VideoDetailsViewGroup extends LinearLayout
         if (Coppola1Utils.isCoppolaContext(this.getContext())) {
             return 2130903092;
         }
-        return 2130903292;
+        return 2130903287;
     }
     
     public void hideRelatedTitle() {
@@ -427,7 +427,7 @@ public class VideoDetailsViewGroup extends LinearLayout
         this.videoId = details.getId();
         this.details = details;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        this.updateImage(details, netflixActivity, String.format(this.getResources().getString(2131230891), details.getTitle()));
+        this.updateImage(details, netflixActivity, String.format(this.getResources().getString(2131230893), details.getTitle()));
         this.updateRelatedTitle(details);
         this.updateTitle(details);
         this.updateBasicInfo(details, videoDetailsViewGroup$DetailsStringProvider);
@@ -480,7 +480,7 @@ public class VideoDetailsViewGroup extends LinearLayout
         final String currentEpisodeTitle = showDetails.getCurrentEpisodeTitle();
         LoMoUtils.toggleEpisodeBadge(showDetails.getCurrentEpisodeBadges(), this.episodeBadge);
         if (currentEpisodeTitle != null) {
-            this.episodeTitle.setText((CharSequence)this.getResources().getString(2131231062, new Object[] { currentEpisodeTitle }));
+            this.episodeTitle.setText((CharSequence)this.getResources().getString(2131231063, new Object[] { currentEpisodeTitle }));
             this.supplemental.setText((CharSequence)showDetails.getSupplementalMessage());
             this.supplemental.setVisibility(0);
             this.starring.setVisibility(8);
@@ -495,7 +495,7 @@ public class VideoDetailsViewGroup extends LinearLayout
     
     protected void updateRelatedTitle(final VideoDetails videoDetails) {
         if (this.relatedTitle != null) {
-            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131231180, new Object[] { videoDetails.getTitle() }));
+            this.relatedTitle.setText((CharSequence)this.relatedTitle.getResources().getString(2131231181, new Object[] { videoDetails.getTitle() }));
         }
     }
     

@@ -112,7 +112,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     @Override
     protected int getLayoutId() {
-        return 2130903255;
+        return 2130903250;
     }
     
     @Override
@@ -242,7 +242,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     }
     
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362064), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362067), this.numColumns));
     }
     
     protected void setupRecyclerViewLayoutManager() {

@@ -47,7 +47,7 @@ public class KubrickKidsCwTestView extends KubrickHighDensityCwView
         final int n = 0;
         this.playContext = new PlayContextImp(trackable, progress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131230885), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131230887), cwVideo.getTitle());
         this.playView.setContentDescription((CharSequence)format);
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView img = this.img;

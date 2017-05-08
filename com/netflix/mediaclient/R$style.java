@@ -494,10 +494,11 @@ public final class R$style
     public static final int Widget_Styled_ActionBar_MenuTextStyle = 2131427813;
     public static final int Widget_TabPageIndicator = 2131427814;
     public static final int WindowFadeTransition = 2131427815;
-    public static final int cardStyle = 2131427816;
-    public static final int match = 2131427817;
-    public static final int preapp_playIcon_big = 2131427818;
-    public static final int preapp_playIcon_medium = 2131427819;
-    public static final int preapp_playIcon_small = 2131427820;
-    public static final int wrap = 2131427821;
+    public static final int WordPartyCardStyle = 2131427816;
+    public static final int WordPartyWordWallyCardStyle = 2131427817;
+    public static final int match = 2131427818;
+    public static final int preapp_playIcon_big = 2131427819;
+    public static final int preapp_playIcon_medium = 2131427820;
+    public static final int preapp_playIcon_small = 2131427821;
+    public static final int wrap = 2131427822;
 }

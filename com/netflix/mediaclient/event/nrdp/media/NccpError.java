@@ -12,6 +12,7 @@ public abstract class NccpError extends BaseMediaEvent
 {
     protected static final String ATTR_ACTION_ID = "actionId";
     protected static final String ATTR_BCP47 = "bcp47";
+    protected static final String ATTR_CODE = "code";
     protected static final String ATTR_END_POINT = "endpoint";
     protected static final String ATTR_MESSAGE = "message";
     protected static final String ATTR_ORIGIN = "origin";

@@ -6,10 +6,10 @@ package com.netflix.mediaclient.util.gfx;
 
 public enum ImageLoader$StaticImgConfig
 {
-    DARK(2130837650, 2130837650), 
-    DARK_NO_PLACEHOLDER(0, 2130837650), 
-    LIGHT(2130837838, 2130837838), 
-    LIGHT_NO_PLACEHOLDER(0, 2130837838);
+    DARK(2130837649, 2130837649), 
+    DARK_NO_PLACEHOLDER(0, 2130837649), 
+    LIGHT(2130837837, 2130837837), 
+    LIGHT_NO_PLACEHOLDER(0, 2130837837);
     
     public static final int NO_PLACEHOLDER = 0;
     private final int onFailResId;

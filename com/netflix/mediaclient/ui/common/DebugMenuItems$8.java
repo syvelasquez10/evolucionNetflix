@@ -28,7 +28,7 @@ class DebugMenuItems$8 implements MenuItem$OnMenuItemClickListener
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
         Log.d(this.this$0.logTag, "Making refreshCw() call");
-        this.this$0.activity.getServiceManager().getBrowse().refreshCw();
+        this.this$0.activity.getServiceManager().getBrowse().refreshCw(false);
         return true;
     }
 }

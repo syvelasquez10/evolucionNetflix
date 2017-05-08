@@ -15,18 +15,21 @@ import java.util.List;
 
 public class ABTestConfigData
 {
-    private static final String COPPOLA_1_AB_TEST_ID = "6729";
-    private static final String COPPOLA_2_AB_TEST_ID = "6941";
-    private static final String CW_PROGRESS_BAR_TEST_ID = "7151";
-    private static final String DISPLAY_PAGE_REFRESH_TEST_ID = "7196";
-    private static final String MEMENTO_TEST_ID = "7131";
-    private static final String MOTION_BB_AB_TEST_ID = "6930";
-    private static final String PHONE_ORIENTATION_TEST_ID = "7129";
-    private static final String PUSH_OPT_IN_TEST_ID = "7035";
-    private static final String SURVEY_TEST_ID = "7141";
+    public static final String AIM_LOW_PREFETCH_LOLOMO_TEST_ID = "7480";
+    public static final String COPPOLA_1_AB_TEST_ID = "6729";
+    public static final String COPPOLA_2_AB_TEST_ID = "6941";
+    public static final String CW_PROGRESS_BAR_TEST_ID = "7151";
+    public static final String DISPLAY_PAGE_REFRESH_TEST_ID = "7196";
+    public static final String MEMENTO_TEST_ID = "7131";
+    public static final String MOTION_BB_AB_TEST_ID = "6930";
+    public static final String PHONE_ORIENTATION_TEST_ID = "7129";
+    public static final String PUSH_OPT_IN_TEST_ID = "7035";
+    public static final String SURVEY_TEST_ID = "7141";
     private static final String TAG = "nf_config";
-    private static final String VOICE_SEARCH_AB_TEST_ID = "6786";
+    public static final String VOICE_SEARCH_AB_TEST_ID = "6786";
     private static List<String> testIds;
+    @SerializedName("7480")
+    private ABTestConfig aimLowPrefetchLolomoConfig;
     @SerializedName("6729")
     private ABTestConfig coppola1Config;
     @SerializedName("6941")
@@ -71,12 +74,17 @@ public class ABTestConfigData
         ABTestConfigData.testIds.add("7151");
         ABTestConfigData.testIds.add("7141");
         ABTestConfigData.testIds.add("7131");
+        ABTestConfigData.testIds.add("7480");
         if (DeviceUtils.isNotTabletByContext(context)) {
             ABTestConfigData.testIds.add("6729");
             ABTestConfigData.testIds.add("6941");
             ABTestConfigData.testIds.add("7129");
         }
         return StringUtils.joinArray(ABTestConfigData.testIds.toArray(new String[ABTestConfigData.testIds.size()]));
+    }
+    
+    public ABTestConfig getAimLowPrefetchLolomoConfig() {
+        return this.aimLowPrefetchLolomoConfig;
     }
     
     public ABTestConfig getBrandLoveSurveyConfig() {

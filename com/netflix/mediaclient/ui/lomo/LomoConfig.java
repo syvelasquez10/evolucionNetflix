@@ -6,11 +6,11 @@ package com.netflix.mediaclient.ui.lomo;
 
 import android.content.res.Resources;
 import android.app.Activity;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.CWTestUtil;
-import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.content.Context;
 import java.util.HashMap;
 import android.util.SparseIntArray;
 import android.util.SparseArray;
@@ -45,11 +45,11 @@ public final class LomoConfig
         LomoConfig.numCWVideosPerPageTable.put(2, (Object)sparseIntArray2);
     }
     
-    public static int computeNumVideosToFetchPerBatch(final NetflixActivity netflixActivity, final LoMoType loMoType) {
+    public static int computeNumVideosToFetchPerBatch(final Context context, final LoMoType loMoType) {
         if (loMoType == LoMoType.BILLBOARD) {
             return 10;
         }
-        final int screenSizeCategory = DeviceUtils.getScreenSizeCategory((Context)netflixActivity);
+        final int screenSizeCategory = DeviceUtils.getScreenSizeCategory(context);
         if (BrowseExperience.isKubrick() || BrowseExperience.isDisplayPageRefresh()) {
             if (loMoType == LoMoType.CONTINUE_WATCHING) {
                 return 6;
@@ -62,7 +62,7 @@ public final class LomoConfig
                     return getNumVideosPerPageTableByOrientation(2, screenSizeCategory) * getNumVideosPerPageTableByOrientation(1, screenSizeCategory);
                 }
                 case 1: {
-                    return CWTestUtil.computeNumVideosToFetchPerBatch((Context)netflixActivity, Math.max(((SparseIntArray)LomoConfig.numCWVideosPerPageTable.get(1)).get(screenSizeCategory) * ((SparseIntArray)LomoConfig.numCWVideosPerPageTable.get(2)).get(screenSizeCategory), 4));
+                    return CWTestUtil.computeNumVideosToFetchPerBatch(context, Math.max(((SparseIntArray)LomoConfig.numCWVideosPerPageTable.get(1)).get(screenSizeCategory) * ((SparseIntArray)LomoConfig.numCWVideosPerPageTable.get(2)).get(screenSizeCategory), 4));
                 }
             }
         }
@@ -85,7 +85,7 @@ public final class LomoConfig
         return ((SparseIntArray)LomoConfig.numCWVideosPerPageTable.get(n)).get(n2);
     }
     
-    private static int getNumVideosPerPageTableByOrientation(final int n, final int n2) {
+    public static int getNumVideosPerPageTableByOrientation(final int n, final int n2) {
         switch (LomoConfig$1.$SwitchMap$com$netflix$mediaclient$ui$experience$BrowseExperience[BrowseExperience.get().ordinal()]) {
             default: {
                 return ((SparseIntArray)LomoConfig.numVideosPerPageTable.get(BrowseExperience.STANDARD).get(n)).get(n2);

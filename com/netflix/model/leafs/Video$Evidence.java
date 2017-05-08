@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -13,8 +14,9 @@ import com.google.gson.JsonElement;
 import java.util.Locale;
 import com.netflix.mediaclient.servicemgr.interface_.IconFontGlyph;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class Video$Evidence implements JsonPopulator
+public class Video$Evidence implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "Evidence";
     private String kind;
@@ -94,6 +96,27 @@ public class Video$Evidence implements JsonPopulator
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("Evidence", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "kind": {
+                this.kind = jsonParser.getValueAsString();
+                break;
+            }
+            case "text": {
+                this.text = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return true;
     }
     
     @Override

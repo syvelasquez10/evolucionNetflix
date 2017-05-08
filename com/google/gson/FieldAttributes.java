@@ -15,4 +15,12 @@ public final class FieldAttributes
         $Gson$Preconditions.checkNotNull(field);
         this.field = field;
     }
+    
+    public Class<?> getDeclaringClass() {
+        return this.field.getDeclaringClass();
+    }
+    
+    public String getName() {
+        return this.field.getName();
+    }
 }

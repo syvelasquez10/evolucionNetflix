@@ -37,20 +37,20 @@ public class PushOptInContentBinder
         switch (PushOptInContentBinder$4.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$ABTestConfig$Cell[abTestConfig$Cell.ordinal()]) {
             case 1:
             case 2: {
-                this.layoutId = 2130903249;
-                this.title = this.mContext.getString(2131231197);
-                this.body = this.mContext.getString(2131231188);
-                this.positiveButton = this.mContext.getString(2131231194);
-                this.negativeButton = this.mContext.getString(2131231191);
-                break;
-            }
-            case 3:
-            case 4: {
-                this.layoutId = 2130903249;
+                this.layoutId = 2130903244;
                 this.title = this.mContext.getString(2131231198);
                 this.body = this.mContext.getString(2131231189);
                 this.positiveButton = this.mContext.getString(2131231195);
                 this.negativeButton = this.mContext.getString(2131231192);
+                break;
+            }
+            case 3:
+            case 4: {
+                this.layoutId = 2130903244;
+                this.title = this.mContext.getString(2131231199);
+                this.body = this.mContext.getString(2131231190);
+                this.positiveButton = this.mContext.getString(2131231196);
+                this.negativeButton = this.mContext.getString(2131231193);
                 break;
             }
         }
@@ -68,13 +68,13 @@ public class PushOptInContentBinder
     }
     
     public void bind(final View view, final OptInResponseHandler optInResponseHandler, final Activity activity) {
-        this.mTitle = (TextView)view.findViewById(2131689778);
-        this.mBody = (TextView)view.findViewById(2131690223);
-        this.mPositiveButton = (Button)view.findViewById(2131689675);
-        this.mNegativeButton = (Button)view.findViewById(2131689676);
-        this.mCloseButton = (ImageView)view.findViewById(2131690064);
-        this.mRootView = view.findViewById(2131690221);
-        this.mCover = (ImageView)view.findViewById(2131690222);
+        this.mTitle = (TextView)view.findViewById(2131689779);
+        this.mBody = (TextView)view.findViewById(2131690214);
+        this.mPositiveButton = (Button)view.findViewById(2131689676);
+        this.mNegativeButton = (Button)view.findViewById(2131689677);
+        this.mCloseButton = (ImageView)view.findViewById(2131690055);
+        this.mRootView = view.findViewById(2131690212);
+        this.mCover = (ImageView)view.findViewById(2131690213);
         this.mTitle.setText((CharSequence)this.title);
         this.mBody.setText((CharSequence)this.body);
         this.mPositiveButton.setText((CharSequence)this.positiveButton);
@@ -86,7 +86,7 @@ public class PushOptInContentBinder
             this.mRootView.setBackgroundResource(2130837585);
         }
         if (DeviceUtils.isTabletByContext((Context)activity) && DeviceUtils.isPortrait(this.mContext)) {
-            this.mCover.setImageResource(2130837591);
+            this.mCover.setImageResource(2130837590);
         }
         this.mPositiveButton.setOnClickListener((View$OnClickListener)new PushOptInContentBinder$1(this, optInResponseHandler));
         this.mNegativeButton.setOnClickListener((View$OnClickListener)new PushOptInContentBinder$2(this, optInResponseHandler));

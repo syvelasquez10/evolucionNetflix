@@ -17,4 +17,17 @@ public enum CryptoProvider
         this.ESN_VALUE = esn_VALUE;
         this.NCCP_VALUE = nccp_VALUE;
     }
+    
+    public static CryptoProvider fromName(final String s) {
+        if (CryptoProvider.LEGACY.name().equals(s)) {
+            return CryptoProvider.LEGACY;
+        }
+        if (CryptoProvider.WIDEVINE_L1.name().equals(s)) {
+            return CryptoProvider.WIDEVINE_L1;
+        }
+        if (CryptoProvider.WIDEVINE_L3.name().equals(s)) {
+            return CryptoProvider.WIDEVINE_L3;
+        }
+        return null;
+    }
 }

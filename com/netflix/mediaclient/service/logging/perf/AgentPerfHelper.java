@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging.perf;
 
+import com.netflix.mediaclient.service.falkor.FalkorAgent;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
 import com.netflix.mediaclient.service.NrdController;
 import com.netflix.mediaclient.service.logging.LoggingAgent;
@@ -53,6 +54,13 @@ public class AgentPerfHelper
                 return;
             }
             PerformanceProfiler.getInstance().endSession(Sessions.RESOURCE_FETCHER_LOAD, null);
+        }
+        else if (serviceAgent instanceof FalkorAgent) {
+            if (b) {
+                PerformanceProfiler.getInstance().startSession(Sessions.FALKOR_AGENT_LOADED, null);
+                return;
+            }
+            PerformanceProfiler.getInstance().endSession(Sessions.FALKOR_AGENT_LOADED, null);
         }
     }
     

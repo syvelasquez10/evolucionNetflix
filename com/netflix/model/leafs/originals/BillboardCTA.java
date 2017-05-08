@@ -10,12 +10,16 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import java.util.Iterator;
+import com.netflix.falkor.BranchNodeUtils;
+import com.fasterxml.jackson.core.JsonToken;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.core.JsonParser;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class BillboardCTA implements JsonPopulator
+public class BillboardCTA implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "BillboardCTA";
     private String bookmarkPosition;
@@ -25,6 +29,9 @@ public class BillboardCTA implements JsonPopulator
     private Boolean suppressPostPlay;
     private String type;
     private String videoId;
+    
+    public BillboardCTA() {
+    }
     
     public BillboardCTA(final JsonElement jsonElement) {
         this.populate(jsonElement);
@@ -38,6 +45,18 @@ public class BillboardCTA implements JsonPopulator
         this.suppressPostPlay = suppressPostPlay;
         this.type = type;
         this.videoId = videoId;
+    }
+    
+    public static List<BillboardCTA> getListOfActions(final JsonParser jsonParser) {
+        final ArrayList<BillboardCTA> list = new ArrayList<BillboardCTA>();
+        if (jsonParser.getCurrentToken().equals(JsonToken.START_ARRAY)) {
+            for (JsonToken jsonToken = jsonParser.nextToken(); !JsonToken.END_ARRAY.equals(jsonToken); jsonToken = jsonParser.nextToken()) {
+                final BillboardCTA billboardCTA = new BillboardCTA();
+                BranchNodeUtils.merge(billboardCTA, jsonParser, jsonParser.getCurrentToken(), false, 10);
+                list.add(billboardCTA);
+            }
+        }
+        return list;
     }
     
     public static List<BillboardCTA> getListOfActions(final JsonElement jsonElement) {
@@ -175,5 +194,46 @@ public class BillboardCTA implements JsonPopulator
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("BillboardCTA", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "name": {
+                this.name = jsonParser.getValueAsString();
+                break;
+            }
+            case "videoId": {
+                this.videoId = jsonParser.getValueAsString();
+                break;
+            }
+            case "suppressPostPlay": {
+                this.suppressPostPlay = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "type": {
+                this.type = jsonParser.getValueAsString();
+                break;
+            }
+            case "ignoreBookmark": {
+                this.ignoreBookmark = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "sequenceNumber": {
+                this.sequenceNumber = jsonParser.getValueAsString();
+                break;
+            }
+            case "bookmarkPosition": {
+                this.bookmarkPosition = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return true;
     }
 }

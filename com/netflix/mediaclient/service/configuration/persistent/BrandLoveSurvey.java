@@ -20,4 +20,9 @@ public class BrandLoveSurvey extends PersistentConfigurable
     public String getPrefKey() {
         return "persistent_survey";
     }
+    
+    @Override
+    public String getTestId() {
+        return "7141";
+    }
 }

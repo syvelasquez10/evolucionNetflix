@@ -37,7 +37,7 @@ public class KubrickKidsPaginatedCwAdapter extends KubrickPaginatedCwAdapter
     @Override
     protected int computeNumVideosToFetchPerBatch(final int n) {
         if (CWTestUtil.isInTest((Context)this.getActivity())) {
-            return LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD);
+            return LomoConfig.computeNumVideosToFetchPerBatch((Context)this.activity, LoMoType.STANDARD);
         }
         return super.computeNumVideosToFetchPerBatch(n);
     }
@@ -45,7 +45,7 @@ public class KubrickKidsPaginatedCwAdapter extends KubrickPaginatedCwAdapter
     @Override
     public int getRowHeightInPx() {
         if (CWTestUtil.isInTest((Context)this.getActivity())) {
-            return (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.numItemsPerPage * 1.43f + this.activity.getResources().getDimension(2131362082) + this.activity.getResources().getDimension(2131362064));
+            return (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.numItemsPerPage * 1.43f + this.activity.getResources().getDimension(2131362084) + this.activity.getResources().getDimension(2131362067));
         }
         return super.getRowHeightInPx();
     }

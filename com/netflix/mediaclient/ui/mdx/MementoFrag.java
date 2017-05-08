@@ -82,9 +82,9 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     }
     
     private void findViews(final View view) {
-        this.pagerIndicator = (CirclePageIndicator)view.findViewById(2131689993);
-        this.tabLayout = (TabLayout)view.findViewById(2131689994);
-        this.pager = (ViewPager)view.findViewById(2131689992);
+        this.pagerIndicator = (CirclePageIndicator)view.findViewById(2131689984);
+        this.tabLayout = (TabLayout)view.findViewById(2131689985);
+        this.pager = (ViewPager)view.findViewById(2131689983);
     }
     
     private void hideStandardViews() {
@@ -128,16 +128,16 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     private void initTabs() {
         if (this.tabLayout != null) {
             this.tabLayout.removeAllTabs();
-            this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903204), 0, true);
-            this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903204), 1, true);
-            ((TextView)this.tabLayout.getTabAt(0).getCustomView().findViewById(2131689997)).setText(2131231052);
-            ((TextView)this.tabLayout.getTabAt(1).getCustomView().findViewById(2131689997)).setText(2131231054);
+            this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903199), 0, true);
+            this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903199), 1, true);
+            ((TextView)this.tabLayout.getTabAt(0).getCustomView().findViewById(2131689988)).setText(2131231053);
+            ((TextView)this.tabLayout.getTabAt(1).getCustomView().findViewById(2131689988)).setText(2131231055);
             this.tabLayout.setOnTabSelectedListener(new MementoFrag$TabListener(this));
         }
     }
     
     private boolean isRDPShowing() {
-        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131690007);
+        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131689998);
         return roleDetailsFrag != null && !roleDetailsFrag.isHidden();
     }
     
@@ -149,10 +149,10 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     
     private void showRDP(final String actorId) {
         if (this.isActivityValid() && this.getNetflixActivity().isPanelExpanded()) {
-            final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131690007);
+            final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131689998);
             if (roleDetailsFrag != null) {
                 final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
-                beginTransaction.setCustomAnimations(2131034112, 2131034113);
+                beginTransaction.setCustomAnimations(2131034114, 2131034115);
                 beginTransaction.show((Fragment)roleDetailsFrag);
                 roleDetailsFrag.setStillImageHeight(this.pager.getMeasuredHeight());
                 roleDetailsFrag.setImageTint(this.currentTint);
@@ -194,7 +194,7 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     }
     
     protected void adjustHeight(final ImageView imageView) {
-        final float n = this.getActivity().getResources().getDimensionPixelOffset(2131362167);
+        final float n = this.getActivity().getResources().getDimensionPixelOffset(2131362169);
         final float n2 = 1;
         final ViewGroup$LayoutParams layoutParams = imageView.getLayoutParams();
         final float n3 = (BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) - n * (n2 + 1.0f)) / 1;
@@ -236,7 +236,7 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("MementoFrag", "Creating new frag view...");
-        final View inflate = layoutInflater.inflate(2130903202, (ViewGroup)null, false);
+        final View inflate = layoutInflater.inflate(2130903197, (ViewGroup)null, false);
         this.findViews(inflate);
         this.init(inflate);
         this.restoreInstanceState(bundle);

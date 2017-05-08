@@ -8,6 +8,7 @@ import android.util.Pair;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.media.MediaFormat;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
+import com.netflix.mediaclient.util.MediaDrmUtils;
 import com.netflix.mediaclient.Log;
 import java.nio.ByteBuffer;
 import android.view.Surface;
@@ -57,7 +58,7 @@ public class JPlayer2
     private void configureVideoPipe() {
         int n = 1920;
         Log.d("NF_JPlayer2", "configureVideoPipe");
-        if (DrmManagerRegistry.isWidevineDrmAllowed() && this.mCrypto == null) {
+        if (MediaDrmUtils.isWidevineDrmAllowed() && this.mCrypto == null) {
             this.mCrypto = DrmManagerRegistry.getWidevineMediaDrmEngine().getMediaCrypto();
         }
         final MediaFormat mediaFormat = new MediaFormat();
@@ -260,6 +261,10 @@ public class JPlayer2
         }
         if (this.mAudioPipe != null) {
             this.mAudioPipe.flush();
+        }
+        if (AndroidUtils.getAndroidVersion() >= 19 && !AdaptiveMediaDecoderHelper.isAvcDecoderSupportsAdaptivePlayback()) {
+            this.videoToBackground();
+            Log.d("NF_JPlayer2", "Video pipe cleared");
         }
         this.mState = 3;
         Log.d("NF_JPlayer2", "Flush called");

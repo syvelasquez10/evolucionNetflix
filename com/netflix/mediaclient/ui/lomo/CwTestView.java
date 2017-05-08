@@ -7,15 +7,15 @@ package com.netflix.mediaclient.ui.lomo;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import android.view.View$OnClickListener;
 import com.netflix.mediaclient.util.CWTestUtil;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 
@@ -25,6 +25,11 @@ public class CwTestView extends CwView implements VideoViewGroup$IVideoView<CWVi
     
     public CwTestView(final Context context) {
         super(context);
+    }
+    
+    @Override
+    public String getImageUrl(final CWVideo cwVideo, final boolean b) {
+        return BrowseExperience.getLomoVideoViewImageUrl(this.getContext(), cwVideo, CwTestView.class, 0);
     }
     
     @Override
@@ -48,11 +53,11 @@ public class CwTestView extends CwView implements VideoViewGroup$IVideoView<CWVi
         final int n = 0;
         this.playContext = new PlayContextImp(trackable, progress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131230885), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131230887), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
+        final String imageUrl = this.getImageUrl(cwVideo, b2);
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView img = this.img;
-        final String boxshotUrl = cwVideo.getBoxshotUrl();
         final IClientLogging$AssetType boxArt = IClientLogging$AssetType.boxArt;
         final ImageLoader$StaticImgConfig imageLoaderConfig = BrowseExperience.getImageLoaderConfig();
         if (b) {
@@ -61,7 +66,7 @@ public class CwTestView extends CwView implements VideoViewGroup$IVideoView<CWVi
         else {
             progress = 0;
         }
-        imageLoader.showImg(img, boxshotUrl, boxArt, format, imageLoaderConfig, true, progress);
+        imageLoader.showImg(img, imageUrl, boxArt, format, imageLoaderConfig, true, progress);
         progress = n;
         if (cwVideo.getRuntime() > 0) {
             progress = cwVideo.getPlayableBookmarkPosition() * 100 / cwVideo.getRuntime();

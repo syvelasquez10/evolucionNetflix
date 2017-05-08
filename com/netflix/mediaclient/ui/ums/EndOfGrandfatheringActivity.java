@@ -114,7 +114,7 @@ public class EndOfGrandfatheringActivity extends NetflixActivity
         }
         this.mCurrentPlanIndex = mCurrentPlanIndex;
         this.setContentView(2130903110);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131689781);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131689782);
         this.addViewsToFlipper();
         this.mLandingPage = new EogLandingPage(this);
         this.mPlanPage = new EogPlanPage(this);
@@ -309,6 +309,7 @@ public class EndOfGrandfatheringActivity extends NetflixActivity
                 if (Log.isLoggable()) {
                     Log.d("eog", String.format("record planSelection planId:%s, priceTier:%s", s2, s));
                 }
+                this.markEogAlertAsDirty();
                 this.getServiceManager().recordPlanSelection(s2, s);
             }
         }

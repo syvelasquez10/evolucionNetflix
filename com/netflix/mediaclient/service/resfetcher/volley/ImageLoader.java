@@ -30,10 +30,10 @@ import android.widget.ImageView;
 import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$InteractiveListener;
 import android.os.Looper;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$ATTITimer;
 import com.android.volley.RequestQueue;
 import android.os.Handler;
 import java.util.HashMap;
-import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$ATTITimer;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 
 public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
@@ -41,7 +41,6 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
     private static final boolean LOG_VERBOSE = false;
     private static final String TAG = "ImageLoader";
     private final ApplicationPerformanceMetricsLogging mApmLogger;
-    InteractiveTimer$ATTITimer mAttiTimer;
     private final int mBatchResponseDelayMs;
     private final HashMap<String, ImageLoader$BatchedImageRequest> mBatchedResponses;
     private final ImageLoader$ImageCache mCache;
@@ -52,6 +51,7 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
     private int mRequestSocketTimeout;
     private final Object mRequestTag;
     private Runnable mRunnable;
+    InteractiveTimer$ATTITimer mTTRTimer;
     
     public ImageLoader(final RequestQueue requestQueue, final ImageLoader$ImageCache imageLoader$ImageCache, final int n, final long mMinimumCacheTtl, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
         this(requestQueue, imageLoader$ImageCache, n, applicationPerformanceMetricsLogging, serviceAgent$ConfigurationAgentInterface);
@@ -74,7 +74,7 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
         this.mRequestQueue = mRequestQueue;
         this.mCache = mCache;
         this.mApmLogger = mApmLogger;
-        this.mAttiTimer = new InteractiveTimer$ATTITimer(new ImageLoader$1(this));
+        this.mTTRTimer = new InteractiveTimer$ATTITimer(new ImageLoader$1(this));
     }
     
     private void batchResponse(final String s, final ImageLoader$BatchedImageRequest imageLoader$BatchedImageRequest) {
@@ -115,8 +115,8 @@ public class ImageLoader implements com.netflix.mediaclient.util.gfx.ImageLoader
                 return imageLoader$ImageContainer2;
             }
             String startSession;
-            if (!PerformanceProfiler.getInstance().hasFinished() && registerListener instanceof ImageLoader$ValidatingListener && request$Priority != Request$Priority.LOW && this.mAttiTimer.shouldTrack(((ImageLoader$ValidatingListener)registerListener).getImageView(), clientLogging$AssetType)) {
-                registerListener = this.mAttiTimer.registerListener(registerListener);
+            if (registerListener instanceof ImageLoader$ValidatingListener && request$Priority != Request$Priority.LOW && this.mTTRTimer.shouldTrack(((ImageLoader$ValidatingListener)registerListener).getImageView(), clientLogging$AssetType)) {
+                registerListener = this.mTTRTimer.registerListener(registerListener);
                 startSession = PerformanceProfiler.getInstance().startSession(Sessions.IMAGE_FETCH, null);
             }
             else {

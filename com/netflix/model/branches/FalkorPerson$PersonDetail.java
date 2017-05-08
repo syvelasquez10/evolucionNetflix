@@ -4,6 +4,7 @@
 
 package com.netflix.model.branches;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.util.JsonUtils;
@@ -12,13 +13,14 @@ import com.netflix.mediaclient.Log;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.PersonDetail;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public final class FalkorPerson$PersonDetail implements JsonPopulator, PersonDetail
+public final class FalkorPerson$PersonDetail implements JsonMerger, JsonPopulator, PersonDetail
 {
     private static final String TAG = "PersonDetail.Detail";
     public String born;
     public String id;
-    public String imageUrl;
+    public String imgUrl;
     public String knownFor;
     public String name;
     public String spouse;
@@ -30,7 +32,7 @@ public final class FalkorPerson$PersonDetail implements JsonPopulator, PersonDet
     
     @Override
     public String getHeadshotImageUrl() {
-        return this.imageUrl;
+        return this.imgUrl;
     }
     
     @Override
@@ -127,7 +129,7 @@ public final class FalkorPerson$PersonDetail implements JsonPopulator, PersonDet
                     continue;
                 }
                 case 3: {
-                    this.imageUrl = JsonUtils.getAsStringSafe(jsonElement2);
+                    this.imgUrl = JsonUtils.getAsStringSafe(jsonElement2);
                     continue;
                 }
                 case 4: {
@@ -140,5 +142,41 @@ public final class FalkorPerson$PersonDetail implements JsonPopulator, PersonDet
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Log.isLoggable()) {
+            Log.v("PersonDetail.Detail", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "spouse": {
+                this.spouse = jsonParser.getValueAsString();
+                break;
+            }
+            case "name": {
+                jsonParser.getValueAsString();
+                break;
+            }
+            case "born": {
+                this.born = jsonParser.getValueAsString();
+                break;
+            }
+            case "imgUrl": {
+                this.imgUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "id": {
+                this.id = jsonParser.getValueAsString();
+            }
+            case "knownFor": {
+                this.knownFor = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return true;
     }
 }

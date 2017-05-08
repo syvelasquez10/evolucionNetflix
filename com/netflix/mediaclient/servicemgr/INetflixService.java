@@ -4,7 +4,10 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.mediaclient.service.job.NetflixJobExecutor;
+import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.service.job.NetflixJobScheduler;
 import android.os.Handler;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
@@ -72,6 +75,8 @@ public interface INetflixService
     
     Handler getHandler();
     
+    NetflixJobScheduler getJobScheduler();
+    
     IMdx getMdx();
     
     IPlayer getNflxPlayer();
@@ -118,11 +123,17 @@ public interface INetflixService
     
     void registerCallback(final INetflixServiceCallback p0);
     
+    void registerJobExecutor(final NetflixJob$NetflixJobId p0, final NetflixJobExecutor p1);
+    
     void removeProfile(final String p0, final int p1, final int p2);
     
     void selectProfile(final String p0);
     
     void setCurrentAppLocale(final String p0);
+    
+    void startJob(final NetflixJob$NetflixJobId p0);
+    
+    void stopJob(final NetflixJob$NetflixJobId p0);
     
     void uiComingFromBackground();
     

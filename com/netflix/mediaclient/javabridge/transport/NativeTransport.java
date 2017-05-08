@@ -7,7 +7,9 @@ package com.netflix.mediaclient.javabridge.transport;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.media.MediaPlayerHelperFactory;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
+import com.netflix.mediaclient.util.MediaUtils;
 import com.netflix.mediaclient.util.SubtitleUtils;
+import com.netflix.mediaclient.media.JPlayer.AdaptiveMediaDecoderHelper;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.javabridge.error.CrashReport;
@@ -51,8 +53,10 @@ public class NativeTransport implements Transport
     private String mRootFileSystem;
     private int mScreenHeight;
     private int mScreenWidth;
+    private boolean mSupportVideoSeamlessSwitch;
     private Surface mSurface;
     private int mVideoBufferSize;
+    private String mVideoDecoderCapLogging;
     private final Object mWeakThis;
     private PlayerType playerType;
     private final NrdProxy proxy;
@@ -247,12 +251,19 @@ public class NativeTransport implements Transport
         this.mDalvikVMHeapSize = (int)(Runtime.getRuntime().maxMemory() / 1048576L);
         this.mGoogleApiClientVersion = DeviceUtils.getGooglePlayClientSDKVersion(this.bridge.getContext());
         this.mGmsPkgVersion = DeviceUtils.getGMSPkgVersion(this.bridge.getContext());
+        if (AndroidUtils.getAndroidVersion() >= 19) {
+            this.mSupportVideoSeamlessSwitch = AdaptiveMediaDecoderHelper.isAvcDecoderSupportsAdaptivePlayback();
+        }
+        else {
+            this.mSupportVideoSeamlessSwitch = false;
+        }
         this.mMdxJsVersion = "1.1.6-android";
         this.mScreenWidth = SubtitleUtils.getSubtitleImageMaxWidth(this.bridge.getContext());
         this.mScreenHeight = SubtitleUtils.getSubtitleImageMaxHeight(this.bridge.getContext());
         if (ipConnectivityPolicy != null) {
             this.mIpConnectivityPolicy = ipConnectivityPolicy.getValue();
         }
+        this.mVideoDecoderCapLogging = MediaUtils.getDecoderCapbilityForFormatIfUpdated();
         if (Log.isLoggable()) {
             Log.d("nf-NativeTransport", "rootFileSystem: " + this.mRootFileSystem);
             Log.d("nf-NativeTransport", "esn: " + this.mEsn);
@@ -269,6 +280,7 @@ public class NativeTransport implements Transport
             Log.d("nf-NativeTransport", "GMS pkg version:" + this.mGmsPkgVersion);
             Log.d("nf-NativeTransport", "MdxJS version:" + this.mMdxJsVersion);
             Log.d("nf-NativeTransport", "MDX Version:2013.3");
+            Log.d("nf-NativeTransport", "Video decoders: " + this.mVideoDecoderCapLogging);
         }
         this.playerType = this.bridge.getCurrentPlayerType();
         if (this.playerType == null) {
@@ -332,6 +344,7 @@ public class NativeTransport implements Transport
                 break Label_0081;
             }
             string = "nrdp";
+        Block_5_Outer:
             while (true) {
                 String s3 = s2;
                 if (s2 == null) {
@@ -340,14 +353,17 @@ public class NativeTransport implements Transport
                 try {
                     this.native_invokeMethod(string, s, s3);
                     return;
-                    // iftrue(Label_0103:, !string.startsWith("nrdp"))
-                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                    continue;
                     Label_0103: {
                         string = "nrdp." + string;
                     }
-                    continue;
+                    continue Block_5_Outer;
+                    while (true) {
+                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                        continue Block_5_Outer;
+                        continue;
+                    }
                 }
+                // iftrue(Label_0103:, !string.startsWith("nrdp"))
                 catch (Throwable t) {
                     Log.w("nf-NativeTransport", "Failure in JNI. It may happend than NRDApp is null!", t);
                 }
@@ -369,12 +385,15 @@ public class NativeTransport implements Transport
             try {
                 // iftrue(Label_0090:, !string.startsWith("nrdp"))
                 while (true) {
-                    this.native_setProperty(string, s, s2);
-                    return;
-                    Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
-                    continue;
-                    Label_0090: {
-                        string = "nrdp." + string;
+                    while (true) {
+                        this.native_setProperty(string, s, s2);
+                        return;
+                        Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
+                        continue;
+                        Label_0090: {
+                            string = "nrdp." + string;
+                        }
+                        continue;
                     }
                     continue;
                 }

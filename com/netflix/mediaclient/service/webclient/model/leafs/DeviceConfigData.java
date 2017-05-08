@@ -38,10 +38,10 @@ public class DeviceConfigData
     private String enableMdxRemoteControlNotification;
     @SerializedName("enableWidevineL1")
     private boolean enableWidevineL1;
-    @SerializedName("enableWidevineL3")
-    private boolean enableWidevineL3;
     @SerializedName("error_logging_specification")
     private ErrorLoggingSpecification error_logging_specification;
+    @SerializedName("forceLegacyCrypto")
+    private boolean forceLegacyCrypto;
     @SerializedName("gcmBrowseEventRateLimitInSecs")
     private int gcmBrowseEventRateLimit;
     @SerializedName("gcmNListChangeEventRateLimitInSecs")
@@ -218,12 +218,12 @@ public class DeviceConfigData
         return this.enableWidevineL1;
     }
     
-    public boolean isWidevineL3Enabled() {
-        return this.enableWidevineL3;
-    }
-    
     public boolean shouldAlertForMissingLocale() {
         return this.shouldAlertForLocaleSupport;
+    }
+    
+    public boolean shouldForceLegacyCrypto() {
+        return this.forceLegacyCrypto;
     }
     
     public boolean toIgnorePrelaodForPlayBilling() {

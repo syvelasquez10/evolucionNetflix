@@ -64,7 +64,7 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
                 n2 = 2130903156;
             }
             else {
-                n2 = 2130903169;
+                n2 = 2130903164;
             }
             inflate = this.activity.getLayoutInflater().inflate(n2, viewGroup, false);
             inflate.setTag((Object)new LanguageSelector$RowHolder(inflate));
@@ -82,13 +82,13 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
             if (item.isCC()) {
                 Log.d("nf_language_selector", "Add CC");
                 sb.append(' ');
-                sb.append(this.activity.getText(2131230993));
+                sb.append(this.activity.getText(2131230994));
             }
             text = sb.toString();
             equals = item.equals(subtitle);
         }
         else {
-            text = this.activity.getString(2131231117);
+            text = this.activity.getString(2131231118);
             if (subtitle == null) {
                 equals = true;
                 text = text;

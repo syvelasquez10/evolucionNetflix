@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs.social;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -14,9 +15,10 @@ import android.os.Parcel;
 import com.google.gson.annotations.SerializedName;
 import android.os.Parcelable$Creator;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 import android.os.Parcelable;
 
-public class IrisNotificationsListSummary implements Parcelable, JsonPopulator
+public class IrisNotificationsListSummary implements Parcelable, JsonMerger, JsonPopulator
 {
     public static final Parcelable$Creator<IrisNotificationsListSummary> CREATOR;
     private static final String TAG = "SocialNotificationsListSummary";
@@ -163,6 +165,38 @@ public class IrisNotificationsListSummary implements Parcelable, JsonPopulator
                 }
             }
         }
+    }
+    
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("SocialNotificationsListSummary", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "length": {
+                this.length = jsonParser.getValueAsInt();
+                break;
+            }
+            case "requestId": {
+                this.requestId = jsonParser.getValueAsString();
+                break;
+            }
+            case "baseTrackId": {
+                this.baseTrackId = jsonParser.getValueAsInt();
+                break;
+            }
+            case "mdpTrackId": {
+                this.mdpTrackId = jsonParser.getValueAsInt();
+                break;
+            }
+            case "playerTrackId": {
+                this.playerTrackId = jsonParser.getValueAsInt();
+                break;
+            }
+        }
+        return true;
     }
     
     @Override

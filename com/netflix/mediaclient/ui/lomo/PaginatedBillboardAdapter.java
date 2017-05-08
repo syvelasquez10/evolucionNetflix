@@ -42,7 +42,7 @@ public class PaginatedBillboardAdapter extends BasePaginatedAdapter<Billboard>
     }
     
     public static int getPortraitBillboardPhoneOffset(final NetflixActivity netflixActivity) {
-        return netflixActivity.getResources().getDimensionPixelSize(2131362017);
+        return netflixActivity.getResources().getDimensionPixelSize(2131362019);
     }
     
     @Override
@@ -52,7 +52,7 @@ public class PaginatedBillboardAdapter extends BasePaginatedAdapter<Billboard>
     
     @Override
     protected int computeNumVideosToFetchPerBatch(final int n) {
-        return LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.BILLBOARD);
+        return LomoConfig.computeNumVideosToFetchPerBatch((Context)this.activity, LoMoType.BILLBOARD);
     }
     
     @Override

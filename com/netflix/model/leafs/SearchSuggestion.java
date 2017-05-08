@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -12,8 +13,9 @@ import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class SearchSuggestion implements JsonPopulator, com.netflix.mediaclient.servicemgr.interface_.search.SearchSuggestion
+public class SearchSuggestion implements JsonMerger, JsonPopulator, com.netflix.mediaclient.servicemgr.interface_.search.SearchSuggestion
 {
     private static final String TAG = "SearchSuggestion";
     private String title;
@@ -53,6 +55,22 @@ public class SearchSuggestion implements JsonPopulator, com.netflix.mediaclient.
                     this.title = jsonElement2.getAsString();
                     continue;
                 }
+            }
+        }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("SearchSuggestion", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "title": {
+                this.title = jsonParser.getValueAsString();
+                return true;
             }
         }
     }

@@ -4,6 +4,10 @@
 
 package com.netflix.mediaclient.ui.experience;
 
+import java.util.List;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -27,4 +31,8 @@ public interface IExperience
     Class<? extends DetailsActivity> getDetailsClassTypeForVideo(final VideoType p0);
     
     int getLomoRowTitleVisibility(final NetflixActivity p0, final BasicLoMo p1);
+    
+    List<String> getPrefetchLolomoImageUrlList(final Context p0, final Video p1, final LoMoType p2);
+    
+    String getViewImageUrl(final Context p0, final Video p1, final Class p2, final int p3);
 }

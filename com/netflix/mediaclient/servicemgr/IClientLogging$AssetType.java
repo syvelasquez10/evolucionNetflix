@@ -16,5 +16,6 @@ public enum IClientLogging$AssetType
     merchStill, 
     motionBillboard, 
     profileAvatar, 
-    subtitles;
+    subtitles, 
+    wordPartyVideoCard;
 }

@@ -5,8 +5,10 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.ui.lolomo.PrefetchLolomoABTestUtils;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.util.StatusUtils;
@@ -27,7 +29,6 @@ import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
 import com.netflix.mediaclient.util.log.SignInLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
-import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.NetflixApplication;
@@ -37,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONTokener;
 import org.json.JSONArray;
 import java.util.ArrayList;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.NetflixService;
@@ -106,15 +108,19 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         if (StringUtils.isEmpty(s)) {
             return null;
         }
+        final String stringPref = PreferenceUtils.getStringPref(this.getContext(), "useragent_current_userprofile_guid", null);
         final ArrayList<UserProfile> list = new ArrayList<UserProfile>();
         try {
             final JSONArray jsonArray = (JSONArray)new JSONTokener(s).nextValue();
             for (int i = 0; i < jsonArray.length(); ++i) {
-                final UserProfile userProfile = new UserProfile(jsonArray.opt(i).toString());
+                final UserProfile mCurrentUserProfile = new UserProfile(jsonArray.opt(i).toString());
                 if (Log.isLoggable()) {
-                    Log.d("nf_service_useragent", "has userprofile " + userProfile);
+                    Log.d("nf_service_useragent", "has userprofile " + mCurrentUserProfile);
                 }
-                list.add(userProfile);
+                list.add(mCurrentUserProfile);
+                if (this.mCurrentUserProfile == null && StringUtils.safeEquals(mCurrentUserProfile.getProfileGuid(), stringPref)) {
+                    this.mCurrentUserProfile = mCurrentUserProfile;
+                }
             }
         }
         catch (JSONException ex) {
@@ -158,6 +164,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         final NetflixPreference netflixPreference = new NetflixPreference(this.getContext());
         netflixPreference.removePref("useragent_userprofiles_data");
         netflixPreference.removePref("useragent_user_data");
+        netflixPreference.removePref("useragent_current_userprofile_guid");
         netflixPreference.putBooleanPref("nf_user_status_loggedin", false);
         PartnerReceiver.broadcastUserStatus(this.getContext(), false);
         netflixPreference.putBooleanPref("user_profile_was_selected", false);
@@ -247,6 +254,17 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         LocalBroadcastManager.getInstance(this.getContext()).sendBroadcast(intent);
         this.getService().getClientLogging().getBreadcrumbLogging().leaveBreadcrumb("Login complete");
         PartnerReceiver.broadcastUserStatus(this.getContext(), true);
+    }
+    
+    private void persistCurrentProfileGuid(final UserProfile userProfile) {
+        if (Log.isLoggable()) {
+            Log.d("nf_service_useragent", "persistCurrentProfileGuid " + userProfile);
+        }
+        if (userProfile != null) {
+            PreferenceUtils.putStringPref(this.getContext(), "useragent_current_userprofile_guid", userProfile.getProfileGuid());
+            return;
+        }
+        PreferenceUtils.removePref(this.getContext(), "useragent_current_userprofile_guid");
     }
     
     private void persistListOfUserProfiles(final List<UserProfile> list) {
@@ -777,8 +795,9 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         this.mCurrentUserAccount = mCurrentUserAccount;
         for (final UserProfile mCurrentUserProfile : this.mListOfUserProfiles) {
             if (mCurrentUserProfile.getProfileGuid().equals(s)) {
-                this.mCurrentUserProfile = mCurrentUserProfile;
+                this.persistCurrentProfileGuid(this.mCurrentUserProfile = mCurrentUserProfile);
                 BrowseExperience.refresh(this.getContext(), this.mCurrentUserProfile);
+                PersistentConfig.refresh();
                 if (this.mCurrentUserProfile != null && this.mCurrentUserProfile.getSubtitlePreference() != null) {
                     this.mSubtitleSettings = TextStyle.buildSubtitleSettings(this.getCurrentProfile().getSubtitlePreference());
                 }
@@ -865,6 +884,11 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     @Override
+    public boolean shouldFetchAccountDataAsync() {
+        return this.isAccountDataAvailable() && PrefetchLolomoABTestUtils.isConfigRequestAsync(this.getContext());
+    }
+    
+    @Override
     public void switchWebUserProfile(final String s) {
         Log.d("nf_service_useragent", "switchWebUserProfile");
         this.getService().getClientLogging().onProfileSwitch();
@@ -909,6 +933,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     public void userAccountActivated(final DeviceAccount mCurrentUserAccount) {
         this.mCurrentUserAccount = mCurrentUserAccount;
         UserAgentBroadcastIntents.signalUserAccountActive(this.getContext());
+        PersistentConfig.refresh();
     }
     
     @Override

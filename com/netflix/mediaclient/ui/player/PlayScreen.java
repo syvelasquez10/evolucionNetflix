@@ -46,7 +46,7 @@ import android.os.Handler;
 import android.widget.ViewFlipper;
 import android.widget.TextView;
 import android.view.View;
-import android.animation.Animator;
+import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -59,7 +59,7 @@ public class PlayScreen implements Screen
     protected PlayScreen$Listeners listeners;
     protected RelativeLayout mBackground;
     protected ImageView mBif;
-    private Animator mBifAnim;
+    private ViewPropertyAnimator mBifAnim;
     protected BottomPanel mBottomPanel;
     protected View mBufferingOverlay;
     private ContentAdvisoryController mContentAdvisory;
@@ -100,7 +100,7 @@ public class PlayScreen implements Screen
         this.mTopPanel = new TopPanel(mController, listeners);
         this.mBottomPanel = new BottomPanel(mController, listeners);
         final View view = mController.getView();
-        this.mSurface = (TappableSurfaceView)view.findViewById(2131690087);
+        this.mSurface = (TappableSurfaceView)view.findViewById(2131690078);
         if (this.mSurface != null) {
             this.mSurface.addTapListener(listeners.tapListener);
             this.mHolder = this.mSurface.getHolder();
@@ -109,21 +109,21 @@ public class PlayScreen implements Screen
         if (this.mHolder != null) {
             this.mHolder.addCallback(listeners.surfaceListener);
         }
-        this.mFlipper = (ViewFlipper)view.findViewById(2131689832);
-        this.mBackground = (RelativeLayout)view.findViewById(2131689831);
-        this.mWatermarkDisplayArea = (RelativeLayout)view.findViewById(2131690090);
-        this.mBufferingOverlay = view.findViewById(2131690109);
-        this.mLoadingOverlay = view.findViewById(2131690091);
+        this.mFlipper = (ViewFlipper)view.findViewById(2131689833);
+        this.mBackground = (RelativeLayout)view.findViewById(2131689832);
+        this.mWatermarkDisplayArea = (RelativeLayout)view.findViewById(2131690081);
+        this.mBufferingOverlay = view.findViewById(2131690100);
+        this.mLoadingOverlay = view.findViewById(2131690082);
         int n;
         if (mController.getNetflixActivity().isTablet()) {
-            n = 2131690106;
+            n = 2131690097;
         }
         else {
-            n = 2131690089;
+            n = 2131690080;
         }
         this.mBif = (ImageView)view.findViewById(n);
-        this.mTabletBifsLayout = view.findViewById(2131690105);
-        this.mQuickActions = view.findViewById(2131690098);
+        this.mTabletBifsLayout = view.findViewById(2131690096);
+        this.mQuickActions = view.findViewById(2131690089);
         this.mPostPlayManager = PostPlayFactory.create(mController, postPlayFactory$PostPlayType);
         this.moveToState(PlayerUiState.Loading);
         final Asset currentAsset = mController.getCurrentAsset();
@@ -205,7 +205,7 @@ public class PlayScreen implements Screen
     private void moveToLoaded() {
         Log.d("screen", "STATE_LOADED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131624150);
+        final int color = this.mController.getResources().getColor(2131624149);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -222,7 +222,7 @@ public class PlayScreen implements Screen
     private void moveToLoadedTapped() {
         Log.d("screen", "STATE_LOADED_TAPPED");
         this.mBottomPanel.enableButtons(!this.mController.isStalled());
-        final int color = this.mController.getResources().getColor(2131624150);
+        final int color = this.mController.getResources().getColor(2131624149);
         if (this.mBackground != null) {
             this.mBackground.setBackgroundColor(color);
         }
@@ -240,18 +240,18 @@ public class PlayScreen implements Screen
     static int resolveContentView(final PostPlayFactory$PostPlayType postPlayFactory$PostPlayType) {
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForPhone) {
             Log.d("screen", "playout_phone_episode");
-            return 2130903226;
+            return 2130903221;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.EpisodesForTablet) {
             Log.d("screen", "playout_tablet_episode");
-            return 2130903230;
+            return 2130903225;
         }
         if (postPlayFactory$PostPlayType == PostPlayFactory$PostPlayType.RecommendationForTablet) {
             Log.d("screen", "playout_tablet_movie");
-            return 2130903231;
+            return 2130903226;
         }
         Log.d("screen", "playout_phone_movie");
-        return 2130903227;
+        return 2130903222;
     }
     
     private void setToolbarVisibility(final boolean b) {
@@ -290,13 +290,13 @@ public class PlayScreen implements Screen
             autoResizeTextView.setGravity(119);
             final int dipToPixels = AndroidUtils.dipToPixels((Context)this.mController.getActivity(), 5);
             autoResizeTextView.setPadding(dipToPixels, dipToPixels, dipToPixels, dipToPixels);
-            autoResizeTextView.setText((CharSequence)this.mController.getActivity().getString(2131231221, new Object[] { watermark.getIdentifier() }));
+            autoResizeTextView.setText((CharSequence)this.mController.getActivity().getString(2131231222, new Object[] { watermark.getIdentifier() }));
             float n;
             if (this.mController.getNetflixActivity().isTablet()) {
-                n = this.mController.getResources().getDimension(2131362247);
+                n = this.mController.getResources().getDimension(2131362249);
             }
             else {
-                n = this.mController.getResources().getDimension(2131362245);
+                n = this.mController.getResources().getDimension(2131362247);
             }
             SubtitleUtils.applyStyle(autoResizeTextView, watermark.getStyle((Context)this.mController.getActivity()), n);
             final RelativeLayout$LayoutParams relativeLayout$LayoutParams = new RelativeLayout$LayoutParams(-2, -2);
@@ -939,8 +939,9 @@ public class PlayScreen implements Screen
             AnimationUtils.startViewAppearanceAnimation((View)this.mBif, false);
             return;
         }
-        if (this.mBifAnim != null && this.mBifAnim.isRunning()) {
+        if (this.mBifAnim != null) {
             this.mBifAnim.cancel();
+            this.mBifAnim = null;
             this.mTabletBifsLayout.setAlpha(0.0f);
             return;
         }

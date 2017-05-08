@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.util.JsonUtils;
@@ -13,17 +14,18 @@ import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.model.branches.FalkorObject;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class DiscoverySummary implements JsonPopulator, FalkorObject
+public class DiscoverySummary implements JsonMerger, JsonPopulator, FalkorObject
 {
     private static final String TAG = "DiscoverySummary";
     private int collectionId;
-    private String storyArtUrl;
+    private String storyArt;
     private String title;
     private int trackId;
     
     public String getPivotBoxartUrl() {
-        return this.storyArtUrl;
+        return this.storyArt;
     }
     
     public long getPivotCollectionId() {
@@ -90,7 +92,7 @@ public class DiscoverySummary implements JsonPopulator, FalkorObject
                     continue;
                 }
                 case 1: {
-                    this.storyArtUrl = JsonUtils.getAsStringSafe(jsonElement2);
+                    this.storyArt = JsonUtils.getAsStringSafe(jsonElement2);
                     continue;
                 }
                 case 2: {
@@ -103,5 +105,34 @@ public class DiscoverySummary implements JsonPopulator, FalkorObject
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("DiscoverySummary", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "collectionId": {
+                this.collectionId = jsonParser.getValueAsInt();
+                break;
+            }
+            case "storyArt": {
+                this.storyArt = jsonParser.getValueAsString();
+                break;
+            }
+            case "title": {
+                this.title = jsonParser.getValueAsString();
+                break;
+            }
+            case "trackId": {
+                this.trackId = jsonParser.getValueAsInt();
+                break;
+            }
+        }
+        return true;
     }
 }

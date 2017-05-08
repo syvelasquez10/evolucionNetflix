@@ -20,4 +20,9 @@ public class PhoneOrientation extends PersistentConfigurable
     public String getPrefKey() {
         return "persistent_phone_orientation_key";
     }
+    
+    @Override
+    public String getTestId() {
+        return "7129";
+    }
 }

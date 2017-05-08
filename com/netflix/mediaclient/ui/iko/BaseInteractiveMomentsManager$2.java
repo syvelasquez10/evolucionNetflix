@@ -20,6 +20,10 @@ class BaseInteractiveMomentsManager$2 implements MediaPlayerWrapper$PlaybackEven
     }
     
     @Override
+    public void onPlaybackError(final int n, final int n2) {
+    }
+    
+    @Override
     public void onPlaybackFinished() {
         if (this.this$0.isActivityInvalid()) {
             return;
@@ -34,5 +38,13 @@ class BaseInteractiveMomentsManager$2 implements MediaPlayerWrapper$PlaybackEven
             this.val$playbackCompleteListener.onComplete(this.val$url);
         }
         this.this$0.urlToMediaPlayerMap.remove(this.val$url);
+    }
+    
+    @Override
+    public void onPlaybackStarted() {
+    }
+    
+    @Override
+    public void onPlaybackSuccessfullyCompleted() {
     }
 }

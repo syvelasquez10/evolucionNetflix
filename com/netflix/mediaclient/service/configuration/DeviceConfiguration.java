@@ -11,8 +11,8 @@ import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.util.NetflixPreference;
 import java.util.Iterator;
 import java.util.List;
-import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import java.util.HashMap;
 import com.netflix.mediaclient.service.webclient.model.leafs.VoipConfiguration;
@@ -41,6 +41,7 @@ public class DeviceConfiguration
     private boolean mDisableCastFaststart;
     private boolean mDisableDataSaver;
     private ErrorLoggingSpecification mErrorLoggingSpecification;
+    private boolean mForceLegacyCrypto;
     private boolean mIgnorePreloadForPlayBilling;
     private ImagePrefRepository mImagePrefRepository;
     private IpConnectivityPolicy mIpConnectivityPolicy;
@@ -49,9 +50,7 @@ public class DeviceConfiguration
     private boolean mIsDynecomSignInEnabled;
     private boolean mIsPlayBillingDisabled;
     private boolean mIsVoipEnabledOnDevice;
-    private boolean mIsWidevineDisabled;
     private boolean mIsWidevineL1Enabled;
-    private boolean mIsWidevineL3Enabled;
     private int mJPlayerErrorRestartCount;
     private boolean mLocalPlaybackEnabled;
     private boolean mMdxRemoteControlLockScreenEnabled;
@@ -86,18 +85,8 @@ public class DeviceConfiguration
         this.mAppMinimalVersion = PreferenceUtils.getIntPref(this.mContext, "config_min_version", -1);
         this.mIsDisableMdx = PreferenceUtils.getBooleanPref(this.mContext, "disable_mdx", false);
         this.mIsDisableWebsocket = PreferenceUtils.getBooleanPref(this.mContext, "disable_websocket", true);
-        this.mIsWidevineDisabled = PreferenceUtils.getBooleanPref(this.mContext, "disable_widevine", false);
-        if (Log.isLoggable()) {
-            Log.d(DeviceConfiguration.TAG, "Disable Widevine is " + this.mIsWidevineDisabled);
-        }
-        if (this.mIsWidevineDisabled) {
-            this.mIsWidevineL1Enabled = false;
-            this.mIsWidevineL3Enabled = false;
-        }
-        else {
-            this.mIsWidevineL1Enabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_widevine_l1", false);
-            this.mIsWidevineL3Enabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_widevine_l3", false);
-        }
+        this.mIsWidevineL1Enabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_widevine_l1", false);
+        this.mForceLegacyCrypto = PreferenceUtils.getBooleanPref(this.mContext, "force_legacy_crypto", false);
         this.mIsDynecomSignInEnabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_dynecom_signin", true);
         this.mIsVoipEnabledOnDevice = PreferenceUtils.getBooleanPref(this.mContext, "enable_voip_on_device", false);
         this.mUserSessionDurationInSeconds = this.loadUserSessionTimeoutDuration();
@@ -282,6 +271,11 @@ public class DeviceConfiguration
         this.mIsDynecomSignInEnabled = mIsDynecomSignInEnabled;
     }
     
+    private void updateForceLegacyCryptoFlag(final NetflixPreference netflixPreference, final boolean mForceLegacyCrypto) {
+        netflixPreference.putBooleanPref("force_legacy_crypto", mForceLegacyCrypto);
+        this.mForceLegacyCrypto = mForceLegacyCrypto;
+    }
+    
     private void updateLocalPlaybackStatus(final NetflixPreference netflixPreference, final String s) {
         if (StringUtils.isNotEmpty(s)) {
             final boolean boolean1 = Boolean.parseBoolean(s);
@@ -349,20 +343,7 @@ public class DeviceConfiguration
     
     private void updateWidevineL1Flag(final NetflixPreference netflixPreference, final boolean mIsWidevineL1Enabled) {
         netflixPreference.putBooleanPref("enable_widevine_l1", mIsWidevineL1Enabled);
-        if (this.mIsWidevineDisabled) {
-            Log.w(DeviceConfiguration.TAG, "Unable to enable Widevine L1 in runtime because of master Widevine disable");
-            return;
-        }
         this.mIsWidevineL1Enabled = mIsWidevineL1Enabled;
-    }
-    
-    private void updateWidevineL3Flag(final NetflixPreference netflixPreference, final boolean mIsWidevineL3Enabled) {
-        netflixPreference.putBooleanPref("enable_widevine_l3", mIsWidevineL3Enabled);
-        if (this.mIsWidevineDisabled) {
-            Log.w(DeviceConfiguration.TAG, "Unable to enable Widevine L3 in runtime because of master Widevine disable");
-            return;
-        }
-        this.mIsWidevineL3Enabled = mIsWidevineL3Enabled;
     }
     
     public void clear() {
@@ -373,10 +354,6 @@ public class DeviceConfiguration
     
     public boolean enableWidevineL1() {
         return this.mIsWidevineL1Enabled;
-    }
-    
-    public boolean enableWidevineL3() {
-        return this.mIsWidevineL3Enabled;
     }
     
     public String getAlertMsgForMissingLocale() {
@@ -512,14 +489,13 @@ public class DeviceConfiguration
             Log.d(DeviceConfiguration.TAG, String.format("writing configData to storage %s", deviceConfigData.toString()));
         }
         final NetflixPreference netflixPreference = new NetflixPreference(this.mContext);
-        PlayerTypeFactory.updateDevicePlayerType(netflixPreference, deviceConfigData.getPlayerType());
         this.mDeviceRepository.update(netflixPreference, deviceConfigData.getDeviceCategory());
         this.mImagePrefRepository.update(netflixPreference, deviceConfigData.getImagePref());
         this.mSignUpConfig.update(netflixPreference, deviceConfigData.getSignUpEnabled(), deviceConfigData.getSignUpTimeout());
         this.updateDisableWebsocketFlag(netflixPreference, deviceConfigData.getWebsocketDisabled());
         this.updateDisableMdxFlag(netflixPreference, deviceConfigData.getMdxDisabled());
         this.updateWidevineL1Flag(netflixPreference, deviceConfigData.isWidevineL1Enabled());
-        this.updateWidevineL3Flag(netflixPreference, deviceConfigData.isWidevineL3Enabled());
+        this.updateForceLegacyCryptoFlag(netflixPreference, deviceConfigData.shouldForceLegacyCrypto());
         this.updateDynecomSignInFlag(netflixPreference, deviceConfigData.isDynecomSignInEnabled());
         this.updateVoipEnabledOnDeviceFlag(netflixPreference, deviceConfigData.isVoipEnabledOnDevice());
         this.updateAudioFormat(netflixPreference, deviceConfigData.getAudioFormats());
@@ -583,5 +559,9 @@ public class DeviceConfiguration
     
     public boolean shouldDisableVoip() {
         return !this.mIsVoipEnabledOnDevice;
+    }
+    
+    public boolean shouldForceLegacyCrypto() {
+        return this.mForceLegacyCrypto;
     }
 }

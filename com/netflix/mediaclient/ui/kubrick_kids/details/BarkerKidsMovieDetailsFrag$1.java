@@ -34,7 +34,7 @@ class BarkerKidsMovieDetailsFrag$1 implements RecyclerViewHeaderAdapter$IViewCre
     }
     
     private int getImageHeight() {
-        return (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362167) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
+        return (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362169) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
     }
     
     @Override

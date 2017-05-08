@@ -38,7 +38,7 @@ class KidsGenresLoMoFrag$2 implements RecyclerViewHeaderAdapter$IViewCreator
     }
     
     private int getImageWidth() {
-        return (this.this$0.recyclerView.getWidth() - (this.this$0.getActivity().getResources().getDimensionPixelSize(2131362193) * 2 + this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362191) * this.this$0.numColumns)) / this.this$0.numColumns;
+        return (this.this$0.recyclerView.getWidth() - (this.this$0.getActivity().getResources().getDimensionPixelSize(2131362195) * 2 + this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362193) * this.this$0.numColumns)) / this.this$0.numColumns;
     }
     
     @Override

@@ -5,8 +5,10 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.ui.lolomo.PrefetchLolomoABTestUtils;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
@@ -24,7 +26,6 @@ import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
 import com.netflix.mediaclient.util.log.SignInLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
-import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.NetflixApplication;
@@ -34,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONTokener;
 import org.json.JSONArray;
 import java.util.ArrayList;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
@@ -51,6 +53,7 @@ import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.StatusUtils;
+import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.event.nrdp.registration.ActivateEvent;
 import com.netflix.mediaclient.Log;
@@ -78,17 +81,21 @@ class UserAgent$ActivateListener implements EventListener
                     this.this$0.mUserAgentStateManager.accountOrProfileActivated(true, access$900, access$901);
                 }
             }
-            else {
-                if (activateEvent.isActionId()) {
-                    this.this$0.mUserAgentStateManager.accountOrProfileActivated(false, null, null);
-                    if (Log.isLoggable()) {
-                        Log.d("nf_service_useragent", "Received a activate event with ActionID error: " + activateEvent.getActionID() + " Received msg " + activateEvent.getMessage());
-                    }
-                    final NetflixStatus actionIdResult = StatusUtils.toActionIdResult(activateEvent);
-                    this.this$0.notifyLoginComplete(actionIdResult);
-                    UserAgentBroadcastIntents.signalProfileSelectionResult(this.this$0.getContext(), actionIdResult.getStatusCode().getValue(), null);
+            else if (activateEvent.isActionId()) {
+                if (Log.isLoggable()) {
+                    Log.d("nf_service_useragent", "Received a activate event with ActionID error: " + activateEvent.getActionID() + ", reason:" + activateEvent.getReasonCode() + "  Received msg " + activateEvent.getMessage());
+                }
+                if (BlacklistedWidevinePluginErrorDescriptor.canHandle(activateEvent)) {
+                    Log.d("nf_service_useragent", "Action ID 3 and code 15003: blacklisted Widevine L3 plugin, report an error");
+                    this.this$0.getErrorHandler().addError(new BlacklistedWidevinePluginErrorDescriptor(this.this$0.getContext()));
                     return;
                 }
+                this.this$0.mUserAgentStateManager.accountOrProfileActivated(false, null, null);
+                final NetflixStatus actionIdResult = StatusUtils.toActionIdResult(activateEvent);
+                this.this$0.notifyLoginComplete(actionIdResult);
+                UserAgentBroadcastIntents.signalProfileSelectionResult(this.this$0.getContext(), actionIdResult.getStatusCode().getValue(), null);
+            }
+            else {
                 if (activateEvent.isNetworkError()) {
                     Log.d("nf_service_useragent", "Received a activate event with Network error");
                     final NetflixStatus actionIdResult2 = StatusUtils.toActionIdResult(activateEvent);

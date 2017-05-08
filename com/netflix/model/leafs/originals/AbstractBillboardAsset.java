@@ -11,16 +11,24 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
+import com.netflix.falkor.BranchNodeUtils;
+import com.fasterxml.jackson.core.JsonParser;
 import com.netflix.model.branches.FalkorObject;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public abstract class AbstractBillboardAsset implements JsonPopulator, FalkorObject
+public abstract class AbstractBillboardAsset implements JsonMerger, JsonPopulator, FalkorObject
 {
     private final String TAG;
     private Integer height;
     private String tone;
     private String url;
     private Integer width;
+    
+    public AbstractBillboardAsset(final JsonParser jsonParser) {
+        this.TAG = this.getTag();
+        BranchNodeUtils.merge(this, jsonParser, jsonParser.getCurrentToken(), false, 10);
+    }
     
     public AbstractBillboardAsset(final JsonElement jsonElement) {
         this.TAG = this.getTag();
@@ -110,5 +118,34 @@ public abstract class AbstractBillboardAsset implements JsonPopulator, FalkorObj
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v(this.TAG, "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "url": {
+                this.url = jsonParser.getValueAsString();
+                break;
+            }
+            case "width": {
+                this.width = jsonParser.getValueAsInt();
+                break;
+            }
+            case "height": {
+                this.height = jsonParser.getValueAsInt();
+                break;
+            }
+            case "tone": {
+                this.tone = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return true;
     }
 }

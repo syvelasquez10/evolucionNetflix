@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
@@ -189,28 +190,23 @@ public final class ServiceManager implements IServiceManagerAccess
             try {
                 Log.d("ServiceManager", "fetchAndCacheResource:: resourceUrl is null");
                 return b;
-                // iftrue(Label_0103:, !this.validateService())
                 while (true) {
-                    while (true) {
-                        Block_4: {
-                            break Block_4;
-                            Label_0103: {
-                                Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
-                            }
-                            return b;
-                        }
-                        final int addCallback;
-                        this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
-                        b = true;
-                        return b;
-                        Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
-                        continue;
+                    final int addCallback;
+                    this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
+                    b = true;
+                    return b;
+                    Label_0103: {
+                        Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
                     }
-                    final int addCallback = this.addCallback(managerCallback);
+                    return b;
+                    addCallback = this.addCallback(managerCallback);
+                    Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
+                    Label_0073:
                     continue;
                 }
             }
             // iftrue(Label_0073:, !Log.isLoggable())
+            // iftrue(Label_0103:, !this.validateService())
             finally {
             }
             // monitorexit(this)
@@ -626,6 +622,18 @@ public final class ServiceManager implements IServiceManagerAccess
         }
         Log.w("ServiceManager", "shouldAlertForMissingLocale:: service is not available");
         return false;
+    }
+    
+    public void startJob(final NetflixJob$NetflixJobId netflixJob$NetflixJobId) {
+        if (this.isReady()) {
+            this.mService.startJob(netflixJob$NetflixJobId);
+        }
+    }
+    
+    public void stopJob(final NetflixJob$NetflixJobId netflixJob$NetflixJobId) {
+        if (this.isReady()) {
+            this.mService.stopJob(netflixJob$NetflixJobId);
+        }
     }
     
     public void uiComingFromBackground() {

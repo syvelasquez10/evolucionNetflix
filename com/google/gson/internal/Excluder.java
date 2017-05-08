@@ -4,6 +4,8 @@
 
 package com.google.gson.internal;
 
+import java.util.Collection;
+import java.util.ArrayList;
 import com.google.gson.FieldAttributes;
 import com.google.gson.annotations.Expose;
 import java.lang.reflect.Field;
@@ -234,5 +236,22 @@ public final class Excluder implements TypeAdapterFactory, Cloneable
             }
         }
         return false;
+    }
+    
+    public Excluder withExclusionStrategy(final ExclusionStrategy exclusionStrategy, final boolean b, final boolean b2) {
+        final Excluder clone = this.clone();
+        if (b) {
+            (clone.serializationStrategies = new ArrayList<ExclusionStrategy>(this.serializationStrategies)).add(exclusionStrategy);
+        }
+        if (b2) {
+            (clone.deserializationStrategies = new ArrayList<ExclusionStrategy>(this.deserializationStrategies)).add(exclusionStrategy);
+        }
+        return clone;
+    }
+    
+    public Excluder withVersion(final double version) {
+        final Excluder clone = this.clone();
+        clone.version = version;
+        return clone;
     }
 }

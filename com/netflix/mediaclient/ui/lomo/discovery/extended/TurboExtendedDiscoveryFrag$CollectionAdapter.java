@@ -40,7 +40,7 @@ class TurboExtendedDiscoveryFrag$CollectionAdapter extends RecyclerView$Adapter<
         final AdvancedImageView advancedImageView = new AdvancedImageView((Context)this.this$0.getActivity());
         advancedImageView.setScaleType(ImageView$ScaleType.FIT_XY);
         advancedImageView.setAdjustViewBounds(true);
-        dimensionPixelOffset = this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362123);
+        dimensionPixelOffset = this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362125);
         final float n = (DeviceUtils.getScreenWidthInPixels((Context)this.this$0.getActivity()) - dimensionPixelOffset * 2) / 2;
         advancedImageView.setLayoutParams(new ViewGroup$LayoutParams((int)n, (int)(1.43f * n)));
         return new TurboExtendedDiscoveryFrag$TurboViewHolder(this.this$0, (View)advancedImageView);

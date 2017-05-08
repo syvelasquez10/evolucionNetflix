@@ -6,10 +6,6 @@ package com.netflix.mediaclient;
 
 import com.netflix.mediaclient.event.UIEvent;
 import android.app.Application$ActivityLifecycleCallbacks;
-import com.netflix.mediaclient.service.logging.perf.Sessions;
-import java.util.Map;
-import com.netflix.mediaclient.service.logging.perf.Events;
-import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.res.Configuration;
@@ -20,6 +16,7 @@ import android.app.PendingIntent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat$Builder;
 import com.netflix.mediaclient.util.IntentUtils;
+import android.app.Application;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.repository.SecurityRepository;
@@ -34,7 +31,7 @@ import java.util.Timer;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.BroadcastReceiver;
 import com.google.gson.Gson;
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 import java.util.TimerTask;
 
 class NetflixApplication$2 extends TimerTask

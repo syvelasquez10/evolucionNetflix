@@ -5,16 +5,56 @@
 package com.netflix.mediaclient.util;
 
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
-import com.netflix.mediaclient.service.configuration.PersistentConfig;
-import com.netflix.mediaclient.Log;
 import android.renderscript.RenderScript;
 import android.graphics.Bitmap;
-import android.content.Context;
 import android.app.Activity;
+import java.util.Iterator;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.configuration.PersistentConfig;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
+import com.netflix.mediaclient.servicemgr.interface_.LoMo;
+import java.util.List;
+import android.content.Context;
 
 public final class Coppola2Utils
 {
     private static final String TAG = "Coppola2Utils";
+    
+    public static void checkAndLogLolomo(final Context context, final List<LoMo> list) {
+        if (isCoppolaWithNormalCW(context)) {
+            final Iterator<LoMo> iterator = list.iterator();
+            int n = 0;
+            int n2 = 0;
+            while (iterator.hasNext()) {
+                final LoMo loMo = iterator.next();
+                int n3;
+                int n4;
+                if (loMo.getType() == LoMoType.DISCOVERY_ROW) {
+                    final boolean b = true;
+                    n3 = n2;
+                    n4 = (b ? 1 : 0);
+                }
+                else if (loMo.getType() == LoMoType.CONTINUE_WATCHING) {
+                    n4 = n;
+                    n3 = 1;
+                }
+                else {
+                    final int n5 = n2;
+                    n4 = n;
+                    n3 = n5;
+                }
+                final int n6 = n3;
+                n = n4;
+                n2 = n6;
+            }
+            if (n2 != 0 && n == 0) {
+                final String string = "SPY-10074 - Coppola2 cell " + PersistentConfig.getCoppola2ABTestCell(context).ordinal() + " user didn't receive cwDiscovery row but did receive CW one";
+                Log.w("Coppola2Utils", string);
+                ErrorLoggingManager.logHandledException(string);
+            }
+        }
+    }
     
     public static void forceToPortraitIfNeeded(final Activity activity) {
         if (isCoppolaDiscovery((Context)activity)) {
@@ -212,6 +252,10 @@ public final class Coppola2Utils
     
     public static boolean isCoppolaDiscovery(final Context context) {
         return PersistentConfig.getCoppola2ABTestCell(context).ordinal() > ABTestConfig$Cell.CELL_ONE.ordinal() && PersistentConfig.getCoppola2ABTestCell(context).ordinal() < ABTestConfig$Cell.CELL_EIGHT.ordinal();
+    }
+    
+    public static boolean isCoppolaWithNormalCW(final Context context) {
+        return PersistentConfig.getCoppola2ABTestCell(context).ordinal() > ABTestConfig$Cell.CELL_FOUR.ordinal() && PersistentConfig.getCoppola2ABTestCell(context).ordinal() < ABTestConfig$Cell.CELL_EIGHT.ordinal();
     }
     
     public static boolean isCoppolaWithoutNormalCW(final Context context) {

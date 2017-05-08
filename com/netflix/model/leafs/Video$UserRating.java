@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -12,8 +13,9 @@ import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.UserRating;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public final class Video$UserRating implements JsonPopulator, UserRating
+public final class Video$UserRating implements JsonMerger, JsonPopulator, UserRating
 {
     private static final String TAG = "UserRating";
     public float userRating;
@@ -53,6 +55,22 @@ public final class Video$UserRating implements JsonPopulator, UserRating
                     this.userRating = jsonElement2.getAsFloat();
                     continue;
                 }
+            }
+        }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("UserRating", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "userRating": {
+                this.userRating = (float)jsonParser.getValueAsDouble();
+                return true;
             }
         }
     }

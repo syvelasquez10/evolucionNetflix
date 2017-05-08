@@ -117,14 +117,14 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void createContentView() {
-        this.setContentView(2130903273);
-        final ImageView imageView = (ImageView)this.findViewById(2131690280);
+        this.setContentView(2130903268);
+        final ImageView imageView = (ImageView)this.findViewById(2131690271);
         int imageResource;
         if (DeviceUtils.isTabletByContext((Context)this)) {
-            imageResource = 2130837951;
+            imageResource = 2130837950;
         }
         else {
-            imageResource = 2130837950;
+            imageResource = 2130837949;
         }
         imageView.setImageResource(imageResource);
         if (DeviceUtils.getScreenResolutionDpi((Context)this) >= 320 && DeviceUtils.getScreenSizeCategory((Context)this) == 4) {
@@ -138,7 +138,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showDebugToast(this.getString(2131231176));
+            this.showDebugToast(this.getString(2131231177));
             SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.smartLock, IClientLogging$CompletionReason.success, null);
             return;
         }
@@ -280,7 +280,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
             return;
         }
         Log.d("LaunchActivity", String.format("Redirect to home with profile %s, %s", serviceManager.getCurrentProfile().getProfileName(), serviceManager.getCurrentProfile().getProfileGuid()));
-        this.startNextActivity(HomeActivity.createStartIntent(this));
+        this.startNextActivity(HomeActivity.createStartIntent(this).putExtra("com.netflix.mediaclient._TRANSITION_ANIMATION", false));
         if (EogUtils.shouldShowEogAlert(serviceManager)) {
             this.startNextActivity(EndOfGrandfatheringActivity.createStartIntent(this, EndOfGrandfatheringActivity.shouldBlockUser(serviceManager.getEndOfGrandfatheringAlert().isBlocking)));
         }
@@ -296,8 +296,8 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void manipulateSplashBackground() {
-        final ImageView imageView = (ImageView)this.findViewById(2131690280);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$1(this, imageView, (ImageView)this.findViewById(2131689849), (ProgressBar)this.findViewById(2131689850)));
+        final ImageView imageView = (ImageView)this.findViewById(2131690271);
+        imageView.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new LaunchActivity$1(this, imageView, (ImageView)this.findViewById(2131689850), (ProgressBar)this.findViewById(2131689851)));
     }
     
     private void onCredentialRetrieved(final Credential credential) {
@@ -396,6 +396,11 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     @Override
+    protected boolean allowTransitionAnimation() {
+        return false;
+    }
+    
+    @Override
     protected ManagerStatusListener createManagerStatusListener() {
         PerformanceProfiler.getInstance().startSession(Sessions.LAUNCH_ACTIVITY_MANAGER_LOAD, null);
         return new LaunchActivity$2(this);
@@ -403,6 +408,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     
     @Override
     public void finish() {
+        PerformanceProfiler.getInstance().endSession(Sessions.LAUNCH_ACTIVITY_LIFE, null);
         super.finish();
     }
     
@@ -484,9 +490,16 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     
     @Override
     protected void onCreate(final Bundle bundle) {
-        PerformanceProfiler.getInstance().startSession(Sessions.LAUNCH_ACTIVITY_LIFE, null);
         this.mStarted = System.currentTimeMillis();
         super.onCreate(bundle);
+        if (bundle == null) {
+            if (this.shouldStartPerformanceLogging()) {
+                PerformanceProfiler.getInstance().clear();
+                PerformanceProfiler.getInstance().startSession(Sessions.TTI, null);
+                PerformanceProfiler.getInstance().startSession(Sessions.TTR, null);
+            }
+            PerformanceProfiler.getInstance().startSession(Sessions.LAUNCH_ACTIVITY_LIFE, null);
+        }
         if (Log.isLoggable()) {
             Log.d("LaunchActivity", this.getIntent());
             Log.d("LaunchActivity", "Time: " + System.nanoTime());
@@ -509,7 +522,6 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         if (this.mCredentialsApiClient != null) {
             this.mCredentialsApiClient.disconnect();
         }
-        PerformanceProfiler.getInstance().endSession(Sessions.LAUNCH_ACTIVITY_LIFE, null);
     }
     
     @Override
@@ -542,6 +554,10 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     @Override
     protected boolean shouldFinishOnManagerError() {
         return false;
+    }
+    
+    protected boolean shouldStartPerformanceLogging() {
+        return true;
     }
     
     @Override

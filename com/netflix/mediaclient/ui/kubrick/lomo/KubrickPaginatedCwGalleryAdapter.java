@@ -54,7 +54,7 @@ public class KubrickPaginatedCwGalleryAdapter extends BasePaginatedAdapter<CWVid
     
     @Override
     protected int computeNumVideosToFetchPerBatch(int n) {
-        int computeNumVideosToFetchPerBatch = LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD);
+        int computeNumVideosToFetchPerBatch = LomoConfig.computeNumVideosToFetchPerBatch((Context)this.activity, LoMoType.STANDARD);
         if (n == 0) {
             n = (computeNumVideosToFetchPerBatch -= 3);
             if (Log.isLoggable()) {

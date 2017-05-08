@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs.social;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -20,9 +21,10 @@ import com.netflix.mediaclient.service.webclient.model.leafs.FriendProfile;
 import com.google.gson.annotations.SerializedName;
 import android.os.Parcelable$Creator;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 import android.os.Parcelable;
 
-public class IrisNotificationSummary implements Parcelable, JsonPopulator
+public class IrisNotificationSummary implements Parcelable, JsonMerger, JsonPopulator
 {
     public static final Parcelable$Creator<IrisNotificationSummary> CREATOR;
     private static final String TAG = "SocialNotificationSummary";
@@ -458,6 +460,89 @@ public class IrisNotificationSummary implements Parcelable, JsonPopulator
                 }
             }
         }
+    }
+    
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("SocialNotificationSummary", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "id": {
+                this.id = jsonParser.getValueAsString();
+                break;
+            }
+            case "storyId": {
+                this.storyId = jsonParser.getValueAsString();
+                break;
+            }
+            case "msgType": {
+                this.type = getNotificationType(jsonParser.getValueAsString());
+                break;
+            }
+            case "msgString": {
+                this.messageString = jsonParser.getValueAsString();
+                break;
+            }
+            case "fromUser": {
+                (this.friendProfile = new FriendProfile()).set(s, jsonParser);
+                break;
+            }
+            case "timestamp": {
+                this.timestamp = jsonParser.getValueAsLong();
+                break;
+            }
+            case "imageAltText": {
+                this.imageAltText = jsonParser.getValueAsString();
+                break;
+            }
+            case "imageTarget": {
+                this.imageTarget = jsonParser.getValueAsString();
+                break;
+            }
+            case "showTimestamp": {
+                this.showTimestamp = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "header": {
+                this.headerText = jsonParser.getValueAsString();
+                break;
+            }
+            case "body": {
+                this.bodyText = jsonParser.getValueAsString();
+                break;
+            }
+            case "textTarget": {
+                this.textTarget = jsonParser.getValueAsString();
+                break;
+            }
+            case "imageUrl": {
+                this.imageUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "isRead": {
+                this.bWasRead = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "isThanked": {
+                this.bWasThanked = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "showType": {
+                VideoType showType;
+                if ("movie".equalsIgnoreCase(jsonParser.getValueAsString())) {
+                    showType = VideoType.MOVIE;
+                }
+                else {
+                    showType = VideoType.SHOW;
+                }
+                this.showType = showType;
+                break;
+            }
+        }
+        return true;
     }
     
     public void setWasRead(final boolean bWasRead) {

@@ -46,7 +46,7 @@ public class KubrickPaginatedGalleryAdapter extends BasePaginatedAdapter<Kubrick
     
     @Override
     protected int computeNumVideosToFetchPerBatch(int n) {
-        int computeNumVideosToFetchPerBatch = LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD);
+        int computeNumVideosToFetchPerBatch = LomoConfig.computeNumVideosToFetchPerBatch((Context)this.activity, LoMoType.STANDARD);
         if (n == 0) {
             n = (computeNumVideosToFetchPerBatch -= 3);
             if (Log.isLoggable()) {
@@ -80,7 +80,7 @@ public class KubrickPaginatedGalleryAdapter extends BasePaginatedAdapter<Kubrick
         int n2;
         final int n = n2 = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, 1 != 0) / this.numItemsPerPage * 0.5625f) * 4;
         if (BrowseExperience.showKidsExperience()) {
-            n2 = n + this.activity.getResources().getDimensionPixelSize(2131362200);
+            n2 = n + this.activity.getResources().getDimensionPixelSize(2131362202);
         }
         if (Log.isLoggable()) {
             Log.v("KubrickPaginatedGalleryAdapter", "Computed view height: " + n2 + " (px)");

@@ -25,10 +25,10 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 import android.os.Looper;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$ATTITimer;
 import com.android.volley.RequestQueue;
 import android.os.Handler;
 import java.util.HashMap;
-import com.netflix.mediaclient.service.logging.perf.InteractiveTimer$ATTITimer;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
@@ -45,8 +45,7 @@ class ImageLoader$1 implements InteractiveTimer$InteractiveListener
     
     @Override
     public void onInteractive() {
-        PerformanceProfiler.getInstance().endSession(Sessions.ATTI, null);
+        PerformanceProfiler.getInstance().endSession(Sessions.TTR, null);
         PerformanceProfiler.getInstance().flushApmEvents(this.this$0.mApmLogger);
-        PerformanceProfiler.getInstance().finish();
     }
 }

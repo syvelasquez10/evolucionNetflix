@@ -10,6 +10,7 @@ import android.view.animation.Interpolator;
 public class WPConstants
 {
     public static final long ANIMATION_DURATION_MS = 1000L;
+    public static final int ANTIALIAS_BORDER_SIZE_PX = 1;
     public static final float ASPECT_RATIO_4_3_QUALIFIER_VALUE = 1.5f;
     public static final int CARDS_MAX_COUNT = 4;
     public static final int CARD_ANIMATION_ROTATION_START_DEGREE = 90;
@@ -60,6 +61,11 @@ public class WPConstants
     public static final float SFX_VOLUME_VALUE = 1.0f;
     private static final String TAG = "WPConstants";
     public static final int TIMEOUT_DURATION_MS = 15000;
+    public static final long VIDEO_CARD_FADE_ANIMATION_DURATION_MS = 500L;
+    public static final float VIDEO_CARD_FADE_IN_ALPHA_END_VALUE = 1.0f;
+    public static final float VIDEO_CARD_FADE_IN_ALPHA_START_VALUE = 0.5f;
+    public static final float VIDEO_CARD_FADE_OUT_ALPHA_END_VALUE = 0.0f;
+    public static final float VIDEO_CARD_FADE_OUT_ALPHA_START_VALUE = 1.0f;
     public static final int WIGGLE_ANIMATION_DELAY_MS = 100;
     public static final int WIGGLE_ANIMATION_DURATION_MS = 500;
     public static final float WORD_WALLY_CARD_HEIGHT_RATIO = 0.62f;

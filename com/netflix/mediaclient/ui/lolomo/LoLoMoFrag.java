@@ -7,6 +7,10 @@ package com.netflix.mediaclient.ui.lolomo;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
+import java.util.Collections;
+import com.netflix.mediaclient.service.logging.perf.Events;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
+import android.content.Context;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
@@ -44,6 +48,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     private LoLoMoFrag$ILoLoMoAdapter adapter;
     protected LoLoMoFocusHandler focusHandler;
     protected String genreId;
+    private boolean isFirstLaunch;
     private boolean isGenreList;
     protected final ErrorWrapper$Callback leCallback;
     protected LoadingAndErrorWrapper leWrapper;
@@ -114,7 +119,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     }
     
     protected int getLayoutId() {
-        return 2130903172;
+        return 2130903167;
     }
     
     ListView getListView() {
@@ -162,8 +167,16 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
+        boolean isFirstLaunch = false;
         Log.v("LoLoMoFrag", "Creating frag view");
         final View inflate = layoutInflater.inflate(this.getLayoutId(), viewGroup, false);
+        if (bundle == null) {
+            isFirstLaunch = true;
+        }
+        this.isFirstLaunch = isFirstLaunch;
+        if (Log.isLoggable()) {
+            Log.v("LoLoMoFrag", "onCreateView: isFirstLaunch = " + this.isFirstLaunch);
+        }
         this.setupMainView(inflate);
         this.setupFocushandler();
         this.setupErrorWrapper(inflate);
@@ -177,6 +190,21 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
             this.adapter.onDestroyView();
         }
         super.onDestroyView();
+    }
+    
+    public void onLolomoPrefetchComplete(final boolean b) {
+        if (!this.isFirstLaunch) {
+            Log.d("LoLoMoFrag", "onLolomoPrefetchComplete: is not from cache or is not first launch to refresh CW");
+        }
+        else if (PrefetchLolomoABTestUtils.hasJobScheduler((Context)this.getNetflixActivity())) {
+            PerformanceProfiler.getInstance().logEvent(Events.LOLOMO_METADATA_FETCHED_EVENT, Collections.singletonMap("isFromCache", String.valueOf(b)));
+            if (b && this.getServiceManager() != null) {
+                if (Log.isLoggable()) {
+                    Log.d("LoLoMoFrag", "onLolomoPrefetchComplete: lolomo data is from cache on a new app launch - refresh CW data from server");
+                }
+                this.getServiceManager().getBrowse().refreshCw(true);
+            }
+        }
     }
     
     @Override

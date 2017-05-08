@@ -23,7 +23,6 @@ import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.net.Uri;
 import com.netflix.mediaclient.ui.common.MediaPlayerWrapper$PlaybackEventsListener;
 import com.netflix.model.leafs.originals.BillboardBackground;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.widget.RelativeLayout$LayoutParams;

@@ -6,12 +6,12 @@ package com.netflix.mediaclient.android.widget;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.util.AttributeSet;
@@ -44,8 +44,17 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130837937);
+        this.setBackgroundResource(2130837936);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
+    }
+    
+    @Override
+    public String getImageUrl(final Video video, final boolean b) {
+        int n = 0;
+        if (this.isHorizontal) {
+            n = 1;
+        }
+        return BrowseExperience.getLomoVideoViewImageUrl(this.getContext(), video, VideoView.class, n);
     }
     
     @Override
@@ -73,14 +82,8 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
         if (trackable != null) {
             this.playContext = new PlayContextImp(trackable, visibility);
         }
-        String s;
-        if (this.isHorizontal) {
-            s = video.getHorzDispUrl();
-        }
-        else {
-            s = video.getBoxshotUrl();
-        }
-        if (StringUtils.isEmpty(s)) {
+        final String imageUrl = this.getImageUrl(video, b2);
+        if (StringUtils.isEmpty(imageUrl)) {
             visibility = 4;
         }
         else {
@@ -98,6 +101,6 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
         else {
             visibility = 0;
         }
-        imageLoader.showImg(this, s, boxArt, title, imageLoaderConfig, true, visibility);
+        imageLoader.showImg(this, imageUrl, boxArt, title, imageLoaderConfig, true, visibility);
     }
 }

@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -11,8 +12,9 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public final class Video$SearchTitle implements JsonPopulator
+public final class Video$SearchTitle implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "SearchTitle";
     public String certification;
@@ -109,6 +111,43 @@ public final class Video$SearchTitle implements JsonPopulator
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("SearchTitle", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "title": {
+                this.title = jsonParser.getValueAsString();
+                break;
+            }
+            case "certification": {
+                this.certification = jsonParser.getValueAsString();
+                break;
+            }
+            case "horzDispUrl": {
+                this.horzDispUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "releaseYear": {
+                this.releaseYear = jsonParser.getValueAsInt();
+                break;
+            }
+            case "isOriginal": {
+                this.isOriginal = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "isPreRelease": {
+                this.isPreRelease = jsonParser.getValueAsBoolean();
+                break;
+            }
+        }
+        return true;
     }
     
     @Override

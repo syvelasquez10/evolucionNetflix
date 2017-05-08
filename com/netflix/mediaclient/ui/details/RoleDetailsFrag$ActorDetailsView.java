@@ -92,17 +92,17 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     private void findViews() {
-        this.actorStillImg = (FocalPointImageView)this.findViewById(2131690230);
-        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131690231);
-        this.knownFor = (TextView)this.findViewById(2131690235);
-        this.knownForLabel = (TextView)this.findViewById(2131690234);
-        this.spouse = (TextView)this.findViewById(2131690239);
-        this.spouseLabel = (TextView)this.findViewById(2131690238);
-        this.name = (TextView)this.findViewById(2131690233);
-        this.born = (TextView)this.findViewById(2131690237);
-        this.bornLabel = (TextView)this.findViewById(2131690236);
-        this.onNetFlixLabel = this.findViewById(2131690232);
-        this.this$0.caret = this.findViewById(2131690240);
+        this.actorStillImg = (FocalPointImageView)this.findViewById(2131690221);
+        this.actorHeadshotImg = (CircleImageView)this.findViewById(2131690222);
+        this.knownFor = (TextView)this.findViewById(2131690226);
+        this.knownForLabel = (TextView)this.findViewById(2131690225);
+        this.spouse = (TextView)this.findViewById(2131690230);
+        this.spouseLabel = (TextView)this.findViewById(2131690229);
+        this.name = (TextView)this.findViewById(2131690224);
+        this.born = (TextView)this.findViewById(2131690228);
+        this.bornLabel = (TextView)this.findViewById(2131690227);
+        this.onNetFlixLabel = this.findViewById(2131690223);
+        this.this$0.caret = this.findViewById(2131690231);
     }
     
     private void init() {
@@ -129,7 +129,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     private void updateActorStillImage(final FalkorPerson falkorPerson) {
-        final View viewById = this.findViewById(2131689956);
+        final View viewById = this.findViewById(2131689947);
         if (this.actorStillImg != null) {
             this.adjustHeight(this.actorStillImg);
             this.actorStillImg.setImageLoaderInfo(null);
@@ -198,7 +198,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     
     protected void adjustHeight(final ImageView imageView) {
         if (this.this$0.stillImageHeight < 1) {
-            final float n = this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362167);
+            final float n = this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362169);
             final float n2 = 1;
             final ViewGroup$LayoutParams layoutParams = imageView.getLayoutParams();
             final float n3 = (BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - n * (n2 + 1.0f)) / 1;
@@ -216,7 +216,7 @@ class RoleDetailsFrag$ActorDetailsView extends RelativeLayout
     }
     
     protected int getlayoutId() {
-        return 2130903253;
+        return 2130903248;
     }
     
     void updateDetails(final FalkorPerson falkorPerson, final boolean b) {

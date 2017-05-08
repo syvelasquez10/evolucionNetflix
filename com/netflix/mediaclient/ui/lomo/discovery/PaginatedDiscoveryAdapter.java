@@ -16,6 +16,7 @@ import android.view.View;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
+import android.content.res.Resources;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.Coppola2Utils;
 import android.content.Context;
@@ -46,10 +47,11 @@ public class PaginatedDiscoveryAdapter extends BasePaginatedAdapter<Discovery>
     
     @Override
     public int getRowHeightInPx() {
+        final Resources resources = this.getActivity().getResources();
         int n2;
-        final int n = n2 = (int)this.getActivity().getResources().getDimension(2131361792);
+        final int n = n2 = (int)resources.getDimension(2131361792);
         if (Coppola2Utils.shouldHideContinueWatchingLink((Context)this.activity)) {
-            n2 = n - (int)this.getActivity().getResources().getDimension(2131362072);
+            n2 = (int)(n - (resources.getDimension(2131362067) + (resources.getDimension(2131361882) + resources.getDimension(2131362125))));
         }
         Log.v("PaginatedDiscoveryAdapter", "Computed view height: " + n2);
         return n2;

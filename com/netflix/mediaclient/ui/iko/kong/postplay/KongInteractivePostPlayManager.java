@@ -463,14 +463,14 @@ public class KongInteractivePostPlayManager implements InteractivePostPlayManage
     }
     
     View inflateViews(final ViewGroup viewGroup) {
-        viewGroup.addView(this.kongPostplayContainer = ((LayoutInflater)this.getActivity().getSystemService("layout_inflater")).inflate(2130903223, viewGroup, false));
-        this.unlockingGearContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690052);
-        this.powerUpContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690066);
-        this.gear1Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131690062);
-        this.gear2Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131690063);
-        this.battleIntroContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690057);
-        this.nextEpisodeContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690053);
-        this.battleResultAvatar = (ImageView)this.kongPostplayContainer.findViewById(2131690065);
+        viewGroup.addView(this.kongPostplayContainer = ((LayoutInflater)this.getActivity().getSystemService("layout_inflater")).inflate(2130903218, viewGroup, false));
+        this.unlockingGearContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690043);
+        this.powerUpContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690057);
+        this.gear1Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131690053);
+        this.gear2Group = (ViewGroup)this.kongPostplayContainer.findViewById(2131690054);
+        this.battleIntroContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690048);
+        this.nextEpisodeContainer = (ViewGroup)this.kongPostplayContainer.findViewById(2131690044);
+        this.battleResultAvatar = (ImageView)this.kongPostplayContainer.findViewById(2131690056);
         this.bgScreen.initViews(this.kongPostplayContainer);
         this.unlockScreen.initViews((View)this.unlockingGearContainer);
         this.powerUpScreen.initViews((View)this.powerUpContainer);
@@ -491,7 +491,7 @@ public class KongInteractivePostPlayManager implements InteractivePostPlayManage
     }
     
     void initMediaPlayer() {
-        this.mediaPlayerWrapper = new MediaPlayerWrapper(null, true, -1, this.bgScoreVolume, new KongInteractivePostPlayManager$7(this));
+        this.mediaPlayerWrapper = new MediaPlayerWrapper(null, true, -1, this.bgScoreVolume, IClientLogging$AssetType.interactiveContent, new KongInteractivePostPlayManager$7(this));
     }
     
     void initMediaPlayerForBgAudio() {

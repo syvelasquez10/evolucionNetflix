@@ -50,16 +50,16 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             return episodeDetails.getTitle();
         }
         if (episodeDetails.isAvailableToStream()) {
-            return context.getString(2131231065, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+            return context.getString(2131231066, new Object[] { episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
         }
         String s;
         if (StringUtils.isEmpty(episodeDetails.getAvailabilityDateMessage())) {
-            s = context.getString(2131231119);
+            s = context.getString(2131231120);
         }
         else {
             s = episodeDetails.getAvailabilityDateMessage();
         }
-        return context.getString(2131231065, new Object[] { episodeDetails.getEpisodeNumber(), s });
+        return context.getString(2131231066, new Object[] { episodeDetails.getEpisodeNumber(), s });
     }
     
     private void init() {
@@ -158,7 +158,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
         }
         this.isNSRE = episodeDetails.episodeIsNSRE();
         this.isCurrentEpisode = isCurrentEpisode;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131230886), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131230888), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
         this.title.setText(createTitleText(episodeDetails, this.getContext()));
         final TextView title = this.title;
         final Resources resources = this.getResources();

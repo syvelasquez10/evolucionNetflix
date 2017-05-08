@@ -4,14 +4,16 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public final class KidsCharacter$Detail implements JsonPopulator
+public final class KidsCharacter$Detail implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "KidsCharacter.Detail";
     public boolean hasWatchedRecently;
@@ -46,6 +48,22 @@ public final class KidsCharacter$Detail implements JsonPopulator
                     this.hasWatchedRecently = jsonElement2.getAsBoolean();
                     continue;
                 }
+            }
+        }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Log.isLoggable()) {
+            Log.v("KidsCharacter.Detail", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "hasWatchedRecently": {
+                this.hasWatchedRecently = jsonParser.getValueAsBoolean();
+                return true;
             }
         }
     }

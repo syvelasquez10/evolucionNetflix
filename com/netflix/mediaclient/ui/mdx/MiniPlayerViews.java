@@ -39,18 +39,18 @@ public class MiniPlayerViews extends MdxMiniPlayerViews
     @Override
     protected void findViews() {
         super.findViews();
-        this.pager = (ViewPager)this.content.findViewById(2131689992);
-        this.indicator = (CirclePageIndicator)this.content.findViewById(2131689993);
-        this.mementoGroup = this.content.findViewById(2131689998);
-        this.puller = this.content.findViewById(2131690008);
-        this.titleExpanded = this.content.findViewById(2131689999);
-        this.mementoTabs = this.content.findViewById(2131689994);
-        this.pullerContainer = this.activity.findViewById(2131689953);
+        this.pager = (ViewPager)this.content.findViewById(2131689983);
+        this.indicator = (CirclePageIndicator)this.content.findViewById(2131689984);
+        this.mementoGroup = this.content.findViewById(2131689989);
+        this.puller = this.content.findViewById(2131689999);
+        this.titleExpanded = this.content.findViewById(2131689990);
+        this.mementoTabs = this.content.findViewById(2131689985);
+        this.pullerContainer = this.activity.findViewById(2131689944);
     }
     
     @Override
     protected int getLayoutId() {
-        return 2130903205;
+        return 2130903200;
     }
     
     @Override

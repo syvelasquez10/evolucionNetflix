@@ -26,6 +26,9 @@ import android.os.Bundle;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -153,26 +156,22 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
             if (googleApiClient != null) {
                 break Label_0018;
             }
-        Block_3_Outer:
             while (true) {
                 try {
                     Log.d("SignupActivity", "GPS client is null, unable to try to save credentials");
                     Label_0015: {
                         return;
                     }
-                    // iftrue(Label_0076:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
                     while (true) {
-                        while (true) {
-                            Log.w("SignupActivity", "Credential is empty, do not save it.");
-                            return;
-                            Log.d("SignupActivity", "Trying to save credentials to GPS");
-                            this.saveCredentials = false;
-                            continue Block_3_Outer;
-                        }
+                        Log.w("SignupActivity", "Credential is empty, do not save it.");
+                        return;
+                        Log.d("SignupActivity", "Trying to save credentials to GPS");
+                        this.saveCredentials = false;
                         continue;
                     }
                 }
                 // iftrue(Label_0015:, !this.saveCredentials)
+                // iftrue(Label_0076:, !StringUtils.isEmpty(this.mEmail) && !StringUtils.isEmpty(this.mPassword))
                 finally {
                 }
                 // monitorexit(this)
@@ -207,13 +206,13 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
         }
         final StatusCode statusCode = status.getStatusCode();
         if (status.isSucces() || statusCode == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showToast(2131231176);
+            this.showToast(2131231177);
             SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.tokenActivate, IClientLogging$CompletionReason.success, null);
             this.clearCookies();
         }
         else {
             SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.tokenActivate, IClientLogging$CompletionReason.failed, status.getError());
-            this.provideDialog(this.getString(2131231281) + " (" + statusCode.getValue() + ")", this.mHandleError);
+            this.provideDialog(this.getString(2131231282) + " (" + statusCode.getValue() + ")", this.mHandleError);
             if (this.mErrHandler != null) {
                 final String string = "javascript:" + this.mErrHandler + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -301,9 +300,9 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     }
     
     private void setUpSignInView(final ServiceManager serviceManager, final boolean b) {
-        this.setContentView(2130903269);
-        this.mWebView = (WebView)this.findViewById(2131690271);
-        this.mFlipper = (ViewFlipper)this.findViewById(2131689832);
+        this.setContentView(2130903264);
+        this.mWebView = (WebView)this.findViewById(2131690262);
+        this.mFlipper = (ViewFlipper)this.findViewById(2131689833);
         this.mESN = serviceManager.getESNProvider().getEsn();
         this.mESNPrefix = serviceManager.getESNProvider().getESNPrefix();
         this.mSoftwareVersion = serviceManager.getSoftwareVersion();
@@ -366,6 +365,12 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
         return new SignupActivity$6(this);
     }
     
+    @Override
+    public void finish() {
+        super.finish();
+        PerformanceProfiler.getInstance().endSession(Sessions.SIGN_UP, null);
+    }
+    
     public String getDeviceLanguage() {
         final ServiceManager serviceManager = this.getServiceManager();
         if (serviceManager != null && serviceManager.isReady()) {
@@ -392,7 +397,7 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
             this.mWebView.goBack();
         }
         else {
-            this.provideTwoButtonDialog(this.getString(2131231280), new SignupActivity$11(this));
+            this.provideTwoButtonDialog(this.getString(2131231281), new SignupActivity$11(this));
         }
         return true;
     }
@@ -503,6 +508,9 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.mHandler = new Handler();
+        if (bundle == null) {
+            PerformanceProfiler.getInstance().startSession(Sessions.SIGN_UP, null);
+        }
         if (isSignupDisabledDevice()) {
             if (Log.isLoggable()) {
                 Log.d("SignupActivity", "found signUp disabled device ... goto login");
@@ -527,12 +535,12 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     public void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         MenuItem menuItem;
         if (this.mSignupMenuItem) {
-            menuItem = menu.add((CharSequence)this.getString(2131231175));
+            menuItem = menu.add((CharSequence)this.getString(2131231176));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$2(this));
         }
         else {
-            menuItem = menu.add((CharSequence)this.getString(2131231177));
+            menuItem = menu.add((CharSequence)this.getString(2131231178));
             menuItem.setShowAsAction(1);
             menuItem.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new SignupActivity$3(this));
         }
@@ -572,11 +580,11 @@ public class SignupActivity extends AccountActivity implements GoogleApiClient$C
     }
     
     void provideDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131231125), runnable)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131231126), runnable)));
     }
     
     void provideTwoButtonDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131231125), runnable, this.getString(2131230990), null)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131231126), runnable, this.getString(2131230991), null)));
     }
     
     @Override

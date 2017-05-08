@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -16,8 +17,9 @@ import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.os.Parcelable$Creator;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class ListOfGenreSummary extends TrackableListSummary implements JsonPopulator, GenreList
+public class ListOfGenreSummary extends TrackableListSummary implements JsonMerger, JsonPopulator, GenreList
 {
     public static final Parcelable$Creator<ListOfGenreSummary> CREATOR;
     private static final String TAG = "ListOfGenreSummary";
@@ -134,6 +136,34 @@ public class ListOfGenreSummary extends TrackableListSummary implements JsonPopu
                     this.isKidsGenre = entry.getValue().getAsBoolean();
                     continue;
                 }
+            }
+        }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("ListOfGenreSummary", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return super.set(s, jsonParser);
+            }
+            case "genreName": {
+                this.genreName = jsonParser.getValueAsString();
+                return true;
+            }
+            case "genreId": {
+                this.genreId = jsonParser.getValueAsString();
+                return true;
+            }
+            case "genreExperience": {
+                this.genreExperience = jsonParser.getValueAsString();
+                return true;
+            }
+            case "isKidsGenre": {
+                this.isKidsGenre = jsonParser.getValueAsBoolean();
+                return true;
             }
         }
     }

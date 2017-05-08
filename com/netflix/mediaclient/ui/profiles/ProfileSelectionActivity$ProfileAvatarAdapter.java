@@ -15,6 +15,9 @@ import com.netflix.mediaclient.android.app.NetflixStatus;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.ui.launch.RelaunchActivity;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.view.ViewGroup$MarginLayoutParams;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -92,14 +95,14 @@ class ProfileSelectionActivity$ProfileAvatarAdapter extends BaseAdapter
     public View getView(int visibility, final View view, final ViewGroup viewGroup) {
         View inflate = view;
         if (view == null) {
-            inflate = this.this$0.getLayoutInflater().inflate(2130903248, viewGroup, false);
-            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131689609), (TextView)inflate.findViewById(2131690220), inflate.findViewById(2131690219)));
+            inflate = this.this$0.getLayoutInflater().inflate(2130903243, viewGroup, false);
+            inflate.setTag((Object)new ProfileSelectionActivity$Holder((AdvancedImageView)inflate.findViewById(2131689609), (TextView)inflate.findViewById(2131690211), inflate.findViewById(2131690210)));
         }
         final ProfileSelectionActivity$Holder profileSelectionActivity$Holder = (ProfileSelectionActivity$Holder)inflate.getTag();
         final UserProfile item = this.getItem(visibility);
         if (visibility == this.this$0.profiles.size()) {
-            profileSelectionActivity$Holder.img.setImageResource(2130837916);
-            profileSelectionActivity$Holder.title.setText(2131231248);
+            profileSelectionActivity$Holder.img.setImageResource(2130837914);
+            profileSelectionActivity$Holder.title.setText(2131231249);
             profileSelectionActivity$Holder.topEditImg.setVisibility(8);
             return inflate;
         }

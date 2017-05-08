@@ -24,7 +24,6 @@ import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.net.Uri;
 import com.netflix.mediaclient.ui.common.MediaPlayerWrapper$PlaybackEventsListener;
 import com.netflix.model.leafs.originals.BillboardBackground;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.widget.RelativeLayout$LayoutParams;
@@ -32,8 +31,8 @@ import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
+import android.text.TextUtils;
 import com.netflix.model.leafs.originals.BillboardSummary;
-import android.view.View$OnClickListener;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.model.leafs.originals.BillboardCTA;
@@ -41,6 +40,7 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.Log;
 import android.util.AttributeSet;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import android.content.Context;
@@ -49,7 +49,6 @@ import com.netflix.mediaclient.android.widget.TopCropImageView;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import android.view.TextureView;
 import com.netflix.mediaclient.ui.common.MediaPlayerWrapper;
-import android.view.View;
 import java.util.Map;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.widget.VideoDetailsClickListener;
@@ -58,12 +57,10 @@ import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import android.widget.RelativeLayout;
-import android.text.TextUtils;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
+import android.view.View;
+import android.view.View$OnClickListener;
 
-class BillboardView$5 extends SimpleManagerCallback
+class BillboardView$5 implements View$OnClickListener
 {
     final /* synthetic */ BillboardView this$0;
     
@@ -71,20 +68,10 @@ class BillboardView$5 extends SimpleManagerCallback
         this.this$0 = this$0;
     }
     
-    @Override
-    public void onResourceCached(final String s, final String s2, final long n, final long n2, final Status status) {
-        super.onResourceCached(s, s2, n, n2, status);
-        if (status.isError()) {
-            if (Log.isLoggable()) {
-                Log.e("BillboardView", "Failed to retrieve video: " + s);
-            }
+    public void onClick(final View view) {
+        if (this.this$0.mediaPlayerWrapper != null) {
+            this.this$0.mediaPlayerWrapper.toggleVolume();
         }
-        else if (this.this$0.mediaPlayerWrapper != null && !TextUtils.isEmpty((CharSequence)s2)) {
-            if (Log.isLoggable()) {
-                Log.v("BillboardView", "Downloaded video - localUrl: " + s2);
-            }
-            this.this$0.mediaPlayerWrapper.setDataSource(s2, n, n2);
-            this.this$0.showMotionBB();
-        }
+        this.this$0.updateMuteButton();
     }
 }

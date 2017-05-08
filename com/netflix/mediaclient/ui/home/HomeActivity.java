@@ -168,7 +168,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void onResumeAfterTimeout() {
-        Toast.makeText((Context)this, 2131231162, 1).show();
+        Toast.makeText((Context)this, 2131231163, 1).show();
         this.clearAllStateAndRefresh();
     }
     
@@ -186,7 +186,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     }
     
     private void setupViews() {
-        (this.drawerLayout = (DrawerLayout)this.findViewById(2131689839)).setDrawerListener(new HomeActivity$1(this));
+        (this.drawerLayout = (DrawerLayout)this.findViewById(2131689840)).setDrawerListener(new HomeActivity$1(this));
         this.unlockSlidingDrawerIfPossible();
         this.slidingMenuAdapter = BrowseExperience.get().createSlidingMenuAdapter(this, this.drawerLayout);
         if (Log.isLoggable()) {
@@ -210,7 +210,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
         this.updateActionBar();
         this.updateSlidingDrawer();
         this.setPrimaryFrag(this.createPrimaryFrag());
-        this.getFragmentManager().beginTransaction().replace(2131689744, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
+        this.getFragmentManager().beginTransaction().replace(2131689745, (Fragment)this.getPrimaryFrag(), "primary").setTransition(4099).commit();
         this.getFragmentManager().executePendingTransactions();
         this.getPrimaryFrag().onManagerReady(this.manager, CommonStatus.OK);
     }
@@ -293,7 +293,7 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     @Override
     public int getActionBarParentViewId() {
-        return 2131689834;
+        return 2131689835;
     }
     
     @Override
@@ -452,6 +452,11 @@ public class HomeActivity extends FragmentHostActivity implements ObjectRecycler
     
     @Override
     public boolean shouldApplyPaddingToSlidingPanel() {
+        return false;
+    }
+    
+    @Override
+    protected boolean shouldSetIntentOnNewIntent() {
         return false;
     }
     

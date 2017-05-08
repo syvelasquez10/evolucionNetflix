@@ -31,4 +31,9 @@ public class WPInteractiveMomentsModel$WPAudio
     public float getVolume() {
         return this.volume;
     }
+    
+    @Override
+    public String toString() {
+        return "WPAudio{name='" + this.name + '\'' + ", id='" + this.id + '\'' + ", url='" + this.url + '\'' + ", volume=" + this.volume + '}';
+    }
 }

@@ -41,7 +41,7 @@ public interface IBrowseInterface
     
     void fetchIQVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final int p4, final int p5);
     
-    void fetchInteractiveVideoMoments(final VideoType p0, final String p1, final String p2, final int p3, final int p4);
+    void fetchInteractiveVideoMoments(final VideoType p0, final String p1, final String p2, final int p3, final int p4, final int p5, final int p6);
     
     void fetchKidsCharacterDetails(final String p0, final int p1, final int p2);
     
@@ -99,7 +99,7 @@ public interface IBrowseInterface
     
     void prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final boolean p7, final boolean p8, final int p9, final int p10);
     
-    void refreshCw();
+    void refreshCw(final boolean p0);
     
     void refreshEpisodeData(final Asset p0);
     
@@ -110,6 +110,8 @@ public interface IBrowseInterface
     void refreshLolomo();
     
     void removeFromQueue(final String p0, final VideoType p1, final String p2, final int p3, final int p4);
+    
+    void runPrefetchLolomoJob(final boolean p0);
     
     void searchNetflix(final String p0, final int p1, final int p2);
     

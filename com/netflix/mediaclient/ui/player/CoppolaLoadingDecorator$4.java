@@ -23,6 +23,7 @@ import android.widget.FrameLayout$LayoutParams;
 import android.content.Context;
 import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.util.ViewUtils;
+import android.view.ViewPropertyAnimator;
 import android.animation.TimeInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.os.Build$VERSION;

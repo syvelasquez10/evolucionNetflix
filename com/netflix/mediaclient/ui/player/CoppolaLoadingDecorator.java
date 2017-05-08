@@ -23,7 +23,7 @@ import android.widget.FrameLayout$LayoutParams;
 import android.content.Context;
 import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.util.ViewUtils;
-import android.animation.Animator;
+import android.view.ViewPropertyAnimator;
 import android.animation.Animator$AnimatorListener;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.animation.TimeInterpolator;
@@ -67,7 +67,7 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
     
     private void animateProgressBar() {
         Log.v("CoppolaLoadingDecorator", "animateProgressBar()");
-        final ObjectAnimator ofFloat = ObjectAnimator.ofFloat((Object)this.loadingIndicator, "translationX", new float[] { -(int)this.getController().getResources().getDimension(2131362073), 0.0f });
+        final ObjectAnimator ofFloat = ObjectAnimator.ofFloat((Object)this.loadingIndicator, "translationX", new float[] { -(int)this.getController().getResources().getDimension(2131362076), 0.0f });
         ofFloat.setDuration(700L);
         if (Build$VERSION.SDK_INT >= 18) {
             ofFloat.setAutoCancel(true);
@@ -80,9 +80,9 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
     
     private void animateUI(final boolean b) {
         Log.v("CoppolaLoadingDecorator", "animateUI()");
-        final Animator startViewAppearanceAnimation = AnimationUtils.startViewAppearanceAnimation((View)this.horzDispImg, b, 200);
+        final ViewPropertyAnimator startViewAppearanceAnimation = AnimationUtils.startViewAppearanceAnimation((View)this.horzDispImg, b, 200);
         if (!b) {
-            startViewAppearanceAnimation.addListener((Animator$AnimatorListener)new CoppolaLoadingDecorator$4(this));
+            startViewAppearanceAnimation.setListener((Animator$AnimatorListener)new CoppolaLoadingDecorator$4(this));
         }
         if (b) {
             this.animateProgressBar();
@@ -148,10 +148,10 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
             }
             String s3;
             if (b) {
-                s3 = resources.getString(2131231066, new Object[] { n, s2 });
+                s3 = resources.getString(2131231067, new Object[] { n, s2 });
             }
             else {
-                s3 = resources.getString(2131231107, new Object[] { s2 });
+                s3 = resources.getString(2131231108, new Object[] { s2 });
             }
             this.loadingTextIndicator.setText((CharSequence)Html.fromHtml(s3));
             ((FrameLayout$LayoutParams)this.loadingTextIndicator.getLayoutParams()).gravity = 17;
@@ -168,26 +168,26 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
         }
         else {
             if (b) {
-                text = resources.getString(2131231063, new Object[] { text, n, s });
+                text = resources.getString(2131231064, new Object[] { text, n, s });
                 if (b2) {
-                    text = resources.getString(2131231062, new Object[] { s });
+                    text = resources.getString(2131231063, new Object[] { s });
                 }
                 this.loadingTextIndicator.setText((CharSequence)text);
                 return;
             }
-            this.loadingTextIndicator.setText(2131231089);
+            this.loadingTextIndicator.setText(2131231090);
         }
     }
     
     private void updateUI(final ViewGroup viewGroup) {
         Log.v("CoppolaLoadingDecorator", "Updating UI...");
         AnimationUtils.startViewAppearanceAnimation(this.getController().getView(), true);
-        this.getController().getActivity().getLayoutInflater().inflate(2130903224, viewGroup);
-        this.horzDispImg = (AdvancedImageView)viewGroup.findViewById(2131690073);
-        this.loadingIndicator = viewGroup.findViewById(2131690079);
-        this.loadingTextIndicator = (TextView)viewGroup.findViewById(2131690076);
-        this.gradient = viewGroup.findViewById(2131690074);
-        this.blackBackground = viewGroup.findViewById(2131690072);
+        this.getController().getActivity().getLayoutInflater().inflate(2130903219, viewGroup);
+        this.horzDispImg = (AdvancedImageView)viewGroup.findViewById(2131690064);
+        this.loadingIndicator = viewGroup.findViewById(2131690070);
+        this.loadingTextIndicator = (TextView)viewGroup.findViewById(2131690067);
+        this.gradient = viewGroup.findViewById(2131690065);
+        this.blackBackground = viewGroup.findViewById(2131690063);
         this.animateProgressBar();
         boolean b;
         if (BandwidthUtility.isPlaybackInWifiOnly((Context)this.playerScreen.getController()) && ConnectivityUtils.getConnectionType((Context)this.playerScreen.getController()) != LogMobileType.WIFI) {
@@ -200,7 +200,7 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
             this.showProgressAndTextIndicator(false);
         }
         this.getController().setOnStartedPlaybackListener(new CoppolaLoadingDecorator$1(this));
-        this.launchButton = viewGroup.findViewById(2131690077);
+        this.launchButton = viewGroup.findViewById(2131690068);
         final View launchButton = this.launchButton;
         int visibility;
         if (this.getController().isInPortrait() && this.isDelayedAutoplay() && !b && Coppola1Utils.isNewPlayerExperience((Context)this.getController().getActivity())) {
@@ -230,7 +230,7 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
         this.updateViewMargins(this.getController().isInPortrait());
         if (!Coppola1Utils.isNewPlayerExperience((Context)this.getController().getActivity()) && !Coppola1Utils.shouldInjectPlayerFragment((Context)this.getController().getActivity())) {
             this.getController().getActivity().setRequestedOrientation(1);
-            (this.oldLaunchButton = viewGroup.findViewById(2131690078)).setVisibility(0);
+            (this.oldLaunchButton = viewGroup.findViewById(2131690069)).setVisibility(0);
             this.oldLaunchButton.setOnClickListener((View$OnClickListener)new CoppolaLoadingDecorator$3(this));
         }
     }
@@ -240,10 +240,10 @@ public class CoppolaLoadingDecorator extends PlayScreenDecorator
             final Resources resources = this.getController().getResources();
             int leftMargin;
             if (b) {
-                leftMargin = (int)resources.getDimension(2131362064);
+                leftMargin = (int)resources.getDimension(2131362067);
             }
             else {
-                leftMargin = (int)resources.getDimension(2131362123);
+                leftMargin = (int)resources.getDimension(2131362125);
             }
             ((ViewGroup$MarginLayoutParams)this.loadingTextIndicator.getLayoutParams()).leftMargin = leftMargin;
         }

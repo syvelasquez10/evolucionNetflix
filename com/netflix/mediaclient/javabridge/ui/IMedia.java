@@ -10,7 +10,7 @@ import com.netflix.mediaclient.service.webclient.model.leafs.PreviewContentConfi
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
-import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetType;
+import com.netflix.mediaclient.util.ConnectivityUtils$NetType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.media.Watermark;
 import com.netflix.mediaclient.media.TrickplayUrl;
@@ -84,7 +84,7 @@ public interface IMedia
     
     Watermark getWatermark();
     
-    void open(final long p0, final PlayContext p1, final AuthorizationParams$NetType p2, final long p3, final boolean p4, final PlaybackVolumeMetric p5, final long p6);
+    void open(final long p0, final PlayContext p1, final ConnectivityUtils$NetType p2, final long p3, final boolean p4, final PlaybackVolumeMetric p5, final long p6);
     
     void pause();
     

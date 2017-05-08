@@ -7,6 +7,6 @@ package com.netflix.mediaclient.service.logging.perf;
 public enum Events
 {
     HOME_ACTIVITY_CREATED, 
-    LAUNCHER_INTENT_EVENT, 
+    LOLOMO_METADATA_FETCHED_EVENT, 
     NETFLIX_SERVICE_STARTED_COMMAND;
 }

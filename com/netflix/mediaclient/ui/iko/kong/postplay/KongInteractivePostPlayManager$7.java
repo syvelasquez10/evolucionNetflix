@@ -16,9 +16,21 @@ class KongInteractivePostPlayManager$7 implements MediaPlayerWrapper$PlaybackEve
     }
     
     @Override
+    public void onPlaybackError(final int n, final int n2) {
+    }
+    
+    @Override
     public void onPlaybackFinished() {
         if (Log.isLoggable()) {
             Log.d("KongInteractivePostPlayManager", "Media player completed (or failed)");
         }
+    }
+    
+    @Override
+    public void onPlaybackStarted() {
+    }
+    
+    @Override
+    public void onPlaybackSuccessfullyCompleted() {
     }
 }

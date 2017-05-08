@@ -56,10 +56,10 @@ public abstract class BaseExtendedDiscoveryFrag extends NetflixDialogFrag
     }
     
     protected void findViews(final View view) {
-        this.recyclerView = (RecyclerView)view.findViewById(2131689779);
-        view.findViewById(2131689777).setOnClickListener((View$OnClickListener)new BaseExtendedDiscoveryFrag$1(this));
-        this.titleView = (TextView)view.findViewById(2131689778);
-        this.bgImageView = (ImageView)view.findViewById(2131689776);
+        this.recyclerView = (RecyclerView)view.findViewById(2131689780);
+        view.findViewById(2131689778).setOnClickListener((View$OnClickListener)new BaseExtendedDiscoveryFrag$1(this));
+        this.titleView = (TextView)view.findViewById(2131689779);
+        this.bgImageView = (ImageView)view.findViewById(2131689777);
         this.leWrapper = new LoadingAndErrorWrapper(view, this.errorCallback);
     }
     

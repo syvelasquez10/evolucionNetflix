@@ -88,7 +88,7 @@ public abstract class PostPlay
         this.findViewsCommon();
         this.findViews();
         this.setClickListeners();
-        this.mOffsetMs = mNetflixActivity.getResources().getInteger(2131492882) * 1000;
+        this.mOffsetMs = mNetflixActivity.getResources().getInteger(2131492883) * 1000;
         this.mFetchPostplayOffsetMs = this.mOffsetMs;
         this.mPostPlayDataFetchStatus = PostPlay$PostPlayDataFetchStatus.notStarted;
     }
@@ -287,18 +287,18 @@ public abstract class PostPlay
     protected abstract void findViews();
     
     protected void findViewsCommon() {
-        this.mInterrupterPlayFromStart = this.mNetflixActivity.findViewById(2131690048);
-        this.mInterrupterContinue = this.mNetflixActivity.findViewById(2131690047);
-        this.mBackground = (AdvancedImageView)this.mNetflixActivity.findViewById(2131690138);
-        this.mSynopsis = (TextView)this.mNetflixActivity.findViewById(2131690123);
-        this.mInterrupterStop = this.mNetflixActivity.findViewById(2131690049);
-        this.mPostPlayIgnoreTap = this.mNetflixActivity.findViewById(2131690134);
-        this.mMoreButton = this.mNetflixActivity.findViewById(2131690114);
-        this.mPlayButton = this.mNetflixActivity.findViewById(2131690112);
-        this.mStopButton = this.mNetflixActivity.findViewById(2131690113);
-        this.mTitle = (TextView)this.mNetflixActivity.findViewById(2131690136);
-        this.mInterrupter = this.mNetflixActivity.findViewById(2131690046);
-        this.mPostPlay = this.mNetflixActivity.findViewById(2131690131);
+        this.mInterrupterPlayFromStart = this.mNetflixActivity.findViewById(2131690039);
+        this.mInterrupterContinue = this.mNetflixActivity.findViewById(2131690038);
+        this.mBackground = (AdvancedImageView)this.mNetflixActivity.findViewById(2131690129);
+        this.mSynopsis = (TextView)this.mNetflixActivity.findViewById(2131690114);
+        this.mInterrupterStop = this.mNetflixActivity.findViewById(2131690040);
+        this.mPostPlayIgnoreTap = this.mNetflixActivity.findViewById(2131690125);
+        this.mMoreButton = this.mNetflixActivity.findViewById(2131690105);
+        this.mPlayButton = this.mNetflixActivity.findViewById(2131690103);
+        this.mStopButton = this.mNetflixActivity.findViewById(2131690104);
+        this.mTitle = (TextView)this.mNetflixActivity.findViewById(2131690127);
+        this.mInterrupter = this.mNetflixActivity.findViewById(2131690037);
+        this.mPostPlay = this.mNetflixActivity.findViewById(2131690122);
     }
     
     public PlayerFragment getController() {

@@ -4,11 +4,12 @@
 
 package com.netflix.mediaclient.service.configuration;
 
-import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import java.util.Iterator;
 import android.content.Context;
+import com.netflix.mediaclient.service.configuration.persistent.PrefetchLolomoConfig;
 import com.netflix.mediaclient.service.configuration.persistent.BrandLoveSurvey;
 import com.netflix.mediaclient.service.configuration.persistent.Memento;
 import com.netflix.mediaclient.service.configuration.persistent.PhoneOrientation;
@@ -38,6 +39,14 @@ public final class PersistentConfig
         PersistentConfig.mConfigs.put(PhoneOrientation.class, new PhoneOrientation());
         PersistentConfig.mConfigs.put(Memento.class, new Memento());
         PersistentConfig.mConfigs.put(BrandLoveSurvey.class, new BrandLoveSurvey());
+        PersistentConfig.mConfigs.put(PrefetchLolomoConfig.class, new PrefetchLolomoConfig());
+    }
+    
+    public static void delete(final Context context) {
+        final Iterator<PersistentConfigurable> iterator = PersistentConfig.mConfigs.values().iterator();
+        while (iterator.hasNext()) {
+            iterator.next().delete(context);
+        }
     }
     
     public static ABTestConfig$Cell getBrandLoveSurveyTestCell(final Context context) {
@@ -57,7 +66,7 @@ public final class PersistentConfig
     }
     
     public static ABTestConfig$Cell getDisplayPageRefreshTestCell(final Context context) {
-        return PersistentConfig.mConfigs.get(DisplayPageRefreshConfig.class).getCell(context);
+        return PersistentConfig.mConfigs.get(DisplayPageRefreshConfig.class).getCell(context, ABTestConfig$Cell.CELL_TWO);
     }
     
     public static ABTestConfig$Cell getMemento(final Context context) {
@@ -72,6 +81,10 @@ public final class PersistentConfig
         return PersistentConfig.mConfigs.get(PhoneOrientation.class).getCell(context);
     }
     
+    public static ABTestConfig$Cell getPrefetchLolomoConfig(final Context context) {
+        return PersistentConfig.mConfigs.get(PrefetchLolomoConfig.class).getCell(context);
+    }
+    
     public static ABTestConfig$Cell getPushNotificationOptIn(final Context context) {
         return PersistentConfig.mConfigs.get(PushNotifOptIn.class).getCell(context);
     }
@@ -82,6 +95,13 @@ public final class PersistentConfig
     
     public static boolean inMementoTest(final Context context) {
         return getMemento(context).ordinal() == ABTestConfig$Cell.CELL_TWO.ordinal() || getMemento(context).ordinal() == ABTestConfig$Cell.CELL_THREE.ordinal();
+    }
+    
+    public static void refresh() {
+        final Iterator<PersistentConfigurable> iterator = PersistentConfig.mConfigs.values().iterator();
+        while (iterator.hasNext()) {
+            iterator.next().refresh();
+        }
     }
     
     public static void update(final Context context, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {

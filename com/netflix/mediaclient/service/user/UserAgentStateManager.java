@@ -503,6 +503,11 @@ public class UserAgentStateManager implements Callback
                 Log.d("nf_service_useragentstate", "@state NEED_VALIDATE_PROFILE_DATA");
                 this.mUserAgent.userAccountActivated(this.mCurrentDeviceAcc);
                 this.mUserAgent.fetchAccountData();
+                if (this.mUserAgent.shouldFetchAccountDataAsync()) {
+                    this.transitionTo(UserAgentStateManager$STATES.PROFILE_ACTIVATED);
+                    return;
+                }
+                break;
             }
             case 13: {
                 Log.d("nf_service_useragentstate", "@state PROFILE_ACTIVATED");
@@ -633,6 +638,11 @@ public class UserAgentStateManager implements Callback
                     return;
                 }
                 this.transitionTo(UserAgentStateManager$STATES.NEED_FETCH_PROFILE_DATA);
+                return;
+            }
+            if (this.mState == UserAgentStateManager$STATES.NEED_ESN_MIGRATION && !b) {
+                Log.e("nf_service_useragentstate", "ESN migration failed, log user out!");
+                this.transitionTo(UserAgentStateManager$STATES.FATAL_ERROR);
                 return;
             }
             if (!this.isProfileIdValid()) {

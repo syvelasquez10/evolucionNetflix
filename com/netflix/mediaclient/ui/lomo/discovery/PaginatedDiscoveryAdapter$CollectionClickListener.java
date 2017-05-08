@@ -10,6 +10,7 @@ import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
 import java.util.List;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
+import android.content.res.Resources;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.Coppola2Utils;
 import android.content.Context;

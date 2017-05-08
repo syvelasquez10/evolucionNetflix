@@ -4,6 +4,10 @@
 
 package com.netflix.mediaclient.service.logging.error;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Arrays;
 import com.netflix.mediaclient.util.StringUtils;
 import android.os.Build;
 import android.os.Build$VERSION;
@@ -21,7 +25,7 @@ import android.annotation.TargetApi;
 @TargetApi(4)
 public final class ErrorLoggingManager
 {
-    private static final String CRITTER_VERSION_NAME = "4.8.7";
+    private static final String CRITTER_VERSION_NAME = "4.9.3";
     private static final boolean ENABLE_CRITTERCISM = true;
     private static final String TAG = "nf_log_crit";
     private static boolean sBreadcrumbLoggingEnabled;
@@ -99,7 +103,7 @@ public final class ErrorLoggingManager
                 crittercismConfig.setNdkCrashReportingEnabled(false);
                 crittercismConfig.setServiceMonitoringEnabled(false);
                 crittercismConfig.setLogcatReportingEnabled(false);
-                crittercismConfig.setCustomVersionName("4.8.7");
+                crittercismConfig.setCustomVersionName("4.9.3");
                 try {
                     final Context context2;
                     Crittercism.initialize(context2, SecurityRepository.getCrittercismAppId(), crittercismConfig);
@@ -195,5 +199,12 @@ public final class ErrorLoggingManager
     
     private static boolean shouldInitializeCrittercism() {
         return ErrorLoggingManager.sErrorLoggingEnabledByConfig;
+    }
+    
+    private static Exception wrapThrowableWithPrefix(final String s, final Throwable t) {
+        final ArrayList<StackTraceElement> list = new ArrayList<StackTraceElement>(Arrays.asList(t.getStackTrace()));
+        list.add(new StackTraceElement(s, "version", "n/a", 0));
+        t.setStackTrace(list.toArray(new StackTraceElement[list.size()]));
+        return new IOException(s + t.getMessage(), t);
     }
 }

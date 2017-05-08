@@ -8,20 +8,20 @@ import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.Log;
 import android.animation.Animator;
 import android.view.View;
-import android.animation.ObjectAnimator;
+import android.view.ViewPropertyAnimator;
 import android.animation.Animator$AnimatorListener;
 
 final class AnimationUtils$1 implements Animator$AnimatorListener
 {
-    final /* synthetic */ ObjectAnimator val$alphaAnimation;
+    final /* synthetic */ ViewPropertyAnimator val$alphaAnimator;
     final /* synthetic */ boolean val$shouldAppear;
     final /* synthetic */ View val$view;
     private boolean wasAnimationCancelled;
     
-    AnimationUtils$1(final boolean val$shouldAppear, final View val$view, final ObjectAnimator val$alphaAnimation) {
+    AnimationUtils$1(final boolean val$shouldAppear, final View val$view, final ViewPropertyAnimator val$alphaAnimator) {
         this.val$shouldAppear = val$shouldAppear;
         this.val$view = val$view;
-        this.val$alphaAnimation = val$alphaAnimation;
+        this.val$alphaAnimator = val$alphaAnimator;
     }
     
     public void onAnimationCancel(final Animator animator) {
@@ -43,7 +43,7 @@ final class AnimationUtils$1 implements Animator$AnimatorListener
         if ((!this.val$shouldAppear && (this.val$view.getAlpha() < 1.0f || !this.val$view.isShown())) || (this.val$shouldAppear && this.val$view.getAlpha() > 0.0f && this.val$view.isShown())) {
             Log.w("AnimationUtils", "Skipping view appearance animation - view is already in correct state.");
             ViewUtils.setVisibleOrGone(this.val$view, this.val$shouldAppear);
-            this.val$alphaAnimation.cancel();
+            this.val$alphaAnimator.cancel();
             return;
         }
         ViewUtils.setVisibleOrGone(this.val$view, true);

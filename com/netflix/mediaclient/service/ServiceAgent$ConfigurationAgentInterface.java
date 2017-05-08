@@ -114,6 +114,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     String getPreAppWidgetExperience();
     
+    ABTestConfig$Cell getPrefetchLolomoConfig();
+    
     int getPresentationTrackingAggregationSize();
     
     PreviewContentConfigData getPreviewContentConfiguration();
@@ -170,13 +172,11 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     boolean isWidevineL1Enabled();
     
-    boolean isWidevineL3ABTestEnabled();
-    
-    boolean isWidevineL3Enabled();
-    
     boolean shouldAlertForMissingLocale();
     
     boolean shouldDisableVoip();
+    
+    boolean shouldForceLegacyCrypto();
     
     void userAgentLogoutComplete();
     

@@ -11,14 +11,21 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
+import com.netflix.falkor.BranchNodeUtils;
+import com.fasterxml.jackson.core.JsonParser;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class Rating implements JsonPopulator
+public class Rating implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "Rating";
     private float average;
     private float predicted;
     private float userRating;
+    
+    public Rating(final JsonParser jsonParser) {
+        BranchNodeUtils.merge(this, jsonParser, jsonParser.getCurrentToken(), false, 10);
+    }
     
     public Rating(final JsonElement jsonElement) {
         this.populate(jsonElement);
@@ -90,5 +97,30 @@ public class Rating implements JsonPopulator
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("Rating", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "average": {
+                this.average = (float)jsonParser.getValueAsDouble();
+                break;
+            }
+            case "predicted": {
+                this.predicted = (float)jsonParser.getValueAsDouble();
+                break;
+            }
+            case "userRating": {
+                this.userRating = (float)jsonParser.getValueAsDouble();
+                break;
+            }
+        }
+        return true;
     }
 }

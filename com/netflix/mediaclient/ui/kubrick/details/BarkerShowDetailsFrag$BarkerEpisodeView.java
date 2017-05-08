@@ -50,7 +50,7 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
                 return;
             }
             this.runtime.setVisibility(0);
-            this.runtime.setText((CharSequence)this.getResources().getString(2131231123, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
+            this.runtime.setText((CharSequence)this.getResources().getString(2131231124, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) }));
         }
     }
     
@@ -65,7 +65,7 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
         final Resources resources = this.getResources();
         int n;
         if (this.isCurrentEpisode && b) {
-            n = 2131624162;
+            n = 2131624161;
         }
         else {
             n = 2131623955;
@@ -90,7 +90,7 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
             this.episodePreviewContainer.getLayoutParams().height = (int)(this.episodePreviewContainer.getLayoutParams().width * 0.5625f);
             return;
         }
-        this.image.getLayoutParams().height = (int)((BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - (this.this$0.getNumColumns() + 1.0f) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362167)) / this.this$0.getNumColumns() * 0.5625f);
+        this.image.getLayoutParams().height = (int)((BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - (this.this$0.getNumColumns() + 1.0f) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362169)) / this.this$0.getNumColumns() * 0.5625f);
     }
     
     protected void adjustEpisodeImageWidth() {
@@ -126,7 +126,7 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
         super.findViews();
         this.image = (AdvancedImageView)this.findViewById(2131689620);
         this.runtime = (TextView)this.findViewById(2131689624);
-        this.progressBarBackground = this.findViewById(2131689746);
+        this.progressBarBackground = this.findViewById(2131689747);
         this.unavailable = this.findViewById(2131689622);
         this.episodePreviewContainer = this.findViewById(2131689619);
         this.badgeContainer = this.findViewById(2131689625);

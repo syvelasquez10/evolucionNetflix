@@ -4,6 +4,7 @@
 
 package com.netflix.model.survey;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -15,9 +16,10 @@ import android.os.Parcel;
 import java.util.ArrayList;
 import android.os.Parcelable$Creator;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 import android.os.Parcelable;
 
-public class Survey implements Parcelable, JsonPopulator
+public class Survey implements Parcelable, JsonMerger, JsonPopulator
 {
     public static final Parcelable$Creator CREATOR;
     static final String TAG = "Survey";
@@ -47,8 +49,8 @@ public class Survey implements Parcelable, JsonPopulator
         surveyQuestion.header = "Question 1 of 1";
         surveyQuestion.title = "How much do you agree with this?";
         surveyQuestion.body = "Netflix is amazeballs awesome sauce!";
-        surveyQuestion.agree = "Strongly Agree";
-        surveyQuestion.disagree = "Strongly Disagree";
+        surveyQuestion.agree = "Kesinlikle Katilmiyorum";
+        surveyQuestion.disagree = "Kesinlikle Katilmiyorum";
         surveyQuestion.skip = "SKIP";
         survey.questions.add(surveyQuestion);
         return survey;
@@ -86,6 +88,14 @@ public class Survey implements Parcelable, JsonPopulator
         while (iterator.hasNext()) {
             this.questions.add(new SurveyQuestion(((Map.Entry<String, JsonElement>)iterator.next()).getValue()));
         }
+    }
+    
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("Survey", "Populating with: " + jsonParser);
+        }
+        this.questions.add(new SurveyQuestion(jsonParser));
+        return false;
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {

@@ -9,6 +9,8 @@ class WPInteractiveMomentsModel$WPItemState
     private WPInteractiveMomentsModel$WPAudio VO;
     private WPInteractiveMomentsModel$WPImage image;
     final /* synthetic */ WPInteractiveMomentsModel this$0;
+    private WPInteractiveMomentsModel$WPVideo video;
+    private WPInteractiveMomentsModel$WPImage videoMask;
     
     private WPInteractiveMomentsModel$WPItemState(final WPInteractiveMomentsModel this$0) {
         this.this$0 = this$0;

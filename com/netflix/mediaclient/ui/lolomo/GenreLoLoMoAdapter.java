@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.lolomo;
 
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import android.content.Context;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.Log;
@@ -42,6 +43,6 @@ public class GenreLoLoMoAdapter extends BaseLoLoMoAdapter<Genre>
             return;
         }
         Log.v("GenreLoLoMoAdapter", "Prefetching genre lolomo...");
-        serviceManager.getBrowse().prefetchGenreLoLoMo(this.getGenreId(), 0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD) - 1, BrowseExperience.shouldLoadKubrickLeavesInLolomo(), false, new GenreLoLoMoAdapter$1(this, "GenreLoLoMoAdapter"));
+        serviceManager.getBrowse().prefetchGenreLoLoMo(this.getGenreId(), 0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch((Context)this.activity, LoMoType.STANDARD) - 1, BrowseExperience.shouldLoadKubrickLeavesInLolomo(), false, new GenreLoLoMoAdapter$1(this, "GenreLoLoMoAdapter"));
     }
 }

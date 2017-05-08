@@ -5,9 +5,14 @@
 package com.netflix.model.leafs.originals;
 
 import com.google.gson.JsonElement;
+import com.fasterxml.jackson.core.JsonParser;
 
 public class BillboardAwardsHeadline extends AbstractBillboardAsset
 {
+    public BillboardAwardsHeadline(final JsonParser jsonParser) {
+        super(jsonParser);
+    }
+    
     public BillboardAwardsHeadline(final JsonElement jsonElement) {
         super(jsonElement);
     }

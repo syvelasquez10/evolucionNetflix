@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -52,6 +53,20 @@ public final class KidsCharacter$Summary extends Video$Summary
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Log.isLoggable()) {
+            Log.v("KidsCharacter.Summary", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            case "characterImgUrl": {
+                this.characterImageUrl = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return super.set(s, jsonParser);
     }
     
     @Override

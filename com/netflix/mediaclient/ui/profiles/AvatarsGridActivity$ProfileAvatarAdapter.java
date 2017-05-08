@@ -89,7 +89,7 @@ class AvatarsGridActivity$ProfileAvatarAdapter extends BaseAdapter
         final String item = this.getItem(n);
         if (this.this$0.mSelectedIconPos == n) {
             avatarsGridActivity$ViewHolder.topEditImg.setVisibility(0);
-            avatarsGridActivity$ViewHolder.topEditImg.setBackgroundResource(2130837913);
+            avatarsGridActivity$ViewHolder.topEditImg.setBackgroundResource(2130837911);
         }
         else {
             avatarsGridActivity$ViewHolder.topEditImg.setVisibility(8);
@@ -107,8 +107,8 @@ class AvatarsGridActivity$ProfileAvatarAdapter extends BaseAdapter
         final int width = this.this$0.mGridView.getWidth();
         if (width > 0) {
             final Resources resources = this.this$0.getResources();
-            final float dimension = resources.getDimension(2131362279);
-            final float n = resources.getDimension(2131362278) + dimension;
+            final float dimension = resources.getDimension(2131362281);
+            final float n = resources.getDimension(2131362280) + dimension;
             final int numColumns = (int)(width / n);
             this.this$0.mGridView.setNumColumns(numColumns);
             this.adjustGridViewPaddings(width, numColumns, n, dimension);

@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -13,8 +14,9 @@ import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class Video$Summary implements JsonPopulator, Video
+public class Video$Summary implements JsonMerger, JsonPopulator, Video
 {
     private static final String TAG = "Summary";
     public String boxartImageTypeIdentifier;
@@ -287,6 +289,79 @@ public class Video$Summary implements JsonPopulator, Video
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("Summary", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "id": {
+                this.id = jsonParser.getValueAsString();
+                break;
+            }
+            case "boxartUrl": {
+                this.boxartUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "boxartImageTypeIdentifier": {
+                this.boxartImageTypeIdentifier = jsonParser.getValueAsString();
+                break;
+            }
+            case "type": {
+                this.type = jsonParser.getValueAsString();
+                break;
+            }
+            case "title": {
+                this.title = jsonParser.getValueAsString();
+                break;
+            }
+            case "isEpisode": {
+                this.isEpisode = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "errorType": {
+                this.errorType = VideoType.create(jsonParser.getValueAsString());
+                break;
+            }
+            case "tvCardUrl": {
+                this.tvCardUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "horzDispUrl": {
+                this.horzDispUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "horzDispSmallUrl": {
+                this.horzDispSmallUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "storyImgDispUrl": {
+                this.storyImgDispUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "videoYear": {
+                this.videoYear = jsonParser.getValueAsInt();
+                break;
+            }
+            case "isOriginal": {
+                this.isOriginal = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "isPreRelease": {
+                this.isPreRelease = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "stillImageUrl": {
+                this.stillImageUrl = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return true;
     }
     
     public void setErrorType(final VideoType errorType) {

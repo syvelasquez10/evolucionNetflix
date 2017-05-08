@@ -276,26 +276,24 @@ public abstract class ConsolidatedLoggingUtils
                                             return error;
                                         }
                                         break Label_0307;
-                                        Label_0275: {
-                                            error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
-                                        }
-                                        // iftrue(Label_0109:, !volleyError instanceof NetworkError)
-                                        break;
-                                        // iftrue(Label_0258:, !volleyError instanceof ServerError)
-                                        // iftrue(Label_0275:, !volleyError instanceof TimeoutError)
-                                        Block_11: {
-                                            Block_10: {
-                                                break Block_10;
-                                                Label_0258: {
-                                                    break Block_11;
-                                                }
+                                    Label_0275:
+                                        while (true) {
+                                            Block_12: {
+                                                break Block_12;
+                                                error.setRootCause(RootCause.serverFailure);
+                                                break;
+                                                error.setRootCause(RootCause.tcpConnectionTimeout);
+                                                break;
                                             }
-                                            error.setRootCause(RootCause.serverFailure);
+                                            error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
                                             break;
+                                            Label_0258:
+                                            continue;
                                         }
-                                        error.setRootCause(RootCause.tcpConnectionTimeout);
-                                        break;
                                     }
+                                    // iftrue(Label_0109:, !volleyError instanceof NetworkError)
+                                    // iftrue(Label_0258:, !volleyError instanceof ServerError)
+                                    // iftrue(Label_0275:, !volleyError instanceof TimeoutError)
                                     catch (Throwable t) {
                                         Log.e("nf_log", "Failed to add body response to JSON object", t);
                                         continue Label_0156;

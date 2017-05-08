@@ -26,6 +26,7 @@ import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig;
+import android.media.UnsupportedSchemeException;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
@@ -374,6 +375,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     public void clearAccountConfigData() {
         this.mAccountConfigOverride.clear();
         this.mABTestConfigOverride.clear();
+        PersistentConfig.delete(this.getContext());
     }
     
     @Override
@@ -437,11 +439,17 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         final ConfigurationAgent$1 configurationAgent$1 = new ConfigurationAgent$1(this);
         PerformanceProfiler.getInstance().startSession(Sessions.DRM_LOADED, null);
         this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), this.getErrorHandler(), configurationAgent$1);
-        this.mESN = EsnProviderRegistry.createESN(this.getContext(), this.mDrmManager, this);
-        this.initVoipSettings();
-        Log.d("nf_configurationagent", "Inject ESN to PlayerTypeFactory");
-        PlayerTypeFactory.initialize(this.mESN);
-        this.mDrmManager.init();
+        try {
+            this.mESN = EsnProviderRegistry.createESN(this.getContext(), this.mDrmManager, this);
+            this.initVoipSettings();
+            Log.d("nf_configurationagent", "Inject ESN to PlayerTypeFactory");
+            PlayerTypeFactory.initialize(this.mESN);
+            this.mDrmManager.init();
+        }
+        catch (UnsupportedSchemeException ex) {
+            Log.e("nf_configurationagent", "Failed to create ESN", (Throwable)ex);
+            this.initCompleted(CommonStatus.DRM_FAILURE_CDM);
+        }
     }
     
     @Override
@@ -686,6 +694,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public ABTestConfig$Cell getPrefetchLolomoConfig() {
+        return this.mABTestConfigOverride.getAimLowPrefetchLolomoConfig();
+    }
+    
+    @Override
     public int getPresentationTrackingAggregationSize() {
         return this.mDeviceConfigOverride.getPTAggregationSize();
     }
@@ -919,16 +932,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         return this.mDeviceConfigOverride.enableWidevineL1();
     }
     
-    @Override
-    public boolean isWidevineL3ABTestEnabled() {
-        return this.mAccountConfigOverride.enableWidevineL3ABTest();
-    }
-    
-    @Override
-    public boolean isWidevineL3Enabled() {
-        return this.mDeviceConfigOverride.enableWidevineL3();
-    }
-    
     public void refreshConfig(final ConfigurationAgentWebCallback configurationAgentWebCallback, final ConfigurationAgent$ConfigAgentListener configurationAgent$ConfigAgentListener) {
         // monitorenter(this)
         Label_0017: {
@@ -972,6 +975,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
             Log.d("nf_configurationagent", "Real disable " + b2);
         }
         return b2;
+    }
+    
+    @Override
+    public boolean shouldForceLegacyCrypto() {
+        return this.mDeviceConfigOverride.shouldForceLegacyCrypto();
     }
     
     @Override

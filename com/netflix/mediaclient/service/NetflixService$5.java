@@ -6,7 +6,7 @@ package com.netflix.mediaclient.service;
 
 import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
-import java.util.Map;
+import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
@@ -45,12 +45,17 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.PendingIntent;
 import android.app.AlarmManager;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import java.util.HashMap;
 import com.netflix.mediaclient.service.voip.WhistleVoipAgent;
 import com.netflix.mediaclient.service.user.UserAgent;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
 import com.netflix.mediaclient.service.pushnotification.PushNotificationAgent;
 import com.netflix.mediaclient.service.preapp.PreAppAgent;
 import com.netflix.mediaclient.service.player.PlayerAgent;
+import com.netflix.mediaclient.service.job.NetflixJobScheduler;
+import com.netflix.mediaclient.service.job.NetflixJobExecutor;
+import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
+import java.util.Map;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.ArrayList;
@@ -102,7 +107,6 @@ class NetflixService$5 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        final boolean b = false;
         boolean pinProtected = false;
         final String action = intent.getAction();
         if ("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND".equals(action)) {
@@ -111,12 +115,9 @@ class NetflixService$5 extends BroadcastReceiver
             }
             this.this$0.stopSelfInMs(28800000L);
             final Asset mdxAgentVideoAsset = this.getMdxAgentVideoAsset();
-            if (mdxAgentVideoAsset != null) {
-                pinProtected = mdxAgentVideoAsset.isPinProtected();
-            }
-            PinVerifier.getInstance().registerPlayEvent(pinProtected);
+            PinVerifier.getInstance().registerPlayEvent(mdxAgentVideoAsset != null && mdxAgentVideoAsset.isPinProtected());
             Log.d("NetflixService", "Refreshing CW for MDXUPDATE_PLAYBACKEND...");
-            this.this$0.getBrowse().refreshCw();
+            this.this$0.getBrowse().refreshCw(false);
         }
         else if ("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART".equals(action)) {
             if (this.this$0.mMdxAgent == null || !this.this$0.mMdxAgent.hasActiveSession()) {
@@ -135,14 +136,13 @@ class NetflixService$5 extends BroadcastReceiver
             final int intExtra = intent.getIntExtra("time", -1);
             Log.v("NetflixService", "on MDX state update - received updated mdx position: " + intExtra);
             final Asset mdxAgentVideoAsset3 = this.getMdxAgentVideoAsset();
-            boolean pinProtected2 = b;
             if (mdxAgentVideoAsset3 != null) {
                 mdxAgentVideoAsset3.setPlaybackBookmark(intExtra);
                 Log.v("NetflixService", "updating cached video position");
                 this.this$0.getBrowse().updateCachedVideoPosition(mdxAgentVideoAsset3);
-                pinProtected2 = mdxAgentVideoAsset3.isPinProtected();
+                pinProtected = mdxAgentVideoAsset3.isPinProtected();
             }
-            PinVerifier.getInstance().registerPlayEvent(pinProtected2);
+            PinVerifier.getInstance().registerPlayEvent(pinProtected);
         }
     }
 }

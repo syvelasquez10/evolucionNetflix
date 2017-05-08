@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.iko.wordparty.moments;
 
+import android.content.res.Resources;
+import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.iko.wordparty.model.WPInteractiveMomentsModel$WPImage;
 import com.netflix.mediaclient.util.ThreadUtils;
 import android.animation.ValueAnimator$AnimatorUpdateListener;
@@ -11,11 +13,13 @@ import android.widget.ImageView$ScaleType;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.ui.iko.BaseInteractiveMomentsManager$PlaybackCompleteListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import com.netflix.mediaclient.util.ViewUtils;
 import java.util.Collection;
 import android.animation.AnimatorSet;
+import android.animation.Animator;
 import android.graphics.Paint;
 import android.graphics.Canvas;
 import android.graphics.Bitmap$Config;
@@ -23,46 +27,50 @@ import android.graphics.drawable.BitmapDrawable;
 import java.util.Iterator;
 import android.animation.Animator$AnimatorListener;
 import android.animation.TimeInterpolator;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.iko.BaseInteractiveMomentsManager$PlaybackCompleteListener;
 import com.netflix.mediaclient.ui.iko.wordparty.WPConstants;
 import com.netflix.mediaclient.util.DeviceUtils;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
+import android.view.View;
 import com.netflix.mediaclient.ui.iko.wordparty.model.WPInteractiveMomentsModel$WPItem;
 import com.netflix.mediaclient.ui.iko.wordparty.model.WPInteractiveMomentsModel$WPAudio;
-import android.view.ViewGroup;
 import android.os.Handler;
 import java.util.ArrayList;
 import com.netflix.mediaclient.ui.iko.wordparty.model.WPInteractiveMomentsModel$WPMoment;
-import java.util.List;
 import android.view.View$OnClickListener;
 import android.widget.ImageView;
 import android.graphics.Bitmap;
-import android.view.View;
-import com.netflix.mediaclient.util.ViewUtils;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
+import java.util.List;
+import com.netflix.mediaclient.Log;
 
-class WPMomentScreen$6 extends AnimatorListenerAdapter
+class WPMomentScreen$6 implements Runnable
 {
     final /* synthetic */ WPMomentScreen this$0;
-    final /* synthetic */ WPCardView val$cardView;
     
-    WPMomentScreen$6(final WPMomentScreen this$0, final WPCardView val$cardView) {
+    WPMomentScreen$6(final WPMomentScreen this$0) {
         this.this$0 = this$0;
-        this.val$cardView = val$cardView;
     }
     
-    public void onAnimationEnd(final Animator animator) {
-        super.onAnimationEnd(animator);
-        this.this$0.cardsList.remove(this.val$cardView);
-        if (this.this$0.isMomentClosed()) {
+    @Override
+    public void run() {
+        if (Log.isLoggable()) {
+            Log.d("WPMomentScreen", "timeoutRunnable: counter = " + this.this$0.timeoutCounter);
+        }
+        if (this.this$0.timeoutCounter >= 2) {
+            this.this$0.playVOList(this.this$0.passiveExitVOList, WPMomentScreen$WordPartyMomentState.OUTRO);
             return;
         }
-        ViewUtils.setVisibleOrGone((View)this.val$cardView, false);
-        this.val$cardView.setAlpha(1.0f);
-        this.this$0.startPanelAnimation(false);
-        this.this$0.discardAnimationComplete();
+        final WPMomentScreen this$0 = this.this$0;
+        List list;
+        if (this.this$0.timeoutCounter == 0) {
+            list = this.this$0.timeoutVOList;
+        }
+        else {
+            list = this.this$0.timeout2VOList;
+        }
+        this$0.playVOList(list, WPMomentScreen$WordPartyMomentState.ITEM_SELECTION);
+        this.this$0.timeoutCounter++;
+        this.this$0.startWiggleAnimation();
     }
 }

@@ -22,6 +22,7 @@ import com.netflix.model.leafs.LoLoMoSummary;
 import com.netflix.model.leafs.ListOfMoviesSummary;
 import com.netflix.model.branches.SummarizedList;
 import com.netflix.model.leafs.ListOfListOfGenres;
+import com.netflix.falkor.Sentinel;
 import com.netflix.model.branches.UnsummarizedList;
 import com.netflix.model.branches.FalkorExpiringContent;
 import com.netflix.falkor.Ref;
@@ -42,7 +43,7 @@ public class Root implements BranchNode, Flushable
     private BranchMap<FalkorEvidenceList<Ref>> evidenceLists;
     private BranchMap<FalkorExpiringContent> expiringContent;
     private BranchMap<UnsummarizedList<Ref>> flatGenres;
-    private ListOfListOfGenres genreList;
+    private Sentinel<ListOfListOfGenres> genreList;
     private BranchMap<SummarizedList<Ref, ListOfMoviesSummary>> lists;
     private Ref lolomo;
     private BranchMap<SummarizedList<Ref, LoLoMoSummary>> lolomos;
@@ -244,7 +245,7 @@ public class Root implements BranchNode, Flushable
                 return this.evidenceLists = new BranchMap<FalkorEvidenceList<Ref>>(Falkor$Creator.FalkorEvidenceList(this.proxy));
             }
             case "genreList": {
-                return this.genreList = new ListOfListOfGenres();
+                return this.genreList = new Sentinel<ListOfListOfGenres>(new ListOfListOfGenres());
             }
             case "topGenres": {
                 return this.topGenres = new BranchMap<Ref>(Falkor$Creator.Ref);
@@ -324,7 +325,7 @@ public class Root implements BranchNode, Flushable
                 this.evidenceLists = (BranchMap<FalkorEvidenceList<Ref>>)o;
             }
             case "genreList": {
-                this.genreList = (ListOfListOfGenres)o;
+                this.genreList = (Sentinel<ListOfListOfGenres>)o;
             }
             case "topGenres": {
                 this.topGenres = (BranchMap<Ref>)o;

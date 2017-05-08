@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -12,9 +13,10 @@ import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.ExpiringContentType;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 import com.netflix.mediaclient.servicemgr.interface_.IExpiringContentWarning;
 
-public class ExpiringContent implements IExpiringContentWarning, JsonPopulator
+public class ExpiringContent implements IExpiringContentWarning, JsonMerger, JsonPopulator
 {
     private static final String TAG = "ExpiringContent";
     private long expirationTime;
@@ -107,6 +109,35 @@ public class ExpiringContent implements IExpiringContentWarning, JsonPopulator
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("ExpiringContent", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "willExpire": {
+                this.willExpire = jsonParser.getValueAsBoolean();
+                break;
+            }
+            case "type": {
+                this.type = ExpiringContentType.valueOf(jsonParser.getValueAsString().toUpperCase());
+                break;
+            }
+            case "expirationTime": {
+                this.expirationTime = jsonParser.getValueAsLong();
+                break;
+            }
+            case "localizedDate": {
+                this.localizedDate = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return true;
     }
     
     @Override

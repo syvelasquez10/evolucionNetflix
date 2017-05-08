@@ -4,6 +4,8 @@
 
 package com.netflix.model.leafs;
 
+import com.netflix.falkor.BranchNodeUtils;
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.util.JsonUtils;
@@ -19,8 +21,9 @@ import android.os.Parcelable$Creator;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class ListOfMoviesSummary extends TrackableListSummary implements JsonPopulator, LoMo, Genre
+public class ListOfMoviesSummary extends TrackableListSummary implements JsonMerger, JsonPopulator, LoMo, Genre
 {
     public static final Parcelable$Creator<ListOfMoviesSummary> CREATOR;
     private static final String TAG = "ListOfMoviesSummary";
@@ -144,6 +147,32 @@ public class ListOfMoviesSummary extends TrackableListSummary implements JsonPop
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("ListOfMoviesSummary", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            case "id": {
+                this.id = jsonParser.getValueAsString();
+                return true;
+            }
+            case "displayName": {
+                this.displayName = jsonParser.getValueAsString();
+                return true;
+            }
+            case "type": {
+                this.type = jsonParser.getValueAsString();
+                return true;
+            }
+            case "moreImgs": {
+                this.moreImgs = BranchNodeUtils.getAsStringArray(jsonParser);
+                break;
+            }
+        }
+        return super.set(s, jsonParser);
     }
     
     @Override

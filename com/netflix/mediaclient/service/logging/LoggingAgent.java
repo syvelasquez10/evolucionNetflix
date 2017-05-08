@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.javabridge.ui.LogArguments;
 import android.support.v4.content.LocalBroadcastManager;
+import com.netflix.mediaclient.servicemgr.IkoLogging;
 import com.netflix.mediaclient.servicemgr.SignInLogging;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging;
 import com.netflix.mediaclient.servicemgr.ISearchLogging;
@@ -120,8 +121,12 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
             intentFilter.addAction(actions5[n2]);
         }
         final String[] actions6 = SignInLogging.ACTIONS;
-        for (int length6 = actions6.length, n3 = n; n3 < length6; ++n3) {
+        for (int length6 = actions6.length, n3 = 0; n3 < length6; ++n3) {
             intentFilter.addAction(actions6[n3]);
+        }
+        final String[] actions7 = IkoLogging.ACTIONS;
+        for (int length7 = actions7.length, n4 = n; n4 < length7; ++n4) {
+            intentFilter.addAction(actions7[n4]);
         }
         intentFilter.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intentFilter.setPriority(999);

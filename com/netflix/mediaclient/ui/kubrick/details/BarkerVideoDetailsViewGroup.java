@@ -71,12 +71,9 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
     protected AdvancedImageView horzDispImg2;
     private View leftGroup;
     private Button myList;
-    private TextView myListLabel;
     private View rate;
     private View ratingContainer;
     private View shadow;
-    private TextView share;
-    private TextView shareLabel;
     protected AdvancedImageView titleImg;
     private TextView year;
     
@@ -152,7 +149,7 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
         else {
             videoType = this.details.getType();
         }
-        final RatingDialogFrag create = RatingDialogFrag.create(parentId, videoType, "", this.rate, 2130903252, false);
+        final RatingDialogFrag create = RatingDialogFrag.create(parentId, videoType, "", this.rate, 2130903247, false);
         final FragmentTransaction beginTransaction = ((NetflixActivity)this.getContext()).getFragmentManager().beginTransaction();
         beginTransaction.add(0, (Fragment)create, "frag_dialog");
         beginTransaction.commitAllowingStateLoss();
@@ -259,7 +256,7 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
             n = 0.0f;
         }
         else {
-            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131362179);
+            n = this.leftGroup.getMeasuredHeight() + this.getContext().getResources().getDimension(2131362181);
         }
         final int n2 = (int)n;
         this.alignHeroImage();
@@ -293,19 +290,16 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
         this.hdIcon = (IconFontTextView)this.findViewById(2131689616);
         this.basicSupplementalInfo = (TextView)this.findViewById(2131689615);
         this.dataSelectorGroup = (RadioGroup)this.findViewById(2131689631);
-        this.myListLabel = (TextView)this.findViewById(2131689905);
-        this.shareLabel = (TextView)this.findViewById(2131689903);
         this.horzDispImg2 = (AdvancedImageView)this.findViewById(2131689637);
         this.myList = (Button)this.findViewById(2131689630);
         this.year = (TextView)this.findViewById(2131689613);
-        this.share = (TextView)this.findViewById(2131689904);
         this.leftGroup = this.findViewById(2131689642);
         this.shadow = this.findViewById(2131689638);
         this.rate = this.findViewById(2131689612);
         this.bookmarkGroup = (ViewGroup)this.findViewById(2131689644);
-        this.bookmarkDuration = (TextView)this.findViewById(2131689909);
-        this.bookmarkValue = (TextView)this.findViewById(2131689908);
-        this.bookmarkProgressBar = (ProgressBar)this.findViewById(2131689910);
+        this.bookmarkDuration = (TextView)this.findViewById(2131689905);
+        this.bookmarkValue = (TextView)this.findViewById(2131689904);
+        this.bookmarkProgressBar = (ProgressBar)this.findViewById(2131689906);
         this.credits = this.findViewById(2131689647);
         this.actions = this.findViewById(2131689617);
         this.detailFlipper = (LinearLayout)this.findViewById(2131689641);
@@ -316,11 +310,6 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
     @Override
     public TextView getAddToMyListButton() {
         return (TextView)this.myList;
-    }
-    
-    @Override
-    public TextView getAddToMyListButtonLabel() {
-        return this.myListLabel;
     }
     
     public AdvancedImageView getHeroImage2() {
@@ -356,7 +345,7 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
     
     protected void setEpisodesTextAsSelected() {
         if (this.dataSelectorEpisodes != null) {
-            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131624162));
+            this.dataSelectorEpisodes.setTextColor(this.getResources().getColor(2131624161));
             this.dataSelectorEpisodesTop.setVisibility(0);
             this.dataSelectorEpisodes.setTypeface(Typeface.DEFAULT_BOLD);
         }
@@ -436,7 +425,7 @@ public class BarkerVideoDetailsViewGroup extends VideoDetailsViewGroup
                 this.episodeTitle.setText(AbsEpisodeView.createTitleText(episodeDetails, this.getContext()));
             }
             else {
-                this.episodeTitle.setText((CharSequence)this.getResources().getString(2131231063, new Object[] { episodeDetails.getSeasonAbbrSeqLabel(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() }));
+                this.episodeTitle.setText((CharSequence)this.getResources().getString(2131231064, new Object[] { episodeDetails.getSeasonAbbrSeqLabel(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() }));
             }
             this.episodeTitle.setVisibility(0);
         }

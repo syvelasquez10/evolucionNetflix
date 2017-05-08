@@ -29,7 +29,7 @@ public class CWExtendedDiscoveryFrag extends BaseExtendedDiscoveryFrag
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.titleView.setText(2131231002);
+        this.titleView.setText(2131231003);
     }
     
     @Override
@@ -42,7 +42,7 @@ public class CWExtendedDiscoveryFrag extends BaseExtendedDiscoveryFrag
     @Override
     public void updatePage(final ServiceManager serviceManager, final long n, final String s, final PlayContext playContext, final PaginatedDiscoveryAdapter$BlurredStoryArtProvider paginatedDiscoveryAdapter$BlurredStoryArtProvider) {
         super.updatePage(serviceManager, n, s, playContext, paginatedDiscoveryAdapter$BlurredStoryArtProvider);
-        serviceManager.getBrowse().fetchTask(new CachedModelProxy$FetchTurboCollectionVideosTask(n, 0, 9), new CWExtendedDiscoveryFrag$1(this, "CWExtendedDiscoveryFrag"));
+        serviceManager.getBrowse().fetchTask(new CachedModelProxy$FetchTurboCollectionVideosTask(n, 0, 9), new CWExtendedDiscoveryFrag$1(this, "CWExtendedDiscoveryFrag", serviceManager));
     }
     
     public void updatePage(final ServiceManager serviceManager, final PlayContext playContext, final PaginatedDiscoveryAdapter$BlurredStoryArtProvider paginatedDiscoveryAdapter$BlurredStoryArtProvider) {

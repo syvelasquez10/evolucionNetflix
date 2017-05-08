@@ -201,6 +201,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
             throw new IllegalStateException("Start intent must provide extra value: extra_video_type");
         }
         if (bundle != null) {
+            bundle.setClassLoader(this.getClass().getClassLoader());
             this.mNotificationOpenedReportAlreadySent = bundle.getBoolean("notification_beacon_sent");
         }
         this.fillVideoAndEpisodeIds();

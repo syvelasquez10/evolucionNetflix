@@ -85,7 +85,7 @@ public class BranchMap<T> extends HashMap<String, T> implements BranchNode, Expi
         }
         else {
             super.put(s, (T)o);
-            if (this.errorsOrUndefineds.containsKey(s)) {
+            if (this.errorsOrUndefineds != null && this.errorsOrUndefineds.containsKey(s)) {
                 this.errorsOrUndefineds.remove(s);
             }
         }

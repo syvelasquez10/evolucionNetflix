@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.util.JsonUtils;
@@ -14,8 +15,9 @@ import com.google.gson.JsonElement;
 import android.os.Parcel;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class TrackableListSummary extends ListSummary implements JsonPopulator, Trackable
+public class TrackableListSummary extends ListSummary implements JsonMerger, JsonPopulator, Trackable
 {
     private static final String TAG = "TrackableListSummary";
     private int heroTrackId;
@@ -122,6 +124,34 @@ public class TrackableListSummary extends ListSummary implements JsonPopulator, 
                     this.requestId = JsonUtils.getAsStringSafe(entry.getValue());
                     continue;
                 }
+            }
+        }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("TrackableListSummary", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return super.set(s, jsonParser);
+            }
+            case "trackId": {
+                this.trackId = jsonParser.getValueAsInt();
+                return true;
+            }
+            case "heroTrackId": {
+                this.heroTrackId = jsonParser.getValueAsInt();
+                return true;
+            }
+            case "listPos": {
+                this.listPos = jsonParser.getValueAsInt();
+                return true;
+            }
+            case "requestId": {
+                this.requestId = jsonParser.getValueAsString();
+                return true;
             }
         }
     }

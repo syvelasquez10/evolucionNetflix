@@ -11,21 +11,21 @@ import android.animation.AnimatorListenerAdapter;
 class WPMomentScreen$3 extends AnimatorListenerAdapter
 {
     final /* synthetic */ WPMomentScreen this$0;
-    final /* synthetic */ WPCardView val$card;
+    final /* synthetic */ WPCardLayout val$v;
     
-    WPMomentScreen$3(final WPMomentScreen this$0, final WPCardView val$card) {
+    WPMomentScreen$3(final WPMomentScreen this$0, final WPCardLayout val$v) {
         this.this$0 = this$0;
-        this.val$card = val$card;
+        this.val$v = val$v;
     }
     
     public void onAnimationEnd(final Animator animator) {
         super.onAnimationEnd(animator);
         if (Log.isLoggable()) {
-            Log.d("WPMomentScreen", "scaleUpCard onAnimationEnd");
+            Log.d("WPMomentScreen", "zoomInCard onAnimationEnd");
         }
         if (this.this$0.isMomentClosed()) {
             return;
         }
-        this.this$0.onCardClickEnd(this.val$card);
+        this.val$v.revealCard();
     }
 }

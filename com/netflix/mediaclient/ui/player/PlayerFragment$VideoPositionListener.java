@@ -102,6 +102,7 @@ import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.event.nrdp.media.MediaEvent;
+import com.netflix.mediaclient.ui.player.error.PlayerErrorDialogDescriptorFactory;
 import com.netflix.mediaclient.event.nrdp.media.NccpError;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.widget.TappableSurfaceView$TapListener;
@@ -148,7 +149,7 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
     }
     
     private boolean inCancelProgressZone(final SeekBar seekBar, final float n) {
-        final float dimension = this.this$0.getResources().getDimension(2131362242);
+        final float dimension = this.this$0.getResources().getDimension(2131362244);
         int height;
         if (this.this$0.mIsTablet) {
             height = (int)(2.0f * dimension);
@@ -246,77 +247,80 @@ public class PlayerFragment$VideoPositionListener implements SeekBar$OnSeekBarCh
     }
     
     public void onStopTrackingTouch(final SeekBar seekBar) {
-    Label_0169_Outer:
+        boolean b;
+        TimelineSeekBar timelineSeekBar;
+        PlayScreen access$800;
+        boolean b2;
+        int access$801;
+        Label_0169_Outer:Label_0054_Outer:
         while (true) {
-            final boolean b = true;
+            b = true;
         Label_0054:
             while (true) {
-            Label_0169:
-                while (true) {
-                Label_0154_Outer:
+                Label_0237: {
                     while (true) {
-                        Label_0208: {
-                            synchronized (this) {
-                                this.this$0.mState.draggingInProgress = false;
-                                Log.d("PlayerFragment", "onStopTrackingTouch called");
-                                if (!(seekBar instanceof TimelineSeekBar)) {
-                                    Log.e("PlayerFragment", "PlayerFragment got not a Netflix seekbar!");
-                                    ErrorLoggingManager.logHandledException("PlayerFragment got not a Netflix seekbar!");
-                                    return;
-                                }
-                                final TimelineSeekBar timelineSeekBar = (TimelineSeekBar)seekBar;
-                                if (!this.mIsInCancelZone && !this.skipSeek(timelineSeekBar)) {
-                                    break Label_0208;
-                                }
-                                break Label_0169;
-                                this.this$0.mScreen.finishDragging();
-                                this.this$0.mSubtitleManager.setSubtitleVisibility(true);
-                                PlayScreen access$800 = null;
-                                ((TimelineSeekBar)access$800).hideThumb(false);
-                                // iftrue(Label_0154:, !Log.isLoggable())
-                                // iftrue(Label_0232:, b2)
-                                // iftrue(Label_0213:, b2)
-                            Block_6:
-                                while (true) {
-                                    final boolean b2;
-                                    Block_7: {
-                                        break Block_7;
-                                        access$800 = this.this$0.mScreen;
-                                        Block_8: {
-                                            break Block_8;
-                                            access$800.stopCurrentTime(b2);
-                                            this.this$0.mState.resetTimeline();
-                                            return;
-                                            break Block_6;
-                                        }
-                                        b2 = b;
-                                        continue Label_0169;
+                    Block_8_Outer:
+                        while (true) {
+                            Label_0208: {
+                                synchronized (this) {
+                                    this.this$0.mState.draggingInProgress = false;
+                                    Log.d("PlayerFragment", "onStopTrackingTouch called");
+                                    if (!(seekBar instanceof TimelineSeekBar)) {
+                                        Log.e("PlayerFragment", "PlayerFragment got not a Netflix seekbar!");
+                                        ErrorLoggingManager.logHandledException("PlayerFragment got not a Netflix seekbar!");
+                                        return;
                                     }
-                                    Log.d("PlayerFragment", "Stop current time " + b2);
-                                    continue Label_0169_Outer;
+                                    timelineSeekBar = (TimelineSeekBar)seekBar;
+                                    if (!this.mIsInCancelZone && !this.skipSeek(timelineSeekBar)) {
+                                        break Label_0208;
+                                    }
+                                    break Label_0237;
+                                    this.this$0.mScreen.finishDragging();
+                                    this.this$0.mSubtitleManager.setSubtitleVisibility(true);
+                                    ((TimelineSeekBar)access$800).hideThumb(false);
+                                    // iftrue(Label_0154:, !Log.isLoggable())
+                                    // iftrue(Label_0213:, b2)
+                                    // iftrue(Label_0232:, b2)
+                                    while (true) {
+                                        Block_7: {
+                                            break Block_7;
+                                            while (true) {
+                                                b2 = b;
+                                                access$800.stopCurrentTime(b2);
+                                                this.this$0.mState.resetTimeline();
+                                                return;
+                                                while (true) {
+                                                    access$801 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getCurrentTimelineProgress());
+                                                    ((TimelineSeekBar)access$800).setProgress(access$801);
+                                                    Log.d("PlayerFragment", "Seek!");
+                                                    this.this$0.doSeek(access$801);
+                                                    continue Block_8_Outer;
+                                                    continue Label_0054_Outer;
+                                                }
+                                                access$800 = this.this$0.mScreen;
+                                                continue Label_0169_Outer;
+                                            }
+                                        }
+                                        Log.d("PlayerFragment", "Stop current time " + b2);
+                                        continue;
+                                    }
                                 }
-                                final int access$801 = this.this$0.toBifAjustedProgress(this.this$0.mScreen.getCurrentTimelineProgress());
-                                ((TimelineSeekBar)access$800).setProgress(access$801);
-                                Log.d("PlayerFragment", "Seek!");
-                                this.this$0.doSeek(access$801);
-                                continue Label_0154_Outer;
                             }
+                            b2 = false;
+                            continue Label_0054;
+                            Label_0213: {
+                                Log.d("PlayerFragment", "Do not seek!");
+                            }
+                            ((TimelineSeekBar)access$800).setProgress(((TimelineSeekBar)access$800).getProgress());
+                            continue Label_0169_Outer;
                         }
-                        boolean b2 = false;
-                        continue Label_0054;
-                        Label_0213: {
-                            Log.d("PlayerFragment", "Do not seek!");
+                        Label_0232: {
+                            b2 = false;
                         }
-                        PlayScreen access$800 = null;
-                        ((TimelineSeekBar)access$800).setProgress(((TimelineSeekBar)access$800).getProgress());
-                        continue Label_0169_Outer;
+                        continue Label_0054_Outer;
                     }
-                    Label_0232: {
-                        final boolean b2 = false;
-                    }
-                    continue Label_0169;
                 }
-                boolean b2 = true;
+                b2 = true;
                 continue Label_0054;
             }
         }

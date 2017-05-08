@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.player;
 
 import android.view.SurfaceHolder;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
+import com.netflix.mediaclient.media.JPlayer.AdaptiveMediaDecoderHelper;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import android.graphics.Point;
 import java.nio.ByteBuffer;

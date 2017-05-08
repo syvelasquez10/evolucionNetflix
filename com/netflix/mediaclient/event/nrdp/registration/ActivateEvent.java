@@ -18,6 +18,7 @@ public class ActivateEvent extends BaseRegistrationEvent
     private int actionID;
     private boolean actionId;
     private String bcp47;
+    private int code;
     private String cookies;
     private String message;
     private boolean networkError;
@@ -39,6 +40,10 @@ public class ActivateEvent extends BaseRegistrationEvent
     
     public String getBcp47() {
         return this.bcp47;
+    }
+    
+    public int getCode() {
+        return this.code;
     }
     
     public String getCookies() {
@@ -83,6 +88,7 @@ public class ActivateEvent extends BaseRegistrationEvent
             this.ok = false;
             this.actionID = BaseNccpEvent.getInt(jsonObject, "actionID", 0);
             this.reasonCode = BaseNccpEvent.getInt(jsonObject, "reasonCode", 0);
+            this.code = BaseNccpEvent.getInt(jsonObject, "code", 0);
             this.message = BaseNccpEvent.getString(jsonObject, "message", null);
             this.bcp47 = BaseNccpEvent.getString(jsonObject, "bcp47", null);
             this.origin = BaseNccpEvent.getString(jsonObject, "origin", null);
@@ -96,5 +102,10 @@ public class ActivateEvent extends BaseRegistrationEvent
                 this.networkError = true;
             }
         }
+    }
+    
+    @Override
+    public String toString() {
+        return "ActivateEvent{cookies='" + this.cookies + '\'' + ", actionID=" + this.actionID + ", message='" + this.message + '\'' + ", bcp47='" + this.bcp47 + '\'' + ", reasonCode=" + this.reasonCode + ", code=" + this.code + ", origin='" + this.origin + '\'' + ", networkError=" + this.networkError + ", actionId=" + this.actionId + ", ok=" + this.ok + "} " + super.toString();
     }
 }

@@ -16,6 +16,10 @@ import com.netflix.mediaclient.service.logging.apm.model.UIModelessViewSessionSt
 import com.netflix.mediaclient.service.logging.client.model.SessionStartedEvent;
 import com.netflix.mediaclient.javabridge.ui.Log$AppIdSetListener;
 import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.service.logging.abconfig.ABTestReceivedEvent;
+import com.netflix.mediaclient.service.logging.abconfig.ABTestLoadedEvent;
+import com.netflix.mediaclient.service.logging.abconfig.ABConfigDataReceivedEvent;
+import com.netflix.mediaclient.service.logging.abconfig.ABConfigDataLoadedEvent;
 import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent;
 import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetInstallEvent$WidgetInstallAction;
 import com.netflix.mediaclient.service.logging.android.settings.model.LocalSettingsChangeEvent;
@@ -120,6 +124,26 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         this.handleEndedNetworkConnectionSession("wiredNetworkConnection", this.mDataContext, this.mCurrentUiView);
     }
     
+    private void handleABConfigDataLoadedEvent(final Intent intent) {
+        Log.d("nf_log_apm", "AB_CONFIG_DATA_LOADED_EVENT");
+        this.reportABConfigDataLoadedEvent();
+    }
+    
+    private void handleABConfigDataReceivedEvent(final Intent intent) {
+        Log.d("nf_log_apm", "AB_CONFIG_DATA_RECEIVED_EVENT");
+        this.reportABConfigDataReceivedEvent();
+    }
+    
+    private void handleABTestLoadedEvent(final Intent intent) {
+        Log.d("nf_log_apm", "AB_TEST_LOADED_EVENT");
+        this.reportABTestLoadedEvent(intent.getStringExtra("ABTestID"), intent.getIntExtra("ABTestCellID", -1));
+    }
+    
+    private void handleABTestReceivedEvent(final Intent intent) {
+        Log.d("nf_log_apm", "AB_TEST_RECEIVED_EVENT");
+        this.reportABTestReceivedEvent(intent.getStringExtra("ABTestID"), intent.getIntExtra("ABTestCellID", -1));
+    }
+    
     private void handleAssetRequestEnded(final Intent p0) {
         // 
         // This method could not be decompiled.
@@ -162,21 +186,21 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         //    61: aconst_null    
         //    62: astore_2       
         //    63: ldc             "nf_log_apm"
-        //    65: ldc             "Failed to parse properties"
-        //    67: aload_1        
-        //    68: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //    71: pop            
-        //    72: aload_3        
-        //    73: astore_1       
-        //    74: goto            49
-        //    77: astore_1       
-        //    78: goto            63
+        //    65: ldc_w           "Failed to parse properties"
+        //    68: aload_1        
+        //    69: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //    72: pop            
+        //    73: aload_3        
+        //    74: astore_1       
+        //    75: goto            49
+        //    78: astore_1       
+        //    79: goto            63
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
         //  29     39     60     63     Ljava/lang/Exception;
-        //  39     49     77     81     Ljava/lang/Exception;
+        //  39     49     78     82     Ljava/lang/Exception;
         // 
         // The error that occurred was:
         // 
@@ -217,75 +241,75 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         //     0: aconst_null    
         //     1: astore          5
         //     3: ldc             "nf_log_apm"
-        //     5: ldc             "Handle data request ended intent. Running it on main thread."
-        //     7: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    10: pop            
-        //    11: aload_1        
-        //    12: ldc             "request_id"
-        //    14: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    17: astore          6
-        //    19: aload_1        
-        //    20: ldc             "reason"
-        //    22: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    25: invokestatic    com/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;
-        //    28: astore          7
-        //    30: aload_1        
-        //    31: ldc             "error"
-        //    33: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    36: invokestatic    com/netflix/mediaclient/service/logging/client/model/Error.createInstance:(Ljava/lang/String;)Lcom/netflix/mediaclient/service/logging/client/model/UIError;
-        //    39: astore_2       
-        //    40: aload_1        
-        //    41: ldc             "http_response"
-        //    43: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    46: invokestatic    com/netflix/mediaclient/service/logging/client/model/HttpResponse.createInstance:(Ljava/lang/String;)Lcom/netflix/mediaclient/service/logging/client/model/HttpResponse;
-        //    49: astore_3       
-        //    50: aload_1        
-        //    51: ldc_w           "falkorPathResults"
-        //    54: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
-        //    57: invokestatic    com/netflix/mediaclient/service/logging/client/model/FalkorPathResult.createList:(Ljava/lang/String;)Ljava/util/List;
-        //    60: astore_1       
-        //    61: aload_3        
-        //    62: astore          4
-        //    64: aload_1        
-        //    65: astore_3       
-        //    66: aload_0        
-        //    67: aload           6
-        //    69: aload_3        
-        //    70: aload           7
-        //    72: aload           4
-        //    74: aload_2        
-        //    75: invokevirtual   com/netflix/mediaclient/service/logging/ApmLoggingImpl.endDataRequestSession:(Ljava/lang/String;Ljava/util/List;Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;Lcom/netflix/mediaclient/service/logging/client/model/HttpResponse;Lcom/netflix/mediaclient/service/logging/client/model/Error;)V
-        //    78: return         
-        //    79: astore          4
-        //    81: aconst_null    
-        //    82: astore_1       
+        //     5: ldc_w           "Handle data request ended intent. Running it on main thread."
+        //     8: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    11: pop            
+        //    12: aload_1        
+        //    13: ldc_w           "request_id"
+        //    16: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //    19: astore          6
+        //    21: aload_1        
+        //    22: ldc             "reason"
+        //    24: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //    27: invokestatic    com/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason.valueOf:(Ljava/lang/String;)Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;
+        //    30: astore          7
+        //    32: aload_1        
+        //    33: ldc             "error"
+        //    35: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //    38: invokestatic    com/netflix/mediaclient/service/logging/client/model/Error.createInstance:(Ljava/lang/String;)Lcom/netflix/mediaclient/service/logging/client/model/UIError;
+        //    41: astore_2       
+        //    42: aload_1        
+        //    43: ldc             "http_response"
+        //    45: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //    48: invokestatic    com/netflix/mediaclient/service/logging/client/model/HttpResponse.createInstance:(Ljava/lang/String;)Lcom/netflix/mediaclient/service/logging/client/model/HttpResponse;
+        //    51: astore_3       
+        //    52: aload_1        
+        //    53: ldc_w           "falkorPathResults"
+        //    56: invokevirtual   android/content/Intent.getStringExtra:(Ljava/lang/String;)Ljava/lang/String;
+        //    59: invokestatic    com/netflix/mediaclient/service/logging/client/model/FalkorPathResult.createList:(Ljava/lang/String;)Ljava/util/List;
+        //    62: astore_1       
+        //    63: aload_3        
+        //    64: astore          4
+        //    66: aload_1        
+        //    67: astore_3       
+        //    68: aload_0        
+        //    69: aload           6
+        //    71: aload_3        
+        //    72: aload           7
+        //    74: aload           4
+        //    76: aload_2        
+        //    77: invokevirtual   com/netflix/mediaclient/service/logging/ApmLoggingImpl.endDataRequestSession:(Ljava/lang/String;Ljava/util/List;Lcom/netflix/mediaclient/servicemgr/IClientLogging$CompletionReason;Lcom/netflix/mediaclient/service/logging/client/model/HttpResponse;Lcom/netflix/mediaclient/service/logging/client/model/Error;)V
+        //    80: return         
+        //    81: astore          4
         //    83: aconst_null    
-        //    84: astore_2       
-        //    85: ldc             "nf_log_apm"
-        //    87: ldc             "Failed to parse properties"
-        //    89: aload           4
-        //    91: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //    94: pop            
-        //    95: aload           5
-        //    97: astore_3       
-        //    98: aload_1        
-        //    99: astore          4
-        //   101: goto            66
-        //   104: astore          4
-        //   106: aconst_null    
-        //   107: astore_1       
-        //   108: goto            85
-        //   111: astore          4
-        //   113: aload_3        
-        //   114: astore_1       
-        //   115: goto            85
+        //    84: astore_1       
+        //    85: aconst_null    
+        //    86: astore_2       
+        //    87: ldc             "nf_log_apm"
+        //    89: ldc_w           "Failed to parse properties"
+        //    92: aload           4
+        //    94: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //    97: pop            
+        //    98: aload           5
+        //   100: astore_3       
+        //   101: aload_1        
+        //   102: astore          4
+        //   104: goto            68
+        //   107: astore          4
+        //   109: aconst_null    
+        //   110: astore_1       
+        //   111: goto            87
+        //   114: astore          4
+        //   116: aload_3        
+        //   117: astore_1       
+        //   118: goto            87
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  30     40     79     85     Ljava/lang/Exception;
-        //  40     50     104    111    Ljava/lang/Exception;
-        //  50     61     111    118    Ljava/lang/Exception;
+        //  32     42     81     87     Ljava/lang/Exception;
+        //  42     52     107    114    Ljava/lang/Exception;
+        //  52     63     114    121    Ljava/lang/Exception;
         // 
         // The error that occurred was:
         // 
@@ -672,6 +696,22 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
                 this.handleLocalSettingsChange(intent);
                 return true;
             }
+            case "com.netflix.mediaclient.intent.action.LOG_APM_AB_TEST_LOADED_EVENT": {
+                this.handleABTestLoadedEvent(intent);
+                return true;
+            }
+            case "com.netflix.mediaclient.intent.action.LOG_APM_AB_TEST_RECEIVED_EVENT": {
+                this.handleABTestReceivedEvent(intent);
+                return true;
+            }
+            case "com.netflix.mediaclient.intent.action.LOG_APM_AB_CONFIG_DATA_LOADED_EVENT": {
+                this.handleABConfigDataLoadedEvent(intent);
+                return true;
+            }
+            case "com.netflix.mediaclient.intent.action.LOG_APM_AB_CONFIG_DATA_RECEIVED_EVENT": {
+                this.handleABConfigDataReceivedEvent(intent);
+                return true;
+            }
         }
     }
     
@@ -713,6 +753,42 @@ class ApmLoggingImpl implements ApplicationPerformanceMetricsLogging
         }
         this.mEventHandler.post(new PreAppWidgetInstallEvent(PreAppWidgetInstallEvent$WidgetInstallAction.DELETE, s, n));
         Log.d("nf_log_apm", "preapp delete widget done");
+    }
+    
+    @Override
+    public void reportABConfigDataLoadedEvent() {
+        if (Log.isLoggable()) {
+            Log.d("nf_log_apm", "All AB config data loaded event");
+        }
+        this.mEventHandler.post(new ABConfigDataLoadedEvent());
+        Log.d("nf_log_apm", "All AB config data loaded event done");
+    }
+    
+    @Override
+    public void reportABConfigDataReceivedEvent() {
+        if (Log.isLoggable()) {
+            Log.d("nf_log_apm", "All AB config data received event");
+        }
+        this.mEventHandler.post(new ABConfigDataReceivedEvent());
+        Log.d("nf_log_apm", "All AB config data received event done");
+    }
+    
+    @Override
+    public void reportABTestLoadedEvent(final String s, final int n) {
+        if (Log.isLoggable()) {
+            Log.d("nf_log_apm", "AB test loaded event");
+        }
+        this.mEventHandler.post(new ABTestLoadedEvent(s, n));
+        Log.d("nf_log_apm", "AB test loaded event done");
+    }
+    
+    @Override
+    public void reportABTestReceivedEvent(final String s, final int n) {
+        if (Log.isLoggable()) {
+            Log.d("nf_log_apm", "AB test received event");
+        }
+        this.mEventHandler.post(new ABTestReceivedEvent(s, n));
+        Log.d("nf_log_apm", "AB test received event done");
     }
     
     @Override

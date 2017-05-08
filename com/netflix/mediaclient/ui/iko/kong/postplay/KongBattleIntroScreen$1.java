@@ -49,9 +49,9 @@ class KongBattleIntroScreen$1 extends OnAnimationEndListener
         this.this$0.battleIntroCompoundView.setScaleY(this.this$0.scaleDownHeight);
         this.this$0.battleIntroContainer.setTranslationX(-this.this$0.battleEpisodeSpacing);
         this.this$0.battleIntroCompoundView.setAlpha(0.0f);
-        ViewUtils.setVisibleOrInvisible((View)this.this$0.battleCard, true);
+        ViewUtils.setVisibleOrInvisible((View)this.this$0.battleCard, !this.this$0.hasWatchedAllBattlesForEpisode);
         if (StringUtils.isNotEmpty(this.this$0.resultDataBattleCardImageUrl)) {
-            ViewUtils.setVisibleOrInvisible(this.this$0.battleCardComposite, false);
+            ViewUtils.setVisibleOrInvisible(this.this$0.battleCardComposite, this.this$0.hasWatchedAllBattlesForEpisode);
         }
         if (this.this$0.nextEpisodeVideoId > 0) {
             this.this$0.nextEpisodeContainer.setVisibility(0);

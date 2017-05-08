@@ -107,7 +107,7 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
             this.logException(itemBackgroundResource);
         }
         if (viewGroup instanceof SeasonsSpinner) {
-            itemBackgroundResource = 2131624150;
+            itemBackgroundResource = 2131624149;
         }
         else {
             itemBackgroundResource = this.itemBackgroundResource;

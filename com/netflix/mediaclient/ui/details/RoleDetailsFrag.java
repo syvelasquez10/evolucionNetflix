@@ -173,7 +173,7 @@ public class RoleDetailsFrag extends NetflixFrag implements LoadingStatus, Error
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("RoleDetailsFrag", "Creating new frag view...");
-        final ViewGroup viewGroup2 = (ViewGroup)layoutInflater.inflate(2130903255, (ViewGroup)null, false);
+        final ViewGroup viewGroup2 = (ViewGroup)layoutInflater.inflate(2130903250, (ViewGroup)null, false);
         this.findViews((View)viewGroup2);
         this.leWrapper = new LoadingAndErrorWrapper((View)viewGroup2, this.errorCallback);
         this.setupRecyclerView();

@@ -10,6 +10,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ImageView$ScaleType;
@@ -46,14 +47,18 @@ public class KubrickKidsCharacterView extends FrameLayout implements VideoViewGr
         super(context);
         this.setFocusable(true);
         this.playContext = PlayContext.EMPTY_CONTEXT;
-        final int dimensionPixelSize = this.getResources().getDimensionPixelSize(2131361948);
+        final int dimensionPixelSize = this.getResources().getDimensionPixelSize(2131361950);
         this.addView((View)(this.bg = new AdvancedImageView(context)), (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(dimensionPixelSize, dimensionPixelSize, 17));
-        final int dimensionPixelSize2 = this.getResources().getDimensionPixelSize(2131361950);
+        final int dimensionPixelSize2 = this.getResources().getDimensionPixelSize(2131361952);
         final FrameLayout$LayoutParams frameLayout$LayoutParams = new FrameLayout$LayoutParams(dimensionPixelSize2, dimensionPixelSize2, 17);
         (this.img = new AdvancedImageView(context)).setCornerRadius(dimensionPixelSize2 / 2);
         this.img.setScaleType(ImageView$ScaleType.CENTER_CROP);
         this.addView((View)this.img, (ViewGroup$LayoutParams)frameLayout$LayoutParams);
         this.listener = new KubrickKidsCharacterView$CharacterVideoDetailsClickListener(this, (NetflixActivity)context, this);
+    }
+    
+    public String getImageUrl(final Video video, final boolean b) {
+        return BrowseExperience.getLomoVideoViewImageUrl(this.getContext(), video, KubrickKidsCharacterView.class, 0);
     }
     
     public PlayContext getPlayContext() {
@@ -68,9 +73,9 @@ public class KubrickKidsCharacterView extends FrameLayout implements VideoViewGr
     
     public void update(final Video video, final Trackable trackable, int n, final boolean b, final boolean b2) {
         final int n2 = 0;
-        final String boxshotUrl = video.getBoxshotUrl();
+        final String imageUrl = this.getImageUrl(video, b2);
         if (Log.isLoggable()) {
-            Log.v("KubrickKidsCharacterView", "Updating for video: " + video.toString() + ", videoPos: " + n + ", img url: " + boxshotUrl);
+            Log.v("KubrickKidsCharacterView", "Updating for video: " + video.toString() + ", videoPos: " + n + ", img url: " + imageUrl);
         }
         this.playContext = new PlayContextImp(trackable, n);
         this.setVisibility(0);
@@ -86,7 +91,7 @@ public class KubrickKidsCharacterView extends FrameLayout implements VideoViewGr
         if (b) {
             n = 1;
         }
-        imageLoader.showImg(img, boxshotUrl, bif, title, light_NO_PLACEHOLDER, true, n);
+        imageLoader.showImg(img, imageUrl, bif, title, light_NO_PLACEHOLDER, true, n);
         this.listener.update((View)this, video, this.img.getPressedStateHandler());
     }
 }

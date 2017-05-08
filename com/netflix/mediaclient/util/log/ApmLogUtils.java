@@ -7,12 +7,9 @@ package com.netflix.mediaclient.util.log;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.service.logging.client.model.DiscreteEvent;
-import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.service.logging.JsonSerializer;
-import android.content.Intent;
 import com.netflix.mediaclient.service.logging.client.model.FalkorPathResult;
 import java.util.List;
-import android.content.Context;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.service.logging.client.model.HttpResponse;
@@ -20,6 +17,9 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import android.support.v4.content.LocalBroadcastManager;
+import android.content.Intent;
+import android.content.Context;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.service.logging.perf.PerfSession;
@@ -33,6 +33,46 @@ public final class ApmLogUtils extends ConsolidatedLoggingUtils
         else if (perfSession != null) {
             applicationPerformanceMetricsLogging.endPerformanceSession(perfSession);
         }
+    }
+    
+    public static void reportABConfigDataLoadedEvent(final Context context) {
+        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
+            return;
+        }
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_AB_CONFIG_DATA_LOADED_EVENT");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    public static void reportABConfigDataReceivedEvent(final Context context) {
+        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
+            return;
+        }
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_AB_CONFIG_DATA_RECEIVED_EVENT");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    public static void reportABTestLoadedEvent(final Context context, final String s, final int n) {
+        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
+            return;
+        }
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_AB_TEST_LOADED_EVENT");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("ABTestID", s);
+        intent.putExtra("ABTestCellID", n);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+    
+    public static void reportABTestReceivedEvent(final Context context, final String s, final int n) {
+        if (ConsolidatedLoggingUtils.isNull(context, "Context can not be null!")) {
+            return;
+        }
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.LOG_APM_AB_TEST_RECEIVED_EVENT");
+        intent.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
+        intent.putExtra("ABTestID", s);
+        intent.putExtra("ABTestCellID", n);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
     
     public static void reportAssetRequest(final String s, final IClientLogging$AssetType clientLogging$AssetType, final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging) {

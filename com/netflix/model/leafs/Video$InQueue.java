@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -11,8 +12,9 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public final class Video$InQueue implements JsonPopulator
+public final class Video$InQueue implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "InQueue";
     public boolean inQueue;
@@ -54,6 +56,22 @@ public final class Video$InQueue implements JsonPopulator
                     this.inQueue = jsonElement2.getAsBoolean();
                     continue;
                 }
+            }
+        }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("InQueue", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "inQueue": {
+                this.inQueue = jsonParser.getValueAsBoolean();
+                return true;
             }
         }
     }

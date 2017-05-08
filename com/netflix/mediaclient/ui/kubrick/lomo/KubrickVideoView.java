@@ -6,14 +6,14 @@ package com.netflix.mediaclient.ui.kubrick.lomo;
 
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.view.View;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ImageView$ScaleType;
@@ -49,9 +49,18 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130837937);
+        this.setBackgroundResource(2130837936);
         this.setScaleType(ImageView$ScaleType.CENTER_CROP);
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), this);
+    }
+    
+    @Override
+    public String getImageUrl(final KubrickVideo kubrickVideo, final boolean b) {
+        int n = 0;
+        if (b) {
+            n = 2;
+        }
+        return BrowseExperience.getLomoVideoViewImageUrl(this.getContext(), kubrickVideo, KubrickVideoView.class, n);
     }
     
     @Override
@@ -70,18 +79,12 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
     public void update(final KubrickVideo kubrickVideo, final Trackable trackable, int visibility, final boolean b, final boolean b2) {
         final int n = 4;
         final int n2 = 0;
-        String s;
-        if (b2) {
-            s = kubrickVideo.getHorzDispUrl();
-        }
-        else {
-            s = kubrickVideo.getHorzDispSmallUrl();
-        }
+        final String imageUrl = this.getImageUrl(kubrickVideo, b2);
         if (Log.isLoggable()) {
-            Log.v("KubrickVideoView", "Updating for video: " + kubrickVideo + ", imgUrl: " + s);
+            Log.v("KubrickVideoView", "Updating for video: " + kubrickVideo + ", imgUrl: " + imageUrl);
         }
         int visibility2;
-        if (StringUtils.isEmpty(s)) {
+        if (StringUtils.isEmpty(imageUrl)) {
             visibility2 = 4;
         }
         else {
@@ -90,7 +93,7 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
         this.setVisibility(visibility2);
         this.playContext = new PlayContextImp(trackable, visibility);
         this.clicker.update((View)this, kubrickVideo, this.pressedHandler);
-        if (StringUtils.isEmpty(s)) {
+        if (StringUtils.isEmpty(imageUrl)) {
             visibility = n;
         }
         else {
@@ -105,6 +108,6 @@ public class KubrickVideoView extends AdvancedImageView implements VideoViewGrou
         if (b) {
             visibility = 1;
         }
-        imageLoader.showImg(this, s, boxArt, title, imageLoaderConfig, true, visibility);
+        imageLoader.showImg(this, imageUrl, boxArt, title, imageLoaderConfig, true, visibility);
     }
 }

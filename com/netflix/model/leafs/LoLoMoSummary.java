@@ -4,6 +4,7 @@
 
 package com.netflix.model.leafs;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -12,14 +13,18 @@ import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.util.StringUtils;
+import com.google.gson.annotations.SerializedName;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class LoLoMoSummary implements JsonPopulator, LoLoMo
+public class LoLoMoSummary implements JsonMerger, JsonPopulator, LoLoMo
 {
     private static final String TAG = "LoLoMoSummary";
     private String mGenreId;
+    @SerializedName("length")
     private int mNumLoMos;
+    @SerializedName("title")
     private String mTitle;
     
     @Override
@@ -89,6 +94,24 @@ public class LoLoMoSummary implements JsonPopulator, LoLoMo
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "title": {
+                this.mTitle = jsonParser.getValueAsString();
+                break;
+            }
+            case "length": {
+                this.mNumLoMos = jsonParser.getValueAsInt();
+                break;
+            }
+        }
+        return true;
     }
     
     public void setGenreId(final String mGenreId) {

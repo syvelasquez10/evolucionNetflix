@@ -11,18 +11,19 @@ import com.netflix.mediaclient.service.logging.uiaction.model.SubmitPaymentEnded
 import com.netflix.mediaclient.service.logging.uiaction.model.StartPlayEndedEvent;
 import com.netflix.mediaclient.service.logging.android.model.ShareSheetEndedEvent;
 import com.netflix.mediaclient.service.logging.android.model.ShareSheetOpenEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.SerializeLolomoEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.SelectProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RemoveFromPlaylistEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RegisterEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.RateTitleEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.PrefetchLolomoJobEndedEvent;
 import com.netflix.mediaclient.service.logging.android.preapp.model.PreAppWidgetActionEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.PostPlayEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.NewLolomoEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.NavigationEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.LoginEndedEvent;
-import com.netflix.mediaclient.service.logging.iko.model.IkoMomentEndedEvent;
-import com.netflix.mediaclient.service.logging.iko.model.IkoModeEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.EditProfileEndedEvent;
+import com.netflix.mediaclient.service.logging.uiaction.model.DeserializeLolomoEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.DeleteProfileEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.ChangeValueEndedEvent;
 import java.util.Iterator;
@@ -58,20 +59,21 @@ import com.netflix.mediaclient.service.logging.uiaction.SubmitPaymentSession;
 import com.netflix.mediaclient.service.logging.uiaction.StartPlaySession;
 import com.netflix.mediaclient.service.logging.android.ShareSheetSession;
 import com.netflix.mediaclient.service.logging.android.ShareSheetOpenSession;
+import com.netflix.mediaclient.service.logging.uiaction.SerializeLolomoSession;
 import com.netflix.mediaclient.service.logging.uiaction.SelectProfileSession;
 import com.netflix.mediaclient.service.logging.uiaction.SearchSession;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.uiaction.RemoveFromPlaylistSession;
 import com.netflix.mediaclient.service.logging.uiaction.RegisterSession;
 import com.netflix.mediaclient.service.logging.uiaction.RateTitleSession;
+import com.netflix.mediaclient.service.logging.uiaction.PrefetchLolomoJobSession;
 import com.netflix.mediaclient.service.logging.android.preapp.PreAppWidgetActionSession;
 import com.netflix.mediaclient.service.logging.uiaction.PostPlaySession;
 import com.netflix.mediaclient.service.logging.uiaction.NewLolomoSession;
 import com.netflix.mediaclient.service.logging.uiaction.NavigationSession;
 import com.netflix.mediaclient.service.logging.uiaction.LoginSession;
-import com.netflix.mediaclient.service.logging.iko.IkoMomentSession;
-import com.netflix.mediaclient.service.logging.iko.IkoModeSession;
 import com.netflix.mediaclient.service.logging.uiaction.EditProfileSession;
+import com.netflix.mediaclient.service.logging.uiaction.DeserializeLolomoSession;
 import com.netflix.mediaclient.service.logging.uiaction.DeleteProfileSession;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import com.netflix.mediaclient.service.logging.uiaction.model.ChangeValueSession;
@@ -92,20 +94,21 @@ final class UserActionLoggingImpl implements UserActionLogging
     private ChangeValueSession mChangeValueSession;
     private DataContext mDataContext;
     private DeleteProfileSession mDeleteProfileSession;
+    private DeserializeLolomoSession mDeserializeLolomoSession;
     private EditProfileSession mEditProfileSession;
     private EventHandler mEventHandler;
-    private IkoModeSession mIkoModeSession;
-    private IkoMomentSession mIkoMomentSession;
     private LoginSession mLoginSession;
     private NavigationSession mNavigationSession;
     private NewLolomoSession mNewLolomoSession;
     private PostPlaySession mPostPlaySession;
     private PreAppWidgetActionSession mPreAppWidgetActionSession;
+    private PrefetchLolomoJobSession mPrefetchLolomoJobSession;
     private RateTitleSession mRateTitleSession;
     private RegisterSession mRegisterSession;
     private RemoveFromPlaylistSession mRemoveFromPlaylistSession;
     private Map<Long, SearchSession> mSearchSessions;
     private SelectProfileSession mSelectProfileSession;
+    private SerializeLolomoSession mSerializeLolomoSession;
     private ShareSheetOpenSession mShareSheetOpenSession;
     private ShareSheetSession mShareSheetSession;
     private StartPlaySession mStartPlaySession;
@@ -357,6 +360,45 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.startDeleteProfileSession(intent.getStringExtra("profile_id"), value2, value);
     }
     
+    private void handleDeserializeLolomoEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
+        while (true) {
+            try {
+                final UIError instance = UIError.createInstance(stringExtra2);
+                if (StringUtils.isNotEmpty(stringExtra)) {
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
+                }
+                this.endDeserializeLolomoSession(value, instance, intent.getLongExtra("lolomoTtl", -1L));
+            }
+            catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
+                final UIError instance = null;
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handleDeserializeLolomoStarted(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
+        final String stringExtra = intent.getStringExtra("cmd");
+        UserActionLogging$CommandName value;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        this.startDeserializeLolomoSession(value, value2);
+    }
+    
     private void handleEditProfileEnded(final Intent intent) {
         IClientLogging$CompletionReason value = null;
         final String stringExtra = intent.getStringExtra("reason");
@@ -406,91 +448,6 @@ final class UserActionLoggingImpl implements UserActionLogging
             value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
         this.startEditProfileSession(value, value2);
-    }
-    
-    private void handleIkoModeEnded(final Intent intent) {
-        IClientLogging$CompletionReason value = null;
-        final String stringExtra = intent.getStringExtra("reason");
-        final String stringExtra2 = intent.getStringExtra("error");
-        while (true) {
-            try {
-                final UIError instance = UIError.createInstance(stringExtra2);
-                if (StringUtils.isNotEmpty(stringExtra)) {
-                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
-                }
-                this.endIkoModeSession(value, instance);
-            }
-            catch (JSONException ex) {
-                Log.e("nf_log", "Failed JSON", (Throwable)ex);
-                final UIError instance = null;
-                continue;
-            }
-            break;
-        }
-    }
-    
-    private void handleIkoModeStart(final Intent intent) {
-        final IClientLogging$ModalView clientLogging$ModalView = null;
-        final String stringExtra = intent.getStringExtra("cmd");
-        UserActionLogging$CommandName value;
-        if (!StringUtils.isEmpty(stringExtra)) {
-            value = UserActionLogging$CommandName.valueOf(stringExtra);
-        }
-        else {
-            value = null;
-        }
-        final String stringExtra2 = intent.getStringExtra("view");
-        IClientLogging$ModalView value2 = clientLogging$ModalView;
-        if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
-        }
-        this.startIkoModeSession(value, value2);
-    }
-    
-    private void handleIkoMomentEnded(final Intent intent) {
-    Label_0031_Outer:
-        while (true) {
-            Serializable s = intent.getStringExtra("reason");
-            final String stringExtra = intent.getStringExtra("error");
-            while (true) {
-                while (true) {
-                    try {
-                        final UIError instance = UIError.createInstance(stringExtra);
-                        if (StringUtils.isNotEmpty((String)s)) {
-                            s = IClientLogging$CompletionReason.valueOf((String)s);
-                            this.endIkoMomentSession((IClientLogging$CompletionReason)s, instance, intent.getStringExtra("momentId"), intent.getStringExtra("momentType"), intent.getIntExtra("expectedVideoOffset", 0), intent.getStringExtra("ikoMomentState"));
-                            return;
-                        }
-                    }
-                    catch (JSONException ex) {
-                        Log.e("nf_log", "Failed JSON", (Throwable)ex);
-                        final UIError instance = null;
-                        continue Label_0031_Outer;
-                    }
-                    break;
-                }
-                s = null;
-                continue;
-            }
-        }
-    }
-    
-    private void handleIkoMomentStart(final Intent intent) {
-        final IClientLogging$ModalView clientLogging$ModalView = null;
-        final String stringExtra = intent.getStringExtra("cmd");
-        UserActionLogging$CommandName value;
-        if (!StringUtils.isEmpty(stringExtra)) {
-            value = UserActionLogging$CommandName.valueOf(stringExtra);
-        }
-        else {
-            value = null;
-        }
-        final String stringExtra2 = intent.getStringExtra("view");
-        IClientLogging$ModalView value2 = clientLogging$ModalView;
-        if (StringUtils.isNotEmpty(stringExtra2)) {
-            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
-        }
-        this.startIkoMomentSession(value, value2);
     }
     
     private void handleLoginEnded(final Intent intent) {
@@ -685,10 +642,10 @@ final class UserActionLoggingImpl implements UserActionLogging
                                                     return;
                                                 }
                                                 break Label_0180;
-                                                value = n;
-                                                break;
                                                 value2 = n;
                                                 continue Label_0099_Outer;
+                                                value = n;
+                                                break;
                                             }
                                             catch (JSONException ex) {
                                                 Log.e("nf_log", "Failed JSON", (Throwable)ex);
@@ -758,6 +715,45 @@ final class UserActionLoggingImpl implements UserActionLogging
             value = UserActionLogging$CommandName.valueOf(stringExtra);
         }
         this.startPreAppWidgetActionSession(value, intent.getStringExtra("logData"), intent.getStringExtra("widgetActionData"));
+    }
+    
+    private void handlePrefetchLolomoJobEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
+        while (true) {
+            try {
+                final UIError instance = UIError.createInstance(stringExtra2);
+                if (StringUtils.isNotEmpty(stringExtra)) {
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
+                }
+                this.endPrefetchLolomoJobSession(value, instance);
+            }
+            catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
+                final UIError instance = null;
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handlePrefetchLolomoJobStarted(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
+        final String stringExtra = intent.getStringExtra("cmd");
+        UserActionLogging$CommandName value;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        this.startPrefetchLolomoJobSession(value, value2);
     }
     
     private void handleRateTitleEnded(final Intent intent) {
@@ -997,6 +993,45 @@ final class UserActionLoggingImpl implements UserActionLogging
             value3 = UserActionLogging$RememberProfile.valueOf(stringExtra4);
         }
         this.startSelectProfileSession(stringExtra3, value3, value, value2);
+    }
+    
+    private void handleSerializeLolomoEnded(final Intent intent) {
+        IClientLogging$CompletionReason value = null;
+        final String stringExtra = intent.getStringExtra("reason");
+        final String stringExtra2 = intent.getStringExtra("error");
+        while (true) {
+            try {
+                final UIError instance = UIError.createInstance(stringExtra2);
+                if (StringUtils.isNotEmpty(stringExtra)) {
+                    value = IClientLogging$CompletionReason.valueOf(stringExtra);
+                }
+                this.endSerializeLolomoSession(value, instance, intent.getLongExtra("lolomoFetchedTime", -1L));
+            }
+            catch (JSONException ex) {
+                Log.e("nf_log", "Failed JSON", (Throwable)ex);
+                final UIError instance = null;
+                continue;
+            }
+            break;
+        }
+    }
+    
+    private void handleSerializeLolomoStarted(final Intent intent) {
+        final IClientLogging$ModalView clientLogging$ModalView = null;
+        final String stringExtra = intent.getStringExtra("cmd");
+        UserActionLogging$CommandName value;
+        if (!StringUtils.isEmpty(stringExtra)) {
+            value = UserActionLogging$CommandName.valueOf(stringExtra);
+        }
+        else {
+            value = null;
+        }
+        final String stringExtra2 = intent.getStringExtra("view");
+        IClientLogging$ModalView value2 = clientLogging$ModalView;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value2 = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        this.startSerializeLolomoSession(value, value2);
     }
     
     private void handleShareSheetEnded(final Intent intent) {
@@ -1523,8 +1558,9 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.endPreAppWidgetActionSession(IClientLogging$CompletionReason.canceled, null);
             this.endSurveySession(IClientLogging$CompletionReason.canceled, null, null);
             this.endSurveyQuestionSession(IClientLogging$CompletionReason.canceled, null, "", null);
-            this.endIkoModeSession(IClientLogging$CompletionReason.canceled, null);
-            this.endIkoMomentSession(IClientLogging$CompletionReason.canceled, null, null, null, 0, null);
+            this.endPrefetchLolomoJobSession(IClientLogging$CompletionReason.canceled, null);
+            this.endDeserializeLolomoSession(IClientLogging$CompletionReason.canceled, null, -1L);
+            this.endSerializeLolomoSession(IClientLogging$CompletionReason.canceled, null, -1L);
             final HashSet<Long> set = new HashSet<Long>(this.mSearchSessions.size());
             set.addAll((Collection<?>)this.mSearchSessions.keySet());
             final Iterator<Object> iterator = set.iterator();
@@ -1574,6 +1610,25 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
+    public void endDeserializeLolomoSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final long n) {
+        if (this.mDeserializeLolomoSession == null) {
+            return;
+        }
+        Log.d("nf_log", "DeserializeLolomoSession session ended");
+        final DeserializeLolomoEndedEvent endedEvent = this.mDeserializeLolomoSession.createEndedEvent(clientLogging$CompletionReason, uiError, n);
+        if (endedEvent == null) {
+            Log.d("nf_log", "DeserializeLolomoSession still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mDeserializeLolomoSession.getView());
+        this.mEventHandler.removeSession(this.mDeserializeLolomoSession);
+        Log.d("nf_log", "DeserializeLolomoSession end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mDeserializeLolomoSession = null;
+        Log.d("nf_log", "DeserializeLolomoSession session end event posted.");
+    }
+    
+    @Override
     public void endEditProfileSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final IClientLogging$ModalView clientLogging$ModalView, final UIError uiError, final UserActionLogging$Profile userActionLogging$Profile) {
         if (this.mEditProfileSession == null) {
             return;
@@ -1591,44 +1646,6 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEditProfileSession = null;
         Log.d("nf_log", "Edit profile session end event posted.");
         Log.d("nf_log", "Edit profile session end done.");
-    }
-    
-    @Override
-    public void endIkoModeSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
-        if (this.mIkoModeSession == null) {
-            return;
-        }
-        Log.d("nf_log", "IkoMode session ended");
-        final IkoModeEndedEvent endedEvent = this.mIkoModeSession.createEndedEvent(clientLogging$CompletionReason, uiError);
-        if (endedEvent == null) {
-            Log.d("nf_log", "IkoMode session still waits on session id, do not post at this time.");
-            return;
-        }
-        this.populateEvent(endedEvent, this.mDataContext, this.mIkoModeSession.getView());
-        this.mEventHandler.removeSession(this.mIkoModeSession);
-        Log.d("nf_log", "IkoMode session end event posting...");
-        this.mEventHandler.post(endedEvent);
-        this.mIkoModeSession = null;
-        Log.d("nf_log", "IkoMode session end event posted.");
-    }
-    
-    @Override
-    public void endIkoMomentSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final String s, final String s2, final int n, final String s3) {
-        if (this.mIkoMomentSession == null) {
-            return;
-        }
-        Log.d("nf_log", "IkoMoment session ended");
-        final IkoMomentEndedEvent endedEvent = this.mIkoMomentSession.createEndedEvent(clientLogging$CompletionReason, uiError, s, s2, n, s3);
-        if (endedEvent == null) {
-            Log.d("nf_log", "IkoMoment session still waits on session id, do not post at this time.");
-            return;
-        }
-        this.populateEvent(endedEvent, this.mDataContext, this.mIkoMomentSession.getView());
-        this.mEventHandler.removeSession(this.mIkoMomentSession);
-        Log.d("nf_log", "IkoMoment session end event posting...");
-        this.mEventHandler.post(endedEvent);
-        this.mIkoMomentSession = null;
-        Log.d("nf_log", "IkoMoment session end event posted.");
     }
     
     @Override
@@ -1736,6 +1753,25 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
+    public void endPrefetchLolomoJobSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError) {
+        if (this.mPrefetchLolomoJobSession == null) {
+            return;
+        }
+        Log.d("nf_log", "PrefetchLolomoJobSession session ended");
+        final PrefetchLolomoJobEndedEvent endedEvent = this.mPrefetchLolomoJobSession.createEndedEvent(clientLogging$CompletionReason, uiError);
+        if (endedEvent == null) {
+            Log.d("nf_log", "PrefetchLolomoJobSession still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mPrefetchLolomoJobSession.getView());
+        this.mEventHandler.removeSession(this.mPrefetchLolomoJobSession);
+        Log.d("nf_log", "PrefetchLolomoJobSession end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mPrefetchLolomoJobSession = null;
+        Log.d("nf_log", "PrefetchLolomoJob session end event posted.");
+    }
+    
+    @Override
     public void endRateTitleSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final int n2) {
         if (this.mRateTitleSession == null) {
             return;
@@ -1835,6 +1871,25 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.post(endedEvent);
         this.mSelectProfileSession = null;
         Log.d("nf_log", "Select profile session end event posted.");
+    }
+    
+    @Override
+    public void endSerializeLolomoSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final long n) {
+        if (this.mSerializeLolomoSession == null) {
+            return;
+        }
+        Log.d("nf_log", "SerializeLolomoSession session ended");
+        final SerializeLolomoEndedEvent endedEvent = this.mSerializeLolomoSession.createEndedEvent(clientLogging$CompletionReason, uiError, n);
+        if (endedEvent == null) {
+            Log.d("nf_log", "SerializeLolomoSession still waits on session id, do not post at this time.");
+            return;
+        }
+        this.populateEvent(endedEvent, this.mDataContext, this.mSerializeLolomoSession.getView());
+        this.mEventHandler.removeSession(this.mSerializeLolomoSession);
+        Log.d("nf_log", "SerializeLolomoSession end event posting...");
+        this.mEventHandler.post(endedEvent);
+        this.mSerializeLolomoSession = null;
+        Log.d("nf_log", "SerializeLolomoSession session end event posted.");
     }
     
     @Override
@@ -2193,24 +2248,34 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.handlePostPlayEnded(intent);
             return true;
         }
-        if ("com.netflix.mediaclient.intent.action.LOG_UIA_IKO_MODE_START".equals(action)) {
-            Log.d("nf_log", "IKO_MODE_START");
-            this.handleIkoModeStart(intent);
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_PREFETCH_LOLOMO_JOB_START".equals(action)) {
+            Log.d("nf_log", "PREFETCH_LOLOMO_JOB_STARTED");
+            this.handlePrefetchLolomoJobStarted(intent);
             return true;
         }
-        if ("com.netflix.mediaclient.intent.action.LOG_UIA_IKO_MODE_ENDED".equals(action)) {
-            Log.d("nf_log", "IKO_MODE_ENDED");
-            this.handleIkoModeEnded(intent);
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_PREFETCH_LOLOMO_JOB_ENDED".equals(action)) {
+            Log.d("nf_log", "PREFETCH_LOLOMO_JOB_ENDED");
+            this.handlePrefetchLolomoJobEnded(intent);
             return true;
         }
-        if ("com.netflix.mediaclient.intent.action.LOG_UIA_IKO_MOMENT_START".equals(action)) {
-            Log.d("nf_log", "IKO_MOMENT_START");
-            this.handleIkoMomentStart(intent);
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_DESERIALIZE_LOLOMO_START".equals(action)) {
+            Log.d("nf_log", "DESERIALIZE_LOLOMO_STARTED");
+            this.handleDeserializeLolomoStarted(intent);
             return true;
         }
-        if ("com.netflix.mediaclient.intent.action.LOG_UIA_IKO_MOMENT_ENDED".equals(action)) {
-            Log.d("nf_log", "IKO_MOMENT_ENDED");
-            this.handleIkoMomentEnded(intent);
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_DESERIALIZE_LOLOMO_ENDED".equals(action)) {
+            Log.d("nf_log", "DESERIALIZE_LOLOMO_ENDED");
+            this.handleDeserializeLolomoEnded(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SERIALIZE_LOLOMO_START".equals(action)) {
+            Log.d("nf_log", "SERIALIZE_LOLOMO_STARTED");
+            this.handleSerializeLolomoStarted(intent);
+            return true;
+        }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_SERIALIZE_LOLOMO_ENDED".equals(action)) {
+            Log.d("nf_log", "SERIALIZE_LOLOMO_ENDED");
+            this.handleSerializeLolomoEnded(intent);
             return true;
         }
         if (Log.isLoggable()) {
@@ -2290,6 +2355,19 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
+    public void startDeserializeLolomoSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (this.mDeserializeLolomoSession != null) {
+            Log.e("nf_log", "DeserializeLolomoSession already started!");
+            return;
+        }
+        Log.d("nf_log", "DeserializeLolomoSession starting...");
+        final DeserializeLolomoSession mDeserializeLolomoSession = new DeserializeLolomoSession(userActionLogging$CommandName, clientLogging$ModalView);
+        this.mEventHandler.addSession(mDeserializeLolomoSession);
+        this.mDeserializeLolomoSession = mDeserializeLolomoSession;
+        Log.d("nf_log", "PrefetchLolomoJobSession start done.");
+    }
+    
+    @Override
     public void startEditProfileSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mEditProfileSession != null) {
             Log.e("nf_log", "Edit profile session already started!");
@@ -2300,32 +2378,6 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.addSession(mEditProfileSession);
         this.mEditProfileSession = mEditProfileSession;
         Log.d("nf_log", "Edit profile session start done.");
-    }
-    
-    @Override
-    public void startIkoModeSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
-        if (this.mIkoModeSession != null) {
-            Log.e("nf_log", "IkoMode session already started!");
-            return;
-        }
-        Log.d("nf_log", "IkoMode session starting...");
-        final IkoModeSession mIkoModeSession = new IkoModeSession(userActionLogging$CommandName, clientLogging$ModalView);
-        this.mEventHandler.addSession(mIkoModeSession);
-        this.mIkoModeSession = mIkoModeSession;
-        Log.d("nf_log", "IkoMode session start done.");
-    }
-    
-    @Override
-    public void startIkoMomentSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
-        if (this.mIkoMomentSession != null) {
-            Log.e("nf_log", "IkoMoment session already started!");
-            return;
-        }
-        Log.d("nf_log", "IkoMoment session starting...");
-        final IkoMomentSession mIkoMomentSession = new IkoMomentSession(userActionLogging$CommandName, clientLogging$ModalView);
-        this.mEventHandler.addSession(mIkoMomentSession);
-        this.mIkoMomentSession = mIkoMomentSession;
-        Log.d("nf_log", "IkoMoment session start done.");
     }
     
     @Override
@@ -2395,6 +2447,19 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
+    public void startPrefetchLolomoJobSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (this.mPrefetchLolomoJobSession != null) {
+            Log.e("nf_log", "PrefetchLolomoJobSession already started!");
+            return;
+        }
+        Log.d("nf_log", "PrefetchLolomoJobSession starting...");
+        final PrefetchLolomoJobSession mPrefetchLolomoJobSession = new PrefetchLolomoJobSession(userActionLogging$CommandName, clientLogging$ModalView);
+        this.mEventHandler.addSession(mPrefetchLolomoJobSession);
+        this.mPrefetchLolomoJobSession = mPrefetchLolomoJobSession;
+        Log.d("nf_log", "PrefetchLolomoJobSession start done.");
+    }
+    
+    @Override
     public void startRateTitleSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
         if (this.mRateTitleSession != null) {
             Log.e("nf_log", "RateTitle session already started!");
@@ -2455,6 +2520,19 @@ final class UserActionLoggingImpl implements UserActionLogging
         this.mEventHandler.addSession(mSelectProfileSession);
         this.mSelectProfileSession = mSelectProfileSession;
         Log.d("nf_log", "Select profile session start done.");
+    }
+    
+    @Override
+    public void startSerializeLolomoSession(final UserActionLogging$CommandName userActionLogging$CommandName, final IClientLogging$ModalView clientLogging$ModalView) {
+        if (this.mSerializeLolomoSession != null) {
+            Log.e("nf_log", "SerializeLolomoSession already started!");
+            return;
+        }
+        Log.d("nf_log", "SerializeLolomoSession starting...");
+        final SerializeLolomoSession mSerializeLolomoSession = new SerializeLolomoSession(userActionLogging$CommandName, clientLogging$ModalView);
+        this.mEventHandler.addSession(mSerializeLolomoSession);
+        this.mSerializeLolomoSession = mSerializeLolomoSession;
+        Log.d("nf_log", "PrefetchLolomoJobSession start done.");
     }
     
     @Override

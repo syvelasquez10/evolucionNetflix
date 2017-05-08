@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.lomo;
 
+import java.io.Serializable;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.android.fragment.LoadingView;
 import android.view.ViewGroup;

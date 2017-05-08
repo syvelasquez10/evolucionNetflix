@@ -32,7 +32,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     
     PostPlayForMDX(final NetflixActivity netflixActivity) {
         super(netflixActivity);
-        this.mTimerValue = netflixActivity.getResources().getInteger(2131492881);
+        this.mTimerValue = netflixActivity.getResources().getInteger(2131492882);
         this.mOffsetMs = this.mTimerValue * 1000;
     }
     
@@ -92,8 +92,8 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     
     @Override
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mNetflixActivity.findViewById(2131690130);
-        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131690128);
+        this.mTargetNameView = (TextView)this.mNetflixActivity.findViewById(2131690121);
+        this.mInfoTitleView = (TextView)this.mNetflixActivity.findViewById(2131690119);
     }
     
     @Override
@@ -169,7 +169,7 @@ public final class PostPlayForMDX extends PostPlayForEpisodes
     @Override
     protected void initInfoContainer(final Activity activity) {
         if (this.mInfoTitleView != null) {
-            this.mInfoTitleView.setText(activity.getText(2131231144));
+            this.mInfoTitleView.setText(activity.getText(2131231145));
             this.mInfoTitleView.setVisibility(4);
         }
         if (this.mTimerView != null) {

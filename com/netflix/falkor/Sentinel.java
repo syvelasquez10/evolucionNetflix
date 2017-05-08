@@ -12,7 +12,7 @@ public class Sentinel<T> implements Expires, PathBound, ReferenceTarget
     private Date expires;
     private PQL path;
     private LinkedList<Ref> references;
-    private final T value;
+    private T value;
     
     public Sentinel(final T value) {
         this.value = value;
@@ -50,6 +50,10 @@ public class Sentinel<T> implements Expires, PathBound, ReferenceTarget
     @Override
     public void setReferences(final LinkedList<Ref> references) {
         this.references = references;
+    }
+    
+    public void setValue(final T value) {
+        this.value = value;
     }
     
     @Override

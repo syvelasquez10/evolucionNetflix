@@ -5,8 +5,10 @@
 package com.netflix.mediaclient.service.user;
 
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
+import com.netflix.mediaclient.ui.lolomo.PrefetchLolomoABTestUtils;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
 import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.util.StatusUtils;
@@ -26,7 +28,6 @@ import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
 import com.netflix.mediaclient.util.log.SignInLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
-import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.NetflixApplication;
@@ -36,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONTokener;
 import org.json.JSONArray;
 import java.util.ArrayList;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
@@ -81,6 +83,7 @@ class UserAgent$4 extends SimpleUserAgentWebCallback
                     if (StringUtils.safeEquals(this.this$0.mCurrentUserProfile.getProfileGuid(), userProfile.getProfileGuid())) {
                         this.this$0.checkCurrentProfileTypeWasChanged(userProfile);
                         this.this$0.mCurrentUserProfile = userProfile;
+                        this.this$0.persistCurrentProfileGuid(this.this$0.mCurrentUserProfile);
                     }
                 }
             }

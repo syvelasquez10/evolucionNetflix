@@ -16,6 +16,10 @@ public class RelaunchActivity extends LaunchActivity
         return new Intent((Context)activity, (Class)RelaunchActivity.class).putExtra("extra_source", s);
     }
     
+    public String getSource() {
+        return this.getIntent().getStringExtra("extra_source");
+    }
+    
     @Override
     protected boolean isAutoLoginEnabled() {
         return false;
@@ -24,5 +28,11 @@ public class RelaunchActivity extends LaunchActivity
     @Override
     protected boolean shouldCreateUiSessions() {
         return false;
+    }
+    
+    @Override
+    protected boolean shouldStartPerformanceLogging() {
+        final String source = this.getSource();
+        return source != null && !source.contains("handleProfileActivated");
     }
 }

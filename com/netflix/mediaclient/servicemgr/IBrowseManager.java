@@ -42,7 +42,7 @@ public interface IBrowseManager
     
     boolean fetchIQVideos(final LoMo p0, final int p1, final int p2, final boolean p3, final ManagerCallback p4);
     
-    boolean fetchInteractiveVideoMoments(final VideoType p0, final String p1, final String p2, final ManagerCallback p3);
+    boolean fetchInteractiveVideoMoments(final VideoType p0, final String p1, final String p2, final int p3, final int p4, final ManagerCallback p5);
     
     boolean fetchKidsCharacterDetails(final String p0, final ManagerCallback p1);
     
@@ -96,7 +96,7 @@ public interface IBrowseManager
     
     boolean prefetchLoLoMo(final int p0, final int p1, final int p2, final int p3, final int p4, final int p5, final boolean p6, final boolean p7, final boolean p8, final ManagerCallback p9);
     
-    void refreshCw();
+    void refreshCw(final boolean p0);
     
     void refreshIq();
     
@@ -105,6 +105,8 @@ public interface IBrowseManager
     void refreshLolomo();
     
     boolean removeFromQueue(final String p0, final VideoType p1, final String p2, final ManagerCallback p3);
+    
+    boolean runPrefetchLolomoJob(final boolean p0);
     
     boolean searchNetflix(final String p0, final ManagerCallback p1);
     

@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.configuration;
 
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
@@ -23,10 +24,20 @@ public class ABTestConfiguration
     public ABTestConfiguration(final Context mContext) {
         this.mContext = mContext;
         this.mABTestConfigData = ABTestConfigData.fromJsonString(PreferenceUtils.getStringPref(this.mContext, "abTestConfig", null));
+        if (this.mABTestConfigData != null) {
+            ApmLogUtils.reportABConfigDataLoadedEvent(this.mContext);
+        }
     }
     
     public void clear() {
         PreferenceUtils.putStringPref(this.mContext, "abTestConfig", null);
+    }
+    
+    public ABTestConfig$Cell getAimLowPrefetchLolomoConfig() {
+        if (this.mABTestConfigData == null || this.mABTestConfigData.getAimLowPrefetchLolomoConfig() == null) {
+            return ABTestConfig$Cell.CELL_ONE;
+        }
+        return this.mABTestConfigData.getAimLowPrefetchLolomoConfig().getCell();
     }
     
     public ABTestConfig$Cell getBrandLoveSurveyConfig() {
@@ -110,5 +121,6 @@ public class ABTestConfiguration
         }
         PreferenceUtils.putStringPref(this.mContext, "abTestConfig", jsonString);
         this.mABTestConfigData = mabTestConfigData;
+        ApmLogUtils.reportABConfigDataReceivedEvent(this.mContext);
     }
 }

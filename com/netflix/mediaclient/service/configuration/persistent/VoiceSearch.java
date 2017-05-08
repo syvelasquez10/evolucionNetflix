@@ -20,4 +20,9 @@ public class VoiceSearch extends PersistentConfigurable
     public String getPrefKey() {
         return "persistent_voice_search_experience_key";
     }
+    
+    @Override
+    public String getTestId() {
+        return "6786";
+    }
 }

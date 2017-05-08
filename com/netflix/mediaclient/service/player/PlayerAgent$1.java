@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.player;
 
 import android.view.SurfaceHolder;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
+import com.netflix.mediaclient.media.JPlayer.AdaptiveMediaDecoderHelper;
 import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import android.graphics.Point;
 import java.nio.ByteBuffer;
@@ -72,7 +73,7 @@ import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent$ConfigAgentListener;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetType;
+import com.netflix.mediaclient.util.ConnectivityUtils$NetType;
 import com.netflix.mediaclient.util.PlaybackVolumeMetric;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.Log;
@@ -133,7 +134,7 @@ class PlayerAgent$1 implements Runnable
                                 Log.d(PlayerAgent.TAG, "Canceled tasks: " + purge);
                             }
                             this.this$0.reloadPlayer();
-                            final AuthorizationParams$NetType currentNetType = ConnectivityUtils.getCurrentNetType(this.this$0.getContext());
+                            final ConnectivityUtils$NetType currentNetType = ConnectivityUtils.getCurrentNetType(this.this$0.getContext());
                             this.this$0.mMedia.setStreamingQoe(this.this$0.getConfigurationAgent().getStreamingQoe(), this.this$0.getConfigurationAgent().enableHTTPSAuth(), this.this$0.isMPPlayerType());
                             this.this$0.mPlaybackVolumeMetric = new PlaybackVolumeMetric(this.this$0.getContext());
                             this.this$0.mMedia.open(this.this$0.mMovieId, this.this$0.mPlayContext, currentNetType, this.this$0.mBookmark, this.this$0.getConfigurationAgent().isPreviewContentEnabled(), this.this$0.mPlaybackVolumeMetric, this.this$0.getPreferredPeakBpsForLogging());

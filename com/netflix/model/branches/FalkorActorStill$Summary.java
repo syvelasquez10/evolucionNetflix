@@ -4,6 +4,7 @@
 
 package com.netflix.model.branches;
 
+import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
 import java.util.Map;
@@ -11,8 +12,9 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
+import com.netflix.mediaclient.servicemgr.interface_.JsonMerger;
 
-public class FalkorActorStill$Summary implements JsonPopulator
+public class FalkorActorStill$Summary implements JsonMerger, JsonPopulator
 {
     private static final String TAG = "Summary";
     public String personId;
@@ -121,5 +123,46 @@ public class FalkorActorStill$Summary implements JsonPopulator
                 }
             }
         }
+    }
+    
+    @Override
+    public boolean set(final String s, final JsonParser jsonParser) {
+        if (Falkor.ENABLE_VERBOSE_LOGGING) {
+            Log.v("Summary", "Populating with: " + jsonParser);
+        }
+        switch (s) {
+            default: {
+                return false;
+            }
+            case "stillImageUrl": {
+                this.stillImageUrl = jsonParser.getValueAsString();
+                break;
+            }
+            case "stillImageHeight": {
+                this.stillImageHeight = jsonParser.getValueAsString();
+                break;
+            }
+            case "stillImageWidth": {
+                this.stillImageWidth = jsonParser.getValueAsString();
+                break;
+            }
+            case "stillImageXFocus": {
+                this.stillImageXFocus = (float)jsonParser.getValueAsDouble();
+                break;
+            }
+            case "stillImageYFocus": {
+                this.stillImageYFocus = (float)jsonParser.getValueAsDouble();
+                break;
+            }
+            case "videoId": {
+                this.videoId = jsonParser.getValueAsString();
+                break;
+            }
+            case "personId": {
+                this.personId = jsonParser.getValueAsString();
+                break;
+            }
+        }
+        return true;
     }
 }

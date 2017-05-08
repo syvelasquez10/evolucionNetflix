@@ -33,7 +33,7 @@ import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
 import com.netflix.mediaclient.javabridge.invoke.media.Play;
 import com.netflix.mediaclient.javabridge.invoke.media.Pause;
 import com.netflix.mediaclient.javabridge.invoke.media.Open;
-import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams$NetType;
+import com.netflix.mediaclient.util.ConnectivityUtils$NetType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import android.graphics.Point;
@@ -791,8 +791,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void open(final long n, final PlayContext playContext, final AuthorizationParams$NetType authorizationParams$NetType, final long n2, final boolean b, final PlaybackVolumeMetric playbackVolumeMetric, final long n3) {
-        this.bridge.getNrdProxy().invokeMethod(new Open(n, new AuthorizationParams(this.bridge.getContext(), playContext, authorizationParams$NetType, b), n2, playbackVolumeMetric, n3));
+    public void open(final long n, final PlayContext playContext, final ConnectivityUtils$NetType connectivityUtils$NetType, final long n2, final boolean b, final PlaybackVolumeMetric playbackVolumeMetric, final long n3) {
+        this.bridge.getNrdProxy().invokeMethod(new Open(n, new AuthorizationParams(this.bridge.getContext(), playContext, connectivityUtils$NetType, b), n2, playbackVolumeMetric, n3));
         Log.d("nf-bridge", "invokeMethod just called...");
     }
     

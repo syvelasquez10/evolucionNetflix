@@ -21,13 +21,13 @@ class BarkerKidsShowDetailsFrag$KubrickKidsEpisodeView extends BarkerShowDetails
     public BarkerKidsShowDetailsFrag$KubrickKidsEpisodeView(final BarkerKidsShowDetailsFrag this$0, final Context context, final int n) {
         this.this$0 = this$0;
         super(this$0, context, n);
-        this.pressableViewGroup = (PressAnimationFrameLayout)this.findViewById(2131689843);
+        this.pressableViewGroup = (PressAnimationFrameLayout)this.findViewById(2131689844);
         this.image.setPressedStateHandlerEnabled(false);
     }
     
     @Override
     protected void adjustEpisodeImageHeight() {
-        this.image.getLayoutParams().height = (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362167) * (this.this$0.getNumColumns() + 1.0f)) / this.this$0.getNumColumns() * 0.5625f);
+        this.image.getLayoutParams().height = (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362169) * (this.this$0.getNumColumns() + 1.0f)) / this.this$0.getNumColumns() * 0.5625f);
     }
     
     @Override

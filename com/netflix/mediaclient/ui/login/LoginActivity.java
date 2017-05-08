@@ -19,6 +19,9 @@ import com.netflix.mediaclient.ui.signup.SignupActivity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.app.FragmentTransaction;
 import com.netflix.mediaclient.Log;
@@ -73,7 +76,7 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
         final FragmentManager fragmentManager = this.getFragmentManager();
         final FragmentTransaction beginTransaction = fragmentManager.beginTransaction();
         this.mEmailPasswordFragment = EmailPasswordFragment.newInstance(this.getIntent().getExtras());
-        beginTransaction.replace(2131689922, (Fragment)this.mEmailPasswordFragment, "EmailPasswordFragment").addToBackStack("EmailPasswordFragment");
+        beginTransaction.replace(2131689913, (Fragment)this.mEmailPasswordFragment, "EmailPasswordFragment").addToBackStack("EmailPasswordFragment");
         beginTransaction.commitAllowingStateLoss();
         fragmentManager.executePendingTransactions();
         this.getActiveFragment(fragmentManager);
@@ -82,6 +85,12 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
         return new LoginActivity$1(this);
+    }
+    
+    @Override
+    public void finish() {
+        super.finish();
+        PerformanceProfiler.getInstance().endSession(Sessions.LOG_IN, null);
     }
     
     @Override
@@ -180,19 +189,15 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         AndroidUtils.setWindowSecureFlag(this);
-        this.setContentView(2130903175);
+        this.setContentView(2130903170);
         if (bundle != null) {
             this.mEmailPasswordFragment = (EmailPasswordFragment)this.getFragmentManager().findFragmentByTag("EmailPasswordFragment");
         }
         else {
+            PerformanceProfiler.getInstance().startSession(Sessions.LOG_IN, null);
             this.showEmailPasswordFragment();
         }
         UserActionLogUtils.reportLoginActionEnded((Context)this, IClientLogging$CompletionReason.success, null);
-    }
-    
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
     
     @Override

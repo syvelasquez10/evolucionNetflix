@@ -4,7 +4,11 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import android.content.Context;
+import android.view.View;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.facebook.device.yearclass.YearClass;
 import com.netflix.mediaclient.ui.iko.InteractiveMomentsFactory;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -124,7 +128,26 @@ public class InteractiveMomentsDecorator extends PlayScreenDecorator
         if (this.interactiveMomentsManager != null) {
             this.interactiveMomentsManager.hide();
         }
-        this.svcManager.getBrowse().fetchInteractiveVideoMoments(this.getVideoType(), this.getVideoId(), s, new InteractiveMomentsDecorator$1(this));
+        while (true) {
+            Label_0137: {
+                if (this.mFragment == null) {
+                    break Label_0137;
+                }
+                final View view = this.mFragment.getView();
+                if (view == null || view.getContext() == null) {
+                    break Label_0137;
+                }
+                final Context context = view.getContext();
+                final int value = YearClass.get(context);
+                final Integer n = DeviceUtils.getScreenResolutionDpi(context);
+                final Integer n2 = value;
+                this.svcManager.getBrowse().fetchInteractiveVideoMoments(this.getVideoType(), this.getVideoId(), s, n2, n, new InteractiveMomentsDecorator$1(this));
+                return;
+            }
+            final Integer n = -1;
+            final Integer n2 = -1;
+            continue;
+        }
     }
     
     @Override

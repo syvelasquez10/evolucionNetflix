@@ -32,7 +32,7 @@ public class CoppolaShowDetailsFrag$CoppolaPlayerDialogEpisodesView extends Bark
     
     @Override
     protected void adjustEpisodeImageHeight() {
-        final int n = DeviceUtils.getScreenWidthInPixels(this.getContext()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362123);
+        final int n = DeviceUtils.getScreenWidthInPixels(this.getContext()) / 2 - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362125);
         final int height = (int)(n * 0.5625f);
         this.image.getLayoutParams().width = n;
         this.image.getLayoutParams().height = height;

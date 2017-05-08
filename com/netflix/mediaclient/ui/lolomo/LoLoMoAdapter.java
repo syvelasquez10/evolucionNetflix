@@ -4,8 +4,11 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
+import com.netflix.mediaclient.util.Coppola2Utils;
+import java.util.List;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import android.content.Context;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.Log;
@@ -23,9 +26,10 @@ public class LoLoMoAdapter extends BaseLoLoMoAdapter<LoMo>
         super(loLoMoFrag, "lolomo");
     }
     
-    private void handlePrefetchComplete() {
+    private void handlePrefetchComplete(final boolean b) {
         LogUtils.logCurrentThreadName("LoLoMoAdapter", "handlePrefetchComplete()");
         super.refreshData();
+        this.frag.onLolomoPrefetchComplete(b);
     }
     
     @Override
@@ -47,6 +51,12 @@ public class LoLoMoAdapter extends BaseLoLoMoAdapter<LoMo>
         }
         Log.v("LoLoMoAdapter", "Prefetching lolomo...");
         this.requestId = System.nanoTime();
-        serviceManager.getBrowse().prefetchLoLoMo(0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.STANDARD) - 1, 0, LomoConfig.computeNumVideosToFetchPerBatch(this.activity, LoMoType.CONTINUE_WATCHING) - 1, BrowseExperience.shouldLoadExtraCharacterLeaves(), BrowseExperience.shouldLoadKubrickLeavesInLolomo(), false, new LoLoMoAdapter$1(this, "LoLoMoAdapter", this.requestId));
+        serviceManager.getBrowse().prefetchLoLoMo(0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch((Context)this.activity, LoMoType.STANDARD) - 1, 0, LomoConfig.computeNumVideosToFetchPerBatch((Context)this.activity, LoMoType.CONTINUE_WATCHING) - 1, BrowseExperience.shouldLoadExtraCharacterLeaves(), BrowseExperience.shouldLoadKubrickLeavesInLolomo(), false, new LoLoMoAdapter$1(this, "LoLoMoAdapter", this.requestId));
+    }
+    
+    @Override
+    protected void updateLoMoData(final List<LoMo> list) {
+        super.updateLoMoData(list);
+        Coppola2Utils.checkAndLogLolomo((Context)this.activity, list);
     }
 }

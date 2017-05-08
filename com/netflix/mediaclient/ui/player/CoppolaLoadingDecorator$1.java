@@ -22,7 +22,7 @@ import com.netflix.mediaclient.util.MdxUtils;
 import android.widget.FrameLayout$LayoutParams;
 import android.content.Context;
 import com.netflix.mediaclient.util.ViewUtils;
-import android.animation.Animator;
+import android.view.ViewPropertyAnimator;
 import android.animation.Animator$AnimatorListener;
 import android.animation.TimeInterpolator;
 import android.view.animation.LinearInterpolator;

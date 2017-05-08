@@ -8,6 +8,7 @@ import android.util.Pair;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.media.MediaFormat;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
+import com.netflix.mediaclient.util.MediaDrmUtils;
 import android.view.Surface;
 import com.netflix.mediaclient.media.VideoResolutionRange;
 import android.media.MediaCrypto;
@@ -67,21 +68,22 @@ public class JPlayer2$MediaDataSource implements MediaDecoderBase$InputDataSourc
                             return mediaDecoderBase$InputDataSource$BufferMeta;
                         }
                         break Label_0228;
-                        Log.e("NF_JPlayer2", "WITH NON-DIRECT BYTEBUFFER");
-                        final byte[] array2 = byteBuffer.array();
-                        // iftrue(Label_0270:, array2 != null)
-                        Block_7: {
-                            break Block_7;
+                        while (true) {
+                            mediaDecoderBase$InputDataSource$BufferMeta.size = 0;
+                            mediaDecoderBase$InputDataSource$BufferMeta.flags = 4;
+                            Log.e("NF_JPlayer2", "can't get bytearray");
+                            return mediaDecoderBase$InputDataSource$BufferMeta;
                             Label_0270: {
+                                final byte[] array2;
                                 this.this$0.getBuffer(array2, this.mIsAudio, mediaDecoderBase$InputDataSource$BufferMeta);
                             }
                             continue Label_0221_Outer;
+                            Log.e("NF_JPlayer2", "WITH NON-DIRECT BYTEBUFFER");
+                            final byte[] array2 = byteBuffer.array();
+                            continue;
                         }
-                        mediaDecoderBase$InputDataSource$BufferMeta.size = 0;
-                        mediaDecoderBase$InputDataSource$BufferMeta.flags = 4;
-                        Log.e("NF_JPlayer2", "can't get bytearray");
-                        return mediaDecoderBase$InputDataSource$BufferMeta;
                     }
+                    // iftrue(Label_0270:, array2 != null)
                     catch (Exception ex) {
                         Log.w("NF_JPlayer2", "reconfig audio decoder failed");
                         continue;

@@ -18,6 +18,11 @@ public abstract class AccountActivity extends NetflixActivity
     }
     
     @Override
+    protected boolean allowTransitionAnimation() {
+        return false;
+    }
+    
+    @Override
     protected boolean hasUpAction() {
         return false;
     }

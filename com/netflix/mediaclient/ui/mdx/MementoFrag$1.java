@@ -55,7 +55,7 @@ class MementoFrag$1 implements Runnable
         if (this.val$showRDP) {
             final View viewWithTag = this.this$0.pager.findViewWithTag((Object)("POS_TAG" + String.valueOf(this.val$pagerIndex)));
             if (viewWithTag != null) {
-                final View viewById = viewWithTag.findViewById(2131689955);
+                final View viewById = viewWithTag.findViewById(2131689946);
                 if (viewById != null) {
                     viewById.performClick();
                 }

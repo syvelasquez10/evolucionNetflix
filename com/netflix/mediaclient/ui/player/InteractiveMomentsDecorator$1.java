@@ -4,7 +4,11 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import android.content.Context;
+import android.view.View;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.facebook.device.yearclass.YearClass;
 import com.netflix.mediaclient.ui.iko.InteractiveMomentsFactory;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
