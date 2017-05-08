@@ -74,6 +74,8 @@ public enum IClientLogging$ModalView
     suggestionResults, 
     suggestionTitleResults, 
     survey, 
+    thumbRatingIntroDialog, 
+    thumbRatingWelcomeDialog, 
     titleResults, 
     trickplay, 
     umsAlert, 

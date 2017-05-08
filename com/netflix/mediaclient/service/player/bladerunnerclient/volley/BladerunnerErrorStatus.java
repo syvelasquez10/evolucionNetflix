@@ -91,6 +91,10 @@ public class BladerunnerErrorStatus extends BaseStatus
                 }
                 case 10: {
                     n2 = StatusCode.DL_LIMIT_TOO_MANY_DOWNLOADED_DELETE_SOME.getValue();
+                    break Label_0178;
+                }
+                case 7: {
+                    n2 = StatusCode.DL_TOTAL_LICENSE_PER_DEVICE_LIMIT.getValue();
                 }
                 case 1:
                 case 2:
@@ -98,7 +102,6 @@ public class BladerunnerErrorStatus extends BaseStatus
                 case 4:
                 case 5:
                 case 6:
-                case 7:
                 case 8:
                 case 9:
                 case 13:
@@ -143,12 +146,8 @@ public class BladerunnerErrorStatus extends BaseStatus
                     this.mErrorCode = StatusCode.BLADERUNNER_FAILURE.getValue();
                 }
                 else {
-                    final ClientActionFromLase create = ClientActionFromLase.create(optJSONObject.optInt("clientAction", ClientActionFromLase.NO_ACTION.getValue()));
-                    StatusCode mStatusCode;
-                    if (create.isRecoverable()) {
-                        mStatusCode = create.getStatusCode();
-                    }
-                    else {
+                    StatusCode mStatusCode = ClientActionFromLase.create(optJSONObject.optInt("clientAction", ClientActionFromLase.NO_ACTION.getValue())).getStatusCode();
+                    if (!mStatusCode.isError()) {
                         mStatusCode = mapBladeRunnerErrorCodeToStatusCode(this.mErrorCode);
                     }
                     this.mStatusCode = mStatusCode;

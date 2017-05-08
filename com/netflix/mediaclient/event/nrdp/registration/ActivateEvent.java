@@ -25,6 +25,7 @@ public class ActivateEvent extends BaseRegistrationEvent
     private boolean ok;
     private String origin;
     private int reasonCode;
+    private String transaction;
     
     public ActivateEvent(final JSONObject jsonObject) {
         super("activate", jsonObject);
@@ -62,6 +63,10 @@ public class ActivateEvent extends BaseRegistrationEvent
         return this.reasonCode;
     }
     
+    public String getTransaction() {
+        return this.transaction;
+    }
+    
     public boolean isActionId() {
         return this.actionId;
     }
@@ -76,6 +81,7 @@ public class ActivateEvent extends BaseRegistrationEvent
         if (Log.isLoggable()) {
             Log.d("nf_event", "Device activated as " + this.cookies + ", status: " + string);
         }
+        this.transaction = BaseNccpEvent.getString(jsonObject, "transaction", null);
         if ("COMPLETE".equalsIgnoreCase(string)) {
             Log.d("nf_event", "Activation was success");
             this.ok = true;
@@ -106,6 +112,6 @@ public class ActivateEvent extends BaseRegistrationEvent
     
     @Override
     public String toString() {
-        return "ActivateEvent{cookies='" + this.cookies + '\'' + ", actionID=" + this.actionID + ", message='" + this.message + '\'' + ", bcp47='" + this.bcp47 + '\'' + ", reasonCode=" + this.reasonCode + ", code=" + this.code + ", origin='" + this.origin + '\'' + ", networkError=" + this.networkError + ", actionId=" + this.actionId + ", ok=" + this.ok + "} " + super.toString();
+        return "ActivateEvent{cookies='" + this.cookies + '\'' + ", actionID=" + this.actionID + ", message='" + this.message + '\'' + ", bcp47='" + this.bcp47 + '\'' + ", reasonCode=" + this.reasonCode + ", code=" + this.code + ", origin='" + this.origin + '\'' + ", transaction='" + this.transaction + '\'' + ", networkError=" + this.networkError + ", actionId=" + this.actionId + ", ok=" + this.ok + "} " + super.toString();
     }
 }

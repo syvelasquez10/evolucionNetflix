@@ -15,13 +15,13 @@ import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.util.PrivacyUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.ThumbMessaging;
 import com.netflix.mediaclient.webapi.WebApiCommand;
 import com.netflix.mediaclient.servicemgr.IMSLClient$MSLUserCredentialRegistry;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.l10n.UserLocale;
-import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
@@ -44,9 +44,9 @@ import org.json.JSONException;
 import org.json.JSONTokener;
 import org.json.JSONArray;
 import java.util.ArrayList;
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.service.webclient.model.leafs.AccountData;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
 import com.netflix.mediaclient.javabridge.ui.Registration;
@@ -62,36 +62,47 @@ import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.ConnectivityUtils;
-import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 
 class UserAgent$VerifyPinTask extends UserAgent$FetchTask<Void>
 {
     final String enteredPin;
+    final PinVerifier$PinType pinType;
     final /* synthetic */ UserAgent this$0;
+    final String videoId;
     private final UserAgentWebCallback webClientCallback;
     
-    public UserAgent$VerifyPinTask(final UserAgent this$0, final String enteredPin, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
+    public UserAgent$VerifyPinTask(final UserAgent this$0, final String enteredPin, final PinVerifier$PinType pinType, final String videoId, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
         this.this$0 = this$0;
         super(userAgent$UserAgentCallback);
         this.webClientCallback = new UserAgent$VerifyPinTask$1(this);
         this.enteredPin = enteredPin;
+        this.pinType = pinType;
+        this.videoId = videoId;
     }
     
     private boolean userEnteredPinMatchesStoredPin() {
-        final String stringPref = PreferenceUtils.getStringPref(this.this$0.getContext(), "prefs_last_successful_user_pin", "");
-        return !stringPref.isEmpty() && this.enteredPin.equals(stringPref);
+        boolean b = false;
+        final String userPin = this.this$0.getConfigurationAgent().getUserPin();
+        Log.i("nf_service_useragent", "userEnteredPinMatchesStoredPin usrPin=%s", userPin);
+        if (StringUtils.isEmpty(userPin) || this.enteredPin.equals(userPin)) {
+            b = true;
+        }
+        return b;
     }
     
     @Override
     public void run() {
         if (ConnectivityUtils.isConnected(this.this$0.getContext())) {
-            this.this$0.mUserWebClient.verifyPin(this.enteredPin, this.webClientCallback);
+            this.this$0.mUserWebClient.verifyPin(this.enteredPin, this.pinType, this.videoId, this.webClientCallback);
             return;
         }
-        if (this.userEnteredPinMatchesStoredPin()) {
-            this.webClientCallback.onVerified(true, CommonStatus.OK);
+        if (PinVerifier$PinType.MATURITY_PIN == this.pinType) {
+            this.webClientCallback.onVerified(this.userEnteredPinMatchesStoredPin(), CommonStatus.OK);
             return;
         }
-        this.webClientCallback.onVerified(false, CommonStatus.OK);
+        this.webClientCallback.onVerified(false, CommonStatus.NO_CONNECTIVITY);
     }
 }

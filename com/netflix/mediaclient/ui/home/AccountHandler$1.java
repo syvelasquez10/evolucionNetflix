@@ -9,6 +9,10 @@ import com.netflix.mediaclient.util.LaunchBrowser;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
+import java.io.UnsupportedEncodingException;
+import com.netflix.mediaclient.util.LogUtils;
+import java.net.URLDecoder;
+import android.net.Uri;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.app.DialogFragment;
 

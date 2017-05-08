@@ -51,7 +51,7 @@ abstract class BaseRealm implements Closeable
         else {
             o = new BaseRealm$1(this);
         }
-        this.sharedRealm = SharedRealm.getInstance(configuration, (RealmNotifier)androidNotifier, (SharedRealm$SchemaVersionListener)o);
+        this.sharedRealm = SharedRealm.getInstance(configuration, (RealmNotifier)androidNotifier, (SharedRealm$SchemaVersionListener)o, true);
         this.schema = new RealmSchema(this);
         if (this.handlerController.isAutoRefreshAvailable()) {
             this.setAutoRefresh(true);
@@ -94,6 +94,12 @@ abstract class BaseRealm implements Closeable
         }
         if (this.threadId != Thread.currentThread().getId()) {
             throw new IllegalStateException("Realm access from incorrect thread. Realm objects can only be accessed on the thread they were created.");
+        }
+    }
+    
+    void checkNotInSync() {
+        if (this.configuration.isSyncConfiguration()) {
+            throw new IllegalArgumentException("You cannot perform changes to a schema. Please update app and restart.");
         }
     }
     

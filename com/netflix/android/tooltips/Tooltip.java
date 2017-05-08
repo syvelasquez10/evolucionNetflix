@@ -5,6 +5,7 @@
 package com.netflix.android.tooltips;
 
 import android.util.Log;
+import android.graphics.Typeface;
 import android.text.Html;
 import android.content.SharedPreferences;
 import android.view.View$OnLayoutChangeListener;
@@ -13,6 +14,7 @@ import android.view.ViewGroup$LayoutParams;
 import android.widget.FrameLayout$LayoutParams;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
@@ -27,14 +29,23 @@ public final class Tooltip
     private final CoordinatorLayout mParent;
     private final TooltipLayout mTooltipLayout;
     
-    private Tooltip(final Context context, final CoordinatorLayout mParent, final View target, final CharSequence title, final CharSequence detail) {
+    private Tooltip(final Context context, final CoordinatorLayout coordinatorLayout, final View view, final Drawable title, final CharSequence charSequence) {
+        this(context, coordinatorLayout, view, charSequence);
+        this.mTooltipLayout.setTitle(title);
+    }
+    
+    private Tooltip(final Context context, final CoordinatorLayout mParent, final View target, final CharSequence detail) {
         this.mParent = mParent;
         (this.mTooltipLayout = (TooltipLayout)LayoutInflater.from(context).inflate(R$layout.tooltip_layout, (ViewGroup)this.mParent, false)).setLayoutParams((ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1));
         this.mTooltipLayout.setOnClickListener((View$OnClickListener)new Tooltip$1(this));
-        this.mTooltipLayout.setTitle(title);
         this.mTooltipLayout.setDetail(detail);
         target.addOnLayoutChangeListener((View$OnLayoutChangeListener)new Tooltip$2(this, target));
         this.mTooltipLayout.setTarget(target);
+    }
+    
+    private Tooltip(final Context context, final CoordinatorLayout coordinatorLayout, final View view, final CharSequence title, final CharSequence charSequence) {
+        this(context, coordinatorLayout, view, charSequence);
+        this.mTooltipLayout.setTitle(title);
     }
     
     public static void clearPrefs(final Context context) {
@@ -55,6 +66,14 @@ public final class Tooltip
     
     public static Tooltip makeTooltip(final Context context, final CoordinatorLayout coordinatorLayout, final View view, final int n, final int n2) {
         return new Tooltip(context, coordinatorLayout, view, (CharSequence)Html.fromHtml(context.getResources().getString(n)), (CharSequence)Html.fromHtml(context.getResources().getString(n2)));
+    }
+    
+    public static Tooltip makeTooltip(final Context context, final CoordinatorLayout coordinatorLayout, final View view, final Drawable drawable, final int n) {
+        return new Tooltip(context, coordinatorLayout, view, drawable, (CharSequence)Html.fromHtml(context.getResources().getString(n)));
+    }
+    
+    public static Tooltip makeTooltip(final Context context, final CoordinatorLayout coordinatorLayout, final View view, final Drawable drawable, final CharSequence charSequence) {
+        return new Tooltip(context, coordinatorLayout, view, drawable, charSequence);
     }
     
     public static Tooltip makeTooltip(final Context context, final CoordinatorLayout coordinatorLayout, final View view, final CharSequence charSequence, final CharSequence charSequence2) {
@@ -90,12 +109,20 @@ public final class Tooltip
         this.mCallback = mCallback;
     }
     
+    public void setDetailTypeface(final Typeface detailTypeface) {
+        this.mTooltipLayout.setDetailTypeface(detailTypeface);
+    }
+    
     public void setOnClickListener(final View$OnClickListener userOnClickListener) {
         this.mTooltipLayout.setUserOnClickListener(userOnClickListener);
     }
     
     public void setOneTime(final String mKey) {
         this.mKey = mKey;
+    }
+    
+    public void setTitleTypeface(final Typeface titleTypeface) {
+        this.mTooltipLayout.setTitleTypeface(titleTypeface);
     }
     
     public void show() {

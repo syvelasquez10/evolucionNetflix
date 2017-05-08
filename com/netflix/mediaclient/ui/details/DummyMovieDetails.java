@@ -10,6 +10,7 @@ import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.IconFontGlyph;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import java.util.Set;
 import java.util.ArrayList;
 import com.netflix.model.leafs.advisory.Advisory;
 import java.util.List;
@@ -39,7 +40,7 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
-    public String getBoxartImageTypeIdentifier() {
+    public String getBoxartId() {
         return null;
     }
     
@@ -55,6 +56,11 @@ public class DummyMovieDetails implements MovieDetails
     
     @Override
     public String getCertification() {
+        return null;
+    }
+    
+    @Override
+    public Set<String> getCharacterRoles() {
         return null;
     }
     
@@ -121,6 +127,11 @@ public class DummyMovieDetails implements MovieDetails
     @Override
     public String getId() {
         return null;
+    }
+    
+    @Override
+    public int getMatchPercentage() {
+        return 0;
     }
     
     @Override
@@ -219,6 +230,11 @@ public class DummyMovieDetails implements MovieDetails
     }
     
     @Override
+    public int getUserThumbRating() {
+        return 0;
+    }
+    
+    @Override
     public int getYear() {
         return 1909;
     }
@@ -245,6 +261,11 @@ public class DummyMovieDetails implements MovieDetails
     
     @Override
     public boolean isNSRE() {
+        return false;
+    }
+    
+    @Override
+    public boolean isNewForPvr() {
         return false;
     }
     
@@ -296,5 +317,9 @@ public class DummyMovieDetails implements MovieDetails
     @Override
     public void setUserRating(final float userRating) {
         this.userRating = userRating;
+    }
+    
+    @Override
+    public void setUserThumbRating(final int n) {
     }
 }

@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.android.widget;
 
 import android.support.v4.content.ContextCompat;
-import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.android.widgetry.utils.UiUtils;
 import android.view.ContextThemeWrapper;
 import android.graphics.drawable.Drawable;
 import android.os.Build$VERSION;
@@ -33,16 +33,20 @@ public class NetflixTextButton extends AppCompatButton
     }
     
     private static ColorStateList getColorState(final TypedArray typedArray, final int n) {
-        ColorStateList list;
-        if ((list = typedArray.getColorStateList(n)) == null) {
-            list = ColorStateList.valueOf(0);
+        return getColorState(typedArray, n, ColorStateList.valueOf(0));
+    }
+    
+    private static ColorStateList getColorState(final TypedArray typedArray, final int n, final ColorStateList list) {
+        final ColorStateList colorStateList = typedArray.getColorStateList(n);
+        if (colorStateList == null) {
+            return list;
         }
-        return list;
+        return colorStateList;
     }
     
     private void setAttributes(final NetflixTextButton$Attributes mAttributes) {
         this.mAttributes = mAttributes;
-        if (!this.mAttributes.simulatePreL && Build$VERSION.SDK_INT >= 21) {
+        if (Build$VERSION.SDK_INT >= 21) {
             this.setBackground((Drawable)new NetflixTextButton$NetflixButtonDrawableL(this.mAttributes));
         }
         else {
@@ -79,7 +83,7 @@ public class NetflixTextButton extends AppCompatButton
             super.setCompoundDrawables(drawable, drawable2, drawable3, drawable4);
             return;
         }
-        super.setCompoundDrawables(ViewUtils.tintAndGet(drawable, this.mAttributes.textColor, this.mAttributes.iconSize), ViewUtils.tintAndGet(drawable2, this.mAttributes.textColor, this.mAttributes.iconSize), ViewUtils.tintAndGet(drawable3, this.mAttributes.textColor, this.mAttributes.iconSize), ViewUtils.tintAndGet(drawable4, this.mAttributes.textColor, this.mAttributes.iconSize));
+        super.setCompoundDrawables(UiUtils.tintAndGet(drawable, this.mAttributes.iconColor, this.mAttributes.iconSize), UiUtils.tintAndGet(drawable2, this.mAttributes.iconColor, this.mAttributes.iconSize), UiUtils.tintAndGet(drawable3, this.mAttributes.iconColor, this.mAttributes.iconSize), UiUtils.tintAndGet(drawable4, this.mAttributes.iconColor, this.mAttributes.iconSize));
     }
     
     public void setCompoundDrawablesRelative(final Drawable drawable, final Drawable drawable2, final Drawable drawable3, final Drawable drawable4) {
@@ -87,7 +91,7 @@ public class NetflixTextButton extends AppCompatButton
             super.setCompoundDrawablesRelative(drawable, drawable2, drawable3, drawable4);
             return;
         }
-        super.setCompoundDrawablesRelative(ViewUtils.tintAndGet(drawable, this.mAttributes.textColor, this.mAttributes.iconSize), ViewUtils.tintAndGet(drawable2, this.mAttributes.textColor, this.mAttributes.iconSize), ViewUtils.tintAndGet(drawable3, this.mAttributes.textColor, this.mAttributes.iconSize), ViewUtils.tintAndGet(drawable4, this.mAttributes.textColor, this.mAttributes.iconSize));
+        super.setCompoundDrawablesRelative(UiUtils.tintAndGet(drawable, this.mAttributes.iconColor, this.mAttributes.iconSize), UiUtils.tintAndGet(drawable2, this.mAttributes.iconColor, this.mAttributes.iconSize), UiUtils.tintAndGet(drawable3, this.mAttributes.iconColor, this.mAttributes.iconSize), UiUtils.tintAndGet(drawable4, this.mAttributes.iconColor, this.mAttributes.iconSize));
     }
     
     public void setCompoundDrawablesRelativeWithIntrinsicBounds(final int n, final int n2, final int n3, final int n4) {

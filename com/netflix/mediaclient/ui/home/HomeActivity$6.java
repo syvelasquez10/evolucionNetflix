@@ -13,10 +13,10 @@ import java.io.Serializable;
 import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.MenuItem;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.ui.mdx.ICastPlayerFrag;
 import com.netflix.mediaclient.ui.search.SearchMenu;
-import com.netflix.mediaclient.ui.mdx.MdxMenu;
+import com.netflix.mediaclient.ui.mdx.CastMenu;
 import android.view.Menu;
 import com.netflix.mediaclient.util.Coppola2Utils;
 import java.util.Collection;
@@ -41,6 +41,8 @@ import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$Interacti
 import android.widget.Toast;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StringUtils;
+import android.content.Context;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
@@ -59,9 +61,6 @@ import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.content.Context;
-import com.netflix.mediaclient.ui.survey.SurveyActivity;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.model.leafs.OnRampEligibility$Action;
@@ -98,10 +97,7 @@ class HomeActivity$6 implements ManagerStatusListener
         this.this$0.reportUiViewChanged(this.this$0.getCurrentViewType());
         this.this$0.getPrimaryFrag().onManagerReady(serviceManager, status);
         this.this$0.slidingMenuAdapter.onManagerReady(serviceManager, status);
-        this.this$0.setLoadingStatusCallback(new HomeActivity$6$2(this));
-        if (SurveyActivity.shouldShowSurvey((Context)this.this$0, serviceManager)) {
-            SurveyActivity.makeSurveyRequestAndShow((NetflixActivity)this.this$0);
-        }
+        this.this$0.setLoadingStatusCallback(new HomeActivity$6$2(this, serviceManager));
     }
     
     @Override

@@ -11,6 +11,7 @@ import io.realm.Realm$2;
 import io.realm.Realm$Transaction$OnError;
 import io.realm.Realm$Transaction$OnSuccess;
 import io.realm.RealmAsyncTask;
+import io.realm.log.RealmLog;
 import io.realm.internal.Table;
 import java.util.Collections;
 import io.realm.BaseRealm$MigrationCallback;
@@ -23,10 +24,9 @@ import io.realm.Realm$1;
 import io.realm.RealmSchema;
 import io.realm.RealmObjectSchema;
 import java.util.ArrayList;
+import io.realm.internal.SharedRealm;
+import java.io.File;
 import io.realm.internal.ObjectServerFacade;
-import io.realm.log.Logger;
-import io.realm.log.RealmLog;
-import io.realm.log.AndroidLogger;
 import io.realm.internal.RealmCore;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -60,7 +60,7 @@ public class RealmUtils
     private static HashMap<Long, RealmUtils$DbState> sCurrentStatesMap;
     
     static {
-        RealmUtils.sCurrentConfig = new RealmConfiguration$Builder().name("offline.realm").modules((Object)new RealmOfflineModule(), new Object[0]).migration((RealmMigration)new RealmOfflineMigration()).schemaVersion(2L).build();
+        RealmUtils.sCurrentConfig = new RealmConfiguration$Builder().name("offline.realm").modules((Object)new RealmOfflineModule(), new Object[0]).migration((RealmMigration)new RealmOfflineMigration()).schemaVersion(4L).build();
     }
     
     private static void checkAndUpdateCurrentState(final RealmUtils$DbState realmUtils$DbState, final RealmUtils$DbState realmUtils$DbState2) {

@@ -21,12 +21,14 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import java.util.Map;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.bridge.OnBatchCompleteListener;
+import com.facebook.react.bridge.NativeModuleLogger;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 
-public class UIManagerModule extends ReactContextBaseJavaModule implements LifecycleEventListener, OnBatchCompleteListener
+public class UIManagerModule extends ReactContextBaseJavaModule implements LifecycleEventListener, NativeModuleLogger, OnBatchCompleteListener
 {
     private static final boolean DEBUG = false;
+    protected static final String NAME = "UIManager";
     private static final int ROOT_VIEW_TAG_INCREMENT = 10;
     private int mBatchId;
     private final EventDispatcher mEventDispatcher;
@@ -35,23 +37,23 @@ public class UIManagerModule extends ReactContextBaseJavaModule implements Lifec
     private int mNextRootViewTag;
     private final UIImplementation mUIImplementation;
     
-    public UIManagerModule(final ReactApplicationContext reactApplicationContext, final List<ViewManager> list, final UIImplementationProvider uiImplementationProvider) {
+    public UIManagerModule(final ReactApplicationContext reactApplicationContext, final List<ViewManager> list, final UIImplementationProvider uiImplementationProvider, final boolean b) {
         super(reactApplicationContext);
         this.mMemoryTrimCallback = new UIManagerModule$MemoryTrimCallback(this, null);
         this.mNextRootViewTag = 1;
         this.mBatchId = 0;
         DisplayMetricsHolder.initDisplayMetricsIfNotInitialized((Context)reactApplicationContext);
         this.mEventDispatcher = new EventDispatcher(reactApplicationContext);
-        this.mModuleConstants = createConstants(list);
+        this.mModuleConstants = createConstants(list, b);
         this.mUIImplementation = uiImplementationProvider.createUIImplementation(reactApplicationContext, list, this.mEventDispatcher);
         reactApplicationContext.addLifecycleEventListener(this);
     }
     
-    private static Map<String, Object> createConstants(final List<ViewManager> list) {
+    private static Map<String, Object> createConstants(final List<ViewManager> list, final boolean b) {
         ReactMarker.logMarker("CREATE_UI_MANAGER_MODULE_CONSTANTS_START");
         Systrace.beginSection(0L, "CreateUIManagerConstants");
         try {
-            return UIManagerModuleConstantsHelper.createConstants(list);
+            return UIManagerModuleConstantsHelper.createConstants(list, b);
         }
         finally {
             Systrace.endSection(0L);
@@ -105,6 +107,11 @@ public class UIManagerModule extends ReactContextBaseJavaModule implements Lifec
         this.mUIImplementation.dispatchViewManagerCommand(n, n2, readableArray);
     }
     
+    @Override
+    public void endConstantsMapConversion() {
+        ReactMarker.logMarker("UI_MANAGER_MODULE_CONSTANTS_CONVERT_END");
+    }
+    
     @ReactMethod
     public void findSubviewIn(final int n, final ReadableArray readableArray, final Callback callback) {
         this.mUIImplementation.findSubviewIn(n, Math.round(PixelUtil.toPixelFromDIP(readableArray.getDouble(0))), Math.round(PixelUtil.toPixelFromDIP(readableArray.getDouble(1))), callback);
@@ -121,7 +128,7 @@ public class UIManagerModule extends ReactContextBaseJavaModule implements Lifec
     
     @Override
     public String getName() {
-        return "RKUIManager";
+        return "UIManager";
     }
     
     public Map<String, Double> getPerformanceCounters() {
@@ -186,6 +193,7 @@ public class UIManagerModule extends ReactContextBaseJavaModule implements Lifec
         YogaNodePool.get().clear();
     }
     
+    @Override
     public void onHostDestroy() {
         this.mUIImplementation.onHostDestroy();
     }
@@ -254,6 +262,11 @@ public class UIManagerModule extends ReactContextBaseJavaModule implements Lifec
     @ReactMethod
     public void showPopupMenu(final int n, final ReadableArray readableArray, final Callback callback, final Callback callback2) {
         this.mUIImplementation.showPopupMenu(n, readableArray, callback, callback2);
+    }
+    
+    @Override
+    public void startConstantsMapConversion() {
+        ReactMarker.logMarker("UI_MANAGER_MODULE_CONSTANTS_CONVERT_START");
     }
     
     public void updateNodeSize(final int n, final int n2, final int n3) {

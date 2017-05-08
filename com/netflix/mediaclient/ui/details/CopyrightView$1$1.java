@@ -9,12 +9,13 @@ import android.view.WindowManager$LayoutParams;
 import android.support.v7.app.AlertDialog;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.RelativeLayout$LayoutParams;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.LayoutInflater;
 import android.view.View$OnLayoutChangeListener;
-import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.content.Context;
 import android.view.View;
 import android.view.View$OnClickListener;
 
@@ -27,6 +28,6 @@ class CopyrightView$1$1 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        this.this$1.this$0.showExpandedCopyrightPopup(this.this$1.this$0.details, this.this$1.val$context);
+        this.this$1.this$0.showExpandedCopyrightPopup(this.this$1.this$0.details);
     }
 }

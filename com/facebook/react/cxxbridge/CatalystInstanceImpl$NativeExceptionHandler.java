@@ -4,12 +4,13 @@
 
 package com.facebook.react.cxxbridge;
 
-import android.content.res.AssetManager;
 import com.facebook.react.bridge.MemoryPressure;
 import com.facebook.react.bridge.queue.ReactQueueConfiguration;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.bridge.JavaScriptModule;
+import android.content.res.AssetManager;
+import java.util.Collection;
 import com.facebook.react.bridge.queue.MessageQueueThread;
 import java.util.Iterator;
 import com.facebook.systrace.Systrace;

@@ -30,21 +30,21 @@ public class AdvancedImageView extends RoundedImageView
     
     public AdvancedImageView(final Context context) {
         super(context);
-        this.defaultForegroundResId = 2130838131;
+        this.defaultForegroundResId = 2130838138;
         this.pressedHandler = null;
         this.init(null);
     }
     
     public AdvancedImageView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.defaultForegroundResId = 2130838131;
+        this.defaultForegroundResId = 2130838138;
         this.pressedHandler = null;
         this.init(set);
     }
     
     public AdvancedImageView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.defaultForegroundResId = 2130838131;
+        this.defaultForegroundResId = 2130838138;
         this.pressedHandler = null;
         this.init(set);
     }
@@ -94,7 +94,7 @@ public class AdvancedImageView extends RoundedImageView
     }
     
     public AdvancedImageView$ImageLoaderInfo getImageLoaderInfo() {
-        return (AdvancedImageView$ImageLoaderInfo)this.getTag(2131755024);
+        return (AdvancedImageView$ImageLoaderInfo)this.getTag(2131820561);
     }
     
     @Override
@@ -182,7 +182,7 @@ public class AdvancedImageView extends RoundedImageView
     }
     
     public void setImageLoaderInfo(final AdvancedImageView$ImageLoaderInfo advancedImageView$ImageLoaderInfo) {
-        this.setTag(2131755024, (Object)advancedImageView$ImageLoaderInfo);
+        this.setTag(2131820561, (Object)advancedImageView$ImageLoaderInfo);
     }
     
     public void setPressedStateHandlerEnabled(final boolean enabled) {

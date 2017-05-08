@@ -28,7 +28,7 @@ public enum YogaEdge
     public static YogaEdge fromInt(final int n) {
         switch (n) {
             default: {
-                throw new IllegalArgumentException("Unkown enum value: " + n);
+                throw new IllegalArgumentException("Unknown enum value: " + n);
             }
             case 0: {
                 return YogaEdge.LEFT;

@@ -367,9 +367,6 @@ public class TextStyle
     public void merge(final TextStyle textStyle) {
         if (textStyle != null) {
             if (this.mColor == null && textStyle.mColor != null) {
-                if (Log.isLoggable()) {
-                    Log.d("nf_subtitles", "Use parent color " + textStyle.mColor);
-                }
                 this.mColor = textStyle.mColor;
             }
             if (this.mWindowColor == null && textStyle.mWindowColor != null) {
@@ -379,9 +376,6 @@ public class TextStyle
                 this.mBackgroundColor = textStyle.mBackgroundColor;
             }
             if (this.mFontSize == null && textStyle.mFontSize != null) {
-                if (Log.isLoggable()) {
-                    Log.d("nf_subtitles", "Use parent mFontSize " + textStyle.mFontSize);
-                }
                 this.mFontSize = textStyle.mFontSize;
             }
             if (this.mOutline == null && textStyle.mOutline != null) {

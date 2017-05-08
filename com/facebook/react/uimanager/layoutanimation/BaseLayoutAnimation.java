@@ -13,17 +13,8 @@ abstract class BaseLayoutAnimation extends AbstractLayoutAnimation
 {
     @Override
     Animation createAnimationImpl(final View view, final int n, final int n2, final int n3, final int n4) {
-        float n5 = 0.0f;
-        float n6;
-        if (this.isReverse()) {
-            n6 = 1.0f;
-        }
-        else {
-            n6 = 0.0f;
-        }
-        if (!this.isReverse()) {
-            n5 = 1.0f;
-        }
+        final float n5 = 0.0f;
+        float alpha = 0.0f;
         if (this.mAnimatedProperty == null) {
             throw new IllegalViewOperationException("Missing animated property from animation config");
         }
@@ -32,10 +23,34 @@ abstract class BaseLayoutAnimation extends AbstractLayoutAnimation
                 throw new IllegalViewOperationException("Missing animation for property : " + this.mAnimatedProperty);
             }
             case 1: {
-                return new OpacityAnimation(view, n6, n5);
+                float alpha2;
+                if (this.isReverse()) {
+                    alpha2 = view.getAlpha();
+                }
+                else {
+                    alpha2 = 0.0f;
+                }
+                if (!this.isReverse()) {
+                    alpha = view.getAlpha();
+                }
+                return new OpacityAnimation(view, alpha2, alpha);
             }
             case 2: {
-                return (Animation)new ScaleAnimation(n6, n5, n6, n5, 1, 0.5f, 1, 0.5f);
+                float n6;
+                if (this.isReverse()) {
+                    n6 = 1.0f;
+                }
+                else {
+                    n6 = 0.0f;
+                }
+                float n7;
+                if (this.isReverse()) {
+                    n7 = n5;
+                }
+                else {
+                    n7 = 1.0f;
+                }
+                return (Animation)new ScaleAnimation(n6, n7, n6, n7, 1, 0.5f, 1, 0.5f);
             }
         }
     }

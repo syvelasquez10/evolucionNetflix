@@ -5,6 +5,7 @@
 package com.facebook.react.bridge;
 
 import java.util.Iterator;
+import android.content.Intent;
 import com.facebook.react.bridge.queue.ReactQueueConfiguration;
 import com.facebook.infer.annotation.Assertions;
 import android.content.Context;
@@ -18,7 +19,7 @@ import android.content.ContextWrapper;
 
 public class ReactContext extends ContextWrapper
 {
-    private final CopyOnWriteArraySet<Object> mActivityEventListeners;
+    private final CopyOnWriteArraySet<ActivityEventListener> mActivityEventListeners;
     private CatalystInstance mCatalystInstance;
     private WeakReference<Activity> mCurrentActivity;
     private LayoutInflater mInflater;
@@ -32,7 +33,7 @@ public class ReactContext extends ContextWrapper
     public ReactContext(final Context context) {
         super(context);
         this.mLifecycleEventListeners = new CopyOnWriteArraySet<LifecycleEventListener>();
-        this.mActivityEventListeners = new CopyOnWriteArraySet<Object>();
+        this.mActivityEventListeners = new CopyOnWriteArraySet<ActivityEventListener>();
         this.mLifecycleState = LifecycleState.BEFORE_CREATE;
     }
     
@@ -137,6 +138,23 @@ public class ReactContext extends ContextWrapper
         return Assertions.assertNotNull(this.mUiMessageQueueThread).isOnThread();
     }
     
+    public void onActivityResult(final Activity activity, final int n, final int n2, final Intent intent) {
+        final Iterator<ActivityEventListener> iterator = this.mActivityEventListeners.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().onActivityResult(activity, n, n2, intent);
+        }
+    }
+    
+    public void onHostDestroy() {
+        UiThreadUtil.assertOnUiThread();
+        this.mLifecycleState = LifecycleState.BEFORE_CREATE;
+        final Iterator<LifecycleEventListener> iterator = this.mLifecycleEventListeners.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().onHostDestroy();
+        }
+        this.mCurrentActivity = null;
+    }
+    
     public void onHostPause() {
         UiThreadUtil.assertOnUiThread();
         this.mLifecycleState = LifecycleState.BEFORE_RESUME;
@@ -154,6 +172,15 @@ public class ReactContext extends ContextWrapper
         final Iterator<LifecycleEventListener> iterator = this.mLifecycleEventListeners.iterator();
         while (iterator.hasNext()) {
             iterator.next().onHostResume();
+        }
+    }
+    
+    public void onNewIntent(final Activity activity, final Intent intent) {
+        UiThreadUtil.assertOnUiThread();
+        this.mCurrentActivity = new WeakReference<Activity>(activity);
+        final Iterator<ActivityEventListener> iterator = this.mActivityEventListeners.iterator();
+        while (iterator.hasNext()) {
+            iterator.next().onNewIntent(intent);
         }
     }
     

@@ -38,13 +38,13 @@ public class DummySeasonDetails implements SeasonDetails
     }
     
     @Override
-    public String getSeasonLongSeqLabel() {
-        return null;
+    public int getSeasonNumber() {
+        return 0;
     }
     
     @Override
-    public int getSeasonNumber() {
-        return 0;
+    public String getShowId() {
+        return null;
     }
     
     @Override

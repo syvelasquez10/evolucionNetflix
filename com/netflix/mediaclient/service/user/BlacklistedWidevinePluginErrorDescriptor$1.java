@@ -22,7 +22,7 @@ class BlacklistedWidevinePluginErrorDescriptor$1 implements Runnable
     @Override
     public void run() {
         Log.d("nf_user_error", "Blacklisted Widevine L3 plugin, fail back to legacy crypto scheme ");
-        PreferenceUtils.putBooleanPref(this.val$context, "nf_disable_widevine_l3", true);
+        PreferenceUtils.putBooleanPref(this.val$context, "nff_disable_widevine_l3", true);
         AndroidUtils.forceStop(this.val$context);
     }
 }

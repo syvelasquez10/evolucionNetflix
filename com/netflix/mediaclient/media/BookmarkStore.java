@@ -18,11 +18,11 @@ import com.netflix.mediaclient.servicemgr.interface_.PlaybackBookmark;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.NetflixApplication;
-import com.netflix.mediaclient.android.app.BackgroundTask;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
 import java.util.List;
+import com.netflix.mediaclient.android.app.BackgroundTask;
 import android.content.Context;
 import java.io.File;
 
@@ -30,27 +30,18 @@ public class BookmarkStore
 {
     private static final int MAX_BOOKMARKS_PER_PROFILE = 100;
     private static final String TAG = "nf_BookmarkStore";
-    private static BookmarkStore sBookmarkStore;
     private BookmarkStore$BookmarkData mBookmarkData;
     private File mBookmarkStoreFile;
     private Context mContext;
     
-    public BookmarkStore() {
+    public BookmarkStore(final Context context) {
         this.mBookmarkData = new BookmarkStore$BookmarkData(this, null);
+        this.init(context);
     }
     
-    public static BookmarkStore getInstance() {
-        Label_0028: {
-            if (BookmarkStore.sBookmarkStore != null) {
-                break Label_0028;
-            }
-            synchronized (BookmarkStore.class) {
-                if (BookmarkStore.sBookmarkStore == null) {
-                    BookmarkStore.sBookmarkStore = new BookmarkStore();
-                }
-                return BookmarkStore.sBookmarkStore;
-            }
-        }
+    private void init(final Context context) {
+        this.mBookmarkStoreFile = new File(context.getFilesDir() + "/bookmarkStore.json");
+        new BackgroundTask().execute(new BookmarkStore$1(this, context));
     }
     
     private boolean isProfileStillValid(final String s, final List<UserProfile> list) {
@@ -126,7 +117,7 @@ public class BookmarkStore
                     n = playable.getPlayableBookmarkPosition();
                 }
                 final long playableBookmarkUpdateTime = playable.getPlayableBookmarkUpdateTime();
-                final PlaybackBookmark bookmark = getInstance().getBookmark(s, playable.getPlayableId());
+                final PlaybackBookmark bookmark = this.getBookmark(s, playable.getPlayableId());
                 int n2;
                 if (bookmark == null) {
                     Log.i("nf_BookmarkStore", "createOrUpdateBookmark bookmarkStore has no bookmark");
@@ -180,12 +171,6 @@ public class BookmarkStore
             Log.i("nf_BookmarkStore", "getBookmark no bookmark for videoId=" + s2);
             return (PlaybackBookmark)mContext;
         }
-    }
-    
-    public void init(final Context mContext) {
-        this.mContext = mContext;
-        this.mBookmarkStoreFile = new File(this.mContext.getFilesDir() + "/bookmarkStore.json");
-        new BackgroundTask().execute(new BookmarkStore$1(this));
     }
     
     public void onCWVideosFetched(final List<CWVideo> list, final String s) {

@@ -10,7 +10,6 @@ import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.common.logging.FLog;
 import android.view.MotionEvent;
 import com.facebook.infer.annotation.Assertions;
-import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.content.Context;
 import android.os.Bundle;

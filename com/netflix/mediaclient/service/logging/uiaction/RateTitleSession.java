@@ -18,8 +18,8 @@ public final class RateTitleSession extends BaseUIActionSession
         super(userActionLogging$CommandName, clientLogging$ModalView);
     }
     
-    public RateTitleEndedEvent createEndedEvent(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final int n2) {
-        final RateTitleEndedEvent rateTitleEndedEvent = new RateTitleEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.mView, this.mAction, clientLogging$CompletionReason, uiError, n, n2);
+    public RateTitleEndedEvent createEndedEvent(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final int n2, final String s, final int n3, final boolean b) {
+        final RateTitleEndedEvent rateTitleEndedEvent = new RateTitleEndedEvent(this.mId, System.currentTimeMillis() - this.mStarted, this.mView, this.mAction, clientLogging$CompletionReason, uiError, n, n2, s, n3, b);
         rateTitleEndedEvent.setCategory(this.getCategory());
         rateTitleEndedEvent.setSessionId(this.mId);
         return rateTitleEndedEvent;

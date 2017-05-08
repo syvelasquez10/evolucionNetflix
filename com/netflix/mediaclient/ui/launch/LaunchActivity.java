@@ -28,7 +28,10 @@ import com.netflix.mediaclient.util.ConnectivityUtils;
 import android.content.IntentSender$SendIntentException;
 import android.app.Activity;
 import com.netflix.mediaclient.util.IntentUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.SignInConfigData;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
+import com.netflix.mediaclient.ui.signup.ReactSignupActivity;
+import com.netflix.mediaclient.service.configuration.SignInConfiguration;
 import com.google.android.gms.common.api.Api$ApiOptions$NotRequiredOptions;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.auth.api.Auth;
@@ -90,14 +93,14 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     private final BroadcastReceiver nflxBroadcastReceiver;
     
     static {
-        sampleVideo = new LaunchActivity$6();
+        sampleVideo = (Video)new LaunchActivity$6();
     }
     
     public LaunchActivity() {
         this.isLoading = true;
         this.mLoginWorkflowInProgress = new AtomicBoolean(false);
-        this.mSmartLockTimeoutTask = new LaunchActivity$2(this);
-        this.nflxBroadcastReceiver = new LaunchActivity$3(this);
+        this.mSmartLockTimeoutTask = (Runnable)new LaunchActivity$2(this);
+        this.nflxBroadcastReceiver = (BroadcastReceiver)new LaunchActivity$3(this);
     }
     
     private NflxHandler$Response canHandleIntent() {
@@ -122,7 +125,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showDebugToast(this.getString(2131296791));
+            this.showDebugToast(this.getString(2131296793));
             SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.smartLock, IClientLogging$CompletionReason.success, (Error)null);
             return;
         }
@@ -177,7 +180,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         if (this.shouldCreateUiSessions()) {
             applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.login, this.mStarted, display, null, UIBrowseStartupSessionCustomData.create((Context)this));
         }
-        this.getServiceManager().loginUser(credential.getId(), credential.getPassword(), new LaunchActivity$5(this, credential));
+        this.getServiceManager().loginUser(credential.getId(), credential.getPassword(), (ManagerCallback)new LaunchActivity$5(this, credential));
     }
     
     private void handleUserLoginWithError(final ServiceManager serviceManager, final Credential credential, final Status status) {
@@ -226,10 +229,16 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         Log.d("LaunchActivity", "User has not signed up, redirect to Signup screen");
         final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = serviceManager.getClientLogging().getApplicationPerformanceMetricsLogging();
         final Display display = ConsolidatedLoggingUtils.getDisplay((Context)this);
+        final SignInConfigData signInConfigData = new SignInConfiguration((Context)this).getSignInConfigData();
         if (this.shouldCreateUiSessions()) {
             applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.signupPrompt, this.mStarted, display, null, UIBrowseStartupSessionCustomData.create((Context)this));
         }
-        this.startNextActivity(SignupActivity.createStartIntent((Context)this, this.getIntent()));
+        if (signInConfigData != null && signInConfigData.getReactNativeMode() != null) {
+            this.startNextActivity(ReactSignupActivity.createStartIntent((Context)this, this.getIntent()));
+        }
+        else {
+            this.startNextActivity(SignupActivity.createStartIntent((Context)this, this.getIntent()));
+        }
         if (this.shouldCreateUiSessions()) {
             applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
         }
@@ -420,7 +429,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
         PerformanceProfiler.getInstance().startSession(Sessions.LAUNCH_ACTIVITY_MANAGER_LOAD, null);
-        return new LaunchActivity$1(this);
+        return (ManagerStatusListener)new LaunchActivity$1(this);
     }
     
     @Override
@@ -484,7 +493,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     @Override
     public void onConnected(final Bundle bundle) {
         Log.d("LaunchActivity", "onConnected, retrieve credentials if any");
-        Auth.CredentialsApi.request(this.mCredentialsApiClient, new CredentialRequest$Builder().setSupportsPasswordLogin(true).build()).setResultCallback(new LaunchActivity$4(this));
+        Auth.CredentialsApi.request(this.mCredentialsApiClient, new CredentialRequest$Builder().setSupportsPasswordLogin(true).build()).setResultCallback((ResultCallback<? super CredentialRequestResult>)new LaunchActivity$4(this));
     }
     
     @Override
@@ -514,6 +523,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
                 PerformanceProfiler.getInstance().clear();
                 PerformanceProfiler.getInstance().startSession(Sessions.TTI, null);
                 PerformanceProfiler.getInstance().startSession(Sessions.TTR, null);
+                PerformanceProfiler.getInstance().startSession(Sessions.NON_MEMBER_TTI, null);
             }
             PerformanceProfiler.getInstance().startSession(Sessions.LAUNCH_ACTIVITY_LIFE, null);
         }
@@ -529,7 +539,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         Log.d("LaunchActivity", "Service is NOT ready, use splash screen... nf_config: splashscreen");
         this.mSplashScreenStarted = System.currentTimeMillis();
-        this.setContentView(2130903314);
+        this.setContentView(2130903304);
     }
     
     @Override

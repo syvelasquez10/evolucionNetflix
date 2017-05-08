@@ -16,11 +16,11 @@ class BarkerVideoDetailsViewGroup$DataSelectorButtonListener implements View$OnC
     }
     
     public void onClick(final View view) {
-        if (view.getId() == 2131755205) {
+        if (view.getId() == 2131820741) {
             ((BarkerShowDetailsFrag)((BarkerShowDetailsActivity)this.this$0.getContext()).getPrimaryFrag()).showRelatedTitles();
             this.this$0.setRelatedTextAsSelected();
         }
-        else if (view.getId() == 2131755203) {
+        else if (view.getId() == 2131820739) {
             ((BarkerShowDetailsFrag)((BarkerShowDetailsActivity)this.this$0.getContext()).getPrimaryFrag()).showCurrentSeason();
             this.this$0.setEpisodesTextAsSelected();
         }

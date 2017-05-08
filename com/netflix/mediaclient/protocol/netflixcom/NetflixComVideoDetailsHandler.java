@@ -7,8 +7,8 @@ package com.netflix.mediaclient.protocol.netflixcom;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.details.DetailsActivity$Action;
 import java.util.List;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class NetflixComVideoDetailsHandler implements NetflixComHandler
@@ -21,8 +21,12 @@ public class NetflixComVideoDetailsHandler implements NetflixComHandler
         HANDLER_DETAILS_URL = String.format("%s://%s/%s/", "http", "www.netflix.com", "title");
     }
     
+    private void fetchFalkorVideo(final String s, final NetflixActivity netflixActivity, final String s2) {
+        netflixActivity.getServiceManager().getBrowse().fetchFalkorVideo(s, new NetflixComVideoDetailsHandler$1(this, s, netflixActivity, s2));
+    }
+    
     private NflxHandler$Response handle(final String s, final NetflixActivity netflixActivity, final String s2) {
-        netflixActivity.getServiceManager().getBrowse().fetchVideoSummary(s, new NetflixComVideoDetailsHandler$1(this, netflixActivity, s, s2));
+        this.fetchFalkorVideo(s, netflixActivity, s2);
         return NflxHandler$Response.HANDLING_WITH_DELAY;
     }
     

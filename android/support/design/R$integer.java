@@ -13,6 +13,6 @@ public final class R$integer
     public static final int cancel_button_image_alpha = 2131558410;
     public static final int design_snackbar_text_max_lines = 2131558403;
     public static final int hide_password_duration = 2131558417;
-    public static final int show_password_duration = 2131558430;
-    public static final int status_bar_notification_info_maxnum = 2131558431;
+    public static final int show_password_duration = 2131558431;
+    public static final int status_bar_notification_info_maxnum = 2131558432;
 }

@@ -169,10 +169,10 @@ public class PerformanceProfiler
         if (s != null && this.sessions.containsKey(s)) {
             final PerfSession perfSession = this.sessions.get(s);
             if (perfSession != null) {
-                if (Log.isLoggable()) {
-                    Log.v("PerformanceProfiler", "endSession: " + sessions.toString());
-                }
                 perfSession.closeSession(map);
+                if (Log.isLoggable()) {
+                    Log.v("PerformanceProfiler", "endSession: " + sessions.toString() + " duration = " + perfSession.getEndEvent().getDuration());
+                }
             }
             return;
         }

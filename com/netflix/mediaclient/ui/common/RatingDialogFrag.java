@@ -23,11 +23,11 @@ import android.widget.TextView;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.details.NetflixRatingBar;
 import com.netflix.mediaclient.ui.details.NetflixRatingBar$RatingBarDataProvider;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
+import com.netflix.mediaclient.ui.mdx.CastPlayerHelper$CastPlayerDialog;
 import com.netflix.mediaclient.ui.details.NetflixRatingBar$OnNetflixRatingBarChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 
-public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRatingBar$OnNetflixRatingBarChangeListener, MdxMiniPlayerFrag$MdxMiniPlayerDialog
+public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRatingBar$OnNetflixRatingBarChangeListener, CastPlayerHelper$CastPlayerDialog
 {
     private static final String PARAM_AUTO_DISMISS = "autoDismiss";
     private static final String PARAM_LAYOUT_ID = "layoutId";
@@ -125,12 +125,12 @@ public class RatingDialogFrag extends NetflixDialogFrag implements NetflixRating
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         final View inflate = layoutInflater.inflate(this.mLayoutId, viewGroup, false);
-        this.mRatingBar = (NetflixRatingBar)inflate.findViewById(2131755849);
-        this.mTitle = (TextView)inflate.findViewById(2131755848);
-        this.mRatingGroup = (ViewGroup)inflate.findViewById(2131755850);
+        this.mRatingBar = (NetflixRatingBar)inflate.findViewById(2131821393);
+        this.mTitle = (TextView)inflate.findViewById(2131821392);
+        this.mRatingGroup = (ViewGroup)inflate.findViewById(2131821394);
         this.mRatingBar.setOnNetflixRatingBarChangeListener(this);
         if (this.mTitle != null) {
-            this.mTitle.setText((CharSequence)this.getString(2131296738, new Object[] { this.mVideoTitle }));
+            this.mTitle.setText((CharSequence)this.getString(2131296740, new Object[] { this.mVideoTitle }));
         }
         this.alignViewsToAnchor();
         this.completeInitIfPossible();

@@ -25,6 +25,8 @@ public interface CatalystInstance extends MemoryPressureListener
     
     ReactQueueConfiguration getReactQueueConfiguration();
     
+    String getSourceURL();
+    
     void initialize();
     
     @DoNotStrip

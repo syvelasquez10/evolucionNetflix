@@ -126,9 +126,8 @@ final class WebmExtractor$Track
         int unsignedShort4;
         int n5;
         List<byte[]> singletonList;
-        Label_0094_Outer:Label_0198_Outer:
+        Label_0094_Outer:Label_0184_Outer:Label_0198_Outer:
         while (true) {
-        Label_0184_Outer:
             while (true) {
                 while (true) {
                 Label_0232:
@@ -169,6 +168,7 @@ final class WebmExtractor$Track
                                         break Label_0225;
                                     }
                                     break Label_0232;
+                                    return (Pair<List<byte[]>, Integer>)Pair.create((Object)singletonList, (Object)((unsignedByte & 0x3) + 1));
                                     singletonList = Collections.singletonList(array);
                                     return (Pair<List<byte[]>, Integer>)Pair.create((Object)singletonList, (Object)((unsignedByte & 0x3) + 1));
                                 }
@@ -180,15 +180,15 @@ final class WebmExtractor$Track
                             continue Label_0094_Outer;
                         }
                         ++n3;
-                        continue Label_0198_Outer;
+                        continue Label_0184_Outer;
                     }
                     if (n2 == 0) {
                         singletonList = null;
-                        continue;
+                        continue Label_0198_Outer;
                     }
                     break;
                 }
-                continue Label_0184_Outer;
+                continue;
             }
         }
     }

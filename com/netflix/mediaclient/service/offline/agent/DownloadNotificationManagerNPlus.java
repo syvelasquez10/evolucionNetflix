@@ -24,22 +24,22 @@ class DownloadNotificationManagerNPlus extends DownloadNotificationManager
     
     @Override
     protected void addCancelDownloadAction(final Notification$Builder notification$Builder, final OfflinePlayableViewData offlinePlayableViewData) {
-        notification$Builder.addAction(new Notification$Action$Builder(Icon.createWithResource(this.mContext, 2130837716), (CharSequence)this.mContext.getString(2131296707), this.getDeletePlayableIntent(offlinePlayableViewData.getPlayableId())).build());
+        notification$Builder.addAction(new Notification$Action$Builder(Icon.createWithResource(this.mContext, 2130837738), (CharSequence)this.mContext.getString(2131296708), this.getDeletePlayableIntent(offlinePlayableViewData.getPlayableId())).build());
     }
     
     @Override
     protected void addResumeDownloadAction(final Notification$Builder notification$Builder, final OfflinePlayableViewData offlinePlayableViewData) {
-        notification$Builder.addAction(new Notification$Action$Builder(Icon.createWithResource(this.mContext, 2130837745), (CharSequence)this.mContext.getString(2131296714), this.getStartDownloadIntent(offlinePlayableViewData.getPlayableId())).build());
+        notification$Builder.addAction(new Notification$Action$Builder(Icon.createWithResource(this.mContext, 2130837757), (CharSequence)this.mContext.getString(2131296715), this.getStartDownloadIntent(offlinePlayableViewData.getPlayableId())).build());
     }
     
     @Override
     protected void addStopDownloadAction(final Notification$Builder notification$Builder, final OfflinePlayableViewData offlinePlayableViewData) {
-        notification$Builder.addAction(new Notification$Action$Builder(Icon.createWithResource(this.mContext, 2130837905), (CharSequence)this.mContext.getString(2131296715), this.getStopDownloadIntent(offlinePlayableViewData.getPlayableId())).build());
+        notification$Builder.addAction(new Notification$Action$Builder(Icon.createWithResource(this.mContext, 2130837916), (CharSequence)this.mContext.getString(2131296716), this.getStopDownloadIntent(offlinePlayableViewData.getPlayableId())).build());
     }
     
     @Override
     protected void addWatchAction(final Notification$Builder notification$Builder, final OfflinePlayableViewData offlinePlayableViewData, final VideoType videoType) {
-        notification$Builder.addAction(new Notification$Action$Builder(Icon.createWithResource(this.mContext, 2130838065), (CharSequence)this.mContext.getString(2131296716), this.getWatchPlayableIntent(offlinePlayableViewData.getPlayableId(), videoType)).build());
+        notification$Builder.addAction(new Notification$Action$Builder(Icon.createWithResource(this.mContext, 2130838071), (CharSequence)this.mContext.getString(2131296717), this.getWatchPlayableIntent(offlinePlayableViewData.getPlayableId(), videoType)).build());
     }
     
     @Override
@@ -54,12 +54,12 @@ class DownloadNotificationManagerNPlus extends DownloadNotificationManager
     
     @Override
     protected int getDownloadCompleteSmallIcon() {
-        return 2130837897;
+        return 2130837908;
     }
     
     @Override
     protected int getErrorNotificationSmallIcon() {
-        return 2130837898;
+        return 2130837909;
     }
     
     @Override

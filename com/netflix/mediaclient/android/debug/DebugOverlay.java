@@ -4,13 +4,18 @@
 
 package com.netflix.mediaclient.android.debug;
 
-import android.content.Context;
 import android.app.Application;
+import com.android.volley.RequestQueue;
+import android.content.Context;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class DebugOverlay
 {
     public static void attachOn(final NetflixActivity netflixActivity) {
+    }
+    
+    public static RequestQueue getDebugRequestQueue(final Context context) {
+        throw new UnsupportedOperationException("getDebugRequestQueue should not be called on release build !");
     }
     
     public static void init(final Application application) {

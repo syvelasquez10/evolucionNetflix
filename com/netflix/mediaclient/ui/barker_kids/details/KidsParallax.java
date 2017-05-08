@@ -18,14 +18,15 @@ class KidsParallax extends DetailsPageParallaxScrollListener
     private static final int TOOLBAR_FADE_DURATION_MS = 300;
     private static final int TRACKER_VIEW_FADE_INTO_ACTIONBAR_FADEIN_DURATION_MS = 300;
     private static final int TRACKER_VIEW_FADE_INTO_ACTIONBAR_FADEOUT_DURATION_MS = 300;
-    private static final int TRACKING_VIEW_FINAL_X_POS = -60;
     private boolean animating;
+    private int finalTrackingPosition;
     private boolean isLatched;
     private View shadow;
     private View toolbarView;
     
     public KidsParallax(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] array, final View view, final View view2) {
-        super(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131689708), 0, 0, view2);
+        super(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131755259), 0, 0, view2);
+        this.finalTrackingPosition = recyclerView.getContext().getResources().getDimensionPixelSize(2131427752);
         this.setApplyToolBarGradientTransform(false);
     }
     
@@ -68,7 +69,7 @@ class KidsParallax extends DetailsPageParallaxScrollListener
     
     @Override
     protected int getTrackerViewFinalXPosition() {
-        return -60;
+        return this.finalTrackingPosition;
     }
     
     @Override
@@ -117,9 +118,9 @@ class KidsParallax extends DetailsPageParallaxScrollListener
     
     @Override
     protected void setInitialToolbarColor() {
-        this.toolbarView = this.recyclerView.getRootView().findViewById(2131755147);
-        this.shadow = this.recyclerView.getRootView().findViewById(2131755162);
-        final Drawable drawable = this.toolbarView.getResources().getDrawable(2130837997);
+        this.toolbarView = this.recyclerView.getRootView().findViewById(2131820684);
+        this.shadow = this.recyclerView.getRootView().findViewById(2131820699);
+        final Drawable drawable = this.toolbarView.getResources().getDrawable(2130838017);
         if (drawable != null && this.toolbarView != null) {
             Api16Util.setBackgroundDrawableCompat(this.toolbarView, drawable);
         }

@@ -38,6 +38,10 @@ public class ReactWebViewManager$ReactWebView extends WebView implements Lifecyc
         }
     }
     
+    public void onHostDestroy() {
+        this.cleanupCallbacksAndDestroy();
+    }
+    
     public void onHostPause() {
     }
     

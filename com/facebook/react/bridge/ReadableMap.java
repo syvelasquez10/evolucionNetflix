@@ -12,6 +12,8 @@ public interface ReadableMap
     
     double getDouble(final String p0);
     
+    Dynamic getDynamic(final String p0);
+    
     int getInt(final String p0);
     
     ReadableMap getMap(final String p0);

@@ -4,8 +4,9 @@
 
 package com.netflix.mediaclient.ui.barker_kids.details;
 
-import com.netflix.mediaclient.ui.mdx.MdxMenu;
-import com.netflix.mediaclient.ui.common.DebugMenuItems;
+import com.netflix.mediaclient.ui.mdx.CastMenu;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.android.debug.DebugMenuItems;
 import android.view.Menu;
 import com.netflix.mediaclient.Log;
 import android.os.Bundle;
@@ -39,7 +40,7 @@ public class BarkerKidsDetailsActivity extends DetailsActivity implements PlayCo
         barkerKidsDetailActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
         barkerKidsDetailActionBar.setTitle("");
         barkerKidsDetailActionBar.setAlpha(0.0f);
-        final View viewById = this.findViewById(2131755147);
+        final View viewById = this.findViewById(2131820684);
         if (viewById != null) {
             viewById.setBackgroundColor(0);
         }
@@ -64,7 +65,7 @@ public class BarkerKidsDetailsActivity extends DetailsActivity implements PlayCo
                 return BarkerKidsShowDetailsFrag.create(this.videoId);
             }
             case 3: {
-                return BarkerKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color_id", 2131689602));
+                return BarkerKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color_id", 2131755145));
             }
         }
     }
@@ -109,7 +110,7 @@ public class BarkerKidsDetailsActivity extends DetailsActivity implements PlayCo
         if (menu2 != null) {
             new DebugMenuItems("KidsShowDetailsActivity", this).addItems(menu2);
         }
-        MdxMenu.addSelectPlayTarget((NetflixActivity)this, menu, false);
+        CastMenu.addSelectPlayTarget((NetflixActivity)this, menu, BrowseExperience.isLightTheme());
     }
     
     @Override

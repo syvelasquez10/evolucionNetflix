@@ -10,4 +10,5 @@ import java.lang.annotation.Annotation;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ReactMethod {
+    boolean isBlockingSynchronousMethod() default false;
 }

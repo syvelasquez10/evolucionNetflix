@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.offline.agent;
 
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;
+import com.netflix.mediaclient.service.offline.license.OfflineLicenseManager$LicenseSyncResponseCallback;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflineUtils;
 import com.android.volley.Network;
@@ -24,6 +25,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.BaseStatus;
@@ -44,7 +46,6 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQualit
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.app.NetflixStatus;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayableImpl;
 import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;
@@ -73,8 +74,6 @@ import com.android.volley.RequestQueue;
 import io.realm.Realm;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiListImpl;
-import com.netflix.mediaclient.service.offline.download.OfflinePlayable;
-import java.util.List;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$ManifestCallback;
 import java.util.Map;
 import com.netflix.mediaclient.service.offline.manifest.OfflineManifestManager;
@@ -86,19 +85,29 @@ import android.os.HandlerThread;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.IntentCommandHandler;
 import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.service.offline.download.OfflinePlayable;
+import java.util.List;
 
 class OfflineAgent$14 implements Runnable
 {
     final /* synthetic */ OfflineAgent this$0;
-    final /* synthetic */ boolean val$requires;
+    final /* synthetic */ OfflineAgentInterface$OfflinePdsDataCallback val$callback;
+    final /* synthetic */ String val$playableId;
     
-    OfflineAgent$14(final OfflineAgent this$0, final boolean val$requires) {
+    OfflineAgent$14(final OfflineAgent this$0, final String val$playableId, final OfflineAgentInterface$OfflinePdsDataCallback val$callback) {
         this.this$0 = this$0;
-        this.val$requires = val$requires;
+        this.val$playableId = val$playableId;
+        this.val$callback = val$callback;
     }
     
     @Override
     public void run() {
-        this.this$0.mDownloadController.setRequiresUnmeteredNetwork(this.val$requires);
+        final OfflinePlayable offlineViewableByPlayableId = OfflineAgentHelper.getOfflineViewableByPlayableId(this.val$playableId, this.this$0.mOfflinePlayableList);
+        if (offlineViewableByPlayableId == null) {
+            this.this$0.sendOfflinePdsDataResponse(this.val$playableId, null, StatusCode.DL_OFFLINE_PLAYABLE_NOT_FOUND, this.val$callback);
+            return;
+        }
+        offlineViewableByPlayableId.getOfflinePdsData(this.val$callback);
     }
 }

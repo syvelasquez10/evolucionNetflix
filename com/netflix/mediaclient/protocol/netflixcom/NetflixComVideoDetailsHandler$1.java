@@ -4,16 +4,21 @@
 
 package com.netflix.mediaclient.protocol.netflixcom;
 
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.details.DetailsActivity$Action;
+import java.util.List;
+import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.ui.details.DetailsActivityLauncher;
 import com.netflix.mediaclient.util.NflxProtocolUtils;
-import android.app.Activity;
-import android.net.Uri;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.model.leafs.Video$Summary;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
@@ -24,18 +29,23 @@ class NetflixComVideoDetailsHandler$1 extends SimpleManagerCallback
     final /* synthetic */ String val$trackId;
     final /* synthetic */ String val$videoId;
     
-    NetflixComVideoDetailsHandler$1(final NetflixComVideoDetailsHandler this$0, final NetflixActivity val$activity, final String val$videoId, final String val$trackId) {
+    NetflixComVideoDetailsHandler$1(final NetflixComVideoDetailsHandler this$0, final String val$videoId, final NetflixActivity val$activity, final String val$trackId) {
         this.this$0 = this$0;
-        this.val$activity = val$activity;
         this.val$videoId = val$videoId;
+        this.val$activity = val$activity;
         this.val$trackId = val$trackId;
     }
     
     @Override
-    public void onVideoSummaryFetched(final Video$Summary video$Summary, final Status status) {
-        if (status.isSucces() && video$Summary != null) {
-            if (video$Summary.getType() != VideoType.MOVIE && video$Summary.getType() != VideoType.SHOW) {
-                NetflixComUtils.launchBrowser(this.val$activity, Uri.parse(NetflixComVideoDetailsHandler.HANDLER_DETAILS_URL + this.val$videoId));
+    public void onFalkorVideoFetched(final FalkorVideo falkorVideo, final Status status) {
+        if (status.isSucces() && falkorVideo != null) {
+            if (falkorVideo.getType() == VideoType.SEASON || falkorVideo.getType() == VideoType.EPISODE) {
+                final String topLevelId = falkorVideo.getTopLevelId();
+                if (!TextUtils.isEmpty((CharSequence)topLevelId) && !topLevelId.equals(this.val$videoId)) {
+                    this.this$0.fetchFalkorVideo(topLevelId, this.val$activity, this.val$trackId);
+                    return;
+                }
+                ErrorLoggingManager.logHandledException(new Throwable("Ancestor is null for: " + this.val$videoId));
             }
             else {
                 if (this.val$activity != null && this.val$activity.getServiceManager() != null) {
@@ -48,7 +58,7 @@ class NetflixComVideoDetailsHandler$1 extends SimpleManagerCallback
                         clientLogging.getCustomerEventLogging().reportMdpFromDeepLinking(sb.toString());
                     }
                 }
-                DetailsActivityLauncher.show(this.val$activity, (Video)video$Summary, NflxProtocolUtils.getPlayContext(this.val$trackId), this.this$0.getAction(), this.this$0.getActionToken(), "DeepLink");
+                DetailsActivityLauncher.show(this.val$activity, (Video)falkorVideo, NflxProtocolUtils.getPlayContext(this.val$trackId), this.this$0.getAction(), this.this$0.getActionToken(), "DeepLink");
             }
         }
         else {

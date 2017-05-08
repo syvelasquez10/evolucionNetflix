@@ -109,7 +109,7 @@ public class NativeViewHierarchyOptimizer
             }
             final ReadableMapKeySetIterator keySetIterator = reactStylesDiffMap.mBackingMap.keySetIterator();
             while (keySetIterator.hasNextKey()) {
-                if (!ViewProps.isLayoutOnly(keySetIterator.nextKey())) {
+                if (!ViewProps.isLayoutOnly(reactStylesDiffMap.mBackingMap, keySetIterator.nextKey())) {
                     return false;
                 }
             }

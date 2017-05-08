@@ -56,6 +56,9 @@ final class CryptoErrorHandlerFactory
         if (NtbaWidevineProvideKeyResponseFailedErrorHandler.canHandle(statusCode)) {
             return new NtbaWidevineProvideKeyResponseFailedErrorHandler();
         }
+        if (NtbaCdmProvisionFailedErrorHandler.canHandle(statusCode)) {
+            return new NtbaCdmProvisionFailedErrorHandler();
+        }
         if (NtbaWidevineOperationErrorHandler.canHandle(statusCode)) {
             return new NtbaWidevineOperationErrorHandler(statusCode);
         }

@@ -14,6 +14,9 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.ArrayList;
 import com.netflix.mediaclient.partner.playbilling.PlayBillingCallback;
+import java.util.Map;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import org.json.JSONException;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.util.PreferenceUtils;
@@ -62,7 +65,7 @@ public class SignupActivity$SignUpJSBridge
         }
         else {
             SignInLogUtils.reportSignInRequestSessionEnded((Context)this.this$0, SignInLogging$SignInType.tokenActivate, IClientLogging$CompletionReason.failed, status.getError());
-            this.this$0.provideDialog(this.this$0.getString(2131296980) + " (" + statusCode.getValue() + ")", this.this$0.mHandleError);
+            this.this$0.provideDialog(this.this$0.getString(2131297002) + " (" + statusCode.getValue() + ")", this.this$0.mHandleError);
             if (s != null) {
                 final String string = "javascript:" + s + "('" + statusCode.getValue() + "')";
                 Log.d("SignupActivity", "Executing the following javascript:" + string);
@@ -192,7 +195,7 @@ public class SignupActivity$SignUpJSBridge
         catch (JSONException ex) {
             Log.e("SignupActivity", "Failed to LoginToApp", (Throwable)ex);
             SignupActivity.access$1102(this.this$0, false);
-            this.this$0.provideDialog(this.this$0.getString(2131296980), this.this$0.mHandleError);
+            this.this$0.provideDialog(this.this$0.getString(2131297002), this.this$0.mHandleError);
             return;
         }
         Log.d("SignupActivity", "loginToApp, invalid state to Login, bailing out");
@@ -210,6 +213,7 @@ public class SignupActivity$SignUpJSBridge
     public void notifyReady() {
         Log.d("SignupActivity", "Signup UI ready to interact");
         this.this$0.getHandler().removeCallbacks(this.this$0.mJumpToSignInTask);
+        PerformanceProfiler.getInstance().endSession(Sessions.NON_MEMBER_TTI, null);
         this.this$0.runOnUiThread((Runnable)new SignupActivity$SignUpJSBridge$1(this));
     }
     
@@ -326,7 +330,7 @@ public class SignupActivity$SignUpJSBridge
             catch (JSONException ex) {
                 Log.e("SignupActivity", "Failed to TokenActivate", (Throwable)ex);
                 SignupActivity.access$1102(this.this$0, false);
-                this.this$0.provideDialog(this.this$0.getString(2131296980), this.this$0.mHandleError);
+                this.this$0.provideDialog(this.this$0.getString(2131297002), this.this$0.mHandleError);
                 return;
             }
             SignInLogUtils.reportSignInRequestSessionStarted((Context)this.this$0, SignInLogging$SignInType.tokenActivate);

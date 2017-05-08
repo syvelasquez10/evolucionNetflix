@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.model.leafs.ListSummary;
 import com.netflix.mediaclient.service.webclient.volley.FalkorException;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.service.webclient.model.leafs.ThumbMessaging;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.google.gson.JsonObject;
@@ -43,7 +44,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
         this.responseCallback = responseCallback;
         this.pqlQuery1 = new StringBuilder("['profilesList', 'summary']").toString();
         this.pqlQuery2 = "['profilesList', {'to':" + 5 + "}, ['summary', 'subtitlePreference']]";
-        this.pqlQuery3 = new StringBuilder("['user', ['summary', 'subtitleDefaults', 'umaEog', 'uma']]").toString();
+        this.pqlQuery3 = new StringBuilder("['user', ['summary', 'subtitleDefaults', 'umaEog', 'uma', 'thumbMessaging']]").toString();
         if (Log.isLoggable()) {
             Log.v("nf_service_user_fetchaccountdatarequest", "PQL = " + this.pqlQuery1);
             Log.v("nf_service_user_fetchaccountdatarequest", "PQL = " + this.pqlQuery2);
@@ -61,6 +62,20 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
         }
         if (Log.isLoggable()) {
             Log.d("nf_service_user_fetchaccountdatarequest", "No EOG loaded from server");
+        }
+        return null;
+    }
+    
+    private static ThumbMessaging getThumbMessaging(final JsonObject jsonObject) {
+        final ThumbMessaging thumbMessaging = FalkorParseUtils.getPropertyObject(jsonObject, "thumbMessaging", ThumbMessaging.class);
+        if (thumbMessaging != null) {
+            if (Log.isLoggable()) {
+                Log.d("nf_service_user_fetchaccountdatarequest", "ThumbMessaging loaded from server : " + thumbMessaging);
+            }
+            return thumbMessaging;
+        }
+        if (Log.isLoggable()) {
+            Log.d("nf_service_user_fetchaccountdatarequest", "No ThumbMessaging loaded from server");
         }
         return null;
     }
@@ -87,7 +102,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
         ArrayList<UserProfile> list;
         while (true) {
             while (true) {
-                Label_0429: {
+                Label_0439: {
                     while (true) {
                         int n = 0;
                         Label_0240: {
@@ -96,7 +111,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
                             try {
                                 final JsonObject asJsonObject = dataObj.getAsJsonObject("profilesList");
                                 if (!asJsonObject.has("summary")) {
-                                    break Label_0429;
+                                    break Label_0439;
                                 }
                                 final int length = FalkorParseUtils.getPropertyObject(asJsonObject, "summary", ListSummary.class).getLength();
                                 list = new ArrayList<UserProfile>();
@@ -148,6 +163,7 @@ public class FetchAccountDataRequest extends FalkorVolleyWebClientRequest<Accoun
             user.subtitleDefaults = FalkorParseUtils.getPropertyObject(asJsonObject3, "subtitleDefaults", SubtitlePreference.class);
             user.eogAlert = getEogAlert(asJsonObject3);
             user.setUmaAlert(getUmaAlert(asJsonObject3));
+            user.setThumbMessaging(getThumbMessaging(asJsonObject3));
             accountData.setUser(user);
         }
         return accountData;

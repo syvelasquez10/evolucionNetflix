@@ -4,6 +4,7 @@
 
 package com.facebook.react.views.scroll;
 
+import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
 import android.view.View;
 import com.facebook.react.uimanager.events.Event;
 import com.facebook.react.bridge.ReactContext;
@@ -38,5 +39,18 @@ public class ReactScrollViewHelper
     
     public static void emitScrollMomentumEndEvent(final ViewGroup viewGroup) {
         emitScrollEvent(viewGroup, ScrollEventType.MOMENTUM_END);
+    }
+    
+    public static int parseOverScrollMode(final String s) {
+        if (s == null || s.equals("auto")) {
+            return 1;
+        }
+        if (s.equals("always")) {
+            return 0;
+        }
+        if (s.equals("never")) {
+            return 2;
+        }
+        throw new JSApplicationIllegalArgumentException("wrong overScrollMode: " + s);
     }
 }

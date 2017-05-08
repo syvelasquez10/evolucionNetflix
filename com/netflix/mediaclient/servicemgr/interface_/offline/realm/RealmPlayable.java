@@ -31,6 +31,7 @@ public class RealmPlayable implements Playable, RealmModel, RealmPlayableRealmPr
     private boolean isNSRE;
     private boolean isNextPlayableEpisode;
     private boolean isPinProtected;
+    private boolean isPreviewProtected;
     private boolean isSupplementalVideo;
     private int logicalStart;
     private int maxAutoplay;
@@ -47,7 +48,7 @@ public class RealmPlayable implements Playable, RealmModel, RealmPlayableRealmPr
     
     public RealmPlayable(final Playable playable) {
         this.realmSet$playableId(playable.getPlayableId());
-        this.realmSet$parentId(playable.getParentId());
+        this.realmSet$parentId(playable.getTopLevelId());
         this.realmSet$isNSRE(playable.isNSRE());
         this.realmSet$isEpisode(playable.isPlayableEpisode());
         this.realmSet$title(playable.getPlayableTitle());
@@ -63,6 +64,7 @@ public class RealmPlayable implements Playable, RealmModel, RealmPlayableRealmPr
         this.realmSet$isNextPlayableEpisode(playable.isNextPlayableEpisode());
         this.realmSet$isAgeProtected(playable.isAgeProtected());
         this.realmSet$isPinProtected(playable.isPinProtected());
+        this.realmSet$isPreviewProtected(playable.isPreviewProtected());
         this.realmSet$expTime(playable.getExpirationTime());
         this.realmSet$isAdvisoryDisabled(playable.isAdvisoryDisabled());
         this.realmSet$seasonLabel(playable.getSeasonAbbrSeqLabel());
@@ -109,11 +111,6 @@ public class RealmPlayable implements Playable, RealmModel, RealmPlayableRealmPr
     }
     
     @Override
-    public String getParentId() {
-        return this.realmGet$parentId();
-    }
-    
-    @Override
     public String getParentTitle() {
         return this.realmGet$parentTitle();
     }
@@ -151,6 +148,11 @@ public class RealmPlayable implements Playable, RealmModel, RealmPlayableRealmPr
     @Override
     public int getSeasonNumber() {
         return this.realmGet$seasonNumber();
+    }
+    
+    @Override
+    public String getTopLevelId() {
+        return this.realmGet$parentId();
     }
     
     @Override
@@ -201,6 +203,11 @@ public class RealmPlayable implements Playable, RealmModel, RealmPlayableRealmPr
     @Override
     public boolean isPlayableEpisode() {
         return this.realmGet$isEpisode();
+    }
+    
+    @Override
+    public boolean isPreviewProtected() {
+        return this.realmGet$isPreviewProtected();
     }
     
     @Override
@@ -266,6 +273,10 @@ public class RealmPlayable implements Playable, RealmModel, RealmPlayableRealmPr
     
     public boolean realmGet$isPinProtected() {
         return this.isPinProtected;
+    }
+    
+    public boolean realmGet$isPreviewProtected() {
+        return this.isPreviewProtected;
     }
     
     public boolean realmGet$isSupplementalVideo() {
@@ -368,6 +379,10 @@ public class RealmPlayable implements Playable, RealmModel, RealmPlayableRealmPr
         this.isPinProtected = isPinProtected;
     }
     
+    public void realmSet$isPreviewProtected(final boolean isPreviewProtected) {
+        this.isPreviewProtected = isPreviewProtected;
+    }
+    
     public void realmSet$isSupplementalVideo(final boolean isSupplementalVideo) {
         this.isSupplementalVideo = isSupplementalVideo;
     }
@@ -410,6 +425,6 @@ public class RealmPlayable implements Playable, RealmModel, RealmPlayableRealmPr
     
     @Override
     public String toString() {
-        return "RealmPlayable{playableId='" + this.realmGet$playableId() + '\'' + ", parentId='" + this.realmGet$parentId() + '\'' + ", title='" + this.realmGet$title() + '\'' + ", seasonLabel='" + this.realmGet$seasonLabel() + '\'' + ", parentTitle='" + this.realmGet$parentTitle() + '\'' + ", isEpisode=" + this.realmGet$isEpisode() + ", isNSRE=" + this.realmGet$isNSRE() + ", isAutoPlay=" + this.realmGet$isAutoPlay() + ", isExemptFromLimit=" + this.realmGet$isExemptFromLimit() + ", isNextPlayableEpisode=" + this.realmGet$isNextPlayableEpisode() + ", isAgeProtected=" + this.realmGet$isAgeProtected() + ", isPinProtected=" + this.realmGet$isPinProtected() + ", isAdvisoryDisabled=" + this.realmGet$isAdvisoryDisabled() + ", isAvailableToStream=" + this.realmGet$isAvailableToStream() + ", duration=" + this.realmGet$duration() + ", seasonNumber=" + this.realmGet$seasonNumber() + ", episodeNumber=" + this.realmGet$episodeNumber() + ", logicalStart=" + this.realmGet$logicalStart() + ", endtime=" + this.realmGet$endtime() + ", maxAutoplay=" + this.realmGet$maxAutoplay() + ", expTime=" + this.realmGet$expTime() + ", advisories=" + this.realmGet$advisoriesString() + ", watchedTime=" + this.realmGet$watchedTime() + ", bookmark=" + this.realmGet$bookmark() + '}';
+        return "RealmPlayable{playableId='" + this.realmGet$playableId() + '\'' + ", parentId='" + this.realmGet$parentId() + '\'' + ", title='" + this.realmGet$title() + '\'' + ", seasonLabel='" + this.realmGet$seasonLabel() + '\'' + ", parentTitle='" + this.realmGet$parentTitle() + '\'' + ", isEpisode=" + this.realmGet$isEpisode() + ", isNSRE=" + this.realmGet$isNSRE() + ", isAutoPlay=" + this.realmGet$isAutoPlay() + ", isExemptFromLimit=" + this.realmGet$isExemptFromLimit() + ", isNextPlayableEpisode=" + this.realmGet$isNextPlayableEpisode() + ", isAgeProtected=" + this.realmGet$isAgeProtected() + ", isPinProtected=" + this.realmGet$isPinProtected() + ", isPreviewProtected=" + this.realmGet$isPreviewProtected() + ", isAdvisoryDisabled=" + this.realmGet$isAdvisoryDisabled() + ", isAvailableToStream=" + this.realmGet$isAvailableToStream() + ", duration=" + this.realmGet$duration() + ", seasonNumber=" + this.realmGet$seasonNumber() + ", episodeNumber=" + this.realmGet$episodeNumber() + ", logicalStart=" + this.realmGet$logicalStart() + ", endtime=" + this.realmGet$endtime() + ", maxAutoplay=" + this.realmGet$maxAutoplay() + ", expTime=" + this.realmGet$expTime() + ", advisories=" + this.realmGet$advisoriesString() + ", watchedTime=" + this.realmGet$watchedTime() + ", bookmark=" + this.realmGet$bookmark() + '}';
     }
 }

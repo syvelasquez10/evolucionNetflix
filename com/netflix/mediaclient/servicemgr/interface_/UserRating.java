@@ -7,4 +7,6 @@ package com.netflix.mediaclient.servicemgr.interface_;
 public interface UserRating
 {
     float getUserRating();
+    
+    int getUserThumbRating();
 }

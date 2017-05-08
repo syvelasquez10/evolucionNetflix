@@ -4,6 +4,7 @@
 
 package com.facebook.react.views.text;
 
+import android.os.Build$VERSION;
 import android.text.Layout;
 import android.text.Spanned;
 import android.graphics.drawable.LayerDrawable;
@@ -233,6 +234,9 @@ public class ReactTextView extends TextView implements ReactCompoundView
             this.mTextAlign = textAlign;
         }
         this.setGravityHorizontal(this.mTextAlign);
+        if (Build$VERSION.SDK_INT >= 23 && this.getBreakStrategy() != reactTextUpdate.getTextBreakStrategy()) {
+            this.setBreakStrategy(reactTextUpdate.getTextBreakStrategy());
+        }
     }
     
     public void setTextIsSelectable(final boolean mTextIsSelectable) {

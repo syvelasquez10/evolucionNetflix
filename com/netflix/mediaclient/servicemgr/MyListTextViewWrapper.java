@@ -30,14 +30,14 @@ public class MyListTextViewWrapper extends TextViewWrapper
     @Override
     protected void setAsInList() {
         if (this.textView != null) {
-            this.textView.setText(2131297070);
+            this.textView.setText(2131297094);
         }
     }
     
     @Override
     protected void setAsNotInList() {
         if (this.textView != null) {
-            this.textView.setText(2131297052);
+            this.textView.setText(2131297076);
         }
     }
     

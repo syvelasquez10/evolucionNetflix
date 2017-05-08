@@ -4,18 +4,8 @@
 
 package com.netflix.mediaclient.service.configuration.persistent;
 
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
-import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
-
 public class PrefetchLolomoConfig extends PersistentConfigurable
 {
-    private static final String PERSISTENT_PREFETCH_LOLOMO_CONFIG_PREFS_KEY = "persistent_prefetch_lolomo_experience_key";
-    
-    @Override
-    public ABTestConfig$Cell getCell(final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
-        return serviceAgent$ConfigurationAgentInterface.getPrefetchLolomoConfig();
-    }
-    
     @Override
     public String getPrefKey() {
         return "persistent_prefetch_lolomo_experience_key";
@@ -23,7 +13,7 @@ public class PrefetchLolomoConfig extends PersistentConfigurable
     
     @Override
     public String getTestId() {
-        return "7882";
+        return "8074";
     }
     
     @Override

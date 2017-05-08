@@ -193,6 +193,10 @@ public class GenericDraweeHierarchy implements SettableDraweeHierarchy
         this.resetFade();
     }
     
+    public void setActualImageColorFilter(final ColorFilter colorFilter) {
+        this.mActualImageWrapper.setColorFilter(colorFilter);
+    }
+    
     public void setActualImageScaleType(final ScalingUtils$ScaleType scaleType) {
         Preconditions.checkNotNull(scaleType);
         this.getScaleTypeDrawableAtIndex(2).setScaleType(scaleType);

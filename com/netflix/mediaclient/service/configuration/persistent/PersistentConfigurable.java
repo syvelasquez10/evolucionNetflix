@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.service.configuration.persistent;
 
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
@@ -21,7 +23,7 @@ public abstract class PersistentConfigurable
     }
     
     public ABTestConfig$Cell getCell(final Context context) {
-        return this.getCell(context, ABTestConfig$Cell.CELL_ONE);
+        return this.getCell(context, this.getDefaultCell());
     }
     
     public ABTestConfig$Cell getCell(final Context context, final ABTestConfig$Cell mCell) {
@@ -35,11 +37,25 @@ public abstract class PersistentConfigurable
         return this.mCell;
     }
     
-    public abstract ABTestConfig$Cell getCell(final ServiceAgent$ConfigurationAgentInterface p0);
+    public ABTestConfig getConfiguration(final ABTestConfigData abTestConfigData) {
+        return abTestConfigData.getConfigForId(this.getTestId());
+    }
+    
+    public ABTestConfig$Cell getDefaultCell() {
+        return ABTestConfig$Cell.CELL_ONE;
+    }
     
     public abstract String getPrefKey();
     
     public abstract String getTestId();
+    
+    public boolean isMobileOnly() {
+        return false;
+    }
+    
+    public boolean isTabletOnly() {
+        return false;
+    }
     
     public void refresh() {
         this.mCell = null;
@@ -50,13 +66,19 @@ public abstract class PersistentConfigurable
     }
     
     public void update(final Context context, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface) {
-        final ABTestConfig$Cell cell = this.getCell(serviceAgent$ConfigurationAgentInterface);
-        if (cell != null) {
-            PreferenceUtils.putIntPref(context, this.getPrefKey(), cell.getCellId());
-            ApmLogUtils.reportABTestReceivedEvent(context, this.getTestId(), cell.getCellId());
+        final ABTestConfig$Cell defaultCell = this.getDefaultCell();
+        final ABTestConfig configuration = this.getConfiguration(serviceAgent$ConfigurationAgentInterface.getABTestConfig());
+        ABTestConfig$Cell mCell = defaultCell;
+        if (configuration != null) {
+            final ABTestConfig$Cell cell = configuration.getCell();
+            if ((mCell = cell) != null) {
+                PreferenceUtils.putIntPref(context, this.getPrefKey(), cell.getCellId());
+                ApmLogUtils.reportABTestReceivedEvent(context, this.getTestId(), cell.getCellId());
+                mCell = cell;
+            }
         }
         if (this.shouldForceUpdateMemory()) {
-            this.mCell = cell;
+            this.mCell = mCell;
         }
     }
 }

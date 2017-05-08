@@ -33,23 +33,25 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.UIImplementationProvider;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 
-class CoreModulesPackage extends LazyReactPackage
+class CoreModulesPackage extends LazyReactPackage implements ReactPackageLogger
 {
     private final DefaultHardwareBackBtnHandler mHardwareBackBtnHandler;
+    private final boolean mLazyViewManagersEnabled;
     private final ReactInstanceManager mReactInstanceManager;
     private final UIImplementationProvider mUIImplementationProvider;
     
-    CoreModulesPackage(final ReactInstanceManager mReactInstanceManager, final DefaultHardwareBackBtnHandler mHardwareBackBtnHandler, final UIImplementationProvider muiImplementationProvider) {
+    CoreModulesPackage(final ReactInstanceManager mReactInstanceManager, final DefaultHardwareBackBtnHandler mHardwareBackBtnHandler, final UIImplementationProvider muiImplementationProvider, final boolean mLazyViewManagersEnabled) {
         this.mReactInstanceManager = mReactInstanceManager;
         this.mHardwareBackBtnHandler = mHardwareBackBtnHandler;
         this.mUIImplementationProvider = muiImplementationProvider;
+        this.mLazyViewManagersEnabled = mLazyViewManagersEnabled;
     }
     
     private UIManagerModule createUIManager(final ReactApplicationContext reactApplicationContext) {
         ReactMarker.logMarker("CREATE_UI_MANAGER_MODULE_START");
         Systrace.beginSection(0L, "createUIManagerModule");
         try {
-            return new UIManagerModule(reactApplicationContext, this.mReactInstanceManager.createAllViewManagers(reactApplicationContext), this.mUIImplementationProvider);
+            return new UIManagerModule(reactApplicationContext, this.mReactInstanceManager.createAllViewManagers(reactApplicationContext), this.mUIImplementationProvider, this.mLazyViewManagersEnabled);
         }
         finally {
             Systrace.endSection(0L);
@@ -63,6 +65,11 @@ class CoreModulesPackage extends LazyReactPackage
     }
     
     @Override
+    public void endProcessPackage() {
+        ReactMarker.logMarker("PROCESS_CORE_REACT_PACKAGE_END");
+    }
+    
+    @Override
     public List<ModuleSpec> getNativeModules(final ReactApplicationContext reactApplicationContext) {
         final ArrayList<ModuleSpec> list = new ArrayList<ModuleSpec>();
         list.add(new ModuleSpec(AndroidInfoModule.class, (Provider<? extends NativeModule>)new CoreModulesPackage$1(this)));
@@ -70,7 +77,7 @@ class CoreModulesPackage extends LazyReactPackage
         list.add(new ModuleSpec(DeviceEventManagerModule.class, (Provider<? extends NativeModule>)new CoreModulesPackage$3(this, reactApplicationContext)));
         list.add(new ModuleSpec(ExceptionsManagerModule.class, (Provider<? extends NativeModule>)new CoreModulesPackage$4(this)));
         list.add(new ModuleSpec(HeadlessJsTaskSupportModule.class, (Provider<? extends NativeModule>)new CoreModulesPackage$5(this, reactApplicationContext)));
-        list.add(new ModuleSpec(SourceCodeModule.class, (Provider<? extends NativeModule>)new CoreModulesPackage$6(this)));
+        list.add(new ModuleSpec(SourceCodeModule.class, (Provider<? extends NativeModule>)new CoreModulesPackage$6(this, reactApplicationContext)));
         list.add(new ModuleSpec(Timing.class, (Provider<? extends NativeModule>)new CoreModulesPackage$7(this, reactApplicationContext)));
         list.add(new ModuleSpec(UIManagerModule.class, (Provider<? extends NativeModule>)new CoreModulesPackage$8(this, reactApplicationContext)));
         return list;
@@ -78,6 +85,14 @@ class CoreModulesPackage extends LazyReactPackage
     
     @Override
     public ReactModuleInfoProvider getReactModuleInfoProvider() {
-        return LazyReactPackage.getReactModuleInfoProviderViaReflection(this);
+        ReactMarker.logMarker("CORE_REACT_PACKAGE_GET_REACT_MODULE_INFO_PROVIDER_START");
+        final ReactModuleInfoProvider reactModuleInfoProviderViaReflection = LazyReactPackage.getReactModuleInfoProviderViaReflection(this);
+        ReactMarker.logMarker("CORE_REACT_PACKAGE_GET_REACT_MODULE_INFO_PROVIDER_END");
+        return reactModuleInfoProviderViaReflection;
+    }
+    
+    @Override
+    public void startProcessPackage() {
+        ReactMarker.logMarker("PROCESS_CORE_REACT_PACKAGE_START");
     }
 }

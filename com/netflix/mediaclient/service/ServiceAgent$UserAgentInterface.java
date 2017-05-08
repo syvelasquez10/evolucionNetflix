@@ -45,7 +45,7 @@ public interface ServiceAgent$UserAgentInterface
     
     boolean isAgeVerified();
     
-    boolean isCurrentProfileIQEnabled();
+    boolean isCurrentProfileInstantQueueEnabled();
     
     boolean isPotentialPrivacyViolationFoundForLogging(final String p0);
     

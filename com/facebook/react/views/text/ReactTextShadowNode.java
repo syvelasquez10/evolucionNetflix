@@ -20,6 +20,7 @@ import android.text.style.ForegroundColorSpan;
 import com.facebook.react.uimanager.IllegalViewOperationException;
 import java.util.List;
 import android.text.SpannableStringBuilder;
+import android.os.Build$VERSION;
 import com.facebook.yoga.YogaMeasureFunction;
 import android.text.Spannable;
 import android.text.TextPaint;
@@ -28,11 +29,13 @@ import com.facebook.react.uimanager.LayoutShadowNode;
 public class ReactTextShadowNode extends LayoutShadowNode
 {
     private static final TextPaint sTextPaintInstance;
+    private boolean mAllowFontScaling;
     private int mBackgroundColor;
     private int mColor;
     protected boolean mContainsImages;
     private String mFontFamily;
     protected int mFontSize;
+    protected float mFontSizeInput;
     private int mFontStyle;
     private int mFontWeight;
     private float mHeightOfTallestInlineImage;
@@ -41,10 +44,12 @@ public class ReactTextShadowNode extends LayoutShadowNode
     private boolean mIsLineThroughTextDecorationSet;
     private boolean mIsUnderlineTextDecorationSet;
     private float mLineHeight;
+    protected int mLineHeightInput;
     protected int mNumberOfLines;
     private Spannable mPreparedSpannableText;
     private String mText;
     protected int mTextAlign;
+    protected int mTextBreakStrategy;
     private final YogaMeasureFunction mTextMeasureFunction;
     private int mTextShadowColor;
     private float mTextShadowOffsetDx;
@@ -56,13 +61,21 @@ public class ReactTextShadowNode extends LayoutShadowNode
     }
     
     public ReactTextShadowNode() {
+        int mTextBreakStrategy = 1;
         this.mTextMeasureFunction = new ReactTextShadowNode$1(this);
         this.mLineHeight = Float.NaN;
         this.mIsColorSet = false;
+        this.mAllowFontScaling = true;
         this.mIsBackgroundColorSet = false;
         this.mNumberOfLines = -1;
         this.mFontSize = -1;
+        this.mFontSizeInput = -1.0f;
+        this.mLineHeightInput = -1;
         this.mTextAlign = 0;
+        if (Build$VERSION.SDK_INT < 23) {
+            mTextBreakStrategy = 0;
+        }
+        this.mTextBreakStrategy = mTextBreakStrategy;
         this.mTextShadowOffsetDx = 0.0f;
         this.mTextShadowOffsetDy = 0.0f;
         this.mTextShadowRadius = 1.0f;
@@ -134,7 +147,14 @@ public class ReactTextShadowNode extends LayoutShadowNode
         final ArrayList<ReactTextShadowNode$SetSpanOperation> list = new ArrayList<ReactTextShadowNode$SetSpanOperation>();
         buildSpannedFromTextCSSNode(reactTextShadowNode, spannableStringBuilder, list);
         if (reactTextShadowNode.mFontSize == -1) {
-            spannableStringBuilder.setSpan((Object)new AbsoluteSizeSpan((int)Math.ceil(PixelUtil.toPixelFromSP(14.0f))), 0, spannableStringBuilder.length(), 17);
+            int n;
+            if (reactTextShadowNode.mAllowFontScaling) {
+                n = (int)Math.ceil(PixelUtil.toPixelFromSP(14.0f));
+            }
+            else {
+                n = (int)Math.ceil(PixelUtil.toPixelFromDIP(14.0f));
+            }
+            spannableStringBuilder.setSpan((Object)new AbsoluteSizeSpan(n), 0, spannableStringBuilder.length(), 17);
         }
         reactTextShadowNode.mContainsImages = false;
         reactTextShadowNode.mHeightOfTallestInlineImage = Float.NaN;
@@ -213,8 +233,18 @@ public class ReactTextShadowNode extends LayoutShadowNode
         if (!this.isVirtual()) {
             super.onCollectExtraUpdates(uiViewOperationQueue);
             if (this.mPreparedSpannableText != null) {
-                uiViewOperationQueue.enqueueUpdateExtraData(this.getReactTag(), new ReactTextUpdate(this.mPreparedSpannableText, -1, this.mContainsImages, this.getPadding(4), this.getPadding(1), this.getPadding(5), this.getPadding(3), this.getTextAlign()));
+                uiViewOperationQueue.enqueueUpdateExtraData(this.getReactTag(), new ReactTextUpdate(this.mPreparedSpannableText, -1, this.mContainsImages, this.getPadding(4), this.getPadding(1), this.getPadding(5), this.getPadding(3), this.getTextAlign(), this.mTextBreakStrategy));
             }
+        }
+    }
+    
+    @ReactProp(defaultBoolean = true, name = "allowFontScaling")
+    public void setAllowFontScaling(final boolean mAllowFontScaling) {
+        if (mAllowFontScaling != this.mAllowFontScaling) {
+            this.mAllowFontScaling = mAllowFontScaling;
+            this.setFontSize(this.mFontSizeInput);
+            this.setLineHeight(this.mLineHeightInput);
+            this.markUpdated();
         }
     }
     
@@ -245,12 +275,17 @@ public class ReactTextShadowNode extends LayoutShadowNode
     }
     
     @ReactProp(defaultFloat = -1.0f, name = "fontSize")
-    public void setFontSize(final float n) {
-        float n2 = n;
-        if (n != -1.0f) {
-            n2 = (float)Math.ceil(PixelUtil.toPixelFromSP(n));
+    public void setFontSize(float mFontSizeInput) {
+        this.mFontSizeInput = mFontSizeInput;
+        if (mFontSizeInput != -1.0f) {
+            if (this.mAllowFontScaling) {
+                mFontSizeInput = (float)Math.ceil(PixelUtil.toPixelFromSP(mFontSizeInput));
+            }
+            else {
+                mFontSizeInput = (float)Math.ceil(PixelUtil.toPixelFromDIP(mFontSizeInput));
+            }
         }
-        this.mFontSize = (int)n2;
+        this.mFontSize = (int)mFontSizeInput;
         this.markUpdated();
     }
     
@@ -305,15 +340,21 @@ public class ReactTextShadowNode extends LayoutShadowNode
     }
     
     @ReactProp(defaultInt = -1, name = "lineHeight")
-    public void setLineHeight(final int n) {
-        float pixelFromSP;
-        if (n == -1) {
-            pixelFromSP = Float.NaN;
+    public void setLineHeight(final int mLineHeightInput) {
+        this.mLineHeightInput = mLineHeightInput;
+        if (mLineHeightInput == -1) {
+            this.mLineHeight = Float.NaN;
         }
         else {
-            pixelFromSP = PixelUtil.toPixelFromSP(n);
+            float mLineHeight;
+            if (this.mAllowFontScaling) {
+                mLineHeight = PixelUtil.toPixelFromSP(mLineHeightInput);
+            }
+            else {
+                mLineHeight = PixelUtil.toPixelFromDIP(mLineHeightInput);
+            }
+            this.mLineHeight = mLineHeight;
         }
-        this.mLineHeight = pixelFromSP;
         this.markUpdated();
     }
     
@@ -352,6 +393,26 @@ public class ReactTextShadowNode extends LayoutShadowNode
                 throw new JSApplicationIllegalArgumentException("Invalid textAlign: " + s);
             }
             this.mTextAlign = 3;
+        }
+        this.markUpdated();
+    }
+    
+    @ReactProp(name = "textBreakStrategy")
+    public void setTextBreakStrategy(final String s) {
+        if (Build$VERSION.SDK_INT < 23) {
+            return;
+        }
+        if (s == null || "highQuality".equals(s)) {
+            this.mTextBreakStrategy = 1;
+        }
+        else if ("simple".equals(s)) {
+            this.mTextBreakStrategy = 0;
+        }
+        else {
+            if (!"balanced".equals(s)) {
+                throw new JSApplicationIllegalArgumentException("Invalid textBreakStrategy: " + s);
+            }
+            this.mTextBreakStrategy = 2;
         }
         this.markUpdated();
     }

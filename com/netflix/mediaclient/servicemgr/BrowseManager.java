@@ -32,7 +32,7 @@ public final class BrowseManager implements IBrowseManager
     }
     
     @Override
-    public boolean addToQueue(final String s, final VideoType videoType, final int n, final boolean b, final String s2, final ManagerCallback managerCallback) {
+    public boolean addToQueue(final String s, final VideoType videoType, final int n, final String s2, final ManagerCallback managerCallback) {
         if (StringUtils.isEmpty(s)) {
             throw new IllegalArgumentException("Parameter cannot be null");
         }
@@ -42,7 +42,7 @@ public final class BrowseManager implements IBrowseManager
         }
         final INetflixService service = this.mgr.getService();
         if (service != null) {
-            service.getBrowse().addToQueue(s, videoType, n, b, s2, this.mgr.getClientId(), wrappedRequestId);
+            service.getBrowse().addToQueue(s, videoType, n, s2, this.mgr.getClientId(), wrappedRequestId);
             return true;
         }
         Log.w("ServiceManagerBrowse", "addToQueue:: service is not available");
@@ -187,6 +187,24 @@ public final class BrowseManager implements IBrowseManager
         }
         // monitorexit(this)
         return b;
+    }
+    
+    @Override
+    public boolean fetchFalkorVideo(final String s, final ManagerCallback managerCallback) {
+        if (StringUtils.isEmpty(s)) {
+            throw new IllegalArgumentException("Parameter cannot be null");
+        }
+        final int requestId = this.mgr.getRequestId(managerCallback);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManagerBrowse", "fetchFalkorVideo requestId=" + requestId + " videoId=" + s);
+        }
+        final INetflixService service = this.mgr.getService();
+        if (service != null) {
+            service.getBrowse().fetchFalkorVideo(s, this.mgr.getClientId(), requestId);
+            return true;
+        }
+        Log.w("ServiceManagerBrowse", "fetchFalkorVideo:: service is not available");
+        return false;
     }
     
     @Override

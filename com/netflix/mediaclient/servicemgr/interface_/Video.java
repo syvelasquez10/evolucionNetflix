@@ -6,19 +6,11 @@ package com.netflix.mediaclient.servicemgr.interface_;
 
 public interface Video extends BasicVideo
 {
-    String getBoxartImageTypeIdentifier();
+    String getBoxartId();
     
     String getBoxshotUrl();
     
     VideoType getErrorType();
-    
-    String getHorzDispSmallUrl();
-    
-    String getHorzDispUrl();
-    
-    String getStoryDispUrl();
-    
-    String getTvCardUrl();
     
     boolean isOriginal();
     

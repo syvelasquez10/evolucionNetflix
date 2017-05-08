@@ -19,7 +19,7 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 
 public interface IBrowseInterface
 {
-    void addToQueue(final String p0, final VideoType p1, final int p2, final boolean p3, final String p4, final int p5, final int p6);
+    void addToQueue(final String p0, final VideoType p1, final int p2, final String p3, final int p4, final int p5);
     
     void dumpCacheToDisk(final File p0);
     
@@ -34,6 +34,8 @@ public interface IBrowseInterface
     void fetchEpisodeDetails(final String p0, final String p1, final int p2, final int p3);
     
     void fetchEpisodes(final String p0, final VideoType p1, final int p2, final int p3, final int p4, final int p5);
+    
+    void fetchFalkorVideo(final String p0, final int p1, final int p2);
     
     void fetchGenreLists(final int p0, final int p1);
     

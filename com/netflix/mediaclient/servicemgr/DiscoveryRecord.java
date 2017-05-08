@@ -34,8 +34,8 @@ public class DiscoveryRecord implements Discovery
     }
     
     @Override
-    public String getBoxartImageTypeIdentifier() {
-        return this.video.getBoxartImageTypeIdentifier();
+    public String getBoxartId() {
+        return this.video.getBoxartId();
     }
     
     @Override
@@ -86,11 +86,6 @@ public class DiscoveryRecord implements Discovery
     @Override
     public int getLogicalStart() {
         return this.video.getLogicalStart();
-    }
-    
-    @Override
-    public String getParentId() {
-        return this.video.getParentId();
     }
     
     @Override
@@ -184,6 +179,11 @@ public class DiscoveryRecord implements Discovery
     }
     
     @Override
+    public String getTopLevelId() {
+        return this.video.getTopLevelId();
+    }
+    
+    @Override
     public String getTvCardUrl() {
         return this.video.getTvCardUrl();
     }
@@ -260,6 +260,11 @@ public class DiscoveryRecord implements Discovery
     @Override
     public boolean isPreRelease() {
         return this.video.isPreRelease();
+    }
+    
+    @Override
+    public boolean isPreviewProtected() {
+        return this.video.isPreviewProtected();
     }
     
     @Override

@@ -6,7 +6,7 @@ package com.netflix.mediaclient.servicemgr.interface_;
 
 import com.netflix.model.branches.FalkorVideo;
 
-public interface Discovery extends Playable, Video
+public interface Discovery extends ArtworkUrlProvider, Playable, Video
 {
     FalkorVideo getFalkorVideo();
     

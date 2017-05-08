@@ -17,6 +17,8 @@ public class ConfigData
     public DeviceConfigData deviceConfig;
     @SerializedName("nrmInfo")
     public NrmConfigData nrmInfo;
+    @SerializedName("nrmLanguages")
+    public NrmLanguagesData nrmLang;
     @SerializedName("signInConfig")
     public SignInConfigData signInConfigData;
     public String streamingqoeJson;
@@ -43,6 +45,10 @@ public class ConfigData
     
     public NrmConfigData getNrmConfigData() {
         return this.nrmInfo;
+    }
+    
+    public NrmLanguagesData getNrmLanguagesData() {
+        return this.nrmLang;
     }
     
     public SignInConfigData getSignInConfigData() {

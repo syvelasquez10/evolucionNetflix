@@ -8,6 +8,7 @@ import java.util.Collection;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableObject;
+import com.netflix.mediaclient.ui.offline.DownloadButton;
 import com.netflix.mediaclient.ui.offline.TutorialHelper;
 import com.netflix.android.tooltips.Tooltip;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
@@ -30,9 +31,8 @@ import java.util.List;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
 import com.netflix.mediaclient.ui.mdx.MementoMovieDetailsActivity;
 import android.support.v7.widget.RecyclerView$LayoutManager;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.ui.offline.DownloadButton;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
@@ -59,10 +59,10 @@ class MovieDetailsFrag$3 extends TransitionListenerAdapter
     }
     
     public void onTransitionEnd(final Transition transition) {
-        this.this$0.setBackgroundResource(2131689714);
+        this.this$0.setBackgroundResource(2131755265);
     }
     
     public void onTransitionStart(final Transition transition) {
-        this.this$0.setBackgroundResource(2131689732);
+        this.this$0.setBackgroundResource(2131755284);
     }
 }

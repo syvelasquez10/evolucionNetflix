@@ -17,11 +17,11 @@ import com.netflix.mediaclient.servicemgr.interface_.PlaybackBookmark;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.NetflixApplication;
-import com.netflix.mediaclient.android.app.BackgroundTask;
 import java.util.Iterator;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
 import java.util.List;
+import com.netflix.mediaclient.android.app.BackgroundTask;
 import android.content.Context;
 import java.io.File;
 

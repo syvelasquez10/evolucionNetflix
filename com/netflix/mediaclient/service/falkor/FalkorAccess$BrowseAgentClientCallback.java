@@ -34,6 +34,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetail
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -138,6 +139,16 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
             return;
         }
         netflixServiceCallback.onEpisodesFetched(this.requestId, list, status);
+    }
+    
+    @Override
+    public void onFalkorVideoFetched(final FalkorVideo falkorVideo, final Status status) {
+        final INetflixServiceCallback netflixServiceCallback = (INetflixServiceCallback)this.this$0.mClientCallbacks.get(this.clientId);
+        if (netflixServiceCallback == null) {
+            Log.w("FalkorAccess", "No client callback found for onFalkorVideoFetched");
+            return;
+        }
+        netflixServiceCallback.onFalkorVideoFetched(this.requestId, falkorVideo, status);
     }
     
     @Override

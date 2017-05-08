@@ -41,11 +41,6 @@ public class DummyPlayable implements Playable
     }
     
     @Override
-    public String getParentId() {
-        return null;
-    }
-    
-    @Override
     public String getParentTitle() {
         return null;
     }
@@ -83,6 +78,11 @@ public class DummyPlayable implements Playable
     @Override
     public int getSeasonNumber() {
         return 0;
+    }
+    
+    @Override
+    public String getTopLevelId() {
+        return null;
     }
     
     @Override
@@ -132,6 +132,11 @@ public class DummyPlayable implements Playable
     
     @Override
     public boolean isPlayableEpisode() {
+        return false;
+    }
+    
+    @Override
+    public boolean isPreviewProtected() {
         return false;
     }
     

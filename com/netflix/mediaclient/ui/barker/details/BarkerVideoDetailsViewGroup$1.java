@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.barker.details;
 
+import android.view.ViewGroup$LayoutParams;
+import android.widget.LinearLayout$LayoutParams;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.graphics.Bitmap$Config;

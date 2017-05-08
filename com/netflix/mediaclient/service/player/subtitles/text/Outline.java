@@ -42,26 +42,25 @@ public final class Outline
         final Outline outline = new Outline();
         if (CharacterEdgeTypeMapping.NONE.getLookupValue().equalsIgnoreCase(s)) {
             outline.mEdgeType = CharacterEdgeTypeMapping.NONE;
+            return outline;
+        }
+        final String[] safeSplit = StringUtils.safeSplit(s, " ");
+        if (StringUtils.startsWithDigit(s)) {
+            if (safeSplit.length < 1) {
+                return null;
+            }
         }
         else {
-            final String[] safeSplit = StringUtils.safeSplit(s, " ");
-            if (StringUtils.startsWithDigit(s)) {
-                if (safeSplit.length < 1) {
-                    return null;
-                }
+            if (safeSplit.length < 2) {
+                return null;
             }
-            else {
-                if (safeSplit.length < 2) {
-                    return null;
-                }
-                outline.mEdgeColor = ColorMapping.findColor(safeSplit[0]);
-                n = 1;
-            }
-            outline.mOutlineWidth = StringUtils.safeParsePixelSize(safeSplit[n]);
-            final int n2 = n + 1;
-            if (n2 < safeSplit.length) {
-                outline.mOutlineBlur = StringUtils.safeParsePixelSize(safeSplit[n2]);
-            }
+            outline.mEdgeColor = ColorMapping.findColor(safeSplit[0]);
+            n = 1;
+        }
+        outline.mOutlineWidth = StringUtils.safeParsePixelSize(safeSplit[n]);
+        final int n2 = n + 1;
+        if (n2 < safeSplit.length) {
+            outline.mOutlineBlur = StringUtils.safeParsePixelSize(safeSplit[n2]);
         }
         if (outline.mOutlineBlur != null) {
             outline.mEdgeType = CharacterEdgeTypeMapping.DROP_SHADOW;

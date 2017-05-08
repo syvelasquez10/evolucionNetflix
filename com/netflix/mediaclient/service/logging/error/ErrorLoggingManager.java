@@ -27,16 +27,19 @@ import android.annotation.TargetApi;
 @TargetApi(4)
 public final class ErrorLoggingManager
 {
-    private static final String CRITTER_VERSION_NAME = "4.13.3";
+    private static final String CRITTER_VERSION_NAME = "4.15.0";
     private static final boolean ENABLE_CRITTERCISM = true;
+    private static final boolean INTERCEPT_EXCEPTIONS_FOR_DEBUGGING = true;
     private static final String TAG = "nf_log_crit";
     private static boolean sBreadcrumbLoggingEnabled;
     private static boolean sCrittercismReady;
     private static boolean sErrorLoggingEnabledByConfig;
+    private static boolean sIsUncaughtExceptionHandlerForDebugInitialized;
     
     static {
         ErrorLoggingManager.sErrorLoggingEnabledByConfig = false;
         ErrorLoggingManager.sBreadcrumbLoggingEnabled = false;
+        ErrorLoggingManager.sIsUncaughtExceptionHandlerForDebugInitialized = false;
     }
     
     private static void configureBreadcrumbLogging(final Context context, final BreadcrumbLoggingSpecification breadcrumbLoggingSpecification) {
@@ -104,9 +107,10 @@ public final class ErrorLoggingManager
                 Log.d("nf_log_crit", "This device is approved for sampling, initialize Crittercism");
                 final CrittercismConfig crittercismConfig = new CrittercismConfig();
                 crittercismConfig.setNdkCrashReportingEnabled(false);
+                crittercismConfig.setVersionCodeToBeIncludedInVersionString(true);
                 crittercismConfig.setServiceMonitoringEnabled(false);
                 crittercismConfig.setLogcatReportingEnabled(false);
-                crittercismConfig.setCustomVersionName("4.13.3");
+                crittercismConfig.setCustomVersionName("4.15.0");
                 try {
                     final Context context2;
                     Crittercism.initialize(context2, SecurityRepository.getCrittercismAppId(), crittercismConfig);
@@ -127,6 +131,9 @@ public final class ErrorLoggingManager
             }
             Log.d("nf_log_crit", "This device is NOT approved for sampling");
         }
+    }
+    
+    private static void initializeUncaughtExceptionHandlerForDebug(final Context context) {
     }
     
     public static boolean isCrittercismEnabled() {

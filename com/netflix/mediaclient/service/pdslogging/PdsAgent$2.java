@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentListener;
 

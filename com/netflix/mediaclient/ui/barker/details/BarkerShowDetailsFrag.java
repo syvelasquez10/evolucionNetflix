@@ -14,6 +14,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.View$OnClickListener;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
 import android.view.LayoutInflater;
@@ -51,14 +52,14 @@ import android.view.View;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import java.util.List;
 import com.netflix.mediaclient.ui.details.CopyrightView;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
+import com.netflix.mediaclient.ui.mdx.CastPlayerHelper$CastPlayerDialog;
 import com.netflix.mediaclient.ui.details.ServiceManagerProvider;
 import com.netflix.mediaclient.ui.details.IHandleBackPress;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.ui.details.EpisodesFrag;
 
-public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$Callback, ManagerStatusListener, IHandleBackPress, ServiceManagerProvider, MdxMiniPlayerFrag$MdxMiniPlayerDialog
+public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$Callback, ManagerStatusListener, IHandleBackPress, ServiceManagerProvider, CastPlayerHelper$CastPlayerDialog
 {
     protected static final int ANIMATE_IN_DURATION_MS = 500;
     private static final String SAVED_STATE_SHOW_RELATED = "saved_state_show_related";
@@ -188,7 +189,7 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     }
     
     protected int calculateSpinnerLeftPosition() {
-        return -this.getActivity().getResources().getDimensionPixelOffset(2131427629);
+        return -this.getActivity().getResources().getDimensionPixelOffset(2131427636);
     }
     
     @Override
@@ -216,20 +217,20 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131755454);
+        this.rootContainer = view.findViewById(2131821063);
         if (this.rootContainer != null) {
             this.rootContainer.setBackgroundResource(this.getBackgroundResource());
         }
         if (!this.showDetailsOnLaunch) {
-            this.seasonsDialogRecyclerView = (RecyclerView)view.findViewById(2131755453);
-            this.fragBackground = view.findViewById(2131755454);
+            this.seasonsDialogRecyclerView = (RecyclerView)view.findViewById(2131821062);
+            this.fragBackground = view.findViewById(2131821063);
             return;
         }
-        this.fragBackground = view.findViewById(2131755466);
+        this.fragBackground = view.findViewById(2131821075);
     }
     
     protected int getBackgroundResource() {
-        return 2131689709;
+        return 2131755260;
     }
     
     protected int getNumColumns() {
@@ -246,15 +247,15 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
         if (this.getActivity() == null) {
             return 0;
         }
-        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427768) * 2;
+        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427776) * 2;
     }
     
     @Override
     protected int getlayoutId() {
         if (this.showDetailsOnLaunch) {
-            return 2130903291;
+            return 2130903282;
         }
-        return 2130903160;
+        return 2130903168;
     }
     
     @Override
@@ -315,7 +316,7 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     public void onStart() {
         super.onStart();
         if (!this.showDetailsOnLaunch) {
-            this.getDialog().getWindow().setLayout(-1, (int)this.getResources().getDimension(2131427771));
+            this.getDialog().getWindow().setLayout(-1, (int)this.getResources().getDimension(2131427779));
         }
     }
     
@@ -354,15 +355,19 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     protected void setupRecyclerView() {
         super.setupRecyclerView();
         if (this.recyclerView != null) {
-            final RecyclerView recyclerView = this.recyclerView;
-            int color;
-            if (BrowseExperience.showKidsExperience()) {
-                color = -1;
+            if (!KidsUtils.isKidsParity((Context)this.getActivity())) {
+                final RecyclerView recyclerView = this.recyclerView;
+                int color;
+                if (BrowseExperience.showKidsExperience()) {
+                    color = -1;
+                }
+                else {
+                    color = this.getResources().getColor(2131755024);
+                }
+                recyclerView.setBackgroundColor(color);
+                return;
             }
-            else {
-                color = this.getResources().getColor(2131689488);
-            }
-            recyclerView.setBackgroundColor(color);
+            this.recyclerView.setBackgroundColor(KidsUtils.getTheme().getBackgroundColor());
         }
     }
     
@@ -383,20 +388,21 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     
     @Override
     protected void setupRecyclerViewLayoutManager() {
-        if (this.getActivity() == null) {
-            return;
-        }
-        if (this.showDetailsOnLaunch) {
+        if (this.getActivity() != null) {
+            if (!this.showDetailsOnLaunch) {
+                final LinearLayoutManager layoutManager = new LinearLayoutManager((Context)this.getActivity(), 0, false);
+                layoutManager.setStackFromEnd(true);
+                this.recyclerView.setLayoutManager(layoutManager);
+                return;
+            }
             final int numColumns = this.getNumColumns();
-            final GridLayoutManager layoutManager = new GridLayoutManager((Context)this.getActivity(), numColumns);
-            layoutManager.setSpanSizeLookup(new BarkerShowDetailsFrag$2(this, numColumns));
-            this.recyclerView.setLayoutManager(layoutManager);
-            this.recyclerView.getLayoutParams().width = BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity());
-            return;
+            final GridLayoutManager layoutManager2 = new GridLayoutManager((Context)this.getActivity(), numColumns);
+            layoutManager2.setSpanSizeLookup(new BarkerShowDetailsFrag$2(this, numColumns));
+            this.recyclerView.setLayoutManager(layoutManager2);
+            if (!KidsUtils.isKidsParity((Context)this.getActivity())) {
+                this.recyclerView.getLayoutParams().width = BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity());
+            }
         }
-        final LinearLayoutManager layoutManager2 = new LinearLayoutManager((Context)this.getActivity(), 0, false);
-        layoutManager2.setStackFromEnd(true);
-        this.recyclerView.setLayoutManager(layoutManager2);
     }
     
     @Override
@@ -475,9 +481,6 @@ public class BarkerShowDetailsFrag extends EpisodesFrag implements ErrorWrapper$
     
     @Override
     protected void updateShowDetails(final ShowDetails showDetails) {
-        if (this.getActivity() == null) {
-            return;
-        }
         if (this.getActivity() instanceof DetailsActivity) {
             ((DetailsActivity)this.getActivity()).setVideoAndEpisodeIds(showDetails.getId(), showDetails.getCurrentEpisodeId());
         }

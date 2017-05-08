@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.offline.agent;
 
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;
+import com.netflix.mediaclient.service.offline.license.OfflineLicenseManager$LicenseSyncResponseCallback;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflineUtils;
 import com.android.volley.Network;
@@ -24,6 +25,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.BaseStatus;
@@ -44,7 +46,6 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQualit
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.app.NetflixStatus;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayableImpl;
 import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;
@@ -59,6 +60,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.android.app.Status;
@@ -97,6 +99,7 @@ class OfflineAgent$BackGroundHandler extends Handler
     static final int TYPE_CREATE = 1;
     static final int TYPE_DELETE = 2;
     static final int TYPE_DELETE_ALL_PLAYABLES = 8;
+    static final int TYPE_DELETE_AND_TRY_AGAIN = 15;
     static final int TYPE_DELETE_PLAYABLES = 14;
     static final int TYPE_DOWNLOAD_MAINTENANCE_JOB = 7;
     static final int TYPE_DOWNLOAD_RESUME_JOB = 6;
@@ -123,7 +126,7 @@ class OfflineAgent$BackGroundHandler extends Handler
                 this.this$0.handleCreateRequest((OfflineAgent$CreateRequest)message.obj);
             }
             case 2: {
-                this.this$0.handleDeleteRequest((String)message.obj);
+                this.this$0.handleDeleteRequest((String)message.obj, null);
             }
             case 3: {
                 this.this$0.handlePauseRequest((String)message.obj);
@@ -161,6 +164,10 @@ class OfflineAgent$BackGroundHandler extends Handler
             }
             case 14: {
                 this.this$0.handleDeletePlayables((List<String>)message.obj);
+            }
+            case 15: {
+                final OfflineAgent$DeleteAndTryAgainRequest offlineAgent$DeleteAndTryAgainRequest = (OfflineAgent$DeleteAndTryAgainRequest)message.obj;
+                this.this$0.handleDeleteRequest(offlineAgent$DeleteAndTryAgainRequest.mPlayableId, offlineAgent$DeleteAndTryAgainRequest);
             }
         }
     }

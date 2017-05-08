@@ -37,6 +37,7 @@ public class ImageEditingManager extends ReactContextBaseJavaModule
     @SuppressLint({ "InlinedApi" })
     private static final String[] EXIF_ATTRIBUTES;
     private static final List<String> LOCAL_URI_PREFIXES;
+    protected static final String NAME = "ImageEditingManager";
     private static final String TEMP_FILE_PREFIX = "ReactNative_cropped_image_";
     
     static {
@@ -221,7 +222,7 @@ public class ImageEditingManager extends ReactContextBaseJavaModule
     
     @Override
     public String getName() {
-        return "RKImageEditingManager";
+        return "ImageEditingManager";
     }
     
     @Override

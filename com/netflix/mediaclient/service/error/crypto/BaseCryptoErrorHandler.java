@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.error.crypto;
 
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.service.configuration.crypto.WidevineErrorDescriptor;
 import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import com.netflix.mediaclient.StatusCode;
@@ -36,7 +38,14 @@ abstract class BaseCryptoErrorHandler implements CryptoErrorHandler
     
     protected ErrorDescriptor handleLogoutUserAndKillApp(final Context context, final Throwable t) {
         this.logHandledException(CryptoErrorManager.createMediaDrmErrorMessage(this.getStatusCode(), t));
-        CryptoErrorManager.INSTANCE.getUserAgent().logoutUser();
+        if (((ServiceAgent)CryptoErrorManager.INSTANCE.getUserAgent()).isReady()) {
+            Log.d(BaseCryptoErrorHandler.TAG, "UserAgent is ready, log user out regular way.");
+            CryptoErrorManager.INSTANCE.getUserAgent().logoutUser();
+        }
+        else {
+            Log.e(BaseCryptoErrorHandler.TAG, "UserAgent is NOT ready, clear app data brute force");
+            CryptoErrorManager.INSTANCE.clearApplicationData();
+        }
         return new WidevineErrorDescriptor(context, this.getStatusCode(), this.getForceStopTask(context), this.getErrorMessageForFatalError());
     }
     

@@ -11,7 +11,6 @@ import com.netflix.mediaclient.media.manifest.Stream;
 import com.netflix.mediaclient.media.manifest.VideoTrack;
 import java.util.Collection;
 import com.netflix.mediaclient.ui.offline.OfflineSubtitle;
-import com.netflix.mediaclient.service.offline.download.DownloadableType;
 import com.netflix.mediaclient.media.SubtitleUrl;
 import com.netflix.mediaclient.media.SubtitleTrackData;
 import java.util.HashMap;
@@ -21,13 +20,14 @@ import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.download.DownloadablePersistentData;
-import java.util.Iterator;
 import com.netflix.mediaclient.service.player.manifest.NfManifestUtils;
-import java.util.ArrayList;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.service.player.manifest.NfManifest;
 import com.netflix.mediaclient.util.AndroidUtils;
+import java.util.Iterator;
+import com.netflix.mediaclient.service.offline.download.DownloadableType;
 import java.io.File;
+import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable;
 import com.netflix.mediaclient.Log;
@@ -71,6 +71,25 @@ public class OfflineUtils
         return n == 403 || n == 404;
     }
     
+    public static boolean deleteAllDownloadables(final String s, final OfflinePlayablePersistentData offlinePlayablePersistentData) {
+        Log.i("nf_offlineUtils", "deleteAllDownloadables");
+        final ArrayList<File> list = new ArrayList<File>();
+        getFileObjectListForDownloadable(list, s, offlinePlayablePersistentData.mAudioDownloadablePersistentList, DownloadableType.Audio);
+        getFileObjectListForDownloadable(list, s, offlinePlayablePersistentData.mVideoDownloadablePersistentList, DownloadableType.Video);
+        getFileObjectListForDownloadable(list, s, offlinePlayablePersistentData.mSubtitleDownloadablePersistentList, DownloadableType.Subtitle);
+        getFileObjectListForDownloadable(list, s, offlinePlayablePersistentData.mTrickPlayDownloadablePersistentList, DownloadableType.TrickPlay);
+        final Iterator<Object> iterator = list.iterator();
+        boolean b = true;
+        while (iterator.hasNext()) {
+            final File file = iterator.next();
+            if (file.exists()) {
+                final boolean delete = file.delete();
+                b = (b && delete);
+            }
+        }
+        return b;
+    }
+    
     public static boolean deletePlayableDirectory(final String s) {
         final File file = new File(s);
         boolean deleteDir = true;
@@ -99,6 +118,13 @@ public class OfflineUtils
             list2.add(iterator.next().mDownloadableId);
         }
         return list2;
+    }
+    
+    private static void getFileObjectListForDownloadable(final List<File> list, final String s, final List<DownloadablePersistentData> list2, final DownloadableType downloadableType) {
+        final Iterator<DownloadablePersistentData> iterator = list2.iterator();
+        while (iterator.hasNext()) {
+            list.add(OfflinePathUtils.getFileObjectForDownloadable(s, iterator.next().mDownloadableId, downloadableType));
+        }
     }
     
     public static byte[] getKeySetIdOrNull(final OfflinePlayablePersistentData offlinePlayablePersistentData) {

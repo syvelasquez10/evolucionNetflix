@@ -11,6 +11,7 @@ import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
+import com.netflix.model.leafs.Video$TvCardArt;
 import com.netflix.model.leafs.Video$InQueue;
 import com.netflix.model.leafs.Video$Summary;
 import com.netflix.model.branches.FalkorVideo;
@@ -27,6 +28,7 @@ import android.os.Parcelable;
 public class IrisNotificationSummary implements Parcelable, JsonMerger, JsonPopulator
 {
     public static final Parcelable$Creator<IrisNotificationSummary> CREATOR;
+    private static final int NUM_OF_FIELDS = 25;
     private static final String TAG = "SocialNotificationSummary";
     @SerializedName("isRead")
     private boolean bWasRead;
@@ -62,6 +64,8 @@ public class IrisNotificationSummary implements Parcelable, JsonMerger, JsonPopu
     private String tvCardUrl;
     @SerializedName("msgType")
     private IrisNotificationSummary$NotificationTypes type;
+    @SerializedName("urlTarget")
+    private String urlTarget;
     private String videoId;
     private String videoTitle;
     private VideoType videoType;
@@ -74,7 +78,7 @@ public class IrisNotificationSummary implements Parcelable, JsonMerger, JsonPopu
     }
     
     protected IrisNotificationSummary(final Parcel parcel) {
-        final String[] array = new String[24];
+        final String[] array = new String[25];
         parcel.readStringArray(array);
         this.bWasRead = Boolean.valueOf(array[0]);
         this.bWasThanked = Boolean.valueOf(array[1]);
@@ -103,6 +107,7 @@ public class IrisNotificationSummary implements Parcelable, JsonMerger, JsonPopu
         this.bodyText = array[21];
         this.imageTarget = array[22];
         this.textTarget = array[23];
+        this.urlTarget = array[24];
     }
     
     public IrisNotificationSummary(final String id, final String storyId) {
@@ -157,8 +162,11 @@ public class IrisNotificationSummary implements Parcelable, JsonMerger, JsonPopu
         this.videoId = video$Summary.getId();
         this.videoType = video$Summary.getType();
         this.videoTitle = video$Summary.getTitle();
-        this.tvCardUrl = video$Summary.getTvCardUrl();
         this.inQueue = ((Video$InQueue)falkorVideo.get("inQueue")).inQueue;
+        final Video$TvCardArt video$TvCardArt = (Video$TvCardArt)falkorVideo.get("tvCardArt");
+        if (video$TvCardArt != null) {
+            this.tvCardUrl = video$TvCardArt.getUrl();
+        }
     }
     
     public String getBodyText() {
@@ -224,6 +232,10 @@ public class IrisNotificationSummary implements Parcelable, JsonMerger, JsonPopu
         return this.type;
     }
     
+    public String getUrlTarget() {
+        return this.urlTarget;
+    }
+    
     public String getVideoId() {
         return this.videoId;
     }
@@ -265,117 +277,124 @@ public class IrisNotificationSummary implements Parcelable, JsonMerger, JsonPopu
             else {
                 final String s = entry.getKey();
                 int n = 0;
-                Label_0286: {
+                Label_0294: {
                     switch (s.hashCode()) {
                         case 3355: {
                             if (s.equals("id")) {
                                 n = 0;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case -1884251920: {
                             if (s.equals("storyId")) {
                                 n = 1;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case 1343750747: {
                             if (s.equals("msgType")) {
                                 n = 2;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case -1473868046: {
                             if (s.equals("msgString")) {
                                 n = 3;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case -1244622187: {
                             if (s.equals("fromUser")) {
                                 n = 4;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case 55126294: {
                             if (s.equals("timestamp")) {
                                 n = 5;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case -306513765: {
                             if (s.equals("imageAltText")) {
                                 n = 6;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case -2108533044: {
                             if (s.equals("imageTarget")) {
                                 n = 7;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case -586188135: {
                             if (s.equals("showTimestamp")) {
                                 n = 8;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case -1221270899: {
                             if (s.equals("header")) {
                                 n = 9;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case 3029410: {
                             if (s.equals("body")) {
                                 n = 10;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case 1862946078: {
                             if (s.equals("textTarget")) {
                                 n = 11;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case -859610604: {
                             if (s.equals("imageUrl")) {
                                 n = 12;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case -1180158496: {
                             if (s.equals("isRead")) {
                                 n = 13;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case -1933137793: {
                             if (s.equals("isThanked")) {
                                 n = 14;
-                                break Label_0286;
+                                break Label_0294;
                             }
                             break;
                         }
                         case -338815017: {
                             if (s.equals("showType")) {
                                 n = 15;
-                                break Label_0286;
+                                break Label_0294;
+                            }
+                            break;
+                        }
+                        case -342813728: {
+                            if (s.equals("urlTarget")) {
+                                n = 16;
+                                break Label_0294;
                             }
                             break;
                         }
@@ -455,6 +474,10 @@ public class IrisNotificationSummary implements Parcelable, JsonMerger, JsonPopu
                             showType = VideoType.SHOW;
                         }
                         this.showType = showType;
+                        continue;
+                    }
+                    case 16: {
+                        this.urlTarget = jsonElement.getAsString();
                         continue;
                     }
                 }
@@ -541,6 +564,10 @@ public class IrisNotificationSummary implements Parcelable, JsonMerger, JsonPopu
                 this.showType = showType;
                 break;
             }
+            case "urlTarget": {
+                this.urlTarget = jsonParser.getValueAsString();
+                break;
+            }
         }
         return true;
     }
@@ -559,7 +586,7 @@ public class IrisNotificationSummary implements Parcelable, JsonMerger, JsonPopu
     }
     
     public void writeToParcel(final Parcel parcel, final int n) {
-        final String[] array = new String[24];
+        final String[] array = new String[25];
         array[0] = String.valueOf(this.bWasRead);
         array[1] = String.valueOf(this.bWasThanked);
         if (this.friendProfile != null) {
@@ -588,6 +615,7 @@ public class IrisNotificationSummary implements Parcelable, JsonMerger, JsonPopu
         array[21] = this.bodyText;
         array[22] = this.imageTarget;
         array[23] = this.textTarget;
+        array[24] = this.urlTarget;
         parcel.writeStringArray(array);
     }
 }

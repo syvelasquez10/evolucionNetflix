@@ -81,6 +81,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     private static final PQL CW_VIDEO_LEAF_PQL;
     private static final boolean ENABLE_LOG_TIMING = false;
     public static final String EXTRA_USER_RATING = "extra_user_rating";
+    public static final String EXTRA_USER_THUMB_RATING = "extra_user_thumb_rating";
     public static final String EXTRA_VIDEO_ID = "extra_video_id";
     private static final List<PQL> FETCH_EPISODES_LEAF_TYPES;
     public static final int FETCH_EPISODES_REQUEST_BATCH_SIZE = 40;
@@ -442,7 +443,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
     private List<GenreList> getGenreList() {
         final Object value = this.getValue(PQL.create("genreList"));
         if (value != null) {
-            return new ArrayList<GenreList>(((Sentinel<List>)value).getValue());
+            return ((Sentinel<List<GenreList>>)value).getValue();
         }
         return null;
     }
@@ -868,7 +869,7 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         }
     }
     
-    public void addToQueue(final String p0, final VideoType p1, final int p2, final boolean p3, final String p4, final BrowseAgentCallback p5) {
+    public void addToQueue(final String p0, final VideoType p1, final int p2, final String p3, final BrowseAgentCallback p4) {
         // 
         // This method could not be decompiled.
         // 
@@ -876,31 +877,30 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         // 
         //     0: aload_0        
         //     1: invokevirtual   com/netflix/falkor/CachedModelProxy.getCurrLolomoId:()Ljava/lang/String;
-        //     4: astore          7
+        //     4: astore          6
         //     6: aload_0        
         //     7: getstatic       com/netflix/mediaclient/servicemgr/interface_/LoMoType.INSTANT_QUEUE:Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;
         //    10: invokespecial   com/netflix/falkor/CachedModelProxy.getCurrLomoInfo:(Lcom/netflix/mediaclient/servicemgr/interface_/LoMoType;)Lcom/netflix/mediaclient/util/DataUtil$StringPair;
-        //    13: astore          8
+        //    13: astore          7
         //    15: aload_0        
         //    16: new             new            !!! ERROR
         //    19: dup            
         //    20: aload_0        
         //    21: aload_1        
         //    22: aload_2        
-        //    23: aload           7
-        //    25: aload           8
+        //    23: aload           6
+        //    25: aload           7
         //    27: getfield        com/netflix/mediaclient/util/DataUtil$StringPair.first:Ljava/lang/Object;
         //    30: checkcast       Ljava/lang/String;
-        //    33: aload           8
+        //    33: aload           7
         //    35: getfield        com/netflix/mediaclient/util/DataUtil$StringPair.second:Ljava/lang/Object;
         //    38: checkcast       Ljava/lang/String;
         //    41: iload_3        
-        //    42: iload           4
+        //    42: aload           4
         //    44: aload           5
-        //    46: aload           6
-        //    48: invokespecial   invokespecial  !!! ERROR
-        //    51: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
-        //    54: return         
+        //    46: invokespecial   invokespecial  !!! ERROR
+        //    49: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //    52: return         
         // 
         // The error that occurred was:
         // 
@@ -1492,6 +1492,69 @@ public class CachedModelProxy<T extends BranchNode> implements ModelProxy<T>
         //    13: invokespecial   invokespecial  !!! ERROR
         //    16: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
         //    19: return         
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalArgumentException: Argument 'typeArguments' must not have any null elements.
+        //     at com.strobel.core.VerifyArgument.noNullElementsAndNotEmpty(VerifyArgument.java:145)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.makeGenericType(CoreMetadataFactory.java:570)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory.makeParameterizedType(CoreMetadataFactory.java:156)
+        //     at com.strobel.assembler.metadata.signatures.Reifier.visitClassTypeSignature(Reifier.java:125)
+        //     at com.strobel.assembler.metadata.signatures.ClassTypeSignature.accept(ClassTypeSignature.java:46)
+        //     at com.strobel.assembler.metadata.MetadataParser.parseClassSignature(MetadataParser.java:394)
+        //     at com.strobel.assembler.metadata.ClassFileReader.populateBaseTypes(ClassFileReader.java:665)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:438)
+        //     at com.strobel.assembler.metadata.ClassFileReader.readClass(ClassFileReader.java:366)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveType(MetadataSystem.java:124)
+        //     at com.strobel.decompiler.NoRetryMetadataSystem.resolveType(DecompilerDriver.java:463)
+        //     at com.strobel.assembler.metadata.MetadataSystem.resolveCore(MetadataSystem.java:76)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:104)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:589)
+        //     at com.strobel.assembler.metadata.MetadataResolver.resolve(MetadataResolver.java:128)
+        //     at com.strobel.assembler.metadata.CoreMetadataFactory$UnresolvedType.resolve(CoreMetadataFactory.java:599)
+        //     at com.strobel.assembler.metadata.MethodReference.resolve(MethodReference.java:172)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferCall(TypeAnalysis.java:2428)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.doInferTypeForExpression(TypeAnalysis.java:1029)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.inferTypeForExpression(TypeAnalysis.java:803)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:672)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:655)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.runInference(TypeAnalysis.java:365)
+        //     at com.strobel.decompiler.ast.TypeAnalysis.run(TypeAnalysis.java:96)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:109)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
+    }
+    
+    public void fetchFalkorVideo(final String p0, final BrowseAgentCallback p1) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_0        
+        //     1: new             new            !!! ERROR
+        //     4: dup            
+        //     5: aload_0        
+        //     6: aload_1        
+        //     7: aload_2        
+        //     8: invokespecial   invokespecial  !!! ERROR
+        //    11: invokespecial   com/netflix/falkor/CachedModelProxy.launchTask:(Ljava/lang/Runnable;)V
+        //    14: return         
         // 
         // The error that occurred was:
         // 

@@ -18,6 +18,6 @@ class NetflixService$7$1 implements Runnable
     @Override
     public void run() {
         Log.v("NetflixService", "Sending show mini player intent");
-        this.this$1.this$0.sendBroadcast(new Intent("com.netflix.mediaclient.service.ACTION_EXPAND_MDX_MINI_PLAYER"));
+        this.this$1.this$0.sendBroadcast(new Intent("com.netflix.mediaclient.service.ACTION_EXPAND_CAST_PLAYER"));
     }
 }

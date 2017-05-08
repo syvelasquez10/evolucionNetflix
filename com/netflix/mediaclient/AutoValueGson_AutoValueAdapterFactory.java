@@ -5,6 +5,7 @@
 package com.netflix.mediaclient;
 
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
+import com.netflix.mediaclient.service.webclient.model.leafs.ThumbMessaging;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaCta;
 import com.google.gson.TypeAdapter;
@@ -21,6 +22,9 @@ public final class AutoValueGson_AutoValueAdapterFactory extends AutoValueAdapte
         }
         if (UmaAlert.class.isAssignableFrom(rawType)) {
             return (TypeAdapter<T>)UmaAlert.typeAdapter(gson);
+        }
+        if (ThumbMessaging.class.isAssignableFrom(rawType)) {
+            return (TypeAdapter<T>)ThumbMessaging.typeAdapter(gson);
         }
         if (EogAlert.class.isAssignableFrom(rawType)) {
             return (TypeAdapter<T>)EogAlert.typeAdapter(gson);

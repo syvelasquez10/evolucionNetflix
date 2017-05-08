@@ -4,12 +4,12 @@
 
 package com.netflix.mediaclient.service.offline.agent;
 
-import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQuality;
 import java.util.List;
+import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 
 public interface OfflineAgentInterface
 {
@@ -19,6 +19,8 @@ public interface OfflineAgentInterface
     void addOfflineAgentListener(final OfflineAgentListener p0);
     
     void deleteAllOfflineContent();
+    
+    void deleteAndTryAgain(final String p0, final VideoType p1, final PlayContext p2);
     
     void deleteOfflinePlayable(final String p0);
     
@@ -32,6 +34,8 @@ public interface OfflineAgentInterface
     
     boolean getRequiresUnmeteredNetwork();
     
+    boolean isOfflineContentPresent();
+    
     boolean isOfflineFeatureEnabled();
     
     void pauseDownload(final String p0);
@@ -43,6 +47,8 @@ public interface OfflineAgentInterface
     void removeOfflineAgentListener(final OfflineAgentListener p0);
     
     void requestGeoPlayabilityUpdate();
+    
+    void requestOfflinePdsData(final String p0, final OfflineAgentInterface$OfflinePdsDataCallback p1);
     
     void requestOfflineViewing(final String p0, final VideoType p1, final PlayContext p2);
     

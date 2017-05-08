@@ -44,10 +44,10 @@ public final class AlertDialogFactory
         updateDialog$Builder.setTitle(noNull(s));
         updateDialog$Builder.setMessage((CharSequence)processMessage(s2));
         if (string == null) {
-            string = context.getString(2131296724);
+            string = context.getString(2131296726);
         }
         if (string2 == null) {
-            string2 = context.getString(2131296564);
+            string2 = context.getString(2131296566);
         }
         if (handler != null) {
             updateDialog$Builder.setPositiveButton(string, (DialogInterface$OnClickListener)new AlertDialogFactory$1(runnable, handler, runnable3));
@@ -81,7 +81,7 @@ public final class AlertDialogFactory
         if (StringUtils.isEmpty(s)) {
             return (Spannable)new SpannableString((CharSequence)"");
         }
-        s = (String)new SpannableString((CharSequence)s);
+        s = (String)new SpannableString((CharSequence)s.replaceAll("netflix.com/changeplan.", "netflix.com/changeplan"));
         try {
             Linkify.addLinks((Spannable)s, 15);
             return (Spannable)s;

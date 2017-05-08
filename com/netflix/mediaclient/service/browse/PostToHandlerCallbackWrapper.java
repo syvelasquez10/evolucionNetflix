@@ -21,6 +21,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetail
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -45,12 +46,12 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     
     @Override
     public void onActorDetailsAndRelatedFetched(final List<FalkorPerson> list, final List<MementoVideoSwatch> list2, final Status status, final List<FalkorActorStill> list3) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$22(this, list, list2, status, list3));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$23(this, list, list2, status, list3));
     }
     
     @Override
     public void onAdvisoriesFetched(final List<Advisory> list, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$36(this, list, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$37(this, list, status));
     }
     
     @Override
@@ -60,7 +61,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     
     @Override
     public void onBrowsePlaySessionEnd(final boolean b, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$35(this, b, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$36(this, b, status));
     }
     
     @Override
@@ -75,7 +76,7 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     
     @Override
     public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$15(this, episodeDetails, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$16(this, episodeDetails, status));
     }
     
     @Override
@@ -84,8 +85,13 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     }
     
     @Override
+    public void onFalkorVideoFetched(final FalkorVideo falkorVideo, final Status status) {
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$12(this, falkorVideo, status));
+    }
+    
+    @Override
     public void onGenreListsFetched(final List<GenreList> list, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$23(this, list, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$24(this, list, status));
     }
     
     @Override
@@ -95,22 +101,22 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     
     @Override
     public void onGenresFetched(final List<Genre> list, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$24(this, list, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$25(this, list, status));
     }
     
     @Override
     public void onInteractiveMomentsFetched(final InteractiveMoments interactiveMoments, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$16(this, interactiveMoments, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$17(this, interactiveMoments, status));
     }
     
     @Override
     public void onIrisNotificationsMarkedAsRead(final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$34(this, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$35(this, status));
     }
     
     @Override
     public void onKidsCharacterDetailsFetched(final KidsCharacterDetails kidsCharacterDetails, final Boolean b, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$14(this, kidsCharacterDetails, b, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$15(this, kidsCharacterDetails, b, status));
     }
     
     @Override
@@ -130,62 +136,62 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     
     @Override
     public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$12(this, movieDetails, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$13(this, movieDetails, status));
     }
     
     @Override
     public void onNotificationsListFetched(final IrisNotificationsList list, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$33(this, list, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$34(this, list, status));
     }
     
     @Override
     public void onOfflineGeoPlayabilityReceived(final Map<String, Boolean> map, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$37(this, map, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$38(this, map, status));
     }
     
     @Override
     public void onPersonDetailFetched(final FalkorPerson falkorPerson, final FalkorActorStill falkorActorStill, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$20(this, falkorPerson, falkorActorStill, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$21(this, falkorPerson, falkorActorStill, status));
     }
     
     @Override
     public void onPersonRelatedFetched(final FalkorPerson falkorPerson, final List<Video> list, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$21(this, falkorPerson, list, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$22(this, falkorPerson, list, status));
     }
     
     @Override
     public void onPostPlayImpressionLogged(final boolean b, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$32(this, b, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$33(this, b, status));
     }
     
     @Override
     public void onPostPlayVideosFetched(final PostPlayVideosProvider postPlayVideosProvider, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$31(this, postPlayVideosProvider, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$32(this, postPlayVideosProvider, status));
     }
     
     @Override
     public void onQueueAdd(final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$26(this, status));
-    }
-    
-    @Override
-    public void onQueueRemove(final Status status) {
         this.handler.post((Runnable)new PostToHandlerCallbackWrapper$27(this, status));
     }
     
     @Override
+    public void onQueueRemove(final Status status) {
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$28(this, status));
+    }
+    
+    @Override
     public void onScenePositionFetched(final int n, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$13(this, n, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$14(this, n, status));
     }
     
     @Override
     public void onSearchResultsFetched(final ISearchResults searchResults, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$29(this, searchResults, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$30(this, searchResults, status));
     }
     
     @Override
     public void onSeasonDetailsFetched(final SeasonDetails seasonDetails, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$17(this, seasonDetails, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$18(this, seasonDetails, status));
     }
     
     @Override
@@ -195,27 +201,27 @@ public class PostToHandlerCallbackWrapper implements BrowseAgentCallback
     
     @Override
     public void onShowDetailsAndSeasonsFetched(final ShowDetails showDetails, final List<SeasonDetails> list, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$19(this, showDetails, list, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$20(this, showDetails, list, status));
     }
     
     @Override
     public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$18(this, showDetails, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$19(this, showDetails, status));
     }
     
     @Override
     public void onSimilarVideosFetched(final SearchVideoListProvider searchVideoListProvider, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$30(this, searchVideoListProvider, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$31(this, searchVideoListProvider, status));
     }
     
     @Override
     public void onVideoHide(final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$28(this, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$29(this, status));
     }
     
     @Override
     public void onVideoRatingSet(final UserRating userRating, final Status status) {
-        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$25(this, userRating, status));
+        this.handler.post((Runnable)new PostToHandlerCallbackWrapper$26(this, userRating, status));
     }
     
     @Override

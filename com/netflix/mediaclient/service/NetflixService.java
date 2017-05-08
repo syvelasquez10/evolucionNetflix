@@ -4,10 +4,10 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import android.app.Notification;
 import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
-import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
@@ -16,6 +16,7 @@ import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.service.webclient.model.leafs.ThumbMessaging;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
 import com.netflix.mediaclient.servicemgr.IPushNotification;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
@@ -86,6 +87,7 @@ import com.netflix.mediaclient.service.error.ErrorAgent;
 import com.netflix.mediaclient.service.diagnostics.DiagnosisAgent;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.service.logging.LoggingAgent;
+import com.netflix.mediaclient.media.BookmarkStore;
 import android.os.IBinder;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;
@@ -93,11 +95,11 @@ import android.app.Service;
 
 public final class NetflixService extends Service implements INetflixService
 {
-    public static final String ACTION_CLOSE_MDX_MINI_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_CLOSE_MINI_PLAYER";
-    public static final String ACTION_EXPAND_HOME_MDX_MINI_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_EXPAND_HOME_MDX_MINI_PLAYER";
-    public static final String ACTION_EXPAND_MDX_MINI_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_EXPAND_MDX_MINI_PLAYER";
+    public static final String ACTION_CLOSE_CAST_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_CLOSE_CAST_PLAYER";
+    public static final String ACTION_EXPAND_CAST_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_EXPAND_CAST_PLAYER";
+    public static final String ACTION_EXPAND_HOME_CAST_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_EXPAND_HOME_CAST_PLAYER";
     private static final String ACTION_REFRESH_WIDGET_CONTENT_ALARM_INTENT = "com.netflix.mediaclient.service.ACTION_REFRESH_WIDGET_CONTENT";
-    private static final String ACTION_SHOW_MDX_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER";
+    private static final String ACTION_SHOW_CAST_PLAYER_INTENT = "com.netflix.mediaclient.service.ACTION_SHOW_CAST_PLAYER";
     private static final String ACTION_SHUTDOWN_SERVICE_PENDING_INTENT = "com.netflix.mediaclient.service.ACTION_SHUTDOWN_SERVICE";
     public static final String INTENT_EXTRA_ALREADY_RUNNING = "isRunning";
     private static final long SERVICE_INIT_TIMEOUT_MS = 90000L;
@@ -113,6 +115,7 @@ public final class NetflixService extends Service implements INetflixService
     boolean hasLoggedAgent;
     private final Runnable initTimeoutRunnable;
     private final IBinder mBinder;
+    private BookmarkStore mBookmarkStore;
     private final NetflixService$ClientCallbacks mClientCallbacks;
     private LoggingAgent mClientLoggingAgent;
     private ConfigurationAgent mConfigurationAgent;
@@ -126,7 +129,6 @@ public final class NetflixService extends Service implements INetflixService
     private MdxAgent mMdxAgent;
     private boolean mMdxEnabled;
     private final BroadcastReceiver mMdxReceiver;
-    private final BroadcastReceiver mMdxShowPlayerIntent;
     private MSLAgent mMslAgent;
     private final Map<NetflixJob$NetflixJobId, NetflixJobExecutor> mNetflixJobMap;
     private NetflixJobScheduler mNetflixJobScheduler;
@@ -142,6 +144,7 @@ public final class NetflixService extends Service implements INetflixService
     private PushNotificationAgent mPushAgent;
     private ResourceFetcher mResourceFetcher;
     private long mServiceStartedTimeInMs;
+    private final BroadcastReceiver mShowCastPlayerIntent;
     private UserAgent mUserAgent;
     private String mUserFlowTag;
     private WhistleVoipAgent mVoipAgent;
@@ -163,7 +166,7 @@ public final class NetflixService extends Service implements INetflixService
         this.mBinder = (IBinder)new NetflixService$LocalBinder(this);
         this.initTimeoutRunnable = new NetflixService$5(this);
         this.mMdxReceiver = new NetflixService$6(this);
-        this.mMdxShowPlayerIntent = new NetflixService$7(this);
+        this.mShowCastPlayerIntent = new NetflixService$7(this);
         this.mNetworkChangeReceiver = new NetflixService$8(this);
     }
     
@@ -187,7 +190,7 @@ public final class NetflixService extends Service implements INetflixService
     }
     
     public static Intent createShowMdxPlayerBroadcastIntent() {
-        return new Intent("com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER");
+        return new Intent("com.netflix.mediaclient.service.ACTION_SHOW_CAST_PLAYER");
     }
     
     private PendingIntent createShutdownServiceAlarmPendingIntent() {
@@ -284,7 +287,7 @@ public final class NetflixService extends Service implements INetflixService
         this.mInitComplete = true;
         if (this.mInitStatusCode.isSucces()) {
             this.registerReceiver(this.mNetworkChangeReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
-            this.registerReceiver(this.mMdxShowPlayerIntent, new IntentFilter("com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER"));
+            this.registerReceiver(this.mShowCastPlayerIntent, new IntentFilter("com.netflix.mediaclient.service.ACTION_SHOW_CAST_PLAYER"));
             this.mNrdController.setNetworkInterfaces();
             Log.d("NetflixService", "Send local intent that Netflix service is ready");
             final Intent intent = new Intent("com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_INIT_COMPLETE");
@@ -478,6 +481,10 @@ public final class NetflixService extends Service implements INetflixService
         this.mUserAgent.fetchAvailableAvatarsList(new NetflixService$UserAgentClientCallback(this, n, n2));
     }
     
+    public BookmarkStore getBookmarkStore() {
+        return this.mBookmarkStore;
+    }
+    
     public IBrowseInterface getBrowse() {
         return this.mFalkorAccess;
     }
@@ -611,6 +618,10 @@ public final class NetflixService extends Service implements INetflixService
         return this.mServiceStartedTimeInMs;
     }
     
+    public ThumbMessaging getThumbMessaging() {
+        return this.mUserAgent.getThumbMessaging();
+    }
+    
     public String getUserEmail() {
         return this.mUserAgent.getEmail();
     }
@@ -623,8 +634,8 @@ public final class NetflixService extends Service implements INetflixService
         return this.mVoipAgent;
     }
     
-    public boolean isCurrentProfileIQEnabled() {
-        return this.mUserAgent.isCurrentProfileIQEnabled();
+    public boolean isCurrentProfileInstantQueueEnabled() {
+        return this.mUserAgent.isCurrentProfileInstantQueueEnabled();
     }
     
     public boolean isDeviceHd() {
@@ -700,7 +711,7 @@ public final class NetflixService extends Service implements INetflixService
         this.mOfflinePlayerAgent = new ExoPlayback(this.getApplicationContext(), this.getHandler(), this.mOfflineAgent, this.mClientLoggingAgent);
         this.mPdsAgent = new PdsAgent(this.mOfflineAgent);
         this.mNetflixPowerManager = new NetflixPowerManager(this.getApplicationContext());
-        BookmarkStore.getInstance().init(this.getApplicationContext());
+        this.mBookmarkStore = new BookmarkStore(this.getApplicationContext());
         this.init();
     }
     
@@ -716,7 +727,7 @@ public final class NetflixService extends Service implements INetflixService
             this.safeUnregisterReceiver(this.mMdxReceiver, "MDX receiver");
         }
         this.safeUnregisterReceiver(this.mNetworkChangeReceiver, "network receiver");
-        this.safeUnregisterReceiver(this.mMdxShowPlayerIntent, "mdx show player receiver");
+        this.safeUnregisterReceiver(this.mShowCastPlayerIntent, "mdx show player receiver");
         this.mClientCallbacks.clear();
         if (this.mMdxEnabled && this.mMdxAgent != null) {
             this.mMdxAgent.destroy();
@@ -827,6 +838,14 @@ public final class NetflixService extends Service implements INetflixService
         this.mUserAgent.recordPlanSelection(s, s2);
     }
     
+    public void recordThumbRatingThanksSeen() {
+        this.mUserAgent.recordThumbRatingThanksSeen();
+    }
+    
+    public void recordThumbRatingWelcomeSeen() {
+        this.mUserAgent.recordThumbRatingWelcomeSeen();
+    }
+    
     public void recordUserMessageImpression(final String s, final String s2) {
         this.mUserAgent.recordUmsImpression(s, s2);
     }
@@ -894,6 +913,10 @@ public final class NetflixService extends Service implements INetflixService
         this.stopSelfInMs(n);
     }
     
+    public void resetThumbMessagingForDebug() {
+        this.mUserAgent.resetThumbMessagingForDebug();
+    }
+    
     public void selectProfile(final String s) {
         this.mUserAgent.selectProfile(s);
     }
@@ -947,7 +970,7 @@ public final class NetflixService extends Service implements INetflixService
         this.mUserAgent.verifyAge(new NetflixService$UserAgentClientCallback(this, n, n2));
     }
     
-    public void verifyPin(final String s, final int n, final int n2) {
-        this.mUserAgent.verifyPin(s, new NetflixService$UserAgentClientCallback(this, n, n2));
+    public void verifyPin(final String s, final PinVerifier$PinType pinVerifier$PinType, final String s2, final int n, final int n2) {
+        this.mUserAgent.verifyPin(s, pinVerifier$PinType, s2, new NetflixService$UserAgentClientCallback(this, n, n2));
     }
 }

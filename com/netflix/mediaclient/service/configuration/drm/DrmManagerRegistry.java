@@ -5,9 +5,9 @@
 package com.netflix.mediaclient.service.configuration.drm;
 
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.util.MediaDrmUtils;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
@@ -27,6 +27,7 @@ public final class DrmManagerRegistry
     private static WidevineMediaDrmEngine mWidevineMediaDrmEngine;
     private static CryptoProvider previousCryptoProvider;
     private static String previousDrmSystem;
+    private static String previousESN;
     
     private static void clearKeys(final String s) {
         getWidevineDrmManager().clearKeys(s);
@@ -39,17 +40,18 @@ public final class DrmManagerRegistry
     public static DrmManager createDrmManager(Context instance, final ServiceAgent$ConfigurationAgentInterface serviceAgent$ConfigurationAgentInterface, final ServiceAgent$UserAgentInterface serviceAgent$UserAgentInterface, final ErrorLogging errorLogging, final IErrorHandler errorHandler, final DrmManager$DrmReadyCallback drmManager$DrmReadyCallback) {
         CryptoProvider cryptoProvider;
         String currentDrmSystem;
-        Label_0067_Outer:Label_0094_Outer:
+        Label_0077_Outer:Label_0104_Outer:
         while (true) {
             while (true) {
-                Label_0315: {
+                Label_0325: {
                     while (true) {
-                    Label_0309:
+                    Label_0319:
                         while (true) {
-                            Label_0261: {
+                            Label_0271: {
                                 synchronized (DrmManagerRegistry.class) {
                                     setPreviousDrm(instance);
                                     cryptoProvider = MediaDrmUtils.getCryptoProvider(instance, serviceAgent$ConfigurationAgentInterface);
+                                    DrmManagerRegistry.previousESN = PreferenceUtils.getStringPref(instance, "nf_drm_esn", null);
                                     try {
                                         if (cryptoProvider == CryptoProvider.WIDEVINE_L1) {
                                             Log.d("nf_drm", "WidevineDrmManager L1 created");
@@ -57,13 +59,13 @@ public final class DrmManagerRegistry
                                         }
                                         else {
                                             if (cryptoProvider != CryptoProvider.WIDEVINE_L3) {
-                                                break Label_0261;
+                                                break Label_0271;
                                             }
                                             Log.d("nf_drm", "WidevineDrmManager L3 created");
                                             DrmManagerRegistry.instance = new WidevineL3DrmManager(instance, serviceAgent$UserAgentInterface, serviceAgent$ConfigurationAgentInterface, errorLogging, errorHandler, drmManager$DrmReadyCallback);
                                         }
                                         if (cryptoProvider != CryptoProvider.LEGACY) {
-                                            break Label_0315;
+                                            break Label_0325;
                                         }
                                         if (AndroidUtils.getAndroidVersion() > 22) {
                                             currentDrmSystem = "M_PLUS_MGK";
@@ -76,25 +78,25 @@ public final class DrmManagerRegistry
                                             instance = (Context)DrmManagerRegistry.instance;
                                             return (DrmManager)instance;
                                         }
-                                        break Label_0309;
+                                        break Label_0319;
                                     }
                                     catch (Throwable t) {
                                         Log.e("nf_drm", "Unable to create WidevineDrmManager, default to LegacyDrmManager", t);
                                         MediaDrmUtils.updateCryptoProvideToLegacy();
                                         DrmManagerRegistry.instance = new LegacyDrmManager(drmManager$DrmReadyCallback);
-                                        continue Label_0067_Outer;
+                                        continue Label_0077_Outer;
                                     }
-                                    continue Label_0067_Outer;
+                                    continue Label_0077_Outer;
                                 }
                             }
                             if (Log.isLoggable()) {
                                 Log.d("nf_drm", "LegacyDrmManager for devices running android version = " + AndroidUtils.getAndroidVersion());
                             }
                             DrmManagerRegistry.instance = new LegacyDrmManager(drmManager$DrmReadyCallback);
-                            continue Label_0067_Outer;
+                            continue Label_0077_Outer;
                         }
                         currentDrmSystem = "LEGACY";
-                        continue Label_0094_Outer;
+                        continue Label_0104_Outer;
                     }
                 }
                 DrmManagerRegistry.currentDrmSystem = PreferenceUtils.getStringPref(instance, "nf_drm_system_id", null);
@@ -161,7 +163,7 @@ public final class DrmManagerRegistry
         return DrmManagerRegistry.mWidevineMediaDrmEngine;
     }
     
-    public static boolean hasEsnChanged() {
+    public static boolean hasEsnChanged(final String s) {
         Log.d("nf_drm", "currentDrmSystem: %s, previousDrmSystem: %s", DrmManagerRegistry.currentDrmSystem, DrmManagerRegistry.previousDrmSystem);
         if (StringUtils.isEmpty(DrmManagerRegistry.currentDrmSystem)) {
             Log.e("nf_drm", "DrmManager instance is not created");
@@ -183,11 +185,20 @@ public final class DrmManagerRegistry
                 return true;
             }
             Log.d("nf_drm", "Widevine System ID is NOT changed, verify if security level is changed");
-            if (DrmManagerRegistry.instance.getCryptoProvider() == DrmManagerRegistry.previousCryptoProvider) {
-                Log.d("nf_drm", "Same crypto provider %s. No change!", DrmManagerRegistry.previousCryptoProvider);
+            if (DrmManagerRegistry.instance.getCryptoProvider() != DrmManagerRegistry.previousCryptoProvider) {
+                Log.d("nf_drm", "Crypto provider is changed from %s to %s", DrmManagerRegistry.previousCryptoProvider, DrmManagerRegistry.instance.getCryptoProvider().name());
+                return true;
+            }
+            Log.d("nf_drm", "Same crypto provider %s. No change!", DrmManagerRegistry.previousCryptoProvider);
+            if (!StringUtils.isNotEmpty(DrmManagerRegistry.previousESN)) {
+                Log.w("nf_drm", "Previous ESN was NOT found, pre 4.15 app. Assume that ESN is not changed");
                 return false;
             }
-            Log.d("nf_drm", "Crypto provider is changed from %s to %s", DrmManagerRegistry.previousCryptoProvider, DrmManagerRegistry.instance.getCryptoProvider().name());
+            if (DrmManagerRegistry.previousESN.equals(s)) {
+                Log.d("nf_drm", "Previous ESN was found, 4.15+ app on last start. ESN is NOT changed!");
+                return false;
+            }
+            Log.w("nf_drm", "Previous ESN was found, 4.15+ app on last start. ESN IS changed!");
             return true;
         }
         return false;

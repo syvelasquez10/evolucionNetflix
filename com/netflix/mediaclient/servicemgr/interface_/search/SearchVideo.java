@@ -5,8 +5,9 @@
 package com.netflix.mediaclient.servicemgr.interface_.search;
 
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import com.netflix.mediaclient.servicemgr.interface_.ArtworkUrlProvider;
 
-public interface SearchVideo extends Video
+public interface SearchVideo extends ArtworkUrlProvider, Video
 {
     String getCertification();
     

@@ -4,6 +4,7 @@
 
 package com.facebook.react.uimanager;
 
+import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 
@@ -31,6 +32,10 @@ public class ReactStylesDiffMap
             return n;
         }
         return this.mBackingMap.getDouble(s);
+    }
+    
+    public Dynamic getDynamic(final String s) {
+        return this.mBackingMap.getDynamic(s);
     }
     
     public float getFloat(final String s, final float n) {

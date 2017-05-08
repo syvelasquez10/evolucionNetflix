@@ -21,6 +21,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import java.util.Map;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.bridge.OnBatchCompleteListener;
+import com.facebook.react.bridge.NativeModuleLogger;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 

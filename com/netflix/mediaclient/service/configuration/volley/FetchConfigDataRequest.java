@@ -13,6 +13,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.netflix.mediaclient.service.webclient.model.leafs.VoipAuthorizationData;
 import com.netflix.mediaclient.service.webclient.model.leafs.SignInConfigData;
+import com.netflix.mediaclient.service.webclient.model.leafs.NrmLanguagesData;
 import com.netflix.mediaclient.service.webclient.model.leafs.NrmConfigData;
 import com.netflix.mediaclient.service.webclient.model.leafs.CastKeyData;
 import com.netflix.mediaclient.service.webclient.model.leafs.AccountConfigData;
@@ -36,6 +37,7 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
     private static final String CUSTOMER_SUPPORT_VOIP_AUTHORIZATIONS = "customerSupportVoipAuthorizations";
     private static final String DEVICE_CONFIG = "deviceConfig";
     private static final String NRM_INFO = "nrmInfo";
+    private static final String NRM_LANG = "nrmLanguages";
     private static final String SIGNIN_CONFIG = "signInConfig";
     private static final String STREAMING_CONFIG = "streamingqoe";
     private static final String STREAMING_CONFIG_DEFAULT = "streamingqoeDefault";
@@ -45,6 +47,7 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
     public static final String customerSupportVoipPql;
     public static final String deviceConfigPql;
     public static final String nrmInfoPql;
+    public static final String nrmLangPql;
     public static final String signInConfigPql;
     private static final String streamingQoePql;
     public static final String streamingQoePqlDefault;
@@ -54,6 +57,7 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
     
     static {
         nrmInfoPql = String.format("['%s']", "nrmInfo");
+        nrmLangPql = String.format("['%s']", "nrmLanguages");
         signInConfigPql = String.format("['%s']", "signInConfig");
         deviceConfigPql = String.format("['%s']", "deviceConfig");
         accountConfigPql = String.format("['%s']", "accountConfig");
@@ -113,7 +117,7 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
             if (Log.isLoggable()) {
                 Log.v("nf_config_data", "AB Test config json: " + dataObj.get("abTestConfig"));
             }
-            (configData.abTestConfigData = FalkorParseUtils.getPropertyObject(dataObj, "abTestConfig", ABTestConfigData.class)).setRawABConfig(configData.abTestConfigData);
+            (configData.abTestConfigData = new ABTestConfigData(dataObj.get("abTestConfig").toString())).setRawABConfig(configData.abTestConfigData);
             if (Log.isLoggable()) {
                 final StringBuilder append2 = new StringBuilder().append("Parsed AB Test config: ");
                 if (configData.abTestConfigData == null) {
@@ -169,20 +173,36 @@ public class FetchConfigDataRequest extends FalkorVolleyWebClientRequest<ConfigD
                 Log.v("nf_config_data", append4.append(s).toString());
             }
         }
+        if (dataObj.has("nrmLanguages")) {
+            if (Log.isLoggable()) {
+                Log.v("nf_config_data", "NRM config json: " + dataObj.get("nrmLanguages"));
+            }
+            configData.nrmLang = FalkorParseUtils.getPropertyObject(dataObj, "nrmLanguages", NrmLanguagesData.class);
+            if (Log.isLoggable()) {
+                final StringBuilder append5 = new StringBuilder().append("Parsed NRM config: ");
+                if (configData.nrmLang == null) {
+                    s = "null";
+                }
+                else {
+                    s = configData.nrmLang.toJsonString();
+                }
+                Log.v("nf_config_data", append5.append(s).toString());
+            }
+        }
         if (dataObj.has("signInConfig")) {
             if (Log.isLoggable()) {
                 Log.v("nf_config_data", "SignIn config json: " + dataObj.get("signInConfig"));
             }
             configData.signInConfigData = FalkorParseUtils.getPropertyObject(dataObj, "signInConfig", SignInConfigData.class);
             if (Log.isLoggable()) {
-                final StringBuilder append5 = new StringBuilder().append("Parsed SingIn config: ");
+                final StringBuilder append6 = new StringBuilder().append("Parsed SingIn config: ");
                 if (configData.signInConfigData == null) {
                     s = "null";
                 }
                 else {
                     s = configData.signInConfigData.toJsonString();
                 }
-                Log.v("nf_config_data", append5.append(s).toString());
+                Log.v("nf_config_data", append6.append(s).toString());
             }
         }
         if (dataObj.has("customerSupportVoipAuthorizations")) {

@@ -28,6 +28,11 @@ import android.widget.Spinner;
 public class AppCompatSpinner extends Spinner implements TintableBackgroundView
 {
     private static final int[] ATTRS_ANDROID_SPINNERMODE;
+    private static final int MAX_ITEMS_MEASURED = 15;
+    private static final int MODE_DIALOG = 0;
+    private static final int MODE_DROPDOWN = 1;
+    private static final int MODE_THEME = -1;
+    private static final String TAG = "AppCompatSpinner";
     private AppCompatBackgroundHelper mBackgroundTintHelper;
     int mDropDownWidth;
     private ForwardingListener mForwardingListener;
@@ -39,6 +44,14 @@ public class AppCompatSpinner extends Spinner implements TintableBackgroundView
     
     static {
         ATTRS_ANDROID_SPINNERMODE = new int[] { 16843505 };
+    }
+    
+    public AppCompatSpinner(final Context context) {
+        this(context, null);
+    }
+    
+    public AppCompatSpinner(final Context context, final int n) {
+        this(context, null, R$attr.spinnerStyle, n);
     }
     
     public AppCompatSpinner(final Context context, final AttributeSet set) {

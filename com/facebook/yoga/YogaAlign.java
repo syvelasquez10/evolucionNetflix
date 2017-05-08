@@ -10,6 +10,7 @@ import com.facebook.proguard.annotations.DoNotStrip;
 public enum YogaAlign
 {
     AUTO(0), 
+    BASELINE(5), 
     CENTER(2), 
     FLEX_END(3), 
     FLEX_START(1), 

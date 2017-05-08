@@ -7,8 +7,8 @@ package com.netflix.mediaclient.ui.details;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable$Orientation;
-import com.netflix.mediaclient.Log;
 import java.util.Date;
+import com.netflix.mediaclient.Log;
 import android.widget.FrameLayout$LayoutParams;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
@@ -108,11 +108,11 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     }
     
     public static DetailsPageParallaxScrollListener createDefault(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] array, final View view, final View view2) {
-        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131689708), 0, 255, view2);
+        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131755259), 0, 255, view2);
     }
     
     public static DetailsPageParallaxScrollListener createParallaxOnly(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] array, final View view, final View view2) {
-        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131689708), 0, 0, view2);
+        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131755259), 0, 0, view2);
     }
     
     private void detachTrackingViewFromOriginalParent() {
@@ -147,8 +147,8 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
             final View child = this.recyclerView.getChildAt(0);
             if (!((RecyclerViewHeaderAdapter)this.recyclerView.getAdapter()).isViewHeader(child, this.recyclerView)) {
                 endingAlpha = this.endingAlpha;
-                if (this.seasonsSpinner != null && child.getTag(2131755028) != null) {
-                    this.postSetSpinnerSelectionRunnable((int)child.getTag(2131755028));
+                if (this.seasonsSpinner != null && child.getTag(2131820565) != null) {
+                    this.postSetSpinnerSelectionRunnable((int)child.getTag(2131820565));
                 }
                 this.onItemsShown();
             }
@@ -206,6 +206,7 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
         if (this.trackingView != null && this.anchorView != null) {
             final int[] array = new int[2];
             this.anchorView.getLocationOnScreen(array);
+            Log.d("DetailsPageParallaxScrollListener", "setTrackerViewPos... loc: " + array[1] + "   latch: " + this.latchPosition);
             if (array[1] < this.latchPosition) {
                 this.setTrackingViewLatchedPosition();
                 this.onTrackingViewLatched();
@@ -229,13 +230,6 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     
     protected int getTrackerViewFinalXPosition() {
         return 0;
-    }
-    
-    protected int getTrackerViewFinalYPosition() {
-        if (this.trackingView == null) {
-            return 0;
-        }
-        return this.actionBarPosition + ((NetflixActivity)this.trackingView.getContext()).getActionBarHeight() / 2 - ((NetflixActivity)this.trackingView.getContext()).getActionBarHeight() / 2;
     }
     
     protected int getTrackerViewLatchFadeinDuration() {

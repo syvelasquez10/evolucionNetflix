@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
+import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.util.DeviceUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,8 @@ public class DeviceConfigData
     private boolean mDisableAndroidJobScheduler;
     @SerializedName("disableAndroidJobSchedulerJobFinish")
     private boolean mDisableAndroidJobSchedulerJobFinish;
+    @SerializedName("mementoEnabledForWorld")
+    private boolean mementoEnabledForWorld;
     private String min_version;
     @SerializedName("offlineConfig")
     private OfflineConfig offlineConfig;
@@ -257,6 +260,10 @@ public class DeviceConfigData
         return this.enableDynecomSignIn;
     }
     
+    public boolean isMementoEnabledForWorld() {
+        return this.mementoEnabledForWorld;
+    }
+    
     public boolean isPlayBillingDisabled() {
         return this.disablePlayBilling;
     }
@@ -279,5 +286,9 @@ public class DeviceConfigData
     
     public boolean toIgnorePrelaodForPlayBilling() {
         return this.ignorePreloadForPlayBilling;
+    }
+    
+    public String toJsonString() {
+        return FalkorParseUtils.getGson().toJson(this);
     }
 }

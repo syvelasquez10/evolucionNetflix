@@ -69,6 +69,7 @@ public class DialogModule extends ReactContextBaseJavaModule implements Lifecycl
         this.getReactApplicationContext().addLifecycleEventListener(this);
     }
     
+    @Override
     public void onHostDestroy() {
     }
     

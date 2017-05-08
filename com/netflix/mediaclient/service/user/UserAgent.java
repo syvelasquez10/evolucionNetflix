@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.user;
 
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.ui.lolomo.PrefetchLolomoABTestUtils;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
@@ -15,13 +16,13 @@ import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.util.PrivacyUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.ThumbMessaging;
 import com.netflix.mediaclient.webapi.WebApiCommand;
 import com.netflix.mediaclient.servicemgr.IMSLClient$MSLUserCredentialRegistry;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.l10n.UserLocale;
-import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
@@ -48,6 +49,7 @@ import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.service.webclient.model.leafs.AccountData;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
@@ -100,8 +102,8 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     public UserAgent() {
         this.localeSupportStatus = CommonStatus.OK;
-        this.commonProfilesUpdateCallback = new UserAgent$5(this);
-        this.configDataCallback = new UserAgent$6(this);
+        this.commonProfilesUpdateCallback = new UserAgent$6(this);
+        this.configDataCallback = new UserAgent$7(this);
     }
     
     private List<UserProfile> buildListOfUserProfiles(final String s) {
@@ -229,7 +231,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             return;
         }
         SignInLogUtils.reportSignInRequestSessionStarted(this.getContext(), SignInLogging$SignInType.autologin);
-        this.mUserWebClient.autoLogin(stringExtra, new UserAgent$8(this));
+        this.mUserWebClient.autoLogin(stringExtra, new UserAgent$9(this));
     }
     
     private void handleCreateAutoLoginToken(final Intent intent) {
@@ -346,9 +348,15 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         this.mCurrentUserProfile = mCurrentUserProfile;
     }
     
-    private void setUserPreferredLanguages(final String[] array) {
-        this.userLocaleRepository.setPreferredLanguages(StringUtils.joinArray(array));
-        this.getNrdController().setDeviceLocale(this.userLocaleRepository.getCurrentAppLocale().getLocale());
+    private void setPrimaryProfileLocale(final AccountData accountData) {
+        if (accountData != null && accountData.getUserProfiles() != null) {
+            for (final UserProfile userProfile : accountData.getUserProfiles()) {
+                if (userProfile.isPrimaryProfile() && this.getCurrentAppLocale() == null) {
+                    this.setUserPreferredLanguages(userProfile.getLanguages());
+                    this.getApplication().refreshLocale(this.getCurrentAppLocale());
+                }
+            }
+        }
     }
     
     private void transferUserCookiesIntoNrmConfig() {
@@ -454,7 +462,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         if (stringPref != null) {
             this.getApplication().setSignedInOnce();
             this.mListOfUserProfiles = this.buildListOfUserProfiles(stringPref);
-            BookmarkStore.getInstance().updateValidProfiles(this.mListOfUserProfiles);
+            this.getService().getBookmarkStore().updateValidProfiles(this.mListOfUserProfiles);
         }
         final String stringPref2 = PreferenceUtils.getStringPref(this.getContext(), "useragent_user_data", null);
         if (stringPref2 != null) {
@@ -469,13 +477,13 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         }
         this.userLocaleRepository.setApplicationLanguage(new UserLocale(rawDeviceLocale));
         while (true) {
-            Label_0291: {
+            Label_0295: {
                 if (!this.getConfigurationAgent().shouldAlertForMissingLocale()) {
-                    break Label_0291;
+                    break Label_0295;
                 }
                 final UserLocaleRepository userLocaleRepository = this.userLocaleRepository;
                 if (UserLocaleRepository.wasPreviouslyAlerted(this.getContext())) {
-                    break Label_0291;
+                    break Label_0295;
                 }
                 final NetflixImmutableStatus localeSupportStatus = CommonStatus.NON_SUPPORTED_LOCALE;
                 this.localeSupportStatus = localeSupportStatus;
@@ -652,7 +660,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     @Override
     public IMSLClient$MSLUserCredentialRegistry getMSLUserCredentialRegistry() {
-        return new UserAgent$9(this);
+        return new UserAgent$10(this);
     }
     
     @Override
@@ -715,13 +723,20 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         return this.mSubtitleDefaults;
     }
     
+    public ThumbMessaging getThumbMessaging() {
+        if (this.mUser != null) {
+            return this.mUser.getThumbMessaging();
+        }
+        return null;
+    }
+    
     @Override
     public UserCredentialRegistry getUserCredentialRegistry() {
         return this;
     }
     
     public UmaAlert getUserMessageAlert() {
-        if (!KidsUtils.isKidsProfile(this.getCurrentProfile()) && this.mUser != null) {
+        if (!KidsUtils.isKidsProfile((com.netflix.mediaclient.servicemgr.interface_.user.UserProfile)this.getCurrentProfile()) && this.mUser != null) {
             return this.mUser.getUmaAlert();
         }
         return null;
@@ -772,15 +787,17 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     @Override
-    public boolean isCurrentProfileIQEnabled() {
+    public boolean isCurrentProfileInstantQueueEnabled() {
         if (this.mCurrentUserProfile == null) {
-            Log.d("nf_service_useragent", "isCurrentProfileIQEnabled is null");
-            return false;
+            Log.d("nf_service_useragent", "isCurrentProfileInstantQueueEnabled is null");
         }
-        if (Log.isLoggable()) {
-            Log.d("nf_service_useragent", String.format("isCurrentProfileIQEnabled %s called: %b ", this.mCurrentUserProfile.getFirstName(), this.mCurrentUserProfile.isIQEnabled()));
+        else if (!KidsUtils.isKidsParity(this.getContext()) || !this.mCurrentUserProfile.isKidsProfile() || !KidsUtils.isMyListForKidsDisabled()) {
+            if (Log.isLoggable()) {
+                Log.d("nf_service_useragent", String.format("isCurrentProfileInstantQueueEnabled %s called: %b ", this.mCurrentUserProfile.getFirstName(), this.mCurrentUserProfile.isIQEnabled()));
+            }
+            return this.mCurrentUserProfile.isIQEnabled();
         }
-        return this.mCurrentUserProfile.isIQEnabled();
+        return false;
     }
     
     public boolean isNonMemberPlayback() {
@@ -922,6 +939,15 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         Log.d("nf_service_useragent", "planId or priceTier is null - skip reporting");
     }
     
+    public void recordThumbRatingThanksSeen() {
+        this.mUser.setThumbMessaging(ThumbMessaging.builder().setShouldShowOneTimeProfileThumbsMessage(this.mUser.getThumbMessaging().shouldShowOneTimeProfileThumbsMessage()).setShouldShowFirstThumbsRatingMessage(false).build());
+    }
+    
+    public void recordThumbRatingWelcomeSeen() {
+        this.mUser.setThumbMessaging(ThumbMessaging.builder().setShouldShowOneTimeProfileThumbsMessage(false).setShouldShowFirstThumbsRatingMessage(this.mUser.getThumbMessaging().shouldShowFirstThumbsRatingMessage()).build());
+        this.launchWebTask(new UserAgent$4(this));
+    }
+    
     public void recordUmsImpression(final String s, final String s2) {
         if (StringUtils.isNotEmpty(s) && StringUtils.isNotEmpty(s2)) {
             if (Log.isLoggable()) {
@@ -952,13 +978,17 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             if (Log.isLoggable()) {
                 Log.d("nf_service_useragent", "UMA refreshing from server...");
             }
-            this.launchWebTask(new UserAgent$4(this, mUser));
+            this.launchWebTask(new UserAgent$5(this, mUser));
         }
     }
     
     public void removeWebUserProfile(final String s, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
         Log.d("nf_service_useragent", "removeWebUserProfile");
         this.launchWebTask(new UserAgent$RemoveWebUserProfilesTask(this, s, userAgent$UserAgentCallback));
+    }
+    
+    public void resetThumbMessagingForDebug() {
+        this.mUser.setThumbMessaging(ThumbMessaging.builder().setShouldShowOneTimeProfileThumbsMessage(true).setShouldShowFirstThumbsRatingMessage(true).build());
     }
     
     public void selectProfile(final String s) {
@@ -978,6 +1008,11 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     public void setNonMemberPlayback(final boolean mIsNonMemberPlayback) {
         this.mIsNonMemberPlayback = mIsNonMemberPlayback;
+    }
+    
+    public void setUserPreferredLanguages(final String[] array) {
+        this.userLocaleRepository.setPreferredLanguages(StringUtils.joinArray(array));
+        this.getNrdController().setDeviceLocale(this.userLocaleRepository.getCurrentAppLocale().getLocale());
     }
     
     @Override
@@ -1060,7 +1095,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         this.launchTask(new UserAgent$VerifyAgeTask(this, userAgent$UserAgentCallback));
     }
     
-    public void verifyPin(final String s, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
-        this.launchTask(new UserAgent$VerifyPinTask(this, s, userAgent$UserAgentCallback));
+    public void verifyPin(final String s, final PinVerifier$PinType pinVerifier$PinType, final String s2, final UserAgent$UserAgentCallback userAgent$UserAgentCallback) {
+        this.launchTask(new UserAgent$VerifyPinTask(this, s, pinVerifier$PinType, s2, userAgent$UserAgentCallback));
     }
 }

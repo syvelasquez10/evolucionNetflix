@@ -5,10 +5,10 @@
 package com.netflix.mediaclient.ui.common;
 
 import android.content.Context;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
+import com.netflix.mediaclient.ui.mdx.CastPlayerHelper$CastPlayerDialog;
 import android.support.v7.app.AlertDialog;
 
-class LanguageSelector$LanguageAlertDialog extends AlertDialog implements MdxMiniPlayerFrag$MdxMiniPlayerDialog
+class LanguageSelector$LanguageAlertDialog extends AlertDialog implements CastPlayerHelper$CastPlayerDialog
 {
     final /* synthetic */ LanguageSelector this$0;
     

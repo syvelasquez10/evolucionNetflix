@@ -20,7 +20,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.TextView;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.ui.details.NetflixRatingBar;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
+import com.netflix.mediaclient.ui.mdx.CastPlayerHelper$CastPlayerDialog;
 import com.netflix.mediaclient.ui.details.NetflixRatingBar$OnNetflixRatingBarChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;

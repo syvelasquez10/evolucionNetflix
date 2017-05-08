@@ -14,6 +14,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvi
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
+import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
@@ -32,23 +33,23 @@ import java.util.List;
 import android.os.Handler;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
+import com.netflix.model.branches.FalkorVideo;
 
 class PostToHandlerCallbackWrapper$12 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
-    final /* synthetic */ MovieDetails val$movieDetails;
+    final /* synthetic */ FalkorVideo val$obj;
     final /* synthetic */ Status val$res;
     
-    PostToHandlerCallbackWrapper$12(final PostToHandlerCallbackWrapper this$0, final MovieDetails val$movieDetails, final Status val$res) {
+    PostToHandlerCallbackWrapper$12(final PostToHandlerCallbackWrapper this$0, final FalkorVideo val$obj, final Status val$res) {
         this.this$0 = this$0;
-        this.val$movieDetails = val$movieDetails;
+        this.val$obj = val$obj;
         this.val$res = val$res;
     }
     
     @Override
     public void run() {
         ThreadUtils.assertOnMain();
-        this.this$0.callback.onMovieDetailsFetched(this.val$movieDetails, this.val$res);
+        this.this$0.callback.onFalkorVideoFetched(this.val$obj, this.val$res);
     }
 }

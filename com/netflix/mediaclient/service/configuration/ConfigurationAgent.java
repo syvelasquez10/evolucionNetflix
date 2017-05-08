@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.NrmLanguagesData;
 import com.netflix.mediaclient.media.JPlayer.DolbyDigitalHelper;
 import com.netflix.mediaclient.service.webclient.model.leafs.VoipConfiguration;
 import android.view.Display;
@@ -26,7 +27,7 @@ import android.util.Pair;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import android.media.UnsupportedSchemeException;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
@@ -210,6 +211,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         this.mDeviceConfigOverride.persistDeviceConfigOverride(configString.getDeviceConfig());
         this.mStreamingConfigOverride.persistStreamingOverride(configString.getStreamingConfig());
         this.mNrmConfigOverride.persistNrmConfigOverride(configString.getNrmConfigData());
+        this.mNrmConfigOverride.persistNrmLanguagesOverride(configString.getNrmLanguagesData());
         this.mCastKeyConfigOverride.persistCastConfigOverride(configString.getCastKeyData());
         this.mSignInConfigOverride.persistSignInConfigOverride(configString.getSignInConfigData());
         return CommonStatus.OK;
@@ -322,6 +324,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         this.mAccountConfigOverride.persistAccountConfigOverride(configData.getAccountConfig());
         this.mABTestConfigOverride.persistABTestConfigOverride(configData.getABTestConfigData());
         this.mNrmConfigOverride.persistNrmConfigOverride(configData.getNrmConfigData());
+        this.mNrmConfigOverride.persistNrmLanguagesOverride(configData.getNrmLanguagesData());
         this.mCastKeyConfigOverride.persistCastConfigOverride(configData.getCastKeyData());
         this.mSignInConfigOverride.persistSignInConfigOverride(configData.getSignInConfigData());
         ((VoipAuthorizationTokensUpdater)this.getService().getVoip()).updateAuthorizationData(configData.getCustomerSupportVoipAuthorizations());
@@ -369,6 +372,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         finally {
         }
         // monitorexit(this)
+    }
+    
+    @Override
+    public void allocateABTest(final int n, final int n2, final ConfigurationAgentWebCallback configurationAgentWebCallback) {
+        this.launchTask(new ConfigurationAgent$AllocateABTestRequestTask(this, n, n2, configurationAgentWebCallback));
     }
     
     @Override
@@ -443,7 +451,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         }
         final ConfigurationAgent$1 configurationAgent$1 = new ConfigurationAgent$1(this);
         PerformanceProfiler.getInstance().startSession(Sessions.DRM_LOADED, null);
-        CryptoErrorManager.INSTANCE.init(this.getContext(), this.getService().getStartedTimeInMs(), this.getUserAgent(), this.getConfigurationAgent(), this.getOfflineAgent(), this.getErrorHandler(), this.getService().getClientLogging().getErrorLogging());
+        CryptoErrorManager.INSTANCE.init(this.getContext(), this.getMainHandler(), this.getService().getStartedTimeInMs(), this.getUserAgent(), this.getConfigurationAgent(), this.getOfflineAgent(), this.getErrorHandler(), this.getService().getClientLogging().getErrorLogging());
         this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), this.getErrorHandler(), configurationAgent$1);
         try {
             this.mESN = EsnProviderRegistry.createESN(this.getContext(), this.mDrmManager, this);
@@ -482,8 +490,8 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
-    public ABTestConfig$Cell getAimLowTextPlaceholderConfig() {
-        return this.mABTestConfigOverride.getAimLowTextPlaceholderConfig();
+    public ABTestConfigData getABTestConfig() {
+        return this.mABTestConfigOverride.mABTestConfigData;
     }
     
     @Override
@@ -516,18 +524,8 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
-    public ABTestConfig$Cell getBrandLoveSurveyConfig() {
-        return this.mABTestConfigOverride.getBrandLoveSurveyConfig();
-    }
-    
-    @Override
     public BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification() {
         return this.mDeviceConfigOverride.getBreadcrumbLoggingSpecification();
-    }
-    
-    @Override
-    public ABTestConfig$Cell getCWProgressBarConfig() {
-        return this.mABTestConfigOverride.getCWProgressBarConfig();
     }
     
     @Override
@@ -569,16 +567,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
-    public ABTestConfig$Cell getCoppola1Experience() {
-        return this.mABTestConfigOverride.getCoppola1TestCell();
-    }
-    
-    @Override
-    public ABTestConfig$Cell getCoppola2Experience() {
-        return this.mABTestConfigOverride.getCoppola2TestCell();
-    }
-    
-    @Override
     public PlayerType getCurrentPlayerType() {
         return PlayerTypeFactory.getCurrentType(this.getContext());
     }
@@ -616,11 +604,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public int getDiskCacheSizeBytes() {
         return this.mDiskCacheSizeBytes;
-    }
-    
-    @Override
-    public ABTestConfig$Cell getDisplayPageRefreshConfig() {
-        return this.mABTestConfigOverride.getDisplayPageRefreshConfig();
     }
     
     @Override
@@ -691,21 +674,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         return this.mMdxConfiguration;
     }
     
-    @Override
-    public ABTestConfig$Cell getMemento2Config() {
-        return this.mABTestConfigOverride.getMemento2Config();
-    }
-    
-    @Override
-    public ABTestConfig$Cell getMementoConfig() {
-        return this.mABTestConfigOverride.getMementoConfig();
-    }
-    
-    @Override
-    public ABTestConfig$Cell getMotionBBTestConfig() {
-        return this.mABTestConfigOverride.getMotionBBTestConfig();
-    }
-    
     public String getNrdDeviceModel() {
         return this.getEsnProvider().getDeviceModel();
     }
@@ -721,21 +689,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
-    public ABTestConfig$Cell getOfflineTutorialConfig() {
-        return this.mABTestConfigOverride.getOfflineTutorialConfig();
-    }
-    
-    @Override
-    public ABTestConfig$Cell getOnRampConfig() {
-        return this.mABTestConfigOverride.getOnRampConfig();
-    }
-    
-    @Override
-    public ABTestConfig$Cell getPhoneOrientationConfig() {
-        return this.mABTestConfigOverride.getPhoneOrientationConfig();
-    }
-    
-    @Override
     public PlaybackConfiguration getPlaybackConfiguration() {
         return this.mPlaybackConfiguration;
     }
@@ -748,16 +701,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public String getPreAppWidgetExperience() {
         return this.mAccountConfigOverride.getPreAppWidgetExperience();
-    }
-    
-    @Override
-    public ABTestConfig$Cell getPrefetchDPConfig() {
-        return this.mABTestConfigOverride.getAimLowPrefetchDPConfig();
-    }
-    
-    @Override
-    public ABTestConfig$Cell getPrefetchLolomoConfig() {
-        return this.mABTestConfigOverride.getAimLowPrefetchLolomoConfig();
     }
     
     @Override
@@ -830,6 +773,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public String getUserPin() {
+        return this.mAccountConfigOverride.getUserPin();
+    }
+    
+    @Override
     public int getVideoBufferSize() {
         final int videoBufferSize = this.mAccountConfigOverride.getVideoBufferSize();
         int n;
@@ -880,11 +828,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         }
         final int heightPixels = Integer.MAX_VALUE;
         return VideoResolutionRange.getVideoResolutionRangeFromMaxHieght(heightPixels);
-    }
-    
-    @Override
-    public ABTestConfig$Cell getVoiceSearchABTestConfig() {
-        return this.mABTestConfigOverride.getVoiceSearchABTestConfig();
     }
     
     @Override
@@ -987,6 +930,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public boolean isMementoEnabledForWorld() {
+        return this.mDeviceConfigOverride.isMementoEnabledForWorld();
+    }
+    
+    @Override
     public boolean isPlayBillingDisabled() {
         return this.mDeviceConfigOverride.isPlayBillingDisabled();
     }
@@ -1021,6 +969,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public void persistNrmConfigData(final NrmConfigData nrmConfigData) {
         this.mNrmConfigOverride.persistNrmConfigOverride(nrmConfigData);
+    }
+    
+    @Override
+    public void persistNrmLanguagesData(final NrmLanguagesData nrmLanguagesData) {
+        this.mNrmConfigOverride.persistNrmLanguagesOverride(nrmLanguagesData);
     }
     
     public void refreshConfig(final ConfigurationAgentWebCallback configurationAgentWebCallback, final ConfigurationAgent$ConfigAgentListener configurationAgent$ConfigAgentListener) {

@@ -21,32 +21,33 @@ import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetail
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
+import com.netflix.model.leafs.advisory.Advisory;
 import com.netflix.model.branches.FalkorActorStill;
 import com.netflix.model.branches.MementoVideoSwatch;
 import com.netflix.model.branches.FalkorPerson;
-import android.os.Handler;
-import com.netflix.model.leafs.advisory.Advisory;
-import com.netflix.mediaclient.android.app.Status;
 import java.util.List;
+import android.os.Handler;
+import com.netflix.mediaclient.android.app.Status;
 
 class PostToHandlerCallbackWrapper$36 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
-    final /* synthetic */ List val$advisories;
     final /* synthetic */ Status val$res;
+    final /* synthetic */ boolean val$success;
     
-    PostToHandlerCallbackWrapper$36(final PostToHandlerCallbackWrapper this$0, final List val$advisories, final Status val$res) {
+    PostToHandlerCallbackWrapper$36(final PostToHandlerCallbackWrapper this$0, final boolean val$success, final Status val$res) {
         this.this$0 = this$0;
-        this.val$advisories = val$advisories;
+        this.val$success = val$success;
         this.val$res = val$res;
     }
     
     @Override
     public void run() {
-        this.this$0.callback.onAdvisoriesFetched(this.val$advisories, this.val$res);
+        this.this$0.callback.onBrowsePlaySessionEnd(this.val$success, this.val$res);
     }
 }

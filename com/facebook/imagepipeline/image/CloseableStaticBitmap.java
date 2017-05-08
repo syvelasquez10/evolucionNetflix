@@ -71,6 +71,7 @@ public class CloseableStaticBitmap extends CloseableBitmap
         return BitmapUtil.getSizeInBytes(this.mBitmap);
     }
     
+    @Override
     public Bitmap getUnderlyingBitmap() {
         return this.mBitmap;
     }

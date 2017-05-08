@@ -21,14 +21,14 @@ public class BarkerRulerActivity extends Activity
     
     private View createColumn() {
         final View view = new View((Context)this);
-        view.setBackgroundColor(this.getResources().getColor(2131689491));
+        view.setBackgroundColor(this.getResources().getColor(2131755027));
         view.setLayoutParams(new ViewGroup$LayoutParams(this.barker.getColumnWidth(), -1));
         return view;
     }
     
     private View createGutter() {
         final View view = new View((Context)this);
-        view.setBackgroundColor(this.getResources().getColor(2131689492));
+        view.setBackgroundColor(this.getResources().getColor(2131755028));
         view.setLayoutParams(new ViewGroup$LayoutParams(this.barker.getGutterWidth(), -1));
         return view;
     }

@@ -14,15 +14,13 @@ class CameraRollManager$SaveToCameraRoll extends GuardedAsyncTask<Void, Void>
 {
     private final Context mContext;
     private final Promise mPromise;
-    private final CameraRollManager$MediaType mType;
     private final Uri mUri;
     
-    public CameraRollManager$SaveToCameraRoll(final ReactContext mContext, final Uri mUri, final CameraRollManager$MediaType mType, final Promise mPromise) {
+    public CameraRollManager$SaveToCameraRoll(final ReactContext mContext, final Uri mUri, final Promise mPromise) {
         super(mContext);
         this.mContext = (Context)mContext;
         this.mUri = mUri;
         this.mPromise = mPromise;
-        this.mType = mType;
     }
     
     @Override
@@ -33,313 +31,311 @@ class CameraRollManager$SaveToCameraRoll extends GuardedAsyncTask<Void, Void>
         // Original Bytecode:
         // 
         //     0: aconst_null    
-        //     1: astore          6
+        //     1: astore          5
         //     3: aconst_null    
-        //     4: astore          7
+        //     4: astore          6
         //     6: new             Ljava/io/File;
         //     9: dup            
         //    10: aload_0        
         //    11: getfield        com/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll.mUri:Landroid/net/Uri;
         //    14: invokevirtual   android/net/Uri.getPath:()Ljava/lang/String;
         //    17: invokespecial   java/io/File.<init>:(Ljava/lang/String;)V
-        //    20: astore          9
-        //    22: aload_0        
-        //    23: getfield        com/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll.mType:Lcom/facebook/react/modules/camera/CameraRollManager$MediaType;
-        //    26: getstatic       com/facebook/react/modules/camera/CameraRollManager$MediaType.PHOTO:Lcom/facebook/react/modules/camera/CameraRollManager$MediaType;
-        //    29: if_acmpne       89
-        //    32: getstatic       android/os/Environment.DIRECTORY_PICTURES:Ljava/lang/String;
-        //    35: invokestatic    android/os/Environment.getExternalStoragePublicDirectory:(Ljava/lang/String;)Ljava/io/File;
-        //    38: astore_1       
-        //    39: aload_1        
-        //    40: invokevirtual   java/io/File.mkdirs:()Z
-        //    43: pop            
-        //    44: aload_1        
-        //    45: invokevirtual   java/io/File.isDirectory:()Z
-        //    48: ifne            99
-        //    51: aload_0        
-        //    52: getfield        com/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll.mPromise:Lcom/facebook/react/bridge/Promise;
-        //    55: ldc             "E_UNABLE_TO_LOAD"
-        //    57: ldc             "External media storage directory not available"
-        //    59: invokeinterface com/facebook/react/bridge/Promise.reject:(Ljava/lang/String;Ljava/lang/String;)V
-        //    64: iconst_0       
-        //    65: ifeq            76
-        //    68: new             Ljava/lang/NullPointerException;
-        //    71: dup            
-        //    72: invokespecial   java/lang/NullPointerException.<init>:()V
-        //    75: athrow         
-        //    76: iconst_0       
-        //    77: ifeq            88
-        //    80: new             Ljava/lang/NullPointerException;
-        //    83: dup            
-        //    84: invokespecial   java/lang/NullPointerException.<init>:()V
-        //    87: athrow         
-        //    88: return         
-        //    89: getstatic       android/os/Environment.DIRECTORY_MOVIES:Ljava/lang/String;
-        //    92: invokestatic    android/os/Environment.getExternalStoragePublicDirectory:(Ljava/lang/String;)Ljava/io/File;
-        //    95: astore_1       
-        //    96: goto            39
-        //    99: new             Ljava/io/File;
-        //   102: dup            
-        //   103: aload_1        
-        //   104: aload           9
-        //   106: invokevirtual   java/io/File.getName:()Ljava/lang/String;
-        //   109: invokespecial   java/io/File.<init>:(Ljava/io/File;Ljava/lang/String;)V
-        //   112: astore_3       
-        //   113: aload           9
-        //   115: invokevirtual   java/io/File.getName:()Ljava/lang/String;
-        //   118: astore          8
-        //   120: aload           8
-        //   122: bipush          46
-        //   124: invokevirtual   java/lang/String.indexOf:(I)I
-        //   127: iflt            542
-        //   130: aload           8
-        //   132: iconst_0       
-        //   133: aload           8
-        //   135: bipush          46
-        //   137: invokevirtual   java/lang/String.lastIndexOf:(I)I
-        //   140: invokevirtual   java/lang/String.substring:(II)Ljava/lang/String;
-        //   143: astore          5
-        //   145: aload           8
-        //   147: aload           8
-        //   149: bipush          46
-        //   151: invokevirtual   java/lang/String.lastIndexOf:(I)I
-        //   154: invokevirtual   java/lang/String.substring:(I)Ljava/lang/String;
-        //   157: astore          4
-        //   159: iconst_0       
-        //   160: istore_2       
-        //   161: aload_3        
-        //   162: invokevirtual   java/io/File.createNewFile:()Z
-        //   165: ifne            213
-        //   168: new             Ljava/io/File;
-        //   171: dup            
-        //   172: aload_1        
-        //   173: new             Ljava/lang/StringBuilder;
-        //   176: dup            
-        //   177: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   180: aload           5
-        //   182: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   185: ldc             "_"
-        //   187: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   190: iload_2        
-        //   191: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
-        //   194: aload           4
-        //   196: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   199: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   202: invokespecial   java/io/File.<init>:(Ljava/io/File;Ljava/lang/String;)V
-        //   205: astore_3       
-        //   206: iload_2        
-        //   207: iconst_1       
-        //   208: iadd           
-        //   209: istore_2       
-        //   210: goto            161
-        //   213: new             Ljava/io/FileInputStream;
-        //   216: dup            
-        //   217: aload           9
-        //   219: invokespecial   java/io/FileInputStream.<init>:(Ljava/io/File;)V
-        //   222: invokevirtual   java/io/FileInputStream.getChannel:()Ljava/nio/channels/FileChannel;
-        //   225: astore_1       
-        //   226: new             Ljava/io/FileOutputStream;
-        //   229: dup            
-        //   230: aload_3        
-        //   231: invokespecial   java/io/FileOutputStream.<init>:(Ljava/io/File;)V
-        //   234: invokevirtual   java/io/FileOutputStream.getChannel:()Ljava/nio/channels/FileChannel;
-        //   237: astore          4
-        //   239: aload           4
-        //   241: aload_1        
-        //   242: lconst_0       
-        //   243: aload_1        
-        //   244: invokevirtual   java/nio/channels/FileChannel.size:()J
-        //   247: invokevirtual   java/nio/channels/FileChannel.transferFrom:(Ljava/nio/channels/ReadableByteChannel;JJ)J
-        //   250: pop2           
-        //   251: aload_1        
-        //   252: invokevirtual   java/nio/channels/FileChannel.close:()V
-        //   255: aload           4
-        //   257: invokevirtual   java/nio/channels/FileChannel.close:()V
-        //   260: aload_0        
-        //   261: getfield        com/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll.mContext:Landroid/content/Context;
-        //   264: astore          5
-        //   266: aload_3        
-        //   267: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
-        //   270: astore_3       
-        //   271: new             Lcom/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll$1;
-        //   274: dup            
-        //   275: aload_0        
-        //   276: invokespecial   com/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll$1.<init>:(Lcom/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll;)V
-        //   279: astore          6
-        //   281: aload           5
-        //   283: iconst_1       
-        //   284: anewarray       Ljava/lang/String;
-        //   287: dup            
-        //   288: iconst_0       
-        //   289: aload_3        
-        //   290: aastore        
-        //   291: aconst_null    
-        //   292: aload           6
-        //   294: invokestatic    android/media/MediaScannerConnection.scanFile:(Landroid/content/Context;[Ljava/lang/String;[Ljava/lang/String;Landroid/media/MediaScannerConnection$OnScanCompletedListener;)V
-        //   297: aload_1        
-        //   298: ifnull          312
-        //   301: aload_1        
+        //    20: astore          8
+        //    22: getstatic       android/os/Environment.DIRECTORY_DCIM:Ljava/lang/String;
+        //    25: invokestatic    android/os/Environment.getExternalStoragePublicDirectory:(Ljava/lang/String;)Ljava/io/File;
+        //    28: astore          9
+        //    30: aload           9
+        //    32: invokevirtual   java/io/File.mkdirs:()Z
+        //    35: pop            
+        //    36: aload           9
+        //    38: invokevirtual   java/io/File.isDirectory:()Z
+        //    41: ifne            82
+        //    44: aload_0        
+        //    45: getfield        com/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll.mPromise:Lcom/facebook/react/bridge/Promise;
+        //    48: ldc             "E_UNABLE_TO_LOAD"
+        //    50: ldc             "External media storage directory not available"
+        //    52: invokeinterface com/facebook/react/bridge/Promise.reject:(Ljava/lang/String;Ljava/lang/String;)V
+        //    57: iconst_0       
+        //    58: ifeq            69
+        //    61: new             Ljava/lang/NullPointerException;
+        //    64: dup            
+        //    65: invokespecial   java/lang/NullPointerException.<init>:()V
+        //    68: athrow         
+        //    69: iconst_0       
+        //    70: ifeq            81
+        //    73: new             Ljava/lang/NullPointerException;
+        //    76: dup            
+        //    77: invokespecial   java/lang/NullPointerException.<init>:()V
+        //    80: athrow         
+        //    81: return         
+        //    82: new             Ljava/io/File;
+        //    85: dup            
+        //    86: aload           9
+        //    88: aload           8
+        //    90: invokevirtual   java/io/File.getName:()Ljava/lang/String;
+        //    93: invokespecial   java/io/File.<init>:(Ljava/io/File;Ljava/lang/String;)V
+        //    96: astore_1       
+        //    97: aload           8
+        //    99: invokevirtual   java/io/File.getName:()Ljava/lang/String;
+        //   102: astore_3       
+        //   103: aload_3        
+        //   104: bipush          46
+        //   106: invokevirtual   java/lang/String.indexOf:(I)I
+        //   109: iflt            529
+        //   112: aload_3        
+        //   113: iconst_0       
+        //   114: aload_3        
+        //   115: bipush          46
+        //   117: invokevirtual   java/lang/String.lastIndexOf:(I)I
+        //   120: invokevirtual   java/lang/String.substring:(II)Ljava/lang/String;
+        //   123: astore          4
+        //   125: aload_3        
+        //   126: aload_3        
+        //   127: bipush          46
+        //   129: invokevirtual   java/lang/String.lastIndexOf:(I)I
+        //   132: invokevirtual   java/lang/String.substring:(I)Ljava/lang/String;
+        //   135: astore          7
+        //   137: iconst_0       
+        //   138: istore_2       
+        //   139: aload_1        
+        //   140: astore_3       
+        //   141: aload           7
+        //   143: astore_1       
+        //   144: aload_3        
+        //   145: invokevirtual   java/io/File.createNewFile:()Z
+        //   148: ifne            196
+        //   151: new             Ljava/io/File;
+        //   154: dup            
+        //   155: aload           9
+        //   157: new             Ljava/lang/StringBuilder;
+        //   160: dup            
+        //   161: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   164: aload           4
+        //   166: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   169: ldc             "_"
+        //   171: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   174: iload_2        
+        //   175: invokevirtual   java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;
+        //   178: aload_1        
+        //   179: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   182: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   185: invokespecial   java/io/File.<init>:(Ljava/io/File;Ljava/lang/String;)V
+        //   188: astore_3       
+        //   189: iload_2        
+        //   190: iconst_1       
+        //   191: iadd           
+        //   192: istore_2       
+        //   193: goto            144
+        //   196: new             Ljava/io/FileInputStream;
+        //   199: dup            
+        //   200: aload           8
+        //   202: invokespecial   java/io/FileInputStream.<init>:(Ljava/io/File;)V
+        //   205: invokevirtual   java/io/FileInputStream.getChannel:()Ljava/nio/channels/FileChannel;
+        //   208: astore_1       
+        //   209: new             Ljava/io/FileOutputStream;
+        //   212: dup            
+        //   213: aload_3        
+        //   214: invokespecial   java/io/FileOutputStream.<init>:(Ljava/io/File;)V
+        //   217: invokevirtual   java/io/FileOutputStream.getChannel:()Ljava/nio/channels/FileChannel;
+        //   220: astore          4
+        //   222: aload           4
+        //   224: aload_1        
+        //   225: lconst_0       
+        //   226: aload_1        
+        //   227: invokevirtual   java/nio/channels/FileChannel.size:()J
+        //   230: invokevirtual   java/nio/channels/FileChannel.transferFrom:(Ljava/nio/channels/ReadableByteChannel;JJ)J
+        //   233: pop2           
+        //   234: aload_1        
+        //   235: invokevirtual   java/nio/channels/FileChannel.close:()V
+        //   238: aload           4
+        //   240: invokevirtual   java/nio/channels/FileChannel.close:()V
+        //   243: aload_0        
+        //   244: getfield        com/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll.mContext:Landroid/content/Context;
+        //   247: astore          5
+        //   249: aload_3        
+        //   250: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
+        //   253: astore          6
+        //   255: new             Lcom/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll$1;
+        //   258: dup            
+        //   259: aload_0        
+        //   260: invokespecial   com/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll$1.<init>:(Lcom/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll;)V
+        //   263: astore_3       
+        //   264: aload           5
+        //   266: iconst_1       
+        //   267: anewarray       Ljava/lang/String;
+        //   270: dup            
+        //   271: iconst_0       
+        //   272: aload           6
+        //   274: aastore        
+        //   275: aconst_null    
+        //   276: aload_3        
+        //   277: invokestatic    android/media/MediaScannerConnection.scanFile:(Landroid/content/Context;[Ljava/lang/String;[Ljava/lang/String;Landroid/media/MediaScannerConnection$OnScanCompletedListener;)V
+        //   280: aload_1        
+        //   281: ifnull          295
+        //   284: aload_1        
+        //   285: invokevirtual   java/nio/channels/FileChannel.isOpen:()Z
+        //   288: ifeq            295
+        //   291: aload_1        
+        //   292: invokevirtual   java/nio/channels/FileChannel.close:()V
+        //   295: aload           4
+        //   297: ifnull          81
+        //   300: aload           4
         //   302: invokevirtual   java/nio/channels/FileChannel.isOpen:()Z
-        //   305: ifeq            312
-        //   308: aload_1        
-        //   309: invokevirtual   java/nio/channels/FileChannel.close:()V
-        //   312: aload           4
-        //   314: ifnull          88
-        //   317: aload           4
-        //   319: invokevirtual   java/nio/channels/FileChannel.isOpen:()Z
-        //   322: ifeq            88
-        //   325: aload           4
-        //   327: invokevirtual   java/nio/channels/FileChannel.close:()V
-        //   330: return         
-        //   331: astore_1       
-        //   332: ldc             "React"
-        //   334: ldc             "Could not close output channel"
-        //   336: aload_1        
-        //   337: invokestatic    com/facebook/common/logging/FLog.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
-        //   340: return         
-        //   341: astore_1       
-        //   342: ldc             "React"
-        //   344: ldc             "Could not close input channel"
-        //   346: aload_1        
-        //   347: invokestatic    com/facebook/common/logging/FLog.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
-        //   350: goto            312
-        //   353: astore          4
-        //   355: aconst_null    
-        //   356: astore_1       
-        //   357: aload           7
-        //   359: astore_3       
-        //   360: aload_0        
-        //   361: getfield        com/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll.mPromise:Lcom/facebook/react/bridge/Promise;
-        //   364: aload           4
-        //   366: invokeinterface com/facebook/react/bridge/Promise.reject:(Ljava/lang/Throwable;)V
-        //   371: aload_3        
-        //   372: ifnull          386
-        //   375: aload_3        
-        //   376: invokevirtual   java/nio/channels/FileChannel.isOpen:()Z
-        //   379: ifeq            386
-        //   382: aload_3        
-        //   383: invokevirtual   java/nio/channels/FileChannel.close:()V
-        //   386: aload_1        
-        //   387: ifnull          88
+        //   305: ifeq            81
+        //   308: aload           4
+        //   310: invokevirtual   java/nio/channels/FileChannel.close:()V
+        //   313: return         
+        //   314: astore_1       
+        //   315: ldc             "React"
+        //   317: ldc             "Could not close output channel"
+        //   319: aload_1        
+        //   320: invokestatic    com/facebook/common/logging/FLog.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   323: return         
+        //   324: astore_1       
+        //   325: ldc             "React"
+        //   327: ldc             "Could not close input channel"
+        //   329: aload_1        
+        //   330: invokestatic    com/facebook/common/logging/FLog.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   333: goto            295
+        //   336: astore          4
+        //   338: aconst_null    
+        //   339: astore_1       
+        //   340: aload           6
+        //   342: astore_3       
+        //   343: aload_0        
+        //   344: getfield        com/facebook/react/modules/camera/CameraRollManager$SaveToCameraRoll.mPromise:Lcom/facebook/react/bridge/Promise;
+        //   347: aload           4
+        //   349: invokeinterface com/facebook/react/bridge/Promise.reject:(Ljava/lang/Throwable;)V
+        //   354: aload_3        
+        //   355: ifnull          369
+        //   358: aload_3        
+        //   359: invokevirtual   java/nio/channels/FileChannel.isOpen:()Z
+        //   362: ifeq            369
+        //   365: aload_3        
+        //   366: invokevirtual   java/nio/channels/FileChannel.close:()V
+        //   369: aload_1        
+        //   370: ifnull          81
+        //   373: aload_1        
+        //   374: invokevirtual   java/nio/channels/FileChannel.isOpen:()Z
+        //   377: ifeq            81
+        //   380: aload_1        
+        //   381: invokevirtual   java/nio/channels/FileChannel.close:()V
+        //   384: return         
+        //   385: astore_1       
+        //   386: ldc             "React"
+        //   388: ldc             "Could not close output channel"
         //   390: aload_1        
-        //   391: invokevirtual   java/nio/channels/FileChannel.isOpen:()Z
-        //   394: ifeq            88
-        //   397: aload_1        
-        //   398: invokevirtual   java/nio/channels/FileChannel.close:()V
-        //   401: return         
-        //   402: astore_1       
-        //   403: ldc             "React"
-        //   405: ldc             "Could not close output channel"
-        //   407: aload_1        
-        //   408: invokestatic    com/facebook/common/logging/FLog.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
-        //   411: return         
-        //   412: astore_3       
-        //   413: ldc             "React"
-        //   415: ldc             "Could not close input channel"
-        //   417: aload_3        
-        //   418: invokestatic    com/facebook/common/logging/FLog.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
-        //   421: goto            386
-        //   424: astore_3       
-        //   425: aconst_null    
-        //   426: astore_1       
-        //   427: aload           6
-        //   429: astore          4
-        //   431: aload_1        
-        //   432: ifnull          446
-        //   435: aload_1        
+        //   391: invokestatic    com/facebook/common/logging/FLog.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   394: return         
+        //   395: astore_3       
+        //   396: ldc             "React"
+        //   398: ldc             "Could not close input channel"
+        //   400: aload_3        
+        //   401: invokestatic    com/facebook/common/logging/FLog.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   404: goto            369
+        //   407: astore_3       
+        //   408: aconst_null    
+        //   409: astore_1       
+        //   410: aload           5
+        //   412: astore          4
+        //   414: aload_1        
+        //   415: ifnull          429
+        //   418: aload_1        
+        //   419: invokevirtual   java/nio/channels/FileChannel.isOpen:()Z
+        //   422: ifeq            429
+        //   425: aload_1        
+        //   426: invokevirtual   java/nio/channels/FileChannel.close:()V
+        //   429: aload           4
+        //   431: ifnull          447
+        //   434: aload           4
         //   436: invokevirtual   java/nio/channels/FileChannel.isOpen:()Z
-        //   439: ifeq            446
-        //   442: aload_1        
-        //   443: invokevirtual   java/nio/channels/FileChannel.close:()V
-        //   446: aload           4
-        //   448: ifnull          464
-        //   451: aload           4
-        //   453: invokevirtual   java/nio/channels/FileChannel.isOpen:()Z
-        //   456: ifeq            464
-        //   459: aload           4
-        //   461: invokevirtual   java/nio/channels/FileChannel.close:()V
-        //   464: aload_3        
-        //   465: athrow         
-        //   466: astore_1       
-        //   467: ldc             "React"
-        //   469: ldc             "Could not close input channel"
-        //   471: aload_1        
-        //   472: invokestatic    com/facebook/common/logging/FLog.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
-        //   475: goto            446
-        //   478: astore_1       
-        //   479: ldc             "React"
-        //   481: ldc             "Could not close output channel"
-        //   483: aload_1        
-        //   484: invokestatic    com/facebook/common/logging/FLog.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
-        //   487: goto            464
-        //   490: astore_3       
-        //   491: aload           6
-        //   493: astore          4
-        //   495: goto            431
-        //   498: astore_3       
-        //   499: goto            431
-        //   502: astore          6
-        //   504: aload_3        
-        //   505: astore          5
-        //   507: aload_1        
-        //   508: astore          4
-        //   510: aload           6
-        //   512: astore_3       
-        //   513: aload           5
-        //   515: astore_1       
-        //   516: goto            431
-        //   519: astore          4
-        //   521: aload_1        
-        //   522: astore_3       
-        //   523: aconst_null    
-        //   524: astore_1       
-        //   525: goto            360
-        //   528: astore          5
-        //   530: aload_1        
-        //   531: astore_3       
-        //   532: aload           4
-        //   534: astore_1       
-        //   535: aload           5
-        //   537: astore          4
-        //   539: goto            360
-        //   542: ldc             ""
-        //   544: astore          4
-        //   546: aload           8
-        //   548: astore          5
-        //   550: iconst_0       
-        //   551: istore_2       
-        //   552: goto            161
+        //   439: ifeq            447
+        //   442: aload           4
+        //   444: invokevirtual   java/nio/channels/FileChannel.close:()V
+        //   447: aload_3        
+        //   448: athrow         
+        //   449: astore_1       
+        //   450: ldc             "React"
+        //   452: ldc             "Could not close input channel"
+        //   454: aload_1        
+        //   455: invokestatic    com/facebook/common/logging/FLog.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   458: goto            429
+        //   461: astore_1       
+        //   462: ldc             "React"
+        //   464: ldc             "Could not close output channel"
+        //   466: aload_1        
+        //   467: invokestatic    com/facebook/common/logging/FLog.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   470: goto            447
+        //   473: astore_3       
+        //   474: aload           5
+        //   476: astore          4
+        //   478: goto            414
+        //   481: astore_3       
+        //   482: goto            414
+        //   485: astore          6
+        //   487: aload_3        
+        //   488: astore          4
+        //   490: aload_1        
+        //   491: astore          5
+        //   493: aload           6
+        //   495: astore_3       
+        //   496: aload           4
+        //   498: astore_1       
+        //   499: aload           5
+        //   501: astore          4
+        //   503: goto            414
+        //   506: astore          4
+        //   508: aload_1        
+        //   509: astore_3       
+        //   510: aconst_null    
+        //   511: astore_1       
+        //   512: goto            343
+        //   515: astore          5
+        //   517: aload_1        
+        //   518: astore_3       
+        //   519: aload           4
+        //   521: astore_1       
+        //   522: aload           5
+        //   524: astore          4
+        //   526: goto            343
+        //   529: ldc             ""
+        //   531: astore          7
+        //   533: aload_3        
+        //   534: astore          4
+        //   536: aload_1        
+        //   537: astore_3       
+        //   538: iconst_0       
+        //   539: istore_2       
+        //   540: aload           7
+        //   542: astore_1       
+        //   543: goto            144
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  22     39     353    360    Ljava/io/IOException;
-        //  22     39     424    431    Any
-        //  39     64     353    360    Ljava/io/IOException;
-        //  39     64     424    431    Any
-        //  89     96     353    360    Ljava/io/IOException;
-        //  89     96     424    431    Any
-        //  99     159    353    360    Ljava/io/IOException;
-        //  99     159    424    431    Any
-        //  161    206    353    360    Ljava/io/IOException;
-        //  161    206    424    431    Any
-        //  213    226    353    360    Ljava/io/IOException;
-        //  213    226    424    431    Any
-        //  226    239    519    528    Ljava/io/IOException;
-        //  226    239    490    498    Any
-        //  239    297    528    542    Ljava/io/IOException;
-        //  239    297    498    502    Any
-        //  308    312    341    353    Ljava/io/IOException;
-        //  325    330    331    341    Ljava/io/IOException;
-        //  360    371    502    519    Any
-        //  382    386    412    424    Ljava/io/IOException;
-        //  397    401    402    412    Ljava/io/IOException;
-        //  442    446    466    478    Ljava/io/IOException;
-        //  459    464    478    490    Ljava/io/IOException;
+        //  22     57     336    343    Ljava/io/IOException;
+        //  22     57     407    414    Any
+        //  82     137    336    343    Ljava/io/IOException;
+        //  82     137    407    414    Any
+        //  144    189    336    343    Ljava/io/IOException;
+        //  144    189    407    414    Any
+        //  196    209    336    343    Ljava/io/IOException;
+        //  196    209    407    414    Any
+        //  209    222    506    515    Ljava/io/IOException;
+        //  209    222    473    481    Any
+        //  222    280    515    529    Ljava/io/IOException;
+        //  222    280    481    485    Any
+        //  291    295    324    336    Ljava/io/IOException;
+        //  308    313    314    324    Ljava/io/IOException;
+        //  343    354    485    506    Any
+        //  365    369    395    407    Ljava/io/IOException;
+        //  380    384    385    395    Ljava/io/IOException;
+        //  425    429    449    461    Ljava/io/IOException;
+        //  442    447    461    473    Ljava/io/IOException;
         // 
         // The error that occurred was:
         // 
-        // java.lang.IndexOutOfBoundsException: Index: 277, Size: 277
+        // java.lang.IndexOutOfBoundsException: Index: 279, Size: 279
         //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
         //     at java.util.ArrayList.get(ArrayList.java:429)
         //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)

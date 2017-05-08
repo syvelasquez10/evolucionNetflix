@@ -7,68 +7,26 @@ package com.netflix.mediaclient.util.l10n;
 import android.util.DisplayMetrics;
 import android.content.res.Resources;
 import android.content.res.Configuration;
-import android.app.Application;
-import android.view.View;
-import android.text.TextUtils;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.AndroidUtils;
-import android.annotation.TargetApi;
+import android.app.Application;
 import java.util.Locale;
+import android.view.View;
+import com.netflix.android.widgetry.utils.UiUtils;
 
 public final class LocalizationUtils
 {
-    public static final char EMBEDDING_LTR = '\u202a';
-    public static final char EMBEDDING_RTL = '\u202b';
-    public static final char FORCED_LTR = '\u200e';
-    public static final char FORCED_RTL = '\u200f';
-    public static final char POP_DIRECTIONAL_FOMATTING = '\u202c';
     private static final String TAG = "nf_locale";
     
-    public static StringBuilder addMarkerForRtLocale(final StringBuilder sb, final char c) {
-        if (sb != null && isCurrentLocaleRTL()) {
-            sb.append(c);
-        }
-        return sb;
-    }
-    
-    public static CharSequence forceLayoutDirectionIfNeeded(final CharSequence charSequence) {
-        if (charSequence == null || !isCurrentLocaleRTL()) {
-            return charSequence;
-        }
-        final StringBuilder sb = new StringBuilder();
-        sb.append('\u200f');
-        sb.append(charSequence);
-        return sb.toString();
-    }
-    
     public static boolean isCurrentLocaleRTL() {
-        return isLocaleRTL(Locale.getDefault());
+        return UiUtils.isCurrentLocaleRTL();
     }
     
-    @TargetApi(17)
-    public static boolean isLocaleLTR(final Locale locale) {
-        return !isLocaleRTL(locale);
+    public static String prependBidiMarkerIfRtl(final String s, final BidiMarker bidiMarker) {
+        return UiUtils.prependBidiMarkerIfRtl(s, bidiMarker);
     }
     
-    @TargetApi(17)
-    public static boolean isLocaleRTL(final Locale locale) {
-        boolean b = true;
-        if (AndroidUtils.getAndroidVersion() < 17) {
-            Log.d("nf_locale", "Device does not support RTL, return false by default");
-            return false;
-        }
-        Log.d("nf_locale", "Device does support RTL, return what locale supports.");
-        if (TextUtils.getLayoutDirectionFromLocale(locale) != 1) {
-            b = false;
-        }
-        return b;
-    }
-    
-    @TargetApi(17)
-    public static void setLayoutDirection(final View view) {
-        if (view != null && AndroidUtils.getAndroidVersion() >= 17 && isLocaleRTL(Locale.getDefault())) {
-            view.setLayoutDirection(1);
-        }
+    public static void setRtlLayoutDirectionIfApplicable(final View rtlLayoutDirectionIfApplicable) {
+        UiUtils.setRtlLayoutDirectionIfApplicable(rtlLayoutDirectionIfApplicable);
     }
     
     public static void updateLocale(final Locale locale, final Application application) {

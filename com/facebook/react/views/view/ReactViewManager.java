@@ -4,8 +4,8 @@
 
 package com.facebook.react.views.view;
 
-import com.facebook.react.uimanager.PointerEvents;
 import java.util.Locale;
+import com.facebook.react.uimanager.PointerEvents;
 import android.annotation.TargetApi;
 import android.graphics.drawable.Drawable;
 import android.graphics.Rect;
@@ -238,9 +238,11 @@ public class ReactViewManager extends ViewGroupManager<ReactViewGroup>
     
     @ReactProp(name = "pointerEvents")
     public void setPointerEvents(final ReactViewGroup reactViewGroup, final String s) {
-        if (s != null) {
-            reactViewGroup.setPointerEvents(PointerEvents.valueOf(s.toUpperCase(Locale.US).replace("-", "_")));
+        if (s == null) {
+            reactViewGroup.setPointerEvents(PointerEvents.AUTO);
+            return;
         }
+        reactViewGroup.setPointerEvents(PointerEvents.valueOf(s.toUpperCase(Locale.US).replace("-", "_")));
     }
     
     @ReactProp(name = "removeClippedSubviews")

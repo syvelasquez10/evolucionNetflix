@@ -70,6 +70,7 @@ public class PermissionsModule extends ReactContextBaseJavaModule implements Per
         return "PermissionsAndroid";
     }
     
+    @Override
     public boolean onRequestPermissionsResult(final int n, final String[] array, final int[] array2) {
         ((Callback)this.mCallbacks.get(n)).invoke(array2, this.getPermissionAwareActivity());
         this.mCallbacks.remove(n);

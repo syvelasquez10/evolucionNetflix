@@ -4,12 +4,12 @@
 
 package com.netflix.mediaclient.service.offline.license;
 
+import com.netflix.mediaclient.service.player.bladerunnerclient.BladeRunnerWebCallback;
 import java.util.List;
 import com.netflix.mediaclient.service.player.bladerunnerclient.IBladeRunnerClient$OfflineRefreshInvoke;
 import com.netflix.mediaclient.service.pdslogging.PdsLoggingUtils;
 import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.player.bladerunnerclient.BladeRunnerWebCallback;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.MediaDrmUtils;
@@ -26,7 +26,6 @@ import android.media.MediaDrm$OnEventListener;
 public class OfflineLicenseManagerImpl implements MediaDrm$OnEventListener, OfflineLicenseManager, OfflineLicenseRequest$OfflineLicenseRequestCallback
 {
     private static final int MAX_MEDIA_DRM_SESSION = 1;
-    private static final long MIN_LICENSE_SYNC_INTERVAL_MS = 3600000L;
     private static final String TAG = "nf_offlineLicenseMgr";
     private final BladeRunnerClient mBladeRunnerClient;
     private final Context mContext;
@@ -34,7 +33,6 @@ public class OfflineLicenseManagerImpl implements MediaDrm$OnEventListener, Offl
     private final IClientLogging mLoggingAgent;
     private final MediaDrm mMediaDrm;
     private final Queue<OfflineLicenseRequest> mNewLicenseRequestQueue;
-    private long mRecentSyncTimeMs;
     private final Queue<RefreshOfflineLicenseRequest> mRefreshLicenseRequestQueue;
     private final Handler mWorkHandler;
     
@@ -42,7 +40,6 @@ public class OfflineLicenseManagerImpl implements MediaDrm$OnEventListener, Offl
         this.mNewLicenseRequestQueue = new LinkedList<OfflineLicenseRequest>();
         this.mRefreshLicenseRequestQueue = new LinkedList<RefreshOfflineLicenseRequest>();
         this.mDeactivateOfflineLicenseRequestQueue = new LinkedList<DeactivateOfflineLicenseRequest>();
-        this.mRecentSyncTimeMs = 0L;
         this.mContext = mContext;
         this.mWorkHandler = new Handler(looper);
         this.mBladeRunnerClient = mBladeRunnerClient;
@@ -131,10 +128,6 @@ public class OfflineLicenseManagerImpl implements MediaDrm$OnEventListener, Offl
         }
     }
     
-    public void downloadCompleteAndActivateLicense(final String s, final String s2, final OfflineLicenseManager$DownloadCompleteAndActivateCallback offlineLicenseManager$DownloadCompleteAndActivateCallback) {
-        this.mBladeRunnerClient.downloadComplete(s2, new OfflineLicenseManagerImpl$1(this, offlineLicenseManager$DownloadCompleteAndActivateCallback, s));
-    }
-    
     public void onEvent(final MediaDrm mediaDrm, final byte[] array, final int n, final int n2, final byte[] array2) {
         String s = "EVENT_UNKNOWN";
         if (n == 3) {
@@ -216,15 +209,7 @@ public class OfflineLicenseManagerImpl implements MediaDrm$OnEventListener, Offl
         Log.i("nf_offlineLicenseMgr", "requestNewLicense serializing the request");
     }
     
-    public void trySyncActiveLicensesToServer(final List<String> list) {
-        final long currentTimeMillis = System.currentTimeMillis();
-        if (currentTimeMillis <= this.mRecentSyncTimeMs + 3600000L) {
-            if (Log.isLoggable()) {
-                Log.i("nf_offlineLicenseMgr", "trySyncActiveLicensesToServer last ssync " + this.mRecentSyncTimeMs);
-            }
-            return;
-        }
-        this.mRecentSyncTimeMs = currentTimeMillis;
-        this.mBladeRunnerClient.syncActiveLicensesToServer(list, new OfflineLicenseManagerImpl$2(this));
+    public void sendSyncActiveLicensesToServer(final List<String> list, final OfflineLicenseManager$LicenseSyncResponseCallback offlineLicenseManager$LicenseSyncResponseCallback) {
+        this.mBladeRunnerClient.syncActiveLicensesToServer(list, new OfflineLicenseManagerImpl$1(this, offlineLicenseManager$LicenseSyncResponseCallback));
     }
 }

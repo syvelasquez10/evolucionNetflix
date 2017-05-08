@@ -1926,8 +1926,9 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                     Label_0695:Label_1259_Outer:
                     while (true) {
                         Label_0650: {
-                            Label_1243_Outer:Label_1273_Outer:
+                        Label_1273_Outer:
                             while (true) {
+                            Label_1243_Outer:
                                 while (true) {
                                     Label_0583: {
                                         while (true) {
@@ -2079,14 +2080,14 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                                                                                         break Label_0191;
                                                                                         fragment.mView = (View)NoSaveStateFrameLayout.wrap(fragment.mView);
                                                                                         break Label_0650;
-                                                                                        fragment.mParentFragment.onAttachFragment(fragment);
-                                                                                        break Label_1047;
-                                                                                        fragment.restoreChildFragmentState(fragment.mSavedFragmentState);
-                                                                                        fragment.mState = 1;
-                                                                                        break Label_0583;
                                                                                         fragment.mInnerView = null;
                                                                                         n2 = n3;
                                                                                         continue Label_0695;
+                                                                                        fragment.restoreChildFragmentState(fragment.mSavedFragmentState);
+                                                                                        fragment.mState = 1;
+                                                                                        break Label_0583;
+                                                                                        fragment.mParentFragment.onAttachFragment(fragment);
+                                                                                        break Label_1047;
                                                                                     }
                                                                                     catch (Resources$NotFoundException ex) {
                                                                                         resourceName = "unknown";
@@ -2121,7 +2122,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                                             }
                                             this.dispatchOnFragmentAttached(fragment, this.mHost.getContext(), false);
                                             if (fragment.mRetaining) {
-                                                continue Label_1273_Outer;
+                                                continue;
                                             }
                                             break;
                                         }
@@ -2135,13 +2136,13 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
                                     }
                                     fragment.mView = fragment.performCreateView(fragment.getLayoutInflater(fragment.mSavedFragmentState), null, fragment.mSavedFragmentState);
                                     if (fragment.mView == null) {
-                                        continue;
+                                        continue Label_1243_Outer;
                                     }
                                     break;
                                 }
                                 fragment.mInnerView = fragment.mView;
                                 if (Build$VERSION.SDK_INT < 11) {
-                                    continue Label_1243_Outer;
+                                    continue Label_1273_Outer;
                                 }
                                 break;
                             }

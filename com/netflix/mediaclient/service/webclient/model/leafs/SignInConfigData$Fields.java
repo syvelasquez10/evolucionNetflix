@@ -8,6 +8,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class SignInConfigData$Fields
 {
+    @SerializedName("backAction")
+    public SignInConfigData$CachedMode backAction;
     @SerializedName("email")
     public SignInConfigData$Rules email;
     @SerializedName("password")

@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
@@ -33,19 +32,21 @@ import android.content.DialogInterface;
 import com.netflix.mediaclient.android.app.LoadingStatus;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.widget.FrameLayout$LayoutParams;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import android.widget.FrameLayout;
-import android.content.Context;
-import android.os.Build$VERSION;
+import android.view.ContextThemeWrapper;
 import android.widget.AdapterView$OnItemSelectedListener;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
 import com.netflix.mediaclient.util.DataUtil;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.os.Bundle;
 import com.netflix.mediaclient.Log;
 import android.view.View;
@@ -55,7 +56,6 @@ import java.util.List;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import android.view.ViewGroup;
-import com.netflix.mediaclient.ui.offline.DownloadButton;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
@@ -66,12 +66,12 @@ import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.ui.offline.ActivityPageOfflineAgentListener;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import com.netflix.mediaclient.ui.offline.TutorialHelper$Tutorialable;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
+import com.netflix.mediaclient.ui.mdx.CastPlayerHelper$CastPlayerDialog;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 
-public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Callback, ManagerStatusListener, DetailsActivity$Reloader, ServiceManagerProvider, VideoDetailsViewGroup$VideoDetailsViewGroupProvider, MdxMiniPlayerFrag$MdxMiniPlayerDialog, TutorialHelper$Tutorialable
+public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Callback, ManagerStatusListener, DetailsActivity$Reloader, ServiceManagerProvider, VideoDetailsViewGroup$VideoDetailsViewGroupProvider, CastPlayerHelper$CastPlayerDialog, TutorialHelper$Tutorialable
 {
     protected static final String EXTRA_EPISODE_ID = "extra_episode_id";
     private static final String EXTRA_EPISODE_INDEX = "extra_episode_index";
@@ -99,7 +99,6 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     public int selectedEpisodeIndex;
     protected ShowDetails showDetails;
     protected boolean showDetailsOnLaunch;
-    private DownloadButton showDownloadButton;
     protected String showId;
     protected SeasonsSpinner spinner;
     protected ViewGroup spinnerViewGroup;
@@ -173,7 +172,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     public static NetflixDialogFrag createEpisodes(final String s, final String s2, final boolean b) {
         final EpisodesFrag episodesFrag = new EpisodesFrag();
-        episodesFrag.setStyle(1, 2131493156);
+        episodesFrag.setStyle(1, 2131493151);
         return applyCreateArgs(episodesFrag, s, s2, b, true);
     }
     
@@ -182,6 +181,14 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
             return -1;
         }
         return this.episodesAdapter.getCheckedItemPosition();
+    }
+    
+    @SuppressLint({ "PrivateResource" })
+    private int getSeasonsSpinnerStyle() {
+        if (BrowseExperience.isLightTheme() && !KidsUtils.shouldTextBeForcedLight((Context)this.getActivity(), VideoDetailsViewGroup$Section.SPINNER)) {
+            return 2131493305;
+        }
+        return 2131493299;
     }
     
     private boolean hasSeasons(final List<SeasonDetails> list) {
@@ -247,18 +254,11 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         if (this.getActivity() == null) {
             return null;
         }
-        SeasonsSpinner spinner;
-        if (Build$VERSION.SDK_INT >= 21) {
-            spinner = new SeasonsSpinnerLollipop((Context)this.getActivity());
-        }
-        else {
-            spinner = new SeasonsSpinner((Context)this.getActivity());
-        }
-        this.spinner = spinner;
+        this.spinner = new SeasonsSpinner((Context)new ContextThemeWrapper((Context)this.getActivity(), this.getSeasonsSpinnerStyle()));
         this.setupSeasonsSpinnerAdapter();
         this.setupSeasonsSpinnerListener();
-        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131689714);
-        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131427895)));
+        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131755265);
+        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131427899)));
         this.spinnerViewGroup.addView((View)this.spinner, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2, 8388627));
         return this.spinnerViewGroup;
     }
@@ -307,7 +307,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     }
     
     protected int getlayoutId() {
-        return 2130903291;
+        return 2130903282;
     }
     
     protected void initDetailsViewGroup() {
@@ -515,6 +515,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.setupRecyclerViewLayoutManager();
         this.setupRecyclerViewAdapter();
         this.setupRecyclerViewItemDecoration();
+        KidsUtils.setBackgroundIfApplicable((View)this.recyclerView);
     }
     
     protected void setupRecyclerViewAdapter() {
@@ -522,7 +523,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         if (DeviceUtils.isTabletByContext((Context)this.getActivity()) && DeviceUtils.isLandscape((Context)this.getActivity())) {
             this.episodesAdapter.addHeaderView(ViewUtils.createActionBarDummyView(this.getNetflixActivity()));
         }
-        this.episodesAdapter.addFooterView(ViewUtils.createActionBarDummyView(this.getNetflixActivity(), this.getResources().getDimensionPixelOffset(2131427898)));
+        this.episodesAdapter.addFooterView(ViewUtils.createActionBarDummyView(this.getNetflixActivity(), this.getResources().getDimensionPixelOffset(2131427902)));
         this.recyclerView.setAdapter(this.episodesAdapter);
         this.episodesAdapter.setSingleChoiceMode(true);
         this.addOfflineAgentListener(this.recyclerView);
@@ -537,7 +538,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new EpisodesFrag$4(this));
-        adapter.setItemBackgroundColor(2130838130);
+        adapter.setItemBackgroundColor(2130838137);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     
@@ -551,7 +552,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     }
     
     public Tooltip setupTutorial(final UserProfile userProfile) {
-        final View viewById = this.recyclerView.findViewById(2131755185);
+        final View viewById = this.recyclerView.findViewById(2131820723);
         if (viewById == null) {
             return null;
         }
@@ -651,21 +652,8 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         }
         if (this.getActivity() instanceof DetailsActivity && this.detailsViewGroup != null) {
             this.addToListWrapper = DetailsFrag.addToMyListWrapper(this.detailsViewGroup, (NetflixActivity)this.getActivity(), serviceManager, this.getShowId());
-            this.showDownloadButton = this.detailsViewGroup.getDownloadButton();
-            if (this.showDownloadButton != null) {
-                if (serviceManager != null && serviceManager.isOfflineFeatureAvailable()) {
-                    this.showDownloadButton.setEnabled(true);
-                    if (showDetails.getType() != VideoType.MOVIE) {
-                        this.showDownloadButton.setVisibility(8);
-                        return;
-                    }
-                    this.showDownloadButton.setStateFromPlayable(showDetails.getPlayable(), this.getNetflixActivity());
-                }
-                else {
-                    this.showDownloadButton.setVisibility(8);
-                }
-            }
-            Log.i("EpisodesFrag", "EpisodeFag updateShowDetails episodeDownloadButton= " + this.showDownloadButton);
+            this.detailsViewGroup.setupDownloadButton(this.showDetails);
+            Log.i("EpisodesFrag", "EpisodeFag updateShowDetails");
         }
     }
 }

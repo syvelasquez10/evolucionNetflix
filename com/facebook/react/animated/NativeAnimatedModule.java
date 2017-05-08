@@ -130,6 +130,7 @@ public class NativeAnimatedModule extends ReactContextBaseJavaModule implements 
         }
     }
     
+    @Override
     public void onHostDestroy() {
     }
     

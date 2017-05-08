@@ -24,8 +24,9 @@ import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
+import com.netflix.mediaclient.util.l10n.BidiMarker;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
 import com.netflix.mediaclient.service.NetflixService;
 import android.app.PendingIntent;
@@ -43,6 +44,7 @@ import com.netflix.mediaclient.servicemgr.INetflixService;
 import android.support.v4.app.NotificationCompat$Builder;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import android.content.Context;
+import com.netflix.mediaclient.servicemgr.interface_.offline.SimpleOfflineAgentListener;
 
 class DownloadNotificationManager$1 implements Runnable
 {

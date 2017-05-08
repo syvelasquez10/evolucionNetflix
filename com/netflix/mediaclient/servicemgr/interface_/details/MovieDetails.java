@@ -4,8 +4,12 @@
 
 package com.netflix.mediaclient.servicemgr.interface_.details;
 
+import java.util.Set;
+
 public interface MovieDetails extends EvidenceDetails, Similarable, VideoDetails
 {
+    Set<String> getCharacterRoles();
+    
     String getDirectors();
     
     int getNumDirectors();

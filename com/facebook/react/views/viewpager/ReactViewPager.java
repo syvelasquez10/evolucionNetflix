@@ -63,6 +63,10 @@ public class ReactViewPager extends ViewPager
         return this.mScrollEnabled && super.onTouchEvent(motionEvent);
     }
     
+    public void removeAllViewsFromAdapter() {
+        this.getAdapter().removeAllViewsFromAdapter(this);
+    }
+    
     void removeViewFromAdapter(final int n) {
         this.getAdapter().removeViewAt(n);
     }

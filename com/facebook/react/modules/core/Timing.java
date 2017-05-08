@@ -36,6 +36,7 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
 {
     private static final float FRAME_DURATION_MS = 16.666666f;
     private static final float IDLE_CALLBACK_FRAME_DEADLINE_MS = 1.0f;
+    protected static final String NAME = "Timing";
     private final AtomicBoolean isPaused;
     private final AtomicBoolean isRunningTasks;
     private Timing$IdleCallbackRunnable mCurrentIdleCallbackRunnable;
@@ -163,7 +164,7 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
     
     @Override
     public String getName() {
-        return "RCTTiming";
+        return "Timing";
     }
     
     @Override
@@ -231,6 +232,7 @@ public final class Timing extends ReactContextBaseJavaModule implements Lifecycl
         }
     }
     
+    @Override
     public void onHostDestroy() {
         this.clearChoreographerCallback();
         this.maybeClearChoreographerIdleCallback();

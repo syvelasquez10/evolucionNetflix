@@ -36,8 +36,10 @@ public class ReadableNativeArray extends NativeArray implements ReadableArray
     @Override
     public native String getString(final int p0);
     
+    @Override
     public native ReadableType getType(final int p0);
     
+    @Override
     public native boolean isNull(final int p0);
     
     @Override

@@ -15,7 +15,6 @@ import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
-import android.content.res.Resources;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
@@ -54,7 +53,7 @@ class BarkerKidsCharacterDetailsFrag$GalleryAdapter$1 implements RecyclerViewHea
     }
     
     private int getImageHeight() {
-        final float n = this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131427754);
+        final float n = this.val$this$0.getActivity().getResources().getDimensionPixelOffset(2131427762);
         final float n2 = this.val$this$0.getNumColumns();
         float n3;
         if (this.val$this$0.shouldRenderAsSDP) {

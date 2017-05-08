@@ -22,5 +22,5 @@ public final class R$layout
     public static final int abc_screen_simple = 2130903061;
     public static final int abc_screen_simple_overlay_action_mode = 2130903062;
     public static final int abc_screen_toolbar = 2130903063;
-    public static final int support_simple_spinner_dropdown_item = 2130903322;
+    public static final int support_simple_spinner_dropdown_item = 2130903312;
 }

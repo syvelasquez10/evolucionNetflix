@@ -6,6 +6,7 @@ package io.realm;
 
 import java.util.concurrent.ThreadPoolExecutor;
 import io.realm.internal.async.RealmAsyncTaskImpl;
+import io.realm.log.RealmLog;
 import io.realm.internal.Table;
 import java.util.List;
 import java.util.Collections;
@@ -15,10 +16,9 @@ import java.util.Set;
 import io.realm.internal.RealmProxyMediator;
 import java.util.ArrayList;
 import java.util.HashMap;
+import io.realm.internal.SharedRealm;
+import java.io.File;
 import io.realm.internal.ObjectServerFacade;
-import io.realm.log.Logger;
-import io.realm.log.RealmLog;
-import io.realm.log.AndroidLogger;
 import io.realm.internal.RealmCore;
 import android.content.Context;
 import java.lang.reflect.Constructor;
@@ -32,7 +32,7 @@ import io.realm.internal.ColumnIndices;
 import io.realm.internal.RealmObjectProxy;
 import java.util.Map;
 
-public final class Realm extends BaseRealm
+public class Realm extends BaseRealm
 {
     private static RealmConfiguration defaultConfiguration;
     
@@ -136,10 +136,10 @@ public final class Realm extends BaseRealm
     }
     
     public static void init(final Context context) {
-        Label_0072: {
+        Label_0078: {
             synchronized (Realm.class) {
                 if (BaseRealm.applicationContext != null) {
-                    break Label_0072;
+                    break Label_0078;
                 }
                 if (context == null) {
                     throw new IllegalArgumentException("Non-null context required.");
@@ -147,10 +147,10 @@ public final class Realm extends BaseRealm
             }
             final Context context2;
             RealmCore.loadLibrary(context2);
-            RealmLog.add((Logger)new AndroidLogger(5));
             Realm.defaultConfiguration = new RealmConfiguration$Builder(context2).build();
             ObjectServerFacade.getSyncFacadeIfPossible().init(context2);
             BaseRealm.applicationContext = context2.getApplicationContext();
+            SharedRealm.initialize(new File(context2.getFilesDir(), ".realm.temp"));
         }
     }
     // monitorexit(Realm.class)

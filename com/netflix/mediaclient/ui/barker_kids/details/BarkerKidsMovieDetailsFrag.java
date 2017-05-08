@@ -22,19 +22,19 @@ public class BarkerKidsMovieDetailsFrag extends BarkerMovieDetailsFrag
     public static BarkerKidsMovieDetailsFrag create(final String s) {
         final BarkerKidsMovieDetailsFrag barkerKidsMovieDetailsFrag = new BarkerKidsMovieDetailsFrag();
         final Bundle arguments = new Bundle();
-        arguments.putString("video_id", s);
+        arguments.putString("extra_video_id", s);
         barkerKidsMovieDetailsFrag.setArguments(arguments);
         return barkerKidsMovieDetailsFrag;
     }
     
     @Override
     protected int getBackgroundResource() {
-        return 2131689713;
+        return 2131755264;
     }
     
     @Override
     protected int getLayoutId() {
-        return 2130903167;
+        return 2130903175;
     }
     
     @Override
@@ -44,7 +44,7 @@ public class BarkerKidsMovieDetailsFrag extends BarkerMovieDetailsFrag
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427768) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427776) * 2;
     }
     
     @Override
@@ -76,7 +76,7 @@ public class BarkerKidsMovieDetailsFrag extends BarkerMovieDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427778), this.numColumns));
+        this.recyclerView.addItemDecoration((RecyclerView$ItemDecoration)new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131427786), this.numColumns));
     }
     
     @Override

@@ -37,7 +37,9 @@ import android.content.Context;
 import android.view.accessibility.AccessibilityManager;
 import android.os.Handler;
 import android.view.animation.Interpolator;
+import android.annotation.SuppressLint;
 
+@SuppressLint({ "PrivateResource" })
 public final class BuffetBar
 {
     static final int ANIMATION_DURATION = 250;

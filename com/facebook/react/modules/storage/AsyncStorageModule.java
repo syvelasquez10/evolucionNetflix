@@ -15,6 +15,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 public final class AsyncStorageModule extends ReactContextBaseJavaModule
 {
     private static final int MAX_SQL_KEYS = 999;
+    protected static final String NAME = "AsyncSQLiteDBStorage";
     private ReactDatabaseSupplier mReactDatabaseSupplier;
     private boolean mShuttingDown;
     

@@ -6,6 +6,7 @@ package com.google.android.exoplayer.audio;
 
 import android.media.PlaybackParams;
 import android.os.SystemClock;
+import android.os.Build;
 import android.os.Build$VERSION;
 import android.media.AudioTrack;
 
@@ -23,7 +24,7 @@ class AudioTrack$AudioTrackUtil
     protected long stopTimestampUs;
     
     static boolean needPlaybackHeadPositionWorkaround() {
-        return Build$VERSION.SDK_INT < 21;
+        return Build$VERSION.SDK_INT < 23 || Build.MODEL.equalsIgnoreCase("SM-J320M");
     }
     
     int getAvailableSpaceBytes(final int n) {

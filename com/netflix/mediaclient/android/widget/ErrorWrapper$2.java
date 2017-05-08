@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.content.Context;
 import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;

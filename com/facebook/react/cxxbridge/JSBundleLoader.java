@@ -16,7 +16,9 @@ public abstract class JSBundleLoader
         return new JSBundleLoader$3(s2, s);
     }
     
-    public abstract String getSourceUrl();
+    public static JSBundleLoader createFileLoader(final String s) {
+        return new JSBundleLoader$2(s);
+    }
     
-    public abstract void loadScript(final CatalystInstanceImpl p0);
+    public abstract String loadScript(final CatalystInstanceImpl p0);
 }

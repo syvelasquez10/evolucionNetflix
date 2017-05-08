@@ -51,7 +51,7 @@ public class BarkerShowDetailsActivity extends ShowDetailsActivity
     @Override
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
         super.onCreateOptionsMenu(menu, menu2);
-        menu.removeItem(2131755008);
+        menu.removeItem(2131820545);
     }
     
     @Override

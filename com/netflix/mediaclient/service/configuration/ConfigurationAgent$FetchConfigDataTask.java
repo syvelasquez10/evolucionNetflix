@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.NrmLanguagesData;
 import com.netflix.mediaclient.media.JPlayer.DolbyDigitalHelper;
 import com.netflix.mediaclient.service.webclient.model.leafs.VoipConfiguration;
 import android.view.Display;
@@ -26,7 +27,7 @@ import android.util.Pair;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import android.media.UnsupportedSchemeException;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;

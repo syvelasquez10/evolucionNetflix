@@ -23,11 +23,12 @@ public class ModuleHolder
     private NativeModule mModule;
     private Provider<? extends NativeModule> mProvider;
     
-    public ModuleHolder(final Class<? extends NativeModule> clazz, final ReactModuleInfo reactModuleInfo, final Provider<? extends NativeModule> mProvider) {
-        Info mInfo = reactModuleInfo;
-        if (reactModuleInfo == null) {
-            mInfo = new ModuleHolder$LegacyModuleInfo(clazz);
-        }
+    public ModuleHolder(final LegacyModuleInfo mInfo, final NativeModule mModule) {
+        this.mInfo = mInfo;
+        this.mModule = mModule;
+    }
+    
+    public ModuleHolder(final ReactModuleInfo mInfo, final Provider<? extends NativeModule> mProvider) {
         this.mInfo = mInfo;
         this.mProvider = mProvider;
         if (this.mInfo.needsEagerInit()) {
@@ -52,10 +53,10 @@ public class ModuleHolder
     }
     
     private NativeModule create() {
-        final boolean b = this.mInfo instanceof ModuleHolder$LegacyModuleInfo;
+        final boolean b = this.mInfo instanceof LegacyModuleInfo;
         String s;
         if (b) {
-            s = ((ModuleHolder$LegacyModuleInfo)this.mInfo).mType.getSimpleName();
+            s = ((LegacyModuleInfo)this.mInfo).mType.getSimpleName();
         }
         else {
             s = this.mInfo.name();

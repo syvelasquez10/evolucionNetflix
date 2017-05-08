@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.common;
 
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+
 public enum PlayLocationType
 {
     DIRECT_PLAY("directPlay"), 
@@ -18,14 +20,22 @@ public enum PlayLocationType
     }
     
     public static PlayLocationType create(final String s) {
+        final PlayLocationType unknown = PlayLocationType.UNKNOWN;
         final PlayLocationType[] values = values();
-        for (int length = values.length, i = 0; i < length; ++i) {
-            final PlayLocationType playLocationType = values[i];
-            if (playLocationType.getValue().equals(s)) {
-                return playLocationType;
+        while (true) {
+            for (int length = values.length, i = 0; i < length; ++i) {
+                final PlayLocationType playLocationType = values[i];
+                if (playLocationType.getValue().equals(s)) {
+                    final PlayLocationType playLocationType2 = playLocationType;
+                    if (playLocationType2 == PlayLocationType.UNKNOWN) {
+                        ErrorLoggingManager.logHandledException("PlayLocationType UNKNOWN.");
+                    }
+                    return playLocationType2;
+                }
             }
+            final PlayLocationType playLocationType2 = unknown;
+            continue;
         }
-        return PlayLocationType.UNKNOWN;
     }
     
     public String getValue() {

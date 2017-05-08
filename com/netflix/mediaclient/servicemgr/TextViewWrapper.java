@@ -11,7 +11,7 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 class TextViewWrapper implements AddToListData$StateListener
 {
-    private final NetflixActivity activity;
+    protected final NetflixActivity activity;
     private final AddToMyListWrapper addToMyListWrapper;
     private final boolean keepVisibilityState;
     protected final TextView textView;
@@ -34,11 +34,11 @@ class TextViewWrapper implements AddToListData$StateListener
     }
     
     protected void setAsInList() {
-        this.textView.setText((CharSequence)this.activity.getString(2131296692, new Object[] { "\u2212" }));
+        this.textView.setText((CharSequence)this.activity.getString(2131296693, new Object[] { "\u2212" }));
     }
     
     protected void setAsNotInList() {
-        this.textView.setText((CharSequence)this.activity.getString(2131296692, new Object[] { "+" }));
+        this.textView.setText((CharSequence)this.activity.getString(2131296693, new Object[] { "+" }));
     }
     
     protected void show() {
@@ -49,14 +49,14 @@ class TextViewWrapper implements AddToListData$StateListener
     public void update(final AddToListData$AddToListState addToListData$AddToListState) {
         switch (TextViewWrapper$3.$SwitchMap$com$netflix$mediaclient$servicemgr$AddToListData$AddToListState[addToListData$AddToListState.ordinal()]) {
             case 1: {
-                this.textView.setContentDescription((CharSequence)this.activity.getString(2131296773));
+                this.textView.setContentDescription((CharSequence)this.activity.getString(2131296775));
                 this.textView.setEnabled(true);
                 this.setAsInList();
                 this.textView.setOnClickListener((View$OnClickListener)new TextViewWrapper$1(this));
                 break;
             }
             case 2: {
-                this.textView.setContentDescription((CharSequence)this.activity.getString(2131296533));
+                this.textView.setContentDescription((CharSequence)this.activity.getString(2131296535));
                 this.textView.setEnabled(true);
                 this.setAsNotInList();
                 this.textView.setOnClickListener((View$OnClickListener)new TextViewWrapper$2(this));
@@ -68,7 +68,7 @@ class TextViewWrapper implements AddToListData$StateListener
             }
         }
         if (!this.keepVisibilityState) {
-            if (!this.addToMyListWrapper.serviceMan.isCurrentProfileIQEnabled()) {
+            if (!this.addToMyListWrapper.serviceMan.isCurrentProfileInstantQueueEnabled()) {
                 this.hide();
                 return;
             }

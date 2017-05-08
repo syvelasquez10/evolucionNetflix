@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.offline.TutorialHelper;
@@ -21,7 +20,6 @@ import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import java.util.Iterator;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
-import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.LayoutInflater;
@@ -32,25 +30,25 @@ import android.content.DialogInterface;
 import com.netflix.mediaclient.android.app.LoadingStatus;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.widget.FrameLayout$LayoutParams;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.AbsListView$LayoutParams;
 import android.widget.FrameLayout;
-import android.content.Context;
-import android.os.Build$VERSION;
+import android.view.ContextThemeWrapper;
 import android.widget.AdapterView$OnItemSelectedListener;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.coppola.details.CoppolaDetailsActivity;
 import com.netflix.mediaclient.util.DataUtil;
+import android.annotation.SuppressLint;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.os.Bundle;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import android.view.ViewGroup;
-import com.netflix.mediaclient.ui.offline.DownloadButton;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import android.os.Handler;
@@ -59,12 +57,14 @@ import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.ui.offline.ActivityPageOfflineAgentListener;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import com.netflix.mediaclient.ui.offline.TutorialHelper$Tutorialable;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
+import com.netflix.mediaclient.ui.mdx.CastPlayerHelper$CastPlayerDialog;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import android.view.View;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
+import android.content.Context;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
@@ -106,16 +106,18 @@ class EpisodesFrag$FetchDataCallback extends LoggingManagerCallback
                 this.this$0.showErrorView();
                 return;
             }
-            this.this$0.updateShowDetails(showDetails);
-            DPPrefetchABTestUtils.reportDPMetadataFetchedEvent(status);
-            if (this.this$0.hasSeasons(list)) {
-                this.this$0.updateSeasonData(list);
-                return;
-            }
-            if (!this.this$0.isListVisible()) {
-                Log.v("EpisodesFrag", "Showing recycler view");
-                AnimationUtils.showView((View)this.this$0.recyclerView, true);
-                this.this$0.leWrapper.hide(false);
+            if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.getActivity())) {
+                this.this$0.updateShowDetails(showDetails);
+                DPPrefetchABTestUtils.reportDPMetadataFetchedEvent(status);
+                if (this.this$0.hasSeasons(list)) {
+                    this.this$0.updateSeasonData(list);
+                    return;
+                }
+                if (!this.this$0.isListVisible()) {
+                    Log.v("EpisodesFrag", "Showing recycler view");
+                    AnimationUtils.showView((View)this.this$0.recyclerView, true);
+                    this.this$0.leWrapper.hide(false);
+                }
             }
         }
     }

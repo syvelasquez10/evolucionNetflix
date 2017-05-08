@@ -22,9 +22,9 @@ public class BarkerPreReleaseDetailsActivity extends BarkerMovieDetailsActivity
     }
     
     private void showSnackBar() {
-        final Snackbar make = Snackbar.make(this.findViewById(16908290), 2131296982, 0);
+        final Snackbar make = Snackbar.make(this.findViewById(16908290), 2131297004, 0);
         make.getView().getLayoutParams().width = -1;
-        final TextView textView = (TextView)((Snackbar$SnackbarLayout)make.getView()).findViewById(2131755326);
+        final TextView textView = (TextView)((Snackbar$SnackbarLayout)make.getView()).findViewById(2131820932);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
         textView.setGravity(1);
         make.show();

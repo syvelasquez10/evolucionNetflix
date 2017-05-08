@@ -59,7 +59,7 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
-    public String getBoxartImageTypeIdentifier() {
+    public String getBoxartId() {
         return null;
     }
     
@@ -75,6 +75,10 @@ public class DummyEpisodeDetails implements EpisodeDetails
     
     @Override
     public String getCertification() {
+        return null;
+    }
+    
+    public List<String> getCharacterRoles() {
         return null;
     }
     
@@ -151,6 +155,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     @Override
     public String getInterestingUrl() {
         return null;
+    }
+    
+    @Override
+    public int getMatchPercentage() {
+        return 0;
     }
     
     @Override
@@ -264,6 +273,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     }
     
     @Override
+    public int getUserThumbRating() {
+        return 0;
+    }
+    
+    @Override
     public int getYear() {
         return 0;
     }
@@ -290,6 +304,11 @@ public class DummyEpisodeDetails implements EpisodeDetails
     
     @Override
     public boolean isNSRE() {
+        return false;
+    }
+    
+    @Override
+    public boolean isNewForPvr() {
         return false;
     }
     
@@ -340,5 +359,9 @@ public class DummyEpisodeDetails implements EpisodeDetails
     
     @Override
     public void setUserRating(final float n) {
+    }
+    
+    @Override
+    public void setUserThumbRating(final int n) {
     }
 }

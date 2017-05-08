@@ -21,8 +21,6 @@ public interface Playable
     
     int getLogicalStart();
     
-    String getParentId();
-    
     String getParentTitle();
     
     int getPlayableBookmarkPosition();
@@ -38,6 +36,8 @@ public interface Playable
     String getSeasonAbbrSeqLabel();
     
     int getSeasonNumber();
+    
+    String getTopLevelId();
     
     boolean isAdvisoryDisabled();
     
@@ -58,6 +58,8 @@ public interface Playable
     boolean isPinProtected();
     
     boolean isPlayableEpisode();
+    
+    boolean isPreviewProtected();
     
     boolean isSupplementalVideo();
 }

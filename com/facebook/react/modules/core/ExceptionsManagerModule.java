@@ -17,6 +17,7 @@ import com.facebook.react.bridge.BaseJavaModule;
 
 public class ExceptionsManagerModule extends BaseJavaModule
 {
+    protected static final String NAME = "ExceptionsManager";
     private static final Pattern mJsModuleIdPattern;
     private final DevSupportManager mDevSupportManager;
     
@@ -68,7 +69,7 @@ public class ExceptionsManagerModule extends BaseJavaModule
     
     @Override
     public String getName() {
-        return "RKExceptionsManager";
+        return "ExceptionsManager";
     }
     
     @ReactMethod

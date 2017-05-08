@@ -24,7 +24,7 @@ public class AccountSettingsUnavailableAlertDialog extends NetflixDialogFrag
     public Dialog onCreateDialog(final Bundle bundle) {
         super.onCreate(bundle);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        alertDialog$Builder.setPositiveButton(2131296724, (DialogInterface$OnClickListener)new AccountSettingsUnavailableAlertDialog$1(this));
+        alertDialog$Builder.setPositiveButton(2131296726, (DialogInterface$OnClickListener)new AccountSettingsUnavailableAlertDialog$1(this));
         alertDialog$Builder.setMessage(this.getString(2131296454));
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);

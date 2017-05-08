@@ -58,7 +58,7 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
         View inflate = view;
         if (view == null) {
             Log.d("nf_language_selector", "Subtitle create row " + n);
-            inflate = this.activity.getLayoutInflater().inflate(2130903178, viewGroup, false);
+            inflate = this.activity.getLayoutInflater().inflate(2130903187, viewGroup, false);
             inflate.setTag((Object)new LanguageSelector$RowHolder(inflate));
         }
         final LanguageSelector$RowHolder languageSelector$RowHolder = (LanguageSelector$RowHolder)inflate.getTag();
@@ -74,13 +74,13 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
             if (item.isCC()) {
                 Log.d("nf_language_selector", "Add CC");
                 sb.append(' ');
-                sb.append(this.activity.getText(2131296567));
+                sb.append(this.activity.getText(2131296569));
             }
             text = sb.toString();
             equals = item.equals(subtitle);
         }
         else {
-            text = this.activity.getString(2131296704);
+            text = this.activity.getString(2131296705);
             if (subtitle == null) {
                 equals = true;
                 text = text;

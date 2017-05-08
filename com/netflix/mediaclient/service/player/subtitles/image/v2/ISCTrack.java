@@ -35,12 +35,13 @@ public class ISCTrack extends Box
     }
     
     private void loadBoxes(final DataInputStream dataInputStream) {
+    Label_0158_Outer:
         while (true) {
             while (true) {
             Label_0044_Outer:
                 while (true) {
                     long n3 = 0L;
-                Label_0044:
+                Label_0177:
                     while (true) {
                         Label_0172: {
                             try {
@@ -53,25 +54,19 @@ public class ISCTrack extends Box
                                 int n = n2;
                                 contentSizeInBytes = n3;
                                 // iftrue(Label_0044:, !Log.isLoggable())
-                                // iftrue(Label_0177:, !Log.isLoggable())
+                                Log.d("nf_subtitles_imv2", "Left to parse: " + n3);
+                                n = n2;
+                                contentSizeInBytes = n3;
+                                break Label_0044;
                                 while (true) {
-                                    Block_5: {
-                                        Block_6: {
-                                            break Block_6;
-                                            n3 = contentSizeInBytes - this.readBox(dataInputStream);
-                                            break Block_5;
-                                        }
-                                        Log.d("nf_subtitles_imv2", "Left to parse: " + n3);
-                                        n = n2;
-                                        contentSizeInBytes = n3;
-                                        break Label_0044;
-                                    }
                                     Log.d("nf_subtitles_imv2", "Content left to be parsed: " + n3);
-                                    break Label_0044;
-                                    continue Label_0044_Outer;
+                                    break Label_0177;
+                                    n3 = contentSizeInBytes - this.readBox(dataInputStream);
+                                    continue Label_0158_Outer;
                                 }
                             }
                             // iftrue(Label_0163:, n == 0)
+                            // iftrue(Label_0177:, !Log.isLoggable())
                             catch (Throwable t) {
                                 Log.w("nf_subtitles_imv2", "Either error or we do not have anything else to read!", t);
                                 return;
@@ -80,7 +75,7 @@ public class ISCTrack extends Box
                             continue Label_0044_Outer;
                         }
                         int n = 1;
-                        continue Label_0044;
+                        continue Label_0158_Outer;
                     }
                     if (n3 > 0L) {
                         final int n2 = 1;

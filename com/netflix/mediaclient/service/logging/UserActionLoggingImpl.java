@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.logging;
 
+import com.netflix.mediaclient.service.logging.client.model.CustomEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.UpgradeStreamsEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.SurveyEndedEvent;
 import com.netflix.mediaclient.service.logging.uiaction.model.SurveyQuestionEndedEvent;
@@ -308,6 +309,16 @@ final class UserActionLoggingImpl implements UserActionLogging
             value2 = IClientLogging$ModalView.valueOf(stringExtra2);
         }
         this.startChangeValueSession(value, value2);
+    }
+    
+    private void handleCustomAction(final Intent intent) {
+        final String stringExtra = intent.getStringExtra("cmd");
+        final String stringExtra2 = intent.getStringExtra("view");
+        IClientLogging$ModalView value = null;
+        if (StringUtils.isNotEmpty(stringExtra2)) {
+            value = IClientLogging$ModalView.valueOf(stringExtra2);
+        }
+        this.reportCustomAction(stringExtra, value);
     }
     
     private void handleDeleteProfileEnded(Intent value) {
@@ -642,10 +653,10 @@ final class UserActionLoggingImpl implements UserActionLogging
                                                     return;
                                                 }
                                                 break Label_0180;
-                                                value2 = n;
-                                                continue Label_0099_Outer;
                                                 value = n;
                                                 break;
+                                                value2 = n;
+                                                continue Label_0099_Outer;
                                             }
                                             catch (JSONException ex) {
                                                 Log.e("nf_log", "Failed JSON", (Throwable)ex);
@@ -757,36 +768,39 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     private void handleRateTitleEnded(final Intent intent) {
-    Label_0060_Outer:
+    Label_0086_Outer:
         while (true) {
-            Integer value = null;
             Serializable s = intent.getStringExtra("reason");
             final String stringExtra = intent.getStringExtra("error");
             final int intExtra = intent.getIntExtra("rating", 0);
             final int intExtra2 = intent.getIntExtra("rank", Integer.MIN_VALUE);
+            final String stringExtra2 = intent.getStringExtra("rating_type");
+            final int intExtra3 = intent.getIntExtra("score", -1);
+            final boolean booleanExtra = intent.getBooleanExtra("is_new", false);
             while (true) {
-                Label_0102: {
+                Label_0137: {
                     while (true) {
                         while (true) {
                             try {
                                 final UIError instance = UIError.createInstance(stringExtra);
                                 if (!StringUtils.isNotEmpty((String)s)) {
-                                    break Label_0102;
+                                    break Label_0137;
                                 }
                                 s = IClientLogging$CompletionReason.valueOf((String)s);
                                 if (intExtra2 == Integer.MIN_VALUE) {
-                                    this.endRateTitleSession((IClientLogging$CompletionReason)s, instance, value, intExtra);
+                                    final Integer value = null;
+                                    this.endRateTitleSession((IClientLogging$CompletionReason)s, instance, value, intExtra, stringExtra2, intExtra3, booleanExtra);
                                     return;
                                 }
                             }
                             catch (JSONException ex) {
                                 Log.e("nf_log", "Failed JSON", (Throwable)ex);
                                 final UIError instance = null;
-                                continue Label_0060_Outer;
+                                continue Label_0086_Outer;
                             }
                             break;
                         }
-                        value = intExtra2;
+                        final Integer value = intExtra2;
                         continue;
                     }
                 }
@@ -1545,7 +1559,7 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.endLoginSession(IClientLogging$CompletionReason.canceled, null);
             this.endNavigationSession(IClientLogging$ModalView.logout, IClientLogging$CompletionReason.canceled, null);
             this.endNewLolomoSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null, null, null, System.currentTimeMillis(), null, null);
-            this.endRateTitleSession(IClientLogging$CompletionReason.canceled, null, 0, 0);
+            this.endRateTitleSession(IClientLogging$CompletionReason.canceled, null, 0, 0, null, -1, false);
             this.endRegisterSession(IClientLogging$CompletionReason.canceled, null);
             this.endRemoveFromPlaylistSession(IClientLogging$CompletionReason.canceled, null);
             this.endSelectProfileSession(IClientLogging$CompletionReason.canceled, IClientLogging$ModalView.logout, null);
@@ -1772,12 +1786,12 @@ final class UserActionLoggingImpl implements UserActionLogging
     }
     
     @Override
-    public void endRateTitleSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final int n2) {
+    public void endRateTitleSession(final IClientLogging$CompletionReason clientLogging$CompletionReason, final UIError uiError, final Integer n, final int n2, final String s, final int n3, final boolean b) {
         if (this.mRateTitleSession == null) {
             return;
         }
         Log.d("nf_log", "RateTitle  session ended");
-        final RateTitleEndedEvent endedEvent = this.mRateTitleSession.createEndedEvent(clientLogging$CompletionReason, uiError, n, n2);
+        final RateTitleEndedEvent endedEvent = this.mRateTitleSession.createEndedEvent(clientLogging$CompletionReason, uiError, n, n2, s, n3, b);
         if (endedEvent == null) {
             Log.d("nf_log", "RateTitle  session still waits on session id, do not post at this time.");
             return;
@@ -2278,10 +2292,20 @@ final class UserActionLoggingImpl implements UserActionLogging
             this.handleSerializeLolomoEnded(intent);
             return true;
         }
+        if ("com.netflix.mediaclient.intent.action.LOG_UIA_CUSTOM_ACTION".equals(action)) {
+            Log.d("nf_log", "CUSTOM_ACTION");
+            this.handleCustomAction(intent);
+            return true;
+        }
         if (Log.isLoggable()) {
             Log.d("nf_log", "We do not support action " + action);
         }
         return false;
+    }
+    
+    @Override
+    public void reportCustomAction(final String s, final IClientLogging$ModalView clientLogging$ModalView) {
+        this.mEventHandler.post(new CustomEvent(s, clientLogging$ModalView));
     }
     
     @Override

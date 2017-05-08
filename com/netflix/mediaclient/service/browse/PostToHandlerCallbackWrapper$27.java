@@ -21,6 +21,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetail
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -45,6 +46,6 @@ class PostToHandlerCallbackWrapper$27 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.callback.onQueueRemove(this.val$res);
+        this.this$0.callback.onQueueAdd(this.val$res);
     }
 }

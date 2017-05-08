@@ -4,17 +4,14 @@
 
 package com.facebook.react.bridge;
 
-final class BaseJavaModule$8 extends BaseJavaModule$ArgumentExtractor<Callback>
+final class BaseJavaModule$8 extends BaseJavaModule$ArgumentExtractor<ReadableMap>
 {
     BaseJavaModule$8() {
         super(null);
     }
     
     @Override
-    public Callback extractArgument(final CatalystInstance catalystInstance, final ExecutorToken executorToken, final ReadableNativeArray readableNativeArray, final int n) {
-        if (readableNativeArray.isNull(n)) {
-            return null;
-        }
-        return new CallbackImpl(catalystInstance, executorToken, (int)readableNativeArray.getDouble(n));
+    public ReadableMap extractArgument(final CatalystInstance catalystInstance, final ExecutorToken executorToken, final ReadableNativeArray readableNativeArray, final int n) {
+        return readableNativeArray.getMap(n);
     }
 }

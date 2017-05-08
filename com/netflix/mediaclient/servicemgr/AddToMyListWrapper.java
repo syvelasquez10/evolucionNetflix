@@ -9,7 +9,6 @@ import android.widget.Toast;
 import com.netflix.mediaclient.android.app.Status;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.Log;
 
@@ -37,7 +36,7 @@ public class AddToMyListWrapper
     }
     
     void addVideoToMyList(final String s, final VideoType videoType, final int n, final String s2) {
-        this.serviceMan.getBrowse().addToQueue(s, videoType, n, BrowseExperience.shouldLoadKubrickLeavesInDetails(), s2, new LoggingManagerCallback("AddToMyListWrapper"));
+        this.serviceMan.getBrowse().addToQueue(s, videoType, n, s2, new LoggingManagerCallback("AddToMyListWrapper"));
     }
     
     public TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final TextView textView2, final String s, final VideoType videoType, final int n, final boolean b) {
@@ -113,10 +112,10 @@ public class AddToMyListWrapper
             if (b2) {
                 int n;
                 if (b) {
-                    n = 2131296651;
+                    n = 2131296652;
                 }
                 else {
-                    n = 2131296654;
+                    n = 2131296655;
                 }
                 Toast.makeText(this.serviceMan.getContext(), n, 1).show();
             }

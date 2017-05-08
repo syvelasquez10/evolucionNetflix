@@ -16,20 +16,20 @@ public class ARTRenderableViewManager extends ViewManager<View, ReactShadowNode>
     static final String CLASS_TEXT = "ARTText";
     private final String mClassName;
     
-    private ARTRenderableViewManager(final String mClassName) {
+    ARTRenderableViewManager(final String mClassName) {
         this.mClassName = mClassName;
     }
     
     public static ARTRenderableViewManager createARTGroupViewManager() {
-        return new ARTRenderableViewManager("ARTGroup");
+        return new ARTGroupViewManager();
     }
     
     public static ARTRenderableViewManager createARTShapeViewManager() {
-        return new ARTRenderableViewManager("ARTShape");
+        return new ARTShapeViewManager();
     }
     
     public static ARTRenderableViewManager createARTTextViewManager() {
-        return new ARTRenderableViewManager("ARTText");
+        return new ARTTextViewManager();
     }
     
     @Override

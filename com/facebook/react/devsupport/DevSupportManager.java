@@ -33,6 +33,8 @@ public interface DevSupportManager extends NativeModuleCallExceptionHandler
     
     void setDevSupportEnabled(final boolean p0);
     
+    void showDevOptionsDialog();
+    
     void showNewJSError(final String p0, final ReadableArray p1, final int p2);
     
     void updateJSError(final String p0, final ReadableArray p1, final int p2);

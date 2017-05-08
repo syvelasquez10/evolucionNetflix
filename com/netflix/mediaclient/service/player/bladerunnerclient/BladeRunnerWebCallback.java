@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.player.bladerunnerclient;
 
+import com.netflix.mediaclient.service.player.bladerunnerclient.volley.ClientActionFromLase;
+import java.util.Map;
 import org.json.JSONObject;
 import com.netflix.mediaclient.android.app.Status;
 
@@ -25,5 +27,5 @@ public interface BladeRunnerWebCallback
     
     void onPdsSessionStart(final Status p0, final long p1, final String p2);
     
-    void onSyncDone(final Status p0);
+    void onSyncLicenseDone(final Map<String, ClientActionFromLase> p0, final Status p1);
 }

@@ -4,8 +4,8 @@
 
 package com.facebook.react.uimanager;
 
-import java.util.Iterator;
 import java.util.HashMap;
+import java.util.Iterator;
 import com.facebook.systrace.Systrace;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.systrace.SystraceMessage;
@@ -14,7 +14,7 @@ import java.util.List;
 
 class UIManagerModuleConstantsHelper
 {
-    static Map<String, Object> createConstants(final List<ViewManager> list) {
+    static Map<String, Object> createConstants(final List<ViewManager> list, final boolean b) {
         final Map<String, Object> constants = UIManagerModuleConstants.getConstants();
         final Map bubblingEventTypeConstants = UIManagerModuleConstants.getBubblingEventTypeConstants();
         final Map directEventTypeConstants = UIManagerModuleConstants.getDirectEventTypeConstants();
@@ -29,7 +29,7 @@ class UIManagerModuleConstantsHelper
                 if (exportedCustomDirectEventTypeConstants != null) {
                     recursiveMerge(directEventTypeConstants, exportedCustomDirectEventTypeConstants);
                 }
-                final HashMap<String, Map> hashMap = (HashMap<String, Map>)MapBuilder.newHashMap();
+                final HashMap<Object, Object> hashMap = MapBuilder.newHashMap();
                 final Map exportedViewConstants = viewManager.getExportedViewConstants();
                 if (exportedViewConstants != null) {
                     hashMap.put("Constants", exportedViewConstants);
@@ -53,8 +53,9 @@ class UIManagerModuleConstantsHelper
             }
             break;
         }
-        constants.put("customBubblingEventTypes", (HashMap<String, Map>)bubblingEventTypeConstants);
-        constants.put("customDirectEventTypes", (HashMap<String, Map>)directEventTypeConstants);
+        constants.put("customBubblingEventTypes", bubblingEventTypeConstants);
+        constants.put("customDirectEventTypes", directEventTypeConstants);
+        constants.put("AndroidLazyViewManagersEnabled", b);
         return constants;
     }
     

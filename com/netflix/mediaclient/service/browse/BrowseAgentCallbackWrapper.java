@@ -21,6 +21,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetail
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -102,6 +103,12 @@ public class BrowseAgentCallbackWrapper implements BrowseAgentCallback
     public void onEpisodesFetched(final List<EpisodeDetails> list, final Status status) {
         this.handleResultTiming("onEpisodesFetched");
         this.callback.onEpisodesFetched(list, this.wrapStatus(status));
+    }
+    
+    @Override
+    public void onFalkorVideoFetched(final FalkorVideo falkorVideo, final Status status) {
+        this.handleResultTiming("onFalkorVideoFetched");
+        this.callback.onFalkorVideoFetched(falkorVideo, status);
     }
     
     @Override

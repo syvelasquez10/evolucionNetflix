@@ -20,16 +20,17 @@ import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import com.netflix.model.leafs.advisory.Advisory;
+import android.os.Handler;
 import com.netflix.model.branches.FalkorActorStill;
 import com.netflix.model.branches.MementoVideoSwatch;
 import com.netflix.model.branches.FalkorPerson;
-import android.os.Handler;
-import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.List;
@@ -37,18 +38,22 @@ import java.util.List;
 class PostToHandlerCallbackWrapper$23 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
-    final /* synthetic */ List val$requestedGenreLists;
+    final /* synthetic */ List val$actors;
     final /* synthetic */ Status val$res;
+    final /* synthetic */ List val$stills;
+    final /* synthetic */ List val$swatches;
     
-    PostToHandlerCallbackWrapper$23(final PostToHandlerCallbackWrapper this$0, final List val$requestedGenreLists, final Status val$res) {
+    PostToHandlerCallbackWrapper$23(final PostToHandlerCallbackWrapper this$0, final List val$actors, final List val$swatches, final Status val$res, final List val$stills) {
         this.this$0 = this$0;
-        this.val$requestedGenreLists = val$requestedGenreLists;
+        this.val$actors = val$actors;
+        this.val$swatches = val$swatches;
         this.val$res = val$res;
+        this.val$stills = val$stills;
     }
     
     @Override
     public void run() {
         ThreadUtils.assertOnMain();
-        this.this$0.callback.onGenreListsFetched(this.val$requestedGenreLists, this.val$res);
+        this.this$0.callback.onActorDetailsAndRelatedFetched(this.val$actors, this.val$swatches, this.val$res, this.val$stills);
     }
 }

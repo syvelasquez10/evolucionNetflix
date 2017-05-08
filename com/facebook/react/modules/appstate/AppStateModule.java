@@ -17,6 +17,7 @@ public class AppStateModule extends ReactContextBaseJavaModule implements Lifecy
 {
     public static final String APP_STATE_ACTIVE = "active";
     public static final String APP_STATE_BACKGROUND = "background";
+    protected static final String NAME = "AppState";
     private String mAppState;
     
     public AppStateModule(final ReactApplicationContext reactApplicationContext) {
@@ -49,6 +50,7 @@ public class AppStateModule extends ReactContextBaseJavaModule implements Lifecy
         this.getReactApplicationContext().addLifecycleEventListener(this);
     }
     
+    @Override
     public void onHostDestroy() {
     }
     

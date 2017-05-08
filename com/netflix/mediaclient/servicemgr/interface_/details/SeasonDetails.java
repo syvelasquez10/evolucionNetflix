@@ -10,9 +10,9 @@ public interface SeasonDetails extends BasicVideo
 {
     int getNumOfEpisodes();
     
-    String getSeasonLongSeqLabel();
-    
     int getSeasonNumber();
+    
+    String getShowId();
     
     int getYear();
 }

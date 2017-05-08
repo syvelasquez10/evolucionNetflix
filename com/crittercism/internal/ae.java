@@ -43,10 +43,10 @@ public final class ae extends aa
                             try {
                                 this.d = Integer.parseInt(ab.a(n2), 16);
                                 return true;
-                                ++n2;
-                                continue Label_0040_Outer;
                                 n2 = -1;
                                 continue;
+                                ++n2;
+                                continue Label_0040_Outer;
                             }
                             catch (NumberFormatException ex) {
                                 return false;

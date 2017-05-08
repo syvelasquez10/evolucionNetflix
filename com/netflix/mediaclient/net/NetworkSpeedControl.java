@@ -84,7 +84,7 @@ public class NetworkSpeedControl
     public static void showNetworkSpeedController(final NetflixActivity netflixActivity) {
         final String[] stringsForDebugMenu = getStringsForDebugMenu();
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)netflixActivity);
-        alertDialog$Builder.setTitle(2131297106);
+        alertDialog$Builder.setTitle(2131297132);
         alertDialog$Builder.setSingleChoiceItems(stringsForDebugMenu, getSelectedSpeedIndex((Context)netflixActivity), (DialogInterface$OnClickListener)new NetworkSpeedControl$5(netflixActivity));
         alertDialog$Builder.create().show();
     }

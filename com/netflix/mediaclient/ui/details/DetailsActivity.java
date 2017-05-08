@@ -13,8 +13,10 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import java.util.HashMap;
 import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.ui.mdx.MdxMenu;
+import com.netflix.mediaclient.ui.mdx.CastMenu;
 import android.view.Menu;
+import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +28,6 @@ import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import java.util.Map;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.Log;
@@ -91,7 +92,7 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
             Log.d("DetailsActivity", "handleAddToMyList:: msg token " + this.mActionToken);
         }
         UserActionLogUtils.reportAddToQueueActionStarted((Context)this, (UserActionLogging$CommandName)null, this.getUiScreen());
-        this.serviceMan.getBrowse().addToQueue(this.videoId, this.getVideoType(), this.getTrackId(), BrowseExperience.shouldLoadKubrickLeavesInDetails(), this.mActionToken, new DetailsActivity$MyListCallback(this, "DetailsActivity"));
+        this.serviceMan.getBrowse().addToQueue(this.videoId, this.getVideoType(), this.getTrackId(), this.mActionToken, new DetailsActivity$MyListCallback(this, "DetailsActivity"));
     }
     
     private void handleRemoveFromMyList() {
@@ -231,11 +232,14 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
         }
         super.onCreate(bundle);
         this.registerReceivers();
+        if (BrowseExperience.isLightTheme() && (DeviceUtils.isPortrait((Context)this) || !DeviceUtils.isTabletByContext((Context)this))) {
+            this.getNetflixActionBar().setDropShadowVisibility(false);
+        }
     }
     
     @Override
     protected void onCreateOptionsMenu(final Menu menu, final Menu menu2) {
-        MdxMenu.addSelectPlayTarget((NetflixActivity)this, menu, false);
+        CastMenu.addSelectPlayTarget((NetflixActivity)this, menu, false);
         IrisUtils.addShareIcon(this.serviceMan, menu, (Context)this);
         this.shareMenuCreated = true;
         DetailsMenu.addItems(this, menu, false);

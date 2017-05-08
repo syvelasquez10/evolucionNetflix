@@ -14,7 +14,9 @@ import com.netflix.mediaclient.service.logging.perf.Events;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import com.netflix.mediaclient.service.configuration.persistent.PersistentConfigurable;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
+import com.netflix.mediaclient.service.configuration.persistent.DPPrefetchABTestConfig;
 import android.content.Context;
 import java.util.NoSuchElementException;
 import com.netflix.mediaclient.Log;
@@ -115,7 +117,7 @@ public final class DPPrefetchABTestUtils
     }
     
     public static boolean isInTest(final Context context) {
-        return context != null && PersistentConfig.getDPPrefetchABTestConfig(context) != ABTestConfig$Cell.CELL_ONE;
+        return context != null && PersistentConfig.getCellForTest(DPPrefetchABTestConfig.class, context) != ABTestConfig$Cell.CELL_ONE;
     }
     
     private static boolean isInputValid(final ServiceManager serviceManager, final List<? extends Video> list) {
@@ -186,8 +188,8 @@ public final class DPPrefetchABTestUtils
             return;
         }
         int n = 0;
-        final ABTestConfig$Cell dpPrefetchABTestConfig = PersistentConfig.getDPPrefetchABTestConfig(serviceManager.getContext());
-        switch (DPPrefetchABTestUtils$2.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$ABTestConfig$Cell[dpPrefetchABTestConfig.ordinal()]) {
+        final ABTestConfig$Cell cellForTest = PersistentConfig.getCellForTest(DPPrefetchABTestConfig.class, serviceManager.getContext());
+        switch (DPPrefetchABTestUtils$2.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$ABTestConfig$Cell[cellForTest.ordinal()]) {
             case 1: {
                 n = 1;
                 break;
@@ -198,12 +200,12 @@ public final class DPPrefetchABTestUtils
             }
         }
         int n2 = n;
-        Label_0125: {
-            if (dpPrefetchABTestConfig.getCellId() >= ABTestConfig$Cell.CELL_THREE.getCellId()) {
+        Label_0129: {
+            if (cellForTest.getCellId() >= ABTestConfig$Cell.CELL_THREE.getCellId()) {
                 if (basicLoMo.getType() != LoMoType.CONTINUE_WATCHING) {
                     n2 = n;
                     if (basicLoMo.getType() != LoMoType.BILLBOARD) {
-                        break Label_0125;
+                        break Label_0129;
                     }
                 }
                 n2 = min;
@@ -228,7 +230,7 @@ public final class DPPrefetchABTestUtils
             return;
         }
         int n = 0;
-        switch (DPPrefetchABTestUtils$2.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$ABTestConfig$Cell[PersistentConfig.getDPPrefetchABTestConfig(serviceManager.getContext()).ordinal()]) {
+        switch (DPPrefetchABTestUtils$2.$SwitchMap$com$netflix$mediaclient$service$webclient$model$leafs$ABTestConfig$Cell[PersistentConfig.getCellForTest(DPPrefetchABTestConfig.class, serviceManager.getContext()).ordinal()]) {
             case 1: {
                 n = 1;
                 break;

@@ -23,6 +23,17 @@ public abstract class JsonParser implements Closeable
     
     public abstract void clearCurrentToken();
     
+    public boolean getBooleanValue() {
+        final JsonToken currentToken = this.getCurrentToken();
+        if (currentToken == JsonToken.VALUE_TRUE) {
+            return true;
+        }
+        if (currentToken == JsonToken.VALUE_FALSE) {
+            return false;
+        }
+        throw new JsonParseException(this, String.format("Current token (%s) not of boolean type", currentToken));
+    }
+    
     public abstract JsonLocation getCurrentLocation();
     
     public abstract String getCurrentName();

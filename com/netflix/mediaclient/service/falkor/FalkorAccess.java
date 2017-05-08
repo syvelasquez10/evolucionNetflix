@@ -39,8 +39,8 @@ public class FalkorAccess implements IBrowseInterface
     }
     
     @Override
-    public void addToQueue(final String s, final VideoType videoType, final int n, final boolean b, final String s2, final int n2, final int n3) {
-        this.mBrowseAgent.addToQueue(s, videoType, n, b, s2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n2, n3)));
+    public void addToQueue(final String s, final VideoType videoType, final int n, final String s2, final int n2, final int n3) {
+        this.mBrowseAgent.addToQueue(s, videoType, n, s2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n2, n3)));
     }
     
     @Override
@@ -76,6 +76,11 @@ public class FalkorAccess implements IBrowseInterface
     @Override
     public void fetchEpisodes(final String s, final VideoType videoType, final int n, final int n2, final int n3, final int n4) {
         this.mBrowseAgent.fetchEpisodes(s, videoType, n, n2, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n3, n4)));
+    }
+    
+    @Override
+    public void fetchFalkorVideo(final String s, final int n, final int n2) {
+        this.mBrowseAgent.fetchFalkorVideo(s, this.wrapCallback(new FalkorAccess$BrowseAgentClientCallback(this, n, n2)));
     }
     
     @Override

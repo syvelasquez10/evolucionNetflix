@@ -4,9 +4,10 @@
 
 package com.netflix.mediaclient.servicemgr.interface_.offline.realm;
 
+import com.netflix.mediaclient.util.LogUtils;
 import io.realm.RealmIncompleteVideoDetailsRealmProxyInterface;
 import io.realm.RealmObject;
-import com.netflix.mediaclient.util.LogUtils;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.Log;
 import io.realm.Realm;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
@@ -33,7 +34,7 @@ final class RealmIncompleteVideoDetails$1 implements Realm$Transaction
         else {
             final String string = "Incomplete object was already in realm " + realmIncompleteVideoDetails.getPlayableId() + ";" + realmIncompleteVideoDetails.getProfileId() + ";" + realmIncompleteVideoDetails.getVideoType();
             Log.d(RealmIncompleteVideoDetails.TAG, string);
-            LogUtils.reportErrorSafely(string);
+            ErrorLoggingManager.logHandledException(string);
             realmIncompleteVideoDetails2 = realmIncompleteVideoDetails;
         }
         realmIncompleteVideoDetails2.setVideoType(this.val$videoType.getKey());

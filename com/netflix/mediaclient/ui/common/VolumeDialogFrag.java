@@ -13,23 +13,23 @@ import android.view.View;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
-import com.netflix.mediaclient.ui.mdx.IMiniPlayerFrag;
+import com.netflix.mediaclient.ui.mdx.ICastPlayerFrag;
 import android.widget.SeekBar;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
+import com.netflix.mediaclient.ui.mdx.CastPlayerHelper$CastPlayerDialog;
 import android.widget.SeekBar$OnSeekBarChangeListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 
-public class VolumeDialogFrag extends NetflixDialogFrag implements SeekBar$OnSeekBarChangeListener, MdxMiniPlayerFrag$MdxMiniPlayerDialog
+public class VolumeDialogFrag extends NetflixDialogFrag implements SeekBar$OnSeekBarChangeListener, CastPlayerHelper$CastPlayerDialog
 {
     private static final String TAG = "VolumeDialogFrag";
     private BroadcastReceiver mVolumeBroadcastReceiver;
     private SeekBar seekBar;
     
     private int getMostRecentVolume() {
-        final IMiniPlayerFrag mdxMiniPlayerFrag = this.getNetflixActivity().getMdxMiniPlayerFrag();
-        if (mdxMiniPlayerFrag != null) {
-            return mdxMiniPlayerFrag.getVolume();
+        final ICastPlayerFrag castPlayerFrag = this.getNetflixActivity().getCastPlayerFrag();
+        if (castPlayerFrag != null) {
+            return castPlayerFrag.getVolume();
         }
         return 100;
     }
@@ -46,8 +46,8 @@ public class VolumeDialogFrag extends NetflixDialogFrag implements SeekBar$OnSee
     }
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        final View inflate = layoutInflater.inflate(2130903341, viewGroup, false);
-        (this.seekBar = (SeekBar)inflate.findViewById(2131755979)).setOnSeekBarChangeListener((SeekBar$OnSeekBarChangeListener)this);
+        final View inflate = layoutInflater.inflate(2130903339, viewGroup, false);
+        (this.seekBar = (SeekBar)inflate.findViewById(2131821546)).setOnSeekBarChangeListener((SeekBar$OnSeekBarChangeListener)this);
         this.seekBar.setMax(100);
         return inflate;
     }
@@ -80,6 +80,6 @@ public class VolumeDialogFrag extends NetflixDialogFrag implements SeekBar$OnSee
     public void onStopTrackingTouch(final SeekBar seekBar) {
         final int progress = seekBar.getProgress();
         Log.v("VolumeDialogFrag", "Setting mdx volume to: " + progress);
-        this.getNetflixActivity().getMdxMiniPlayerFrag().setVolume(progress);
+        this.getNetflixActivity().getCastPlayerFrag().setVolume(progress);
     }
 }

@@ -24,7 +24,7 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     
     public DiagnosisActivity$ResultsAdapter(final DiagnosisActivity this$0, final Context context) {
         this.this$0 = this$0;
-        super(context, 2130903118, 2131755343);
+        super(context, 2130903127, 2131820949);
         this.context = context;
     }
     
@@ -44,20 +44,20 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     }
     
     public View getView(final int n, View inflate, final ViewGroup viewGroup) {
-        inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903118, viewGroup, false);
-        final TextView textView = (TextView)inflate.findViewById(2131755345);
-        final TextView textView2 = (TextView)inflate.findViewById(2131755346);
-        final ImageView imageView = (ImageView)inflate.findViewById(2131755344);
-        imageView.setImageResource(2130837954);
+        inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903127, viewGroup, false);
+        final TextView textView = (TextView)inflate.findViewById(2131820951);
+        final TextView textView2 = (TextView)inflate.findViewById(2131820952);
+        final ImageView imageView = (ImageView)inflate.findViewById(2131820950);
+        imageView.setImageResource(2130837964);
         final UrlNetworkState urlNetworkState = this.this$0.mUrlList.get(n);
         this.setTitleText(textView, urlNetworkState.getUrl(), n);
         if (urlNetworkState.getStatus().equals(DiagnosisAgent$UrlStatus.COMPLETED)) {
             if (urlNetworkState.getResult() != 0) {
                 textView2.setText((CharSequence)("nw-" + urlNetworkState.getErrorGroup() + "-" + urlNetworkState.getErrorCode()));
-                imageView.setImageResource(2130837953);
+                imageView.setImageResource(2130837963);
                 return inflate;
             }
-            imageView.setImageResource(2130837954);
+            imageView.setImageResource(2130837964);
             textView2.setVisibility(4);
         }
         else {
@@ -78,9 +78,9 @@ public class DiagnosisActivity$ResultsAdapter extends ArrayAdapter<String>
     
     public void setTitleText(final TextView textView, final String s, final int n) {
         if (s != null && s.contains("netflix")) {
-            textView.setText((CharSequence)this.context.getString(2131296694, new Object[] { n + 1 }));
+            textView.setText((CharSequence)this.context.getString(2131296695, new Object[] { n + 1 }));
             return;
         }
-        textView.setText(2131296671);
+        textView.setText(2131296672);
     }
 }

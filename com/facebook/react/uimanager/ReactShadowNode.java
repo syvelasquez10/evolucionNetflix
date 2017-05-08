@@ -11,10 +11,12 @@ import com.facebook.yoga.YogaJustify;
 import com.facebook.yoga.YogaWrap;
 import com.facebook.yoga.YogaFlexDirection;
 import com.facebook.yoga.YogaAlign;
+import com.facebook.yoga.YogaValue;
 import com.facebook.yoga.YogaDirection;
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.yoga.YogaEdge;
 import com.facebook.yoga.YogaConstants;
+import java.util.Arrays;
 import com.facebook.yoga.YogaNode;
 import java.util.ArrayList;
 
@@ -30,7 +32,8 @@ public class ReactShadowNode
     private ArrayList<ReactShadowNode> mNativeChildren;
     private ReactShadowNode mNativeParent;
     private boolean mNodeUpdated;
-    private final Spacing mPadding;
+    private final float[] mPadding;
+    private final boolean[] mPaddingIsPercent;
     private ReactShadowNode mParent;
     private int mReactTag;
     private ReactShadowNode mRootNode;
@@ -44,13 +47,15 @@ public class ReactShadowNode
         this.mNodeUpdated = true;
         this.mTotalNativeChildren = 0;
         this.mDefaultPadding = new Spacing(0.0f);
-        this.mPadding = new Spacing(Float.NaN);
+        this.mPadding = new float[9];
+        this.mPaddingIsPercent = new boolean[9];
         if (!this.isVirtual()) {
             YogaNode mYogaNode;
             if ((mYogaNode = YogaNodePool.get().acquire()) == null) {
                 mYogaNode = new YogaNode();
             }
             this.mYogaNode = mYogaNode;
+            Arrays.fill(this.mPadding, Float.NaN);
             return;
         }
         this.mYogaNode = null;
@@ -68,28 +73,38 @@ public class ReactShadowNode
     }
     
     private void updatePadding() {
-        for (int i = 0; i <= 8; ++i) {
-            if (i == 0 || i == 2 || i == 4 || i == 5) {
-                if (YogaConstants.isUndefined(this.mPadding.getRaw(i)) && YogaConstants.isUndefined(this.mPadding.getRaw(6)) && YogaConstants.isUndefined(this.mPadding.getRaw(8))) {
-                    this.mYogaNode.setPadding(YogaEdge.fromInt(i), this.mDefaultPadding.getRaw(i));
+        int i = 0;
+    Label_0084_Outer:
+        while (i <= 8) {
+            while (true) {
+                Label_0195: {
+                    if (i == 0 || i == 2 || i == 4 || i == 5) {
+                        if (!YogaConstants.isUndefined(this.mPadding[i]) || !YogaConstants.isUndefined(this.mPadding[6]) || !YogaConstants.isUndefined(this.mPadding[8])) {
+                            break Label_0195;
+                        }
+                        this.mYogaNode.setPadding(YogaEdge.fromInt(i), this.mDefaultPadding.getRaw(i));
+                    }
+                    else if (i == 1 || i == 3) {
+                        if (!YogaConstants.isUndefined(this.mPadding[i]) || !YogaConstants.isUndefined(this.mPadding[7]) || !YogaConstants.isUndefined(this.mPadding[8])) {
+                            break Label_0195;
+                        }
+                        this.mYogaNode.setPadding(YogaEdge.fromInt(i), this.mDefaultPadding.getRaw(i));
+                    }
+                    else {
+                        if (!YogaConstants.isUndefined(this.mPadding[i])) {
+                            break Label_0195;
+                        }
+                        this.mYogaNode.setPadding(YogaEdge.fromInt(i), this.mDefaultPadding.getRaw(i));
+                    }
+                    ++i;
+                    continue Label_0084_Outer;
                 }
-                else {
-                    this.mYogaNode.setPadding(YogaEdge.fromInt(i), this.mPadding.getRaw(i));
+                if (this.mPaddingIsPercent[i]) {
+                    this.mYogaNode.setPaddingPercent(YogaEdge.fromInt(i), this.mPadding[i]);
+                    continue;
                 }
-            }
-            else if (i == 1 || i == 3) {
-                if (YogaConstants.isUndefined(this.mPadding.getRaw(i)) && YogaConstants.isUndefined(this.mPadding.getRaw(7)) && YogaConstants.isUndefined(this.mPadding.getRaw(8))) {
-                    this.mYogaNode.setPadding(YogaEdge.fromInt(i), this.mDefaultPadding.getRaw(i));
-                }
-                else {
-                    this.mYogaNode.setPadding(YogaEdge.fromInt(i), this.mPadding.getRaw(i));
-                }
-            }
-            else if (YogaConstants.isUndefined(this.mPadding.getRaw(i))) {
-                this.mYogaNode.setPadding(YogaEdge.fromInt(i), this.mDefaultPadding.getRaw(i));
-            }
-            else {
-                this.mYogaNode.setPadding(YogaEdge.fromInt(i), this.mPadding.getRaw(i));
+                this.mYogaNode.setPadding(YogaEdge.fromInt(i), this.mPadding[i]);
+                continue;
             }
         }
     }
@@ -106,7 +121,7 @@ public class ReactShadowNode
         if (this.mYogaNode != null && !this.mYogaNode.isMeasureDefined()) {
             final YogaNode mYogaNode = reactShadowNode.mYogaNode;
             if (mYogaNode == null) {
-                throw new RuntimeException("Cannot add a child that doesn't have a CSS node to a node without a measure function!");
+                throw new RuntimeException("Cannot add a child that doesn't have a YogaNode to a parent without a measure function! (Trying to add a '" + reactShadowNode.getClass().getSimpleName() + "' to a '" + this.getClass().getSimpleName() + "')");
             }
             this.mYogaNode.addChildAt(mYogaNode, mTotalNativeChildren);
         }
@@ -241,7 +256,7 @@ public class ReactShadowNode
     }
     
     public final float getPadding(final int n) {
-        return this.mYogaNode.getPadding(YogaEdge.fromInt(n));
+        return this.mYogaNode.getLayoutPadding(YogaEdge.fromInt(n));
     }
     
     public final ReactShadowNode getParent() {
@@ -270,6 +285,10 @@ public class ReactShadowNode
     
     public int getScreenY() {
         return Math.round(this.getLayoutY());
+    }
+    
+    public final YogaValue getStylePadding(final int n) {
+        return this.mYogaNode.getPadding(YogaEdge.fromInt(n));
     }
     
     public final ThemedReactContext getThemedContext() {
@@ -442,6 +461,10 @@ public class ReactShadowNode
         this.mYogaNode.setFlexBasis(flexBasis);
     }
     
+    public void setFlexBasisPercent(final float flexBasisPercent) {
+        this.mYogaNode.setFlexBasisPercent(flexBasisPercent);
+    }
+    
     public void setFlexDirection(final YogaFlexDirection flexDirection) {
         this.mYogaNode.setFlexDirection(flexDirection);
     }
@@ -478,6 +501,10 @@ public class ReactShadowNode
         this.mYogaNode.setMargin(YogaEdge.fromInt(n), n2);
     }
     
+    public void setMarginPercent(final int n, final float n2) {
+        this.mYogaNode.setMarginPercent(YogaEdge.fromInt(n), n2);
+    }
+    
     public void setMeasureFunction(final YogaMeasureFunction measureFunction) {
         if ((measureFunction == null ^ this.mYogaNode.isMeasureDefined()) && this.getChildCount() != 0) {
             throw new RuntimeException("Since a node with a measure function does not add any native yoga children, it's not safe to transition to/from having a measure function unless a node has no children");
@@ -490,12 +517,23 @@ public class ReactShadowNode
     }
     
     public void setPadding(final int n, final float n2) {
-        this.mPadding.set(n, n2);
+        this.mPadding[n] = n2;
+        this.mPaddingIsPercent[n] = false;
+        this.updatePadding();
+    }
+    
+    public void setPaddingPercent(final int n, final float n2) {
+        this.mPadding[n] = n2;
+        this.mPaddingIsPercent[n] = !YogaConstants.isUndefined(n2);
         this.updatePadding();
     }
     
     public void setPosition(final int n, final float n2) {
         this.mYogaNode.setPosition(YogaEdge.fromInt(n), n2);
+    }
+    
+    public void setPositionPercent(final int n, final float n2) {
+        this.mYogaNode.setPositionPercent(YogaEdge.fromInt(n), n2);
     }
     
     public void setPositionType(final YogaPositionType positionType) {
@@ -522,24 +560,48 @@ public class ReactShadowNode
         this.mYogaNode.setHeight(height);
     }
     
+    public void setStyleHeightPercent(final float heightPercent) {
+        this.mYogaNode.setHeightPercent(heightPercent);
+    }
+    
     public void setStyleMaxHeight(final float maxHeight) {
         this.mYogaNode.setMaxHeight(maxHeight);
+    }
+    
+    public void setStyleMaxHeightPercent(final float maxHeightPercent) {
+        this.mYogaNode.setMaxHeightPercent(maxHeightPercent);
     }
     
     public void setStyleMaxWidth(final float maxWidth) {
         this.mYogaNode.setMaxWidth(maxWidth);
     }
     
+    public void setStyleMaxWidthPercent(final float maxWidthPercent) {
+        this.mYogaNode.setMaxWidthPercent(maxWidthPercent);
+    }
+    
     public void setStyleMinHeight(final float minHeight) {
         this.mYogaNode.setMinHeight(minHeight);
+    }
+    
+    public void setStyleMinHeightPercent(final float minHeightPercent) {
+        this.mYogaNode.setMinHeightPercent(minHeightPercent);
     }
     
     public void setStyleMinWidth(final float minWidth) {
         this.mYogaNode.setMinWidth(minWidth);
     }
     
+    public void setStyleMinWidthPercent(final float minWidthPercent) {
+        this.mYogaNode.setMinWidthPercent(minWidthPercent);
+    }
+    
     public void setStyleWidth(final float width) {
         this.mYogaNode.setWidth(width);
+    }
+    
+    public void setStyleWidthPercent(final float widthPercent) {
+        this.mYogaNode.setWidthPercent(widthPercent);
     }
     
     public void setThemedContext(final ThemedReactContext mThemedContext) {

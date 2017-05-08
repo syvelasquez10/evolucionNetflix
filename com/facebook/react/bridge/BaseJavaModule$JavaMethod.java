@@ -27,13 +27,16 @@ public class BaseJavaModule$JavaMethod implements NativeModule$NativeMethod
     private String mType;
     final /* synthetic */ BaseJavaModule this$0;
     
-    public BaseJavaModule$JavaMethod(final BaseJavaModule this$0, final Method mMethod) {
+    public BaseJavaModule$JavaMethod(final BaseJavaModule this$0, final Method mMethod, final boolean b) {
         this.this$0 = this$0;
         this.mType = "async";
         (this.mMethod = mMethod).setAccessible(true);
+        if (b) {
+            this.mType = "sync";
+        }
         final Class<?>[] parameterTypes = mMethod.getParameterTypes();
         this.mArgumentExtractors = this.buildArgumentExtractors(parameterTypes);
-        this.mSignature = this.buildSignature(parameterTypes);
+        this.mSignature = this.buildSignature(this.mMethod, parameterTypes, b);
         this.mArguments = new Object[parameterTypes.length];
         this.mJSArgumentsNeeded = this.calculateJSArgumentsNeeded();
         this.mTraceName = this$0.getName() + "." + this.mMethod.getName();
@@ -80,19 +83,28 @@ public class BaseJavaModule$JavaMethod implements NativeModule$NativeMethod
             else if (clazz == ReadableMap.class) {
                 array2[i] = BaseJavaModule.ARGUMENT_EXTRACTOR_MAP;
             }
+            else if (clazz == ReadableArray.class) {
+                array2[i] = BaseJavaModule.ARGUMENT_EXTRACTOR_ARRAY;
+            }
             else {
-                if (clazz != ReadableArray.class) {
+                if (clazz != Dynamic.class) {
                     throw new RuntimeException("Got unknown argument class: " + clazz.getSimpleName());
                 }
-                array2[i] = BaseJavaModule.ARGUMENT_EXTRACTOR_ARRAY;
+                array2[i] = BaseJavaModule.ARGUMENT_EXTRACTOR_DYNAMIC;
             }
         }
         return array2;
     }
     
-    private String buildSignature(final Class[] array) {
-        final StringBuilder sb = new StringBuilder(array.length);
-        sb.append("v.");
+    private String buildSignature(final Method method, final Class[] array, final boolean b) {
+        final StringBuilder sb = new StringBuilder(array.length + 2);
+        if (b) {
+            sb.append(returnTypeToChar(method.getReturnType()));
+            sb.append('.');
+        }
+        else {
+            sb.append("v.");
+        }
         for (int i = 0; i < array.length; ++i) {
             final Class clazz = array[i];
             if (clazz == ExecutorToken.class) {
@@ -102,7 +114,9 @@ public class BaseJavaModule$JavaMethod implements NativeModule$NativeMethod
             }
             else if (clazz == Promise.class) {
                 Assertions.assertCondition(i == array.length - 1, "Promise must be used as last parameter only");
-                this.mType = "promise";
+                if (!b) {
+                    this.mType = "promise";
+                }
             }
             sb.append(paramTypeToChar(clazz));
         }
@@ -144,6 +158,7 @@ public class BaseJavaModule$JavaMethod implements NativeModule$NativeMethod
         return this.mType;
     }
     
+    @Override
     public void invoke(final CatalystInstance catalystInstance, final ExecutorToken executorToken, final ReadableNativeArray readableNativeArray) {
         int n = 0;
         SystraceMessage.beginSection(0L, "callJavaModuleMethod").arg("method", this.mTraceName).flush();
@@ -156,9 +171,9 @@ public class BaseJavaModule$JavaMethod implements NativeModule$NativeMethod
             Systrace.endSection(0L);
         }
         while (true) {
-            Label_0473: {
+            Label_0475: {
                 if (!this.this$0.supportsWebWorkers()) {
-                    break Label_0473;
+                    break Label_0475;
                 }
                 this.mArguments[0] = executorToken;
                 final int n2 = 1;

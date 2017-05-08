@@ -27,6 +27,10 @@ public class ResourceDrawableIdHelper
         return ResourceDrawableIdHelper.sResourceDrawableIdHelper;
     }
     
+    public void clear() {
+        this.mResourceDrawableIdMap.clear();
+    }
+    
     public Drawable getResourceDrawable(final Context context, final String s) {
         final int resourceDrawableId = this.getResourceDrawableId(context, s);
         if (resourceDrawableId > 0) {

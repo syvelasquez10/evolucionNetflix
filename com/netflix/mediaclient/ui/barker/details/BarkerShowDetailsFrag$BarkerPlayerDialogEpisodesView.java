@@ -13,6 +13,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.View$OnClickListener;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
 import android.view.LayoutInflater;
@@ -48,7 +49,7 @@ import com.netflix.mediaclient.util.ItemDecorationBarkerGrid;
 import android.view.View;
 import java.util.List;
 import com.netflix.mediaclient.ui.details.CopyrightView;
-import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
+import com.netflix.mediaclient.ui.mdx.CastPlayerHelper$CastPlayerDialog;
 import com.netflix.mediaclient.ui.details.ServiceManagerProvider;
 import com.netflix.mediaclient.ui.details.IHandleBackPress;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -80,7 +81,7 @@ public class BarkerShowDetailsFrag$BarkerPlayerDialogEpisodesView extends Barker
     @Override
     protected void findViews() {
         super.findViews();
-        this.nowPlaying = (TextView)this.findViewById(2131755193);
+        this.nowPlaying = (TextView)this.findViewById(2131820731);
     }
     
     @Override

@@ -43,13 +43,11 @@ public class MatrixMathHelper
     }
     
     public static void applySkewX(final double[] array, final double n) {
-        array[4] = Math.sin(n);
-        array[5] = Math.cos(n);
+        array[4] = Math.tan(n);
     }
     
     public static void applySkewY(final double[] array, final double n) {
-        array[0] = Math.cos(n);
-        array[1] = Math.sin(n);
+        array[1] = Math.tan(n);
     }
     
     public static void applyTranslate2D(final double[] array, final double n, final double n2) {

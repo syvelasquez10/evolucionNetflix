@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Map;
+import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
@@ -20,6 +21,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetail
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -31,22 +33,21 @@ import com.netflix.model.branches.FalkorPerson;
 import java.util.List;
 import android.os.Handler;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 
 class PostToHandlerCallbackWrapper$33 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
-    final /* synthetic */ IrisNotificationsList val$notifications;
     final /* synthetic */ Status val$res;
+    final /* synthetic */ boolean val$success;
     
-    PostToHandlerCallbackWrapper$33(final PostToHandlerCallbackWrapper this$0, final IrisNotificationsList val$notifications, final Status val$res) {
+    PostToHandlerCallbackWrapper$33(final PostToHandlerCallbackWrapper this$0, final boolean val$success, final Status val$res) {
         this.this$0 = this$0;
-        this.val$notifications = val$notifications;
+        this.val$success = val$success;
         this.val$res = val$res;
     }
     
     @Override
     public void run() {
-        this.this$0.callback.onNotificationsListFetched(this.val$notifications, this.val$res);
+        this.this$0.callback.onPostPlayImpressionLogged(this.val$success, this.val$res);
     }
 }

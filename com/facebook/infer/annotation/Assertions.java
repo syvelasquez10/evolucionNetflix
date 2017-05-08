@@ -32,7 +32,7 @@ public class Assertions
         return t;
     }
     
-    public static AssertionError assertUnreachable(final String s) {
-        throw new AssertionError((Object)s);
+    public static <T> T assumeNotNull(final T t) {
+        return t;
     }
 }

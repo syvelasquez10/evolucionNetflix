@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.configuration.volley;
 
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
+import com.netflix.mediaclient.service.user.volley.AllocateABTestRequest;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClient;
 import com.netflix.mediaclient.service.NetflixService;
@@ -18,6 +19,11 @@ public class ConfigurationVolleyWebClient implements ConfigurationWebClient
     public ConfigurationVolleyWebClient(final NetflixService service, final FalkorVolleyWebClient webclient) {
         this.webclient = webclient;
         this.service = service;
+    }
+    
+    @Override
+    public void allocateABTest(final int n, final int n2, final ConfigurationAgentWebCallback configurationAgentWebCallback) {
+        this.webclient.sendRequest(new AllocateABTestRequest(this.service.getApplicationContext(), n, n2, configurationAgentWebCallback));
     }
     
     @Override

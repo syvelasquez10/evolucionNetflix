@@ -18,11 +18,13 @@ import android.os.Process;
 import android.content.pm.ResolveInfo;
 import java.util.concurrent.TimeUnit;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.widget.Toast;
 import java.util.Locale;
 import android.os.Build;
 import android.os.Build$VERSION;
 import android.content.Intent;
+import android.app.Activity;
 import android.net.Uri;
 import java.io.FileOutputStream;
 import java.util.Map;
@@ -39,13 +41,12 @@ import java.io.OutputStream;
 import java.io.InputStream;
 import java.io.FileInputStream;
 import java.util.zip.ZipEntry;
-import com.netflix.mediaclient.Log;
 import java.io.File;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import java.util.zip.ZipOutputStream;
 import android.content.Context;
-import android.app.Activity;
 
 public class ExportDebugData
 {
@@ -55,6 +56,7 @@ public class ExportDebugData
     private static final String PREF_CRASHED_PID = "ExportDebugData.PREF_CRASHED_PID";
     private static final long SIZE_LIMIT = 5242880L;
     private static final String TAG = "ExportDebugData";
+    private static final String THREAD_DUMP_FILENAME = "thread_dump.txt";
     private static long lastReportTime;
     
     static {
@@ -65,18 +67,20 @@ public class ExportDebugData
         final NetflixActivity netflixActivity = AndroidUtils.getContextAs(context, NetflixActivity.class);
         if (netflixActivity != null) {
             final ServiceManager serviceManager = netflixActivity.getServiceManager();
-            if (serviceManager != null) {
-                final File file = new File(netflixActivity.getFilesDir() + "/cache.txt");
-                serviceManager.getBrowse().dumpCacheToDisk(file);
-                if (!file.exists()) {
-                    Log.i("ExportDebugData", "Expected file not found " + file.getAbsolutePath());
-                    return;
-                }
-                Log.i("ExportDebugData", "Adding " + file.getAbsolutePath());
-                zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
-                copyFile(new FileInputStream(file), zipOutputStream);
-                zipOutputStream.closeEntry();
+            if (serviceManager == null || !serviceManager.isReady()) {
+                Log.i("ExportDebugData", "Unable to export falkor mem cache, ServiceManager not available");
+                return;
             }
+            final File file = new File(netflixActivity.getFilesDir() + "/cache.txt");
+            serviceManager.getBrowse().dumpCacheToDisk(file);
+            if (!file.exists()) {
+                Log.i("ExportDebugData", "Expected file not found " + file.getAbsolutePath());
+                return;
+            }
+            Log.i("ExportDebugData", "Adding " + file.getAbsolutePath());
+            zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
+            copyFile(new FileInputStream(file), zipOutputStream);
+            zipOutputStream.closeEntry();
         }
     }
     
@@ -210,76 +214,129 @@ public class ExportDebugData
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
-    private static void createBugReport(final Activity activity) {
+    public static void createBugReport(final Context context, final String s, final String s2) {
+        createBugReport(context, s, s2, null);
+    }
+    
+    public static void createBugReport(final Context context, String string, final String s, String string2) {
         while (true) {
             ArrayList<Uri> list = null;
             Intent intent = null;
-        Label_0631:
+        Label_0780:
             while (true) {
-                Label_0751: {
-                    try {
-                        final File file = new File(activity.getFilesDir(), "debug_data");
-                        if (!file.exists() && (file.exists() || !file.mkdirs())) {
-                            throw new IOException("Unable to create directories: " + file.getAbsolutePath());
-                        }
-                        Log.i("ExportDebugData", "Preparing " + "debug_data.zip" + " in " + file.getAbsolutePath());
-                        final File file2 = new File(file, "debug_data.zip");
-                        if (file2.exists() && !file2.delete()) {
-                            throw new IOException("Unable to write: " + file2.getAbsolutePath());
-                        }
-                        final ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(file2));
-                        zipOutputStream.setLevel(9);
-                        addFalkorMemCache((Context)activity, zipOutputStream);
-                        addOfflineRealm((Context)activity, zipOutputStream);
-                        addOfflineRegistry((Context)activity, zipOutputStream);
-                        addPreferences((Context)activity, zipOutputStream, "nfxpref");
-                        zipOutputStream.close();
-                        list = new ArrayList<Uri>();
-                        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)activity)) {
-                            final File screenshot = screenshot(activity, file);
-                            if (screenshot != null) {
-                                list.add(Uri.parse("content://com.netflix.mediaclient.debugdata.fileprovider/debug_data/" + screenshot.getName()));
+                Label_0917: {
+                    while (true) {
+                        try {
+                            final File file = new File(context.getFilesDir(), "debug_data");
+                            if (!file.exists() && (file.exists() || !file.mkdirs())) {
+                                throw new IOException("Unable to create directories: " + file.getAbsolutePath());
                             }
-                        }
-                        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)activity)) {
-                            final File logcat = logcat((Context)activity, file);
+                            Log.i("ExportDebugData", "Preparing " + "debug_data.zip" + " in " + file.getAbsolutePath());
+                            final File file2 = new File(file, "debug_data.zip");
+                            if (file2.exists() && !file2.delete()) {
+                                throw new IOException("Unable to write: " + file2.getAbsolutePath());
+                            }
+                            final ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(file2));
+                            zipOutputStream.setLevel(9);
+                            addFalkorMemCache(context, zipOutputStream);
+                            addOfflineRealm(context, zipOutputStream);
+                            addOfflineRegistry(context, zipOutputStream);
+                            addPreferences(context, zipOutputStream, "nfxpref");
+                            zipOutputStream.close();
+                            list = new ArrayList<Uri>();
+                            final Activity activity = AndroidUtils.getContextAs(context, Activity.class);
+                            if (!AndroidUtils.isActivityFinishedOrDestroyed(context)) {
+                                final File screenshot = screenshot(activity, file);
+                                if (screenshot != null) {
+                                    list.add(Uri.parse("content://com.netflix.mediaclient.debugdata.fileprovider/debug_data/" + screenshot.getName()));
+                                }
+                            }
+                            final File logcat = logcat(context, file);
                             if (logcat != null) {
                                 list.add(Uri.parse("content://com.netflix.mediaclient.debugdata.fileprovider/debug_data/" + logcat.getName()));
                             }
+                            final File threadDump = threadDump(context, file, string2);
+                            if (threadDump != null) {
+                                list.add(Uri.parse("content://com.netflix.mediaclient.debugdata.fileprovider/debug_data/" + threadDump.getName()));
+                            }
+                            if (!file2.exists()) {
+                                throw new IOException("Unable to create: " + file2.getAbsolutePath());
+                            }
+                            list.add(Uri.parse("content://com.netflix.mediaclient.debugdata.fileprovider/debug_data/" + "debug_data.zip"));
+                            final NetflixActivity netflixActivity = AndroidUtils.getContextAs(context, NetflixActivity.class);
+                            if (netflixActivity == null || netflixActivity.getServiceManager() == null || !netflixActivity.getServiceManager().isReady() || netflixActivity.getServiceManager().getCurrentProfile() == null) {
+                                break Label_0917;
+                            }
+                            string2 = "user=" + netflixActivity.getServiceManager().getCurrentProfile().getEmail() + " (" + netflixActivity.getServiceManager().getCurrentProfile().getLanguagesInCsv() + ")\n";
+                            intent = new Intent("android.intent.action.SEND_MULTIPLE");
+                            intent.setType("text/plain");
+                            intent.putExtra("android.intent.extra.EMAIL", new String[] { "spy-issues@netflix.com" });
+                            String s2 = string;
+                            if (string == null) {
+                                s2 = "Enter_JIRA_summary_here";
+                            }
+                            intent.putExtra("android.intent.extra.SUBJECT", s2);
+                            final StringBuilder append = new StringBuilder().append("\n\nEnter_JIRA_description_here\n\n\n\n\npackage=com.netflix.mediaclient\nversion=4.15.0 build 14924\ncode=14924\nandroid=").append(Build$VERSION.SDK_INT).append("\nbrand=").append(Build.BRAND).append("\nmanufacturer=").append(Build.MANUFACTURER).append("\nmodel=").append(Build.MODEL).append("\ndevice=").append(Build.DEVICE).append("\ndevice.locale=").append(Locale.getDefault().getCountry()).append("_").append(Locale.getDefault().getLanguage()).append("\n").append(string2).append("\n");
+                            if (s == null) {
+                                string = "";
+                                intent.putExtra("android.intent.extra.TEXT", append.append(string).toString());
+                                final Iterator<Uri> iterator = list.iterator();
+                                while (iterator.hasNext()) {
+                                    grantRead(context, intent, iterator.next());
+                                }
+                                break Label_0780;
+                            }
                         }
-                        if (!file2.exists()) {
-                            throw new IOException("Unable to create: " + file2.getAbsolutePath());
+                        catch (Throwable t) {
+                            Log.e("ExportDebugData", "Oops, cannot createBugReport data", t);
+                            Toast.makeText(context, (CharSequence)("Oops, cannot createBugReport data, see error in logs (" + t.toString() + ")"), 1).show();
+                            return;
                         }
-                        list.add(Uri.parse("content://com.netflix.mediaclient.debugdata.fileprovider/debug_data/" + "debug_data.zip"));
-                        final NetflixActivity netflixActivity = AndroidUtils.getContextAs((Context)activity, NetflixActivity.class);
-                        if (netflixActivity == null || netflixActivity.getServiceManager() == null || netflixActivity.getServiceManager().getCurrentProfile() == null) {
-                            break Label_0751;
-                        }
-                        final String string = "user=" + netflixActivity.getServiceManager().getCurrentProfile().getEmail() + " (" + netflixActivity.getServiceManager().getCurrentProfile().getLanguagesInCsv() + ")\n";
-                        intent = new Intent("android.intent.action.SEND_MULTIPLE");
-                        intent.setType("text/plain");
-                        intent.putExtra("android.intent.extra.EMAIL", new String[] { "spy-issues@netflix.com" });
-                        intent.putExtra("android.intent.extra.SUBJECT", "Enter_JIRA_summary_here");
-                        intent.putExtra("android.intent.extra.TEXT", "\n\nEnter_JIRA_description_here\n\n\n\n\npackage=com.netflix.mediaclient\nversion=4.13.3 build 14573\ncode=14573\nandroid=" + Build$VERSION.SDK_INT + "\nbrand=" + Build.BRAND + "\nmanufacturer=" + Build.MANUFACTURER + "\nmodel=" + Build.MODEL + "\ndevice=" + Build.DEVICE + "\ndevice.locale=" + Locale.getDefault().getCountry() + "_" + Locale.getDefault().getLanguage() + "\n" + string);
-                        final Iterator<Uri> iterator = list.iterator();
-                        while (iterator.hasNext()) {
-                            grantRead((Context)activity, intent, iterator.next());
-                        }
+                        string = "\n" + s;
+                        continue;
                     }
-                    catch (Throwable t) {
-                        Log.e("ExportDebugData", "Oops, cannot createBugReport data", t);
-                        Toast.makeText((Context)activity, (CharSequence)("Oops, cannot createBugReport data, see error in logs (" + t.toString() + ")"), 1).show();
-                        return;
-                    }
-                    break Label_0631;
                 }
-                final String string = "";
+                string2 = "";
                 continue;
             }
             intent.putParcelableArrayListExtra("android.intent.extra.STREAM", (ArrayList)list);
             intent.addFlags(1);
-            activity.startActivity(Intent.createChooser(intent, (CharSequence)"Send email..."));
+            final Intent chooser = Intent.createChooser(intent, (CharSequence)"Send email...");
+            chooser.addFlags(268435456);
+            context.startActivity(chooser);
         }
+    }
+    
+    public static void createBugReportFromCrash(final Context context, final Throwable t, final String s) {
+        String string = null;
+        String string3;
+        if (t != null) {
+            final String string2 = t.toString();
+            final String s2 = string = "{code}\n" + Log.getStackTraceString(t) + "{code}";
+            string3 = string2;
+            if (t.getStackTrace() != null) {
+                string = s2;
+                string3 = string2;
+                if (t.getStackTrace()[0] != null) {
+                    final String fileName = t.getStackTrace()[0].getFileName();
+                    final int lineNumber = t.getStackTrace()[0].getLineNumber();
+                    string = s2;
+                    string3 = string2;
+                    if (!TextUtils.isEmpty((CharSequence)fileName)) {
+                        string = s2;
+                        string3 = string2;
+                        if (lineNumber > 0) {
+                            string3 = string2 + " at " + fileName + ":" + lineNumber;
+                            string = s2;
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            string3 = null;
+        }
+        createBugReport(context, string3, string, s);
     }
     
     public static void createBugReportWithFeedback(final NetflixActivity netflixActivity) {
@@ -362,5 +419,146 @@ public class ExportDebugData
             Log.e("ExportDebugData", "Unable to capture screenshot", t);
             return null;
         }
+    }
+    
+    private static File threadDump(final Context p0, final File p1, final String p2) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aload_2        
+        //     1: astore_0       
+        //     2: aload_2        
+        //     3: ifnonnull       10
+        //     6: invokestatic    com/netflix/mediaclient/util/ThreadUtils.dumpThreads:()Ljava/lang/String;
+        //     9: astore_0       
+        //    10: new             Ljava/io/File;
+        //    13: dup            
+        //    14: aload_1        
+        //    15: ldc             "thread_dump.txt"
+        //    17: invokespecial   java/io/File.<init>:(Ljava/io/File;Ljava/lang/String;)V
+        //    20: astore_1       
+        //    21: aload_1        
+        //    22: invokevirtual   java/io/File.exists:()Z
+        //    25: ifeq            35
+        //    28: aload_1        
+        //    29: invokevirtual   java/io/File.delete:()Z
+        //    32: ifeq            126
+        //    35: new             Ljava/io/FileWriter;
+        //    38: dup            
+        //    39: aload_1        
+        //    40: invokespecial   java/io/FileWriter.<init>:(Ljava/io/File;)V
+        //    43: astore_2       
+        //    44: aload_2        
+        //    45: aload_0        
+        //    46: invokevirtual   java/io/FileWriter.write:(Ljava/lang/String;)V
+        //    49: aload_2        
+        //    50: ifnull          61
+        //    53: iconst_0       
+        //    54: ifeq            85
+        //    57: aload_2        
+        //    58: invokevirtual   java/io/FileWriter.close:()V
+        //    61: aload_1        
+        //    62: areturn        
+        //    63: astore_0       
+        //    64: new             Ljava/lang/NullPointerException;
+        //    67: dup            
+        //    68: invokespecial   java/lang/NullPointerException.<init>:()V
+        //    71: athrow         
+        //    72: astore_0       
+        //    73: ldc             "ExportDebugData"
+        //    75: ldc_w           "Unable to get threadDump"
+        //    78: aload_0        
+        //    79: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //    82: pop            
+        //    83: aconst_null    
+        //    84: areturn        
+        //    85: aload_2        
+        //    86: invokevirtual   java/io/FileWriter.close:()V
+        //    89: goto            61
+        //    92: astore_0       
+        //    93: aload_0        
+        //    94: athrow         
+        //    95: astore_1       
+        //    96: aload_2        
+        //    97: ifnull          108
+        //   100: aload_0        
+        //   101: ifnull          119
+        //   104: aload_2        
+        //   105: invokevirtual   java/io/FileWriter.close:()V
+        //   108: aload_1        
+        //   109: athrow         
+        //   110: astore_2       
+        //   111: aload_0        
+        //   112: aload_2        
+        //   113: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
+        //   116: goto            108
+        //   119: aload_2        
+        //   120: invokevirtual   java/io/FileWriter.close:()V
+        //   123: goto            108
+        //   126: ldc             "ExportDebugData"
+        //   128: new             Ljava/lang/StringBuilder;
+        //   131: dup            
+        //   132: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   135: ldc_w           "Unable to get threadDump, "
+        //   138: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   141: aload_1        
+        //   142: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
+        //   145: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   148: ldc_w           " cannot be used"
+        //   151: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   154: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   157: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;)I
+        //   160: pop            
+        //   161: aconst_null    
+        //   162: areturn        
+        //   163: astore_1       
+        //   164: aconst_null    
+        //   165: astore_0       
+        //   166: goto            96
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type                 
+        //  -----  -----  -----  -----  ---------------------
+        //  6      10     72     85     Ljava/lang/Throwable;
+        //  10     35     72     85     Ljava/lang/Throwable;
+        //  35     44     72     85     Ljava/lang/Throwable;
+        //  44     49     92     96     Ljava/lang/Throwable;
+        //  44     49     163    169    Any
+        //  57     61     63     72     Ljava/lang/Throwable;
+        //  64     72     72     85     Ljava/lang/Throwable;
+        //  85     89     72     85     Ljava/lang/Throwable;
+        //  93     95     95     96     Any
+        //  104    108    110    119    Ljava/lang/Throwable;
+        //  108    110    72     85     Ljava/lang/Throwable;
+        //  111    116    72     85     Ljava/lang/Throwable;
+        //  119    123    72     85     Ljava/lang/Throwable;
+        //  126    161    72     85     Ljava/lang/Throwable;
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IndexOutOfBoundsException: Index: 90, Size: 90
+        //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
+        //     at java.util.ArrayList.get(ArrayList.java:429)
+        //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)
+        //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3551)
+        //     at com.strobel.decompiler.ast.AstBuilder.build(AstBuilder.java:113)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:210)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
 }

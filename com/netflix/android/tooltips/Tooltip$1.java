@@ -5,12 +5,14 @@
 package com.netflix.android.tooltips;
 
 import android.util.Log;
+import android.graphics.Typeface;
 import android.text.Html;
 import android.content.SharedPreferences;
 import android.view.View$OnLayoutChangeListener;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.FrameLayout$LayoutParams;
 import android.view.LayoutInflater;
+import android.graphics.drawable.Drawable;
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.ViewGroup;

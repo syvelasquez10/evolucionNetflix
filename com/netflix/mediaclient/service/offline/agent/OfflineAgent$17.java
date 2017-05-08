@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.offline.agent;
 
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;
+import com.netflix.mediaclient.service.offline.license.OfflineLicenseManager$LicenseSyncResponseCallback;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflineUtils;
 import com.android.volley.Network;
@@ -24,6 +25,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.BaseStatus;
@@ -44,7 +46,6 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQualit
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.app.NetflixStatus;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayableImpl;
 import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;
@@ -56,9 +57,11 @@ import java.util.Iterator;
 import com.netflix.mediaclient.service.offline.registry.RegistryData;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry$RegistryEnumerator;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.android.app.Status;
@@ -72,8 +75,6 @@ import com.android.volley.RequestQueue;
 import io.realm.Realm;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiListImpl;
-import com.netflix.mediaclient.service.offline.download.OfflinePlayable;
-import java.util.List;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$ManifestCallback;
 import java.util.Map;
 import com.netflix.mediaclient.service.offline.manifest.OfflineManifestManager;
@@ -85,23 +86,25 @@ import android.os.HandlerThread;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.IntentCommandHandler;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.player.bladerunnerclient.IBladeRunnerClient$OfflineRefreshInvoke;
+import com.netflix.mediaclient.service.offline.download.OfflinePlayable;
+import java.util.List;
 
 class OfflineAgent$17 implements Runnable
 {
     final /* synthetic */ OfflineAgent this$0;
+    final /* synthetic */ String val$playableId;
     
-    OfflineAgent$17(final OfflineAgent this$0) {
+    OfflineAgent$17(final OfflineAgent this$0, final String val$playableId) {
         this.this$0 = this$0;
+        this.val$playableId = val$playableId;
     }
     
     @Override
     public void run() {
-        if (!this.this$0.mRegistryDirty) {
-            Log.i("nf_offlineAgent", "saveToRegistry avoiding duplicate save.");
-            return;
+        final OfflinePlayable offlineViewableByPlayableId = OfflineAgentHelper.getOfflineViewableByPlayableId(this.val$playableId, this.this$0.mOfflinePlayableList);
+        if (offlineViewableByPlayableId != null) {
+            offlineViewableByPlayableId.refreshLicenseIfNeeded(IBladeRunnerClient$OfflineRefreshInvoke.USER, new OfflineAgent$17$1(this, offlineViewableByPlayableId));
         }
-        this.this$0.doSaveToRegistryInBGThread(this.this$0.getContext());
-        this.this$0.mRegistryDirty = false;
     }
 }

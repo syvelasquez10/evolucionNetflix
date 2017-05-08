@@ -36,6 +36,7 @@ public class ReactWebViewManager extends SimpleViewManager<WebView>
     private static final String BRIDGE_NAME = "__REACT_WEB_VIEW_BRIDGE";
     public static final int COMMAND_GO_BACK = 1;
     public static final int COMMAND_GO_FORWARD = 2;
+    public static final int COMMAND_INJECT_JAVASCRIPT = 6;
     public static final int COMMAND_POST_MESSAGE = 5;
     public static final int COMMAND_RELOAD = 3;
     public static final int COMMAND_STOP_LOADING = 4;
@@ -76,13 +77,14 @@ public class ReactWebViewManager extends SimpleViewManager<WebView>
         this.mWebViewConfig.configWebView(reactWebViewManager$ReactWebView);
         reactWebViewManager$ReactWebView.getSettings().setBuiltInZoomControls(true);
         reactWebViewManager$ReactWebView.getSettings().setDisplayZoomControls(false);
+        reactWebViewManager$ReactWebView.getSettings().setDomStorageEnabled(true);
         reactWebViewManager$ReactWebView.setLayoutParams(new ViewGroup$LayoutParams(-1, -1));
         return reactWebViewManager$ReactWebView;
     }
     
     @Override
     public Map<String, Integer> getCommandsMap() {
-        return MapBuilder.of("goBack", 1, "goForward", 2, "reload", 3, "stopLoading", 4, "postMessage", 5);
+        return MapBuilder.of("goBack", 1, "goForward", 2, "reload", 3, "stopLoading", 4, "postMessage", 5, "injectJavaScript", 6);
     }
     
     @Override
@@ -115,13 +117,14 @@ public class ReactWebViewManager extends SimpleViewManager<WebView>
                 try {
                     final JSONObject jsonObject = new JSONObject();
                     jsonObject.put("data", (Object)readableArray.getString(0));
-                    webView.loadUrl("javascript:(document.dispatchEvent(new MessageEvent('message', " + jsonObject.toString() + ")))");
-                    return;
+                    webView.loadUrl("javascript:(function () {var event;var data = " + jsonObject.toString() + ";" + "try {" + "event = new MessageEvent('message', data);" + "} catch (e) {" + "event = document.createEvent('MessageEvent');" + "event.initMessageEvent('message', true, true, data.data, data.origin, data.lastEventId, data.source);" + "}" + "document.dispatchEvent(event);" + "})();");
                 }
                 catch (JSONException ex) {
                     throw new RuntimeException((Throwable)ex);
                 }
-                break;
+            }
+            case 6: {
+                webView.loadUrl("javascript:" + readableArray.getString(0));
             }
         }
     }

@@ -12,6 +12,4 @@ public interface GenreList extends Parcelable, BasicLoMo
     GenreList$GenreType getGenreType();
     
     int getNumVideos();
-    
-    boolean isKidsGenre();
 }

@@ -17,12 +17,8 @@ final class JSBundleLoader$1 extends JSBundleLoader
     }
     
     @Override
-    public String getSourceUrl() {
-        return this.val$assetUrl;
-    }
-    
-    @Override
-    public void loadScript(final CatalystInstanceImpl catalystInstanceImpl) {
+    public String loadScript(final CatalystInstanceImpl catalystInstanceImpl) {
         catalystInstanceImpl.loadScriptFromAssets(this.val$context.getAssets(), this.val$assetUrl);
+        return this.val$assetUrl;
     }
 }

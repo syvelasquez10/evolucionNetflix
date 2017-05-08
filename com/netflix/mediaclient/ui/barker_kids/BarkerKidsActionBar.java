@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.ui.barker_kids;
 
-import android.content.Context;
-import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.support.v7.widget.Toolbar;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
@@ -26,15 +24,11 @@ public class BarkerKidsActionBar extends NetflixActionBar
         final Toolbar toolbar = this.toolbar;
         int navigationIcon;
         if (b) {
-            navigationIcon = 2130837793;
+            navigationIcon = 2130837804;
         }
         else {
-            navigationIcon = 2130837792;
+            navigationIcon = 2130837803;
         }
         toolbar.setNavigationIcon(navigationIcon);
-    }
-    
-    public void setWidth() {
-        this.toolbar.getLayoutParams().width = KidsUtils.getDetailsPageContentWidth((Context)this.getActivity());
     }
 }

@@ -55,7 +55,7 @@ import java.util.Stack;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListenerProvider;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
-import com.netflix.mediaclient.ui.mdx.IMiniPlayerFrag;
+import com.netflix.mediaclient.ui.mdx.ICastPlayerFrag;
 
 class CoppolaDetailsActivity$1 implements Runnable
 {
@@ -67,13 +67,13 @@ class CoppolaDetailsActivity$1 implements Runnable
     
     @Override
     public void run() {
-        final IMiniPlayerFrag mdxMiniPlayerFrag = this.this$0.getMdxMiniPlayerFrag();
-        if (mdxMiniPlayerFrag != null) {
-            mdxMiniPlayerFrag.initMdxComponents();
+        final ICastPlayerFrag castPlayerFrag = this.this$0.getCastPlayerFrag();
+        if (castPlayerFrag != null) {
+            castPlayerFrag.initMdxComponents();
             this.this$0.initSlidingPanel();
-            this.this$0.hideMiniPlayer();
-            if (mdxMiniPlayerFrag.getPlayer() != null) {
-                mdxMiniPlayerFrag.getPlayer().sync();
+            this.this$0.hideCastPlayer();
+            if (castPlayerFrag.getPlayer() != null) {
+                castPlayerFrag.getPlayer().sync();
             }
         }
     }

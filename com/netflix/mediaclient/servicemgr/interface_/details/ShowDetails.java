@@ -5,9 +5,12 @@
 package com.netflix.mediaclient.servicemgr.interface_.details;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ShowDetails extends EvidenceDetails, Similarable, VideoDetails
 {
+    Set<String> getCharacterRoles();
+    
     String getCreators();
     
     List<String> getCurrentEpisodeBadges();
@@ -25,6 +28,8 @@ public interface ShowDetails extends EvidenceDetails, Similarable, VideoDetails
     String getCurrentEpisodeTitle();
     
     int getCurrentSeasonNumber();
+    
+    int getNumCreators();
     
     int getNumOfEpisodes();
     

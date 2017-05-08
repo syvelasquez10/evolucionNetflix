@@ -9,6 +9,7 @@ public enum StopReason
     AccountInActive(11, false), 
     DownloadLimitRequiresManualResume(104, true), 
     EncodesAreNotAvailableAnyMore(101, true), 
+    EncodesRevoked(105, true), 
     GeoCheckError(103, true), 
     ManifestError(102, true), 
     NetworkError(2, true), 

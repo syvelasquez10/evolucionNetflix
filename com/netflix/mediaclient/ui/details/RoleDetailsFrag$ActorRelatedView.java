@@ -117,20 +117,20 @@ class RoleDetailsFrag$ActorRelatedView extends RelativeLayout implements Checkab
     }
     
     private void findViews() {
-        this.synopsis = (TextView)this.findViewById(2131755872);
-        this.duration = (TextView)this.findViewById(2131755873);
-        this.titleExpanded = (TextView)this.findViewById(2131755869);
-        this.title = (TextView)this.findViewById(2131755865);
-        this.genre = (TextView)this.findViewById(2131755874);
-        this.storyArtImage = (AdvancedImageView)this.findViewById(2131755851);
-        this.storyArtImageExpanded = (AdvancedImageView)this.findViewById(2131755868);
-        this.titleImage = (AdvancedImageView)this.findViewById(2131755864);
-        this.addToQueue = (TextView)this.findViewById(2131755871);
-        this.expand = this.findViewById(2131755866);
-        this.showDP = this.findViewById(2131755870);
-        this.expandedGroup = (ViewGroup)this.findViewById(2131755867);
-        this.unExpandedGroup = (ViewGroup)this.findViewById(2131755863);
-        this.flipper = (ViewFlipper)this.findViewById(2131755862);
+        this.synopsis = (TextView)this.findViewById(2131821416);
+        this.duration = (TextView)this.findViewById(2131821417);
+        this.titleExpanded = (TextView)this.findViewById(2131821413);
+        this.title = (TextView)this.findViewById(2131821409);
+        this.genre = (TextView)this.findViewById(2131821418);
+        this.storyArtImage = (AdvancedImageView)this.findViewById(2131821395);
+        this.storyArtImageExpanded = (AdvancedImageView)this.findViewById(2131821412);
+        this.titleImage = (AdvancedImageView)this.findViewById(2131821408);
+        this.addToQueue = (TextView)this.findViewById(2131821415);
+        this.expand = this.findViewById(2131821410);
+        this.showDP = this.findViewById(2131821414);
+        this.expandedGroup = (ViewGroup)this.findViewById(2131821411);
+        this.unExpandedGroup = (ViewGroup)this.findViewById(2131821407);
+        this.flipper = (ViewFlipper)this.findViewById(2131821406);
     }
     
     private void init() {
@@ -216,6 +216,8 @@ class RoleDetailsFrag$ActorRelatedView extends RelativeLayout implements Checkab
                 return;
             }
             this.titleImage.setVisibility(0);
+            this.titleImage.setPressedStateHandlerEnabled(false);
+            this.titleImage.setEnabled(false);
             NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.titleImage, falkorVideo.getTitleImgUrl(), IClientLogging$AssetType.boxArt, "RoleDetailsFragActorRelatedView", BrowseExperience.getImageLoaderConfig(), true);
             this.titleImage.getLayoutParams().height = this.storyArtImage.getLayoutParams().height / 3;
         }
@@ -248,7 +250,7 @@ class RoleDetailsFrag$ActorRelatedView extends RelativeLayout implements Checkab
     }
     
     protected int getlayoutId() {
-        return 2130903290;
+        return 2130903281;
     }
     
     public void hide() {

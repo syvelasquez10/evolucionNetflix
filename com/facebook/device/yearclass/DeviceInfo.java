@@ -155,27 +155,27 @@ public class DeviceInfo
                         read = fileInputStream.read(array);
                         n = 0;
                         break Label_0087;
-                        final int n3;
-                        Label_0053: {
-                            return extractValue(array, n3);
-                        }
-                        // iftrue(Label_0073:, n2 != s.length() - 1)
-                        Label_0073: {
-                            ++n3;
-                        }
-                        break Label_0020;
                         // iftrue(Label_0053:, array[n3] == s.charAt(n2))
+                        // iftrue(Label_0073:, n2 != s.length() - 1)
                         // iftrue(Label_0129:, n3 >= read)
                         final int n4;
                     Block_7:
                         while (true) {
+                            final int n3;
                             final int n2 = n3 - n4;
                             break Block_7;
+                            Label_0053: {
+                                return extractValue(array, n3);
+                            }
                             n5 = n4;
-                            continue;
+                            continue Label_0020_Outer;
                         }
                         n5 = n4;
                         break Label_0129;
+                        Label_0073: {
+                            final int n3 = n3 + 1;
+                        }
+                        continue;
                     }
                     catch (NumberFormatException ex) {}
                     catch (IOException ex2) {

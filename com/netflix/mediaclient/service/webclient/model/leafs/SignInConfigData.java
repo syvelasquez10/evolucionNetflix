@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
+import java.util.HashMap;
 import com.netflix.mediaclient.service.webclient.volley.FalkorParseUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
@@ -59,6 +60,13 @@ public class SignInConfigData
             return 4;
         }
         return this.fields.password.minLength;
+    }
+    
+    public HashMap<String, Object> getReactNativeMode() {
+        if (this.fields == null || this.fields.backAction == null || this.fields.backAction.cached == null) {
+            return null;
+        }
+        return this.fields.backAction.cached;
     }
     
     public boolean isEmailValid(final String s) {

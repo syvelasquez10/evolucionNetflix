@@ -116,6 +116,7 @@ public class NetInfoModule extends ReactContextBaseJavaModule implements Lifecyc
         promise.resolve(ConnectivityManagerCompat.isActiveNetworkMetered(this.mConnectivityManager));
     }
     
+    @Override
     public void onHostDestroy() {
     }
     

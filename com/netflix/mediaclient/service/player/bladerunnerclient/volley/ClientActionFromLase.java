@@ -9,11 +9,12 @@ import com.netflix.mediaclient.StatusCode;
 public enum ClientActionFromLase
 {
     ACQUIRE_NEW_LICENSE(1), 
+    DELETE_CONTENT_ON_REVOCATION(4), 
     DELETE_LICENSES(2), 
     MARK_PLAYABLE(3), 
     NO_ACTION(0);
     
-    private int mAction;
+    private final int mAction;
     
     private ClientActionFromLase(final int mAction) {
         this.mAction = mAction;
@@ -30,22 +31,21 @@ public enum ClientActionFromLase
         return ClientActionFromLase.NO_ACTION;
     }
     
-    private boolean isActionAcquireNewLicense() {
-        return this.mAction == ClientActionFromLase.DELETE_LICENSES.getValue();
-    }
-    
     public StatusCode getStatusCode() {
-        if (this.isActionAcquireNewLicense()) {
-            return StatusCode.OFFLINE_LICENSE_FETCH_NEW;
+        switch (ClientActionFromLase$1.$SwitchMap$com$netflix$mediaclient$service$player$bladerunnerclient$volley$ClientActionFromLase[this.ordinal()]) {
+            default: {
+                return StatusCode.OK;
+            }
+            case 2: {
+                return StatusCode.OFFLINE_LICENSE_FETCH_NEW;
+            }
+            case 5: {
+                return StatusCode.DL_ENCODES_DELETE_ON_REVOCATION;
+            }
         }
-        return StatusCode.OK;
     }
     
     public int getValue() {
         return this.mAction;
-    }
-    
-    public boolean isRecoverable() {
-        return this.isActionAcquireNewLicense();
     }
 }

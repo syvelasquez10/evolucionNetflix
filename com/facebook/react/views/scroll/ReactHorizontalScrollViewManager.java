@@ -47,9 +47,24 @@ public class ReactHorizontalScrollViewManager extends ViewGroupManager<ReactHori
         reactHorizontalScrollView.scrollTo(reactScrollViewCommandHelper$ScrollToCommandData.mDestX, reactScrollViewCommandHelper$ScrollToCommandData.mDestY);
     }
     
+    @Override
+    public void scrollToEnd(final ReactHorizontalScrollView reactHorizontalScrollView, final ReactScrollViewCommandHelper$ScrollToEndCommandData reactScrollViewCommandHelper$ScrollToEndCommandData) {
+        final int n = reactHorizontalScrollView.getChildAt(0).getWidth() + reactHorizontalScrollView.getPaddingRight();
+        if (reactScrollViewCommandHelper$ScrollToEndCommandData.mAnimated) {
+            reactHorizontalScrollView.smoothScrollTo(n, reactHorizontalScrollView.getScrollY());
+            return;
+        }
+        reactHorizontalScrollView.scrollTo(n, reactHorizontalScrollView.getScrollY());
+    }
+    
     @ReactProp(customType = "Color", defaultInt = 0, name = "endFillColor")
     public void setBottomFillColor(final ReactHorizontalScrollView reactHorizontalScrollView, final int endFillColor) {
         reactHorizontalScrollView.setEndFillColor(endFillColor);
+    }
+    
+    @ReactProp(name = "overScrollMode")
+    public void setOverScrollMode(final ReactHorizontalScrollView reactHorizontalScrollView, final String s) {
+        reactHorizontalScrollView.setOverScrollMode(ReactScrollViewHelper.parseOverScrollMode(s));
     }
     
     @ReactProp(name = "pagingEnabled")

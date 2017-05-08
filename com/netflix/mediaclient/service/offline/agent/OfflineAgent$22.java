@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.offline.agent;
 
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;
+import com.netflix.mediaclient.service.offline.license.OfflineLicenseManager$LicenseSyncResponseCallback;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflineUtils;
 import com.android.volley.Network;
@@ -24,6 +25,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.BaseStatus;
@@ -34,7 +36,6 @@ import com.netflix.mediaclient.util.NetflixTransactionIdGenerator;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import android.media.UnsupportedSchemeException;
 import android.media.NotProvisionedException;
-import com.netflix.mediaclient.service.offline.registry.ChecksumException;
 import com.netflix.mediaclient.service.offline.license.OfflineLicenseManagerImpl;
 import com.netflix.mediaclient.service.offline.manifest.OfflineManifestManagerImpl;
 import com.netflix.mediaclient.service.player.bladerunnerclient.BladeRunnerClient;
@@ -44,7 +45,6 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQualit
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.app.NetflixStatus;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayableImpl;
 import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;
@@ -56,10 +56,9 @@ import java.util.Iterator;
 import com.netflix.mediaclient.service.offline.registry.RegistryData;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry$RegistryEnumerator;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
-import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
-import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.android.app.Status;
@@ -68,7 +67,6 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.service.user.UserAgent;
 import com.netflix.mediaclient.service.offline.registry.OfflineStorageMonitor;
-import com.netflix.mediaclient.service.offline.registry.OfflineStorageMonitor$StorageChangeListener;
 import com.android.volley.RequestQueue;
 import io.realm.Realm;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry;
@@ -86,19 +84,45 @@ import android.os.HandlerThread;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.IntentCommandHandler;
 import com.netflix.mediaclient.service.ServiceAgent;
+import com.netflix.mediaclient.service.offline.registry.ChecksumException;
+import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.service.offline.registry.OfflineStorageMonitor$StorageChangeListener;
 
-class OfflineAgent$22 implements Runnable
+class OfflineAgent$22 implements OfflineStorageMonitor$StorageChangeListener
 {
     final /* synthetic */ OfflineAgent this$0;
-    final /* synthetic */ long val$movieId;
     
-    OfflineAgent$22(final OfflineAgent this$0, final long val$movieId) {
+    OfflineAgent$22(final OfflineAgent this$0) {
         this.this$0 = this$0;
-        this.val$movieId = val$movieId;
     }
     
     @Override
-    public void run() {
-        this.this$0.mOfflinePlayManifestRequestMap.remove(this.val$movieId);
+    public void onStorageAddedOrRemoved() {
+        if (!this.this$0.mUserAgent.isUserLoggedIn()) {
+            return;
+        }
+        final boolean b = !this.this$0.getService().getMSLClient().enabled();
+        final boolean offlineFeatureDisabled = this.this$0.mConfigurationAgent.getOfflineConfig().isOfflineFeatureDisabled();
+        if (b || offlineFeatureDisabled) {
+            Log.i("nf_offlineAgent", "onStorageAddedOrRemoved ignored mslDisabled=%b disabledFromConfig=%b", b, offlineFeatureDisabled);
+            return;
+        }
+        while (true) {
+            try {
+                final boolean access$4800 = this.this$0.stopAllDownloads(StopReason.WaitingToBeStarted);
+                this.this$0.mAvailable = this.this$0.buildFalkorDataAndPlayableListFromPersistentStore();
+                if (access$4800) {
+                    this.this$0.startDownloadIfAllowed();
+                }
+                this.this$0.mAgentListenerHelper.sendStorageAddedOrRemoved(this.this$0.getMainHandler(), this.this$0.mAvailable);
+            }
+            catch (ChecksumException ex) {
+                Log.e("nf_offlineAgent", "onStorageAddedOrRemoved", ex);
+                this.this$0.mAvailable = false;
+                continue;
+            }
+            break;
+        }
     }
 }

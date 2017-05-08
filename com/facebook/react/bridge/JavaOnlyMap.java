@@ -65,6 +65,11 @@ public class JavaOnlyMap implements ReadableMap, WritableMap
     }
     
     @Override
+    public Dynamic getDynamic(final String s) {
+        return DynamicFromMap.create(this, s);
+    }
+    
+    @Override
     public int getInt(final String s) {
         return this.mBackingMap.get(s);
     }
@@ -81,7 +86,7 @@ public class JavaOnlyMap implements ReadableMap, WritableMap
     
     @Override
     public ReadableType getType(final String s) {
-        final Object value = this.mBackingMap.get(s);
+        final Dynamic value = this.mBackingMap.get(s);
         if (value == null) {
             return ReadableType.Null;
         }
@@ -99,6 +104,9 @@ public class JavaOnlyMap implements ReadableMap, WritableMap
         }
         if (value instanceof ReadableArray) {
             return ReadableType.Array;
+        }
+        if (value instanceof Dynamic) {
+            return value.getType();
         }
         throw new IllegalArgumentException("Invalid value " + value.toString() + " for key " + s + "contained in JavaOnlyMap");
     }

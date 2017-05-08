@@ -10,15 +10,17 @@ import android.support.v7.app.AlertDialog;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.RelativeLayout$LayoutParams;
 import android.view.View;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.LayoutInflater;
 import android.view.View$OnLayoutChangeListener;
-import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.content.Context;
 
 public class CopyrightView
 {
+    private final Context context;
     private TextView copyrightTextView;
     private ViewGroup copyrightViewGroup;
     private VideoDetails details;
@@ -28,15 +30,16 @@ public class CopyrightView
     public CopyrightView(final VideoDetails details, final Context context, final ViewGroup copyrightViewGroup) {
         this.copyrightViewGroup = copyrightViewGroup;
         this.details = details;
+        this.context = context;
         this.init();
     }
     
-    private void addExpandedCopyright(final Context context) {
-        this.copyrightTextView.addOnLayoutChangeListener((View$OnLayoutChangeListener)new CopyrightView$1(this, context));
+    private void addExpandedCopyright() {
+        this.copyrightTextView.addOnLayoutChangeListener((View$OnLayoutChangeListener)new CopyrightView$1(this));
     }
     
     public static CopyrightView create(final VideoDetails videoDetails, final Context context) {
-        final ViewGroup viewGroup = (ViewGroup)((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903329, (ViewGroup)null);
+        final ViewGroup viewGroup = (ViewGroup)((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903327, (ViewGroup)null);
         if (viewGroup != null) {
             return new CopyrightView(videoDetails, context, viewGroup);
         }
@@ -44,19 +47,21 @@ public class CopyrightView
     }
     
     private void init() {
-        if (this.details != null && this.copyrightViewGroup != null) {
-            this.copyrightTextView = (TextView)this.copyrightViewGroup.findViewById(2131755969);
-            if (this.copyrightTextView != null && this.details != null) {
-                this.copyrightTextView.setText((CharSequence)this.details.getCopyright());
-                this.copyrightTextView.setVisibility(0);
-                this.setLayoutAsCentered();
-                this.addExpandedCopyright(this.copyrightTextView.getContext());
-            }
+        if (this.details == null || this.copyrightViewGroup == null) {
+            return;
         }
+        this.copyrightTextView = (TextView)this.copyrightViewGroup.findViewById(2131821531);
+        if (this.copyrightTextView != null && this.details != null) {
+            this.copyrightTextView.setText((CharSequence)this.details.getCopyright());
+            this.copyrightTextView.setVisibility(0);
+            this.setLayoutAsCentered();
+            this.addExpandedCopyright();
+        }
+        KidsUtils.manageSectionTextColor(this.copyrightTextView, VideoDetailsViewGroup$Section.INFO);
     }
     
-    private void setExpandedText(final VideoDetails videoDetails, final Context context, final View view) {
-        final TextView textView = (TextView)view.findViewById(2131755970);
+    private void setExpandedText(final VideoDetails videoDetails, final View view) {
+        final TextView textView = (TextView)view.findViewById(2131821532);
         if (textView != null) {
             textView.setText((CharSequence)videoDetails.getCopyright());
         }
@@ -86,13 +91,13 @@ public class CopyrightView
         attributes.y = array[1] - this.expandedYOffset;
     }
     
-    private void showExpandedCopyrightPopup(final VideoDetails videoDetails, final Context context) {
-        final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(context);
-        final View inflate = ((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903330, (ViewGroup)null);
+    private void showExpandedCopyrightPopup(final VideoDetails videoDetails) {
+        final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(this.context);
+        final View inflate = ((LayoutInflater)this.context.getSystemService("layout_inflater")).inflate(2130903328, (ViewGroup)null);
         if (inflate == null) {
             return;
         }
-        this.setExpandedText(videoDetails, context, inflate);
+        this.setExpandedText(videoDetails, inflate);
         alertDialog$Builder.setView(inflate);
         final AlertDialog create = alertDialog$Builder.create();
         this.setScreenLocation(create);

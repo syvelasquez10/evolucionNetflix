@@ -22,6 +22,7 @@ import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsLis
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -53,6 +54,8 @@ public interface INetflixServiceCallback
     void onEpisodeDetailsFetched(final int p0, final EpisodeDetails p1, final Status p2);
     
     void onEpisodesFetched(final int p0, final List<EpisodeDetails> p1, final Status p2);
+    
+    void onFalkorVideoFetched(final int p0, final FalkorVideo p1, final Status p2);
     
     void onGenreListsFetched(final int p0, final List<GenreList> p1, final Status p2);
     

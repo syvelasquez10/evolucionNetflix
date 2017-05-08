@@ -21,6 +21,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetail
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -64,6 +65,10 @@ public abstract class SimpleBrowseAgentCallback implements BrowseAgentCallback
     
     @Override
     public void onEpisodesFetched(final List<EpisodeDetails> list, final Status status) {
+    }
+    
+    @Override
+    public void onFalkorVideoFetched(final FalkorVideo falkorVideo, final Status status) {
     }
     
     @Override

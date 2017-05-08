@@ -61,6 +61,7 @@ public class DeviceConfiguration
     private boolean mLocalPlaybackEnabled;
     private boolean mMdxRemoteControlLockScreenEnabled;
     private boolean mMdxRemoteControlNotificationEnabled;
+    private boolean mMementoEnabledForWorld;
     private OfflineConfig mOfflineConfig;
     private int mPTAggregationSize;
     private int mRateLimitForGcmBrowseEvents;
@@ -96,6 +97,7 @@ public class DeviceConfiguration
         this.mForceLegacyCrypto = PreferenceUtils.getBooleanPref(this.mContext, "force_legacy_crypto", false);
         this.mIsDynecomSignInEnabled = PreferenceUtils.getBooleanPref(this.mContext, "enable_dynecom_signin", true);
         this.mIsVoipEnabledOnDevice = PreferenceUtils.getBooleanPref(this.mContext, "enable_voip_on_device", false);
+        this.mMementoEnabledForWorld = PreferenceUtils.getBooleanPref(this.mContext, "memento_enabled_for_world", false);
         this.mUserSessionDurationInSeconds = this.loadUserSessionTimeoutDuration();
         this.mBreadcrumbLoggingSpecification = BreadcrumbLoggingSpecification.loadFromPreferences(mContext);
         this.mErrorLoggingSpecification = ErrorLoggingSpecification.loadFromPreferences(mContext);
@@ -363,6 +365,11 @@ public class DeviceConfiguration
         }
     }
     
+    private void updateMementoEnabledForWorld(final NetflixPreference netflixPreference, final boolean mMementoEnabledForWorld) {
+        netflixPreference.putBooleanPref("memento_enabled_for_world", mMementoEnabledForWorld);
+        this.mMementoEnabledForWorld = mMementoEnabledForWorld;
+    }
+    
     private void updateVoipEnabledOnDeviceFlag(final NetflixPreference netflixPreference, final boolean mIsVoipEnabledOnDevice) {
         netflixPreference.putBooleanPref("enable_voip_on_device", mIsVoipEnabledOnDevice);
         this.mIsVoipEnabledOnDevice = mIsVoipEnabledOnDevice;
@@ -522,6 +529,10 @@ public class DeviceConfiguration
         return this.mMdxRemoteControlNotificationEnabled;
     }
     
+    public boolean isMementoEnabledForWorld() {
+        return this.mMementoEnabledForWorld;
+    }
+    
     public boolean isPlayBillingDisabled() {
         return this.mIsPlayBillingDisabled;
     }
@@ -544,6 +555,7 @@ public class DeviceConfiguration
         this.updateForceLegacyCryptoFlag(netflixPreference, deviceConfigData.shouldForceLegacyCrypto());
         this.updateDynecomSignInFlag(netflixPreference, deviceConfigData.isDynecomSignInEnabled());
         this.updateVoipEnabledOnDeviceFlag(netflixPreference, deviceConfigData.isVoipEnabledOnDevice());
+        this.updateMementoEnabledForWorld(netflixPreference, deviceConfigData.isMementoEnabledForWorld());
         this.updateAudioFormat(netflixPreference, deviceConfigData.getAudioFormats());
         this.updateConsolidatedLoggingSpecification(netflixPreference, deviceConfigData.getConsolidatedloggingSpecification());
         this.mSubtitleConfiguration = SubtitleConfiguration.update(this.mContext, netflixPreference, deviceConfigData.getSubtitleConfiguration());
@@ -606,6 +618,7 @@ public class DeviceConfiguration
             this.updateDeviceConfigFlag(netflixPreference, true);
         }
         netflixPreference.commit();
+        PreferenceUtils.putStringPref(this.mContext, "deviceConfig", deviceConfigData.toJsonString());
     }
     
     public boolean shouldAlertForMissingLocale() {

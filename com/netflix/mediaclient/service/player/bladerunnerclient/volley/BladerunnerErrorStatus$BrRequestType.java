@@ -14,6 +14,7 @@ public enum BladerunnerErrorStatus$BrRequestType
     OfflineManifest("M"), 
     OfflineManifestRefresh("MR"), 
     StreamingLicense("SL"), 
+    SyncLicense("SN"), 
     other("O");
     
     private String mValue;

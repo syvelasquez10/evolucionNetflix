@@ -9,38 +9,38 @@ import io.realm.RealmObject;
 
 public class RealmSeason extends RealmObject implements RealmSeasonRealmProxyInterface
 {
-    private String label;
     private int number;
-    
-    public String getLabel() {
-        return this.realmGet$label();
-    }
+    private String title;
     
     public int getNumber() {
         return this.realmGet$number();
     }
     
-    public String realmGet$label() {
-        return this.label;
+    public String getTitle() {
+        return this.realmGet$title();
     }
     
     public int realmGet$number() {
         return this.number;
     }
     
-    public void realmSet$label(final String label) {
-        this.label = label;
+    public String realmGet$title() {
+        return this.title;
     }
     
     public void realmSet$number(final int number) {
         this.number = number;
     }
     
-    public void setLabel(final String s) {
-        this.realmSet$label(s);
+    public void realmSet$title(final String title) {
+        this.title = title;
     }
     
     public void setNumber(final int n) {
         this.realmSet$number(n);
+    }
+    
+    public void setTitle(final String s) {
+        this.realmSet$title(s);
     }
 }

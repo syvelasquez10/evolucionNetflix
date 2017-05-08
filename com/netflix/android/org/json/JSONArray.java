@@ -416,7 +416,6 @@ public class JSONArray
             int n5;
             Label_0072_Outer:Label_0044_Outer:
             while (true) {
-            Label_0044:
                 while (true) {
                     Label_0135: {
                         try {
@@ -428,41 +427,40 @@ public class JSONArray
                                 return writer;
                             }
                             break Label_0135;
-                        Label_0107:
+                            // iftrue(Label_0107:, n3 >= length)
+                            // iftrue(Label_0062:, n5 == 0)
+                            // iftrue(Label_0072:, n <= 0)
+                        Label_0062_Outer:
                             while (true) {
-                                Block_8: {
-                                    break Block_8;
-                                Block_5_Outer:
-                                    while (true) {
+                            Block_8:
+                                while (true) {
+                                    Block_6: {
                                         while (true) {
                                             JSONObject.indent(writer, n4);
                                             JSONObject.writeValue(writer, this.myArrayList.get(n3), n, n4);
                                             ++n3;
                                             n5 = 1;
-                                            break Label_0044;
-                                            JSONObject.indent(writer, n2);
-                                            continue Label_0072_Outer;
+                                            Block_5: {
+                                                break Block_5;
+                                                JSONObject.indent(writer, n2);
+                                                continue Label_0072_Outer;
+                                            }
+                                            break Block_6;
                                             writer.write(10);
                                             continue Label_0044_Outer;
                                         }
-                                    Block_6:
-                                        while (true) {
-                                            break Block_6;
-                                            continue;
+                                        Label_0107: {
+                                            break Block_8;
                                         }
-                                        writer.write(44);
-                                        Label_0062:
-                                        continue Block_5_Outer;
                                     }
+                                    writer.write(44);
+                                    continue;
                                 }
                                 writer.write(10);
-                                continue;
+                                continue Label_0062_Outer;
                             }
                         }
                         // iftrue(Label_0117:, n <= 0)
-                        // iftrue(Label_0062:, n5 == 0)
-                        // iftrue(Label_0107:, n3 >= length)
-                        // iftrue(Label_0072:, n <= 0)
                         catch (IOException ex) {
                             throw new JSONException(ex);
                         }
@@ -470,7 +468,7 @@ public class JSONArray
                     if (length != 0) {
                         n4 = n2 + n;
                         n5 = 0;
-                        continue Label_0044;
+                        continue;
                     }
                     break;
                 }

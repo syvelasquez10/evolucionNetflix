@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.offline.agent;
 
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;
+import com.netflix.mediaclient.service.offline.license.OfflineLicenseManager$LicenseSyncResponseCallback;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflineUtils;
 import com.android.volley.Network;
@@ -42,7 +43,6 @@ import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQuality;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.app.NetflixStatus;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayableImpl;
 import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;
@@ -57,6 +57,7 @@ import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersisten
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.android.app.Status;
@@ -105,7 +106,7 @@ class OfflineAgent$DownloadJobExecutor implements NetflixJobExecutor
         if (!this.this$0.mUserAgent.isUserLoggedIn()) {
             return;
         }
-        switch (OfflineAgent$26.$SwitchMap$com$netflix$mediaclient$service$job$NetflixJob$NetflixJobId[netflixJob$NetflixJobId.ordinal()]) {
+        switch (OfflineAgent$30.$SwitchMap$com$netflix$mediaclient$service$job$NetflixJob$NetflixJobId[netflixJob$NetflixJobId.ordinal()]) {
             default: {}
             case 1: {
                 this.this$0.addRequestToHandler(6);

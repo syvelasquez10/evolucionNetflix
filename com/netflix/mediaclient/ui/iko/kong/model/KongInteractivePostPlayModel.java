@@ -340,7 +340,6 @@ public class KongInteractivePostPlayModel extends InteractivePostplayModel
         return this.interactiveOriginalsPrimerVersion;
     }
     
-    @Override
     public int getInterrupterCount() {
         if (this.interrupterCount > 0) {
             return this.interrupterCount;
@@ -764,7 +763,6 @@ public class KongInteractivePostPlayModel extends InteractivePostplayModel
         return this.trackId;
     }
     
-    @Override
     public String getType() {
         return this.type;
     }
@@ -880,7 +878,6 @@ public class KongInteractivePostPlayModel extends InteractivePostplayModel
         return this.hideAnimation;
     }
     
-    @Override
     public String toString() {
         return "KongInteractivePostPlayModel{type='" + this.type + '\'' + ", initialState='" + this.initialState + '\'' + ", interactiveOriginalsPrimerVersion='" + this.interactiveOriginalsPrimerVersion + '\'' + ", autoPlayInterval=" + this.autoPlayInterval + ", trackId=" + this.trackId + ", strings=" + this.strings + ", audio=" + this.audio + ", battle=" + this.battle + ", images=" + this.images + ", avatar=" + this.avatar + ", opponent=" + this.opponent + ", nextEpisode=" + this.nextEpisode + ", collectionItems=" + this.collectionItems + ", resultData=" + this.resultData + '}';
     }

@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.offline.agent;
 
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;
+import com.netflix.mediaclient.service.offline.license.OfflineLicenseManager$LicenseSyncResponseCallback;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflineUtils;
 import com.android.volley.Network;
@@ -18,11 +19,13 @@ import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmIncompleteVideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.BaseStatus;
@@ -40,9 +43,9 @@ import com.netflix.mediaclient.service.player.bladerunnerclient.BladeRunnerClien
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQuality;
+import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.app.NetflixStatus;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayableImpl;
 import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;
@@ -54,10 +57,14 @@ import java.util.Iterator;
 import com.netflix.mediaclient.service.offline.registry.RegistryData;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry$RegistryEnumerator;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
+import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.android.app.Status;
 import java.util.HashMap;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
@@ -81,48 +88,19 @@ import android.os.HandlerThread;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.IntentCommandHandler;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.media.BookmarkStore;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
-import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
-import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
-import com.netflix.mediaclient.service.browse.SimpleBrowseAgentCallback;
 
-class OfflineAgent$25 extends SimpleBrowseAgentCallback
+class OfflineAgent$25 implements Runnable
 {
     final /* synthetic */ OfflineAgent this$0;
-    final /* synthetic */ Runnable val$callback;
-    final /* synthetic */ String val$playableId;
-    final /* synthetic */ String val$profileId;
+    final /* synthetic */ long val$movieId;
     
-    OfflineAgent$25(final OfflineAgent this$0, final String val$playableId, final String val$profileId, final Runnable val$callback) {
+    OfflineAgent$25(final OfflineAgent this$0, final long val$movieId) {
         this.this$0 = this$0;
-        this.val$playableId = val$playableId;
-        this.val$profileId = val$profileId;
-        this.val$callback = val$callback;
+        this.val$movieId = val$movieId;
     }
     
     @Override
-    public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
-        super.onEpisodeDetailsFetched(episodeDetails, status);
-        if (status.isError() || episodeDetails == null) {
-            handleFetchDetailsError(status, episodeDetails);
-        }
-        else {
-            final String showId = episodeDetails.getShowId();
-            if (RealmUtils.idNotExists(this.this$0.mRealm, RealmVideoDetails.class, showId)) {
-                this.this$0.getBrowseAgent().fetchShowDetailsAndSeasons(showId, this.val$playableId, false, false, new OfflineAgent$25$1(this, episodeDetails));
-                return;
-            }
-            Log.d("nf_offlineAgent", "Saving episode details, season details already saved");
-            RealmVideoDetails.insertInRealm(this.this$0.mRealm, this.this$0.getService(), episodeDetails, this.val$profileId);
-            BookmarkStore.getInstance().createOrUpdateBookmark(episodeDetails, this.val$profileId);
-            if (this.val$callback != null) {
-                this.val$callback.run();
-            }
-        }
+    public void run() {
+        this.this$0.mOfflinePlayManifestRequestMap.remove(this.val$movieId);
     }
 }

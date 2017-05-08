@@ -12,10 +12,10 @@ import java.io.Serializable;
 import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.MenuItem;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.ui.mdx.ICastPlayerFrag;
 import com.netflix.mediaclient.ui.search.SearchMenu;
-import com.netflix.mediaclient.ui.mdx.MdxMenu;
+import com.netflix.mediaclient.ui.mdx.CastMenu;
 import android.view.Menu;
 import com.netflix.mediaclient.util.Coppola2Utils;
 import java.util.Collection;
@@ -81,8 +81,8 @@ class HomeActivity$4 implements DrawerLayout$DrawerListener
     @Override
     public void onDrawerClosed(final View view) {
         Log.i("HomeActivity", "onDrawerClosed");
-        HomeActivity.currentUnreadCount = 0;
         if (this.this$0.slidingMenuAdapter instanceof StandardSlidingMenu) {
+            ((StandardSlidingMenu)this.this$0.slidingMenuAdapter).onNavDrawerClosed();
             this.this$0.cancelMarkingNotificationsAsRead();
             ((StandardSlidingMenu)this.this$0.slidingMenuAdapter).reportNotificationsImpression(false);
             UIViewLogUtils.reportLeftMenuImpressionEnded((Context)this.this$0, true);

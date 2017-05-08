@@ -299,6 +299,11 @@ public class EventDispatcher implements LifecycleEventListener
     }
     
     @Override
+    public void onHostDestroy() {
+        this.stopFrameCallback();
+    }
+    
+    @Override
     public void onHostPause() {
         this.stopFrameCallback();
     }

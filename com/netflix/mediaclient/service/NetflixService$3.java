@@ -4,10 +4,10 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import android.app.Notification;
 import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
-import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
@@ -16,6 +16,7 @@ import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.service.webclient.model.leafs.ThumbMessaging;
 import com.netflix.mediaclient.servicemgr.IPushNotification;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.repository.SecurityRepository;
@@ -85,6 +86,7 @@ import com.netflix.mediaclient.service.error.ErrorAgent;
 import com.netflix.mediaclient.service.diagnostics.DiagnosisAgent;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.service.logging.LoggingAgent;
+import com.netflix.mediaclient.media.BookmarkStore;
 import android.os.IBinder;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;

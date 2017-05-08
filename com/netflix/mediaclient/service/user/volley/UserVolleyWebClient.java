@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.user.volley;
 
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
@@ -93,6 +94,11 @@ public final class UserVolleyWebClient implements UserWebClient
     }
     
     @Override
+    public void recordThumbRatingWelcomeSeen() {
+        this.webclient.sendRequest(new RecordThumbRatingWelcomeSeen(this.service.getApplicationContext()));
+    }
+    
+    @Override
     public void recordUmsImpression(final String s, final String s2) {
         this.webclient.sendRequest(new RecordUmsImpression(this.service.getApplicationContext(), s, s2));
     }
@@ -113,7 +119,7 @@ public final class UserVolleyWebClient implements UserWebClient
     }
     
     @Override
-    public void verifyPin(final String s, final UserAgentWebCallback userAgentWebCallback) {
-        this.webclient.sendRequest(new VerifyPinRequest(this.service.getApplicationContext(), s, userAgentWebCallback));
+    public void verifyPin(final String s, final PinVerifier$PinType pinVerifier$PinType, final String s2, final UserAgentWebCallback userAgentWebCallback) {
+        this.webclient.sendRequest(new VerifyPinRequest(this.service.getApplicationContext(), s, pinVerifier$PinType, s2, userAgentWebCallback));
     }
 }

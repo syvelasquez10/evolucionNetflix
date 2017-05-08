@@ -108,11 +108,11 @@ public class OfflineAgentListenerHelper
         handler.post((Runnable)new OfflineAgentListenerHelper$10(this, offlinePlayableViewData, status));
     }
     
-    public void onOfflinePlayableDeleted(final Handler handler, final String s, final Status status) {
+    public void onOfflinePlayableDeleted(final Handler handler, final String s, final Status status, final OfflineAgentInterface offlineAgentInterface, final OfflineAgent$DeleteAndTryAgainRequest offlineAgent$DeleteAndTryAgainRequest) {
         if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "onOfflinePlayableDeleted playableId=" + s + " Status=" + status);
         }
-        handler.post((Runnable)new OfflineAgentListenerHelper$6(this, s, status));
+        handler.post((Runnable)new OfflineAgentListenerHelper$6(this, s, status, offlineAgent$DeleteAndTryAgainRequest, handler, offlineAgentInterface));
     }
     
     public void onOfflinePlayableProgress(final Handler handler, final OfflinePlayableViewData offlinePlayableViewData, final int n) {

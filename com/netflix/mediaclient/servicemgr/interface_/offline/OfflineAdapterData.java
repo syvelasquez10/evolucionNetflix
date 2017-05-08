@@ -56,7 +56,7 @@ public class OfflineAdapterData
                     final RealmVideoDetails realmVideoDetails3 = list3.get(0);
                     final RealmVideoDetails realmVideoDetails4 = new RealmVideoDetails();
                     realmVideoDetails4.fillForRealm(realmVideoDetails3);
-                    realmVideoDetails4.setPlayableAndVideoType((RealmPlayable)realmVideoDetails3.getPlayable(), VideoType.SEASON, realmVideoDetails.getSeasonLongLabel(seasonNumber));
+                    realmVideoDetails4.setPlayableAndVideoType((RealmPlayable)realmVideoDetails3.getPlayable(), VideoType.SEASON, realmVideoDetails.getSeasonTitle(seasonNumber));
                     list2.add(realmVideoDetails4);
                     list2.addAll((Collection<?>)list3);
                     list4 = null;

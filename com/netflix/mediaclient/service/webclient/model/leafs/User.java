@@ -21,6 +21,7 @@ public class User implements com.netflix.mediaclient.servicemgr.interface_.user.
     public EogAlert eogAlert;
     public SubtitlePreference subtitleDefaults;
     public User$Summary summary;
+    private ThumbMessaging thumbMessaging;
     private UmaAlert umaAlert;
     
     public User() {
@@ -311,6 +312,10 @@ public class User implements com.netflix.mediaclient.servicemgr.interface_.user.
         return this.subtitleDefaults;
     }
     
+    public ThumbMessaging getThumbMessaging() {
+        return this.thumbMessaging;
+    }
+    
     public UmaAlert getUmaAlert() {
         return this.umaAlert;
     }
@@ -326,6 +331,10 @@ public class User implements com.netflix.mediaclient.servicemgr.interface_.user.
     @Override
     public boolean isAgeVerified() {
         return this.summary != null && this.summary.isAgeVerified;
+    }
+    
+    public void setThumbMessaging(final ThumbMessaging thumbMessaging) {
+        this.thumbMessaging = thumbMessaging;
     }
     
     public void setUmaAlert(final UmaAlert umaAlert) {

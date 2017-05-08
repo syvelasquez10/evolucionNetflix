@@ -34,6 +34,8 @@ public class PVideo
     public boolean isPlayable;
     @SerializedName("isPlayableEpisode")
     public boolean isPlayableEpisode;
+    @SerializedName("isPreviewProtected")
+    public boolean isPreviewProtected;
     @SerializedName("playableEndtime")
     public int playableEndtime;
     @SerializedName("playableEpisodeNumber")
@@ -81,9 +83,6 @@ public class PVideo
     public PVideo(final Video video) {
         this.id = video.getId();
         this.boxartUrl = video.getBoxshotUrl();
-        this.storyImgDispUrl = video.getStoryDispUrl();
-        this.tvCardUrl = video.getTvCardUrl();
-        this.horzDispUrl = video.getHorzDispUrl();
         this.videoType = video.getType();
         this.title = video.getTitle();
     }
@@ -95,12 +94,13 @@ public class PVideo
         pVideo.isAutoPlayEnabled = playable.isAutoPlayEnabled();
         pVideo.isAgeProtected = playable.isAgeProtected();
         pVideo.isPinProtected = playable.isPinProtected();
+        pVideo.isPreviewProtected = playable.isPreviewProtected();
         pVideo.plyableBookmarkPos = playable.getPlayableBookmarkPosition();
         pVideo.playableRuntime = playable.getRuntime();
         pVideo.playableEndtime = playable.getEndtime();
         pVideo.playableId = playable.getPlayableId();
         pVideo.playableTitle = playable.getPlayableTitle();
-        pVideo.playableParentId = playable.getParentId();
+        pVideo.playableParentId = playable.getTopLevelId();
         pVideo.playableParentTitle = playable.getParentTitle();
         pVideo.playableEpisodeNumber = playable.getEpisodeNumber();
         pVideo.playableSeasonNumber = playable.getSeasonNumber();

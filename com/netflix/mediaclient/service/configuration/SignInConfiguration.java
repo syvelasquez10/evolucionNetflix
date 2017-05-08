@@ -28,6 +28,10 @@ public class SignInConfiguration
         PreferenceUtils.putStringPref(this.mContext, "signInConfigData", null);
     }
     
+    public SignInConfigData getSignInConfigData() {
+        return this.mSignInConfigData;
+    }
+    
     public void persistSignInConfigOverride(final SignInConfigData mSignInConfigData) {
         if (mSignInConfigData == null) {
             Log.e(SignInConfiguration.TAG, "signInConfigData object is null - ignore overwrite");

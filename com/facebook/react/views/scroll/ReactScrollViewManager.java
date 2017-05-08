@@ -63,9 +63,24 @@ public class ReactScrollViewManager extends ViewGroupManager<ReactScrollView> im
         reactScrollView.scrollTo(reactScrollViewCommandHelper$ScrollToCommandData.mDestX, reactScrollViewCommandHelper$ScrollToCommandData.mDestY);
     }
     
+    @Override
+    public void scrollToEnd(final ReactScrollView reactScrollView, final ReactScrollViewCommandHelper$ScrollToEndCommandData reactScrollViewCommandHelper$ScrollToEndCommandData) {
+        final int n = reactScrollView.getChildAt(0).getHeight() + reactScrollView.getPaddingBottom();
+        if (reactScrollViewCommandHelper$ScrollToEndCommandData.mAnimated) {
+            reactScrollView.smoothScrollTo(reactScrollView.getScrollX(), n);
+            return;
+        }
+        reactScrollView.scrollTo(reactScrollView.getScrollX(), n);
+    }
+    
     @ReactProp(customType = "Color", defaultInt = 0, name = "endFillColor")
     public void setBottomFillColor(final ReactScrollView reactScrollView, final int endFillColor) {
         reactScrollView.setEndFillColor(endFillColor);
+    }
+    
+    @ReactProp(name = "overScrollMode")
+    public void setOverScrollMode(final ReactScrollView reactScrollView, final String s) {
+        reactScrollView.setOverScrollMode(ReactScrollViewHelper.parseOverScrollMode(s));
     }
     
     @ReactProp(name = "removeClippedSubviews")

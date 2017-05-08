@@ -32,7 +32,7 @@ class MovieDetailsFrag$4 implements RecyclerViewHeaderAdapter$IViewCreator
             detailsPageContentWidth = BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity());
         }
         else {
-            detailsPageContentWidth = DeviceUtils.getScreenWidthInPixels((Context)this.this$0.getActivity()) - this.this$0.recyclerView.getPaddingLeft() - this.this$0.recyclerView.getPaddingRight() - (this.this$0.numColumns + 1) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427629);
+            detailsPageContentWidth = DeviceUtils.getScreenWidthInPixels((Context)this.this$0.getActivity()) - this.this$0.recyclerView.getPaddingLeft() - this.this$0.recyclerView.getPaddingRight() - (this.this$0.numColumns + 1) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427636);
         }
         this.width = detailsPageContentWidth / this.this$0.numColumns;
         this.height = (int)(this.width * 1.43f);

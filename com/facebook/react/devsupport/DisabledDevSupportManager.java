@@ -72,6 +72,10 @@ public class DisabledDevSupportManager implements DevSupportManager
     }
     
     @Override
+    public void showDevOptionsDialog() {
+    }
+    
+    @Override
     public void showNewJSError(final String s, final ReadableArray readableArray, final int n) {
     }
     

@@ -11,7 +11,6 @@ import com.facebook.common.logging.FLog;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import com.facebook.infer.annotation.Assertions;
-import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.content.Context;
 import android.os.Bundle;

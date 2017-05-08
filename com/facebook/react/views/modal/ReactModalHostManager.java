@@ -67,6 +67,11 @@ public class ReactModalHostManager extends ViewGroupManager<ReactModalHostView>
         reactModalHostView.setAnimationType(animationType);
     }
     
+    @ReactProp(name = "hardwareAccelerated")
+    public void setHardwareAccelerated(final ReactModalHostView reactModalHostView, final boolean hardwareAccelerated) {
+        reactModalHostView.setHardwareAccelerated(hardwareAccelerated);
+    }
+    
     @ReactProp(name = "transparent")
     public void setTransparent(final ReactModalHostView reactModalHostView, final boolean transparent) {
         reactModalHostView.setTransparent(transparent);

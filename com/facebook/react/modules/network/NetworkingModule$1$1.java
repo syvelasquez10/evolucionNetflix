@@ -4,6 +4,7 @@
 
 package com.facebook.react.modules.network;
 
+import okio.ByteString;
 import java.util.concurrent.TimeUnit;
 import okhttp3.Interceptor;
 import okhttp3.Request$Builder;

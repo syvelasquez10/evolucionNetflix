@@ -7,6 +7,10 @@ package com.netflix.mediaclient.ui.home;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
+import com.netflix.mediaclient.service.webclient.model.leafs.ThumbMessaging;
+import com.netflix.mediaclient.ui.rating.Ratings;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.thumb_rating.ThumbRatingTutorialDialogFrag;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag;
@@ -74,10 +78,12 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
         return false;
     }
     
-    private void displayOfflineTutorialIfNeeded() {
+    private boolean displayOfflineTutorialIfNeeded() {
         if (this.shouldDisplayOfflineTutorialDialog()) {
             this.mOwner.showDialog((DialogFragment)new OfflineTutorialDialogFrag());
+            return true;
         }
+        return false;
     }
     
     private boolean displayOptInDialogIfNeeded() {
@@ -92,6 +98,14 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
             b = true;
         }
         return b;
+    }
+    
+    private boolean displayThumbRatingTutorialIfNeeded() {
+        if (this.shouldDisplayThumbRatingTutorialDialog()) {
+            this.mOwner.showDialog((DialogFragment)new ThumbRatingTutorialDialogFrag());
+            return true;
+        }
+        return false;
     }
     
     private boolean shouldDisplayOfflineTutorialDialog() {
@@ -111,8 +125,28 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
         return true;
     }
     
+    private boolean shouldDisplayThumbRatingTutorialDialog() {
+        if (this.mOwner.isDialogFragmentVisible()) {
+            Log.w("DialogManager", "Dialog fragment is already displayed, so don't display thumb rating tutorial.");
+        }
+        else if (NetflixActivity.isTutorialOn() && Ratings.isAndroidThumbActive()) {
+            final ThumbMessaging thumbMessaging = this.mOwner.getServiceManager().getThumbMessaging();
+            if (thumbMessaging != null && thumbMessaging.shouldShowOneTimeProfileThumbsMessage()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public boolean displayDialogsIfNeeded() {
-        this.displayOfflineTutorialIfNeeded();
+        if (this.displayOfflineTutorialIfNeeded()) {
+            Log.d("DialogManager", "Offline tutorial dialog displayed");
+            return true;
+        }
+        if (this.displayThumbRatingTutorialIfNeeded()) {
+            Log.d("DialogManager", "ThumbRating dialog displayed");
+            return true;
+        }
         if (this.displayOptInDialogIfNeeded()) {
             Log.d("DialogManager", "OptIn dialog displayed");
             return true;

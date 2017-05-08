@@ -4,11 +4,16 @@
 
 package com.netflix.mediaclient.ui.home;
 
+import android.net.Uri$Builder;
 import android.content.Context;
 import com.netflix.mediaclient.util.LaunchBrowser;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
+import java.io.UnsupportedEncodingException;
+import com.netflix.mediaclient.util.LogUtils;
+import java.net.URLDecoder;
+import android.net.Uri;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class AccountHandler
@@ -25,10 +30,16 @@ public class AccountHandler
         this.mContext = mContext;
     }
     
-    public static String createLink(final String s, final String s2) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(s).append("?nftoken=").append(s2);
-        return sb.toString();
+    public static String createLink(String buildUpon, final String s) {
+        buildUpon = (String)Uri.parse(buildUpon).buildUpon();
+        try {
+            ((Uri$Builder)buildUpon).appendQueryParameter("nftoken", URLDecoder.decode(s, "UTF-8"));
+            return ((Uri$Builder)buildUpon).build().toString();
+        }
+        catch (UnsupportedEncodingException ex) {
+            LogUtils.reportErrorSafely("should not happen", (Throwable)ex);
+            return ((Uri$Builder)buildUpon).build().toString();
+        }
     }
     
     public void handle(final String s, final Status status) {

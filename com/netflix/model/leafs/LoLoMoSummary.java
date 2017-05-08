@@ -7,12 +7,12 @@ package com.netflix.model.leafs;
 import com.fasterxml.jackson.core.JsonParser;
 import java.util.Iterator;
 import com.google.gson.JsonObject;
+import com.netflix.mediaclient.util.StringUtils;
 import java.util.Map;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.falkor.Falkor;
 import com.google.gson.JsonElement;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
-import com.netflix.mediaclient.util.StringUtils;
 import com.google.gson.annotations.SerializedName;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.JsonPopulator;
@@ -44,7 +44,7 @@ public class LoLoMoSummary implements JsonMerger, JsonPopulator, LoLoMo
     
     @Override
     public String getTitle() {
-        return StringUtils.decodeHtmlEntities(this.mTitle);
+        return this.mTitle;
     }
     
     @Override
@@ -85,7 +85,7 @@ public class LoLoMoSummary implements JsonMerger, JsonPopulator, LoLoMo
                     continue;
                 }
                 case 0: {
-                    this.mTitle = entry.getValue().getAsString();
+                    this.mTitle = StringUtils.decodeHtmlEntities(entry.getValue().getAsString());
                     continue;
                 }
                 case 1: {
@@ -103,7 +103,7 @@ public class LoLoMoSummary implements JsonMerger, JsonPopulator, LoLoMo
                 return false;
             }
             case "title": {
-                this.mTitle = jsonParser.getValueAsString();
+                this.mTitle = StringUtils.decodeHtmlEntities(jsonParser.getValueAsString());
                 break;
             }
             case "length": {

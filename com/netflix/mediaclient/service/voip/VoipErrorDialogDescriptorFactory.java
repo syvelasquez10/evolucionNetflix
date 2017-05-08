@@ -14,23 +14,23 @@ public class VoipErrorDialogDescriptorFactory
     protected static final String TAG = "ErrorManager";
     
     private static ErrorDescriptor getHandle(final Context context, final String s, final String s2, final Runnable runnable) {
-        return new VoipErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, s2, context.getString(2131296777), new VoipErrorDialogDescriptorFactory$1(context), context.getString(2131296564), runnable));
+        return new VoipErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor(s, s2, context.getString(2131296779), new VoipErrorDialogDescriptorFactory$1(context), context.getString(2131296566), runnable));
     }
     
     public static ErrorDescriptor getHandlerForCallFailed(final Context context, final Runnable runnable) {
-        return getHandle(context, context.getString(2131296585), context.getString(2131296584), runnable);
+        return getHandle(context, context.getString(2131296586), context.getString(2131296585), runnable);
     }
     
     public static ErrorDescriptor getHandlerForCallFailed(final Context context, String string, final int n) {
-        string = context.getString(2131296584);
-        return getHandle(context, context.getString(2131296585), string, null);
+        string = context.getString(2131296585);
+        return getHandle(context, context.getString(2131296586), string, null);
     }
     
     public static ErrorDescriptor getHandlerForEngineFailed(final Context context, final Runnable runnable) {
-        return getHandle(context, context.getString(2131296585), context.getString(2131296584), runnable);
+        return getHandle(context, context.getString(2131296586), context.getString(2131296585), runnable);
     }
     
     public static ErrorDescriptor getHandlerForNoLineAvailable(final Context context) {
-        return getHandle(context, context.getString(2131296585), context.getString(2131296584), null);
+        return getHandle(context, context.getString(2131296586), context.getString(2131296585), null);
     }
 }

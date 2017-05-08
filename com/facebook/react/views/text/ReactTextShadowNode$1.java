@@ -25,8 +25,10 @@ import com.facebook.react.uimanager.LayoutShadowNode;
 import android.text.BoringLayout$Metrics;
 import android.text.TextPaint;
 import com.facebook.yoga.YogaMeasureOutput;
+import android.text.StaticLayout$Builder;
 import android.text.StaticLayout;
 import android.text.Layout$Alignment;
+import android.os.Build$VERSION;
 import com.facebook.yoga.YogaConstants;
 import android.text.Layout;
 import android.text.BoringLayout;
@@ -62,19 +64,28 @@ class ReactTextShadowNode$1 implements YogaMeasureFunction
         else {
             b = false;
         }
-        Object make;
+        Object o;
         if (boring == null && (b || (!YogaConstants.isUndefined(desiredWidth) && desiredWidth <= n))) {
-            make = new StaticLayout((CharSequence)spanned, access$000, (int)Math.ceil(desiredWidth), Layout$Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+            final int n2 = (int)Math.ceil(desiredWidth);
+            if (Build$VERSION.SDK_INT < 23) {
+                o = new StaticLayout((CharSequence)spanned, access$000, n2, Layout$Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+            }
+            else {
+                o = StaticLayout$Builder.obtain((CharSequence)spanned, 0, spanned.length(), access$000, n2).setAlignment(Layout$Alignment.ALIGN_NORMAL).setLineSpacing(0.0f, 1.0f).setIncludePad(true).setBreakStrategy(this.this$0.mTextBreakStrategy).setHyphenationFrequency(1).build();
+            }
         }
         else if (boring != null && (b || boring.width <= n)) {
-            make = BoringLayout.make((CharSequence)spanned, access$000, boring.width, Layout$Alignment.ALIGN_NORMAL, 1.0f, 0.0f, boring, true);
+            o = BoringLayout.make((CharSequence)spanned, access$000, boring.width, Layout$Alignment.ALIGN_NORMAL, 1.0f, 0.0f, boring, true);
+        }
+        else if (Build$VERSION.SDK_INT < 23) {
+            o = new StaticLayout((CharSequence)spanned, access$000, (int)n, Layout$Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
         }
         else {
-            make = new StaticLayout((CharSequence)spanned, access$000, (int)n, Layout$Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
+            o = StaticLayout$Builder.obtain((CharSequence)spanned, 0, spanned.length(), access$000, (int)n).setAlignment(Layout$Alignment.ALIGN_NORMAL).setLineSpacing(0.0f, 1.0f).setIncludePad(true).setBreakStrategy(this.this$0.mTextBreakStrategy).setHyphenationFrequency(1).build();
         }
-        if (this.this$0.mNumberOfLines != -1 && this.this$0.mNumberOfLines < ((Layout)make).getLineCount()) {
-            return YogaMeasureOutput.make(((Layout)make).getWidth(), ((Layout)make).getLineBottom(this.this$0.mNumberOfLines - 1));
+        if (this.this$0.mNumberOfLines != -1 && this.this$0.mNumberOfLines < ((Layout)o).getLineCount()) {
+            return YogaMeasureOutput.make(((Layout)o).getWidth(), ((Layout)o).getLineBottom(this.this$0.mNumberOfLines - 1));
         }
-        return YogaMeasureOutput.make(((Layout)make).getWidth(), ((Layout)make).getHeight());
+        return YogaMeasureOutput.make(((Layout)o).getWidth(), ((Layout)o).getHeight());
     }
 }

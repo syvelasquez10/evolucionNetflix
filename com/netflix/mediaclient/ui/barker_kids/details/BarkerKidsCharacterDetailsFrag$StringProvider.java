@@ -34,11 +34,11 @@ public class BarkerKidsCharacterDetailsFrag$StringProvider implements VideoDetai
         if (StringUtils.isEmpty(this.details.getGenres())) {
             return null;
         }
-        return StringUtils.createBoldLabeledText(this.context, 2131296665, this.details.getGenres());
+        return StringUtils.createBoldLabeledText(this.context, 2131296666, this.details.getGenres());
     }
     
     @Override
     public CharSequence getStarringText() {
-        return StringUtils.createBoldLabeledText(this.context, 2131296815, this.details.getActors());
+        return StringUtils.createBoldLabeledText(this.context, 2131296817, this.details.getActors());
     }
 }

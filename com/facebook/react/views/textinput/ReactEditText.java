@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.view.MotionEvent;
 import android.view.KeyEvent;
 import android.graphics.Rect;
+import android.os.Build$VERSION;
 import com.facebook.react.views.text.ReactTextUpdate;
 import com.facebook.react.views.text.TextInlineImageSpan;
 import android.text.Spanned;
@@ -248,15 +249,17 @@ public class ReactEditText extends EditText
     
     public void maybeSetText(final ReactTextUpdate reactTextUpdate) {
         this.mMostRecentEventCount = reactTextUpdate.getJsEventCounter();
-        if (this.mMostRecentEventCount < this.mNativeEventCount) {
-            return;
+        if (this.mMostRecentEventCount >= this.mNativeEventCount) {
+            final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder((CharSequence)reactTextUpdate.getText());
+            this.manageSpans(spannableStringBuilder);
+            this.mContainsImages = reactTextUpdate.containsImages();
+            this.mIsSettingTextFromJS = true;
+            this.getText().replace(0, this.length(), (CharSequence)spannableStringBuilder);
+            this.mIsSettingTextFromJS = false;
+            if (Build$VERSION.SDK_INT >= 23 && this.getBreakStrategy() != reactTextUpdate.getTextBreakStrategy()) {
+                this.setBreakStrategy(reactTextUpdate.getTextBreakStrategy());
+            }
         }
-        final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder((CharSequence)reactTextUpdate.getText());
-        this.manageSpans(spannableStringBuilder);
-        this.mContainsImages = reactTextUpdate.containsImages();
-        this.mIsSettingTextFromJS = true;
-        this.getText().replace(0, this.length(), (CharSequence)spannableStringBuilder);
-        this.mIsSettingTextFromJS = false;
     }
     
     public void onAttachedToWindow() {

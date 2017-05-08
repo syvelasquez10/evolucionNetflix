@@ -59,7 +59,7 @@ public class WidevineErrorDescriptor implements ErrorDescriptor
             mOkTask = new WidevineErrorDescriptor$1(this);
         }
         if (uri != null) {
-            this.mData = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", message, null, mOkTask, this.mContext.getString(2131296633), (Runnable)new LaunchBrowser(this.mContext, uri));
+            this.mData = new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", message, null, mOkTask, this.mContext.getString(2131296634), (Runnable)new LaunchBrowser(this.mContext, uri));
             return;
         }
         this.mData = new AlertDialogFactory$AlertDialogDescriptor("", message, null, mOkTask);
@@ -68,7 +68,7 @@ public class WidevineErrorDescriptor implements ErrorDescriptor
     private String getMessage(final int n, final StatusCode statusCode) {
         String string;
         if (n == Integer.MAX_VALUE) {
-            string = this.mContext.getString(2131296652);
+            string = this.mContext.getString(2131296653);
         }
         else {
             String s;
@@ -80,7 +80,7 @@ public class WidevineErrorDescriptor implements ErrorDescriptor
             }
             string = s;
             if (s == null) {
-                return this.mContext.getString(2131296652);
+                return this.mContext.getString(2131296653);
             }
         }
         return string;

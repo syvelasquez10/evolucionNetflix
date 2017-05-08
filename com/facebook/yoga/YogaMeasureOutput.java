@@ -6,7 +6,11 @@ package com.facebook.yoga;
 
 public class YogaMeasureOutput
 {
+    public static long make(final float n, final float n2) {
+        return Float.floatToRawIntBits(n2) | Float.floatToRawIntBits(n) << 32;
+    }
+    
     public static long make(final int n, final int n2) {
-        return n << 32 | n2;
+        return make(n, (float)n2);
     }
 }

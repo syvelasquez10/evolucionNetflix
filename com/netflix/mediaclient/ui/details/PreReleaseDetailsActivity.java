@@ -22,8 +22,8 @@ public class PreReleaseDetailsActivity extends MovieDetailsActivity
     }
     
     private void showSnackBar() {
-        final Snackbar make = Snackbar.make(this.findViewById(16908290), 2131296982, 0);
-        final TextView textView = (TextView)((Snackbar$SnackbarLayout)make.getView()).findViewById(2131755326);
+        final Snackbar make = Snackbar.make(this.findViewById(16908290), 2131297004, 0);
+        final TextView textView = (TextView)((Snackbar$SnackbarLayout)make.getView()).findViewById(2131820932);
         textView.setTypeface(Typeface.DEFAULT_BOLD);
         if (Build$VERSION.SDK_INT >= 17) {
             textView.setTextAlignment(4);
@@ -36,7 +36,16 @@ public class PreReleaseDetailsActivity extends MovieDetailsActivity
     
     @Override
     protected Fragment createPrimaryFrag() {
-        return PreReleaseDetailsFrag.create(this.getVideoId(), this.getIntent().getExtras().getBoolean("extra_is_movie", false));
+        final Bundle extras = this.getIntent().getExtras();
+        Fragment create = null;
+        final String videoId = this.getVideoId();
+        if (extras != null) {
+            if (!extras.getBoolean("extra_is_movie", false)) {
+                return PreReleaseShowDetailsFrag.create(videoId);
+            }
+            create = PreReleaseMovieDetailsFrag.create(videoId);
+        }
+        return create;
     }
     
     @Override

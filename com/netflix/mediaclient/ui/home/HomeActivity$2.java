@@ -22,10 +22,10 @@ class HomeActivity$2 extends BroadcastReceiver
         if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0)) {
             return;
         }
-        if (intent == null || !"com.netflix.mediaclient.service.ACTION_EXPAND_HOME_MDX_MINI_PLAYER".equals(intent.getAction())) {
+        if (intent == null || !"com.netflix.mediaclient.service.ACTION_EXPAND_HOME_CAST_PLAYER".equals(intent.getAction())) {
             Log.d("HomeActivity", "Invalid intent: ", intent);
             return;
         }
-        this.this$0.notifyMdxMiniPlayerShown(true);
+        this.this$0.notifyCastPlayerShown(true);
     }
 }

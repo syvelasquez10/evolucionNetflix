@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.android.widget;
 
 import android.content.res.TypedArray;
-import com.netflix.mediaclient.R$styleable;
+import com.netflix.android.widgetry.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.view.ViewGroup$LayoutParams;
@@ -26,7 +26,7 @@ public class FlowLayout$LayoutParams extends ViewGroup$LayoutParams
         this.horizontalSpacing = -1;
         obtainStyledAttributes = (Context)obtainStyledAttributes.obtainStyledAttributes(set, R$styleable.FlowLayout_LayoutParams);
         try {
-            this.horizontalSpacing = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(0, -1);
+            this.horizontalSpacing = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(R$styleable.FlowLayout_LayoutParams_layout_fl_horizontalSpacing, -1);
         }
         finally {
             ((TypedArray)obtainStyledAttributes).recycle();

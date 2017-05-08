@@ -22,6 +22,7 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
 {
     private String mAnimationType;
     private Dialog mDialog;
+    private boolean mHardwareAccelerated;
     private ReactModalHostView$DialogRootViewGroup mHostView;
     private ReactModalHostView$OnRequestCloseListener mOnRequestCloseListener;
     private DialogInterface$OnShowListener mOnShowListener;
@@ -87,6 +88,10 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
         this.dismiss();
     }
     
+    public void onHostDestroy() {
+        this.onDropInstance();
+    }
+    
     public void onHostPause() {
         this.dismiss();
     }
@@ -108,6 +113,11 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
     
     protected void setAnimationType(final String mAnimationType) {
         this.mAnimationType = mAnimationType;
+        this.mPropertyRequiresNewDialog = true;
+    }
+    
+    protected void setHardwareAccelerated(final boolean mHardwareAccelerated) {
+        this.mHardwareAccelerated = mHardwareAccelerated;
         this.mPropertyRequiresNewDialog = true;
     }
     
@@ -144,6 +154,9 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
         this.mDialog.setOnShowListener(this.mOnShowListener);
         this.mDialog.setOnKeyListener((DialogInterface$OnKeyListener)new ReactModalHostView$1(this));
         this.mDialog.getWindow().setSoftInputMode(16);
+        if (this.mHardwareAccelerated) {
+            this.mDialog.getWindow().addFlags(16777216);
+        }
         this.mDialog.show();
     }
 }

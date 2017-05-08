@@ -14,12 +14,13 @@ import com.netflix.mediaclient.service.NrdController;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry;
 import com.netflix.mediaclient.service.user.UserAgent;
-import com.netflix.mediaclient.util.PreferenceUtils;
-import android.content.Context;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.AndroidUtils;
 import java.io.File;
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
+import java.util.concurrent.TimeUnit;
+import com.netflix.mediaclient.util.PreferenceUtils;
+import android.content.Context;
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable;
@@ -29,6 +30,7 @@ import java.util.Map;
 class OfflineAgentHelper
 {
     private static final long DISK_FREE_SPACE_SAFETY_MARGIN = 50000000L;
+    public static final int MIN_HR_BEFORE_NEXT_LICENSE_SYNC = 24;
     private static final String TAG = "nf_offlineAgent";
     
     static void applyGeoPlayabilityFlags(final Map<String, Boolean> map, final List<OfflinePlayable> list) {
@@ -43,6 +45,10 @@ class OfflineAgentHelper
                 }
             }
         }
+    }
+    
+    static boolean enoughTimePassedSinceLastLicenseSync(final Context context) {
+        return System.currentTimeMillis() - PreferenceUtils.getLongPref(context, "pref_offline_license_sync_time", 0L) > TimeUnit.HOURS.toMillis(24L);
     }
     
     static boolean ensureEnoughDiskSpaceForNewRequest(final String s, final List<OfflinePlayable> list) {
@@ -97,6 +103,10 @@ class OfflineAgentHelper
         return null;
     }
     
+    static int getZeroPlayableLicenseSyncCount(final Context context) {
+        return PreferenceUtils.getIntPref(context, "pref_offline_license_sync_count_zero", 0);
+    }
+    
     static boolean hasAnyItemInCreatingOrCreateFailed(final List<OfflinePlayable> list) {
         for (final OfflinePlayable offlinePlayable : list) {
             if (offlinePlayable.getDownloadState() == DownloadState.Creating || offlinePlayable.getDownloadState() == DownloadState.CreateFailed) {
@@ -148,7 +158,15 @@ class OfflineAgentHelper
         }
     }
     
+    static void setLastLicenseSyncTimeToNow(final Context context) {
+        PreferenceUtils.putLongPref(context, "pref_offline_license_sync_time", System.currentTimeMillis());
+    }
+    
     static void setLastMaintenanceJobStartTime(final Context context, final long n) {
         PreferenceUtils.putLongPref(context, "pref_offline_maintenance_job_start_time", n);
+    }
+    
+    static void setZeroPlayableLicenseSyncCount(final Context context, final int n) {
+        PreferenceUtils.putIntPref(context, "pref_offline_license_sync_count_zero", n);
     }
 }

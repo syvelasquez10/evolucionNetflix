@@ -7,16 +7,34 @@ package com.facebook.react.uimanager;
 import com.facebook.yoga.YogaPositionType;
 import com.facebook.yoga.YogaOverflow;
 import com.facebook.yoga.YogaJustify;
-import com.facebook.yoga.YogaConstants;
 import com.facebook.yoga.YogaWrap;
 import com.facebook.yoga.YogaFlexDirection;
 import com.facebook.react.uimanager.annotations.ReactPropGroup;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import java.util.Locale;
 import com.facebook.yoga.YogaAlign;
+import com.facebook.react.bridge.ReadableType;
+import com.facebook.react.bridge.Dynamic;
 
 public class LayoutShadowNode extends ReactShadowNode
 {
+    private static boolean dynamicIsPercent(final Dynamic dynamic) {
+        return dynamic.getType() == ReadableType.String && dynamic.asString().endsWith("%");
+    }
+    
+    private static float getDynamicAsFloat(final Dynamic dynamic) {
+        return PixelUtil.toPixelFromDIP(dynamic.asDouble());
+    }
+    
+    private static float getDynamicAsPercent(final Dynamic dynamic) {
+        final String string = dynamic.asString();
+        return Float.parseFloat(string.substring(0, string.length() - 1));
+    }
+    
+    private static boolean isNull(final Dynamic dynamic) {
+        return dynamic == null || dynamic.isNull();
+    }
+    
     @ReactProp(name = "alignItems")
     public void setAlignItems(final String s) {
         if (this.isVirtual()) {
@@ -69,13 +87,25 @@ public class LayoutShadowNode extends ReactShadowNode
         super.setFlex(flex);
     }
     
-    @ReactProp(defaultFloat = 0.0f, name = "flexBasis")
-    @Override
-    public void setFlexBasis(final float flexBasis) {
+    @ReactProp(name = "flexBasis")
+    public void setFlexBasis(final Dynamic dynamic) {
         if (this.isVirtual()) {
             return;
         }
-        super.setFlexBasis(flexBasis);
+        if (!isNull(dynamic) && dynamicIsPercent(dynamic)) {
+            this.setFlexBasisPercent(getDynamicAsPercent(dynamic));
+        }
+        else {
+            float dynamicAsFloat;
+            if (isNull(dynamic)) {
+                dynamicAsFloat = 0.0f;
+            }
+            else {
+                dynamicAsFloat = getDynamicAsFloat(dynamic);
+            }
+            this.setFlexBasis(dynamicAsFloat);
+        }
+        dynamic.recycle();
     }
     
     @ReactProp(name = "flexDirection")
@@ -127,15 +157,25 @@ public class LayoutShadowNode extends ReactShadowNode
         throw new IllegalArgumentException("Unknown flexWrap value: " + s);
     }
     
-    @ReactProp(defaultFloat = Float.NaN, name = "height")
-    public void setHeight(float pixelFromDIP) {
+    @ReactProp(name = "height")
+    public void setHeight(final Dynamic dynamic) {
         if (this.isVirtual()) {
             return;
         }
-        if (!YogaConstants.isUndefined(pixelFromDIP)) {
-            pixelFromDIP = PixelUtil.toPixelFromDIP(pixelFromDIP);
+        if (!isNull(dynamic) && dynamicIsPercent(dynamic)) {
+            this.setStyleHeightPercent(getDynamicAsPercent(dynamic));
         }
-        this.setStyleHeight(pixelFromDIP);
+        else {
+            float dynamicAsFloat;
+            if (isNull(dynamic)) {
+                dynamicAsFloat = Float.NaN;
+            }
+            else {
+                dynamicAsFloat = getDynamicAsFloat(dynamic);
+            }
+            this.setStyleHeight(dynamicAsFloat);
+        }
+        dynamic.recycle();
     }
     
     @ReactProp(name = "justifyContent")
@@ -153,56 +193,110 @@ public class LayoutShadowNode extends ReactShadowNode
         this.setJustifyContent(justifyContent);
     }
     
-    @ReactPropGroup(defaultFloat = Float.NaN, names = { "margin", "marginVertical", "marginHorizontal", "marginLeft", "marginRight", "marginTop", "marginBottom" })
-    public void setMargins(final int n, final float n2) {
+    @ReactPropGroup(names = { "margin", "marginVertical", "marginHorizontal", "marginLeft", "marginRight", "marginTop", "marginBottom" })
+    public void setMargins(int n, final Dynamic dynamic) {
         if (this.isVirtual()) {
             return;
         }
-        this.setMargin(ViewProps.PADDING_MARGIN_SPACING_TYPES[n], PixelUtil.toPixelFromDIP(n2));
+        if (!isNull(dynamic) && dynamicIsPercent(dynamic)) {
+            this.setMarginPercent(ViewProps.PADDING_MARGIN_SPACING_TYPES[n], getDynamicAsPercent(dynamic));
+        }
+        else {
+            n = ViewProps.PADDING_MARGIN_SPACING_TYPES[n];
+            float dynamicAsFloat;
+            if (isNull(dynamic)) {
+                dynamicAsFloat = Float.NaN;
+            }
+            else {
+                dynamicAsFloat = getDynamicAsFloat(dynamic);
+            }
+            this.setMargin(n, dynamicAsFloat);
+        }
+        dynamic.recycle();
     }
     
-    @ReactProp(defaultFloat = Float.NaN, name = "maxHeight")
-    public void setMaxHeight(float pixelFromDIP) {
+    @ReactProp(name = "maxHeight")
+    public void setMaxHeight(final Dynamic dynamic) {
         if (this.isVirtual()) {
             return;
         }
-        if (!YogaConstants.isUndefined(pixelFromDIP)) {
-            pixelFromDIP = PixelUtil.toPixelFromDIP(pixelFromDIP);
+        if (!isNull(dynamic) && dynamicIsPercent(dynamic)) {
+            this.setStyleMaxHeightPercent(getDynamicAsPercent(dynamic));
         }
-        this.setStyleMaxHeight(pixelFromDIP);
+        else {
+            float dynamicAsFloat;
+            if (isNull(dynamic)) {
+                dynamicAsFloat = Float.NaN;
+            }
+            else {
+                dynamicAsFloat = getDynamicAsFloat(dynamic);
+            }
+            this.setStyleMaxHeight(dynamicAsFloat);
+        }
+        dynamic.recycle();
     }
     
-    @ReactProp(defaultFloat = Float.NaN, name = "maxWidth")
-    public void setMaxWidth(float pixelFromDIP) {
+    @ReactProp(name = "maxWidth")
+    public void setMaxWidth(final Dynamic dynamic) {
         if (this.isVirtual()) {
             return;
         }
-        if (!YogaConstants.isUndefined(pixelFromDIP)) {
-            pixelFromDIP = PixelUtil.toPixelFromDIP(pixelFromDIP);
+        if (!isNull(dynamic) && dynamicIsPercent(dynamic)) {
+            this.setStyleMaxWidthPercent(getDynamicAsPercent(dynamic));
         }
-        this.setStyleMaxWidth(pixelFromDIP);
+        else {
+            float dynamicAsFloat;
+            if (isNull(dynamic)) {
+                dynamicAsFloat = Float.NaN;
+            }
+            else {
+                dynamicAsFloat = getDynamicAsFloat(dynamic);
+            }
+            this.setStyleMaxWidth(dynamicAsFloat);
+        }
+        dynamic.recycle();
     }
     
-    @ReactProp(defaultFloat = Float.NaN, name = "minHeight")
-    public void setMinHeight(float pixelFromDIP) {
+    @ReactProp(name = "minHeight")
+    public void setMinHeight(final Dynamic dynamic) {
         if (this.isVirtual()) {
             return;
         }
-        if (!YogaConstants.isUndefined(pixelFromDIP)) {
-            pixelFromDIP = PixelUtil.toPixelFromDIP(pixelFromDIP);
+        if (!isNull(dynamic) && dynamicIsPercent(dynamic)) {
+            this.setStyleMinHeightPercent(getDynamicAsPercent(dynamic));
         }
-        this.setStyleMinHeight(pixelFromDIP);
+        else {
+            float dynamicAsFloat;
+            if (isNull(dynamic)) {
+                dynamicAsFloat = Float.NaN;
+            }
+            else {
+                dynamicAsFloat = getDynamicAsFloat(dynamic);
+            }
+            this.setStyleMinHeight(dynamicAsFloat);
+        }
+        dynamic.recycle();
     }
     
-    @ReactProp(defaultFloat = Float.NaN, name = "minWidth")
-    public void setMinWidth(float pixelFromDIP) {
+    @ReactProp(name = "minWidth")
+    public void setMinWidth(final Dynamic dynamic) {
         if (this.isVirtual()) {
             return;
         }
-        if (!YogaConstants.isUndefined(pixelFromDIP)) {
-            pixelFromDIP = PixelUtil.toPixelFromDIP(pixelFromDIP);
+        if (!isNull(dynamic) && dynamicIsPercent(dynamic)) {
+            this.setStyleMinWidthPercent(getDynamicAsPercent(dynamic));
         }
-        this.setStyleMinWidth(pixelFromDIP);
+        else {
+            float dynamicAsFloat;
+            if (isNull(dynamic)) {
+                dynamicAsFloat = Float.NaN;
+            }
+            else {
+                dynamicAsFloat = getDynamicAsFloat(dynamic);
+            }
+            this.setStyleMinWidth(dynamicAsFloat);
+        }
+        dynamic.recycle();
     }
     
     @ReactProp(name = "overflow")
@@ -220,16 +314,26 @@ public class LayoutShadowNode extends ReactShadowNode
         this.setOverflow(overflow);
     }
     
-    @ReactPropGroup(defaultFloat = Float.NaN, names = { "padding", "paddingVertical", "paddingHorizontal", "paddingLeft", "paddingRight", "paddingTop", "paddingBottom" })
-    public void setPaddings(int n, float pixelFromDIP) {
+    @ReactPropGroup(names = { "padding", "paddingVertical", "paddingHorizontal", "paddingLeft", "paddingRight", "paddingTop", "paddingBottom" })
+    public void setPaddings(int n, final Dynamic dynamic) {
         if (this.isVirtual()) {
             return;
         }
-        n = ViewProps.PADDING_MARGIN_SPACING_TYPES[n];
-        if (!YogaConstants.isUndefined(pixelFromDIP)) {
-            pixelFromDIP = PixelUtil.toPixelFromDIP(pixelFromDIP);
+        if (!isNull(dynamic) && dynamicIsPercent(dynamic)) {
+            this.setPaddingPercent(ViewProps.PADDING_MARGIN_SPACING_TYPES[n], getDynamicAsPercent(dynamic));
         }
-        this.setPadding(n, pixelFromDIP);
+        else {
+            n = ViewProps.PADDING_MARGIN_SPACING_TYPES[n];
+            float dynamicAsFloat;
+            if (isNull(dynamic)) {
+                dynamicAsFloat = Float.NaN;
+            }
+            else {
+                dynamicAsFloat = getDynamicAsFloat(dynamic);
+            }
+            this.setPadding(n, dynamicAsFloat);
+        }
+        dynamic.recycle();
     }
     
     @ReactProp(name = "position")
@@ -247,16 +351,26 @@ public class LayoutShadowNode extends ReactShadowNode
         this.setPositionType(positionType);
     }
     
-    @ReactPropGroup(defaultFloat = Float.NaN, names = { "left", "right", "top", "bottom" })
-    public void setPositionValues(int n, float pixelFromDIP) {
+    @ReactPropGroup(names = { "left", "right", "top", "bottom" })
+    public void setPositionValues(int n, final Dynamic dynamic) {
         if (this.isVirtual()) {
             return;
         }
-        n = ViewProps.POSITION_SPACING_TYPES[n];
-        if (!YogaConstants.isUndefined(pixelFromDIP)) {
-            pixelFromDIP = PixelUtil.toPixelFromDIP(pixelFromDIP);
+        if (!isNull(dynamic) && dynamicIsPercent(dynamic)) {
+            this.setPositionPercent(ViewProps.POSITION_SPACING_TYPES[n], getDynamicAsPercent(dynamic));
         }
-        this.setPosition(n, pixelFromDIP);
+        else {
+            n = ViewProps.POSITION_SPACING_TYPES[n];
+            float dynamicAsFloat;
+            if (isNull(dynamic)) {
+                dynamicAsFloat = Float.NaN;
+            }
+            else {
+                dynamicAsFloat = getDynamicAsFloat(dynamic);
+            }
+            this.setPosition(n, dynamicAsFloat);
+        }
+        dynamic.recycle();
     }
     
     @ReactProp(name = "onLayout")
@@ -265,14 +379,24 @@ public class LayoutShadowNode extends ReactShadowNode
         super.setShouldNotifyOnLayout(shouldNotifyOnLayout);
     }
     
-    @ReactProp(defaultFloat = Float.NaN, name = "width")
-    public void setWidth(float pixelFromDIP) {
+    @ReactProp(name = "width")
+    public void setWidth(final Dynamic dynamic) {
         if (this.isVirtual()) {
             return;
         }
-        if (!YogaConstants.isUndefined(pixelFromDIP)) {
-            pixelFromDIP = PixelUtil.toPixelFromDIP(pixelFromDIP);
+        if (!isNull(dynamic) && dynamicIsPercent(dynamic)) {
+            this.setStyleWidthPercent(getDynamicAsPercent(dynamic));
         }
-        this.setStyleWidth(pixelFromDIP);
+        else {
+            float dynamicAsFloat;
+            if (isNull(dynamic)) {
+                dynamicAsFloat = Float.NaN;
+            }
+            else {
+                dynamicAsFloat = getDynamicAsFloat(dynamic);
+            }
+            this.setStyleWidth(dynamicAsFloat);
+        }
+        dynamic.recycle();
     }
 }

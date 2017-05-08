@@ -8,8 +8,8 @@ import android.content.Context;
 
 public class ReLinker
 {
-    public static void loadLibrary(final Context context, final String s) {
-        loadLibrary(context, s, null, null);
+    public static void loadLibrary(final Context context, final String s, final String s2) {
+        loadLibrary(context, s, s2, null);
     }
     
     public static void loadLibrary(final Context context, final String s, final String s2, final ReLinker$LoadListener reLinker$LoadListener) {

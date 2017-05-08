@@ -37,9 +37,9 @@ public class CxxModuleWrapper implements NativeModule
         return false;
     }
     
-    public native String getConstantsJson();
-    
-    public native Map<String, NativeModule$NativeMethod> getMethods();
+    public Map<String, NativeModule$NativeMethod> getMethods() {
+        throw new UnsupportedOperationException();
+    }
     
     @Override
     public native String getName();

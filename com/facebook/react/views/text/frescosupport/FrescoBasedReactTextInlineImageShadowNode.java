@@ -6,6 +6,9 @@ package com.facebook.react.views.text.frescosupport;
 
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
+import com.facebook.react.bridge.ReadableType;
+import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.views.text.TextInlineImageSpan;
 import android.net.Uri$Builder;
 import java.util.Locale;
@@ -60,8 +63,12 @@ public class FrescoBasedReactTextInlineImageShadowNode extends ReactTextInlineIm
     }
     
     @Override
-    public void setHeight(final float mHeight) {
-        this.mHeight = mHeight;
+    public void setHeight(final Dynamic dynamic) {
+        if (dynamic.getType() == ReadableType.Number) {
+            this.mHeight = (float)dynamic.asDouble();
+            return;
+        }
+        throw new JSApplicationIllegalArgumentException("Inline images must not have percentage based height");
     }
     
     @ReactProp(name = "src")
@@ -160,7 +167,11 @@ public class FrescoBasedReactTextInlineImageShadowNode extends ReactTextInlineIm
     }
     
     @Override
-    public void setWidth(final float mWidth) {
-        this.mWidth = mWidth;
+    public void setWidth(final Dynamic dynamic) {
+        if (dynamic.getType() == ReadableType.Number) {
+            this.mWidth = (float)dynamic.asDouble();
+            return;
+        }
+        throw new JSApplicationIllegalArgumentException("Inline images must not have percentage based width");
     }
 }

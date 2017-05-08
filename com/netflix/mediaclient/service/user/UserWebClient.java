@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.user;
 
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.model.leafs.OnRampEligibility$Action;
 
@@ -37,6 +38,8 @@ public interface UserWebClient
     
     void recordPlanSelection(final String p0, final String p1);
     
+    void recordThumbRatingWelcomeSeen();
+    
     void recordUmsImpression(final String p0, final String p1);
     
     void refreshUserMessage(final User p0);
@@ -45,5 +48,5 @@ public interface UserWebClient
     
     void switchWebUserProfile(final String p0, final UserAgentWebCallback p1);
     
-    void verifyPin(final String p0, final UserAgentWebCallback p1);
+    void verifyPin(final String p0, final PinVerifier$PinType p1, final String p2, final UserAgentWebCallback p3);
 }

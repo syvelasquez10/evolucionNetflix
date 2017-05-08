@@ -66,7 +66,7 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
     public static BarkerMovieDetailsFrag create(final String s) {
         final BarkerMovieDetailsFrag barkerMovieDetailsFrag = new BarkerMovieDetailsFrag();
         final Bundle arguments = new Bundle();
-        arguments.putString("video_id", s);
+        arguments.putString("extra_video_id", s);
         barkerMovieDetailsFrag.setArguments(arguments);
         return barkerMovieDetailsFrag;
     }
@@ -121,15 +121,15 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
     @Override
     protected void findViews(final View view) {
         super.findViews(view);
-        this.rootContainer = view.findViewById(2131755454);
-        this.fragBackground = view.findViewById(2131755466);
+        this.rootContainer = view.findViewById(2131821063);
+        this.fragBackground = view.findViewById(2131821075);
         if (this.rootContainer != null) {
             this.rootContainer.setBackgroundResource(this.getBackgroundResource());
         }
     }
     
     protected int getBackgroundResource() {
-        return 2131689709;
+        return 2131755260;
     }
     
     @Override
@@ -141,7 +141,7 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
         if (this.getActivity() == null) {
             return 0;
         }
-        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427768) * 2;
+        return BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427776) * 2;
     }
     
     @Override
@@ -225,7 +225,7 @@ public class BarkerMovieDetailsFrag extends MovieDetailsFrag implements IHandleB
     protected void setupRecyclerView() {
         super.setupRecyclerView();
         if (this.recyclerView != null) {
-            this.recyclerView.setBackgroundColor(this.getResources().getColor(2131689488));
+            this.recyclerView.setBackgroundColor(this.getResources().getColor(2131755024));
         }
     }
     

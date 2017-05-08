@@ -13,7 +13,6 @@ import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
-import android.content.res.Resources;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
@@ -72,22 +71,22 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
     private Drawable getBackgroundResource() {
         switch (this.this$0.kidsColorId) {
             default: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837601);
+                return this.this$0.getActivity().getResources().getDrawable(2130837610);
             }
-            case 2131689608: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837605);
+            case 2131755151: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837614);
             }
-            case 2131689600: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837601);
+            case 2131755143: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837610);
             }
-            case 2131689603: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837602);
+            case 2131755146: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837611);
             }
-            case 2131689605: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837604);
+            case 2131755148: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837613);
             }
-            case 2131689604: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837603);
+            case 2131755147: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837612);
             }
         }
     }
@@ -99,27 +98,27 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
         int imageResource = 0;
         switch (this.this$0.kidsColorId) {
             default: {
-                imageResource = 2130837615;
+                imageResource = 2130837624;
                 break;
             }
-            case 2131689608: {
-                imageResource = 2130837619;
+            case 2131755151: {
+                imageResource = 2130837628;
                 break;
             }
-            case 2131689600: {
-                imageResource = 2130837614;
+            case 2131755143: {
+                imageResource = 2130837623;
                 break;
             }
-            case 2131689603: {
-                imageResource = 2130837616;
+            case 2131755146: {
+                imageResource = 2130837625;
                 break;
             }
-            case 2131689605: {
-                imageResource = 2130837618;
+            case 2131755148: {
+                imageResource = 2130837627;
                 break;
             }
-            case 2131689604: {
-                imageResource = 2130837617;
+            case 2131755147: {
+                imageResource = 2130837626;
                 break;
             }
         }
@@ -162,14 +161,14 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
     @Override
     protected void findViews() {
         super.findViews();
-        this.characterView = (AdvancedImageView)this.findViewById(2131755426);
-        this.playView = (ImageView)this.findViewById(2131755429);
-        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131755427);
+        this.characterView = (AdvancedImageView)this.findViewById(2131821035);
+        this.playView = (ImageView)this.findViewById(2131821038);
+        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131821036);
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903149;
+        return 2130903158;
     }
     
     @Override

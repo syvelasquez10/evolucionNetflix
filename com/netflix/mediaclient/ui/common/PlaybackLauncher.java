@@ -13,6 +13,9 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.ui.launch.LaunchActivity;
+import com.netflix.mediaclient.ui.home.HomeActivity;
+import com.netflix.mediaclient.ui.details.DetailsActivity;
 import android.util.Pair;
 import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.Log;
@@ -45,6 +48,7 @@ public final class PlaybackLauncher
             Log.w("nf_play", "Start time parameter was ignored since it exceeds the total duration.");
         }
         intent.putExtra("SeamlessMode", b);
+        intent.putExtra("play_launched_by", netflixActivityToPlayLaunchedBy(netflixActivity).ordinal());
         asset.toIntent(intent);
         return intent;
     }
@@ -83,6 +87,22 @@ public final class PlaybackLauncher
             }
             Log.d("nf_play", "MDX current target '" + mdx.getCurrentTarget() + "'");
         }
+    }
+    
+    private static PlaybackLauncher$PlayLaunchedBy netflixActivityToPlayLaunchedBy(final NetflixActivity netflixActivity) {
+        if (netflixActivity instanceof DetailsActivity) {
+            return PlaybackLauncher$PlayLaunchedBy.DetailsScreen;
+        }
+        if (netflixActivity instanceof HomeActivity) {
+            return PlaybackLauncher$PlayLaunchedBy.HomeScreen;
+        }
+        if (netflixActivity instanceof PlayerActivity) {
+            return PlaybackLauncher$PlayLaunchedBy.PlayerScreen;
+        }
+        if (netflixActivity instanceof LaunchActivity) {
+            return PlaybackLauncher$PlayLaunchedBy.LaunchActivity;
+        }
+        return PlaybackLauncher$PlayLaunchedBy.Unknown;
     }
     
     public static void playVideo(final NetflixActivity netflixActivity, final Asset asset, final boolean b, final int n, final boolean b2) {
@@ -127,7 +147,7 @@ public final class PlaybackLauncher
     }
     
     public static void startPlaybackAfterPIN(final NetflixActivity netflixActivity, final Asset asset, final int n) {
-        switch (PlaybackLauncher$2.$SwitchMap$com$netflix$mediaclient$ui$common$PlaybackLauncher$PlaybackTarget[whereToPlay(netflixActivity.getServiceManager()).ordinal()]) {
+        switch (PlaybackLauncher$1.$SwitchMap$com$netflix$mediaclient$ui$common$PlaybackLauncher$PlaybackTarget[whereToPlay(netflixActivity.getServiceManager()).ordinal()]) {
             default: {}
             case 1: {
                 verifyAgeAndPinToPlay(netflixActivity, asset, false, n);
@@ -136,10 +156,10 @@ public final class PlaybackLauncher
                 verifyAgeAndPinToPlay(netflixActivity, asset, true, n);
             }
             case 3: {
-                displayErrorDialog(netflixActivity, 2131296842);
+                displayErrorDialog(netflixActivity, 2131296844);
             }
             case 4: {
-                displayErrorDialog(netflixActivity, 2131296843);
+                displayErrorDialog(netflixActivity, 2131296845);
             }
         }
     }
@@ -163,24 +183,20 @@ public final class PlaybackLauncher
     public static void startPlaybackOnPINSuccess(final NetflixActivity netflixActivity, final Asset asset, final boolean b, final int n) {
         if (b) {
             Log.d("nf_play", "Starting MDX remote playback");
-            if (!MdxAgent$Utils.playVideo(netflixActivity, asset, n, false)) {
-                return;
-            }
-            new Handler(netflixActivity.getMainLooper()).postDelayed((Runnable)new PlaybackLauncher$1((Context)netflixActivity.getApplication()), 250L);
+            if (!MdxAgent$Utils.playVideo(netflixActivity, asset, n, false)) {}
+            return;
         }
-        else {
-            if (netflixActivity.getServiceManager().getConfiguration().getPlaybackConfiguration().isLocalPlaybackEnabled()) {
-                Log.d("nf_play", "Start local playback");
-                playVideo(netflixActivity, asset, true, n, false);
-                return;
-            }
-            Log.w("nf_play", "Local playback is disabled, we can not start playback!");
-            displayErrorDialog(netflixActivity, 2131296842);
+        if (netflixActivity.getServiceManager().getConfiguration().getPlaybackConfiguration().isLocalPlaybackEnabled()) {
+            Log.d("nf_play", "Start local playback");
+            playVideo(netflixActivity, asset, true, n, false);
+            return;
         }
+        Log.w("nf_play", "Local playback is disabled, we can not start playback!");
+        displayErrorDialog(netflixActivity, 2131296844);
     }
     
     private static void verifyAgeAndPinToPlay(final NetflixActivity netflixActivity, final Asset asset, final boolean b, final int n) {
-        Log.d("nf_play", String.format("nf_pin verifyPinAndPlay - %s ageProtected: %b, pinProtected:%b", asset.getPlayableId(), asset.isAgeProtected(), asset.isPinProtected()));
+        Log.d("nf_play", String.format("nf_pin verifyPinAndPlay - %s ageProtected: %b, pinProtected:%b, previewProtected: %b", asset.getPlayableId(), asset.isAgeProtected(), asset.isPinProtected(), asset.isPreviewProtected()));
         PinAndAgeVerifier.verifyAgeAndPinToPlay(netflixActivity, asset.isAgeProtected(), new PlayVerifierVault(PlayVerifierVault$RequestedBy.PLAY_LAUNCHER.getValue(), asset, b, n));
     }
     

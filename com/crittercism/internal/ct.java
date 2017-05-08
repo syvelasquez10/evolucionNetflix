@@ -93,6 +93,8 @@ public final class ct extends da
                                                     ax.C().a((bf)jsonObject);
                                                 }
                                                 return;
+                                                dw.a = dw$a.c;
+                                                break;
                                                 try {
                                                     if ((n = optJSONObject.getInt("rateAfterLoadNum")) < 0) {
                                                         n = 0;
@@ -110,8 +112,6 @@ public final class ct extends da
                                                     n2.a(false);
                                                 }
                                                 break Label_0062;
-                                                dw.a = dw$a.c;
-                                                break;
                                             }
                                             catch (IOException ex) {
                                                 dw.d("IOException in handleResponse(): " + ex.getMessage());

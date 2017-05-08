@@ -75,11 +75,40 @@ public class JavaOnlyArray implements ReadableArray, WritableArray
     }
     
     @Override
+    public ReadableType getType(final int n) {
+        final Object value = this.mBackingList.get(n);
+        if (value == null) {
+            return ReadableType.Null;
+        }
+        if (value instanceof Boolean) {
+            return ReadableType.Boolean;
+        }
+        if (value instanceof Double || value instanceof Float || value instanceof Integer) {
+            return ReadableType.Number;
+        }
+        if (value instanceof String) {
+            return ReadableType.String;
+        }
+        if (value instanceof ReadableArray) {
+            return ReadableType.Array;
+        }
+        if (value instanceof ReadableMap) {
+            return ReadableType.Map;
+        }
+        return null;
+    }
+    
+    @Override
     public int hashCode() {
         if (this.mBackingList != null) {
             return this.mBackingList.hashCode();
         }
         return 0;
+    }
+    
+    @Override
+    public boolean isNull(final int n) {
+        return this.mBackingList.get(n) == null;
     }
     
     @Override

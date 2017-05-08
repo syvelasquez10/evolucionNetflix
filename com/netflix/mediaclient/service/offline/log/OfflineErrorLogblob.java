@@ -59,7 +59,7 @@ public final class OfflineErrorLogblob extends OfflineBaseLogblob
         if (logblobLogging != null) {
             while (true) {
                 while (true) {
-                    Label_0265: {
+                    Label_0280: {
                         try {
                             final Logblob$Severity error = Logblob$Severity.error;
                             switch (OfflineErrorLogblob$1.$SwitchMap$com$netflix$mediaclient$servicemgr$interface_$offline$StopReason[stopReason.ordinal()]) {
@@ -67,45 +67,49 @@ public final class OfflineErrorLogblob extends OfflineBaseLogblob
                                 case 2:
                                 case 3:
                                 case 4: {
-                                    goto Label_0158;
-                                    goto Label_0158;
+                                    goto Label_0162;
+                                    goto Label_0162;
                                 }
                                 case 5:
                                 case 6:
                                 case 7: {
-                                    goto Label_0164;
-                                    goto Label_0164;
+                                    goto Label_0168;
+                                    goto Label_0168;
                                 }
                                 case 8: {
-                                    goto Label_0170;
-                                    goto Label_0170;
+                                    goto Label_0174;
+                                    goto Label_0174;
                                 }
                                 case 9: {
-                                    goto Label_0181;
-                                    goto Label_0181;
+                                    goto Label_0185;
+                                    goto Label_0185;
                                 }
                                 case 10: {
-                                    goto Label_0192;
-                                    goto Label_0192;
+                                    goto Label_0196;
+                                    goto Label_0196;
                                 }
                                 case 11: {
-                                    goto Label_0203;
-                                    goto Label_0203;
+                                    goto Label_0207;
+                                    goto Label_0207;
                                 }
                                 case 12: {
-                                    goto Label_0214;
-                                    goto Label_0214;
+                                    goto Label_0218;
+                                    goto Label_0218;
                                 }
                                 case 13: {
-                                    goto Label_0225;
-                                    goto Label_0225;
+                                    goto Label_0229;
+                                    goto Label_0229;
                                 }
                                 case 14: {
-                                    goto Label_0236;
-                                    goto Label_0236;
+                                    goto Label_0240;
+                                    goto Label_0240;
+                                }
+                                case 15: {
+                                    goto Label_0251;
+                                    goto Label_0251;
                                 }
                                 default: {
-                                    break Label_0265;
+                                    break Label_0280;
                                 }
                             }
                             Log.d("offlineErrorLogBlob", " onDownloadStopped stopReason: %s, no-op", stopReason);

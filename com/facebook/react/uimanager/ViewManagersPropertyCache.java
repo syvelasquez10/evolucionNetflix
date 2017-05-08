@@ -8,6 +8,7 @@ import android.view.View;
 import com.facebook.react.uimanager.annotations.ReactPropGroup;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.Dynamic;
 import java.lang.reflect.Method;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import java.util.HashMap;
@@ -24,6 +25,9 @@ class ViewManagersPropertyCache
     }
     
     private static ViewManagersPropertyCache$PropSetter createPropSetter(final ReactProp reactProp, final Method method, final Class<?> clazz) {
+        if (clazz == Dynamic.class) {
+            return new ViewManagersPropertyCache$DynamicPropSetter(reactProp, method);
+        }
         if (clazz == Boolean.TYPE) {
             return new ViewManagersPropertyCache$BooleanPropSetter(reactProp, method, reactProp.defaultBoolean());
         }
@@ -57,30 +61,36 @@ class ViewManagersPropertyCache
     private static void createPropSetters(final ReactPropGroup reactPropGroup, final Method method, final Class<?> clazz, final Map<String, ViewManagersPropertyCache$PropSetter> map) {
         final int n = 0;
         final int n2 = 0;
+        final int n3 = 0;
         int i = 0;
         final String[] names = reactPropGroup.names();
-        if (clazz == Integer.TYPE) {
+        if (clazz == Dynamic.class) {
             while (i < names.length) {
-                map.put(names[i], new ViewManagersPropertyCache$IntPropSetter(reactPropGroup, method, i, reactPropGroup.defaultInt()));
+                map.put(names[i], new ViewManagersPropertyCache$DynamicPropSetter(reactPropGroup, method, i));
                 ++i;
             }
         }
-        else if (clazz == Float.TYPE) {
+        else if (clazz == Integer.TYPE) {
             for (int j = n; j < names.length; ++j) {
-                map.put(names[j], new ViewManagersPropertyCache$FloatPropSetter(reactPropGroup, method, j, reactPropGroup.defaultFloat()));
+                map.put(names[j], new ViewManagersPropertyCache$IntPropSetter(reactPropGroup, method, j, reactPropGroup.defaultInt()));
+            }
+        }
+        else if (clazz == Float.TYPE) {
+            for (int k = n2; k < names.length; ++k) {
+                map.put(names[k], new ViewManagersPropertyCache$FloatPropSetter(reactPropGroup, method, k, reactPropGroup.defaultFloat()));
             }
         }
         else if (clazz == Double.TYPE) {
-            for (int k = 0; k < names.length; ++k) {
-                map.put(names[k], new ViewManagersPropertyCache$DoublePropSetter(reactPropGroup, method, k, reactPropGroup.defaultDouble()));
+            for (int l = 0; l < names.length; ++l) {
+                map.put(names[l], new ViewManagersPropertyCache$DoublePropSetter(reactPropGroup, method, l, reactPropGroup.defaultDouble()));
             }
         }
         else {
             if (clazz != Integer.class) {
                 throw new RuntimeException("Unrecognized type: " + clazz + " for method: " + method.getDeclaringClass().getName() + "#" + method.getName());
             }
-            for (int l = n2; l < names.length; ++l) {
-                map.put(names[l], new ViewManagersPropertyCache$BoxedIntPropSetter(reactPropGroup, method, l));
+            for (int n4 = n3; n4 < names.length; ++n4) {
+                map.put(names[n4], new ViewManagersPropertyCache$BoxedIntPropSetter(reactPropGroup, method, n4));
             }
         }
     }

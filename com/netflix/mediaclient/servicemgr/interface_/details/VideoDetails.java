@@ -10,8 +10,9 @@ import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.servicemgr.interface_.Ratable;
 import com.netflix.mediaclient.servicemgr.interface_.FeatureEnabledProvider;
+import com.netflix.mediaclient.servicemgr.interface_.ArtworkUrlProvider;
 
-public interface VideoDetails extends FeatureEnabledProvider, Ratable, Video
+public interface VideoDetails extends ArtworkUrlProvider, FeatureEnabledProvider, Ratable, Video
 {
     String getActors();
     

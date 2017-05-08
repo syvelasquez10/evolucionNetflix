@@ -18,6 +18,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 
 public class AnimationsDebugModule extends ReactContextBaseJavaModule
 {
+    protected static final String NAME = "AnimationsDebugModule";
     private final DeveloperSettings mCatalystSettings;
     private FpsDebugFrameCallback mFrameCallback;
     

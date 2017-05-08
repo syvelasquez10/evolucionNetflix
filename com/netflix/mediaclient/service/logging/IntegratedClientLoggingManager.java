@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.NetflixService;
 import java.util.concurrent.atomic.AtomicLong;
+import com.netflix.mediaclient.ui.rating.Ratings$CL;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import java.util.List;
@@ -84,6 +85,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
     private final LoggingAgent mOwner;
     private final List<String> mPendingCachedLogPayloads;
     private final BroadcastReceiver mPlayerReceiver;
+    private Ratings$CL mRatingsLogging;
     private SearchLogging mSearchLogging;
     private final AtomicLong mSequence;
     private final NetflixService mService;
@@ -520,6 +522,9 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         else if (this.mExceptionLoggingCl.handleIntent(intent)) {
             Log.d("nf_log", "Handled by ExceptionLoggingCl logger");
         }
+        else if (this.mRatingsLogging.handleIntent(intent)) {
+            Log.d("nf_log", "Handled by RatingsLogging logger");
+        }
         else {
             Log.w("nf_log", "Action not handled!");
         }
@@ -548,6 +553,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         this.mIkoLogging = new IkoLoggingImpl(this);
         this.mOfflineLogging = new OfflineLoggingImpl(this);
         this.mExceptionLoggingCl = new ExceptionLoggingClImpl(this);
+        this.mRatingsLogging = new Ratings$CL((EventHandler)this);
         this.initDataRepository();
         this.registerReceivers();
         this.createSession(andClearCachedIntent);
@@ -737,5 +743,6 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         this.mIkoLogging.setDataContext(dataContext);
         this.mOfflineLogging.setDataContext(dataContext);
         this.mExceptionLoggingCl.setDataContext(dataContext);
+        this.mRatingsLogging.setDataContext(dataContext);
     }
 }

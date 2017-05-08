@@ -11,7 +11,7 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$ManifestCallback;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface$OfflinePdsDataCallback;
 import junit.framework.Assert;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
@@ -21,9 +21,9 @@ import android.content.Context;
 import com.netflix.mediaclient.service.logging.IPdsLogging;
 import java.util.Map;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.servicemgr.LogblobLogging;
-import com.netflix.mediaclient.service.offline.agent.OfflineAgentListener;
+import com.netflix.mediaclient.servicemgr.interface_.offline.SimpleOfflineAgentListener;
 
 class PdsDownloadSessionManager$2 implements PdsDownloadSessionManager$ManifestCallback
 {

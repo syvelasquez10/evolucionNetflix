@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx;
 
-import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import java.util.List;
 import java.util.Collection;

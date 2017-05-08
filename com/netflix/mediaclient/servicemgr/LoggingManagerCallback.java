@@ -23,6 +23,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -169,6 +170,21 @@ public class LoggingManagerCallback implements ManagerCallback
                 size = list.size();
             }
             Log.v(tag, String.format("onEpisodesFetched, num: %d, status: %d", size, status.getStatusCode().getValue()));
+        }
+    }
+    
+    @Override
+    public void onFalkorVideoFetched(final FalkorVideo falkorVideo, final Status status) {
+        if (Log.isLoggable()) {
+            final String tag = this.tag;
+            String title;
+            if (falkorVideo == null) {
+                title = "null";
+            }
+            else {
+                title = falkorVideo.getTitle();
+            }
+            Log.v(tag, String.format("onFalkorVideoFetched, title: %s, status: %d", title, status.getStatusCode().getValue()));
         }
     }
     

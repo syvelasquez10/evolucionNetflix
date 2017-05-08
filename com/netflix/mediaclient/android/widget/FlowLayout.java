@@ -8,7 +8,7 @@ import android.content.res.TypedArray;
 import android.view.View$MeasureSpec;
 import android.view.View;
 import android.view.ViewGroup$LayoutParams;
-import com.netflix.mediaclient.R$styleable;
+import com.netflix.android.widgetry.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.view.ViewGroup;
@@ -24,9 +24,9 @@ public class FlowLayout extends ViewGroup
         this.mMaxWidth = 0;
         obtainStyledAttributes = (Context)obtainStyledAttributes.obtainStyledAttributes(set, R$styleable.FlowLayout);
         try {
-            this.mHorizontalSpacing = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(0, 0);
-            this.mVerticalSpacing = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(1, 0);
-            this.mMaxWidth = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(2, this.mMaxWidth);
+            this.mHorizontalSpacing = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(R$styleable.FlowLayout_fl_horizontalSpacing, 0);
+            this.mVerticalSpacing = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(R$styleable.FlowLayout_fl_verticalSpacing, 0);
+            this.mMaxWidth = ((TypedArray)obtainStyledAttributes).getDimensionPixelSize(R$styleable.FlowLayout_fl_maxWidth, this.mMaxWidth);
         }
         finally {
             ((TypedArray)obtainStyledAttributes).recycle();

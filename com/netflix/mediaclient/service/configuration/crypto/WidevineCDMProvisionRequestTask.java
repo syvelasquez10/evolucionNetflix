@@ -79,20 +79,20 @@ public final class WidevineCDMProvisionRequestTask extends AsyncTask<String, Voi
                     }
                     goto Label_0468;
                     // iftrue(Label_0355:, statusCode != 400)
-                    // iftrue(Label_0251:, this.callback == null)
-                    Block_7: {
-                        break Block_7;
-                        while (true) {
-                            this.callback.abort();
-                            return null;
-                            Label_0292: {
-                                ErrorLoggingManager.logHandledException("15002. Provisiong failed with status code 400 " + array[0]);
-                            }
-                            continue;
-                        }
-                    }
                     // iftrue(Label_0292:, !Log.isLoggable())
-                    Log.d("nf_net", "Server returned HTTP error code 400 (BAD REQUEST), assume Widevine plugun is NOT recognized: " + statusCode);
+                    // iftrue(Label_0251:, this.callback == null)
+                Block_9:
+                    while (true) {
+                        Block_8: {
+                            break Block_8;
+                            ErrorLoggingManager.logHandledException("15002. Provisiong failed with status code 400 " + array[0]);
+                            break Block_9;
+                        }
+                        Log.d("nf_net", "Server returned HTTP error code 400 (BAD REQUEST), assume Widevine plugun is NOT recognized: " + statusCode);
+                        continue;
+                    }
+                    this.callback.abort();
+                    return null;
                 }
                 catch (ConnectTimeoutException ex) {}
                 catch (SocketTimeoutException ex2) {}

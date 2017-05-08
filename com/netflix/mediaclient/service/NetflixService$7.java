@@ -4,10 +4,10 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import android.app.Notification;
 import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
-import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
@@ -16,6 +16,7 @@ import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.service.webclient.model.leafs.ThumbMessaging;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
 import com.netflix.mediaclient.servicemgr.IPushNotification;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
@@ -82,6 +83,7 @@ import com.netflix.mediaclient.service.error.ErrorAgent;
 import com.netflix.mediaclient.service.diagnostics.DiagnosisAgent;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.service.logging.LoggingAgent;
+import com.netflix.mediaclient.media.BookmarkStore;
 import android.os.IBinder;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;
@@ -101,7 +103,7 @@ class NetflixService$7 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (intent == null || !"com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER".equals(intent.getAction())) {
+        if (intent == null || !"com.netflix.mediaclient.service.ACTION_SHOW_CAST_PLAYER".equals(intent.getAction())) {
             Log.d("NetflixService", "Invalid intent: ", intent);
             return;
         }

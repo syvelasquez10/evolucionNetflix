@@ -4,11 +4,13 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import android.app.Notification;
 import com.netflix.mediaclient.service.job.NetflixJobExecutor;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.service.webclient.model.leafs.ThumbMessaging;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.service.NetflixPowerManager;
@@ -18,6 +20,7 @@ import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import java.util.List;
 import com.netflix.model.leafs.OnRampEligibility$Action;
@@ -56,6 +59,8 @@ public interface INetflixService
     List<? extends UserProfile> getAllProfiles();
     
     void getAvailableAvatarsList(final int p0, final int p1);
+    
+    BookmarkStore getBookmarkStore();
     
     IBrowseInterface getBrowse();
     
@@ -115,13 +120,15 @@ public interface INetflixService
     
     long getStartedTimeInMs();
     
+    ThumbMessaging getThumbMessaging();
+    
     String getUserEmail();
     
     UmaAlert getUserMessageAlert();
     
     IVoip getVoip();
     
-    boolean isCurrentProfileIQEnabled();
+    boolean isCurrentProfileInstantQueueEnabled();
     
     boolean isDeviceHd();
     
@@ -145,6 +152,10 @@ public interface INetflixService
     
     void recordPlanSelection(final String p0, final String p1);
     
+    void recordThumbRatingThanksSeen();
+    
+    void recordThumbRatingWelcomeSeen();
+    
     void recordUserMessageImpression(final String p0, final String p1);
     
     void refreshCurrentUserMessageArea();
@@ -160,6 +171,8 @@ public interface INetflixService
     void requestBackgroundForNotification(final int p0, final boolean p1);
     
     void requestForegroundForNotification(final int p0, final Notification p1);
+    
+    void resetThumbMessagingForDebug();
     
     void selectProfile(final String p0);
     
@@ -177,5 +190,5 @@ public interface INetflixService
     
     void verifyAge(final int p0, final int p1);
     
-    void verifyPin(final String p0, final int p1, final int p2);
+    void verifyPin(final String p0, final PinVerifier$PinType p1, final String p2, final int p3, final int p4);
 }

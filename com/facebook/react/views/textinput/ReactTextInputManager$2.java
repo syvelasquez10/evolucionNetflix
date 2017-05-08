@@ -27,12 +27,9 @@ class ReactTextInputManager$2 implements TextView$OnEditorActionListener
         if ((n & 0xFF) > 0 || n == 0) {
             this.val$reactContext.getNativeModule(UIManagerModule.class).getEventDispatcher().dispatchEvent(new ReactTextInputSubmitEditingEvent(this.val$editText.getId(), this.val$editText.getText().toString()));
         }
-        if (n == 5 || n == 7) {
-            if (this.val$editText.getBlurOnSubmit()) {
-                this.val$editText.clearFocus();
-            }
-            return true;
+        if (this.val$editText.getBlurOnSubmit()) {
+            this.val$editText.clearFocus();
         }
-        return !this.val$editText.getBlurOnSubmit();
+        return true;
     }
 }

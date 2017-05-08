@@ -10,9 +10,9 @@ import com.netflix.mediaclient.ui.barker.details.RelatedTitleState;
 import java.util.Stack;
 import com.netflix.mediaclient.servicemgr.interface_.details.Similarable;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
+import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.ui.barker.details.BarkerHelper$BarkerBars;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import com.netflix.mediaclient.util.DeviceUtils;
 import android.content.Context;
 import com.netflix.mediaclient.ui.barker.details.BarkerHelper;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils$LoMoWidthType;
@@ -32,12 +32,6 @@ public class BarkerUtils
     public static LoMoUtils$LoMoWidthType getCwGalleryWidthType(final NetflixActivity netflixActivity) {
         if (BarkerHelper.isInTest((Context)netflixActivity)) {
             return LoMoUtils$LoMoWidthType.STANDARD;
-        }
-        if (DeviceUtils.getScreenSizeCategory((Context)netflixActivity) == 3 && DeviceUtils.isPortrait((Context)netflixActivity)) {
-            return LoMoUtils$LoMoWidthType.KUBRICK_EXTENDED_CW_GALLERY_ROW;
-        }
-        if (DeviceUtils.getScreenSizeCategory((Context)netflixActivity) == 4 && DeviceUtils.isLandscape((Context)netflixActivity)) {
-            return LoMoUtils$LoMoWidthType.KUBRICK_EXTENDED_CW_GALLERY_ROW;
         }
         return LoMoUtils$LoMoWidthType.STANDARD;
     }

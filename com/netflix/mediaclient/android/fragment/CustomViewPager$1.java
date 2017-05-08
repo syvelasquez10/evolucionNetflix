@@ -19,10 +19,6 @@ class CustomViewPager$1 implements ViewPager$OnPageChangeListener
     }
     
     public void onPageScrolled(final int n, final float n2, final int n3) {
-        if (Log.isLoggable()) {
-            Log.v("CustomViewPager", "onPageScrolled, position: " + n + "; positionOffset: " + n2 + "; positionOffsetPixels: " + n3);
-        }
-        this.this$0.onPageSelected(n);
     }
     
     public void onPageSelected(final int n) {

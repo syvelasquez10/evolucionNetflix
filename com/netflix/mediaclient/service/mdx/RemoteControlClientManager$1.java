@@ -56,7 +56,7 @@ class RemoteControlClientManager$1 extends BroadcastReceiver
                             if (episodeDetails.getPlayable() == null) {
                                 break Label_0181;
                             }
-                            final int int2 = Integer.parseInt(episodeDetails.getPlayable().getParentId());
+                            final int int2 = Integer.parseInt(episodeDetails.getPlayable().getTopLevelId());
                             int1 = Integer.parseInt(episodeDetails.getId());
                             this.postPlayMediaButtonHandler.handleButtonDown(context, keyEvent, int2, int1, this.this$0.mTargetUUID);
                             return;

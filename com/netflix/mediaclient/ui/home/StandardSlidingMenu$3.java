@@ -11,13 +11,13 @@ import android.os.Build$VERSION;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
-import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.widget.ListAdapter;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
@@ -55,7 +55,6 @@ class StandardSlidingMenu$3 implements NotificationsFrag$NotificationsListStatus
         this.this$0 = this$0;
     }
     
-    @Override
     public void onNotificationsListUpdated(final boolean b) {
         this.this$0.setNotificationsVisible(b);
     }

@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.NrmLanguagesData;
 import com.netflix.mediaclient.service.webclient.model.leafs.VoipConfiguration;
 import com.netflix.mediaclient.media.VideoResolutionRange;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitleDownloadRetryPolicy;
@@ -28,11 +29,13 @@ import android.util.Pair;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
 
 public interface ServiceAgent$ConfigurationAgentInterface
 {
+    void allocateABTest(final int p0, final int p1, final ConfigurationAgentWebCallback p2);
+    
     void clearAccountConfigData();
     
     boolean enableHTTPSAuth();
@@ -43,7 +46,7 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     void fetchAccountConfigData(final ConfigurationAgentWebCallback p0);
     
-    ABTestConfig$Cell getAimLowTextPlaceholderConfig();
+    ABTestConfigData getABTestConfig();
     
     String getAlertMsgForMissingLocale();
     
@@ -55,21 +58,13 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     DataSaveConfigData getBWSaveConfigData();
     
-    ABTestConfig$Cell getBrandLoveSurveyConfig();
-    
     BreadcrumbLoggingSpecification getBreadcrumbLoggingSpecification();
-    
-    ABTestConfig$Cell getCWProgressBarConfig();
     
     Pair<String, byte[]> getCastPrefetchSharedSecret();
     
     String getChannelId();
     
     ConsolidatedLoggingSessionSpecification getConsolidatedLoggingSessionSpecification(final String p0);
-    
-    ABTestConfig$Cell getCoppola1Experience();
-    
-    ABTestConfig$Cell getCoppola2Experience();
     
     PlayerType getCurrentPlayerType();
     
@@ -82,8 +77,6 @@ public interface ServiceAgent$ConfigurationAgentInterface
     DeviceModel getDeviceModel();
     
     int getDiskCacheSizeBytes();
-    
-    ABTestConfig$Cell getDisplayPageRefreshConfig();
     
     int getDownloadAgentThreadPoolSize();
     
@@ -111,31 +104,15 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     MdxConfiguration getMdxConfiguration();
     
-    ABTestConfig$Cell getMemento2Config();
-    
-    ABTestConfig$Cell getMementoConfig();
-    
-    ABTestConfig$Cell getMotionBBTestConfig();
-    
     NrmConfigData getNrmConfigData();
     
     OfflineConfig getOfflineConfig();
-    
-    ABTestConfig$Cell getOfflineTutorialConfig();
-    
-    ABTestConfig$Cell getOnRampConfig();
-    
-    ABTestConfig$Cell getPhoneOrientationConfig();
     
     PlaybackConfiguration getPlaybackConfiguration();
     
     String getPreAppPartnerExperience();
     
     String getPreAppWidgetExperience();
-    
-    ABTestConfig$Cell getPrefetchDPConfig();
-    
-    ABTestConfig$Cell getPrefetchLolomoConfig();
     
     int getPresentationTrackingAggregationSize();
     
@@ -159,11 +136,11 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     SubtitleDownloadRetryPolicy getSubtitleDownloadRetryPolicy();
     
+    String getUserPin();
+    
     int getVideoBufferSize();
     
     VideoResolutionRange getVideoResolutionRange();
-    
-    ABTestConfig$Cell getVoiceSearchABTestConfig();
     
     VoipConfiguration getVoipConfiguration();
     
@@ -197,6 +174,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     boolean isLogoutRequired();
     
+    boolean isMementoEnabledForWorld();
+    
     boolean isPlayBillingDisabled();
     
     boolean isPreviewContentEnabled();
@@ -204,6 +183,8 @@ public interface ServiceAgent$ConfigurationAgentInterface
     boolean isWidevineL1Enabled();
     
     void persistNrmConfigData(final NrmConfigData p0);
+    
+    void persistNrmLanguagesData(final NrmLanguagesData p0);
     
     void setShouldUseAndroidHttpStack(final boolean p0);
     

@@ -7,6 +7,8 @@ package com.facebook.react.animated;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.facebook.common.logging.FLog;
 import java.util.ArrayDeque;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.facebook.react.bridge.UiThreadUtil;
@@ -327,36 +329,50 @@ class NativeAnimatedNodesManager implements EventDispatcherListener
         while (!arrayDeque.isEmpty()) {
             final ValueAnimatedNode valueAnimatedNode = arrayDeque.poll();
             valueAnimatedNode.update();
-            if (valueAnimatedNode instanceof PropsAnimatedNode) {
-                ((PropsAnimatedNode)valueAnimatedNode).updateView(this.mUIImplementation);
-            }
-            if (valueAnimatedNode instanceof ValueAnimatedNode) {
-                valueAnimatedNode.onValueUpdate();
-            }
-            int n18;
-            if (valueAnimatedNode.mChildren != null) {
-                int n17 = 0;
-                while (true) {
-                    n18 = n15;
-                    if (n17 >= valueAnimatedNode.mChildren.size()) {
+            int n18 = 0;
+            Label_0606: {
+                Label_0602: {
+                    while (true) {
+                        if (!(valueAnimatedNode instanceof PropsAnimatedNode)) {
+                            break Label_0657;
+                        }
+                        try {
+                            ((PropsAnimatedNode)valueAnimatedNode).updateView(this.mUIImplementation);
+                            if (valueAnimatedNode instanceof ValueAnimatedNode) {
+                                valueAnimatedNode.onValueUpdate();
+                            }
+                            if (valueAnimatedNode.mChildren == null) {
+                                break Label_0602;
+                            }
+                            int n17 = 0;
+                            while (true) {
+                                n18 = n15;
+                                if (n17 >= valueAnimatedNode.mChildren.size()) {
+                                    break Label_0606;
+                                }
+                                final AnimatedNode animatedNode5 = valueAnimatedNode.mChildren.get(n17);
+                                --animatedNode5.mActiveIncomingNodes;
+                                int n19 = n15;
+                                if (animatedNode5.mBFSColor != this.mAnimatedGraphBFSColor) {
+                                    n19 = n15;
+                                    if (animatedNode5.mActiveIncomingNodes == 0) {
+                                        animatedNode5.mBFSColor = this.mAnimatedGraphBFSColor;
+                                        n19 = n15 + 1;
+                                        arrayDeque.add(animatedNode5);
+                                    }
+                                }
+                                ++n17;
+                                n15 = n19;
+                            }
+                        }
+                        catch (IllegalViewOperationException ex) {
+                            FLog.e("React", "Native animation workaround, frame lost as result of race condition", ex);
+                            continue;
+                        }
                         break;
                     }
-                    final AnimatedNode animatedNode5 = valueAnimatedNode.mChildren.get(n17);
-                    --animatedNode5.mActiveIncomingNodes;
-                    int n19 = n15;
-                    if (animatedNode5.mBFSColor != this.mAnimatedGraphBFSColor) {
-                        n19 = n15;
-                        if (animatedNode5.mActiveIncomingNodes == 0) {
-                            animatedNode5.mBFSColor = this.mAnimatedGraphBFSColor;
-                            n19 = n15 + 1;
-                            arrayDeque.add(animatedNode5);
-                        }
-                    }
-                    ++n17;
-                    n15 = n19;
+                    break;
                 }
-            }
-            else {
                 n18 = n15;
             }
             n15 = n18;

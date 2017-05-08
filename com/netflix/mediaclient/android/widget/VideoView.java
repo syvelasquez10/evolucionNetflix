@@ -50,7 +50,7 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
     private void init() {
         this.playContext = PlayContext.EMPTY_CONTEXT;
         this.setFocusable(true);
-        this.setBackgroundResource(2130838136);
+        this.setBackgroundResource(2130838143);
         this.useCallbackAnimation = BrowseExperience.showKidsExperience();
         this.clicker = new VideoDetailsClickListener((NetflixActivity)this.getContext(), (PlayContextProvider)this, this.useCallbackAnimation);
         this.setPressedStateHandlerEnabled(this.useCallbackAnimation);
@@ -58,11 +58,11 @@ public class VideoView extends AdvancedImageView implements VideoViewGroup$IVide
     
     private void renderTextOnPlaceholder() {
         if (this.mTitleDrawable == null) {
-            final int dimensionPixelSize = this.getContext().getResources().getDimensionPixelSize(2131427924);
-            (this.mTitleDrawable = new TitleDrawable()).setMaxLines(this.getResources().getInteger(2131558434));
-            this.mTitleDrawable.setTextColor(this.getContext().getResources().getColor(2131689720));
+            final int dimensionPixelSize = this.getContext().getResources().getDimensionPixelSize(2131427940);
+            (this.mTitleDrawable = new TitleDrawable()).setMaxLines(this.getResources().getInteger(2131558435));
+            this.mTitleDrawable.setTextColor(this.getContext().getResources().getColor(2131755272));
             this.mTitleDrawable.setTextPadding(0, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
-            this.mTitleDrawable.setTextSize(this.getContext().getResources().getDimensionPixelSize(2131427928));
+            this.mTitleDrawable.setTextSize(this.getContext().getResources().getDimensionPixelSize(2131427944));
             this.mTitleDrawable.setBackground(this.getContext(), BrowseExperience.getImageLoaderConfig().getPlaceholderResId());
         }
         this.mTitleDrawable.setVideoTitle(this.mTitle);

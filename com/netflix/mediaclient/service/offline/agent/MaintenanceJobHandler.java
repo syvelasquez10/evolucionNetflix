@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.offline.agent;
 
-import com.netflix.mediaclient.util.StringUtils;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayableListener;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayableImpl;
@@ -25,7 +24,7 @@ class MaintenanceJobHandler implements OfflinePlayable$PlayableDeleteCompleteCal
     private static final String TAG = "nf_MaintenanceJob";
     private final List<OfflinePlayable> mActivePlayables;
     private final MaintenanceJobHandler$MaintenanceJobHandlerCallback mCallback;
-    private final List<OfflinePlayablePersistentData> mDeletedPlaybles;
+    private final List<OfflinePlayablePersistentData> mDeletedPlayables;
     private final OfflineLicenseManager mOfflineLicenseManager;
     private final OfflineRegistry mOfflineRegistry;
     private int mPendingDeleteCount;
@@ -39,14 +38,14 @@ class MaintenanceJobHandler implements OfflinePlayable$PlayableDeleteCompleteCal
         this.mOfflineRegistry = mOfflineRegistry;
         this.mOfflineLicenseManager = mOfflineLicenseManager;
         this.mCallback = mCallback;
-        this.mDeletedPlaybles = this.mOfflineRegistry.getAllDeletedPlayable();
+        this.mDeletedPlayables = this.mOfflineRegistry.getAllDeletedPlayable();
         this.mActivePlayables = mActivePlayables;
     }
     
     private void processPendingDelete() {
         Log.i("nf_MaintenanceJob", "processPendingDelete");
         final ArrayList<OfflinePlayablePersistentData> list = new ArrayList<OfflinePlayablePersistentData>();
-        for (final OfflinePlayablePersistentData offlinePlayablePersistentData : this.mDeletedPlaybles) {
+        for (final OfflinePlayablePersistentData offlinePlayablePersistentData : this.mDeletedPlayables) {
             if (!offlinePlayablePersistentData.getDownloadState().equals(DownloadState.DeleteComplete)) {
                 list.add(offlinePlayablePersistentData);
             }
@@ -65,21 +64,6 @@ class MaintenanceJobHandler implements OfflinePlayable$PlayableDeleteCompleteCal
         else {
             this.mCallback.onAllMaintenanceJobDone();
         }
-        this.syncActiveLicensesToServer();
-    }
-    
-    private void syncActiveLicensesToServer() {
-        final ArrayList<String> list = new ArrayList<String>();
-        if (this.mActivePlayables.size() > 0) {
-            final Iterator<OfflinePlayable> iterator = this.mActivePlayables.iterator();
-            while (iterator.hasNext()) {
-                final String mLinkDeactivate = iterator.next().getOfflineViewablePersistentData().mLicenseData.mLinkDeactivate;
-                if (StringUtils.isNotEmpty(mLinkDeactivate)) {
-                    list.add(mLinkDeactivate);
-                }
-            }
-        }
-        this.mOfflineLicenseManager.trySyncActiveLicensesToServer(list);
     }
     
     @Override

@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.view.MotionEvent;
 import android.view.KeyEvent;
 import android.graphics.Rect;
+import android.os.Build$VERSION;
 import com.facebook.react.views.text.ReactTextUpdate;
 import com.facebook.react.views.text.TextInlineImageSpan;
 import android.text.Spanned;

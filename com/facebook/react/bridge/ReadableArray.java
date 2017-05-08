@@ -18,5 +18,9 @@ public interface ReadableArray
     
     String getString(final int p0);
     
+    ReadableType getType(final int p0);
+    
+    boolean isNull(final int p0);
+    
     int size();
 }

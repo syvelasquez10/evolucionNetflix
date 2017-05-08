@@ -17,8 +17,6 @@ public interface IBladeRunnerClient
     
     void deactivateOfflineLicense(final String p0, final String p1, final boolean p2, final BladeRunnerWebCallback p3);
     
-    void downloadComplete(final String p0, final BladeRunnerWebCallback p1);
-    
     void fetchLicense(final BaseLicenseContext p0, final BladeRunnerWebCallback p1);
     
     void fetchManifests(final String[] p0, final IBladeRunnerClient$ManifestRequestFlavor p1, final BladeRunnerWebCallback p2);

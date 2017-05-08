@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.player.bladerunnerclient;
 
+import com.netflix.mediaclient.service.player.bladerunnerclient.volley.OfflineLicenseSyncRequest;
 import java.util.List;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.RefreshOfflineManifestRequest;
 import com.netflix.mediaclient.service.player.manifest.NfManifest;
@@ -13,7 +14,6 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchLicenseRequest;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchLicenseRequest$LicenseReqType;
 import com.netflix.mediaclient.service.player.drm.BaseLicenseContext;
-import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchDownloadComplete;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.OfflineLicenseDeactivate;
 import com.netflix.mediaclient.service.msl.volley.MSLVolleyRequest;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchLinkRequest;
@@ -57,7 +57,7 @@ public class BladeRunnerClient implements IBladeRunnerClient
     }
     
     private String buildYearlyWarningMessage(final Context context, final long n, final Locale locale) {
-        final String string = context.getString(2131296884, new Object[] { 1, new SimpleDateFormat("MMMM d, yyyy", locale).format(new Date(n)) });
+        final String string = context.getString(2131296887, new Object[] { 1, new SimpleDateFormat("MMMM d, yyyy", locale).format(new Date(n)) });
         Log.d(BladeRunnerClient.TAG, "yearly warning msg: %s", string);
         return string;
     }
@@ -96,11 +96,6 @@ public class BladeRunnerClient implements IBladeRunnerClient
     @Override
     public void deactivateOfflineLicense(final String s, final String s2, final boolean b, final BladeRunnerWebCallback bladeRunnerWebCallback) {
         this.mslClient.addRequest(new OfflineLicenseDeactivate(new DeactivateRequestParamBuilder(b).setLink(this.getLinkJson(s)).build(), bladeRunnerWebCallback));
-    }
-    
-    @Override
-    public void downloadComplete(final String s, final BladeRunnerWebCallback bladeRunnerWebCallback) {
-        this.mslClient.addRequest(new FetchDownloadComplete(this.buildLinkRequestParam(s), bladeRunnerWebCallback));
     }
     
     @Override
@@ -145,6 +140,6 @@ public class BladeRunnerClient implements IBladeRunnerClient
     
     @Override
     public void syncActiveLicensesToServer(final List<String> deactiveLinks, final BladeRunnerWebCallback bladeRunnerWebCallback) {
-        this.mslClient.addRequest(new FetchLinkRequest(new SyncActiveLicensesParamBuilder().setDeactiveLinks(deactiveLinks).build(), bladeRunnerWebCallback));
+        this.mslClient.addRequest(new OfflineLicenseSyncRequest(new SyncActiveLicensesParamBuilder().setDeactiveLinks(deactiveLinks).build(), bladeRunnerWebCallback));
     }
 }

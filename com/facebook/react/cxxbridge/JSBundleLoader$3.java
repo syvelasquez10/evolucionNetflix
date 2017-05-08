@@ -17,14 +17,10 @@ final class JSBundleLoader$3 extends JSBundleLoader
     }
     
     @Override
-    public String getSourceUrl() {
-        return this.val$sourceURL;
-    }
-    
-    @Override
-    public void loadScript(final CatalystInstanceImpl catalystInstanceImpl) {
+    public String loadScript(final CatalystInstanceImpl catalystInstanceImpl) {
         try {
             catalystInstanceImpl.loadScriptFromFile(this.val$cachedFileLocation, this.val$sourceURL);
+            return this.val$sourceURL;
         }
         catch (Exception ex) {
             throw DebugServerException.makeGeneric(ex.getMessage(), ex);

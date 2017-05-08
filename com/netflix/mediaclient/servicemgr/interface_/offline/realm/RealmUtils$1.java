@@ -32,10 +32,10 @@ final class RealmUtils$1 implements Realm$Transaction
                 if (realmVideoDetails.getType() != VideoType.EPISODE) {
                     break Label_0272;
                 }
-                if (realm.where(RealmVideoDetails.class).equalTo("playable.parentId", realmVideoDetails.getPlayable().getParentId()).equalTo("videoType", VideoType.EPISODE.getKey()).findAll().size() == 1) {
-                    OfflineImageUtils.deleteVideoDetailsImage(this.val$context, realmVideoDetails.getPlayable().getParentId());
-                    realm.where(RealmVideoDetails.class).equalTo("id", realmVideoDetails.getPlayable().getParentId()).findAll().deleteAllFromRealm();
-                    realm.where(RealmPlayable.class).equalTo("parentId", realmVideoDetails.getPlayable().getParentId()).findAll().deleteAllFromRealm();
+                if (realm.where(RealmVideoDetails.class).equalTo("playable.parentId", realmVideoDetails.getPlayable().getTopLevelId()).equalTo("videoType", VideoType.EPISODE.getKey()).findAll().size() == 1) {
+                    OfflineImageUtils.deleteVideoDetailsImage(this.val$context, realmVideoDetails.getPlayable().getTopLevelId());
+                    realm.where(RealmVideoDetails.class).equalTo("id", realmVideoDetails.getPlayable().getTopLevelId()).findAll().deleteAllFromRealm();
+                    realm.where(RealmPlayable.class).equalTo("parentId", realmVideoDetails.getPlayable().getTopLevelId()).findAll().deleteAllFromRealm();
                 }
                 if (realm.where(RealmVideoDetails.class).equalTo("playable.playableId", this.val$playableId).findAll().size() <= 1) {
                     break Label_0272;

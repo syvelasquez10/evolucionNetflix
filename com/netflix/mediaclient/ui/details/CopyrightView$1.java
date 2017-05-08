@@ -9,24 +9,23 @@ import android.view.WindowManager$LayoutParams;
 import android.support.v7.app.AlertDialog;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.RelativeLayout$LayoutParams;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.content.Context;
 import android.text.Layout;
 import android.view.View$OnClickListener;
 import android.view.View;
-import android.content.Context;
 import android.view.View$OnLayoutChangeListener;
 
 class CopyrightView$1 implements View$OnLayoutChangeListener
 {
     final /* synthetic */ CopyrightView this$0;
-    final /* synthetic */ Context val$context;
     
-    CopyrightView$1(final CopyrightView this$0, final Context val$context) {
+    CopyrightView$1(final CopyrightView this$0) {
         this.this$0 = this$0;
-        this.val$context = val$context;
     }
     
     public void onLayoutChange(final View view, final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final int n7, final int n8) {

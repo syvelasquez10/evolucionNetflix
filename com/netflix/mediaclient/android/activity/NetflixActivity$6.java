@@ -22,10 +22,10 @@ class NetflixActivity$6 extends BroadcastReceiver
         if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0)) {
             return;
         }
-        if (intent == null || !"com.netflix.mediaclient.service.ACTION_EXPAND_MDX_MINI_PLAYER".equals(intent.getAction())) {
+        if (intent == null || !"com.netflix.mediaclient.service.ACTION_EXPAND_CAST_PLAYER".equals(intent.getAction())) {
             Log.d("NetflixActivity", "Invalid intent: ", intent);
             return;
         }
-        this.this$0.expandMiniPlayerIfVisible();
+        this.this$0.expandCastPlayerIfVisible();
     }
 }

@@ -16,7 +16,7 @@ public class Falkor$Utils
     public static UserRating getUserRating(final String s, final ServiceManager serviceManager, final VideoDetails videoDetails) {
         PQL pql;
         if (videoDetails.getType() == VideoType.EPISODE) {
-            pql = PQL.create("shows", videoDetails.getPlayable().getParentId(), "rating");
+            pql = PQL.create("shows", videoDetails.getPlayable().getTopLevelId(), "rating");
         }
         else {
             pql = PQL.create("movies", videoDetails.getId(), "rating");

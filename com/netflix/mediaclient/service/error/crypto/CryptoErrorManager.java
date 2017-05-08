@@ -7,18 +7,21 @@ package com.netflix.mediaclient.service.error.crypto;
 import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import com.netflix.mediaclient.service.configuration.crypto.CryptoProvider;
 import com.netflix.mediaclient.service.configuration.crypto.CryptoManagerRegistry;
+import android.app.ActivityManager;
 import org.json.JSONArray;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgent;
+import java.util.Iterator;
 import com.netflix.mediaclient.ui.offline.DownloadButton;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentListener;
-import java.util.Iterator;
 import android.util.Log;
 import com.netflix.mediaclient.StatusCode;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import java.util.concurrent.atomic.AtomicBoolean;
+import android.os.Handler;
 import java.util.List;
 import com.netflix.mediaclient.servicemgr.ErrorLogging;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
@@ -39,6 +42,7 @@ public enum CryptoErrorManager
     private IErrorHandler mErrorHandler;
     private ErrorLogging mErrorLogger;
     private List<CryptoErrorManager$FatalCryptoError> mFatalErrors;
+    private Handler mHandler;
     private AtomicBoolean mIgnoreFatalError;
     private OfflineAgentInterface mOfflineAgent;
     private AtomicBoolean mRemovingOfflineContentInProgress;
@@ -67,6 +71,12 @@ public enum CryptoErrorManager
         return sb.toString();
     }
     
+    private void doRemoveOfflineContent() {
+        this.mOfflineAgent.addOfflineAgentListener(new CryptoErrorManager$2(this));
+        this.mOfflineAgent.deleteAllOfflineContent();
+        DownloadButton.clearPreQueued();
+    }
+    
     private void dumpErrorState() {
         if (com.netflix.mediaclient.Log.isLoggable()) {
             com.netflix.mediaclient.Log.d(CryptoErrorManager.TAG, "Found %d fatal errors: ", this.mFatalErrors.size());
@@ -93,15 +103,18 @@ public enum CryptoErrorManager
     }
     
     private boolean isOfflineContentPresent() {
-        return this.mOfflineAgent.getLatestOfflinePlayableList().getTitleCount() > 0;
+        return this.mOfflineAgent.isOfflineContentPresent();
     }
     
-    private void removeOfflineContent() {
-        if (this.isOfflineContentPresent()) {
-            this.mOfflineAgent.addOfflineAgentListener(new CryptoErrorManager$1(this));
+    private void removeOfflineContent(final CryptoErrorManager$FatalCryptoError cryptoErrorManager$FatalCryptoError) {
+        if (cryptoErrorManager$FatalCryptoError.statusCode == StatusCode.DRM_FAILURE_MEDIADRM_KEYS_RESTORE_FAILED && !((OfflineAgent)this.mOfflineAgent).isReady()) {
+            com.netflix.mediaclient.Log.d(CryptoErrorManager.TAG, "Failed to restore keys BEFORE OfflineAgent is initialized, offline content can not be removed by OfflineAgent. Use brute force!");
+            this.clearApplicationData();
+        }
+        else if (this.isOfflineContentPresent()) {
+            com.netflix.mediaclient.Log.d(CryptoErrorManager.TAG, "Offline content exist!");
             this.mRemovingOfflineContentInProgress.set(true);
-            this.mOfflineAgent.deleteAllOfflineContent();
-            DownloadButton.clearPreQueued();
+            this.mHandler.post((Runnable)new CryptoErrorManager$1(this));
         }
     }
     
@@ -118,7 +131,7 @@ public enum CryptoErrorManager
         while (true) {
             while (true) {
                 int n = 0;
-                Label_0126: {
+                Label_0128: {
                     try {
                         final JSONArray jsonArray = new JSONArray(stringPref);
                         n = 0;
@@ -126,11 +139,11 @@ public enum CryptoErrorManager
                             final CryptoErrorManager$FatalCryptoError cryptoErrorManager$FatalCryptoError = new CryptoErrorManager$FatalCryptoError(jsonArray.getJSONObject(n));
                             if (cryptoErrorManager$FatalCryptoError.isValid()) {
                                 this.mFatalErrors.add(cryptoErrorManager$FatalCryptoError);
-                                break Label_0126;
+                                break Label_0128;
                             }
                             com.netflix.mediaclient.Log.d(CryptoErrorManager.TAG, "Ignore, occured to long ago: %s: ", n, cryptoErrorManager$FatalCryptoError.toString());
                             ++n;
-                            break Label_0126;
+                            break Label_0128;
                         }
                     }
                     catch (Throwable t) {
@@ -161,20 +174,30 @@ public enum CryptoErrorManager
         PreferenceUtils.putStringPref(this.mContext, "prefs_crypto_fatal_errors", jsonArray.toString());
     }
     
+    void clearApplicationData() {
+        com.netflix.mediaclient.Log.d(CryptoErrorManager.TAG, "Use brute force to remove offline content and all user data.");
+        final ActivityManager activityManager = (ActivityManager)this.mContext.getSystemService("activity");
+        if (activityManager != null) {
+            com.netflix.mediaclient.Log.d(CryptoErrorManager.TAG, "Removed application data: %b", activityManager.clearApplicationUserData());
+            return;
+        }
+        com.netflix.mediaclient.Log.w(CryptoErrorManager.TAG, "Unable to remove application data, activity manager is null!");
+    }
+    
     ErrorLogging getErrorLogger() {
         return this.mErrorLogger;
     }
     
     int getErrorMessageForFatalError(final ErrorSource errorSource, final StatusCode statusCode) {
         while (true) {
-            int n = 2131296641;
+            int n = 2131296642;
             while (true) {
                 final CryptoErrorManager$FatalCryptoError lastFatalCryptoError;
                 Label_0098: {
                     synchronized (this) {
                         if (this.mIgnoreFatalError.get()) {
                             com.netflix.mediaclient.Log.w(CryptoErrorManager.TAG, "Crypto fallback in progress. We should not see this. Do not add error. Return crypto failback message. Next app start will see different crypto...");
-                            n = 2131296638;
+                            n = 2131296639;
                         }
                         else {
                             lastFatalCryptoError = this.getLastFatalCryptoError();
@@ -198,26 +221,26 @@ public enum CryptoErrorManager
                         return n;
                     }
                     com.netflix.mediaclient.Log.w(CryptoErrorManager.TAG, "Found previous valid fatal error, app was restarted and we failed again, Tell user to restart device.");
-                    n = 2131296642;
+                    n = 2131296643;
                     continue;
                 }
                 else {
                     if (this.mFatalErrors.size() < 2) {
                         continue;
                     }
-                    if (lastFatalCryptoError.belongToApplicationInstance(this.mAppStartupTime)) {
-                        com.netflix.mediaclient.Log.w(CryptoErrorManager.TAG, "Found previous valid fatal error, but it from this same app instance, do not add it again. It should NOT happen. Return message to start app again.");
-                        n = 2131296642;
+                    if (!lastFatalCryptoError.wasDeviceRestartedSinceErrorOccured(this.mAppStartupTime)) {
+                        com.netflix.mediaclient.Log.w(CryptoErrorManager.TAG, "Found previous valid fatal error, but since than device was NOT restarted again. It should NOT happen. Return message to restart device again.");
+                        n = 2131296643;
                         return n;
                     }
                     com.netflix.mediaclient.Log.w(CryptoErrorManager.TAG, "Found previous valid fatal error, app was restarted and than rebooted and each time we failed again, Fallback...");
                     if (this.handleCryptoFallback()) {
                         com.netflix.mediaclient.Log.d(CryptoErrorManager.TAG, "Failback to legacy crypto...");
-                        n = 2131296639;
+                        n = 2131296640;
                         return n;
                     }
                     com.netflix.mediaclient.Log.d(CryptoErrorManager.TAG, "Failback to Widevine L3.");
-                    n = 2131296640;
+                    n = 2131296641;
                     return n;
                 }
                 break;
@@ -232,6 +255,7 @@ public enum CryptoErrorManager
     public boolean handleCryptoFallback() {
         boolean shouldForceLegacyCrypto = true;
         final CryptoProvider cryptoProvider = CryptoManagerRegistry.getCryptoProvider();
+        final CryptoErrorManager$FatalCryptoError lastFatalCryptoError = this.getLastFatalCryptoError();
         String s;
         if (cryptoProvider == CryptoProvider.WIDEVINE_L1) {
             s = "MediaDrm failed for Widevine L1, fail back to legacy crypto scheme " + this.mConfiguration.shouldForceLegacyCrypto();
@@ -239,14 +263,14 @@ public enum CryptoErrorManager
             PreferenceUtils.putBooleanPref(this.mContext, "disable_widevine", true);
             this.resetErrorCounter();
             shouldForceLegacyCrypto = this.mConfiguration.shouldForceLegacyCrypto();
-            this.removeOfflineContent();
+            this.removeOfflineContent(lastFatalCryptoError);
         }
         else if (cryptoProvider == CryptoProvider.WIDEVINE_L3) {
             s = "MediaDrm failed for Widevine L3, fail back to legacy crypto scheme ";
             com.netflix.mediaclient.Log.d(CryptoErrorManager.TAG, "MediaDrm failed for Widevine L3, fail back to legacy crypto scheme ");
-            PreferenceUtils.putBooleanPref(this.mContext, "nf_disable_widevine_l3", true);
+            PreferenceUtils.putBooleanPref(this.mContext, "nff_disable_widevine_l3", true);
             this.resetErrorCounter();
-            this.removeOfflineContent();
+            this.removeOfflineContent(lastFatalCryptoError);
         }
         else {
             s = "Crypto provider was not supported for this error " + cryptoProvider;
@@ -257,7 +281,7 @@ public enum CryptoErrorManager
         return shouldForceLegacyCrypto;
     }
     
-    public void init(final Context mContext, final long mAppStartupTime, final ServiceAgent$UserAgentInterface mUserAgent, final ServiceAgent$ConfigurationAgentInterface mConfiguration, final OfflineAgentInterface mOfflineAgent, final IErrorHandler mErrorHandler, final ErrorLogging mErrorLogger) {
+    public void init(final Context mContext, final Handler mHandler, final long mAppStartupTime, final ServiceAgent$UserAgentInterface mUserAgent, final ServiceAgent$ConfigurationAgentInterface mConfiguration, final OfflineAgentInterface mOfflineAgent, final IErrorHandler mErrorHandler, final ErrorLogging mErrorLogger) {
         // monitorenter(this)
         if (mContext == null) {
             try {
@@ -266,6 +290,9 @@ public enum CryptoErrorManager
             finally {
             }
             // monitorexit(this)
+        }
+        if (mHandler == null) {
+            throw new IllegalArgumentException("CryptoErrorManager can not be initialized with null handler!");
         }
         if (mUserAgent == null) {
             throw new IllegalArgumentException("CryptoErrorManager can not be initialized with null user agent!");
@@ -289,6 +316,7 @@ public enum CryptoErrorManager
         this.mErrorLogger = mErrorLogger;
         this.mAppStartupTime = mAppStartupTime;
         this.mOfflineAgent = mOfflineAgent;
+        this.mHandler = mHandler;
         this.restoreErrorState();
     }
     // monitorexit(this)

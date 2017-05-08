@@ -5,6 +5,7 @@
 package com.facebook.react.views.image;
 
 import com.facebook.react.bridge.ReadableMap;
+import android.net.Uri;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.uimanager.UIManagerModule;

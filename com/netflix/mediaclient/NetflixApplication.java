@@ -4,10 +4,11 @@
 
 package com.netflix.mediaclient;
 
+import android.app.Application;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.event.UIEvent;
 import android.app.Application$ActivityLifecycleCallbacks;
 import io.realm.Realm;
-import com.squareup.leakcanary.LeakCanary;
 import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.res.Configuration;
@@ -18,8 +19,6 @@ import android.app.PendingIntent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat$Builder;
 import com.netflix.mediaclient.util.IntentUtils;
-import android.app.Application;
-import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.util.AndroidManifestUtils;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.ui.launch.LaunchActivity;
@@ -94,6 +93,10 @@ public class NetflixApplication extends MultiDexApplication
         return (Context)NetflixApplication.instance;
     }
     
+    public static Context getCurrentActivityForDebug() {
+        return (Context)NetflixApplication.instance.getCurrentActivity();
+    }
+    
     public static Gson getGson() {
         return NetflixApplication.gson;
     }
@@ -153,18 +156,6 @@ public class NetflixApplication extends MultiDexApplication
         }
     }
     
-    private void refreshLocale(final UserLocale mServiceLocale) {
-        if (mServiceLocale == null) {
-            Log.d("nf_locale", "serviceLocale = null, exit");
-            return;
-        }
-        if (Log.isLoggable()) {
-            Log.d("nf_locale", "refreshLocale with language = " + mServiceLocale);
-        }
-        this.mServiceLocale = mServiceLocale;
-        LocalizationUtils.updateLocale(mServiceLocale.getLocale(), this);
-    }
-    
     private void registerReceiver() {
         Log.d("NetflixApplication", "Registering application broadcast receiver");
         IntentUtils.registerSafelyLocalBroadcastReceiver((Context)this, this.broadcastReceiver, "com.netflix.mediaclient.intent.category.NETFLIX_SERVICE", "com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_INIT_COMPLETE", "com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_DESTROYED");
@@ -172,7 +163,7 @@ public class NetflixApplication extends MultiDexApplication
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837966).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131296985, new Object[] { n })).setContentTitle(this.getString(2131296986, new Object[] { n })).setContentText(this.getString(2131296537, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837984).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131297007, new Object[] { n })).setContentTitle(this.getString(2131297008, new Object[] { n })).setContentText(this.getString(2131296539, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");
@@ -230,10 +221,6 @@ public class NetflixApplication extends MultiDexApplication
     
     public void onCreate() {
         super.onCreate();
-        if (LeakCanary.isInAnalyzerProcess((Context)this)) {
-            return;
-        }
-        LeakCanary.install(this);
         NetflixApplication.instance = this;
         Log.d("NetflixApplication", "Application onCreate");
         Log.d("NetflixApplication", "Loading native libraries");
@@ -258,6 +245,18 @@ public class NetflixApplication extends MultiDexApplication
     
     public void refreshLastKnownLocale() {
         this.refreshLocale(this.mServiceLocale);
+    }
+    
+    public void refreshLocale(final UserLocale mServiceLocale) {
+        if (mServiceLocale == null) {
+            Log.d("nf_locale", "serviceLocale = null, exit");
+            return;
+        }
+        if (Log.isLoggable()) {
+            Log.d("nf_locale", "refreshLocale with language = " + mServiceLocale);
+        }
+        this.mServiceLocale = mServiceLocale;
+        LocalizationUtils.updateLocale(mServiceLocale.getLocale(), this);
     }
     
     public void refreshLocale(final String s) {

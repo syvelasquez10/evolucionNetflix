@@ -8,16 +8,16 @@ import org.json.JSONObject;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
 
 public class PdsAgent extends ServiceAgent implements PdsDownloadInterface, PdsPlayInterface
 {
     private PdsDownloadSessionManager mDownloadManager;
-    OfflinePlaybackInterface mOfflinePlaybackInterface;
+    private final OfflineAgentInterface mOfflineAgentInterface;
     
-    public PdsAgent(final OfflinePlaybackInterface mOfflinePlaybackInterface) {
-        this.mOfflinePlaybackInterface = mOfflinePlaybackInterface;
+    public PdsAgent(final OfflineAgentInterface mOfflineAgentInterface) {
+        this.mOfflineAgentInterface = mOfflineAgentInterface;
     }
     
     private void registerWithOfflineAgent() {
@@ -42,7 +42,7 @@ public class PdsAgent extends ServiceAgent implements PdsDownloadInterface, PdsP
     
     @Override
     protected void doInit() {
-        this.mDownloadManager = new PdsDownloadSessionManager(this.getContext(), this.mOfflinePlaybackInterface, this.getLoggingAgent());
+        this.mDownloadManager = new PdsDownloadSessionManager(this.getContext(), this.mOfflineAgentInterface, this.getLoggingAgent());
         this.registerWithOfflineAgent();
         this.initCompleted(CommonStatus.OK);
     }

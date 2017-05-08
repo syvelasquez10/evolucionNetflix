@@ -85,14 +85,14 @@ public class ReactScrollView extends ScrollView implements View$OnLayoutChangeLi
         //    59: iconst_1       
         //    60: invokevirtual   java/lang/reflect/Field.setAccessible:(Z)V
         //    63: getstatic       com/facebook/react/views/scroll/ReactScrollView.sScrollerField:Ljava/lang/reflect/Field;
-        //    66: ifnull          138
+        //    66: ifnull          144
         //    69: getstatic       com/facebook/react/views/scroll/ReactScrollView.sScrollerField:Ljava/lang/reflect/Field;
         //    72: aload_0        
         //    73: invokevirtual   java/lang/reflect/Field.get:(Ljava/lang/Object;)Ljava/lang/Object;
         //    76: astore_1       
         //    77: aload_1        
         //    78: instanceof      Landroid/widget/OverScroller;
-        //    81: ifeq            110
+        //    81: ifeq            116
         //    84: aload_0        
         //    85: aload_1        
         //    86: checkcast       Landroid/widget/OverScroller;
@@ -100,39 +100,42 @@ public class ReactScrollView extends ScrollView implements View$OnLayoutChangeLi
         //    92: aload_0        
         //    93: aload_0        
         //    94: invokevirtual   com/facebook/react/views/scroll/ReactScrollView.setOnHierarchyChangeListener:(Landroid/view/ViewGroup$OnHierarchyChangeListener;)V
-        //    97: return         
-        //    98: astore_1       
-        //    99: ldc             "React"
-        //   101: ldc             "Failed to get mScroller field for ScrollView! This app will exhibit the bounce-back scrolling bug :("
-        //   103: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
-        //   106: pop            
-        //   107: goto            63
-        //   110: ldc             "React"
-        //   112: ldc             "Failed to cast mScroller field in ScrollView (probably due to OEM changes to AOSP)! This app will exhibit the bounce-back scrolling bug :("
-        //   114: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
-        //   117: pop            
-        //   118: aload_0        
-        //   119: aconst_null    
-        //   120: putfield        com/facebook/react/views/scroll/ReactScrollView.mScroller:Landroid/widget/OverScroller;
-        //   123: goto            92
-        //   126: astore_1       
-        //   127: new             Ljava/lang/RuntimeException;
-        //   130: dup            
-        //   131: ldc             "Failed to get mScroller from ScrollView!"
-        //   133: aload_1        
-        //   134: invokespecial   java/lang/RuntimeException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
-        //   137: athrow         
-        //   138: aload_0        
-        //   139: aconst_null    
-        //   140: putfield        com/facebook/react/views/scroll/ReactScrollView.mScroller:Landroid/widget/OverScroller;
-        //   143: goto            92
+        //    97: aload_0        
+        //    98: ldc             33554432
+        //   100: invokevirtual   com/facebook/react/views/scroll/ReactScrollView.setScrollBarStyle:(I)V
+        //   103: return         
+        //   104: astore_1       
+        //   105: ldc             "React"
+        //   107: ldc             "Failed to get mScroller field for ScrollView! This app will exhibit the bounce-back scrolling bug :("
+        //   109: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   112: pop            
+        //   113: goto            63
+        //   116: ldc             "React"
+        //   118: ldc             "Failed to cast mScroller field in ScrollView (probably due to OEM changes to AOSP)! This app will exhibit the bounce-back scrolling bug :("
+        //   120: invokestatic    android/util/Log.w:(Ljava/lang/String;Ljava/lang/String;)I
+        //   123: pop            
+        //   124: aload_0        
+        //   125: aconst_null    
+        //   126: putfield        com/facebook/react/views/scroll/ReactScrollView.mScroller:Landroid/widget/OverScroller;
+        //   129: goto            92
+        //   132: astore_1       
+        //   133: new             Ljava/lang/RuntimeException;
+        //   136: dup            
+        //   137: ldc             "Failed to get mScroller from ScrollView!"
+        //   139: aload_1        
+        //   140: invokespecial   java/lang/RuntimeException.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   143: athrow         
+        //   144: aload_0        
+        //   145: aconst_null    
+        //   146: putfield        com/facebook/react/views/scroll/ReactScrollView.mScroller:Landroid/widget/OverScroller;
+        //   149: goto            92
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                              
         //  -----  -----  -----  -----  ----------------------------------
-        //  46     63     98     110    Ljava/lang/NoSuchFieldException;
-        //  69     92     126    138    Ljava/lang/IllegalAccessException;
-        //  110    123    126    138    Ljava/lang/IllegalAccessException;
+        //  46     63     104    116    Ljava/lang/NoSuchFieldException;
+        //  69     92     132    144    Ljava/lang/IllegalAccessException;
+        //  116    129    132    144    Ljava/lang/IllegalAccessException;
         // 
         // The error that occurred was:
         // 

@@ -14,11 +14,12 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
+import com.netflix.mediaclient.servicemgr.TTIListener;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.app.LoadingStatus;
 import android.app.Fragment;
 
-public abstract class NetflixFrag extends Fragment implements LoadingStatus, ManagerStatusListener
+public abstract class NetflixFrag extends Fragment implements LoadingStatus, ManagerStatusListener, TTIListener
 {
     private static final String TAG = "NetflixFrag";
     private boolean isDestroyed;
@@ -79,6 +80,9 @@ public abstract class NetflixFrag extends Fragment implements LoadingStatus, Man
     }
     
     public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
+    }
+    
+    public void onTTIComplete(final Status status) {
     }
     
     public void setLoadingStatusCallback(final LoadingStatus$LoadingStatusCallback mLoadingStatusCallback) {

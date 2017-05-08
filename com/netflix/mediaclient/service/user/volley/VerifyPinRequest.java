@@ -12,6 +12,7 @@ import com.netflix.mediaclient.android.app.Status;
 import java.util.Arrays;
 import java.util.List;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import android.content.Context;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.volley.FalkorVolleyWebClientRequest;
@@ -21,16 +22,40 @@ public class VerifyPinRequest extends FalkorVolleyWebClientRequest<Boolean>
     private static final String FIELD_IS_PIN_VALID = "isPinValid";
     private static final String FIELD_USER = "user";
     private static final String FIELD_VERIFY_PIN = "verifyPin";
+    private static final String FIELD_VERIFY_PREVIEW_PIN = "verifyPreviewPin";
     private static final String TAG = "nf_pin";
     private final String enteredPin;
+    private String mPinPath;
     private final String pqlQuery1;
     private final UserAgentWebCallback responseCallback;
     
-    protected VerifyPinRequest(final Context context, final String enteredPin, final UserAgentWebCallback responseCallback) {
+    protected VerifyPinRequest(final Context context, final String enteredPin, final PinVerifier$PinType pinVerifier$PinType, final String s, final UserAgentWebCallback responseCallback) {
         super(context);
         this.responseCallback = responseCallback;
         this.enteredPin = enteredPin;
-        this.pqlQuery1 = String.format("['user', 'verifyPin', '%s']", enteredPin);
+        boolean b;
+        if (PinVerifier$PinType.MATURITY_PIN == pinVerifier$PinType) {
+            b = true;
+        }
+        else {
+            b = false;
+        }
+        String mPinPath;
+        if (b) {
+            mPinPath = "verifyPin";
+        }
+        else {
+            mPinPath = "verifyPreviewPin";
+        }
+        this.mPinPath = mPinPath;
+        String pqlQuery1;
+        if (b) {
+            pqlQuery1 = String.format("['user', '%s', '%s']", this.mPinPath, enteredPin);
+        }
+        else {
+            pqlQuery1 = String.format("['user', '%s', '%s', '%s']", this.mPinPath, enteredPin, s);
+        }
+        this.pqlQuery1 = pqlQuery1;
         if (Log.isLoggable()) {
             Log.v("nf_pin", "PQL = " + this.pqlQuery1);
         }
@@ -65,7 +90,7 @@ public class VerifyPinRequest extends FalkorVolleyWebClientRequest<Boolean>
             throw new FalkorException("verifyPinResponse empty!!!");
         }
         try {
-            return dataObj.getAsJsonObject("user").getAsJsonObject("verifyPin").getAsJsonObject(this.enteredPin).get("isPinValid").getAsBoolean();
+            return dataObj.getAsJsonObject("user").getAsJsonObject(this.mPinPath).getAsJsonObject(this.enteredPin).get("isPinValid").getAsBoolean();
         }
         catch (Exception ex) {
             Log.v("nf_pin", "String response to parse = " + s);

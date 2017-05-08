@@ -4,7 +4,6 @@
 
 package com.facebook.react.uimanager;
 
-import android.util.AttributeSet;
 import android.content.Context;
 import android.widget.FrameLayout;
 
@@ -14,14 +13,6 @@ public class SizeMonitoringFrameLayout extends FrameLayout
     
     public SizeMonitoringFrameLayout(final Context context) {
         super(context);
-    }
-    
-    public SizeMonitoringFrameLayout(final Context context, final AttributeSet set) {
-        super(context, set);
-    }
-    
-    public SizeMonitoringFrameLayout(final Context context, final AttributeSet set, final int n) {
-        super(context, set, n);
     }
     
     protected void onSizeChanged(final int n, final int n2, final int n3, final int n4) {

@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.barker_kids.lolomo;
 
 import android.view.View;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.util.ViewUtils;
 import android.widget.TextView;
 import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
@@ -16,14 +17,14 @@ public class BarkerKidsLoLoMoAdapter extends LoLoMoAdapter
         super(loLoMoFrag);
     }
     
-    static void updateTitleStyle(final TextView textViewToBold) {
-        ViewUtils.setTextViewColor(textViewToBold, 2131689606);
-        ViewUtils.setTextViewSizeByRes(textViewToBold, 2131427422);
-        ViewUtils.setTextViewToBold(textViewToBold);
-        ViewUtils.removeShadow(textViewToBold);
+    static void updateTitleStyle(final TextView textView) {
+        ViewUtils.setTextViewColor(textView, 2131755149);
+        ViewUtils.setTextViewSizeByRes(textView, 2131427422);
+        ViewUtils.setTextViewToBold(textView);
+        ViewUtils.removeShadow(textView);
+        KidsUtils.setTextColorIfApplicable(textView);
     }
     
-    @Override
     protected TextView initTitleView(final View view) {
         final TextView initTitleView = super.initTitleView(view);
         updateTitleStyle(initTitleView);

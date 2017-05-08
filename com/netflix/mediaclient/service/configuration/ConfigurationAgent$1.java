@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.service.webclient.model.leafs.NrmLanguagesData;
 import com.netflix.mediaclient.media.JPlayer.DolbyDigitalHelper;
 import com.netflix.mediaclient.service.webclient.model.leafs.VoipConfiguration;
 import android.view.Display;
@@ -26,7 +27,7 @@ import android.util.Pair;
 import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSpecification;
 import com.netflix.mediaclient.service.webclient.model.leafs.DataSaveConfigData;
 import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
+import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfigData;
 import android.media.UnsupportedSchemeException;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.service.error.crypto.CryptoErrorManager;
@@ -88,7 +89,7 @@ class ConfigurationAgent$1 implements DrmManager$DrmReadyCallback
     public void drmReady() {
         Log.d("nf_configurationagent", "DRM manager is ready");
         PerformanceProfiler.getInstance().endSession(Sessions.DRM_LOADED, null);
-        if (DrmManagerRegistry.hasEsnChanged()) {
+        if (DrmManagerRegistry.hasEsnChanged(this.this$0.mESN.getEsn())) {
             this.this$0.mNeedEsMigration = true;
         }
         Log.d("nf_configurationagent", "EsnMigration needed:" + this.this$0.mNeedEsMigration);

@@ -16,12 +16,11 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
-import com.netflix.mediaclient.ui.kids.KidsUtils;
-import android.content.res.Resources;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
@@ -84,7 +83,7 @@ public class BarkerKidsCharacterDetailsFrag extends BarkerKidsShowDetailsFrag
     }
     
     private DetailsPageParallaxScrollListener setupDetailsPageParallaxScrollListenerLocal() {
-        if (this.getActivity() != null && this.getRecyclerView() != null && this.getRecyclerView().getContext() instanceof NetflixActivity && DeviceUtils.isTabletByContext((Context)this.getActivity())) {
+        if (this.getActivity() != null && this.getRecyclerView() != null && this.getRecyclerView().getContext() instanceof NetflixActivity && (DeviceUtils.isTabletByContext((Context)this.getActivity()) || KidsUtils.isKidsParity((Context)this.getActivity()))) {
             final NetflixActionBar netflixActionBar = this.getNetflixActivity().getNetflixActionBar();
             if (netflixActionBar != null) {
                 netflixActionBar.hidelogo();
@@ -111,7 +110,7 @@ public class BarkerKidsCharacterDetailsFrag extends BarkerKidsShowDetailsFrag
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
             seasonsSpinnerAdapter.setItemBackgroundColor(this.kidsColorId);
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131689731);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131755283);
             seasonsSpinnerAdapter.setDropDownTextColor(this.kidsColorId);
         }
         return seasonsSelectorGroup;
@@ -119,25 +118,35 @@ public class BarkerKidsCharacterDetailsFrag extends BarkerKidsShowDetailsFrag
     
     @Override
     protected int getNumColumns() {
-        final Resources resources = this.getActivity().getResources();
-        int n;
-        if (this.shouldRenderAsSDP) {
-            n = 2131558420;
+        int n = 2131558421;
+        final int n2 = 2131558420;
+        if (KidsUtils.isKidsParity((Context)this.getActivity())) {
+            if (this.shouldRenderAsSDP) {
+                if (!DeviceUtils.isLandscape((Context)this.getActivity())) {
+                    n = 2131558420;
+                }
+            }
+            else if (DeviceUtils.isLandscape((Context)this.getActivity())) {
+                n = 2131558419;
+            }
+        }
+        else if (this.shouldRenderAsSDP) {
+            n = n2;
         }
         else {
             n = 2131558419;
         }
-        return resources.getInteger(n);
+        return this.getActivity().getResources().getInteger(n);
     }
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427768) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131427776) * 2;
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903167;
+        return 2130903175;
     }
     
     @Override

@@ -6,5 +6,5 @@ package android.support.transition;
 
 public final class R$id
 {
-    public static final int transition_current_scene = 2131755036;
+    public static final int transition_current_scene = 2131820573;
 }

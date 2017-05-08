@@ -18,7 +18,7 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 
 public interface IBrowseManager
 {
-    boolean addToQueue(final String p0, final VideoType p1, final int p2, final boolean p3, final String p4, final ManagerCallback p5);
+    boolean addToQueue(final String p0, final VideoType p1, final int p2, final String p3, final ManagerCallback p4);
     
     void dumpCacheToDisk(final File p0);
     
@@ -35,6 +35,8 @@ public interface IBrowseManager
     boolean fetchEpisodeDetails(final String p0, final String p1, final ManagerCallback p2);
     
     boolean fetchEpisodes(final String p0, final VideoType p1, final int p2, final int p3, final ManagerCallback p4);
+    
+    boolean fetchFalkorVideo(final String p0, final ManagerCallback p1);
     
     boolean fetchGenreLists(final ManagerCallback p0);
     

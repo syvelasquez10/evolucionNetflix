@@ -6,8 +6,8 @@ package com.netflix.mediaclient.service.offline.manifest;
 
 public class NetflixFMP4Parser$SidxInfo
 {
-    private long mSidxOffset;
-    private long mSidxlength;
+    private final long mSidxOffset;
+    private final long mSidxlength;
     
     NetflixFMP4Parser$SidxInfo(final long mSidxlength, final long mSidxOffset) {
         this.mSidxlength = mSidxlength;

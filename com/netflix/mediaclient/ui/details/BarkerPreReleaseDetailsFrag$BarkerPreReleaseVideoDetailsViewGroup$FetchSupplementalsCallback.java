@@ -9,7 +9,6 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.text.TextUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.ui.barker.details.BarkerHelper$BarkerBars;
 import android.widget.TextView;
 import android.widget.Button;

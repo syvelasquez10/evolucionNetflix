@@ -15,12 +15,11 @@ import java.util.Collection;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
-import com.netflix.mediaclient.ui.kids.KidsUtils;
-import android.content.res.Resources;
 import com.netflix.mediaclient.ui.details.SeasonsSpinnerAdapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.details.DetailsPageParallaxScrollListener$IScrollStateChanged;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
@@ -73,22 +72,22 @@ class BarkerKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
     private Drawable getBackroundResource(final View view) {
         switch (this.this$0.kidsColorId) {
             default: {
-                return view.getResources().getDrawable(2130837997);
+                return view.getResources().getDrawable(2130838017);
             }
-            case 2131689608: {
-                return view.getResources().getDrawable(2130838001);
+            case 2131755151: {
+                return view.getResources().getDrawable(2130838021);
             }
-            case 2131689600: {
-                return view.getResources().getDrawable(2130837996);
+            case 2131755143: {
+                return view.getResources().getDrawable(2130838016);
             }
-            case 2131689603: {
-                return view.getResources().getDrawable(2130837998);
+            case 2131755146: {
+                return view.getResources().getDrawable(2130838018);
             }
-            case 2131689605: {
-                return view.getResources().getDrawable(2130838000);
+            case 2131755148: {
+                return view.getResources().getDrawable(2130838020);
             }
-            case 2131689604: {
-                return view.getResources().getDrawable(2130837999);
+            case 2131755147: {
+                return view.getResources().getDrawable(2130838019);
             }
         }
     }
@@ -96,7 +95,7 @@ class BarkerKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
     @Override
     protected void setInitialToolbarColor() {
         super.setInitialToolbarColor();
-        final View viewById = this.recyclerView.getRootView().findViewById(2131755147);
+        final View viewById = this.recyclerView.getRootView().findViewById(2131820684);
         if (viewById != null) {
             Api16Util.setBackgroundDrawableCompat(viewById, this.getBackroundResource(viewById));
         }

@@ -44,7 +44,7 @@ class DownloadController
     private final long FIRST_TIME_NETWORK_CHANGE_RUNNABLE_DELAY;
     private final long MAINTENANCE_JOB_CANCEL_DELAY;
     private final Runnable mBackOffRunnable;
-    private Runnable mCancelMtJobRunnable;
+    private final Runnable mCancelMtJobRunnable;
     private boolean mCancelMtJobRunnableScheduled;
     private final IClientLogging mClientLogging;
     private int mCompletedCount;
@@ -445,33 +445,38 @@ class DownloadController
     public void onNetworkError(final String s) {
         final int n = 2;
         this.updateConnectedNetworkType();
-        if (this.mConnectedNetType == null) {
+        if (this.mConnectedNetType != null) {
+            ++this.mNumberOfNetworkErrorsInCurrentDLWindow;
+            Log.i("nf_downloadController", "onNetworkError mNumberOfNetworkErrorsInCurrentDLWindow=%d", this.mNumberOfNetworkErrorsInCurrentDLWindow);
+            this.updateItemCounts();
+            int max_NETWORK_ERRORS_IN_DL_WINDOW;
+            if ((max_NETWORK_ERRORS_IN_DL_WINDOW = this.mIncompleteItems * (DownloadController.MAX_NETWORK_ERRORS_BEFORE_SELECTING_NEXT_PLAYABLE + 1) - 1) > DownloadController.MAX_NETWORK_ERRORS_IN_DL_WINDOW) {
+                max_NETWORK_ERRORS_IN_DL_WINDOW = DownloadController.MAX_NETWORK_ERRORS_IN_DL_WINDOW;
+            }
+            if (max_NETWORK_ERRORS_IN_DL_WINDOW < 2) {
+                max_NETWORK_ERRORS_IN_DL_WINDOW = n;
+            }
+            Log.i("nf_downloadController", "maxErrorsInDlWindow=%d", max_NETWORK_ERRORS_IN_DL_WINDOW);
+            if (this.mNumberOfNetworkErrorsInCurrentDLWindow <= max_NETWORK_ERRORS_IN_DL_WINDOW) {
+                int incrementNetworkErrorCount;
+                if ((incrementNetworkErrorCount = this.incrementNetworkErrorCount(s)) > DownloadController.MAX_NETWORK_ERRORS_BEFORE_SELECTING_NEXT_PLAYABLE) {
+                    ++this.mIndexOfNextPlayable;
+                    this.mPlayableNetworkErrorCountMap.put(s, 1);
+                    incrementNetworkErrorCount = 1;
+                }
+                this.scheduleBackOffTimer(DownloadController.AttemptToBackOffMilliseconds[(incrementNetworkErrorCount - 1) % DownloadController.AttemptToBackOffMilliseconds.length]);
+                return;
+            }
+            this.scheduleNextDLWindow();
+        }
+        else {
+            if (this.mNetflixJobScheduler.isJobScheduled(this.mDownloadResumeJob.getNetflixJobId())) {
+                Log.i("nf_downloadController", "onNetworkError networkConnected=no, download resume job already scheduled.");
+                return;
+            }
             Log.i("nf_downloadController", "onNetworkError networkConnected=no, scheduling download resume job");
             this.scheduleDownloadResumeJobNoDelay();
-            return;
         }
-        ++this.mNumberOfNetworkErrorsInCurrentDLWindow;
-        Log.i("nf_downloadController", "onNetworkError mNumberOfNetworkErrorsInCurrentDLWindow=%d", this.mNumberOfNetworkErrorsInCurrentDLWindow);
-        this.updateItemCounts();
-        int max_NETWORK_ERRORS_IN_DL_WINDOW;
-        if ((max_NETWORK_ERRORS_IN_DL_WINDOW = this.mIncompleteItems * (DownloadController.MAX_NETWORK_ERRORS_BEFORE_SELECTING_NEXT_PLAYABLE + 1) - 1) > DownloadController.MAX_NETWORK_ERRORS_IN_DL_WINDOW) {
-            max_NETWORK_ERRORS_IN_DL_WINDOW = DownloadController.MAX_NETWORK_ERRORS_IN_DL_WINDOW;
-        }
-        if (max_NETWORK_ERRORS_IN_DL_WINDOW < 2) {
-            max_NETWORK_ERRORS_IN_DL_WINDOW = n;
-        }
-        Log.i("nf_downloadController", "maxErrorsInDlWindow=%d", max_NETWORK_ERRORS_IN_DL_WINDOW);
-        if (this.mNumberOfNetworkErrorsInCurrentDLWindow <= max_NETWORK_ERRORS_IN_DL_WINDOW) {
-            int incrementNetworkErrorCount;
-            if ((incrementNetworkErrorCount = this.incrementNetworkErrorCount(s)) > DownloadController.MAX_NETWORK_ERRORS_BEFORE_SELECTING_NEXT_PLAYABLE) {
-                ++this.mIndexOfNextPlayable;
-                this.mPlayableNetworkErrorCountMap.put(s, 1);
-                incrementNetworkErrorCount = 1;
-            }
-            this.scheduleBackOffTimer(DownloadController.AttemptToBackOffMilliseconds[(incrementNetworkErrorCount - 1) % DownloadController.AttemptToBackOffMilliseconds.length]);
-            return;
-        }
-        this.scheduleNextDLWindow();
     }
     
     public void onStorageError() {

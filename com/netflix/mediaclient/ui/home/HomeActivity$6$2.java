@@ -13,10 +13,10 @@ import java.io.Serializable;
 import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.MenuItem;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.ui.mdx.ICastPlayerFrag;
 import com.netflix.mediaclient.ui.search.SearchMenu;
-import com.netflix.mediaclient.ui.mdx.MdxMenu;
+import com.netflix.mediaclient.ui.mdx.CastMenu;
 import android.view.Menu;
 import com.netflix.mediaclient.util.Coppola2Utils;
 import java.util.Collection;
@@ -41,15 +41,12 @@ import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$Interacti
 import android.widget.Toast;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.util.StringUtils;
-import android.content.Context;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.os.Handler;
 import com.netflix.mediaclient.util.IrisUtils$NotificationsListStatus;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import android.content.BroadcastReceiver;
 import android.support.v4.widget.DrawerLayout;
@@ -61,20 +58,26 @@ import com.netflix.mediaclient.ui.offline.TutorialHelper$Tutorialable;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.content.Context;
+import com.netflix.mediaclient.ui.survey.SurveyActivity;
 import android.os.SystemClock;
 import com.netflix.mediaclient.Log;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 
 class HomeActivity$6$2 implements LoadingStatus$LoadingStatusCallback
 {
     final /* synthetic */ HomeActivity$6 this$1;
+    final /* synthetic */ ServiceManager val$manager;
     
-    HomeActivity$6$2(final HomeActivity$6 this$1) {
+    HomeActivity$6$2(final HomeActivity$6 this$1, final ServiceManager val$manager) {
         this.this$1 = this$1;
+        this.val$manager = val$manager;
     }
     
     @Override
@@ -83,9 +86,15 @@ class HomeActivity$6$2 implements LoadingStatus$LoadingStatusCallback
         PerformanceProfiler.getInstance().endSession(Sessions.LOLOMO_LOAD, null);
         this.this$1.this$0.setLoadingStatusCallback(null);
         Log.d("HomeActivity", "LOLOMO is loaded, report UI browse startup session ended in case this was on UI startup");
-        this.this$1.this$0.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().endUiBrowseStartupSession(SystemClock.elapsedRealtime() - this.this$1.this$0.mStartedTimeMs, status.isSucces(), null);
+        final long elapsedRealtime = SystemClock.elapsedRealtime();
+        final long access$1400 = this.this$1.this$0.mStartedTimeMs;
         if (status.isError()) {
             this.this$1.this$0.handleFalkorAgentErrors(status);
         }
+        this.this$1.this$0.slidingMenuAdapter.onTTIComplete(status);
+        if (SurveyActivity.shouldShowSurvey((Context)this.this$1.this$0, this.val$manager)) {
+            SurveyActivity.makeSurveyRequestAndShow((NetflixActivity)this.this$1.this$0);
+        }
+        this.this$1.this$0.getServiceManager().getClientLogging().getApplicationPerformanceMetricsLogging().endUiBrowseStartupSession(elapsedRealtime - access$1400, status.isSucces(), null);
     }
 }

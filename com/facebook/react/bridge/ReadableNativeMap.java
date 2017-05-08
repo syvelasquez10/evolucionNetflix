@@ -28,6 +28,11 @@ public class ReadableNativeMap extends NativeMap implements ReadableMap
     public native double getDouble(final String p0);
     
     @Override
+    public Dynamic getDynamic(final String s) {
+        return DynamicFromMap.create(this, s);
+    }
+    
+    @Override
     public native int getInt(final String p0);
     
     @Override

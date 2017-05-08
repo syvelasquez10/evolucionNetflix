@@ -26,7 +26,7 @@ import com.netflix.mediaclient.service.webclient.ApiEndpointRegistry;
 
 public class EndpointRegistryProvider implements ApiEndpointRegistry
 {
-    private static final String ANDROID_API_ENDPOINT_PATH = "/android/4.13/api";
+    private static final String ANDROID_API_ENDPOINT_PATH = "/android/4.15/api";
     private static final String ANDROID_CONFIG_ENDPOINT_FULL = "/android/samurai/config";
     private static final boolean BROWSE_AUTO_REDIRECT_TRUE = true;
     private static final String BROWSE_RESP_AUTO_REDIRECT = "&routing=redirect";
@@ -98,7 +98,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         }
         if (this.mUserAgent != null && KidsUtils.isKidsProfile(this.mUserAgent.getCurrentProfile())) {
             sb.append(this.buildUrlParam("prfType", this.mUserAgent.getCurrentProfile().getProfileType().toString()));
-            if (BrowseExperience.showKidsExperience()) {
+            if (BrowseExperience.showKidsExperience() || KidsUtils.isKidsParity(this.mContext)) {
                 sb.append(this.buildUrlParam("kk", Boolean.TRUE.toString()));
             }
         }
@@ -198,7 +198,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             }
             if (this.mUserAgent != null && KidsUtils.isKidsProfile(this.mUserAgent.getCurrentProfile())) {
                 ((MultiValuedMap)multiValuedHashMap).put((Object)"prfType", (Object)this.mUserAgent.getCurrentProfile().getProfileType().toString());
-                if (BrowseExperience.showKidsExperience()) {
+                if (BrowseExperience.showKidsExperience() || KidsUtils.isKidsParity(this.mContext)) {
                     ((MultiValuedMap)multiValuedHashMap).put((Object)"kk", (Object)Boolean.TRUE.toString());
                 }
             }
@@ -228,7 +228,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
         if (s != null) {
             sb.append(s);
         }
-        sb.append("/android/4.13/api");
+        sb.append("/android/4.15/api");
         return sb.toString();
     }
     
@@ -245,7 +245,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
             sb.append("http://");
         }
         sb.append(this.mEndpointHost);
-        sb.append("/android/4.13/api");
+        sb.append("/android/4.15/api");
         sb.append("?");
         sb.append("responseFormat=json&progressive=false");
         sb.append("&routing=reject");
@@ -267,7 +267,7 @@ public class EndpointRegistryProvider implements ApiEndpointRegistry
     }
     
     public String getAppStartConfigUrl() {
-        return this.buildConfigUrl(true) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.nrmInfoPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.signInConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.streamingQoePqlDefault));
+        return this.buildConfigUrl(true) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.nrmInfoPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.nrmLangPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.signInConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.deviceConfigPql)) + this.buildUrlParam("path", UriUtil.urlEncodeParam(FetchConfigDataRequest.streamingQoePqlDefault));
     }
     
     public String getAppbootUri(final String s) {

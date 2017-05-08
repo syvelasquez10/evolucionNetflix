@@ -4,6 +4,7 @@
 
 package com.facebook.react.modules.network;
 
+import okio.ByteString;
 import java.util.concurrent.TimeUnit;
 import okhttp3.Interceptor;
 import okhttp3.Request$Builder;
@@ -43,6 +44,8 @@ public final class NetworkingModule extends ReactContextBaseJavaModule
     private static final String CONTENT_ENCODING_HEADER_NAME = "content-encoding";
     private static final String CONTENT_TYPE_HEADER_NAME = "content-type";
     private static final int MAX_CHUNK_SIZE_BETWEEN_FLUSHES = 8192;
+    protected static final String NAME = "Networking";
+    private static final String REQUEST_BODY_KEY_BASE64 = "base64";
     private static final String REQUEST_BODY_KEY_FORMDATA = "formData";
     private static final String REQUEST_BODY_KEY_STRING = "string";
     private static final String REQUEST_BODY_KEY_URI = "uri";
@@ -320,7 +323,7 @@ public final class NetworkingModule extends ReactContextBaseJavaModule
     
     @Override
     public String getName() {
-        return "RCTNetworking";
+        return "Networking";
     }
     
     @Override
@@ -377,6 +380,13 @@ public final class NetworkingModule extends ReactContextBaseJavaModule
                 else {
                     url.method(s, RequestBody.create(parse, string));
                 }
+            }
+            else if (readableMap.hasKey("base64")) {
+                if (value2 == null) {
+                    ResponseUtil.onRequestError(eventEmitter, n, "Payload is set but no content-type header specified", null);
+                    return;
+                }
+                url.method(s, RequestBody.create(MediaType.parse(value2), ByteString.decodeBase64(readableMap.getString("base64"))));
             }
             else if (readableMap.hasKey("uri")) {
                 if (value2 == null) {

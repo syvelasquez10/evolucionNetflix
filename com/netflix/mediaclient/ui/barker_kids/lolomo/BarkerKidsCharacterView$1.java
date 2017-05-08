@@ -10,10 +10,10 @@ import java.util.ArrayList;
 final class BarkerKidsCharacterView$1 extends ArrayList<Pair<Integer, Integer>>
 {
     BarkerKidsCharacterView$1() {
-        this.add(new Pair<Integer, Integer>(2130837990, 2131689608));
-        this.add(new Pair<Integer, Integer>(2130837988, 2131689604));
-        this.add(new Pair<Integer, Integer>(2130837987, 2131689603));
-        this.add(new Pair<Integer, Integer>(2130837986, 2131689600));
-        this.add(new Pair<Integer, Integer>(2130837989, 2131689605));
+        this.add(new Pair<Integer, Integer>(2130838010, 2131755151));
+        this.add(new Pair<Integer, Integer>(2130838008, 2131755147));
+        this.add(new Pair<Integer, Integer>(2130838007, 2131755146));
+        this.add(new Pair<Integer, Integer>(2130838006, 2131755143));
+        this.add(new Pair<Integer, Integer>(2130838009, 2131755148));
     }
 }

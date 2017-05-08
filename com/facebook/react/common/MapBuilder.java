@@ -60,4 +60,15 @@ public class MapBuilder
         of.put(m, v5);
         return of;
     }
+    
+    public static <K, V> Map<K, V> of(final K k, final V v, final K i, final V v2, final K j, final V v3, final K l, final V v4, final K m, final V v5, final K k2, final V v6) {
+        final Map<K, V> of = of();
+        of.put(k, v);
+        of.put(i, v2);
+        of.put(j, v3);
+        of.put(l, v4);
+        of.put(m, v5);
+        of.put(k2, v6);
+        return of;
+    }
 }

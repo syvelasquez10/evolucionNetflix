@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.barker.details;
 
+import java.util.Locale;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -27,8 +28,8 @@ public class BarkerSeasonsDialogAdapter$EpisodesViewHolder extends RecyclerView$
     public BarkerSeasonsDialogAdapter$EpisodesViewHolder(final BarkerSeasonsDialogAdapter this$0, final View view) {
         this.this$0 = this$0;
         super(view);
-        this.text = (TextView)view.findViewById(2131755456);
-        this.selectIndicator = view.findViewById(2131755455);
+        this.text = (TextView)view.findViewById(2131821065);
+        this.selectIndicator = view.findViewById(2131821064);
         if (view != null) {
             view.setOnClickListener((View$OnClickListener)this);
         }

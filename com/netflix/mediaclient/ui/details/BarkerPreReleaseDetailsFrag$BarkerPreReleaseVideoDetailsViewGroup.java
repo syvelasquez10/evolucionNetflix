@@ -9,8 +9,6 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.mediaclient.android.widget.AdvancedImageView;
 import android.text.TextUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.view.View;
-import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.ui.barker.details.BarkerHelper$BarkerBars;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -63,13 +61,13 @@ class BarkerPreReleaseDetailsFrag$BarkerPreReleaseVideoDetailsViewGroup extends 
     @Override
     protected void findViews() {
         super.findViews();
-        this.playButton = (Button)this.findViewById(2131755977);
-        LocalizationUtils.setLayoutDirection((View)(this.supplementalMessage = (TextView)this.findViewById(2131755974)));
+        this.playButton = (Button)this.findViewById(2131821544);
+        this.supplementalMessage = (TextView)this.findViewById(2131821537);
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903339;
+        return 2130903337;
     }
     
     @Override

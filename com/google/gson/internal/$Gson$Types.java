@@ -11,7 +11,6 @@ import java.util.Properties;
 import java.util.Collection;
 import java.util.Arrays;
 import java.lang.reflect.TypeVariable;
-import java.io.Serializable;
 import java.lang.reflect.WildcardType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.GenericArrayType;
@@ -30,25 +29,28 @@ public final class $Gson$Types
     }
     
     public static Type canonicalize(final Type type) {
+        Object o;
         if (type instanceof Class) {
-            Serializable s = (Class)type;
-            if (((Class)s).isArray()) {
-                s = new $Gson$Types$GenericArrayTypeImpl(canonicalize(((Class)s).getComponentType()));
+            final Class clazz = (Class)(o = type);
+            if (clazz.isArray()) {
+                o = new $Gson$Types$GenericArrayTypeImpl(canonicalize(clazz.getComponentType()));
             }
-            return (Class<?>)s;
         }
-        if (type instanceof ParameterizedType) {
-            final ParameterizedType parameterizedType = (ParameterizedType)type;
-            return new $Gson$Types$ParameterizedTypeImpl(parameterizedType.getOwnerType(), parameterizedType.getRawType(), parameterizedType.getActualTypeArguments());
+        else {
+            if (type instanceof ParameterizedType) {
+                final ParameterizedType parameterizedType = (ParameterizedType)type;
+                return new $Gson$Types$ParameterizedTypeImpl(parameterizedType.getOwnerType(), parameterizedType.getRawType(), parameterizedType.getActualTypeArguments());
+            }
+            if (type instanceof GenericArrayType) {
+                return new $Gson$Types$GenericArrayTypeImpl(((GenericArrayType)type).getGenericComponentType());
+            }
+            o = type;
+            if (type instanceof WildcardType) {
+                final WildcardType wildcardType = (WildcardType)type;
+                return new $Gson$Types$WildcardTypeImpl(wildcardType.getUpperBounds(), wildcardType.getLowerBounds());
+            }
         }
-        if (type instanceof GenericArrayType) {
-            return new $Gson$Types$GenericArrayTypeImpl(((GenericArrayType)type).getGenericComponentType());
-        }
-        if (type instanceof WildcardType) {
-            final WildcardType wildcardType = (WildcardType)type;
-            return new $Gson$Types$WildcardTypeImpl(wildcardType.getUpperBounds(), wildcardType.getLowerBounds());
-        }
-        return type;
+        return (Type)o;
     }
     
     private static void checkNotPrimitive(final Type type) {

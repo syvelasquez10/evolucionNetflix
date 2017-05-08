@@ -15,7 +15,6 @@ public class BarkerKidsGenreLoLoMoAdapter extends GenreLoLoMoAdapter
         super(loLoMoFrag, s);
     }
     
-    @Override
     protected TextView initTitleView(final View view) {
         final TextView initTitleView = super.initTitleView(view);
         BarkerKidsLoLoMoAdapter.updateTitleStyle(initTitleView);

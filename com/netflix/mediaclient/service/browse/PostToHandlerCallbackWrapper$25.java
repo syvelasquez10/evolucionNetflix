@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.service.browse;
 
 import com.netflix.model.leafs.Video$Summary;
+import com.netflix.mediaclient.servicemgr.interface_.UserRating;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
@@ -18,8 +19,8 @@ import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
-import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -28,27 +29,27 @@ import com.netflix.model.leafs.advisory.Advisory;
 import com.netflix.model.branches.FalkorActorStill;
 import com.netflix.model.branches.MementoVideoSwatch;
 import com.netflix.model.branches.FalkorPerson;
-import java.util.List;
 import android.os.Handler;
+import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.util.ThreadUtils;
-import com.netflix.mediaclient.servicemgr.interface_.UserRating;
 import com.netflix.mediaclient.android.app.Status;
+import java.util.List;
 
 class PostToHandlerCallbackWrapper$25 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
+    final /* synthetic */ List val$requestedGenres;
     final /* synthetic */ Status val$res;
-    final /* synthetic */ UserRating val$userRating;
     
-    PostToHandlerCallbackWrapper$25(final PostToHandlerCallbackWrapper this$0, final UserRating val$userRating, final Status val$res) {
+    PostToHandlerCallbackWrapper$25(final PostToHandlerCallbackWrapper this$0, final List val$requestedGenres, final Status val$res) {
         this.this$0 = this$0;
-        this.val$userRating = val$userRating;
+        this.val$requestedGenres = val$requestedGenres;
         this.val$res = val$res;
     }
     
     @Override
     public void run() {
         ThreadUtils.assertOnMain();
-        this.this$0.callback.onVideoRatingSet(this.val$userRating, this.val$res);
+        this.this$0.callback.onGenresFetched(this.val$requestedGenres, this.val$res);
     }
 }

@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 import java.util.List;
 import java.util.AbstractList;
 
-public final class RealmResults<E extends RealmModel> extends AbstractList<E> implements OrderedRealmCollection<E>
+public class RealmResults<E extends RealmModel> extends AbstractList<E> implements OrderedRealmCollection<E>
 {
     private boolean asyncQueryCompleted;
     String className;

@@ -5,15 +5,18 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.service.webclient.model.leafs.ThumbMessaging;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
@@ -44,6 +47,7 @@ import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsLis
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -219,6 +223,21 @@ class ServiceManager$ServiceListener implements INetflixServiceCallback
             return;
         }
         access$400.onEpisodesFetched(list, status);
+    }
+    
+    @Override
+    public void onFalkorVideoFetched(final int n, final FalkorVideo falkorVideo, final Status status) {
+        this.updateStatusRequestId(status, n);
+        if (Log.isLoggable()) {
+            Log.d("ServiceManager", "onFalkorVideoFetched requestId=" + n + " errorCode=" + status.getStatusCode());
+            Log.d("ServiceManager", "onFalkorVideoFetched requestedMdp=" + falkorVideo);
+        }
+        final ManagerCallback access$400 = this.this$0.getManagerCallback(n);
+        if (access$400 == null) {
+            Log.d("ServiceManager", "No callback for onFalkorVideoFetched requestId " + n);
+            return;
+        }
+        access$400.onFalkorVideoFetched(falkorVideo, status);
     }
     
     @Override

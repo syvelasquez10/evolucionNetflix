@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.ui.rating.Ratings;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.model.leafs.PreviewContentConfigData;
 import org.json.JSONObject;
@@ -17,8 +19,8 @@ import com.netflix.mediaclient.service.webclient.model.leafs.AccountConfigData;
 public class AccountConfiguration
 {
     private static String TAG;
-    AccountConfigData mAccountConfigData;
-    Context mContext;
+    private AccountConfigData mAccountConfigData;
+    private Context mContext;
     
     static {
         AccountConfiguration.TAG = "nf_configuration_account";
@@ -26,7 +28,7 @@ public class AccountConfiguration
     
     public AccountConfiguration(final Context mContext) {
         this.mContext = mContext;
-        this.mAccountConfigData = AccountConfigData.fromJsonString(PreferenceUtils.getStringPref(this.mContext, "accountConfig", null));
+        this.setAccountConfigData(AccountConfigData.fromJsonString(PreferenceUtils.getStringPref(this.mContext, "accountConfig", null)));
     }
     
     public void clear() {
@@ -98,6 +100,13 @@ public class AccountConfiguration
         return this.mAccountConfigData.getPreviewContentConfigData();
     }
     
+    public String getUserPin() {
+        if (this.mAccountConfigData == null) {
+            return null;
+        }
+        return this.mAccountConfigData.getUserPin();
+    }
+    
     public int getVideoBufferSize() {
         if (this.mAccountConfigData == null) {
             return 0;
@@ -105,17 +114,25 @@ public class AccountConfiguration
         return this.mAccountConfigData.getVideoBufferSize();
     }
     
-    public void persistAccountConfigOverride(final AccountConfigData mAccountConfigData) {
-        if (mAccountConfigData == null) {
+    public void persistAccountConfigOverride(final AccountConfigData accountConfigData) {
+        if (accountConfigData == null) {
             Log.e(AccountConfiguration.TAG, "accountConfig obj is null - ignore overwrite");
             return;
         }
-        final String jsonString = mAccountConfigData.toJsonString();
+        final String jsonString = accountConfigData.toJsonString();
         if (Log.isLoggable()) {
             Log.d(AccountConfiguration.TAG, "Persisting account config: " + jsonString);
         }
         PreferenceUtils.putStringPref(this.mContext, "accountConfig", jsonString);
+        this.setAccountConfigData(accountConfigData);
+    }
+    
+    public void setAccountConfigData(final AccountConfigData mAccountConfigData) {
         this.mAccountConfigData = mAccountConfigData;
+        if (this.mAccountConfigData != null) {
+            Ratings.setAndroidThumbActive(this.mAccountConfigData.isThumbRatingActive());
+            KidsUtils.setMyListForKidsDisabled(this.mAccountConfigData.isMyListForKidsDisabled());
+        }
     }
     
     public boolean shouldDisableVoip() {

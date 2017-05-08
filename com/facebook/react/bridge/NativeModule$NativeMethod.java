@@ -7,4 +7,6 @@ package com.facebook.react.bridge;
 public interface NativeModule$NativeMethod
 {
     String getType();
+    
+    void invoke(final CatalystInstance p0, final ExecutorToken p1, final ReadableNativeArray p2);
 }

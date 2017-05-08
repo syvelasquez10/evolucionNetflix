@@ -4,10 +4,13 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import android.support.v4.content.ContextCompat;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.content.res.Resources;
 import java.util.List;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.ui.common.PlayLocationType;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -68,7 +71,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             return episodeDetails.getTitle();
         }
         if (StringUtils.isEmpty(episodeDetails.getAvailabilityDateMessage())) {
-            return context.getString(2131296706);
+            return context.getString(2131296707);
         }
         return episodeDetails.getAvailabilityDateMessage();
     }
@@ -88,14 +91,14 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     }
     
     protected void findViews() {
-        this.episodeBadge = (TextView)this.findViewById(2131755187);
-        this.title = (TextView)this.findViewById(2131755189);
-        this.episodeNumber = (TextView)this.findViewById(2131755188);
-        this.synopsis = (TextView)this.findViewById(2131755190);
-        this.playButton = (ImageView)this.findViewById(2131755182);
-        this.episodeDownloadButton = (DownloadButton)this.findViewById(2131755185);
-        this.progressBar = (ProgressBar)this.findViewById(2131755184);
-        this.episodeTime = (TextView)this.findViewById(2131755191);
+        this.episodeBadge = (TextView)this.findViewById(2131820725);
+        this.title = (TextView)this.findViewById(2131820727);
+        this.episodeNumber = (TextView)this.findViewById(2131820726);
+        this.synopsis = (TextView)this.findViewById(2131820728);
+        this.playButton = (ImageView)this.findViewById(2131820720);
+        this.episodeDownloadButton = (DownloadButton)this.findViewById(2131820723);
+        this.progressBar = (ProgressBar)this.findViewById(2131820722);
+        this.episodeTime = (TextView)this.findViewById(2131820729);
     }
     
     protected int getDefaultSynopsisVisibility() {
@@ -174,6 +177,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
         this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131296442), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
         if (episodeDetails.isAvailableToStream() && !this.isNSRE && this.episodeNumber != null) {
             this.episodeNumber.setText((CharSequence)createEpisodeNumber(episodeDetails, this.getContext()));
+            KidsUtils.setSecondaryTextColorIfApplicable(this.episodeNumber);
         }
         if (this.title != null) {
             this.title.setText((CharSequence)createTitleText(episodeDetails, this.getContext()));
@@ -181,16 +185,18 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             final Resources resources = this.getResources();
             int n;
             if (episodeDetails.isAvailableToStream()) {
-                n = 2131689657;
+                n = 2131755196;
             }
             else {
-                n = 2131689673;
+                n = 2131755212;
             }
             title.setTextColor(resources.getColor(n));
             this.title.setClickable(false);
+            KidsUtils.setTextColorIfApplicable(this.title);
         }
         if (this.episodeBadge != null) {
             LoMoUtils.toggleEpisodeBadge((List)episodeDetails.getEpisodeBadges(), this.episodeBadge);
+            KidsUtils.setTextColorIfApplicable(this.episodeBadge);
         }
         if (this.episodeTime != null) {
             if (episodeDetails.isNSRE()) {
@@ -203,6 +209,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
                 }
                 this.episodeTime.setVisibility(8);
             }
+            KidsUtils.setSecondaryTextColorIfApplicable(this.episodeTime);
         }
         this.updateSynopsis(episodeDetails);
         this.updateBookmark(episodeDetails);
@@ -226,16 +233,21 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     protected void updateProgressBar() {
         if (this.progressVal <= 0) {
             this.progressBar.setVisibility(8);
-            return;
         }
-        this.progressBar.setVisibility(0);
-        if (this.isCurrentEpisode) {
-            this.progressBar.setProgress(this.progressVal);
-            this.progressBar.setSecondaryProgress(0);
-            return;
+        else {
+            this.progressBar.setVisibility(0);
+            if (this.isCurrentEpisode) {
+                this.progressBar.setProgress(this.progressVal);
+                this.progressBar.setSecondaryProgress(0);
+            }
+            else {
+                this.progressBar.setProgress(0);
+                this.progressBar.setSecondaryProgress(this.progressVal);
+            }
         }
-        this.progressBar.setProgress(0);
-        this.progressBar.setSecondaryProgress(this.progressVal);
+        if (BrowseExperience.isLightTheme()) {
+            this.progressBar.setProgressDrawable(ContextCompat.getDrawable(this.getContext(), 2130837995));
+        }
     }
     
     protected void updateSynopsis(final EpisodeDetails episodeDetails) {
@@ -244,5 +256,6 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
         }
         this.synopsis.setText((CharSequence)episodeDetails.getSynopsis());
         this.synopsis.setVisibility(this.getDefaultSynopsisVisibility());
+        KidsUtils.setSecondaryTextColorIfApplicable(this.synopsis);
     }
 }

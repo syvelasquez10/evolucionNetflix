@@ -7,16 +7,17 @@ package com.netflix.mediaclient.android.activity;
 import com.netflix.mediaclient.util.MdxUtils$MdxTargetSelectionDialogInterface;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog;
 import com.netflix.mediaclient.ui.launch.RelaunchActivity;
-import android.app.FragmentManager;
-import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
-import com.netflix.mediaclient.ui.player.MDXControllerActivity;
-import com.netflix.mediaclient.service.mdx.MdxAgent;
-import android.text.TextUtils;
-import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
+import android.widget.PopupMenu$OnDismissListener;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.widget.Toast;
+import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
+import com.netflix.mediaclient.service.mdx.MdxAgent;
+import android.text.TextUtils;
+import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
+import android.app.FragmentManager;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.ui.barker.BarkerUtils;
 import android.app.FragmentTransaction;
 import android.app.Fragment;
 import com.netflix.mediaclient.ui.home.HomeActivity;
@@ -25,25 +26,25 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
 import java.util.Iterator;
 import com.netflix.mediaclient.android.widget.advisor.Advisor;
-import com.netflix.mediaclient.ui.common.DebugMenuItems;
+import com.netflix.mediaclient.android.debug.DebugMenuItems;
 import android.view.Menu;
 import com.netflix.mediaclient.android.debug.DebugOverlay;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ColorDrawable;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import com.crittercism.app.Crittercism;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
 import com.netflix.mediaclient.util.Coppola1Utils;
-import com.netflix.mediaclient.service.webclient.model.leafs.ABTestConfig$Cell;
-import com.netflix.mediaclient.service.configuration.PersistentConfig;
-import android.content.res.Resources;
-import com.netflix.mediaclient.ui.mdx.MiniPlayerControlsFrag;
+import com.netflix.mediaclient.ui.mdx.CastPlayerControlsFrag;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
 import com.netflix.mediaclient.ui.launch.LaunchActivity;
 import android.app.Activity;
@@ -105,7 +106,7 @@ import com.squareup.seismic.ShakeDetector;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout$PanelSlideListener;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
-import com.netflix.mediaclient.ui.mdx.IMiniPlayerFrag;
+import android.widget.PopupMenu;
 import java.util.LinkedList;
 import android.widget.RelativeLayout;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
@@ -116,6 +117,7 @@ import android.app.Application$ActivityLifecycleCallbacks;
 import android.support.design.widget.FloatingActionButton;
 import java.util.concurrent.atomic.AtomicBoolean;
 import android.os.Handler;
+import com.netflix.mediaclient.ui.mdx.ICastPlayerFrag;
 import android.content.BroadcastReceiver;
 import java.util.Set;
 import com.netflix.mediaclient.ui.offline.ActivityPageOfflineAgentListener;
@@ -125,10 +127,8 @@ import com.netflix.mediaclient.ui.mdx.ShowMessageDialogFrag$MessageResponseProvi
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListenerProvider;
 import com.netflix.mediaclient.android.app.LoadingStatus;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.PopupMenu;
-import android.widget.PopupMenu$OnDismissListener;
 
-class NetflixActivity$11 implements PopupMenu$OnDismissListener
+class NetflixActivity$11 implements Runnable
 {
     final /* synthetic */ NetflixActivity this$0;
     
@@ -136,7 +136,8 @@ class NetflixActivity$11 implements PopupMenu$OnDismissListener
         this.this$0 = this$0;
     }
     
-    public void onDismiss(final PopupMenu popupMenu) {
-        this.this$0.mShownPopupMenus.remove(popupMenu);
+    @Override
+    public void run() {
+        this.this$0.collapseSlidingPanel();
     }
 }

@@ -50,7 +50,7 @@ public class KongBattleResultScreen extends KongBaseScreen
     @Override
     void initViews(final View view) {
         this.leftGateWidth = DeviceUtils.getScreenWidthInPixels((Context)this.postPlayManager.getActivity()) / 2;
-        this.battleResultAvatar = (ImageView)view.findViewById(2131755677);
+        this.battleResultAvatar = (ImageView)view.findViewById(2131821233);
     }
     
     @Override

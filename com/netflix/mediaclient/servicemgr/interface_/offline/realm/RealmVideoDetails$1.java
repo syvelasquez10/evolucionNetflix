@@ -48,7 +48,7 @@ final class RealmVideoDetails$1 implements Realm$Transaction
                 }
                 final RealmSeason realmSeason = new RealmSeason();
                 realmSeason.setNumber(seasonDetails.getSeasonNumber());
-                realmSeason.setLabel(seasonDetails.getSeasonLongSeqLabel());
+                realmSeason.setTitle(seasonDetails.getTitle());
                 realmVideoDetails.realmGet$seasonLabels().add((RealmModel)realmSeason);
             }
         }

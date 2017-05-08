@@ -126,6 +126,15 @@ public class ReactTextViewManager extends BaseViewManager<ReactTextView, ReactTe
         reactTextView.setTextIsSelectable(textIsSelectable);
     }
     
+    @ReactProp(customType = "Color", name = "selectionColor")
+    public void setSelectionColor(final ReactTextView reactTextView, final Integer n) {
+        if (n == null) {
+            reactTextView.setHighlightColor(DefaultStyleValuesUtil.getDefaultTextColorHighlight(reactTextView.getContext()));
+            return;
+        }
+        reactTextView.setHighlightColor((int)n);
+    }
+    
     @ReactProp(name = "textAlignVertical")
     public void setTextAlignVertical(final ReactTextView reactTextView, final String s) {
         if (s == null || "auto".equals(s)) {

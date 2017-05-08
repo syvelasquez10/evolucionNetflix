@@ -28,7 +28,7 @@ public interface OfflinePlayableUiList extends ReadOnlyList<OfflineAdapterData>
     
     int getPercentage(final int p0);
     
-    ActivityPageOfflineAgentListener$SnackbarMessage getSnackbarStatus(final Context p0, final OfflineAgentInterface p1, final boolean p2);
+    ActivityPageOfflineAgentListener$SnackbarMessage getSnackbarStatus(final Context p0, final OfflineAgentInterface p1);
     
     int getTitleCount();
     

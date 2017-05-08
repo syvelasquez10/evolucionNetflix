@@ -6,6 +6,7 @@ package com.netflix.mediaclient.ui.details;
 
 import java.util.Collection;
 import android.support.v4.content.ContextCompat;
+import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.widget.TextView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +54,7 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         if (viewGroup == null) {
             return;
         }
-        viewGroup.setId(2131755030);
+        viewGroup.setId(2131820567);
     }
     
     public int getCount() {
@@ -73,7 +74,9 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         if (this.dropDownTextColor != -1) {
             textView.setTextColor(idForTest.getResources().getColor(this.dropDownTextColor));
         }
-        textView.setText((CharSequence)this.getItem(n).getSeasonLongSeqLabel());
+        textView.setText((CharSequence)this.getItem(n).getTitle());
+        KidsUtils.setBackgroundIfApplicable((View)textView);
+        KidsUtils.setTextColorIfApplicable(textView);
         return (View)textView;
     }
     
@@ -89,10 +92,6 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         return n;
     }
     
-    public int getSeasonNumberForPosition(final int n) {
-        return this.getItem(n).getSeasonNumber();
-    }
-    
     public View getView(int itemBackgroundResource, final View view, final ViewGroup viewGroup) {
         TextView textView = (TextView)view;
         if (textView == null) {
@@ -101,19 +100,20 @@ public class SeasonsSpinnerAdapter extends BaseAdapter
         final SeasonDetails item = this.getItem(itemBackgroundResource);
         if (item != null) {
             textView.setTag((Object)item.getSeasonNumber());
-            textView.setText((CharSequence)item.getSeasonLongSeqLabel());
+            textView.setText((CharSequence)item.getTitle());
         }
         else {
             this.logException(itemBackgroundResource);
         }
         if (viewGroup instanceof SeasonsSpinner) {
-            itemBackgroundResource = 2131689714;
+            itemBackgroundResource = 2131755265;
         }
         else {
             itemBackgroundResource = this.itemBackgroundResource;
         }
         textView.setBackgroundResource(itemBackgroundResource);
-        textView.setTextColor(ContextCompat.getColor(viewGroup.getContext(), 2131689671));
+        textView.setTextColor(ContextCompat.getColor(viewGroup.getContext(), 2131755210));
+        KidsUtils.manageSectionTextColor(textView, VideoDetailsViewGroup$Section.SPINNER);
         return (View)textView;
     }
     

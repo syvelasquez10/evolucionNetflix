@@ -14,6 +14,6 @@ class NetflixActivity$DefaultManagerStatusListener$1 implements Runnable
     
     @Override
     public void run() {
-        this.this$1.this$0.expandMiniPlayerIfVisible();
+        this.this$1.this$0.expandCastPlayerIfVisible();
     }
 }

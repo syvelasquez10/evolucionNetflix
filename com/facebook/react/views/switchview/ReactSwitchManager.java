@@ -4,6 +4,7 @@
 
 package com.facebook.react.views.switchview;
 
+import android.graphics.PorterDuff$Mode;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import android.content.Context;
 import com.facebook.react.uimanager.ReactShadowNode;
@@ -57,5 +58,23 @@ public class ReactSwitchManager extends SimpleViewManager<ReactSwitch>
         reactSwitch.setOnCheckedChangeListener((CompoundButton$OnCheckedChangeListener)null);
         reactSwitch.setOn(on);
         reactSwitch.setOnCheckedChangeListener(ReactSwitchManager.ON_CHECKED_CHANGE_LISTENER);
+    }
+    
+    @ReactProp(customType = "Color", name = "thumbTintColor")
+    public void setThumbTintColor(final ReactSwitch reactSwitch, final Integer n) {
+        if (n == null) {
+            reactSwitch.getThumbDrawable().clearColorFilter();
+            return;
+        }
+        reactSwitch.getThumbDrawable().setColorFilter((int)n, PorterDuff$Mode.MULTIPLY);
+    }
+    
+    @ReactProp(customType = "Color", name = "trackTintColor")
+    public void setTrackTintColor(final ReactSwitch reactSwitch, final Integer n) {
+        if (n == null) {
+            reactSwitch.getTrackDrawable().clearColorFilter();
+            return;
+        }
+        reactSwitch.getTrackDrawable().setColorFilter((int)n, PorterDuff$Mode.MULTIPLY);
     }
 }

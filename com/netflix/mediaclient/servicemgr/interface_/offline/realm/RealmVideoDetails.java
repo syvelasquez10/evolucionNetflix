@@ -77,7 +77,9 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
     public static void insertInRealm(final Realm realm, final NetflixService netflixService, final VideoDetails videoDetails, final List<SeasonDetails> list, final String s) {
         if (RealmUtils.idNotExists(realm, RealmVideoDetails.class, videoDetails.getId())) {
             RealmUtils.executeTransaction(realm, (Realm$Transaction)new RealmVideoDetails$1(videoDetails, s, list, netflixService));
+            return;
         }
+        RealmUtils.executeTransaction(realm, (Realm$Transaction)new RealmVideoDetails$2(videoDetails));
     }
     
     private void setPlayable(final RealmPlayable realmPlayable) {
@@ -98,7 +100,7 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
         this.realmSet$hResPortBoxArtUrl(videoDetails.getHighResolutionPortraitBoxArtUrl());
         this.realmSet$hResLandBoxArtUrl(videoDetails.getHighResolutionLandscapeBoxArtUrl());
         this.realmSet$boxshotUrl(videoDetails.getBoxshotUrl());
-        this.realmSet$boxartImageId(videoDetails.getBoxartImageTypeIdentifier());
+        this.realmSet$boxartImageId(videoDetails.getBoxartId());
         if (videoDetails instanceof EpisodeDetails) {
             this.realmSet$horzDispUrl(((EpisodeDetails)videoDetails).getInterestingUrl());
         }
@@ -149,7 +151,7 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
         return this.realmGet$bifUrl();
     }
     
-    public String getBoxartImageTypeIdentifier() {
+    public String getBoxartId() {
         return this.realmGet$boxartImageId();
     }
     
@@ -213,6 +215,10 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
         return this.realmGet$id();
     }
     
+    public int getMatchPercentage() {
+        throw new UnsupportedOperationException("not supported in offline realm");
+    }
+    
     @Override
     public int getMaturityLevel() {
         return this.realmGet$maturityLevel();
@@ -248,10 +254,10 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
         return this.realmGet$horzDispUrl();
     }
     
-    public String getSeasonLongLabel(final int n) {
+    public String getSeasonTitle(final int n) {
         for (final RealmSeason realmSeason : this.realmGet$seasonLabels()) {
             if (realmSeason.getNumber() == n) {
-                return realmSeason.getLabel();
+                return realmSeason.getTitle();
             }
         }
         return null;
@@ -303,6 +309,10 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
         return this.realmGet$userRating();
     }
     
+    public int getUserThumbRating() {
+        throw new UnsupportedOperationException("not supported in offline realm");
+    }
+    
     @Override
     public int getYear() {
         return this.realmGet$year();
@@ -331,6 +341,10 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
     @Override
     public boolean isNSRE() {
         return this.realmGet$playable().isNSRE();
+    }
+    
+    public boolean isNewForPvr() {
+        throw new UnsupportedOperationException("not supported in offline realm");
     }
     
     @Override
@@ -731,6 +745,10 @@ public class RealmVideoDetails implements VideoDetails, RealmModel, RealmVideoDe
     
     public void setUserRating(final float n) {
         this.realmSet$userRating(n);
+    }
+    
+    public void setUserThumbRating(final int n) {
+        throw new UnsupportedOperationException("not supported in offline realm");
     }
     
     @Override

@@ -4,21 +4,21 @@
 
 package com.facebook.react.cxxbridge;
 
-import com.facebook.react.bridge.BaseJavaModule$SyncJavaHook;
 import com.facebook.react.bridge.ReadableNativeArray;
 import com.facebook.react.bridge.ExecutorToken;
-import com.facebook.react.bridge.BaseJavaModule;
 import java.util.Iterator;
-import com.facebook.react.bridge.NativeModule$NativeMethod;
+import com.facebook.react.bridge.BaseJavaModule$JavaMethod;
 import java.util.List;
 import com.facebook.react.bridge.WritableNativeMap;
 import java.util.Map;
+import com.facebook.react.bridge.BaseJavaModule;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.NativeModuleLogger;
 import com.facebook.systrace.Systrace;
 import com.facebook.systrace.SystraceMessage;
 import com.facebook.react.bridge.NativeArray;
-import com.facebook.react.bridge.BaseJavaModule$JavaMethod;
+import com.facebook.react.bridge.NativeModule$NativeMethod;
 import java.util.ArrayList;
 import com.facebook.react.bridge.CatalystInstance;
 import com.facebook.proguard.annotations.DoNotStrip;
@@ -27,26 +27,33 @@ import com.facebook.proguard.annotations.DoNotStrip;
 class JavaModuleWrapper
 {
     private final CatalystInstance mCatalystInstance;
-    private final ArrayList<BaseJavaModule$JavaMethod> mMethods;
+    private final ArrayList<NativeModule$NativeMethod> mMethods;
     private final ModuleHolder mModuleHolder;
     
     public JavaModuleWrapper(final CatalystInstance mCatalystInstance, final ModuleHolder mModuleHolder) {
         this.mCatalystInstance = mCatalystInstance;
         this.mModuleHolder = mModuleHolder;
-        this.mMethods = new ArrayList<BaseJavaModule$JavaMethod>();
+        this.mMethods = new ArrayList<NativeModule$NativeMethod>();
     }
     
     @DoNotStrip
     public NativeArray getConstants() {
         SystraceMessage.beginSection(0L, "Map constants").arg("moduleName", this.getName()).flush();
-        final Map<String, Object> constants = this.getModule().getConstants();
+        final BaseJavaModule module = this.getModule();
+        final Map<String, Object> constants = module.getConstants();
         Systrace.endSection(0L);
         SystraceMessage.beginSection(0L, "WritableNativeMap constants").arg("moduleName", this.getName()).flush();
+        if (module instanceof NativeModuleLogger) {
+            ((NativeModuleLogger)module).startConstantsMapConversion();
+        }
         try {
             final WritableNativeMap nativeMap = Arguments.makeNativeMap(constants);
             Systrace.endSection(0L);
             final WritableNativeArray writableNativeArray = new WritableNativeArray();
             writableNativeArray.pushMap(nativeMap);
+            if (module instanceof NativeModuleLogger) {
+                ((NativeModuleLogger)module).endConstantsMapConversion();
+            }
             return writableNativeArray;
         }
         finally {
@@ -61,7 +68,12 @@ class JavaModuleWrapper
             final JavaModuleWrapper$MethodDescriptor javaModuleWrapper$MethodDescriptor = new JavaModuleWrapper$MethodDescriptor(this);
             javaModuleWrapper$MethodDescriptor.name = entry.getKey();
             javaModuleWrapper$MethodDescriptor.type = entry.getValue().getType();
-            this.mMethods.add(entry.getValue());
+            final BaseJavaModule$JavaMethod baseJavaModule$JavaMethod = entry.getValue();
+            if (javaModuleWrapper$MethodDescriptor.type == "sync") {
+                javaModuleWrapper$MethodDescriptor.signature = baseJavaModule$JavaMethod.getSignature();
+                javaModuleWrapper$MethodDescriptor.method = baseJavaModule$JavaMethod.getMethod();
+            }
+            this.mMethods.add(baseJavaModule$JavaMethod);
             list.add(javaModuleWrapper$MethodDescriptor);
         }
         return list;
@@ -83,30 +95,6 @@ class JavaModuleWrapper
             return;
         }
         this.mMethods.get(n).invoke(this.mCatalystInstance, executorToken, readableNativeArray);
-    }
-    
-    @DoNotStrip
-    public List<JavaModuleWrapper$MethodDescriptor> newGetMethodDescriptors() {
-        final ArrayList<JavaModuleWrapper$MethodDescriptor> list = new ArrayList<JavaModuleWrapper$MethodDescriptor>();
-        for (final Map.Entry<String, NativeModule$NativeMethod> entry : this.getModule().getMethods().entrySet()) {
-            final JavaModuleWrapper$MethodDescriptor javaModuleWrapper$MethodDescriptor = new JavaModuleWrapper$MethodDescriptor(this);
-            javaModuleWrapper$MethodDescriptor.name = entry.getKey();
-            javaModuleWrapper$MethodDescriptor.type = entry.getValue().getType();
-            final BaseJavaModule$JavaMethod baseJavaModule$JavaMethod = entry.getValue();
-            javaModuleWrapper$MethodDescriptor.method = baseJavaModule$JavaMethod.getMethod();
-            javaModuleWrapper$MethodDescriptor.signature = baseJavaModule$JavaMethod.getSignature();
-            list.add(javaModuleWrapper$MethodDescriptor);
-        }
-        for (final Map.Entry<String, Object> entry2 : this.getModule().getSyncHooks().entrySet()) {
-            final JavaModuleWrapper$MethodDescriptor javaModuleWrapper$MethodDescriptor2 = new JavaModuleWrapper$MethodDescriptor(this);
-            javaModuleWrapper$MethodDescriptor2.name = entry2.getKey();
-            javaModuleWrapper$MethodDescriptor2.type = "sync";
-            final BaseJavaModule$SyncJavaHook baseJavaModule$SyncJavaHook = entry2.getValue();
-            javaModuleWrapper$MethodDescriptor2.method = baseJavaModule$SyncJavaHook.getMethod();
-            javaModuleWrapper$MethodDescriptor2.signature = baseJavaModule$SyncJavaHook.getSignature();
-            list.add(javaModuleWrapper$MethodDescriptor2);
-        }
-        return list;
     }
     
     @DoNotStrip

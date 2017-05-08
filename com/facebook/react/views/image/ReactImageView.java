@@ -5,6 +5,7 @@
 package com.facebook.react.views.image;
 
 import com.facebook.react.bridge.ReadableMap;
+import android.net.Uri;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
@@ -156,6 +157,9 @@ public class ReactImageView extends GenericDraweeView
             return true;
         }
         return b;
+    }
+    
+    private void warnImageSource(final String s) {
     }
     
     public boolean hasOverlappingRendering() {
@@ -338,12 +342,22 @@ public class ReactImageView extends GenericDraweeView
         this.mSources.clear();
         if (readableArray != null && readableArray.size() != 0) {
             if (readableArray.size() == 1) {
-                this.mSources.add(new ImageSource(this.getContext(), readableArray.getMap(0).getString("uri")));
+                final String string = readableArray.getMap(0).getString("uri");
+                final ImageSource imageSource = new ImageSource(this.getContext(), string);
+                this.mSources.add(imageSource);
+                if (Uri.EMPTY.equals((Object)imageSource.getUri())) {
+                    this.warnImageSource(string);
+                }
             }
             else {
                 while (i < readableArray.size()) {
                     final ReadableMap map = readableArray.getMap(i);
-                    this.mSources.add(new ImageSource(this.getContext(), map.getString("uri"), map.getDouble("width"), map.getDouble("height")));
+                    final String string2 = map.getString("uri");
+                    final ImageSource imageSource2 = new ImageSource(this.getContext(), string2, map.getDouble("width"), map.getDouble("height"));
+                    this.mSources.add(imageSource2);
+                    if (Uri.EMPTY.equals((Object)imageSource2.getUri())) {
+                        this.warnImageSource(string2);
+                    }
                     ++i;
                 }
             }

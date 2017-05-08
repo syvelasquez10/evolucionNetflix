@@ -5,15 +5,18 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.service.webclient.model.leafs.ThumbMessaging;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import java.util.List;
 import com.netflix.model.leafs.OnRampEligibility$Action;
@@ -230,25 +233,22 @@ public final class ServiceManager implements IServiceManagerAccess
             try {
                 Log.d("ServiceManager", "fetchAndCacheResource:: resourceUrl is null");
                 return b;
-                // iftrue(Label_0073:, !Log.isLoggable())
-                int addCallback = 0;
-                Label_0073: {
-                    while (true) {
-                        Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
-                        break Label_0073;
-                        addCallback = this.addCallback(managerCallback);
-                        continue;
-                    }
-                    Label_0103: {
-                        Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
-                    }
-                    return b;
+                Label_0103: {
+                    Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
                 }
-                // iftrue(Label_0103:, !this.validateService())
-                this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
-                b = true;
                 return b;
+                while (true) {
+                    final int addCallback;
+                    this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
+                    b = true;
+                    return b;
+                    addCallback = this.addCallback(managerCallback);
+                    Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
+                    continue;
+                }
             }
+            // iftrue(Label_0103:, !this.validateService())
+            // iftrue(Label_0073:, !Log.isLoggable())
             finally {
             }
             // monitorexit(this)
@@ -302,6 +302,13 @@ public final class ServiceManager implements IServiceManagerAccess
             return this.mService.getAllProfiles();
         }
         Log.w("ServiceManager", "getAllProfiles:: service is not available");
+        return null;
+    }
+    
+    public BookmarkStore getBookmarkStore() {
+        if (this.validateService()) {
+            return this.mService.getBookmarkStore();
+        }
         return null;
     }
     
@@ -510,6 +517,14 @@ public final class ServiceManager implements IServiceManagerAccess
         return null;
     }
     
+    public ThumbMessaging getThumbMessaging() {
+        if (this.validateService()) {
+            return this.mService.getThumbMessaging();
+        }
+        Log.w("ServiceManager", "getThumbMessaging:: service is not available");
+        return null;
+    }
+    
     public String getUserEmail() {
         if (this.validateService()) {
             return this.mService.getUserEmail();
@@ -540,11 +555,11 @@ public final class ServiceManager implements IServiceManagerAccess
         return this.addCallback(this.wrapForAddToList(managerCallback, s));
     }
     
-    public boolean isCurrentProfileIQEnabled() {
+    public boolean isCurrentProfileInstantQueueEnabled() {
         if (this.validateService()) {
-            return this.mService.isCurrentProfileIQEnabled();
+            return this.mService.isCurrentProfileInstantQueueEnabled();
         }
-        Log.w("ServiceManager", "isCurrentProfileIQEnabled:: service is not available");
+        Log.w("ServiceManager", "isCurrentProfileInstantQueueEnabled:: service is not available");
         return false;
     }
     
@@ -649,6 +664,22 @@ public final class ServiceManager implements IServiceManagerAccess
             return;
         }
         Log.w("ServiceManager", "recordPlanSelection:: service is not available");
+    }
+    
+    public void recordThumbRatingThanksSeen() {
+        if (this.validateService()) {
+            this.mService.recordThumbRatingThanksSeen();
+            return;
+        }
+        Log.w("ServiceManager", "recordThumbRatingThanksSeen:: service is not available");
+    }
+    
+    public void recordThumbRatingWelcomeSeen() {
+        if (this.validateService()) {
+            this.mService.recordThumbRatingWelcomeSeen();
+            return;
+        }
+        Log.w("ServiceManager", "recordThumbRatingWelcomeSeen:: service is not available");
     }
     
     public void recordUserMessageImpression(final String s, final String s2) {
@@ -782,9 +813,9 @@ public final class ServiceManager implements IServiceManagerAccess
         return false;
     }
     
-    public boolean verifyPin(final String s, final ManagerCallback managerCallback) {
+    public boolean verifyPin(final String s, final PinVerifier$PinType pinVerifier$PinType, final String s2, final ManagerCallback managerCallback) {
         if (this.validateService()) {
-            this.mService.verifyPin(s, this.mClientId, this.addCallback(managerCallback));
+            this.mService.verifyPin(s, pinVerifier$PinType, s2, this.mClientId, this.addCallback(managerCallback));
             return true;
         }
         Log.w("ServiceManager", "verifyPin:: service is not available");

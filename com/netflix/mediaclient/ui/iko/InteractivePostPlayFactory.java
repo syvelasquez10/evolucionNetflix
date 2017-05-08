@@ -16,7 +16,7 @@ public class InteractivePostPlayFactory
     
     public static InteractivePostPlayManager getManager(final String s, final PostPlay postPlay, final InteractivePostplayModel interactivePostplayModel) {
         if (!StringUtils.isEmpty(s) && "KONG_POST_PLAY".equalsIgnoreCase(s) && interactivePostplayModel instanceof KongInteractivePostPlayModel) {
-            return new KongInteractivePostPlayManager(postPlay, (KongInteractivePostPlayModel)interactivePostplayModel);
+            return (InteractivePostPlayManager)new KongInteractivePostPlayManager(postPlay, (KongInteractivePostPlayModel)interactivePostplayModel);
         }
         return null;
     }

@@ -234,8 +234,8 @@ public class KongBattleIntroScreen extends KongBaseScreen
             }
         }
         else {
-            this.battleIntroContainer = (ViewGroup)view.findViewById(2131755670);
-            this.nextEpisodeContainer = (ViewGroup)view.findViewById(2131755666);
+            this.battleIntroContainer = (ViewGroup)view.findViewById(2131821226);
+            this.nextEpisodeContainer = (ViewGroup)view.findViewById(2131821222);
             final NetflixActivity activity = this.postPlayManager.getActivity();
             this.battleCardWidth = activity.getResources().getDimensionPixelSize(2131427461);
             this.battleCardHeight = this.battleCardWidth / DeviceUtils.getScreenAspectRatio((Context)activity);
@@ -260,32 +260,32 @@ public class KongBattleIntroScreen extends KongBaseScreen
                 }
             }
             if (this.battleIntroContainer != null) {
-                this.battleTitle = (TextView)this.battleIntroContainer.findViewById(2131755673);
-                this.battleCountdownTimer = (TextView)this.battleIntroContainer.findViewById(2131755674);
-                this.battleIntroCompoundView = (PressAnimationFrameLayout)this.battleIntroContainer.findViewById(2131755671);
-                this.battleIntroPlaceholderView = this.battleIntroContainer.findViewById(2131755672);
+                this.battleTitle = (TextView)this.battleIntroContainer.findViewById(2131821229);
+                this.battleCountdownTimer = (TextView)this.battleIntroContainer.findViewById(2131821230);
+                this.battleIntroCompoundView = (PressAnimationFrameLayout)this.battleIntroContainer.findViewById(2131821227);
+                this.battleIntroPlaceholderView = this.battleIntroContainer.findViewById(2131821228);
                 this.battleIntroPlaceholderView.getLayoutParams().height = (int)this.battleCardHeight;
                 if (this.battleIntroCompoundView != null) {
-                    this.leftGate = (ImageView)this.battleIntroCompoundView.findViewById(2131755442);
-                    this.rightGate = (ImageView)this.battleIntroCompoundView.findViewById(2131755441);
-                    this.versusHex = (ImageView)this.battleIntroCompoundView.findViewById(2131755445);
-                    this.versusHexSword = (ImageView)this.battleIntroCompoundView.findViewById(2131755446);
-                    this.kongAvatar = (ImageView)this.battleIntroCompoundView.findViewById(2131755444);
-                    this.opponentAvatar = (ImageView)this.battleIntroCompoundView.findViewById(2131755443);
+                    this.leftGate = (ImageView)this.battleIntroCompoundView.findViewById(2131821051);
+                    this.rightGate = (ImageView)this.battleIntroCompoundView.findViewById(2131821050);
+                    this.versusHex = (ImageView)this.battleIntroCompoundView.findViewById(2131821054);
+                    this.versusHexSword = (ImageView)this.battleIntroCompoundView.findViewById(2131821055);
+                    this.kongAvatar = (ImageView)this.battleIntroCompoundView.findViewById(2131821053);
+                    this.opponentAvatar = (ImageView)this.battleIntroCompoundView.findViewById(2131821052);
                     this.leftGateWidth = DeviceUtils.getScreenWidthInPixels((Context)activity);
                     this.rightGateWidth = this.leftGateWidth;
-                    this.battleCard = (ImageView)this.battleIntroCompoundView.findViewById(2131755447);
-                    this.battleCardComposite = this.battleIntroCompoundView.findViewById(2131755439);
+                    this.battleCard = (ImageView)this.battleIntroCompoundView.findViewById(2131821056);
+                    this.battleCardComposite = this.battleIntroCompoundView.findViewById(2131821048);
                     this.battleIntroCompoundView.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(this.battleIntroCompoundView.getPressedStateHandler(), this.gearSelectionClickListener));
                     this.battleCountdownTimer.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(this.battleIntroCompoundView.getPressedStateHandler(), this.gearSelectionClickListener));
                 }
             }
             if (this.nextEpisodeContainer != null) {
-                this.nextEpisode = (AdvancedImageView)this.nextEpisodeContainer.findViewById(2131755667);
+                this.nextEpisode = (AdvancedImageView)this.nextEpisodeContainer.findViewById(2131821223);
                 this.nextEpisode.getLayoutParams().height = (int)this.battleCardHeight;
                 this.nextEpisode.setScaleType(ImageView$ScaleType.CENTER_CROP);
-                this.nextEpisodeTitle = (TextView)this.nextEpisodeContainer.findViewById(2131755668);
-                this.nextEpisodeCountdownTimer = (TextView)this.nextEpisodeContainer.findViewById(2131755669);
+                this.nextEpisodeTitle = (TextView)this.nextEpisodeContainer.findViewById(2131821224);
+                this.nextEpisodeCountdownTimer = (TextView)this.nextEpisodeContainer.findViewById(2131821225);
                 this.nextEpisode.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(this.nextEpisode.getPressedStateHandler(), this.nextEpisodeClickListener));
                 this.nextEpisodeCountdownTimer.setOnClickListener((View$OnClickListener)new PressedStateHandler$DelayedOnClickListener(this.nextEpisode.getPressedStateHandler(), this.nextEpisodeClickListener));
             }
@@ -344,7 +344,7 @@ public class KongBattleIntroScreen extends KongBaseScreen
         }
         this.postPlayManager.loadImageBitmapFromCache(this.rightGate, this.rightGateImageUrl, this.options);
         this.postPlayManager.loadImageBitmapFromCache(this.leftGate, this.leftGateImageUrl, this.options);
-        this.postPlayManager.loadImageBitmapFromCache(this.nextEpisode, this.nextEpisodeImageUrl, this.options);
+        this.postPlayManager.loadImageBitmapFromCache((ImageView)this.nextEpisode, this.nextEpisodeImageUrl, this.options);
         if (StringUtils.isNotEmpty(this.resultDataBattleCardImageUrl)) {
             this.postPlayManager.loadImageBitmapFromCache(this.battleCard, this.resultDataBattleCardImageUrl, this.options);
         }

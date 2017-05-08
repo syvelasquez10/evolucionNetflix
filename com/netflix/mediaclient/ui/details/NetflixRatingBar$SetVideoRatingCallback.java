@@ -67,13 +67,13 @@ class NetflixRatingBar$SetVideoRatingCallback extends LoggingManagerCallback
         this.this$0.setEnabled(true);
         if (status.isError()) {
             Log.w("NetflixRatingBar", "Invalid status code");
-            Toast.makeText(this.this$0.getContext(), 2131296655, 1).show();
+            Toast.makeText(this.this$0.getContext(), 2131296656, 1).show();
             this.this$0.setRating((float)this.this$0.currRating);
-            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131296655), ActionOnUIError.displayedError), (Integer)null, this.this$0.currRating);
+            UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.failed, ConsolidatedLoggingUtils.createUIError(status, this.this$0.getContext().getString(2131296656), ActionOnUIError.displayedError), (Integer)null, this.this$0.currRating, "star", (Integer)null, (Boolean)null);
             return;
         }
         Log.v("NetflixRatingBar", "Rating has been updated");
-        Toast.makeText(this.this$0.getContext(), 2131296770, 1).show();
+        Toast.makeText(this.this$0.getContext(), 2131296772, 1).show();
         this.this$0.currRating = this.rating;
         if (this.this$0.ratableObject != null) {
             this.this$0.ratableObject.setUserRating(this.rating);
@@ -85,6 +85,6 @@ class NetflixRatingBar$SetVideoRatingCallback extends LoggingManagerCallback
         this.this$0.setRating((float)this.this$0.currRating);
         this.this$0.dispatchSystemUiVisibilityChanged(0);
         Log.d("NetflixRatingBar", "Report rate action ended");
-        UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.success, (UIError)null, (Integer)null, this.this$0.currRating);
+        UserActionLogUtils.reportRateActionEnded(this.this$0.getContext(), IClientLogging$CompletionReason.success, (UIError)null, (Integer)null, this.this$0.currRating, "star", (Integer)null, (Boolean)null);
     }
 }

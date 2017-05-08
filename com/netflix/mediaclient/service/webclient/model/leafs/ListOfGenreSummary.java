@@ -4,11 +4,11 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
-import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.Locale;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList$GenreType;
 import android.os.Parcel;
-import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
+import com.netflix.mediaclient.util.StringUtils;
 import android.os.Parcelable$Creator;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 
@@ -16,32 +16,25 @@ import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 public class ListOfGenreSummary extends TrackableListSummary implements GenreList
 {
     public static final Parcelable$Creator<ListOfGenreSummary> CREATOR;
-    private LoMoType enumType;
-    private final String genreExperience;
     private final String genreId;
     private final String genreName;
     private final String genreType;
-    private final boolean isKidsGenre;
     
     static {
         CREATOR = (Parcelable$Creator)new ListOfGenreSummary$1();
     }
     
-    public ListOfGenreSummary(final int n, final int n2, final int n3, final String s, final String genreName, final String genreId, final String genreType, final boolean isKidsGenre, final String genreExperience) {
+    public ListOfGenreSummary(final int n, final int n2, final int n3, final String s, final String s2, final String genreId, final String genreType) {
         super(n, n2, n3, s);
-        this.genreName = genreName;
+        this.genreName = StringUtils.decodeHtmlEntities(s2);
         this.genreId = genreId;
         this.genreType = genreType;
-        this.isKidsGenre = isKidsGenre;
-        this.genreExperience = genreExperience;
     }
     
     public ListOfGenreSummary(final Parcel parcel) {
         super(parcel);
         this.genreName = parcel.readString();
         this.genreId = parcel.readString();
-        this.isKidsGenre = (parcel.readByte() != 0);
-        this.genreExperience = parcel.readString();
         this.genreType = parcel.readString();
     }
     
@@ -52,7 +45,7 @@ public class ListOfGenreSummary extends TrackableListSummary implements GenreLis
     @Override
     public GenreList$GenreType getGenreType() {
         if (this.genreType == null) {
-            return GenreList$GenreType.UNKNOWN;
+            return GenreList$GenreType.LOLOMO;
         }
         return GenreList$GenreType.valueOf(this.genreType.toUpperCase(Locale.ENGLISH));
     }
@@ -67,38 +60,22 @@ public class ListOfGenreSummary extends TrackableListSummary implements GenreLis
     }
     
     public String getTitle() {
-        return StringUtils.decodeHtmlEntities(this.genreName);
+        return this.genreName;
     }
     
     public LoMoType getType() {
-        if (this.enumType == null) {
-            this.enumType = LoMoType.create(this.genreExperience);
-        }
-        return this.enumType;
-    }
-    
-    @Override
-    public boolean isKidsGenre() {
-        return this.isKidsGenre;
+        return LoMoType.STANDARD;
     }
     
     @Override
     public String toString() {
-        return "ListOfGenreSummary [genreName=" + this.genreName + ", genreId=" + this.genreId + ", genreType=" + this.genreType + ", isKidsGenre=" + this.isKidsGenre + ", genreExperience=" + this.genreExperience + ", enumType=" + this.enumType + "]";
+        return "ListOfGenreSummary [genreName=" + this.genreName + ", genreId=" + this.genreId + ", genreType=" + this.genreType + "]";
     }
     
-    public void writeToParcel(final Parcel parcel, int n) {
+    public void writeToParcel(final Parcel parcel, final int n) {
         super.writeToParcel(parcel, n);
         parcel.writeString(this.genreName);
         parcel.writeString(this.genreId);
-        if (this.isKidsGenre) {
-            n = 1;
-        }
-        else {
-            n = 0;
-        }
-        parcel.writeByte((byte)n);
-        parcel.writeString(this.genreExperience);
         parcel.writeString(this.genreType);
     }
 }

@@ -41,43 +41,43 @@ final class ExoSoSource$ExoUnpacker extends UnpackingSoSource$Unpacker
         //    54: invokespecial   java/util/ArrayList.<init>:()V
         //    57: astore          12
         //    59: invokestatic    com/facebook/soloader/SysUtil.getSupportedAbis:()[Ljava/lang/String;
-        //    62: astore_1       
-        //    63: aload_1        
-        //    64: arraylength    
-        //    65: istore          4
-        //    67: iconst_0       
-        //    68: istore_2       
-        //    69: iload_2        
-        //    70: iload           4
-        //    72: if_icmpge       491
-        //    75: new             Ljava/io/File;
-        //    78: dup            
-        //    79: aload           10
-        //    81: aload_1        
-        //    82: iload_2        
-        //    83: aaload         
-        //    84: invokespecial   java/io/File.<init>:(Ljava/io/File;Ljava/lang/String;)V
-        //    87: astore          11
-        //    89: aload           11
-        //    91: invokevirtual   java/io/File.isDirectory:()Z
-        //    94: ifne            104
-        //    97: iload_2        
-        //    98: iconst_1       
-        //    99: iadd           
-        //   100: istore_2       
-        //   101: goto            69
-        //   104: new             Ljava/io/File;
-        //   107: dup            
-        //   108: aload           11
-        //   110: ldc             "metadata.txt"
-        //   112: invokespecial   java/io/File.<init>:(Ljava/io/File;Ljava/lang/String;)V
-        //   115: astore          7
-        //   117: aload           7
-        //   119: invokevirtual   java/io/File.isFile:()Z
-        //   122: ifeq            97
-        //   125: new             Ljava/io/FileReader;
-        //   128: dup            
-        //   129: aload           7
+        //    62: astore          7
+        //    64: aload           7
+        //    66: arraylength    
+        //    67: istore          4
+        //    69: iconst_0       
+        //    70: istore_2       
+        //    71: iload_2        
+        //    72: iload           4
+        //    74: if_icmpge       489
+        //    77: new             Ljava/io/File;
+        //    80: dup            
+        //    81: aload           10
+        //    83: aload           7
+        //    85: iload_2        
+        //    86: aaload         
+        //    87: invokespecial   java/io/File.<init>:(Ljava/io/File;Ljava/lang/String;)V
+        //    90: astore          11
+        //    92: aload           11
+        //    94: invokevirtual   java/io/File.isDirectory:()Z
+        //    97: ifne            107
+        //   100: iload_2        
+        //   101: iconst_1       
+        //   102: iadd           
+        //   103: istore_2       
+        //   104: goto            71
+        //   107: new             Ljava/io/File;
+        //   110: dup            
+        //   111: aload           11
+        //   113: ldc             "metadata.txt"
+        //   115: invokespecial   java/io/File.<init>:(Ljava/io/File;Ljava/lang/String;)V
+        //   118: astore_1       
+        //   119: aload_1        
+        //   120: invokevirtual   java/io/File.isFile:()Z
+        //   123: ifeq            100
+        //   126: new             Ljava/io/FileReader;
+        //   129: dup            
+        //   130: aload_1        
         //   131: invokespecial   java/io/FileReader.<init>:(Ljava/io/File;)V
         //   134: astore          8
         //   136: new             Ljava/io/BufferedReader;
@@ -86,225 +86,225 @@ final class ExoSoSource$ExoUnpacker extends UnpackingSoSource$Unpacker
         //   142: invokespecial   java/io/BufferedReader.<init>:(Ljava/io/Reader;)V
         //   145: astore          9
         //   147: aconst_null    
-        //   148: astore          7
-        //   150: aload           9
-        //   152: invokevirtual   java/io/BufferedReader.readLine:()Ljava/lang/String;
-        //   155: astore          14
-        //   157: aload           14
-        //   159: ifnull          386
-        //   162: aload           14
-        //   164: invokevirtual   java/lang/String.length:()I
-        //   167: ifeq            150
-        //   170: aload           14
-        //   172: bipush          32
-        //   174: invokevirtual   java/lang/String.indexOf:(I)I
-        //   177: istore          5
-        //   179: iload           5
-        //   181: iconst_m1      
-        //   182: if_icmpne       264
-        //   185: new             Ljava/lang/RuntimeException;
-        //   188: dup            
-        //   189: new             Ljava/lang/StringBuilder;
-        //   192: dup            
-        //   193: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   196: ldc             "illegal line in exopackage metadata: ["
-        //   198: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   201: aload           14
-        //   203: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   206: ldc             "]"
-        //   208: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   211: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   214: invokespecial   java/lang/RuntimeException.<init>:(Ljava/lang/String;)V
-        //   217: athrow         
-        //   218: astore          7
-        //   220: aload           7
-        //   222: athrow         
-        //   223: astore_1       
-        //   224: aload           9
-        //   226: ifnull          239
-        //   229: aload           7
-        //   231: ifnull          455
-        //   234: aload           9
-        //   236: invokevirtual   java/io/BufferedReader.close:()V
-        //   239: aload_1        
-        //   240: athrow         
-        //   241: astore          7
-        //   243: aload           7
-        //   245: athrow         
-        //   246: astore_1       
-        //   247: aload           8
-        //   249: ifnull          262
-        //   252: aload           7
-        //   254: ifnull          483
-        //   257: aload           8
-        //   259: invokevirtual   java/io/FileReader.close:()V
-        //   262: aload_1        
-        //   263: athrow         
-        //   264: new             Ljava/lang/StringBuilder;
-        //   267: dup            
-        //   268: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   271: aload           14
-        //   273: iconst_0       
-        //   274: iload           5
-        //   276: invokevirtual   java/lang/String.substring:(II)Ljava/lang/String;
-        //   279: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   282: ldc             ".so"
-        //   284: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   287: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   290: astore          13
-        //   292: aload           12
-        //   294: invokevirtual   java/util/ArrayList.size:()I
-        //   297: istore          6
-        //   299: iconst_0       
-        //   300: istore_3       
-        //   301: iload_3        
-        //   302: iload           6
-        //   304: if_icmpge       512
-        //   307: aload           12
-        //   309: iload_3        
-        //   310: invokevirtual   java/util/ArrayList.get:(I)Ljava/lang/Object;
-        //   313: checkcast       Lcom/facebook/soloader/ExoSoSource$FileDso;
-        //   316: getfield        com/facebook/soloader/ExoSoSource$FileDso.name:Ljava/lang/String;
-        //   319: aload           13
-        //   321: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
-        //   324: ifeq            379
-        //   327: iconst_1       
-        //   328: istore_3       
-        //   329: iload_3        
-        //   330: ifne            150
-        //   333: aload           14
-        //   335: iload           5
-        //   337: iconst_1       
-        //   338: iadd           
-        //   339: invokevirtual   java/lang/String.substring:(I)Ljava/lang/String;
-        //   342: astore          14
-        //   344: aload           12
-        //   346: new             Lcom/facebook/soloader/ExoSoSource$FileDso;
-        //   349: dup            
-        //   350: aload           13
-        //   352: aload           14
-        //   354: new             Ljava/io/File;
-        //   357: dup            
-        //   358: aload           11
-        //   360: aload           14
-        //   362: invokespecial   java/io/File.<init>:(Ljava/io/File;Ljava/lang/String;)V
-        //   365: invokespecial   com/facebook/soloader/ExoSoSource$FileDso.<init>:(Ljava/lang/String;Ljava/lang/String;Ljava/io/File;)V
-        //   368: invokevirtual   java/util/ArrayList.add:(Ljava/lang/Object;)Z
-        //   371: pop            
-        //   372: goto            150
-        //   375: astore_1       
-        //   376: goto            224
-        //   379: iload_3        
-        //   380: iconst_1       
-        //   381: iadd           
-        //   382: istore_3       
-        //   383: goto            301
-        //   386: aload           9
-        //   388: ifnull          400
-        //   391: iconst_0       
-        //   392: ifeq            435
-        //   395: aload           9
-        //   397: invokevirtual   java/io/BufferedReader.close:()V
-        //   400: aload           8
-        //   402: ifnull          97
-        //   405: iconst_0       
-        //   406: ifeq            463
-        //   409: aload           8
-        //   411: invokevirtual   java/io/FileReader.close:()V
-        //   414: goto            97
-        //   417: astore_1       
-        //   418: new             Ljava/lang/NullPointerException;
-        //   421: dup            
-        //   422: invokespecial   java/lang/NullPointerException.<init>:()V
-        //   425: athrow         
-        //   426: astore_1       
-        //   427: new             Ljava/lang/NullPointerException;
-        //   430: dup            
-        //   431: invokespecial   java/lang/NullPointerException.<init>:()V
-        //   434: athrow         
-        //   435: aload           9
-        //   437: invokevirtual   java/io/BufferedReader.close:()V
-        //   440: goto            400
-        //   443: astore          9
-        //   445: aload           7
-        //   447: aload           9
-        //   449: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
-        //   452: goto            239
-        //   455: aload           9
-        //   457: invokevirtual   java/io/BufferedReader.close:()V
-        //   460: goto            239
-        //   463: aload           8
-        //   465: invokevirtual   java/io/FileReader.close:()V
-        //   468: goto            97
-        //   471: astore          8
-        //   473: aload           7
-        //   475: aload           8
-        //   477: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
-        //   480: goto            262
-        //   483: aload           8
-        //   485: invokevirtual   java/io/FileReader.close:()V
-        //   488: goto            262
-        //   491: aload_0        
+        //   148: astore_1       
+        //   149: aload           9
+        //   151: invokevirtual   java/io/BufferedReader.readLine:()Ljava/lang/String;
+        //   154: astore          14
+        //   156: aload           14
+        //   158: ifnull          385
+        //   161: aload           14
+        //   163: invokevirtual   java/lang/String.length:()I
+        //   166: ifeq            149
+        //   169: aload           14
+        //   171: bipush          32
+        //   173: invokevirtual   java/lang/String.indexOf:(I)I
+        //   176: istore          5
+        //   178: iload           5
+        //   180: iconst_m1      
+        //   181: if_icmpne       262
+        //   184: new             Ljava/lang/RuntimeException;
+        //   187: dup            
+        //   188: new             Ljava/lang/StringBuilder;
+        //   191: dup            
+        //   192: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   195: ldc             "illegal line in exopackage metadata: ["
+        //   197: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   200: aload           14
+        //   202: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   205: ldc             "]"
+        //   207: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   210: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   213: invokespecial   java/lang/RuntimeException.<init>:(Ljava/lang/String;)V
+        //   216: athrow         
+        //   217: astore_1       
+        //   218: aload_1        
+        //   219: athrow         
+        //   220: astore          7
+        //   222: aload           9
+        //   224: ifnull          236
+        //   227: aload_1        
+        //   228: ifnull          453
+        //   231: aload           9
+        //   233: invokevirtual   java/io/BufferedReader.close:()V
+        //   236: aload           7
+        //   238: athrow         
+        //   239: astore          7
+        //   241: aload           7
+        //   243: athrow         
+        //   244: astore_1       
+        //   245: aload           8
+        //   247: ifnull          260
+        //   250: aload           7
+        //   252: ifnull          481
+        //   255: aload           8
+        //   257: invokevirtual   java/io/FileReader.close:()V
+        //   260: aload_1        
+        //   261: athrow         
+        //   262: new             Ljava/lang/StringBuilder;
+        //   265: dup            
+        //   266: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   269: aload           14
+        //   271: iconst_0       
+        //   272: iload           5
+        //   274: invokevirtual   java/lang/String.substring:(II)Ljava/lang/String;
+        //   277: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   280: ldc             ".so"
+        //   282: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   285: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   288: astore          13
+        //   290: aload           12
+        //   292: invokevirtual   java/util/ArrayList.size:()I
+        //   295: istore          6
+        //   297: iconst_0       
+        //   298: istore_3       
+        //   299: iload_3        
+        //   300: iload           6
+        //   302: if_icmpge       510
+        //   305: aload           12
+        //   307: iload_3        
+        //   308: invokevirtual   java/util/ArrayList.get:(I)Ljava/lang/Object;
+        //   311: checkcast       Lcom/facebook/soloader/ExoSoSource$FileDso;
+        //   314: getfield        com/facebook/soloader/ExoSoSource$FileDso.name:Ljava/lang/String;
+        //   317: aload           13
+        //   319: invokevirtual   java/lang/String.equals:(Ljava/lang/Object;)Z
+        //   322: ifeq            378
+        //   325: iconst_1       
+        //   326: istore_3       
+        //   327: iload_3        
+        //   328: ifne            149
+        //   331: aload           14
+        //   333: iload           5
+        //   335: iconst_1       
+        //   336: iadd           
+        //   337: invokevirtual   java/lang/String.substring:(I)Ljava/lang/String;
+        //   340: astore          14
+        //   342: aload           12
+        //   344: new             Lcom/facebook/soloader/ExoSoSource$FileDso;
+        //   347: dup            
+        //   348: aload           13
+        //   350: aload           14
+        //   352: new             Ljava/io/File;
+        //   355: dup            
+        //   356: aload           11
+        //   358: aload           14
+        //   360: invokespecial   java/io/File.<init>:(Ljava/io/File;Ljava/lang/String;)V
+        //   363: invokespecial   com/facebook/soloader/ExoSoSource$FileDso.<init>:(Ljava/lang/String;Ljava/lang/String;Ljava/io/File;)V
+        //   366: invokevirtual   java/util/ArrayList.add:(Ljava/lang/Object;)Z
+        //   369: pop            
+        //   370: goto            149
+        //   373: astore          7
+        //   375: goto            222
+        //   378: iload_3        
+        //   379: iconst_1       
+        //   380: iadd           
+        //   381: istore_3       
+        //   382: goto            299
+        //   385: aload           9
+        //   387: ifnull          399
+        //   390: iconst_0       
+        //   391: ifeq            434
+        //   394: aload           9
+        //   396: invokevirtual   java/io/BufferedReader.close:()V
+        //   399: aload           8
+        //   401: ifnull          100
+        //   404: iconst_0       
+        //   405: ifeq            461
+        //   408: aload           8
+        //   410: invokevirtual   java/io/FileReader.close:()V
+        //   413: goto            100
+        //   416: astore_1       
+        //   417: new             Ljava/lang/NullPointerException;
+        //   420: dup            
+        //   421: invokespecial   java/lang/NullPointerException.<init>:()V
+        //   424: athrow         
+        //   425: astore_1       
+        //   426: new             Ljava/lang/NullPointerException;
+        //   429: dup            
+        //   430: invokespecial   java/lang/NullPointerException.<init>:()V
+        //   433: athrow         
+        //   434: aload           9
+        //   436: invokevirtual   java/io/BufferedReader.close:()V
+        //   439: goto            399
+        //   442: astore          9
+        //   444: aload_1        
+        //   445: aload           9
+        //   447: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
+        //   450: goto            236
+        //   453: aload           9
+        //   455: invokevirtual   java/io/BufferedReader.close:()V
+        //   458: goto            236
+        //   461: aload           8
+        //   463: invokevirtual   java/io/FileReader.close:()V
+        //   466: goto            100
+        //   469: astore          8
+        //   471: aload           7
+        //   473: aload           8
+        //   475: invokevirtual   java/lang/Throwable.addSuppressed:(Ljava/lang/Throwable;)V
+        //   478: goto            260
+        //   481: aload           8
+        //   483: invokevirtual   java/io/FileReader.close:()V
+        //   486: goto            260
+        //   489: aload_0        
+        //   490: aload           12
         //   492: aload           12
-        //   494: aload           12
-        //   496: invokevirtual   java/util/ArrayList.size:()I
-        //   499: anewarray       Lcom/facebook/soloader/ExoSoSource$FileDso;
-        //   502: invokevirtual   java/util/ArrayList.toArray:([Ljava/lang/Object;)[Ljava/lang/Object;
-        //   505: checkcast       [Lcom/facebook/soloader/ExoSoSource$FileDso;
-        //   508: putfield        com/facebook/soloader/ExoSoSource$ExoUnpacker.mDsos:[Lcom/facebook/soloader/ExoSoSource$FileDso;
-        //   511: return         
-        //   512: iconst_0       
-        //   513: istore_3       
-        //   514: goto            329
-        //   517: astore_1       
-        //   518: aconst_null    
-        //   519: astore          7
-        //   521: goto            247
+        //   494: invokevirtual   java/util/ArrayList.size:()I
+        //   497: anewarray       Lcom/facebook/soloader/ExoSoSource$FileDso;
+        //   500: invokevirtual   java/util/ArrayList.toArray:([Ljava/lang/Object;)[Ljava/lang/Object;
+        //   503: checkcast       [Lcom/facebook/soloader/ExoSoSource$FileDso;
+        //   506: putfield        com/facebook/soloader/ExoSoSource$ExoUnpacker.mDsos:[Lcom/facebook/soloader/ExoSoSource$FileDso;
+        //   509: return         
+        //   510: iconst_0       
+        //   511: istore_3       
+        //   512: goto            327
+        //   515: astore_1       
+        //   516: aconst_null    
+        //   517: astore          7
+        //   519: goto            245
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  136    147    241    247    Ljava/lang/Throwable;
-        //  136    147    517    524    Any
-        //  150    157    218    224    Ljava/lang/Throwable;
-        //  150    157    375    379    Any
-        //  162    179    218    224    Ljava/lang/Throwable;
-        //  162    179    375    379    Any
-        //  185    218    218    224    Ljava/lang/Throwable;
-        //  185    218    375    379    Any
-        //  220    223    223    224    Any
-        //  234    239    443    455    Ljava/lang/Throwable;
-        //  234    239    517    524    Any
-        //  239    241    241    247    Ljava/lang/Throwable;
-        //  239    241    517    524    Any
-        //  243    246    246    247    Any
-        //  257    262    471    483    Ljava/lang/Throwable;
-        //  264    299    218    224    Ljava/lang/Throwable;
-        //  264    299    375    379    Any
-        //  307    327    218    224    Ljava/lang/Throwable;
-        //  307    327    375    379    Any
-        //  333    372    218    224    Ljava/lang/Throwable;
-        //  333    372    375    379    Any
-        //  395    400    426    435    Ljava/lang/Throwable;
-        //  395    400    517    524    Any
-        //  409    414    417    426    Ljava/lang/Throwable;
-        //  427    435    241    247    Ljava/lang/Throwable;
-        //  427    435    517    524    Any
-        //  435    440    241    247    Ljava/lang/Throwable;
-        //  435    440    517    524    Any
-        //  445    452    241    247    Ljava/lang/Throwable;
-        //  445    452    517    524    Any
-        //  455    460    241    247    Ljava/lang/Throwable;
-        //  455    460    517    524    Any
+        //  136    147    239    245    Ljava/lang/Throwable;
+        //  136    147    515    522    Any
+        //  149    156    217    222    Ljava/lang/Throwable;
+        //  149    156    373    378    Any
+        //  161    178    217    222    Ljava/lang/Throwable;
+        //  161    178    373    378    Any
+        //  184    217    217    222    Ljava/lang/Throwable;
+        //  184    217    373    378    Any
+        //  218    220    220    222    Any
+        //  231    236    442    453    Ljava/lang/Throwable;
+        //  231    236    515    522    Any
+        //  236    239    239    245    Ljava/lang/Throwable;
+        //  236    239    515    522    Any
+        //  241    244    244    245    Any
+        //  255    260    469    481    Ljava/lang/Throwable;
+        //  262    297    217    222    Ljava/lang/Throwable;
+        //  262    297    373    378    Any
+        //  305    325    217    222    Ljava/lang/Throwable;
+        //  305    325    373    378    Any
+        //  331    370    217    222    Ljava/lang/Throwable;
+        //  331    370    373    378    Any
+        //  394    399    425    434    Ljava/lang/Throwable;
+        //  394    399    515    522    Any
+        //  408    413    416    425    Ljava/lang/Throwable;
+        //  426    434    239    245    Ljava/lang/Throwable;
+        //  426    434    515    522    Any
+        //  434    439    239    245    Ljava/lang/Throwable;
+        //  434    439    515    522    Any
+        //  444    450    239    245    Ljava/lang/Throwable;
+        //  444    450    515    522    Any
+        //  453    458    239    245    Ljava/lang/Throwable;
+        //  453    458    515    522    Any
         // 
         // The error that occurred was:
         // 
-        // java.lang.NullPointerException
-        //     at com.strobel.assembler.ir.StackMappingVisitor.push(StackMappingVisitor.java:290)
-        //     at com.strobel.assembler.ir.StackMappingVisitor$InstructionAnalyzer.execute(StackMappingVisitor.java:833)
-        //     at com.strobel.assembler.ir.StackMappingVisitor$InstructionAnalyzer.visit(StackMappingVisitor.java:398)
-        //     at com.strobel.decompiler.ast.AstBuilder.performStackAnalysis(AstBuilder.java:2030)
-        //     at com.strobel.decompiler.ast.AstBuilder.build(AstBuilder.java:108)
+        // java.lang.IndexOutOfBoundsException: Index: 247, Size: 247
+        //     at java.util.ArrayList.rangeCheck(ArrayList.java:653)
+        //     at java.util.ArrayList.get(ArrayList.java:429)
+        //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3303)
+        //     at com.strobel.decompiler.ast.AstBuilder.convertToAst(AstBuilder.java:3551)
+        //     at com.strobel.decompiler.ast.AstBuilder.build(AstBuilder.java:113)
         //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:210)
         //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
         //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)

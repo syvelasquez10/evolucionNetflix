@@ -49,11 +49,11 @@ public abstract class BaseTextSubtitleParser extends BaseSubtitleParser implemen
         this.mRegions = new HashMap<String, Region>();
         this.mTextBlocks = new ArrayList<SubtitleBlock>();
         this.mDefault = new TextStyle();
-        this.createDefaults();
         this.mVideoAspectRatio = mVideoAspectRatio;
         this.mUserDefaults = mUserDefaults;
         this.mRegionDefault = mRegionDefault;
         this.mDeviceDefault = SubtitleUtils.getDeviceDefaultTextStyle(mUserDefaults, mRegionDefault);
+        this.createDefaults();
     }
     
     private int compareBlockTime(final long n, final int n2) {
@@ -229,7 +229,7 @@ public abstract class BaseTextSubtitleParser extends BaseSubtitleParser implemen
         for (int i = 0; i < elementsByTagName.getLength(); ++i) {
             final Node item = elementsByTagName.item(i);
             if (item instanceof Element) {
-                final TextStyle instanceFromContainer = TextStyle.createInstanceFromContainer((Element)item, this, null);
+                final TextStyle instanceFromContainer = TextStyle.createInstanceFromContainer((Element)item, this, this.mDefault);
                 if (instanceFromContainer == null) {
                     Log.w("nf_subtitles", "Style not found!");
                 }
@@ -305,6 +305,7 @@ public abstract class BaseTextSubtitleParser extends BaseSubtitleParser implemen
     protected void createDefaults() {
         this.mDefault.merge(this.mRegionDefault);
         this.mDefault.merge(this.mDeviceDefault);
+        Log.d("nf_subtitles", "Default text style %s", this.mDefault);
     }
     
     @Override

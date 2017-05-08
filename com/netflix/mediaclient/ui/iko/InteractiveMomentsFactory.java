@@ -19,7 +19,7 @@ public class InteractiveMomentsFactory
                 return new KongInteractiveMomentsManager();
             }
             if ("wordparty".equalsIgnoreCase(s)) {
-                return new WPInteractiveMomentsManager();
+                return (InteractiveMomentsManager)new WPInteractiveMomentsManager();
             }
         }
         return null;

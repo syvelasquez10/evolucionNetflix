@@ -896,6 +896,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                     }
                     Label_0223: {
                         break Label_0223;
+                    Label_0187_Outer:
                         while (true) {
                             Object o = new ArrayList<DeepErrorElement>();
                             final DeepErrorElement deepErrorElement = new DeepErrorElement();
@@ -914,24 +915,24 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                     CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), (CustomerServiceLogging$TerminationReason)o2, IClientLogging$CompletionReason.failed, (Error)o);
                                     this.callCleanup();
                                     return;
+                                    Log.e("nf_voip", "Engine is null and we received network failed! Should not happen!");
+                                    break;
+                                    o2 = CustomerServiceLogging$TerminationReason.failedBeforeConnected;
+                                    continue Label_0187_Outer;
+                                    // iftrue(Label_0274:, WhistleVoipAgent$WhistleCall.access$400(this.mCurrentCall) != n)
+                                    // iftrue(Label_0096:, !o2.hasNext())
+                                    while (true) {
+                                        ((Iterator<IVoip$OutboundCallListener>)o2).next().networkFailed(this.mCurrentCall);
+                                        Label_0244: {
+                                            break Label_0244;
+                                            o2 = this.mListeners.iterator();
+                                        }
+                                        continue;
+                                    }
                                     Label_0274: {
                                         Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received network failed on line " + n);
                                     }
                                     return;
-                                    // iftrue(Label_0096:, !o2.hasNext())
-                                    // iftrue(Label_0274:, WhistleVoipAgent$WhistleCall.access$400(this.mCurrentCall) != n)
-                                    while (true) {
-                                        ((Iterator<IVoip$OutboundCallListener>)o2).next().networkFailed(this.mCurrentCall);
-                                        continue;
-                                        Block_7: {
-                                            break Block_7;
-                                            Log.e("nf_voip", "Engine is null and we received network failed! Should not happen!");
-                                            break;
-                                        }
-                                        o2 = this.mListeners.iterator();
-                                        continue;
-                                    }
-                                    o2 = CustomerServiceLogging$TerminationReason.failedBeforeConnected;
                                 }
                                 catch (JSONException ex) {
                                     continue;

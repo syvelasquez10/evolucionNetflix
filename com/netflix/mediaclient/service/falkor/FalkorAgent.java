@@ -8,7 +8,6 @@ import com.netflix.model.leafs.advisory.ExpiringContentAdvisory$ContentAction;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
-import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.util.Coppola1Utils;
@@ -49,6 +48,7 @@ import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.service.job.NetflixJobScheduler;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
+import com.netflix.mediaclient.ui.lolomo.LoLoMoFrag;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.gfx.ImageLoader$ImageLoaderListener;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
@@ -118,7 +118,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
                 if (Log.isLoggable()) {
                     Log.d("FalkorAgent", "caching images for all visible videos in the view port.");
                 }
-                this.fetchLoMos(0, 19, new FalkorAgent$16(this, countDownLatch));
+                this.fetchLoMos(0, LoLoMoFrag.getNumberRowsToFetch((Context)this.getService()) - 1, new FalkorAgent$16(this, countDownLatch));
                 return;
             }
             if (Log.isLoggable()) {
@@ -686,11 +686,11 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         new BackgroundTask().execute(new FalkorAgent$19(this, countDownLatch2, countDownLatch));
     }
     
-    public void addToQueue(final String s, final VideoType videoType, final int n, final boolean b, final String s2, final BrowseAgentCallback browseAgentCallback) {
+    public void addToQueue(final String s, final VideoType videoType, final int n, final String s2, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.addToQueue(s, videoType, n, b, s2, browseAgentCallback);
+        this.cmp.addToQueue(s, videoType, n, s2, browseAgentCallback);
     }
     
     @Override
@@ -809,6 +809,14 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
                 Log.d("FalkorAgent", String.format("fetchEpisodesForSeason - parentId %s or videoId %s is Movie - skip!", parentId, playableId));
             }
         }
+    }
+    
+    @Override
+    public void fetchFalkorVideo(final String s, final BrowseAgentCallback browseAgentCallback) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.fetchFalkorVideo(s, browseAgentCallback);
     }
     
     public void fetchGenreList(final BrowseAgentCallback browseAgentCallback) {
@@ -1135,7 +1143,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
-        this.cmp.fetchNotifications(0, IrisUtils.PAGE_NOTIFICATIONS_SIZE - 1, b, new FalkorAgent$8(this, b2, messageData));
+        this.cmp.fetchNotifications(0, 7, b, new FalkorAgent$8(this, b2, messageData));
         if (this.getService() != null && this.getService().getCurrentProfile() != null) {
             this.rescheduleNotificationsRefresh();
         }
@@ -1388,7 +1396,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.requestId = System.nanoTime();
         final long requestId = this.requestId;
         final CountDownLatch countDownLatch = new CountDownLatch(2);
-        this.prefetchLoLoMo(0, 19, 0, LomoConfig.computeNumVideosToFetchPerBatch((Context)this.getService(), LoMoType.STANDARD) - 1, 0, LomoConfig.computeNumVideosToFetchPerBatch((Context)this.getService(), LoMoType.CONTINUE_WATCHING) - 1, BrowseExperience.shouldLoadExtraCharacterLeaves(), BrowseExperience.shouldLoadKubrickLeavesInLolomo(), false, true, new FalkorAgent$12(this, requestId, countDownLatch));
+        this.prefetchLoLoMo(0, LoLoMoFrag.getNumberRowsToFetch((Context)this.getService()) - 1, 0, LomoConfig.computeNumVideosToFetchPerBatch((Context)this.getService(), LoMoType.STANDARD) - 1, 0, LomoConfig.computeNumVideosToFetchPerBatch((Context)this.getService(), LoMoType.CONTINUE_WATCHING) - 1, BrowseExperience.shouldLoadExtraCharacterLeaves(), BrowseExperience.shouldLoadKubrickLeavesInLolomo(), false, true, new FalkorAgent$12(this, requestId, countDownLatch));
         this.notifyJobSchedulerFinishedAsync(countDownLatch);
         return true;
     }

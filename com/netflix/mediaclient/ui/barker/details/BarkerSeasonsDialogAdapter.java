@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.barker.details;
 
+import java.util.Locale;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -66,14 +67,14 @@ public class BarkerSeasonsDialogAdapter extends RecyclerView$Adapter<BarkerSeaso
     
     @Override
     public BarkerSeasonsDialogAdapter$EpisodesViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int n) {
-        return new BarkerSeasonsDialogAdapter$EpisodesViewHolder(this, LayoutInflater.from(viewGroup.getContext()).inflate(2130903161, viewGroup, false));
+        return new BarkerSeasonsDialogAdapter$EpisodesViewHolder(this, LayoutInflater.from(viewGroup.getContext()).inflate(2130903169, viewGroup, false));
     }
     
     public int updateSeasonData(final List<SeasonDetails> list, final int n) {
         this.seasons.clear();
         for (int i = 0; i < list.size(); ++i) {
             final SeasonDetails seasonDetails = list.get(i);
-            this.seasons.add(seasonDetails.getSeasonLongSeqLabel().toUpperCase());
+            this.seasons.add(seasonDetails.getTitle().toUpperCase(Locale.getDefault()));
             if (n == seasonDetails.getSeasonNumber()) {
                 this.curSelectedPosition = i;
             }

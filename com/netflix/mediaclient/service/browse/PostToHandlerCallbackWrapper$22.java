@@ -11,7 +11,6 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
-import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
@@ -21,38 +20,38 @@ import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetail
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
 import com.netflix.mediaclient.servicemgr.interface_.Billboard;
 import com.netflix.model.leafs.advisory.Advisory;
-import android.os.Handler;
 import com.netflix.model.branches.FalkorActorStill;
 import com.netflix.model.branches.MementoVideoSwatch;
-import com.netflix.model.branches.FalkorPerson;
+import android.os.Handler;
+import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.List;
+import com.netflix.model.branches.FalkorPerson;
 
 class PostToHandlerCallbackWrapper$22 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
-    final /* synthetic */ List val$actors;
+    final /* synthetic */ FalkorPerson val$actor;
+    final /* synthetic */ List val$related;
     final /* synthetic */ Status val$res;
-    final /* synthetic */ List val$stills;
-    final /* synthetic */ List val$swatches;
     
-    PostToHandlerCallbackWrapper$22(final PostToHandlerCallbackWrapper this$0, final List val$actors, final List val$swatches, final Status val$res, final List val$stills) {
+    PostToHandlerCallbackWrapper$22(final PostToHandlerCallbackWrapper this$0, final FalkorPerson val$actor, final List val$related, final Status val$res) {
         this.this$0 = this$0;
-        this.val$actors = val$actors;
-        this.val$swatches = val$swatches;
+        this.val$actor = val$actor;
+        this.val$related = val$related;
         this.val$res = val$res;
-        this.val$stills = val$stills;
     }
     
     @Override
     public void run() {
         ThreadUtils.assertOnMain();
-        this.this$0.callback.onActorDetailsAndRelatedFetched(this.val$actors, this.val$swatches, this.val$res, this.val$stills);
+        this.this$0.callback.onPersonRelatedFetched(this.val$actor, this.val$related, this.val$res);
     }
 }

@@ -23,6 +23,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
 import com.netflix.mediaclient.service.user.volley.FriendForRecommendation;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -56,6 +57,8 @@ public interface ManagerCallback
     void onEpisodeDetailsFetched(final EpisodeDetails p0, final Status p1);
     
     void onEpisodesFetched(final List<EpisodeDetails> p0, final Status p1);
+    
+    void onFalkorVideoFetched(final FalkorVideo p0, final Status p1);
     
     void onFriendsForRecommendationsListFetched(final List<FriendForRecommendation> p0, final Status p1);
     

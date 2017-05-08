@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.NetflixService;
 import java.util.concurrent.atomic.AtomicLong;
+import com.netflix.mediaclient.ui.rating.Ratings$CL;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import java.util.List;

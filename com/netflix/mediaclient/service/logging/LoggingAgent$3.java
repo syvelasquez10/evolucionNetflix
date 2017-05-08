@@ -21,6 +21,7 @@ import com.android.volley.NetworkDispatcher;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.javabridge.ui.LogArguments;
 import android.support.v4.content.LocalBroadcastManager;
+import com.netflix.mediaclient.ui.rating.Ratings$CL;
 import com.netflix.mediaclient.servicemgr.ExceptionLoggingCl;
 import com.netflix.mediaclient.servicemgr.OfflineLogging;
 import com.netflix.mediaclient.servicemgr.IkoLogging;

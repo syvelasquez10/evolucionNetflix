@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.player.bladerunnerclient;
 
+import com.netflix.mediaclient.service.player.bladerunnerclient.volley.OfflineLicenseSyncRequest;
 import java.util.List;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.RefreshOfflineManifestRequest;
 import com.netflix.mediaclient.service.player.manifest.NfManifest;
@@ -13,7 +14,6 @@ import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchLicenseRequest;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchLicenseRequest$LicenseReqType;
 import com.netflix.mediaclient.service.player.drm.BaseLicenseContext;
-import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchDownloadComplete;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.OfflineLicenseDeactivate;
 import com.netflix.mediaclient.service.msl.volley.MSLVolleyRequest;
 import com.netflix.mediaclient.service.player.bladerunnerclient.volley.FetchLinkRequest;

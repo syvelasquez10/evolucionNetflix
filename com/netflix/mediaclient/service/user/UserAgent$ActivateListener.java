@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.user;
 
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.ui.lolomo.PrefetchLolomoABTestUtils;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
@@ -14,13 +15,13 @@ import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.util.PrivacyUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.ThumbMessaging;
 import com.netflix.mediaclient.webapi.WebApiCommand;
 import com.netflix.mediaclient.servicemgr.IMSLClient$MSLUserCredentialRegistry;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.l10n.UserLocale;
-import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
@@ -43,6 +44,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.service.webclient.model.leafs.AccountData;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
@@ -56,9 +58,12 @@ import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
 import com.netflix.mediaclient.android.app.NetflixStatus;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.StatusUtils;
+import com.netflix.mediaclient.StatusCode;
+import com.netflix.mediaclient.service.error.crypto.ErrorSource;
+import com.netflix.mediaclient.service.error.crypto.CryptoErrorManager;
+import com.netflix.mediaclient.service.error.crypto.NtbaCdmProvisionFailedErrorHandler;
 import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.event.nrdp.registration.ActivateEvent;
@@ -80,6 +85,7 @@ class UserAgent$ActivateListener implements EventListener
         if (uiEvent instanceof ActivateEvent) {
             final ActivateEvent activateEvent = (ActivateEvent)uiEvent;
             if (!activateEvent.failed()) {
+                Log.d("nf_service_useragent", "Received a success activate event: %s", activateEvent);
                 final String cookies = activateEvent.getCookies();
                 final String access$1000 = this.this$0.extractToken(this.this$0.getNetflixIdName() + "=", cookies);
                 final String access$1001 = this.this$0.extractToken(this.this$0.getSecureNetflixIdName() + "=", cookies);
@@ -88,12 +94,15 @@ class UserAgent$ActivateListener implements EventListener
                 }
             }
             else if (activateEvent.isActionId()) {
-                if (Log.isLoggable()) {
-                    Log.d("nf_service_useragent", "Received a activate event with ActionID error: " + activateEvent.getActionID() + ", reason:" + activateEvent.getReasonCode() + "  Received msg " + activateEvent.getMessage());
-                }
+                Log.d("nf_service_useragent", "Received an activate event with ActionID error: %s", activateEvent);
                 if (BlacklistedWidevinePluginErrorDescriptor.canHandle(activateEvent)) {
-                    Log.d("nf_service_useragent", "Action ID 3 and reason code 15003: blacklisted Widevine L3 plugin, report an error");
+                    Log.d("nf_service_useragent", "Action ID 1 and reason code 15003: blacklisted Widevine L3 plugin, report an error");
                     this.this$0.getErrorHandler().addError(new BlacklistedWidevinePluginErrorDescriptor(this.this$0.getContext()));
+                    return;
+                }
+                if (NtbaCdmProvisionFailedErrorHandler.canHandle(activateEvent)) {
+                    Log.d("nf_service_useragent", "Action ID 1 and reason code 15001 and transaction is CDM provision: initiate crypto error workflow");
+                    CryptoErrorManager.INSTANCE.mediaDrmFailure(ErrorSource.ntba, StatusCode.DRM_FAILURE_CDM, new IllegalStateException("Action ID 1 and reason code 15001 and transaction is CDM provision"));
                     return;
                 }
                 this.this$0.mUserAgentStateManager.accountOrProfileActivated(false, null, null);

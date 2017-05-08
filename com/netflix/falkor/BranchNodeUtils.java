@@ -4,6 +4,7 @@
 
 package com.netflix.falkor;
 
+import java.util.Set;
 import java.util.HashMap;
 import java.util.Date;
 import java.io.IOException;
@@ -281,6 +282,14 @@ public class BranchNodeUtils
             }
         }
         return valueAsString;
+    }
+    
+    public static void setupCharacterRoles(final Set<String> set, final String[] array) {
+        if (set != null && array != null) {
+            for (int length = array.length, i = 0; i < length; ++i) {
+                set.add(array[i]);
+            }
+        }
     }
     
     public static boolean shouldIgnoreKey(final String s) {

@@ -43,12 +43,10 @@ public class KongInteractiveMomentsModel extends InteractiveMomentsModel
         return list;
     }
     
-    @Override
     public String getType() {
         return this.type;
     }
     
-    @Override
     public String toString() {
         return "KongInteractiveMomentsModel{type='" + this.type + '\'' + ", moments=" + this.moments + '}';
     }

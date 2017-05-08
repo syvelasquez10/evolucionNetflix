@@ -333,26 +333,36 @@ public class Crittercism
             if (e != null) {
                 break Label_0019;
             }
+        Label_0097_Outer:
             while (true) {
+            Label_0097:
                 while (true) {
                     ax c;
                     try {
                         a(String.class.getCanonicalName());
                         return;
-                        // iftrue(Label_0048:, context != null)
-                        a(Context.class.getCanonicalName());
-                        return;
+                        while (true) {
+                            a(Context.class.getCanonicalName());
+                            return;
+                            continue Label_0097_Outer;
+                        }
                     }
+                    // iftrue(Label_0048:, context != null)
                     catch (bl$a bl$a) {
                         a(bl$a);
                         return;
                     }
                     catch (ThreadDeath threadDeath) {
                         throw threadDeath;
-                        long nanoTime = System.nanoTime();
-                        c = ax.C();
                         // iftrue(Label_0142:, Build$VERSION.SDK_INT >= 14)
-                        dw.b("Crittercism is not supported for Android API less than 14 (ICS).");
+                        long nanoTime;
+                        while (true) {
+                            dw.b("Crittercism is not supported for Android API less than 14 (ICS).");
+                            break Label_0097;
+                            nanoTime = System.nanoTime();
+                            c = ax.C();
+                            continue Label_0097_Outer;
+                        }
                         nanoTime = (System.nanoTime() - nanoTime) / 1000000L;
                         dw.d("Crittercism finished initializing in " + nanoTime + "ms");
                         return;
@@ -373,10 +383,10 @@ public class Crittercism
                     c.t = t;
                     if (c.g.a()) {
                         dw.d("User opted out. Not initializing Crittercism");
-                        continue;
+                        continue Label_0097;
                     }
                     c.D();
-                    continue;
+                    continue Label_0097;
                 }
             }
         }

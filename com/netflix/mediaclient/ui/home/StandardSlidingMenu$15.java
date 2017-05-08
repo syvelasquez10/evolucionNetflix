@@ -18,6 +18,6 @@ final class StandardSlidingMenu$15 implements Runnable
     
     @Override
     public void run() {
-        LogoutActivity.showLogoutDialog(this.val$context);
+        LogoutActivity.showLogoutDialog((Activity)this.val$context);
     }
 }

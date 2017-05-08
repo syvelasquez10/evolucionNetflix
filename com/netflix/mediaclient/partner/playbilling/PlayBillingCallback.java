@@ -8,7 +8,11 @@ import org.json.JSONObject;
 
 public abstract class PlayBillingCallback
 {
-    private final String callback;
+    private String callback;
+    
+    public PlayBillingCallback() {
+        this.callback = null;
+    }
     
     public PlayBillingCallback(final String callback) {
         this.callback = callback;

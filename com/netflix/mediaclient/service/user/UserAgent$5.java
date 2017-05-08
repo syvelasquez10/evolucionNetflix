@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.user;
 
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier$PinType;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.ui.lolomo.PrefetchLolomoABTestUtils;
 import com.netflix.mediaclient.ui.profiles.RestrictedProfilesReceiver;
@@ -15,16 +16,17 @@ import com.netflix.mediaclient.util.StatusUtils;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.util.PrivacyUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.ThumbMessaging;
 import com.netflix.mediaclient.webapi.WebApiCommand;
 import com.netflix.mediaclient.servicemgr.IMSLClient$MSLUserCredentialRegistry;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.l10n.UserLocale;
-import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
+import java.util.Iterator;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import com.netflix.mediaclient.util.NetflixPreference;
@@ -44,58 +46,37 @@ import org.json.JSONTokener;
 import org.json.JSONArray;
 import java.util.ArrayList;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.service.webclient.model.leafs.AccountData;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.service.webclient.model.leafs.User;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
 import com.netflix.mediaclient.javabridge.ui.Registration;
 import com.netflix.mediaclient.javabridge.ui.Nrdp;
+import java.util.List;
+import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
 import com.netflix.mediaclient.javabridge.ui.DeviceAccount;
 import com.netflix.mediaclient.javabridge.ui.EventListener;
+import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.service.configuration.ConfigurationAgentWebCallback;
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent;
-import java.util.Iterator;
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.service.webclient.model.leafs.UserProfile;
-import java.util.List;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.service.webclient.model.leafs.AccountData;
+import com.netflix.mediaclient.service.webclient.model.leafs.User;
 
-class UserAgent$5 extends SimpleUserAgentWebCallback
+class UserAgent$5 implements Runnable
 {
     final /* synthetic */ UserAgent this$0;
+    final /* synthetic */ User val$user;
     
-    UserAgent$5(final UserAgent this$0) {
+    UserAgent$5(final UserAgent this$0, final User val$user) {
         this.this$0 = this$0;
+        this.val$user = val$user;
     }
     
     @Override
-    public void onUserProfilesUpdated(final AccountData accountData, final Status status) {
-        if (Log.isLoggable()) {
-            Log.v("nf_service_useragent", "onUserProfilesUpdated: " + status.getStatusCode());
-        }
-        if (status.isSucces() && accountData != null) {
-            final List<UserProfile> userProfiles = accountData.getUserProfiles();
-            if (Log.isLoggable()) {
-                Log.d("nf_service_useragent", String.format("onUserProfilesUpdated got profiles: %d", userProfiles.size()));
-            }
-            this.this$0.mListOfUserProfiles = userProfiles;
-            this.this$0.persistListOfUserProfiles(userProfiles);
-            if (this.this$0.mCurrentUserProfile != null) {
-                for (final UserProfile userProfile : userProfiles) {
-                    if (StringUtils.safeEquals(this.this$0.mCurrentUserProfile.getProfileGuid(), userProfile.getProfileGuid())) {
-                        this.this$0.checkCurrentProfileTypeWasChanged(userProfile);
-                        this.this$0.mCurrentUserProfile = userProfile;
-                        this.this$0.persistCurrentProfileGuid(this.this$0.mCurrentUserProfile);
-                    }
-                }
-            }
-            UserAgentBroadcastIntents.signalProfilesListUpdated(this.this$0.getContext());
-            return;
-        }
-        Log.e("nf_service_useragent", "Updating user profiles failed with statusCode=" + status.getStatusCode());
+    public void run() {
+        this.this$0.mUserWebClient.refreshUserMessage(this.val$user);
     }
 }

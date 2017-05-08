@@ -5,6 +5,7 @@
 package com.netflix.android.tooltips;
 
 import android.support.v4.view.ViewCompat;
+import android.graphics.Typeface;
 import android.view.View$MeasureSpec;
 import android.view.ViewGroup$MarginLayoutParams;
 import android.view.ViewGroup$LayoutParams;
@@ -21,7 +22,9 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.view.View$OnClickListener;
+import android.widget.FrameLayout;
 import android.graphics.RectF;
+import android.widget.ImageView;
 import android.graphics.Paint;
 import android.widget.TextView;
 import android.graphics.Rect;

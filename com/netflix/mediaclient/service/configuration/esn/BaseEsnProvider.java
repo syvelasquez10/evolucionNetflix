@@ -444,7 +444,7 @@ public abstract class BaseEsnProvider implements EsnProvider
         return validateChars(StringUtils.replaceWhiteSpace(Build.MODEL, BaseEsnProvider.DELIM));
     }
     
-    void initialize(final Context context) {
+    final void initialize(final Context context) {
         if (context == null) {
             throw new IllegalArgumentException("Context can not be null");
         }
@@ -454,5 +454,6 @@ public abstract class BaseEsnProvider implements EsnProvider
         }
         this.initFutureEsn2(context);
         this.generateEsnPrefix();
+        PreferenceUtils.putStringPref(context, "nf_drm_esn", this.getEsn());
     }
 }

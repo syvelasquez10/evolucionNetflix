@@ -7,6 +7,7 @@ package com.netflix.android.tooltips;
 import android.graphics.ColorFilter;
 import android.graphics.Canvas;
 import android.support.v4.view.ViewCompat;
+import android.graphics.Typeface;
 import android.view.View$MeasureSpec;
 import android.view.ViewGroup$MarginLayoutParams;
 import android.view.ViewGroup$LayoutParams;
@@ -23,8 +24,10 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.view.View$OnClickListener;
+import android.widget.FrameLayout;
 import android.graphics.RectF;
 import android.view.View;
+import android.widget.ImageView;
 import android.graphics.Paint;
 import android.widget.TextView;
 import android.graphics.Rect;
@@ -44,6 +47,7 @@ public class TooltipLayout extends ViewGroup
     private TextView mDetail;
     private int mGravity;
     private final Paint mHighlightPaint;
+    private ImageView mImageTitle;
     private int mLastMeasuredHeight;
     private int mLastMeasuredWidth;
     private final int[] mLocationHelper;
@@ -52,7 +56,8 @@ public class TooltipLayout extends ViewGroup
     private final Paint mScrimPaint;
     private View mTarget;
     private final RectF mTargetBounds;
-    private TextView mTitle;
+    private TextView mTextTitle;
+    private FrameLayout mTitle;
     private ViewGroup mTooltip;
     private final int mTooltipDefaultSize;
     private final TooltipLayout$TooltipDesignDrawable mTooltipDesignDrawable;
@@ -148,7 +153,9 @@ public class TooltipLayout extends ViewGroup
     
     protected void onFinishInflate() {
         super.onFinishInflate();
-        this.mTitle = (TextView)this.findViewById(R$id.title);
+        this.mTitle = (FrameLayout)this.findViewById(R$id.title);
+        this.mTextTitle = (TextView)this.findViewById(R$id.title_text);
+        this.mImageTitle = (ImageView)this.findViewById(R$id.title_image);
         this.mDetail = (TextView)this.findViewById(R$id.detail);
         (this.mTooltip = (ViewGroup)this.findViewById(R$id.tooltip)).setBackground((Drawable)this.mTooltipDesignDrawable);
         this.mTooltip.setOnClickListener((View$OnClickListener)new TooltipLayout$3(this));
@@ -241,6 +248,10 @@ public class TooltipLayout extends ViewGroup
         this.mDetail.setText(text);
     }
     
+    public void setDetailTypeface(final Typeface typeface) {
+        this.mDetail.setTypeface(typeface);
+    }
+    
     public void setScrimColor(final int color) {
         this.mScrimPaint.setColor(color);
         this.invalidate();
@@ -252,8 +263,20 @@ public class TooltipLayout extends ViewGroup
         this.requestLayout();
     }
     
+    public void setTitle(final Drawable imageDrawable) {
+        this.mTextTitle.setVisibility(8);
+        this.mImageTitle.setVisibility(0);
+        this.mImageTitle.setImageDrawable(imageDrawable);
+    }
+    
     public void setTitle(final CharSequence text) {
-        this.mTitle.setText(text);
+        this.mImageTitle.setVisibility(8);
+        this.mTextTitle.setVisibility(0);
+        this.mTextTitle.setText(text);
+    }
+    
+    public void setTitleTypeface(final Typeface typeface) {
+        this.mTextTitle.setTypeface(typeface);
     }
     
     void setUserOnClickListener(final View$OnClickListener mUserOnClickListener) {

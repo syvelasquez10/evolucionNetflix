@@ -16,6 +16,7 @@ public abstract class BaseJavaModule implements NativeModule
     private static final BaseJavaModule$ArgumentExtractor<Boolean> ARGUMENT_EXTRACTOR_BOOLEAN;
     private static final BaseJavaModule$ArgumentExtractor<Callback> ARGUMENT_EXTRACTOR_CALLBACK;
     private static final BaseJavaModule$ArgumentExtractor<Double> ARGUMENT_EXTRACTOR_DOUBLE;
+    private static final BaseJavaModule$ArgumentExtractor<Dynamic> ARGUMENT_EXTRACTOR_DYNAMIC;
     private static final BaseJavaModule$ArgumentExtractor<Float> ARGUMENT_EXTRACTOR_FLOAT;
     private static final BaseJavaModule$ArgumentExtractor<Integer> ARGUMENT_EXTRACTOR_INTEGER;
     private static final BaseJavaModule$ArgumentExtractor<ReadableMap> ARGUMENT_EXTRACTOR_MAP;
@@ -24,7 +25,6 @@ public abstract class BaseJavaModule implements NativeModule
     public static final String METHOD_TYPE_ASYNC = "async";
     public static final String METHOD_TYPE_PROMISE = "promise";
     public static final String METHOD_TYPE_SYNC = "sync";
-    private Map<String, Object> mHooks;
     private Map<String, NativeModule$NativeMethod> mMethods;
     
     static {
@@ -34,9 +34,10 @@ public abstract class BaseJavaModule implements NativeModule
         ARGUMENT_EXTRACTOR_INTEGER = new BaseJavaModule$4();
         ARGUMENT_EXTRACTOR_STRING = new BaseJavaModule$5();
         ARGUMENT_EXTRACTOR_ARRAY = new BaseJavaModule$6();
-        ARGUMENT_EXTRACTOR_MAP = new BaseJavaModule$7();
-        ARGUMENT_EXTRACTOR_CALLBACK = new BaseJavaModule$8();
-        ARGUMENT_EXTRACTOR_PROMISE = new BaseJavaModule$9();
+        ARGUMENT_EXTRACTOR_DYNAMIC = new BaseJavaModule$7();
+        ARGUMENT_EXTRACTOR_MAP = new BaseJavaModule$8();
+        ARGUMENT_EXTRACTOR_CALLBACK = new BaseJavaModule$9();
+        ARGUMENT_EXTRACTOR_PROMISE = new BaseJavaModule$10();
     }
     
     private static char commonTypeToChar(final Class clazz) {
@@ -74,23 +75,16 @@ public abstract class BaseJavaModule implements NativeModule
         if (this.mMethods == null) {
             Systrace.beginSection(0L, "findMethods");
             this.mMethods = new HashMap<String, NativeModule$NativeMethod>();
-            this.mHooks = new HashMap<String, Object>();
             final Method[] declaredMethods = this.getClass().getDeclaredMethods();
             for (int length = declaredMethods.length, i = 0; i < length; ++i) {
                 final Method method = declaredMethods[i];
-                if (method.getAnnotation(ReactMethod.class) != null) {
+                final ReactMethod reactMethod = method.getAnnotation(ReactMethod.class);
+                if (reactMethod != null) {
                     final String name = method.getName();
-                    if (this.mHooks.containsKey(name) || this.mMethods.containsKey(name)) {
-                        throw new IllegalArgumentException("Java Module " + this.getName() + " sync method name already registered: " + name);
+                    if (this.mMethods.containsKey(name)) {
+                        throw new IllegalArgumentException("Java Module " + this.getName() + " method name already registered: " + name);
                     }
-                    this.mMethods.put(name, new BaseJavaModule$JavaMethod(this, method));
-                }
-                if (method.getAnnotation(ReactSyncHook.class) != null) {
-                    final String name2 = method.getName();
-                    if (this.mHooks.containsKey(name2) || this.mMethods.containsKey(name2)) {
-                        throw new IllegalArgumentException("Java Module " + this.getName() + " sync method name already registered: " + name2);
-                    }
-                    this.mHooks.put(name2, new BaseJavaModule$SyncJavaHook(this, method));
+                    this.mMethods.put(name, new BaseJavaModule$JavaMethod(this, method, reactMethod.isBlockingSynchronousMethod()));
                 }
             }
             Systrace.endSection(0L);
@@ -116,6 +110,9 @@ public abstract class BaseJavaModule implements NativeModule
         }
         if (clazz == ReadableArray.class) {
             return 'A';
+        }
+        if (clazz == Dynamic.class) {
+            return 'Y';
         }
         throw new RuntimeException("Got unknown param class: " + clazz.getSimpleName());
     }
@@ -149,11 +146,6 @@ public abstract class BaseJavaModule implements NativeModule
     public final Map<String, NativeModule$NativeMethod> getMethods() {
         this.findMethods();
         return Assertions.assertNotNull(this.mMethods);
-    }
-    
-    public final Map<String, Object> getSyncHooks() {
-        this.findMethods();
-        return Assertions.assertNotNull(this.mHooks);
     }
     
     @Override

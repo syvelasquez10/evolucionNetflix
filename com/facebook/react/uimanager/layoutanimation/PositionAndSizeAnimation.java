@@ -22,8 +22,8 @@ class PositionAndSizeAnimation extends Animation implements HandleLayout
     
     public PositionAndSizeAnimation(final View mView, final int n, final int n2, final int n3, final int n4) {
         this.mView = mView;
-        this.mStartX = mView.getX();
-        this.mStartY = mView.getY();
+        this.mStartX = mView.getX() - mView.getTranslationX();
+        this.mStartY = mView.getY() - mView.getTranslationY();
         this.mStartWidth = mView.getWidth();
         this.mStartHeight = mView.getHeight();
         this.mDeltaX = n - this.mStartX;

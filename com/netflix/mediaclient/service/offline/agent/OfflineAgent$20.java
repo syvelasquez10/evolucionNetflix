@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.offline.agent;
 
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;
+import com.netflix.mediaclient.service.offline.license.OfflineLicenseManager$LicenseSyncResponseCallback;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflineUtils;
 import com.android.volley.Network;
@@ -21,8 +22,10 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmIncomple
 import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.BaseStatus;
@@ -43,7 +46,6 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQualit
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.app.NetflixStatus;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayableImpl;
 import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;
@@ -55,8 +57,11 @@ import java.util.Iterator;
 import com.netflix.mediaclient.service.offline.registry.RegistryData;
 import com.netflix.mediaclient.service.offline.registry.OfflineRegistry$RegistryEnumerator;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayablePersistentData;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
+import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.android.app.Status;
@@ -83,11 +88,8 @@ import android.os.HandlerThread;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.IntentCommandHandler;
 import com.netflix.mediaclient.service.ServiceAgent;
-import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.ThreadUtils;
 
-class OfflineAgent$20 implements DownloadController$DownloadControllerListener
+class OfflineAgent$20 implements Runnable
 {
     final /* synthetic */ OfflineAgent this$0;
     
@@ -96,44 +98,7 @@ class OfflineAgent$20 implements DownloadController$DownloadControllerListener
     }
     
     @Override
-    public void continueDownloadOnBackOff() {
-        ThreadUtils.assertNotOnMain();
-        Log.i("nf_offlineAgent", "continueDownloadOnBackOff");
-        this.this$0.startDownloadIfAllowed();
-    }
-    
-    @Override
-    public void continueDownloadOnNetworkChanged() {
-        ThreadUtils.assertNotOnMain();
-        Log.i("nf_offlineAgent", "continueDownloadOnNetworkChanged");
-        this.this$0.startDownloadIfAllowed();
-    }
-    
-    @Override
-    public void continueDownloadOnStreamingStopped() {
-        ThreadUtils.assertNotOnMain();
-        Log.i("nf_offlineAgent", "continueDownloadOnStreamingStopped");
-        this.this$0.startDownloadIfAllowed();
-    }
-    
-    @Override
-    public void stopDownloadOnStreamingStarted() {
-        ThreadUtils.assertNotOnMain();
-        Log.i("nf_offlineAgent", "stopDownloadOnStreamingStarted");
-        this.this$0.stopAllDownloadsAndPersistRegistry(StopReason.PlayerStreaming);
-    }
-    
-    @Override
-    public void stopDownloadsNoNetwork() {
-        ThreadUtils.assertNotOnMain();
-        Log.i("nf_offlineAgent", "stopDownloadsNoNetwork");
-        this.this$0.stopAllDownloadsAndPersistRegistry(StopReason.NoNetworkConnectivity);
-    }
-    
-    @Override
-    public void stopDownloadsNotAllowedByNetwork() {
-        ThreadUtils.assertNotOnMain();
-        Log.i("nf_offlineAgent", "stopDownloadsNotAllowedByNetwork");
-        this.this$0.stopAllDownloadsAndPersistRegistry(StopReason.NotAllowedOnCurrentNetwork);
+    public void run() {
+        this.this$0.mDownloadNotificationManager.cancelNotificationOnAccountInActive();
     }
 }

@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service.offline.agent;
 
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflineStorageVolumeUiList;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableUiList;
+import com.netflix.mediaclient.service.offline.license.OfflineLicenseManager$LicenseSyncResponseCallback;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.offline.utils.OfflineUtils;
 import com.android.volley.Network;
@@ -24,6 +25,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayable$PlayableMaintenanceCallBack;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
+import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.service.offline.log.OfflineErrorLogblob;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.android.app.BaseStatus;
@@ -44,7 +46,6 @@ import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadVideoQualit
 import com.netflix.mediaclient.service.browse.BrowseAgentCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.android.app.NetflixStatus;
-import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.util.LogUtils;
 import com.netflix.mediaclient.service.offline.download.OfflinePlayableImpl;
 import com.netflix.mediaclient.service.offline.utils.OfflinePathUtils;
@@ -60,6 +61,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$OfflineManifest;
 import com.netflix.mediaclient.servicemgr.interface_.offline.StopReason;
+import com.netflix.mediaclient.StatusCode;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.service.NetflixService;
 import com.netflix.mediaclient.android.app.Status;
@@ -90,9 +92,11 @@ import com.netflix.mediaclient.service.ServiceAgent;
 public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, BroadcastReceiverHelper$BroadcastHelperListener, MaintenanceJobHandler$MaintenanceJobHandlerCallback, OfflineAgentInterface, OfflineAgentServiceInterface, OfflinePlaybackInterface
 {
     private static final int CW_FETCH_COUNT = 10;
+    private static final int MAX_NUMBER_OF_ZERO_PLAYABLE_LICENSE_SYNC = 3;
     private static final String TAG = "nf_offlineAgent";
     private static final long VIEW_TIME_TO_QUALIFY_FIRST_VIEW = 30000L;
     private final OfflineAgentListenerHelper mAgentListenerHelper;
+    private long mAgentStartTime;
     private boolean mAvailable;
     private OfflineAgent$BackGroundHandler mBackGroundHandler;
     private HandlerThread mBackgroundThread;
@@ -114,6 +118,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     private Realm mRealm;
     private boolean mRegistryDirty;
     private RequestQueue mRequestQueue;
+    private int mResumeJobBlobCounter;
     private boolean mSkipAdultContent;
     private final OfflineStorageMonitor$StorageChangeListener mStorageChangeListener;
     private OfflineStorageMonitor mStorageMonitor;
@@ -126,12 +131,14 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         this.mOfflinePlayManifestRequestMap = new HashMap<Long, OfflinePlaybackInterface$ManifestCallback>();
         this.mAvailable = false;
         this.mAgentListenerHelper = new OfflineAgentListenerHelper();
+        this.mAgentStartTime = 0L;
         this.mMainThreadOfflinePlayableListener = new OfflineAgent$1(this);
-        this.mStorageChangeListener = new OfflineAgent$19(this);
-        this.mDownloadControllerListener = new OfflineAgent$20(this);
+        this.mStorageChangeListener = new OfflineAgent$22(this);
+        this.mDownloadControllerListener = new OfflineAgent$23(this);
         this.mConfigurationAgent = mConfigurationAgent;
         this.mUserAgent = mUserAgent;
         this.mContext = mContext;
+        this.mAgentStartTime = System.currentTimeMillis();
     }
     
     private void addRequestToHandler(final int n) {
@@ -209,10 +216,10 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     
     private void fetchVideoDetailsAndSaveToRealm(final String s, final VideoType videoType, final String s2, final Runnable runnable) {
         if (videoType == VideoType.MOVIE) {
-            this.getBrowseAgent().fetchMovieDetails(s, null, new OfflineAgent$24(this, s2, runnable));
+            this.getBrowseAgent().fetchMovieDetails(s, null, new OfflineAgent$27(this, s2, runnable));
         }
         else if (videoType == VideoType.EPISODE) {
-            this.getBrowseAgent().fetchEpisodeDetails(s, null, new OfflineAgent$25(this, s, s2, runnable));
+            this.getBrowseAgent().fetchEpisodeDetails(s, null, new OfflineAgent$28(this, s, s2, runnable));
         }
     }
     
@@ -414,7 +421,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         this.sendDownloadPlayablesDeleteDone(list, ok);
     }
     
-    private void handleDeleteRequest(final String s) {
+    private void handleDeleteRequest(final String s, final OfflineAgent$DeleteAndTryAgainRequest offlineAgent$DeleteAndTryAgainRequest) {
         Log.i("nf_offlineAgent", "handleDeleteRequest playableId=%s", s);
         final OfflinePlayable offlineViewableByPlayableId = OfflineAgentHelper.getOfflineViewableByPlayableId(s, this.mOfflinePlayableList);
         if (offlineViewableByPlayableId == null) {
@@ -423,7 +430,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         }
         if (offlineViewableByPlayableId.getPlayableId().equals(this.mPlayableIdInFlight)) {
             Log.i("nf_offlineAgent", "handleDeleteRequest not deleting in-flight item");
-            this.sendDownloadDeleted(s, new NetflixStatus(StatusCode.DL_BUSY_TRY_DELETE_AGAIN));
+            this.sendDownloadDeleted(s, new NetflixStatus(StatusCode.DL_BUSY_TRY_DELETE_AGAIN), null);
             return;
         }
         OfflineLogUtils.reportRemoveCachedVideoStart(this.getContext(), offlineViewableByPlayableId.getOfflineViewablePersistentData().mOxId);
@@ -434,7 +441,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         this.mDownloadController.onDeleted(s);
         this.saveToRegistry();
         this.buildNewUiList();
-        this.sendDownloadDeleted(s, deleteDownload);
+        this.sendDownloadDeleted(s, deleteDownload, offlineAgent$DeleteAndTryAgainRequest);
         this.startDownloadIfAllowed();
         this.getMainHandler().post((Runnable)new OfflineAgent$6(this, s));
     }
@@ -450,7 +457,18 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     
     private void handleDownloadResumeJob() {
         Log.i("nf_offlineAgent", "handleDownloadResumeJob");
-        OfflineErrorLogblob.sendNetflixJobStartLogBlob(this.getLoggingAgent().getLogblobLogging(), NetflixJob$NetflixJobId.DOWNLOAD_RESUME);
+        final long n = System.currentTimeMillis() - this.mAgentStartTime;
+        if (n > 0L) {
+            long hours;
+            if ((hours = TimeUnit.MILLISECONDS.toHours(n)) <= 0L) {
+                hours = 1L;
+            }
+            Log.i("nf_offlineAgent", "mResumeJobBlobCounter=%d hours=%d", this.mResumeJobBlobCounter, hours);
+            if (this.mResumeJobBlobCounter / hours < 60L) {
+                ++this.mResumeJobBlobCounter;
+                OfflineErrorLogblob.sendNetflixJobStartLogBlob(this.getLoggingAgent().getLogblobLogging(), NetflixJob$NetflixJobId.DOWNLOAD_RESUME);
+            }
+        }
         this.startDownloadIfAllowed();
         this.mDownloadController.onDownloadResumeJobDone();
     }
@@ -636,7 +654,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     private void saveToRegistry() {
         Log.i("nf_offlineAgent", "saveToRegistry");
         this.mRegistryDirty = true;
-        this.mBackGroundHandler.post((Runnable)new OfflineAgent$17(this));
+        this.mBackGroundHandler.post((Runnable)new OfflineAgent$19(this));
     }
     
     private void sendAllDeleted(final Status status) {
@@ -647,8 +665,8 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         this.mAgentListenerHelper.onDownloadCompleted(this.getMainHandler(), offlinePlayableViewData);
     }
     
-    private void sendDownloadDeleted(final String s, final Status status) {
-        this.mAgentListenerHelper.onOfflinePlayableDeleted(this.getMainHandler(), s, status);
+    private void sendDownloadDeleted(final String s, final Status status, final OfflineAgent$DeleteAndTryAgainRequest offlineAgent$DeleteAndTryAgainRequest) {
+        this.mAgentListenerHelper.onOfflinePlayableDeleted(this.getMainHandler(), s, status, this, offlineAgent$DeleteAndTryAgainRequest);
     }
     
     private void sendDownloadPlayablesDeleteDone(final List<String> list, final Status status) {
@@ -680,7 +698,11 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "sendOfflineManifestFromMainThread offlineManifest=" + offlinePlaybackInterface$OfflineManifest + "status=" + status);
         }
-        this.getMainHandler().post((Runnable)new OfflineAgent$23(this, offlinePlaybackInterface$OfflineManifest, offlinePlaybackInterface$ManifestCallback, n, status));
+        this.getMainHandler().post((Runnable)new OfflineAgent$26(this, offlinePlaybackInterface$OfflineManifest, offlinePlaybackInterface$ManifestCallback, n, status));
+    }
+    
+    private void sendOfflinePdsDataResponse(final String s, final OfflinePdsData offlinePdsData, final StatusCode statusCode, final OfflineAgentInterface$OfflinePdsDataCallback offlineAgentInterface$OfflinePdsDataCallback) {
+        this.getMainHandler().post((Runnable)new OfflineAgent$15(this, offlineAgentInterface$OfflinePdsDataCallback, s, offlinePdsData, statusCode));
     }
     
     private void sendPlayWindowRenewDone(final OfflinePlayable offlinePlayable, final Status status) {
@@ -715,6 +737,9 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
                 offlineViewableByPlayableId.getOfflineViewablePersistentData().setPersistentStatus(status);
                 OfflineLogUtils.reportAddCachedVideoEnded(this.getContext(), offlineViewableByPlayableId.getOfflineViewablePersistentData().mOxId, IClientLogging$ModalView.addCachedVideoButton, IClientLogging$CompletionReason.failed, status.getError());
                 offlineViewableByPlayableId.getOfflineViewablePersistentData().setCreateFailedState();
+                if (status.getStatusCode() == StatusCode.DL_TOTAL_LICENSE_PER_DEVICE_LIMIT) {
+                    this.syncLicensesToServer();
+                }
             }
             this.doSaveToRegistryInBGThread(this.getContext());
             this.buildNewUiList();
@@ -798,6 +823,22 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         }
     }
     
+    private void syncLicensesToServer() {
+        Log.i("nf_offlineAgent", "syncLicensesToServer");
+        if (!this.mUserAgent.isUserLoggedIn()) {
+            return;
+        }
+        final ArrayList<String> list = new ArrayList<String>();
+        final Iterator<OfflinePlayable> iterator = this.mOfflinePlayableList.iterator();
+        while (iterator.hasNext()) {
+            final String mLinkDeactivate = iterator.next().getOfflineViewablePersistentData().mLicenseData.mLinkDeactivate;
+            if (StringUtils.isNotEmpty(mLinkDeactivate)) {
+                list.add(mLinkDeactivate);
+            }
+        }
+        this.mOfflineLicenseManager.sendSyncActiveLicensesToServer(list, new OfflineAgent$29(this));
+    }
+    
     private boolean tryResumingPlayable(final OfflinePlayable offlinePlayable) {
         if (this.mDownloadController.canThisPlayableBeResumedByUser(offlinePlayable)) {
             offlinePlayable.startDownload();
@@ -820,7 +861,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     @Override
     public void abortManifestRequest(final long n) {
         if (this.isReady()) {
-            this.mBackGroundHandler.post((Runnable)new OfflineAgent$22(this, n));
+            this.mBackGroundHandler.post((Runnable)new OfflineAgent$25(this, n));
         }
         else if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "abortManifestRequest OfflineAgent not ready error movieId=" + n);
@@ -837,6 +878,12 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     public void deleteAllOfflineContent() {
         ThreadUtils.assertOnMain();
         this.addRequestToHandler(8);
+    }
+    
+    @Override
+    public void deleteAndTryAgain(final String s, final VideoType videoType, final PlayContext playContext) {
+        ThreadUtils.assertOnMain();
+        this.mBackGroundHandler.obtainMessage(15, (Object)new OfflineAgent$DeleteAndTryAgainRequest(this, s, playContext, videoType)).sendToTarget();
     }
     
     @Override
@@ -910,7 +957,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     @Override
     public void handleCommand(final Intent intent) {
         final IntentCommandGroupType groupType = IntentCommandGroupType.getGroupType(intent);
-        switch (OfflineAgent$26.$SwitchMap$com$netflix$mediaclient$service$offline$agent$IntentCommandGroupType[groupType.ordinal()]) {
+        switch (OfflineAgent$30.$SwitchMap$com$netflix$mediaclient$service$offline$agent$IntentCommandGroupType[groupType.ordinal()]) {
             default: {
                 if (Log.isLoggable()) {
                     Log.e("nf_offlineAgent", "unsupported IntentCommandGroupType=" + groupType);
@@ -920,6 +967,11 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
                 this.mDownloadNotificationManager.handleDownloadNotificationIntent(intent);
             }
         }
+    }
+    
+    @Override
+    public boolean isOfflineContentPresent() {
+        return this.mOfflinePlayableUiList.size() > 0;
     }
     
     @Override
@@ -954,13 +1006,37 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
     public void onAccountDataFetched() {
         ThreadUtils.assertNotOnMain();
         Log.i("nf_offlineAgent", "onAccountDataFetched");
-        if (!this.isOfflineFeatureDisabled()) {
-            this.handleMayBeNewUser();
-            this.handleLicenseRefreshForAll();
-            if (DownloadGeoPlayabilityHelper.hasGeoCountryChanged(this.mOfflineRegistry.getGeoCountryCode(), this.mConfigurationAgent.getGeoCountryCode())) {
-                this.sendGeoPlayabilityRequest();
-            }
+        if (this.isOfflineFeatureDisabled()) {
+            return;
         }
+        this.handleMayBeNewUser();
+        this.handleLicenseRefreshForAll();
+        if (DownloadGeoPlayabilityHelper.hasGeoCountryChanged(this.mOfflineRegistry.getGeoCountryCode(), this.mConfigurationAgent.getGeoCountryCode())) {
+            this.sendGeoPlayabilityRequest();
+        }
+        if (!OfflineAgentHelper.enoughTimePassedSinceLastLicenseSync(this.mContext)) {
+            Log.i("nf_offlineAgent", "Not calling sync, too early");
+            return;
+        }
+        boolean b;
+        if (this.mOfflinePlayableUiList.size() == 0) {
+            b = true;
+        }
+        else {
+            b = false;
+        }
+        final int zeroPlayableLicenseSyncCount = OfflineAgentHelper.getZeroPlayableLicenseSyncCount(this.mContext);
+        if (b && zeroPlayableLicenseSyncCount >= 3) {
+            Log.i("nf_offlineAgent", "Not calling sync, already did %d syncs", 3);
+            return;
+        }
+        OfflineAgentHelper.setLastLicenseSyncTimeToNow(this.mContext);
+        if (b) {
+            final int n = zeroPlayableLicenseSyncCount + 1;
+            Log.i("nf_offlineAgent", "zeroPlayableSyncCount %d", n);
+            OfflineAgentHelper.setZeroPlayableLicenseSyncCount(this.mContext, n);
+        }
+        this.mBackGroundHandler.postDelayed((Runnable)new OfflineAgent$21(this), 10000L);
     }
     
     @Override
@@ -1008,7 +1084,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
             return;
         }
         this.stopAllDownloadsAndPersistRegistry(StopReason.AccountInActive);
-        this.getMainHandler().post((Runnable)new OfflineAgent$18(this));
+        this.getMainHandler().post((Runnable)new OfflineAgent$20(this));
     }
     
     @Override
@@ -1052,7 +1128,16 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "requestOfflineManifest posting runnable movieId=" + n);
         }
-        this.mBackGroundHandler.post((Runnable)new OfflineAgent$21(this, n, offlinePlaybackInterface$ManifestCallback));
+        this.mBackGroundHandler.post((Runnable)new OfflineAgent$24(this, n, offlinePlaybackInterface$ManifestCallback));
+    }
+    
+    @Override
+    public void requestOfflinePdsData(final String s, final OfflineAgentInterface$OfflinePdsDataCallback offlineAgentInterface$OfflinePdsDataCallback) {
+        if (this.isOfflineFeatureDisabled()) {
+            this.sendOfflinePdsDataResponse(s, null, StatusCode.DL_OFFLINE_AGENT_NOT_READY, offlineAgentInterface$OfflinePdsDataCallback);
+            return;
+        }
+        this.mBackGroundHandler.post((Runnable)new OfflineAgent$14(this, s, offlineAgentInterface$OfflinePdsDataCallback));
     }
     
     @Override
@@ -1060,6 +1145,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "requestOfflineViewing playableId=" + s);
         }
+        OfflineAgentHelper.setZeroPlayableLicenseSyncCount(this.mContext, 0);
         this.updatePrimaryProfileGuidIfMissing();
         this.onDownloadPauseOrResumeByUser(false);
         final OfflineAgent$CreateRequest offlineAgent$CreateRequest = new OfflineAgent$CreateRequest(this, s, playContext);
@@ -1072,7 +1158,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "requestRefreshLicenseForPlayable playableId=" + s);
         }
-        this.mBackGroundHandler.post((Runnable)new OfflineAgent$15(this, s));
+        this.mBackGroundHandler.post((Runnable)new OfflineAgent$17(this, s));
     }
     
     @Override
@@ -1080,7 +1166,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "requestRenewPlayWindowForPlayable playableId=" + s);
         }
-        this.mBackGroundHandler.post((Runnable)new OfflineAgent$16(this, s));
+        this.mBackGroundHandler.post((Runnable)new OfflineAgent$18(this, s));
     }
     
     @Override
@@ -1106,7 +1192,7 @@ public class OfflineAgent extends ServiceAgent implements IntentCommandHandler, 
         if (Log.isLoggable()) {
             Log.i("nf_offlineAgent", "setRequiresUnmeteredNetwork requires=" + b);
         }
-        this.mBackGroundHandler.post((Runnable)new OfflineAgent$14(this, b));
+        this.mBackGroundHandler.post((Runnable)new OfflineAgent$16(this, b));
     }
     
     @Override

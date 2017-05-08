@@ -14,13 +14,13 @@ import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvi
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
-import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
 import com.netflix.mediaclient.servicemgr.interface_.LoLoMo;
 import com.netflix.mediaclient.servicemgr.interface_.details.KidsCharacterDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.InteractiveMoments;
 import com.netflix.mediaclient.servicemgr.interface_.genre.Genre;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import com.netflix.model.branches.FalkorVideo;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.servicemgr.interface_.CWVideo;
@@ -33,22 +33,23 @@ import java.util.List;
 import android.os.Handler;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 
 class PostToHandlerCallbackWrapper$13 implements Runnable
 {
     final /* synthetic */ PostToHandlerCallbackWrapper this$0;
-    final /* synthetic */ int val$position;
+    final /* synthetic */ MovieDetails val$movieDetails;
     final /* synthetic */ Status val$res;
     
-    PostToHandlerCallbackWrapper$13(final PostToHandlerCallbackWrapper this$0, final int val$position, final Status val$res) {
+    PostToHandlerCallbackWrapper$13(final PostToHandlerCallbackWrapper this$0, final MovieDetails val$movieDetails, final Status val$res) {
         this.this$0 = this$0;
-        this.val$position = val$position;
+        this.val$movieDetails = val$movieDetails;
         this.val$res = val$res;
     }
     
     @Override
     public void run() {
         ThreadUtils.assertOnMain();
-        this.this$0.callback.onScenePositionFetched(this.val$position, this.val$res);
+        this.this$0.callback.onMovieDetailsFetched(this.val$movieDetails, this.val$res);
     }
 }

@@ -11,7 +11,6 @@ import com.facebook.common.logging.FLog;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import com.facebook.infer.annotation.Assertions;
-import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.content.Context;
 import android.os.Bundle;
@@ -33,20 +32,6 @@ public class ReactRootView extends SizeMonitoringFrameLayout implements RootView
     
     public ReactRootView(final Context context) {
         super(context);
-        this.mWasMeasured = false;
-        this.mIsAttachedToInstance = false;
-        this.mJSTouchDispatcher = new JSTouchDispatcher((ViewGroup)this);
-    }
-    
-    public ReactRootView(final Context context, final AttributeSet set) {
-        super(context, set);
-        this.mWasMeasured = false;
-        this.mIsAttachedToInstance = false;
-        this.mJSTouchDispatcher = new JSTouchDispatcher((ViewGroup)this);
-    }
-    
-    public ReactRootView(final Context context, final AttributeSet set, final int n) {
-        super(context, set, n);
         this.mWasMeasured = false;
         this.mIsAttachedToInstance = false;
         this.mJSTouchDispatcher = new JSTouchDispatcher((ViewGroup)this);
@@ -169,6 +154,13 @@ public class ReactRootView extends SizeMonitoringFrameLayout implements RootView
         }
         if (this.mWasMeasured) {
             this.attachToReactInstanceManager();
+        }
+    }
+    
+    public void unmountReactApplication() {
+        if (this.mReactInstanceManager != null && this.mIsAttachedToInstance) {
+            this.mReactInstanceManager.detachRootView(this);
+            this.mIsAttachedToInstance = false;
         }
     }
 }

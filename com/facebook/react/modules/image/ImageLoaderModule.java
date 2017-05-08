@@ -82,6 +82,7 @@ public class ImageLoaderModule extends ReactContextBaseJavaModule implements Lif
         Fresco.getImagePipeline().fetchDecodedImage(ImageRequestBuilder.newBuilderWithSource(Uri.parse(s)).build(), this.mCallerContext).subscribe(new ImageLoaderModule$1(this, promise), CallerThreadExecutor.getInstance());
     }
     
+    @Override
     public void onHostDestroy() {
         while (true) {
             while (true) {

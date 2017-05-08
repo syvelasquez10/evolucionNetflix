@@ -622,22 +622,25 @@ public class ListPopupWindow implements ShowableListMenu
                                                 return;
                                             }
                                             return;
-                                            // iftrue(Label_0488:, this.mDropDownWidth != -2)
-                                            width3 = this.getAnchorView().getWidth();
-                                            continue Label_0309_Outer;
-                                            // iftrue(Label_0309:, this.mDropDownHeight == -2)
-                                            while (true) {
-                                                height = this.mDropDownHeight;
-                                                continue Label_0350_Outer;
-                                                outsideTouchable = false;
-                                                continue Label_0396_Outer;
-                                                continue;
-                                            }
+                                            outsideTouchable = false;
+                                            continue Label_0396_Outer;
                                             Label_0488: {
                                                 width3 = this.mDropDownWidth;
                                             }
                                             continue Label_0309_Outer;
+                                            // iftrue(Label_0488:, this.mDropDownWidth != -2)
+                                            while (true) {
+                                                Block_20: {
+                                                    break Block_20;
+                                                    height = this.mDropDownHeight;
+                                                    continue Label_0350_Outer;
+                                                }
+                                                width3 = this.getAnchorView().getWidth();
+                                                continue Label_0309_Outer;
+                                                continue;
+                                            }
                                         }
+                                        // iftrue(Label_0309:, this.mDropDownHeight == -2)
                                         catch (Exception ex) {
                                             Log.e("ListPopupWindow", "Could not invoke setEpicenterBounds on PopupWindow", (Throwable)ex);
                                             continue;

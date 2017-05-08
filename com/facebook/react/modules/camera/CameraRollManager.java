@@ -35,6 +35,7 @@ public class CameraRollManager extends ReactContextBaseJavaModule
     private static final String ERROR_UNABLE_TO_LOAD_PERMISSION = "E_UNABLE_TO_LOAD_PERMISSION";
     private static final String ERROR_UNABLE_TO_SAVE = "E_UNABLE_TO_SAVE";
     public static final boolean IS_JELLY_BEAN_OR_LATER;
+    protected static final String NAME = "CameraRollManager";
     private static final String[] PROJECTION;
     private static final String SELECTION_BUCKET = "bucket_display_name = ?";
     private static final String SELECTION_DATE_TAKEN = "datetaken < ?";
@@ -165,7 +166,7 @@ public class CameraRollManager extends ReactContextBaseJavaModule
     
     @Override
     public String getName() {
-        return "RKCameraRollManager";
+        return "CameraRollManager";
     }
     
     @ReactMethod
@@ -200,13 +201,6 @@ public class CameraRollManager extends ReactContextBaseJavaModule
     
     @ReactMethod
     public void saveToCameraRoll(final String s, final String s2, final Promise promise) {
-        CameraRollManager$MediaType cameraRollManager$MediaType;
-        if (s2.equals("video")) {
-            cameraRollManager$MediaType = CameraRollManager$MediaType.VIDEO;
-        }
-        else {
-            cameraRollManager$MediaType = CameraRollManager$MediaType.PHOTO;
-        }
-        new CameraRollManager$SaveToCameraRoll(this.getReactApplicationContext(), Uri.parse(s), cameraRollManager$MediaType, promise).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Object[])new Void[0]);
+        new CameraRollManager$SaveToCameraRoll(this.getReactApplicationContext(), Uri.parse(s), promise).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Object[])new Void[0]);
     }
 }

@@ -14,6 +14,7 @@ import android.text.InputFilter$LengthFilter;
 import java.util.LinkedList;
 import com.facebook.react.views.imagehelper.ResourceDrawableIdHelper;
 import android.graphics.Typeface;
+import com.facebook.react.views.text.ReactFontManager;
 import com.facebook.react.views.text.DefaultStyleValuesUtil;
 import com.facebook.yoga.YogaConstants;
 import com.facebook.react.uimanager.annotations.ReactPropGroup;
@@ -229,7 +230,7 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
         if (reactEditText.getTypeface() != null) {
             style = reactEditText.getTypeface().getStyle();
         }
-        reactEditText.setTypeface(Typeface.create(s, style));
+        reactEditText.setTypeface(ReactFontManager.getInstance().getTypeface(s, style, reactEditText.getContext().getAssets()));
     }
     
     @ReactProp(defaultFloat = 14.0f, name = "fontSize")
@@ -529,12 +530,9 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
     
     @Override
     public void updateExtraData(final ReactEditText reactEditText, final Object o) {
-        if (o instanceof float[]) {
-            final float[] array = (float[])o;
-            reactEditText.setPadding((int)Math.floor(array[0]), (int)Math.floor(array[1]), (int)Math.floor(array[2]), (int)Math.floor(array[3]));
-        }
-        else if (o instanceof ReactTextUpdate) {
+        if (o instanceof ReactTextUpdate) {
             final ReactTextUpdate reactTextUpdate = (ReactTextUpdate)o;
+            reactEditText.setPadding((int)reactTextUpdate.getPaddingLeft(), (int)reactTextUpdate.getPaddingTop(), (int)reactTextUpdate.getPaddingRight(), (int)reactTextUpdate.getPaddingBottom());
             if (reactTextUpdate.containsImages()) {
                 TextInlineImageSpan.possiblyUpdateInlineImageSpans(reactTextUpdate.getText(), (TextView)reactEditText);
             }

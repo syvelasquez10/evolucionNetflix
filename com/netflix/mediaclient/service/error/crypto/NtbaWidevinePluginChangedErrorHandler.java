@@ -25,6 +25,6 @@ class NtbaWidevinePluginChangedErrorHandler extends BaseNtbaCryptoErrorHandler
     public ErrorDescriptor handle(final Context context, final Throwable t) {
         Log.d(NtbaWidevinePluginChangedErrorHandler.TAG, "MediaDrm Widevine plugin changed");
         this.logHandledException(CryptoErrorManager.createMediaDrmErrorMessage(this.getStatusCode(), t));
-        return new WidevineErrorDescriptor(context, this.getStatusCode(), this.getForceStopTask(context), 2131296637);
+        return new WidevineErrorDescriptor(context, this.getStatusCode(), this.getForceStopTask(context), 2131296638);
     }
 }

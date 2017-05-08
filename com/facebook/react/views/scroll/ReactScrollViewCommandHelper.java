@@ -13,7 +13,7 @@ import java.util.Map;
 public class ReactScrollViewCommandHelper
 {
     public static Map<String, Integer> getCommandsMap() {
-        return MapBuilder.of("scrollTo", 1);
+        return MapBuilder.of("scrollTo", 1, "scrollToEnd", 2);
     }
     
     public static <T> void receiveCommand(final ReactScrollViewCommandHelper$ScrollCommandHandler<T> reactScrollViewCommandHelper$ScrollCommandHandler, final T t, final int n, final ReadableArray readableArray) {
@@ -26,6 +26,9 @@ public class ReactScrollViewCommandHelper
             }
             case 1: {
                 reactScrollViewCommandHelper$ScrollCommandHandler.scrollTo(t, new ReactScrollViewCommandHelper$ScrollToCommandData(Math.round(PixelUtil.toPixelFromDIP(readableArray.getDouble(0))), Math.round(PixelUtil.toPixelFromDIP(readableArray.getDouble(1))), readableArray.getBoolean(2)));
+            }
+            case 2: {
+                reactScrollViewCommandHelper$ScrollCommandHandler.scrollToEnd(t, new ReactScrollViewCommandHelper$ScrollToEndCommandData(readableArray.getBoolean(0)));
             }
         }
     }

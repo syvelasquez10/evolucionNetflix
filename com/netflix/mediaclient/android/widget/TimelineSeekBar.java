@@ -72,10 +72,10 @@ public class TimelineSeekBar extends NetflixSeekBar
         }
         Drawable thumb2;
         if (b) {
-            thumb2 = this.getResources().getDrawable(2131689714);
+            thumb2 = this.getResources().getDrawable(2131755265);
         }
         else {
-            thumb2 = this.getResources().getDrawable(2130838099);
+            thumb2 = this.getResources().getDrawable(2130838105);
         }
         this.setThumb(thumb2);
     }

@@ -4,6 +4,7 @@
 
 package com.facebook.react.uimanager;
 
+import com.facebook.react.bridge.ReadableMap;
 import java.util.Collection;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,7 +23,25 @@ public class ViewProps
         LAYOUT_ONLY_PROPS = new HashSet<String>(Arrays.asList("alignSelf", "alignItems", "collapsable", "flex", "flexDirection", "flexWrap", "justifyContent", "overflow", "position", "right", "top", "bottom", "left", "width", "height", "minWidth", "maxWidth", "minHeight", "maxHeight", "margin", "marginVertical", "marginHorizontal", "marginLeft", "marginRight", "marginTop", "marginBottom", "padding", "paddingVertical", "paddingHorizontal", "paddingLeft", "paddingRight", "paddingTop", "paddingBottom"));
     }
     
-    public static boolean isLayoutOnly(final String s) {
-        return ViewProps.LAYOUT_ONLY_PROPS.contains(s);
+    public static boolean isLayoutOnly(final ReadableMap readableMap, final String s) {
+        final boolean b = false;
+        boolean b2;
+        if (ViewProps.LAYOUT_ONLY_PROPS.contains(s)) {
+            b2 = true;
+        }
+        else {
+            b2 = b;
+            if ("pointerEvents".equals(s)) {
+                final String string = readableMap.getString(s);
+                if (!"auto".equals(string)) {
+                    b2 = b;
+                    if (!"box-none".equals(string)) {
+                        return b2;
+                    }
+                }
+                return true;
+            }
+        }
+        return b2;
     }
 }

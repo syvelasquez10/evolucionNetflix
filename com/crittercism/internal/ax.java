@@ -712,18 +712,19 @@ public final class ax implements ar, au, av, f
                     Label_0012: {
                         return;
                     }
-                    // iftrue(Label_0012:, this.o.a((Runnable)ax$7))
                     // iftrue(Label_0067:, !this.s)
-                    ax$7 ax$7 = null;
-                Block_5:
                     while (true) {
-                        ax$7 = new ax$7(this, t, Thread.currentThread().getId());
-                        break Block_5;
+                        Block_4: {
+                            break Block_4;
+                            final ax$7 ax$7;
+                            this.r.execute(ax$7);
+                            return;
+                        }
+                        final ax$7 ax$7 = new ax$7(this, t, Thread.currentThread().getId());
                         continue;
                     }
-                    this.r.execute(ax$7);
-                    return;
                 }
+                // iftrue(Label_0012:, this.o.a((Runnable)ax$7))
                 finally {
                 }
                 // monitorexit(this)

@@ -49,7 +49,7 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
                 return;
             }
             this.episodeTime.setVisibility(0);
-            String text = this.getResources().getString(2131296720, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) });
+            String text = this.getResources().getString(2131296722, new Object[] { TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime()) });
             if (episodeDetails.isNSRE()) {
                 text = text + "        " + episodeDetails.getAvailabilityDateMessage();
             }
@@ -68,10 +68,10 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
         final Resources resources = this.getResources();
         int n;
         if (this.isCurrentEpisode && b) {
-            n = 2131689731;
+            n = 2131755283;
         }
         else {
-            n = 2131689493;
+            n = 2131755029;
         }
         final int color = resources.getColor(n);
         if (this.synopsis != null) {
@@ -93,7 +93,7 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
             this.episodePreviewContainer.getLayoutParams().height = (int)(this.episodePreviewContainer.getLayoutParams().width * 0.5625f);
             return;
         }
-        this.image.getLayoutParams().height = (int)((BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - (this.this$0.getNumColumns() + 1.0f) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427754)) / this.this$0.getNumColumns() * 0.5625f);
+        this.image.getLayoutParams().height = (int)((BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - (this.this$0.getNumColumns() + 1.0f) * this.this$0.getActivity().getResources().getDimensionPixelOffset(2131427762)) / this.this$0.getNumColumns() * 0.5625f);
     }
     
     protected void adjustEpisodeImageWidth() {
@@ -127,11 +127,11 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
     @Override
     protected void findViews() {
         super.findViews();
-        this.image = (AdvancedImageView)this.findViewById(2131755181);
-        this.progressBarBackground = this.findViewById(2131755192);
-        this.unavailable = this.findViewById(2131755183);
-        this.episodePreviewContainer = this.findViewById(2131755180);
-        this.badgeContainer = this.findViewById(2131755186);
+        this.image = (AdvancedImageView)this.findViewById(2131820719);
+        this.progressBarBackground = this.findViewById(2131820730);
+        this.unavailable = this.findViewById(2131820721);
+        this.episodePreviewContainer = this.findViewById(2131820718);
+        this.badgeContainer = this.findViewById(2131820724);
     }
     
     @Override
@@ -230,7 +230,7 @@ public class BarkerShowDetailsFrag$BarkerEpisodeView extends EpisodesFrag$Episod
     protected void updateTitle(final EpisodeDetails episodeDetails) {
         if (this.this$0.getActivity() != null) {
             if (this.title != null) {
-                this.title.setTextColor(this.getResources().getColor(2131689657));
+                this.title.setTextColor(this.getResources().getColor(2131755196));
             }
             if (this.episodeNumber != null) {
                 ViewUtils.setVisibleOrGone((View)this.episodeNumber, !episodeDetails.isNSRE());

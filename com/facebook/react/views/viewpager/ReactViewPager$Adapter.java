@@ -12,8 +12,8 @@ import com.facebook.react.uimanager.UIManagerModule;
 import android.content.Context;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.uimanager.events.EventDispatcher;
-import android.support.v4.view.ViewPager;
 import java.util.Collection;
+import android.support.v4.view.ViewPager;
 import android.view.ViewGroup;
 import java.util.ArrayList;
 import android.view.View;
@@ -70,6 +70,12 @@ class ReactViewPager$Adapter extends PagerAdapter
     @Override
     public boolean isViewFromObject(final View view, final Object o) {
         return view == o;
+    }
+    
+    void removeAllViewsFromAdapter(final ViewPager viewPager) {
+        this.mViews.clear();
+        viewPager.removeAllViews();
+        this.mIsViewPagerInIntentionallyInconsistentState = true;
     }
     
     void removeViewAt(final int n) {

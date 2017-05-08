@@ -4,22 +4,22 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.util.api.Api16Util;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import java.util.List;
 import android.widget.AdapterView;
 import com.netflix.mediaclient.Log;
+import android.view.View;
 import com.netflix.mediaclient.android.widget.ScalePressedStateHandler;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import android.view.View;
-import com.netflix.mediaclient.util.api.Api16Util;
 import android.util.AttributeSet;
 import android.content.Context;
 import com.netflix.mediaclient.android.widget.PressedStateHandler;
 import android.widget.AdapterView$OnItemSelectedListener;
 import android.graphics.drawable.Drawable;
-import android.widget.Spinner;
+import android.support.v7.widget.AppCompatSpinner;
 
-public class SeasonsSpinner extends Spinner
+public class SeasonsSpinner extends AppCompatSpinner
 {
     public static final int NON_USER_SELECTED = 0;
     private static final String TAG = "SeasonsSpinner";
@@ -31,7 +31,7 @@ public class SeasonsSpinner extends Spinner
     private AdapterView$OnItemSelectedListener touchListener;
     
     public SeasonsSpinner(final Context context) {
-        super(context, (AttributeSet)null);
+        super(context, null);
         this.init();
     }
     
@@ -45,16 +45,10 @@ public class SeasonsSpinner extends Spinner
         this.init();
     }
     
-    protected SeasonsSpinner(final Context context, final AttributeSet set, final int n, final int n2, final int n3) {
-        super(context, set, n, n2, n3);
-        this.init();
-    }
-    
     private void init() {
-        this.drawableMultipleSeasons = this.getResources().getDrawable(2130838144);
-        this.drawableOneSeason = this.getResources().getDrawable(2131689714);
-        Api16Util.setBackgroundDrawableCompat((View)this, this.drawableMultipleSeasons);
-        this.setId(2131755029);
+        this.drawableMultipleSeasons = this.getBackground();
+        this.drawableOneSeason = this.getResources().getDrawable(2131755265);
+        this.setId(2131820566);
         ScalePressedStateHandler pressedHandler;
         if (BrowseExperience.showKidsExperience()) {
             pressedHandler = new ScalePressedStateHandler((View)this);

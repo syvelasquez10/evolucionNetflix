@@ -11,7 +11,7 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
 import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.service.player.OfflinePlaybackInterface$ManifestCallback;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface$OfflinePdsDataCallback;
 import junit.framework.Assert;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
@@ -21,11 +21,11 @@ import android.content.Context;
 import com.netflix.mediaclient.service.logging.IPdsLogging;
 import java.util.Map;
 import android.content.BroadcastReceiver;
-import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.servicemgr.LogblobLogging;
-import com.netflix.mediaclient.service.offline.agent.OfflineAgentListener;
+import com.netflix.mediaclient.servicemgr.interface_.offline.SimpleOfflineAgentListener;
 
-public class PdsDownloadSessionManager implements OfflineAgentListener
+public class PdsDownloadSessionManager extends SimpleOfflineAgentListener
 {
     public static String CATEGORY_NF_PDSLOG_DOWNLOAD;
     private static final boolean ENABLE_PROGRESS_IN_CODE = true;
@@ -38,7 +38,7 @@ public class PdsDownloadSessionManager implements OfflineAgentListener
     private static final String TAG;
     private String mAppSessionId;
     LogblobLogging mLogblobLogging;
-    private OfflinePlaybackInterface mOfflinePlaybackInterface;
+    private OfflineAgentInterface mOfflineAgentInterface;
     private final BroadcastReceiver mPdsDownloadEventReceiver;
     private Map<String, PdsDownloadSession> mPdsDownloadSessions;
     IPdsLogging mPdsLogging;
@@ -56,11 +56,11 @@ public class PdsDownloadSessionManager implements OfflineAgentListener
         PdsDownloadSessionManager.EXTRA_PLAYABLE_ID = "playableId";
     }
     
-    public PdsDownloadSessionManager(final Context context, final OfflinePlaybackInterface mOfflinePlaybackInterface, final IClientLogging clientLogging) {
+    public PdsDownloadSessionManager(final Context context, final OfflineAgentInterface mOfflineAgentInterface, final IClientLogging clientLogging) {
         this.mSessionsLock = new Object();
         this.mPdsDownloadEventReceiver = new PdsDownloadSessionManager$4(this);
         this.mPdsDownloadSessions = new HashMap<String, PdsDownloadSession>();
-        this.mOfflinePlaybackInterface = mOfflinePlaybackInterface;
+        this.mOfflineAgentInterface = mOfflineAgentInterface;
         this.mLogblobLogging = clientLogging.getLogblobLogging();
         this.mPdsLogging = clientLogging.getPdsLogging();
         this.mAppSessionId = clientLogging.getApplicationId();
@@ -91,7 +91,7 @@ public class PdsDownloadSessionManager implements OfflineAgentListener
     
     private void fetchPersistedManifest(final PdsDownloadSession pdsDownloadSession, final PdsDownloadSessionManager$ManifestCallback pdsDownloadSessionManager$ManifestCallback) {
         pdsDownloadSession.setManifestFetchInProgress(true);
-        this.mOfflinePlaybackInterface.requestOfflineManifest(Long.parseLong(pdsDownloadSession.getPlayableId()), new PdsDownloadSessionManager$3(this, pdsDownloadSessionManager$ManifestCallback));
+        this.mOfflineAgentInterface.requestOfflinePdsData(pdsDownloadSession.getPlayableId(), new PdsDownloadSessionManager$3(this, pdsDownloadSessionManager$ManifestCallback));
     }
     
     private PdsDownloadSession getDownloadSession(final String s) {
@@ -192,7 +192,8 @@ public class PdsDownloadSessionManager implements OfflineAgentListener
                 case 11:
                 case 12:
                 case 13:
-                case 14: {
+                case 14:
+                case 15: {
                     break;
                 }
                 default: {

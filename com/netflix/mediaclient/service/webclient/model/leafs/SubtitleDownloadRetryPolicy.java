@@ -48,10 +48,10 @@ public class SubtitleDownloadRetryPolicy
     
     public static SubtitleDownloadRetryPolicy loadFromPreferences(Context context) {
         final Context context2 = null;
-        final String stringPref = PreferenceUtils.getStringPref(context, "breadcrumb_log_configuration", null);
+        final String stringPref = PreferenceUtils.getStringPref(context, "subtitle_download_retry_policy", null);
         Label_0028: {
             if (StringUtils.isEmpty(stringPref)) {
-                Log.d(SubtitleDownloadRetryPolicy.TAG, "Breadcrumb specification not found in file system");
+                Log.d(SubtitleDownloadRetryPolicy.TAG, "subtitle download retry config not found in file system");
                 context = null;
             }
             else {
@@ -59,12 +59,12 @@ public class SubtitleDownloadRetryPolicy
                     try {
                         context = (Context)FalkorParseUtils.getGson().fromJson(stringPref, SubtitleDownloadRetryPolicy.class);
                         try {
-                            Log.d(SubtitleDownloadRetryPolicy.TAG, "Breadcrumb logging specification loaded from file system");
+                            Log.d(SubtitleDownloadRetryPolicy.TAG, "subtitle download retry config loaded from file system");
                             break Label_0028;
                         }
                         catch (Throwable t2) {}
                         final Throwable t;
-                        Log.e(SubtitleDownloadRetryPolicy.TAG, "Failed to load Breadcrumb logging specification from file system", t);
+                        Log.e(SubtitleDownloadRetryPolicy.TAG, "Failed to load subtitle download retry config from file system", t);
                     }
                     catch (Throwable t) {
                         context = context2;

@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx;
 
-import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import java.util.List;
 import java.util.Collection;
@@ -209,9 +208,9 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         }
         else {
             final Playable playable = this.mVideoDetails.getPlayable();
-            string = this.getContext().getString(2131296644, new Object[] { playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), this.mVideoDetails.getTitle() });
+            string = this.getContext().getString(2131296645, new Object[] { playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), this.mVideoDetails.getTitle() });
             if (this.mVideoDetails.isNSRE()) {
-                return this.getContext().getString(2131296645, new Object[] { this.mVideoDetails.getTitle() });
+                return this.getContext().getString(2131296646, new Object[] { this.mVideoDetails.getTitle() });
             }
         }
         return string;
@@ -254,9 +253,9 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             return null;
         }
         final EpisodeDetails episodeDetails = (EpisodeDetails)this.mVideoDetailsPostplay;
-        final String string = this.getContext().getString(2131296644, new Object[] { episodeDetails.getSeasonAbbrSeqLabel(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        final String string = this.getContext().getString(2131296645, new Object[] { episodeDetails.getSeasonAbbrSeqLabel(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
         if (episodeDetails.isNSRE()) {
-            return this.getContext().getString(2131296645, new Object[] { episodeDetails.getTitle() });
+            return this.getContext().getString(2131296646, new Object[] { episodeDetails.getTitle() });
         }
         return string;
     }
@@ -512,7 +511,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             if (videoDetails.getType() == VideoType.EPISODE) {
                 String s;
                 if (b) {
-                    s = this.getContext().getString(2131296685);
+                    s = this.getContext().getString(2131296686);
                 }
                 else {
                     s = videoDetails.getPlayable().getParentTitle();
@@ -712,12 +711,12 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         final EpisodeDetails episodeDetails = (EpisodeDetails)this.mVideoDetails;
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.MDX_PLAY_VIDEOIDS");
         final String nextEpisodeId = episodeDetails.getNextEpisodeId();
-        final String parentId = this.mVideoDetails.getPlayable().getParentId();
-        if (TextUtils.isEmpty((CharSequence)parentId) || TextUtils.isEmpty((CharSequence)nextEpisodeId)) {
+        final String topLevelId = this.mVideoDetails.getPlayable().getTopLevelId();
+        if (TextUtils.isEmpty((CharSequence)topLevelId) || TextUtils.isEmpty((CharSequence)nextEpisodeId)) {
             return null;
         }
         intent.putExtra("episodeId", Integer.parseInt(nextEpisodeId));
-        intent.putExtra("catalogId", Integer.parseInt(parentId));
+        intent.putExtra("catalogId", Integer.parseInt(topLevelId));
         intent.putExtra("playNext", true);
         return this.createNotificationButtonIntent(intent);
     }
@@ -1130,7 +1129,6 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         this.mMdxNotificationManager.cancelNotification();
         this.mMdxNotificationManager = null;
         this.mBoxartBitmap = null;
-        MDXControllerActivity.finishMDXController(this.getContext());
         final MdxSharedState mdxSharedState = (MdxSharedState)this.getSharedState();
         if (mdxSharedState instanceof MdxSharedState) {
             mdxSharedState.resetPostplayState();

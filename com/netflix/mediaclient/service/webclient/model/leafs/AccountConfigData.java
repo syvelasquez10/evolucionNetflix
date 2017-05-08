@@ -41,12 +41,18 @@ public class AccountConfigData
     private JSONArray mMdxBlacklistTargetsJSONArray;
     @SerializedName("mdxBlacklistTargets")
     private final String mdxBlacklistTargets;
+    @SerializedName("myListForKidsDisabled")
+    private boolean myListForKidsDisabled;
     @SerializedName("preAppPartnerExperience")
     private String preAppPartnerExperience;
     @SerializedName("preAppWidgetExperience")
     private String preAppWidgetExperience;
     @SerializedName("previewContent")
     public PreviewContentConfigData previewContent;
+    @SerializedName("thumbRatingActive")
+    private boolean thumbRatingActive;
+    @SerializedName("userPin")
+    private String userPin;
     @SerializedName("videoBufferSize")
     private final int videoBufferSize;
     @SerializedName("voipEnabledOnAccount")
@@ -186,8 +192,20 @@ public class AccountConfigData
         return this.previewContent;
     }
     
+    public String getUserPin() {
+        return this.userPin;
+    }
+    
     public int getVideoBufferSize() {
         return 0;
+    }
+    
+    public boolean isMyListForKidsDisabled() {
+        return this.myListForKidsDisabled;
+    }
+    
+    public boolean isThumbRatingActive() {
+        return this.thumbRatingActive;
     }
     
     public boolean isVoipEnabledOnAccount() {

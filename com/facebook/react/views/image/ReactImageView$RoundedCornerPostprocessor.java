@@ -5,6 +5,7 @@
 package com.facebook.react.views.image;
 
 import com.facebook.react.bridge.ReadableMap;
+import android.net.Uri;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
@@ -45,7 +46,6 @@ import android.graphics.BitmapShader;
 import android.graphics.Shader$TileMode;
 import android.graphics.Paint;
 import com.facebook.react.uimanager.FloatUtil;
-import com.facebook.drawee.drawable.ScalingUtils;
 import android.graphics.Rect;
 import android.graphics.Bitmap;
 import com.facebook.imagepipeline.request.BasePostprocessor;
@@ -59,7 +59,7 @@ class ReactImageView$RoundedCornerPostprocessor extends BasePostprocessor
     }
     
     void getRadii(final Bitmap bitmap, final float[] array, final float[] array2) {
-        ScalingUtils.getTransform(ReactImageView.sMatrix, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), bitmap.getWidth(), bitmap.getHeight(), 0.0f, 0.0f, this.this$0.mScaleType);
+        this.this$0.mScaleType.getTransform(ReactImageView.sMatrix, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), bitmap.getWidth(), bitmap.getHeight(), 0.0f, 0.0f);
         ReactImageView.sMatrix.invert(ReactImageView.sInverse);
         array2[1] = (array2[0] = ReactImageView.sInverse.mapRadius(array[0]));
         array2[3] = (array2[2] = ReactImageView.sInverse.mapRadius(array[1]));
