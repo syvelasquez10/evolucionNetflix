@@ -9,6 +9,11 @@ import android.widget.PopupWindow;
 class PopupWindowCompat$Api21PopupWindowImpl extends PopupWindowCompat$KitKatPopupWindowImpl
 {
     @Override
+    public boolean getOverlapAnchor(final PopupWindow popupWindow) {
+        return PopupWindowCompatApi21.getOverlapAnchor(popupWindow);
+    }
+    
+    @Override
     public void setOverlapAnchor(final PopupWindow popupWindow, final boolean b) {
         PopupWindowCompatApi21.setOverlapAnchor(popupWindow, b);
     }

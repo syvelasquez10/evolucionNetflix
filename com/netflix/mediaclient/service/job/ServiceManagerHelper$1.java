@@ -23,12 +23,17 @@ class ServiceManagerHelper$1 implements ManagerStatusListener
         if (Log.isLoggable()) {
             Log.i("nf_job_svcmgr_helper", "onManagerReady result=" + status);
         }
+        if (this.this$0.mServiceManager == null) {
+            Log.i("nf_job_svcmgr_helper", "got a callback even after the mServiceManager release");
+            return;
+        }
         if (status.isSucces()) {
             this.this$0.mState = ServiceManagerHelper$ServiceManagerState.ServiceManagerReady;
             this.this$0.mServiceManagerHelperListener.serviceManagerReady();
             return;
         }
         this.this$0.mState = ServiceManagerHelper$ServiceManagerState.ServiceManagerFailed;
+        this.this$0.mServiceManagerHelperListener.serviceManagerFailed();
     }
     
     @Override

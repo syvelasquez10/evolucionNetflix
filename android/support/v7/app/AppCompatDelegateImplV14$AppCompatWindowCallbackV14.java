@@ -4,7 +4,7 @@
 
 package android.support.v7.app;
 
-import android.support.v7.internal.view.SupportActionModeWrapper$CallbackWrapper;
+import android.support.v7.view.SupportActionModeWrapper$CallbackWrapper;
 import android.view.ActionMode;
 import android.view.ActionMode$Callback;
 import android.view.Window$Callback;

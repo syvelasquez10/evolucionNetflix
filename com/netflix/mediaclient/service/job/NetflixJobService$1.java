@@ -6,20 +6,22 @@ package com.netflix.mediaclient.service.job;
 
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import com.netflix.mediaclient.service.configuration.AndroidJobSchedulerConfig;
+import android.content.Context;
 import java.util.Iterator;
+import com.netflix.mediaclient.Log;
+import android.content.Intent;
 import java.util.HashMap;
 import java.util.ArrayList;
+import android.os.Handler;
 import java.util.List;
 import android.app.job.JobParameters;
 import java.util.Map;
+import android.content.BroadcastReceiver;
 import android.annotation.TargetApi;
 import android.app.job.JobService;
-import com.netflix.mediaclient.Log;
-import android.content.Intent;
-import android.content.Context;
-import android.content.BroadcastReceiver;
 
-class NetflixJobService$1 extends BroadcastReceiver
+class NetflixJobService$1 implements Runnable
 {
     final /* synthetic */ NetflixJobService this$0;
     
@@ -27,13 +29,8 @@ class NetflixJobService$1 extends BroadcastReceiver
         this.this$0 = this$0;
     }
     
-    public void onReceive(final Context context, final Intent intent) {
-        final int intExtra = intent.getIntExtra("NetflixJobId=", NetflixJob$NetflixJobId.UNKNOWN_JOB_ID.getIntValue());
-        final boolean booleanExtra = intent.getBooleanExtra("needsReschedule", false);
-        final NetflixJob$NetflixJobId jobIdByValue = NetflixJob$NetflixJobId.getJobIdByValue(intExtra);
-        if (Log.isLoggable()) {
-            Log.i("nf_job_service_l", "mJobFinishReceiver onReceive jobId=" + jobIdByValue);
-        }
-        this.this$0.sendJobFinished(intExtra, booleanExtra);
+    @Override
+    public void run() {
+        this.this$0.executeJobs();
     }
 }

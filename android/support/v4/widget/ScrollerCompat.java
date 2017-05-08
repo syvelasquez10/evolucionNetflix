@@ -7,27 +7,23 @@ package android.support.v4.widget;
 import android.os.Build$VERSION;
 import android.view.animation.Interpolator;
 import android.content.Context;
+import android.widget.OverScroller;
 
-public class ScrollerCompat
+public final class ScrollerCompat
 {
-    ScrollerCompat$ScrollerCompatImpl mImpl;
-    Object mScroller;
+    private final boolean mIsIcsOrNewer;
+    OverScroller mScroller;
     
-    private ScrollerCompat(final int n, final Context context, final Interpolator interpolator) {
-        if (n >= 14) {
-            this.mImpl = new ScrollerCompat$ScrollerCompatImplIcs();
-        }
-        else if (n >= 9) {
-            this.mImpl = new ScrollerCompat$ScrollerCompatImplGingerbread();
+    ScrollerCompat(final boolean mIsIcsOrNewer, final Context context, final Interpolator interpolator) {
+        this.mIsIcsOrNewer = mIsIcsOrNewer;
+        OverScroller mScroller;
+        if (interpolator != null) {
+            mScroller = new OverScroller(context, interpolator);
         }
         else {
-            this.mImpl = new ScrollerCompat$ScrollerCompatImplBase();
+            mScroller = new OverScroller(context);
         }
-        this.mScroller = this.mImpl.createScroller(context, interpolator);
-    }
-    
-    ScrollerCompat(final Context context, final Interpolator interpolator) {
-        this(Build$VERSION.SDK_INT, context, interpolator);
+        this.mScroller = mScroller;
     }
     
     public static ScrollerCompat create(final Context context) {
@@ -35,46 +31,73 @@ public class ScrollerCompat
     }
     
     public static ScrollerCompat create(final Context context, final Interpolator interpolator) {
-        return new ScrollerCompat(context, interpolator);
+        return new ScrollerCompat(Build$VERSION.SDK_INT >= 14, context, interpolator);
     }
     
     public void abortAnimation() {
-        this.mImpl.abortAnimation(this.mScroller);
+        this.mScroller.abortAnimation();
     }
     
     public boolean computeScrollOffset() {
-        return this.mImpl.computeScrollOffset(this.mScroller);
+        return this.mScroller.computeScrollOffset();
     }
     
     public void fling(final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final int n7, final int n8) {
-        this.mImpl.fling(this.mScroller, n, n2, n3, n4, n5, n6, n7, n8);
+        this.mScroller.fling(n, n2, n3, n4, n5, n6, n7, n8);
+    }
+    
+    public void fling(final int n, final int n2, final int n3, final int n4, final int n5, final int n6, final int n7, final int n8, final int n9, final int n10) {
+        this.mScroller.fling(n, n2, n3, n4, n5, n6, n7, n8, n9, n10);
     }
     
     public float getCurrVelocity() {
-        return this.mImpl.getCurrVelocity(this.mScroller);
+        if (this.mIsIcsOrNewer) {
+            return ScrollerCompatIcs.getCurrVelocity(this.mScroller);
+        }
+        return 0.0f;
     }
     
     public int getCurrX() {
-        return this.mImpl.getCurrX(this.mScroller);
+        return this.mScroller.getCurrX();
     }
     
     public int getCurrY() {
-        return this.mImpl.getCurrY(this.mScroller);
+        return this.mScroller.getCurrY();
     }
     
     public int getFinalX() {
-        return this.mImpl.getFinalX(this.mScroller);
+        return this.mScroller.getFinalX();
     }
     
     public int getFinalY() {
-        return this.mImpl.getFinalY(this.mScroller);
+        return this.mScroller.getFinalY();
     }
     
     public boolean isFinished() {
-        return this.mImpl.isFinished(this.mScroller);
+        return this.mScroller.isFinished();
+    }
+    
+    public boolean isOverScrolled() {
+        return this.mScroller.isOverScrolled();
+    }
+    
+    public void notifyHorizontalEdgeReached(final int n, final int n2, final int n3) {
+        this.mScroller.notifyHorizontalEdgeReached(n, n2, n3);
+    }
+    
+    public void notifyVerticalEdgeReached(final int n, final int n2, final int n3) {
+        this.mScroller.notifyVerticalEdgeReached(n, n2, n3);
+    }
+    
+    public boolean springBack(final int n, final int n2, final int n3, final int n4, final int n5, final int n6) {
+        return this.mScroller.springBack(n, n2, n3, n4, n5, n6);
+    }
+    
+    public void startScroll(final int n, final int n2, final int n3, final int n4) {
+        this.mScroller.startScroll(n, n2, n3, n4);
     }
     
     public void startScroll(final int n, final int n2, final int n3, final int n4, final int n5) {
-        this.mImpl.startScroll(this.mScroller, n, n2, n3, n4, n5);
+        this.mScroller.startScroll(n, n2, n3, n4, n5);
     }
 }

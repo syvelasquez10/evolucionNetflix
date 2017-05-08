@@ -7,10 +7,25 @@ package com.crittercism.internal;
 import java.io.FileInputStream;
 import java.io.File;
 import java.io.InputStreamReader;
+import android.content.res.AssetManager;
 import java.io.InputStream;
+import android.content.Context;
 
 public final class dz
 {
+    public static String a(Context open, final String s) {
+        final AssetManager assets = open.getAssets();
+        open = null;
+        try {
+            return a((InputStream)(open = (Context)assets.open(s)));
+        }
+        finally {
+            if (open != null) {
+                ((InputStream)open).close();
+            }
+        }
+    }
+    
     private static String a(final InputStream inputStream) {
         final StringBuilder sb = new StringBuilder();
         while (true) {
@@ -78,15 +93,12 @@ public final class dz
                 final FileInputStream fileInputStream3 = fileInputStream;
                 fileInputStream3.close();
                 return s;
-                while (true) {
-                    fileInputStream.close();
-                    Label_0031: {
-                        throw;
-                    }
-                    continue;
+                // iftrue(Label_0031:, fileInputStream == null)
+                fileInputStream.close();
+                Label_0031: {
+                    throw;
                 }
             }
-            // iftrue(Label_0031:, fileInputStream == null)
             finally {
                 continue;
             }

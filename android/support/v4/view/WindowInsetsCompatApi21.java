@@ -4,52 +4,40 @@
 
 package android.support.v4.view;
 
+import android.graphics.Rect;
 import android.view.WindowInsets;
 
-class WindowInsetsCompatApi21 extends WindowInsetsCompat
+class WindowInsetsCompatApi21
 {
-    private final WindowInsets mSource;
-    
-    WindowInsetsCompatApi21(final WindowInsets mSource) {
-        this.mSource = mSource;
+    public static Object consumeStableInsets(final Object o) {
+        return ((WindowInsets)o).consumeStableInsets();
     }
     
-    @Override
-    public WindowInsetsCompat consumeSystemWindowInsets() {
-        return new WindowInsetsCompatApi21(this.mSource.consumeSystemWindowInsets());
+    public static int getStableInsetBottom(final Object o) {
+        return ((WindowInsets)o).getStableInsetBottom();
     }
     
-    @Override
-    public int getSystemWindowInsetBottom() {
-        return this.mSource.getSystemWindowInsetBottom();
+    public static int getStableInsetLeft(final Object o) {
+        return ((WindowInsets)o).getStableInsetLeft();
     }
     
-    @Override
-    public int getSystemWindowInsetLeft() {
-        return this.mSource.getSystemWindowInsetLeft();
+    public static int getStableInsetRight(final Object o) {
+        return ((WindowInsets)o).getStableInsetRight();
     }
     
-    @Override
-    public int getSystemWindowInsetRight() {
-        return this.mSource.getSystemWindowInsetRight();
+    public static int getStableInsetTop(final Object o) {
+        return ((WindowInsets)o).getStableInsetTop();
     }
     
-    @Override
-    public int getSystemWindowInsetTop() {
-        return this.mSource.getSystemWindowInsetTop();
+    public static boolean hasStableInsets(final Object o) {
+        return ((WindowInsets)o).hasStableInsets();
     }
     
-    @Override
-    public boolean isConsumed() {
-        return this.mSource.isConsumed();
+    public static boolean isConsumed(final Object o) {
+        return ((WindowInsets)o).isConsumed();
     }
     
-    @Override
-    public WindowInsetsCompat replaceSystemWindowInsets(final int n, final int n2, final int n3, final int n4) {
-        return new WindowInsetsCompatApi21(this.mSource.replaceSystemWindowInsets(n, n2, n3, n4));
-    }
-    
-    WindowInsets unwrap() {
-        return this.mSource;
+    public static Object replaceSystemWindowInsets(final Object o, final Rect rect) {
+        return ((WindowInsets)o).replaceSystemWindowInsets(rect);
     }
 }

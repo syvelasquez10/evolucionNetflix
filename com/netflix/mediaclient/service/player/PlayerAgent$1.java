@@ -5,10 +5,10 @@
 package com.netflix.mediaclient.service.player;
 
 import android.view.SurfaceHolder;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleFailure;
 import com.netflix.mediaclient.media.JPlayer.AdaptiveMediaDecoderHelper;
 import android.os.Build$VERSION;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import android.graphics.Point;
 import java.nio.ByteBuffer;
 import com.netflix.mediaclient.media.AudioSource;
@@ -20,7 +20,7 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.Coppola1Utils;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
+import com.netflix.mediaclient.media.SubtitleUrl;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.media.Subtitle;
@@ -39,9 +39,10 @@ import android.annotation.SuppressLint;
 import android.media.AudioDeviceInfo;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.media.AudioManager;
-import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.event.nrdp.media.Warning;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.event.nrdp.media.BufferRange;
@@ -96,7 +97,7 @@ class PlayerAgent$1 implements Runnable
     @Override
     public void run() {
         while (true) {
-            Label_0602: {
+            Label_0585: {
                 while (true) {
                     synchronized (this.this$0) {
                         this.this$0.mMedia.reset();
@@ -119,7 +120,7 @@ class PlayerAgent$1 implements Runnable
                             Log.d(PlayerAgent.TAG, "Player state is " + this.this$0.mState);
                         }
                         if (this.this$0.mState != 4 && this.this$0.mState != -1) {
-                            break Label_0602;
+                            break Label_0585;
                         }
                         Log.d(PlayerAgent.TAG, "Player state was CLOSED or CREATED, cancel timeout task!");
                         this.this$0.mState = 5;
@@ -144,7 +145,6 @@ class PlayerAgent$1 implements Runnable
                             this.this$0.mPlaybackVolumeMetric = new PlaybackVolumeMetric(this.this$0.getContext());
                             this.this$0.mMedia.open(this.this$0.mMovieId, this.this$0.mPlayContext, currentNetType, this.this$0.mBookmark, this.this$0.getConfigurationAgent().isPreviewContentEnabled(), this.this$0.mPlaybackVolumeMetric, this.this$0.getPreferredPeakBpsForLogging());
                             this.this$0.toOpenAfterClose = false;
-                            this.this$0.getConfigurationAgent().getDeviceCategory().getValue();
                             this.this$0.sessionInitRxBytes = ConnectivityUtils.getApplicationRx();
                             this.this$0.sessionInitTxBytes = ConnectivityUtils.getApplicationTx();
                             return;

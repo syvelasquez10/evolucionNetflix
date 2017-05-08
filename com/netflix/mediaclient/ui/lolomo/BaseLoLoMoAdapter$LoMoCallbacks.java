@@ -15,7 +15,6 @@ import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.util.Coppola2Utils;
-import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import java.util.Iterator;
 import android.widget.ListView;

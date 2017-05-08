@@ -13,7 +13,7 @@ class DrawerLayout$ViewDragCallback extends ViewDragHelper$Callback
     private final Runnable mPeekRunnable;
     final /* synthetic */ DrawerLayout this$0;
     
-    public DrawerLayout$ViewDragCallback(final DrawerLayout this$0, final int mAbsGravity) {
+    DrawerLayout$ViewDragCallback(final DrawerLayout this$0, final int mAbsGravity) {
         this.this$0 = this$0;
         this.mPeekRunnable = new DrawerLayout$ViewDragCallback$1(this);
         this.mAbsGravity = mAbsGravity;
@@ -27,39 +27,6 @@ class DrawerLayout$ViewDragCallback extends ViewDragHelper$Callback
         final View drawerWithGravity = this.this$0.findDrawerWithGravity(n);
         if (drawerWithGravity != null) {
             this.this$0.closeDrawer(drawerWithGravity);
-        }
-    }
-    
-    private void peekDrawer() {
-        int n = 0;
-        final int edgeSize = this.mDragger.getEdgeSize();
-        boolean b;
-        if (this.mAbsGravity == 3) {
-            b = true;
-        }
-        else {
-            b = false;
-        }
-        View view;
-        int n2;
-        if (b) {
-            view = this.this$0.findDrawerWithGravity(3);
-            if (view != null) {
-                n = -view.getWidth();
-            }
-            n2 = n + edgeSize;
-        }
-        else {
-            view = this.this$0.findDrawerWithGravity(5);
-            n2 = this.this$0.getWidth() - edgeSize;
-        }
-        if (view != null && ((b && view.getLeft() < n2) || (!b && view.getLeft() > n2)) && this.this$0.getDrawerLockMode(view) == 0) {
-            final DrawerLayout$LayoutParams drawerLayout$LayoutParams = (DrawerLayout$LayoutParams)view.getLayoutParams();
-            this.mDragger.smoothSlideViewTo(view, n2, view.getTop());
-            drawerLayout$LayoutParams.isPeeking = true;
-            this.this$0.invalidate();
-            this.closeOtherDrawer();
-            this.this$0.cancelChildViewTouch();
         }
     }
     
@@ -172,6 +139,39 @@ class DrawerLayout$ViewDragCallback extends ViewDragHelper$Callback
         }
         this.mDragger.settleCapturedViewAt(n2, view.getTop());
         this.this$0.invalidate();
+    }
+    
+    void peekDrawer() {
+        int n = 0;
+        final int edgeSize = this.mDragger.getEdgeSize();
+        boolean b;
+        if (this.mAbsGravity == 3) {
+            b = true;
+        }
+        else {
+            b = false;
+        }
+        View view;
+        int n2;
+        if (b) {
+            view = this.this$0.findDrawerWithGravity(3);
+            if (view != null) {
+                n = -view.getWidth();
+            }
+            n2 = n + edgeSize;
+        }
+        else {
+            view = this.this$0.findDrawerWithGravity(5);
+            n2 = this.this$0.getWidth() - edgeSize;
+        }
+        if (view != null && ((b && view.getLeft() < n2) || (!b && view.getLeft() > n2)) && this.this$0.getDrawerLockMode(view) == 0) {
+            final DrawerLayout$LayoutParams drawerLayout$LayoutParams = (DrawerLayout$LayoutParams)view.getLayoutParams();
+            this.mDragger.smoothSlideViewTo(view, n2, view.getTop());
+            drawerLayout$LayoutParams.isPeeking = true;
+            this.this$0.invalidate();
+            this.closeOtherDrawer();
+            this.this$0.cancelChildViewTouch();
+        }
     }
     
     public void removeCallbacks() {

@@ -8,7 +8,11 @@ import android.graphics.drawable.Drawable;
 
 class DrawableCompatApi23
 {
-    public static void setLayoutDirection(final Drawable drawable, final int layoutDirection) {
-        drawable.setLayoutDirection(layoutDirection);
+    public static int getLayoutDirection(final Drawable drawable) {
+        return drawable.getLayoutDirection();
+    }
+    
+    public static boolean setLayoutDirection(final Drawable drawable, final int layoutDirection) {
+        return drawable.setLayoutDirection(layoutDirection);
     }
 }

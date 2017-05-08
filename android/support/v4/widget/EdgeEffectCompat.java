@@ -8,7 +8,7 @@ import android.graphics.Canvas;
 import android.content.Context;
 import android.os.Build$VERSION;
 
-public class EdgeEffectCompat
+public final class EdgeEffectCompat
 {
     private static final EdgeEffectCompat$EdgeEffectImpl IMPL;
     private Object mEdgeEffect;
@@ -45,6 +45,7 @@ public class EdgeEffectCompat
         return EdgeEffectCompat.IMPL.onAbsorb(this.mEdgeEffect, n);
     }
     
+    @Deprecated
     public boolean onPull(final float n) {
         return EdgeEffectCompat.IMPL.onPull(this.mEdgeEffect, n);
     }

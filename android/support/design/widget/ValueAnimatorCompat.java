@@ -14,8 +14,32 @@ class ValueAnimatorCompat
         this.mImpl = mImpl;
     }
     
+    public void addListener(final ValueAnimatorCompat$AnimatorListener valueAnimatorCompat$AnimatorListener) {
+        if (valueAnimatorCompat$AnimatorListener != null) {
+            this.mImpl.addListener(new ValueAnimatorCompat$2(this, valueAnimatorCompat$AnimatorListener));
+            return;
+        }
+        this.mImpl.addListener(null);
+    }
+    
+    public void addUpdateListener(final ValueAnimatorCompat$AnimatorUpdateListener valueAnimatorCompat$AnimatorUpdateListener) {
+        if (valueAnimatorCompat$AnimatorUpdateListener != null) {
+            this.mImpl.addUpdateListener(new ValueAnimatorCompat$1(this, valueAnimatorCompat$AnimatorUpdateListener));
+            return;
+        }
+        this.mImpl.addUpdateListener(null);
+    }
+    
     public void cancel() {
         this.mImpl.cancel();
+    }
+    
+    public void end() {
+        this.mImpl.end();
+    }
+    
+    public float getAnimatedFloatValue() {
+        return this.mImpl.getAnimatedFloatValue();
     }
     
     public float getAnimatedFraction() {
@@ -26,11 +50,15 @@ class ValueAnimatorCompat
         return this.mImpl.getAnimatedIntValue();
     }
     
+    public long getDuration() {
+        return this.mImpl.getDuration();
+    }
+    
     public boolean isRunning() {
         return this.mImpl.isRunning();
     }
     
-    public void setDuration(final int duration) {
+    public void setDuration(final long duration) {
         this.mImpl.setDuration(duration);
     }
     
@@ -44,22 +72,6 @@ class ValueAnimatorCompat
     
     public void setInterpolator(final Interpolator interpolator) {
         this.mImpl.setInterpolator(interpolator);
-    }
-    
-    public void setListener(final ValueAnimatorCompat$AnimatorListener valueAnimatorCompat$AnimatorListener) {
-        if (valueAnimatorCompat$AnimatorListener != null) {
-            this.mImpl.setListener(new ValueAnimatorCompat$2(this, valueAnimatorCompat$AnimatorListener));
-            return;
-        }
-        this.mImpl.setListener(null);
-    }
-    
-    public void setUpdateListener(final ValueAnimatorCompat$AnimatorUpdateListener valueAnimatorCompat$AnimatorUpdateListener) {
-        if (valueAnimatorCompat$AnimatorUpdateListener != null) {
-            this.mImpl.setUpdateListener(new ValueAnimatorCompat$1(this, valueAnimatorCompat$AnimatorUpdateListener));
-            return;
-        }
-        this.mImpl.setUpdateListener(null);
     }
     
     public void start() {

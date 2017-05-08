@@ -4,8 +4,6 @@
 
 package android.support.v4.view;
 
-import android.view.animation.Interpolator;
-import java.util.WeakHashMap;
 import android.view.View;
 import java.lang.ref.WeakReference;
 
@@ -15,7 +13,7 @@ class ViewPropertyAnimatorCompat$BaseViewPropertyAnimatorCompatImpl$Starter impl
     ViewPropertyAnimatorCompat mVpa;
     final /* synthetic */ ViewPropertyAnimatorCompat$BaseViewPropertyAnimatorCompatImpl this$0;
     
-    private ViewPropertyAnimatorCompat$BaseViewPropertyAnimatorCompatImpl$Starter(final ViewPropertyAnimatorCompat$BaseViewPropertyAnimatorCompatImpl this$0, final ViewPropertyAnimatorCompat mVpa, final View view) {
+    ViewPropertyAnimatorCompat$BaseViewPropertyAnimatorCompatImpl$Starter(final ViewPropertyAnimatorCompat$BaseViewPropertyAnimatorCompatImpl this$0, final ViewPropertyAnimatorCompat mVpa, final View view) {
         this.this$0 = this$0;
         this.mViewRef = new WeakReference<View>(view);
         this.mVpa = mVpa;

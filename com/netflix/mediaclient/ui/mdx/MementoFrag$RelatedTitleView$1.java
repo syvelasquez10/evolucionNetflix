@@ -58,7 +58,7 @@ class MementoFrag$RelatedTitleView$1 implements View$OnClickListener
             if (this.this$1.this$0.leWrapper != null) {
                 this.this$1.this$0.leWrapper.showLoadingView(true);
             }
-            miniPlayerControlsFrag.fetchRelatedCollection((String)this.val$moreInfo.getTag(2131689496), (String)this.val$moreInfo.getTag(2131689497));
+            miniPlayerControlsFrag.fetchRelatedCollection((String)this.val$moreInfo.getTag(2131689498), (String)this.val$moreInfo.getTag(2131689499));
             if (this.this$1.this$0.isActivityValid()) {
                 UIViewLogUtils.reportUIViewCommand((Context)this.this$1.this$0.getActivity(), UIViewLogging$UIViewCommandName.mementoRelatedMore, IClientLogging$ModalView.memento, this.this$1.this$0.getNetflixActivity().getDataContext());
             }

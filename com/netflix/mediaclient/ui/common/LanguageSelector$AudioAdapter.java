@@ -42,10 +42,10 @@ public class LanguageSelector$AudioAdapter extends BaseAdapter
             Log.d("nf_language_selector", "Audio create row " + n);
             int n2;
             if (BrowseExperience.isKubrick()) {
-                n2 = 2130903156;
+                n2 = 2130903166;
             }
             else {
-                n2 = 2130903164;
+                n2 = 2130903174;
             }
             inflate = this.activity.getLayoutInflater().inflate(n2, viewGroup, false);
             inflate.setTag((Object)new LanguageSelector$RowHolder(inflate));

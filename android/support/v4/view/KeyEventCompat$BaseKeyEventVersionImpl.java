@@ -8,6 +8,9 @@ import android.view.KeyEvent;
 
 class KeyEventCompat$BaseKeyEventVersionImpl implements KeyEventCompat$KeyEventVersionImpl
 {
+    private static final int META_ALL_MASK = 247;
+    private static final int META_MODIFIER_MASK = 247;
+    
     private static int metaStateFilterDirectionalModifiers(final int n, int n2, final int n3, int n4, final int n5) {
         final int n6 = 1;
         int n7;
@@ -40,6 +43,11 @@ class KeyEventCompat$BaseKeyEventVersionImpl implements KeyEventCompat$KeyEventV
     }
     
     @Override
+    public boolean isCtrlPressed(final KeyEvent keyEvent) {
+        return false;
+    }
+    
+    @Override
     public boolean metaStateHasModifiers(final int n, final int n2) {
         return metaStateFilterDirectionalModifiers(metaStateFilterDirectionalModifiers(this.normalizeMetaState(n) & 0xF7, n2, 1, 64, 128), n2, 2, 16, 32) == n2;
     }
@@ -49,6 +57,7 @@ class KeyEventCompat$BaseKeyEventVersionImpl implements KeyEventCompat$KeyEventV
         return (this.normalizeMetaState(n) & 0xF7) == 0x0;
     }
     
+    @Override
     public int normalizeMetaState(int n) {
         if ((n & 0xC0) != 0x0) {
             n |= 0x1;
@@ -58,9 +67,5 @@ class KeyEventCompat$BaseKeyEventVersionImpl implements KeyEventCompat$KeyEventV
             n2 = (n | 0x2);
         }
         return n2 & 0xF7;
-    }
-    
-    @Override
-    public void startTracking(final KeyEvent keyEvent) {
     }
 }

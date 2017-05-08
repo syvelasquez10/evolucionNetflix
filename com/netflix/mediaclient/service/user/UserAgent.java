@@ -16,10 +16,12 @@ import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import com.netflix.mediaclient.util.PrivacyUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.webapi.WebApiCommand;
+import com.netflix.mediaclient.servicemgr.IMSLClient$MSLUserCredentialRegistry;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.util.l10n.UserLocale;
+import com.netflix.mediaclient.media.BookmarkStore;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
@@ -68,10 +70,6 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     private static final String APP_RESET_Required = "appResetRequired";
     private static final String BIND = "bind";
     private static final String DEACTIVATED = "deactivated";
-    private static final String NETFLIX_ID = "NetflixId";
-    private static final String NETFLIX_ID_TEST = "NetflixIdTest";
-    private static final String SECURE_NETFLIX_ID = "SecureNetflixId";
-    private static final String SECURE_NETFLIX_ID_TEST = "SecureNetflixIdTest";
     private static final String TAG = "nf_service_useragent";
     private final UserAgentWebCallback commonProfilesUpdateCallback;
     private final ConfigurationAgentWebCallback configDataCallback;
@@ -138,6 +136,14 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         final NrmConfigData nrmConfigData = new NrmConfigData();
         nrmConfigData.isUserBound = true;
         final NrmConfigData nrmConfigData2 = this.getConfigurationAgent().getNrmConfigData();
+        String netflixId;
+        if (nrmConfigData2 != null) {
+            netflixId = nrmConfigData2.netflixId;
+        }
+        else {
+            netflixId = "";
+        }
+        Log.d("nf_service_useragent", "transferUserCookiesIntoNrmConfig - bf4- netflixId: %s", netflixId);
         if (nrmConfigData2 == null) {
             nrmConfigData.netflixId = this.mDynecomNetflixId;
             nrmConfigData.secureNetflixId = this.mDynecomSecureNetflixId;
@@ -336,13 +342,19 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         this.getContext().registerReceiver((BroadcastReceiver)this.mPlayStopReceiver, new IntentFilter("com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP"));
     }
     
+    private void setCurrentUserProfile(final UserProfile mCurrentUserProfile) {
+        this.mCurrentUserProfile = mCurrentUserProfile;
+    }
+    
     private void setUserPreferredLanguages(final String[] array) {
         this.userLocaleRepository.setPreferredLanguages(StringUtils.joinArray(array));
         this.getNrdController().setDeviceLocale(this.userLocaleRepository.getCurrentAppLocale().getLocale());
     }
     
     private void transferUserCookiesIntoNrmConfig() {
-        this.getConfigurationAgent().persistNrmConfigData(this.buildNewNrmConfigData());
+        final NrmConfigData buildNewNrmConfigData = this.buildNewNrmConfigData();
+        this.getConfigurationAgent().persistNrmConfigData(buildNewNrmConfigData);
+        Log.d("nf_service_useragent", "transferUserCookiesIntoNrmConfig - aftr - netflixId: %s, mDynecomNetflixId: %s", buildNewNrmConfigData.netflixId, this.mDynecomNetflixId);
     }
     
     private void unregisterAccountErrorReceiver() {
@@ -442,6 +454,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         if (stringPref != null) {
             this.getApplication().setSignedInOnce();
             this.mListOfUserProfiles = this.buildListOfUserProfiles(stringPref);
+            BookmarkStore.getInstance().updateValidProfiles(this.mListOfUserProfiles);
         }
         final String stringPref2 = PreferenceUtils.getStringPref(this.getContext(), "useragent_user_data", null);
         if (stringPref2 != null) {
@@ -456,13 +469,13 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
         }
         this.userLocaleRepository.setApplicationLanguage(new UserLocale(rawDeviceLocale));
         while (true) {
-            Label_0281: {
+            Label_0291: {
                 if (!this.getConfigurationAgent().shouldAlertForMissingLocale()) {
-                    break Label_0281;
+                    break Label_0291;
                 }
                 final UserLocaleRepository userLocaleRepository = this.userLocaleRepository;
                 if (UserLocaleRepository.wasPreviouslyAlerted(this.getContext())) {
-                    break Label_0281;
+                    break Label_0291;
                 }
                 final NetflixImmutableStatus localeSupportStatus = CommonStatus.NON_SUPPORTED_LOCALE;
                 this.localeSupportStatus = localeSupportStatus;
@@ -534,6 +547,9 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     
     @Override
     public String getCurrentAppLanguage() {
+        if (this.userLocaleRepository == null) {
+            return null;
+        }
         if (this.mCurrentUserProfile == null || this.mCurrentUserProfile.getLanguagesList() == null || this.mCurrentUserProfile.getLanguagesList().size() < 1) {
             return this.userLocaleRepository.getCurrentAppLocale().getRaw();
         }
@@ -635,6 +651,11 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     }
     
     @Override
+    public IMSLClient$MSLUserCredentialRegistry getMSLUserCredentialRegistry() {
+        return new UserAgent$9(this);
+    }
+    
+    @Override
     public String getNetflixID() {
         if (this.isUserLoggedIn()) {
             return this.mCurrentUserAccount.getNetflixId();
@@ -648,6 +669,20 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     @Override
     public String getNetflixIdName() {
         return WebApiCommand.getNetflixIdName();
+    }
+    
+    @Override
+    public String getPrimaryProfileGuid() {
+        Log.i("nf_service_useragent", "getPrimaryProfileGuid");
+        if (this.mListOfUserProfiles != null) {
+            for (final UserProfile userProfile : this.mListOfUserProfiles) {
+                Log.i("nf_service_useragent", "getPrimaryProfileGuid " + userProfile.getFirstName());
+                if (userProfile.isPrimaryProfile()) {
+                    return userProfile.getProfileGuid();
+                }
+            }
+        }
+        return null;
     }
     
     @Override
@@ -840,9 +875,10 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
     @Override
     public void profileActivated(final String s, final DeviceAccount mCurrentUserAccount) {
         this.mCurrentUserAccount = mCurrentUserAccount;
-        for (final UserProfile mCurrentUserProfile : this.mListOfUserProfiles) {
-            if (mCurrentUserProfile.getProfileGuid().equals(s)) {
-                this.persistCurrentProfileGuid(this.mCurrentUserProfile = mCurrentUserProfile);
+        for (final UserProfile currentUserProfile : this.mListOfUserProfiles) {
+            if (currentUserProfile.getProfileGuid().equals(s)) {
+                this.setCurrentUserProfile(currentUserProfile);
+                this.persistCurrentProfileGuid(this.mCurrentUserProfile);
                 BrowseExperience.refresh(this.getContext(), this.mCurrentUserProfile);
                 PersistentConfig.refresh();
                 if (this.mCurrentUserProfile != null && this.mCurrentUserProfile.getSubtitlePreference() != null) {
@@ -985,6 +1021,7 @@ public class UserAgent extends ServiceAgent implements ServiceAgent$UserAgentInt
             Log.d("nf_service_useragent", "got cookies from dynecom");
             this.mDynecomNetflixId = mDynecomNetflixId;
             this.mDynecomSecureNetflixId = mDynecomSecureNetflixId;
+            Log.d("nf_service_useragent", "NetlixId: %s, secureNetflixId: %s", this.mDynecomNetflixId, this.mDynecomSecureNetflixId);
             return false;
         }
         this.mCurrentUserAccount = this.mUserAgentStateManager.updateAccountTokens(mDynecomNetflixId, mDynecomSecureNetflixId);

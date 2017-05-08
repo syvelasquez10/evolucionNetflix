@@ -4,40 +4,46 @@
 
 package android.support.design.widget;
 
-import android.animation.ObjectAnimator;
-import android.animation.StateListAnimator;
-import android.support.v4.view.ViewCompat;
+import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.graphics.PorterDuff$Mode;
 import android.content.res.ColorStateList;
-import android.animation.TimeInterpolator;
-import android.animation.Animator;
-import android.view.animation.AnimationUtils;
-import android.view.View;
-import android.graphics.drawable.RippleDrawable;
-import android.view.animation.Interpolator;
 import android.graphics.drawable.Drawable;
+import android.animation.TimeInterpolator;
+import android.view.View;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.AnimatorSet;
+import android.animation.StateListAnimator;
+import android.graphics.Rect;
+import android.graphics.drawable.InsetDrawable;
 import android.annotation.TargetApi;
 
 @TargetApi(21)
-class FloatingActionButtonLollipop extends FloatingActionButtonHoneycombMr1
+class FloatingActionButtonLollipop extends FloatingActionButtonIcs
 {
-    private Drawable mBorderDrawable;
-    private Interpolator mInterpolator;
-    private RippleDrawable mRippleDrawable;
-    private Drawable mShapeDrawable;
+    private InsetDrawable mInsetDrawable;
     
-    FloatingActionButtonLollipop(final View view, final ShadowViewDelegate shadowViewDelegate) {
-        super(view, shadowViewDelegate);
-        if (!view.isInEditMode()) {
-            this.mInterpolator = AnimationUtils.loadInterpolator(this.mView.getContext(), 17563661);
-        }
+    FloatingActionButtonLollipop(final VisibilityAwareImageButton visibilityAwareImageButton, final ShadowViewDelegate shadowViewDelegate, final ValueAnimatorCompat$Creator valueAnimatorCompat$Creator) {
+        super(visibilityAwareImageButton, shadowViewDelegate, valueAnimatorCompat$Creator);
     }
     
-    private Animator setupAnimator(final Animator animator) {
-        animator.setInterpolator((TimeInterpolator)this.mInterpolator);
-        return animator;
+    public float getElevation() {
+        return this.mView.getElevation();
+    }
+    
+    @Override
+    void getPadding(final Rect rect) {
+        if (this.mShadowViewDelegate.isCompatPaddingEnabled()) {
+            final float radius = this.mShadowViewDelegate.getRadius();
+            final float n = this.getElevation() + this.mPressedTranslationZ;
+            final int n2 = (int)Math.ceil(ShadowDrawableWrapper.calculateHorizontalPadding(n, radius, false));
+            final int n3 = (int)Math.ceil(ShadowDrawableWrapper.calculateVerticalPadding(n, radius, false));
+            rect.set(n2, n3, n2, n3);
+            return;
+        }
+        rect.set(0, 0, 0, 0);
     }
     
     @Override
@@ -50,56 +56,82 @@ class FloatingActionButtonLollipop extends FloatingActionButtonHoneycombMr1
     }
     
     @Override
+    void onCompatShadowChanged() {
+        this.updatePadding();
+    }
+    
+    @Override
     void onDrawableStateChanged(final int[] array) {
     }
     
     @Override
-    void setBackgroundDrawable(Drawable mShapeDrawable, final ColorStateList list, final PorterDuff$Mode porterDuff$Mode, final int n, final int n2) {
-        DrawableCompat.setTintList(this.mShapeDrawable = DrawableCompat.wrap(mShapeDrawable.mutate()), list);
+    void onElevationsChanged(final float n, final float n2) {
+        final StateListAnimator stateListAnimator = new StateListAnimator();
+        final AnimatorSet set = new AnimatorSet();
+        set.play((Animator)ObjectAnimator.ofFloat((Object)this.mView, "elevation", new float[] { n }).setDuration(0L)).with((Animator)ObjectAnimator.ofFloat((Object)this.mView, View.TRANSLATION_Z, new float[] { n2 }).setDuration(100L));
+        set.setInterpolator((TimeInterpolator)FloatingActionButtonLollipop.ANIM_INTERPOLATOR);
+        stateListAnimator.addState(FloatingActionButtonLollipop.PRESSED_ENABLED_STATE_SET, (Animator)set);
+        final AnimatorSet set2 = new AnimatorSet();
+        set2.play((Animator)ObjectAnimator.ofFloat((Object)this.mView, "elevation", new float[] { n }).setDuration(0L)).with((Animator)ObjectAnimator.ofFloat((Object)this.mView, View.TRANSLATION_Z, new float[] { n2 }).setDuration(100L));
+        set2.setInterpolator((TimeInterpolator)FloatingActionButtonLollipop.ANIM_INTERPOLATOR);
+        stateListAnimator.addState(FloatingActionButtonLollipop.FOCUSED_ENABLED_STATE_SET, (Animator)set2);
+        final AnimatorSet set3 = new AnimatorSet();
+        final AnimatorSet set4 = new AnimatorSet();
+        set4.play((Animator)ObjectAnimator.ofFloat((Object)this.mView, View.TRANSLATION_Z, new float[] { 0.0f }).setDuration(100L)).after(100L);
+        set3.play((Animator)ObjectAnimator.ofFloat((Object)this.mView, "elevation", new float[] { n }).setDuration(0L)).with((Animator)set4);
+        set3.setInterpolator((TimeInterpolator)FloatingActionButtonLollipop.ANIM_INTERPOLATOR);
+        stateListAnimator.addState(FloatingActionButtonLollipop.ENABLED_STATE_SET, (Animator)set3);
+        final AnimatorSet set5 = new AnimatorSet();
+        set5.play((Animator)ObjectAnimator.ofFloat((Object)this.mView, "elevation", new float[] { 0.0f }).setDuration(0L)).with((Animator)ObjectAnimator.ofFloat((Object)this.mView, View.TRANSLATION_Z, new float[] { 0.0f }).setDuration(0L));
+        set5.setInterpolator((TimeInterpolator)FloatingActionButtonLollipop.ANIM_INTERPOLATOR);
+        stateListAnimator.addState(FloatingActionButtonLollipop.EMPTY_STATE_SET, (Animator)set5);
+        this.mView.setStateListAnimator(stateListAnimator);
+        if (this.mShadowViewDelegate.isCompatPaddingEnabled()) {
+            this.updatePadding();
+        }
+    }
+    
+    @Override
+    void onPaddingUpdated(final Rect rect) {
+        if (this.mShadowViewDelegate.isCompatPaddingEnabled()) {
+            this.mInsetDrawable = new InsetDrawable(this.mRippleDrawable, rect.left, rect.top, rect.right, rect.bottom);
+            this.mShadowViewDelegate.setBackgroundDrawable((Drawable)this.mInsetDrawable);
+            return;
+        }
+        this.mShadowViewDelegate.setBackgroundDrawable(this.mRippleDrawable);
+    }
+    
+    @Override
+    boolean requirePreDrawListener() {
+        return false;
+    }
+    
+    @Override
+    void setBackgroundDrawable(final ColorStateList list, final PorterDuff$Mode porterDuff$Mode, final int n, final int n2) {
+        DrawableCompat.setTintList(this.mShapeDrawable = DrawableCompat.wrap((Drawable)this.createShapeDrawable()), list);
         if (porterDuff$Mode != null) {
             DrawableCompat.setTintMode(this.mShapeDrawable, porterDuff$Mode);
         }
+        Object mShapeDrawable;
         if (n2 > 0) {
             this.mBorderDrawable = this.createBorderDrawable(n2, list);
-            mShapeDrawable = (Drawable)new LayerDrawable(new Drawable[] { this.mBorderDrawable, this.mShapeDrawable });
+            mShapeDrawable = new LayerDrawable(new Drawable[] { this.mBorderDrawable, this.mShapeDrawable });
         }
         else {
             this.mBorderDrawable = null;
             mShapeDrawable = this.mShapeDrawable;
         }
-        this.mRippleDrawable = new RippleDrawable(ColorStateList.valueOf(n), mShapeDrawable, (Drawable)null);
-        this.mShadowViewDelegate.setBackgroundDrawable((Drawable)this.mRippleDrawable);
-        this.mShadowViewDelegate.setShadowPadding(0, 0, 0, 0);
+        this.mRippleDrawable = (Drawable)new RippleDrawable(ColorStateList.valueOf(n), (Drawable)mShapeDrawable, (Drawable)null);
+        this.mContentBackground = this.mRippleDrawable;
+        this.mShadowViewDelegate.setBackgroundDrawable(this.mRippleDrawable);
     }
     
     @Override
-    void setBackgroundTintList(final ColorStateList list) {
-        DrawableCompat.setTintList(this.mShapeDrawable, list);
-        if (this.mBorderDrawable != null) {
-            DrawableCompat.setTintList(this.mBorderDrawable, list);
+    void setRippleColor(final int rippleColor) {
+        if (this.mRippleDrawable instanceof RippleDrawable) {
+            ((RippleDrawable)this.mRippleDrawable).setColor(ColorStateList.valueOf(rippleColor));
+            return;
         }
-    }
-    
-    @Override
-    void setBackgroundTintMode(final PorterDuff$Mode porterDuff$Mode) {
-        DrawableCompat.setTintMode(this.mShapeDrawable, porterDuff$Mode);
-    }
-    
-    public void setElevation(final float n) {
-        ViewCompat.setElevation(this.mView, n);
-    }
-    
-    @Override
-    void setPressedTranslationZ(final float n) {
-        final StateListAnimator stateListAnimator = new StateListAnimator();
-        stateListAnimator.addState(FloatingActionButtonLollipop.PRESSED_ENABLED_STATE_SET, this.setupAnimator((Animator)ObjectAnimator.ofFloat((Object)this.mView, "translationZ", new float[] { n })));
-        stateListAnimator.addState(FloatingActionButtonLollipop.FOCUSED_ENABLED_STATE_SET, this.setupAnimator((Animator)ObjectAnimator.ofFloat((Object)this.mView, "translationZ", new float[] { n })));
-        stateListAnimator.addState(FloatingActionButtonLollipop.EMPTY_STATE_SET, this.setupAnimator((Animator)ObjectAnimator.ofFloat((Object)this.mView, "translationZ", new float[] { 0.0f })));
-        this.mView.setStateListAnimator(stateListAnimator);
-    }
-    
-    @Override
-    void setRippleColor(final int n) {
-        this.mRippleDrawable.setColor(ColorStateList.valueOf(n));
+        super.setRippleColor(rippleColor);
     }
 }

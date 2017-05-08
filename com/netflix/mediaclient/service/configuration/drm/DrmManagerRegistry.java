@@ -162,9 +162,7 @@ public final class DrmManagerRegistry
     }
     
     public static boolean hasEsnChanged() {
-        if (Log.isLoggable()) {
-            Log.d("nf_drm", "currentDrmSystem : " + DrmManagerRegistry.currentDrmSystem + ", previousDrmSystem : " + DrmManagerRegistry.previousDrmSystem);
-        }
+        Log.d("nf_drm", "currentDrmSystem: %s, previousDrmSystem: %s", DrmManagerRegistry.currentDrmSystem, DrmManagerRegistry.previousDrmSystem);
         if (StringUtils.isEmpty(DrmManagerRegistry.currentDrmSystem)) {
             Log.e("nf_drm", "DrmManager instance is not created");
         }
@@ -185,16 +183,12 @@ public final class DrmManagerRegistry
                 return true;
             }
             Log.d("nf_drm", "Widevine System ID is NOT changed, verify if security level is changed");
-            if (DrmManagerRegistry.instance.getCryptoProvider() != DrmManagerRegistry.previousCryptoProvider) {
-                if (Log.isLoggable()) {
-                    Log.d("nf_drm", "Crypto provider is changed from " + DrmManagerRegistry.previousCryptoProvider + " to " + DrmManagerRegistry.instance.getCryptoProvider());
-                }
-                return true;
-            }
-            if (Log.isLoggable()) {
-                Log.d("nf_drm", "Same crypto provider " + DrmManagerRegistry.previousCryptoProvider + ". No change!");
+            if (DrmManagerRegistry.instance.getCryptoProvider() == DrmManagerRegistry.previousCryptoProvider) {
+                Log.d("nf_drm", "Same crypto provider %s. No change!", DrmManagerRegistry.previousCryptoProvider);
                 return false;
             }
+            Log.d("nf_drm", "Crypto provider is changed from %s to %s", DrmManagerRegistry.previousCryptoProvider, DrmManagerRegistry.instance.getCryptoProvider().name());
+            return true;
         }
         return false;
     }

@@ -11,12 +11,13 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
-import android.content.Context;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.os.Bundle;
 import com.netflix.mediaclient.Log;
+import android.content.Context;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
@@ -35,6 +36,10 @@ class ShowDetailsFrag$FetchShowDetailsCallback extends LoggingManagerCallback
     @Override
     public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
         super.onShowDetailsFetched(showDetails, status);
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.getNetflixActivity())) {
+            Log.v("ShowDetailsFrag", "Activity state is invalid");
+            return;
+        }
         if (this.requestId != this.this$0.requestId || this.this$0.isDestroyed()) {
             Log.v("ShowDetailsFrag", "Ignoring stale callback");
             return;

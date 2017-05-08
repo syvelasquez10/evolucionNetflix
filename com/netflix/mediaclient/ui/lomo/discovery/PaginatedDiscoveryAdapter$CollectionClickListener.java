@@ -13,12 +13,12 @@ import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.content.res.Resources;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.Coppola2Utils;
-import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.Discovery;
 import com.netflix.mediaclient.ui.lomo.BasePaginatedAdapter;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.lomo.discovery.extended.TurboExtendedDiscoveryFrag;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.View;
 import com.netflix.mediaclient.ui.common.PlayContextImp;
@@ -41,7 +41,7 @@ class PaginatedDiscoveryAdapter$CollectionClickListener implements View$OnClickL
     }
     
     public void onClick(final View view) {
-        if (!AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.getActivity())) {
+        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.getActivity())) {
             final TurboExtendedDiscoveryFrag turboExtendedDiscoveryFrag = new TurboExtendedDiscoveryFrag();
             ((NetflixActivity)this.this$0.getActivity()).showDialog(turboExtendedDiscoveryFrag);
             turboExtendedDiscoveryFrag.updatePage(((NetflixActivity)this.this$0.getActivity()).getServiceManager(), this.turboCollectionId, this.title, this.trackable, this.this$0.animator);

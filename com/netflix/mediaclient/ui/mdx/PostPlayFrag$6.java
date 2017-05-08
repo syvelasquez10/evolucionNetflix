@@ -31,7 +31,6 @@ import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import com.netflix.mediaclient.ui.player.PostPlayRequestContext;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Intent;
 import android.content.Context;
@@ -46,7 +45,7 @@ class PostPlayFrag$6 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.getNetflixActivity()) || intent == null || this.this$0.video == null) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.getNetflixActivity()) || intent == null || this.this$0.video == null) {
             return;
         }
         final String action = intent.getAction();

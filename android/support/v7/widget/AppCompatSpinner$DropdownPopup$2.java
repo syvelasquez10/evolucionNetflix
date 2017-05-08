@@ -6,10 +6,9 @@ package android.support.v7.widget;
 
 import android.view.ViewTreeObserver;
 import android.widget.PopupWindow$OnDismissListener;
+import android.support.v4.view.ViewCompat;
 import android.graphics.drawable.Drawable;
 import android.widget.SpinnerAdapter;
-import android.support.v7.internal.widget.ViewUtils;
-import android.support.v4.view.ViewCompat;
 import android.widget.AdapterView$OnItemClickListener;
 import android.util.AttributeSet;
 import android.content.Context;

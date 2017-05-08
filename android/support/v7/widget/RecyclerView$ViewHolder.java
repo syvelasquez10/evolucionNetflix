@@ -4,42 +4,6 @@
 
 package android.support.v7.widget;
 
-import android.support.v4.view.ViewConfigurationCompat;
-import android.os.SystemClock;
-import android.support.v4.view.AccessibilityDelegateCompat;
-import android.support.v4.view.VelocityTrackerCompat;
-import android.support.v4.os.TraceCompat;
-import android.view.ViewParent;
-import android.view.FocusFinder;
-import android.graphics.Canvas;
-import android.os.Parcelable;
-import android.util.SparseArray;
-import android.support.v4.util.SimpleArrayMap;
-import android.support.v4.util.ArrayMap;
-import android.support.v4.view.MotionEventCompat;
-import android.util.TypedValue;
-import android.view.MotionEvent;
-import android.support.v4.view.accessibility.AccessibilityEventCompat;
-import android.view.accessibility.AccessibilityEvent;
-import android.view.View$MeasureSpec;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import android.view.ViewGroup$LayoutParams;
-import android.content.res.TypedArray;
-import android.support.v7.recyclerview.R$styleable;
-import android.view.ViewConfiguration;
-import android.util.AttributeSet;
-import android.content.Context;
-import android.os.Build$VERSION;
-import android.view.VelocityTracker;
-import android.graphics.Rect;
-import android.support.v4.view.NestedScrollingChildHelper;
-import android.support.v4.widget.EdgeEffectCompat;
-import android.view.accessibility.AccessibilityManager;
-import android.view.animation.Interpolator;
-import android.support.v4.view.ScrollingView;
-import android.support.v4.view.NestedScrollingChild;
-import android.view.ViewGroup;
 import android.util.Log;
 import android.support.v4.view.ViewCompat;
 import java.util.ArrayList;
@@ -51,10 +15,12 @@ public abstract class RecyclerView$ViewHolder
 {
     static final int FLAG_ADAPTER_FULLUPDATE = 1024;
     static final int FLAG_ADAPTER_POSITION_UNKNOWN = 512;
+    static final int FLAG_APPEARED_IN_PRE_LAYOUT = 4096;
+    static final int FLAG_BOUNCED_FROM_HIDDEN_LIST = 8192;
     static final int FLAG_BOUND = 1;
-    static final int FLAG_CHANGED = 64;
     static final int FLAG_IGNORE = 128;
     static final int FLAG_INVALID = 4;
+    static final int FLAG_MOVED = 2048;
     static final int FLAG_NOT_RECYCLABLE = 16;
     static final int FLAG_REMOVED = 8;
     static final int FLAG_RETURNED_FROM_SCRAP = 32;
@@ -63,6 +29,7 @@ public abstract class RecyclerView$ViewHolder
     private static final List<Object> FULLUPDATE_PAYLOADS;
     public final View itemView;
     private int mFlags;
+    private boolean mInChangeScrap;
     private int mIsRecyclableCount;
     long mItemId;
     int mItemViewType;
@@ -93,6 +60,7 @@ public abstract class RecyclerView$ViewHolder
         this.mUnmodifiedPayloads = null;
         this.mIsRecyclableCount = 0;
         this.mScrapContainer = null;
+        this.mInChangeScrap = false;
         this.mWasImportantForAccessibilityBeforeHidden = 0;
         if (itemView == null) {
             throw new IllegalArgumentException("itemView may not be null");
@@ -221,10 +189,6 @@ public abstract class RecyclerView$ViewHolder
         return (this.mFlags & 0x1) != 0x0;
     }
     
-    boolean isChanged() {
-        return (this.mFlags & 0x40) != 0x0;
-    }
-    
     boolean isInvalid() {
         return (this.mFlags & 0x4) != 0x0;
     }
@@ -243,6 +207,10 @@ public abstract class RecyclerView$ViewHolder
     
     boolean isTmpDetached() {
         return (this.mFlags & 0x100) != 0x0;
+    }
+    
+    boolean isUpdated() {
+        return (this.mFlags & 0x2) != 0x0;
     }
     
     boolean needsUpdate() {
@@ -312,8 +280,9 @@ public abstract class RecyclerView$ViewHolder
         }
     }
     
-    void setScrapContainer(final RecyclerView$Recycler mScrapContainer) {
+    void setScrapContainer(final RecyclerView$Recycler mScrapContainer, final boolean mInChangeScrap) {
         this.mScrapContainer = mScrapContainer;
+        this.mInChangeScrap = mInChangeScrap;
     }
     
     boolean shouldIgnore() {
@@ -328,7 +297,15 @@ public abstract class RecyclerView$ViewHolder
     public String toString() {
         final StringBuilder sb = new StringBuilder("ViewHolder{" + Integer.toHexString(this.hashCode()) + " position=" + this.mPosition + " id=" + this.mItemId + ", oldPos=" + this.mOldPosition + ", pLpos:" + this.mPreLayoutPosition);
         if (this.isScrap()) {
-            sb.append(" scrap");
+            final StringBuilder append = sb.append(" scrap ");
+            String s;
+            if (this.mInChangeScrap) {
+                s = "[changeScrap]";
+            }
+            else {
+                s = "[attachedScrap]";
+            }
+            append.append(s);
         }
         if (this.isInvalid()) {
             sb.append(" invalid");
@@ -345,9 +322,6 @@ public abstract class RecyclerView$ViewHolder
         if (this.shouldIgnore()) {
             sb.append(" ignored");
         }
-        if (this.isChanged()) {
-            sb.append(" changed");
-        }
         if (this.isTmpDetached()) {
             sb.append(" tmpDetached");
         }
@@ -355,7 +329,7 @@ public abstract class RecyclerView$ViewHolder
             sb.append(" not recyclable(" + this.mIsRecyclableCount + ")");
         }
         if (this.isAdapterPositionUnknown()) {
-            sb.append("undefined adapter position");
+            sb.append(" undefined adapter position");
         }
         if (this.itemView.getParent() == null) {
             sb.append(" no parent");

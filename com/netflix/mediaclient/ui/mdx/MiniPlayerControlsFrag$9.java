@@ -35,7 +35,6 @@ import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.content.Intent;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
-import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.FragmentManager;
 import android.app.DialogFragment;

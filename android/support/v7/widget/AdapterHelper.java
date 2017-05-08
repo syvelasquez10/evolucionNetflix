@@ -13,6 +13,7 @@ class AdapterHelper implements OpReorderer$Callback
 {
     final AdapterHelper$Callback mCallback;
     final boolean mDisableRecycler;
+    private int mExistingUpdateTypes;
     Runnable mOnItemProcessedCallback;
     final OpReorderer mOpReorderer;
     final ArrayList<AdapterHelper$UpdateOp> mPendingUpdates;
@@ -27,6 +28,7 @@ class AdapterHelper implements OpReorderer$Callback
         this.mUpdateOpPool = new Pools$SimplePool<AdapterHelper$UpdateOp>(30);
         this.mPendingUpdates = new ArrayList<AdapterHelper$UpdateOp>();
         this.mPostponedList = new ArrayList<AdapterHelper$UpdateOp>();
+        this.mExistingUpdateTypes = 0;
         this.mCallback = mCallback;
         this.mDisableRecycler = mDisableRecycler;
         this.mOpReorderer = new OpReorderer(this);
@@ -50,7 +52,7 @@ class AdapterHelper implements OpReorderer$Callback
             int n4;
             if (this.mCallback.findViewHolder(i) != null || this.canFindInPreLayout(i)) {
                 if (n2 == 0) {
-                    this.dispatchAndUpdateViewHolders(this.obtainUpdateOp(1, positionStart, n3, null));
+                    this.dispatchAndUpdateViewHolders(this.obtainUpdateOp(2, positionStart, n3, null));
                     n4 = 1;
                 }
                 else {
@@ -61,7 +63,7 @@ class AdapterHelper implements OpReorderer$Callback
             else {
                 int n5;
                 if (n2 == 1) {
-                    this.postponeAndUpdateViewHolders(this.obtainUpdateOp(1, positionStart, n3, null));
+                    this.postponeAndUpdateViewHolders(this.obtainUpdateOp(2, positionStart, n3, null));
                     n5 = 1;
                 }
                 else {
@@ -92,7 +94,7 @@ class AdapterHelper implements OpReorderer$Callback
         AdapterHelper$UpdateOp obtainUpdateOp = adapterHelper$UpdateOp;
         if (n3 != adapterHelper$UpdateOp.itemCount) {
             this.recycleUpdateOp(adapterHelper$UpdateOp);
-            obtainUpdateOp = this.obtainUpdateOp(1, positionStart, n3, null);
+            obtainUpdateOp = this.obtainUpdateOp(2, positionStart, n3, null);
         }
         if (n2 == 0) {
             this.dispatchAndUpdateViewHolders(obtainUpdateOp);
@@ -115,7 +117,7 @@ class AdapterHelper implements OpReorderer$Callback
                 n3 = n2;
                 int n4 = positionStart;
                 if (n == 0) {
-                    this.dispatchAndUpdateViewHolders(this.obtainUpdateOp(2, positionStart, n2, adapterHelper$UpdateOp.payload));
+                    this.dispatchAndUpdateViewHolders(this.obtainUpdateOp(4, positionStart, n2, adapterHelper$UpdateOp.payload));
                     n3 = 0;
                     n4 = i;
                 }
@@ -126,7 +128,7 @@ class AdapterHelper implements OpReorderer$Callback
                 n3 = n2;
                 int n6 = positionStart;
                 if (n == 1) {
-                    this.postponeAndUpdateViewHolders(this.obtainUpdateOp(2, positionStart, n2, adapterHelper$UpdateOp.payload));
+                    this.postponeAndUpdateViewHolders(this.obtainUpdateOp(4, positionStart, n2, adapterHelper$UpdateOp.payload));
                     n3 = 0;
                     n6 = i;
                 }
@@ -142,7 +144,7 @@ class AdapterHelper implements OpReorderer$Callback
         if (n2 != adapterHelper$UpdateOp.itemCount) {
             final Object payload = adapterHelper$UpdateOp.payload;
             this.recycleUpdateOp(adapterHelper$UpdateOp);
-            obtainUpdateOp = this.obtainUpdateOp(2, positionStart, n2, payload);
+            obtainUpdateOp = this.obtainUpdateOp(4, positionStart, n2, payload);
         }
         if (n == 0) {
             this.dispatchAndUpdateViewHolders(obtainUpdateOp);
@@ -154,12 +156,12 @@ class AdapterHelper implements OpReorderer$Callback
     private boolean canFindInPreLayout(final int n) {
         for (int size = this.mPostponedList.size(), i = 0; i < size; ++i) {
             final AdapterHelper$UpdateOp adapterHelper$UpdateOp = this.mPostponedList.get(i);
-            if (adapterHelper$UpdateOp.cmd == 3) {
+            if (adapterHelper$UpdateOp.cmd == 8) {
                 if (this.findPositionOffset(adapterHelper$UpdateOp.itemCount, i + 1) == n) {
                     return true;
                 }
             }
-            else if (adapterHelper$UpdateOp.cmd == 0) {
+            else if (adapterHelper$UpdateOp.cmd == 1) {
                 for (int positionStart = adapterHelper$UpdateOp.positionStart, itemCount = adapterHelper$UpdateOp.itemCount, j = adapterHelper$UpdateOp.positionStart; j < positionStart + itemCount; ++j) {
                     if (this.findPositionOffset(j, i + 1) == n) {
                         return true;
@@ -171,7 +173,7 @@ class AdapterHelper implements OpReorderer$Callback
     }
     
     private void dispatchAndUpdateViewHolders(AdapterHelper$UpdateOp obtainUpdateOp) {
-        if (obtainUpdateOp.cmd == 0 || obtainUpdateOp.cmd == 3) {
+        if (obtainUpdateOp.cmd == 1 || obtainUpdateOp.cmd == 8) {
             throw new IllegalArgumentException("should not dispatch add or move for pre layout");
         }
         int updatePositionWithPostponed = this.updatePositionWithPostponed(obtainUpdateOp.positionStart, obtainUpdateOp.cmd);
@@ -181,11 +183,11 @@ class AdapterHelper implements OpReorderer$Callback
             default: {
                 throw new IllegalArgumentException("op should be remove or update." + obtainUpdateOp);
             }
-            case 2: {
+            case 4: {
                 n = 1;
                 break;
             }
-            case 1: {
+            case 2: {
                 n = 0;
                 break;
             }
@@ -200,7 +202,7 @@ class AdapterHelper implements OpReorderer$Callback
                     n3 = 0;
                     break;
                 }
-                case 2: {
+                case 4: {
                     if (updatePositionWithPostponed2 == updatePositionWithPostponed + 1) {
                         n3 = 1;
                         break;
@@ -208,7 +210,7 @@ class AdapterHelper implements OpReorderer$Callback
                     n3 = 0;
                     break;
                 }
-                case 1: {
+                case 2: {
                     if (updatePositionWithPostponed2 == updatePositionWithPostponed) {
                         n3 = 1;
                         break;
@@ -225,7 +227,7 @@ class AdapterHelper implements OpReorderer$Callback
                 this.dispatchFirstPassAndUpdateViewHolders(obtainUpdateOp2, positionStart);
                 this.recycleUpdateOp(obtainUpdateOp2);
                 int n5 = positionStart;
-                if (obtainUpdateOp.cmd == 2) {
+                if (obtainUpdateOp.cmd == 4) {
                     n5 = positionStart + n2;
                 }
                 final int n6 = 1;
@@ -249,16 +251,16 @@ class AdapterHelper implements OpReorderer$Callback
             default: {
                 throw new IllegalArgumentException("Unknown update op type for " + adapterHelper$UpdateOp);
             }
-            case 0: {
+            case 1: {
                 this.mCallback.offsetPositionsForAdd(adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount);
             }
-            case 3: {
+            case 8: {
                 this.mCallback.offsetPositionsForMove(adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount);
             }
-            case 1: {
+            case 2: {
                 this.mCallback.offsetPositionsForRemovingLaidOutOrNewView(adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount);
             }
-            case 2: {
+            case 4: {
                 this.mCallback.markViewHoldersUpdated(adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount, adapterHelper$UpdateOp.payload);
             }
         }
@@ -268,7 +270,7 @@ class AdapterHelper implements OpReorderer$Callback
         int n4;
         for (int j = this.mPostponedList.size() - 1; j >= 0; --j, n = n4) {
             final AdapterHelper$UpdateOp adapterHelper$UpdateOp = this.mPostponedList.get(j);
-            if (adapterHelper$UpdateOp.cmd == 3) {
+            if (adapterHelper$UpdateOp.cmd == 8) {
                 int n2;
                 int n3;
                 if (adapterHelper$UpdateOp.positionStart < adapterHelper$UpdateOp.itemCount) {
@@ -281,30 +283,30 @@ class AdapterHelper implements OpReorderer$Callback
                 }
                 if (n >= n2 && n <= n3) {
                     if (n2 == adapterHelper$UpdateOp.positionStart) {
-                        if (i == 0) {
+                        if (i == 1) {
                             ++adapterHelper$UpdateOp.itemCount;
                         }
-                        else if (i == 1) {
+                        else if (i == 2) {
                             --adapterHelper$UpdateOp.itemCount;
                         }
                         ++n;
                     }
                     else {
-                        if (i == 0) {
+                        if (i == 1) {
                             ++adapterHelper$UpdateOp.positionStart;
                         }
-                        else if (i == 1) {
+                        else if (i == 2) {
                             --adapterHelper$UpdateOp.positionStart;
                         }
                         --n;
                     }
                 }
                 else if (n < adapterHelper$UpdateOp.positionStart) {
-                    if (i == 0) {
+                    if (i == 1) {
                         ++adapterHelper$UpdateOp.positionStart;
                         ++adapterHelper$UpdateOp.itemCount;
                     }
-                    else if (i == 1) {
+                    else if (i == 2) {
                         --adapterHelper$UpdateOp.positionStart;
                         --adapterHelper$UpdateOp.itemCount;
                     }
@@ -312,23 +314,23 @@ class AdapterHelper implements OpReorderer$Callback
                 n4 = n;
             }
             else if (adapterHelper$UpdateOp.positionStart <= n) {
-                if (adapterHelper$UpdateOp.cmd == 0) {
+                if (adapterHelper$UpdateOp.cmd == 1) {
                     n4 = n - adapterHelper$UpdateOp.itemCount;
                 }
                 else {
                     n4 = n;
-                    if (adapterHelper$UpdateOp.cmd == 1) {
+                    if (adapterHelper$UpdateOp.cmd == 2) {
                         n4 = n + adapterHelper$UpdateOp.itemCount;
                     }
                 }
             }
-            else if (i == 0) {
+            else if (i == 1) {
                 ++adapterHelper$UpdateOp.positionStart;
                 n4 = n;
             }
             else {
                 n4 = n;
-                if (i == 1) {
+                if (i == 2) {
                     --adapterHelper$UpdateOp.positionStart;
                     n4 = n;
                 }
@@ -337,7 +339,7 @@ class AdapterHelper implements OpReorderer$Callback
         AdapterHelper$UpdateOp adapterHelper$UpdateOp2;
         for (i = this.mPostponedList.size() - 1; i >= 0; --i) {
             adapterHelper$UpdateOp2 = this.mPostponedList.get(i);
-            if (adapterHelper$UpdateOp2.cmd == 3) {
+            if (adapterHelper$UpdateOp2.cmd == 8) {
                 if (adapterHelper$UpdateOp2.itemCount == adapterHelper$UpdateOp2.positionStart || adapterHelper$UpdateOp2.itemCount < 0) {
                     this.mPostponedList.remove(i);
                     this.recycleUpdateOp(adapterHelper$UpdateOp2);
@@ -355,60 +357,56 @@ class AdapterHelper implements OpReorderer$Callback
         final int size = this.mPendingUpdates.size();
         int n = 0;
         int n2 = itemCount;
-    Label_0078_Outer:
+    Label_0139:
         while (true) {
             itemCount = n2;
             if (n >= size) {
                 break;
             }
             final AdapterHelper$UpdateOp adapterHelper$UpdateOp = this.mPendingUpdates.get(n);
-            itemCount = n2;
-            while (true) {
-                switch (adapterHelper$UpdateOp.cmd) {
-                    default: {
-                        itemCount = n2;
-                    }
-                    case 2: {
-                        ++n;
-                        n2 = itemCount;
-                        continue Label_0078_Outer;
-                    }
-                    case 0: {
-                        itemCount = n2;
-                        if (adapterHelper$UpdateOp.positionStart <= n2) {
-                            itemCount = n2 + adapterHelper$UpdateOp.itemCount;
-                        }
-                        continue;
-                    }
-                    case 1: {
-                        itemCount = n2;
-                        if (adapterHelper$UpdateOp.positionStart > n2) {
-                            continue;
-                        }
-                        if (adapterHelper$UpdateOp.positionStart + adapterHelper$UpdateOp.itemCount > n2) {
-                            itemCount = -1;
-                            break Label_0078_Outer;
-                        }
-                        itemCount = n2 - adapterHelper$UpdateOp.itemCount;
-                        continue;
-                    }
-                    case 3: {
-                        if (adapterHelper$UpdateOp.positionStart == n2) {
-                            itemCount = adapterHelper$UpdateOp.itemCount;
-                            continue;
-                        }
-                        int n3;
-                        if (adapterHelper$UpdateOp.positionStart < (n3 = n2)) {
-                            n3 = n2 - 1;
-                        }
-                        if (adapterHelper$UpdateOp.itemCount <= (itemCount = n3)) {
-                            itemCount = n3 + 1;
-                        }
-                        continue;
-                    }
+            switch (adapterHelper$UpdateOp.cmd) {
+                default: {
+                    itemCount = n2;
+                    break;
                 }
-                break;
+                case 1: {
+                    itemCount = n2;
+                    if (adapterHelper$UpdateOp.positionStart <= n2) {
+                        itemCount = n2 + adapterHelper$UpdateOp.itemCount;
+                        break;
+                    }
+                    break;
+                }
+                case 2: {
+                    itemCount = n2;
+                    if (adapterHelper$UpdateOp.positionStart > n2) {
+                        break;
+                    }
+                    if (adapterHelper$UpdateOp.positionStart + adapterHelper$UpdateOp.itemCount > n2) {
+                        itemCount = -1;
+                        break Label_0139;
+                    }
+                    itemCount = n2 - adapterHelper$UpdateOp.itemCount;
+                    break;
+                }
+                case 8: {
+                    if (adapterHelper$UpdateOp.positionStart == n2) {
+                        itemCount = adapterHelper$UpdateOp.itemCount;
+                        break;
+                    }
+                    int n3;
+                    if (adapterHelper$UpdateOp.positionStart < (n3 = n2)) {
+                        n3 = n2 - 1;
+                    }
+                    if (adapterHelper$UpdateOp.itemCount <= (itemCount = n3)) {
+                        itemCount = n3 + 1;
+                        break;
+                    }
+                    break;
+                }
             }
+            ++n;
+            n2 = itemCount;
         }
         return itemCount;
     }
@@ -418,6 +416,7 @@ class AdapterHelper implements OpReorderer$Callback
             this.mCallback.onDispatchSecondPass(this.mPostponedList.get(i));
         }
         this.recycleUpdateOpsAndClearList(this.mPostponedList);
+        this.mExistingUpdateTypes = 0;
     }
     
     void consumeUpdatesInOnePass() {
@@ -425,22 +424,22 @@ class AdapterHelper implements OpReorderer$Callback
         for (int size = this.mPendingUpdates.size(), i = 0; i < size; ++i) {
             final AdapterHelper$UpdateOp adapterHelper$UpdateOp = this.mPendingUpdates.get(i);
             switch (adapterHelper$UpdateOp.cmd) {
-                case 0: {
+                case 1: {
                     this.mCallback.onDispatchSecondPass(adapterHelper$UpdateOp);
                     this.mCallback.offsetPositionsForAdd(adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount);
                     break;
                 }
-                case 1: {
+                case 2: {
                     this.mCallback.onDispatchSecondPass(adapterHelper$UpdateOp);
                     this.mCallback.offsetPositionsForRemovingInvisible(adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount);
                     break;
                 }
-                case 2: {
+                case 4: {
                     this.mCallback.onDispatchSecondPass(adapterHelper$UpdateOp);
                     this.mCallback.markViewHoldersUpdated(adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount, adapterHelper$UpdateOp.payload);
                     break;
                 }
-                case 3: {
+                case 8: {
                     this.mCallback.onDispatchSecondPass(adapterHelper$UpdateOp);
                     this.mCallback.offsetPositionsForMove(adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount);
                     break;
@@ -451,6 +450,7 @@ class AdapterHelper implements OpReorderer$Callback
             }
         }
         this.recycleUpdateOpsAndClearList(this.mPendingUpdates);
+        this.mExistingUpdateTypes = 0;
     }
     
     void dispatchFirstPassAndUpdateViewHolders(final AdapterHelper$UpdateOp adapterHelper$UpdateOp, final int n) {
@@ -459,10 +459,10 @@ class AdapterHelper implements OpReorderer$Callback
             default: {
                 throw new IllegalArgumentException("only remove and update ops can be dispatched in first pass");
             }
-            case 1: {
+            case 2: {
                 this.mCallback.offsetPositionsForRemovingInvisible(n, adapterHelper$UpdateOp.itemCount);
             }
-            case 2: {
+            case 4: {
                 this.mCallback.markViewHoldersUpdated(n, adapterHelper$UpdateOp.itemCount, adapterHelper$UpdateOp.payload);
             }
         }
@@ -482,7 +482,7 @@ class AdapterHelper implements OpReorderer$Callback
                 break;
             }
             final AdapterHelper$UpdateOp adapterHelper$UpdateOp = this.mPostponedList.get(n2);
-            if (adapterHelper$UpdateOp.cmd == 3) {
+            if (adapterHelper$UpdateOp.cmd == 8) {
                 if (adapterHelper$UpdateOp.positionStart == n) {
                     itemCount = adapterHelper$UpdateOp.itemCount;
                 }
@@ -497,7 +497,7 @@ class AdapterHelper implements OpReorderer$Callback
                 }
             }
             else if (adapterHelper$UpdateOp.positionStart <= (itemCount = n)) {
-                if (adapterHelper$UpdateOp.cmd == 1) {
+                if (adapterHelper$UpdateOp.cmd == 2) {
                     if (n < adapterHelper$UpdateOp.positionStart + adapterHelper$UpdateOp.itemCount) {
                         itemCount = -1;
                         break;
@@ -506,7 +506,7 @@ class AdapterHelper implements OpReorderer$Callback
                 }
                 else {
                     itemCount = n;
-                    if (adapterHelper$UpdateOp.cmd == 0) {
+                    if (adapterHelper$UpdateOp.cmd == 1) {
                         itemCount = n + adapterHelper$UpdateOp.itemCount;
                     }
                 }
@@ -517,8 +517,16 @@ class AdapterHelper implements OpReorderer$Callback
         return itemCount;
     }
     
+    boolean hasAnyUpdateTypes(final int n) {
+        return (this.mExistingUpdateTypes & n) != 0x0;
+    }
+    
     boolean hasPendingUpdates() {
         return this.mPendingUpdates.size() > 0;
+    }
+    
+    boolean hasUpdates() {
+        return !this.mPostponedList.isEmpty() && !this.mPendingUpdates.isEmpty();
     }
     
     @Override
@@ -535,13 +543,29 @@ class AdapterHelper implements OpReorderer$Callback
     }
     
     boolean onItemRangeChanged(final int n, final int n2, final Object o) {
-        this.mPendingUpdates.add(this.obtainUpdateOp(2, n, n2, o));
-        return this.mPendingUpdates.size() == 1;
+        boolean b = true;
+        if (n2 < 1) {
+            return false;
+        }
+        this.mPendingUpdates.add(this.obtainUpdateOp(4, n, n2, o));
+        this.mExistingUpdateTypes |= 0x4;
+        if (this.mPendingUpdates.size() != 1) {
+            b = false;
+        }
+        return b;
     }
     
     boolean onItemRangeInserted(final int n, final int n2) {
-        this.mPendingUpdates.add(this.obtainUpdateOp(0, n, n2, null));
-        return this.mPendingUpdates.size() == 1;
+        boolean b = true;
+        if (n2 < 1) {
+            return false;
+        }
+        this.mPendingUpdates.add(this.obtainUpdateOp(1, n, n2, null));
+        this.mExistingUpdateTypes |= 0x1;
+        if (this.mPendingUpdates.size() != 1) {
+            b = false;
+        }
+        return b;
     }
     
     boolean onItemRangeMoved(final int n, final int n2, final int n3) {
@@ -552,7 +576,8 @@ class AdapterHelper implements OpReorderer$Callback
         if (n3 != 1) {
             throw new IllegalArgumentException("Moving more than 1 item is not supported yet");
         }
-        this.mPendingUpdates.add(this.obtainUpdateOp(3, n, n2, null));
+        this.mPendingUpdates.add(this.obtainUpdateOp(8, n, n2, null));
+        this.mExistingUpdateTypes |= 0x8;
         if (this.mPendingUpdates.size() != 1) {
             b = false;
         }
@@ -560,8 +585,16 @@ class AdapterHelper implements OpReorderer$Callback
     }
     
     boolean onItemRangeRemoved(final int n, final int n2) {
-        this.mPendingUpdates.add(this.obtainUpdateOp(1, n, n2, null));
-        return this.mPendingUpdates.size() == 1;
+        boolean b = true;
+        if (n2 < 1) {
+            return false;
+        }
+        this.mPendingUpdates.add(this.obtainUpdateOp(2, n, n2, null));
+        this.mExistingUpdateTypes |= 0x2;
+        if (this.mPendingUpdates.size() != 1) {
+            b = false;
+        }
+        return b;
     }
     
     void preProcess() {
@@ -569,19 +602,19 @@ class AdapterHelper implements OpReorderer$Callback
         for (int size = this.mPendingUpdates.size(), i = 0; i < size; ++i) {
             final AdapterHelper$UpdateOp adapterHelper$UpdateOp = this.mPendingUpdates.get(i);
             switch (adapterHelper$UpdateOp.cmd) {
-                case 0: {
+                case 1: {
                     this.applyAdd(adapterHelper$UpdateOp);
                     break;
                 }
-                case 1: {
+                case 2: {
                     this.applyRemove(adapterHelper$UpdateOp);
                     break;
                 }
-                case 2: {
+                case 4: {
                     this.applyUpdate(adapterHelper$UpdateOp);
                     break;
                 }
-                case 3: {
+                case 8: {
                     this.applyMove(adapterHelper$UpdateOp);
                     break;
                 }
@@ -611,5 +644,6 @@ class AdapterHelper implements OpReorderer$Callback
     void reset() {
         this.recycleUpdateOpsAndClearList(this.mPendingUpdates);
         this.recycleUpdateOpsAndClearList(this.mPostponedList);
+        this.mExistingUpdateTypes = 0;
     }
 }

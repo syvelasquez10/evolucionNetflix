@@ -8,6 +8,10 @@ import android.view.KeyEvent;
 
 class KeyEventCompatHoneycomb
 {
+    public static boolean isCtrlPressed(final KeyEvent keyEvent) {
+        return keyEvent.isCtrlPressed();
+    }
+    
     public static boolean metaStateHasModifiers(final int n, final int n2) {
         return KeyEvent.metaStateHasModifiers(n, n2);
     }

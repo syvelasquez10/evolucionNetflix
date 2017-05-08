@@ -4,9 +4,6 @@
 
 package android.support.v4.app;
 
-import android.view.animation.Animation;
-import android.view.View;
-import android.view.animation.Animation$AnimationListener;
 import android.graphics.Paint;
 import android.support.v4.view.ViewCompat;
 
@@ -20,6 +17,6 @@ class FragmentManagerImpl$AnimateOnHWLayerIfNeededListener$1 implements Runnable
     
     @Override
     public void run() {
-        ViewCompat.setLayerType(this.this$0.mView, 2, null);
+        ViewCompat.setLayerType(this.this$0.mView, 0, null);
     }
 }

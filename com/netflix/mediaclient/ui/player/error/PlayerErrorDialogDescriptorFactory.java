@@ -4,6 +4,9 @@
 
 package com.netflix.mediaclient.ui.player.error;
 
+import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
+import com.netflix.mediaclient.service.error.action.ExitPlayerAction;
+import com.netflix.mediaclient.servicemgr.IPlayer$PlaybackError;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.event.nrdp.media.NccpNetworkingError;
 import com.netflix.mediaclient.event.network.NetworkError;
@@ -36,5 +39,9 @@ public final class PlayerErrorDialogDescriptorFactory
         }
         Log.e("ErrorManager", "Ukwnown NCCP error, display generic error!");
         return UknownErrorDescriptor.build(playerFragment, "");
+    }
+    
+    public static ErrorDescriptor getHandlerForPlaybackError(final PlayerFragment playerFragment, final IPlayer$PlaybackError player$PlaybackError) {
+        return new UknownErrorDescriptor(new AlertDialogFactory$AlertDialogDescriptor("", playerFragment.getString(2131230859, new Object[] { "(" + player$PlaybackError.getUiDisplayErrorCode() + ")" }), null, new ExitPlayerAction(playerFragment.getActivity())));
     }
 }

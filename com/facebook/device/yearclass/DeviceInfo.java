@@ -144,36 +144,40 @@ public class DeviceInfo
     private static int parseFileForValue(final String s, final FileInputStream fileInputStream) {
         while (true) {
             final byte[] array = new byte[1024];
-        Label_0020_Outer:
+            int read = 0;
+            int n = 0;
+            int n3;
+            int n2 = 0;
+            int n4;
+            int n5;
+            Block_6_Outer:Label_0020_Outer:
             while (true) {
-                int n5 = 0;
                 Label_0129: {
                     while (true) {
-                        int read = 0;
-                        int n = 0;
                         try {
                             read = fileInputStream.read(array);
                             n = 0;
                             break Label_0087;
-                            // iftrue(Label_0053:, array[n3] == s.charAt(n2))
-                            // iftrue(Label_0129:, n3 >= read)
-                            int n3 = 0;
+                            // iftrue(Label_0073:, n4 != s.length() - 1)
+                            // iftrue(Label_0053:, array[n5] == s.charAt(n4))
                             while (true) {
-                                final int n4;
-                                final int n2 = n3 - n4;
-                                n5 = n4;
-                                break Label_0129;
-                                Label_0073: {
-                                    ++n3;
+                                while (true) {
+                                    n2 = n3;
+                                    break Label_0129;
+                                    Label_0053: {
+                                        return extractValue(array, n5);
+                                    }
+                                    n4 = n5 - n3;
+                                    continue Block_6_Outer;
                                 }
-                                n5 = n4;
+                                Label_0073: {
+                                    ++n5;
+                                }
+                                n2 = n3;
                                 continue Label_0020_Outer;
                             }
-                            Label_0053: {
-                                return extractValue(array, n3);
-                            }
                         }
-                        // iftrue(Label_0073:, n2 != s.length() - 1)
+                        // iftrue(Label_0129:, n5 >= read)
                         catch (NumberFormatException ex) {}
                         catch (IOException ex2) {
                             goto Label_0081;
@@ -181,18 +185,18 @@ public class DeviceInfo
                         if (n >= read) {
                             goto Label_0081;
                         }
-                        if (array[n] == 10 || (n5 = n) == 0) {
-                            int n4 = n;
+                        if (array[n] == 10 || (n2 = n) == 0) {
+                            n3 = n;
                             if (array[n] == 10) {
-                                n4 = n + 1;
+                                n3 = n + 1;
                             }
-                            final int n3 = n4;
+                            n5 = n3;
                             continue;
                         }
                         break;
                     }
                 }
-                int n = n5 + 1;
+                n = n2 + 1;
                 continue;
             }
         }

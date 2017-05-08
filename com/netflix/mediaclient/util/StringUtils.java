@@ -15,7 +15,6 @@ import android.text.style.URLSpan;
 import android.text.Spannable;
 import android.content.res.Resources;
 import android.net.Uri;
-import com.netflix.mediaclient.Log;
 import java.io.FileInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,6 +22,9 @@ import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
+import android.text.style.RelativeSizeSpan;
+import android.text.SpannableString;
+import android.text.TextUtils;
 import java.util.StringTokenizer;
 import android.util.Pair;
 import android.text.Html;
@@ -32,6 +34,8 @@ import android.text.style.StyleSpan;
 import android.text.SpannableStringBuilder;
 import android.content.Context;
 import java.util.Locale;
+import java.io.UnsupportedEncodingException;
+import com.netflix.mediaclient.Log;
 import java.util.regex.Pattern;
 
 public final class StringUtils
@@ -61,6 +65,18 @@ public final class StringUtils
         sb.append("=");
         sb.append(s2);
         return sb.toString();
+    }
+    
+    public static String byteArrayToString(final byte[] array, final String s) {
+        if (array != null) {
+            try {
+                return new String(array, s);
+            }
+            catch (UnsupportedEncodingException ex) {
+                Log.e("StringUtils", "byteArrayToString error", ex);
+            }
+        }
+        return null;
     }
     
     public static String capitalizeFirstLetter(final String s) {
@@ -170,6 +186,34 @@ public final class StringUtils
             ++n;
         }
         return array;
+    }
+    
+    public static CharSequence generateTitleAndSubtitles(final String s, String string) {
+        if (TextUtils.isEmpty((CharSequence)string)) {
+            return s;
+        }
+        string = s + "\n" + string;
+        final SpannableString spannableString = new SpannableString((CharSequence)string);
+        spannableString.setSpan((Object)new RelativeSizeSpan(0.8f), s.length(), string.length(), 33);
+        return (CharSequence)spannableString;
+    }
+    
+    public static String getAsPercentString(final Context context, final int n) {
+        boolean b = true;
+        boolean b2;
+        if (Locale.getDefault() != null && TextUtils.equals((CharSequence)Locale.getDefault().getLanguage(), (CharSequence)"tr")) {
+            b2 = true;
+        }
+        else {
+            b2 = false;
+        }
+        if (Locale.getDefault() == null || !TextUtils.equals((CharSequence)Locale.getDefault().getLanguage(), (CharSequence)"ar")) {
+            b = false;
+        }
+        if (b || b2) {
+            return "%" + n;
+        }
+        return n + "%";
     }
     
     private static CharSequence getBasicMovieInfoString(final Context context, final int n, final String s, final int n2) {
@@ -749,6 +793,10 @@ public final class StringUtils
             return s2;
         }
         return s;
+    }
+    
+    public static boolean notEmptyAndEquals(final String s, final String s2) {
+        return !isEmpty(s) && s.equals(s2);
     }
     
     public static String notNull(final String s, final String s2) {

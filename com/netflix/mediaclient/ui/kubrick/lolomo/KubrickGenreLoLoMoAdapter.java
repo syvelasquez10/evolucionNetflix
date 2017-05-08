@@ -37,7 +37,7 @@ public class KubrickGenreLoLoMoAdapter extends GenreLoLoMoAdapter
     
     @Override
     protected int getViewLayoutId() {
-        return 2130903157;
+        return 2130903167;
     }
     
     @Override

@@ -107,6 +107,11 @@ class DummyMdxVideoDetails$1 implements Playable
     }
     
     @Override
+    public boolean isAvailableOffline() {
+        return false;
+    }
+    
+    @Override
     public boolean isAvailableToStream() {
         return false;
     }

@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.service.logging.IPdsLogging;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import java.util.List;
 import com.netflix.mediaclient.javabridge.ui.LogArguments;
@@ -27,6 +28,8 @@ public interface IClientLogging
     
     AdvertiserIdLogging getAdvertiserIdLogging();
     
+    String getApplicationId();
+    
     ApplicationPerformanceMetricsLogging getApplicationPerformanceMetricsLogging();
     
     BreadcrumbLogging getBreadcrumbLogging();
@@ -37,9 +40,15 @@ public interface IClientLogging
     
     ErrorLogging getErrorLogging();
     
+    LogblobLogging getLogblobLogging();
+    
     long getNextSequence();
     
+    IPdsLogging getPdsLogging();
+    
     PresentationTracking getPresentationTracking();
+    
+    String getUserSessionId();
     
     void onPlayEnd();
     

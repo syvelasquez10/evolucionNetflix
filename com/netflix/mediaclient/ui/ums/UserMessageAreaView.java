@@ -66,13 +66,13 @@ public class UserMessageAreaView extends LinearLayout
     public UserMessageAreaView(final Context context) {
         super(context);
         this.mReceiver = new UserMessageAreaView$1(this);
-        inflate(context, 2130903286, (ViewGroup)this);
-        (this.mTitle = (TextView)this.findViewById(2131689566)).setMovementMethod(LinkMovementMethod.getInstance());
-        (this.mBody = (TextView)this.findViewById(2131690312)).setMovementMethod(LinkMovementMethod.getInstance());
-        this.mCtaContainer = (ViewGroup)this.findViewById(2131690313);
-        this.mIcon = (IconFontTextView)this.findViewById(2131689565);
-        this.mAlertView = this.findViewById(2131690310);
-        this.mDimSpace = (Space)this.findViewById(2131690311);
+        inflate(context, 2130903307, (ViewGroup)this);
+        (this.mTitle = (TextView)this.findViewById(2131689574)).setMovementMethod(LinkMovementMethod.getInstance());
+        (this.mBody = (TextView)this.findViewById(2131690377)).setMovementMethod(LinkMovementMethod.getInstance());
+        this.mCtaContainer = (ViewGroup)this.findViewById(2131690378);
+        this.mIcon = (IconFontTextView)this.findViewById(2131689573);
+        this.mAlertView = this.findViewById(2131690375);
+        this.mDimSpace = (Space)this.findViewById(2131690376);
         this.setOnTouchListener((View$OnTouchListener)new UserMessageAreaView$2(this));
         LocalizationUtils.setLayoutDirection((View)this.mCtaContainer);
         (this.mAlphaAnimation = this.animate()).setDuration((long)this.getResources().getInteger(17694721));
@@ -90,10 +90,10 @@ public class UserMessageAreaView extends LinearLayout
         final Context context = this.getContext();
         int n;
         if (umaCta.selected()) {
-            n = 2131427735;
+            n = 2131427777;
         }
         else {
-            n = 2131427734;
+            n = 2131427776;
         }
         final NetflixTextButton netflixTextButton = new NetflixTextButton((Context)new ContextThemeWrapper(context, n));
         netflixTextButton.setText((CharSequence)umaCta.text());
@@ -139,20 +139,20 @@ public class UserMessageAreaView extends LinearLayout
         }
         if ("INFO".equalsIgnoreCase(this.mUmaAlert.viewType())) {
             this.mIcon.setVisibility(0);
-            this.mIcon.setText(2131231330);
-            this.mIcon.setTextColor(this.getResources().getColor(2131624042));
+            this.mIcon.setText(2131231477);
+            this.mIcon.setTextColor(this.getResources().getColor(2131624052));
             return;
         }
         if ("WARN".equalsIgnoreCase(this.mUmaAlert.viewType())) {
             this.mIcon.setVisibility(0);
-            this.mIcon.setText(2131231342);
-            this.mIcon.setTextColor(this.getResources().getColor(2131624043));
+            this.mIcon.setText(2131231489);
+            this.mIcon.setTextColor(this.getResources().getColor(2131624053));
             return;
         }
         if ("ERROR".equalsIgnoreCase(this.mUmaAlert.viewType())) {
             this.mIcon.setVisibility(0);
-            this.mIcon.setText(2131231327);
-            this.mIcon.setTextColor(this.getResources().getColor(2131624044));
+            this.mIcon.setText(2131231474);
+            this.mIcon.setTextColor(this.getResources().getColor(2131624054));
             return;
         }
         this.mIcon.setVisibility(8);
@@ -210,7 +210,7 @@ public class UserMessageAreaView extends LinearLayout
                 viewGroup.addView((View)this, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-1, -1));
                 this.getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver$OnGlobalLayoutListener)new UserMessageAreaView$6(this));
                 this.mDimSpace.setVisibility(0);
-                this.setBackgroundResource(2131624155);
+                this.setBackgroundResource(2131624175);
             }
             else {
                 this.mParentView.addHeaderView((View)this, (Object)null, false);

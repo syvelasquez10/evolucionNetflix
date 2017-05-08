@@ -111,19 +111,19 @@ public class ExpiringContentAdvisory extends Advisory
         int n = 0;
         switch (ExpiringContentAdvisory$1.$SwitchMap$com$netflix$model$leafs$advisory$ExpiringContentAdvisory$ContentType[this.type.ordinal()]) {
             default: {
-                n = 2131230944;
+                n = 2131230959;
                 break;
             }
             case 1: {
-                n = 2131230946;
+                n = 2131230961;
                 break;
             }
             case 2: {
-                n = 2131230947;
+                n = 2131230962;
                 break;
             }
             case 3: {
-                n = 2131230945;
+                n = 2131230960;
                 break;
             }
         }

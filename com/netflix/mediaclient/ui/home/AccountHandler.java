@@ -9,8 +9,6 @@ import com.netflix.mediaclient.util.LaunchBrowser;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
-import android.net.Uri$Builder;
-import android.net.Uri;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public class AccountHandler
@@ -21,16 +19,16 @@ public class AccountHandler
     private static final String TAG = "AccountHandler";
     public static final String TOKEN_PARAMETER_NAME = "nftoken";
     private boolean mCompleted;
-    private NetflixActivity mContext;
+    private final NetflixActivity mContext;
     
     public AccountHandler(final NetflixActivity mContext) {
         this.mContext = mContext;
     }
     
-    private static String createLink(final String s, final String s2) {
-        final Uri$Builder buildUpon = Uri.parse(s).buildUpon();
-        buildUpon.appendQueryParameter("nftoken", s2);
-        return buildUpon.build().toString();
+    public static String createLink(final String s, final String s2) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(s).append("?nftoken=").append(s2);
+        return sb.toString();
     }
     
     public void handle(final String s, final Status status) {

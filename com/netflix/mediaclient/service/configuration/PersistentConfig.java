@@ -12,6 +12,7 @@ import android.content.Context;
 import com.netflix.mediaclient.service.configuration.persistent.DPPrefetchABTestConfig;
 import com.netflix.mediaclient.service.configuration.persistent.PrefetchLolomoConfig;
 import com.netflix.mediaclient.service.configuration.persistent.BrandLoveSurvey;
+import com.netflix.mediaclient.service.configuration.persistent.OfflineTutorial;
 import com.netflix.mediaclient.service.configuration.persistent.OnRamp;
 import com.netflix.mediaclient.service.configuration.persistent.Memento;
 import com.netflix.mediaclient.service.configuration.persistent.PhoneOrientation;
@@ -39,6 +40,7 @@ public final class PersistentConfig
         PersistentConfig.mConfigs.put(PhoneOrientation.class, new PhoneOrientation());
         PersistentConfig.mConfigs.put(Memento.class, new Memento());
         PersistentConfig.mConfigs.put(OnRamp.class, new OnRamp());
+        PersistentConfig.mConfigs.put(OfflineTutorial.class, new OfflineTutorial());
         PersistentConfig.mConfigs.put(BrandLoveSurvey.class, new BrandLoveSurvey());
         PersistentConfig.mConfigs.put(PrefetchLolomoConfig.class, new PrefetchLolomoConfig());
         PersistentConfig.mConfigs.put(DPPrefetchABTestConfig.class, new DPPrefetchABTestConfig());
@@ -83,6 +85,10 @@ public final class PersistentConfig
         return PersistentConfig.mConfigs.get(MotionBB.class).getCell(context);
     }
     
+    public static ABTestConfig$Cell getOfflineTutorial(final Context context) {
+        return PersistentConfig.mConfigs.get(OfflineTutorial.class).getCell(context);
+    }
+    
     public static ABTestConfig$Cell getPhoneOrientation(final Context context) {
         return PersistentConfig.mConfigs.get(PhoneOrientation.class).getCell(context);
     }
@@ -96,11 +102,19 @@ public final class PersistentConfig
     }
     
     public static boolean inMementoTest(final Context context) {
-        return getMemento(context).ordinal() == ABTestConfig$Cell.CELL_TWO.ordinal() || getMemento(context).ordinal() == ABTestConfig$Cell.CELL_THREE.ordinal();
+        return getMemento(context) == ABTestConfig$Cell.CELL_TWO || getMemento(context) == ABTestConfig$Cell.CELL_THREE;
+    }
+    
+    public static boolean isGuidanceTutorial(final Context context) {
+        return getOfflineTutorial(context) == ABTestConfig$Cell.CELL_ONE || getOfflineTutorial(context) == ABTestConfig$Cell.CELL_THREE || getOfflineTutorial(context) == ABTestConfig$Cell.CELL_FOUR;
+    }
+    
+    public static boolean isLaunchTutorial(final Context context) {
+        return getOfflineTutorial(context) == ABTestConfig$Cell.CELL_ONE || getOfflineTutorial(context) == ABTestConfig$Cell.CELL_THREE || getOfflineTutorial(context) == ABTestConfig$Cell.CELL_FIVE;
     }
     
     public static boolean isOnRampTest(final Context context) {
-        return PersistentConfig.mConfigs.get(OnRamp.class).getCell(context).ordinal() == ABTestConfig$Cell.CELL_ONE.ordinal();
+        return PersistentConfig.mConfigs.get(OnRamp.class).getCell(context) == ABTestConfig$Cell.CELL_ONE;
     }
     
     public static void refresh() {

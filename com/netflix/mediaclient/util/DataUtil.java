@@ -110,21 +110,28 @@ public class DataUtil
     public static void invalidateCachedEpisodes(final ServiceManager serviceManager, final String s, final SeasonDetails seasonDetails) {
         if (serviceManager == null || !serviceManager.isReady()) {
             Log.d("DataUtil", "Manager is not ready");
-            return;
         }
-        if (seasonDetails == null) {
-            Log.v("DataUtil", "No season details yet");
-            return;
+        else {
+            if (seasonDetails == null) {
+                Log.v("DataUtil", "No season details yet");
+                return;
+            }
+            final String id = seasonDetails.getId();
+            if (Log.isLoggable()) {
+                Log.v("DataUtil", "Purging episode data for: " + id);
+            }
+            if (StringUtils.isEmpty(id)) {
+                LogUtils.logEmptySeasonId(serviceManager.getClientLogging(), s, seasonDetails);
+                return;
+            }
+            if (ConnectivityUtils.isConnected(serviceManager.getContext())) {
+                serviceManager.getBrowse().invalidateCachedEpisodes(id, VideoType.SEASON);
+                return;
+            }
+            if (Log.isLoggable()) {
+                Log.d("DataUtil", "not invalidating cache because of no network connectivity.");
+            }
         }
-        final String id = seasonDetails.getId();
-        if (Log.isLoggable()) {
-            Log.v("DataUtil", "Purging episode data for: " + id);
-        }
-        if (StringUtils.isEmpty(id)) {
-            LogUtils.logEmptySeasonId(serviceManager.getClientLogging(), s, seasonDetails);
-            return;
-        }
-        serviceManager.getBrowse().invalidateCachedEpisodes(id, VideoType.SEASON);
     }
     
     public static void logVerboseUriInfo(final String s, final Uri uri) {

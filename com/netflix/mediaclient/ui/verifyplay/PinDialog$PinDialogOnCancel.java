@@ -4,14 +4,14 @@
 
 package com.netflix.mediaclient.ui.verifyplay;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.text.method.MovementMethod;
 import android.view.View$OnKeyListener;
 import android.widget.TextView$OnEditorActionListener;
 import android.view.ViewGroup;
 import android.app.Dialog;
 import android.view.View;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import android.util.TypedValue;
 import android.view.WindowManager$LayoutParams;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;

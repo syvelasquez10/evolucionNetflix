@@ -11,13 +11,35 @@ interface ViewPropertyAnimatorCompat$ViewPropertyAnimatorCompatImpl
 {
     void alpha(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
     
+    void alphaBy(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
     void cancel(final ViewPropertyAnimatorCompat p0, final View p1);
     
     long getDuration(final ViewPropertyAnimatorCompat p0, final View p1);
     
+    Interpolator getInterpolator(final ViewPropertyAnimatorCompat p0, final View p1);
+    
+    long getStartDelay(final ViewPropertyAnimatorCompat p0, final View p1);
+    
+    void rotation(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void rotationBy(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void rotationX(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void rotationXBy(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void rotationY(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void rotationYBy(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
     void scaleX(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
     
+    void scaleXBy(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
     void scaleY(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void scaleYBy(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
     
     void setDuration(final ViewPropertyAnimatorCompat p0, final View p1, final long p2);
     
@@ -33,5 +55,31 @@ interface ViewPropertyAnimatorCompat$ViewPropertyAnimatorCompatImpl
     
     void translationX(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
     
+    void translationXBy(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
     void translationY(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void translationYBy(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void translationZ(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void translationZBy(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void withEndAction(final ViewPropertyAnimatorCompat p0, final View p1, final Runnable p2);
+    
+    void withLayer(final ViewPropertyAnimatorCompat p0, final View p1);
+    
+    void withStartAction(final ViewPropertyAnimatorCompat p0, final View p1, final Runnable p2);
+    
+    void x(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void xBy(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void y(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void yBy(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void z(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
+    
+    void zBy(final ViewPropertyAnimatorCompat p0, final View p1, final float p2);
 }

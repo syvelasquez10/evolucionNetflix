@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.media.JPlayer.DolbyDigitalHelper;
 import com.netflix.mediaclient.service.webclient.model.leafs.VoipConfiguration;
 import android.view.Display;
 import android.util.DisplayMetrics;
@@ -11,6 +12,7 @@ import android.hardware.display.DisplayManager;
 import com.netflix.mediaclient.media.VideoResolutionRange;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitleDownloadRetryPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.SignInConfigData;
+import com.netflix.mediaclient.service.webclient.model.leafs.OfflineConfig;
 import com.netflix.mediaclient.service.webclient.model.leafs.NrmConfigData;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
@@ -30,6 +32,7 @@ import android.media.UnsupportedSchemeException;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
+import com.netflix.mediaclient.service.error.crypto.CryptoErrorManager;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
@@ -41,7 +44,6 @@ import com.netflix.mediaclient.javabridge.transport.NativeTransport;
 import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
-import com.netflix.mediaclient.media.JPlayer.DolbyDigitalHelper;
 import android.content.pm.PackageManager;
 import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.android.app.CommonStatus;
@@ -99,6 +101,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     private Status mConfigRefreshStatus;
     private ConfigurationWebClient mConfigurationWebClient;
     private DeviceConfiguration mDeviceConfigOverride;
+    private DeviceModel mDeviceModel;
     private int mDiskCacheSizeBytes;
     private DrmManager mDrmManager;
     private EsnProvider mESN;
@@ -113,6 +116,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     private SignInConfiguration mSignInConfigOverride;
     private String mSoftwareVersion;
     private StreamingConfiguration mStreamingConfigOverride;
+    private TextToSpeechWrapper mTextToSpeechWrapper;
     private Handler refreshHandler;
     private final Runnable refreshRunnable;
     
@@ -267,10 +271,6 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         Log.d("nf_configurationagent", "VOIP was enabled, its settings retrieved.");
     }
     
-    private boolean isDolbyDigitalPlus20Supported() {
-        return (this.mDeviceConfigOverride.getmAudioFormat() & 0x4) != 0x0 && DolbyDigitalHelper.isEAC3supported();
-    }
-    
     private void launchTask(final ConfigurationAgent$FetchTask configurationAgent$FetchTask) {
         if (Log.isLoggable()) {
             Log.v("nf_configurationagent", "Launching task: " + configurationAgent$FetchTask.getClass().getSimpleName());
@@ -421,7 +421,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         if (Log.isLoggable()) {
             Log.i("nf_configurationagent", "Current softwareVersion = " + this.mSoftwareVersion);
         }
-        final DeviceModel deviceModel = new DeviceModel(this.mAppVersionCode, this.getContext());
+        this.mDeviceModel = new DeviceModel(this.mAppVersionCode, this.getContext());
         this.mDeviceConfigOverride = new DeviceConfiguration(this.getContext());
         this.mAccountConfigOverride = new AccountConfiguration(this.getContext());
         this.mStreamingConfigOverride = new StreamingConfiguration(this.getContext());
@@ -429,7 +429,8 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         this.mSignInConfigOverride = new SignInConfiguration(this.getContext());
         this.mNrmConfigOverride = new NrmConfiguration(this.getContext());
         this.mCastKeyConfigOverride = new CastKeyConfiguration(this.getContext());
-        this.mEndpointRegistry = new EndpointRegistryProvider(this.getContext(), deviceModel, this.isDeviceHd(), this.mDeviceConfigOverride.getImageRepository(), this.computeImageResolutionClass(this.getContext()));
+        this.mTextToSpeechWrapper = new TextToSpeechWrapper(this.getContext(), this.getMainHandler());
+        this.mEndpointRegistry = new EndpointRegistryProvider(this.getContext(), this.getUserAgent(), this, this.getOfflineAgent());
         this.mMicrophoneExist = this.hasMicrophone();
         final Status loadConfigOverridesOnAppStart = this.loadConfigOverridesOnAppStart(this.mEndpointRegistry.getAppStartConfigUrl());
         if (loadConfigOverridesOnAppStart.isError()) {
@@ -438,6 +439,7 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         }
         final ConfigurationAgent$1 configurationAgent$1 = new ConfigurationAgent$1(this);
         PerformanceProfiler.getInstance().startSession(Sessions.DRM_LOADED, null);
+        CryptoErrorManager.INSTANCE.init(this.getContext(), this.getService().getStartedTimeInMs(), this.getUserAgent(), this.getConfigurationAgent(), this.getOfflineAgent(), this.getErrorHandler(), this.getService().getClientLogging().getErrorLogging());
         this.mDrmManager = DrmManagerRegistry.createDrmManager(this.getContext(), this, this.getUserAgent(), this.getService().getClientLogging().getErrorLogging(), this.getErrorHandler(), configurationAgent$1);
         try {
             this.mESN = EsnProviderRegistry.createESN(this.getContext(), this.mDrmManager, this);
@@ -575,6 +577,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public int getDataRequestThreadPoolSize() {
+        return 4;
+    }
+    
+    @Override
     public int getDataRequestTimeout() {
         return 10000;
     }
@@ -595,6 +602,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public DeviceModel getDeviceModel() {
+        return this.mDeviceModel;
+    }
+    
+    @Override
     public int getDiskCacheSizeBytes() {
         return this.mDiskCacheSizeBytes;
     }
@@ -602,6 +614,14 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public ABTestConfig$Cell getDisplayPageRefreshConfig() {
         return this.mABTestConfigOverride.getDisplayPageRefreshConfig();
+    }
+    
+    @Override
+    public int getDownloadAgentThreadPoolSize() {
+        if (shouldUseLowMemConfig()) {
+            return 2;
+        }
+        return 4;
     }
     
     @Override
@@ -620,6 +640,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public String getGeoCountryCode() {
+        return this.mDeviceConfigOverride.getGeoCountryCode();
+    }
+    
+    @Override
     public long getImageCacheMinimumTtl() {
         return 1209600000L;
     }
@@ -627,6 +652,16 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public int getImageCacheSizeBytes() {
         return ConfigurationAgent.DEFAULT_IMAGE_CACHE_SIZE_BYTES;
+    }
+    
+    @Override
+    public String getImagePreference() {
+        return this.mDeviceConfigOverride.getImageRepository().getImgPreference();
+    }
+    
+    @Override
+    public ImageResolutionClass getImageResolutionClass() {
+        return this.computeImageResolutionClass(this.getContext());
     }
     
     @Override
@@ -671,6 +706,16 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public NrmConfigData getNrmConfigData() {
         return this.mNrmConfigOverride.mNrmConfigData;
+    }
+    
+    @Override
+    public OfflineConfig getOfflineConfig() {
+        return this.mDeviceConfigOverride.getOfflineConfig();
+    }
+    
+    @Override
+    public ABTestConfig$Cell getOfflineTutorialConfig() {
+        return this.mABTestConfigOverride.getOfflineTutorialConfig();
     }
     
     @Override
@@ -845,6 +890,19 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
         return this.mDeviceConfigOverride.ignorePreloadForPlayBilling();
     }
     
+    @Override
+    public boolean isAllowHevcMobile() {
+        return this.mDeviceConfigOverride != null && this.mDeviceConfigOverride.isAllowHevcMobile();
+    }
+    
+    @Override
+    public boolean isAllowVp9Mobile() {
+        if (this.mDeviceConfigOverride != null) {
+            return this.mDeviceConfigOverride.isAllowVp9Mobile();
+        }
+        return DeviceUtils.DEFAULT_ALLOW_VP9_MOBILE;
+    }
+    
     public boolean isAppVersionObsolete() {
         final int appMinimalVersion = this.mDeviceConfigOverride.getAppMinimalVersion();
         if (Log.isLoggable()) {
@@ -862,10 +920,16 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public boolean isAssistiveAudioEnabled() {
+        return this.mTextToSpeechWrapper.isAssistiveAudioEnabled();
+    }
+    
+    @Override
     public boolean isCurrentDrmWidevine() {
         return DrmManagerRegistry.isCurrentDrmWidevine();
     }
     
+    @Override
     public boolean isDeviceHd() {
         return DrmManagerRegistry.drmSupportsHd() && this.isWidevineL1Enabled();
     }
@@ -883,6 +947,11 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public boolean isDisableMcQueenV2() {
         return this.mAccountConfigOverride.toDisableMcQueenV2();
+    }
+    
+    @Override
+    public boolean isDolbyDigitalPlus20Supported() {
+        return (this.mDeviceConfigOverride.getmAudioFormat() & 0x4) != 0x0 && DolbyDigitalHelper.isEAC3supported();
     }
     
     @Override
@@ -965,6 +1034,10 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     }
     
     @Override
+    public void setShouldUseAndroidHttpStack(final boolean b) {
+    }
+    
+    @Override
     public boolean shouldAlertForMissingLocale() {
         return this.mDeviceConfigOverride.shouldAlertForMissingLocale();
     }
@@ -990,6 +1063,16 @@ public class ConfigurationAgent extends ServiceAgent implements ServiceAgent$Con
     @Override
     public boolean shouldForceLegacyCrypto() {
         return this.mDeviceConfigOverride.shouldForceLegacyCrypto();
+    }
+    
+    @Override
+    public boolean shouldUseAndroidHttpStack() {
+        return false;
+    }
+    
+    @Override
+    public boolean showHelpForNonMemebers() {
+        return this.mDeviceConfigOverride != null && this.mDeviceConfigOverride.getVoipConfiguration() != null && this.mDeviceConfigOverride.getVoipConfiguration().isShowHelpForNonMember();
     }
     
     @Override

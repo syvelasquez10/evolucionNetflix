@@ -7,28 +7,61 @@ package android.support.v7.app;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.view.ActionMode$Callback;
 import android.support.v4.app.ActivityCompat;
-import android.content.Context;
 import android.support.v7.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.app.TaskStackBuilder;
+import android.os.Build$VERSION;
 import android.os.Bundle;
 import android.content.res.Configuration;
 import android.support.v4.app.NavUtils;
 import android.content.Intent;
+import android.content.Context;
+import android.support.v7.widget.VectorEnabledTintResources;
 import android.view.MenuInflater;
 import android.app.Activity;
+import android.support.v4.view.KeyEventCompat;
+import android.view.KeyEvent;
 import android.view.ViewGroup$LayoutParams;
 import android.view.View;
+import android.content.res.Resources;
 import android.support.v4.app.TaskStackBuilder$SupportParentable;
 import android.support.v4.app.FragmentActivity;
 
 public class AppCompatActivity extends FragmentActivity implements TaskStackBuilder$SupportParentable, AppCompatCallback
 {
     private AppCompatDelegate mDelegate;
+    private boolean mEatKeyUpEvent;
+    private Resources mResources;
+    private int mThemeId;
+    
+    public AppCompatActivity() {
+        this.mThemeId = 0;
+    }
     
     public void addContentView(final View view, final ViewGroup$LayoutParams viewGroup$LayoutParams) {
         this.getDelegate().addContentView(view, viewGroup$LayoutParams);
+    }
+    
+    public boolean dispatchKeyEvent(final KeyEvent keyEvent) {
+        if (KeyEventCompat.isCtrlPressed(keyEvent) && keyEvent.getUnicodeChar(keyEvent.getMetaState() & 0xFFFF8FFF) == 60) {
+            final int action = keyEvent.getAction();
+            if (action == 0) {
+                final ActionBar supportActionBar = this.getSupportActionBar();
+                if (supportActionBar != null && supportActionBar.isShowing() && supportActionBar.requestFocus()) {
+                    return this.mEatKeyUpEvent = true;
+                }
+            }
+            else if (action == 1 && this.mEatKeyUpEvent) {
+                this.mEatKeyUpEvent = false;
+                return true;
+            }
+        }
+        return super.dispatchKeyEvent(keyEvent);
+    }
+    
+    public View findViewById(final int n) {
+        return this.getDelegate().findViewById(n);
     }
     
     public AppCompatDelegate getDelegate() {
@@ -44,6 +77,16 @@ public class AppCompatActivity extends FragmentActivity implements TaskStackBuil
     
     public MenuInflater getMenuInflater() {
         return this.getDelegate().getMenuInflater();
+    }
+    
+    public Resources getResources() {
+        if (this.mResources == null && VectorEnabledTintResources.shouldBeUsed()) {
+            this.mResources = new VectorEnabledTintResources((Context)this, super.getResources());
+        }
+        if (this.mResources == null) {
+            return super.getResources();
+        }
+        return this.mResources;
     }
     
     public ActionBar getSupportActionBar() {
@@ -63,6 +106,9 @@ public class AppCompatActivity extends FragmentActivity implements TaskStackBuil
     public void onConfigurationChanged(final Configuration configuration) {
         super.onConfigurationChanged(configuration);
         this.getDelegate().onConfigurationChanged(configuration);
+        if (this.mResources != null) {
+            this.mResources.updateConfiguration(configuration, super.getResources().getDisplayMetrics());
+        }
     }
     
     public void onContentChanged() {
@@ -71,8 +117,17 @@ public class AppCompatActivity extends FragmentActivity implements TaskStackBuil
     
     @Override
     protected void onCreate(final Bundle bundle) {
-        this.getDelegate().installViewFactory();
-        this.getDelegate().onCreate(bundle);
+        final AppCompatDelegate delegate = this.getDelegate();
+        delegate.installViewFactory();
+        delegate.onCreate(bundle);
+        if (delegate.applyDayNight() && this.mThemeId != 0) {
+            if (Build$VERSION.SDK_INT >= 23) {
+                this.onApplyThemeResource(this.getTheme(), this.mThemeId, false);
+            }
+            else {
+                this.setTheme(this.mThemeId);
+            }
+        }
         super.onCreate(bundle);
     }
     
@@ -116,6 +171,18 @@ public class AppCompatActivity extends FragmentActivity implements TaskStackBuil
     }
     
     public void onPrepareSupportNavigateUpTaskStack(final TaskStackBuilder taskStackBuilder) {
+    }
+    
+    @Override
+    protected void onSaveInstanceState(final Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        this.getDelegate().onSaveInstanceState(bundle);
+    }
+    
+    @Override
+    protected void onStart() {
+        super.onStart();
+        this.getDelegate().onStart();
     }
     
     @Override
@@ -202,6 +269,11 @@ public class AppCompatActivity extends FragmentActivity implements TaskStackBuil
     
     @Deprecated
     public void setSupportProgressBarVisibility(final boolean b) {
+    }
+    
+    public void setTheme(final int n) {
+        super.setTheme(n);
+        this.mThemeId = n;
     }
     
     public ActionMode startSupportActionMode(final ActionMode$Callback actionMode$Callback) {

@@ -138,8 +138,11 @@ public class PlayerFileManager implements IPlayerFileCache
         if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Save data as file to cache " + s + " with name " + s2);
         }
-        if (StringUtils.isEmpty(s) || StringUtils.isEmpty(s2) || array == null) {
-            Log.e("nf_subtitles", "Bad arguments! Key or name are null or bytes are null!");
+        final boolean empty = StringUtils.isEmpty(s);
+        final boolean empty2 = StringUtils.isEmpty(s2);
+        final boolean b = array == null;
+        if (empty || empty2 || b) {
+            Log.e("nf_subtitles", "Bad arguments! Key empty %b or name empty %b or bytes are null %b!", empty, empty2, b);
             return null;
         }
         final File file = this.mSubtitles.get(s);

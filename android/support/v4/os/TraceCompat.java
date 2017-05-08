@@ -6,7 +6,7 @@ package android.support.v4.os;
 
 import android.os.Build$VERSION;
 
-public class TraceCompat
+public final class TraceCompat
 {
     public static void beginSection(final String s) {
         if (Build$VERSION.SDK_INT >= 18) {

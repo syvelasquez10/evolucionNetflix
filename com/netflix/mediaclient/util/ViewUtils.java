@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.util;
 
+import android.content.res.ColorStateList;
 import java.util.Iterator;
 import java.util.Collection;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
@@ -76,7 +77,7 @@ public class ViewUtils
     
     public static boolean activityIsDead(final View view) {
         final Context context = view.getContext();
-        return context instanceof Activity && AndroidUtils.isActivityFinishedOrDestroyed((Activity)context);
+        return context instanceof Activity && AndroidUtils.isActivityFinishedOrDestroyed(context);
     }
     
     public static void addActionBarPaddingView(final ListView listView) {
@@ -124,9 +125,13 @@ public class ViewUtils
     }
     
     public static View createActionBarDummyView(final NetflixActivity netflixActivity) {
+        return createActionBarDummyView(netflixActivity, netflixActivity.getActionBarHeight());
+    }
+    
+    public static View createActionBarDummyView(final NetflixActivity netflixActivity, final int n) {
         final View view = new View((Context)netflixActivity);
         view.setId(2131689474);
-        view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, netflixActivity.getActionBarHeight()));
+        view.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, n));
         return view;
     }
     
@@ -162,7 +167,7 @@ public class ViewUtils
     }
     
     public static int getDefaultActionBarHeight(final Context context) {
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(new TypedValue().data, new int[] { 2130772210 });
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(new TypedValue().data, new int[] { 2130772055 });
         final int n = (int)obtainStyledAttributes.getDimension(0, 0.0f);
         obtainStyledAttributes.recycle();
         return n;
@@ -633,5 +638,32 @@ public class ViewUtils
                 }
             }
         }
+    }
+    
+    public static Drawable tintAndGet(Drawable wrap, final int n) {
+        if (wrap == null) {
+            return null;
+        }
+        wrap = DrawableCompat.wrap(wrap.mutate());
+        DrawableCompat.setTint(wrap, n);
+        return wrap;
+    }
+    
+    public static Drawable tintAndGet(Drawable drawable, final ColorStateList list, final int n) {
+        if (drawable == null) {
+            drawable = null;
+        }
+        else {
+            final Drawable wrap = DrawableCompat.wrap(drawable.mutate());
+            if (n > 0) {
+                wrap.setBounds(0, 0, n, n);
+            }
+            drawable = wrap;
+            if (list != null) {
+                DrawableCompat.setTint(wrap, list.getDefaultColor());
+                return wrap;
+            }
+        }
+        return drawable;
     }
 }

@@ -11,9 +11,8 @@ import android.view.View;
 import android.util.AttributeSet;
 import android.support.v7.appcompat.R$attr;
 import android.content.Context;
-import android.support.v7.internal.widget.TintImageView;
 
-class ActionMenuPresenter$OverflowMenuButton extends TintImageView implements ActionMenuView$ActionMenuChildView
+class ActionMenuPresenter$OverflowMenuButton extends AppCompatImageView implements ActionMenuView$ActionMenuChildView
 {
     private final float[] mTempPts;
     final /* synthetic */ ActionMenuPresenter this$0;

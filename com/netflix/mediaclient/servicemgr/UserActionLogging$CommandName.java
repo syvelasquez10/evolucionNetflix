@@ -6,6 +6,13 @@ package com.netflix.mediaclient.servicemgr;
 
 public enum UserActionLogging$CommandName
 {
+    AddCachedVideoCommand, 
+    PauseDownloadCommand, 
+    RemoveAllCachedVideosCommand, 
+    RemoveCachedVideoAndPlayNextCommand, 
+    RemoveCachedVideoCommand, 
+    ResumeDownloadCommand, 
+    RetryDownloadCommand, 
     androidWidgetCommand, 
     rating;
 }

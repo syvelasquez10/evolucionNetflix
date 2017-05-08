@@ -15,7 +15,7 @@ final class ViewUtils$1 implements ValueAnimatorCompat$Creator
             valueAnimatorCompat$Impl = new ValueAnimatorCompatImplHoneycombMr1();
         }
         else {
-            valueAnimatorCompat$Impl = new ValueAnimatorCompatImplEclairMr1();
+            valueAnimatorCompat$Impl = new ValueAnimatorCompatImplGingerbread();
         }
         return new ValueAnimatorCompat(valueAnimatorCompat$Impl);
     }

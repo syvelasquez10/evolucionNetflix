@@ -17,6 +17,7 @@ import com.netflix.mediaclient.util.PreferenceUtils;
 import java.util.HashMap;
 import com.netflix.mediaclient.service.webclient.model.leafs.VoipConfiguration;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitleDownloadRetryPolicy;
+import com.netflix.mediaclient.service.webclient.model.leafs.OfflineConfig;
 import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
 import android.content.Context;
@@ -26,11 +27,14 @@ import com.netflix.mediaclient.service.webclient.model.leafs.BreadcrumbLoggingSp
 
 public class DeviceConfiguration
 {
+    private static final boolean DEFAULT_SHOW_HELP_FOR_NOMN_MEMEBER = false;
     private static final boolean DISABLE_MDX_DEF = false;
     private static final boolean DISABLE_WEBSOCKET_DEF = true;
     private static final boolean FORCE_DISABLE_VOIP_IN_CODE = false;
     private static String TAG;
     private String mAlertMsgForMissingLocale;
+    private boolean mAllowHevcMobile;
+    private boolean mAllowVp9Mobile;
     private int mAppMinimalVersion;
     private int mAppRecommendedVersion;
     private int mAudioFormat;
@@ -42,6 +46,7 @@ public class DeviceConfiguration
     private boolean mDisableDataSaver;
     private ErrorLoggingSpecification mErrorLoggingSpecification;
     private boolean mForceLegacyCrypto;
+    private String mGeoCountryCode;
     private boolean mIgnorePreloadForPlayBilling;
     private ImagePrefRepository mImagePrefRepository;
     private IpConnectivityPolicy mIpConnectivityPolicy;
@@ -55,6 +60,7 @@ public class DeviceConfiguration
     private boolean mLocalPlaybackEnabled;
     private boolean mMdxRemoteControlLockScreenEnabled;
     private boolean mMdxRemoteControlNotificationEnabled;
+    private OfflineConfig mOfflineConfig;
     private int mPTAggregationSize;
     private int mRateLimitForGcmBrowseEvents;
     private int mRateLimitForNListChangeEvents;
@@ -104,12 +110,16 @@ public class DeviceConfiguration
         this.mIsPlayBillingDisabled = PreferenceUtils.getBooleanPref(this.mContext, "disable_playbilling", false);
         this.mIgnorePreloadForPlayBilling = PreferenceUtils.getBooleanPref(this.mContext, "ignore_preload_playbilling", false);
         this.mVoipConfiguration = VoipConfiguration.loadFromPreferences(mContext);
+        this.mOfflineConfig = OfflineConfig.loadFromPreferences(mContext);
+        this.mGeoCountryCode = PreferenceUtils.getStringPref(this.mContext, "device_config_geo_country_code", "");
         this.mSubtitleDownloadRetryPolicy = SubtitleDownloadRetryPolicy.loadFromPreferences(mContext);
         if (Log.isLoggable()) {
             Log.d(DeviceConfiguration.TAG, "constructor DeviceConfiguration: Disable mIsVoipEnabledOnDevice " + this.mIsVoipEnabledOnDevice + ", disabledInCode? " + false);
         }
         this.mDisableCastFaststart = PreferenceUtils.getBooleanPref(this.mContext, "disable_cast_faststart", false);
         this.mDisableDataSaver = PreferenceUtils.getBooleanPref(this.mContext, "disable_data_saver", false);
+        this.mAllowHevcMobile = PreferenceUtils.getBooleanPref(this.mContext, "prefs_allow_hevc_mobile", false);
+        this.mAllowVp9Mobile = PreferenceUtils.getBooleanPref(this.mContext, "prefs_allow_vp9_mobile", DeviceUtils.DEFAULT_ALLOW_VP9_MOBILE);
     }
     
     private Map<String, ConsolidatedLoggingSessionSpecification> loadConsolidateLoggingSpecification() {
@@ -283,6 +293,14 @@ public class DeviceConfiguration
         this.mForceLegacyCrypto = mForceLegacyCrypto;
     }
     
+    private void updateGeoCountryCode(final NetflixPreference netflixPreference, String mGeoCountryCode) {
+        if (mGeoCountryCode == null) {
+            mGeoCountryCode = "";
+        }
+        netflixPreference.putStringPref("device_config_geo_country_code", mGeoCountryCode);
+        this.mGeoCountryCode = mGeoCountryCode;
+    }
+    
     private void updateLocalPlaybackStatus(final NetflixPreference netflixPreference, final String s) {
         if (StringUtils.isNotEmpty(s)) {
             final boolean boolean1 = Boolean.parseBoolean(s);
@@ -394,6 +412,10 @@ public class DeviceConfiguration
         return this.mErrorLoggingSpecification;
     }
     
+    public String getGeoCountryCode() {
+        return this.mGeoCountryCode;
+    }
+    
     public ImagePrefRepository getImageRepository() {
         return this.mImagePrefRepository;
     }
@@ -404,6 +426,10 @@ public class DeviceConfiguration
     
     public int getJPlayerStreamErrorRestartCount() {
         return this.mJPlayerErrorRestartCount;
+    }
+    
+    public OfflineConfig getOfflineConfig() {
+        return this.mOfflineConfig;
     }
     
     public int getPTAggregationSize() {
@@ -448,6 +474,14 @@ public class DeviceConfiguration
     
     public boolean ignorePreloadForPlayBilling() {
         return this.mIgnorePreloadForPlayBilling;
+    }
+    
+    public boolean isAllowHevcMobile() {
+        return this.mAllowHevcMobile;
+    }
+    
+    public boolean isAllowVp9Mobile() {
+        return this.mAllowVp9Mobile;
     }
     
     public boolean isDeviceConfigInCache() {
@@ -547,6 +581,10 @@ public class DeviceConfiguration
         this.updateDeviceLocaleSupportAlert(netflixPreference, deviceConfigData.shouldAlertForMissingLocale(), deviceConfigData.getAlertMsgForLocaleSupport());
         this.mSubtitleDownloadRetryPolicy = SubtitleDownloadRetryPolicy.saveToPreferences(netflixPreference, deviceConfigData.getSubtitleDownloadRetryPolicy());
         this.mVoipConfiguration = VoipConfiguration.saveToPreferences(netflixPreference, deviceConfigData.getVoipConfiguration());
+        this.mOfflineConfig = OfflineConfig.saveToPreferences(netflixPreference, deviceConfigData.getOfflineConfig());
+        this.updateGeoCountryCode(netflixPreference, deviceConfigData.getGeoCountryCode());
+        AndroidJobSchedulerConfig.updateJobSchedulerDisabledAndDisableIfNeeded(this.mContext, deviceConfigData.disableAndroidJobScheduler());
+        AndroidJobSchedulerConfig.updateJobFinishDisabled(this.mContext, deviceConfigData.disableAndroidJobSchedulerJobFinish());
         this.updateAppBootUrlSuffix(netflixPreference, deviceConfigData.getAppBootUrlSuffix());
         this.mSignUpConfig.update(netflixPreference, deviceConfigData.getSignUpEnabled(), deviceConfigData.getSignUpTimeout(), deviceConfigData.getAppBootUrlSuffix());
         this.mIsPlayBillingDisabled = deviceConfigData.isPlayBillingDisabled();
@@ -555,6 +593,8 @@ public class DeviceConfiguration
         netflixPreference.putBooleanPref("ignore_preload_playbilling", deviceConfigData.toIgnorePrelaodForPlayBilling());
         netflixPreference.putBooleanPref("disable_cast_faststart", this.mDisableCastFaststart = deviceConfigData.getDisableCastFaststart());
         netflixPreference.putBooleanPref("disable_data_saver", this.mDisableDataSaver = deviceConfigData.getDisableDataSaver());
+        netflixPreference.putBooleanPref("prefs_allow_hevc_mobile", this.mAllowHevcMobile = deviceConfigData.isAllowHevcMobile());
+        netflixPreference.putBooleanPref("prefs_allow_vp9_mobile", this.mAllowVp9Mobile = deviceConfigData.isAllowVp9Mobile());
         if (!this.isDeviceConfigInCache()) {
             this.updateDeviceConfigFlag(netflixPreference, true);
         }

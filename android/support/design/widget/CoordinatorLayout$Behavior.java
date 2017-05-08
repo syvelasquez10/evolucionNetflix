@@ -8,6 +8,7 @@ import android.view.View$BaseSavedState;
 import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.support.v4.view.WindowInsetsCompat;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.view.View;
@@ -20,18 +21,31 @@ public abstract class CoordinatorLayout$Behavior<V extends View>
     public CoordinatorLayout$Behavior(final Context context, final AttributeSet set) {
     }
     
+    public static Object getTag(final View view) {
+        return ((CoordinatorLayout$LayoutParams)view.getLayoutParams()).mBehaviorTag;
+    }
+    
+    public static void setTag(final View view, final Object mBehaviorTag) {
+        ((CoordinatorLayout$LayoutParams)view.getLayoutParams()).mBehaviorTag = mBehaviorTag;
+    }
+    
     public boolean blocksInteractionBelow(final CoordinatorLayout coordinatorLayout, final V v) {
         return this.getScrimOpacity(coordinatorLayout, v) > 0.0f;
     }
     
-    public final int getScrimColor(final CoordinatorLayout coordinatorLayout, final V v) {
+    public boolean getInsetDodgeRect(final CoordinatorLayout coordinatorLayout, final V v, final Rect rect) {
+        return false;
+    }
+    
+    public int getScrimColor(final CoordinatorLayout coordinatorLayout, final V v) {
         return -16777216;
     }
     
-    public final float getScrimOpacity(final CoordinatorLayout coordinatorLayout, final V v) {
+    public float getScrimOpacity(final CoordinatorLayout coordinatorLayout, final V v) {
         return 0.0f;
     }
     
+    @Deprecated
     public boolean isDirty(final CoordinatorLayout coordinatorLayout, final V v) {
         return false;
     }
@@ -44,11 +58,17 @@ public abstract class CoordinatorLayout$Behavior<V extends View>
         return windowInsetsCompat;
     }
     
+    public void onAttachedToLayoutParams(final CoordinatorLayout$LayoutParams coordinatorLayout$LayoutParams) {
+    }
+    
     public boolean onDependentViewChanged(final CoordinatorLayout coordinatorLayout, final V v, final View view) {
         return false;
     }
     
     public void onDependentViewRemoved(final CoordinatorLayout coordinatorLayout, final V v, final View view) {
+    }
+    
+    public void onDetachedFromLayoutParams() {
     }
     
     public boolean onInterceptTouchEvent(final CoordinatorLayout coordinatorLayout, final V v, final MotionEvent motionEvent) {
@@ -78,6 +98,10 @@ public abstract class CoordinatorLayout$Behavior<V extends View>
     }
     
     public void onNestedScrollAccepted(final CoordinatorLayout coordinatorLayout, final V v, final View view, final View view2, final int n) {
+    }
+    
+    public boolean onRequestChildRectangleOnScreen(final CoordinatorLayout coordinatorLayout, final V v, final Rect rect, final boolean b) {
+        return false;
     }
     
     public void onRestoreInstanceState(final CoordinatorLayout coordinatorLayout, final V v, final Parcelable parcelable) {

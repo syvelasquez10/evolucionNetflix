@@ -12,7 +12,8 @@ public class NotificationCompat$Action extends NotificationCompatBase$Action
     public static final NotificationCompatBase$Action$Factory FACTORY;
     public PendingIntent actionIntent;
     public int icon;
-    private final Bundle mExtras;
+    private boolean mAllowGeneratedReplies;
+    final Bundle mExtras;
     private final RemoteInput[] mRemoteInputs;
     public CharSequence title;
     
@@ -21,10 +22,11 @@ public class NotificationCompat$Action extends NotificationCompatBase$Action
     }
     
     public NotificationCompat$Action(final int n, final CharSequence charSequence, final PendingIntent pendingIntent) {
-        this(n, charSequence, pendingIntent, new Bundle(), null);
+        this(n, charSequence, pendingIntent, new Bundle(), null, false);
     }
     
-    private NotificationCompat$Action(final int icon, final CharSequence charSequence, final PendingIntent actionIntent, Bundle mExtras, final RemoteInput[] mRemoteInputs) {
+    NotificationCompat$Action(final int icon, final CharSequence charSequence, final PendingIntent actionIntent, Bundle mExtras, final RemoteInput[] mRemoteInputs, final boolean mAllowGeneratedReplies) {
+        this.mAllowGeneratedReplies = false;
         this.icon = icon;
         this.title = NotificationCompat$Builder.limitCharSequenceLength(charSequence);
         this.actionIntent = actionIntent;
@@ -33,11 +35,17 @@ public class NotificationCompat$Action extends NotificationCompatBase$Action
         }
         this.mExtras = mExtras;
         this.mRemoteInputs = mRemoteInputs;
+        this.mAllowGeneratedReplies = mAllowGeneratedReplies;
     }
     
     @Override
     public PendingIntent getActionIntent() {
         return this.actionIntent;
+    }
+    
+    @Override
+    public boolean getAllowGeneratedReplies() {
+        return this.mAllowGeneratedReplies;
     }
     
     @Override

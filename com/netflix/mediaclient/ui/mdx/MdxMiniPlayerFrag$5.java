@@ -21,7 +21,6 @@ import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.content.Intent;
-import android.content.Context;
 import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.app.Fragment;
@@ -42,7 +41,7 @@ import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.Log;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 
 class MdxMiniPlayerFrag$5 implements RemotePlayer$RemoteTargetUiListener
@@ -75,7 +74,7 @@ class MdxMiniPlayerFrag$5 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void cancelDialog() {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.activity)) {
             return;
         }
         if (Log.isLoggable()) {
@@ -122,7 +121,7 @@ class MdxMiniPlayerFrag$5 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void showDialog(final RemoteDialog remoteDialog) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.activity)) {
             return;
         }
         if (Log.isLoggable()) {
@@ -141,7 +140,7 @@ class MdxMiniPlayerFrag$5 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void updateDuration(final int progressMax) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.activity)) {
             return;
         }
         this.this$0.log("updateDuration, " + progressMax);
@@ -162,7 +161,7 @@ class MdxMiniPlayerFrag$5 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void updateTargetCapabilities(final MdxTargetCapabilities mdxTargetCapabilities) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.activity)) {
             return;
         }
         if (mdxTargetCapabilities == null) {

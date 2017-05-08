@@ -29,6 +29,6 @@ public class ThanksFragment extends Fragment
     
     @Override
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
-        return layoutInflater.inflate(2130903130, viewGroup, false);
+        return layoutInflater.inflate(2130903140, viewGroup, false);
     }
 }

@@ -4,10 +4,16 @@
 
 package android.support.v4.view;
 
+import android.graphics.Paint;
 import android.view.View;
 
 class ViewCompat$JbMr1ViewCompatImpl extends ViewCompat$JBViewCompatImpl
 {
+    @Override
+    public int getLabelFor(final View view) {
+        return ViewCompatJellybeanMr1.getLabelFor(view);
+    }
+    
     @Override
     public int getLayoutDirection(final View view) {
         return ViewCompatJellybeanMr1.getLayoutDirection(view);
@@ -31,6 +37,21 @@ class ViewCompat$JbMr1ViewCompatImpl extends ViewCompat$JBViewCompatImpl
     @Override
     public boolean isPaddingRelative(final View view) {
         return ViewCompatJellybeanMr1.isPaddingRelative(view);
+    }
+    
+    @Override
+    public void setLabelFor(final View view, final int n) {
+        ViewCompatJellybeanMr1.setLabelFor(view, n);
+    }
+    
+    @Override
+    public void setLayerPaint(final View view, final Paint paint) {
+        ViewCompatJellybeanMr1.setLayerPaint(view, paint);
+    }
+    
+    @Override
+    public void setLayoutDirection(final View view, final int n) {
+        ViewCompatJellybeanMr1.setLayoutDirection(view, n);
     }
     
     @Override

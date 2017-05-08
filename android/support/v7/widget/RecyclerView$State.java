@@ -4,34 +4,29 @@
 
 package android.support.v7.widget;
 
-import java.util.ArrayList;
-import android.support.v4.util.ArrayMap;
-import android.view.View;
-import java.util.List;
 import android.util.SparseArray;
 
 public class RecyclerView$State
 {
     private SparseArray<Object> mData;
-    private int mDeletedInvisibleItemCountSincePreviousLayout;
-    final List<View> mDisappearingViewsInLayoutPass;
-    private boolean mInPreLayout;
+    int mDeletedInvisibleItemCountSincePreviousLayout;
+    long mFocusedItemId;
+    int mFocusedItemPosition;
+    int mFocusedSubChildId;
+    boolean mInPreLayout;
+    boolean mIsMeasuring;
     int mItemCount;
-    ArrayMap<Long, RecyclerView$ViewHolder> mOldChangedHolders;
-    ArrayMap<RecyclerView$ViewHolder, RecyclerView$ItemHolderInfo> mPostLayoutHolderMap;
-    ArrayMap<RecyclerView$ViewHolder, RecyclerView$ItemHolderInfo> mPreLayoutHolderMap;
-    private int mPreviousLayoutItemCount;
-    private boolean mRunPredictiveAnimations;
-    private boolean mRunSimpleAnimations;
-    private boolean mStructureChanged;
+    int mLayoutStep;
+    int mPreviousLayoutItemCount;
+    boolean mRunPredictiveAnimations;
+    boolean mRunSimpleAnimations;
+    boolean mStructureChanged;
     private int mTargetPosition;
+    boolean mTrackOldChangeHolders;
     
     public RecyclerView$State() {
         this.mTargetPosition = -1;
-        this.mPreLayoutHolderMap = new ArrayMap<RecyclerView$ViewHolder, RecyclerView$ItemHolderInfo>();
-        this.mPostLayoutHolderMap = new ArrayMap<RecyclerView$ViewHolder, RecyclerView$ItemHolderInfo>();
-        this.mOldChangedHolders = new ArrayMap<Long, RecyclerView$ViewHolder>();
-        this.mDisappearingViewsInLayoutPass = new ArrayList<View>();
+        this.mLayoutStep = 1;
         this.mItemCount = 0;
         this.mPreviousLayoutItemCount = 0;
         this.mDeletedInvisibleItemCountSincePreviousLayout = 0;
@@ -39,20 +34,13 @@ public class RecyclerView$State
         this.mInPreLayout = false;
         this.mRunSimpleAnimations = false;
         this.mRunPredictiveAnimations = false;
+        this.mTrackOldChangeHolders = false;
+        this.mIsMeasuring = false;
     }
     
-    private void removeFrom(final ArrayMap<Long, RecyclerView$ViewHolder> arrayMap, final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-        for (int i = arrayMap.size() - 1; i >= 0; --i) {
-            if (recyclerView$ViewHolder == arrayMap.valueAt(i)) {
-                arrayMap.removeAt(i);
-                break;
-            }
-        }
-    }
-    
-    void addToDisappearingList(final View view) {
-        if (!this.mDisappearingViewsInLayoutPass.contains(view)) {
-            this.mDisappearingViewsInLayoutPass.add(view);
+    void assertLayoutStep(final int n) {
+        if ((this.mLayoutStep & n) == 0x0) {
+            throw new IllegalStateException("Layout state should be one of " + Integer.toBinaryString(n) + " but it is " + Integer.toBinaryString(this.mLayoutStep));
         }
     }
     
@@ -63,6 +51,10 @@ public class RecyclerView$State
         return this.mItemCount;
     }
     
+    public int getTargetScrollPosition() {
+        return this.mTargetPosition;
+    }
+    
     public boolean hasTargetScrollPosition() {
         return this.mTargetPosition != -1;
     }
@@ -71,26 +63,9 @@ public class RecyclerView$State
         return this.mInPreLayout;
     }
     
-    public void onViewIgnored(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-        this.onViewRecycled(recyclerView$ViewHolder);
-    }
-    
-    void onViewRecycled(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-        this.mPreLayoutHolderMap.remove(recyclerView$ViewHolder);
-        this.mPostLayoutHolderMap.remove(recyclerView$ViewHolder);
-        if (this.mOldChangedHolders != null) {
-            this.removeFrom(this.mOldChangedHolders, recyclerView$ViewHolder);
-        }
-        this.mDisappearingViewsInLayoutPass.remove(recyclerView$ViewHolder.itemView);
-    }
-    
-    void removeFromDisappearingList(final View view) {
-        this.mDisappearingViewsInLayoutPass.remove(view);
-    }
-    
     @Override
     public String toString() {
-        return "State{mTargetPosition=" + this.mTargetPosition + ", mPreLayoutHolderMap=" + this.mPreLayoutHolderMap + ", mPostLayoutHolderMap=" + this.mPostLayoutHolderMap + ", mData=" + this.mData + ", mItemCount=" + this.mItemCount + ", mPreviousLayoutItemCount=" + this.mPreviousLayoutItemCount + ", mDeletedInvisibleItemCountSincePreviousLayout=" + this.mDeletedInvisibleItemCountSincePreviousLayout + ", mStructureChanged=" + this.mStructureChanged + ", mInPreLayout=" + this.mInPreLayout + ", mRunSimpleAnimations=" + this.mRunSimpleAnimations + ", mRunPredictiveAnimations=" + this.mRunPredictiveAnimations + '}';
+        return "State{mTargetPosition=" + this.mTargetPosition + ", mData=" + this.mData + ", mItemCount=" + this.mItemCount + ", mPreviousLayoutItemCount=" + this.mPreviousLayoutItemCount + ", mDeletedInvisibleItemCountSincePreviousLayout=" + this.mDeletedInvisibleItemCountSincePreviousLayout + ", mStructureChanged=" + this.mStructureChanged + ", mInPreLayout=" + this.mInPreLayout + ", mRunSimpleAnimations=" + this.mRunSimpleAnimations + ", mRunPredictiveAnimations=" + this.mRunPredictiveAnimations + '}';
     }
     
     public boolean willRunPredictiveAnimations() {

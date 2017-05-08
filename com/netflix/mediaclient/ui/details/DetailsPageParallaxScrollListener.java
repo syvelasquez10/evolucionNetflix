@@ -108,11 +108,11 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
     }
     
     public static DetailsPageParallaxScrollListener createDefault(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] array, final View view, final View view2) {
-        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131624147), 0, 255, view2);
+        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131624167), 0, 255, view2);
     }
     
     public static DetailsPageParallaxScrollListener createParallaxOnly(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] array, final View view, final View view2) {
-        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131624147), 0, 0, view2);
+        return new DetailsPageParallaxScrollListener(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131624167), 0, 0, view2);
     }
     
     private void detachTrackingViewFromOriginalParent() {
@@ -147,8 +147,8 @@ public class DetailsPageParallaxScrollListener extends RecyclerView$OnScrollList
             final View child = this.recyclerView.getChildAt(0);
             if (!((RecyclerViewHeaderAdapter)this.recyclerView.getAdapter()).isViewHeader(child, this.recyclerView)) {
                 endingAlpha = this.endingAlpha;
-                if (this.seasonsSpinner != null && child.getTag(2131689491) != null) {
-                    this.postSetSpinnerSelectionRunnable((int)child.getTag(2131689491));
+                if (this.seasonsSpinner != null && child.getTag(2131689492) != null) {
+                    this.postSetSpinnerSelectionRunnable((int)child.getTag(2131689492));
                 }
                 this.onItemsShown();
             }

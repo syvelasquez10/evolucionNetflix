@@ -15,10 +15,10 @@ class ViewGroupUtils
     
     static {
         if (Build$VERSION.SDK_INT >= 11) {
-            IMPL = new ViewGroupUtils$ViewGroupUtilsImplHoneycomb(null);
+            IMPL = new ViewGroupUtils$ViewGroupUtilsImplHoneycomb();
             return;
         }
-        IMPL = new ViewGroupUtils$ViewGroupUtilsImplBase(null);
+        IMPL = new ViewGroupUtils$ViewGroupUtilsImplBase();
     }
     
     static void getDescendantRect(final ViewGroup viewGroup, final View view, final Rect rect) {

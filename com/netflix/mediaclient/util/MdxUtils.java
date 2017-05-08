@@ -12,18 +12,18 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelection;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import android.widget.AdapterView$OnItemClickListener;
+import android.app.Activity;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog$Builder;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.view.View;
 import android.content.DialogInterface$OnClickListener;
-import android.content.Context;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import android.widget.TextView;
 import android.view.ViewGroup;
 import com.netflix.mediaclient.Log;
-import android.app.Activity;
-import android.app.AlertDialog;
+import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 public final class MdxUtils
@@ -32,22 +32,22 @@ public final class MdxUtils
     private static final String TAG = "MdxUtils";
     
     public static AlertDialog createMdxDisconnectDialog(final NetflixActivity netflixActivity, final MdxUtils$MdxTargetSelectionDialogInterface mdxUtils$MdxTargetSelectionDialogInterface) {
-        if (netflixActivity == null || mdxUtils$MdxTargetSelectionDialogInterface == null || AndroidUtils.isActivityFinishedOrDestroyed(netflixActivity)) {
+        if (netflixActivity == null || mdxUtils$MdxTargetSelectionDialogInterface == null || AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
             Log.w("MdxUtils", "Activity is not valid or MdxFrag is null. Skipping MDX disconnect dialog");
             return null;
         }
-        final View inflate = netflixActivity.getLayoutInflater().inflate(2130903176, (ViewGroup)null);
-        ((TextView)inflate.findViewById(2131689923)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
-        final TextView textView = (TextView)inflate.findViewById(2131689924);
-        final TextView textView2 = (TextView)inflate.findViewById(2131689925);
+        final View inflate = netflixActivity.getLayoutInflater().inflate(2130903186, (ViewGroup)null);
+        ((TextView)inflate.findViewById(2131689951)).setText((CharSequence)ServiceManagerUtils.getCurrentDeviceFriendlyName(netflixActivity.getServiceManager()));
+        final TextView textView = (TextView)inflate.findViewById(2131689952);
+        final TextView textView2 = (TextView)inflate.findViewById(2131689953);
         final Playable playable = mdxUtils$MdxTargetSelectionDialogInterface.getPlayable();
         String string2;
         if (mdxUtils$MdxTargetSelectionDialogInterface.isPlayingRemotely() && playable != null) {
-            final String string = netflixActivity.getResources().getString(2131231250, new Object[] { "" });
+            final String string = netflixActivity.getResources().getString(2131231306, new Object[] { "" });
             textView2.setVisibility(0);
             String text;
             if (playable.isPlayableEpisode()) {
-                text = netflixActivity.getResources().getString(2131231241, new Object[] { playable.getParentTitle(), playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), playable.getPlayableTitle() });
+                text = netflixActivity.getResources().getString(2131231297, new Object[] { playable.getParentTitle(), playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), playable.getPlayableTitle() });
             }
             else {
                 text = playable.getPlayableTitle();
@@ -56,17 +56,17 @@ public final class MdxUtils
             string2 = string;
         }
         else {
-            string2 = netflixActivity.getResources().getString(2131231240);
+            string2 = netflixActivity.getResources().getString(2131231296);
             textView2.setVisibility(8);
         }
         textView.setText((CharSequence)string2);
-        final AlertDialog create = new AlertDialog$Builder((Context)netflixActivity).setPositiveButton(2131231239, (DialogInterface$OnClickListener)new MdxUtils$2(netflixActivity)).setView(inflate).setCancelable(true).create();
+        final AlertDialog create = new AlertDialog$Builder((Context)netflixActivity).setPositiveButton(2131231295, (DialogInterface$OnClickListener)new MdxUtils$2(netflixActivity)).setView(inflate).setCancelable(true).create();
         create.setCanceledOnTouchOutside(true);
         return create;
     }
     
     public static AlertDialog createMdxMenuDialog(final NetflixActivity netflixActivity, final MdxUtils$MdxTargetSelectionDialogInterface mdxUtils$MdxTargetSelectionDialogInterface) {
-        if (netflixActivity == null || AndroidUtils.isActivityFinishedOrDestroyed(netflixActivity)) {
+        if (netflixActivity == null || AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
             Log.w("MdxUtils", "Activity is not valid. Skipping MDX menu dialog");
             return null;
         }
@@ -77,7 +77,7 @@ public final class MdxUtils
     }
     
     public static AlertDialog createMdxTargetSelectionDialog(final NetflixActivity netflixActivity, final MdxUtils$MdxTargetSelectionDialogInterface mdxUtils$MdxTargetSelectionDialogInterface) {
-        if (netflixActivity == null || mdxUtils$MdxTargetSelectionDialogInterface == null || AndroidUtils.isActivityFinishedOrDestroyed(netflixActivity)) {
+        if (netflixActivity == null || mdxUtils$MdxTargetSelectionDialogInterface == null || AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
             Log.w("MdxUtils", "Activity is not valid or MdxFrag is null. Skipping MDX target selection dialog");
             return null;
         }
@@ -87,13 +87,13 @@ public final class MdxUtils
         targetSelection.setTarget(devicePositionByUUID);
         final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(netflixActivity);
         mdxTargetSelectionDialog$Builder.setCancelable(true);
-        mdxTargetSelectionDialog$Builder.setTitle(2131231094);
+        mdxTargetSelectionDialog$Builder.setTitle(2131231118);
         mdxTargetSelectionDialog$Builder.setAdapterData(targetSelection.getTargets((Context)netflixActivity));
         String format = "";
         if (mdxUtils$MdxTargetSelectionDialogInterface.getPlayable() != null) {
             format = format;
             if (StringUtils.isNotEmpty(mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle())) {
-                format = String.format(netflixActivity.getString(2131231250), mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle());
+                format = String.format(netflixActivity.getString(2131231306), mdxUtils$MdxTargetSelectionDialogInterface.getPlayable().getPlayableTitle());
             }
         }
         mdxTargetSelectionDialog$Builder.setSelection(devicePositionByUUID, format);

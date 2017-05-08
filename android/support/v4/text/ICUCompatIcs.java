@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 
 class ICUCompatIcs
 {
+    private static final String TAG = "ICUCompatIcs";
     private static Method sAddLikelySubtagsMethod;
     private static Method sGetScriptMethod;
     

@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.player.subtitles;
 
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import android.text.TextUtils$TruncateAt;
 import com.netflix.mediaclient.android.widget.AutoResizeTextView;
 import com.netflix.mediaclient.android.widget.StrokeTextView;

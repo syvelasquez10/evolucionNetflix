@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx.notification;
 
-import android.app.Service;
 import android.graphics.Bitmap;
 import android.util.Pair;
 import com.netflix.mediaclient.util.AndroidUtils;
@@ -20,7 +19,7 @@ import android.content.Context;
 public final class MdxNotificationManager implements IMdxNotificationManager
 {
     private static final String TAG = "nf_mdxnotification";
-    private Context context;
+    private final Context context;
     private boolean isEpisode;
     private boolean isPlaying;
     private boolean isPostplay;
@@ -57,11 +56,11 @@ public final class MdxNotificationManager implements IMdxNotificationManager
     }
     
     private void createPlayerBuilder() {
-        this.playerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837842).setWhen(System.currentTimeMillis());
+        this.playerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837897).setWhen(System.currentTimeMillis());
     }
     
     private void createPostPlayerBuilder() {
-        this.postPlayerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837842).setWhen(System.currentTimeMillis());
+        this.postPlayerBuilder = new NotificationCompat$Builder(this.context).setOngoing(true).setOnlyAlertOnce(true).setSmallIcon(2130837897).setWhen(System.currentTimeMillis());
     }
     
     private void createRemoteViews(final MdxAgent mdxAgent) {
@@ -211,27 +210,27 @@ public final class MdxNotificationManager implements IMdxNotificationManager
     }
     
     @Override
-    public void startNotification(final Notification notification, final Service service, final boolean isPostplay) {
-        this.stopNotification(service);
+    public void startNotification(final Notification notification, final NetflixService netflixService, final boolean isPostplay) {
+        this.stopNotification(netflixService);
         if (notification == null) {
             return;
         }
-        service.startForeground(1, notification);
+        netflixService.requestForegroundForNotification(1, notification);
         this.isPostplay = isPostplay;
         this.isPlaying = true;
     }
     
     @Override
-    public void stopNotification(final Service service) {
+    public void stopNotification(final NetflixService netflixService) {
         this.cancelNotification();
-        service.stopForeground(true);
+        netflixService.requestBackgroundForNotification(1, true);
         this.isPlaying = false;
     }
     
     @Override
-    public void stopPostplayNotification(final Service service) {
+    public void stopPostplayNotification(final NetflixService netflixService) {
         if (this.isPostplay) {
-            service.stopForeground(true);
+            netflixService.requestBackgroundForNotification(1, true);
             this.isPlaying = false;
         }
     }

@@ -51,7 +51,7 @@ public class PaginatedDiscoveryAdapter extends BasePaginatedAdapter<Discovery>
         int n2;
         final int n = n2 = (int)resources.getDimension(2131361792);
         if (Coppola2Utils.shouldHideContinueWatchingLink((Context)this.activity)) {
-            n2 = (int)(n - (resources.getDimension(2131362066) + (resources.getDimension(2131361879) + resources.getDimension(2131362125))));
+            n2 = (int)(n - (resources.getDimension(2131362082) + (resources.getDimension(2131361882) + resources.getDimension(2131362150))));
         }
         Log.v("PaginatedDiscoveryAdapter", "Computed view height: " + n2);
         return n2;

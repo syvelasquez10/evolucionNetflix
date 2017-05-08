@@ -4,8 +4,6 @@
 
 package android.support.design.widget;
 
-import android.os.Looper;
-import android.os.Handler;
 import android.os.Message;
 import android.os.Handler$Callback;
 

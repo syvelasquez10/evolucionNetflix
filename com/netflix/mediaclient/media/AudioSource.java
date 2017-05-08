@@ -9,11 +9,16 @@ import com.netflix.mediaclient.ui.player.NccpAudioSource;
 import com.netflix.mediaclient.ui.mdx.MdxAudioSource;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
+import java.util.ArrayList;
+import com.netflix.mediaclient.media.manifest.Stream;
+import java.util.List;
 
 public abstract class AudioSource implements Comparable<AudioSource>
 {
     public static final int ASSISTIVE_AUDIO = 2;
+    protected static final String ATTR_BITRATE = "bitrate";
     protected static final String ATTR_DISSALOWED_TIMED_TEXT_TRACK = "disallowedSubtitleTracks";
+    protected static final String ATTR_DLID = "downloadable_id";
     protected static final String ATTR_ID = "id";
     protected static final String ATTR_IS_NATIVE = "isNative";
     protected static final String ATTR_LANGUAGE = "language";
@@ -34,8 +39,10 @@ public abstract class AudioSource implements Comparable<AudioSource>
     public static final int UNKNOWN_AUDIO = 3;
     public static final int UNKNOWN_AUDIO_CODEC = -1;
     public static final int WMA_AUDIO = 0;
+    protected int bitrate;
     protected int codecType;
     protected String[] disallowedSubtitles;
+    protected String dlid;
     protected String id;
     protected boolean isNative;
     protected String languageCodeIso639_1;
@@ -43,7 +50,12 @@ public abstract class AudioSource implements Comparable<AudioSource>
     protected String languageDescription;
     protected int nccpOrderNumber;
     protected int numChannels;
+    protected List<Stream> streams;
     protected int trackType;
+    
+    public AudioSource() {
+        this.streams = new ArrayList<Stream>();
+    }
     
     public static void dumpLog(final AudioSource[] array, final String s) {
         if (array != null) {
@@ -118,12 +130,20 @@ public abstract class AudioSource implements Comparable<AudioSource>
         return true;
     }
     
+    public int getBitrate() {
+        return this.bitrate;
+    }
+    
     public int getCodecType() {
         return this.codecType;
     }
     
     public String[] getDisallowedSubtitles() {
         return this.disallowedSubtitles;
+    }
+    
+    public String getDlid() {
+        return this.dlid;
     }
     
     public String getId() {
@@ -155,6 +175,10 @@ public abstract class AudioSource implements Comparable<AudioSource>
     
     public int getNumChannels() {
         return this.numChannels;
+    }
+    
+    public List<Stream> getStreams() {
+        return this.streams;
     }
     
     public int getTrackType() {
@@ -200,6 +224,6 @@ public abstract class AudioSource implements Comparable<AudioSource>
     
     @Override
     public String toString() {
-        return "AudioSource [id=" + this.id + ", languageCodeIso639_1=" + this.languageCodeIso639_1 + ", languageCodeIso639_2=" + this.languageCodeIso639_2 + ", languageDescription=" + this.languageDescription + ", trackType=" + this.trackType + ", codecType=" + this.codecType + ", isNative=" + this.isNative + ", numChannels=" + this.numChannels + ", dissalowed subtitles # " + this.disallowedSubtitles.length + ", nccpOrderNumber=" + this.nccpOrderNumber + "]";
+        return "AudioSource [id=" + this.id + ", languageCodeIso639_1=" + this.languageCodeIso639_1 + ", languageCodeIso639_2=" + this.languageCodeIso639_2 + ", languageDescription=" + this.languageDescription + ", trackType=" + this.trackType + ", codecType=" + this.codecType + ", isNative=" + this.isNative + ", numChannels=" + this.numChannels + ", dissalowed subtitles # " + this.disallowedSubtitles.length + ", nccpOrderNumber=" + this.nccpOrderNumber + ", dlid=" + this.dlid + "]";
     }
 }

@@ -71,32 +71,11 @@ public final class StatusUtils
                         deepErrorElement$Debug.setMessage(activateEvent.getData());
                         netflixStatus2.setError(createError(statusCode, b, RootCause.serverFailure, deepErrorElement$Debug));
                         return netflixStatus;
-                        Label_0159: {
-                            statusCode = StatusCode.NRD_LOGIN_ACTIONID_1;
+                        Label_0210: {
+                            statusCode = StatusCode.NRD_LOGIN_ACTIONID_8;
                         }
                         continue Label_0070_Outer;
-                        Label_0189:
-                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_5;
-                        continue Label_0070_Outer;
-                        Label_0175:
-                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_3;
-                        continue Label_0070_Outer;
-                        Label_0152:
-                        statusCode = StatusCode.NRD_ERROR;
-                        continue Label_0070_Outer;
-                        // switch([Lcom.strobel.decompiler.ast.Label;@56766988, actionID)
-                        Label_0231:
-                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_11;
-                        continue Label_0070_Outer;
-                        Label_0210:
-                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_8;
-                        continue Label_0070_Outer;
-                        Label_0196:
-                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_6;
-                        continue Label_0070_Outer;
-                        Label_0182:
-                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_4;
-                        continue Label_0070_Outer;
+                        // switch([Lcom.strobel.decompiler.ast.Label;@65dc9d6f, actionID)
                         Label_0203:
                         statusCode = StatusCode.NRD_LOGIN_ACTIONID_7;
                         continue Label_0070_Outer;
@@ -104,12 +83,33 @@ public final class StatusUtils
                         statusCode = StatusCode.NRD_LOGIN_ACTIONID_12;
                         b = false;
                         continue Label_0070_Outer;
+                        Label_0152:
+                        statusCode = StatusCode.NRD_ERROR;
+                        continue Label_0070_Outer;
+                        Label_0189:
+                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_5;
+                        continue Label_0070_Outer;
+                        Label_0159:
+                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_1;
+                        continue Label_0070_Outer;
+                        Label_0224:
+                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_10;
+                        continue Label_0070_Outer;
+                        Label_0182:
+                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_4;
+                        continue Label_0070_Outer;
+                        Label_0196:
+                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_6;
+                        continue Label_0070_Outer;
+                        Label_0231:
+                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_11;
+                        continue Label_0070_Outer;
                         Label_0166:
                         statusCode = StatusCode.NRD_LOGIN_ACTIONID_2;
                         b = false;
                         continue Label_0070_Outer;
-                        Label_0224:
-                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_10;
+                        Label_0175:
+                        statusCode = StatusCode.NRD_LOGIN_ACTIONID_3;
                         continue Label_0070_Outer;
                         Label_0217:
                         statusCode = StatusCode.NRD_LOGIN_ACTIONID_9;

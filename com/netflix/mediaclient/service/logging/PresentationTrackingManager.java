@@ -7,6 +7,8 @@ package com.netflix.mediaclient.service.logging;
 import com.netflix.mediaclient.servicemgr.UiLocation;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebClientFactory;
+import com.netflix.mediaclient.util.ConnectivityUtils;
+import android.content.Intent;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebCallback;
 import com.netflix.mediaclient.service.logging.presentation.PresentationRequest;
 import com.netflix.mediaclient.util.data.DataRepository$DataLoadedCallback;
@@ -16,9 +18,10 @@ import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.data.DataRepository$Entry;
 import com.netflix.mediaclient.service.logging.presentation.PresentationEvent;
-import java.util.List;
+import java.util.ArrayList;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebClient;
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import com.netflix.mediaclient.util.data.DataRepository;
 import android.content.Context;
@@ -34,11 +37,13 @@ class PresentationTrackingManager implements PresentationTracking
     private DataRepository mDataRepository;
     private ScheduledExecutorService mExecutor;
     private LoggingAgent mOwner;
+    private final List<String> mPendingCachedLogPayloads;
     private PresentationTrackingManager$PresentationTrackingEventQueue mPresentationEventQueue;
     private PresentationWebClient mPresentationWebClient;
     private ServiceAgent$UserAgentInterface mUser;
     
     PresentationTrackingManager(final Context mContext, final LoggingAgent mOwner, final ServiceAgent$UserAgentInterface mUser) {
+        this.mPendingCachedLogPayloads = new ArrayList<String>();
         this.mOwner = mOwner;
         this.mContext = mContext;
         this.mUser = mUser;
@@ -48,11 +53,20 @@ class PresentationTrackingManager implements PresentationTracking
         if (array == null || array.length < 1) {
             Log.d("nf_presentation", "No saved events found");
         }
-        if (Log.isLoggable()) {
-            Log.d("nf_presentation", "Found " + array.length + " payloads waiting");
-        }
-        for (int length = array.length, i = 0; i < length; ++i) {
-            this.mExecutor.schedule(new PresentationTrackingManager$3(this, array[i].getKey()), this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
+        else {
+            if (Log.isLoggable()) {
+                Log.d("nf_presentation", "Found " + array.length + " payloads waiting");
+            }
+            for (int length = array.length, i = 0; i < length; ++i) {
+                final String key = array[i].getKey();
+                if (this.mPendingCachedLogPayloads.contains(key)) {
+                    Log.w("nf_presentation", "We are already trying to deliver %s deliveryRequestId, skip");
+                }
+                else {
+                    this.mExecutor.schedule(new PresentationTrackingManager$3(this, key), this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
+                    this.mPendingCachedLogPayloads.add(key);
+                }
+            }
         }
     }
     
@@ -82,6 +96,7 @@ class PresentationTrackingManager implements PresentationTracking
     
     private void removeSavedEvents(final String s) {
         try {
+            this.mPendingCachedLogPayloads.remove(s);
             this.mDataRepository.remove(s);
         }
         catch (Throwable t) {
@@ -116,7 +131,9 @@ class PresentationTrackingManager implements PresentationTracking
                 Log.d("nf_presentation", "Payload for presentation request " + string);
             }
             if (b) {
-                this.mPresentationWebClient.sendPresentationEvents(this.saveEvents(string), presentationRequest, new PresentationTrackingManager$PresentationWebCallbackImpl(this, string));
+                final String saveEvents = this.saveEvents(string);
+                this.mPendingCachedLogPayloads.add(saveEvents);
+                this.mPresentationWebClient.sendPresentationEvents(saveEvents, presentationRequest, new PresentationTrackingManager$PresentationWebCallbackImpl(this, string));
                 return;
             }
         }
@@ -135,6 +152,17 @@ class PresentationTrackingManager implements PresentationTracking
     
     void flush(final boolean b) {
         this.mPresentationEventQueue.flushEvents(b);
+    }
+    
+    public void handleConnectivityChange(final Intent intent) {
+        if (ConnectivityUtils.isConnectedOrConnecting(this.mContext)) {
+            Log.d("nf_presentation", "Device is connected, lets see if we need to deliver cached events...");
+            final DataRepository$Entry[] entries = this.mDataRepository.getEntries();
+            if (entries != null || entries.length > 0) {
+                Log.d("nf_presentation", "We found %d cached log entries, network is connected, lets try to deliver them");
+                this.deliverSavedPayloads(entries);
+            }
+        }
     }
     
     void init(final ScheduledExecutorService mExecutor) {

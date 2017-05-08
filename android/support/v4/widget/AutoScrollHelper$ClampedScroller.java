@@ -4,17 +4,6 @@
 
 package android.support.v4.widget;
 
-import android.support.v4.view.MotionEventCompat;
-import android.support.v4.view.ViewCompat;
-import android.view.MotionEvent;
-import android.os.SystemClock;
-import android.util.DisplayMetrics;
-import android.content.res.Resources;
-import android.view.animation.AccelerateInterpolator;
-import android.view.ViewConfiguration;
-import android.view.View;
-import android.view.animation.Interpolator;
-import android.view.View$OnTouchListener;
 import android.view.animation.AnimationUtils;
 
 class AutoScrollHelper$ClampedScroller
@@ -31,7 +20,7 @@ class AutoScrollHelper$ClampedScroller
     private float mTargetVelocityX;
     private float mTargetVelocityY;
     
-    public AutoScrollHelper$ClampedScroller() {
+    AutoScrollHelper$ClampedScroller() {
         this.mStartTime = Long.MIN_VALUE;
         this.mStopTime = -1L;
         this.mDeltaTime = 0L;
@@ -44,9 +33,9 @@ class AutoScrollHelper$ClampedScroller
             return 0.0f;
         }
         if (this.mStopTime < 0L || n < this.mStopTime) {
-            return constrain((n - this.mStartTime) / this.mRampUpDuration, 0.0f, 1.0f) * 0.5f;
+            return AutoScrollHelper.constrain((n - this.mStartTime) / this.mRampUpDuration, 0.0f, 1.0f) * 0.5f;
         }
-        return constrain((n - this.mStopTime) / this.mEffectiveRampDown, 0.0f, 1.0f) * this.mStopValue + (1.0f - this.mStopValue);
+        return AutoScrollHelper.constrain((n - this.mStopTime) / this.mEffectiveRampDown, 0.0f, 1.0f) * this.mStopValue + (1.0f - this.mStopValue);
     }
     
     private float interpolateValue(final float n) {
@@ -87,7 +76,7 @@ class AutoScrollHelper$ClampedScroller
     
     public void requestStop() {
         final long currentAnimationTimeMillis = AnimationUtils.currentAnimationTimeMillis();
-        this.mEffectiveRampDown = constrain((int)(currentAnimationTimeMillis - this.mStartTime), 0, this.mRampDownDuration);
+        this.mEffectiveRampDown = AutoScrollHelper.constrain((int)(currentAnimationTimeMillis - this.mStartTime), 0, this.mRampDownDuration);
         this.mStopValue = this.getValueAt(currentAnimationTimeMillis);
         this.mStopTime = currentAnimationTimeMillis;
     }

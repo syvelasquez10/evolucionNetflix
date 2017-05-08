@@ -5,8 +5,8 @@
 package com.netflix.mediaclient.service.player.subtitles;
 
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
-import com.netflix.mediaclient.service.player.PlayerAgent;
+import com.netflix.mediaclient.media.SubtitleUrl;
+import com.netflix.mediaclient.servicemgr.IPlayer;
 
 abstract class BaseImageSubtitleParser extends BaseSubtitleParser
 {
@@ -14,14 +14,10 @@ abstract class BaseImageSubtitleParser extends BaseSubtitleParser
     protected long mLastKnownPosition;
     protected boolean mUseCache;
     
-    public BaseImageSubtitleParser(final PlayerAgent playerAgent, final SubtitleUrl subtitleUrl, final long mLastKnownPosition, final SubtitleParser$DownloadFailedCallback subtitleParser$DownloadFailedCallback, final long n) {
-        super(playerAgent, subtitleUrl, subtitleParser$DownloadFailedCallback, n);
+    public BaseImageSubtitleParser(final IPlayer player, final SubtitleUrl subtitleUrl, final long mLastKnownPosition, final SubtitleParser$DownloadFailedCallback subtitleParser$DownloadFailedCallback, final long n) {
+        super(player, subtitleUrl, subtitleParser$DownloadFailedCallback, n);
         this.mUseCache = true;
         this.mLastKnownPosition = mLastKnownPosition;
-        if (Log.isLoggable()) {
-            Log.d("nf_subtitles", "Cache for playable id " + playerAgent.getCurrentPlayableId() + " and language " + playerAgent.getCurrentSubtitleTrack());
-        }
-        this.mKey = this.getCacheName();
     }
     
     protected void downloadNextRange(final int n) {
@@ -30,6 +26,8 @@ abstract class BaseImageSubtitleParser extends BaseSubtitleParser
     }
     
     protected abstract void downloadSegment(final int p0);
+    
+    protected abstract String initCache();
     
     protected void saveFileSafelyToCache(final String s, final byte[] array) {
         if (Log.isLoggable()) {

@@ -4,22 +4,8 @@
 
 package android.support.v4.app;
 
-import android.support.v4.util.SimpleArrayMap;
-import android.view.MenuItem;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.os.Parcelable;
+import android.content.IntentSender;
 import android.os.Bundle;
-import android.content.res.Configuration;
-import java.util.List;
-import java.util.ArrayList;
-import android.util.Log;
-import android.os.Build$VERSION;
-import android.util.AttributeSet;
-import android.content.res.Resources;
-import android.content.res.Resources$NotFoundException;
-import android.view.ViewGroup;
-import android.os.Handler;
 import android.content.Intent;
 import android.app.Activity;
 import android.view.Window;
@@ -100,6 +86,16 @@ class FragmentActivity$HostCallbacks extends FragmentHostCallback<FragmentActivi
     @Override
     public void onStartActivityFromFragment(final Fragment fragment, final Intent intent, final int n) {
         this.this$0.startActivityFromFragment(fragment, intent, n);
+    }
+    
+    @Override
+    public void onStartActivityFromFragment(final Fragment fragment, final Intent intent, final int n, final Bundle bundle) {
+        this.this$0.startActivityFromFragment(fragment, intent, n, bundle);
+    }
+    
+    @Override
+    public void onStartIntentSenderFromFragment(final Fragment fragment, final IntentSender intentSender, final int n, final Intent intent, final int n2, final int n3, final int n4, final Bundle bundle) {
+        this.this$0.startIntentSenderFromFragment(fragment, intentSender, n, intent, n2, n3, n4, bundle);
     }
     
     @Override

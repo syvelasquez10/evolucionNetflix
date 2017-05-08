@@ -45,6 +45,8 @@ public interface Playable
     
     boolean isAutoPlayEnabled();
     
+    boolean isAvailableOffline();
+    
     boolean isAvailableToStream();
     
     boolean isExemptFromInterrupterLimit();

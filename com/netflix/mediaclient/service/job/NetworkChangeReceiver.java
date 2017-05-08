@@ -15,7 +15,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver
     
     public void onReceive(final Context context, final Intent intent) {
         if (intent.getAction() != null && intent.getAction().equals("android.net.conn.CONNECTIVITY_CHANGE")) {
-            if (context.getResources().getBoolean(2131558405)) {
+            if (context.getResources().getBoolean(2131558404)) {
                 NetflixJobSchedulerPreL.onNetworkConnectivityChanged(context);
             }
             else if (Log.isLoggable()) {

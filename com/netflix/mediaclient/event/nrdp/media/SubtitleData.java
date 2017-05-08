@@ -7,6 +7,7 @@ package com.netflix.mediaclient.event.nrdp.media;
 import org.json.JSONArray;
 import com.netflix.mediaclient.Log;
 import org.json.JSONObject;
+import com.netflix.mediaclient.media.SubtitleUrl;
 
 public class SubtitleData extends BaseMediaEvent
 {

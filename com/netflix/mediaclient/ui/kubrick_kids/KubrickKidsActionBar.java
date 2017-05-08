@@ -18,7 +18,7 @@ public class KubrickKidsActionBar extends NetflixActionBar
     
     @Override
     protected int getLayoutId() {
-        return 2130903066;
+        return 2130903068;
     }
     
     @Override
@@ -26,10 +26,10 @@ public class KubrickKidsActionBar extends NetflixActionBar
         final Toolbar toolbar = this.toolbar;
         int navigationIcon;
         if (b) {
-            navigationIcon = 2130837717;
+            navigationIcon = 2130837763;
         }
         else {
-            navigationIcon = 2130837716;
+            navigationIcon = 2130837762;
         }
         toolbar.setNavigationIcon(navigationIcon);
     }

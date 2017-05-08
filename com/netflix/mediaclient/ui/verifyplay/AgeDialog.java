@@ -13,7 +13,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.ViewGroup;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.widget.Button;
@@ -26,7 +26,7 @@ import android.os.Bundle;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.widget.ProgressBar;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.widget.TextView;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 
@@ -39,6 +39,7 @@ public class AgeDialog extends NetflixDialogFrag
     private static final String TAG = "nf_age";
     private boolean mActive;
     private TextView mAgeMessage;
+    private PinAndAgeVerifier$PinAndAgeVerifyCallback mCallback;
     private AlertDialog mDialog;
     private int mDialogWidthInDp;
     private boolean mInProgress;
@@ -46,14 +47,24 @@ public class AgeDialog extends NetflixDialogFrag
     private ProgressBar mSpinner;
     private PlayVerifierVault mVault;
     
+    private void ageVerifyDone() {
+        this.showProgress(this.mActive = false);
+    }
+    
     protected static AgeDialog createAgeDialog(final PlayVerifierVault playVerifierVault) {
         Log.d("nf_age", "creating dialog");
         final AgeDialog ageDialog = new AgeDialog();
         final Bundle arguments = new Bundle();
         arguments.putParcelable(PlayVerifierVault.NAME, (Parcelable)playVerifierVault);
         ageDialog.setArguments(arguments);
-        ageDialog.setStyle(1, 2131427452);
+        ageDialog.setStyle(1, 2131427465);
         return ageDialog;
+    }
+    
+    private void dismissDialog() {
+        Log.d("nf_age", "dismissing age dialog");
+        this.getDialog().dismiss();
+        this.mActive = false;
     }
     
     private void notifyCallerAgeCancelled() {
@@ -62,12 +73,23 @@ public class AgeDialog extends NetflixDialogFrag
             Log.d("nf_age", "mValut is null - cannot start playback");
         }
         else {
-            if (PlayVerifierVault$PlayInvokedFrom.MDX.getValue().equals(this.mVault.getInvokeLocation()) && this.getActivity() != null) {
+            if (PlayVerifierVault$RequestedBy.MDX.getValue().equals(this.mVault.getInvokeLocation()) && this.getActivity() != null) {
                 this.getActivity().startService(MdxAgent$Utils.createIntent((Context)this.getActivity(), "com.netflix.mediaclient.intent.action.MDX_PINCANCELLED", this.mVault.getUuid()));
                 return;
             }
-            if (PlayVerifierVault$PlayInvokedFrom.PLAYER.getValue().equals(this.mVault.getInvokeLocation())) {
-                ((NetflixActivity)this.getActivity()).onPlayVerified(false, this.mVault);
+            if (PlayVerifierVault$RequestedBy.PLAYER.getValue().equals(this.mVault.getInvokeLocation())) {
+                if (this.mCallback != null) {
+                    this.mCallback.onPlayVerified(false, this.mVault);
+                    return;
+                }
+                Log.d("nf_age", "notifyCallerAgeCancelled PLAYER callback is null");
+            }
+            else if (PlayVerifierVault$RequestedBy.OFFLINE_DOWNLOAD.getValue().equals(this.mVault.getInvokeLocation())) {
+                if (this.mCallback != null) {
+                    this.mCallback.onOfflineDownloadPinAndAgeVerified(false, this.mVault);
+                    return;
+                }
+                Log.d("nf_age", "notifyCallerAgeCancelled OFFLINE_DOWNLOAD callback is null");
             }
         }
     }
@@ -84,6 +106,33 @@ public class AgeDialog extends NetflixDialogFrag
         }
     }
     
+    private void showProgress(final boolean mInProgress) {
+        boolean b = false;
+        this.mInProgress = mInProgress;
+        final ProgressBar mSpinner = this.mSpinner;
+        int visibility;
+        if (mInProgress) {
+            visibility = 0;
+        }
+        else {
+            visibility = 8;
+        }
+        mSpinner.setVisibility(visibility);
+        final TextView mAgeMessage = this.mAgeMessage;
+        int text;
+        if (mInProgress) {
+            text = 2131230978;
+        }
+        else {
+            text = 2131230980;
+        }
+        mAgeMessage.setText(text);
+        if (!mInProgress) {
+            b = true;
+        }
+        this.showVerifyButton(b);
+    }
+    
     private void showVerifyButton(final boolean b) {
         final Button button = this.mDialog.getButton(-1);
         if (button != null) {
@@ -96,16 +145,6 @@ public class AgeDialog extends NetflixDialogFrag
             }
             button.setVisibility(visibility);
         }
-    }
-    
-    public void ageVerifyDone() {
-        this.showProgress(this.mActive = false);
-    }
-    
-    protected void dismissDialog() {
-        Log.d("nf_age", "dismissing age dialog");
-        this.getDialog().dismiss();
-        this.mActive = false;
     }
     
     public void onCancel(final DialogInterface dialogInterface) {
@@ -125,9 +164,9 @@ public class AgeDialog extends NetflixDialogFrag
         }
         this.mVault = (PlayVerifierVault)this.getArguments().getParcelable(PlayVerifierVault.NAME);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903069, (ViewGroup)null);
-        this.mSpinner = (ProgressBar)inflate.findViewById(2131689606);
-        this.mAgeMessage = (TextView)inflate.findViewById(2131689605);
+        final View inflate = this.getActivity().getLayoutInflater().inflate(2130903071, (ViewGroup)null);
+        this.mSpinner = (ProgressBar)inflate.findViewById(2131689618);
+        this.mAgeMessage = (TextView)inflate.findViewById(2131689617);
         int mDialogWidthInDp;
         if (DeviceUtils.isTabletByContext((Context)this.getActivity())) {
             mDialogWidthInDp = 400;
@@ -139,14 +178,14 @@ public class AgeDialog extends NetflixDialogFrag
         alertDialog$Builder.setView(inflate);
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);
-        create.setButton(-2, (CharSequence)this.getString(2131230993), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnCancel(this, null));
-        create.setButton(-1, (CharSequence)this.getString(2131230964), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnVerify(this, null));
+        create.setButton(-2, this.getString(2131231008), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnCancel(this, null));
+        create.setButton(-1, this.getString(2131230979), (DialogInterface$OnClickListener)new AgeDialog$AgeDialogOnVerify(this, null));
         this.mActive = true;
         this.mDialog = create;
         if (!this.mRestored) {
             ApmLogUtils.reportUiModalViewImpressionEvent((Context)this.getActivity(), IClientLogging$ModalView.ageVerificationDialog);
         }
-        return (Dialog)create;
+        return create;
     }
     
     @Override
@@ -178,30 +217,7 @@ public class AgeDialog extends NetflixDialogFrag
         }
     }
     
-    public void showProgress(final boolean mInProgress) {
-        boolean b = false;
-        this.mInProgress = mInProgress;
-        final ProgressBar mSpinner = this.mSpinner;
-        int visibility;
-        if (mInProgress) {
-            visibility = 0;
-        }
-        else {
-            visibility = 8;
-        }
-        mSpinner.setVisibility(visibility);
-        final TextView mAgeMessage = this.mAgeMessage;
-        int text;
-        if (mInProgress) {
-            text = 2131230963;
-        }
-        else {
-            text = 2131230965;
-        }
-        mAgeMessage.setText(text);
-        if (!mInProgress) {
-            b = true;
-        }
-        this.showVerifyButton(b);
+    public void setAgeVerifierCallback(final PinAndAgeVerifier$PinAndAgeVerifyCallback mCallback) {
+        this.mCallback = mCallback;
     }
 }

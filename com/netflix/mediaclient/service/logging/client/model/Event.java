@@ -120,10 +120,9 @@ public abstract class Event implements JsonSerializer
     }
     
     protected JSONObject getData() {
-        JSONObject jsonObject = null;
+        final JSONObject jsonObject = new JSONObject();
         final JSONObject customData = this.getCustomData();
         if (customData != null) {
-            jsonObject = new JSONObject();
             jsonObject.put("custom", (Object)customData);
         }
         return jsonObject;

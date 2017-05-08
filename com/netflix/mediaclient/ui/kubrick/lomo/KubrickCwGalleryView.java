@@ -62,16 +62,16 @@ public class KubrickCwGalleryView extends FrameLayout implements VideoViewGroup$
     
     private void init() {
         this.setFocusable(true);
-        this.setBackgroundResource(2130837933);
+        this.setBackgroundResource(2130837990);
         this.playContext = PlayContext.EMPTY_CONTEXT;
         final NetflixActivity netflixActivity = (NetflixActivity)this.getContext();
-        netflixActivity.getLayoutInflater().inflate(2130903143, (ViewGroup)this);
-        this.title = (TextView)this.findViewById(2131689737);
-        this.seasonInfo = (TextView)this.findViewById(2131689866);
-        this.img = (AdvancedImageView)this.findViewById(2131689734);
-        this.progress = (ProgressBar)this.findViewById(2131689736);
-        this.infoIcon = this.findViewById(2131689738);
-        this.playIcon = this.findViewById(2131689865);
+        netflixActivity.getLayoutInflater().inflate(2130903153, (ViewGroup)this);
+        this.title = (TextView)this.findViewById(2131689749);
+        this.seasonInfo = (TextView)this.findViewById(2131689893);
+        this.img = (AdvancedImageView)this.findViewById(2131689746);
+        this.progress = (ProgressBar)this.findViewById(2131689748);
+        this.infoIcon = this.findViewById(2131689750);
+        this.playIcon = this.findViewById(2131689892);
         this.clicker = new VideoDetailsClickListener(netflixActivity, this);
     }
     
@@ -101,10 +101,10 @@ public class KubrickCwGalleryView extends FrameLayout implements VideoViewGroup$
         }
         this.playContext = new PlayContextImp(trackable, n);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131230893), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131230897), cwVideo.getTitle());
         this.title.setText((CharSequence)cwVideo.getTitle());
         if (VideoType.SHOW.equals(cwVideo.getType())) {
-            this.seasonInfo.setText((CharSequence)this.getContext().getString(2131231180, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
+            this.seasonInfo.setText((CharSequence)this.getContext().getString(2131231228, new Object[] { cwVideo.getSeasonAbbrSeqLabel(), cwVideo.getEpisodeNumber() }));
         }
         else {
             this.seasonInfo.setText((CharSequence)"");
@@ -130,7 +130,7 @@ public class KubrickCwGalleryView extends FrameLayout implements VideoViewGroup$
         }
         this.progress.setProgress(progress);
         this.img.setOnClickListener((View$OnClickListener)new KubrickCwGalleryView$1(this, cwVideo));
-        this.infoIcon.setContentDescription((CharSequence)String.format(this.getResources().getString(2131231048), cwVideo.getTitle()));
+        this.infoIcon.setContentDescription((CharSequence)String.format(this.getResources().getString(2131231063), cwVideo.getTitle()));
         this.clicker.update(this.infoIcon, cwVideo, null);
         if (n == 0) {
             n = n2;
@@ -141,15 +141,15 @@ public class KubrickCwGalleryView extends FrameLayout implements VideoViewGroup$
         final Resources resources = this.getResources();
         int n4;
         if (n != 0) {
-            n4 = 2131362175;
+            n4 = 2131362204;
         }
         else {
-            n4 = 2131362176;
+            n4 = 2131362205;
         }
         final int dimensionPixelSize = resources.getDimensionPixelSize(n4);
         final FrameLayout$LayoutParams layoutParams = new FrameLayout$LayoutParams(dimensionPixelSize, dimensionPixelSize, 17);
         if (n == 0) {
-            layoutParams.setMargins(0, 0, 0, this.getResources().getDimensionPixelSize(2131362066));
+            layoutParams.setMargins(0, 0, 0, this.getResources().getDimensionPixelSize(2131362082));
         }
         this.playIcon.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
     }

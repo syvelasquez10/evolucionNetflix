@@ -64,8 +64,8 @@ class MementoFrag$ActorDetailsView extends RelativeLayout
     
     private void updateImage(final int n) {
         final FalkorPerson falkorPerson = this.this$0.actors.get(n);
-        final FocalPointImageView focalPointImageView = (FocalPointImageView)this.findViewById(2131689944);
-        final View viewById = this.findViewById(2131689945);
+        final FocalPointImageView focalPointImageView = (FocalPointImageView)this.findViewById(2131689972);
+        final View viewById = this.findViewById(2131689973);
         if (focalPointImageView != null) {
             final FalkorActorStill still = this.this$0.getStill(this.this$0.videoId, falkorPerson.detail.getId());
             focalPointImageView.setImageDrawable(null);
@@ -80,7 +80,7 @@ class MementoFrag$ActorDetailsView extends RelativeLayout
                 this.this$0.tintIndex = -1;
             }
             else {
-                focalPointImageView.setImageResource(2130837576);
+                focalPointImageView.setImageResource(2130837597);
                 focalPointImageView.setCutomCroppingEnabled(false);
                 this.this$0.tintIndex++;
                 if (this.this$0.tintIndex >= this.this$0.tintColors.length) {
@@ -99,7 +99,7 @@ class MementoFrag$ActorDetailsView extends RelativeLayout
     }
     
     protected int getlayoutId() {
-        return 2130903184;
+        return 2130903194;
     }
     
     void updateDetails(final int n) {
@@ -109,7 +109,7 @@ class MementoFrag$ActorDetailsView extends RelativeLayout
     
     void updateTitle(final int n) {
         final FalkorPerson falkorPerson = this.this$0.actors.get(n);
-        final TextView textView = (TextView)this.findViewById(2131689948);
+        final TextView textView = (TextView)this.findViewById(2131689976);
         if (textView != null) {
             textView.setText((CharSequence)falkorPerson.detail.name);
         }

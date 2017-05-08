@@ -4,8 +4,11 @@
 
 package com.netflix.mediaclient.service;
 
+import android.app.Notification;
 import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
+import com.netflix.mediaclient.media.BookmarkStore;
+import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
@@ -14,10 +17,12 @@ import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
 import com.netflix.mediaclient.servicemgr.IPushNotification;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.servicemgr.NrdpComponent;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.servicemgr.IMdx;
+import com.netflix.mediaclient.servicemgr.IMSLClient;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
@@ -32,6 +37,7 @@ import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.service.user.UserAgent$UserAgentCallback;
+import com.netflix.mediaclient.servicemgr.IMSLClient$NetworkRequestInspector;
 import android.os.SystemClock;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
@@ -42,7 +48,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import java.io.Serializable;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.ThreadUtils;
-import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
@@ -50,6 +55,7 @@ import android.app.PendingIntent;
 import com.netflix.mediaclient.Log;
 import android.app.AlarmManager;
 import android.content.Intent;
+import java.util.HashSet;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.HashMap;
 import com.netflix.mediaclient.service.voip.WhistleVoipAgent;
@@ -57,11 +63,16 @@ import com.netflix.mediaclient.service.user.UserAgent;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
 import com.netflix.mediaclient.service.pushnotification.PushNotificationAgent;
 import com.netflix.mediaclient.service.preapp.PreAppAgent;
+import java.util.Set;
 import com.netflix.mediaclient.service.player.PlayerAgent;
+import com.netflix.mediaclient.service.pdslogging.PdsAgent;
+import com.netflix.mediaclient.service.player.exoplayback.ExoPlayback;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgent;
 import com.netflix.mediaclient.service.job.NetflixJobScheduler;
 import com.netflix.mediaclient.service.job.NetflixJobExecutor;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import java.util.Map;
+import com.netflix.mediaclient.service.msl.MSLAgent;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.android.app.Status;
@@ -89,6 +100,7 @@ public final class NetflixService extends Service implements INetflixService
     private static final long SERVICE_INIT_TIMEOUT_MS = 90000L;
     private static final long SERVICE_KILL_DELAY_MS = 28800000L;
     private static final String TAG = "NetflixService";
+    private static final boolean TEST_DELAY_INIT_BY_5_SECONDS = false;
     private static final long WIDGET_CONTENT_REFRESH_DELAY_MS = 172800000L;
     private static boolean fetchErrorsEnabled;
     private static boolean isCreated;
@@ -112,14 +124,21 @@ public final class NetflixService extends Service implements INetflixService
     private boolean mMdxEnabled;
     private final BroadcastReceiver mMdxReceiver;
     private final BroadcastReceiver mMdxShowPlayerIntent;
+    private MSLAgent mMslAgent;
     private final Map<NetflixJob$NetflixJobId, NetflixJobExecutor> mNetflixJobMap;
     private NetflixJobScheduler mNetflixJobScheduler;
+    private NetflixPowerManager mNetflixPowerManager;
     private final BroadcastReceiver mNetworkChangeReceiver;
     private NrdController mNrdController;
+    private OfflineAgent mOfflineAgent;
+    private ExoPlayback mOfflinePlayerAgent;
+    private PdsAgent mPdsAgent;
     private PlayerAgent mPlayerAgent;
+    private final Set<Integer> mPostedNotificationSet;
     private PreAppAgent mPreAppAgent;
     private PushNotificationAgent mPushAgent;
     private ResourceFetcher mResourceFetcher;
+    private long mServiceStartedTimeInMs;
     private UserAgent mUserAgent;
     private WhistleVoipAgent mVoipAgent;
     
@@ -134,12 +153,13 @@ public final class NetflixService extends Service implements INetflixService
         this.mInitStatusCode = CommonStatus.UNKNOWN;
         this.mInitCallbacks = new ArrayList<NetflixService$InitCallback>();
         this.mMdxEnabled = false;
-        this.agentContext = new NetflixService$3(this);
+        this.mPostedNotificationSet = new HashSet<Integer>();
+        this.agentContext = new NetflixService$4(this);
         this.mBinder = (IBinder)new NetflixService$LocalBinder(this);
-        this.initTimeoutRunnable = new NetflixService$4(this);
-        this.mMdxReceiver = new NetflixService$5(this);
-        this.mMdxShowPlayerIntent = new NetflixService$6(this);
-        this.mNetworkChangeReceiver = new NetflixService$7(this);
+        this.initTimeoutRunnable = new NetflixService$5(this);
+        this.mMdxReceiver = new NetflixService$6(this);
+        this.mMdxShowPlayerIntent = new NetflixService$7(this);
+        this.mNetworkChangeReceiver = new NetflixService$8(this);
     }
     
     public static void TEST_ONLY_setJobExecutionMonitor(final NetflixService$JobExecutionMonitor netflixService$JobExecutionMonitor) {
@@ -184,6 +204,15 @@ public final class NetflixService extends Service implements INetflixService
                 return;
             }
             this.cancelPendingSelfStop();
+            if (intent.hasCategory("com.netflix.mediaclient.intent.category.offline")) {
+                Log.d("NetflixService", "Offline command intent ");
+                if (this.mOfflineAgent.isReady() && this.mOfflineAgent.isOfflineFeatureEnabled()) {
+                    this.mOfflineAgent.getCommandHandler().handleCommand(intent);
+                }
+                else {
+                    Log.e("NetflixService", "received a command while offline agent is not ready");
+                }
+            }
             if (intent.hasCategory("com.netflix.mediaclient.intent.category.MDX") && this.mMdxEnabled) {
                 Log.d("NetflixService", "MDX command intent ");
                 this.mMdxAgent.handleCommand(intent);
@@ -228,18 +257,13 @@ public final class NetflixService extends Service implements INetflixService
     }
     
     private void init() {
-        final NetflixService$1 netflixService$1 = new NetflixService$1(this);
-        if (!ConnectivityUtils.isConnectedOrConnecting((Context)this)) {
-            this.mInitStatusCode = CommonStatus.NO_CONNECTIVITY;
-            this.initCompleted();
-            Log.i("NetflixService", "Stopping service due to lack of network connectivity...");
-            this.stopSelf();
-            return;
+        synchronized (this) {
+            final NetflixService$2 netflixService$2 = new NetflixService$2(this, new NetflixService$1(this));
+            Log.i("NetflixService", "NetflixService initing...");
+            this.mConfigurationAgent.init(this.agentContext, netflixService$2);
+            Log.i("NetflixService", "Service has " + 90000L / 1000L + " seconds to init or else we fail...");
+            this.handler.postDelayed(this.initTimeoutRunnable, 90000L);
         }
-        Log.i("NetflixService", "NetflixService initing...");
-        this.mConfigurationAgent.init(this.agentContext, netflixService$1);
-        Log.i("NetflixService", "Service has " + 90000L / 1000L + " seconds to init or else we fail...");
-        this.handler.postDelayed(this.initTimeoutRunnable, 90000L);
     }
     
     private void initCompleted() {
@@ -374,6 +398,14 @@ public final class NetflixService extends Service implements INetflixService
         alarmManager.set(2, n2, this.createWidgetContentRefreshPendingIntent());
     }
     
+    public void addNetworkRequestInspector(final IMSLClient$NetworkRequestInspector imslClient$NetworkRequestInspector, final Class[] array) {
+        if (this.mMslAgent == null) {
+            Log.e("NetflixService", "MSLAgent unavailable. Unable to add a network request inspector");
+            return;
+        }
+        this.mMslAgent.addNetworkRequestInspector(imslClient$NetworkRequestInspector, array);
+    }
+    
     public void addProfile(final String s, final boolean b, final String s2, final int n, final int n2) {
         this.mUserAgent.addWebUserProfile(s, b, s2, new NetflixService$UserAgentClientCallback(this, n, n2));
     }
@@ -498,8 +530,16 @@ public final class NetflixService extends Service implements INetflixService
         return this.mNetflixJobScheduler;
     }
     
+    public IMSLClient getMSLClient() {
+        return this.mMslAgent;
+    }
+    
     public IMdx getMdx() {
         return this.mMdxAgent;
+    }
+    
+    public NetflixPowerManager getNetflixPowerManager() {
+        return this.mNetflixPowerManager;
     }
     
     public IPlayer getNflxPlayer() {
@@ -523,16 +563,32 @@ public final class NetflixService extends Service implements INetflixService
         return null;
     }
     
+    public OfflineAgentInterface getOfflineAgent() {
+        return this.mOfflineAgent;
+    }
+    
+    public IPlayer getOfflinePlayer() {
+        return this.mOfflinePlayerAgent;
+    }
+    
     public IPushNotification getPushNotification() {
         return this.mPushAgent;
     }
     
+    public ResourceFetcher getResourceFetcher() {
+        return this.mResourceFetcher;
+    }
+    
     public SignUpParams getSignUpParams() {
-        return new NetflixService$2(this);
+        return new NetflixService$3(this);
     }
     
     public String getSoftwareVersion() {
         return this.mConfigurationAgent.getSoftwareVersion();
+    }
+    
+    public long getStartedTimeInMs() {
+        return this.mServiceStartedTimeInMs;
     }
     
     public String getUserEmail() {
@@ -602,9 +658,11 @@ public final class NetflixService extends Service implements INetflixService
         PerformanceProfiler.getInstance().startSession(Sessions.NETFLIX_SERVICE_LOADED, null);
         super.onCreate();
         NetflixService.isCreated = true;
+        this.mServiceStartedTimeInMs = System.currentTimeMillis();
         this.handler = new Handler();
         this.mNetflixJobScheduler = NetflixJobSchedulerSelector.createNetflixJobScheduler(this.getApplicationContext());
         this.mConfigurationAgent = new ConfigurationAgent();
+        this.mMslAgent = new MSLAgent();
         this.mNrdController = new NrdController();
         this.mUserAgent = new UserAgent();
         this.mResourceFetcher = new ResourceFetcher();
@@ -617,6 +675,11 @@ public final class NetflixService extends Service implements INetflixService
         this.mPreAppAgent = new PreAppAgent();
         this.mErrorAgent = new ErrorAgent();
         this.mVoipAgent = new WhistleVoipAgent(this.getApplicationContext(), this.mUserAgent);
+        this.mOfflineAgent = new OfflineAgent(this.mConfigurationAgent, this.mUserAgent);
+        this.mOfflinePlayerAgent = new ExoPlayback(this.getApplicationContext(), this.getHandler(), this.mOfflineAgent, this.mClientLoggingAgent);
+        this.mPdsAgent = new PdsAgent(this.mOfflineAgent);
+        this.mNetflixPowerManager = new NetflixPowerManager(this.getApplicationContext());
+        BookmarkStore.getInstance().init(this.getApplicationContext());
         this.init();
     }
     
@@ -664,6 +727,15 @@ public final class NetflixService extends Service implements INetflixService
         if (this.mVoipAgent != null) {
             this.mVoipAgent.destroy();
         }
+        if (this.mOfflineAgent != null) {
+            this.mOfflineAgent.destroy();
+        }
+        if (this.mMslAgent != null) {
+            this.mMslAgent.destroy();
+        }
+        if (this.mNetflixPowerManager != null) {
+            this.mNetflixPowerManager.forceReleasePartialWakeLock();
+        }
         this.mNetflixJobScheduler = null;
         this.mNetflixJobMap.clear();
         NetflixService.isCreated = false;
@@ -703,6 +775,7 @@ public final class NetflixService extends Service implements INetflixService
                 Log.d("NetflixService", "onTrimMemory: level - " + n);
             }
             this.mFalkorAgent.serializeFalkorMetadataAsync();
+            this.mOfflineAgent.onTrimMemory(n);
         }
     }
     
@@ -772,6 +845,28 @@ public final class NetflixService extends Service implements INetflixService
     
     public void removeProfile(final String s, final int n, final int n2) {
         this.mUserAgent.removeWebUserProfile(s, new NetflixService$UserAgentClientCallback(this, n, n2));
+    }
+    
+    public void requestBackgroundForNotification(final int n, final boolean b) {
+        ThreadUtils.assertOnMain();
+        this.mPostedNotificationSet.remove(n);
+        if (this.mPostedNotificationSet.size() == 0) {
+            if (Log.isLoggable()) {
+                Log.i("NetflixService", "stopForeground removeNotification=" + b);
+            }
+            this.stopForeground(b);
+        }
+    }
+    
+    public void requestForegroundForNotification(final int n, final Notification notification) {
+        ThreadUtils.assertOnMain();
+        if (!this.mPostedNotificationSet.contains(n)) {
+            this.mPostedNotificationSet.add(n);
+            if (Log.isLoggable()) {
+                Log.i("NetflixService", "startForeground notificationId=" + n);
+            }
+            this.startForeground(n, notification);
+        }
     }
     
     public void requestServiceShutdownAfterDelay(final long n) {

@@ -4,18 +4,20 @@
 
 package com.netflix.mediaclient.ui.common;
 
+import com.netflix.mediaclient.util.net.CronetHttpURLConnectionFactory;
 import com.netflix.mediaclient.util.PreferenceUtils;
+import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
-import android.content.Context;
 import com.netflix.mediaclient.util.PermissionUtils;
 import android.os.Handler;
 import android.os.Debug;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.home.HomeActivity;
+import android.content.Context;
+import com.netflix.mediaclient.android.debug.DebugOverlay;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.app.Activity;
-import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
+import android.content.BroadcastReceiver;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -28,7 +30,7 @@ class DebugMenuItems$18 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        PerformanceProfiler.getInstance().dumpToDisk(this.this$0.activity);
+        this.this$0.activity.unregisterReceiver((BroadcastReceiver)null);
         return true;
     }
 }

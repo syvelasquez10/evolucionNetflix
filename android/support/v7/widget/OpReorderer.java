@@ -17,7 +17,7 @@ class OpReorderer
     private int getLastMoveOutOfOrder(final List<AdapterHelper$UpdateOp> list) {
         int n = 0;
         for (int i = list.size() - 1; i >= 0; --i) {
-            if (list.get(i).cmd == 3) {
+            if (list.get(i).cmd == 8) {
                 if (n != 0) {
                     return i;
                 }
@@ -54,13 +54,13 @@ class OpReorderer
         final AdapterHelper$UpdateOp adapterHelper$UpdateOp2 = list.get(n2);
         switch (adapterHelper$UpdateOp2.cmd) {
             default: {}
-            case 1: {
+            case 2: {
                 this.swapMoveRemove(list, n, adapterHelper$UpdateOp, n2, adapterHelper$UpdateOp2);
             }
-            case 0: {
+            case 1: {
                 this.swapMoveAdd(list, n, adapterHelper$UpdateOp, n2, adapterHelper$UpdateOp2);
             }
-            case 2: {
+            case 4: {
                 this.swapMoveUpdate(list, n, adapterHelper$UpdateOp, n2, adapterHelper$UpdateOp2);
             }
         }
@@ -100,7 +100,7 @@ class OpReorderer
         }
         else if (adapterHelper$UpdateOp.itemCount < adapterHelper$UpdateOp2.positionStart + adapterHelper$UpdateOp2.itemCount) {
             --adapterHelper$UpdateOp2.itemCount;
-            adapterHelper$UpdateOp.cmd = 1;
+            adapterHelper$UpdateOp.cmd = 2;
             adapterHelper$UpdateOp.itemCount = 1;
             if (adapterHelper$UpdateOp2.itemCount == 0) {
                 list.remove(n2);
@@ -114,7 +114,7 @@ class OpReorderer
             obtainUpdateOp = null;
         }
         else if (adapterHelper$UpdateOp.positionStart < adapterHelper$UpdateOp2.positionStart + adapterHelper$UpdateOp2.itemCount) {
-            obtainUpdateOp = this.mCallback.obtainUpdateOp(1, adapterHelper$UpdateOp.positionStart + 1, adapterHelper$UpdateOp2.positionStart + adapterHelper$UpdateOp2.itemCount - adapterHelper$UpdateOp.positionStart, null);
+            obtainUpdateOp = this.mCallback.obtainUpdateOp(2, adapterHelper$UpdateOp.positionStart + 1, adapterHelper$UpdateOp2.positionStart + adapterHelper$UpdateOp2.itemCount - adapterHelper$UpdateOp.positionStart, null);
             adapterHelper$UpdateOp2.itemCount = adapterHelper$UpdateOp.positionStart - adapterHelper$UpdateOp2.positionStart;
         }
         else {
@@ -180,7 +180,7 @@ class OpReorderer
         }
         else if (adapterHelper$UpdateOp.itemCount < adapterHelper$UpdateOp2.positionStart + adapterHelper$UpdateOp2.itemCount) {
             --adapterHelper$UpdateOp2.itemCount;
-            obtainUpdateOp2 = this.mCallback.obtainUpdateOp(2, adapterHelper$UpdateOp.positionStart, 1, adapterHelper$UpdateOp2.payload);
+            obtainUpdateOp2 = this.mCallback.obtainUpdateOp(4, adapterHelper$UpdateOp.positionStart, 1, adapterHelper$UpdateOp2.payload);
         }
         else {
             obtainUpdateOp2 = null;
@@ -190,7 +190,7 @@ class OpReorderer
         }
         else if (adapterHelper$UpdateOp.positionStart < adapterHelper$UpdateOp2.positionStart + adapterHelper$UpdateOp2.itemCount) {
             final int n3 = adapterHelper$UpdateOp2.positionStart + adapterHelper$UpdateOp2.itemCount - adapterHelper$UpdateOp.positionStart;
-            obtainUpdateOp = this.mCallback.obtainUpdateOp(2, adapterHelper$UpdateOp.positionStart + 1, n3, adapterHelper$UpdateOp2.payload);
+            obtainUpdateOp = this.mCallback.obtainUpdateOp(4, adapterHelper$UpdateOp.positionStart + 1, n3, adapterHelper$UpdateOp2.payload);
             adapterHelper$UpdateOp2.itemCount -= n3;
         }
         list.set(n2, adapterHelper$UpdateOp);

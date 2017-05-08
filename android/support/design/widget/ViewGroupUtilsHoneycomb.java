@@ -13,14 +13,12 @@ import android.graphics.Matrix;
 
 class ViewGroupUtilsHoneycomb
 {
-    private static final Matrix IDENTITY;
     private static final ThreadLocal<Matrix> sMatrix;
     private static final ThreadLocal<RectF> sRectF;
     
     static {
         sMatrix = new ThreadLocal<Matrix>();
         sRectF = new ThreadLocal<RectF>();
-        IDENTITY = new Matrix();
     }
     
     static void offsetDescendantMatrix(final ViewParent viewParent, final View view, final Matrix matrix) {
@@ -43,12 +41,13 @@ class ViewGroupUtilsHoneycomb
             ViewGroupUtilsHoneycomb.sMatrix.set(matrix);
         }
         else {
-            matrix.set(ViewGroupUtilsHoneycomb.IDENTITY);
+            matrix.reset();
         }
         offsetDescendantMatrix((ViewParent)viewGroup, view, matrix);
         RectF rectF;
         if ((rectF = ViewGroupUtilsHoneycomb.sRectF.get()) == null) {
             rectF = new RectF();
+            ViewGroupUtilsHoneycomb.sRectF.set(rectF);
         }
         rectF.set(rect);
         matrix.mapRect(rectF);

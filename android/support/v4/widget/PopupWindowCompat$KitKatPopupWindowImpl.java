@@ -7,7 +7,7 @@ package android.support.v4.widget;
 import android.view.View;
 import android.widget.PopupWindow;
 
-class PopupWindowCompat$KitKatPopupWindowImpl extends PopupWindowCompat$GingerbreadPopupWindowImpl
+class PopupWindowCompat$KitKatPopupWindowImpl extends PopupWindowCompat$BasePopupWindowImpl
 {
     @Override
     public void showAsDropDown(final PopupWindow popupWindow, final View view, final int n, final int n2, final int n3) {

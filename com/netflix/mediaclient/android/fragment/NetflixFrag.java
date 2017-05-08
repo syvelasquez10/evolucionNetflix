@@ -9,6 +9,7 @@ import com.netflix.mediaclient.android.app.Status;
 import android.os.Bundle;
 import com.netflix.mediaclient.Log;
 import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -32,7 +33,7 @@ public abstract class NetflixFrag extends Fragment implements LoadingStatus, Man
     }
     
     public boolean isActivityValid() {
-        return !AndroidUtils.isActivityFinishedOrDestroyed(this.getActivity());
+        return !AndroidUtils.isActivityFinishedOrDestroyed((Context)this.getActivity());
     }
     
     protected boolean isDestroyed() {

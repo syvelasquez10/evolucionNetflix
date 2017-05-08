@@ -4,10 +4,14 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import android.app.Notification;
 import com.netflix.mediaclient.service.job.NetflixJobExecutor;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
+import com.netflix.mediaclient.service.NetflixPowerManager;
 import com.netflix.mediaclient.service.job.NetflixJobScheduler;
 import android.os.Handler;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
@@ -24,6 +28,8 @@ public interface INetflixService
     public static final String INTENT_CATEGORY_NETFLIX_SERVICE = "com.netflix.mediaclient.intent.category.NETFLIX_SERVICE";
     public static final String INTENT_NAME_DESTROYED = "com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_DESTROYED";
     public static final String INTENT_NAME_INIT_COMPLETE = "com.netflix.mediaclient.intent.action.NETFLIX_SERVICE_INIT_COMPLETE";
+    
+    void addNetworkRequestInspector(final IMSLClient$NetworkRequestInspector p0, final Class[] p1);
     
     void addProfile(final String p0, final boolean p1, final String p2, final int p3, final int p4);
     
@@ -83,7 +89,11 @@ public interface INetflixService
     
     NetflixJobScheduler getJobScheduler();
     
+    IMSLClient getMSLClient();
+    
     IMdx getMdx();
+    
+    NetflixPowerManager getNetflixPowerManager();
     
     IPlayer getNflxPlayer();
     
@@ -91,11 +101,19 @@ public interface INetflixService
     
     String getNrdpComponentVersion(final NrdpComponent p0);
     
+    OfflineAgentInterface getOfflineAgent();
+    
+    IPlayer getOfflinePlayer();
+    
     IPushNotification getPushNotification();
+    
+    ResourceFetcher getResourceFetcher();
     
     SignUpParams getSignUpParams();
     
     String getSoftwareVersion();
+    
+    long getStartedTimeInMs();
     
     String getUserEmail();
     
@@ -138,6 +156,10 @@ public interface INetflixService
     void registerJobExecutor(final NetflixJob$NetflixJobId p0, final NetflixJobExecutor p1);
     
     void removeProfile(final String p0, final int p1, final int p2);
+    
+    void requestBackgroundForNotification(final int p0, final boolean p1);
+    
+    void requestForegroundForNotification(final int p0, final Notification p1);
     
     void selectProfile(final String p0);
     

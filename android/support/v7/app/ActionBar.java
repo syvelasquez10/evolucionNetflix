@@ -42,7 +42,14 @@ public abstract class ActionBar
     public void onConfigurationChanged(final Configuration configuration) {
     }
     
+    void onDestroy() {
+    }
+    
     public boolean onKeyShortcut(final int n, final KeyEvent keyEvent) {
+        return false;
+    }
+    
+    boolean requestFocus() {
         return false;
     }
     
@@ -87,6 +94,8 @@ public abstract class ActionBar
     
     public void setShowHideAnimationEnabled(final boolean b) {
     }
+    
+    public abstract void setSubtitle(final CharSequence p0);
     
     public abstract void setTitle(final CharSequence p0);
     

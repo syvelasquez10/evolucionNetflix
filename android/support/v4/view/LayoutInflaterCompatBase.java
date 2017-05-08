@@ -9,6 +9,14 @@ import android.view.LayoutInflater;
 
 class LayoutInflaterCompatBase
 {
+    static LayoutInflaterFactory getFactory(final LayoutInflater layoutInflater) {
+        final LayoutInflater$Factory factory = layoutInflater.getFactory();
+        if (factory instanceof LayoutInflaterCompatBase$FactoryWrapper) {
+            return ((LayoutInflaterCompatBase$FactoryWrapper)factory).mDelegateFactory;
+        }
+        return null;
+    }
+    
     static void setFactory(final LayoutInflater layoutInflater, final LayoutInflaterFactory layoutInflaterFactory) {
         Object factory;
         if (layoutInflaterFactory != null) {

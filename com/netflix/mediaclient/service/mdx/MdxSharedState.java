@@ -157,7 +157,7 @@ public class MdxSharedState implements IMdxSharedState
             this.mAllowVolume = new MdxTargetCapabilities(s).isVolumeControl();
         }
         catch (JSONException ex) {
-            Log.w(MdxSharedState.TAG, "ignore capability data ", (Throwable)ex);
+            Log.w(MdxSharedState.TAG, "ignore capability data ", ex);
         }
     }
     

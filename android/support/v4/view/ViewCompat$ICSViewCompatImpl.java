@@ -4,6 +4,8 @@
 
 package android.support.v4.view;
 
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import android.view.accessibility.AccessibilityEvent;
 import java.util.WeakHashMap;
 import android.view.View;
 import java.lang.reflect.Field;
@@ -113,6 +115,21 @@ class ViewCompat$ICSViewCompatImpl extends ViewCompat$HCViewCompatImpl
         //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
         // 
         throw new IllegalStateException("An error occurred while decompiling this method.");
+    }
+    
+    @Override
+    public void onInitializeAccessibilityEvent(final View view, final AccessibilityEvent accessibilityEvent) {
+        ViewCompatICS.onInitializeAccessibilityEvent(view, accessibilityEvent);
+    }
+    
+    @Override
+    public void onInitializeAccessibilityNodeInfo(final View view, final AccessibilityNodeInfoCompat accessibilityNodeInfoCompat) {
+        ViewCompatICS.onInitializeAccessibilityNodeInfo(view, accessibilityNodeInfoCompat.getInfo());
+    }
+    
+    @Override
+    public void onPopulateAccessibilityEvent(final View view, final AccessibilityEvent accessibilityEvent) {
+        ViewCompatICS.onPopulateAccessibilityEvent(view, accessibilityEvent);
     }
     
     @Override

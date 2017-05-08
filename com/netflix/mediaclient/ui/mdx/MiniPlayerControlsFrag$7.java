@@ -63,10 +63,9 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
 import com.netflix.mediaclient.util.StringUtils;
-import android.content.Context;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import com.netflix.mediaclient.Log;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 
 class MiniPlayerControlsFrag$7 implements RemotePlayer$RemoteTargetUiListener
@@ -99,7 +98,7 @@ class MiniPlayerControlsFrag$7 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void cancelDialog() {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.activity)) {
             return;
         }
         if (Log.isLoggable()) {
@@ -156,7 +155,7 @@ class MiniPlayerControlsFrag$7 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void showDialog(final RemoteDialog remoteDialog) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.activity)) {
             return;
         }
         if (Log.isLoggable()) {
@@ -175,7 +174,7 @@ class MiniPlayerControlsFrag$7 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void updateDuration(final int progressMax) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.activity)) {
             return;
         }
         this.this$0.log("updateDuration, " + progressMax);
@@ -196,7 +195,7 @@ class MiniPlayerControlsFrag$7 implements RemotePlayer$RemoteTargetUiListener
     
     @Override
     public void updateTargetCapabilities(final MdxTargetCapabilities mdxTargetCapabilities) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.activity)) {
             return;
         }
         if (mdxTargetCapabilities == null) {

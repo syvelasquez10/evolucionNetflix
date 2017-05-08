@@ -10,8 +10,9 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.SystemClock;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClientFactory;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.servicemgr.SignInLogging;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import com.netflix.mediaclient.servicemgr.SignInLogging;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
@@ -83,6 +84,7 @@ class IntegratedClientLoggingManager$ClientLoggingWebCallbackImpl implements Cli
         if (StringUtils.isEmpty(s)) {
             return;
         }
+        this.this$0.mPendingCachedLogPayloads.remove(s);
         this.this$0.mExecutor.schedule(new IntegratedClientLoggingManager$ClientLoggingWebCallbackImpl$1(this, s), this.this$0.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
     }
 }

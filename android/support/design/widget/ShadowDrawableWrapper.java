@@ -23,6 +23,10 @@ import android.support.v7.graphics.drawable.DrawableWrapper;
 class ShadowDrawableWrapper extends DrawableWrapper
 {
     static final double COS_45;
+    static final float SHADOW_BOTTOM_SCALE = 1.0f;
+    static final float SHADOW_HORIZ_SCALE = 0.5f;
+    static final float SHADOW_MULTIPLIER = 1.5f;
+    static final float SHADOW_TOP_SCALE = 0.25f;
     private boolean mAddPaddingForCorners;
     final RectF mContentBounds;
     float mCornerRadius;
@@ -34,6 +38,7 @@ class ShadowDrawableWrapper extends DrawableWrapper
     private boolean mPrintedShadowClipWarning;
     float mRawMaxShadowSize;
     float mRawShadowSize;
+    private float mRotation;
     private final int mShadowEndColor;
     private final int mShadowMiddleColor;
     float mShadowSize;
@@ -106,6 +111,8 @@ class ShadowDrawableWrapper extends DrawableWrapper
     }
     
     private void drawShadow(final Canvas canvas) {
+        final int save = canvas.save();
+        canvas.rotate(this.mRotation, this.mContentBounds.centerX(), this.mContentBounds.centerY());
         final float n = -this.mCornerRadius - this.mShadowSize;
         final float mCornerRadius = this.mCornerRadius;
         boolean b;
@@ -131,7 +138,7 @@ class ShadowDrawableWrapper extends DrawableWrapper
         final float n2 = mCornerRadius / (mRawShadowSize3 - mRawShadowSize4 * 0.5f + mCornerRadius);
         final float n3 = mCornerRadius / (mRawShadowSize - mRawShadowSize2 * 0.25f + mCornerRadius);
         final float n4 = mCornerRadius / (mCornerRadius + (mRawShadowSize5 - mRawShadowSize6 * 1.0f));
-        final int save = canvas.save();
+        final int save2 = canvas.save();
         canvas.translate(this.mContentBounds.left + mCornerRadius, this.mContentBounds.top + mCornerRadius);
         canvas.scale(n2, n3);
         canvas.drawPath(this.mCornerShadowPath, this.mCornerShadowPaint);
@@ -139,8 +146,8 @@ class ShadowDrawableWrapper extends DrawableWrapper
             canvas.scale(1.0f / n2, 1.0f);
             canvas.drawRect(0.0f, n, this.mContentBounds.width() - 2.0f * mCornerRadius, -this.mCornerRadius, this.mEdgeShadowPaint);
         }
-        canvas.restoreToCount(save);
-        final int save2 = canvas.save();
+        canvas.restoreToCount(save2);
+        final int save3 = canvas.save();
         canvas.translate(this.mContentBounds.right - mCornerRadius, this.mContentBounds.bottom - mCornerRadius);
         canvas.scale(n2, n4);
         canvas.rotate(180.0f);
@@ -149,8 +156,8 @@ class ShadowDrawableWrapper extends DrawableWrapper
             canvas.scale(1.0f / n2, 1.0f);
             canvas.drawRect(0.0f, n, this.mContentBounds.width() - 2.0f * mCornerRadius, this.mShadowSize + -this.mCornerRadius, this.mEdgeShadowPaint);
         }
-        canvas.restoreToCount(save2);
-        final int save3 = canvas.save();
+        canvas.restoreToCount(save3);
+        final int save4 = canvas.save();
         canvas.translate(this.mContentBounds.left + mCornerRadius, this.mContentBounds.bottom - mCornerRadius);
         canvas.scale(n2, n4);
         canvas.rotate(270.0f);
@@ -159,8 +166,8 @@ class ShadowDrawableWrapper extends DrawableWrapper
             canvas.scale(1.0f / n4, 1.0f);
             canvas.drawRect(0.0f, n, this.mContentBounds.height() - 2.0f * mCornerRadius, -this.mCornerRadius, this.mEdgeShadowPaint);
         }
-        canvas.restoreToCount(save3);
-        final int save4 = canvas.save();
+        canvas.restoreToCount(save4);
+        final int save5 = canvas.save();
         canvas.translate(this.mContentBounds.right - mCornerRadius, this.mContentBounds.top + mCornerRadius);
         canvas.scale(n2, n3);
         canvas.rotate(90.0f);
@@ -169,7 +176,8 @@ class ShadowDrawableWrapper extends DrawableWrapper
             canvas.scale(1.0f / n3, 1.0f);
             canvas.drawRect(0.0f, n, this.mContentBounds.height() - 2.0f * mCornerRadius, -this.mCornerRadius, this.mEdgeShadowPaint);
         }
-        canvas.restoreToCount(save4);
+        canvas.restoreToCount(save5);
+        canvas.restoreToCount(save);
     }
     
     private static int toEven(final float n) {
@@ -189,6 +197,22 @@ class ShadowDrawableWrapper extends DrawableWrapper
         }
         this.drawShadow(canvas);
         super.draw(canvas);
+    }
+    
+    public float getCornerRadius() {
+        return this.mCornerRadius;
+    }
+    
+    public float getMaxShadowSize() {
+        return this.mRawMaxShadowSize;
+    }
+    
+    public float getMinHeight() {
+        return Math.max(this.mRawMaxShadowSize, this.mCornerRadius + this.mRawMaxShadowSize * 1.5f / 2.0f) * 2.0f + this.mRawMaxShadowSize * 1.5f * 2.0f;
+    }
+    
+    public float getMinWidth() {
+        return Math.max(this.mRawMaxShadowSize, this.mCornerRadius + this.mRawMaxShadowSize / 2.0f) * 2.0f + this.mRawMaxShadowSize * 2.0f;
     }
     
     @Override
@@ -225,8 +249,25 @@ class ShadowDrawableWrapper extends DrawableWrapper
         this.mEdgeShadowPaint.setAlpha(alpha);
     }
     
+    public void setCornerRadius(float mCornerRadius) {
+        mCornerRadius = Math.round(mCornerRadius);
+        if (this.mCornerRadius == mCornerRadius) {
+            return;
+        }
+        this.mCornerRadius = mCornerRadius;
+        this.mDirty = true;
+        this.invalidateSelf();
+    }
+    
     public void setMaxShadowSize(final float n) {
         this.setShadowSize(this.mRawShadowSize, n);
+    }
+    
+    final void setRotation(final float mRotation) {
+        if (this.mRotation != mRotation) {
+            this.mRotation = mRotation;
+            this.invalidateSelf();
+        }
     }
     
     public void setShadowSize(final float n) {

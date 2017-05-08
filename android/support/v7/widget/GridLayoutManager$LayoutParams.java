@@ -11,8 +11,8 @@ import android.content.Context;
 
 public class GridLayoutManager$LayoutParams extends RecyclerView$LayoutParams
 {
-    private int mSpanIndex;
-    private int mSpanSize;
+    int mSpanIndex;
+    int mSpanSize;
     
     public GridLayoutManager$LayoutParams(final int n, final int n2) {
         super(n, n2);

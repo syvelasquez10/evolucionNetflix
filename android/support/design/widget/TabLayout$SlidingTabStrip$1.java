@@ -4,15 +4,6 @@
 
 package android.support.design.widget;
 
-import android.widget.LinearLayout$LayoutParams;
-import android.view.View$MeasureSpec;
-import android.graphics.Canvas;
-import android.view.View;
-import android.support.v4.view.ViewCompat;
-import android.content.Context;
-import android.graphics.Paint;
-import android.widget.LinearLayout;
-
 class TabLayout$SlidingTabStrip$1 implements ValueAnimatorCompat$AnimatorUpdateListener
 {
     final /* synthetic */ TabLayout$SlidingTabStrip this$1;

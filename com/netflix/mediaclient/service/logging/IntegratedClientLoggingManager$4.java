@@ -10,8 +10,9 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.SystemClock;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClientFactory;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.servicemgr.SignInLogging;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import com.netflix.mediaclient.servicemgr.SignInLogging;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
@@ -20,8 +21,10 @@ import com.netflix.mediaclient.javabridge.ui.Log$ResetSessionIdCallback;
 import java.util.Iterator;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import com.netflix.mediaclient.service.logging.client.model.SessionEvent;
+import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
 import com.netflix.mediaclient.service.logging.client.model.LoggingRequest;
 import com.netflix.mediaclient.util.IntentUtils;
+import com.netflix.mediaclient.util.data.DataRepository$DataLoadedCallback;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
@@ -33,6 +36,7 @@ import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$EndReason;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.util.data.DataRepository$Entry;
 import java.util.HashMap;
@@ -53,11 +57,8 @@ import com.netflix.mediaclient.util.data.DataRepository;
 import android.content.Context;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClient;
 import com.netflix.mediaclient.android.app.ApplicationStateListener;
-import com.netflix.mediaclient.service.logging.client.ClientLoggingWebCallback;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.util.data.DataRepository$DataLoadedCallback;
 
-class IntegratedClientLoggingManager$4 implements DataRepository$DataLoadedCallback
+class IntegratedClientLoggingManager$4 implements Runnable
 {
     final /* synthetic */ IntegratedClientLoggingManager this$0;
     final /* synthetic */ String val$deliveryRequestId;
@@ -68,19 +69,7 @@ class IntegratedClientLoggingManager$4 implements DataRepository$DataLoadedCallb
     }
     
     @Override
-    public void onDataLoaded(String s, final byte[] array, final long n) {
-        if (array == null || array.length < 1) {
-            Log.e("nf_log", "We failed to retrieve payload. Trying to delete it");
-            this.this$0.removeSavedEvents(this.val$deliveryRequestId);
-            return;
-        }
-        try {
-            s = new String(array, "utf-8");
-            this.this$0.mClientLoggingWebClient.sendLoggingEvents(this.val$deliveryRequestId, s, new IntegratedClientLoggingManager$ClientLoggingWebCallbackImpl(this.this$0, s));
-        }
-        catch (Throwable t) {
-            Log.e("nf_log", "Failed to send events. Try to delete it.", t);
-            this.this$0.removeSavedEvents(this.val$deliveryRequestId);
-        }
+    public void run() {
+        this.this$0.loadAndSendEvent(this.val$deliveryRequestId);
     }
 }

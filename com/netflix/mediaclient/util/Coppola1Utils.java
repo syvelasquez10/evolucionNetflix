@@ -14,7 +14,6 @@ import com.netflix.mediaclient.Log;
 import android.app.FragmentTransaction;
 import android.os.Handler;
 import android.app.Fragment;
-import android.os.Parcelable;
 import com.netflix.mediaclient.ui.player.PlayerFragment;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -34,21 +33,21 @@ public final class Coppola1Utils
     }
     
     public static void forceToPortraitIfNeeded(final Activity activity) {
-        if (!AndroidUtils.isActivityFinishedOrDestroyed(activity) && PersistentConfig.getCoppola1ABTestCell((Context)activity).ordinal() >= ABTestConfig$Cell.CELL_TEN.ordinal() && (activity.getIntent() == null || !activity.getIntent().hasExtra("push_to_landscape"))) {
+        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)activity) && PersistentConfig.getCoppola1ABTestCell((Context)activity).ordinal() >= ABTestConfig$Cell.CELL_TEN.ordinal() && (activity.getIntent() == null || !activity.getIntent().hasExtra("push_to_landscape"))) {
             activity.setRequestedOrientation(1);
         }
     }
     
     public static void injectPlayerFragmentIfNeeded(final Activity activity, final String s, final VideoType videoType, final PlayContext playContext, final ServiceManager serviceManager, final Status status) {
-        if (shouldInjectPlayerFragment((Context)activity) && !AndroidUtils.isActivityFinishedOrDestroyed(activity)) {
-            final PlayerFragment playerFragment = PlayerFragment.createPlayerFragment(s, videoType.getValue(), (Parcelable)playContext, 0);
+        if (shouldInjectPlayerFragment((Context)activity) && !AndroidUtils.isActivityFinishedOrDestroyed((Context)activity)) {
+            final PlayerFragment playerFragment = PlayerFragment.createPlayerFragment(s, videoType.getValue(), playContext, 0);
             final FragmentTransaction beginTransaction = activity.getFragmentManager().beginTransaction();
             int n;
             if (videoType == VideoType.MOVIE) {
-                n = 2131689743;
+                n = 2131689755;
             }
             else {
-                n = 2131689744;
+                n = 2131689756;
             }
             beginTransaction.add(n, (Fragment)playerFragment).commitAllowingStateLoss();
             new Handler().postDelayed((Runnable)new Coppola1Utils$1(activity, playerFragment, serviceManager, status), 2000L);
@@ -145,7 +144,7 @@ public final class Coppola1Utils
     }
     
     public static void unlockOrientationIfNeeded(final Activity activity) {
-        if (!AndroidUtils.isActivityFinishedOrDestroyed(activity) && PersistentConfig.getCoppola1ABTestCell((Context)activity).ordinal() > ABTestConfig$Cell.CELL_TEN.ordinal()) {
+        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)activity) && PersistentConfig.getCoppola1ABTestCell((Context)activity).ordinal() > ABTestConfig$Cell.CELL_TEN.ordinal()) {
             activity.setRequestedOrientation(4);
         }
     }

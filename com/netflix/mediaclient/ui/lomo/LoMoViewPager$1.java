@@ -12,12 +12,12 @@ import com.netflix.mediaclient.servicemgr.interface_.LoMoType;
 import android.view.MotionEvent;
 import com.netflix.mediaclient.service.webclient.model.leafs.KubrickLoMoHeroDuplicate;
 import com.netflix.mediaclient.servicemgr.interface_.BasicLoMo;
+import android.app.Activity;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
 import android.support.v4.view.PagerAdapter;
 import com.netflix.mediaclient.util.ThreadUtils;
-import android.content.Context;
 import android.view.View;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -31,7 +31,7 @@ import com.netflix.mediaclient.ui.lolomo.BaseLoLoMoAdapter$LoMoRowContent;
 import com.netflix.mediaclient.android.fragment.CustomViewPager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 
 class LoMoViewPager$1 implements Runnable
@@ -44,7 +44,7 @@ class LoMoViewPager$1 implements Runnable
     
     @Override
     public void run() {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.getActivity())) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.getActivity())) {
             return;
         }
         int n;

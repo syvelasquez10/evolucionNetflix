@@ -18,6 +18,10 @@ public class Fragment$SavedState implements Parcelable
         CREATOR = (Parcelable$Creator)new Fragment$SavedState$1();
     }
     
+    Fragment$SavedState(final Bundle mState) {
+        this.mState = mState;
+    }
+    
     Fragment$SavedState(final Parcel parcel, final ClassLoader classLoader) {
         this.mState = parcel.readBundle();
         if (classLoader != null && this.mState != null) {

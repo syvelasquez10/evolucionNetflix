@@ -5,6 +5,8 @@
 package com.netflix.mediaclient.service.logging;
 
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebClientFactory;
+import com.netflix.mediaclient.util.ConnectivityUtils;
+import android.content.Intent;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebCallback;
 import com.netflix.mediaclient.service.logging.presentation.PresentationRequest;
 import com.netflix.mediaclient.util.data.DataRepository$DataLoadedCallback;
@@ -12,6 +14,7 @@ import com.netflix.mediaclient.util.data.FileSystemDataRepositoryImpl;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.util.data.DataRepository$Entry;
+import java.util.ArrayList;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.logging.presentation.PresentationWebClient;
 import java.util.concurrent.ScheduledExecutorService;

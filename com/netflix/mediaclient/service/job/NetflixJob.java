@@ -39,6 +39,14 @@ public class NetflixJob
         this.mRequiresIdle = mRequiresIdle;
     }
     
+    public static NetflixJob buildDownloadMaintenanceJob(final boolean b, final long n) {
+        return new NetflixJob(NetflixJob$NetflixJobId.DOWNLOAD_MAINTENANCE, b, true, n, false, false);
+    }
+    
+    public static NetflixJob buildDownloadResumeJob(final boolean b) {
+        return new NetflixJob(NetflixJob$NetflixJobId.DOWNLOAD_RESUME, b, false, 0L, false, false);
+    }
+    
     public static NetflixJob buildPrefetchLolomoJob(final boolean b, final boolean b2, final long n, final boolean b3, final boolean b4) {
         return new NetflixJob(NetflixJob$NetflixJobId.FALKOR_METADATA, b, b2, n, b3, b4);
     }

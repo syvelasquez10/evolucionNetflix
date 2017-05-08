@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.mdx.notification;
 
-import android.app.Service;
+import com.netflix.mediaclient.service.NetflixService;
 import android.graphics.Bitmap;
 import android.app.Notification;
 import android.util.Pair;
@@ -76,23 +76,23 @@ public final class MdxNotificationManagerWrapper implements IMdxNotificationMana
     }
     
     @Override
-    public void startNotification(final Notification notification, final Service service, final boolean b) {
+    public void startNotification(final Notification notification, final NetflixService netflixService, final boolean b) {
         if (this.mMdxConfiguration.isRemoteControlNotificationEnabled()) {
-            this.mRealmanager.startNotification(notification, service, b);
+            this.mRealmanager.startNotification(notification, netflixService, b);
         }
     }
     
     @Override
-    public void stopNotification(final Service service) {
+    public void stopNotification(final NetflixService netflixService) {
         if (this.mMdxConfiguration.isRemoteControlNotificationEnabled()) {
-            this.mRealmanager.stopNotification(service);
+            this.mRealmanager.stopNotification(netflixService);
         }
     }
     
     @Override
-    public void stopPostplayNotification(final Service service) {
+    public void stopPostplayNotification(final NetflixService netflixService) {
         if (this.mMdxConfiguration.isRemoteControlNotificationEnabled()) {
-            this.mRealmanager.stopPostplayNotification(service);
+            this.mRealmanager.stopPostplayNotification(netflixService);
         }
     }
 }

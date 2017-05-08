@@ -10,6 +10,7 @@ import android.view.ViewGroup$LayoutParams;
 import android.view.View;
 import android.support.v7.appcompat.R$attr;
 import android.util.TypedValue;
+import android.content.DialogInterface$OnCancelListener;
 import android.os.Bundle;
 import android.content.Context;
 import android.app.Dialog;
@@ -18,9 +19,18 @@ public class AppCompatDialog extends Dialog implements AppCompatCallback
 {
     private AppCompatDelegate mDelegate;
     
+    public AppCompatDialog(final Context context) {
+        this(context, 0);
+    }
+    
     public AppCompatDialog(final Context context, final int n) {
         super(context, getThemeResId(context, n));
         this.getDelegate().onCreate(null);
+        this.getDelegate().applyDayNight();
+    }
+    
+    protected AppCompatDialog(final Context context, final boolean b, final DialogInterface$OnCancelListener dialogInterface$OnCancelListener) {
+        super(context, b, dialogInterface$OnCancelListener);
     }
     
     private static int getThemeResId(final Context context, final int n) {
@@ -37,11 +47,19 @@ public class AppCompatDialog extends Dialog implements AppCompatCallback
         this.getDelegate().addContentView(view, viewGroup$LayoutParams);
     }
     
+    public View findViewById(final int n) {
+        return this.getDelegate().findViewById(n);
+    }
+    
     public AppCompatDelegate getDelegate() {
         if (this.mDelegate == null) {
             this.mDelegate = AppCompatDelegate.create(this, this);
         }
         return this.mDelegate;
+    }
+    
+    public ActionBar getSupportActionBar() {
+        return this.getDelegate().getSupportActionBar();
     }
     
     public void invalidateOptionsMenu() {

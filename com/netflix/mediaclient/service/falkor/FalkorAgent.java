@@ -751,6 +751,14 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.fetchCWVideos(0, n - 1, b, browseAgentCallback);
     }
     
+    @Override
+    public void fetchCWFromNetwork(final int n, final BrowseAgentCallback browseAgentCallback) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        this.cmp.fetchCWVideosFromNetwork(0, n - 1, browseAgentCallback);
+    }
+    
     public void fetchCWVideos(final int n, final int n2, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
@@ -942,6 +950,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.fetchSeasons(s, n, n2, browseAgentCallback);
     }
     
+    @Override
     public void fetchShowDetails(final String s, final String s2, final boolean b, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
@@ -949,6 +958,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.fetchShowDetails(s, s2, false, b, false, browseAgentCallback);
     }
     
+    @Override
     public void fetchShowDetailsAndSeasons(final String s, final String s2, final boolean b, final boolean b2, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
@@ -970,6 +980,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         this.cmp.fetchSimilarVideos(Falkor$SimilarRequestType.QUERY_SUGGESTION, s, n, s2, browseAgentCallback);
     }
     
+    @Override
     public void fetchTask(final CachedModelProxy$CmpTaskDetails cachedModelProxy$CmpTaskDetails, final BrowseAgentCallback browseAgentCallback) {
         if (Log.isLoggable()) {
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
@@ -1094,7 +1105,7 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
         else if ((Coppola2Utils.isCoppolaWithoutNormalCW(this.getContext()) && this.cmp.doesDiscoveryRowExist()) || (Coppola1Utils.isCoppolaExperience(this.getContext()) && b) || b2) {
             Log.v("FalkorAgent", "This is a special use case for Coppola - no need to refresh the whole LoLoMo");
         }
-        else {
+        else if (ConnectivityUtils.isConnected(this.getContext())) {
             this.refreshLolomo();
         }
         if (Coppola2Utils.isCoppolaDiscovery(this.getContext())) {
@@ -1387,5 +1398,15 @@ public class FalkorAgent extends ServiceAgent implements ServiceProvider, Servic
             Log.v("FalkorAgent", LogUtils.getCurrMethodName());
         }
         this.cmp.updateExpiredContentAdvisoryStatus(s, expiringContentAdvisory$ContentAction);
+    }
+    
+    @Override
+    public void updateOfflineGeoPlayability(final List<String> list, final BrowseAgentCallback browseAgentCallback) {
+        if (Log.isLoggable()) {
+            Log.v("FalkorAgent", LogUtils.getCurrMethodName());
+        }
+        if (this.isReady()) {
+            this.cmp.fetchOfflineGeoPlayability(list, browseAgentCallback);
+        }
     }
 }

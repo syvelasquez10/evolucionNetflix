@@ -4,6 +4,10 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmVideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.servicemgr.interface_.offline.realm.RealmUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.servicemgr.Asset;
 import android.app.Notification;
@@ -81,35 +85,35 @@ public final class PlayerSuspendNotification
         RemoteViews remoteViews;
         if (b) {
             if (notEmpty) {
-                remoteViews = new RemoteViews(packageName, 2130903278);
+                remoteViews = new RemoteViews(packageName, 2130903297);
             }
             else {
-                remoteViews = new RemoteViews(packageName, 2130903280);
+                remoteViews = new RemoteViews(packageName, 2130903299);
             }
         }
         else if (notEmpty) {
-            remoteViews = new RemoteViews(packageName, 2130903277);
+            remoteViews = new RemoteViews(packageName, 2130903296);
         }
         else {
-            remoteViews = new RemoteViews(packageName, 2130903279);
+            remoteViews = new RemoteViews(packageName, 2130903298);
         }
         if (bitmap != null) {
-            remoteViews.setImageViewBitmap(2131690279, bitmap);
+            remoteViews.setImageViewBitmap(2131690325, bitmap);
         }
         if (StringUtils.isNotEmpty(s)) {
-            remoteViews.setTextViewText(2131690280, (CharSequence)s);
+            remoteViews.setTextViewText(2131690326, (CharSequence)s);
         }
         else {
-            remoteViews.setTextViewText(2131690280, (CharSequence)"");
+            remoteViews.setTextViewText(2131690326, (CharSequence)"");
         }
         if (notEmpty) {
-            remoteViews.setTextViewText(2131690281, (CharSequence)s2);
+            remoteViews.setTextViewText(2131690327, (CharSequence)s2);
         }
         return remoteViews;
     }
     
     private Bitmap getDefaultBoxArt() {
-        return BitmapFactory.decodeResource(this.mActivity.getResources(), 2130837781);
+        return BitmapFactory.decodeResource(this.mActivity.getResources(), 2130837839);
     }
     
     public static IntentFilter getNotificationIntentFilter() {
@@ -132,25 +136,28 @@ public final class PlayerSuspendNotification
             if ((defaultBoxArt = largeIcon) == null) {
                 defaultBoxArt = this.getDefaultBoxArt();
             }
-            final Notification notification = notification2 = new NotificationCompat$Builder((Context)this.mActivity).setOngoing(0 != 0).setOnlyAlertOnce(1 != 0).setSmallIcon(2130837754).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, defaultBoxArt, (boolean)(0 != 0))).setWhen(System.currentTimeMillis()).build();
+            final Notification notification = notification2 = new NotificationCompat$Builder((Context)this.mActivity).setOngoing(0 != 0).setOnlyAlertOnce(1 != 0).setSmallIcon(2130837812).setTicker(this.mTitle).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setContent(this.getContentView(this.mTitle, this.mSecondaryTitle, defaultBoxArt, (boolean)(0 != 0))).setWhen(System.currentTimeMillis()).build();
             if (AndroidUtils.getAndroidVersion() >= 16) {
                 notification.bigContentView = this.getContentView(this.mTitle, this.mSecondaryTitle, defaultBoxArt, true);
                 notification2 = notification;
             }
         }
         else {
-            final int color = this.mActivity.getResources().getColor(2131624084);
-            final String string = this.mActivity.getResources().getString(2131231216);
-            final Notification$Builder setVisibility = new Notification$Builder((Context)this.mActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837754).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
+            final int color = this.mActivity.getResources().getColor(2131624097);
+            String s = this.mActivity.getResources().getString(2131231269);
+            if (AndroidUtils.getAndroidVersion() >= 24) {
+                s = this.mActivity.getResources().getString(2131231270);
+            }
+            final Notification$Builder setVisibility = new Notification$Builder((Context)this.mActivity).setOngoing(false).setOnlyAlertOnce(true).setSmallIcon(2130837812).setTicker((CharSequence)this.mTitle).setContentTitle((CharSequence)this.mTitle).setColor(color).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).setWhen(System.currentTimeMillis()).setVisibility(-1);
             if (largeIcon != null) {
                 setVisibility.setLargeIcon(largeIcon);
             }
             if (TextUtils.isEmpty((CharSequence)this.mSecondaryTitle)) {
-                setVisibility.setContentText((CharSequence)string);
+                setVisibility.setContentText((CharSequence)s);
             }
             else {
                 setVisibility.setContentText((CharSequence)this.mSecondaryTitle);
-                setVisibility.setSubText((CharSequence)string);
+                setVisibility.setSubText((CharSequence)s);
             }
             notification2 = setVisibility.build();
         }
@@ -169,7 +176,7 @@ public final class PlayerSuspendNotification
         this.mShowNotification.set(true);
         final PlayerSuspendNotification$1 playerSuspendNotification$1 = new PlayerSuspendNotification$1(this);
         if (asset.isEpisode()) {
-            this.mSecondaryTitle = this.mActivity.getApplicationContext().getString(2131231065, new Object[] { asset.getSeasonAbbrSeqLabel(), asset.getEpisodeNumber(), asset.getTitle() });
+            this.mSecondaryTitle = this.mActivity.getApplicationContext().getString(2131231088, new Object[] { asset.getSeasonAbbrSeqLabel(), asset.getEpisodeNumber(), asset.getTitle() });
             this.mTitle = asset.getParentTitle();
             this.mServiceManager.getBrowse().fetchEpisodeDetails(String.valueOf(asset.getPlayableId()), null, playerSuspendNotification$1);
             return;
@@ -177,5 +184,28 @@ public final class PlayerSuspendNotification
         this.mServiceManager.getBrowse().fetchMovieDetails(String.valueOf(asset.getPlayableId()), null, playerSuspendNotification$1);
         this.mSecondaryTitle = null;
         this.mTitle = asset.getTitle();
+    }
+    
+    void showNotificationOffline(final Asset asset) {
+        final RealmVideoDetails offlineVideoDetails = RealmUtils.getOfflineVideoDetails(asset.getPlayableId());
+        if (offlineVideoDetails == null) {
+            Log.i(PlayerSuspendNotification.TAG, "VideoDetails is null");
+            return;
+        }
+        final Playable playable = offlineVideoDetails.getPlayable();
+        if (playable == null) {
+            Log.i(PlayerSuspendNotification.TAG, "Playable is null");
+            return;
+        }
+        this.mShowNotification.set(true);
+        if (offlineVideoDetails.getType() == VideoType.EPISODE) {
+            this.mTitle = playable.getParentTitle();
+            this.mSecondaryTitle = this.mActivity.getApplicationContext().getString(2131231088, new Object[] { playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), offlineVideoDetails.getTitle() });
+        }
+        else {
+            this.mTitle = offlineVideoDetails.getTitle();
+            this.mSecondaryTitle = "";
+        }
+        this.fetchImageWithLoader(offlineVideoDetails.getBoxshotUrl());
     }
 }

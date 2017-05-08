@@ -10,8 +10,9 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.SystemClock;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClientFactory;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.servicemgr.SignInLogging;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import com.netflix.mediaclient.servicemgr.SignInLogging;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
@@ -69,7 +70,7 @@ class IntegratedClientLoggingManager$1$1 implements DataRepository$LoadedCallbac
     @Override
     public void onLoaded(final DataRepository$Entry[] array) {
         if (array != null && array.length > 0) {
-            this.this$1.this$0.deliverSavedPayloads(array);
+            this.this$1.this$0.deliverSavedPayloads(array, false);
             return;
         }
         Log.d("nf_log", "No saved payloads found.");

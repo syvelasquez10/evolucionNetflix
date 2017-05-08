@@ -4,9 +4,10 @@
 
 package com.netflix.mediaclient.service.player.subtitles;
 
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
+import com.netflix.mediaclient.servicemgr.IPlayer;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
+import com.netflix.mediaclient.media.SubtitleUrl;
 import com.netflix.mediaclient.service.player.PlayerAgent;
 
 public class SubtitleParserFactory
@@ -17,17 +18,17 @@ public class SubtitleParserFactory
         if (subtitleUrl == null) {
             throw new IllegalArgumentException("Metadata object is null!");
         }
-        final IMedia$SubtitleProfile profile = subtitleUrl.getProfile();
-        if (profile == IMedia$SubtitleProfile.IMAGE) {
+        final ISubtitleDef$SubtitleProfile profile = subtitleUrl.getProfile();
+        if (profile == ISubtitleDef$SubtitleProfile.IMAGE) {
             return new ImageSubtitleParser(playerAgent, subtitleUrl, n2, subtitleParser$DownloadFailedCallback, n3);
         }
-        if (profile == IMedia$SubtitleProfile.ENHANCED_ENC || profile == IMedia$SubtitleProfile.SIMPLE_ENC) {
-            return new EncryptedTextSubtitleParser(playerAgent, subtitleUrl, textStyle, textStyle2, n, subtitleParser$DownloadFailedCallback, n3);
+        if (profile == ISubtitleDef$SubtitleProfile.ENHANCED_ENC || profile == ISubtitleDef$SubtitleProfile.SIMPLE_ENC) {
+            return new StreamingEncryptedTextSubtitleParser(playerAgent, subtitleUrl, textStyle, textStyle2, n, subtitleParser$DownloadFailedCallback, n3);
         }
-        if (profile == IMedia$SubtitleProfile.ENHANCED || profile == IMedia$SubtitleProfile.SIMPLE) {
-            return new TextSubtitleParser(playerAgent, subtitleUrl, textStyle, textStyle2, n, subtitleParser$DownloadFailedCallback, n3);
+        if (profile == ISubtitleDef$SubtitleProfile.ENHANCED || profile == ISubtitleDef$SubtitleProfile.SIMPLE) {
+            return new StreamingTextSubtitleParser(playerAgent, subtitleUrl, textStyle, textStyle2, n, subtitleParser$DownloadFailedCallback, n3);
         }
-        if (profile == IMedia$SubtitleProfile.IMAGE_ENC) {
+        if (profile == ISubtitleDef$SubtitleProfile.IMAGE_ENC) {
             return new ImageV2SubtitleParser(playerAgent, subtitleUrl, n2, subtitleParser$DownloadFailedCallback, n3);
         }
         throw new IllegalArgumentException("Not supported profile: " + profile);

@@ -38,12 +38,12 @@ class BarkerKidsMovieDetailsFrag$KubrickKidsMovieDetailsViewGroup extends Barker
     @Override
     protected void findViews() {
         super.findViews();
-        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131689842);
+        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131689869);
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903154;
+        return 2130903164;
     }
     
     @Override

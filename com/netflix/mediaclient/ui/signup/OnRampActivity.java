@@ -14,8 +14,6 @@ import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
-import com.netflix.model.leafs.OnRampEligibility$Action;
 import android.content.Context;
 import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.app.Activity;
@@ -32,21 +30,19 @@ public class OnRampActivity extends WebViewAccountActivity
     Runnable mAbortOnRamp;
     private String mBootUrl;
     Runnable mHandleError;
+    private boolean onLoadedBeenCalled;
     
     static {
         PAGE_LOAD_TIMEOUT = TimeUnit.SECONDS.toMillis(5L);
     }
     
     public OnRampActivity() {
-        this.mAbortOnRamp = new OnRampActivity$2(this);
-        this.mHandleError = new OnRampActivity$4(this);
+        this.mAbortOnRamp = new OnRampActivity$1(this);
+        this.mHandleError = new OnRampActivity$3(this);
     }
     
-    public static void showOnRampIfApplicable(final ServiceManager serviceManager, final Activity activity) {
-        if (!serviceManager.isReady() || activity == null || serviceManager.getCurrentProfile() == null || !PersistentConfig.isOnRampTest((Context)activity) || serviceManager.getCurrentProfile().isPrimaryProfile()) {
-            return;
-        }
-        serviceManager.doOnRampEligibilityAction(OnRampEligibility$Action.FETCH, new OnRampActivity$1(activity));
+    public static boolean shouldShowOnRamp(final ServiceManager serviceManager, final Activity activity) {
+        return serviceManager.isReady() && activity != null && serviceManager.getCurrentProfile() != null && PersistentConfig.isOnRampTest((Context)activity) && !serviceManager.getCurrentProfile().isPrimaryProfile();
     }
     
     @Override
@@ -56,7 +52,7 @@ public class OnRampActivity extends WebViewAccountActivity
     
     @Override
     protected ManagerStatusListener createManagerStatusListener() {
-        return new OnRampActivity$3(this);
+        return new OnRampActivity$2(this);
     }
     
     @Override
@@ -112,12 +108,12 @@ public class OnRampActivity extends WebViewAccountActivity
     
     @Override
     public void provideDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131231128), runnable)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$AlertDialogDescriptor(null, s, this.getString(2131231167), runnable)));
     }
     
     @Override
     public void provideTwoButtonDialog(final String s, final Runnable runnable) {
-        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131231128), runnable, this.getString(2131230993), null)));
+        this.displayDialog(AlertDialogFactory.createDialog((Context)this, this.handler, new AlertDialogFactory$TwoButtonAlertDialogDescriptor(null, s, this.getString(2131231167), runnable, this.getString(2131231008), null)));
     }
     
     @Override

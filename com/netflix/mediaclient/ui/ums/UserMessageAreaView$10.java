@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.ums;
 
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.app.Status;
@@ -29,7 +29,7 @@ class UserMessageAreaView$10 extends SimpleManagerCallback
     @Override
     public void onAutoLoginTokenCreated(final String s, final Status status) {
         final NetflixActivity netflixActivity = AndroidUtils.getContextAs(this.this$0.getContext(), NetflixActivity.class);
-        if (netflixActivity != null && !AndroidUtils.isActivityFinishedOrDestroyed(netflixActivity)) {
+        if (netflixActivity != null && !AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
             netflixActivity.getHandler().removeCallbacks(this.val$timeout);
             this.val$handler.handle(s, status, this.val$umaCta.action());
         }

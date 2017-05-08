@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.BadPaddingException;
 import com.netflix.mediaclient.Log;
+import android.util.Base64;
 
 public final class CryptoUtils
 {
@@ -75,6 +76,10 @@ public final class CryptoUtils
         return n2;
     }
     
+    public static byte[] decode(final String s) {
+        return Base64.decode(s, 0);
+    }
+    
     public static String decrypt(final String s, final String s2) {
         Log.d("nf_crypto", "Encrypted text " + s2);
         if (s2 == null) {
@@ -104,6 +109,10 @@ public final class CryptoUtils
             Log.e("nf_crypto", "EXCEPTION: " + ex4);
             return null;
         }
+    }
+    
+    public static String encodeToString(final byte[] array) {
+        return Base64.encodeToString(array, 2);
     }
     
     public static String encrypt(String hex, final String s) {

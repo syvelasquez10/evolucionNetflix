@@ -14,7 +14,6 @@ import android.view.View;
 import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.support.v7.internal.widget.TintManager;
 import android.support.v4.view.TintableBackgroundView;
 import android.widget.Button;
 
@@ -22,23 +21,29 @@ public class AppCompatButton extends Button implements TintableBackgroundView
 {
     private final AppCompatBackgroundHelper mBackgroundTintHelper;
     private final AppCompatTextHelper mTextHelper;
-    private final TintManager mTintManager;
+    
+    public AppCompatButton(final Context context) {
+        this(context, null);
+    }
     
     public AppCompatButton(final Context context, final AttributeSet set) {
         this(context, set, R$attr.buttonStyle);
     }
     
     public AppCompatButton(final Context context, final AttributeSet set, final int n) {
-        super(context, set, n);
-        this.mTintManager = TintManager.get(this.getContext());
-        (this.mBackgroundTintHelper = new AppCompatBackgroundHelper((View)this, this.mTintManager)).loadFromAttributes(set, n);
-        (this.mTextHelper = new AppCompatTextHelper((TextView)this)).loadFromAttributes(set, n);
+        super(TintContextWrapper.wrap(context), set, n);
+        (this.mBackgroundTintHelper = new AppCompatBackgroundHelper((View)this)).loadFromAttributes(set, n);
+        (this.mTextHelper = AppCompatTextHelper.create((TextView)this)).loadFromAttributes(set, n);
+        this.mTextHelper.applyCompoundDrawablesTints();
     }
     
     protected void drawableStateChanged() {
         super.drawableStateChanged();
         if (this.mBackgroundTintHelper != null) {
             this.mBackgroundTintHelper.applySupportBackgroundTint();
+        }
+        if (this.mTextHelper != null) {
+            this.mTextHelper.applyCompoundDrawablesTints();
         }
     }
     

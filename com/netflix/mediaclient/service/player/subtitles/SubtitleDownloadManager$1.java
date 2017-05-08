@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.player.subtitles;
 
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleFailure;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitleDownloadRetryPolicy;
 import com.netflix.mediaclient.util.net.ExponentialBackOff;
@@ -12,7 +12,7 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.player.PlayerAgent;
 import com.netflix.mediaclient.event.nrdp.media.SubtitleData;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
+import com.netflix.mediaclient.media.SubtitleUrl;
 import com.netflix.mediaclient.util.net.BackOff;
 import com.netflix.mediaclient.Log;
 

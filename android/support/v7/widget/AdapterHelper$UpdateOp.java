@@ -23,16 +23,16 @@ class AdapterHelper$UpdateOp
             default: {
                 return "??";
             }
-            case 0: {
+            case 1: {
                 return "add";
             }
-            case 1: {
+            case 2: {
                 return "rm";
             }
-            case 2: {
+            case 4: {
                 return "up";
             }
-            case 3: {
+            case 8: {
                 return "mv";
             }
         }
@@ -48,7 +48,7 @@ class AdapterHelper$UpdateOp
             if (this.cmd != adapterHelper$UpdateOp.cmd) {
                 return false;
             }
-            if (this.cmd != 3 || Math.abs(this.itemCount - this.positionStart) != 1 || this.itemCount != adapterHelper$UpdateOp.positionStart || this.positionStart != adapterHelper$UpdateOp.itemCount) {
+            if (this.cmd != 8 || Math.abs(this.itemCount - this.positionStart) != 1 || this.itemCount != adapterHelper$UpdateOp.positionStart || this.positionStart != adapterHelper$UpdateOp.itemCount) {
                 if (this.itemCount != adapterHelper$UpdateOp.itemCount) {
                     return false;
                 }

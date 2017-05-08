@@ -4,11 +4,14 @@
 
 package com.netflix.mediaclient.ui.signup;
 
-import com.netflix.mediaclient.service.logging.perf.Sessions;
-import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
+import com.netflix.model.leafs.OnRampEligibility$Action;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 
-class OnRampActivity$2 implements Runnable
+class OnRampActivity$2 implements ManagerStatusListener
 {
     final /* synthetic */ OnRampActivity this$0;
     
@@ -17,11 +20,19 @@ class OnRampActivity$2 implements Runnable
     }
     
     @Override
-    public void run() {
-        Log.d("OnRampActivity", "Timeout triggered, switching to LoginActivity");
-        if (!this.this$0.isWebViewLoaded() && !this.this$0.isFinishing()) {
-            PerformanceProfiler.getInstance().endSession(Sessions.ONRAMP_TTR, PerformanceProfiler.createFailedMap());
-            this.this$0.finish();
+    public void onManagerReady(final ServiceManager serviceManager, final Status status) {
+        if (Log.isLoggable()) {
+            Log.d("OnRampActivity", "ServiceManager ready: " + status.getStatusCode());
         }
+        serviceManager.createAutoLoginToken(3600000L, new OnRampActivity$2$1(this, serviceManager));
+        if (serviceManager.getCurrentProfile() != null) {
+            serviceManager.doOnRampEligibilityAction(OnRampEligibility$Action.RECORD, null);
+        }
+    }
+    
+    @Override
+    public void onManagerUnavailable(final ServiceManager serviceManager, final Status status) {
+        Log.e("OnRampActivity", "NetflixService is NOT available!");
+        this.this$0.finish();
     }
 }

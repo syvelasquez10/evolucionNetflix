@@ -9,6 +9,11 @@ import android.graphics.drawable.Drawable;
 class DrawableCompat$KitKatDrawableImpl extends DrawableCompat$JellybeanMr1DrawableImpl
 {
     @Override
+    public int getAlpha(final Drawable drawable) {
+        return DrawableCompatKitKat.getAlpha(drawable);
+    }
+    
+    @Override
     public boolean isAutoMirrored(final Drawable drawable) {
         return DrawableCompatKitKat.isAutoMirrored(drawable);
     }

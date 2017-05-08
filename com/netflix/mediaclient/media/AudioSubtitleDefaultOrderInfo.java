@@ -11,6 +11,7 @@ import org.json.JSONObject;
 public final class AudioSubtitleDefaultOrderInfo implements Comparable<AudioSubtitleDefaultOrderInfo>
 {
     private String audioTrackId;
+    private long creationTimeInMs;
     private int preferenceOrder;
     private String subtitleTrackId;
     
@@ -20,10 +21,11 @@ public final class AudioSubtitleDefaultOrderInfo implements Comparable<AudioSubt
         this.preferenceOrder = preferenceOrder;
     }
     
-    public AudioSubtitleDefaultOrderInfo(final JSONObject jsonObject) {
+    public AudioSubtitleDefaultOrderInfo(final JSONObject jsonObject, final long creationTimeInMs) {
         this.audioTrackId = JsonUtils.getString(jsonObject, "audioTrackId", null);
         this.subtitleTrackId = JsonUtils.getString(jsonObject, "subtitleTrackId", null);
         this.preferenceOrder = JsonUtils.getInt(jsonObject, "preferenceOrder", -1);
+        this.creationTimeInMs = creationTimeInMs;
     }
     
     public static void dumpLog(final AudioSubtitleDefaultOrderInfo[] array, final String s) {
@@ -57,6 +59,10 @@ public final class AudioSubtitleDefaultOrderInfo implements Comparable<AudioSubt
         return this.audioTrackId;
     }
     
+    public long getCreationTimeInMs() {
+        return this.creationTimeInMs;
+    }
+    
     public int getPreferenceOrder() {
         return this.preferenceOrder;
     }
@@ -67,6 +73,6 @@ public final class AudioSubtitleDefaultOrderInfo implements Comparable<AudioSubt
     
     @Override
     public String toString() {
-        return "AudioSubtitleDefaultOrderInfo [audioTrackId=" + this.audioTrackId + ", subtitleTrackId=" + this.subtitleTrackId + ", preferenceOrder=" + this.preferenceOrder + "]";
+        return "AudioSubtitleDefaultOrderInfo [audioTrackId=" + this.audioTrackId + ", subtitleTrackId=" + this.subtitleTrackId + ", preferenceOrder=" + this.preferenceOrder + ", creationTimeInMs=" + this.creationTimeInMs + "]";
     }
 }

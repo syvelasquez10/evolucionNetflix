@@ -14,7 +14,7 @@ public class NetflixAlarmReceiver extends BroadcastReceiver
     private static final String TAG = "nf_alarm_receiver";
     
     public void onReceive(final Context context, final Intent intent) {
-        if (context.getResources().getBoolean(2131558404)) {
+        if (context.getResources().getBoolean(2131558403)) {
             NetflixJobSchedulerPreL.onAlarmReceived(context, intent);
         }
         else if (Log.isLoggable()) {

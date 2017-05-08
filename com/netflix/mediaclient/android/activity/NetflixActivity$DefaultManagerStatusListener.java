@@ -10,7 +10,6 @@ import com.netflix.mediaclient.ui.launch.RelaunchActivity;
 import android.app.FragmentManager;
 import com.netflix.mediaclient.util.WebApiUtils$VideoIds;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
-import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import android.text.TextUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
@@ -31,10 +30,11 @@ import com.netflix.mediaclient.android.widget.advisor.Advisor;
 import com.netflix.mediaclient.ui.common.DebugMenuItems;
 import android.view.Menu;
 import android.content.IntentFilter;
-import com.netflix.mediaclient.util.ViewUtils;
 import android.os.Bundle;
 import com.netflix.mediaclient.util.log.UIViewLogUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging$UIViewCommandName;
+import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.crittercism.app.Crittercism;
 import com.netflix.mediaclient.ui.details.DetailsActivity;
 import com.netflix.mediaclient.util.Coppola1Utils;
@@ -43,6 +43,7 @@ import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.content.res.Resources;
 import com.netflix.mediaclient.ui.mdx.MiniPlayerControlsFrag;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
+import android.app.Activity;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
 import com.netflix.mediaclient.StatusCode;
@@ -55,33 +56,35 @@ import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import java.io.Serializable;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
-import android.app.AlertDialog;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog$Builder;
 import android.view.MotionEvent;
 import com.netflix.mediaclient.util.MdxUtils;
 import android.view.KeyEvent;
 import com.netflix.mediaclient.ui.kubrick_kids.KubrickKidsActionBar;
 import com.netflix.mediaclient.ui.experience.BrowseExperience;
-import android.view.View;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentListener;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.android.widget.UpdateDialog;
 import com.netflix.mediaclient.android.widget.UpdateDialog$Builder;
 import com.netflix.mediaclient.service.error.ErrorDescriptor;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
-import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.android.widget.AlertDialogFactory;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
+import android.view.View;
+import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.ui.mdx.MdxReceiver;
 import android.view.View$OnClickListener;
 import android.view.ViewGroup$LayoutParams;
 import android.support.design.widget.CoordinatorLayout$LayoutParams;
 import android.view.ViewGroup;
-import android.content.Context;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.ui.voip.ContactUsActivity;
 import android.content.Intent;
@@ -91,6 +94,8 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout$PanelSlideListener;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import com.netflix.mediaclient.ui.mdx.IMiniPlayerFrag;
+import java.util.LinkedList;
+import android.widget.RelativeLayout;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
 import android.view.MenuItem;
 import android.support.design.widget.CoordinatorLayout;
@@ -101,8 +106,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import android.os.Handler;
 import android.content.BroadcastReceiver;
 import java.util.Set;
+import com.netflix.mediaclient.ui.offline.ActivityPageOfflineAgentListener;
 import android.annotation.SuppressLint;
-import com.netflix.mediaclient.ui.verifyplay.PlayVerifier$PlayVerifyCallback;
+import com.netflix.mediaclient.ui.verifyplay.PinAndAgeVerifier$PinAndAgeVerifyCallback;
 import com.netflix.mediaclient.ui.mdx.ShowMessageDialogFrag$MessageResponseProvider;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListenerProvider;
 import com.netflix.mediaclient.android.app.LoadingStatus;
@@ -111,6 +117,8 @@ import android.app.DialogFragment;
 import com.netflix.mediaclient.service.logging.client.model.UIError;
 import com.netflix.mediaclient.ui.launch.LaunchActivity;
 import com.netflix.mediaclient.NetflixApplication;
+import android.content.Context;
+import com.netflix.mediaclient.ui.offline.TutorialHelper;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -134,6 +142,8 @@ class NetflixActivity$DefaultManagerStatusListener implements ManagerStatusListe
         if (Log.isLoggable()) {
             Log.d("NetflixActivity", "onManagerReady, status: " + status.getStatusCode());
         }
+        this.this$0.showEndpointPathDebugToast(serviceManager);
+        this.this$0.tutorialHelper = new TutorialHelper((Context)this.this$0, serviceManager.getCurrentProfile());
         this.this$0.mIsTablet = serviceManager.isTablet();
         if (status.isError()) {
             this.this$0.startLaunchActivityIfVisible();
@@ -163,6 +173,7 @@ class NetflixActivity$DefaultManagerStatusListener implements ManagerStatusListe
             this.listener.onManagerReady(serviceManager, status);
         }
         this.this$0.addFab();
+        this.this$0.displayNoNetworkOverlay();
         if (!(this.this$0 instanceof LaunchActivity)) {
             serviceManager.getClientLogging().getApplicationPerformanceMetricsLogging().endUiStartupSession(true, null, serviceManager.getConfiguration().getCurrentPlayerType());
         }
@@ -172,6 +183,10 @@ class NetflixActivity$DefaultManagerStatusListener implements ManagerStatusListe
             this.this$0.showMDXPostPlayOnResume();
         }
         this.this$0.displayErrorDialogIfExist();
+        this.this$0.setupDownloadButtonListener();
+        while (!this.this$0.mPendingServiceManagerRunnable.isEmpty()) {
+            this.this$0.mPendingServiceManagerRunnable.pop().run(this.this$0.getServiceManager());
+        }
     }
     
     @Override
@@ -197,6 +212,9 @@ class NetflixActivity$DefaultManagerStatusListener implements ManagerStatusListe
                 Log.d("NetflixActivity", this.this$0.getClass().getSimpleName() + ": Finishing activity because manager error occured...");
             }
             this.this$0.finish();
+        }
+        while (!this.this$0.mPendingServiceManagerRunnable.isEmpty()) {
+            this.this$0.mPendingServiceManagerRunnable.pop().notAvailable(this.this$0.getServiceManager());
         }
     }
 }

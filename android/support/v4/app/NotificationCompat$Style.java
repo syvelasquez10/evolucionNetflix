@@ -4,6 +4,9 @@
 
 package android.support.v4.app;
 
+import android.app.Notification;
+import android.os.Bundle;
+
 public abstract class NotificationCompat$Style
 {
     CharSequence mBigContentTitle;
@@ -13,6 +16,20 @@ public abstract class NotificationCompat$Style
     
     public NotificationCompat$Style() {
         this.mSummaryTextSet = false;
+    }
+    
+    public void addCompatExtras(final Bundle bundle) {
+    }
+    
+    public Notification build() {
+        Notification build = null;
+        if (this.mBuilder != null) {
+            build = this.mBuilder.build();
+        }
+        return build;
+    }
+    
+    protected void restoreFromCompatExtras(final Bundle bundle) {
     }
     
     public void setBuilder(final NotificationCompat$Builder mBuilder) {

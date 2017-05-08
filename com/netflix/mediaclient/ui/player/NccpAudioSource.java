@@ -4,7 +4,9 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import com.netflix.mediaclient.media.manifest.Stream;
 import org.json.JSONArray;
+import com.netflix.mediaclient.media.manifest.NfManifestParser;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
@@ -20,6 +22,8 @@ public class NccpAudioSource extends AudioSource
     protected NccpAudioSource(final JSONObject jsonObject, int i) {
         final int n = 0;
         this.id = JsonUtils.getString(jsonObject, "id", null);
+        this.dlid = JsonUtils.getString(jsonObject, "downloadable_id", null);
+        this.bitrate = JsonUtils.getInt(jsonObject, "bitrate", 0);
         this.numChannels = JsonUtils.getInt(jsonObject, "channels", 0);
         this.languageCodeIso639_1 = JsonUtils.getString(jsonObject, "language", "en");
         this.languageDescription = JsonUtils.getString(jsonObject, "languageDescription", "English");
@@ -42,13 +46,23 @@ public class NccpAudioSource extends AudioSource
         if (jsonArray != null) {
             Log.d("nf_audio_source", "DisallowedSubtitleTracks found: " + jsonArray.length());
             this.disallowedSubtitles = new String[jsonArray.length()];
-            for (i = n; i < jsonArray.length(); ++i) {
+            for (i = 0; i < jsonArray.length(); ++i) {
                 this.disallowedSubtitles[i] = jsonArray.getString(i);
             }
         }
         else {
             Log.d("nf_audio_source", "No disallowedSubtitleTracks!");
             this.disallowedSubtitles = new String[0];
+        }
+        final JSONArray optJSONArray = jsonObject.optJSONArray("streams");
+        if (optJSONArray != null) {
+            Stream stream;
+            for (i = n; i < optJSONArray.length(); ++i) {
+                stream = NfManifestParser.parseStream((JSONObject)optJSONArray.opt(i));
+                if (stream != null) {
+                    this.streams.add(stream);
+                }
+            }
         }
     }
     

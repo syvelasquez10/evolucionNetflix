@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.ui.lomo;
 
 import android.widget.FrameLayout$LayoutParams;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.ui.common.PlayContextImp;

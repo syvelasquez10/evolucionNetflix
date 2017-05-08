@@ -8,7 +8,6 @@ import android.content.Intent;
 import java.util.Iterator;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.annotation.TargetApi;
 import android.transition.Transition;
@@ -67,7 +66,7 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
             ((MovieDetailsFrag)this.getPrimaryFrag()).setLayoutManagerSavedState(layoutManagerSavedState);
             final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
             this.addBackStackTransitionAnimation(primaryFrag, layoutManagerSavedState != null);
-            beginTransaction.replace(2131689743, this.getPrimaryFrag(), "primary");
+            beginTransaction.replace(2131689755, this.getPrimaryFrag(), "primary");
             if (!Coppola1Utils.shouldInjectPlayerFragment((Context)this)) {
                 beginTransaction.setTransition(4099);
             }
@@ -105,7 +104,7 @@ public class MovieDetailsActivity extends DetailsActivity implements ManagerStat
     
     @Override
     public boolean destroyed() {
-        return AndroidUtils.isActivityFinishedOrDestroyed(this);
+        return AndroidUtils.isActivityFinishedOrDestroyed((Context)this);
     }
     
     @Override

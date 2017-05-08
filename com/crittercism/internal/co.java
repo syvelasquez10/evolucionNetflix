@@ -9,8 +9,16 @@ import java.io.PrintStream;
 
 public final class co extends cp
 {
+    private static final long serialVersionUID = -5983887553268578751L;
     public boolean a;
     private String[] c;
+    
+    public co(final String s, final String s2, final String s3, final boolean a) {
+        super(s, s2, s3);
+        this.c = null;
+        this.c = s3.split("\\r\\n");
+        this.a = a;
+    }
     
     @Override
     public final void printStackTrace(final PrintStream printStream) {

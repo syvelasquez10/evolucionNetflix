@@ -4,8 +4,8 @@
 
 package android.support.v7.widget;
 
-import android.util.Log;
 import android.view.animation.Interpolator;
+import android.util.Log;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.content.Context;
@@ -13,7 +13,7 @@ import android.graphics.PointF;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
-public abstract class LinearSmoothScroller extends RecyclerView$SmoothScroller
+public class LinearSmoothScroller extends RecyclerView$SmoothScroller
 {
     private final float MILLISECONDS_PER_PX;
     protected final DecelerateInterpolator mDecelerateInterpolator;
@@ -66,7 +66,7 @@ public abstract class LinearSmoothScroller extends RecyclerView$SmoothScroller
     
     public int calculateDxToMakeVisible(final View view, final int n) {
         final RecyclerView$LayoutManager layoutManager = this.getLayoutManager();
-        if (!layoutManager.canScrollHorizontally()) {
+        if (layoutManager == null || !layoutManager.canScrollHorizontally()) {
             return 0;
         }
         final RecyclerView$LayoutParams recyclerView$LayoutParams = (RecyclerView$LayoutParams)view.getLayoutParams();
@@ -75,7 +75,7 @@ public abstract class LinearSmoothScroller extends RecyclerView$SmoothScroller
     
     public int calculateDyToMakeVisible(final View view, final int n) {
         final RecyclerView$LayoutManager layoutManager = this.getLayoutManager();
-        if (!layoutManager.canScrollVertically()) {
+        if (layoutManager == null || !layoutManager.canScrollVertically()) {
             return 0;
         }
         final RecyclerView$LayoutParams recyclerView$LayoutParams = (RecyclerView$LayoutParams)view.getLayoutParams();
@@ -94,7 +94,14 @@ public abstract class LinearSmoothScroller extends RecyclerView$SmoothScroller
         return (int)Math.ceil(Math.abs(n) * this.MILLISECONDS_PER_PX);
     }
     
-    public abstract PointF computeScrollVectorForPosition(final int p0);
+    public PointF computeScrollVectorForPosition(final int n) {
+        final RecyclerView$LayoutManager layoutManager = this.getLayoutManager();
+        if (layoutManager instanceof RecyclerView$SmoothScroller$ScrollVectorProvider) {
+            return ((RecyclerView$SmoothScroller$ScrollVectorProvider)layoutManager).computeScrollVectorForPosition(n);
+        }
+        Log.w("LinearSmoothScroller", "You should override computeScrollVectorForPosition when the LayoutManager does not implement " + RecyclerView$SmoothScroller$ScrollVectorProvider.class.getCanonicalName());
+        return null;
+    }
     
     protected int getHorizontalSnapPreference() {
         if (this.mTargetVector == null || this.mTargetVector.x == 0.0f) {
@@ -154,7 +161,6 @@ public abstract class LinearSmoothScroller extends RecyclerView$SmoothScroller
     protected void updateActionForInterimTarget(final RecyclerView$SmoothScroller$Action recyclerView$SmoothScroller$Action) {
         final PointF computeScrollVectorForPosition = this.computeScrollVectorForPosition(this.getTargetPosition());
         if (computeScrollVectorForPosition == null || (computeScrollVectorForPosition.x == 0.0f && computeScrollVectorForPosition.y == 0.0f)) {
-            Log.e("LinearSmoothScroller", "To support smooth scrolling, you should override \nLayoutManager#computeScrollVectorForPosition.\nFalling back to instant scroll");
             recyclerView$SmoothScroller$Action.jumpTo(this.getTargetPosition());
             this.stop();
             return;

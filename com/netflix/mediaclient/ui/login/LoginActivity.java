@@ -79,7 +79,7 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
         final FragmentManager fragmentManager = this.getFragmentManager();
         final FragmentTransaction beginTransaction = fragmentManager.beginTransaction();
         this.mEmailPasswordFragment = EmailPasswordFragment.newInstance(this.getIntent().getExtras());
-        beginTransaction.replace(2131689911, (Fragment)this.mEmailPasswordFragment, "EmailPasswordFragment").addToBackStack("EmailPasswordFragment");
+        beginTransaction.replace(2131689939, (Fragment)this.mEmailPasswordFragment, "EmailPasswordFragment").addToBackStack("EmailPasswordFragment");
         beginTransaction.commitAllowingStateLoss();
         fragmentManager.executePendingTransactions();
         this.getActiveFragment(fragmentManager);
@@ -194,7 +194,7 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         AndroidUtils.setWindowSecureFlag(this);
-        this.setContentView(2130903170);
+        this.setContentView(2130903180);
         if (bundle != null) {
             this.mEmailPasswordFragment = (EmailPasswordFragment)this.getFragmentManager().findFragmentByTag("EmailPasswordFragment");
         }
@@ -228,6 +228,6 @@ public class LoginActivity extends AccountActivity implements LoginFragmentListe
     
     @Override
     protected boolean showHelpInMenu() {
-        return true;
+        return this.getServiceManager() != null && this.getServiceManager().getConfiguration() != null && this.getServiceManager().getConfiguration().showHelpForNonMemebers();
     }
 }

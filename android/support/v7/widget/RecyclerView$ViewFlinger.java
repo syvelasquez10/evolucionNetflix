@@ -4,25 +4,20 @@
 
 package android.support.v7.widget;
 
-import android.graphics.PointF;
-import android.support.v4.view.ViewConfigurationCompat;
 import android.os.SystemClock;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.VelocityTrackerCompat;
-import android.view.ViewParent;
+import android.view.View$MeasureSpec;
 import android.view.FocusFinder;
+import android.view.ViewParent;
 import android.graphics.Canvas;
 import android.os.Parcelable;
 import android.util.SparseArray;
-import android.support.v4.util.SimpleArrayMap;
-import android.util.Log;
-import android.support.v4.util.ArrayMap;
 import android.support.v4.view.MotionEventCompat;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.View$MeasureSpec;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import android.view.ViewGroup$LayoutParams;
@@ -33,6 +28,7 @@ import android.util.AttributeSet;
 import android.content.Context;
 import android.os.Build$VERSION;
 import android.view.VelocityTracker;
+import android.graphics.RectF;
 import android.graphics.Rect;
 import android.support.v4.view.NestedScrollingChildHelper;
 import java.util.List;
@@ -42,6 +38,8 @@ import android.view.accessibility.AccessibilityManager;
 import android.support.v4.view.ScrollingView;
 import android.support.v4.view.NestedScrollingChild;
 import android.view.ViewGroup;
+import android.graphics.PointF;
+import android.util.Log;
 import android.support.v4.os.TraceCompat;
 import android.view.View;
 import android.support.v4.view.ViewCompat;
@@ -139,11 +137,15 @@ class RecyclerView$ViewFlinger implements Runnable
     
     @Override
     public void run() {
+        if (this.this$0.mLayout == null) {
+            this.stop();
+            return;
+        }
         this.disableRunOnAnimationRequests();
         this.this$0.consumePendingUpdateOperations();
         final ScrollerCompat mScroller = this.mScroller;
         final RecyclerView$SmoothScroller mSmoothScroller = this.this$0.mLayout.mSmoothScroller;
-        Label_0744: {
+        Label_0618: {
             if (mScroller.computeScrollOffset()) {
                 final int currX = mScroller.getCurrX();
                 final int currY = mScroller.getCurrY();
@@ -160,9 +162,9 @@ class RecyclerView$ViewFlinger implements Runnable
                 int n7 = 0;
                 int n8 = 0;
                 while (true) {
-                    Label_0849: {
+                    Label_0723: {
                         if (this.this$0.mAdapter == null) {
-                            break Label_0849;
+                            break Label_0723;
                         }
                         this.this$0.eatRequestLayout();
                         this.this$0.onEnterLayoutOrScroll();
@@ -176,20 +178,7 @@ class RecyclerView$ViewFlinger implements Runnable
                             n8 = n2 - scrollVerticallyBy;
                         }
                         TraceCompat.endSection();
-                        if (this.this$0.supportsChangeAnimations()) {
-                            for (int childCount = this.this$0.mChildHelper.getChildCount(), i = 0; i < childCount; ++i) {
-                                final View child = this.this$0.mChildHelper.getChildAt(i);
-                                final RecyclerView$ViewHolder childViewHolder = this.this$0.getChildViewHolder(child);
-                                if (childViewHolder != null && childViewHolder.mShadowingHolder != null) {
-                                    final View itemView = childViewHolder.mShadowingHolder.itemView;
-                                    final int left = child.getLeft();
-                                    final int top = child.getTop();
-                                    if (left != itemView.getLeft() || top != itemView.getTop()) {
-                                        itemView.layout(left, top, itemView.getWidth() + left, itemView.getHeight() + top);
-                                    }
-                                }
-                            }
-                        }
+                        this.this$0.repositionShadowingViews();
                         this.this$0.onExitLayoutOrScroll();
                         this.this$0.resumeRequestLayout(false);
                         n7 = n8;
@@ -197,21 +186,21 @@ class RecyclerView$ViewFlinger implements Runnable
                         n5 = n6;
                         n3 = scrollHorizontallyBy;
                         if (mSmoothScroller == null) {
-                            break Label_0849;
+                            break Label_0723;
                         }
                         n7 = n8;
                         n4 = scrollVerticallyBy;
                         n5 = n6;
                         n3 = scrollHorizontallyBy;
                         if (mSmoothScroller.isPendingInitialRun()) {
-                            break Label_0849;
+                            break Label_0723;
                         }
                         n7 = n8;
                         n4 = scrollVerticallyBy;
                         n5 = n6;
                         n3 = scrollHorizontallyBy;
                         if (!mSmoothScroller.isRunning()) {
-                            break Label_0849;
+                            break Label_0723;
                         }
                         final int itemCount = this.this$0.mState.getItemCount();
                         int n9;
@@ -228,7 +217,7 @@ class RecyclerView$ViewFlinger implements Runnable
                                 n5 = n6;
                                 n4 = scrollVerticallyBy;
                                 n7 = n8;
-                                break Label_0849;
+                                break Label_0723;
                             }
                             mSmoothScroller.setTargetPosition(itemCount - 1);
                             mSmoothScroller.onAnimation(n - n6, n2 - n8);
@@ -238,7 +227,7 @@ class RecyclerView$ViewFlinger implements Runnable
                         if (!this.this$0.mItemDecorations.isEmpty()) {
                             this.this$0.invalidate();
                         }
-                        if (ViewCompat.getOverScrollMode((View)this.this$0) != 2) {
+                        if (this.this$0.getOverScrollMode() != 2) {
                             this.this$0.considerReleasingGlowsOnScroll(n, n2);
                         }
                         if (n10 != 0 || n8 != 0) {
@@ -275,7 +264,7 @@ class RecyclerView$ViewFlinger implements Runnable
                             else {
                                 n14 = 0;
                             }
-                            if (ViewCompat.getOverScrollMode((View)this.this$0) != 2) {
+                            if (this.this$0.getOverScrollMode() != 2) {
                                 this.this$0.absorbGlows(n13, n14);
                             }
                             if ((n13 != 0 || n10 == currX || mScroller.getFinalX() == 0) && (n14 != 0 || n8 == currY || mScroller.getFinalY() == 0)) {
@@ -285,7 +274,7 @@ class RecyclerView$ViewFlinger implements Runnable
                         if (scrollHorizontallyBy != 0 || n9 != 0) {
                             this.this$0.dispatchOnScrolled(scrollHorizontallyBy, n9);
                         }
-                        if (!RecyclerView.access$3100(this.this$0)) {
+                        if (!RecyclerView.access$500(this.this$0)) {
                             this.this$0.invalidate();
                         }
                         boolean b;
@@ -311,10 +300,10 @@ class RecyclerView$ViewFlinger implements Runnable
                         }
                         if (mScroller.isFinished() || !b3) {
                             this.this$0.setScrollState(0);
-                            break Label_0744;
+                            break Label_0618;
                         }
                         this.postOnAnimation();
-                        break Label_0744;
+                        break Label_0618;
                     }
                     int n10 = n5;
                     n8 = n7;

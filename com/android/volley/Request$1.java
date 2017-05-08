@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import android.net.Uri;
 import android.text.TextUtils;
+import java.net.HttpURLConnection;
 
 class Request$1 implements Runnable
 {

@@ -33,4 +33,8 @@ public final class ds
     public final String c() {
         return this.a.getString("rateAppTitle", "Rate My App");
     }
+    
+    public final void d() {
+        this.a.edit().putBoolean("hasRatedApp", true).commit();
+    }
 }

@@ -13,6 +13,21 @@ public final class l extends OutputStream implements ah
     private c c;
     private aa d;
     
+    public l(final z b, final OutputStream a) {
+        if (b == null) {
+            throw new NullPointerException("socket was null");
+        }
+        if (a == null) {
+            throw new NullPointerException("output stream was null");
+        }
+        this.b = b;
+        this.a = a;
+        this.d = this.b();
+        if (this.d == null) {
+            throw new NullPointerException("parser was null");
+        }
+    }
+    
     private void a(final byte[] array, final int n, final int n2) {
         try {
             this.d.a(array, n, n2);

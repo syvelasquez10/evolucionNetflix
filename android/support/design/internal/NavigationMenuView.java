@@ -4,13 +4,15 @@
 
 package android.support.design.internal;
 
-import android.support.v7.internal.view.menu.i;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.widget.RecyclerView$LayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.support.v7.internal.view.menu.z;
-import android.widget.ListView;
+import android.support.v7.view.menu.MenuView;
+import android.support.v7.widget.RecyclerView;
 
-public class NavigationMenuView extends ListView implements z
+public class NavigationMenuView extends RecyclerView implements MenuView
 {
     public NavigationMenuView(final Context context) {
         this(context, null);
@@ -22,12 +24,14 @@ public class NavigationMenuView extends ListView implements z
     
     public NavigationMenuView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
+        this.setLayoutManager(new LinearLayoutManager(context, 1, false));
     }
     
     public int getWindowAnimations() {
         return 0;
     }
     
-    public void initialize(final i i) {
+    @Override
+    public void initialize(final MenuBuilder menuBuilder) {
     }
 }

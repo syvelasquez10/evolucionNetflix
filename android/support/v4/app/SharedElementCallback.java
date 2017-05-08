@@ -23,6 +23,9 @@ import android.graphics.Matrix;
 
 public abstract class SharedElementCallback
 {
+    private static final String BUNDLE_SNAPSHOT_BITMAP = "sharedElement:snapshot:bitmap";
+    private static final String BUNDLE_SNAPSHOT_IMAGE_MATRIX = "sharedElement:snapshot:imageMatrix";
+    private static final String BUNDLE_SNAPSHOT_IMAGE_SCALETYPE = "sharedElement:snapshot:imageScaleType";
     private static int MAX_IMAGE_SIZE;
     private Matrix mTempMatrix;
     
@@ -147,5 +150,9 @@ public abstract class SharedElementCallback
     }
     
     public void onSharedElementStart(final List<String> list, final List<View> list2, final List<View> list3) {
+    }
+    
+    public void onSharedElementsArrived(final List<String> list, final List<View> list2, final SharedElementCallback$OnSharedElementsReadyListener sharedElementCallback$OnSharedElementsReadyListener) {
+        sharedElementCallback$OnSharedElementsReadyListener.onSharedElementsReady();
     }
 }

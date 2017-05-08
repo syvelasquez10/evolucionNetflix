@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import android.os.Parcelable;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -23,7 +22,7 @@ public class NonMemberPlayerActivity extends PlayerActivity
         intent.addFlags(131072);
         intent.putExtra("extra_get_details_video_id", s);
         intent.putExtra("extra_get_details_video_type", videoType.getValue());
-        intent.putExtra("extra_get_details_play_context", (Parcelable)playContext);
+        intent.putExtra("extra_get_details_play_context_bundle", playContext.playContextToBundle());
         return intent;
     }
 }

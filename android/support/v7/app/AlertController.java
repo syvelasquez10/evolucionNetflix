@@ -7,13 +7,18 @@ package android.support.v7.app;
 import android.content.DialogInterface$OnClickListener;
 import android.view.KeyEvent;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
-import android.widget.FrameLayout;
-import android.support.v7.internal.widget.TintTypedArray;
-import android.support.v7.appcompat.R$id;
-import android.text.TextUtils;
-import android.view.ViewGroup$LayoutParams;
 import android.widget.LinearLayout$LayoutParams;
+import android.widget.FrameLayout;
+import android.view.LayoutInflater;
+import android.view.ViewGroup$LayoutParams;
+import android.text.TextUtils;
+import android.widget.AbsListView$OnScrollListener;
+import android.support.v4.widget.NestedScrollView$OnScrollChangeListener;
+import android.os.Build$VERSION;
+import android.support.v7.appcompat.R$id;
+import android.view.ViewParent;
+import android.view.ViewStub;
+import android.support.v4.view.ViewCompat;
 import android.view.ViewGroup;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
@@ -21,7 +26,7 @@ import android.support.v7.appcompat.R$attr;
 import android.support.v7.appcompat.R$styleable;
 import android.content.DialogInterface;
 import android.view.Window;
-import android.widget.ScrollView;
+import android.support.v4.widget.NestedScrollView;
 import android.widget.TextView;
 import android.widget.ListView;
 import android.widget.ImageView;
@@ -36,36 +41,36 @@ import android.widget.ListAdapter;
 
 class AlertController
 {
-    private ListAdapter mAdapter;
+    ListAdapter mAdapter;
     private int mAlertDialogLayout;
     private final View$OnClickListener mButtonHandler;
-    private Button mButtonNegative;
-    private Message mButtonNegativeMessage;
+    Button mButtonNegative;
+    Message mButtonNegativeMessage;
     private CharSequence mButtonNegativeText;
-    private Button mButtonNeutral;
-    private Message mButtonNeutralMessage;
+    Button mButtonNeutral;
+    Message mButtonNeutralMessage;
     private CharSequence mButtonNeutralText;
     private int mButtonPanelLayoutHint;
     private int mButtonPanelSideLayout;
-    private Button mButtonPositive;
-    private Message mButtonPositiveMessage;
+    Button mButtonPositive;
+    Message mButtonPositiveMessage;
     private CharSequence mButtonPositiveText;
-    private int mCheckedItem;
+    int mCheckedItem;
     private final Context mContext;
     private View mCustomTitleView;
-    private final AppCompatDialog mDialog;
-    private Handler mHandler;
+    final AppCompatDialog mDialog;
+    Handler mHandler;
     private Drawable mIcon;
     private int mIconId;
     private ImageView mIconView;
-    private int mListItemLayout;
-    private int mListLayout;
-    private ListView mListView;
+    int mListItemLayout;
+    int mListLayout;
+    ListView mListView;
     private CharSequence mMessage;
     private TextView mMessageView;
-    private int mMultiChoiceItemLayout;
-    private ScrollView mScrollView;
-    private int mSingleChoiceItemLayout;
+    int mMultiChoiceItemLayout;
+    NestedScrollView mScrollView;
+    int mSingleChoiceItemLayout;
     private CharSequence mTitle;
     private TextView mTitleView;
     private View mView;
@@ -95,6 +100,7 @@ class AlertController
         this.mSingleChoiceItemLayout = obtainStyledAttributes.getResourceId(R$styleable.AlertDialog_singleChoiceItemLayout, 0);
         this.mListItemLayout = obtainStyledAttributes.getResourceId(R$styleable.AlertDialog_listItemLayout, 0);
         obtainStyledAttributes.recycle();
+        mDialog.supportRequestWindowFeature(1);
     }
     
     static boolean canTextInput(final View view) {
@@ -114,11 +120,50 @@ class AlertController
         return false;
     }
     
-    private void centerButton(final Button button) {
-        final LinearLayout$LayoutParams layoutParams = (LinearLayout$LayoutParams)button.getLayoutParams();
-        layoutParams.gravity = 1;
-        layoutParams.weight = 0.5f;
-        button.setLayoutParams((ViewGroup$LayoutParams)layoutParams);
+    static void manageScrollIndicators(final View view, final View view2, final View view3) {
+        final boolean b = false;
+        if (view2 != null) {
+            int visibility;
+            if (ViewCompat.canScrollVertically(view, -1)) {
+                visibility = 0;
+            }
+            else {
+                visibility = 4;
+            }
+            view2.setVisibility(visibility);
+        }
+        if (view3 != null) {
+            int visibility2;
+            if (ViewCompat.canScrollVertically(view, 1)) {
+                visibility2 = (b ? 1 : 0);
+            }
+            else {
+                visibility2 = 4;
+            }
+            view3.setVisibility(visibility2);
+        }
+    }
+    
+    private ViewGroup resolvePanel(View view, final View view2) {
+        if (view == null) {
+            if (view2 instanceof ViewStub) {
+                view = ((ViewStub)view2).inflate();
+            }
+            else {
+                view = view2;
+            }
+            return (ViewGroup)view;
+        }
+        if (view2 != null) {
+            final ViewParent parent = view2.getParent();
+            if (parent instanceof ViewGroup) {
+                ((ViewGroup)parent).removeView(view2);
+            }
+        }
+        if (view instanceof ViewStub) {
+            view = ((ViewStub)view).inflate();
+        }
+        return (ViewGroup)view;
     }
     
     private int selectContentView() {
@@ -131,8 +176,57 @@ class AlertController
         return this.mAlertDialogLayout;
     }
     
-    private boolean setupButtons() {
-        (this.mButtonPositive = (Button)this.mWindow.findViewById(16908313)).setOnClickListener(this.mButtonHandler);
+    private void setScrollIndicators(final ViewGroup viewGroup, View view, final int n, final int n2) {
+        View view2 = null;
+        final View viewById = this.mWindow.findViewById(R$id.scrollIndicatorUp);
+        final View viewById2 = this.mWindow.findViewById(R$id.scrollIndicatorDown);
+        if (Build$VERSION.SDK_INT >= 23) {
+            ViewCompat.setScrollIndicators(view, n, n2);
+            if (viewById != null) {
+                viewGroup.removeView(viewById);
+            }
+            if (viewById2 != null) {
+                viewGroup.removeView(viewById2);
+            }
+        }
+        else {
+            if ((view = viewById) != null) {
+                view = viewById;
+                if ((n & 0x1) == 0x0) {
+                    viewGroup.removeView(viewById);
+                    view = null;
+                }
+            }
+            if (viewById2 != null && (n & 0x2) == 0x0) {
+                viewGroup.removeView(viewById2);
+            }
+            else {
+                view2 = viewById2;
+            }
+            if (view != null || view2 != null) {
+                if (this.mMessage != null) {
+                    this.mScrollView.setOnScrollChangeListener(new AlertController$2(this, view, view2));
+                    this.mScrollView.post((Runnable)new AlertController$3(this, view, view2));
+                    return;
+                }
+                if (this.mListView != null) {
+                    this.mListView.setOnScrollListener((AbsListView$OnScrollListener)new AlertController$4(this, view, view2));
+                    this.mListView.post((Runnable)new AlertController$5(this, view, view2));
+                    return;
+                }
+                if (view != null) {
+                    viewGroup.removeView(view);
+                }
+                if (view2 != null) {
+                    viewGroup.removeView(view2);
+                }
+            }
+        }
+    }
+    
+    private void setupButtons(final ViewGroup viewGroup) {
+        final boolean b = true;
+        (this.mButtonPositive = (Button)viewGroup.findViewById(16908313)).setOnClickListener(this.mButtonHandler);
         int n;
         if (TextUtils.isEmpty(this.mButtonPositiveText)) {
             this.mButtonPositive.setVisibility(8);
@@ -143,7 +237,7 @@ class AlertController
             this.mButtonPositive.setVisibility(0);
             n = 1;
         }
-        (this.mButtonNegative = (Button)this.mWindow.findViewById(16908314)).setOnClickListener(this.mButtonHandler);
+        (this.mButtonNegative = (Button)viewGroup.findViewById(16908314)).setOnClickListener(this.mButtonHandler);
         if (TextUtils.isEmpty(this.mButtonNegativeText)) {
             this.mButtonNegative.setVisibility(8);
         }
@@ -152,7 +246,7 @@ class AlertController
             this.mButtonNegative.setVisibility(0);
             n |= 0x2;
         }
-        (this.mButtonNeutral = (Button)this.mWindow.findViewById(16908315)).setOnClickListener(this.mButtonHandler);
+        (this.mButtonNeutral = (Button)viewGroup.findViewById(16908315)).setOnClickListener(this.mButtonHandler);
         if (TextUtils.isEmpty(this.mButtonNeutralText)) {
             this.mButtonNeutral.setVisibility(8);
         }
@@ -161,23 +255,15 @@ class AlertController
             this.mButtonNeutral.setVisibility(0);
             n |= 0x4;
         }
-        if (shouldCenterSingleButton(this.mContext)) {
-            if (n == 1) {
-                this.centerButton(this.mButtonPositive);
-            }
-            else if (n == 2) {
-                this.centerButton(this.mButtonNegative);
-            }
-            else if (n == 4) {
-                this.centerButton(this.mButtonNeutral);
-            }
+        if (n == 0 || !b) {
+            viewGroup.setVisibility(8);
         }
-        return n != 0;
     }
     
     private void setupContent(ViewGroup viewGroup) {
-        (this.mScrollView = (ScrollView)this.mWindow.findViewById(R$id.scrollView)).setFocusable(false);
-        this.mMessageView = (TextView)this.mWindow.findViewById(16908299);
+        (this.mScrollView = (NestedScrollView)this.mWindow.findViewById(R$id.scrollView)).setFocusable(false);
+        this.mScrollView.setNestedScrollingEnabled(false);
+        this.mMessageView = (TextView)viewGroup.findViewById(16908299);
         if (this.mMessageView == null) {
             return;
         }
@@ -197,11 +283,43 @@ class AlertController
         viewGroup.setVisibility(8);
     }
     
-    private boolean setupTitle(final ViewGroup viewGroup) {
+    private void setupCustomContent(final ViewGroup viewGroup) {
+        boolean b = false;
+        View view;
+        if (this.mView != null) {
+            view = this.mView;
+        }
+        else if (this.mViewLayoutResId != 0) {
+            view = LayoutInflater.from(this.mContext).inflate(this.mViewLayoutResId, viewGroup, false);
+        }
+        else {
+            view = null;
+        }
+        if (view != null) {
+            b = true;
+        }
+        if (!b || !canTextInput(view)) {
+            this.mWindow.setFlags(131072, 131072);
+        }
+        if (b) {
+            final FrameLayout frameLayout = (FrameLayout)this.mWindow.findViewById(R$id.custom);
+            frameLayout.addView(view, new ViewGroup$LayoutParams(-1, -1));
+            if (this.mViewSpacingSpecified) {
+                frameLayout.setPadding(this.mViewSpacingLeft, this.mViewSpacingTop, this.mViewSpacingRight, this.mViewSpacingBottom);
+            }
+            if (this.mListView != null) {
+                ((LinearLayout$LayoutParams)viewGroup.getLayoutParams()).weight = 0.0f;
+            }
+            return;
+        }
+        viewGroup.setVisibility(8);
+    }
+    
+    private void setupTitle(final ViewGroup viewGroup) {
         if (this.mCustomTitleView != null) {
             viewGroup.addView(this.mCustomTitleView, 0, new ViewGroup$LayoutParams(-1, -2));
             this.mWindow.findViewById(R$id.title_template).setVisibility(8);
-            return true;
+            return;
         }
         this.mIconView = (ImageView)this.mWindow.findViewById(16908294);
         int n;
@@ -215,66 +333,92 @@ class AlertController
             this.mWindow.findViewById(R$id.title_template).setVisibility(8);
             this.mIconView.setVisibility(8);
             viewGroup.setVisibility(8);
-            return false;
+            return;
         }
         (this.mTitleView = (TextView)this.mWindow.findViewById(R$id.alertTitle)).setText(this.mTitle);
         if (this.mIconId != 0) {
             this.mIconView.setImageResource(this.mIconId);
-            return true;
+            return;
         }
         if (this.mIcon != null) {
             this.mIconView.setImageDrawable(this.mIcon);
-            return true;
+            return;
         }
         this.mTitleView.setPadding(this.mIconView.getPaddingLeft(), this.mIconView.getPaddingTop(), this.mIconView.getPaddingRight(), this.mIconView.getPaddingBottom());
         this.mIconView.setVisibility(8);
-        return true;
     }
     
     private void setupView() {
-        boolean b = false;
-        this.setupContent((ViewGroup)this.mWindow.findViewById(R$id.contentPanel));
-        final boolean setupButtons = this.setupButtons();
-        final ViewGroup viewGroup = (ViewGroup)this.mWindow.findViewById(R$id.topPanel);
-        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(this.mContext, null, R$styleable.AlertDialog, R$attr.alertDialogStyle, 0);
-        this.setupTitle(viewGroup);
-        final View viewById = this.mWindow.findViewById(R$id.buttonPanel);
-        if (!setupButtons) {
-            viewById.setVisibility(8);
-            final View viewById2 = this.mWindow.findViewById(R$id.textSpacerNoButtons);
-            if (viewById2 != null) {
-                viewById2.setVisibility(0);
-            }
-        }
-        final FrameLayout frameLayout = (FrameLayout)this.mWindow.findViewById(R$id.customPanel);
-        View view;
-        if (this.mView != null) {
-            view = this.mView;
-        }
-        else if (this.mViewLayoutResId != 0) {
-            view = LayoutInflater.from(this.mContext).inflate(this.mViewLayoutResId, (ViewGroup)frameLayout, false);
+        final View viewById = this.mWindow.findViewById(R$id.parentPanel);
+        final View viewById2 = viewById.findViewById(R$id.topPanel);
+        final View viewById3 = viewById.findViewById(R$id.contentPanel);
+        final View viewById4 = viewById.findViewById(R$id.buttonPanel);
+        final ViewGroup viewGroup = (ViewGroup)viewById.findViewById(R$id.customPanel);
+        this.setupCustomContent(viewGroup);
+        final View viewById5 = viewGroup.findViewById(R$id.topPanel);
+        final View viewById6 = viewGroup.findViewById(R$id.contentPanel);
+        final View viewById7 = viewGroup.findViewById(R$id.buttonPanel);
+        final ViewGroup resolvePanel = this.resolvePanel(viewById5, viewById2);
+        final ViewGroup resolvePanel2 = this.resolvePanel(viewById6, viewById3);
+        final ViewGroup resolvePanel3 = this.resolvePanel(viewById7, viewById4);
+        this.setupContent(resolvePanel2);
+        this.setupButtons(resolvePanel3);
+        this.setupTitle(resolvePanel);
+        int n;
+        if (viewGroup != null && viewGroup.getVisibility() != 8) {
+            n = 1;
         }
         else {
-            view = null;
+            n = 0;
         }
-        if (view != null) {
+        boolean b;
+        if (resolvePanel != null && resolvePanel.getVisibility() != 8) {
             b = true;
         }
-        if (!b || !canTextInput(view)) {
-            this.mWindow.setFlags(131072, 131072);
+        else {
+            b = false;
         }
-        if (b) {
-            final FrameLayout frameLayout2 = (FrameLayout)this.mWindow.findViewById(R$id.custom);
-            frameLayout2.addView(view, new ViewGroup$LayoutParams(-1, -1));
-            if (this.mViewSpacingSpecified) {
-                frameLayout2.setPadding(this.mViewSpacingLeft, this.mViewSpacingTop, this.mViewSpacingRight, this.mViewSpacingBottom);
-            }
-            if (this.mListView != null) {
-                ((LinearLayout$LayoutParams)frameLayout.getLayoutParams()).weight = 0.0f;
-            }
+        boolean b2;
+        if (resolvePanel3 != null && resolvePanel3.getVisibility() != 8) {
+            b2 = true;
         }
         else {
-            frameLayout.setVisibility(8);
+            b2 = false;
+        }
+        if (!b2 && resolvePanel2 != null) {
+            final View viewById8 = resolvePanel2.findViewById(R$id.textSpacerNoButtons);
+            if (viewById8 != null) {
+                viewById8.setVisibility(0);
+            }
+        }
+        if (b && this.mScrollView != null) {
+            this.mScrollView.setClipToPadding(true);
+        }
+        if (n == 0) {
+            Object o;
+            if (this.mListView != null) {
+                o = this.mListView;
+            }
+            else {
+                o = this.mScrollView;
+            }
+            if (o != null) {
+                boolean b3;
+                if (b) {
+                    b3 = true;
+                }
+                else {
+                    b3 = false;
+                }
+                int n2;
+                if (b2) {
+                    n2 = 2;
+                }
+                else {
+                    n2 = 0;
+                }
+                this.setScrollIndicators(resolvePanel2, (View)o, n2 | (b3 ? 1 : 0), 3);
+            }
         }
         final ListView mListView = this.mListView;
         if (mListView != null && this.mAdapter != null) {
@@ -285,13 +429,23 @@ class AlertController
                 mListView.setSelection(mCheckedItem);
             }
         }
-        obtainStyledAttributes.recycle();
     }
     
-    private static boolean shouldCenterSingleButton(final Context context) {
-        final TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(R$attr.alertDialogCenterButtons, typedValue, true);
-        return typedValue.data != 0;
+    public Button getButton(final int n) {
+        switch (n) {
+            default: {
+                return null;
+            }
+            case -1: {
+                return this.mButtonPositive;
+            }
+            case -2: {
+                return this.mButtonNegative;
+            }
+            case -3: {
+                return this.mButtonNeutral;
+            }
+        }
     }
     
     public int getIconAttributeResId(final int n) {
@@ -300,8 +454,11 @@ class AlertController
         return typedValue.resourceId;
     }
     
+    public ListView getListView() {
+        return this.mListView;
+    }
+    
     public void installContent() {
-        this.mDialog.supportRequestWindowFeature(1);
         this.mDialog.setContentView(this.selectContentView());
         this.setupView();
     }
@@ -341,6 +498,10 @@ class AlertController
         }
     }
     
+    public void setButtonPanelLayoutHint(final int mButtonPanelLayoutHint) {
+        this.mButtonPanelLayoutHint = mButtonPanelLayoutHint;
+    }
+    
     public void setCustomTitle(final View mCustomTitleView) {
         this.mCustomTitleView = mCustomTitleView;
     }
@@ -353,6 +514,7 @@ class AlertController
                 this.mIconView.setVisibility(8);
                 return;
             }
+            this.mIconView.setVisibility(0);
             this.mIconView.setImageResource(this.mIconId);
         }
     }
@@ -365,6 +527,7 @@ class AlertController
                 this.mIconView.setVisibility(8);
                 return;
             }
+            this.mIconView.setVisibility(0);
             this.mIconView.setImageDrawable(drawable);
         }
     }

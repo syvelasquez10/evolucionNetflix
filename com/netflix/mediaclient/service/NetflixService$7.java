@@ -4,8 +4,11 @@
 
 package com.netflix.mediaclient.service;
 
+import android.app.Notification;
 import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
+import com.netflix.mediaclient.media.BookmarkStore;
+import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
@@ -14,10 +17,12 @@ import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
 import com.netflix.mediaclient.servicemgr.IPushNotification;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.servicemgr.NrdpComponent;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.servicemgr.IMdx;
+import com.netflix.mediaclient.servicemgr.IMSLClient;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
@@ -32,6 +37,7 @@ import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.service.user.UserAgent$UserAgentCallback;
+import com.netflix.mediaclient.servicemgr.IMSLClient$NetworkRequestInspector;
 import android.os.SystemClock;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
@@ -42,12 +48,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import java.io.Serializable;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.ThreadUtils;
-import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import android.app.PendingIntent;
-import com.netflix.mediaclient.Log;
 import android.app.AlarmManager;
+import java.util.HashSet;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.HashMap;
 import com.netflix.mediaclient.service.voip.WhistleVoipAgent;
@@ -55,11 +60,16 @@ import com.netflix.mediaclient.service.user.UserAgent;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
 import com.netflix.mediaclient.service.pushnotification.PushNotificationAgent;
 import com.netflix.mediaclient.service.preapp.PreAppAgent;
+import java.util.Set;
 import com.netflix.mediaclient.service.player.PlayerAgent;
+import com.netflix.mediaclient.service.pdslogging.PdsAgent;
+import com.netflix.mediaclient.service.player.exoplayback.ExoPlayback;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgent;
 import com.netflix.mediaclient.service.job.NetflixJobScheduler;
 import com.netflix.mediaclient.service.job.NetflixJobExecutor;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import java.util.Map;
+import com.netflix.mediaclient.service.msl.MSLAgent;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.ArrayList;
@@ -73,7 +83,8 @@ import android.os.IBinder;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;
 import android.app.Service;
-import com.netflix.mediaclient.service.net.DnsManager;
+import com.netflix.mediaclient.NetflixApplication;
+import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
 import android.content.BroadcastReceiver;
@@ -87,9 +98,12 @@ class NetflixService$7 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        this.this$0.mNrdController.setNetworkInterfaces();
-        this.this$0.mPlayerAgent.handleConnectivityChange(intent);
-        this.this$0.mClientLoggingAgent.handleConnectivityChange(intent);
-        DnsManager.getInstance().cacheFlush();
+        if (intent == null || !"com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER".equals(intent.getAction())) {
+            Log.d("NetflixService", "Invalid intent: ", intent);
+            return;
+        }
+        Log.v("NetflixService", "Sending show app intent");
+        this.this$0.startActivity(NetflixApplication.createShowApplicationIntent((Context)this.this$0).addFlags(268435456));
+        this.this$0.handler.postDelayed((Runnable)new NetflixService$7$1(this), 400L);
     }
 }

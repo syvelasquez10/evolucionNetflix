@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.service.user;
 
-import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.content.Context;
 import java.util.Iterator;
 import android.content.IntentFilter;
@@ -17,6 +17,7 @@ public final class UserAgentBroadcastIntents
     public static final String EXTRA_TOKEN = "token";
     public static final String EXTRA_USER_PROFILE_SELECTION_RESULT_INT = "com.netflix.mediaclient.intent.action.EXTRA_USER_PROFILE_SELECTION_RESULT_INT";
     public static final String EXTRA_USER_PROFILE_SELECTION_RESULT_STRING = "com.netflix.mediaclient.intent.action.EXTRA_USER_PROFILE_SELECTION_RESULT_STRING";
+    public static final String NOTIFY_ACCOUNT_DATA_FETCHED = "com.netflix.mediaclient.intent.action.ACCOUNT_DATA_FETCHED";
     public static final String NOTIFY_AUTOLOGIN_TOKEN_CREATED = "com.netflix.mediaclient.intent.action.NOTIFY_AUTOLOGIN_TOKEN_CREATED";
     public static final String NOTIFY_CURRENT_PROFILE_INVALID = "com.netflix.mediaclient.intent.action.NOTIFY_CURRENT_PROFILE_INVALID";
     public static final String NOTIFY_PROFILES_LIST_UPDATED = "com.netflix.mediaclient.intent.action.NOTIFY_PROFILES_LIST_UPDATED";
@@ -39,6 +40,10 @@ public final class UserAgentBroadcastIntents
             intentFilter.addAction((String)iterator.next());
         }
         return intentFilter;
+    }
+    
+    public static void signalAccountDataFetched(final Context context) {
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.ACCOUNT_DATA_FETCHED"));
     }
     
     static void signalAutoLoginTokenCreated(final String s, final Context context) {

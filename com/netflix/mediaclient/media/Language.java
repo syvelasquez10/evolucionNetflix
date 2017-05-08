@@ -6,6 +6,7 @@ package com.netflix.mediaclient.media;
 
 import java.io.Serializable;
 import org.json.JSONArray;
+import com.netflix.mediaclient.util.SubtitleUtils;
 import org.json.JSONObject;
 import com.netflix.mediaclient.Log;
 import java.util.Arrays;
@@ -183,7 +184,7 @@ public class Language
                 if (n2 >= array.length) {
                     break;
                 }
-                array[n2] = Subtitle.restore(optJSONArray2.getJSONObject(n2));
+                array[n2] = SubtitleUtils.newInstance(optJSONArray2.getJSONObject(n2));
                 ++n2;
             }
         }

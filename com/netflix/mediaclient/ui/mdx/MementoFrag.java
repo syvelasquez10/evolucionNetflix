@@ -85,9 +85,9 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     }
     
     private void findViews(final View view) {
-        this.pagerIndicator = (CirclePageIndicator)view.findViewById(2131689982);
-        this.tabLayout = (TabLayout)view.findViewById(2131689983);
-        this.pager = (ViewPager)view.findViewById(2131689981);
+        this.pagerIndicator = (CirclePageIndicator)view.findViewById(2131690010);
+        this.tabLayout = (TabLayout)view.findViewById(2131690011);
+        this.pager = (ViewPager)view.findViewById(2131690009);
     }
     
     private void hideStandardViews() {
@@ -133,16 +133,16 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     private void initTabs() {
         if (this.tabLayout != null) {
             this.tabLayout.removeAllTabs();
-            this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903199), 0, true);
-            this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903199), 1, true);
-            ((TextView)this.tabLayout.getTabAt(0).getCustomView().findViewById(2131689986)).setText(2131231055);
-            ((TextView)this.tabLayout.getTabAt(1).getCustomView().findViewById(2131689986)).setText(2131231057);
+            this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903209), 0, true);
+            this.tabLayout.addTab(this.tabLayout.newTab().setCustomView(2130903209), 1, true);
+            ((TextView)this.tabLayout.getTabAt(0).getCustomView().findViewById(2131690014)).setText(2131231071);
+            ((TextView)this.tabLayout.getTabAt(1).getCustomView().findViewById(2131690014)).setText(2131231073);
             this.tabLayout.setOnTabSelectedListener(new MementoFrag$TabListener(this));
         }
     }
     
     private boolean isRDPShowing() {
-        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131689997);
+        final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131690025);
         return roleDetailsFrag != null && !roleDetailsFrag.isHidden();
     }
     
@@ -151,8 +151,8 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
             final View viewWithTag = this.pager.findViewWithTag((Object)("POS_TAG" + String.valueOf(n)));
             if (viewWithTag != null) {
                 View view;
-                if ((view = viewWithTag.findViewById(2131689944)) == null) {
-                    view = viewWithTag.findViewById(2131689949);
+                if ((view = viewWithTag.findViewById(2131689972)) == null) {
+                    view = viewWithTag.findViewById(2131689977);
                 }
                 if (view != null) {
                     view.setTranslationX(0.0f);
@@ -169,7 +169,7 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     
     private void showRDP(final String actorId) {
         if (this.isActivityValid() && this.getNetflixActivity().isPanelExpanded()) {
-            final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131689997);
+            final RoleDetailsFrag roleDetailsFrag = (RoleDetailsFrag)this.getFragmentManager().findFragmentById(2131690025);
             if (roleDetailsFrag != null) {
                 final FragmentTransaction beginTransaction = this.getFragmentManager().beginTransaction();
                 beginTransaction.setCustomAnimations(2131034114, 2131034115);
@@ -225,7 +225,7 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     }
     
     protected void adjustHeight(final ImageView imageView) {
-        final float n = this.getActivity().getResources().getDimensionPixelOffset(2131362171);
+        final float n = this.getActivity().getResources().getDimensionPixelOffset(2131362200);
         final float n2 = 1;
         final ViewGroup$LayoutParams layoutParams = imageView.getLayoutParams();
         final float n3 = (BarkerUtils.getDetailsPageContentWidth((Context)this.getActivity()) - n * (n2 + 1.0f)) / 1;
@@ -267,7 +267,7 @@ public class MementoFrag extends NetflixFrag implements ErrorWrapper$Callback
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("MementoFrag", "Creating new frag view...");
-        final View inflate = layoutInflater.inflate(2130903197, (ViewGroup)null, false);
+        final View inflate = layoutInflater.inflate(2130903207, (ViewGroup)null, false);
         this.findViews(inflate);
         this.init(inflate);
         this.restoreInstanceState(bundle);

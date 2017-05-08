@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.media;
 
+import android.util.Pair;
+
 public final class PlayoutMetadata
 {
     private static final long DELTA_CURRENT = 1000L;
@@ -13,6 +15,8 @@ public final class PlayoutMetadata
     public boolean isHD;
     public boolean isSuperHD;
     public String language;
+    public String mVideoDecoderName;
+    public Pair<Integer, Integer> mVideoResolution;
     public int numChannels;
     public int position;
     public int targetBitRate;
@@ -29,6 +33,13 @@ public final class PlayoutMetadata
         this.language = language;
         this.numChannels = numChannels;
         this.audioTrackType = audioTrackType;
+    }
+    
+    public PlayoutMetadata(final int instantBitRate, final Pair<Integer, Integer> mVideoResolution, final String mVideoDecoderName) {
+        this.timestamp = System.currentTimeMillis();
+        this.instantBitRate = instantBitRate;
+        this.mVideoResolution = mVideoResolution;
+        this.mVideoDecoderName = mVideoDecoderName;
     }
     
     public String getAudioChannel() {

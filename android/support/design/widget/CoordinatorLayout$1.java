@@ -4,10 +4,11 @@
 
 package android.support.design.widget;
 
+import android.support.v4.view.WindowInsetsCompat;
 import android.view.View;
-import java.util.Comparator;
+import android.support.v4.view.OnApplyWindowInsetsListener;
 
-class CoordinatorLayout$1 implements Comparator<View>
+class CoordinatorLayout$1 implements OnApplyWindowInsetsListener
 {
     final /* synthetic */ CoordinatorLayout this$0;
     
@@ -16,16 +17,7 @@ class CoordinatorLayout$1 implements Comparator<View>
     }
     
     @Override
-    public int compare(final View view, final View view2) {
-        if (view == view2) {
-            return 0;
-        }
-        if (((CoordinatorLayout$LayoutParams)view.getLayoutParams()).dependsOn(this.this$0, view, view2)) {
-            return 1;
-        }
-        if (((CoordinatorLayout$LayoutParams)view2.getLayoutParams()).dependsOn(this.this$0, view2, view)) {
-            return -1;
-        }
-        return 0;
+    public WindowInsetsCompat onApplyWindowInsets(final View view, final WindowInsetsCompat windowInsets) {
+        return this.this$0.setWindowInsets(windowInsets);
     }
 }

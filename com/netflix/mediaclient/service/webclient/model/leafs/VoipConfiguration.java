@@ -32,6 +32,8 @@ public class VoipConfiguration
     private Threshold rttThresholdInMs;
     @SerializedName("sampleRateInHz")
     private int sampleRateInHz;
+    @SerializedName("showHelpForNonMember")
+    private boolean showHelpForNonMember;
     @SerializedName("sipThresholdInMs")
     private Threshold sipThresholdInMs;
     
@@ -123,8 +125,12 @@ public class VoipConfiguration
         return this.enableVoipOverWiFi;
     }
     
+    public boolean isShowHelpForNonMember() {
+        return this.showHelpForNonMember;
+    }
+    
     @Override
     public String toString() {
-        return "VoipConfiguration{enableVoip=" + this.enableVoip + ", enableVoipOverData=" + this.enableVoipOverData + ", enableVoipOverWiFi=" + this.enableVoipOverWiFi + ", rttThresholdInMs=" + this.rttThresholdInMs + ", jitterThresholdInMs=" + this.jitterThresholdInMs + ", sipThresholdInMs=" + this.sipThresholdInMs + ", packetLosThresholdInPercent=" + this.packetLosThresholdInPercent + ", sampleRateInHz=" + this.sampleRateInHz + '}';
+        return "VoipConfiguration{enableVoip=" + this.enableVoip + ", enableVoipOverData=" + this.enableVoipOverData + ", enableVoipOverWiFi=" + this.enableVoipOverWiFi + ", rttThresholdInMs=" + this.rttThresholdInMs + ", jitterThresholdInMs=" + this.jitterThresholdInMs + ", sipThresholdInMs=" + this.sipThresholdInMs + ", packetLosThresholdInPercent=" + this.packetLosThresholdInPercent + ", sampleRateInHz=" + this.sampleRateInHz + ", showHelpForNonMember=" + this.showHelpForNonMember + '}';
     }
 }

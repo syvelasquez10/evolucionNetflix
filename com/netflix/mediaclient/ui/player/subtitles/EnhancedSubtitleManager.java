@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.player.subtitles;
 
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import android.text.TextUtils$TruncateAt;
 import com.netflix.mediaclient.android.widget.AutoResizeTextView;
 import com.netflix.mediaclient.android.widget.StrokeTextView;
@@ -66,10 +66,10 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         this.mDefaultsInitiated = new AtomicBoolean(false);
         this.mDoNotDraw = (ViewTreeObserver$OnPreDrawListener)new EnhancedSubtitleManager$1(this);
         if (playerFragment.getNetflixActivity().isTablet()) {
-            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131362254);
+            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131362289);
         }
         else {
-            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131362252);
+            this.mDefaultTextSize = this.mPlayerFragment.getResources().getDimension(2131362287);
         }
         this.mTransparent = playerFragment.getActivity().getResources().getColor(17170445);
     }
@@ -475,6 +475,10 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
         if (Log.isLoggable()) {
             Log.d("nf_subtitles_render", "AspectRatio dimensions: " + displayAspectRatioDimension);
         }
+        if (displayAspectRatioDimension == null) {
+            Log.w("nf_subtitles_render", "AspectRatio is null!");
+            return;
+        }
         if (this.mAspectRatio != null && this.mAspectRatio.equals((Object)displayAspectRatioDimension)) {
             Log.d("nf_subtitles_render", "AspectRatio not changed");
             return;
@@ -487,14 +491,14 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
     private void setBackgroundColorToRegion(final LinearLayout linearLayout, final TextSubtitleBlock textSubtitleBlock) {
         final TextStyle userDefaults = ((TextSubtitleParser)this.mParser).getUserDefaults();
         Integer n = null;
-        Label_0076: {
+        Label_0078: {
             if (userDefaults == null) {
                 Log.d("nf_subtitles_render", "No user overides for window color");
                 if (textSubtitleBlock.getTextNodes().size() > 0) {
                     final TextStyle style = textSubtitleBlock.getTextNodes().get(0).getStyle();
                     if (style != null && style.getWindowColor() != null) {
                         n = ColorMapping.resolveColor(style.getWindowOpacity(), style.getWindowColor());
-                        break Label_0076;
+                        break Label_0078;
                     }
                 }
                 n = null;
@@ -860,8 +864,8 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
     }
     
     @Override
-    public boolean canHandleSubtitleProfile(final IMedia$SubtitleProfile media$SubtitleProfile) {
-        return media$SubtitleProfile != null && media$SubtitleProfile != IMedia$SubtitleProfile.IMAGE && media$SubtitleProfile != IMedia$SubtitleProfile.IMAGE_ENC;
+    public boolean canHandleSubtitleProfile(final ISubtitleDef$SubtitleProfile subtitleDef$SubtitleProfile) {
+        return subtitleDef$SubtitleProfile != null && subtitleDef$SubtitleProfile != ISubtitleDef$SubtitleProfile.IMAGE && subtitleDef$SubtitleProfile != ISubtitleDef$SubtitleProfile.IMAGE_ENC;
     }
     
     @Override
@@ -885,8 +889,8 @@ public class EnhancedSubtitleManager extends BaseSubtitleManager
     }
     
     @Override
-    public IMedia$SubtitleProfile getSubtitleProfile() {
-        return IMedia$SubtitleProfile.ENHANCED;
+    public ISubtitleDef$SubtitleProfile getSubtitleProfile() {
+        return ISubtitleDef$SubtitleProfile.ENHANCED;
     }
     
     @Override

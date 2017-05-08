@@ -76,9 +76,9 @@ public class KongPowerUpScreen extends KongBaseScreen
     void initViews(final View view) {
         this.powerUpViewsContainer = (ViewGroup)view;
         this.context = this.postPlayManager.getActivity();
-        this.powerUpContainer = (ViewGroup)this.powerUpViewsContainer.findViewById(2131690059);
-        this.powerUpParams = new FrameLayout$LayoutParams(-2, this.context.getResources().getDimensionPixelSize(2131361918), 17);
-        this.powerUpTitleView = (TextView)this.powerUpViewsContainer.findViewById(2131690058);
+        this.powerUpContainer = (ViewGroup)this.powerUpViewsContainer.findViewById(2131690105);
+        this.powerUpParams = new FrameLayout$LayoutParams(-2, this.context.getResources().getDimensionPixelSize(2131361924), 17);
+        this.powerUpTitleView = (TextView)this.powerUpViewsContainer.findViewById(2131690104);
         (this.smAvatarImage = new ImageView((Context)this.postPlayManager.getActivity())).setLayoutParams((ViewGroup$LayoutParams)this.powerUpParams);
         (this.whiteFlareImage = new ImageView((Context)this.context)).setLayoutParams((ViewGroup$LayoutParams)this.powerUpParams);
         (this.emptyBadgeImage = new ImageView((Context)this.context)).setLayoutParams((ViewGroup$LayoutParams)this.powerUpParams);
@@ -236,7 +236,7 @@ public class KongPowerUpScreen extends KongBaseScreen
         final ObjectAnimator setDuration3 = ObjectAnimator.ofFloat((Object)this.smAvatarImage, View.ALPHA, new float[] { 0.0f }).setDuration(1000L);
         final ObjectAnimator setDuration4 = ObjectAnimator.ofFloat((Object)this.powerUpAvatarImage, View.ALPHA, new float[] { 1.0f }).setDuration(1000L);
         final ObjectAnimator setDuration5 = ObjectAnimator.ofFloat((Object)this.powerUpAvatarImage, View.ALPHA, new float[] { 0.0f }).setDuration(1000L);
-        final int dimensionPixelSize = this.getActivity().getResources().getDimensionPixelSize(2131361936);
+        final int dimensionPixelSize = this.getActivity().getResources().getDimensionPixelSize(2131361942);
         for (int size = this.gearItemsImageViewList.size(), i = 1; i < size; ++i) {
             final ImageView imageView = this.gearItemsImageViewList.get(size - i);
             final int n = i / 2;
@@ -255,7 +255,7 @@ public class KongPowerUpScreen extends KongBaseScreen
         }
         ViewUtils.setVisibleOrGone((View)this.powerUpViewsContainer, true);
         ViewUtils.setVisibleOrGone((View)this.powerUpContainer, true);
-        final float n3 = DeviceUtils.getScreenHeightInPixels((Context)this.getActivity()) / this.getActivity().getResources().getDimension(2131361918) * 0.9f;
+        final float n3 = DeviceUtils.getScreenHeightInPixels((Context)this.getActivity()) / this.getActivity().getResources().getDimension(2131361924) * 0.9f;
         final ObjectAnimator setDuration6 = ObjectAnimator.ofFloat((Object)this.whiteFlareImage, View.ALPHA, new float[] { 1.0f }).setDuration(1000L);
         this.powerUpAvatarImage.setScaleX(0.8f);
         this.powerUpAvatarImage.setScaleY(0.8f);

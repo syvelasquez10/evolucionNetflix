@@ -10,7 +10,7 @@ class ViewPager$PagerObserver extends DataSetObserver
 {
     final /* synthetic */ ViewPager this$0;
     
-    private ViewPager$PagerObserver(final ViewPager this$0) {
+    ViewPager$PagerObserver(final ViewPager this$0) {
         this.this$0 = this$0;
     }
     

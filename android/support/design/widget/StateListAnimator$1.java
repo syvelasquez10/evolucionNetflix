@@ -4,14 +4,7 @@
 
 package android.support.design.widget;
 
-import android.util.StateSet;
-import android.view.View;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import android.view.animation.Animation;
-import android.view.animation.Animation$AnimationListener;
-
-class StateListAnimator$1 implements Animation$AnimationListener
+class StateListAnimator$1 extends ValueAnimatorCompat$AnimatorListenerAdapter
 {
     final /* synthetic */ StateListAnimator this$0;
     
@@ -19,15 +12,10 @@ class StateListAnimator$1 implements Animation$AnimationListener
         this.this$0 = this$0;
     }
     
-    public void onAnimationEnd(final Animation animation) {
-        if (this.this$0.mRunningAnimation == animation) {
-            this.this$0.mRunningAnimation = null;
+    @Override
+    public void onAnimationEnd(final ValueAnimatorCompat valueAnimatorCompat) {
+        if (this.this$0.mRunningAnimator == valueAnimatorCompat) {
+            this.this$0.mRunningAnimator = null;
         }
-    }
-    
-    public void onAnimationRepeat(final Animation animation) {
-    }
-    
-    public void onAnimationStart(final Animation animation) {
     }
 }

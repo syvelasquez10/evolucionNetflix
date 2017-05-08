@@ -6,6 +6,14 @@ package com.netflix.mediaclient.servicemgr;
 
 public enum UIViewLogging$UIViewCommandName
 {
+    AddCachedVideoCommand, 
+    PauseDownloadCommand, 
+    RemoveAllCachedVideosCommand, 
+    RemoveCachedVideoAndPlayNextCommand, 
+    RemoveCachedVideoCommand, 
+    ResumeDownloadCommand, 
+    RetryDownloadCommand, 
+    StartCachedPlay, 
     actionBarBackButton, 
     actionBarKidsEntry, 
     actionBarKidsExit, 

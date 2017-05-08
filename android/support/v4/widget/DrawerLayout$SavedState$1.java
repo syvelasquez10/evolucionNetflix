@@ -5,14 +5,16 @@
 package android.support.v4.widget;
 
 import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 
-final class DrawerLayout$SavedState$1 implements Parcelable$Creator<DrawerLayout$SavedState>
+final class DrawerLayout$SavedState$1 implements ParcelableCompatCreatorCallbacks<DrawerLayout$SavedState>
 {
-    public DrawerLayout$SavedState createFromParcel(final Parcel parcel) {
-        return new DrawerLayout$SavedState(parcel);
+    @Override
+    public DrawerLayout$SavedState createFromParcel(final Parcel parcel, final ClassLoader classLoader) {
+        return new DrawerLayout$SavedState(parcel, classLoader);
     }
     
+    @Override
     public DrawerLayout$SavedState[] newArray(final int n) {
         return new DrawerLayout$SavedState[n];
     }

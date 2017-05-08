@@ -4,23 +4,7 @@
 
 package android.support.design.widget;
 
-import android.support.v4.view.ViewPager$OnPageChangeListener;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.PagerAdapter;
-import java.util.Iterator;
-import android.view.View$MeasureSpec;
-import android.widget.LinearLayout$LayoutParams;
-import android.support.v4.view.ViewCompat;
-import android.view.ViewGroup$LayoutParams;
-import android.content.res.TypedArray;
-import android.support.design.R$style;
-import android.support.design.R$styleable;
-import android.util.AttributeSet;
-import android.content.Context;
-import java.util.ArrayList;
-import android.content.res.ColorStateList;
-import android.view.View$OnClickListener;
-import android.widget.HorizontalScrollView;
+import android.support.v7.content.res.AppCompatResources;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.graphics.drawable.Drawable;
@@ -28,16 +12,18 @@ import android.view.View;
 
 public final class TabLayout$Tab
 {
+    public static final int INVALID_POSITION = -1;
     private CharSequence mContentDesc;
     private View mCustomView;
     private Drawable mIcon;
-    private final TabLayout mParent;
+    TabLayout mParent;
     private int mPosition;
+    private Object mTag;
     private CharSequence mText;
+    TabLayout$TabView mView;
     
-    TabLayout$Tab(final TabLayout mParent) {
+    TabLayout$Tab() {
         this.mPosition = -1;
-        this.mParent = mParent;
     }
     
     public CharSequence getContentDescription() {
@@ -56,23 +42,72 @@ public final class TabLayout$Tab
         return this.mPosition;
     }
     
+    public Object getTag() {
+        return this.mTag;
+    }
+    
     public CharSequence getText() {
         return this.mText;
     }
     
+    public boolean isSelected() {
+        if (this.mParent == null) {
+            throw new IllegalArgumentException("Tab not attached to a TabLayout");
+        }
+        return this.mParent.getSelectedTabPosition() == this.mPosition;
+    }
+    
+    void reset() {
+        this.mParent = null;
+        this.mView = null;
+        this.mTag = null;
+        this.mIcon = null;
+        this.mText = null;
+        this.mContentDesc = null;
+        this.mPosition = -1;
+        this.mCustomView = null;
+    }
+    
     public void select() {
+        if (this.mParent == null) {
+            throw new IllegalArgumentException("Tab not attached to a TabLayout");
+        }
         this.mParent.selectTab(this);
     }
     
+    public TabLayout$Tab setContentDescription(final int n) {
+        if (this.mParent == null) {
+            throw new IllegalArgumentException("Tab not attached to a TabLayout");
+        }
+        return this.setContentDescription(this.mParent.getResources().getText(n));
+    }
+    
+    public TabLayout$Tab setContentDescription(final CharSequence mContentDesc) {
+        this.mContentDesc = mContentDesc;
+        this.updateView();
+        return this;
+    }
+    
     public TabLayout$Tab setCustomView(final int n) {
-        return this.setCustomView(LayoutInflater.from(this.mParent.getContext()).inflate(n, (ViewGroup)null));
+        return this.setCustomView(LayoutInflater.from(this.mView.getContext()).inflate(n, (ViewGroup)this.mView, false));
     }
     
     public TabLayout$Tab setCustomView(final View mCustomView) {
         this.mCustomView = mCustomView;
-        if (this.mPosition >= 0) {
-            this.mParent.updateTab(this.mPosition);
+        this.updateView();
+        return this;
+    }
+    
+    public TabLayout$Tab setIcon(final int n) {
+        if (this.mParent == null) {
+            throw new IllegalArgumentException("Tab not attached to a TabLayout");
         }
+        return this.setIcon(AppCompatResources.getDrawable(this.mParent.getContext(), n));
+    }
+    
+    public TabLayout$Tab setIcon(final Drawable mIcon) {
+        this.mIcon = mIcon;
+        this.updateView();
         return this;
     }
     
@@ -80,11 +115,27 @@ public final class TabLayout$Tab
         this.mPosition = mPosition;
     }
     
+    public TabLayout$Tab setTag(final Object mTag) {
+        this.mTag = mTag;
+        return this;
+    }
+    
+    public TabLayout$Tab setText(final int n) {
+        if (this.mParent == null) {
+            throw new IllegalArgumentException("Tab not attached to a TabLayout");
+        }
+        return this.setText(this.mParent.getResources().getText(n));
+    }
+    
     public TabLayout$Tab setText(final CharSequence mText) {
         this.mText = mText;
-        if (this.mPosition >= 0) {
-            this.mParent.updateTab(this.mPosition);
-        }
+        this.updateView();
         return this;
+    }
+    
+    void updateView() {
+        if (this.mView != null) {
+            this.mView.update();
+        }
     }
 }

@@ -23,11 +23,9 @@ import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.content.Intent;
-import android.content.Context;
 import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.app.Fragment;
-import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.Log;
@@ -41,6 +39,8 @@ import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import android.app.Dialog;
+import android.content.Context;
+import com.netflix.mediaclient.util.l10n.LanguageUtils;
 import com.netflix.mediaclient.media.Language;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
 
@@ -57,6 +57,7 @@ class MdxMiniPlayerFrag$4 implements LanguageSelector$LanguageSelectorCallback
         this.this$0.log("Language changed via dialog: " + language);
         if (this.this$0.remotePlayer != null) {
             this.this$0.remotePlayer.changeLanguage(language);
+            LanguageUtils.saveUserChoice((Context)this.this$0.getActivity(), language);
             this.this$0.remotePlayer.requestAudioAndSubtitleData();
         }
         this.this$0.updateLanguage();

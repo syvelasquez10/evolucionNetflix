@@ -5,14 +5,16 @@
 package android.support.design.widget;
 
 import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 
-final class AppBarLayout$Behavior$SavedState$1 implements Parcelable$Creator<AppBarLayout$Behavior$SavedState>
+final class AppBarLayout$Behavior$SavedState$1 implements ParcelableCompatCreatorCallbacks<AppBarLayout$Behavior$SavedState>
 {
-    public AppBarLayout$Behavior$SavedState createFromParcel(final Parcel parcel) {
-        return new AppBarLayout$Behavior$SavedState(parcel);
+    @Override
+    public AppBarLayout$Behavior$SavedState createFromParcel(final Parcel parcel, final ClassLoader classLoader) {
+        return new AppBarLayout$Behavior$SavedState(parcel, classLoader);
     }
     
+    @Override
     public AppBarLayout$Behavior$SavedState[] newArray(final int n) {
         return new AppBarLayout$Behavior$SavedState[n];
     }

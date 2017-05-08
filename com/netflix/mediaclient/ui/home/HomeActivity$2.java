@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.ui.home;
 
 import com.netflix.mediaclient.Log;
-import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Intent;
 import android.content.Context;
@@ -20,7 +19,7 @@ class HomeActivity$2 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0)) {
             return;
         }
         if (intent == null || !"com.netflix.mediaclient.service.ACTION_EXPAND_HOME_MDX_MINI_PLAYER".equals(intent.getAction())) {

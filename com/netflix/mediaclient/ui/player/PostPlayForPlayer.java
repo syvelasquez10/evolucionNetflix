@@ -145,7 +145,7 @@ public final class PostPlayForPlayer extends PostPlay
     
     @Override
     protected void findViews() {
-        this.experienceTitle = (TextView)this.mNetflixActivity.findViewById(2131690105);
+        this.experienceTitle = (TextView)this.mNetflixActivity.findViewById(2131690151);
     }
     
     @Override
@@ -221,7 +221,7 @@ public final class PostPlayForPlayer extends PostPlay
                     text = this.mPostPlayExperience.getExperienceTitle().get(0).getDisplayText();
                 }
                 else if ("recommendations".equals(this.mPostPlayExperience.getType())) {
-                    text = this.mNetflixActivity.getResources().getString(2131231153);
+                    text = this.mNetflixActivity.getResources().getString(2131231194);
                 }
                 else {
                     text = "";
@@ -248,23 +248,23 @@ public final class PostPlayForPlayer extends PostPlay
             this.mBackgroundContainer.getLayoutParams().width = DeviceUtils.getScreenWidthInPixels((Context)this.mNetflixActivity) * this.mPostPlayExperience.getItems().size();
             int n;
             if (b) {
-                n = 2130903230;
+                n = 2130903249;
             }
             else {
-                n = 2130903228;
+                n = 2130903247;
             }
             int n2;
             if (nonMemberPlayback) {
-                n2 = 2130903239;
+                n2 = 2130903258;
             }
             else if (equals) {
-                n2 = 2130903238;
+                n2 = 2130903257;
             }
             else if (b) {
-                n2 = 2130903237;
+                n2 = 2130903256;
             }
             else {
-                n2 = 2130903236;
+                n2 = 2130903255;
             }
             final Iterator<PostPlayItem> iterator = this.mPostPlayExperience.getItems().iterator();
             int n3 = 0;

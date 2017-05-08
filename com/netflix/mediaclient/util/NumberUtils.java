@@ -20,8 +20,8 @@ public final class NumberUtils
     }
     
     public static Integer toIntegerSafely(final String s, final Integer n) {
-        if (s == null) {
-            return null;
+        if (StringUtils.isEmpty(s)) {
+            return n;
         }
         try {
             return Integer.valueOf(s);

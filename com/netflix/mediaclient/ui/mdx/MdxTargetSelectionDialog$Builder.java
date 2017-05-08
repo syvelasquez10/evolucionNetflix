@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.mdx;
 
 import android.widget.AdapterView$OnItemClickListener;
 import java.util.List;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.widget.ListAdapter;
 import android.view.ViewGroup;
@@ -16,7 +16,7 @@ import android.content.DialogInterface$OnCancelListener;
 import android.widget.ListView;
 import android.view.View;
 import android.app.Activity;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 
 public class MdxTargetSelectionDialog$Builder extends AlertDialog$Builder
 {
@@ -31,14 +31,15 @@ public class MdxTargetSelectionDialog$Builder extends AlertDialog$Builder
         super((Context)activity);
         this.activity = activity;
         final LayoutInflater layoutInflater = activity.getLayoutInflater();
-        this.content = layoutInflater.inflate(2130903196, (ViewGroup)null);
-        this.title = (TextView)this.content.findViewById(2131689923);
-        this.listView = (ListView)this.content.findViewById(2131689980);
+        this.content = layoutInflater.inflate(2130903206, (ViewGroup)null);
+        this.title = (TextView)this.content.findViewById(2131689951);
+        this.listView = (ListView)this.content.findViewById(2131690008);
         this.adapterWrapper = new MdxTargetSelectionDialog$TargetsAdapter(layoutInflater);
         this.listView.setAdapter((ListAdapter)this.adapterWrapper);
         this.setCancelable(true);
     }
     
+    @Override
     public AlertDialog create() {
         final MdxTargetSelectionDialog mdxTargetSelectionDialog = new MdxTargetSelectionDialog((Context)this.activity, null);
         mdxTargetSelectionDialog.setView(this.content);
@@ -53,6 +54,7 @@ public class MdxTargetSelectionDialog$Builder extends AlertDialog$Builder
         this.adapterWrapper.setData(data);
     }
     
+    @Override
     public MdxTargetSelectionDialog$Builder setOnCancelListener(final DialogInterface$OnCancelListener onCancelListener) {
         this.onCancelListener = onCancelListener;
         return this;
@@ -66,6 +68,7 @@ public class MdxTargetSelectionDialog$Builder extends AlertDialog$Builder
         this.adapterWrapper.setSelected(n, s);
     }
     
+    @Override
     public MdxTargetSelectionDialog$Builder setTitle(final int text) {
         this.title.setText(text);
         return this;

@@ -25,6 +25,13 @@ class ViewOffsetBehavior<V extends View> extends CoordinatorLayout$Behavior<V>
         this.mTempLeftRightOffset = 0;
     }
     
+    public int getLeftAndRightOffset() {
+        if (this.mViewOffsetHelper != null) {
+            return this.mViewOffsetHelper.getLeftAndRightOffset();
+        }
+        return 0;
+    }
+    
     public int getTopAndBottomOffset() {
         if (this.mViewOffsetHelper != null) {
             return this.mViewOffsetHelper.getTopAndBottomOffset();
@@ -32,9 +39,13 @@ class ViewOffsetBehavior<V extends View> extends CoordinatorLayout$Behavior<V>
         return 0;
     }
     
+    protected void layoutChild(final CoordinatorLayout coordinatorLayout, final V v, final int n) {
+        coordinatorLayout.onLayoutChild(v, n);
+    }
+    
     @Override
     public boolean onLayoutChild(final CoordinatorLayout coordinatorLayout, final V v, final int n) {
-        coordinatorLayout.onLayoutChild(v, n);
+        this.layoutChild(coordinatorLayout, v, n);
         if (this.mViewOffsetHelper == null) {
             this.mViewOffsetHelper = new ViewOffsetHelper(v);
         }
@@ -48,6 +59,14 @@ class ViewOffsetBehavior<V extends View> extends CoordinatorLayout$Behavior<V>
             this.mTempLeftRightOffset = 0;
         }
         return true;
+    }
+    
+    public boolean setLeftAndRightOffset(final int n) {
+        if (this.mViewOffsetHelper != null) {
+            return this.mViewOffsetHelper.setLeftAndRightOffset(n);
+        }
+        this.mTempLeftRightOffset = n;
+        return false;
     }
     
     public boolean setTopAndBottomOffset(final int n) {

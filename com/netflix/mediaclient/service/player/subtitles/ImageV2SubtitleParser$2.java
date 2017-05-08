@@ -4,27 +4,27 @@
 
 package com.netflix.mediaclient.service.player.subtitles;
 
-import java.util.List;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
-import java.util.ArrayList;
 import com.netflix.mediaclient.service.player.subtitles.image.v2.BoxHeader;
 import java.io.InputStream;
 import java.io.DataInputStream;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
+import java.util.List;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
+import java.util.ArrayList;
 import com.netflix.mediaclient.service.player.subtitles.image.ImageDescriptor;
 import java.io.File;
 import com.netflix.mediaclient.util.FileUtils;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleFailure;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.net.DnsManager;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.mediaclient.service.player.subtitles.image.v2.SegmentIndex;
 import com.netflix.mediaclient.service.player.subtitles.image.v2.SegmentEncryptionInfo$ImageEncryptionInfo;
 import com.netflix.mediaclient.service.player.subtitles.image.v2.ImageDecryptorFactory;
-import com.netflix.mediaclient.service.player.subtitles.image.v2.SegmentIndex;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
-import com.netflix.mediaclient.service.player.PlayerAgent;
+import com.netflix.mediaclient.media.SubtitleUrl;
+import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.service.player.subtitles.image.v2.ISCSegment;
 import com.netflix.mediaclient.service.player.subtitles.image.v2.ISCTrack;
 import com.netflix.mediaclient.service.player.subtitles.image.ImageSubtitleMetadata;
@@ -56,10 +56,10 @@ class ImageV2SubtitleParser$2 extends LoggingResourceFetcherCallback
         Log.d("nf_subtitles_imv2", "Ready to serve subtitles...");
         this.this$0.mReady = true;
         this.this$0.saveFileSafelyToCache("segment.idx", array);
-        final int access$300 = this.this$0.getCurrentSegmentIndex();
+        final int access$100 = this.this$0.getCurrentSegmentIndex();
         if (Log.isLoggable()) {
-            Log.d("nf_subtitles_imv2", "Download segment " + access$300 + " on start");
+            Log.d("nf_subtitles_imv2", "Download segment " + access$100 + " on start");
         }
-        this.this$0.downloadNextRange(access$300);
+        this.this$0.downloadNextRange(access$100);
     }
 }

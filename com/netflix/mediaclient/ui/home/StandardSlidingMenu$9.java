@@ -4,31 +4,62 @@
 
 package com.netflix.mediaclient.ui.home;
 
-import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.android.app.NetworkErrorStatus;
-import com.netflix.mediaclient.util.VolleyUtils;
+import android.support.v4.content.LocalBroadcastManager;
+import android.os.Build$VERSION;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
+import com.netflix.mediaclient.util.gfx.ImageLoader$StaticImgConfig;
+import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.mediaclient.util.l10n.LocalizationUtils;
+import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.util.gfx.AnimationUtils;
+import android.widget.ListAdapter;
+import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import com.netflix.mediaclient.ui.experience.BrowseExperience;
+import java.util.ArrayList;
+import com.netflix.mediaclient.util.ViewUtils;
+import java.util.List;
+import android.content.IntentFilter;
+import com.netflix.mediaclient.ui.iris.notifications.NotificationsFrag$NotificationsListStatusListener;
 import com.netflix.mediaclient.Log;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import com.netflix.mediaclient.android.widget.AdvancedImageView;
+import android.view.View$OnClickListener;
+import android.view.ViewStub;
+import com.netflix.mediaclient.ui.iris.notifications.SlidingMenuNotificationsFrag;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import android.content.BroadcastReceiver;
+import android.widget.TextView;
+import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
+import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
+import android.support.v4.widget.DrawerLayout;
+import android.widget.LinearLayout;
+import com.netflix.mediaclient.android.widget.StaticListView;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
+import android.annotation.SuppressLint;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView$OnItemClickListener;
 
-final class StandardSlidingMenu$9 implements Runnable
+class StandardSlidingMenu$9 implements AdapterView$OnItemClickListener
 {
-    final /* synthetic */ NetflixActivity val$context;
+    final /* synthetic */ StandardSlidingMenu this$0;
     
-    StandardSlidingMenu$9(final NetflixActivity val$context) {
-        this.val$context = val$context;
+    StandardSlidingMenu$9(final StandardSlidingMenu this$0) {
+        this.this$0 = this$0;
     }
     
-    @Override
-    public void run() {
-        Log.d("StandardSlidingMenu", "Get autologin token...");
-        if (this.val$context.getServiceManager().getService() == null) {
-            Log.e("StandardSlidingMenu", "Service is not available!");
-            return;
+    public void onItemClick(final AdapterView<?> adapterView, final View view, final int n, final long n2) {
+        if (!this.this$0.mBlockedByUmaAlert) {
+            HomeActivity.showGenreList(this.this$0.activity, this.this$0.genresAdapter.getItem(n - this.this$0.genresList.getHeaderViewsCount()));
+            this.this$0.closeDrawersWithDelay();
         }
-        final AccountHandler accountHandler = new AccountHandler(this.val$context);
-        final StandardSlidingMenu$9$1 standardSlidingMenu$9$1 = new StandardSlidingMenu$9$1(this, accountHandler, new NetworkErrorStatus(VolleyUtils.TIMEOUT_ERROR));
-        this.val$context.getHandler().postDelayed((Runnable)standardSlidingMenu$9$1, 10000L);
-        this.val$context.getServiceManager().createAutoLoginToken(3600000L, new StandardSlidingMenu$9$2(this, standardSlidingMenu$9$1, accountHandler));
     }
 }

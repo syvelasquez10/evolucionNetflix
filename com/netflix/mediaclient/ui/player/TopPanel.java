@@ -9,6 +9,7 @@ import android.app.Dialog;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSource;
 import com.netflix.mediaclient.Log;
+import com.netflix.mediaclient.util.l10n.LanguageUtils;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
@@ -17,7 +18,7 @@ import android.content.DialogInterface$OnCancelListener;
 import android.widget.AdapterView$OnItemClickListener;
 import android.content.Context;
 import com.netflix.mediaclient.ui.mdx.MdxTargetSelectionDialog$Builder;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.media.Language;
@@ -26,8 +27,8 @@ import android.view.View;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import com.netflix.mediaclient.ui.common.LanguageSelector;
-import android.view.ViewPropertyAnimator;
 import android.view.MenuItem;
+import android.view.ViewPropertyAnimator;
 import android.view.View$OnClickListener;
 import android.support.v7.app.ActionBar;
 
@@ -36,7 +37,6 @@ public final class TopPanel extends PlayerSection
     private static final String TAG = "screen";
     private final ActionBar mActionBar;
     private final View$OnClickListener mBackListener;
-    private MenuItem mBandwidth;
     private ViewPropertyAnimator mCurrentToolbarAnimation;
     private MenuItem mDebugMetadata;
     private String mDialogLanguageId;
@@ -59,9 +59,9 @@ public final class TopPanel extends PlayerSection
         this.mBackListener = (View$OnClickListener)new TopPanel$1(this);
         this.mListeners = mListeners;
         (this.mActionBar = playerFragment.getNetflixActivity().getSupportActionBar()).setTitle("");
-        this.mTitleLabel = (TextView)playerFragment.getView().findViewById(2131690087);
-        this.mTopGradient = playerFragment.getView().findViewById(2131690084);
-        this.mToolBar = (Toolbar)playerFragment.getView().findViewById(2131690086);
+        this.mTitleLabel = (TextView)playerFragment.getView().findViewById(2131690133);
+        this.mTopGradient = playerFragment.getView().findViewById(2131690130);
+        this.mToolBar = (Toolbar)playerFragment.getView().findViewById(2131690132);
     }
     
     private void changeControlsVisibility(final boolean gradientVisibility) {
@@ -89,9 +89,9 @@ public final class TopPanel extends PlayerSection
         this.mdxTargetSelector.setTarget(localDevicePosition);
         final MdxTargetSelectionDialog$Builder mdxTargetSelectionDialog$Builder = new MdxTargetSelectionDialog$Builder(playerFragment.getActivity());
         mdxTargetSelectionDialog$Builder.setCancelable(false);
-        mdxTargetSelectionDialog$Builder.setTitle(2131231094);
+        mdxTargetSelectionDialog$Builder.setTitle(2131231118);
         mdxTargetSelectionDialog$Builder.setAdapterData(this.mdxTargetSelector.getTargets((Context)playerFragment.getActivity()));
-        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131231250), this.getCurrentTitle()));
+        mdxTargetSelectionDialog$Builder.setSelection(localDevicePosition, String.format(playerFragment.getString(2131231306), this.getCurrentTitle()));
         mdxTargetSelectionDialog$Builder.setOnItemClickListener((AdapterView$OnItemClickListener)new TopPanel$8(this, playerFragment, b));
         mdxTargetSelectionDialog$Builder.setOnCancelListener((DialogInterface$OnCancelListener)new TopPanel$9(this, playerFragment));
         return mdxTargetSelectionDialog$Builder.create();
@@ -115,22 +115,22 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initGeneric(final Menu menu) {
-        (this.mEpisodeSelector = menu.add(2131230878)).setVisible(this.mEpisodeSelectorEnabled);
-        this.mEpisodeSelector.setIcon(2130837698);
+        (this.mEpisodeSelector = menu.add(2131230882)).setVisible(this.mEpisodeSelectorEnabled);
+        this.mEpisodeSelector.setIcon(2130837741);
         this.mEpisodeSelector.setShowAsAction(2);
         this.mEpisodeSelector.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$6(this));
     }
     
     private void initLanguages(final Menu menu) {
         this.mLanguageSelector = LanguageSelector.createInstance(this.playerFragment.getNetflixActivity(), this.playerFragment.getNetflixActivity().isTablet(), new TopPanel$3(this));
-        (this.mLanguage = menu.add(2131230879)).setVisible(this.showLanguageMenuItem());
-        this.mLanguage.setIcon(2130837772);
+        (this.mLanguage = menu.add(2131230883)).setVisible(this.showLanguageMenuItem());
+        this.mLanguage.setIcon(2130837830);
         this.mLanguage.setShowAsAction(2);
         this.mLanguage.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$4(this));
     }
     
     private void initMDX(final Menu menu) {
-        (this.mMdxTarget = menu.add(2131230880)).setIcon(2130837679);
+        (this.mMdxTarget = menu.add(2131230884)).setIcon(2130837716);
         this.mMdxTarget.setVisible(this.mMDXSelectorEnabled);
         this.mMdxTarget.setShowAsAction(2);
         this.mMdxTarget.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$7(this));
@@ -140,7 +140,7 @@ public final class TopPanel extends PlayerSection
     }
     
     private void initSound(final Menu menu) {
-        (this.mSound = menu.add(2131230898)).setIcon(2130837777);
+        (this.mSound = menu.add(2131230902)).setIcon(2130837835);
         this.mSound.setShowAsAction(2);
         this.mSound.setOnMenuItemClickListener((MenuItem$OnMenuItemClickListener)new TopPanel$2(this));
     }
@@ -158,6 +158,7 @@ public final class TopPanel extends PlayerSection
         if (this.playerFragment.getScreen() == null) {
             return false;
         }
+        LanguageUtils.saveUserChoice((Context)this.activity, language);
         final AudioSource selectedAudio = language.getSelectedAudio();
         final Subtitle selectedSubtitle = language.getSelectedSubtitle();
         boolean subtitleVisibility;
@@ -257,7 +258,7 @@ public final class TopPanel extends PlayerSection
         }
         else if (this.playerFragment.isActivityValid()) {
             Log.d("screen", "MDX target is reachable, display dialog");
-            this.playerFragment.getNetflixActivity().displayDialog((Dialog)this.createMdxTargetSelectionDialog(this.playerFragment));
+            this.playerFragment.getNetflixActivity().displayDialog(this.createMdxTargetSelectionDialog(this.playerFragment));
         }
     }
     
@@ -304,6 +305,9 @@ public final class TopPanel extends PlayerSection
     }
     
     void setGradientVisibility(final boolean b) {
+        if (this.mTopGradient != null) {
+            ViewUtils.setVisibleOrGone(this.mTopGradient, !b);
+        }
         if (ViewUtils.isVisible(this.mTopGradient) != b) {
             AnimationUtils.startViewAppearanceAnimation(this.mTopGradient, b);
         }

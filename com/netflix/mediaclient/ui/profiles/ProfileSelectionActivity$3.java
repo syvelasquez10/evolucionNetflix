@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.profiles;
 
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import android.view.Menu;

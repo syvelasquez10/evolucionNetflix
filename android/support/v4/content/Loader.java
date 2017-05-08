@@ -7,11 +7,13 @@ package android.support.v4.content;
 import java.io.PrintWriter;
 import java.io.FileDescriptor;
 import android.support.v4.util.DebugUtils;
+import android.content.Context;
 
 public class Loader<D>
 {
     boolean mAbandoned;
     boolean mContentChanged;
+    Context mContext;
     int mId;
     Loader$OnLoadCompleteListener<D> mListener;
     Loader$OnLoadCanceledListener<D> mOnLoadCanceledListener;
@@ -19,11 +21,45 @@ public class Loader<D>
     boolean mReset;
     boolean mStarted;
     
+    public Loader(final Context context) {
+        this.mStarted = false;
+        this.mAbandoned = false;
+        this.mReset = true;
+        this.mContentChanged = false;
+        this.mProcessingChange = false;
+        this.mContext = context.getApplicationContext();
+    }
+    
+    public void abandon() {
+        this.mAbandoned = true;
+        this.onAbandon();
+    }
+    
+    public boolean cancelLoad() {
+        return this.onCancelLoad();
+    }
+    
+    public void commitContentChanged() {
+        this.mProcessingChange = false;
+    }
+    
     public String dataToString(final D n) {
         final StringBuilder sb = new StringBuilder(64);
         DebugUtils.buildShortClassTag(n, sb);
         sb.append("}");
         return sb.toString();
+    }
+    
+    public void deliverCancellation() {
+        if (this.mOnLoadCanceledListener != null) {
+            this.mOnLoadCanceledListener.onLoadCanceled(this);
+        }
+    }
+    
+    public void deliverResult(final D n) {
+        if (this.mListener != null) {
+            this.mListener.onLoadComplete(this, n);
+        }
     }
     
     public void dump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, final String[] array) {
@@ -48,6 +84,48 @@ public class Loader<D>
             printWriter.print(" mReset=");
             printWriter.println(this.mReset);
         }
+    }
+    
+    public void forceLoad() {
+        this.onForceLoad();
+    }
+    
+    public Context getContext() {
+        return this.mContext;
+    }
+    
+    public int getId() {
+        return this.mId;
+    }
+    
+    public boolean isAbandoned() {
+        return this.mAbandoned;
+    }
+    
+    public boolean isReset() {
+        return this.mReset;
+    }
+    
+    public boolean isStarted() {
+        return this.mStarted;
+    }
+    
+    protected void onAbandon() {
+    }
+    
+    protected boolean onCancelLoad() {
+        return false;
+    }
+    
+    public void onContentChanged() {
+        if (this.mStarted) {
+            this.forceLoad();
+            return;
+        }
+        this.mContentChanged = true;
+    }
+    
+    protected void onForceLoad() {
     }
     
     protected void onReset() {
@@ -83,6 +161,12 @@ public class Loader<D>
         this.mProcessingChange = false;
     }
     
+    public void rollbackContentChanged() {
+        if (this.mProcessingChange) {
+            this.onContentChanged();
+        }
+    }
+    
     public final void startLoading() {
         this.mStarted = true;
         this.mReset = false;
@@ -93,6 +177,13 @@ public class Loader<D>
     public void stopLoading() {
         this.mStarted = false;
         this.onStopLoading();
+    }
+    
+    public boolean takeContentChanged() {
+        final boolean mContentChanged = this.mContentChanged;
+        this.mContentChanged = false;
+        this.mProcessingChange |= mContentChanged;
+        return mContentChanged;
     }
     
     @Override

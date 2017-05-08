@@ -4,8 +4,56 @@
 
 package android.support.v4.view.accessibility;
 
+import android.view.View;
+import java.util.List;
+
 class AccessibilityNodeInfoCompat$AccessibilityNodeInfoApi21Impl extends AccessibilityNodeInfoCompat$AccessibilityNodeInfoKitKatImpl
 {
+    @Override
+    public void addAction(final Object o, final Object o2) {
+        AccessibilityNodeInfoCompatApi21.addAction(o, o2);
+    }
+    
+    @Override
+    public int getAccessibilityActionId(final Object o) {
+        return AccessibilityNodeInfoCompatApi21.getAccessibilityActionId(o);
+    }
+    
+    @Override
+    public CharSequence getAccessibilityActionLabel(final Object o) {
+        return AccessibilityNodeInfoCompatApi21.getAccessibilityActionLabel(o);
+    }
+    
+    @Override
+    public List<Object> getActionList(final Object o) {
+        return AccessibilityNodeInfoCompatApi21.getActionList(o);
+    }
+    
+    @Override
+    public int getCollectionInfoSelectionMode(final Object o) {
+        return AccessibilityNodeInfoCompatApi21$CollectionInfo.getSelectionMode(o);
+    }
+    
+    @Override
+    public CharSequence getError(final Object o) {
+        return AccessibilityNodeInfoCompatApi21.getError(o);
+    }
+    
+    @Override
+    public int getMaxTextLength(final Object o) {
+        return AccessibilityNodeInfoCompatApi21.getMaxTextLength(o);
+    }
+    
+    @Override
+    public Object getWindow(final Object o) {
+        return AccessibilityNodeInfoCompatApi21.getWindow(o);
+    }
+    
+    @Override
+    public boolean isCollectionItemSelected(final Object o) {
+        return AccessibilityNodeInfoCompatApi21$CollectionItemInfo.isSelected(o);
+    }
+    
     @Override
     public Object newAccessibilityAction(final int n, final CharSequence charSequence) {
         return AccessibilityNodeInfoCompatApi21.newAccessibilityAction(n, charSequence);
@@ -24,5 +72,25 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoApi21Impl extends Accessi
     @Override
     public boolean removeAction(final Object o, final Object o2) {
         return AccessibilityNodeInfoCompatApi21.removeAction(o, o2);
+    }
+    
+    @Override
+    public boolean removeChild(final Object o, final View view) {
+        return AccessibilityNodeInfoCompatApi21.removeChild(o, view);
+    }
+    
+    @Override
+    public boolean removeChild(final Object o, final View view, final int n) {
+        return AccessibilityNodeInfoCompatApi21.removeChild(o, view, n);
+    }
+    
+    @Override
+    public void setError(final Object o, final CharSequence charSequence) {
+        AccessibilityNodeInfoCompatApi21.setError(o, charSequence);
+    }
+    
+    @Override
+    public void setMaxTextLength(final Object o, final int n) {
+        AccessibilityNodeInfoCompatApi21.setMaxTextLength(o, n);
     }
 }

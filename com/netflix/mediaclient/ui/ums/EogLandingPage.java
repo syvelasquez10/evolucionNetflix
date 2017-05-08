@@ -37,14 +37,14 @@ public class EogLandingPage
     
     EogLandingPage(final EndOfGrandfatheringActivity mOwner) {
         this.mOwner = mOwner;
-        this.mTitle = (TextView)mOwner.findViewById(2131689786);
-        this.mBody = (TextView)mOwner.findViewById(2131689787);
-        this.mContinue = (TextView)mOwner.findViewById(2131689789);
-        this.mPlans = (TextView)mOwner.findViewById(2131689791);
-        this.mSkip = (TextView)mOwner.findViewById(2131689792);
-        this.mAccount = (TextView)mOwner.findViewById(2131689793);
-        this.mSkipNowButton = (LinearLayout)mOwner.findViewById(2131689782);
-        this.mSeeOtherPlansHeader = (LinearLayout)mOwner.findViewById(2131689790);
+        this.mTitle = (TextView)mOwner.findViewById(2131689808);
+        this.mBody = (TextView)mOwner.findViewById(2131689809);
+        this.mContinue = (TextView)mOwner.findViewById(2131689811);
+        this.mPlans = (TextView)mOwner.findViewById(2131689813);
+        this.mSkip = (TextView)mOwner.findViewById(2131689814);
+        this.mAccount = (TextView)mOwner.findViewById(2131689815);
+        this.mSkipNowButton = (LinearLayout)mOwner.findViewById(2131689804);
+        this.mSeeOtherPlansHeader = (LinearLayout)mOwner.findViewById(2131689812);
     }
     
     public static SpannableString buildAccountString(final NetflixActivity netflixActivity, final EogAlert eogAlert) {
@@ -73,8 +73,8 @@ public class EogLandingPage
                 this.mSkipNowButton.setVisibility(8);
             }
             if (EogUtils.shouldUseLayoutWithImages(eogAlert)) {
-                this.mImage1 = (AdvancedImageView)this.mOwner.findViewById(2131689783);
-                this.mImage2 = (AdvancedImageView)this.mOwner.findViewById(2131689784);
+                this.mImage1 = (AdvancedImageView)this.mOwner.findViewById(2131689805);
+                this.mImage2 = (AdvancedImageView)this.mOwner.findViewById(2131689806);
                 if (StringUtils.isNotEmpty(eogAlert.urlImage1()) && this.mImage1 != null) {
                     NetflixActivity.getImageLoader((Context)this.mOwner).showImg(this.mImage1, eogAlert.urlImage1(), IClientLogging$AssetType.boxArt, "", BrowseExperience.getImageLoaderConfig(), true);
                 }
@@ -100,7 +100,7 @@ public class EogLandingPage
                 }
                 return false;
             }
-            case 2131689790: {
+            case 2131689812: {
                 if (EogUtils.shouldShowOtherPlans(this.mOwner.getEogAlert())) {
                     this.mOwner.goToPlanPage();
                     return true;
@@ -108,11 +108,11 @@ public class EogLandingPage
                 Log.w("eog_landing", "showPlans view should be invisible..");
                 return true;
             }
-            case 2131689782: {
+            case 2131689804: {
                 this.mOwner.backPressed();
                 return true;
             }
-            case 2131689788: {
+            case 2131689810: {
                 this.mOwner.recordPlanSelection();
                 if (EndOfGrandfatheringActivity.shouldBlockUser(this.mOwner.getEogAlert().isBlocking())) {
                     this.mOwner.startActivity(HomeActivity.createStartIntent(this.mOwner));

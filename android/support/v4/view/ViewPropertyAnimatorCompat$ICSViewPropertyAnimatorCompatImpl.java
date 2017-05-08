@@ -22,6 +22,11 @@ class ViewPropertyAnimatorCompat$ICSViewPropertyAnimatorCompatImpl extends ViewP
     }
     
     @Override
+    public void alphaBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.alphaBy(view, n);
+    }
+    
+    @Override
     public void cancel(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view) {
         ViewPropertyAnimatorCompatICS.cancel(view);
     }
@@ -32,13 +37,58 @@ class ViewPropertyAnimatorCompat$ICSViewPropertyAnimatorCompatImpl extends ViewP
     }
     
     @Override
+    public long getStartDelay(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view) {
+        return ViewPropertyAnimatorCompatICS.getStartDelay(view);
+    }
+    
+    @Override
+    public void rotation(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.rotation(view, n);
+    }
+    
+    @Override
+    public void rotationBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.rotationBy(view, n);
+    }
+    
+    @Override
+    public void rotationX(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.rotationX(view, n);
+    }
+    
+    @Override
+    public void rotationXBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.rotationXBy(view, n);
+    }
+    
+    @Override
+    public void rotationY(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.rotationY(view, n);
+    }
+    
+    @Override
+    public void rotationYBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.rotationYBy(view, n);
+    }
+    
+    @Override
     public void scaleX(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
         ViewPropertyAnimatorCompatICS.scaleX(view, n);
     }
     
     @Override
+    public void scaleXBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.scaleXBy(view, n);
+    }
+    
+    @Override
     public void scaleY(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
         ViewPropertyAnimatorCompatICS.scaleY(view, n);
+    }
+    
+    @Override
+    public void scaleYBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.scaleYBy(view, n);
     }
     
     @Override
@@ -73,7 +123,55 @@ class ViewPropertyAnimatorCompat$ICSViewPropertyAnimatorCompatImpl extends ViewP
     }
     
     @Override
+    public void translationXBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.translationXBy(view, n);
+    }
+    
+    @Override
     public void translationY(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
         ViewPropertyAnimatorCompatICS.translationY(view, n);
+    }
+    
+    @Override
+    public void translationYBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.translationYBy(view, n);
+    }
+    
+    @Override
+    public void withEndAction(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final Runnable mEndAction) {
+        ViewPropertyAnimatorCompatICS.setListener(view, new ViewPropertyAnimatorCompat$ICSViewPropertyAnimatorCompatImpl$MyVpaListener(viewPropertyAnimatorCompat));
+        viewPropertyAnimatorCompat.mEndAction = mEndAction;
+    }
+    
+    @Override
+    public void withLayer(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view) {
+        viewPropertyAnimatorCompat.mOldLayerType = ViewCompat.getLayerType(view);
+        ViewPropertyAnimatorCompatICS.setListener(view, new ViewPropertyAnimatorCompat$ICSViewPropertyAnimatorCompatImpl$MyVpaListener(viewPropertyAnimatorCompat));
+    }
+    
+    @Override
+    public void withStartAction(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final Runnable mStartAction) {
+        ViewPropertyAnimatorCompatICS.setListener(view, new ViewPropertyAnimatorCompat$ICSViewPropertyAnimatorCompatImpl$MyVpaListener(viewPropertyAnimatorCompat));
+        viewPropertyAnimatorCompat.mStartAction = mStartAction;
+    }
+    
+    @Override
+    public void x(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.x(view, n);
+    }
+    
+    @Override
+    public void xBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.xBy(view, n);
+    }
+    
+    @Override
+    public void y(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.y(view, n);
+    }
+    
+    @Override
+    public void yBy(final ViewPropertyAnimatorCompat viewPropertyAnimatorCompat, final View view, final float n) {
+        ViewPropertyAnimatorCompatICS.yBy(view, n);
     }
 }

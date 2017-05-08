@@ -111,7 +111,7 @@ public class BarkerKidsCharacterDetailsFrag extends BarkerKidsShowDetailsFrag
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
             seasonsSpinnerAdapter.setItemBackgroundColor(this.kidsColorId);
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131624167);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131624188);
             seasonsSpinnerAdapter.setDropDownTextColor(this.kidsColorId);
         }
         return seasonsSelectorGroup;
@@ -122,22 +122,22 @@ public class BarkerKidsCharacterDetailsFrag extends BarkerKidsShowDetailsFrag
         final Resources resources = this.getActivity().getResources();
         int n;
         if (this.shouldRenderAsSDP) {
-            n = 2131492882;
+            n = 2131492883;
         }
         else {
-            n = 2131492881;
+            n = 2131492882;
         }
         return resources.getInteger(n);
     }
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362185) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362214) * 2;
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903152;
+        return 2130903162;
     }
     
     @Override

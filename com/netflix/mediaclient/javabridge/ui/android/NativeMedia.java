@@ -29,8 +29,8 @@ import com.netflix.mediaclient.javabridge.invoke.android.SendSubtitleQoe;
 import com.netflix.mediaclient.javabridge.invoke.android.SendSubtitleError;
 import com.netflix.mediaclient.javabridge.invoke.android.SetFailedSubtitleDownloadUrl;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleFailure;
+import com.netflix.mediaclient.media.SubtitleUrl;
 import com.netflix.mediaclient.javabridge.invoke.media.Play;
 import com.netflix.mediaclient.javabridge.invoke.media.Pause;
 import com.netflix.mediaclient.javabridge.invoke.media.Open;
@@ -81,8 +81,8 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.javabridge.Bridge;
 import com.netflix.mediaclient.media.Watermark;
 import com.netflix.mediaclient.media.TrickplayUrl;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleOutputMode;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.javabridge.StreamInfo;
 import com.netflix.mediaclient.media.Subtitle;
@@ -109,8 +109,8 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     private int mFrameY;
     private int mPosition;
     private int mState;
-    private IMedia$SubtitleOutputMode mSubtitleOutputMode;
-    private IMedia$SubtitleProfile mSubtitleProfile;
+    private ISubtitleDef$SubtitleOutputMode mSubtitleOutputMode;
+    private ISubtitleDef$SubtitleProfile mSubtitleProfile;
     private Subtitle[] mSubtitleTrackList;
     private StreamInfo mTargetVideoStream;
     private TrickplayUrl[] mTrickplayUrlList;
@@ -178,11 +178,11 @@ public class NativeMedia extends NativeNrdObject implements IMedia
             return new AudioSubtitleDefaultOrderInfo[0];
         }
         final ArrayList<AudioSubtitleDefaultOrderInfo> list = new ArrayList<AudioSubtitleDefaultOrderInfo>(jsonArray.length());
-    Label_0140_Outer:
+    Label_0143_Outer:
         while (i < jsonArray.length()) {
             while (true) {
                 try {
-                    final AudioSubtitleDefaultOrderInfo audioSubtitleDefaultOrderInfo = new AudioSubtitleDefaultOrderInfo(jsonArray.getJSONObject(i));
+                    final AudioSubtitleDefaultOrderInfo audioSubtitleDefaultOrderInfo = new AudioSubtitleDefaultOrderInfo(jsonArray.getJSONObject(i), System.currentTimeMillis());
                     if (Log.isLoggable()) {
                         Log.d("nf-bridge", "Default found " + audioSubtitleDefaultOrderInfo);
                     }
@@ -190,7 +190,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
                         list.add(audioSubtitleDefaultOrderInfo);
                     }
                     ++i;
-                    continue Label_0140_Outer;
+                    continue Label_0143_Outer;
                 }
                 catch (JSONException ex) {
                     Log.e("nf-bridge", "Failed to parse default ", (Throwable)ex);
@@ -739,12 +739,12 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public IMedia$SubtitleOutputMode getSubtitleOutputMode() {
+    public ISubtitleDef$SubtitleOutputMode getSubtitleOutputMode() {
         return this.mSubtitleOutputMode;
     }
     
     @Override
-    public IMedia$SubtitleProfile getSubtitleProfile() {
+    public ISubtitleDef$SubtitleProfile getSubtitleProfile() {
         return this.mSubtitleProfile;
     }
     
@@ -830,9 +830,9 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Status status, final String[] array) {
-        this.bridge.getNrdProxy().invokeMethod(new SetFailedSubtitleDownloadUrl(s, media$SubtitleFailure));
-        this.bridge.getNrdProxy().invokeMethod(new SendSubtitleError(s, subtitleUrl, media$SubtitleFailure, b, this.mCurrentSubtitleTrack, status, array));
+    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final ISubtitleDef$SubtitleFailure subtitleDef$SubtitleFailure, final boolean b, final Status status, final String[] array) {
+        this.bridge.getNrdProxy().invokeMethod(new SetFailedSubtitleDownloadUrl(s, subtitleDef$SubtitleFailure));
+        this.bridge.getNrdProxy().invokeMethod(new SendSubtitleError(s, subtitleUrl, subtitleDef$SubtitleFailure, b, this.mCurrentSubtitleTrack, status, array));
     }
     
     @Override
@@ -940,7 +940,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void setSubtitleOutputMode(final IMedia$SubtitleOutputMode mSubtitleOutputMode) {
+    public void setSubtitleOutputMode(final ISubtitleDef$SubtitleOutputMode mSubtitleOutputMode) {
         if (mSubtitleOutputMode == null) {
             throw new IllegalArgumentException("Output mode can not be null!");
         }
@@ -949,7 +949,7 @@ public class NativeMedia extends NativeNrdObject implements IMedia
     }
     
     @Override
-    public void setSubtitleProfile(final IMedia$SubtitleProfile mSubtitleProfile) {
+    public void setSubtitleProfile(final ISubtitleDef$SubtitleProfile mSubtitleProfile) {
         if (mSubtitleProfile == null) {
             throw new IllegalArgumentException("Subtitle profile can not be null!");
         }

@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.ui.voip;
 
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
-import android.content.Context;
 import android.graphics.PorterDuff$Mode;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.servicemgr.IVoip$Call;
@@ -20,7 +19,7 @@ import android.widget.TextView;
 import android.view.View;
 import android.media.AudioManager;
 import com.netflix.mediaclient.Log;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 
 class DialerScreen$6 implements Runnable
@@ -33,7 +32,7 @@ class DialerScreen$6 implements Runnable
     
     @Override
     public void run() {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.mOwner)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.mOwner)) {
             Log.d("VoipActivity", "timer update exit");
             return;
         }

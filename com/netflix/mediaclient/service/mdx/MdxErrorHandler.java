@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx;
 
-import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
@@ -12,7 +11,7 @@ import com.netflix.mediaclient.javabridge.ui.LogArguments;
 import com.netflix.mediaclient.javabridge.ui.LogArguments$LogLevel;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
@@ -36,13 +35,13 @@ public class MdxErrorHandler
     private AlertDialog$Builder getDialogBuilder(final int n, final String s) {
         switch (n) {
             default: {
-                return new AlertDialog$Builder((Context)this.activity).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131231128, (DialogInterface$OnClickListener)null);
+                return new AlertDialog$Builder((Context)this.activity).setMessage(this.getErrorMessage(n, s)).setPositiveButton(2131231167, null);
             }
             case 100: {
-                return new AlertDialog$Builder((Context)this.activity).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131231128, (DialogInterface$OnClickListener)null).setNegativeButton(2131231061, this.kblaunch_16001);
+                return new AlertDialog$Builder((Context)this.activity).setMessage(this.getErrorMessage(n, s)).setPositiveButton(2131231167, null).setNegativeButton(2131231077, this.kblaunch_16001);
             }
             case 105: {
-                return new AlertDialog$Builder((Context)this.activity).setMessage((CharSequence)this.getErrorMessage(n, s)).setPositiveButton(2131231128, (DialogInterface$OnClickListener)null).setNegativeButton(2131231061, this.kblaunch_16003);
+                return new AlertDialog$Builder((Context)this.activity).setMessage(this.getErrorMessage(n, s)).setPositiveButton(2131231167, null).setNegativeButton(2131231077, this.kblaunch_16003);
             }
         }
     }
@@ -60,22 +59,22 @@ public class MdxErrorHandler
                 return s;
             }
             case 100: {
-                return this.activity.getString(2131231101);
+                return this.activity.getString(2131231125);
             }
             case 104: {
-                return this.activity.getString(2131231099);
+                return this.activity.getString(2131231123);
             }
             case 105: {
-                return this.activity.getString(2131231100);
+                return this.activity.getString(2131231124);
             }
             case 200: {
-                return this.activity.getString(2131231102);
+                return this.activity.getString(2131231126);
             }
             case 106: {
-                return String.format(this.activity.getString(2131231098), s);
+                return String.format(this.activity.getString(2131231122), s);
             }
             case 201: {
-                return this.activity.getString(2131231103);
+                return this.activity.getString(2131231127);
             }
         }
     }
@@ -110,7 +109,7 @@ public class MdxErrorHandler
                 }
             }
             try {
-                this.activity.getServiceManager().getClientLogging().NrdpLog(new LogArguments(LogArguments$LogLevel.ERROR.getLevelInString(), s, "mdx", null));
+                this.activity.getServiceManager().getClientLogging().NrdpLog(new LogArguments(LogArguments$LogLevel.ERROR, s, "mdx", null));
                 return;
             }
             catch (Exception ex) {
@@ -132,7 +131,7 @@ public class MdxErrorHandler
         if (Log.isLoggable()) {
             Log.d(this.tag, "Error received. Code: " + n + ", message: " + s);
         }
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.activity)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.activity)) {
             return;
         }
         if (n >= 100 && n < 200) {

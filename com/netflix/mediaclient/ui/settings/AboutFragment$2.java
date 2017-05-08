@@ -7,6 +7,8 @@ package com.netflix.mediaclient.ui.settings;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.ui.diagnosis.DiagnosisActivity;
 import android.os.Bundle;
+import android.preference.PreferenceCategory;
+import android.preference.PreferenceScreen;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import android.os.Build;
 import com.netflix.mediaclient.util.AndroidUtils;

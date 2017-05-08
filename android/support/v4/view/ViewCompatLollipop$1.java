@@ -10,13 +10,13 @@ import android.view.View$OnApplyWindowInsetsListener;
 
 final class ViewCompatLollipop$1 implements View$OnApplyWindowInsetsListener
 {
-    final /* synthetic */ OnApplyWindowInsetsListener val$listener;
+    final /* synthetic */ ViewCompatLollipop$OnApplyWindowInsetsListenerBridge val$bridge;
     
-    ViewCompatLollipop$1(final OnApplyWindowInsetsListener val$listener) {
-        this.val$listener = val$listener;
+    ViewCompatLollipop$1(final ViewCompatLollipop$OnApplyWindowInsetsListenerBridge val$bridge) {
+        this.val$bridge = val$bridge;
     }
     
     public WindowInsets onApplyWindowInsets(final View view, final WindowInsets windowInsets) {
-        return ((WindowInsetsCompatApi21)this.val$listener.onApplyWindowInsets(view, new WindowInsetsCompatApi21(windowInsets))).unwrap();
+        return (WindowInsets)this.val$bridge.onApplyWindowInsets(view, windowInsets);
     }
 }

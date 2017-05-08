@@ -75,22 +75,22 @@ class BarkerKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
     private Drawable getBackroundResource(final View view) {
         switch (this.this$0.kidsColorId) {
             default: {
-                return view.getResources().getDrawable(2130837815);
+                return view.getResources().getDrawable(2130837870);
             }
-            case 2131624058: {
-                return view.getResources().getDrawable(2130837819);
+            case 2131624070: {
+                return view.getResources().getDrawable(2130837874);
             }
-            case 2131624051: {
-                return view.getResources().getDrawable(2130837814);
+            case 2131624062: {
+                return view.getResources().getDrawable(2130837869);
             }
-            case 2131624053: {
-                return view.getResources().getDrawable(2130837816);
+            case 2131624065: {
+                return view.getResources().getDrawable(2130837871);
             }
-            case 2131624055: {
-                return view.getResources().getDrawable(2130837818);
+            case 2131624067: {
+                return view.getResources().getDrawable(2130837873);
             }
-            case 2131624054: {
-                return view.getResources().getDrawable(2130837817);
+            case 2131624066: {
+                return view.getResources().getDrawable(2130837872);
             }
         }
     }
@@ -98,7 +98,7 @@ class BarkerKidsCharacterDetailsFrag$CharacterKidsParallax extends KidsParallax
     @Override
     protected void setInitialToolbarColor() {
         super.setInitialToolbarColor();
-        final View viewById = this.recyclerView.getRootView().findViewById(2131689586);
+        final View viewById = this.recyclerView.getRootView().findViewById(2131689598);
         if (viewById != null) {
             Api16Util.setBackgroundDrawableCompat(viewById, this.getBackroundResource(viewById));
         }

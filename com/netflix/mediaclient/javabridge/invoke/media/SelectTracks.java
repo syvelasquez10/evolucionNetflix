@@ -28,9 +28,9 @@ public class SelectTracks extends BaseInvoke
     
     private void setArguments(final AudioSource audioSource, final Subtitle subtitle) {
         while (true) {
-            Label_0082: {
+            Label_0086: {
                 if (audioSource == null) {
-                    break Label_0082;
+                    break Label_0086;
                 }
                 try {
                     if (audioSource.getId() != null) {

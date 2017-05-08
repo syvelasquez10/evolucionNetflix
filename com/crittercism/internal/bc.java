@@ -18,7 +18,28 @@ public final class bc extends Transaction
     }
     
     @Override
+    public final void a(final int n) {
+        dw.b("No-op transaction. Ignoring Transaction.setValue(double) call.", new IllegalStateException("No-op transaction"));
+    }
+    
+    @Override
+    public final int a_() {
+        dw.b("No-op transaction. Ignoring Transaction.getValue() call.", new IllegalStateException("No-op transaction"));
+        return -1;
+    }
+    
+    @Override
     public final void b() {
         dw.b("No-op transaction. Ignoring Transaction.stop() call.", new IllegalStateException("No-op transaction"));
+    }
+    
+    @Override
+    public final void c() {
+        dw.b("No-op transaction. Ignoring Transaction.fail() call.", new IllegalStateException("No-op transaction"));
+    }
+    
+    @Override
+    public final void d() {
+        dw.b("No-op transaction. Ignoring Transaction.cancel() call.", new IllegalStateException("No-op transaction"));
     }
 }

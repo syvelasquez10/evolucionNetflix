@@ -24,7 +24,6 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.app.Fragment;
-import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.Log;

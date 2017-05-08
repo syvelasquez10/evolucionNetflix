@@ -6,15 +6,19 @@ package com.netflix.mediaclient.servicemgr;
 
 public enum IClientLogging$ModalView
 {
+    addCachedVideoButton, 
     ageVerificationDialog, 
     appLoading, 
     audioSubtitlesSelector, 
     badPayment, 
     bob, 
     browseTitles, 
+    cachedEpisodes, 
+    cachedVideos, 
     characterDetails, 
     contactUs, 
     customerService, 
+    downloadProgress, 
     emailConfirmation, 
     eogPlanSelector, 
     eogPrompt, 
@@ -35,6 +39,7 @@ public enum IClientLogging$ModalView
     menuPanel, 
     movieDetails, 
     nmLanding, 
+    noConnectivityWarning, 
     notification, 
     offerDetails, 
     offlineShows, 
@@ -43,6 +48,7 @@ public enum IClientLogging$ModalView
     optInDialog, 
     orderConfirmation, 
     originalDetails, 
+    pauseDownloadButton, 
     payment, 
     peopleResults, 
     peopleTitleResults, 
@@ -55,6 +61,9 @@ public enum IClientLogging$ModalView
     profilesGate, 
     rdp, 
     registration, 
+    removeCachedVideoButton, 
+    resumeDownloadButton, 
+    retryDownloadButton, 
     search, 
     searchResults, 
     seasonsSelector, 
@@ -68,5 +77,8 @@ public enum IClientLogging$ModalView
     trickplay, 
     upgradeStreamsError, 
     upgradeStreamsPitch, 
-    upgradeStreamsPrompt;
+    upgradeStreamsPrompt, 
+    videoNotAvailableToCacheWarning, 
+    videoNotEligibleToCacheWarning, 
+    viewCachedVideosButton;
 }

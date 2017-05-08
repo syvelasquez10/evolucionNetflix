@@ -11,14 +11,17 @@ import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.service.webclient.model.leafs.SignInConfigData;
 import com.netflix.mediaclient.service.webclient.model.leafs.PreviewContentConfigData;
 import com.netflix.mediaclient.service.configuration.PlaybackConfiguration;
+import com.netflix.mediaclient.service.webclient.model.leafs.OfflineConfig;
 import com.netflix.mediaclient.service.webclient.model.leafs.NrmConfigData;
 import com.netflix.mediaclient.service.configuration.MdxConfiguration;
 import com.netflix.mediaclient.service.configuration.KubrickConfiguration;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
+import com.netflix.mediaclient.service.configuration.ImageResolutionClass;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.service.webclient.model.leafs.ErrorLoggingSpecification;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager;
+import com.netflix.mediaclient.service.configuration.DeviceModel;
 import com.netflix.mediaclient.util.DeviceCategory;
 import com.netflix.mediaclient.media.PlayerType;
 import com.netflix.mediaclient.service.webclient.model.leafs.ConsolidatedLoggingSessionSpecification;
@@ -72,13 +75,19 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     PlayerType getCurrentPlayerType();
     
+    int getDataRequestThreadPoolSize();
+    
     int getDataRequestTimeout();
     
     DeviceCategory getDeviceCategory();
     
+    DeviceModel getDeviceModel();
+    
     int getDiskCacheSizeBytes();
     
     ABTestConfig$Cell getDisplayPageRefreshConfig();
+    
+    int getDownloadAgentThreadPoolSize();
     
     DrmManager getDrmManager();
     
@@ -86,9 +95,15 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     EsnProvider getEsnProvider();
     
+    String getGeoCountryCode();
+    
     long getImageCacheMinimumTtl();
     
     int getImageCacheSizeBytes();
+    
+    String getImagePreference();
+    
+    ImageResolutionClass getImageResolutionClass();
     
     IpConnectivityPolicy getIpConnectivityPolicy();
     
@@ -105,6 +120,10 @@ public interface ServiceAgent$ConfigurationAgentInterface
     ABTestConfig$Cell getMotionBBTestConfig();
     
     NrmConfigData getNrmConfigData();
+    
+    OfflineConfig getOfflineConfig();
+    
+    ABTestConfig$Cell getOfflineTutorialConfig();
     
     ABTestConfig$Cell getOnRampConfig();
     
@@ -152,13 +171,23 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     boolean ignorePreloadForPlayBilling();
     
+    boolean isAllowHevcMobile();
+    
+    boolean isAllowVp9Mobile();
+    
+    boolean isAssistiveAudioEnabled();
+    
     boolean isCurrentDrmWidevine();
+    
+    boolean isDeviceHd();
     
     boolean isDeviceLowMem();
     
     boolean isDisableCastFaststart();
     
     boolean isDisableMcQueenV2();
+    
+    boolean isDolbyDigitalPlus20Supported();
     
     boolean isDolbyDigitalPlus51Supported();
     
@@ -176,11 +205,17 @@ public interface ServiceAgent$ConfigurationAgentInterface
     
     void persistNrmConfigData(final NrmConfigData p0);
     
+    void setShouldUseAndroidHttpStack(final boolean p0);
+    
     boolean shouldAlertForMissingLocale();
     
     boolean shouldDisableVoip();
     
     boolean shouldForceLegacyCrypto();
+    
+    boolean shouldUseAndroidHttpStack();
+    
+    boolean showHelpForNonMemebers();
     
     void userAgentLogoutComplete();
     

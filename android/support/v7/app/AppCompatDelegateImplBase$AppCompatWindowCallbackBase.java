@@ -5,11 +5,11 @@
 package android.support.v7.app;
 
 import android.view.View;
-import android.support.v7.internal.view.menu.i;
+import android.support.v7.view.menu.MenuBuilder;
 import android.view.Menu;
 import android.view.KeyEvent;
 import android.view.Window$Callback;
-import android.support.v7.internal.view.WindowCallbackWrapper;
+import android.support.v7.view.WindowCallbackWrapper;
 
 class AppCompatDelegateImplBase$AppCompatWindowCallbackBase extends WindowCallbackWrapper
 {
@@ -36,12 +36,14 @@ class AppCompatDelegateImplBase$AppCompatWindowCallbackBase extends WindowCallba
     
     @Override
     public boolean onCreatePanelMenu(final int n, final Menu menu) {
-        return (n != 0 || menu instanceof i) && super.onCreatePanelMenu(n, menu);
+        return (n != 0 || menu instanceof MenuBuilder) && super.onCreatePanelMenu(n, menu);
     }
     
     @Override
     public boolean onMenuOpened(final int n, final Menu menu) {
-        return super.onMenuOpened(n, menu) || this.this$0.onMenuOpened(n, menu);
+        super.onMenuOpened(n, menu);
+        this.this$0.onMenuOpened(n, menu);
+        return true;
     }
     
     @Override
@@ -52,24 +54,24 @@ class AppCompatDelegateImplBase$AppCompatWindowCallbackBase extends WindowCallba
     
     @Override
     public boolean onPreparePanel(final int n, final View view, final Menu menu) {
-        i i;
-        if (menu instanceof i) {
-            i = (i)menu;
+        MenuBuilder menuBuilder;
+        if (menu instanceof MenuBuilder) {
+            menuBuilder = (MenuBuilder)menu;
         }
         else {
-            i = null;
+            menuBuilder = null;
         }
         boolean onPreparePanel;
-        if (n == 0 && i == null) {
+        if (n == 0 && menuBuilder == null) {
             onPreparePanel = false;
         }
         else {
-            if (i != null) {
-                i.c(true);
+            if (menuBuilder != null) {
+                menuBuilder.setOverrideVisibleItems(true);
             }
             onPreparePanel = super.onPreparePanel(n, view, menu);
-            if (i != null) {
-                i.c(false);
+            if (menuBuilder != null) {
+                menuBuilder.setOverrideVisibleItems(false);
                 return onPreparePanel;
             }
         }

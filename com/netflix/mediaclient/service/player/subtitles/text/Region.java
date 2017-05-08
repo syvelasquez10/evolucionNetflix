@@ -8,8 +8,9 @@ import com.netflix.mediaclient.util.StringUtils;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import com.netflix.mediaclient.Log;
-import org.w3c.dom.Element;
 import com.netflix.mediaclient.service.player.subtitles.TextSubtitleParser;
+import org.w3c.dom.Element;
+import com.netflix.mediaclient.service.player.subtitles.BaseTextSubtitleParser;
 import com.netflix.mediaclient.service.player.subtitles.DoubleLength;
 
 public class Region
@@ -28,10 +29,10 @@ public class Region
     private TextStyle mTextStyle;
     private VerticalAlignment mVerticalAlignment;
     
-    private Region(final TextSubtitleParser textSubtitleParser, final Element element, final CellResolution mCellResolution, final TextStyle textStyle) {
+    private Region(final BaseTextSubtitleParser baseTextSubtitleParser, final Element element, final CellResolution mCellResolution, final TextStyle textStyle) {
         this.mId = element.getAttribute("xml:id");
         this.mCellResolution = mCellResolution;
-        final TextStyle instanceFromContainer = TextStyle.createInstanceFromContainer(element, textSubtitleParser, textStyle);
+        final TextStyle instanceFromContainer = TextStyle.createInstanceFromContainer(element, baseTextSubtitleParser, textStyle);
         if (Log.isLoggable()) {
             Log.d("nf_subtitles", "Style defined as attribute in region " + instanceFromContainer);
         }
@@ -86,8 +87,8 @@ public class Region
         return new Region("SIMPLE_SDH", DoubleLength.SIMPLE_SDH_EXTENT, DoubleLength.ZERO, HorizontalAlignment.left, VerticalAlignment.top, null, textStyle);
     }
     
-    public static Region createRegion(final TextSubtitleParser textSubtitleParser, final Element element, final CellResolution cellResolution, final TextStyle textStyle) {
-        return new Region(textSubtitleParser, element, cellResolution, textStyle);
+    public static Region createRegion(final BaseTextSubtitleParser baseTextSubtitleParser, final Element element, final CellResolution cellResolution, final TextStyle textStyle) {
+        return new Region(baseTextSubtitleParser, element, cellResolution, textStyle);
     }
     
     private TextStyle parseStyles(final Element element) {

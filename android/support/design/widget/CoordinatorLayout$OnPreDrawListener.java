@@ -15,7 +15,7 @@ class CoordinatorLayout$OnPreDrawListener implements ViewTreeObserver$OnPreDrawL
     }
     
     public boolean onPreDraw() {
-        this.this$0.dispatchOnDependentViewChanged(false);
+        this.this$0.onChildViewsChanged(0);
         return true;
     }
 }

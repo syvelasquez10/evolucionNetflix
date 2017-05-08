@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.ui.details;
 
 import android.app.Fragment;
-import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.Intent;
 import android.content.Context;
@@ -20,7 +19,7 @@ class RoleDetailsFrag$ActorRelatedView$1 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$1.this$0.getNetflixActivity()) || intent == null || !this.this$1.this$0.isResumed() || this.this$1.this$0.isHidden()) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$1.this$0.getNetflixActivity()) || intent == null || !this.this$1.this$0.isResumed() || this.this$1.this$0.isHidden()) {
             return;
         }
         final String action = intent.getAction();

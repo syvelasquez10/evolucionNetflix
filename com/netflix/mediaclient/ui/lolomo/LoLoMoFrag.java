@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
+import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.android.app.LoadingStatus$LoadingStatusCallback;
@@ -62,8 +64,8 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     
     public LoLoMoFrag() {
         this.stateMap = new HashMap<String, Object>();
-        this.leCallback = new LoLoMoFrag$1(this);
-        this.recycleListener = (AbsListView$RecyclerListener)new LoLoMoFrag$2(this);
+        this.leCallback = new LoLoMoFrag$2(this);
+        this.recycleListener = (AbsListView$RecyclerListener)new LoLoMoFrag$3(this);
     }
     
     public static LoLoMoFrag create(final String s, final GenreList list) {
@@ -125,7 +127,7 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     }
     
     protected int getLayoutId() {
-        return 2130903167;
+        return 2130903177;
     }
     
     ListView getListView() {
@@ -266,6 +268,11 @@ public class LoLoMoFrag extends NetflixFrag implements ManagerStatusListener
     public void showErrorView() {
         Log.v("LoLoMoFrag", "Showing error view");
         AnimationUtils.hideView((View)this.listView, true);
+        final NetflixActivity netflixActivity = this.getNetflixActivity();
+        if (netflixActivity != null) {
+            netflixActivity.removeNoNetworkOverlay();
+            this.getNetflixActivity().runWhenManagerIsReady(new LoLoMoFrag$1(this));
+        }
         this.leWrapper.showErrorView(true);
     }
     

@@ -96,6 +96,13 @@ public class ABTestConfiguration
         return this.mABTestConfigData.getMotionBBTestConfig().getCell();
     }
     
+    public ABTestConfig$Cell getOfflineTutorialConfig() {
+        if (this.mABTestConfigData == null || this.mABTestConfigData.getOfflineTutorialConfig() == null) {
+            return ABTestConfig$Cell.CELL_ONE;
+        }
+        return this.mABTestConfigData.getOfflineTutorialConfig().getCell();
+    }
+    
     public ABTestConfig$Cell getOnRampConfig() {
         if (this.mABTestConfigData == null || this.mABTestConfigData.getOnRampConfig() == null) {
             return ABTestConfig$Cell.CELL_ONE;

@@ -5,6 +5,7 @@
 package android.support.v4.view.accessibility;
 
 import android.graphics.Rect;
+import java.util.List;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -16,6 +17,10 @@ class AccessibilityNodeInfoCompatIcs
     
     public static void addChild(final Object o, final View view) {
         ((AccessibilityNodeInfo)o).addChild(view);
+    }
+    
+    public static List<Object> findAccessibilityNodeInfosByText(final Object o, final String s) {
+        return (List<Object>)((AccessibilityNodeInfo)o).findAccessibilityNodeInfosByText(s);
     }
     
     public static int getActions(final Object o) {
@@ -30,6 +35,14 @@ class AccessibilityNodeInfoCompatIcs
         ((AccessibilityNodeInfo)o).getBoundsInScreen(rect);
     }
     
+    public static Object getChild(final Object o, final int n) {
+        return ((AccessibilityNodeInfo)o).getChild(n);
+    }
+    
+    public static int getChildCount(final Object o) {
+        return ((AccessibilityNodeInfo)o).getChildCount();
+    }
+    
     public static CharSequence getClassName(final Object o) {
         return ((AccessibilityNodeInfo)o).getClassName();
     }
@@ -42,8 +55,16 @@ class AccessibilityNodeInfoCompatIcs
         return ((AccessibilityNodeInfo)o).getPackageName();
     }
     
+    public static Object getParent(final Object o) {
+        return ((AccessibilityNodeInfo)o).getParent();
+    }
+    
     public static CharSequence getText(final Object o) {
         return ((AccessibilityNodeInfo)o).getText();
+    }
+    
+    public static int getWindowId(final Object o) {
+        return ((AccessibilityNodeInfo)o).getWindowId();
     }
     
     public static boolean isCheckable(final Object o) {
@@ -86,6 +107,14 @@ class AccessibilityNodeInfoCompatIcs
         return ((AccessibilityNodeInfo)o).isSelected();
     }
     
+    public static Object obtain() {
+        return AccessibilityNodeInfo.obtain();
+    }
+    
+    public static Object obtain(final View view) {
+        return AccessibilityNodeInfo.obtain(view);
+    }
+    
     public static Object obtain(final Object o) {
         return AccessibilityNodeInfo.obtain((AccessibilityNodeInfo)o);
     }
@@ -104,6 +133,14 @@ class AccessibilityNodeInfoCompatIcs
     
     public static void setBoundsInScreen(final Object o, final Rect boundsInScreen) {
         ((AccessibilityNodeInfo)o).setBoundsInScreen(boundsInScreen);
+    }
+    
+    public static void setCheckable(final Object o, final boolean checkable) {
+        ((AccessibilityNodeInfo)o).setCheckable(checkable);
+    }
+    
+    public static void setChecked(final Object o, final boolean checked) {
+        ((AccessibilityNodeInfo)o).setChecked(checked);
     }
     
     public static void setClassName(final Object o, final CharSequence className) {
@@ -142,6 +179,10 @@ class AccessibilityNodeInfoCompatIcs
         ((AccessibilityNodeInfo)o).setParent(parent);
     }
     
+    public static void setPassword(final Object o, final boolean password) {
+        ((AccessibilityNodeInfo)o).setPassword(password);
+    }
+    
     public static void setScrollable(final Object o, final boolean scrollable) {
         ((AccessibilityNodeInfo)o).setScrollable(scrollable);
     }
@@ -152,5 +193,9 @@ class AccessibilityNodeInfoCompatIcs
     
     public static void setSource(final Object o, final View source) {
         ((AccessibilityNodeInfo)o).setSource(source);
+    }
+    
+    public static void setText(final Object o, final CharSequence text) {
+        ((AccessibilityNodeInfo)o).setText(text);
     }
 }

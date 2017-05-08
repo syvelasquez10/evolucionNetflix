@@ -33,6 +33,7 @@ import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.util.LoginUtils;
 import android.content.IntentSender$SendIntentException;
+import android.app.Activity;
 import android.os.Build;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
@@ -49,12 +50,11 @@ import android.annotation.SuppressLint;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import com.netflix.mediaclient.service.logging.client.model.Error;
-import android.content.Context;
 import com.netflix.mediaclient.util.log.SignInLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.SignInLogging$CredentialService;
 import com.netflix.mediaclient.Log;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.Status;
@@ -70,7 +70,7 @@ class SignupActivity$12 implements ResultCallback<Status>
     
     @Override
     public void onResult(final Status status) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0)) {
             Log.e("SignupActivity", "Auth.CredentialsApi.request ActivityFinishedOrDestroyed");
             return;
         }

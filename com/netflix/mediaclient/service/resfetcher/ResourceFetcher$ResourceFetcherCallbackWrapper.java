@@ -29,7 +29,7 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.content.Context;
-import com.android.volley.toolbox.HurlStack;
+import com.netflix.mediaclient.service.resfetcher.volley.ResourceHttpStack;
 import com.android.volley.toolbox.HttpStack;
 import com.netflix.mediaclient.Log;
 import com.android.volley.toolbox.DiskBasedCache;

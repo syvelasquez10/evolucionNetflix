@@ -33,6 +33,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class DeviceUtils
 {
+    public static final boolean DEFAULT_ALLOW_HEVC_MOBILE = false;
+    public static final boolean DEFAULT_ALLOW_VP9_MOBILE;
     public static final boolean DEVICE_WITH_MENU_BUTTON_BUG;
     public static final int SCREEN_SIZE_LARGE = 3;
     public static final int SCREEN_SIZE_NORMAL = 2;
@@ -44,7 +46,9 @@ public final class DeviceUtils
     private static AtomicBoolean sFirstStartAfterInstall;
     
     static {
+        final boolean b = true;
         DEVICE_WITH_MENU_BUTTON_BUG = (Build$VERSION.SDK_INT <= 16 && Build.MANUFACTURER.compareTo("LGE") == 0);
+        DEFAULT_ALLOW_VP9_MOBILE = (Build$VERSION.SDK_INT >= 21 && b);
     }
     
     public static boolean canUseGooglePlayServices(final Context context) {
@@ -447,17 +451,15 @@ public final class DeviceUtils
                     }
                     System.load(string);
                     return true;
+                    // iftrue(Label_0173:, !Log.isLoggable())
+                Label_0173:
                     while (true) {
-                        while (true) {
-                            System.loadLibrary(s);
-                            return true;
-                            Log.d("nf_device_utils", "Loading library " + s + " leaving to android to find mapping. Preloaded app.");
-                            continue;
-                        }
+                        Log.d("nf_device_utils", "Loading library " + s + " leaving to android to find mapping. Preloaded app.");
+                        break Label_0173;
                         continue;
                     }
+                    System.loadLibrary(s);
                 }
-                // iftrue(Label_0173:, !Log.isLoggable())
                 catch (Throwable t) {
                     Log.e("nf_device_utils", "Failed to load library from assumed location", t);
                     ErrorLoggingManager.logHandledException(t);

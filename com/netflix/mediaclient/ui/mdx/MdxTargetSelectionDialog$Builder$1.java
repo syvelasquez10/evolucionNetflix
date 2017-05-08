@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.mdx;
 
 import java.util.List;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.widget.ListAdapter;
 import android.view.ViewGroup;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.content.DialogInterface$OnCancelListener;
 import android.widget.ListView;
 import android.app.Activity;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView$OnItemClickListener;

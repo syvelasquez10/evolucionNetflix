@@ -5,78 +5,59 @@
 package android.support.v7.widget;
 
 import android.support.v4.view.ActionProvider;
-import android.support.v7.internal.transition.ActionBarTransition;
-import android.support.v7.appcompat.R$integer;
+import android.support.v7.transition.ActionBarTransition;
+import android.os.Parcelable;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.support.v7.internal.view.ActionBarPolicy;
+import android.support.v7.view.ActionBarPolicy;
 import android.view.ViewGroup$LayoutParams;
 import java.util.ArrayList;
 import android.view.View$MeasureSpec;
-import android.support.v7.internal.view.menu.c;
-import android.support.v7.internal.view.menu.k;
-import android.support.v7.internal.view.menu.ActionMenuItemView;
-import android.support.v7.internal.view.menu.aa;
+import android.support.v7.view.menu.ActionMenuItemView$PopupCallback;
+import android.support.v7.view.menu.MenuBuilder$ItemInvoker;
+import android.support.v7.view.menu.ActionMenuItemView;
+import android.support.v7.view.menu.MenuView$ItemView;
 import android.view.ViewGroup;
-import android.support.v7.internal.view.menu.z;
+import android.view.MenuItem;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.appcompat.R$layout;
 import android.graphics.drawable.Drawable;
 import android.util.SparseBooleanArray;
 import android.support.v4.view.ActionProvider$SubUiVisibilityListener;
-import android.support.v7.internal.view.menu.d;
-import android.view.MenuItem;
-import android.support.v7.internal.view.menu.y;
-import android.support.v7.internal.view.menu.m;
-import android.view.View;
-import android.support.v7.internal.view.menu.i;
+import android.support.v7.view.menu.BaseMenuPresenter;
+import android.support.v7.view.menu.MenuPresenter$Callback;
+import android.support.v7.view.menu.MenuItemImpl;
+import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.appcompat.R$attr;
+import android.view.View;
+import android.support.v7.view.menu.SubMenuBuilder;
 import android.content.Context;
-import android.support.v7.internal.view.menu.ad;
-import android.support.v7.internal.view.menu.v;
+import android.support.v7.view.menu.MenuPopupHelper;
 
-class ActionMenuPresenter$ActionButtonSubmenu extends v
+class ActionMenuPresenter$ActionButtonSubmenu extends MenuPopupHelper
 {
-    private ad mSubMenu;
     final /* synthetic */ ActionMenuPresenter this$0;
     
-    public ActionMenuPresenter$ActionButtonSubmenu(final ActionMenuPresenter this$0, final Context context, final ad mSubMenu) {
-        final boolean b = false;
+    public ActionMenuPresenter$ActionButtonSubmenu(final ActionMenuPresenter this$0, final Context context, final SubMenuBuilder subMenuBuilder, final View view) {
         this.this$0 = this$0;
-        super(context, mSubMenu, null, false, R$attr.actionOverflowMenuStyle);
-        this.mSubMenu = mSubMenu;
-        if (!((m)mSubMenu.getItem()).i()) {
-            Object access$500;
+        super(context, subMenuBuilder, view, false, R$attr.actionOverflowMenuStyle);
+        if (!((MenuItemImpl)subMenuBuilder.getItem()).isActionButton()) {
+            Object mOverflowButton;
             if (this$0.mOverflowButton == null) {
-                access$500 = this$0.mMenuView;
+                mOverflowButton = this$0.mMenuView;
             }
             else {
-                access$500 = this$0.mOverflowButton;
+                mOverflowButton = this$0.mOverflowButton;
             }
-            this.setAnchorView((View)access$500);
+            this.setAnchorView((View)mOverflowButton);
         }
-        this.setCallback(this$0.mPopupPresenterCallback);
-        final int size = mSubMenu.size();
-        int n = 0;
-        boolean forceShowIcon;
-        while (true) {
-            forceShowIcon = b;
-            if (n >= size) {
-                break;
-            }
-            final MenuItem item = mSubMenu.getItem(n);
-            if (item.isVisible() && item.getIcon() != null) {
-                forceShowIcon = true;
-                break;
-            }
-            ++n;
-        }
-        this.setForceShowIcon(forceShowIcon);
+        this.setPresenterCallback(this$0.mPopupPresenterCallback);
     }
     
     @Override
-    public void onDismiss() {
-        super.onDismiss();
+    protected void onDismiss() {
         this.this$0.mActionButtonPopup = null;
         this.this$0.mOpenSubMenuId = 0;
+        super.onDismiss();
     }
 }

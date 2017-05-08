@@ -28,8 +28,9 @@ import javax.net.ssl.SSLSocketFactory;
 
 public class HurlStack implements HttpStack
 {
-    private final SSLSocketFactory mSslSocketFactory;
-    private final HurlStack$UrlRewriter mUrlRewriter;
+    private static final String HEADER_CONTENT_TYPE = "Content-Type";
+    protected final SSLSocketFactory mSslSocketFactory;
+    protected final HurlStack$UrlRewriter mUrlRewriter;
     
     public HurlStack() {
         this(null);
@@ -74,19 +75,6 @@ public class HurlStack implements HttpStack
         }
     }
     
-    private HttpURLConnection openConnection(final URL url, final Request<?> request) {
-        final HttpURLConnection connection = this.createConnection(url);
-        final int timeoutMs = request.getTimeoutMs();
-        connection.setConnectTimeout(timeoutMs);
-        connection.setReadTimeout(timeoutMs);
-        connection.setUseCaches(false);
-        connection.setDoInput(true);
-        if ("https".equals(url.getProtocol()) && this.mSslSocketFactory != null) {
-            ((HttpsURLConnection)connection).setSSLSocketFactory(this.mSslSocketFactory);
-        }
-        return connection;
-    }
-    
     static void setConnectionParametersForRequest(final HttpURLConnection httpURLConnection, final Request<?> request) {
         switch (request.getMethod()) {
             default: {
@@ -122,6 +110,19 @@ public class HurlStack implements HttpStack
     
     protected HttpURLConnection createConnection(final URL url) {
         return (HttpURLConnection)url.openConnection();
+    }
+    
+    protected HttpURLConnection openConnection(final URL url, final Request<?> request) {
+        final HttpURLConnection connection = this.createConnection(url);
+        final int timeoutMs = request.getTimeoutMs();
+        connection.setConnectTimeout(timeoutMs);
+        connection.setReadTimeout(timeoutMs);
+        connection.setUseCaches(false);
+        connection.setDoInput(true);
+        if ("https".equals(url.getProtocol()) && this.mSslSocketFactory != null) {
+            ((HttpsURLConnection)connection).setSSLSocketFactory(this.mSslSocketFactory);
+        }
+        return connection;
     }
     
     @Override

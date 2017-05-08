@@ -8,29 +8,29 @@ import com.netflix.mediaclient.util.NetflixPreference;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.content.Context;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleOutputMode;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleOutputMode;
 
 public enum SubtitleConfiguration
 {
-    BINARY_IMAGE(IMedia$SubtitleProfile.IMAGE, IMedia$SubtitleOutputMode.BINARY_IMAGE, 3, 2131231369);
+    BINARY_IMAGE(ISubtitleDef$SubtitleProfile.IMAGE, ISubtitleDef$SubtitleOutputMode.BINARY_IMAGE, 3, 2131231524);
     
     public static SubtitleConfiguration DEFAULT;
     
-    ENHANCED_XML(IMedia$SubtitleProfile.ENHANCED, IMedia$SubtitleOutputMode.DATA_XML, 1, 2131231368), 
-    SIMPLE_XML(IMedia$SubtitleProfile.SIMPLE, IMedia$SubtitleOutputMode.DATA_XML, 2, 2131231370);
+    ENHANCED_XML(ISubtitleDef$SubtitleProfile.ENHANCED, ISubtitleDef$SubtitleOutputMode.DATA_XML, 1, 2131231523), 
+    SIMPLE_XML(ISubtitleDef$SubtitleProfile.SIMPLE, ISubtitleDef$SubtitleOutputMode.DATA_XML, 2, 2131231525);
     
     private static final String TAG = "nf_conf";
     private int mLabelId;
     private int mLookupType;
-    private IMedia$SubtitleOutputMode mMode;
-    private IMedia$SubtitleProfile mProfile;
+    private ISubtitleDef$SubtitleOutputMode mMode;
+    private ISubtitleDef$SubtitleProfile mProfile;
     
     static {
         SubtitleConfiguration.DEFAULT = SubtitleConfiguration.ENHANCED_XML;
     }
     
-    private SubtitleConfiguration(final IMedia$SubtitleProfile mProfile, final IMedia$SubtitleOutputMode mMode, final int mLookupType, final int mLabelId) {
+    private SubtitleConfiguration(final ISubtitleDef$SubtitleProfile mProfile, final ISubtitleDef$SubtitleOutputMode mMode, final int mLookupType, final int mLabelId) {
         this.mProfile = mProfile;
         this.mMode = mMode;
         this.mLookupType = mLookupType;
@@ -113,11 +113,11 @@ public enum SubtitleConfiguration
         return this.mLookupType;
     }
     
-    public IMedia$SubtitleOutputMode getMode() {
+    public ISubtitleDef$SubtitleOutputMode getMode() {
         return this.mMode;
     }
     
-    public IMedia$SubtitleProfile getProfile() {
+    public ISubtitleDef$SubtitleProfile getProfile() {
         return this.mProfile;
     }
     

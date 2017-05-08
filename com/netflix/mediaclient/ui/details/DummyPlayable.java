@@ -101,6 +101,11 @@ public class DummyPlayable implements Playable
     }
     
     @Override
+    public boolean isAvailableOffline() {
+        return false;
+    }
+    
+    @Override
     public boolean isAvailableToStream() {
         return false;
     }

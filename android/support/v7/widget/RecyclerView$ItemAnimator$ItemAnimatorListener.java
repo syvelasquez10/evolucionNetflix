@@ -6,11 +6,5 @@ package android.support.v7.widget;
 
 interface RecyclerView$ItemAnimator$ItemAnimatorListener
 {
-    void onAddFinished(final RecyclerView$ViewHolder p0);
-    
-    void onChangeFinished(final RecyclerView$ViewHolder p0);
-    
-    void onMoveFinished(final RecyclerView$ViewHolder p0);
-    
-    void onRemoveFinished(final RecyclerView$ViewHolder p0);
+    void onAnimationFinished(final RecyclerView$ViewHolder p0);
 }

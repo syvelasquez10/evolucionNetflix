@@ -4,7 +4,6 @@
 
 package android.support.v4.app;
 
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.util.DebugUtils;
 import java.lang.reflect.Modifier;
 import java.io.PrintWriter;
@@ -32,6 +31,13 @@ final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCanceledListene
     boolean mRetainingStarted;
     boolean mStarted;
     final /* synthetic */ LoaderManagerImpl this$0;
+    
+    public LoaderManagerImpl$LoaderInfo(final LoaderManagerImpl this$0, final int mId, final Bundle mArgs, final LoaderManager$LoaderCallbacks<Object> mCallbacks) {
+        this.this$0 = this$0;
+        this.mId = mId;
+        this.mArgs = mArgs;
+        this.mCallbacks = mCallbacks;
+    }
     
     void callOnLoadFinished(final Loader<Object> loader, final Object o) {
         if (this.mCallbacks == null) {
@@ -66,6 +72,20 @@ final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCanceledListene
         }
     }
     
+    boolean cancel() {
+        if (LoaderManagerImpl.DEBUG) {
+            Log.v("LoaderManager", "  Canceling: " + this);
+        }
+        if (this.mStarted && this.mLoader != null && this.mListenerRegistered) {
+            final boolean cancelLoad = this.mLoader.cancelLoad();
+            if (!cancelLoad) {
+                this.onLoadCanceled(this.mLoader);
+            }
+            return cancelLoad;
+        }
+        return false;
+    }
+    
     void destroy() {
         if (LoaderManagerImpl.DEBUG) {
             Log.v("LoaderManager", "  Destroying: " + this);
@@ -79,7 +99,7 @@ final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCanceledListene
                     break Label_0178;
                 }
                 if (LoaderManagerImpl.DEBUG) {
-                    Log.v("LoaderManager", "  Reseting: " + this);
+                    Log.v("LoaderManager", "  Resetting: " + this);
                 }
                 if (this.this$0.mHost == null) {
                     break Label_0178;
@@ -181,10 +201,85 @@ final class LoaderManagerImpl$LoaderInfo implements Loader$OnLoadCanceledListene
         }
     }
     
+    @Override
+    public void onLoadCanceled(final Loader<Object> loader) {
+        if (LoaderManagerImpl.DEBUG) {
+            Log.v("LoaderManager", "onLoadCanceled: " + this);
+        }
+        if (this.mDestroyed) {
+            if (LoaderManagerImpl.DEBUG) {
+                Log.v("LoaderManager", "  Ignoring load canceled -- destroyed");
+            }
+        }
+        else if (this.this$0.mLoaders.get(this.mId) != this) {
+            if (LoaderManagerImpl.DEBUG) {
+                Log.v("LoaderManager", "  Ignoring load canceled -- not active");
+            }
+        }
+        else {
+            final LoaderManagerImpl$LoaderInfo mPendingLoader = this.mPendingLoader;
+            if (mPendingLoader != null) {
+                if (LoaderManagerImpl.DEBUG) {
+                    Log.v("LoaderManager", "  Switching to pending loader: " + mPendingLoader);
+                }
+                this.mPendingLoader = null;
+                this.this$0.mLoaders.put(this.mId, null);
+                this.destroy();
+                this.this$0.installLoader(mPendingLoader);
+            }
+        }
+    }
+    
+    @Override
+    public void onLoadComplete(final Loader<Object> loader, final Object mData) {
+        if (LoaderManagerImpl.DEBUG) {
+            Log.v("LoaderManager", "onLoadComplete: " + this);
+        }
+        if (this.mDestroyed) {
+            if (LoaderManagerImpl.DEBUG) {
+                Log.v("LoaderManager", "  Ignoring load complete -- destroyed");
+            }
+        }
+        else if (this.this$0.mLoaders.get(this.mId) != this) {
+            if (LoaderManagerImpl.DEBUG) {
+                Log.v("LoaderManager", "  Ignoring load complete -- not active");
+            }
+        }
+        else {
+            final LoaderManagerImpl$LoaderInfo mPendingLoader = this.mPendingLoader;
+            if (mPendingLoader != null) {
+                if (LoaderManagerImpl.DEBUG) {
+                    Log.v("LoaderManager", "  Switching to pending loader: " + mPendingLoader);
+                }
+                this.mPendingLoader = null;
+                this.this$0.mLoaders.put(this.mId, null);
+                this.destroy();
+                this.this$0.installLoader(mPendingLoader);
+                return;
+            }
+            if (this.mData != mData || !this.mHaveData) {
+                this.mData = mData;
+                this.mHaveData = true;
+                if (this.mStarted) {
+                    this.callOnLoadFinished(loader, mData);
+                }
+            }
+            final LoaderManagerImpl$LoaderInfo loaderManagerImpl$LoaderInfo = this.this$0.mInactiveLoaders.get(this.mId);
+            if (loaderManagerImpl$LoaderInfo != null && loaderManagerImpl$LoaderInfo != this) {
+                loaderManagerImpl$LoaderInfo.mDeliveredData = false;
+                loaderManagerImpl$LoaderInfo.destroy();
+                this.this$0.mInactiveLoaders.remove(this.mId);
+            }
+            if (this.this$0.mHost != null && !this.this$0.hasRunningLoaders()) {
+                this.this$0.mHost.mFragmentManager.startPendingDeferredFragments();
+            }
+        }
+    }
+    
     void reportStart() {
         if (this.mStarted && this.mReportNextStart) {
             this.mReportNextStart = false;
-            if (this.mHaveData) {
+            if (this.mHaveData && !this.mRetaining) {
                 this.callOnLoadFinished(this.mLoader, this.mData);
             }
         }

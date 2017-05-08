@@ -20,6 +20,7 @@ import android.support.v4.app.ActivityManagerCompat;
 import android.app.ActivityManager;
 import android.support.v4.media.session.MediaSessionCompat$OnActiveChangeListener;
 import java.lang.ref.WeakReference;
+import android.support.v4.media.session.MediaSessionCompat;
 import java.util.ArrayList;
 import android.support.v4.hardware.display.DisplayManagerCompat;
 import android.content.Context;
@@ -36,6 +37,7 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
     private final RemoteControlClientCompat$PlaybackInfo mPlaybackInfo;
     private final MediaRouter$GlobalMediaRouter$ProviderCallback mProviderCallback;
     private final ArrayList<MediaRouter$ProviderInfo> mProviders;
+    private MediaSessionCompat mRccMediaSession;
     private RegisteredMediaRouteProviderWatcher mRegisteredProviderWatcher;
     private final ArrayList<MediaRouter$GlobalMediaRouter$RemoteControlClientRecord> mRemoteControlClients;
     private final ArrayList<WeakReference<MediaRouter>> mRouters;
@@ -88,6 +90,15 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
     private int findProviderInfo(final MediaRouteProvider mediaRouteProvider) {
         for (int size = this.mProviders.size(), i = 0; i < size; ++i) {
             if (this.mProviders.get(i).mProviderInstance == mediaRouteProvider) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    private int findRemoteControlClientRecord(final Object o) {
+        for (int size = this.mRemoteControlClients.size(), i = 0; i < size; ++i) {
+            if (this.mRemoteControlClients.get(i).getRemoteControlClient() == o) {
                 return i;
             }
         }
@@ -322,6 +333,12 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
         }
     }
     
+    public void addRemoteControlClient(final Object o) {
+        if (this.findRemoteControlClientRecord(o) < 0) {
+            this.mRemoteControlClients.add(new MediaRouter$GlobalMediaRouter$RemoteControlClientRecord(this, o));
+        }
+    }
+    
     public MediaRouter$RouteInfo getDefaultRoute() {
         if (this.mDefaultRoute == null) {
             throw new IllegalStateException("There is no default route.  The media router has not yet been fully initialized.");
@@ -384,6 +401,13 @@ final class MediaRouter$GlobalMediaRouter implements RegisteredMediaRouteProvide
             }
             this.mCallbackHandler.post(514, mediaRouter$ProviderInfo);
             this.mProviders.remove(providerInfo);
+        }
+    }
+    
+    public void removeRemoteControlClient(final Object o) {
+        final int remoteControlClientRecord = this.findRemoteControlClientRecord(o);
+        if (remoteControlClientRecord >= 0) {
+            this.mRemoteControlClients.remove(remoteControlClientRecord).disconnect();
         }
     }
     

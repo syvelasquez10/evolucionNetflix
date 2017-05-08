@@ -4,33 +4,11 @@
 
 package com.netflix.mediaclient.service.configuration.drm;
 
-import com.netflix.mediaclient.util.CryptoUtils;
-import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
-import java.util.Arrays;
-import com.netflix.mediaclient.service.error.ErrorDescriptor;
-import com.netflix.mediaclient.util.StringUtils;
-import com.netflix.mediaclient.service.configuration.crypto.CryptoProvider;
-import android.media.MediaDrm$CryptoSession;
-import android.util.Base64;
-import com.netflix.mediaclient.StatusCode;
-import android.media.NotProvisionedException;
-import java.util.HashMap;
-import android.media.MediaDrm$KeyRequest;
-import com.netflix.mediaclient.util.PreferenceUtils;
-import com.netflix.mediaclient.util.MediaDrmUtils;
-import java.util.concurrent.atomic.AtomicBoolean;
-import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
-import com.netflix.mediaclient.servicemgr.ErrorLogging;
-import com.netflix.mediaclient.servicemgr.IErrorHandler;
-import android.content.Context;
-import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
-import android.media.MediaDrm;
-import android.annotation.TargetApi;
-import android.media.MediaDrm$OnEventListener;
 import android.media.DeniedByServerException;
 import android.os.Build;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.android.app.CommonStatus;
+import com.netflix.mediaclient.service.error.crypto.CryptoErrorManager;
 import com.netflix.mediaclient.Log;
 
 class WidevineDrmManager$1 implements WidevineDrmManager$WidewineProvisiongCallback
@@ -46,7 +24,7 @@ class WidevineDrmManager$1 implements WidevineDrmManager$WidewineProvisiongCallb
     @Override
     public void abort() {
         Log.e(WidevineDrmManager.TAG, "Blacklisted Widevine plugin? Do NOT use it!");
-        this.this$0.handleCryptoFallback();
+        CryptoErrorManager.INSTANCE.handleCryptoFallback();
         this.this$0.mCallback.drmError(CommonStatus.DRM_FAILURE_GOOGLE_DECLINED_PROVISIONING);
         this.this$0.mErrorLogging.logHandledException("15002. Provisiong failed with status code 400 " + this.val$url);
     }
@@ -63,7 +41,7 @@ class WidevineDrmManager$1 implements WidevineDrmManager$WidewineProvisiongCallb
                 return;
             }
             catch (DeniedByServerException ex) {
-                Log.d(WidevineDrmManager.TAG, "Server declined Widewine provisioning request. Server URL: " + this.val$url, (Throwable)ex);
+                Log.d(WidevineDrmManager.TAG, "Server declined Widewine provisioning request. Server URL: " + this.val$url, ex);
                 this.this$0.mCallback.drmError(CommonStatus.DRM_FAILURE_GOOGLE_CDM_PROVISIONG_DENIED);
                 this.this$0.mErrorLogging.logHandledException(new Exception("Server declined Widewine provisioning request. Server URL: " + this.val$url + ". Build: " + Build.DISPLAY, (Throwable)ex));
                 return;

@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui.mdx;
 import android.content.DialogInterface$OnClickListener;
 import com.netflix.mediaclient.Log;
 import android.content.Context;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import android.app.Dialog;
 import android.os.Bundle;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -62,13 +62,13 @@ public class ShowMessageDialogFrag extends NetflixDialogFrag implements MdxMiniP
         }
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
         if (string != null) {
-            alertDialog$Builder.setTitle((CharSequence)string);
+            alertDialog$Builder.setTitle(string);
         }
         else {
             Log.w("mdxui", "No title...");
         }
         if (string2 != null) {
-            alertDialog$Builder.setMessage((CharSequence)string2);
+            alertDialog$Builder.setMessage(string2);
         }
         else {
             Log.w("mdxui", "No message...");
@@ -77,17 +77,17 @@ public class ShowMessageDialogFrag extends NetflixDialogFrag implements MdxMiniP
             Log.e("mdxui", "We are expecting at least one button!");
         }
         if (int1 > 0) {
-            alertDialog$Builder.setPositiveButton((CharSequence)array[0], (DialogInterface$OnClickListener)new ShowMessageDialogFrag$1(this, array2));
+            alertDialog$Builder.setPositiveButton(array[0], (DialogInterface$OnClickListener)new ShowMessageDialogFrag$1(this, array2));
         }
         if (int1 > 1) {
-            alertDialog$Builder.setNegativeButton((CharSequence)array[1], (DialogInterface$OnClickListener)new ShowMessageDialogFrag$2(this, array2));
+            alertDialog$Builder.setNegativeButton(array[1], (DialogInterface$OnClickListener)new ShowMessageDialogFrag$2(this, array2));
         }
         if (int1 > 2) {
-            alertDialog$Builder.setNegativeButton((CharSequence)array[2], (DialogInterface$OnClickListener)new ShowMessageDialogFrag$3(this, array2));
+            alertDialog$Builder.setNegativeButton(array[2], (DialogInterface$OnClickListener)new ShowMessageDialogFrag$3(this, array2));
         }
         if (int1 > 3) {
             Log.e("mdxui", "We can support up to 3 buttons!");
         }
-        return (Dialog)alertDialog$Builder.create();
+        return alertDialog$Builder.create();
     }
 }

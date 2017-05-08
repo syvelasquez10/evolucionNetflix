@@ -50,6 +50,16 @@ final class OrientationHelper$2 extends OrientationHelper
     }
     
     @Override
+    public int getMode() {
+        return this.mLayoutManager.getHeightMode();
+    }
+    
+    @Override
+    public int getModeInOther() {
+        return this.mLayoutManager.getWidthMode();
+    }
+    
+    @Override
     public int getStartAfterPadding() {
         return this.mLayoutManager.getPaddingTop();
     }
@@ -57,6 +67,18 @@ final class OrientationHelper$2 extends OrientationHelper
     @Override
     public int getTotalSpace() {
         return this.mLayoutManager.getHeight() - this.mLayoutManager.getPaddingTop() - this.mLayoutManager.getPaddingBottom();
+    }
+    
+    @Override
+    public int getTransformedEndWithDecoration(final View view) {
+        this.mLayoutManager.getTransformedBoundingBox(view, true, this.mTmpRect);
+        return this.mTmpRect.bottom;
+    }
+    
+    @Override
+    public int getTransformedStartWithDecoration(final View view) {
+        this.mLayoutManager.getTransformedBoundingBox(view, true, this.mTmpRect);
+        return this.mTmpRect.top;
     }
     
     @Override

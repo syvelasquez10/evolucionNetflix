@@ -4,48 +4,6 @@
 
 package android.support.v7.widget;
 
-import android.support.v4.view.ViewConfigurationCompat;
-import android.os.SystemClock;
-import android.support.v4.view.AccessibilityDelegateCompat;
-import android.support.v4.view.VelocityTrackerCompat;
-import android.view.ViewParent;
-import android.view.FocusFinder;
-import android.graphics.Canvas;
-import android.os.Parcelable;
-import android.util.SparseArray;
-import android.support.v4.util.SimpleArrayMap;
-import android.util.Log;
-import android.support.v4.util.ArrayMap;
-import android.support.v4.view.MotionEventCompat;
-import android.util.TypedValue;
-import android.view.MotionEvent;
-import android.support.v4.view.accessibility.AccessibilityEventCompat;
-import android.view.accessibility.AccessibilityEvent;
-import android.view.View$MeasureSpec;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import android.view.ViewGroup$LayoutParams;
-import android.content.res.TypedArray;
-import android.support.v7.recyclerview.R$styleable;
-import android.view.View;
-import android.support.v4.view.ViewCompat;
-import android.view.ViewConfiguration;
-import android.util.AttributeSet;
-import android.content.Context;
-import android.os.Build$VERSION;
-import android.view.VelocityTracker;
-import android.graphics.Rect;
-import android.support.v4.view.NestedScrollingChildHelper;
-import java.util.List;
-import java.util.ArrayList;
-import android.support.v4.widget.EdgeEffectCompat;
-import android.view.accessibility.AccessibilityManager;
-import android.view.animation.Interpolator;
-import android.support.v4.view.ScrollingView;
-import android.support.v4.view.NestedScrollingChild;
-import android.view.ViewGroup;
-import android.support.v4.os.TraceCompat;
-
 class RecyclerView$1 implements Runnable
 {
     final /* synthetic */ RecyclerView this$0;
@@ -56,23 +14,17 @@ class RecyclerView$1 implements Runnable
     
     @Override
     public void run() {
-        if (this.this$0.mFirstLayoutComplete) {
-            if (this.this$0.mDataSetHasChangedAfterLayout) {
-                TraceCompat.beginSection("RV FullInvalidate");
-                this.this$0.dispatchLayout();
-                TraceCompat.endSection();
-                return;
-            }
-            if (this.this$0.mAdapterHelper.hasPendingUpdates()) {
-                TraceCompat.beginSection("RV PartialInvalidate");
-                this.this$0.eatRequestLayout();
-                this.this$0.mAdapterHelper.preProcess();
-                if (!this.this$0.mLayoutRequestEaten) {
-                    this.this$0.rebindUpdatedViewHolders();
-                }
-                this.this$0.resumeRequestLayout(true);
-                TraceCompat.endSection();
-            }
+        if (!this.this$0.mFirstLayoutComplete || this.this$0.isLayoutRequested()) {
+            return;
         }
+        if (!this.this$0.mIsAttached) {
+            this.this$0.requestLayout();
+            return;
+        }
+        if (this.this$0.mLayoutFrozen) {
+            this.this$0.mLayoutRequestEaten = true;
+            return;
+        }
+        this.this$0.consumePendingUpdateOperations();
     }
 }

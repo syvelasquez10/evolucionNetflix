@@ -7,7 +7,6 @@ package com.netflix.mediaclient.android.widget;
 import android.animation.Animator$AnimatorListener;
 import java.io.Serializable;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
 import java.security.InvalidParameterException;
 import android.view.View$OnClickListener;
@@ -26,12 +25,11 @@ public class PressedStateHandler$DelayedOnClickListener implements View$OnClickL
     }
     
     public void onClick(final View view) {
-        final NetflixActivity netflixActivity = (NetflixActivity)view.getContext();
         if (this.pressedStateHandler != null && this.pressedStateHandler.isAnimating()) {
             if (Log.isLoggable()) {
                 Log.v("PressedStateHandler", "Pressed handler is busy - waiting to launch details");
             }
-            this.pressedStateHandler.setCompletionCallback(new PressedStateHandler$DelayedOnClickListener$1(this, netflixActivity, view));
+            this.pressedStateHandler.setCompletionCallback(new PressedStateHandler$DelayedOnClickListener$1(this, view));
             return;
         }
         if (Log.isLoggable()) {

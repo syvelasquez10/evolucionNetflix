@@ -56,7 +56,7 @@ public class GalleryGenresLoMoFrag extends LoLoMoFrag
     
     private void setupRecyclerViewAdapter() {
         (this.adapter = new GalleryGenresLoMoFrag$ProgressiveAdapter(this, false, this.numColumns, new GalleryGenresLoMoFrag$2(this))).addHeaderView(ViewUtils.createActionBarDummyView(this.getNetflixActivity()));
-        final int dimensionPixelSize = this.getActivity().getResources().getDimensionPixelSize(2131362197);
+        final int dimensionPixelSize = this.getActivity().getResources().getDimensionPixelSize(2131362226);
         this.recyclerView.setPadding(dimensionPixelSize, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
         this.recyclerView.setAdapter(this.adapter);
     }
@@ -65,15 +65,15 @@ public class GalleryGenresLoMoFrag extends LoLoMoFrag
         final GridLayoutManager layoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns);
         layoutManager.setSpanSizeLookup(new GalleryGenresLoMoFrag$1(this));
         this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362195), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362224), this.numColumns));
     }
     
     @Override
     protected int getLayoutId() {
         if (BrowseExperience.showKidsExperience()) {
-            return 2130903152;
+            return 2130903162;
         }
-        return 2130903258;
+        return 2130903277;
     }
     
     @Override

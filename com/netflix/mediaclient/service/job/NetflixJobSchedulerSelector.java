@@ -20,8 +20,8 @@ public class NetflixJobSchedulerSelector
         else {
             n = 0;
         }
-        final boolean boolean1 = context.getResources().getBoolean(2131558404);
-        final boolean boolean2 = context.getResources().getBoolean(2131558405);
+        final boolean boolean1 = context.getResources().getBoolean(2131558403);
+        final boolean boolean2 = context.getResources().getBoolean(2131558404);
         if (Log.isLoggable()) {
             Log.i("nf_job_scheduler_select", "alarmReceiverOn=" + boolean1 + " networkChangeReceiverOn=" + boolean2);
         }

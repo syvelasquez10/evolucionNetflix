@@ -15,6 +15,7 @@ import java.util.Locale;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.volley.StatusCodeError;
+import com.android.volley.NoConnectionError;
 import com.android.volley.NetworkError;
 import com.android.volley.TimeoutError;
 import com.android.volley.ServerError;
@@ -52,6 +53,9 @@ public final class VolleyUtils
         }
         else if (volleyError instanceof NetworkError) {
             statusCode = getStatusCodeFromVolleyNetworkError(volleyError);
+        }
+        else if (volleyError instanceof NoConnectionError) {
+            statusCode = StatusCode.NO_CONNECTIVITY;
         }
         else {
             statusCode = internal_ERROR;

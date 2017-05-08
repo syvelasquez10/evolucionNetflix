@@ -15,6 +15,8 @@ import com.netflix.mediaclient.servicemgr.UserActionLogging$PostPlayExperience;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.text.TextUtils;
+import com.netflix.mediaclient.util.ConnectivityUtils;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import android.content.Context;
@@ -83,7 +85,7 @@ public abstract class PostPlay
         this.findViewsCommon();
         this.findViews();
         this.setClickListeners();
-        this.mOffsetMs = mNetflixActivity.getResources().getInteger(2131492885) * 1000;
+        this.mOffsetMs = mNetflixActivity.getResources().getInteger(2131492886) * 1000;
         this.mFetchPostplayOffsetMs = this.mOffsetMs;
         this.mPostPlayDataFetchStatus = PostPlay$PostPlayDataFetchStatus.notStarted;
     }
@@ -261,17 +263,23 @@ public abstract class PostPlay
     }
     
     public void fetchPostPlayVideos(final String s, final VideoType videoType, final PostPlayRequestContext postPlayRequestContext) {
-        synchronized (this) {
-            if (!TextUtils.isEmpty((CharSequence)s) && this.mNetflixActivity.getServiceManager() != null) {
-                Log.d("nf_postplay", "Fetch post_play videos...");
-                final PostPlay$FetchPostPlayForPlaybackCallback mFetchPostPlayForPlaybackCallback = new PostPlay$FetchPostPlayForPlaybackCallback(this);
-                ErrorLoggingManager.leaveBreadcrumb("nf_postplay: Requesting post play response for video ID: " + s + " Type: " + videoType);
-                this.mNetflixActivity.getServiceManager().getBrowse().fetchPostPlayVideos(s, videoType, postPlayRequestContext, mFetchPostPlayForPlaybackCallback);
-                this.mFetchPostPlayForPlaybackCallback = mFetchPostPlayForPlaybackCallback;
+        while (true) {
+            Label_0133: {
+                synchronized (this) {
+                    if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)this.mNetflixActivity) && ConnectivityUtils.isConnected((Context)this.mNetflixActivity)) {
+                        if (TextUtils.isEmpty((CharSequence)s) || this.mNetflixActivity.getServiceManager() == null) {
+                            break Label_0133;
+                        }
+                        Log.d("nf_postplay", "Fetch post_play videos...");
+                        final PostPlay$FetchPostPlayForPlaybackCallback mFetchPostPlayForPlaybackCallback = new PostPlay$FetchPostPlayForPlaybackCallback(this);
+                        ErrorLoggingManager.leaveBreadcrumb("nf_postplay: Requesting post play response for video ID: " + s + " Type: " + videoType);
+                        this.mNetflixActivity.getServiceManager().getBrowse().fetchPostPlayVideos(s, videoType, postPlayRequestContext, mFetchPostPlayForPlaybackCallback);
+                        this.mFetchPostPlayForPlaybackCallback = mFetchPostPlayForPlaybackCallback;
+                    }
+                    return;
+                }
             }
-            else {
-                Log.e("nf_postplay", "Unable to fetch post_play videos!");
-            }
+            Log.e("nf_postplay", "Unable to fetch post_play videos!");
         }
     }
     
@@ -299,14 +307,14 @@ public abstract class PostPlay
     protected abstract void findViews();
     
     protected void findViewsCommon() {
-        this.mInterrupterPlayFromStart = this.mNetflixActivity.findViewById(2131690038);
-        this.mInterrupterContinue = this.mNetflixActivity.findViewById(2131690037);
-        this.mBackgroundContainer = (LinearLayout)this.mNetflixActivity.findViewById(2131690110);
-        this.mItemsContainer = (LinearLayout)this.mNetflixActivity.findViewById(2131690106);
-        this.mInterrupterStop = this.mNetflixActivity.findViewById(2131690039);
-        this.mPostPlayIgnoreTap = this.mNetflixActivity.findViewById(2131690104);
-        this.mInterrupter = this.mNetflixActivity.findViewById(2131690036);
-        this.mPostPlay = this.mNetflixActivity.findViewById(2131690102);
+        this.mInterrupterPlayFromStart = this.mNetflixActivity.findViewById(2131690085);
+        this.mInterrupterContinue = this.mNetflixActivity.findViewById(2131690084);
+        this.mBackgroundContainer = (LinearLayout)this.mNetflixActivity.findViewById(2131690156);
+        this.mItemsContainer = (LinearLayout)this.mNetflixActivity.findViewById(2131690152);
+        this.mInterrupterStop = this.mNetflixActivity.findViewById(2131690086);
+        this.mPostPlayIgnoreTap = this.mNetflixActivity.findViewById(2131690150);
+        this.mInterrupter = this.mNetflixActivity.findViewById(2131690083);
+        this.mPostPlay = this.mNetflixActivity.findViewById(2131690148);
     }
     
     public PlayerFragment getController() {

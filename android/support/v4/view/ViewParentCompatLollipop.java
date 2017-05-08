@@ -10,6 +10,8 @@ import android.view.ViewParent;
 
 class ViewParentCompatLollipop
 {
+    private static final String TAG = "ViewParentCompat";
+    
     public static boolean onNestedFling(final ViewParent viewParent, final View view, final float n, final float n2, final boolean b) {
         try {
             return viewParent.onNestedFling(view, n, n2, b);

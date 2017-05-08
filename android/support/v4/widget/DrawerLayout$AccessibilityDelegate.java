@@ -4,27 +4,6 @@
 
 package android.support.v4.widget;
 
-import android.graphics.drawable.ColorDrawable;
-import android.support.v4.content.ContextCompat;
-import android.os.Parcelable;
-import android.view.View$MeasureSpec;
-import android.support.v4.view.KeyEventCompat;
-import android.view.KeyEvent;
-import android.support.v4.view.MotionEventCompat;
-import android.view.ViewGroup$MarginLayoutParams;
-import android.support.v4.view.GravityCompat;
-import android.graphics.Canvas;
-import android.view.MotionEvent;
-import android.os.SystemClock;
-import android.view.ViewGroup$LayoutParams;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.ViewGroupCompat;
-import android.util.AttributeSet;
-import android.content.Context;
-import android.os.Build$VERSION;
-import android.graphics.drawable.Drawable;
-import android.graphics.Paint;
-import java.util.ArrayList;
 import android.view.ViewParent;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat$AccessibilityActionCompat;
 import android.support.v4.view.ViewCompat;
@@ -49,7 +28,7 @@ class DrawerLayout$AccessibilityDelegate extends AccessibilityDelegateCompat
     private void addChildrenForAccessibility(final AccessibilityNodeInfoCompat accessibilityNodeInfoCompat, final ViewGroup viewGroup) {
         for (int childCount = viewGroup.getChildCount(), i = 0; i < childCount; ++i) {
             final View child = viewGroup.getChildAt(i);
-            if (includeChildForAccessibility(child)) {
+            if (DrawerLayout.includeChildForAccessibility(child)) {
                 accessibilityNodeInfoCompat.addChild(child);
             }
         }
@@ -79,9 +58,9 @@ class DrawerLayout$AccessibilityDelegate extends AccessibilityDelegateCompat
     public boolean dispatchPopulateAccessibilityEvent(final View view, final AccessibilityEvent accessibilityEvent) {
         if (accessibilityEvent.getEventType() == 32) {
             final List text = accessibilityEvent.getText();
-            final View access$300 = this.this$0.findVisibleDrawer();
-            if (access$300 != null) {
-                final CharSequence drawerTitle = this.this$0.getDrawerTitle(this.this$0.getDrawerViewAbsoluteGravity(access$300));
+            final View visibleDrawer = this.this$0.findVisibleDrawer();
+            if (visibleDrawer != null) {
+                final CharSequence drawerTitle = this.this$0.getDrawerTitle(this.this$0.getDrawerViewAbsoluteGravity(visibleDrawer));
                 if (drawerTitle != null) {
                     text.add(drawerTitle);
                 }
@@ -123,6 +102,6 @@ class DrawerLayout$AccessibilityDelegate extends AccessibilityDelegateCompat
     
     @Override
     public boolean onRequestSendAccessibilityEvent(final ViewGroup viewGroup, final View view, final AccessibilityEvent accessibilityEvent) {
-        return (DrawerLayout.CAN_HIDE_DESCENDANTS || includeChildForAccessibility(view)) && super.onRequestSendAccessibilityEvent(viewGroup, view, accessibilityEvent);
+        return (DrawerLayout.CAN_HIDE_DESCENDANTS || DrawerLayout.includeChildForAccessibility(view)) && super.onRequestSendAccessibilityEvent(viewGroup, view, accessibilityEvent);
     }
 }

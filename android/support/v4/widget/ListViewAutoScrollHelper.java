@@ -47,14 +47,7 @@ public class ListViewAutoScrollHelper extends AutoScrollHelper
     }
     
     @Override
-    public void scrollTargetBy(int firstVisiblePosition, final int n) {
-        final ListView mTarget = this.mTarget;
-        firstVisiblePosition = mTarget.getFirstVisiblePosition();
-        if (firstVisiblePosition != -1) {
-            final View child = mTarget.getChildAt(0);
-            if (child != null) {
-                mTarget.setSelectionFromTop(firstVisiblePosition, child.getTop() - n);
-            }
-        }
+    public void scrollTargetBy(final int n, final int n2) {
+        ListViewCompat.scrollListBy(this.mTarget, n2);
     }
 }

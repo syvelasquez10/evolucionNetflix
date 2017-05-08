@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.verifyplay;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.text.method.MovementMethod;
 import android.view.View$OnKeyListener;
 import android.widget.TextView$OnEditorActionListener;
@@ -13,7 +13,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.view.View;
 import android.content.DialogInterface$OnClickListener;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import android.util.TypedValue;
 import android.view.WindowManager$LayoutParams;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -38,11 +38,13 @@ import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
 
 class PinDialog$OnPinVerifiedCallback extends LoggingManagerCallback
 {
+    protected final PinAndAgeVerifier$PinAndAgeVerifyCallback mPinVerifyCallback;
     final /* synthetic */ PinDialog this$0;
     
-    public PinDialog$OnPinVerifiedCallback(final PinDialog this$0) {
+    public PinDialog$OnPinVerifiedCallback(final PinDialog this$0, final PinAndAgeVerifier$PinAndAgeVerifyCallback mPinVerifyCallback) {
         this.this$0 = this$0;
         super("nf_pin");
+        this.mPinVerifyCallback = mPinVerifyCallback;
     }
     
     @Override
@@ -64,7 +66,7 @@ class PinDialog$OnPinVerifiedCallback extends LoggingManagerCallback
         this.this$0.dismissDialog();
         if (status.isSucces()) {
             PinVerifier.getInstance().registerPinVerifyEvent();
-            PinDialog.notifyCallerPinVerified((NetflixActivity)this.this$0.getActivity(), this.this$0.mVault);
+            PinDialog.notifyCallerPinVerified((NetflixActivity)this.this$0.getActivity(), this.this$0.mVault, this.mPinVerifyCallback);
             return;
         }
         showConnectivityErrorDialog((NetflixActivity)this.this$0.getActivity(), status);

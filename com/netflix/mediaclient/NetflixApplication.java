@@ -6,6 +6,7 @@ package com.netflix.mediaclient;
 
 import com.netflix.mediaclient.event.UIEvent;
 import android.app.Application$ActivityLifecycleCallbacks;
+import io.realm.Realm;
 import com.netflix.mediaclient.service.pservice.PServiceWidgetProvider;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.content.res.Configuration;
@@ -170,7 +171,7 @@ public class NetflixApplication extends MultiDexApplication
     
     private void reportFailedToLoadNativeLibraries(final Throwable t, final int n) {
         Log.d("NetflixApplication", "Send warning notification!");
-        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837781).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131231295, new Object[] { n })).setContentTitle(this.getString(2131231296, new Object[] { n })).setContentText(this.getString(2131230966, new Object[] { n })).setAutoCancel(true);
+        final NotificationCompat$Builder setAutoCancel = new NotificationCompat$Builder((Context)this).setOngoing(false).setOnlyAlertOnce(false).setSmallIcon(2130837839).setWhen(System.currentTimeMillis()).setTicker(this.getString(2131231428, new Object[] { n })).setContentTitle(this.getString(2131231429, new Object[] { n })).setContentText(this.getString(2131230981, new Object[] { n })).setAutoCancel(true);
         setAutoCancel.setContentIntent(PendingIntent.getActivity((Context)this, 0, new Intent("android.intent.action.UNINSTALL_PACKAGE", Uri.parse("package:com.netflix.mediaclient")), 134217728));
         final Notification build = setAutoCancel.build();
         final NotificationManager notificationManager = (NotificationManager)this.getSystemService("notification");
@@ -232,6 +233,7 @@ public class NetflixApplication extends MultiDexApplication
         Log.d("NetflixApplication", "Application onCreate");
         Log.d("NetflixApplication", "Loading native libraries");
         this.loadAndVerifyNativeLibraries();
+        Realm.init((Context)this);
         this.registerActivityLifecycleCallbacks((Application$ActivityLifecycleCallbacks)this.mUserInput);
         this.registerReceiver();
     }

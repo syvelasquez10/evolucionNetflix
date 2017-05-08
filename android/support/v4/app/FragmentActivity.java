@@ -4,15 +4,14 @@
 
 package android.support.v4.app;
 
+import android.content.IntentSender;
+import android.app.Activity;
 import android.support.v4.util.SimpleArrayMap;
 import android.view.MenuItem;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.os.Parcelable;
 import android.os.Bundle;
 import android.content.res.Configuration;
-import java.util.List;
-import java.util.ArrayList;
 import android.util.Log;
 import android.content.Intent;
 import android.os.Build$VERSION;
@@ -21,23 +20,31 @@ import android.util.AttributeSet;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources$NotFoundException;
-import android.app.Activity;
 import android.view.ViewGroup;
 import android.view.View;
 import java.io.PrintWriter;
+import android.support.v4.util.SparseArrayCompat;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.os.Handler;
 
-public class FragmentActivity extends BaseFragmentActivityHoneycomb implements ActivityCompat$OnRequestPermissionsResultCallback, ActivityCompatApi23$RequestPermissionsRequestCodeValidator
+public class FragmentActivity extends BaseFragmentActivityJB implements ActivityCompat$OnRequestPermissionsResultCallback, ActivityCompatApi23$RequestPermissionsRequestCodeValidator
 {
+    static final String ALLOCATED_REQUEST_INDICIES_TAG = "android:support:request_indicies";
     static final String FRAGMENTS_TAG = "android:support:fragments";
     private static final int HONEYCOMB = 11;
+    static final int MAX_NUM_PENDING_FRAGMENT_ACTIVITY_RESULTS = 65534;
     static final int MSG_REALLY_STOPPED = 1;
     static final int MSG_RESUME_PENDING = 2;
+    static final String NEXT_CANDIDATE_REQUEST_INDEX_TAG = "android:support:next_request_index";
+    static final String REQUEST_FRAGMENT_WHO_TAG = "android:support:request_fragment_who";
     private static final String TAG = "FragmentActivity";
     boolean mCreated;
     final FragmentController mFragments;
     final Handler mHandler;
+    MediaControllerCompat mMediaController;
+    int mNextCandidateRequestIndex;
     boolean mOptionsMenuInvalidated;
+    SparseArrayCompat<String> mPendingFragmentActivityResults;
     boolean mReallyStopped;
     boolean mRequestedPermissionsFromFragment;
     boolean mResumed;
@@ -47,6 +54,19 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
     public FragmentActivity() {
         this.mHandler = new FragmentActivity$1(this);
         this.mFragments = FragmentController.createController(new FragmentActivity$HostCallbacks(this));
+    }
+    
+    private int allocateRequestIndex(final Fragment fragment) {
+        if (this.mPendingFragmentActivityResults.size() >= 65534) {
+            throw new IllegalStateException("Too many pending Fragment activity results.");
+        }
+        while (this.mPendingFragmentActivityResults.indexOfKey(this.mNextCandidateRequestIndex) >= 0) {
+            this.mNextCandidateRequestIndex = (this.mNextCandidateRequestIndex + 1) % 65534;
+        }
+        final int mNextCandidateRequestIndex = this.mNextCandidateRequestIndex;
+        this.mPendingFragmentActivityResults.put(mNextCandidateRequestIndex, fragment.mWho);
+        this.mNextCandidateRequestIndex = (this.mNextCandidateRequestIndex + 1) % 65534;
+        return mNextCandidateRequestIndex;
     }
     
     private void dumpViewHierarchy(String string, final PrintWriter printWriter, final View view) {
@@ -67,18 +87,6 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
                 }
             }
         }
-    }
-    
-    private void requestPermissionsFromFragment(final Fragment fragment, final String[] array, final int n) {
-        if (n == -1) {
-            ActivityCompat.requestPermissions(this, array, n);
-            return;
-        }
-        if ((n & 0xFFFFFF00) != 0x0) {
-            throw new IllegalArgumentException("Can only use lower 8 bits for requestCode");
-        }
-        this.mRequestedPermissionsFromFragment = true;
-        ActivityCompat.requestPermissions(this, array, (fragment.mIndex + 1 << 8) + (n & 0xFF));
     }
     
     private static String viewToString(final View view) {
@@ -104,31 +112,31 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
         char c10 = '\0';
         char c11 = '\0';
         char c12;
-        Label_0509_Outer:Label_0616_Outer:
+        Label_0509_Outer:Label_0611_Outer:
         while (true) {
-        Label_0610_Outer:
+        Label_0618_Outer:
             while (true) {
                 while (true) {
-                    Label_0598_Outer:Label_0604_Outer:
+                    Label_0546_Outer:Label_0575_Outer:Label_0599_Outer:
                     while (true) {
                         Label_0261: {
                             while (true) {
                                 Label_0244: {
-                                    Label_0580_Outer:Label_0592_Outer:
+                                Label_0593_Outer:
                                     while (true) {
                                         Label_0220: {
                                             while (true) {
                                                 Label_0203: {
+                                                Label_0581_Outer:
                                                     while (true) {
                                                         Label_0186: {
                                                             while (true) {
                                                                 Label_0169: {
-                                                                    Label_0556_Outer:Label_0568_Outer:
                                                                     while (true) {
                                                                         Label_0152: {
-                                                                        Label_0562_Outer:
                                                                             while (true) {
                                                                                 Label_0135: {
+                                                                                Label_0557_Outer:
                                                                                     while (true) {
                                                                                         Label_0118: {
                                                                                             while (true) {
@@ -140,8 +148,8 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
                                                                                                                 break;
                                                                                                             }
                                                                                                             case 0: {
-                                                                                                                Label_0523: {
-                                                                                                                    break Label_0523;
+                                                                                                                Label_0524: {
+                                                                                                                    break Label_0524;
                                                                                                                     try {
                                                                                                                         resourcePackageName = resources.getResourcePackageName(id);
                                                                                                                         while (true) {
@@ -155,47 +163,47 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
                                                                                                                             sb.append(resourceEntryName);
                                                                                                                             sb.append("}");
                                                                                                                             return sb.toString();
+                                                                                                                            sb.append('G');
+                                                                                                                            break;
                                                                                                                             c3 = '.';
-                                                                                                                            break Label_0244;
-                                                                                                                            c4 = '.';
-                                                                                                                            break Label_0186;
-                                                                                                                            resourcePackageName = "android";
+                                                                                                                            break Label_0169;
+                                                                                                                            resourcePackageName = "app";
                                                                                                                             continue Label_0509_Outer;
+                                                                                                                            c4 = '.';
+                                                                                                                            break Label_0203;
+                                                                                                                            sb.append('I');
+                                                                                                                            break;
                                                                                                                             sb.append('V');
                                                                                                                             break;
                                                                                                                             c5 = '.';
-                                                                                                                            break Label_0169;
+                                                                                                                            break Label_0186;
                                                                                                                             c6 = '.';
+                                                                                                                            break Label_0244;
+                                                                                                                            c7 = '.';
+                                                                                                                            break Label_0135;
+                                                                                                                            c8 = '.';
                                                                                                                             break Label_0118;
-                                                                                                                            resourcePackageName = "app";
+                                                                                                                            c9 = '.';
+                                                                                                                            break Label_0220;
+                                                                                                                            c10 = 'D';
+                                                                                                                            break Label_0152;
+                                                                                                                            resourcePackageName = "android";
                                                                                                                             continue Label_0509_Outer;
                                                                                                                         }
-                                                                                                                        sb.append('I');
-                                                                                                                        break;
-                                                                                                                        c7 = 'D';
-                                                                                                                        break Label_0152;
-                                                                                                                        c8 = '.';
-                                                                                                                        break Label_0135;
-                                                                                                                        sb.append('G');
-                                                                                                                        break;
-                                                                                                                        c9 = '.';
-                                                                                                                        break Label_0261;
-                                                                                                                        c10 = '.';
-                                                                                                                        break Label_0203;
                                                                                                                         c11 = '.';
-                                                                                                                        break Label_0220;
+                                                                                                                        break Label_0261;
                                                                                                                     }
                                                                                                                     catch (Resources$NotFoundException ex) {
-                                                                                                                        continue Label_0598_Outer;
+                                                                                                                        continue Label_0546_Outer;
                                                                                                                     }
                                                                                                                 }
                                                                                                                 break;
                                                                                                             }
                                                                                                             case 4: {
-                                                                                                                continue Label_0568_Outer;
+                                                                                                                continue Label_0581_Outer;
                                                                                                             }
                                                                                                             case 8: {
-                                                                                                                continue Label_0604_Outer;
+                                                                                                                continue Label_0575_Outer;
                                                                                                             }
                                                                                                         }
                                                                                                         break;
@@ -203,78 +211,78 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
                                                                                                     break;
                                                                                                 }
                                                                                                 if (!view.isFocusable()) {
-                                                                                                    continue Label_0610_Outer;
+                                                                                                    continue Label_0593_Outer;
                                                                                                 }
                                                                                                 break;
                                                                                             }
-                                                                                            c6 = 'F';
+                                                                                            c8 = 'F';
                                                                                         }
-                                                                                        sb.append(c6);
+                                                                                        sb.append(c8);
                                                                                         if (!view.isEnabled()) {
-                                                                                            continue Label_0604_Outer;
+                                                                                            continue Label_0557_Outer;
                                                                                         }
                                                                                         break;
                                                                                     }
-                                                                                    c8 = 'E';
+                                                                                    c7 = 'E';
                                                                                 }
-                                                                                sb.append(c8);
+                                                                                sb.append(c7);
                                                                                 if (!view.willNotDraw()) {
-                                                                                    continue Label_0562_Outer;
+                                                                                    continue Label_0618_Outer;
                                                                                 }
                                                                                 break;
                                                                             }
-                                                                            c7 = '.';
+                                                                            c10 = '.';
                                                                         }
-                                                                        sb.append(c7);
+                                                                        sb.append(c10);
                                                                         if (!view.isHorizontalScrollBarEnabled()) {
-                                                                            continue Label_0556_Outer;
+                                                                            continue Label_0611_Outer;
                                                                         }
                                                                         break;
                                                                     }
-                                                                    c5 = 'H';
+                                                                    c3 = 'H';
                                                                 }
-                                                                sb.append(c5);
+                                                                sb.append(c3);
                                                                 if (!view.isVerticalScrollBarEnabled()) {
-                                                                    continue Label_0616_Outer;
+                                                                    continue Label_0599_Outer;
                                                                 }
                                                                 break;
                                                             }
-                                                            c4 = 'V';
+                                                            c5 = 'V';
                                                         }
-                                                        sb.append(c4);
+                                                        sb.append(c5);
                                                         if (!view.isClickable()) {
-                                                            continue Label_0592_Outer;
+                                                            continue Label_0581_Outer;
                                                         }
                                                         break;
                                                     }
-                                                    c10 = 'C';
+                                                    c4 = 'C';
                                                 }
-                                                sb.append(c10);
+                                                sb.append(c4);
                                                 if (!view.isLongClickable()) {
-                                                    continue;
+                                                    continue Label_0618_Outer;
                                                 }
                                                 break;
                                             }
-                                            c11 = 'L';
+                                            c9 = 'L';
                                         }
-                                        sb.append(c11);
+                                        sb.append(c9);
                                         sb.append(' ');
                                         if (!view.isFocused()) {
-                                            continue Label_0580_Outer;
+                                            continue Label_0593_Outer;
                                         }
                                         break;
                                     }
-                                    c3 = c;
+                                    c6 = c;
                                 }
-                                sb.append(c3);
+                                sb.append(c6);
                                 if (!view.isSelected()) {
                                     continue;
                                 }
                                 break;
                             }
-                            c9 = 'S';
+                            c11 = 'S';
                         }
-                        sb.append(c9);
+                        sb.append(c11);
                         c12 = c2;
                         if (view.isPressed()) {
                             c12 = 'P';
@@ -290,13 +298,13 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
                         sb.append(view.getBottom());
                         id = view.getId();
                         if (id == -1) {
-                            continue Label_0598_Outer;
+                            continue Label_0575_Outer;
                         }
                         sb.append(" #");
                         sb.append(Integer.toHexString(id));
                         resources = view.getResources();
                         if (id == 0 || resources == null) {
-                            continue Label_0598_Outer;
+                            continue Label_0575_Outer;
                         }
                         break;
                     }
@@ -305,10 +313,10 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
                             continue Label_0509_Outer;
                         }
                         case 2130706432: {
-                            continue;
+                            continue Label_0618_Outer;
                         }
                         case 16777216: {
-                            continue Label_0610_Outer;
+                            continue;
                         }
                     }
                     break;
@@ -330,6 +338,10 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
             this.mRetaining = mRetaining;
             this.mHandler.removeMessages(1);
             this.onReallyStop();
+        }
+        else if (mRetaining) {
+            this.mFragments.doLoaderStart();
+            this.mFragments.doLoaderStop(true);
         }
     }
     
@@ -372,6 +384,10 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
         return this.mFragments.getSupportLoaderManager();
     }
     
+    public final MediaControllerCompat getSupportMediaController() {
+        return this.mMediaController;
+    }
+    
     protected void onActivityResult(final int n, final int n2, final Intent intent) {
         this.mFragments.noteStateNotSaved();
         final int n3 = n >> 16;
@@ -380,17 +396,18 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
             return;
         }
         final int n4 = n3 - 1;
-        final int activeFragmentsCount = this.mFragments.getActiveFragmentsCount();
-        if (activeFragmentsCount == 0 || n4 < 0 || n4 >= activeFragmentsCount) {
-            Log.w("FragmentActivity", "Activity result fragment index out of range: 0x" + Integer.toHexString(n));
+        final String s = this.mPendingFragmentActivityResults.get(n4);
+        this.mPendingFragmentActivityResults.remove(n4);
+        if (s == null) {
+            Log.w("FragmentActivity", "Activity result delivered for unknown Fragment.");
             return;
         }
-        final Fragment fragment = this.mFragments.getActiveFragments(new ArrayList<Fragment>(activeFragmentsCount)).get(n4);
-        if (fragment == null) {
-            Log.w("FragmentActivity", "Activity result no fragment exists for index: 0x" + Integer.toHexString(n));
+        final Fragment fragmentByWho = this.mFragments.findFragmentByWho(s);
+        if (fragmentByWho == null) {
+            Log.w("FragmentActivity", "Activity result no fragment exists for who: " + s);
             return;
         }
-        fragment.onActivityResult(0xFFFF & n, n2, intent);
+        fragmentByWho.onActivityResult(0xFFFF & n, n2, intent);
     }
     
     public void onAttachFragment(final Fragment fragment) {
@@ -398,7 +415,7 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
     
     public void onBackPressed() {
         if (!this.mFragments.getSupportFragmentManager().popBackStackImmediate()) {
-            this.supportFinishAfterTransition();
+            super.onBackPressed();
         }
     }
     
@@ -418,7 +435,7 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
         if (bundle != null) {
             final Parcelable parcelable = bundle.getParcelable("android:support:fragments");
             final FragmentController mFragments = this.mFragments;
-            List<Fragment> fragments;
+            FragmentManagerNonConfig fragments;
             if (fragmentActivity$NonConfigurationInstances != null) {
                 fragments = fragmentActivity$NonConfigurationInstances.fragments;
             }
@@ -426,6 +443,24 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
                 fragments = null;
             }
             mFragments.restoreAllState(parcelable, fragments);
+            if (bundle.containsKey("android:support:next_request_index")) {
+                this.mNextCandidateRequestIndex = bundle.getInt("android:support:next_request_index");
+                final int[] intArray = bundle.getIntArray("android:support:request_indicies");
+                final String[] stringArray = bundle.getStringArray("android:support:request_fragment_who");
+                if (intArray == null || stringArray == null || intArray.length != stringArray.length) {
+                    Log.w("FragmentActivity", "Invalid requestCode mapping in savedInstanceState.");
+                }
+                else {
+                    this.mPendingFragmentActivityResults = new SparseArrayCompat<String>(intArray.length);
+                    for (int i = 0; i < intArray.length; ++i) {
+                        this.mPendingFragmentActivityResults.put(intArray[i], stringArray[i]);
+                    }
+                }
+            }
+        }
+        if (this.mPendingFragmentActivityResults == null) {
+            this.mPendingFragmentActivityResults = new SparseArrayCompat<String>();
+            this.mNextCandidateRequestIndex = 0;
         }
         this.mFragments.dispatchCreate();
     }
@@ -444,14 +479,6 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
         this.doReallyStop(false);
         this.mFragments.dispatchDestroy();
         this.mFragments.doLoaderDestroy();
-    }
-    
-    public boolean onKeyDown(final int n, final KeyEvent keyEvent) {
-        if (Build$VERSION.SDK_INT < 5 && n == 4 && keyEvent.getRepeatCount() == 0) {
-            this.onBackPressed();
-            return true;
-        }
-        return super.onKeyDown(n, keyEvent);
     }
     
     public void onLowMemory() {
@@ -474,6 +501,10 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
                 return this.mFragments.dispatchContextItemSelected(menuItem);
             }
         }
+    }
+    
+    public void onMultiWindowModeChanged(final boolean b) {
+        this.mFragments.dispatchMultiWindowModeChanged(b);
     }
     
     protected void onNewIntent(final Intent intent) {
@@ -499,6 +530,10 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
             this.onResumeFragments();
         }
         this.mFragments.dispatchPause();
+    }
+    
+    public void onPictureInPictureModeChanged(final boolean b) {
+        this.mFragments.dispatchPictureInPictureModeChanged(b);
     }
     
     protected void onPostResume() {
@@ -531,20 +566,21 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
     
     @Override
     public void onRequestPermissionsResult(final int n, final String[] array, final int[] array2) {
-        final int n2 = n >> 8 & 0xFF;
+        final int n2 = n >> 16 & 0xFFFF;
         if (n2 != 0) {
             final int n3 = n2 - 1;
-            final int activeFragmentsCount = this.mFragments.getActiveFragmentsCount();
-            if (activeFragmentsCount == 0 || n3 < 0 || n3 >= activeFragmentsCount) {
-                Log.w("FragmentActivity", "Activity result fragment index out of range: 0x" + Integer.toHexString(n));
+            final String s = this.mPendingFragmentActivityResults.get(n3);
+            this.mPendingFragmentActivityResults.remove(n3);
+            if (s == null) {
+                Log.w("FragmentActivity", "Activity result delivered for unknown Fragment.");
             }
             else {
-                final Fragment fragment = this.mFragments.getActiveFragments(new ArrayList<Fragment>(activeFragmentsCount)).get(n3);
-                if (fragment == null) {
-                    Log.w("FragmentActivity", "Activity result no fragment exists for index: 0x" + Integer.toHexString(n));
+                final Fragment fragmentByWho = this.mFragments.findFragmentByWho(s);
+                if (fragmentByWho == null) {
+                    Log.w("FragmentActivity", "Activity result no fragment exists for who: " + s);
                     return;
                 }
-                fragment.onRequestPermissionsResult(n & 0xFF, array, array2);
+                fragmentByWho.onRequestPermissionsResult(n & 0xFFFF, array, array2);
             }
         }
     }
@@ -569,14 +605,14 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
             this.doReallyStop(true);
         }
         final Object onRetainCustomNonConfigurationInstance = this.onRetainCustomNonConfigurationInstance();
-        final List<Fragment> retainNonConfig = this.mFragments.retainNonConfig();
+        final FragmentManagerNonConfig retainNestedNonConfig = this.mFragments.retainNestedNonConfig();
         final SimpleArrayMap<String, LoaderManager> retainLoaderNonConfig = this.mFragments.retainLoaderNonConfig();
-        if (retainNonConfig == null && retainLoaderNonConfig == null && onRetainCustomNonConfigurationInstance == null) {
+        if (retainNestedNonConfig == null && retainLoaderNonConfig == null && onRetainCustomNonConfigurationInstance == null) {
             return null;
         }
         final FragmentActivity$NonConfigurationInstances fragmentActivity$NonConfigurationInstances = new FragmentActivity$NonConfigurationInstances();
         fragmentActivity$NonConfigurationInstances.custom = onRetainCustomNonConfigurationInstance;
-        fragmentActivity$NonConfigurationInstances.fragments = retainNonConfig;
+        fragmentActivity$NonConfigurationInstances.fragments = retainNestedNonConfig;
         fragmentActivity$NonConfigurationInstances.loaders = retainLoaderNonConfig;
         return fragmentActivity$NonConfigurationInstances;
     }
@@ -586,6 +622,17 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
         final Parcelable saveAllState = this.mFragments.saveAllState();
         if (saveAllState != null) {
             bundle.putParcelable("android:support:fragments", saveAllState);
+        }
+        if (this.mPendingFragmentActivityResults.size() > 0) {
+            bundle.putInt("android:support:next_request_index", this.mNextCandidateRequestIndex);
+            final int[] array = new int[this.mPendingFragmentActivityResults.size()];
+            final String[] array2 = new String[this.mPendingFragmentActivityResults.size()];
+            for (int i = 0; i < this.mPendingFragmentActivityResults.size(); ++i) {
+                array[i] = this.mPendingFragmentActivityResults.keyAt(i);
+                array2[i] = this.mPendingFragmentActivityResults.valueAt(i);
+            }
+            bundle.putIntArray("android:support:request_indicies", array);
+            bundle.putStringArray("android:support:request_fragment_who", array2);
         }
     }
     
@@ -616,6 +663,21 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
         this.mFragments.dispatchStop();
     }
     
+    void requestPermissionsFromFragment(final Fragment fragment, final String[] array, final int n) {
+        if (n == -1) {
+            ActivityCompat.requestPermissions(this, array, n);
+            return;
+        }
+        BaseFragmentActivityGingerbread.checkForValidRequestCode(n);
+        try {
+            this.mRequestedPermissionsFromFragment = true;
+            ActivityCompat.requestPermissions(this, array, (this.allocateRequestIndex(fragment) + 1 << 16) + (0xFFFF & n));
+        }
+        finally {
+            this.mRequestedPermissionsFromFragment = false;
+        }
+    }
+    
     public void setEnterSharedElementCallback(final SharedElementCallback sharedElementCallback) {
         ActivityCompat.setEnterSharedElementCallback(this, sharedElementCallback);
     }
@@ -624,22 +686,58 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
         ActivityCompat.setExitSharedElementCallback(this, sharedElementCallback);
     }
     
+    public final void setSupportMediaController(final MediaControllerCompat mMediaController) {
+        this.mMediaController = mMediaController;
+        if (Build$VERSION.SDK_INT >= 21) {
+            ActivityCompat21.setMediaController(this, mMediaController.getMediaController());
+        }
+    }
+    
     public void startActivityForResult(final Intent intent, final int n) {
-        if (n != -1 && (0xFFFF0000 & n) != 0x0) {
-            throw new IllegalArgumentException("Can only use lower 16 bits for requestCode");
+        if (!this.mStartedActivityFromFragment && n != -1) {
+            BaseFragmentActivityGingerbread.checkForValidRequestCode(n);
         }
         super.startActivityForResult(intent, n);
     }
     
     public void startActivityFromFragment(final Fragment fragment, final Intent intent, final int n) {
-        if (n == -1) {
-            super.startActivityForResult(intent, -1);
-            return;
+        this.startActivityFromFragment(fragment, intent, n, null);
+    }
+    
+    public void startActivityFromFragment(final Fragment fragment, final Intent intent, final int n, final Bundle bundle) {
+        this.mStartedActivityFromFragment = true;
+        Label_0024: {
+            if (n != -1) {
+                break Label_0024;
+            }
+            try {
+                ActivityCompat.startActivityForResult(this, intent, -1, bundle);
+                return;
+                BaseFragmentActivityGingerbread.checkForValidRequestCode(n);
+                ActivityCompat.startActivityForResult(this, intent, (this.allocateRequestIndex(fragment) + 1 << 16) + (0xFFFF & n), bundle);
+            }
+            finally {
+                this.mStartedActivityFromFragment = false;
+            }
         }
-        if ((0xFFFF0000 & n) != 0x0) {
-            throw new IllegalArgumentException("Can only use lower 16 bits for requestCode");
+    }
+    
+    public void startIntentSenderFromFragment(final Fragment fragment, final IntentSender intentSender, final int n, final Intent intent, final int n2, final int n3, final int n4, final Bundle bundle) {
+        this.mStartedIntentSenderFromFragment = true;
+        Label_0032: {
+            if (n != -1) {
+                break Label_0032;
+            }
+            try {
+                ActivityCompat.startIntentSenderForResult(this, intentSender, n, intent, n2, n3, n4, bundle);
+                return;
+                BaseFragmentActivityGingerbread.checkForValidRequestCode(n);
+                ActivityCompat.startIntentSenderForResult(this, intentSender, (this.allocateRequestIndex(fragment) + 1 << 16) + (0xFFFF & n), intent, n2, n3, n4, bundle);
+            }
+            finally {
+                this.mStartedIntentSenderFromFragment = false;
+            }
         }
-        super.startActivityForResult(intent, (fragment.mIndex + 1 << 16) + (0xFFFF & n));
     }
     
     public void supportFinishAfterTransition() {
@@ -664,11 +762,8 @@ public class FragmentActivity extends BaseFragmentActivityHoneycomb implements A
     
     @Override
     public final void validateRequestPermissionsRequestCode(final int n) {
-        if (this.mRequestedPermissionsFromFragment) {
-            this.mRequestedPermissionsFromFragment = false;
-        }
-        else if ((n & 0xFFFFFF00) != 0x0) {
-            throw new IllegalArgumentException("Can only use lower 8 bits for requestCode");
+        if (!this.mRequestedPermissionsFromFragment && n != -1) {
+            BaseFragmentActivityGingerbread.checkForValidRequestCode(n);
         }
     }
 }

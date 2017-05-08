@@ -8,7 +8,7 @@ class ListPopupWindow$ListSelectorHider implements Runnable
 {
     final /* synthetic */ ListPopupWindow this$0;
     
-    private ListPopupWindow$ListSelectorHider(final ListPopupWindow this$0) {
+    ListPopupWindow$ListSelectorHider(final ListPopupWindow this$0) {
         this.this$0 = this$0;
     }
     

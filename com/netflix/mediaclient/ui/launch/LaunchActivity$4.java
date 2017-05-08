@@ -17,12 +17,15 @@ import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import android.content.IntentSender$SendIntentException;
-import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.ui.ums.EndOfGrandfatheringActivity;
 import com.netflix.mediaclient.ui.ums.EogUtils;
 import com.netflix.mediaclient.ui.home.HomeActivity;
+import com.netflix.mediaclient.ui.offline.OfflineActivity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
+import com.netflix.mediaclient.util.ConnectivityUtils;
+import android.content.IntentSender$SendIntentException;
+import android.app.Activity;
+import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
 import com.google.android.gms.common.api.Api$ApiOptions$NotRequiredOptions;
 import com.google.android.gms.common.api.Api;
@@ -58,11 +61,10 @@ import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.google.android.gms.common.api.Result;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.SignInLogging$SignInType;
-import android.content.Context;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.SignInLogging$CredentialService;
 import com.netflix.mediaclient.util.log.SignInLogUtils;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
@@ -81,7 +83,7 @@ class LaunchActivity$4 implements ResultCallback<CredentialRequestResult>
         if (Log.isLoggable()) {
             Log.d("LaunchActivity", "Received resolution for GPS credential APIs: " + credentialRequestResult);
         }
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0)) {
             Log.e("LaunchActivity", "Auth.CredentialsApi.request ActivityFinishedOrDestroyed");
             return;
         }

@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import android.view.WindowManager$LayoutParams;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.RelativeLayout$LayoutParams;
 import android.view.View;
@@ -36,7 +36,7 @@ public class CopyrightView
     }
     
     public static CopyrightView create(final VideoDetails videoDetails, final Context context) {
-        final ViewGroup viewGroup = (ViewGroup)((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903289, (ViewGroup)null);
+        final ViewGroup viewGroup = (ViewGroup)((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903310, (ViewGroup)null);
         if (viewGroup != null) {
             return new CopyrightView(videoDetails, context, viewGroup);
         }
@@ -45,7 +45,7 @@ public class CopyrightView
     
     private void init() {
         if (this.details != null && this.copyrightViewGroup != null) {
-            this.copyrightTextView = (TextView)this.copyrightViewGroup.findViewById(2131690315);
+            this.copyrightTextView = (TextView)this.copyrightViewGroup.findViewById(2131690380);
             if (this.copyrightTextView != null && this.details != null) {
                 this.copyrightTextView.setText((CharSequence)this.details.getCopyright());
                 this.copyrightTextView.setVisibility(0);
@@ -56,7 +56,7 @@ public class CopyrightView
     }
     
     private void setExpandedText(final VideoDetails videoDetails, final Context context, final View view) {
-        final TextView textView = (TextView)view.findViewById(2131690316);
+        final TextView textView = (TextView)view.findViewById(2131690381);
         if (textView != null) {
             textView.setText((CharSequence)videoDetails.getCopyright());
         }
@@ -88,7 +88,7 @@ public class CopyrightView
     
     private void showExpandedCopyrightPopup(final VideoDetails videoDetails, final Context context) {
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder(context);
-        final View inflate = ((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903290, (ViewGroup)null);
+        final View inflate = ((LayoutInflater)context.getSystemService("layout_inflater")).inflate(2130903311, (ViewGroup)null);
         if (inflate == null) {
             return;
         }

@@ -4,9 +4,10 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
 
-class DetailsFrag$1 implements ErrorWrapper$Callback
+class DetailsFrag$1 extends NetflixActivity$ServiceManagerRunnable
 {
     final /* synthetic */ DetailsFrag this$0;
     
@@ -15,7 +16,9 @@ class DetailsFrag$1 implements ErrorWrapper$Callback
     }
     
     @Override
-    public void onRetryRequested() {
-        ((ErrorWrapper$Callback)this.this$0.getActivity()).onRetryRequested();
+    public void run(final ServiceManager serviceManager) {
+        if (serviceManager.isOfflineFeatureAvailable() && serviceManager.getOfflineAgent().getLatestOfflinePlayableList().getTitleCount() > 0) {
+            this.this$0.leWrapper.showViewMyDownloadsButton();
+        }
     }
 }

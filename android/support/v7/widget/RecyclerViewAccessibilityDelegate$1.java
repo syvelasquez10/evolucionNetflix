@@ -4,7 +4,6 @@
 
 package android.support.v7.widget;
 
-import android.view.accessibility.AccessibilityEvent;
 import android.os.Bundle;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.View;

@@ -4,21 +4,21 @@
 
 package android.support.design.widget;
 
-import android.support.v4.view.MotionEventCompat;
-import android.view.MotionEvent;
-import android.view.ViewGroup;
-import android.support.v4.widget.ViewDragHelper;
+import android.view.ViewParent;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.support.v4.widget.ViewDragHelper$Callback;
 
 class SwipeDismissBehavior$1 extends ViewDragHelper$Callback
 {
+    private static final int INVALID_POINTER_ID = -1;
+    private int mActivePointerId;
     private int mOriginalCapturedViewLeft;
     final /* synthetic */ SwipeDismissBehavior this$0;
     
     SwipeDismissBehavior$1(final SwipeDismissBehavior this$0) {
         this.this$0 = this$0;
+        this.mActivePointerId = -1;
     }
     
     private boolean shouldDismiss(final View view, final float n) {
@@ -89,7 +89,7 @@ class SwipeDismissBehavior$1 extends ViewDragHelper$Callback
             n3 = this.mOriginalCapturedViewLeft - view.getWidth();
             n2 = this.mOriginalCapturedViewLeft + view.getWidth();
         }
-        return clamp(n3, n, n2);
+        return SwipeDismissBehavior.clamp(n3, n, n2);
     }
     
     @Override
@@ -100,6 +100,16 @@ class SwipeDismissBehavior$1 extends ViewDragHelper$Callback
     @Override
     public int getViewHorizontalDragRange(final View view) {
         return view.getWidth();
+    }
+    
+    @Override
+    public void onViewCaptured(final View view, final int mActivePointerId) {
+        this.mActivePointerId = mActivePointerId;
+        this.mOriginalCapturedViewLeft = view.getLeft();
+        final ViewParent parent = view.getParent();
+        if (parent != null) {
+            parent.requestDisallowInterceptTouchEvent(true);
+        }
     }
     
     @Override
@@ -121,11 +131,12 @@ class SwipeDismissBehavior$1 extends ViewDragHelper$Callback
             ViewCompat.setAlpha(view, 0.0f);
             return;
         }
-        ViewCompat.setAlpha(view, clamp(0.0f, 1.0f - SwipeDismissBehavior.fraction(n5, n6, n), 1.0f));
+        ViewCompat.setAlpha(view, SwipeDismissBehavior.clamp(0.0f, 1.0f - SwipeDismissBehavior.fraction(n5, n6, n), 1.0f));
     }
     
     @Override
     public void onViewReleased(final View view, final float n, final float n2) {
+        this.mActivePointerId = -1;
         final int width = view.getWidth();
         boolean b = false;
         int mOriginalCapturedViewLeft;
@@ -151,7 +162,6 @@ class SwipeDismissBehavior$1 extends ViewDragHelper$Callback
     
     @Override
     public boolean tryCaptureView(final View view, final int n) {
-        this.mOriginalCapturedViewLeft = view.getLeft();
-        return true;
+        return this.mActivePointerId == -1 && this.this$0.canSwipeDismissView(view);
     }
 }

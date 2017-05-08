@@ -40,8 +40,8 @@ public class PostPlayBackgroundBasic extends PostPlayBackground
     
     @Override
     protected void findViews() {
-        this.background = (TopCropImageView)this.findViewById(2131690109);
-        this.playButton = (ImageView)this.findViewById(2131690113);
+        this.background = (TopCropImageView)this.findViewById(2131690155);
+        this.playButton = (ImageView)this.findViewById(2131690159);
     }
     
     @Override
@@ -68,7 +68,7 @@ public class PostPlayBackgroundBasic extends PostPlayBackground
             this.background.setCutomCroppingEnabled(postPlayRequestContext.equals(PostPlayRequestContext.MDX) && DeviceUtils.isLandscape((Context)netflixActivity));
         }
         if (postPlayItem.getBackgroundAsset() != null && postPlayItem.getBackgroundAsset().getUrl() != null) {
-            NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.background, postPlayItem.getBackgroundAsset().getUrl(), IClientLogging$AssetType.merchStill, String.format(netflixActivity.getResources().getString(2131230895), postPlayItem.getTitle()), ImageLoader$StaticImgConfig.DARK, true, 1);
+            NetflixActivity.getImageLoader((Context)netflixActivity).showImg(this.background, postPlayItem.getBackgroundAsset().getUrl(), IClientLogging$AssetType.merchStill, String.format(netflixActivity.getResources().getString(2131230899), postPlayItem.getTitle()), ImageLoader$StaticImgConfig.DARK, true, 1);
         }
         if (this.playButton != null && postPlayItem.getPlayAction() != null && playerFragment != null) {
             this.playAction = new PostPlayCallToAction(netflixActivity, playerFragment, postPlayItem.getPlayAction(), postPlayRequestContext, (View)this.playButton);

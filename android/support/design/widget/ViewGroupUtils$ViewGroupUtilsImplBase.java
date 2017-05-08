@@ -13,5 +13,6 @@ class ViewGroupUtils$ViewGroupUtilsImplBase implements ViewGroupUtils$ViewGroupU
     @Override
     public void offsetDescendantRect(final ViewGroup viewGroup, final View view, final Rect rect) {
         viewGroup.offsetDescendantRectToMyCoords(view, rect);
+        rect.offset(view.getScrollX(), view.getScrollY());
     }
 }

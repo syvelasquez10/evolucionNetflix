@@ -11,7 +11,7 @@ import com.netflix.mediaclient.Log;
 import android.os.Bundle;
 import com.netflix.mediaclient.ui.details.IHandleBackPress;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
@@ -39,7 +39,7 @@ public class BarkerKidsDetailsActivity extends DetailsActivity implements PlayCo
         kubrickKidsDetailActionBar.setLogoType(NetflixActionBar$LogoType.GONE);
         kubrickKidsDetailActionBar.setTitle("");
         kubrickKidsDetailActionBar.setAlpha(0.0f);
-        final View viewById = this.findViewById(2131689586);
+        final View viewById = this.findViewById(2131689598);
         if (viewById != null) {
             viewById.setBackgroundColor(0);
         }
@@ -64,14 +64,14 @@ public class BarkerKidsDetailsActivity extends DetailsActivity implements PlayCo
                 return BarkerKidsShowDetailsFrag.create(this.videoId);
             }
             case 3: {
-                return BarkerKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color_id", 2131624052));
+                return BarkerKidsCharacterDetailsFrag.create(this.videoId, this.getIntent().getIntExtra("extra_kids_color_id", 2131624064));
             }
         }
     }
     
     @Override
     public boolean destroyed() {
-        return AndroidUtils.isActivityFinishedOrDestroyed(this);
+        return AndroidUtils.isActivityFinishedOrDestroyed((Context)this);
     }
     
     @Override

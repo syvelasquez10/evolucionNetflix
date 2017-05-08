@@ -6,6 +6,8 @@ package com.netflix.mediaclient;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Locale;
+import android.util.Base64;
 import android.os.Bundle;
 import java.util.Iterator;
 import android.content.Intent;
@@ -33,9 +35,9 @@ public final class Log
         return 0;
     }
     
-    public static int d(final String s, final String s2, final Throwable t) {
+    public static int d(final String s, final String s2, final Object... array) {
         if (Log.debug) {
-            return android.util.Log.d(s, s2, t);
+            return android.util.Log.d(s, toMessage(s2, array));
         }
         return 0;
     }
@@ -105,6 +107,20 @@ public final class Log
         return 0;
     }
     
+    public static int e(final String s, final String s2, final Object... array) {
+        if (Log.debug) {
+            return android.util.Log.e(s, toMessage(s2, array));
+        }
+        return 0;
+    }
+    
+    public static int e(final String s, final Throwable t, final String s2, final Object... array) {
+        if (Log.debug) {
+            return android.util.Log.e(s, toMessage(s2, array), t);
+        }
+        return 0;
+    }
+    
     public static String getStackTraceString(final Throwable t) {
         if (t == null) {
             return "";
@@ -125,7 +141,7 @@ public final class Log
     }
     
     public static void handleException(final String s, final Exception ex) {
-        e(s, "Exception msg: " + ex.getMessage(), ex);
+        e(s, ex, "Exception msg: " + ex.getMessage(), new Object[0]);
     }
     
     public static int i(final String s, final String s2) {
@@ -135,9 +151,9 @@ public final class Log
         return 0;
     }
     
-    public static int i(final String s, final String s2, final Throwable t) {
+    public static int i(final String s, final String s2, final Object... array) {
         if (Log.debug) {
-            return android.util.Log.i(s, s2, t);
+            return android.util.Log.i(s, toMessage(s2, array));
         }
         return 0;
     }
@@ -169,12 +185,84 @@ public final class Log
         }
     }
     
+    public static void logByteArrayAsHexString(final String s, String encodeToString, final byte[] array) {
+        if (Log.debug) {
+            if (array != null) {
+                android.util.Log.d(s, encodeToString + ". Length " + array.length + " bytes. Hex: ");
+                encodeToString = Base64.encodeToString(array, 2);
+                for (int i = 0; i < encodeToString.length(); i += 100) {
+                    int length;
+                    if ((length = i + 100) > encodeToString.length()) {
+                        length = encodeToString.length();
+                    }
+                    android.util.Log.d(s, encodeToString.substring(i, length));
+                }
+            }
+            else {
+                android.util.Log.d(s, encodeToString + ". null array ");
+            }
+        }
+    }
+    
+    public static void logByteArrayRaw(final String s, final String s2, final byte[] array) {
+        if (Log.debug) {
+            if (array == null) {
+                android.util.Log.d(s, s2 + ". null array ");
+                return;
+            }
+            final StringBuilder sb = new StringBuilder("[ ");
+            int n = 1;
+            for (int i = 0; i < array.length; ++i) {
+                if (n != 0) {
+                    n = 0;
+                }
+                else {
+                    sb.append(", ");
+                }
+                sb.append(array[i]);
+            }
+            sb.append("]");
+            android.util.Log.d(s, s2 + ". Length " + array.length + " bytes. Array: ");
+            android.util.Log.d(s, sb.toString());
+        }
+    }
+    
+    public static void logLongArray(final String s, final String s2, final long[] array) {
+        if (Log.debug) {
+            if (array == null) {
+                android.util.Log.d(s, s2 + ". null array ");
+                return;
+            }
+            final StringBuilder sb = new StringBuilder("[ ");
+            int n = 1;
+            for (int i = 0; i < array.length; ++i) {
+                if (n != 0) {
+                    n = 0;
+                }
+                else {
+                    sb.append(", ");
+                }
+                sb.append(array[i]);
+            }
+            sb.append("]");
+            android.util.Log.d(s, s2 + ". Length " + array.length + ". Array: ");
+            android.util.Log.d(s, sb.toString());
+        }
+    }
+    
     public static void printStackTrace(final String s) {
         v(s, android.util.Log.getStackTraceString((Throwable)new Log$PrintStackTrace((Log$1)null)));
     }
     
     public static void printStackTrace(final String s, final Throwable t) {
         v(s, android.util.Log.getStackTraceString(t));
+    }
+    
+    private static String toMessage(final String s, final Object... array) {
+        if (array == null || array.length < 1) {
+            return s;
+        }
+        return String.format(Locale.US, s, array);
     }
     
     public static int v(final String s, final String s2) {
@@ -184,9 +272,9 @@ public final class Log
         return 0;
     }
     
-    public static int v(final String s, final String s2, final Throwable t) {
+    public static int v(final String s, final String s2, final Object... array) {
         if (Log.debug) {
-            return android.util.Log.v(s, s2, t);
+            return android.util.Log.v(s, toMessage(s2, array));
         }
         return 0;
     }
@@ -202,9 +290,9 @@ public final class Log
         while (true) {
             decode = "n/a";
             while (true) {
-            Label_0139:
+            Label_0140:
                 while (true) {
-                Label_0128:
+                Label_0129:
                     while (true) {
                         try {
                             if (intent.getDataString() == null) {
@@ -214,7 +302,7 @@ public final class Log
                                 decode = URLDecoder.decode(intent.getDataString(), "utf-8");
                             }
                             if (intent.getCategories() != null) {
-                                break Label_0128;
+                                break Label_0129;
                             }
                             string = "n/a";
                             if (intent.getExtras() == null) {
@@ -222,7 +310,7 @@ public final class Log
                                 v(s, String.format("Handling intent\n   action: %s\n   uri: %s\n   decodedUri: %s\n   categories: %s\n   extras: %s", intent.getAction(), intent.getDataString(), decode, string, string2));
                                 return;
                             }
-                            break Label_0139;
+                            break Label_0140;
                         }
                         catch (UnsupportedEncodingException ex) {
                             w(s, "Couldn't decode url: " + intent.getDataString());
@@ -246,9 +334,9 @@ public final class Log
         return 0;
     }
     
-    public static int w(final String s, final String s2, final Throwable t) {
+    public static int w(final String s, final String s2, final Object... array) {
         if (Log.debug) {
-            return android.util.Log.w(s, s2, t);
+            return android.util.Log.w(s, toMessage(s2, array));
         }
         return 0;
     }
@@ -260,18 +348,32 @@ public final class Log
         return 0;
     }
     
-    public static int wtf(final String s, final String s2) {
-        return wtf(s, s2, null);
-    }
-    
-    public static int wtf(final String s, final String s2, final Throwable t) {
+    public static int w(final String s, final Throwable t, final String s2) {
         if (Log.debug) {
-            return android.util.Log.wtf(s, s2, t);
+            return android.util.Log.w(s, s2, t);
         }
         return 0;
     }
     
+    public static int w(final String s, final Throwable t, final String s2, final Object... array) {
+        if (Log.debug) {
+            return android.util.Log.w(s, toMessage(s2, array), t);
+        }
+        return 0;
+    }
+    
+    public static int wtf(final String s, final String s2) {
+        return wtf(s, null, s2, new Object[0]);
+    }
+    
     public static int wtf(final String s, final Throwable t) {
-        return wtf(s, t.getMessage(), t);
+        return wtf(s, t, t.getMessage(), new Object[0]);
+    }
+    
+    public static int wtf(final String s, final Throwable t, final String s2, final Object... array) {
+        if (Log.debug) {
+            return android.util.Log.wtf(s, toMessage(s2, array), t);
+        }
+        return 0;
     }
 }

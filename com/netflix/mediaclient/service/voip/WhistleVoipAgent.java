@@ -33,7 +33,6 @@ import com.vailsys.whistleengine.WhistleEngineConfig$TransportMode;
 import com.vailsys.whistleengine.WhistleEngineConfig;
 import com.netflix.mediaclient.service.user.UserLocaleRepository;
 import com.netflix.mediaclient.Log;
-import android.app.Service;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.l10n.UserLocale;
@@ -115,7 +114,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     
     private void cancelNotification() {
         if (this.mNotificationManager != null) {
-            this.mNotificationManager.cancelNotification(this.getService());
+            this.mNotificationManager.cancelNotification(this.getService(), this.getMainHandler());
         }
     }
     
@@ -407,8 +406,8 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
     public void callConnected(final int n) {
         while (true) {
             while (true) {
-                Label_0222: {
-                    Label_0177: {
+                Label_0226: {
+                    Label_0181: {
                         synchronized (this) {
                             if (Log.isLoggable()) {
                                 Log.d("nf_voip", "Outbound call connected on line " + n);
@@ -419,7 +418,7 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                 }
                                 else {
                                     if (this.mCurrentCall.line != n) {
-                                        break Label_0177;
+                                        break Label_0181;
                                     }
                                     final Iterator<IVoip$OutboundCallListener> iterator = this.mListeners.iterator();
                                     while (iterator.hasNext()) {
@@ -427,13 +426,13 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                     }
                                 }
                                 this.mConnectivityState = IVoip$ConnectivityState.GREEN;
-                                this.mNotificationManager.updateConnectedNotification(this.getService());
+                                this.mNotificationManager.updateConnectedNotification(this.getService(), this.getMainHandler());
                                 CustomerServiceLogUtils.reportCallConnected(this.getContext(), CustomerServiceLogging$CallQuality.green);
                                 Log.d("nf_voip", "Sets start time...");
                                 this.mStartTime = System.currentTimeMillis();
                                 return;
                             }
-                            break Label_0222;
+                            break Label_0226;
                         }
                     }
                     Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received connect on line " + n);
@@ -928,25 +927,29 @@ public class WhistleVoipAgent extends ServiceAgent implements VoipAuthorizationT
                                     CustomerServiceLogUtils.reportCallSessionEnded(this.getContext(), (CustomerServiceLogging$TerminationReason)o2, IClientLogging$CompletionReason.failed, (Error)o);
                                     this.callCleanup();
                                     return;
+                                    o2 = CustomerServiceLogging$TerminationReason.failedBeforeConnected;
+                                    continue Label_0187_Outer;
+                                    Label_0274: {
+                                        Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received network failed on line " + n);
+                                    }
+                                    return;
+                                    // iftrue(Label_0274:, WhistleVoipAgent$WhistleCall.access$400(this.mCurrentCall) != n)
+                                    // iftrue(Label_0096:, !o2.hasNext())
                                     while (true) {
-                                        ((Iterator<IVoip$OutboundCallListener>)o2).next().networkFailed(this.mCurrentCall);
-                                        Label_0244: {
-                                            break Label_0244;
-                                            Label_0274: {
-                                                Log.e("nf_voip", "Call is in progress on line " + this.mCurrentCall.line + " but we received network failed on line " + n);
+                                        Block_8: {
+                                            Block_7: {
+                                                break Block_7;
+                                                break Block_8;
+                                                Log.e("nf_voip", "Engine is null and we received network failed! Should not happen!");
+                                                break;
                                             }
-                                            return;
-                                            o2 = CustomerServiceLogging$TerminationReason.failedBeforeConnected;
-                                            continue Label_0187_Outer;
-                                            Log.e("nf_voip", "Engine is null and we received network failed! Should not happen!");
-                                            break;
                                             o2 = this.mListeners.iterator();
+                                            continue;
                                         }
+                                        ((Iterator<IVoip$OutboundCallListener>)o2).next().networkFailed(this.mCurrentCall);
                                         continue;
                                     }
                                 }
-                                // iftrue(Label_0274:, WhistleVoipAgent$WhistleCall.access$400(this.mCurrentCall) != n)
-                                // iftrue(Label_0096:, !o2.hasNext())
                                 catch (JSONException ex) {
                                     continue;
                                 }

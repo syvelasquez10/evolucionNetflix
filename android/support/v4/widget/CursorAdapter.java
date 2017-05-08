@@ -17,6 +17,9 @@ import android.widget.BaseAdapter;
 
 public abstract class CursorAdapter extends BaseAdapter implements CursorFilter$CursorFilterClient, Filterable
 {
+    @Deprecated
+    public static final int FLAG_AUTO_REQUERY = 1;
+    public static final int FLAG_REGISTER_CONTENT_OBSERVER = 2;
     protected boolean mAutoRequery;
     protected CursorAdapter$ChangeObserver mChangeObserver;
     protected Context mContext;
@@ -26,6 +29,14 @@ public abstract class CursorAdapter extends BaseAdapter implements CursorFilter$
     protected boolean mDataValid;
     protected FilterQueryProvider mFilterQueryProvider;
     protected int mRowIDColumn;
+    
+    public CursorAdapter(final Context context, final Cursor cursor) {
+        this.init(context, cursor, 1);
+    }
+    
+    public CursorAdapter(final Context context, final Cursor cursor, final int n) {
+        this.init(context, cursor, n);
+    }
     
     public CursorAdapter(final Context context, final Cursor cursor, final boolean b) {
         int n;
@@ -83,6 +94,10 @@ public abstract class CursorAdapter extends BaseAdapter implements CursorFilter$
             this.mCursorFilter = new CursorFilter(this);
         }
         return this.mCursorFilter;
+    }
+    
+    public FilterQueryProvider getFilterQueryProvider() {
+        return this.mFilterQueryProvider;
     }
     
     public Object getItem(final int n) {
@@ -152,7 +167,7 @@ public abstract class CursorAdapter extends BaseAdapter implements CursorFilter$
         this.mRowIDColumn = columnIndexOrThrow;
         if ((n & 0x2) == 0x2) {
             this.mChangeObserver = new CursorAdapter$ChangeObserver(this);
-            this.mDataSetObserver = new CursorAdapter$MyDataSetObserver(this, null);
+            this.mDataSetObserver = new CursorAdapter$MyDataSetObserver(this);
         }
         else {
             this.mChangeObserver = null;
@@ -166,6 +181,18 @@ public abstract class CursorAdapter extends BaseAdapter implements CursorFilter$
                 mCursor.registerDataSetObserver(this.mDataSetObserver);
             }
         }
+    }
+    
+    @Deprecated
+    protected void init(final Context context, final Cursor cursor, final boolean b) {
+        int n;
+        if (b) {
+            n = 1;
+        }
+        else {
+            n = 2;
+        }
+        this.init(context, cursor, n);
     }
     
     public View newDropDownView(final Context context, final Cursor cursor, final ViewGroup viewGroup) {
@@ -185,6 +212,10 @@ public abstract class CursorAdapter extends BaseAdapter implements CursorFilter$
             return this.mFilterQueryProvider.runQuery(charSequence);
         }
         return this.mCursor;
+    }
+    
+    public void setFilterQueryProvider(final FilterQueryProvider mFilterQueryProvider) {
+        this.mFilterQueryProvider = mFilterQueryProvider;
     }
     
     public Cursor swapCursor(final Cursor mCursor) {

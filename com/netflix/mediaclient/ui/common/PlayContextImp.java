@@ -4,13 +4,22 @@
 
 package com.netflix.mediaclient.ui.common;
 
+import com.netflix.mediaclient.Log;
+import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import android.os.Parcel;
 import android.os.Parcelable$Creator;
 
 public class PlayContextImp implements PlayContext
 {
+    private static final String BUNDLE_BROWSE_PLAY = "play_context_bundle_browse_play";
+    private static final String BUNDLE_LIST_POS = "play_context_bundle_list_pos";
+    private static final String BUNDLE_PLAY_LOCATION = "play_context_bundle_play_location";
+    private static final String BUNDLE_REQUEST_ID = "play_context_bundle_request_id";
+    private static final String BUNDLE_TRACK_ID = "play_context_bundle_track_id";
+    private static final String BUNDLE_VIDEO_POS = "play_context_bundle_video_pos";
     public static final Parcelable$Creator<PlayContextImp> CREATOR;
+    private static final String TAG = "nf_play_context_imp";
     private boolean browsePlay;
     private final int listPos;
     private String playLocation;
@@ -49,6 +58,44 @@ public class PlayContextImp implements PlayContext
         this.trackId = trackId;
         this.listPos = listPos;
         this.videoPos = videoPos;
+    }
+    
+    public static PlayContext createPlayContextFromBundle(final Bundle bundle) {
+        if (Log.isLoggable()) {
+            Log.i("nf_play_context_imp", "createPlayContextFromBundle");
+        }
+        PlayContext empty_CONTEXT;
+        if (bundle == null) {
+            if (Log.isLoggable()) {
+                Log.e("nf_play_context_imp", "createPlayContextFromBundle bundle is null, using empty playContext");
+            }
+            empty_CONTEXT = PlayContext.EMPTY_CONTEXT;
+        }
+        else {
+            final PlayContextImp playContextImp = new PlayContextImp(bundle.getString("play_context_bundle_request_id", (String)null), bundle.getInt("play_context_bundle_track_id", -1), bundle.getInt("play_context_bundle_list_pos", -1), bundle.getInt("play_context_bundle_video_pos", -1));
+            playContextImp.setBrowsePlay(bundle.getBoolean("play_context_bundle_browse_play", false));
+            playContextImp.setPlayLocation(PlayLocationType.create(bundle.getString("play_context_bundle_play_location", PlayLocationType.DIRECT_PLAY.getValue())));
+            empty_CONTEXT = playContextImp;
+            if (Log.isLoggable()) {
+                Log.i("nf_play_context_imp", "createPlayContextFromBundle\n" + playContextImp.toString());
+                return playContextImp;
+            }
+        }
+        return empty_CONTEXT;
+    }
+    
+    public static Bundle playContextToBundle(final PlayContext playContext) {
+        if (Log.isLoggable()) {
+            Log.i("nf_play_context_imp", "playContextToBundle\n" + playContext.toString());
+        }
+        final Bundle bundle = new Bundle();
+        bundle.putString("play_context_bundle_request_id", playContext.getRequestId());
+        bundle.putInt("play_context_bundle_track_id", playContext.getTrackId());
+        bundle.putInt("play_context_bundle_list_pos", playContext.getListPos());
+        bundle.putInt("play_context_bundle_video_pos", playContext.getVideoPos());
+        bundle.putBoolean("play_context_bundle_browse_play", playContext.getBrowsePlay());
+        bundle.putString("play_context_bundle_play_location", playContext.getPlayLocation().getValue());
+        return bundle;
     }
     
     public PlayContextImp cloneWithNewTrackId(final int n) {
@@ -92,6 +139,11 @@ public class PlayContextImp implements PlayContext
     
     public boolean isHero() {
         return false;
+    }
+    
+    @Override
+    public Bundle playContextToBundle() {
+        return playContextToBundle(this);
     }
     
     @Override

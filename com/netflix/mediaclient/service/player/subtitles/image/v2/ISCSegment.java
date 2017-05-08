@@ -33,14 +33,14 @@ public class ISCSegment extends Box
     Label_0039_Outer:
         while (true) {
             while (true) {
-                Label_0101: {
+                Label_0108: {
                     try {
                         long contentSizeInBytes = this.getBoxHeader().contentSizeInBytes;
                         int i = 1;
                         while (i != 0) {
                             final long n3 = contentSizeInBytes - this.readBox(dataInputStream, n, n2);
                             if (n3 <= 0L) {
-                                break Label_0101;
+                                break Label_0108;
                             }
                             final int n4 = 1;
                             i = n4;

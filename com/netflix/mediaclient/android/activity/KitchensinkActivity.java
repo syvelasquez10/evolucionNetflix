@@ -16,6 +16,6 @@ public class KitchensinkActivity extends AppCompatActivity
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        this.setContentView(2130903138);
+        this.setContentView(2130903148);
     }
 }

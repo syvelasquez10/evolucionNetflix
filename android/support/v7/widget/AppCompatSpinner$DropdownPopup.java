@@ -4,26 +4,12 @@
 
 package android.support.v7.widget;
 
-import android.widget.Adapter;
-import android.view.MotionEvent;
-import android.graphics.PorterDuff$Mode;
-import android.content.res.ColorStateList;
-import android.view.ViewGroup$LayoutParams;
-import android.view.ViewGroup;
-import android.view.View$MeasureSpec;
-import android.content.res.Resources$Theme;
-import android.support.v7.appcompat.R$attr;
-import android.os.Build$VERSION;
-import android.support.v7.internal.widget.TintManager;
-import android.support.v4.view.TintableBackgroundView;
-import android.widget.Spinner;
 import android.view.ViewTreeObserver;
 import android.widget.PopupWindow$OnDismissListener;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
+import android.support.v4.view.ViewCompat;
 import android.graphics.drawable.Drawable;
 import android.widget.SpinnerAdapter;
-import android.support.v7.internal.widget.ViewUtils;
-import android.support.v4.view.ViewCompat;
 import android.widget.AdapterView$OnItemClickListener;
 import android.view.View;
 import android.util.AttributeSet;
@@ -33,7 +19,7 @@ import android.widget.ListAdapter;
 
 class AppCompatSpinner$DropdownPopup extends ListPopupWindow
 {
-    private ListAdapter mAdapter;
+    ListAdapter mAdapter;
     private CharSequence mHintText;
     private final Rect mVisibleRect;
     final /* synthetic */ AppCompatSpinner this$0;
@@ -46,10 +32,6 @@ class AppCompatSpinner$DropdownPopup extends ListPopupWindow
         this.setModal(true);
         this.setPromptPosition(0);
         this.setOnItemClickListener((AdapterView$OnItemClickListener)new AppCompatSpinner$DropdownPopup$1(this, appCompatSpinner));
-    }
-    
-    private boolean isVisibleToUser(final View view) {
-        return ViewCompat.isAttachedToWindow(view) && view.getGlobalVisibleRect(this.mVisibleRect);
     }
     
     void computeContentWidth() {
@@ -65,21 +47,21 @@ class AppCompatSpinner$DropdownPopup extends ListPopupWindow
             }
         }
         else {
-            final Rect access$300 = this.this$0.mTempRect;
+            final Rect mTempRect = this.this$0.mTempRect;
             this.this$0.mTempRect.right = 0;
-            access$300.left = 0;
+            mTempRect.left = 0;
             right = 0;
         }
         final int paddingLeft = this.this$0.getPaddingLeft();
         final int paddingRight = this.this$0.getPaddingRight();
         final int width = this.this$0.getWidth();
         if (this.this$0.mDropDownWidth == -2) {
-            int access$301 = this.this$0.compatMeasureContentWidth((SpinnerAdapter)this.mAdapter, this.getBackground());
+            int compatMeasureContentWidth = this.this$0.compatMeasureContentWidth((SpinnerAdapter)this.mAdapter, this.getBackground());
             final int n = this.this$0.getContext().getResources().getDisplayMetrics().widthPixels - this.this$0.mTempRect.left - this.this$0.mTempRect.right;
-            if (access$301 > n) {
-                access$301 = n;
+            if (compatMeasureContentWidth > n) {
+                compatMeasureContentWidth = n;
             }
-            this.setContentWidth(Math.max(access$301, width - paddingLeft - paddingRight));
+            this.setContentWidth(Math.max(compatMeasureContentWidth, width - paddingLeft - paddingRight));
         }
         else if (this.this$0.mDropDownWidth == -1) {
             this.setContentWidth(width - paddingLeft - paddingRight);
@@ -99,6 +81,10 @@ class AppCompatSpinner$DropdownPopup extends ListPopupWindow
     
     public CharSequence getHintText() {
         return this.mHintText;
+    }
+    
+    boolean isVisibleToUser(final View view) {
+        return ViewCompat.isAttachedToWindow(view) && view.getGlobalVisibleRect(this.mVisibleRect);
     }
     
     @Override

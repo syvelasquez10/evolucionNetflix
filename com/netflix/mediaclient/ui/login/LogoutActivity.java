@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.DialogInterface$OnClickListener;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -37,7 +37,7 @@ public class LogoutActivity extends AccountActivity
         Log.i("LogoutActivity", "Handling logout completion...");
         PerformanceProfiler.getInstance().flushApmEvents(this.getApmSafely());
         UserActionLogUtils.reportNavigationActionEnded((Context)this, this.getUiScreen(), IClientLogging$CompletionReason.success, null);
-        Toast.makeText(this.getApplicationContext(), 2131231187, 1).show();
+        Toast.makeText(this.getApplicationContext(), 2131231240, 1).show();
         relaunchApp(this, "handleLogoutComplete()");
     }
     
@@ -58,7 +58,7 @@ public class LogoutActivity extends AccountActivity
     }
     
     public static void showLogoutDialog(final Activity activity) {
-        new AlertDialog$Builder((Context)activity).setMessage(2131231095).setNegativeButton(2131230993, (DialogInterface$OnClickListener)null).setPositiveButton(2131231186, (DialogInterface$OnClickListener)new LogoutActivity$1(activity)).show();
+        new AlertDialog$Builder((Context)activity).setMessage(2131231119).setNegativeButton(2131231008, null).setPositiveButton(2131231239, (DialogInterface$OnClickListener)new LogoutActivity$1(activity)).show();
     }
     
     @Override

@@ -4,8 +4,15 @@
 
 package android.support.v4.view;
 
-class KeyEventCompat$HoneycombKeyEventVersionImpl extends KeyEventCompat$EclairKeyEventVersionImpl
+import android.view.KeyEvent;
+
+class KeyEventCompat$HoneycombKeyEventVersionImpl extends KeyEventCompat$BaseKeyEventVersionImpl
 {
+    @Override
+    public boolean isCtrlPressed(final KeyEvent keyEvent) {
+        return KeyEventCompatHoneycomb.isCtrlPressed(keyEvent);
+    }
+    
     @Override
     public boolean metaStateHasModifiers(final int n, final int n2) {
         return KeyEventCompatHoneycomb.metaStateHasModifiers(n, n2);

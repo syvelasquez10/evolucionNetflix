@@ -6,4 +6,5 @@ package android.support.v4.content;
 
 public interface Loader$OnLoadCanceledListener<D>
 {
+    void onLoadCanceled(final Loader<D> p0);
 }

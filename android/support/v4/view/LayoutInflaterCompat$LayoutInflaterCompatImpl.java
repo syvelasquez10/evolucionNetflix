@@ -8,5 +8,7 @@ import android.view.LayoutInflater;
 
 interface LayoutInflaterCompat$LayoutInflaterCompatImpl
 {
+    LayoutInflaterFactory getFactory(final LayoutInflater p0);
+    
     void setFactory(final LayoutInflater p0, final LayoutInflaterFactory p1);
 }

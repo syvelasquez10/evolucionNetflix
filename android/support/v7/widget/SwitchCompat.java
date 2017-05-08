@@ -4,35 +4,33 @@
 
 package android.support.v7.widget;
 
+import android.support.v7.content.res.AppCompatResources;
 import android.content.res.TypedArray;
-import android.support.v7.internal.text.AllCapsTransformationMethod;
+import android.support.v7.text.AllCapsTransformationMethod;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.annotation.TargetApi;
 import android.view.accessibility.AccessibilityEvent;
 import android.graphics.Region$Op;
 import android.text.TextUtils;
 import android.os.Build$VERSION;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.text.StaticLayout;
 import android.text.Layout$Alignment;
-import android.support.v7.internal.widget.DrawableUtils;
 import android.view.View;
-import android.support.v7.internal.widget.ViewUtils;
 import android.view.MotionEvent;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.animation.Animation;
+import android.view.animation.Animation$AnimationListener;
 import android.view.ViewConfiguration;
 import android.graphics.drawable.Drawable$Callback;
-import android.support.v7.internal.widget.TintTypedArray;
 import android.support.v7.appcompat.R$styleable;
 import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.view.VelocityTracker;
-import android.support.v7.internal.widget.TintManager;
+import android.graphics.PorterDuff$Mode;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.content.res.ColorStateList;
@@ -44,10 +42,14 @@ import android.widget.CompoundButton;
 public class SwitchCompat extends CompoundButton
 {
     private static final int[] CHECKED_STATE_SET;
+    private boolean mHasThumbTint;
+    private boolean mHasThumbTintMode;
+    private boolean mHasTrackTint;
+    private boolean mHasTrackTintMode;
     private int mMinFlingVelocity;
     private Layout mOffLayout;
     private Layout mOnLayout;
-    private SwitchCompat$ThumbAnimation mPositionAnimator;
+    SwitchCompat$ThumbAnimation mPositionAnimator;
     private boolean mShowText;
     private boolean mSplitTrack;
     private int mSwitchBottom;
@@ -67,13 +69,16 @@ public class SwitchCompat extends CompoundButton
     private Drawable mThumbDrawable;
     private float mThumbPosition;
     private int mThumbTextPadding;
+    private ColorStateList mThumbTintList;
+    private PorterDuff$Mode mThumbTintMode;
     private int mThumbWidth;
-    private final TintManager mTintManager;
     private int mTouchMode;
     private int mTouchSlop;
     private float mTouchX;
     private float mTouchY;
     private Drawable mTrackDrawable;
+    private ColorStateList mTrackTintList;
+    private PorterDuff$Mode mTrackTintMode;
     private VelocityTracker mVelocityTracker;
     
     static {
@@ -90,6 +95,14 @@ public class SwitchCompat extends CompoundButton
     
     public SwitchCompat(final Context context, final AttributeSet set, int resourceId) {
         super(context, set, resourceId);
+        this.mThumbTintList = null;
+        this.mThumbTintMode = null;
+        this.mHasThumbTint = false;
+        this.mHasThumbTintMode = false;
+        this.mTrackTintList = null;
+        this.mTrackTintMode = null;
+        this.mHasTrackTint = false;
+        this.mHasTrackTintMode = false;
         this.mVelocityTracker = VelocityTracker.obtain();
         this.mTempRect = new Rect();
         this.mTextPaint = new TextPaint(1);
@@ -110,11 +123,36 @@ public class SwitchCompat extends CompoundButton
         this.mSwitchMinWidth = obtainStyledAttributes.getDimensionPixelSize(R$styleable.SwitchCompat_switchMinWidth, 0);
         this.mSwitchPadding = obtainStyledAttributes.getDimensionPixelSize(R$styleable.SwitchCompat_switchPadding, 0);
         this.mSplitTrack = obtainStyledAttributes.getBoolean(R$styleable.SwitchCompat_splitTrack, false);
+        final ColorStateList colorStateList = obtainStyledAttributes.getColorStateList(R$styleable.SwitchCompat_thumbTint);
+        if (colorStateList != null) {
+            this.mThumbTintList = colorStateList;
+            this.mHasThumbTint = true;
+        }
+        final PorterDuff$Mode tintMode = DrawableUtils.parseTintMode(obtainStyledAttributes.getInt(R$styleable.SwitchCompat_thumbTintMode, -1), null);
+        if (this.mThumbTintMode != tintMode) {
+            this.mThumbTintMode = tintMode;
+            this.mHasThumbTintMode = true;
+        }
+        if (this.mHasThumbTint || this.mHasThumbTintMode) {
+            this.applyThumbTint();
+        }
+        final ColorStateList colorStateList2 = obtainStyledAttributes.getColorStateList(R$styleable.SwitchCompat_trackTint);
+        if (colorStateList2 != null) {
+            this.mTrackTintList = colorStateList2;
+            this.mHasTrackTint = true;
+        }
+        final PorterDuff$Mode tintMode2 = DrawableUtils.parseTintMode(obtainStyledAttributes.getInt(R$styleable.SwitchCompat_trackTintMode, -1), null);
+        if (this.mTrackTintMode != tintMode2) {
+            this.mTrackTintMode = tintMode2;
+            this.mHasTrackTintMode = true;
+        }
+        if (this.mHasTrackTint || this.mHasTrackTintMode) {
+            this.applyTrackTint();
+        }
         resourceId = obtainStyledAttributes.getResourceId(R$styleable.SwitchCompat_switchTextAppearance, 0);
         if (resourceId != 0) {
             this.setSwitchTextAppearance(context, resourceId);
         }
-        this.mTintManager = obtainStyledAttributes.getTintManager();
         obtainStyledAttributes.recycle();
         final ViewConfiguration value = ViewConfiguration.get(context);
         this.mTouchSlop = value.getScaledTouchSlop();
@@ -124,6 +162,9 @@ public class SwitchCompat extends CompoundButton
     }
     
     private void animateThumbToCheckedState(final boolean b) {
+        if (this.mPositionAnimator != null) {
+            this.cancelPositionAnimator();
+        }
         final float mThumbPosition = this.mThumbPosition;
         float n;
         if (b) {
@@ -132,8 +173,39 @@ public class SwitchCompat extends CompoundButton
         else {
             n = 0.0f;
         }
-        (this.mPositionAnimator = new SwitchCompat$ThumbAnimation(this, mThumbPosition, n, null)).setDuration(250L);
+        (this.mPositionAnimator = new SwitchCompat$ThumbAnimation(this, mThumbPosition, n)).setDuration(250L);
+        this.mPositionAnimator.setAnimationListener((Animation$AnimationListener)new SwitchCompat$1(this, b));
         this.startAnimation((Animation)this.mPositionAnimator);
+    }
+    
+    private void applyThumbTint() {
+        if (this.mThumbDrawable != null && (this.mHasThumbTint || this.mHasThumbTintMode)) {
+            this.mThumbDrawable = this.mThumbDrawable.mutate();
+            if (this.mHasThumbTint) {
+                DrawableCompat.setTintList(this.mThumbDrawable, this.mThumbTintList);
+            }
+            if (this.mHasThumbTintMode) {
+                DrawableCompat.setTintMode(this.mThumbDrawable, this.mThumbTintMode);
+            }
+            if (this.mThumbDrawable.isStateful()) {
+                this.mThumbDrawable.setState(this.getDrawableState());
+            }
+        }
+    }
+    
+    private void applyTrackTint() {
+        if (this.mTrackDrawable != null && (this.mHasTrackTint || this.mHasTrackTintMode)) {
+            this.mTrackDrawable = this.mTrackDrawable.mutate();
+            if (this.mHasTrackTint) {
+                DrawableCompat.setTintList(this.mTrackDrawable, this.mTrackTintList);
+            }
+            if (this.mHasTrackTintMode) {
+                DrawableCompat.setTintMode(this.mTrackDrawable, this.mTrackTintMode);
+            }
+            if (this.mTrackDrawable.isStateful()) {
+                this.mTrackDrawable.setState(this.getDrawableState());
+            }
+        }
     }
     
     private void cancelPositionAnimator() {
@@ -245,11 +317,6 @@ public class SwitchCompat extends CompoundButton
         this.setSwitchTypeface(typeface, n2);
     }
     
-    private void setThumbPosition(final float mThumbPosition) {
-        this.mThumbPosition = mThumbPosition;
-        this.invalidate();
-    }
-    
     private void stopDrag(final MotionEvent motionEvent) {
         boolean targetCheckedState = true;
         this.mTouchMode = 0;
@@ -283,8 +350,8 @@ public class SwitchCompat extends CompoundButton
         }
         if (targetCheckedState != checked) {
             this.playSoundEffect(0);
-            this.setChecked(targetCheckedState);
         }
+        this.setChecked(targetCheckedState);
         this.cancelSuperTouch(motionEvent);
     }
     
@@ -310,7 +377,7 @@ public class SwitchCompat extends CompoundButton
             int n3;
             int n4;
             int n5;
-            if (rect != null && !rect.isEmpty()) {
+            if (rect != null) {
                 n2 = mSwitchLeft;
                 if (rect.left > mTempRect.left) {
                     n2 = mSwitchLeft + (rect.left - mTempRect.left);
@@ -373,13 +440,26 @@ public class SwitchCompat extends CompoundButton
     protected void drawableStateChanged() {
         super.drawableStateChanged();
         final int[] drawableState = this.getDrawableState();
-        if (this.mThumbDrawable != null) {
-            this.mThumbDrawable.setState(drawableState);
+        final boolean b = false;
+        final Drawable mThumbDrawable = this.mThumbDrawable;
+        boolean b2 = b;
+        if (mThumbDrawable != null) {
+            b2 = b;
+            if (mThumbDrawable.isStateful()) {
+                b2 = (false | mThumbDrawable.setState(drawableState));
+            }
         }
-        if (this.mTrackDrawable != null) {
-            this.mTrackDrawable.setState(drawableState);
+        final Drawable mTrackDrawable = this.mTrackDrawable;
+        boolean b3 = b2;
+        if (mTrackDrawable != null) {
+            b3 = b2;
+            if (mTrackDrawable.isStateful()) {
+                b3 = (b2 | mTrackDrawable.setState(drawableState));
+            }
         }
-        this.invalidate();
+        if (b3) {
+            this.invalidate();
+        }
     }
     
     public int getCompoundPaddingLeft() {
@@ -442,8 +522,24 @@ public class SwitchCompat extends CompoundButton
         return this.mThumbTextPadding;
     }
     
+    public ColorStateList getThumbTintList() {
+        return this.mThumbTintList;
+    }
+    
+    public PorterDuff$Mode getThumbTintMode() {
+        return this.mThumbTintMode;
+    }
+    
     public Drawable getTrackDrawable() {
         return this.mTrackDrawable;
+    }
+    
+    public ColorStateList getTrackTintList() {
+        return this.mTrackTintList;
+    }
+    
+    public PorterDuff$Mode getTrackTintMode() {
+        return this.mTrackTintMode;
     }
     
     public void jumpDrawablesToCurrentState() {
@@ -455,11 +551,15 @@ public class SwitchCompat extends CompoundButton
             if (this.mTrackDrawable != null) {
                 this.mTrackDrawable.jumpToCurrentState();
             }
-            if (this.mPositionAnimator != null && !this.mPositionAnimator.hasEnded()) {
-                this.clearAnimation();
-                this.setThumbPosition(this.mPositionAnimator.mEndPosition);
-                this.mPositionAnimator = null;
+            this.cancelPositionAnimator();
+            float thumbPosition;
+            if (this.isChecked()) {
+                thumbPosition = 1.0f;
             }
+            else {
+                thumbPosition = 0.0f;
+            }
+            this.setThumbPosition(thumbPosition);
         }
     }
     
@@ -532,7 +632,6 @@ public class SwitchCompat extends CompoundButton
         canvas.restoreToCount(save2);
     }
     
-    @TargetApi(14)
     public void onInitializeAccessibilityEvent(final AccessibilityEvent accessibilityEvent) {
         super.onInitializeAccessibilityEvent(accessibilityEvent);
         accessibilityEvent.setClassName((CharSequence)"android.widget.Switch");
@@ -669,7 +768,6 @@ public class SwitchCompat extends CompoundButton
         }
     }
     
-    @TargetApi(14)
     public void onPopulateAccessibilityEvent(final AccessibilityEvent accessibilityEvent) {
         super.onPopulateAccessibilityEvent(accessibilityEvent);
         CharSequence charSequence;
@@ -766,7 +864,7 @@ public class SwitchCompat extends CompoundButton
     public void setChecked(final boolean checked) {
         super.setChecked(checked);
         final boolean checked2 = this.isChecked();
-        if (this.getWindowToken() != null && ViewCompat.isLaidOut((View)this)) {
+        if (this.getWindowToken() != null && ViewCompat.isLaidOut((View)this) && this.isShown()) {
             this.animateThumbToCheckedState(checked2);
             return;
         }
@@ -885,12 +983,22 @@ public class SwitchCompat extends CompoundButton
     }
     
     public void setThumbDrawable(final Drawable mThumbDrawable) {
-        this.mThumbDrawable = mThumbDrawable;
+        if (this.mThumbDrawable != null) {
+            this.mThumbDrawable.setCallback((Drawable$Callback)null);
+        }
+        if ((this.mThumbDrawable = mThumbDrawable) != null) {
+            mThumbDrawable.setCallback((Drawable$Callback)this);
+        }
         this.requestLayout();
     }
     
+    void setThumbPosition(final float mThumbPosition) {
+        this.mThumbPosition = mThumbPosition;
+        this.invalidate();
+    }
+    
     public void setThumbResource(final int n) {
-        this.setThumbDrawable(this.mTintManager.getDrawable(n));
+        this.setThumbDrawable(AppCompatResources.getDrawable(this.getContext(), n));
     }
     
     public void setThumbTextPadding(final int mThumbTextPadding) {
@@ -898,13 +1006,42 @@ public class SwitchCompat extends CompoundButton
         this.requestLayout();
     }
     
+    public void setThumbTintList(final ColorStateList mThumbTintList) {
+        this.mThumbTintList = mThumbTintList;
+        this.mHasThumbTint = true;
+        this.applyThumbTint();
+    }
+    
+    public void setThumbTintMode(final PorterDuff$Mode mThumbTintMode) {
+        this.mThumbTintMode = mThumbTintMode;
+        this.mHasThumbTintMode = true;
+        this.applyThumbTint();
+    }
+    
     public void setTrackDrawable(final Drawable mTrackDrawable) {
-        this.mTrackDrawable = mTrackDrawable;
+        if (this.mTrackDrawable != null) {
+            this.mTrackDrawable.setCallback((Drawable$Callback)null);
+        }
+        if ((this.mTrackDrawable = mTrackDrawable) != null) {
+            mTrackDrawable.setCallback((Drawable$Callback)this);
+        }
         this.requestLayout();
     }
     
     public void setTrackResource(final int n) {
-        this.setTrackDrawable(this.mTintManager.getDrawable(n));
+        this.setTrackDrawable(AppCompatResources.getDrawable(this.getContext(), n));
+    }
+    
+    public void setTrackTintList(final ColorStateList mTrackTintList) {
+        this.mTrackTintList = mTrackTintList;
+        this.mHasTrackTint = true;
+        this.applyTrackTint();
+    }
+    
+    public void setTrackTintMode(final PorterDuff$Mode mTrackTintMode) {
+        this.mTrackTintMode = mTrackTintMode;
+        this.mHasTrackTintMode = true;
+        this.applyTrackTint();
     }
     
     public void toggle() {

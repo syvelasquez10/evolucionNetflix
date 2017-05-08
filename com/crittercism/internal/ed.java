@@ -5,6 +5,7 @@
 package com.crittercism.internal;
 
 import android.view.KeyEvent;
+import android.view.InputEvent;
 import android.net.http.SslError;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceResponse;
@@ -17,6 +18,7 @@ import android.os.Build$VERSION;
 import android.annotation.TargetApi;
 import android.os.Message;
 import android.webkit.WebView;
+import android.util.Base64;
 import android.webkit.WebViewClient;
 
 public final class ed extends WebViewClient
@@ -26,6 +28,41 @@ public final class ed extends WebViewClient
     private final String c;
     private e d;
     private c e;
+    
+    public ed(final WebViewClient a, final e d, final d b, final String s) {
+        this.a = a;
+        this.d = d;
+        this.b = b;
+        final StringBuilder sb = new StringBuilder();
+        sb.append("javascript:(function() {");
+        sb.append("  if (typeof(Crittercism) !== \"undefined\") {");
+        sb.append("    Crittercism.init({");
+        sb.append("      \"platform\": \"android\"});");
+        sb.append("  } else {");
+        sb.append("    (");
+        sb.append("      function() {");
+        sb.append("        var parent = document.getElementsByTagName('head').item(0);");
+        sb.append("        var script = document.createElement('script');");
+        sb.append("        script.type = 'text/javascript';");
+        sb.append("        script.innerHTML = window.atob('");
+        sb.append(Base64.encodeToString(s.getBytes(), 2));
+        sb.append("                                     ');");
+        sb.append("        parent.appendChild(script)");
+        sb.append("      }");
+        sb.append("    )();");
+        sb.append("    if (typeof(BasicCrittercism) !== \"undefined\") {");
+        sb.append("      BasicCrittercism.instrumentOnError({");
+        sb.append("        errorCallback: function(errorMsg, stackStr) {");
+        sb.append("          _crttr.logError(errorMsg, stackStr);");
+        sb.append("          }, ");
+        sb.append("        platform: \"android\"");
+        sb.append("      });");
+        sb.append("      BasicCrittercism.initApm();");
+        sb.append("    } ");
+        sb.append("  }");
+        sb.append("})()");
+        this.c = sb.toString();
+    }
     
     public final void doUpdateVisitedHistory(final WebView webView, final String s, final boolean b) {
         if (this.a != null) {
@@ -234,6 +271,13 @@ public final class ed extends WebViewClient
         }
     }
     
+    @TargetApi(21)
+    public final void onUnhandledInputEvent(final WebView webView, final InputEvent inputEvent) {
+        if (this.a != null) {
+            this.a.onUnhandledInputEvent(webView, inputEvent);
+        }
+    }
+    
     public final void onUnhandledKeyEvent(final WebView webView, final KeyEvent keyEvent) {
         if (this.a != null) {
             this.a.onUnhandledKeyEvent(webView, keyEvent);
@@ -261,7 +305,7 @@ public final class ed extends WebViewClient
         //    26: ifne            73
         //    29: aload_0        
         //    30: getfield        com/crittercism/internal/ed.a:Landroid/webkit/WebViewClient;
-        //    33: ifnull          231
+        //    33: ifnull          233
         //    36: aload_0        
         //    37: getfield        com/crittercism/internal/ed.a:Landroid/webkit/WebViewClient;
         //    40: aload_1        
@@ -277,122 +321,122 @@ public final class ed extends WebViewClient
         //    59: invokeinterface android/webkit/WebResourceRequest.isForMainFrame:()Z
         //    64: istore          5
         //    66: iload           5
-        //    68: ifne            183
+        //    68: ifne            184
         //    71: aload_1        
         //    72: areturn        
-        //    73: ldc             "******** shouldInterceptRequest (Lollipop) part 1"
-        //    75: invokestatic    com/crittercism/internal/dw.d:(Ljava/lang/String;)V
-        //    78: aload_0        
-        //    79: monitorenter   
-        //    80: aload_0        
-        //    81: new             Lcom/crittercism/internal/c;
-        //    84: dup            
-        //    85: invokespecial   com/crittercism/internal/c.<init>:()V
-        //    88: putfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
-        //    91: aload_0        
-        //    92: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
-        //    95: aload_2        
-        //    96: invokeinterface android/webkit/WebResourceRequest.getUrl:()Landroid/net/Uri;
-        //   101: invokevirtual   android/net/Uri.toString:()Ljava/lang/String;
-        //   104: invokevirtual   com/crittercism/internal/c.a:(Ljava/lang/String;)V
-        //   107: aload_0        
-        //   108: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
-        //   111: aload_2        
-        //   112: invokeinterface android/webkit/WebResourceRequest.getMethod:()Ljava/lang/String;
-        //   117: putfield        com/crittercism/internal/c.f:Ljava/lang/String;
-        //   120: aload_0        
-        //   121: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
-        //   124: lload_3        
-        //   125: invokevirtual   com/crittercism/internal/c.c:(J)V
-        //   128: aload_0        
-        //   129: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
-        //   132: aload_0        
-        //   133: getfield        com/crittercism/internal/ed.b:Lcom/crittercism/internal/d;
-        //   136: invokevirtual   com/crittercism/internal/d.a:()Lcom/crittercism/internal/b;
-        //   139: putfield        com/crittercism/internal/c.j:Lcom/crittercism/internal/b;
-        //   142: invokestatic    com/crittercism/internal/ba.b:()Z
-        //   145: ifeq            158
-        //   148: aload_0        
-        //   149: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
-        //   152: invokestatic    com/crittercism/internal/ba.a:()Landroid/location/Location;
-        //   155: invokevirtual   com/crittercism/internal/c.a:(Landroid/location/Location;)V
-        //   158: aload_0        
-        //   159: monitorexit    
-        //   160: goto            29
-        //   163: astore          6
-        //   165: aload_0        
-        //   166: monitorexit    
-        //   167: aload           6
-        //   169: athrow         
-        //   170: astore_1       
-        //   171: aload_1        
-        //   172: athrow         
-        //   173: astore          6
-        //   175: aload           6
-        //   177: invokestatic    com/crittercism/internal/dw.b:(Ljava/lang/Throwable;)V
-        //   180: goto            29
-        //   183: ldc             "******** shouldInterceptRequest (Lollipop) part 2"
-        //   185: invokestatic    com/crittercism/internal/dw.d:(Ljava/lang/String;)V
-        //   188: aload_1        
-        //   189: ifnull          71
-        //   192: aload_0        
-        //   193: monitorenter   
+        //    73: ldc_w           "******** shouldInterceptRequest (Lollipop) part 1"
+        //    76: invokestatic    com/crittercism/internal/dw.d:(Ljava/lang/String;)V
+        //    79: aload_0        
+        //    80: monitorenter   
+        //    81: aload_0        
+        //    82: new             Lcom/crittercism/internal/c;
+        //    85: dup            
+        //    86: invokespecial   com/crittercism/internal/c.<init>:()V
+        //    89: putfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
+        //    92: aload_0        
+        //    93: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
+        //    96: aload_2        
+        //    97: invokeinterface android/webkit/WebResourceRequest.getUrl:()Landroid/net/Uri;
+        //   102: invokevirtual   android/net/Uri.toString:()Ljava/lang/String;
+        //   105: invokevirtual   com/crittercism/internal/c.a:(Ljava/lang/String;)V
+        //   108: aload_0        
+        //   109: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
+        //   112: aload_2        
+        //   113: invokeinterface android/webkit/WebResourceRequest.getMethod:()Ljava/lang/String;
+        //   118: putfield        com/crittercism/internal/c.f:Ljava/lang/String;
+        //   121: aload_0        
+        //   122: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
+        //   125: lload_3        
+        //   126: invokevirtual   com/crittercism/internal/c.c:(J)V
+        //   129: aload_0        
+        //   130: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
+        //   133: aload_0        
+        //   134: getfield        com/crittercism/internal/ed.b:Lcom/crittercism/internal/d;
+        //   137: invokevirtual   com/crittercism/internal/d.a:()Lcom/crittercism/internal/b;
+        //   140: putfield        com/crittercism/internal/c.j:Lcom/crittercism/internal/b;
+        //   143: invokestatic    com/crittercism/internal/ba.b:()Z
+        //   146: ifeq            159
+        //   149: aload_0        
+        //   150: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
+        //   153: invokestatic    com/crittercism/internal/ba.a:()Landroid/location/Location;
+        //   156: invokevirtual   com/crittercism/internal/c.a:(Landroid/location/Location;)V
+        //   159: aload_0        
+        //   160: monitorexit    
+        //   161: goto            29
+        //   164: astore          6
+        //   166: aload_0        
+        //   167: monitorexit    
+        //   168: aload           6
+        //   170: athrow         
+        //   171: astore_1       
+        //   172: aload_1        
+        //   173: athrow         
+        //   174: astore          6
+        //   176: aload           6
+        //   178: invokestatic    com/crittercism/internal/dw.b:(Ljava/lang/Throwable;)V
+        //   181: goto            29
+        //   184: ldc_w           "******** shouldInterceptRequest (Lollipop) part 2"
+        //   187: invokestatic    com/crittercism/internal/dw.d:(Ljava/lang/String;)V
+        //   190: aload_1        
+        //   191: ifnull          71
         //   194: aload_0        
-        //   195: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
-        //   198: ifnull          212
-        //   201: aload_0        
-        //   202: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
-        //   205: aload_1        
-        //   206: invokevirtual   android/webkit/WebResourceResponse.getStatusCode:()I
-        //   209: putfield        com/crittercism/internal/c.e:I
-        //   212: aload_0        
-        //   213: monitorexit    
-        //   214: aload_1        
-        //   215: areturn        
-        //   216: astore_2       
-        //   217: aload_0        
-        //   218: monitorexit    
-        //   219: aload_2        
-        //   220: athrow         
-        //   221: astore_1       
-        //   222: aload_1        
-        //   223: athrow         
-        //   224: astore_2       
-        //   225: aload_2        
-        //   226: invokestatic    com/crittercism/internal/dw.b:(Ljava/lang/Throwable;)V
-        //   229: aload_1        
-        //   230: areturn        
-        //   231: aconst_null    
-        //   232: astore_1       
-        //   233: goto            46
+        //   195: monitorenter   
+        //   196: aload_0        
+        //   197: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
+        //   200: ifnull          214
+        //   203: aload_0        
+        //   204: getfield        com/crittercism/internal/ed.e:Lcom/crittercism/internal/c;
+        //   207: aload_1        
+        //   208: invokevirtual   android/webkit/WebResourceResponse.getStatusCode:()I
+        //   211: putfield        com/crittercism/internal/c.e:I
+        //   214: aload_0        
+        //   215: monitorexit    
+        //   216: aload_1        
+        //   217: areturn        
+        //   218: astore_2       
+        //   219: aload_0        
+        //   220: monitorexit    
+        //   221: aload_2        
+        //   222: athrow         
+        //   223: astore_1       
+        //   224: aload_1        
+        //   225: athrow         
+        //   226: astore_2       
+        //   227: aload_2        
+        //   228: invokestatic    com/crittercism/internal/dw.b:(Ljava/lang/Throwable;)V
+        //   231: aload_1        
+        //   232: areturn        
+        //   233: aconst_null    
+        //   234: astore_1       
+        //   235: goto            46
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                   
         //  -----  -----  -----  -----  -----------------------
-        //  4      12     170    173    Ljava/lang/ThreadDeath;
-        //  4      12     173    183    Ljava/lang/Throwable;
-        //  16     24     170    173    Ljava/lang/ThreadDeath;
-        //  16     24     173    183    Ljava/lang/Throwable;
-        //  46     54     221    224    Ljava/lang/ThreadDeath;
-        //  46     54     224    231    Ljava/lang/Throwable;
-        //  58     66     221    224    Ljava/lang/ThreadDeath;
-        //  58     66     224    231    Ljava/lang/Throwable;
-        //  73     80     170    173    Ljava/lang/ThreadDeath;
-        //  73     80     173    183    Ljava/lang/Throwable;
-        //  80     158    163    170    Any
-        //  158    160    163    170    Any
-        //  165    167    163    170    Any
-        //  167    170    170    173    Ljava/lang/ThreadDeath;
-        //  167    170    173    183    Ljava/lang/Throwable;
-        //  183    188    221    224    Ljava/lang/ThreadDeath;
-        //  183    188    224    231    Ljava/lang/Throwable;
-        //  192    194    221    224    Ljava/lang/ThreadDeath;
-        //  192    194    224    231    Ljava/lang/Throwable;
-        //  194    212    216    221    Any
-        //  212    214    216    221    Any
-        //  217    219    216    221    Any
-        //  219    221    221    224    Ljava/lang/ThreadDeath;
-        //  219    221    224    231    Ljava/lang/Throwable;
+        //  4      12     171    174    Ljava/lang/ThreadDeath;
+        //  4      12     174    184    Ljava/lang/Throwable;
+        //  16     24     171    174    Ljava/lang/ThreadDeath;
+        //  16     24     174    184    Ljava/lang/Throwable;
+        //  46     54     223    226    Ljava/lang/ThreadDeath;
+        //  46     54     226    233    Ljava/lang/Throwable;
+        //  58     66     223    226    Ljava/lang/ThreadDeath;
+        //  58     66     226    233    Ljava/lang/Throwable;
+        //  73     81     171    174    Ljava/lang/ThreadDeath;
+        //  73     81     174    184    Ljava/lang/Throwable;
+        //  81     159    164    171    Any
+        //  159    161    164    171    Any
+        //  166    168    164    171    Any
+        //  168    171    171    174    Ljava/lang/ThreadDeath;
+        //  168    171    174    184    Ljava/lang/Throwable;
+        //  184    190    223    226    Ljava/lang/ThreadDeath;
+        //  184    190    226    233    Ljava/lang/Throwable;
+        //  194    196    223    226    Ljava/lang/ThreadDeath;
+        //  194    196    226    233    Ljava/lang/Throwable;
+        //  196    214    218    223    Any
+        //  214    216    218    223    Any
+        //  219    221    218    223    Any
+        //  221    223    223    226    Ljava/lang/ThreadDeath;
+        //  221    223    226    233    Ljava/lang/Throwable;
         // 
         // The error that occurred was:
         // 

@@ -6,4 +6,5 @@ package com.crittercism.internal;
 
 public interface dm
 {
+    dl a(final String p0);
 }

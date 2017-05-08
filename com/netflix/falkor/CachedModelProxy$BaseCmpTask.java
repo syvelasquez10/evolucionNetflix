@@ -6,9 +6,14 @@ package com.netflix.falkor;
 
 import com.netflix.mediaclient.util.DataUtil$StringPair;
 import java.util.List;
+import com.google.gson.JsonObject;
 
 abstract class CachedModelProxy$BaseCmpTask implements CachedModelProxy$CmpTaskDetails
 {
+    @Override
+    public void customHandleResponse(final JsonObject jsonObject) {
+    }
+    
     @Override
     public List<DataUtil$StringPair> getOptionalRequestParams() {
         return null;
@@ -16,6 +21,11 @@ abstract class CachedModelProxy$BaseCmpTask implements CachedModelProxy$CmpTaskD
     
     @Override
     public boolean shouldCollapseMissingPql() {
+        return false;
+    }
+    
+    @Override
+    public boolean shouldCustomHandleResponse() {
         return false;
     }
     

@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.service.mdx;
 
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
-import android.app.Service;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import java.util.List;
 import java.util.Collection;
@@ -210,9 +209,9 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
         }
         else {
             final Playable playable = this.mVideoDetails.getPlayable();
-            string = this.getContext().getString(2131231065, new Object[] { playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), this.mVideoDetails.getTitle() });
+            string = this.getContext().getString(2131231088, new Object[] { playable.getSeasonAbbrSeqLabel(), playable.getEpisodeNumber(), this.mVideoDetails.getTitle() });
             if (this.mVideoDetails.isNSRE()) {
-                return this.getContext().getString(2131231066, new Object[] { this.mVideoDetails.getTitle() });
+                return this.getContext().getString(2131231089, new Object[] { this.mVideoDetails.getTitle() });
             }
         }
         return string;
@@ -255,9 +254,9 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             return null;
         }
         final EpisodeDetails episodeDetails = (EpisodeDetails)this.mVideoDetailsPostplay;
-        final String string = this.getContext().getString(2131231065, new Object[] { episodeDetails.getSeasonAbbrSeqLabel(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
+        final String string = this.getContext().getString(2131231088, new Object[] { episodeDetails.getSeasonAbbrSeqLabel(), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle() });
         if (episodeDetails.isNSRE()) {
-            return this.getContext().getString(2131231066, new Object[] { episodeDetails.getTitle() });
+            return this.getContext().getString(2131231089, new Object[] { episodeDetails.getTitle() });
         }
         return string;
     }
@@ -513,7 +512,7 @@ public class MdxAgent extends ServiceAgent implements MdxController$PropertyUpda
             if (videoDetails.getType() == VideoType.EPISODE) {
                 String s;
                 if (b) {
-                    s = this.getContext().getString(2131231105);
+                    s = this.getContext().getString(2131231129);
                 }
                 else {
                     s = videoDetails.getPlayable().getParentTitle();

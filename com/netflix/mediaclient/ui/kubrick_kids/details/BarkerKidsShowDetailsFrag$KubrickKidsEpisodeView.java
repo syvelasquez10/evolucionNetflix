@@ -21,13 +21,13 @@ class BarkerKidsShowDetailsFrag$KubrickKidsEpisodeView extends BarkerShowDetails
     public BarkerKidsShowDetailsFrag$KubrickKidsEpisodeView(final BarkerKidsShowDetailsFrag this$0, final Context context, final int n) {
         this.this$0 = this$0;
         super(this$0, context, n);
-        this.pressableViewGroup = (PressAnimationFrameLayout)this.findViewById(2131689842);
+        this.pressableViewGroup = (PressAnimationFrameLayout)this.findViewById(2131689869);
         this.image.setPressedStateHandlerEnabled(false);
     }
     
     @Override
     protected void adjustEpisodeImageHeight() {
-        this.image.getLayoutParams().height = (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362171) * (this.this$0.getNumColumns() + 1.0f)) / this.this$0.getNumColumns() * 0.5625f);
+        this.image.getLayoutParams().height = (int)((KidsUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362200) * (this.this$0.getNumColumns() + 1.0f)) / this.this$0.getNumColumns() * 0.5625f);
     }
     
     @Override
@@ -68,10 +68,10 @@ class BarkerKidsShowDetailsFrag$KubrickKidsEpisodeView extends BarkerShowDetails
     protected void updateTitle(final EpisodeDetails episodeDetails) {
         if (this.title != null) {
             super.updateTitle(episodeDetails);
-            this.title.setTextColor(this.getResources().getColor(2131624056));
+            this.title.setTextColor(this.getResources().getColor(2131624068));
             final View view = (View)this.getParent();
             if (view != null) {
-                view.setTag(2131689491, (Object)episodeDetails.getSeasonNumber());
+                view.setTag(2131689492, (Object)episodeDetails.getSeasonNumber());
             }
         }
     }

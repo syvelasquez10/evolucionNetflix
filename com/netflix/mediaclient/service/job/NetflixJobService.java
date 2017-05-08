@@ -6,12 +6,14 @@ package com.netflix.mediaclient.service.job;
 
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import android.content.Intent;
+import com.netflix.mediaclient.service.configuration.AndroidJobSchedulerConfig;
 import android.content.Context;
-import com.netflix.mediaclient.Log;
 import java.util.Iterator;
+import com.netflix.mediaclient.Log;
+import android.content.Intent;
 import java.util.HashMap;
 import java.util.ArrayList;
+import android.os.Handler;
 import java.util.List;
 import android.app.job.JobParameters;
 import java.util.Map;
@@ -27,14 +29,25 @@ public class NetflixJobService extends JobService implements ServiceManagerHelpe
     private static final String NETFLIX_JOB_ID = "NetflixJobId=";
     private static final String TAG = "nf_job_service_l";
     private final BroadcastReceiver mJobFinishReceiver;
-    private final Map<NetflixJob$NetflixJobId, JobParameters> mJobsUnderExecutionInfoMap;
-    private final List<NetflixJob$NetflixJobId> mJobsWaitingForExecution;
+    private final Map<NetflixJob$NetflixJobId, JobParameters> mJobsParamsInfoMap;
+    private final List<NetflixJob$NetflixJobId> mJobsWaitingForServiceManager;
+    private final Handler mMainHandler;
     private ServiceManagerHelper mServiceManagerHelper;
     
     public NetflixJobService() {
-        this.mJobsWaitingForExecution = new ArrayList<NetflixJob$NetflixJobId>();
-        this.mJobsUnderExecutionInfoMap = new HashMap<NetflixJob$NetflixJobId, JobParameters>();
-        this.mJobFinishReceiver = new NetflixJobService$1(this);
+        this.mJobsWaitingForServiceManager = new ArrayList<NetflixJob$NetflixJobId>();
+        this.mJobsParamsInfoMap = new HashMap<NetflixJob$NetflixJobId, JobParameters>();
+        this.mMainHandler = new Handler();
+        this.mJobFinishReceiver = new NetflixJobService$2(this);
+    }
+    
+    private void callAndroidJobFinish(final JobParameters jobParameters) {
+        if (isAndroidJobFinishDisabled(this.getApplicationContext())) {
+            Log.i("nf_job_service_l", "not calling Android JobService jobFinish");
+            return;
+        }
+        Log.i("nf_job_service_l", "calling Android JobService jobFinish");
+        this.jobFinished(jobParameters, false);
     }
     
     private void createServiceManagerHelperIfRequired() {
@@ -45,25 +58,40 @@ public class NetflixJobService extends JobService implements ServiceManagerHelpe
     
     private void executeJobs() {
         if (this.mServiceManagerHelper != null) {
-            final Iterator<NetflixJob$NetflixJobId> iterator = this.mJobsWaitingForExecution.iterator();
+            final Iterator<NetflixJob$NetflixJobId> iterator = this.mJobsWaitingForServiceManager.iterator();
             while (iterator.hasNext()) {
                 this.mServiceManagerHelper.startJob(iterator.next());
+                iterator.remove();
             }
         }
-        this.mJobsWaitingForExecution.clear();
     }
     
-    private JobParameters getPendingJobParams(final int n) {
-        return this.mJobsUnderExecutionInfoMap.get(NetflixJob$NetflixJobId.getJobIdByValue(n));
+    private static boolean isAndroidJobFinishDisabled(final Context context) {
+        return context == null || AndroidJobSchedulerConfig.isJobFinishDisabled(context);
     }
     
     private void markAllPendingJobsFinished() {
         if (Log.isLoggable()) {
             Log.i("nf_job_service_l", "markAllPendingJobsFinished");
         }
-        final Iterator<Map.Entry<NetflixJob$NetflixJobId, JobParameters>> iterator = this.mJobsUnderExecutionInfoMap.entrySet().iterator();
+        final Iterator<Map.Entry<NetflixJob$NetflixJobId, JobParameters>> iterator = this.mJobsParamsInfoMap.entrySet().iterator();
         while (iterator.hasNext()) {
-            this.sendJobFinished(iterator.next().getKey().getIntValue(), false);
+            final JobParameters jobParameters = iterator.next().getValue();
+            Log.i("nf_job_service_l", "markAllPendingJobsFinished calling jobFinish");
+            iterator.remove();
+            this.callAndroidJobFinish(jobParameters);
+        }
+    }
+    
+    private void onJobFinishBroadcast(final Intent intent) {
+        final NetflixJob$NetflixJobId jobIdByValue = NetflixJob$NetflixJobId.getJobIdByValue(intent.getIntExtra("NetflixJobId=", NetflixJob$NetflixJobId.UNKNOWN_JOB_ID.getIntValue()));
+        if (Log.isLoggable()) {
+            Log.i("nf_job_service_l", "mJobFinishReceiver onReceive jobId=" + jobIdByValue);
+        }
+        final JobParameters jobParameters = this.mJobsParamsInfoMap.get(jobIdByValue);
+        if (jobParameters != null) {
+            this.mJobsParamsInfoMap.remove(jobIdByValue);
+            this.callAndroidJobFinish(jobParameters);
         }
     }
     
@@ -74,26 +102,11 @@ public class NetflixJobService extends JobService implements ServiceManagerHelpe
         }
     }
     
-    private void removePendingJob(final int n) {
-        this.mJobsUnderExecutionInfoMap.remove(NetflixJob$NetflixJobId.getJobIdByValue(n));
-    }
-    
     public static void sendJobFinishBroadcast(final Context context, final NetflixJob$NetflixJobId netflixJob$NetflixJobId, final boolean b) {
         final Intent intent = new Intent("com.netflix.mediaclient.service.job.netflixjobservice.jobcomplete");
         intent.putExtra("NetflixJobId=", netflixJob$NetflixJobId.getIntValue());
         intent.putExtra("needsReschedule", b);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
-    
-    private void sendJobFinished(final int n, final boolean b) {
-        final JobParameters pendingJobParams = this.getPendingJobParams(n);
-        if (pendingJobParams != null) {
-            if (Log.isLoggable()) {
-                Log.i("nf_job_service_l", "calling Android JobService jobFinished");
-            }
-            this.removePendingJob(n);
-            this.jobFinished(pendingJobParams, b);
-        }
     }
     
     public void onCreate() {
@@ -126,24 +139,24 @@ public class NetflixJobService extends JobService implements ServiceManagerHelpe
             Log.i("nf_job_service_l", "onStartJob NetflixJobId=" + jobParameters.getJobId());
         }
         final NetflixJob$NetflixJobId jobIdByValue = NetflixJob$NetflixJobId.getJobIdByValue(jobParameters.getJobId());
-        this.mJobsUnderExecutionInfoMap.put(jobIdByValue, jobParameters);
         this.createServiceManagerHelperIfRequired();
         if (this.mServiceManagerHelper.isServiceManagerFailed()) {
             if (Log.isLoggable()) {
                 Log.e("nf_job_service_l", "onStartJob ServiceManager was failed. Can't execute jobId=" + jobIdByValue);
             }
-            this.mJobsWaitingForExecution.clear();
+            this.mJobsWaitingForServiceManager.clear();
             this.markAllPendingJobsFinished();
             this.releaseServiceManagerHelper();
             return false;
         }
-        if (!this.mJobsWaitingForExecution.contains(jobIdByValue)) {
-            this.mJobsWaitingForExecution.add(jobIdByValue);
+        this.mJobsParamsInfoMap.put(jobIdByValue, jobParameters);
+        if (!this.mJobsWaitingForServiceManager.contains(jobIdByValue)) {
+            this.mJobsWaitingForServiceManager.add(jobIdByValue);
         }
         if (this.mServiceManagerHelper.isServiceManagerReady()) {
-            this.executeJobs();
+            this.mMainHandler.post((Runnable)new NetflixJobService$1(this));
         }
-        else if (Log.isLoggable()) {
+        else {
             Log.i("nf_job_service_l", "waiting for serviceManager to be ready");
         }
         return true;
@@ -153,11 +166,18 @@ public class NetflixJobService extends JobService implements ServiceManagerHelpe
         if (Log.isLoggable()) {
             Log.i("nf_job_service_l", "onStopJob NetflixJobId=" + jobParameters.getJobId());
         }
+        final NetflixJob$NetflixJobId jobIdByValue = NetflixJob$NetflixJobId.getJobIdByValue(jobParameters.getJobId());
+        this.mJobsParamsInfoMap.remove(jobIdByValue);
         if (this.mServiceManagerHelper != null) {
-            this.mServiceManagerHelper.stopJob(NetflixJob$NetflixJobId.getJobIdByValue(jobParameters.getJobId()));
+            this.mServiceManagerHelper.stopJob(jobIdByValue);
         }
-        this.removePendingJob(jobParameters.getJobId());
         return false;
+    }
+    
+    public void serviceManagerFailed() {
+        if (this.mServiceManagerHelper != null) {
+            this.markAllPendingJobsFinished();
+        }
     }
     
     public void serviceManagerReady() {

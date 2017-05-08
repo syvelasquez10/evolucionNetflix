@@ -10,7 +10,7 @@ class CursorAdapter$MyDataSetObserver extends DataSetObserver
 {
     final /* synthetic */ CursorAdapter this$0;
     
-    private CursorAdapter$MyDataSetObserver(final CursorAdapter this$0) {
+    CursorAdapter$MyDataSetObserver(final CursorAdapter this$0) {
         this.this$0 = this$0;
     }
     

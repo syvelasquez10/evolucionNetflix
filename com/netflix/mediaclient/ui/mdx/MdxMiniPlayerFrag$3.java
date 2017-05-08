@@ -23,7 +23,6 @@ import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import android.content.Intent;
-import android.content.Context;
 import android.annotation.SuppressLint;
 import android.app.FragmentManager;
 import android.app.Fragment;
@@ -39,7 +38,7 @@ import com.netflix.mediaclient.servicemgr.IMdx;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 
 class MdxMiniPlayerFrag$3 implements Runnable
@@ -52,7 +51,7 @@ class MdxMiniPlayerFrag$3 implements Runnable
     
     @Override
     public void run() {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity) || this.this$0.draggingInProgress) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.activity) || this.this$0.draggingInProgress) {
             this.this$0.log("skipping seekbar update");
             return;
         }

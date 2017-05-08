@@ -28,6 +28,7 @@ public abstract class Advisor
 {
     public static final long DEFAULT_DELAY;
     public static final long DEFAULT_DURATION;
+    public static final long SLOP = 15000L;
     public static final String TAG = "AdvisorToast";
     private static Queue<Advisor> sQueue;
     Advisory advisory;
@@ -72,11 +73,11 @@ public abstract class Advisor
         this.secondaryMessageView = (TextView)this.popupView.findViewById(this.getSecondaryMessageViewId());
         final View viewById = this.popupView.findViewById(this.getMessageViewId());
         if (viewById != null) {
-            viewById.setVisibility(8);
+            viewById.setVisibility(4);
         }
         final View viewById2 = this.popupView.findViewById(this.getSecondaryMessageViewId());
         if (viewById2 != null) {
-            viewById2.setVisibility(8);
+            viewById2.setVisibility(4);
         }
         if (advisory != null) {
             this.withMessage(advisory.getMessage((Context)context)).withSecondaryMessage(advisory.getSecondaryMessage((Context)context)).withDelay(advisory.getDelay()).forDuration(advisory.getDuration());

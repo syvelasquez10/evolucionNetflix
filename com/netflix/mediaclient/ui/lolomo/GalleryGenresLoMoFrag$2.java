@@ -38,7 +38,7 @@ class GalleryGenresLoMoFrag$2 implements RecyclerViewHeaderAdapter$IViewCreator
     }
     
     private int getImageWidth() {
-        return (this.this$0.recyclerView.getWidth() - (this.this$0.getActivity().getResources().getDimensionPixelSize(2131362197) * 2 + this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362195) * this.this$0.numColumns)) / this.this$0.numColumns;
+        return (this.this$0.recyclerView.getWidth() - (this.this$0.getActivity().getResources().getDimensionPixelSize(2131362226) * 2 + this.this$0.getActivity().getResources().getDimensionPixelOffset(2131362224) * this.this$0.numColumns)) / this.this$0.numColumns;
     }
     
     @Override

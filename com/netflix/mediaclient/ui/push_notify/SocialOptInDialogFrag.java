@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.push_notify;
 
 import android.app.Activity;
 import android.content.DialogInterface$OnClickListener;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.content.Context;
@@ -51,6 +51,6 @@ public class SocialOptInDialogFrag extends NetflixDialogFrag
             return null;
         }
         this.handler = (HomeActivity)activity;
-        return (Dialog)new AlertDialog$Builder((Context)this.getActivity(), 2131427451).setTitle(2131231205).setMessage(2131231196).setPositiveButton(2131231202, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$2(this)).setNegativeButton(2131231199, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$1(this)).create();
+        return new AlertDialog$Builder((Context)this.getActivity()).setTitle(2131231258).setMessage(2131231249).setPositiveButton(2131231255, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$2(this)).setNegativeButton(2131231252, (DialogInterface$OnClickListener)new SocialOptInDialogFrag$1(this)).create();
     }
 }

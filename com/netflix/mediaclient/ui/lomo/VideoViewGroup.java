@@ -24,7 +24,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
     
     public VideoViewGroup(final Context context, final boolean b) {
         super(context);
-        this.setId(2131689500);
+        this.setId(2131689504);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         this.setOrientation(0);
         if (b) {
@@ -47,7 +47,7 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
     protected abstract V createChildView(final Context p0);
     
     protected int getChildPaddingDimenResId() {
-        return 2131362223;
+        return 2131362252;
     }
     
     protected LoMoUtils$LoMoWidthType getLomoWidthType() {
@@ -60,7 +60,10 @@ public abstract class VideoViewGroup<T extends Video, V extends View> extends Li
         for (int i = 0; i < n; ++i) {
             final View childView = this.createChildView(this.getContext());
             if (this.shouldApplyPaddingToChildren()) {
-                childView.setPadding(dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset, dimensionPixelOffset);
+                linearLayout$LayoutParams.topMargin = dimensionPixelOffset;
+                linearLayout$LayoutParams.bottomMargin = dimensionPixelOffset;
+                linearLayout$LayoutParams.rightMargin = dimensionPixelOffset;
+                linearLayout$LayoutParams.leftMargin = dimensionPixelOffset;
             }
             this.addView(childView, (ViewGroup$LayoutParams)linearLayout$LayoutParams);
         }

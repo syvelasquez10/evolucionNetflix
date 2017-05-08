@@ -18,6 +18,6 @@ class AppBarLayout$Behavior$1 implements ValueAnimatorCompat$AnimatorUpdateListe
     
     @Override
     public void onAnimationUpdate(final ValueAnimatorCompat valueAnimatorCompat) {
-        this.this$0.setAppBarTopBottomOffset(this.val$coordinatorLayout, this.val$child, valueAnimatorCompat.getAnimatedIntValue());
+        this.this$0.setHeaderTopBottomOffset(this.val$coordinatorLayout, this.val$child, valueAnimatorCompat.getAnimatedIntValue());
     }
 }

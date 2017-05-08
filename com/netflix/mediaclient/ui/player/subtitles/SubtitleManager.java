@@ -6,11 +6,11 @@ package com.netflix.mediaclient.ui.player.subtitles;
 
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 
 public interface SubtitleManager
 {
-    boolean canHandleSubtitleProfile(final IMedia$SubtitleProfile p0);
+    boolean canHandleSubtitleProfile(final ISubtitleDef$SubtitleProfile p0);
     
     void clear();
     
@@ -18,7 +18,7 @@ public interface SubtitleManager
     
     NetflixActivity getContext();
     
-    IMedia$SubtitleProfile getSubtitleProfile();
+    ISubtitleDef$SubtitleProfile getSubtitleProfile();
     
     void onPlayerOverlayVisibiltyChange(final boolean p0);
     

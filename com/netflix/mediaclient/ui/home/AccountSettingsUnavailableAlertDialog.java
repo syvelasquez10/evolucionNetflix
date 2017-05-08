@@ -4,10 +4,10 @@
 
 package com.netflix.mediaclient.ui.home;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.content.DialogInterface$OnClickListener;
 import android.content.Context;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import android.app.Dialog;
 import android.os.Bundle;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -17,17 +17,17 @@ public class AccountSettingsUnavailableAlertDialog extends NetflixDialogFrag
 {
     protected static AccountSettingsUnavailableAlertDialog createAccountSettingsUnavailableAlertDialog(final NetflixActivity netflixActivity) {
         final AccountSettingsUnavailableAlertDialog accountSettingsUnavailableAlertDialog = new AccountSettingsUnavailableAlertDialog();
-        accountSettingsUnavailableAlertDialog.setStyle(1, 2131427452);
+        accountSettingsUnavailableAlertDialog.setStyle(1, 2131427465);
         return accountSettingsUnavailableAlertDialog;
     }
     
     public Dialog onCreateDialog(final Bundle bundle) {
         super.onCreate(bundle);
         final AlertDialog$Builder alertDialog$Builder = new AlertDialog$Builder((Context)this.getActivity());
-        alertDialog$Builder.setPositiveButton(2131231128, (DialogInterface$OnClickListener)new AccountSettingsUnavailableAlertDialog$1(this));
-        alertDialog$Builder.setMessage((CharSequence)this.getString(2131230900));
+        alertDialog$Builder.setPositiveButton(2131231167, (DialogInterface$OnClickListener)new AccountSettingsUnavailableAlertDialog$1(this));
+        alertDialog$Builder.setMessage(this.getString(2131230904));
         final AlertDialog create = alertDialog$Builder.create();
         create.setCanceledOnTouchOutside(false);
-        return (Dialog)create;
+        return create;
     }
 }

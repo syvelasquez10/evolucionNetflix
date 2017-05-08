@@ -45,7 +45,7 @@ public class KubrickKidsPaginatedCwAdapter extends KubrickPaginatedCwAdapter
     @Override
     public int getRowHeightInPx() {
         if (CWTestUtil.isInTest((Context)this.getActivity())) {
-            return (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.numItemsPerPage * 1.43f + this.activity.getResources().getDimension(2131362085) + this.activity.getResources().getDimension(2131362066));
+            return (int)(LoMoViewPager.computeViewPagerWidth(this.activity, true) / this.numItemsPerPage * 1.43f + this.activity.getResources().getDimension(2131362101) + this.activity.getResources().getDimension(2131362082));
         }
         return super.getRowHeightInPx();
     }

@@ -8,13 +8,14 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.util.StringUtils;
-import android.content.Context;
 import android.view.View;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.os.Bundle;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.Log;
+import android.content.Context;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import com.netflix.mediaclient.servicemgr.LoggingManagerCallback;
@@ -33,6 +34,10 @@ class PreReleaseDetailsFrag$FetchShowDetailsCallback extends LoggingManagerCallb
     @Override
     public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
         super.onShowDetailsFetched(showDetails, status);
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.getNetflixActivity())) {
+            Log.v("PreReleaseDetailsFrag", "Activity state is invalid");
+            return;
+        }
         if (this.requestId != this.this$0.requestId || this.this$0.isDestroyed()) {
             Log.v("PreReleaseDetailsFrag", "Ignoring stale callback");
             return;

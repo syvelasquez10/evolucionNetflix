@@ -10,6 +10,12 @@ import com.netflix.mediaclient.service.player.subtitles.text.VerticalAlignment;
 import com.netflix.mediaclient.service.player.subtitles.text.HorizontalAlignment;
 import java.util.regex.Matcher;
 import java.util.Locale;
+import org.json.JSONException;
+import com.netflix.mediaclient.ui.offline.OfflineImageSubtitle;
+import com.netflix.mediaclient.ui.offline.OfflineTextSubtitle;
+import com.netflix.mediaclient.ui.player.NccpSubtitle;
+import com.netflix.mediaclient.ui.mdx.MdxSubtitle;
+import org.json.JSONObject;
 import com.netflix.mediaclient.service.player.subtitles.text.TextSubtitleBlock;
 import android.widget.LinearLayout;
 import com.netflix.mediaclient.service.player.subtitles.text.SubtitleTextNode;
@@ -17,6 +23,7 @@ import java.util.List;
 import android.util.DisplayMetrics;
 import android.content.Context;
 import com.netflix.mediaclient.service.player.subtitles.text.ColorMapping;
+import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.service.player.subtitles.DoubleLength;
 import com.netflix.mediaclient.android.widget.StrokeTextView;
 import com.netflix.mediaclient.service.player.subtitles.text.Outline$Shadow;
@@ -289,6 +296,20 @@ public final class SubtitleUtils
         }
         sb.append(" ");
         return sb.toString();
+    }
+    
+    public static void dumpLog(final Subtitle[] array, final String s) {
+        if (array != null) {
+            if (Log.isLoggable()) {
+                Log.d(s, "Subtitles: " + array.length);
+                for (int i = 0; i < array.length; ++i) {
+                    Log.d(s, i + " " + array[i]);
+                }
+            }
+        }
+        else {
+            Log.e(s, "Subtitles are null!");
+        }
     }
     
     public static Integer getBackgroundColor(final TextStyle textStyle) {
@@ -572,6 +593,26 @@ public final class SubtitleUtils
     
     public static boolean isStrokeTextViewRequired(final TextStyle textStyle) {
         return textStyle != null && textStyle.getOutline() != null && textStyle.getOutline().isStrokeTextRequired();
+    }
+    
+    public static Subtitle newInstance(final JSONObject jsonObject) {
+        if (jsonObject == null) {
+            return null;
+        }
+        final int optInt = jsonObject.optInt("impl", -1);
+        if (optInt == 2) {
+            return MdxSubtitle.newInstance(jsonObject, jsonObject.getInt("order"));
+        }
+        if (optInt == 1) {
+            return NccpSubtitle.newInstance(jsonObject);
+        }
+        if (optInt == 3) {
+            return new OfflineTextSubtitle(jsonObject);
+        }
+        if (optInt == 4) {
+            return new OfflineImageSubtitle(jsonObject);
+        }
+        throw new JSONException("Implementation does not support restore " + optInt);
     }
     
     public static Float parseMargin(final String s, final int n) {

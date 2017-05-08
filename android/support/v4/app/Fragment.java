@@ -5,7 +5,7 @@
 package android.support.v4.app;
 
 import android.support.v4.util.DebugUtils;
-import java.util.List;
+import android.content.IntentSender;
 import android.util.AttributeSet;
 import android.view.MenuInflater;
 import android.view.Menu;
@@ -50,6 +50,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     boolean mCalled;
     boolean mCheckedForLoaderManager;
     FragmentManagerImpl mChildFragmentManager;
+    FragmentManagerNonConfig mChildNonConfig;
     ViewGroup mContainer;
     int mContainerId;
     boolean mDeferStart;
@@ -75,7 +76,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     Object mReenterTransition;
     boolean mRemoving;
     boolean mRestored;
-    boolean mResumed;
     boolean mRetainInstance;
     boolean mRetaining;
     Object mReturnTransition;
@@ -179,8 +179,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         printWriter.print(this.mAdded);
         printWriter.print(" mRemoving=");
         printWriter.print(this.mRemoving);
-        printWriter.print(" mResumed=");
-        printWriter.print(this.mResumed);
         printWriter.print(" mFromLayout=");
         printWriter.print(this.mFromLayout);
         printWriter.print(" mInLayout=");
@@ -465,7 +463,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         this.mWho = null;
         this.mAdded = false;
         this.mRemoving = false;
-        this.mResumed = false;
         this.mFromLayout = false;
         this.mInLayout = false;
         this.mRestored = false;
@@ -517,7 +514,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     public final boolean isResumed() {
-        return this.mResumed;
+        return this.mState >= 5;
     }
     
     public final boolean isVisible() {
@@ -551,6 +548,9 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         }
     }
     
+    public void onAttachFragment(final Fragment fragment) {
+    }
+    
     public void onConfigurationChanged(final Configuration configuration) {
         this.mCalled = true;
     }
@@ -561,6 +561,10 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     
     public void onCreate(final Bundle bundle) {
         this.mCalled = true;
+        this.restoreChildFragmentState(bundle);
+        if (this.mChildFragmentManager != null && !this.mChildFragmentManager.isStateAtLeast(1)) {
+            this.mChildFragmentManager.dispatchCreate();
+        }
     }
     
     public Animation onCreateAnimation(final int n, final boolean b, final int n2) {
@@ -627,6 +631,9 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         this.mCalled = true;
     }
     
+    public void onMultiWindowModeChanged(final boolean b) {
+    }
+    
     public boolean onOptionsItemSelected(final MenuItem menuItem) {
         return false;
     }
@@ -636,6 +643,9 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     
     public void onPause() {
         this.mCalled = true;
+    }
+    
+    public void onPictureInPictureModeChanged(final boolean b) {
     }
     
     public void onPrepareOptionsMenu(final Menu menu) {
@@ -680,6 +690,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         if (this.mChildFragmentManager != null) {
             this.mChildFragmentManager.noteStateNotSaved();
         }
+        this.mState = 2;
         this.mCalled = false;
         this.onActivityCreated(bundle);
         if (!this.mCalled) {
@@ -705,20 +716,11 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         if (this.mChildFragmentManager != null) {
             this.mChildFragmentManager.noteStateNotSaved();
         }
+        this.mState = 1;
         this.mCalled = false;
         this.onCreate(bundle);
         if (!this.mCalled) {
             throw new SuperNotCalledException("Fragment " + this + " did not call through to super.onCreate()");
-        }
-        if (bundle != null) {
-            final Parcelable parcelable = bundle.getParcelable("android:support:fragments");
-            if (parcelable != null) {
-                if (this.mChildFragmentManager == null) {
-                    this.instantiateChildFragmentManager();
-                }
-                this.mChildFragmentManager.restoreAllState(parcelable, null);
-                this.mChildFragmentManager.dispatchCreate();
-            }
         }
     }
     
@@ -753,17 +755,20 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         if (this.mChildFragmentManager != null) {
             this.mChildFragmentManager.dispatchDestroy();
         }
+        this.mState = 0;
         this.mCalled = false;
         this.onDestroy();
         if (!this.mCalled) {
             throw new SuperNotCalledException("Fragment " + this + " did not call through to super.onDestroy()");
         }
+        this.mChildFragmentManager = null;
     }
     
     void performDestroyView() {
         if (this.mChildFragmentManager != null) {
             this.mChildFragmentManager.dispatchDestroyView();
         }
+        this.mState = 1;
         this.mCalled = false;
         this.onDestroyView();
         if (!this.mCalled) {
@@ -774,10 +779,32 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         }
     }
     
+    void performDetach() {
+        this.mCalled = false;
+        this.onDetach();
+        if (!this.mCalled) {
+            throw new SuperNotCalledException("Fragment " + this + " did not call through to super.onDetach()");
+        }
+        if (this.mChildFragmentManager != null) {
+            if (!this.mRetaining) {
+                throw new IllegalStateException("Child FragmentManager of " + this + " was not " + " destroyed and this fragment is not retaining instance");
+            }
+            this.mChildFragmentManager.dispatchDestroy();
+            this.mChildFragmentManager = null;
+        }
+    }
+    
     void performLowMemory() {
         this.onLowMemory();
         if (this.mChildFragmentManager != null) {
             this.mChildFragmentManager.dispatchLowMemory();
+        }
+    }
+    
+    void performMultiWindowModeChanged(final boolean b) {
+        this.onMultiWindowModeChanged(b);
+        if (this.mChildFragmentManager != null) {
+            this.mChildFragmentManager.dispatchMultiWindowModeChanged(b);
         }
     }
     
@@ -800,10 +827,18 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         if (this.mChildFragmentManager != null) {
             this.mChildFragmentManager.dispatchPause();
         }
+        this.mState = 4;
         this.mCalled = false;
         this.onPause();
         if (!this.mCalled) {
             throw new SuperNotCalledException("Fragment " + this + " did not call through to super.onPause()");
+        }
+    }
+    
+    void performPictureInPictureModeChanged(final boolean b) {
+        this.onPictureInPictureModeChanged(b);
+        if (this.mChildFragmentManager != null) {
+            this.mChildFragmentManager.dispatchPictureInPictureModeChanged(b);
         }
     }
     
@@ -831,6 +866,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         if (this.mChildFragmentManager != null) {
             this.mChildFragmentManager.dispatchReallyStop();
         }
+        this.mState = 2;
         if (this.mLoadersStarted) {
             this.mLoadersStarted = false;
             if (!this.mCheckedForLoaderManager) {
@@ -838,11 +874,11 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
                 this.mLoaderManager = this.mHost.getLoaderManager(this.mWho, this.mLoadersStarted, false);
             }
             if (this.mLoaderManager != null) {
-                if (this.mRetaining) {
-                    this.mLoaderManager.doRetain();
+                if (!this.mHost.getRetainLoaders()) {
+                    this.mLoaderManager.doStop();
                     return;
                 }
-                this.mLoaderManager.doStop();
+                this.mLoaderManager.doRetain();
             }
         }
     }
@@ -852,6 +888,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
             this.mChildFragmentManager.noteStateNotSaved();
             this.mChildFragmentManager.execPendingActions();
         }
+        this.mState = 5;
         this.mCalled = false;
         this.onResume();
         if (!this.mCalled) {
@@ -878,6 +915,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
             this.mChildFragmentManager.noteStateNotSaved();
             this.mChildFragmentManager.execPendingActions();
         }
+        this.mState = 4;
         this.mCalled = false;
         this.onStart();
         if (!this.mCalled) {
@@ -895,6 +933,7 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
         if (this.mChildFragmentManager != null) {
             this.mChildFragmentManager.dispatchStop();
         }
+        this.mState = 3;
         this.mCalled = false;
         this.onStop();
         if (!this.mCalled) {
@@ -911,6 +950,20 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
             throw new IllegalStateException("Fragment " + this + " not attached to Activity");
         }
         this.mHost.onRequestPermissionsFromFragment(this, array, n);
+    }
+    
+    void restoreChildFragmentState(final Bundle bundle) {
+        if (bundle != null) {
+            final Parcelable parcelable = bundle.getParcelable("android:support:fragments");
+            if (parcelable != null) {
+                if (this.mChildFragmentManager == null) {
+                    this.instantiateChildFragmentManager();
+                }
+                this.mChildFragmentManager.restoreAllState(parcelable, this.mChildNonConfig);
+                this.mChildNonConfig = null;
+                this.mChildFragmentManager.dispatchCreate();
+            }
+        }
     }
     
     final void restoreViewState(final Bundle bundle) {
@@ -1002,9 +1055,6 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     public void setRetainInstance(final boolean mRetainInstance) {
-        if (mRetainInstance && this.mParentFragment != null) {
-            throw new IllegalStateException("Can't retain fragements that are nested in other fragments");
-        }
         this.mRetainInstance = mRetainInstance;
     }
     
@@ -1026,10 +1076,11 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     public void setUserVisibleHint(final boolean mUserVisibleHint) {
-        if (!this.mUserVisibleHint && mUserVisibleHint && this.mState < 4) {
+        if (!this.mUserVisibleHint && mUserVisibleHint && this.mState < 4 && this.mFragmentManager != null && this.isAdded()) {
             this.mFragmentManager.performPendingDeferredStart(this);
         }
-        this.mDeferStart = !(this.mUserVisibleHint = mUserVisibleHint);
+        this.mUserVisibleHint = mUserVisibleHint;
+        this.mDeferStart = (this.mState < 4 && !mUserVisibleHint);
     }
     
     public boolean shouldShowRequestPermissionRationale(final String s) {
@@ -1037,17 +1088,32 @@ public class Fragment implements ComponentCallbacks, View$OnCreateContextMenuLis
     }
     
     public void startActivity(final Intent intent) {
+        this.startActivity(intent, null);
+    }
+    
+    public void startActivity(final Intent intent, final Bundle bundle) {
         if (this.mHost == null) {
             throw new IllegalStateException("Fragment " + this + " not attached to Activity");
         }
-        this.mHost.onStartActivityFromFragment(this, intent, -1);
+        this.mHost.onStartActivityFromFragment(this, intent, -1, bundle);
     }
     
     public void startActivityForResult(final Intent intent, final int n) {
+        this.startActivityForResult(intent, n, null);
+    }
+    
+    public void startActivityForResult(final Intent intent, final int n, final Bundle bundle) {
         if (this.mHost == null) {
             throw new IllegalStateException("Fragment " + this + " not attached to Activity");
         }
-        this.mHost.onStartActivityFromFragment(this, intent, n);
+        this.mHost.onStartActivityFromFragment(this, intent, n, bundle);
+    }
+    
+    public void startIntentSenderForResult(final IntentSender intentSender, final int n, final Intent intent, final int n2, final int n3, final int n4, final Bundle bundle) {
+        if (this.mHost == null) {
+            throw new IllegalStateException("Fragment " + this + " not attached to Activity");
+        }
+        this.mHost.onStartIntentSenderFromFragment(this, intentSender, n, intent, n2, n3, n4, bundle);
     }
     
     @Override

@@ -4,14 +4,13 @@
 
 package com.netflix.mediaclient.service.mdx;
 
-import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 import com.netflix.mediaclient.javabridge.ui.LogArguments;
 import com.netflix.mediaclient.javabridge.ui.LogArguments$LogLevel;
 import android.content.Context;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 import android.net.Uri;

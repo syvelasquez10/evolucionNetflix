@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 
 class LayoutInflaterCompatHC
 {
+    private static final String TAG = "LayoutInflaterCompatHC";
     private static boolean sCheckedField;
     private static Field sLayoutInflaterFactory2Field;
     

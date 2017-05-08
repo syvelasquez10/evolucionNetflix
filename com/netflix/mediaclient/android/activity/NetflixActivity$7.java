@@ -14,6 +14,5 @@ class NetflixActivity$7 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.getNetflixActionBar().show(true);
     }
 }

@@ -14,7 +14,7 @@ class DrawableCompatHoneycomb
     
     public static Drawable wrapForTinting(final Drawable drawable) {
         Drawable drawable2 = drawable;
-        if (!(drawable instanceof DrawableWrapperHoneycomb)) {
+        if (!(drawable instanceof TintAwareDrawable)) {
             drawable2 = new DrawableWrapperHoneycomb(drawable);
         }
         return drawable2;

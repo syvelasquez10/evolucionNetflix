@@ -31,6 +31,14 @@ public final class CompoundButtonCompat
         return CompoundButtonCompat.IMPL.getButtonDrawable(compoundButton);
     }
     
+    public static ColorStateList getButtonTintList(final CompoundButton compoundButton) {
+        return CompoundButtonCompat.IMPL.getButtonTintList(compoundButton);
+    }
+    
+    public static PorterDuff$Mode getButtonTintMode(final CompoundButton compoundButton) {
+        return CompoundButtonCompat.IMPL.getButtonTintMode(compoundButton);
+    }
+    
     public static void setButtonTintList(final CompoundButton compoundButton, final ColorStateList list) {
         CompoundButtonCompat.IMPL.setButtonTintList(compoundButton, list);
     }

@@ -4,6 +4,10 @@
 
 package com.crittercism.internal;
 
+import java.io.IOException;
+import javax.net.ssl.SSLSocket;
+import java.io.OutputStream;
+import java.io.InputStream;
 import org.apache.harmony.xnet.provider.jsse.SSLParametersImpl;
 import java.net.InetAddress;
 import org.apache.harmony.xnet.provider.jsse.OpenSSLSocketImpl;
@@ -47,5 +51,40 @@ public final class s extends OpenSSLSocketImpl implements z
     
     public final c b() {
         return this.a.b();
+    }
+    
+    public final void close() {
+        super.close();
+        this.a.a();
+    }
+    
+    public final InputStream getInputStream() {
+        return this.a.a(this, super.getInputStream());
+    }
+    
+    public final OutputStream getOutputStream() {
+        return this.a.a(this, super.getOutputStream());
+    }
+    
+    public final int getSoTimeout() {
+        synchronized (this) {
+            return super.getSoTimeout();
+        }
+    }
+    
+    public final void setSoTimeout(final int soTimeout) {
+        synchronized (this) {
+            super.setSoTimeout(soTimeout);
+        }
+    }
+    
+    public final void startHandshake() {
+        try {
+            super.startHandshake();
+        }
+        catch (IOException ex) {
+            this.a.a(ex, (SSLSocket)this);
+            throw ex;
+        }
     }
 }

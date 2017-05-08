@@ -6,6 +6,7 @@ package com.netflix.mediaclient.util;
 
 import java.util.Iterator;
 import com.netflix.mediaclient.Log;
+import android.os.SystemClock;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.ArrayList;
@@ -106,91 +107,29 @@ public abstract class EventQueue<T>
         this.mPaused.set(true);
     }
     
-    public final void post(final T p0) {
-        // 
-        // This method could not be decompiled.
-        // 
-        // Original Bytecode:
-        // 
-        //     0: aload_0        
-        //     1: monitorenter   
-        //     2: aload_1        
-        //     3: ifnonnull       9
-        //     6: aload_0        
-        //     7: monitorexit    
-        //     8: return         
-        //     9: aload_0        
-        //    10: getfield        com/netflix/mediaclient/util/EventQueue.mEventQueue:Ljava/util/List;
-        //    13: astore_2       
-        //    14: aload_2        
-        //    15: monitorenter   
-        //    16: aload_0        
-        //    17: getfield        com/netflix/mediaclient/util/EventQueue.mEventQueue:Ljava/util/List;
-        //    20: invokeinterface java/util/List.isEmpty:()Z
-        //    25: ifeq            35
-        //    28: aload_0        
-        //    29: invokestatic    android/os/SystemClock.elapsedRealtime:()J
-        //    32: putfield        com/netflix/mediaclient/util/EventQueue.mLastTimeEventAddedInMs:J
-        //    35: aload_0        
-        //    36: getfield        com/netflix/mediaclient/util/EventQueue.mEventQueue:Ljava/util/List;
-        //    39: aload_1        
-        //    40: invokeinterface java/util/List.add:(Ljava/lang/Object;)Z
-        //    45: pop            
-        //    46: aload_2        
-        //    47: monitorexit    
-        //    48: aload_0        
-        //    49: invokevirtual   com/netflix/mediaclient/util/EventQueue.shouldFlushQueue:()Z
-        //    52: ifeq            6
-        //    55: aload_0        
-        //    56: iconst_1       
-        //    57: invokevirtual   com/netflix/mediaclient/util/EventQueue.flushEvents:(Z)V
-        //    60: goto            6
-        //    63: astore_1       
-        //    64: aload_0        
-        //    65: monitorexit    
-        //    66: aload_1        
-        //    67: athrow         
-        //    68: astore_1       
-        //    69: aload_2        
-        //    70: monitorexit    
-        //    71: aload_1        
-        //    72: athrow         
-        //    Signature:
-        //  (TT;)V
-        //    Exceptions:
-        //  Try           Handler
-        //  Start  End    Start  End    Type
-        //  -----  -----  -----  -----  ----
-        //  9      16     63     68     Any
-        //  16     35     68     73     Any
-        //  35     48     68     73     Any
-        //  48     60     63     68     Any
-        //  69     71     68     73     Any
-        //  71     73     63     68     Any
-        // 
-        // The error that occurred was:
-        // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0035:
-        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
-        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
-        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
-        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
-        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
-        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
-        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
-        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
-        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
-        // 
-        throw new IllegalStateException("An error occurred while decompiling this method.");
+    public final boolean post(final T t) {
+        boolean b = false;
+        // monitorenter(this)
+        if (t != null) {
+            try {
+                synchronized (this.mEventQueue) {
+                    if (this.mEventQueue.isEmpty()) {
+                        this.mLastTimeEventAddedInMs = SystemClock.elapsedRealtime();
+                    }
+                    this.mEventQueue.add(t);
+                    // monitorexit(this.mEventQueue)
+                    if (this.shouldFlushQueue()) {
+                        this.flushEvents(true);
+                        b = true;
+                    }
+                }
+            }
+            finally {
+            }
+            // monitorexit(this)
+        }
+        // monitorexit(this)
+        return b;
     }
     
     public boolean removeFlushCriterion(final EventQueue$FlushCriterion eventQueue$FlushCriterion) {

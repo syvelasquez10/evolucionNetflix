@@ -4,14 +4,25 @@
 
 package android.support.v4.util;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Collection;
 import java.util.Map;
 
 public class ArrayMap<K, V> extends SimpleArrayMap<K, V> implements Map<K, V>
 {
     MapCollections<K, V> mCollections;
+    
+    public ArrayMap() {
+    }
+    
+    public ArrayMap(final int n) {
+        super(n);
+    }
+    
+    public ArrayMap(final SimpleArrayMap simpleArrayMap) {
+        super(simpleArrayMap);
+    }
     
     private MapCollections<K, V> getCollection() {
         // 
@@ -81,6 +92,10 @@ public class ArrayMap<K, V> extends SimpleArrayMap<K, V> implements Map<K, V>
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
+    public boolean containsAll(final Collection<?> collection) {
+        return MapCollections.containsAllHelper((Map<Object, Object>)this, collection);
+    }
+    
     @Override
     public Set<Entry<K, V>> entrySet() {
         return this.getCollection().getEntrySet();
@@ -97,6 +112,10 @@ public class ArrayMap<K, V> extends SimpleArrayMap<K, V> implements Map<K, V>
         for (final Entry<? extends K, ? extends V> entry : map.entrySet()) {
             this.put((K)entry.getKey(), (V)entry.getValue());
         }
+    }
+    
+    public boolean removeAll(final Collection<?> collection) {
+        return MapCollections.removeAllHelper((Map<Object, Object>)this, collection);
     }
     
     public boolean retainAll(final Collection<?> collection) {

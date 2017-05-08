@@ -4,18 +4,23 @@
 
 package com.netflix.mediaclient.service;
 
+import android.app.Notification;
 import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
+import com.netflix.mediaclient.media.BookmarkStore;
+import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
 import com.netflix.mediaclient.servicemgr.IPushNotification;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.servicemgr.NrdpComponent;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.servicemgr.IMdx;
+import com.netflix.mediaclient.servicemgr.IMSLClient;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
@@ -30,6 +35,7 @@ import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.service.user.UserAgent$UserAgentCallback;
+import com.netflix.mediaclient.servicemgr.IMSLClient$NetworkRequestInspector;
 import android.os.SystemClock;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
@@ -38,23 +44,28 @@ import com.netflix.mediaclient.servicemgr.INetflixServiceCallback;
 import android.support.v4.content.LocalBroadcastManager;
 import java.io.Serializable;
 import android.content.IntentFilter;
-import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
 import android.app.PendingIntent;
 import android.app.AlarmManager;
 import android.content.Intent;
+import java.util.HashSet;
 import java.util.HashMap;
 import com.netflix.mediaclient.service.voip.WhistleVoipAgent;
 import com.netflix.mediaclient.service.user.UserAgent;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
 import com.netflix.mediaclient.service.pushnotification.PushNotificationAgent;
 import com.netflix.mediaclient.service.preapp.PreAppAgent;
+import java.util.Set;
 import com.netflix.mediaclient.service.player.PlayerAgent;
+import com.netflix.mediaclient.service.pdslogging.PdsAgent;
+import com.netflix.mediaclient.service.player.exoplayback.ExoPlayback;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgent;
 import com.netflix.mediaclient.service.job.NetflixJobScheduler;
 import com.netflix.mediaclient.service.job.NetflixJobExecutor;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
+import com.netflix.mediaclient.service.msl.MSLAgent;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.service.falkor.FalkorAgent;
@@ -102,30 +113,44 @@ class NetflixService$1 implements ServiceAgent$InitCallback
                 if (!serviceAgent2.isInitCalled()) {
                     serviceAgent2.init(this.this$0.agentContext, this);
                 }
+                else {
+                    Log.w("NetflixService", "Agent %s from error batch already initialized!", serviceAgent2.getClass().getSimpleName());
+                }
             }
             this.this$0.initCompleted();
             this.this$0.stopSelf();
         }
         else {
-            Log.i("NetflixService", "NetflixService successfully inited ServiceAgent " + serviceAgent.getClass().getSimpleName());
-            if (serviceAgent == this.this$0.mConfigurationAgent) {
-                final Iterator<ServiceAgent> iterator2 = this.agentsToInitBatch1.iterator();
-                while (iterator2.hasNext()) {
-                    iterator2.next().init(this.this$0.agentContext, this);
+            Log.d("NetflixService", "NetflixService successfully initiated ServiceAgent %s", serviceAgent.getClass().getSimpleName());
+            if (serviceAgent == this.this$0.mMslAgent) {
+                Log.d("NetflixService", "Go for batch1!");
+                for (final ServiceAgent serviceAgent3 : this.agentsToInitBatch1) {
+                    if (!serviceAgent3.isInitCalled()) {
+                        serviceAgent3.init(this.this$0.agentContext, this);
+                    }
+                    else {
+                        Log.w("NetflixService", "Agent %s from batch1 already initialized!", serviceAgent3.getClass().getSimpleName());
+                    }
                 }
             }
             else if (this.agentsToInitBatch1.contains(serviceAgent)) {
+                Log.d("NetflixService", "Remove %s from batch1", serviceAgent.getClass().getSimpleName());
                 this.agentsToInitBatch1.remove(serviceAgent);
                 if (this.agentsToInitBatch1.isEmpty()) {
                     Log.d("NetflixService", "NetflixService successfully inited batch1 of ServiceAgents");
-                    final Iterator<ServiceAgent> iterator3 = this.agentsToInitBatch2.iterator();
-                    while (iterator3.hasNext()) {
-                        iterator3.next().init(this.this$0.agentContext, this);
+                    for (final ServiceAgent serviceAgent4 : this.agentsToInitBatch2) {
+                        if (!serviceAgent4.isInitCalled()) {
+                            serviceAgent4.init(this.this$0.agentContext, this);
+                        }
+                        else {
+                            Log.w("NetflixService", "Agent %s from batch2 already initialized!", serviceAgent4.getClass().getSimpleName());
+                        }
                     }
                     this.this$0.enableMdxAgentAndInit(this.this$0.agentContext, this);
                 }
             }
             else {
+                Log.d("NetflixService", "Remove %s from batch2", serviceAgent.getClass().getSimpleName());
                 this.agentsToInitBatch2.remove(serviceAgent);
                 if (this.agentsToInitBatch2.isEmpty()) {
                     Log.i("NetflixService", "NetflixService successfully inited all ServiceAgents ");
@@ -142,9 +167,9 @@ class NetflixService$1 implements ServiceAgent$InitCallback
                     }
                     this.this$0.initCompleted();
                 }
-                for (final ServiceAgent serviceAgent3 : this.agentsToInitBatch2) {
-                    if (!serviceAgent3.isReady()) {
-                        Log.d("NetflixService", "NetflixService still waiting for init of ServiceAgent " + serviceAgent3.getClass().getSimpleName());
+                for (final ServiceAgent serviceAgent5 : this.agentsToInitBatch2) {
+                    if (!serviceAgent5.isReady()) {
+                        Log.d("NetflixService", "NetflixService still waiting for init of ServiceAgent " + serviceAgent5.getClass().getSimpleName());
                     }
                 }
             }

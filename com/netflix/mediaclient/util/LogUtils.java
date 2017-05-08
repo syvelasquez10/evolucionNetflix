@@ -66,7 +66,11 @@ public final class LogUtils
         clientLogging.getErrorLogging().logHandledException(format);
     }
     
-    public static void reportErrorSafely(final String s, final Throwable t) {
+    public static void reportErrorSafely(final String s) {
+        reportErrorSafely(s, null);
+    }
+    
+    public static void reportErrorSafely(final String s, Throwable t) {
         String s2 = s;
         if (s == null) {
             s2 = "";
@@ -76,6 +80,7 @@ public final class LogUtils
         }
         else {
             Log.e("nf_log", s2);
+            t = new RuntimeException(s2);
         }
         ErrorLoggingManager.logHandledException(t);
     }

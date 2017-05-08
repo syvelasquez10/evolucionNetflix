@@ -4,17 +4,6 @@
 
 package android.support.v7.widget;
 
-import android.view.ViewTreeObserver;
-import android.widget.PopupWindow$OnDismissListener;
-import android.view.ViewTreeObserver$OnGlobalLayoutListener;
-import android.graphics.drawable.Drawable;
-import android.widget.SpinnerAdapter;
-import android.support.v7.internal.widget.ViewUtils;
-import android.support.v4.view.ViewCompat;
-import android.util.AttributeSet;
-import android.content.Context;
-import android.graphics.Rect;
-import android.widget.ListAdapter;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView$OnItemClickListener;

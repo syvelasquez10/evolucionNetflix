@@ -57,6 +57,19 @@ public final class dr
         }
     }
     
+    public final boolean a(final boolean b) {
+        final dx dx = new dx(new dr$b(this, b));
+        dx.start();
+        try {
+            dx.join();
+            return true;
+        }
+        catch (InterruptedException ex) {
+            dw.b(ex);
+            return false;
+        }
+    }
+    
     public final boolean b() {
         JSONObject jsonObject = null;
         final ax c = ax.C();

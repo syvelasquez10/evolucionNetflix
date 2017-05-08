@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import com.netflix.mediaclient.ui.verifyplay.PlayVerifier;
+import com.netflix.mediaclient.ui.verifyplay.PinAndAgeVerifier;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
-import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$PlayInvokedFrom;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$RequestedBy;
 import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
@@ -136,10 +136,10 @@ public final class PlaybackLauncher
                 verifyAgeAndPinToPlay(netflixActivity, asset, true, n);
             }
             case 3: {
-                displayErrorDialog(netflixActivity, 2131231233);
+                displayErrorDialog(netflixActivity, 2131231289);
             }
             case 4: {
-                displayErrorDialog(netflixActivity, 2131231234);
+                displayErrorDialog(netflixActivity, 2131231290);
             }
         }
     }
@@ -175,13 +175,13 @@ public final class PlaybackLauncher
                 return;
             }
             Log.w("nf_play", "Local playback is disabled, we can not start playback!");
-            displayErrorDialog(netflixActivity, 2131231233);
+            displayErrorDialog(netflixActivity, 2131231289);
         }
     }
     
     private static void verifyAgeAndPinToPlay(final NetflixActivity netflixActivity, final Asset asset, final boolean b, final int n) {
         Log.d("nf_play", String.format("nf_pin verifyPinAndPlay - %s ageProtected: %b, pinProtected:%b", asset.getPlayableId(), asset.isAgeProtected(), asset.isPinProtected()));
-        PlayVerifier.verify(netflixActivity, asset.isAgeProtected(), asset.isPinProtected(), new PlayVerifierVault(PlayVerifierVault$PlayInvokedFrom.PLAY_LAUNCHER.getValue(), asset, b, n));
+        PinAndAgeVerifier.verifyAgeAndPinToPlay(netflixActivity, asset.isAgeProtected(), new PlayVerifierVault(PlayVerifierVault$RequestedBy.PLAY_LAUNCHER.getValue(), asset, b, n));
     }
     
     public static PlaybackLauncher$PlaybackTarget whereToPlay(final ServiceManager serviceManager) {

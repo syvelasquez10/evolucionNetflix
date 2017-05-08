@@ -4,7 +4,7 @@
 
 package android.support.v4.view;
 
-interface ViewPager$OnAdapterChangeListener
+public interface ViewPager$OnAdapterChangeListener
 {
-    void onAdapterChanged(final PagerAdapter p0, final PagerAdapter p1);
+    void onAdapterChanged(final ViewPager p0, final PagerAdapter p1, final PagerAdapter p2);
 }

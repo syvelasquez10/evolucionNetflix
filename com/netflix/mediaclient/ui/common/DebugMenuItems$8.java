@@ -4,18 +4,21 @@
 
 package com.netflix.mediaclient.ui.common;
 
+import com.netflix.mediaclient.util.net.CronetHttpURLConnectionFactory;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
-import android.content.Context;
 import com.netflix.mediaclient.util.PermissionUtils;
 import android.os.Handler;
 import android.os.Debug;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.home.HomeActivity;
+import com.netflix.mediaclient.android.debug.DebugOverlay;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.content.Context;
+import com.netflix.mediaclient.service.NetflixService;
 import android.content.Intent;
-import com.netflix.mediaclient.Log;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -28,8 +31,10 @@ class DebugMenuItems$8 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        Log.d(this.this$0.logTag, "Sending CW refresh: com.netflix.mediaclient.intent.action.BA_CW_REFRESH");
-        this.this$0.activity.sendBroadcast(new Intent("com.netflix.mediaclient.intent.action.BA_CW_REFRESH"));
+        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.USER_CREATE_AUTOLOGIN_TOKEN");
+        intent.setClass((Context)this.this$0.activity, (Class)NetflixService.class);
+        intent.addCategory("com.netflix.mediaclient.intent.category.USER");
+        this.this$0.activity.startService(intent);
         return true;
     }
 }

@@ -12,7 +12,6 @@ import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import android.view.MenuItem$OnMenuItemClickListener;
 import android.view.Menu;
 import com.netflix.mediaclient.servicemgr.interface_.VideoType;
-import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.Fragment;
 import android.content.Context;
@@ -36,7 +35,7 @@ public class ShowDetailsActivity extends DetailsActivity implements AbsEpisodeVi
     
     @Override
     public boolean destroyed() {
-        return AndroidUtils.isActivityFinishedOrDestroyed(this);
+        return AndroidUtils.isActivityFinishedOrDestroyed((Context)this);
     }
     
     @Override

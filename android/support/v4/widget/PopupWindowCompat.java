@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.PopupWindow;
 import android.os.Build$VERSION;
 
-public class PopupWindowCompat
+public final class PopupWindowCompat
 {
     static final PopupWindowCompat$PopupWindowImpl IMPL;
     
@@ -26,11 +26,15 @@ public class PopupWindowCompat
             IMPL = new PopupWindowCompat$KitKatPopupWindowImpl();
             return;
         }
-        if (sdk_INT >= 9) {
-            IMPL = new PopupWindowCompat$GingerbreadPopupWindowImpl();
-            return;
-        }
         IMPL = new PopupWindowCompat$BasePopupWindowImpl();
+    }
+    
+    public static boolean getOverlapAnchor(final PopupWindow popupWindow) {
+        return PopupWindowCompat.IMPL.getOverlapAnchor(popupWindow);
+    }
+    
+    public static int getWindowLayoutType(final PopupWindow popupWindow) {
+        return PopupWindowCompat.IMPL.getWindowLayoutType(popupWindow);
     }
     
     public static void setOverlapAnchor(final PopupWindow popupWindow, final boolean b) {

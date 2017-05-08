@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.profiles;
 
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.ui.kids.KidsUtils;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;

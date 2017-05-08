@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx.notification;
 
-import android.app.Service;
 import android.util.Pair;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
@@ -28,15 +27,15 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
     private static final String TAG = "nf_mdxnotification";
     private Bitmap boxart;
     private Notification$Builder builder;
-    private MdxNotificationManagerLollipop$BuilderFactory builderFactory;
-    private Context context;
+    private final MdxNotificationManagerLollipop$BuilderFactory builderFactory;
+    private final Context context;
     private boolean isEpisode;
     private boolean isPlaying;
     private boolean isPostplay;
     private final int mNotificationId;
     private String mainTitle;
-    private MdxAgent mdxAgent;
-    private MediaSessionController mediaSessionController;
+    private final MdxAgent mdxAgent;
+    private final MediaSessionController mediaSessionController;
     private Notification notification;
     private NotificationManager notificationManager;
     private int runningServiceNotificationId;
@@ -66,7 +65,7 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
     }
     
     private Bitmap getDefaultBoxArt() {
-        return BitmapFactory.decodeResource(this.context.getResources(), 2130837781);
+        return BitmapFactory.decodeResource(this.context.getResources(), 2130837839);
     }
     
     private Notification$MediaStyle getStyle() {
@@ -103,12 +102,12 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
             this.builder.setSubText((CharSequence)this.secondTitle);
         }
         if (this.isPostplay) {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131231105));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131231129));
         }
         else {
-            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131231249));
+            this.builder.setContentTitle((CharSequence)this.context.getResources().getString(2131231305));
         }
-        this.builder.setSmallIcon(2130837754);
+        this.builder.setSmallIcon(2130837812);
         this.notification = this.builder.build();
         this.notificationManager.notify(1, this.notification);
     }
@@ -202,12 +201,12 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
     }
     
     @Override
-    public void startNotification(final Notification notification, final Service service, final boolean isPostplay) {
+    public void startNotification(final Notification notification, final NetflixService netflixService, final boolean isPostplay) {
         if (notification == null) {
             return;
         }
         if (1 != this.runningServiceNotificationId) {
-            service.startForeground(1, notification);
+            netflixService.requestForegroundForNotification(1, notification);
             this.runningServiceNotificationId = 1;
         }
         this.isPostplay = isPostplay;
@@ -215,17 +214,17 @@ public final class MdxNotificationManagerLollipop implements IMdxNotificationMan
     }
     
     @Override
-    public void stopNotification(final Service service) {
+    public void stopNotification(final NetflixService netflixService) {
         this.cancelNotification();
-        service.stopForeground(true);
+        netflixService.requestBackgroundForNotification(1, true);
         this.runningServiceNotificationId = 0;
         this.isPlaying = false;
     }
     
     @Override
-    public void stopPostplayNotification(final Service service) {
+    public void stopPostplayNotification(final NetflixService netflixService) {
         if (this.isPostplay) {
-            service.stopForeground(true);
+            netflixService.requestBackgroundForNotification(1, true);
             this.runningServiceNotificationId = 0;
             this.isPlaying = false;
         }

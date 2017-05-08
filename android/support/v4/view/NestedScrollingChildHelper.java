@@ -124,6 +124,14 @@ public class NestedScrollingChildHelper
         return this.mIsNestedScrollingEnabled;
     }
     
+    public void onDetachedFromWindow() {
+        ViewCompat.stopNestedScroll(this.mView);
+    }
+    
+    public void onStopNestedScroll(final View view) {
+        ViewCompat.stopNestedScroll(this.mView);
+    }
+    
     public void setNestedScrollingEnabled(final boolean mIsNestedScrollingEnabled) {
         if (this.mIsNestedScrollingEnabled) {
             ViewCompat.stopNestedScroll(this.mView);

@@ -4,36 +4,24 @@
 
 package android.support.design.widget;
 
-import android.support.v4.view.ViewPager$OnPageChangeListener;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.PagerAdapter;
-import java.util.Iterator;
-import android.view.ViewGroup$LayoutParams;
-import android.content.res.TypedArray;
-import android.support.design.R$style;
-import android.support.design.R$styleable;
-import android.util.AttributeSet;
-import java.util.ArrayList;
-import android.content.res.ColorStateList;
-import android.view.View$OnClickListener;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout$LayoutParams;
 import android.view.View$MeasureSpec;
 import android.graphics.Canvas;
-import android.view.View;
 import android.support.v4.view.ViewCompat;
+import android.view.View;
 import android.content.Context;
 import android.graphics.Paint;
 import android.widget.LinearLayout;
 
 class TabLayout$SlidingTabStrip extends LinearLayout
 {
+    private ValueAnimatorCompat mIndicatorAnimator;
     private int mIndicatorLeft;
     private int mIndicatorRight;
     private int mSelectedIndicatorHeight;
     private final Paint mSelectedIndicatorPaint;
-    private int mSelectedPosition;
-    private float mSelectionOffset;
+    int mSelectedPosition;
+    float mSelectionOffset;
     final /* synthetic */ TabLayout this$0;
     
     TabLayout$SlidingTabStrip(final TabLayout this$0, final Context context) {
@@ -44,14 +32,6 @@ class TabLayout$SlidingTabStrip extends LinearLayout
         this.mIndicatorRight = -1;
         this.setWillNotDraw(false);
         this.mSelectedIndicatorPaint = new Paint();
-    }
-    
-    private void setIndicatorPosition(final int mIndicatorLeft, final int mIndicatorRight) {
-        if (mIndicatorLeft != this.mIndicatorLeft || mIndicatorRight != this.mIndicatorRight) {
-            this.mIndicatorLeft = mIndicatorLeft;
-            this.mIndicatorRight = mIndicatorRight;
-            ViewCompat.postInvalidateOnAnimation((View)this);
-        }
     }
     
     private void updateIndicatorPosition() {
@@ -79,42 +59,50 @@ class TabLayout$SlidingTabStrip extends LinearLayout
         this.setIndicatorPosition(n2, right);
     }
     
-    void animateIndicatorToPosition(final int n, final int duration) {
+    void animateIndicatorToPosition(final int n, final int n2) {
+        if (this.mIndicatorAnimator != null && this.mIndicatorAnimator.isRunning()) {
+            this.mIndicatorAnimator.cancel();
+        }
         final boolean b = ViewCompat.getLayoutDirection((View)this) == 1;
         final View child = this.getChildAt(n);
-        final int left = child.getLeft();
-        final int right = child.getRight();
-        int mIndicatorLeft;
-        int mIndicatorRight;
-        if (Math.abs(n - this.mSelectedPosition) <= 1) {
-            mIndicatorLeft = this.mIndicatorLeft;
-            mIndicatorRight = this.mIndicatorRight;
+        if (child == null) {
+            this.updateIndicatorPosition();
         }
         else {
-            final int access$1300 = this.this$0.dpToPx(24);
-            if (n < this.mSelectedPosition) {
-                if (b) {
-                    mIndicatorRight = (mIndicatorLeft = left - access$1300);
-                }
-                else {
-                    mIndicatorRight = (mIndicatorLeft = right + access$1300);
-                }
-            }
-            else if (b) {
-                mIndicatorRight = (mIndicatorLeft = right + access$1300);
+            final int left = child.getLeft();
+            final int right = child.getRight();
+            int mIndicatorLeft;
+            int mIndicatorRight;
+            if (Math.abs(n - this.mSelectedPosition) <= 1) {
+                mIndicatorLeft = this.mIndicatorLeft;
+                mIndicatorRight = this.mIndicatorRight;
             }
             else {
-                mIndicatorRight = (mIndicatorLeft = left - access$1300);
+                final int dpToPx = this.this$0.dpToPx(24);
+                if (n < this.mSelectedPosition) {
+                    if (b) {
+                        mIndicatorRight = (mIndicatorLeft = left - dpToPx);
+                    }
+                    else {
+                        mIndicatorRight = (mIndicatorLeft = right + dpToPx);
+                    }
+                }
+                else if (b) {
+                    mIndicatorRight = (mIndicatorLeft = right + dpToPx);
+                }
+                else {
+                    mIndicatorRight = (mIndicatorLeft = left - dpToPx);
+                }
             }
-        }
-        if (mIndicatorLeft != left || mIndicatorRight != right) {
-            final ValueAnimatorCompat access$1301 = this.this$0.mIndicatorAnimator = ViewUtils.createAnimator();
-            access$1301.setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
-            access$1301.setDuration(duration);
-            access$1301.setFloatValues(0.0f, 1.0f);
-            access$1301.setUpdateListener(new TabLayout$SlidingTabStrip$1(this, mIndicatorLeft, left, mIndicatorRight, right));
-            access$1301.setListener(new TabLayout$SlidingTabStrip$2(this, n));
-            access$1301.start();
+            if (mIndicatorLeft != left || mIndicatorRight != right) {
+                final ValueAnimatorCompat animator = ViewUtils.createAnimator();
+                (this.mIndicatorAnimator = animator).setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
+                animator.setDuration(n2);
+                animator.setFloatValues(0.0f, 1.0f);
+                animator.addUpdateListener(new TabLayout$SlidingTabStrip$1(this, mIndicatorLeft, left, mIndicatorRight, right));
+                animator.addListener(new TabLayout$SlidingTabStrip$2(this, n));
+                animator.start();
+            }
         }
     }
     
@@ -148,42 +136,80 @@ class TabLayout$SlidingTabStrip extends LinearLayout
         return this.mSelectedPosition + this.mSelectionOffset;
     }
     
-    protected void onLayout(final boolean b, final int n, final int n2, final int n3, final int n4) {
-        super.onLayout(b, n, n2, n3, n4);
+    protected void onLayout(final boolean b, int mSelectedPosition, final int n, final int n2, final int n3) {
+        super.onLayout(b, mSelectedPosition, n, n2, n3);
+        if (this.mIndicatorAnimator != null && this.mIndicatorAnimator.isRunning()) {
+            this.mIndicatorAnimator.cancel();
+            final long duration = this.mIndicatorAnimator.getDuration();
+            mSelectedPosition = this.mSelectedPosition;
+            this.animateIndicatorToPosition(mSelectedPosition, Math.round(duration * (1.0f - this.mIndicatorAnimator.getAnimatedFraction())));
+            return;
+        }
         this.updateIndicatorPosition();
     }
     
     protected void onMeasure(final int n, final int n2) {
+        final boolean b = false;
         super.onMeasure(n, n2);
         if (View$MeasureSpec.getMode(n) == 1073741824 && this.this$0.mMode == 1 && this.this$0.mTabGravity == 1) {
             final int childCount = this.getChildCount();
-            final int measureSpec = View$MeasureSpec.makeMeasureSpec(0, 0);
             int i = 0;
-            int max = 0;
+            int width = 0;
             while (i < childCount) {
                 final View child = this.getChildAt(i);
-                child.measure(measureSpec, n2);
-                max = Math.max(max, child.getMeasuredWidth());
+                int max;
+                if (child.getVisibility() == 0) {
+                    max = Math.max(width, child.getMeasuredWidth());
+                }
+                else {
+                    max = width;
+                }
                 ++i;
+                width = max;
             }
-            if (max > 0) {
-                if (max * childCount <= this.getMeasuredWidth() - this.this$0.dpToPx(16) * 2) {
-                    for (int j = 0; j < childCount; ++j) {
-                        final LinearLayout$LayoutParams linearLayout$LayoutParams = (LinearLayout$LayoutParams)this.getChildAt(j).getLayoutParams();
-                        linearLayout$LayoutParams.width = max;
-                        linearLayout$LayoutParams.weight = 0.0f;
+            if (width > 0) {
+                int n5;
+                if (width * childCount <= this.getMeasuredWidth() - this.this$0.dpToPx(16) * 2) {
+                    int n3 = 0;
+                    int n4 = b ? 1 : 0;
+                    while (true) {
+                        n5 = n4;
+                        if (n3 >= childCount) {
+                            break;
+                        }
+                        final LinearLayout$LayoutParams linearLayout$LayoutParams = (LinearLayout$LayoutParams)this.getChildAt(n3).getLayoutParams();
+                        if (linearLayout$LayoutParams.width != width || linearLayout$LayoutParams.weight != 0.0f) {
+                            linearLayout$LayoutParams.width = width;
+                            linearLayout$LayoutParams.weight = 0.0f;
+                            n4 = 1;
+                        }
+                        ++n3;
                     }
                 }
                 else {
                     this.this$0.mTabGravity = 0;
-                    this.this$0.updateTabViewsLayoutParams();
+                    this.this$0.updateTabViews(false);
+                    n5 = 1;
                 }
-                super.onMeasure(n, n2);
+                if (n5 != 0) {
+                    super.onMeasure(n, n2);
+                }
             }
         }
     }
     
+    void setIndicatorPosition(final int mIndicatorLeft, final int mIndicatorRight) {
+        if (mIndicatorLeft != this.mIndicatorLeft || mIndicatorRight != this.mIndicatorRight) {
+            this.mIndicatorLeft = mIndicatorLeft;
+            this.mIndicatorRight = mIndicatorRight;
+            ViewCompat.postInvalidateOnAnimation((View)this);
+        }
+    }
+    
     void setIndicatorPositionFromTabPosition(final int mSelectedPosition, final float mSelectionOffset) {
+        if (this.mIndicatorAnimator != null && this.mIndicatorAnimator.isRunning()) {
+            this.mIndicatorAnimator.cancel();
+        }
         this.mSelectedPosition = mSelectedPosition;
         this.mSelectionOffset = mSelectionOffset;
         this.updateIndicatorPosition();

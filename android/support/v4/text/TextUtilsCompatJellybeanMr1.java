@@ -7,9 +7,13 @@ package android.support.v4.text;
 import android.text.TextUtils;
 import java.util.Locale;
 
-public class TextUtilsCompatJellybeanMr1
+class TextUtilsCompatJellybeanMr1
 {
     public static int getLayoutDirectionFromLocale(final Locale locale) {
         return TextUtils.getLayoutDirectionFromLocale(locale);
+    }
+    
+    public static String htmlEncode(final String s) {
+        return TextUtils.htmlEncode(s);
     }
 }

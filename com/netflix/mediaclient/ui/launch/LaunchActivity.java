@@ -19,13 +19,15 @@ import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
-import android.content.IntentSender$SendIntentException;
-import android.app.Activity;
-import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.ui.ums.EndOfGrandfatheringActivity;
 import com.netflix.mediaclient.ui.ums.EogUtils;
 import com.netflix.mediaclient.ui.home.HomeActivity;
+import com.netflix.mediaclient.ui.offline.OfflineActivity;
 import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
+import com.netflix.mediaclient.util.ConnectivityUtils;
+import android.content.IntentSender$SendIntentException;
+import android.app.Activity;
+import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.ui.signup.SignupActivity;
 import com.google.android.gms.common.api.Api$ApiOptions$NotRequiredOptions;
 import com.google.android.gms.common.api.Api;
@@ -120,7 +122,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         this.setRequestedOrientation(-1);
         if (status.isSucces() || status.getStatusCode() == StatusCode.NRD_REGISTRATION_EXISTS) {
-            this.showDebugToast(this.getString(2131231185));
+            this.showDebugToast(this.getString(2131231238));
             SignInLogUtils.reportSignInRequestSessionEnded((Context)this, SignInLogging$SignInType.smartLock, IClientLogging$CompletionReason.success, null);
             return;
         }
@@ -235,14 +237,9 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
     }
     
     private void handleUserSignedIn(final ServiceManager serviceManager) {
-        final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = serviceManager.getClientLogging().getApplicationPerformanceMetricsLogging();
-        final Display display = ConsolidatedLoggingUtils.getDisplay((Context)this);
-        NflxHandler$Response canHandleIntent;
+        NflxHandler$Response canHandleIntent = null;
         if (serviceManager.getCurrentProfile() != null) {
             canHandleIntent = this.canHandleIntent();
-        }
-        else {
-            canHandleIntent = null;
         }
         if (canHandleIntent != null && canHandleIntent == NflxHandler$Response.HANDLING) {
             Log.d("LaunchActivity", "Handled by nflx workflow");
@@ -254,24 +251,10 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
             return;
         }
         if (serviceManager.getCurrentProfile() == null || this.shouldProfileGateBeShown(serviceManager)) {
-            if (this.shouldCreateUiSessions()) {
-                applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.profilesGate, this.mStarted, display, null, UIBrowseStartupSessionCustomData.create((Context)this));
-                applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
-            }
-            this.startNextActivity(ProfileSelectionActivity.createStartIntentForAppRestart((Context)this));
-            this.finish();
+            this.showProfileGate(serviceManager);
             return;
         }
-        Log.d("LaunchActivity", String.format("Redirect to home with profile %s, %s", serviceManager.getCurrentProfile().getProfileName(), serviceManager.getCurrentProfile().getProfileGuid()));
-        this.startNextActivity(HomeActivity.createStartIntent(this).putExtra("com.netflix.mediaclient._TRANSITION_ANIMATION", false));
-        if (EogUtils.shouldShowEogAlert(serviceManager)) {
-            this.startNextActivity(EndOfGrandfatheringActivity.createStartIntent(this, EndOfGrandfatheringActivity.shouldBlockUser(serviceManager.getEndOfGrandfatheringAlert().isBlocking())));
-        }
-        if (this.shouldCreateUiSessions()) {
-            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.homeScreen, this.mStarted, display, null, UIBrowseStartupSessionCustomData.create((Context)this));
-            applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
-        }
-        this.finish();
+        this.showStartPageForSignedInUser(serviceManager);
     }
     
     public static boolean isSignUpEnabled(final ServiceManager serviceManager) {
@@ -334,11 +317,30 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
     }
     
+    private boolean shouldDisplayOfflineContent(final ServiceManager serviceManager) {
+        if (ConnectivityUtils.isConnectedOrConnecting((Context)this)) {
+            Log.d("LaunchActivity", "Network connectivity exist, go to LOLOMO");
+            return false;
+        }
+        if (!serviceManager.isOfflineFeatureAvailable()) {
+            Log.d("LaunchActivity", "Offline feature not available!");
+            return false;
+        }
+        if (serviceManager.getOfflineAgent() != null && serviceManager.getOfflineAgent().getLatestOfflinePlayableList() != null && serviceManager.getOfflineAgent().getLatestOfflinePlayableList().size() > 0) {
+            Log.d("LaunchActivity", "Network connectivity do NOT exist, we have %d offline titles available, load Offline UI...", serviceManager.getOfflineAgent().getLatestOfflinePlayableList().size());
+            return true;
+        }
+        Log.d("LaunchActivity", "Network connectivity do NOT exist, we do NOT have any offline titles available, load LOLOMO...");
+        return false;
+    }
+    
     private boolean shouldProfileGateBeShown(final ServiceManager serviceManager) {
-        boolean b = false;
-        boolean b2 = false;
+        final boolean b = false;
+        final boolean b2 = false;
+        boolean b3;
         if (serviceManager == null) {
             Log.e("LaunchActivity", "shouldProfileGateBeShown was called with null manager");
+            b3 = b2;
         }
         else {
             int n;
@@ -348,19 +350,56 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
             else {
                 n = 0;
             }
-            if (n != 0) {
-                final int intPref = PreferenceUtils.getIntPref((Context)this, "user_saw_profile_gate", 0);
-                if (intPref < 2) {
-                    b = true;
-                }
-                b2 = b;
-                if (b) {
-                    PreferenceUtils.putIntPref((Context)this, "user_saw_profile_gate", intPref + 1);
-                    return b;
+            b3 = b2;
+            if (!this.shouldDisplayOfflineContent(serviceManager)) {
+                b3 = b2;
+                if (n != 0) {
+                    final int intPref = PreferenceUtils.getIntPref((Context)this, "user_saw_profile_gate", 0);
+                    boolean b4 = b;
+                    if (intPref < 2) {
+                        b4 = true;
+                    }
+                    b3 = b4;
+                    if (b4) {
+                        PreferenceUtils.putIntPref((Context)this, "user_saw_profile_gate", intPref + 1);
+                        return b4;
+                    }
                 }
             }
         }
-        return b2;
+        return b3;
+    }
+    
+    private void showProfileGate(final ServiceManager serviceManager) {
+        final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = serviceManager.getClientLogging().getApplicationPerformanceMetricsLogging();
+        final Display display = ConsolidatedLoggingUtils.getDisplay((Context)this);
+        if (this.shouldCreateUiSessions()) {
+            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.profilesGate, this.mStarted, display, null, UIBrowseStartupSessionCustomData.create((Context)this));
+            applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
+        }
+        this.startNextActivity(ProfileSelectionActivity.createStartIntentForAppRestart((Context)this));
+        this.finish();
+    }
+    
+    private void showStartPageForSignedInUser(final ServiceManager serviceManager) {
+        final ApplicationPerformanceMetricsLogging applicationPerformanceMetricsLogging = serviceManager.getClientLogging().getApplicationPerformanceMetricsLogging();
+        final Display display = ConsolidatedLoggingUtils.getDisplay((Context)this);
+        if (this.shouldDisplayOfflineContent(serviceManager)) {
+            Log.d("LaunchActivity", "Redirect to offline activity with profile %s, %s", serviceManager.getCurrentProfile().getProfileName(), serviceManager.getCurrentProfile().getProfileGuid());
+            this.startNextActivity(OfflineActivity.showAllDownloads(this).putExtra("com.netflix.mediaclient._TRANSITION_ANIMATION", false));
+        }
+        else {
+            Log.d("LaunchActivity", "Redirect to home with profile %s, %s", serviceManager.getCurrentProfile().getProfileName(), serviceManager.getCurrentProfile().getProfileGuid());
+            this.startNextActivity(HomeActivity.createStartIntent(this).putExtra("com.netflix.mediaclient._TRANSITION_ANIMATION", false));
+        }
+        if (EogUtils.shouldShowEogAlert(serviceManager)) {
+            this.startNextActivity(EndOfGrandfatheringActivity.createStartIntent(this, EndOfGrandfatheringActivity.shouldBlockUser(serviceManager.getEndOfGrandfatheringAlert().isBlocking())));
+        }
+        if (this.shouldCreateUiSessions()) {
+            applicationPerformanceMetricsLogging.startUiStartupSession(ApplicationPerformanceMetricsLogging$UiStartupTrigger.touchGesture, IClientLogging$ModalView.homeScreen, this.mStarted, display, null, UIBrowseStartupSessionCustomData.create((Context)this));
+            applicationPerformanceMetricsLogging.startUiBrowseStartupSession(this.mStarted);
+        }
+        this.finish();
     }
     
     private void startNextActivity(final Intent intent) {
@@ -490,7 +529,7 @@ public class LaunchActivity extends NetflixActivity implements GoogleApiClient$C
         }
         Log.d("LaunchActivity", "Service is NOT ready, use splash screen... nf_config: splashscreen");
         this.mSplashScreenStarted = System.currentTimeMillis();
-        this.setContentView(2130903276);
+        this.setContentView(2130903295);
     }
     
     @Override

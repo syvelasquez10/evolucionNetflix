@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import com.google.android.gms.common.ConnectionResult;
 import android.content.IntentSender$SendIntentException;
+import android.app.Activity;
 import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
@@ -48,12 +49,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks;
 import com.netflix.mediaclient.service.logging.client.model.Error;
-import android.content.Context;
 import com.netflix.mediaclient.util.log.SignInLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.servicemgr.SignInLogging$CredentialService;
 import com.netflix.mediaclient.Log;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.Status;
@@ -69,7 +69,7 @@ class EmailPasswordFragment$6 implements ResultCallback<Status>
     
     @Override
     public void onResult(final Status status) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.getNetflixActivity())) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.getNetflixActivity())) {
             Log.e("LoginBaseFragment", "Auth.CredentialsApi.save onResult ActivityFinishedOrDestroyed");
         }
         else {

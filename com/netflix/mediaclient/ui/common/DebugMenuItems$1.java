@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.common;
 
+import com.netflix.mediaclient.util.net.CronetHttpURLConnectionFactory;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
@@ -12,11 +13,12 @@ import android.os.Handler;
 import android.os.Debug;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.home.HomeActivity;
+import com.netflix.mediaclient.android.debug.DebugOverlay;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.ui.offline.TutorialHelper;
 import android.content.Context;
-import android.content.Intent;
-import com.netflix.mediaclient.android.activity.KitchensinkActivity;
+import com.netflix.android.tooltips.Tooltip;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -29,7 +31,8 @@ class DebugMenuItems$1 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        this.this$0.activity.startActivity(new Intent((Context)this.this$0.activity, (Class)KitchensinkActivity.class));
+        Tooltip.clearPrefs((Context)this.this$0.activity);
+        TutorialHelper.clearPrefs((Context)this.this$0.activity);
         return true;
     }
 }

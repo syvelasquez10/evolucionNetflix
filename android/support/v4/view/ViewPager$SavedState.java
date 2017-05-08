@@ -9,9 +9,8 @@ import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 import android.support.v4.os.ParcelableCompat;
 import android.os.Parcelable;
 import android.os.Parcelable$Creator;
-import android.view.View$BaseSavedState;
 
-public class ViewPager$SavedState extends View$BaseSavedState
+public class ViewPager$SavedState extends AbsSavedState
 {
     public static final Parcelable$Creator<ViewPager$SavedState> CREATOR;
     Parcelable adapterState;
@@ -23,7 +22,7 @@ public class ViewPager$SavedState extends View$BaseSavedState
     }
     
     ViewPager$SavedState(final Parcel parcel, final ClassLoader classLoader) {
-        super(parcel);
+        super(parcel, classLoader);
         ClassLoader classLoader2 = classLoader;
         if (classLoader == null) {
             classLoader2 = this.getClass().getClassLoader();
@@ -37,10 +36,12 @@ public class ViewPager$SavedState extends View$BaseSavedState
         super(parcelable);
     }
     
+    @Override
     public String toString() {
         return "FragmentPager.SavedState{" + Integer.toHexString(System.identityHashCode(this)) + " position=" + this.position + "}";
     }
     
+    @Override
     public void writeToParcel(final Parcel parcel, final int n) {
         super.writeToParcel(parcel, n);
         parcel.writeInt(this.position);

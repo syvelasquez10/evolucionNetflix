@@ -411,6 +411,44 @@ public final class be extends Transaction implements cf
         be.u = u;
     }
     
+    private void b(final int n) {
+        // monitorenter(this)
+        Label_0015: {
+            if (n >= 0) {
+                break Label_0015;
+            }
+            while (true) {
+                try {
+                    dw.b("Ignoring Transaction.setValue(int) call. Negative parameter provided.");
+                    return;
+                    // iftrue(Label_0038:, this.b != be$a.a)
+                    this.g = n;
+                    return;
+                }
+                finally {
+                }
+                // monitorexit(this)
+                Label_0038: {
+                    if (this.b == be$a.b) {
+                        this.g = n;
+                        final be$7 be$7 = new be$7(this, new be(this));
+                        synchronized (be.c) {
+                            be.c.execute(be$7);
+                            return;
+                        }
+                    }
+                }
+                dw.b("Transaction " + this.e + " no longer in progress. Ignoring setValue(int) call.", new IllegalStateException("Transaction no longer in progress"));
+            }
+        }
+    }
+    
+    private void b(final long n) {
+        synchronized (this) {
+            this.a(be$a.e, n);
+        }
+    }
+    
     public static void b(final ax p0) {
         // 
         // This method could not be decompiled.
@@ -977,10 +1015,29 @@ public final class be extends Transaction implements cf
         }
     }
     
+    private int r() {
+        synchronized (this) {
+            return this.g;
+        }
+    }
+    
     @Override
     public final void a() {
         try {
             this.o();
+        }
+        catch (ThreadDeath threadDeath) {
+            throw threadDeath;
+        }
+        catch (Throwable t) {
+            dw.b(t);
+        }
+    }
+    
+    @Override
+    public final void a(final int n) {
+        try {
+            this.b(n);
         }
         catch (ThreadDeath threadDeath) {
             throw threadDeath;
@@ -1008,6 +1065,20 @@ public final class be extends Transaction implements cf
     }
     
     @Override
+    public final int a_() {
+        try {
+            return this.r();
+        }
+        catch (ThreadDeath threadDeath) {
+            throw threadDeath;
+        }
+        catch (Throwable t) {
+            dw.b(t);
+            return -1;
+        }
+    }
+    
+    @Override
     public final void b() {
         try {
             this.a(System.nanoTime());
@@ -1020,6 +1091,20 @@ public final class be extends Transaction implements cf
         }
     }
     
+    @Override
+    public final void c() {
+        try {
+            this.b(System.nanoTime());
+        }
+        catch (ThreadDeath threadDeath) {
+            throw threadDeath;
+        }
+        catch (Throwable t) {
+            dw.b(t);
+        }
+    }
+    
+    @Override
     public final void d() {
         try {
             this.c(System.nanoTime());

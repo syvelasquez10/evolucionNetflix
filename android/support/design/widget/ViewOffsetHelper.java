@@ -4,8 +4,6 @@
 
 package android.support.design.widget;
 
-import android.view.ViewParent;
-import android.os.Build$VERSION;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 
@@ -21,22 +19,21 @@ class ViewOffsetHelper
         this.mView = mView;
     }
     
-    private static void tickleInvalidationFlag(final View view) {
-        final float translationX = ViewCompat.getTranslationX(view);
-        ViewCompat.setTranslationX(view, 1.0f + translationX);
-        ViewCompat.setTranslationX(view, translationX);
-    }
-    
     private void updateOffsets() {
         ViewCompat.offsetTopAndBottom(this.mView, this.mOffsetTop - (this.mView.getTop() - this.mLayoutTop));
         ViewCompat.offsetLeftAndRight(this.mView, this.mOffsetLeft - (this.mView.getLeft() - this.mLayoutLeft));
-        if (Build$VERSION.SDK_INT < 23) {
-            tickleInvalidationFlag(this.mView);
-            final ViewParent parent = this.mView.getParent();
-            if (parent instanceof View) {
-                tickleInvalidationFlag((View)parent);
-            }
-        }
+    }
+    
+    public int getLayoutLeft() {
+        return this.mLayoutLeft;
+    }
+    
+    public int getLayoutTop() {
+        return this.mLayoutTop;
+    }
+    
+    public int getLeftAndRightOffset() {
+        return this.mOffsetLeft;
     }
     
     public int getTopAndBottomOffset() {

@@ -8,6 +8,8 @@ import android.view.View;
 
 public interface NestedScrollingParent
 {
+    int getNestedScrollAxes();
+    
     boolean onNestedFling(final View p0, final float p1, final float p2, final boolean p3);
     
     boolean onNestedPreFling(final View p0, final float p1, final float p2);

@@ -6,5 +6,7 @@ package com.netflix.mediaclient.service.job;
 
 public interface ServiceManagerHelper$ServiceManagerHelperListener
 {
+    void serviceManagerFailed();
+    
     void serviceManagerReady();
 }

@@ -8,6 +8,9 @@ import android.os.Build$VERSION;
 
 public abstract class VolumeProviderCompat
 {
+    public static final int VOLUME_CONTROL_ABSOLUTE = 2;
+    public static final int VOLUME_CONTROL_FIXED = 0;
+    public static final int VOLUME_CONTROL_RELATIVE = 1;
     private VolumeProviderCompat$Callback mCallback;
     private final int mControlType;
     private int mCurrentVolume;
@@ -18,6 +21,18 @@ public abstract class VolumeProviderCompat
         this.mControlType = mControlType;
         this.mMaxVolume = mMaxVolume;
         this.mCurrentVolume = mCurrentVolume;
+    }
+    
+    public final int getCurrentVolume() {
+        return this.mCurrentVolume;
+    }
+    
+    public final int getMaxVolume() {
+        return this.mMaxVolume;
+    }
+    
+    public final int getVolumeControl() {
+        return this.mControlType;
     }
     
     public Object getVolumeProvider() {
@@ -31,6 +46,10 @@ public abstract class VolumeProviderCompat
     }
     
     public void onSetVolumeTo(final int n) {
+    }
+    
+    public void setCallback(final VolumeProviderCompat$Callback mCallback) {
+        this.mCallback = mCallback;
     }
     
     public final void setCurrentVolume(final int mCurrentVolume) {

@@ -117,20 +117,20 @@ class RoleDetailsFrag$ActorRelatedView extends RelativeLayout implements Checkab
     }
     
     private void findViews() {
-        this.synopsis = (TextView)this.findViewById(2131690249);
-        this.duration = (TextView)this.findViewById(2131690250);
-        this.titleExpanded = (TextView)this.findViewById(2131690246);
-        this.title = (TextView)this.findViewById(2131690242);
-        this.genre = (TextView)this.findViewById(2131690251);
-        this.storyArtImage = (AdvancedImageView)this.findViewById(2131690228);
-        this.storyArtImageExpanded = (AdvancedImageView)this.findViewById(2131690245);
-        this.titleImage = (AdvancedImageView)this.findViewById(2131690241);
-        this.addToQueue = (TextView)this.findViewById(2131690248);
-        this.expand = this.findViewById(2131690243);
-        this.showDP = this.findViewById(2131690247);
-        this.expandedGroup = (ViewGroup)this.findViewById(2131690244);
-        this.unExpandedGroup = (ViewGroup)this.findViewById(2131690240);
-        this.flipper = (ViewFlipper)this.findViewById(2131690239);
+        this.synopsis = (TextView)this.findViewById(2131690295);
+        this.duration = (TextView)this.findViewById(2131690296);
+        this.titleExpanded = (TextView)this.findViewById(2131690292);
+        this.title = (TextView)this.findViewById(2131690288);
+        this.genre = (TextView)this.findViewById(2131690297);
+        this.storyArtImage = (AdvancedImageView)this.findViewById(2131690274);
+        this.storyArtImageExpanded = (AdvancedImageView)this.findViewById(2131690291);
+        this.titleImage = (AdvancedImageView)this.findViewById(2131690287);
+        this.addToQueue = (TextView)this.findViewById(2131690294);
+        this.expand = this.findViewById(2131690289);
+        this.showDP = this.findViewById(2131690293);
+        this.expandedGroup = (ViewGroup)this.findViewById(2131690290);
+        this.unExpandedGroup = (ViewGroup)this.findViewById(2131690286);
+        this.flipper = (ViewFlipper)this.findViewById(2131690285);
     }
     
     private void init() {
@@ -236,7 +236,7 @@ class RoleDetailsFrag$ActorRelatedView extends RelativeLayout implements Checkab
     }
     
     protected void adjustHeight(final ImageView imageView) {
-        imageView.getLayoutParams().height = (int)((BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131361867) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
+        imageView.getLayoutParams().height = (int)((BarkerUtils.getDetailsPageContentWidth((Context)this.this$0.getActivity()) - this.this$0.getActivity().getResources().getDimensionPixelOffset(2131361869) * (this.this$0.numColumns + 1.0f)) / this.this$0.numColumns * 0.5625f);
     }
     
     public String getImageUrl(final Object o, final boolean b) {
@@ -248,7 +248,7 @@ class RoleDetailsFrag$ActorRelatedView extends RelativeLayout implements Checkab
     }
     
     protected int getlayoutId() {
-        return 2130903257;
+        return 2130903276;
     }
     
     public void hide() {

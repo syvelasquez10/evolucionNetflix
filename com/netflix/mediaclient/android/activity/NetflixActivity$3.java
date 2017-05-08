@@ -4,12 +4,14 @@
 
 package com.netflix.mediaclient.android.activity;
 
-import com.netflix.mediaclient.Log;
 import android.content.Intent;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$ReturnToDialScreenFrom;
 import android.content.Context;
-import android.content.BroadcastReceiver;
+import com.netflix.mediaclient.ui.voip.ContactUsActivity;
+import android.view.View;
+import android.view.View$OnClickListener;
 
-class NetflixActivity$3 extends BroadcastReceiver
+class NetflixActivity$3 implements View$OnClickListener
 {
     final /* synthetic */ NetflixActivity this$0;
     
@@ -17,10 +19,12 @@ class NetflixActivity$3 extends BroadcastReceiver
         this.this$0 = this$0;
     }
     
-    public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable()) {
-            Log.v("NetflixActivity", "Finishing activity " + this.this$0.getClass().getSimpleName() + " from intent: " + intent.getAction());
+    public void onClick(final View view) {
+        final Intent startIntent = ContactUsActivity.createStartIntent((Context)this.this$0);
+        if (this.this$0.getUiScreen() != null) {
+            startIntent.putExtra("source", this.this$0.getUiScreen().name());
         }
-        this.this$0.finish();
+        startIntent.putExtra("from", CustomerServiceLogging$ReturnToDialScreenFrom.fab.name());
+        this.this$0.startActivity(startIntent);
     }
 }

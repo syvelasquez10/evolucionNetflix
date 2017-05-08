@@ -4,6 +4,8 @@
 
 package com.crittercism.internal;
 
+import com.crittercism.app.Crittercism$LoggingLevel;
+
 public enum dw$b
 {
     a("Silent", 0, 0), 
@@ -17,6 +19,26 @@ public enum dw$b
     
     private dw$b(final String s, final int n, final int g) {
         this.g = g;
+    }
+    
+    public static dw$b a(final Crittercism$LoggingLevel crittercism$LoggingLevel) {
+        switch (dw$1.b[crittercism$LoggingLevel.ordinal()]) {
+            default: {
+                return dw$b.c;
+            }
+            case 1: {
+                return dw$b.a;
+            }
+            case 2: {
+                return dw$b.b;
+            }
+            case 3: {
+                return dw$b.c;
+            }
+            case 4: {
+                return dw$b.d;
+            }
+        }
     }
     
     public final boolean a(final dw$b dw$b) {

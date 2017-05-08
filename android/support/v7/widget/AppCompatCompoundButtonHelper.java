@@ -5,7 +5,7 @@
 package android.support.v7.widget;
 
 import android.content.res.TypedArray;
-import android.support.v7.graphics.drawable.DrawableUtils;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.appcompat.R$styleable;
 import android.util.AttributeSet;
 import android.os.Build$VERSION;
@@ -13,7 +13,6 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.CompoundButtonCompat;
 import android.widget.CompoundButton;
-import android.support.v7.internal.widget.TintManager;
 import android.graphics.PorterDuff$Mode;
 import android.content.res.ColorStateList;
 
@@ -24,16 +23,14 @@ class AppCompatCompoundButtonHelper
     private boolean mHasButtonTint;
     private boolean mHasButtonTintMode;
     private boolean mSkipNextApply;
-    private final TintManager mTintManager;
     private final CompoundButton mView;
     
-    AppCompatCompoundButtonHelper(final CompoundButton mView, final TintManager mTintManager) {
+    AppCompatCompoundButtonHelper(final CompoundButton mView) {
         this.mButtonTintList = null;
         this.mButtonTintMode = null;
         this.mHasButtonTint = false;
         this.mHasButtonTintMode = false;
         this.mView = mView;
-        this.mTintManager = mTintManager;
     }
     
     void applyButtonTint() {
@@ -79,7 +76,7 @@ class AppCompatCompoundButtonHelper
             if (((TypedArray)obtainStyledAttributes).hasValue(R$styleable.CompoundButton_android_button)) {
                 resourceId = ((TypedArray)obtainStyledAttributes).getResourceId(R$styleable.CompoundButton_android_button, 0);
                 if (resourceId != 0) {
-                    this.mView.setButtonDrawable(this.mTintManager.getDrawable(resourceId));
+                    this.mView.setButtonDrawable(AppCompatResources.getDrawable(this.mView.getContext(), resourceId));
                 }
             }
             if (((TypedArray)obtainStyledAttributes).hasValue(R$styleable.CompoundButton_buttonTint)) {

@@ -25,22 +25,27 @@ public class TabLayout$TabLayoutOnPageChangeListener implements ViewPager$OnPage
     
     @Override
     public void onPageScrolled(final int n, final float n2, final int n3) {
-        final boolean b = true;
+        boolean b = false;
         final TabLayout tabLayout = this.mTabLayoutRef.get();
         if (tabLayout != null) {
-            boolean b2 = b;
-            if (this.mScrollState != 1) {
-                b2 = (this.mScrollState == 2 && this.mPreviousScrollState == 1 && b);
+            final boolean b2 = this.mScrollState != 2 || this.mPreviousScrollState == 1;
+            if (this.mScrollState != 2 || this.mPreviousScrollState != 0) {
+                b = true;
             }
-            tabLayout.setScrollPosition(n, n2, b2);
+            tabLayout.setScrollPosition(n, n2, b2, b);
         }
     }
     
     @Override
     public void onPageSelected(final int n) {
         final TabLayout tabLayout = this.mTabLayoutRef.get();
-        if (tabLayout != null) {
-            tabLayout.selectTab(tabLayout.getTabAt(n), this.mScrollState == 0);
+        if (tabLayout != null && tabLayout.getSelectedTabPosition() != n && n < tabLayout.getTabCount()) {
+            tabLayout.selectTab(tabLayout.getTabAt(n), this.mScrollState == 0 || (this.mScrollState == 2 && this.mPreviousScrollState == 0));
         }
+    }
+    
+    void reset() {
+        this.mScrollState = 0;
+        this.mPreviousScrollState = 0;
     }
 }

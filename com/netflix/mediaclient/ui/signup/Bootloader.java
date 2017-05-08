@@ -13,6 +13,7 @@ import com.netflix.mediaclient.servicemgr.ServiceManager;
 
 final class Bootloader
 {
+    private static final String PARAMETER_CHANNEL_ID = "channelId";
     private static final String PARAMETER_DEVICE_CATEGORY = "device_cat";
     private static final String PARAMETER_DEVICE_LANGUAGE = "locale";
     private static final String PARAMETER_FULL_ESN = "esn";
@@ -26,6 +27,7 @@ final class Bootloader
     private static final String PARAMETER_SOFTWARE_VERSION = "sw_version";
     private static final String PARAMETER_VIDEO_ID = "titleVideoId";
     private static final String TAG = "SignupActivity";
+    private static final String TEMP_CHANNLE_ID = "780bd1ac-0bef-4578-bf41-5cd4d3acd5a1";
     private boolean mIsPlayBillingEnabled;
     private boolean mIsPreloaded;
     private String mLang;
@@ -99,7 +101,8 @@ final class Bootloader
         else {
             s = "false";
         }
-        append2.append(s);
+        append2.append(s).append('&');
+        sb.append("channelId").append('=').append("780bd1ac-0bef-4578-bf41-5cd4d3acd5a1");
         if (this.mUuid != null) {
             sb.append('&').append("uuid").append('=').append(this.mUuid);
         }

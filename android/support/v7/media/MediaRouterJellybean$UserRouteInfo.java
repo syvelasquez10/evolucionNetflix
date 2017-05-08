@@ -5,6 +5,7 @@
 package android.support.v7.media;
 
 import android.media.MediaRouter$VolumeCallback;
+import android.media.RemoteControlClient;
 import android.media.MediaRouter$UserRouteInfo;
 
 public final class MediaRouterJellybean$UserRouteInfo
@@ -19,6 +20,10 @@ public final class MediaRouterJellybean$UserRouteInfo
     
     public static void setPlaybackType(final Object o, final int playbackType) {
         ((MediaRouter$UserRouteInfo)o).setPlaybackType(playbackType);
+    }
+    
+    public static void setRemoteControlClient(final Object o, final Object o2) {
+        ((MediaRouter$UserRouteInfo)o).setRemoteControlClient((RemoteControlClient)o2);
     }
     
     public static void setVolume(final Object o, final int volume) {

@@ -4,6 +4,8 @@
 
 package android.support.design.widget;
 
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.GravityCompat;
 import android.view.ViewParent;
 import android.view.ViewGroup$LayoutParams;
 import android.content.res.TypedArray;
@@ -17,7 +19,9 @@ import android.view.ViewGroup$MarginLayoutParams;
 public class CoordinatorLayout$LayoutParams extends ViewGroup$MarginLayoutParams
 {
     public int anchorGravity;
+    public int dodgeInsetEdges;
     public int gravity;
+    public int insetEdge;
     public int keyline;
     View mAnchorDirectChild;
     int mAnchorId;
@@ -28,6 +32,8 @@ public class CoordinatorLayout$LayoutParams extends ViewGroup$MarginLayoutParams
     private boolean mDidAcceptNestedScroll;
     private boolean mDidBlockInteraction;
     private boolean mDidChangeAfterNestedScroll;
+    int mInsetOffsetX;
+    int mInsetOffsetY;
     final Rect mLastChildRect;
     
     public CoordinatorLayout$LayoutParams(final int n, final int n2) {
@@ -37,6 +43,8 @@ public class CoordinatorLayout$LayoutParams extends ViewGroup$MarginLayoutParams
         this.anchorGravity = 0;
         this.keyline = -1;
         this.mAnchorId = -1;
+        this.insetEdge = 0;
+        this.dodgeInsetEdges = 0;
         this.mLastChildRect = new Rect();
     }
     
@@ -47,17 +55,24 @@ public class CoordinatorLayout$LayoutParams extends ViewGroup$MarginLayoutParams
         this.anchorGravity = 0;
         this.keyline = -1;
         this.mAnchorId = -1;
+        this.insetEdge = 0;
+        this.dodgeInsetEdges = 0;
         this.mLastChildRect = new Rect();
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.CoordinatorLayout_LayoutParams);
-        this.gravity = obtainStyledAttributes.getInteger(R$styleable.CoordinatorLayout_LayoutParams_android_layout_gravity, 0);
-        this.mAnchorId = obtainStyledAttributes.getResourceId(R$styleable.CoordinatorLayout_LayoutParams_layout_anchor, -1);
-        this.anchorGravity = obtainStyledAttributes.getInteger(R$styleable.CoordinatorLayout_LayoutParams_layout_anchorGravity, 0);
-        this.keyline = obtainStyledAttributes.getInteger(R$styleable.CoordinatorLayout_LayoutParams_layout_keyline, -1);
-        this.mBehaviorResolved = obtainStyledAttributes.hasValue(R$styleable.CoordinatorLayout_LayoutParams_layout_behavior);
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.CoordinatorLayout_Layout);
+        this.gravity = obtainStyledAttributes.getInteger(R$styleable.CoordinatorLayout_Layout_android_layout_gravity, 0);
+        this.mAnchorId = obtainStyledAttributes.getResourceId(R$styleable.CoordinatorLayout_Layout_layout_anchor, -1);
+        this.anchorGravity = obtainStyledAttributes.getInteger(R$styleable.CoordinatorLayout_Layout_layout_anchorGravity, 0);
+        this.keyline = obtainStyledAttributes.getInteger(R$styleable.CoordinatorLayout_Layout_layout_keyline, -1);
+        this.insetEdge = obtainStyledAttributes.getInt(R$styleable.CoordinatorLayout_Layout_layout_insetEdge, 0);
+        this.dodgeInsetEdges = obtainStyledAttributes.getInt(R$styleable.CoordinatorLayout_Layout_layout_dodgeInsetEdges, 0);
+        this.mBehaviorResolved = obtainStyledAttributes.hasValue(R$styleable.CoordinatorLayout_Layout_layout_behavior);
         if (this.mBehaviorResolved) {
-            this.mBehavior = CoordinatorLayout.parseBehavior(context, set, obtainStyledAttributes.getString(R$styleable.CoordinatorLayout_LayoutParams_layout_behavior));
+            this.mBehavior = CoordinatorLayout.parseBehavior(context, set, obtainStyledAttributes.getString(R$styleable.CoordinatorLayout_Layout_layout_behavior));
         }
         obtainStyledAttributes.recycle();
+        if (this.mBehavior != null) {
+            this.mBehavior.onAttachedToLayoutParams(this);
+        }
     }
     
     public CoordinatorLayout$LayoutParams(final CoordinatorLayout$LayoutParams coordinatorLayout$LayoutParams) {
@@ -67,6 +82,8 @@ public class CoordinatorLayout$LayoutParams extends ViewGroup$MarginLayoutParams
         this.anchorGravity = 0;
         this.keyline = -1;
         this.mAnchorId = -1;
+        this.insetEdge = 0;
+        this.dodgeInsetEdges = 0;
         this.mLastChildRect = new Rect();
     }
     
@@ -77,6 +94,8 @@ public class CoordinatorLayout$LayoutParams extends ViewGroup$MarginLayoutParams
         this.anchorGravity = 0;
         this.keyline = -1;
         this.mAnchorId = -1;
+        this.insetEdge = 0;
+        this.dodgeInsetEdges = 0;
         this.mLastChildRect = new Rect();
     }
     
@@ -87,39 +106,56 @@ public class CoordinatorLayout$LayoutParams extends ViewGroup$MarginLayoutParams
         this.anchorGravity = 0;
         this.keyline = -1;
         this.mAnchorId = -1;
+        this.insetEdge = 0;
+        this.dodgeInsetEdges = 0;
         this.mLastChildRect = new Rect();
     }
     
     private void resolveAnchorView(final View view, final CoordinatorLayout coordinatorLayout) {
         this.mAnchorView = coordinatorLayout.findViewById(this.mAnchorId);
         if (this.mAnchorView != null) {
-            View mAnchorView = this.mAnchorView;
-            ViewParent viewParent = this.mAnchorView.getParent();
-            while (viewParent != coordinatorLayout && viewParent != null) {
-                if (viewParent == view) {
-                    if (coordinatorLayout.isInEditMode()) {
-                        this.mAnchorDirectChild = null;
-                        this.mAnchorView = null;
-                        return;
+            if (this.mAnchorView != coordinatorLayout) {
+                View mAnchorView = this.mAnchorView;
+                ViewParent viewParent = this.mAnchorView.getParent();
+                while (viewParent != coordinatorLayout && viewParent != null) {
+                    if (viewParent == view) {
+                        if (coordinatorLayout.isInEditMode()) {
+                            this.mAnchorDirectChild = null;
+                            this.mAnchorView = null;
+                            return;
+                        }
+                        throw new IllegalStateException("Anchor must not be a descendant of the anchored view");
                     }
-                    throw new IllegalStateException("Anchor must not be a descendant of the anchored view");
-                }
-                else {
-                    if (viewParent instanceof View) {
-                        mAnchorView = (View)viewParent;
+                    else {
+                        if (viewParent instanceof View) {
+                            mAnchorView = (View)viewParent;
+                        }
+                        viewParent = viewParent.getParent();
                     }
-                    viewParent = viewParent.getParent();
                 }
+                this.mAnchorDirectChild = mAnchorView;
+                return;
             }
-            this.mAnchorDirectChild = mAnchorView;
-            return;
+            if (coordinatorLayout.isInEditMode()) {
+                this.mAnchorDirectChild = null;
+                this.mAnchorView = null;
+                return;
+            }
+            throw new IllegalStateException("View can not be anchored to the the parent CoordinatorLayout");
         }
-        if (coordinatorLayout.isInEditMode()) {
-            this.mAnchorDirectChild = null;
-            this.mAnchorView = null;
-            return;
+        else {
+            if (coordinatorLayout.isInEditMode()) {
+                this.mAnchorDirectChild = null;
+                this.mAnchorView = null;
+                return;
+            }
+            throw new IllegalStateException("Could not find CoordinatorLayout descendant view with id " + coordinatorLayout.getResources().getResourceName(this.mAnchorId) + " to anchor view " + view);
         }
-        throw new IllegalStateException("Could not find CoordinatorLayout descendant view with id " + coordinatorLayout.getResources().getResourceName(this.mAnchorId) + " to anchor view " + view);
+    }
+    
+    private boolean shouldDodge(final View view, final int n) {
+        final int absoluteGravity = GravityCompat.getAbsoluteGravity(((CoordinatorLayout$LayoutParams)view.getLayoutParams()).insetEdge, n);
+        return absoluteGravity != 0 && (GravityCompat.getAbsoluteGravity(this.dodgeInsetEdges, n) & absoluteGravity) == absoluteGravity;
     }
     
     private boolean verifyAnchorView(final View view, final CoordinatorLayout coordinatorLayout) {
@@ -150,7 +186,7 @@ public class CoordinatorLayout$LayoutParams extends ViewGroup$MarginLayoutParams
     }
     
     boolean dependsOn(final CoordinatorLayout coordinatorLayout, final View view, final View view2) {
-        return view2 == this.mAnchorDirectChild || (this.mBehavior != null && this.mBehavior.layoutDependsOn(coordinatorLayout, view, view2));
+        return view2 == this.mAnchorDirectChild || this.shouldDodge(view2, ViewCompat.getLayoutDirection((View)coordinatorLayout)) || (this.mBehavior != null && this.mBehavior.layoutDependsOn(coordinatorLayout, view, view2));
     }
     
     boolean didBlockInteraction() {
@@ -196,10 +232,6 @@ public class CoordinatorLayout$LayoutParams extends ViewGroup$MarginLayoutParams
         return this.mDidBlockInteraction || (this.mDidBlockInteraction |= (this.mBehavior != null && this.mBehavior.blocksInteractionBelow(coordinatorLayout, view)));
     }
     
-    boolean isDirty(final CoordinatorLayout coordinatorLayout, final View view) {
-        return this.mBehavior != null && this.mBehavior.isDirty(coordinatorLayout, view);
-    }
-    
     boolean isNestedScrollAccepted() {
         return this.mDidAcceptNestedScroll;
     }
@@ -223,9 +255,15 @@ public class CoordinatorLayout$LayoutParams extends ViewGroup$MarginLayoutParams
     
     public void setBehavior(final CoordinatorLayout$Behavior mBehavior) {
         if (this.mBehavior != mBehavior) {
+            if (this.mBehavior != null) {
+                this.mBehavior.onDetachedFromLayoutParams();
+            }
             this.mBehavior = mBehavior;
             this.mBehaviorTag = null;
             this.mBehaviorResolved = true;
+            if (mBehavior != null) {
+                mBehavior.onAttachedToLayoutParams(this);
+            }
         }
     }
     

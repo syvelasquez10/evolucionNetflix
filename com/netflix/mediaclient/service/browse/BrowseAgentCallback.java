@@ -12,6 +12,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
@@ -70,6 +71,8 @@ public interface BrowseAgentCallback
     void onMovieDetailsFetched(final MovieDetails p0, final Status p1);
     
     void onNotificationsListFetched(final IrisNotificationsList p0, final Status p1);
+    
+    void onOfflineGeoPlayabilityReceived(final Map<String, Boolean> p0, final Status p1);
     
     void onPersonDetailFetched(final FalkorPerson p0, final FalkorActorStill p1, final Status p2);
     

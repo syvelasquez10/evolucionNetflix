@@ -4,6 +4,13 @@
 
 package android.support.v4.app;
 
+import android.transition.Transition$EpicenterCallback;
+import java.util.Collection;
+import java.util.List;
+import android.transition.TransitionManager;
+import android.view.ViewGroup;
+import android.transition.TransitionSet;
+import android.graphics.Rect;
 import java.util.Iterator;
 import java.util.Map;
 import android.view.View;
@@ -43,9 +50,13 @@ final class FragmentTransitionCompat21$4 implements ViewTreeObserver$OnPreDrawLi
         this.val$sceneRoot.getViewTreeObserver().removeOnPreDrawListener((ViewTreeObserver$OnPreDrawListener)this);
         if (this.val$enterTransition != null) {
             FragmentTransitionCompat21.removeTargets(this.val$enterTransition, this.val$enteringViews);
+            excludeViews(this.val$enterTransition, this.val$exitTransition, this.val$exitingViews, false);
+            excludeViews(this.val$enterTransition, this.val$sharedElementTransition, this.val$sharedElementTargets, false);
         }
         if (this.val$exitTransition != null) {
             FragmentTransitionCompat21.removeTargets(this.val$exitTransition, this.val$exitingViews);
+            excludeViews(this.val$exitTransition, this.val$enterTransition, this.val$enteringViews, false);
+            excludeViews(this.val$exitTransition, this.val$sharedElementTransition, this.val$sharedElementTargets, false);
         }
         if (this.val$sharedElementTransition != null) {
             FragmentTransitionCompat21.removeTargets(this.val$sharedElementTransition, this.val$sharedElementTargets);

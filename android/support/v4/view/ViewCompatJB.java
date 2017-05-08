@@ -4,11 +4,16 @@
 
 package android.support.v4.view;
 
+import android.os.Bundle;
 import android.view.ViewParent;
 import android.view.View;
 
 class ViewCompatJB
 {
+    public static Object getAccessibilityNodeProvider(final View view) {
+        return view.getAccessibilityNodeProvider();
+    }
+    
     public static boolean getFitsSystemWindows(final View view) {
         return view.getFitsSystemWindows();
     }
@@ -37,8 +42,16 @@ class ViewCompatJB
         return view.hasTransientState();
     }
     
+    public static boolean performAccessibilityAction(final View view, final int n, final Bundle bundle) {
+        return view.performAccessibilityAction(n, bundle);
+    }
+    
     public static void postInvalidateOnAnimation(final View view) {
         view.postInvalidateOnAnimation();
+    }
+    
+    public static void postInvalidateOnAnimation(final View view, final int n, final int n2, final int n3, final int n4) {
+        view.postInvalidate(n, n2, n3, n4);
     }
     
     public static void postOnAnimation(final View view, final Runnable runnable) {
@@ -51,6 +64,10 @@ class ViewCompatJB
     
     public static void requestApplyInsets(final View view) {
         view.requestFitSystemWindows();
+    }
+    
+    public static void setHasTransientState(final View view, final boolean hasTransientState) {
+        view.setHasTransientState(hasTransientState);
     }
     
     public static void setImportantForAccessibility(final View view, final int importantForAccessibility) {

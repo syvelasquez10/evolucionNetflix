@@ -4,7 +4,10 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
 import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
+import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.servicemgr.ServiceManagerUtils;
 import com.netflix.mediaclient.ui.common.PlayContextProvider;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
@@ -17,6 +20,7 @@ import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
+import com.netflix.mediaclient.ui.offline.DownloadButton;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
@@ -31,11 +35,12 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     public VideoDetailsViewGroup detailsViewGroup;
     protected final ErrorWrapper$Callback errorCallback;
     protected LoadingAndErrorWrapper leWrapper;
+    private DownloadButton mShowDownloadButton;
     private T mVideoDetails;
     protected View primaryView;
     
     public DetailsFrag() {
-        this.errorCallback = new DetailsFrag$1(this);
+        this.errorCallback = new DetailsFrag$2(this);
     }
     
     protected static AddToListData$StateListener addToMyListWrapper(final VideoDetailsViewGroup videoDetailsViewGroup, final NetflixActivity netflixActivity, final ServiceManager serviceManager, final String s) {
@@ -61,7 +66,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
             return null;
         }
         if (serviceManager.getCurrentProfile().isKidsProfile()) {
-            addToMyListButton.setVisibility(8);
+            videoDetailsViewGroup.getMyListGroup().setVisibility(8);
             return null;
         }
         final AddToListData$StateListener addToMyListWrapper = serviceManager.createAddToMyListWrapper((DetailsActivity)netflixActivity, addToMyListButton, videoDetailsViewGroup.getAddToMyListButtonLabel(), false);
@@ -72,11 +77,11 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     protected abstract VideoDetailsViewGroup$DetailsStringProvider getDetailsStringProvider(final T p0);
     
     protected int getLayoutId() {
-        return 2130903292;
+        return 2130903313;
     }
     
     protected int getPrimaryViewId() {
-        return 2131690317;
+        return 2131690382;
     }
     
     public String getTitle() {
@@ -151,6 +156,7 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
     protected abstract void reloadData();
     
     protected void showDetailsView(final T mVideoDetails) {
+        final ServiceManager serviceManager = this.getServiceManager();
         this.mVideoDetails = mVideoDetails;
         this.leWrapper.hide(true);
         if (this.primaryView != null) {
@@ -160,13 +166,30 @@ public abstract class DetailsFrag<T extends VideoDetails> extends NetflixFrag im
         if (this.getActivity() instanceof PlayContextProvider) {
             playContext = ((PlayContextProvider)this.getActivity()).getPlayContext();
         }
-        ServiceManagerUtils.castPrefetchAndCacheManifestIfEnabled(this.getServiceManager(), this.mVideoDetails.getPlayable(), playContext);
+        ServiceManagerUtils.castPrefetchAndCacheManifestIfEnabled(serviceManager, this.mVideoDetails.getPlayable(), playContext);
         this.detailsViewGroup.updateDetails(mVideoDetails, this.getDetailsStringProvider(mVideoDetails));
-        this.addToListWrapper = addToMyListWrapper(this.detailsViewGroup, (NetflixActivity)this.getActivity(), this.getServiceManager(), this.getVideoId());
+        this.addToListWrapper = addToMyListWrapper(this.detailsViewGroup, (NetflixActivity)this.getActivity(), serviceManager, this.getVideoId());
+        this.mShowDownloadButton = this.detailsViewGroup.getDownloadButton();
+        if (this.mShowDownloadButton != null) {
+            if (serviceManager == null || !serviceManager.isOfflineFeatureAvailable()) {
+                ViewUtils.setVisibleOrGone((View)this.mShowDownloadButton, false);
+                return;
+            }
+            if (this.mVideoDetails.getType() == VideoType.MOVIE) {
+                this.mShowDownloadButton.setVisibility(0);
+                this.mShowDownloadButton.setEnabled(true);
+                this.mShowDownloadButton.setStateFromPlayable(mVideoDetails.getPlayable(), this.getNetflixActivity());
+                return;
+            }
+            this.mShowDownloadButton.setVisibility(8);
+        }
     }
     
     protected void showErrorView() {
         this.leWrapper.showErrorView(true);
+        if (this.getNetflixActivity() != null) {
+            this.getNetflixActivity().runWhenManagerIsReady(new DetailsFrag$1(this));
+        }
         if (this.primaryView != null) {
             AnimationUtils.hideView(this.primaryView, true);
         }

@@ -9,12 +9,10 @@ import android.os.Build$VERSION;
 import android.view.accessibility.AccessibilityEvent;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.internal.widget.ViewUtils;
 import android.graphics.Canvas;
 import android.view.ViewGroup$LayoutParams;
 import android.view.View;
 import android.view.View$MeasureSpec;
-import android.support.v7.internal.widget.TintTypedArray;
 import android.support.v7.appcompat.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
@@ -23,6 +21,17 @@ import android.view.ViewGroup;
 
 public class LinearLayoutCompat extends ViewGroup
 {
+    public static final int HORIZONTAL = 0;
+    private static final int INDEX_BOTTOM = 2;
+    private static final int INDEX_CENTER_VERTICAL = 0;
+    private static final int INDEX_FILL = 3;
+    private static final int INDEX_TOP = 1;
+    public static final int SHOW_DIVIDER_BEGINNING = 1;
+    public static final int SHOW_DIVIDER_END = 4;
+    public static final int SHOW_DIVIDER_MIDDLE = 2;
+    public static final int SHOW_DIVIDER_NONE = 0;
+    public static final int VERTICAL = 1;
+    private static final int VERTICAL_GRAVITY_COUNT = 4;
     private boolean mBaselineAligned;
     private int mBaselineAlignedChildIndex;
     private int mBaselineChildTop;
@@ -313,6 +322,14 @@ public class LinearLayoutCompat extends ViewGroup
             return false;
         }
         return true;
+    }
+    
+    public boolean isBaselineAligned() {
+        return this.mBaselineAligned;
+    }
+    
+    public boolean isMeasureWithLargestChildEnabled() {
+        return this.mUseLargestChild;
     }
     
     void layoutHorizontal(int n, int i, int n2, int n3) {

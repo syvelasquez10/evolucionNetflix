@@ -4,12 +4,20 @@
 
 package android.support.design.widget;
 
-import android.view.View;
+import android.support.design.R$attr;
 import android.view.ViewGroup$MarginLayoutParams;
-import android.util.AttributeSet;
 import android.widget.LinearLayout$LayoutParams;
 import android.view.ViewGroup$LayoutParams;
+import java.util.ArrayList;
+import android.content.res.TypedArray;
+import android.support.v4.view.OnApplyWindowInsetsListener;
 import android.support.v4.view.ViewCompat;
+import android.support.design.R$styleable;
+import android.support.design.R$style;
+import android.view.View;
+import android.os.Build$VERSION;
+import android.util.AttributeSet;
+import android.content.Context;
 import java.util.List;
 import android.support.v4.view.WindowInsetsCompat;
 import android.widget.LinearLayout;
@@ -17,28 +25,102 @@ import android.widget.LinearLayout;
 @CoordinatorLayout$DefaultBehavior(AppBarLayout$Behavior.class)
 public class AppBarLayout extends LinearLayout
 {
+    private static final int INVALID_SCROLL_RANGE = -1;
+    static final int PENDING_ACTION_ANIMATE_ENABLED = 4;
+    static final int PENDING_ACTION_COLLAPSED = 2;
+    static final int PENDING_ACTION_EXPANDED = 1;
+    static final int PENDING_ACTION_NONE = 0;
+    private boolean mCollapsed;
+    private boolean mCollapsible;
     private int mDownPreScrollRange;
     private int mDownScrollRange;
-    boolean mHaveChildWithInterpolator;
+    private boolean mHaveChildWithInterpolator;
     private WindowInsetsCompat mLastInsets;
-    private final List<AppBarLayout$OnOffsetChangedListener> mListeners;
+    private List<AppBarLayout$OnOffsetChangedListener> mListeners;
     private int mPendingAction;
-    private float mTargetElevation;
+    private final int[] mTmpStatesArray;
     private int mTotalScrollRange;
     
-    private void setWindowInsets(WindowInsetsCompat dispatchApplyWindowInsets) {
+    public AppBarLayout(final Context context) {
+        this(context, null);
+    }
+    
+    public AppBarLayout(final Context context, final AttributeSet set) {
+        super(context, set);
         this.mTotalScrollRange = -1;
-        this.mLastInsets = dispatchApplyWindowInsets;
-        for (int i = 0; i < this.getChildCount(); ++i) {
-            dispatchApplyWindowInsets = ViewCompat.dispatchApplyWindowInsets(this.getChildAt(i), dispatchApplyWindowInsets);
-            if (dispatchApplyWindowInsets.isConsumed()) {
-                break;
+        this.mDownPreScrollRange = -1;
+        this.mDownScrollRange = -1;
+        this.mPendingAction = 0;
+        this.mTmpStatesArray = new int[2];
+        this.setOrientation(1);
+        ThemeUtils.checkAppCompatTheme(context);
+        if (Build$VERSION.SDK_INT >= 21) {
+            ViewUtilsLollipop.setBoundsViewOutlineProvider((View)this);
+            ViewUtilsLollipop.setStateListAnimatorFromAttrs((View)this, set, 0, R$style.Widget_Design_AppBarLayout);
+        }
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.AppBarLayout, 0, R$style.Widget_Design_AppBarLayout);
+        this.setBackgroundDrawable(obtainStyledAttributes.getDrawable(R$styleable.AppBarLayout_android_background));
+        if (obtainStyledAttributes.hasValue(R$styleable.AppBarLayout_expanded)) {
+            this.setExpanded(obtainStyledAttributes.getBoolean(R$styleable.AppBarLayout_expanded, false));
+        }
+        if (Build$VERSION.SDK_INT >= 21 && obtainStyledAttributes.hasValue(R$styleable.AppBarLayout_elevation)) {
+            ViewUtilsLollipop.setDefaultAppBarLayoutStateListAnimator((View)this, obtainStyledAttributes.getDimensionPixelSize(R$styleable.AppBarLayout_elevation, 0));
+        }
+        obtainStyledAttributes.recycle();
+        ViewCompat.setOnApplyWindowInsetsListener((View)this, new AppBarLayout$1(this));
+    }
+    
+    private void invalidateScrollRanges() {
+        this.mTotalScrollRange = -1;
+        this.mDownPreScrollRange = -1;
+        this.mDownScrollRange = -1;
+    }
+    
+    private boolean setCollapsibleState(final boolean mCollapsible) {
+        if (this.mCollapsible != mCollapsible) {
+            this.mCollapsible = mCollapsible;
+            this.refreshDrawableState();
+            return true;
+        }
+        return false;
+    }
+    
+    private void updateCollapsible() {
+        while (true) {
+            for (int childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
+                if (((AppBarLayout$LayoutParams)this.getChildAt(i).getLayoutParams()).isCollapsible()) {
+                    final boolean collapsibleState = true;
+                    this.setCollapsibleState(collapsibleState);
+                    return;
+                }
             }
+            final boolean collapsibleState = false;
+            continue;
+        }
+    }
+    
+    public void addOnOffsetChangedListener(final AppBarLayout$OnOffsetChangedListener appBarLayout$OnOffsetChangedListener) {
+        if (this.mListeners == null) {
+            this.mListeners = new ArrayList<AppBarLayout$OnOffsetChangedListener>();
+        }
+        if (appBarLayout$OnOffsetChangedListener != null && !this.mListeners.contains(appBarLayout$OnOffsetChangedListener)) {
+            this.mListeners.add(appBarLayout$OnOffsetChangedListener);
         }
     }
     
     protected boolean checkLayoutParams(final ViewGroup$LayoutParams viewGroup$LayoutParams) {
         return viewGroup$LayoutParams instanceof AppBarLayout$LayoutParams;
+    }
+    
+    void dispatchOffsetUpdates(final int n) {
+        if (this.mListeners != null) {
+            for (int size = this.mListeners.size(), i = 0; i < size; ++i) {
+                final AppBarLayout$OnOffsetChangedListener appBarLayout$OnOffsetChangedListener = this.mListeners.get(i);
+                if (appBarLayout$OnOffsetChangedListener != null) {
+                    appBarLayout$OnOffsetChangedListener.onOffsetChanged(this, n);
+                }
+            }
+        }
     }
     
     protected AppBarLayout$LayoutParams generateDefaultLayoutParams() {
@@ -59,98 +141,98 @@ public class AppBarLayout extends LinearLayout
         return new AppBarLayout$LayoutParams(viewGroup$LayoutParams);
     }
     
-    final int getDownNestedPreScrollRange() {
+    int getDownNestedPreScrollRange() {
         if (this.mDownPreScrollRange != -1) {
             return this.mDownPreScrollRange;
         }
-        int mDownPreScrollRange = 0;
-        for (int i = this.getChildCount() - 1; i >= 0; --i) {
+        int i = this.getChildCount() - 1;
+        int n = 0;
+        while (i >= 0) {
             final View child = this.getChildAt(i);
             final AppBarLayout$LayoutParams appBarLayout$LayoutParams = (AppBarLayout$LayoutParams)child.getLayoutParams();
-            int n;
-            if (ViewCompat.isLaidOut(child)) {
-                n = child.getHeight();
-            }
-            else {
-                n = child.getMeasuredHeight();
-            }
+            final int measuredHeight = child.getMeasuredHeight();
             final int mScrollFlags = appBarLayout$LayoutParams.mScrollFlags;
             if ((mScrollFlags & 0x5) == 0x5) {
-                final int n2 = appBarLayout$LayoutParams.bottomMargin + appBarLayout$LayoutParams.topMargin + mDownPreScrollRange;
+                final int n2 = appBarLayout$LayoutParams.bottomMargin + appBarLayout$LayoutParams.topMargin + n;
                 if ((mScrollFlags & 0x8) != 0x0) {
-                    mDownPreScrollRange = n2 + ViewCompat.getMinimumHeight(child);
+                    n = n2 + ViewCompat.getMinimumHeight(child);
+                }
+                else if ((mScrollFlags & 0x2) != 0x0) {
+                    n = n2 + (measuredHeight - ViewCompat.getMinimumHeight(child));
                 }
                 else {
-                    mDownPreScrollRange = n2 + n;
+                    n = n2 + measuredHeight;
                 }
             }
-            else if (mDownPreScrollRange > 0) {
+            else if (n > 0) {
                 break;
             }
+            --i;
         }
-        return this.mDownPreScrollRange = mDownPreScrollRange;
+        return this.mDownPreScrollRange = Math.max(0, n);
     }
     
-    final int getDownNestedScrollRange() {
+    int getDownNestedScrollRange() {
         if (this.mDownScrollRange != -1) {
             return this.mDownScrollRange;
         }
         final int childCount = this.getChildCount();
         int i = 0;
-        int mDownScrollRange = 0;
+        int n = 0;
         while (i < childCount) {
             final View child = this.getChildAt(i);
             final AppBarLayout$LayoutParams appBarLayout$LayoutParams = (AppBarLayout$LayoutParams)child.getLayoutParams();
-            int n;
-            if (ViewCompat.isLaidOut(child)) {
-                n = child.getHeight();
-            }
-            else {
-                n = child.getMeasuredHeight();
-            }
+            final int measuredHeight = child.getMeasuredHeight();
             final int topMargin = appBarLayout$LayoutParams.topMargin;
             final int bottomMargin = appBarLayout$LayoutParams.bottomMargin;
             final int mScrollFlags = appBarLayout$LayoutParams.mScrollFlags;
             if ((mScrollFlags & 0x1) == 0x0) {
                 break;
             }
-            mDownScrollRange += n + (topMargin + bottomMargin);
+            n += measuredHeight + (topMargin + bottomMargin);
             if ((mScrollFlags & 0x2) != 0x0) {
-                return mDownScrollRange - ViewCompat.getMinimumHeight(child);
+                n -= ViewCompat.getMinimumHeight(child) + this.getTopInset();
+                return this.mDownScrollRange = Math.max(0, n);
             }
             ++i;
         }
-        return this.mDownScrollRange = mDownScrollRange;
+        return this.mDownScrollRange = Math.max(0, n);
     }
     
     final int getMinimumHeightForVisibleOverlappingContent() {
-        int n = 0;
-        int systemWindowInsetTop;
-        if (this.mLastInsets != null) {
-            systemWindowInsetTop = this.mLastInsets.getSystemWindowInsetTop();
-        }
-        else {
-            systemWindowInsetTop = 0;
-        }
+        final int topInset = this.getTopInset();
         final int minimumHeight = ViewCompat.getMinimumHeight((View)this);
         if (minimumHeight != 0) {
-            n = minimumHeight * 2 + systemWindowInsetTop;
+            return minimumHeight * 2 + topInset;
+        }
+        final int childCount = this.getChildCount();
+        int minimumHeight2;
+        if (childCount >= 1) {
+            minimumHeight2 = ViewCompat.getMinimumHeight(this.getChildAt(childCount - 1));
         }
         else {
-            final int childCount = this.getChildCount();
-            if (childCount >= 1) {
-                return ViewCompat.getMinimumHeight(this.getChildAt(childCount - 1)) * 2 + systemWindowInsetTop;
-            }
+            minimumHeight2 = 0;
         }
-        return n;
+        if (minimumHeight2 != 0) {
+            return minimumHeight2 * 2 + topInset;
+        }
+        return this.getHeight() / 3;
     }
     
     int getPendingAction() {
         return this.mPendingAction;
     }
     
+    @Deprecated
     public float getTargetElevation() {
-        return this.mTargetElevation;
+        return 0.0f;
+    }
+    
+    final int getTopInset() {
+        if (this.mLastInsets != null) {
+            return this.mLastInsets.getSystemWindowInsetTop();
+        }
+        return 0;
     }
     
     public final int getTotalScrollRange() {
@@ -160,56 +242,59 @@ public class AppBarLayout extends LinearLayout
         final int childCount = this.getChildCount();
         int i = 0;
         int n = 0;
-        while (true) {
-            while (i < childCount) {
-                final View child = this.getChildAt(i);
-                final AppBarLayout$LayoutParams appBarLayout$LayoutParams = (AppBarLayout$LayoutParams)child.getLayoutParams();
-                int n2;
-                if (ViewCompat.isLaidOut(child)) {
-                    n2 = child.getHeight();
-                }
-                else {
-                    n2 = child.getMeasuredHeight();
-                }
-                final int mScrollFlags = appBarLayout$LayoutParams.mScrollFlags;
-                if ((mScrollFlags & 0x1) == 0x0) {
-                    break;
-                }
-                n += appBarLayout$LayoutParams.bottomMargin + (n2 + appBarLayout$LayoutParams.topMargin);
-                if ((mScrollFlags & 0x2) != 0x0) {
-                    n -= ViewCompat.getMinimumHeight(child);
-                    int systemWindowInsetTop;
-                    if (this.mLastInsets != null) {
-                        systemWindowInsetTop = this.mLastInsets.getSystemWindowInsetTop();
-                    }
-                    else {
-                        systemWindowInsetTop = 0;
-                    }
-                    return this.mTotalScrollRange = n - systemWindowInsetTop;
-                }
-                ++i;
+        while (i < childCount) {
+            final View child = this.getChildAt(i);
+            final AppBarLayout$LayoutParams appBarLayout$LayoutParams = (AppBarLayout$LayoutParams)child.getLayoutParams();
+            final int measuredHeight = child.getMeasuredHeight();
+            final int mScrollFlags = appBarLayout$LayoutParams.mScrollFlags;
+            if ((mScrollFlags & 0x1) == 0x0) {
+                break;
             }
-            continue;
+            n += appBarLayout$LayoutParams.bottomMargin + (measuredHeight + appBarLayout$LayoutParams.topMargin);
+            if ((mScrollFlags & 0x2) != 0x0) {
+                n -= ViewCompat.getMinimumHeight(child);
+                return this.mTotalScrollRange = Math.max(0, n - this.getTopInset());
+            }
+            ++i;
         }
+        return this.mTotalScrollRange = Math.max(0, n - this.getTopInset());
     }
     
-    final int getUpNestedPreScrollRange() {
+    int getUpNestedPreScrollRange() {
         return this.getTotalScrollRange();
     }
     
-    final boolean hasChildWithInterpolator() {
+    boolean hasChildWithInterpolator() {
         return this.mHaveChildWithInterpolator;
     }
     
-    final boolean hasScrollableChildren() {
+    boolean hasScrollableChildren() {
         return this.getTotalScrollRange() != 0;
+    }
+    
+    protected int[] onCreateDrawableState(int n) {
+        final int[] mTmpStatesArray = this.mTmpStatesArray;
+        final int[] onCreateDrawableState = super.onCreateDrawableState(mTmpStatesArray.length + n);
+        if (this.mCollapsible) {
+            n = R$attr.state_collapsible;
+        }
+        else {
+            n = -R$attr.state_collapsible;
+        }
+        mTmpStatesArray[0] = n;
+        if (this.mCollapsible && this.mCollapsed) {
+            n = R$attr.state_collapsed;
+        }
+        else {
+            n = -R$attr.state_collapsed;
+        }
+        mTmpStatesArray[1] = n;
+        return mergeDrawableStates(onCreateDrawableState, mTmpStatesArray);
     }
     
     protected void onLayout(final boolean b, int i, int childCount, final int n, final int n2) {
         super.onLayout(b, i, childCount, n, n2);
-        this.mTotalScrollRange = -1;
-        this.mDownPreScrollRange = -1;
-        this.mDownPreScrollRange = -1;
+        this.invalidateScrollRanges();
         this.mHaveChildWithInterpolator = false;
         for (childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
             if (((AppBarLayout$LayoutParams)this.getChildAt(i).getLayoutParams()).getScrollInterpolator() != null) {
@@ -217,10 +302,43 @@ public class AppBarLayout extends LinearLayout
                 break;
             }
         }
+        this.updateCollapsible();
+    }
+    
+    protected void onMeasure(final int n, final int n2) {
+        super.onMeasure(n, n2);
+        this.invalidateScrollRanges();
+    }
+    
+    WindowInsetsCompat onWindowInsetChanged(final WindowInsetsCompat windowInsetsCompat) {
+        WindowInsetsCompat mLastInsets = null;
+        if (ViewCompat.getFitsSystemWindows((View)this)) {
+            mLastInsets = windowInsetsCompat;
+        }
+        if (!ViewUtils.objectEquals(this.mLastInsets, mLastInsets)) {
+            this.mLastInsets = mLastInsets;
+            this.invalidateScrollRanges();
+        }
+        return windowInsetsCompat;
+    }
+    
+    public void removeOnOffsetChangedListener(final AppBarLayout$OnOffsetChangedListener appBarLayout$OnOffsetChangedListener) {
+        if (this.mListeners != null && appBarLayout$OnOffsetChangedListener != null) {
+            this.mListeners.remove(appBarLayout$OnOffsetChangedListener);
+        }
     }
     
     void resetPendingAction() {
         this.mPendingAction = 0;
+    }
+    
+    boolean setCollapsedState(final boolean mCollapsed) {
+        if (this.mCollapsed != mCollapsed) {
+            this.mCollapsed = mCollapsed;
+            this.refreshDrawableState();
+            return true;
+        }
+        return false;
     }
     
     public void setExpanded(final boolean b) {
@@ -253,7 +371,10 @@ public class AppBarLayout extends LinearLayout
         super.setOrientation(orientation);
     }
     
-    public void setTargetElevation(final float mTargetElevation) {
-        this.mTargetElevation = mTargetElevation;
+    @Deprecated
+    public void setTargetElevation(final float n) {
+        if (Build$VERSION.SDK_INT >= 21) {
+            ViewUtilsLollipop.setDefaultAppBarLayoutStateListAnimator((View)this, n);
+        }
     }
 }

@@ -218,6 +218,11 @@ public class DiscoveryRecord implements Discovery
     }
     
     @Override
+    public boolean isAvailableOffline() {
+        return this.video.isAvailableOffline();
+    }
+    
+    @Override
     public boolean isAvailableToStream() {
         return this.video.isAvailableToStream();
     }

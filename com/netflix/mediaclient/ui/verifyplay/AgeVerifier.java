@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.ui.verifyplay;
 
-import android.app.DialogFragment;
-import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
 
@@ -24,7 +22,7 @@ public class AgeVerifier
     }
     
     private boolean shouldHandleNewRequest(final PlayVerifierVault playVerifierVault) {
-        if (PlayVerifierVault$PlayInvokedFrom.MDX.getValue().equals(playVerifierVault.getInvokeLocation())) {
+        if (PlayVerifierVault$RequestedBy.MDX.getValue().equals(playVerifierVault.getInvokeLocation())) {
             if (Log.isLoggable()) {
                 Log.d("nf_age", String.format("Dismissing new request new one Invoked from: %s", playVerifierVault.getInvokeLocation()));
             }
@@ -33,13 +31,15 @@ public class AgeVerifier
         return true;
     }
     
-    public void verify(final NetflixActivity netflixActivity, final PlayVerifierVault playVerifierVault) {
+    public void verify(final NetflixActivity netflixActivity, final PlayVerifierVault playVerifierVault, final PinAndAgeVerifier$PinAndAgeVerifyCallback ageVerifierCallback) {
         if (Log.isLoggable()) {
             Log.d("nf_age", String.format("verifyAge invokeLoc:%s, vault:%s", playVerifierVault.getInvokeLocation(), playVerifierVault));
         }
         if (!this.shouldHandleNewRequest(playVerifierVault)) {
             return;
         }
-        ViewUtils.safeShowDialogFragment(AgeDialog.createAgeDialog(playVerifierVault), netflixActivity.getFragmentManager(), "frag_dialog");
+        final AgeDialog ageDialog = AgeDialog.createAgeDialog(playVerifierVault);
+        ageDialog.setAgeVerifierCallback(ageVerifierCallback);
+        ageDialog.show(netflixActivity.getFragmentManager(), "frag_dialog");
     }
 }

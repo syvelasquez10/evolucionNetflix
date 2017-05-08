@@ -5,65 +5,145 @@
 package android.support.v7.widget;
 
 import android.text.method.TransformationMethod;
-import android.support.v7.internal.text.AllCapsTransformationMethod;
-import android.content.res.ColorStateList;
-import android.content.res.TypedArray;
-import android.content.Context;
-import android.support.v7.internal.widget.ThemeUtils;
-import android.os.Build$VERSION;
+import android.support.v7.text.AllCapsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.support.v7.appcompat.R$styleable;
 import android.util.AttributeSet;
-import android.support.v7.appcompat.R$attr;
+import android.graphics.drawable.Drawable;
+import android.content.res.ColorStateList;
+import android.content.Context;
+import android.os.Build$VERSION;
 import android.widget.TextView;
 
 class AppCompatTextHelper
 {
-    private static final int[] TEXT_APPEARANCE_ATTRS;
-    private static final int[] VIEW_ATTRS;
-    private final TextView mView;
-    
-    static {
-        VIEW_ATTRS = new int[] { 16842804 };
-        TEXT_APPEARANCE_ATTRS = new int[] { R$attr.textAllCaps };
-    }
+    private TintInfo mDrawableBottomTint;
+    private TintInfo mDrawableLeftTint;
+    private TintInfo mDrawableRightTint;
+    private TintInfo mDrawableTopTint;
+    final TextView mView;
     
     AppCompatTextHelper(final TextView mView) {
         this.mView = mView;
     }
     
+    static AppCompatTextHelper create(final TextView textView) {
+        if (Build$VERSION.SDK_INT >= 17) {
+            return new AppCompatTextHelperV17(textView);
+        }
+        return new AppCompatTextHelper(textView);
+    }
+    
+    protected static TintInfo createTintInfo(final Context context, final AppCompatDrawableManager appCompatDrawableManager, final int n) {
+        final ColorStateList tintList = appCompatDrawableManager.getTintList(context, n);
+        if (tintList != null) {
+            final TintInfo tintInfo = new TintInfo();
+            tintInfo.mHasTintList = true;
+            tintInfo.mTintList = tintList;
+            return tintInfo;
+        }
+        return null;
+    }
+    
+    final void applyCompoundDrawableTint(final Drawable drawable, final TintInfo tintInfo) {
+        if (drawable != null && tintInfo != null) {
+            AppCompatDrawableManager.tintDrawable(drawable, tintInfo, this.mView.getDrawableState());
+        }
+    }
+    
+    void applyCompoundDrawablesTints() {
+        if (this.mDrawableLeftTint != null || this.mDrawableTopTint != null || this.mDrawableRightTint != null || this.mDrawableBottomTint != null) {
+            final Drawable[] compoundDrawables = this.mView.getCompoundDrawables();
+            this.applyCompoundDrawableTint(compoundDrawables[0], this.mDrawableLeftTint);
+            this.applyCompoundDrawableTint(compoundDrawables[1], this.mDrawableTopTint);
+            this.applyCompoundDrawableTint(compoundDrawables[2], this.mDrawableRightTint);
+            this.applyCompoundDrawableTint(compoundDrawables[3], this.mDrawableBottomTint);
+        }
+    }
+    
     void loadFromAttributes(final AttributeSet set, int n) {
         final Context context = this.mView.getContext();
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, AppCompatTextHelper.VIEW_ATTRS, n, 0);
-        final int resourceId = obtainStyledAttributes.getResourceId(0, -1);
+        final AppCompatDrawableManager value = AppCompatDrawableManager.get();
+        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, set, R$styleable.AppCompatTextHelper, n, 0);
+        final int resourceId = obtainStyledAttributes.getResourceId(R$styleable.AppCompatTextHelper_android_textAppearance, -1);
+        if (obtainStyledAttributes.hasValue(R$styleable.AppCompatTextHelper_android_drawableLeft)) {
+            this.mDrawableLeftTint = createTintInfo(context, value, obtainStyledAttributes.getResourceId(R$styleable.AppCompatTextHelper_android_drawableLeft, 0));
+        }
+        if (obtainStyledAttributes.hasValue(R$styleable.AppCompatTextHelper_android_drawableTop)) {
+            this.mDrawableTopTint = createTintInfo(context, value, obtainStyledAttributes.getResourceId(R$styleable.AppCompatTextHelper_android_drawableTop, 0));
+        }
+        if (obtainStyledAttributes.hasValue(R$styleable.AppCompatTextHelper_android_drawableRight)) {
+            this.mDrawableRightTint = createTintInfo(context, value, obtainStyledAttributes.getResourceId(R$styleable.AppCompatTextHelper_android_drawableRight, 0));
+        }
+        if (obtainStyledAttributes.hasValue(R$styleable.AppCompatTextHelper_android_drawableBottom)) {
+            this.mDrawableBottomTint = createTintInfo(context, value, obtainStyledAttributes.getResourceId(R$styleable.AppCompatTextHelper_android_drawableBottom, 0));
+        }
         obtainStyledAttributes.recycle();
+        final boolean b = this.mView.getTransformationMethod() instanceof PasswordTransformationMethod;
+        ColorStateList colorStateList = null;
+        final ColorStateList list = null;
+        boolean boolean1;
+        int n2;
         if (resourceId != -1) {
-            final TypedArray obtainStyledAttributes2 = context.obtainStyledAttributes(resourceId, R$styleable.TextAppearance);
-            if (obtainStyledAttributes2.hasValue(R$styleable.TextAppearance_textAllCaps)) {
-                this.setAllCaps(obtainStyledAttributes2.getBoolean(R$styleable.TextAppearance_textAllCaps, false));
+            final TintTypedArray obtainStyledAttributes2 = TintTypedArray.obtainStyledAttributes(context, resourceId, R$styleable.TextAppearance);
+            if (!b && obtainStyledAttributes2.hasValue(R$styleable.TextAppearance_textAllCaps)) {
+                boolean1 = obtainStyledAttributes2.getBoolean(R$styleable.TextAppearance_textAllCaps, false);
+                n2 = 1;
+            }
+            else {
+                n2 = 0;
+                boolean1 = false;
+            }
+            colorStateList = list;
+            if (Build$VERSION.SDK_INT < 23) {
+                colorStateList = list;
+                if (obtainStyledAttributes2.hasValue(R$styleable.TextAppearance_android_textColor)) {
+                    colorStateList = obtainStyledAttributes2.getColorStateList(R$styleable.TextAppearance_android_textColor);
+                }
             }
             obtainStyledAttributes2.recycle();
         }
-        final TypedArray obtainStyledAttributes3 = context.obtainStyledAttributes(set, AppCompatTextHelper.TEXT_APPEARANCE_ATTRS, n, 0);
-        if (obtainStyledAttributes3.hasValue(0)) {
-            this.setAllCaps(obtainStyledAttributes3.getBoolean(0, false));
+        else {
+            n2 = 0;
+            boolean1 = false;
+        }
+        final TintTypedArray obtainStyledAttributes3 = TintTypedArray.obtainStyledAttributes(context, set, R$styleable.TextAppearance, n, 0);
+        n = n2;
+        boolean boolean2 = boolean1;
+        if (!b) {
+            n = n2;
+            boolean2 = boolean1;
+            if (obtainStyledAttributes3.hasValue(R$styleable.TextAppearance_textAllCaps)) {
+                boolean2 = obtainStyledAttributes3.getBoolean(R$styleable.TextAppearance_textAllCaps, false);
+                n = 1;
+            }
+        }
+        ColorStateList colorStateList2 = colorStateList;
+        if (Build$VERSION.SDK_INT < 23) {
+            colorStateList2 = colorStateList;
+            if (obtainStyledAttributes3.hasValue(R$styleable.TextAppearance_android_textColor)) {
+                colorStateList2 = obtainStyledAttributes3.getColorStateList(R$styleable.TextAppearance_android_textColor);
+            }
         }
         obtainStyledAttributes3.recycle();
-        final ColorStateList textColors = this.mView.getTextColors();
-        if (textColors != null && !textColors.isStateful()) {
-            if (Build$VERSION.SDK_INT < 21) {
-                n = ThemeUtils.getDisabledThemeAttrColor(context, 16842808);
-            }
-            else {
-                n = ThemeUtils.getThemeAttrColor(context, 16842808);
-            }
-            this.mView.setTextColor(ThemeUtils.createDisabledStateList(textColors.getDefaultColor(), n));
+        if (colorStateList2 != null) {
+            this.mView.setTextColor(colorStateList2);
+        }
+        if (!b && n != 0) {
+            this.setAllCaps(boolean2);
         }
     }
     
     void onSetTextAppearance(final Context context, final int n) {
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(n, AppCompatTextHelper.TEXT_APPEARANCE_ATTRS);
-        if (obtainStyledAttributes.hasValue(0)) {
-            this.setAllCaps(obtainStyledAttributes.getBoolean(0, false));
+        final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(context, n, R$styleable.TextAppearance);
+        if (obtainStyledAttributes.hasValue(R$styleable.TextAppearance_textAllCaps)) {
+            this.setAllCaps(obtainStyledAttributes.getBoolean(R$styleable.TextAppearance_textAllCaps, false));
+        }
+        if (Build$VERSION.SDK_INT < 23 && obtainStyledAttributes.hasValue(R$styleable.TextAppearance_android_textColor)) {
+            final ColorStateList colorStateList = obtainStyledAttributes.getColorStateList(R$styleable.TextAppearance_android_textColor);
+            if (colorStateList != null) {
+                this.mView.setTextColor(colorStateList);
+            }
         }
         obtainStyledAttributes.recycle();
     }

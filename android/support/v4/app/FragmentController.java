@@ -59,8 +59,16 @@ public class FragmentController
         this.mHost.mFragmentManager.dispatchDestroy();
     }
     
+    public void dispatchDestroyView() {
+        this.mHost.mFragmentManager.dispatchDestroyView();
+    }
+    
     public void dispatchLowMemory() {
         this.mHost.mFragmentManager.dispatchLowMemory();
+    }
+    
+    public void dispatchMultiWindowModeChanged(final boolean b) {
+        this.mHost.mFragmentManager.dispatchMultiWindowModeChanged(b);
     }
     
     public boolean dispatchOptionsItemSelected(final MenuItem menuItem) {
@@ -73,6 +81,10 @@ public class FragmentController
     
     public void dispatchPause() {
         this.mHost.mFragmentManager.dispatchPause();
+    }
+    
+    public void dispatchPictureInPictureModeChanged(final boolean b) {
+        this.mHost.mFragmentManager.dispatchPictureInPictureModeChanged(b);
     }
     
     public boolean dispatchPrepareOptionsMenu(final Menu menu) {
@@ -99,6 +111,10 @@ public class FragmentController
         this.mHost.doLoaderDestroy();
     }
     
+    public void doLoaderRetain() {
+        this.mHost.doLoaderRetain();
+    }
+    
     public void doLoaderStart() {
         this.mHost.doLoaderStart();
     }
@@ -113,6 +129,10 @@ public class FragmentController
     
     public boolean execPendingActions() {
         return this.mHost.mFragmentManager.execPendingActions();
+    }
+    
+    public Fragment findFragmentByWho(final String s) {
+        return this.mHost.mFragmentManager.findFragmentByWho(s);
     }
     
     public List<Fragment> getActiveFragments(final List<Fragment> list) {
@@ -155,8 +175,13 @@ public class FragmentController
         this.mHost.reportLoaderStart();
     }
     
+    public void restoreAllState(final Parcelable parcelable, final FragmentManagerNonConfig fragmentManagerNonConfig) {
+        this.mHost.mFragmentManager.restoreAllState(parcelable, fragmentManagerNonConfig);
+    }
+    
+    @Deprecated
     public void restoreAllState(final Parcelable parcelable, final List<Fragment> list) {
-        this.mHost.mFragmentManager.restoreAllState(parcelable, list);
+        this.mHost.mFragmentManager.restoreAllState(parcelable, new FragmentManagerNonConfig(list, null));
     }
     
     public void restoreLoaderNonConfig(final SimpleArrayMap<String, LoaderManager> simpleArrayMap) {
@@ -167,8 +192,17 @@ public class FragmentController
         return this.mHost.retainLoaderNonConfig();
     }
     
-    public List<Fragment> retainNonConfig() {
+    public FragmentManagerNonConfig retainNestedNonConfig() {
         return this.mHost.mFragmentManager.retainNonConfig();
+    }
+    
+    @Deprecated
+    public List<Fragment> retainNonConfig() {
+        final FragmentManagerNonConfig retainNonConfig = this.mHost.mFragmentManager.retainNonConfig();
+        if (retainNonConfig != null) {
+            return retainNonConfig.getFragments();
+        }
+        return null;
     }
     
     public Parcelable saveAllState() {

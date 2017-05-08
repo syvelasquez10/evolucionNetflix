@@ -7,7 +7,7 @@ package com.netflix.mediaclient.ui.player.subtitles;
 import com.netflix.mediaclient.service.player.subtitles.image.ImageSubtitleMetadata;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleScreen;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import java.util.ArrayList;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleBlock;
 import com.netflix.mediaclient.service.player.subtitles.image.ImageDescriptor;
@@ -287,8 +287,8 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
     }
     
     @Override
-    public boolean canHandleSubtitleProfile(final IMedia$SubtitleProfile media$SubtitleProfile) {
-        return media$SubtitleProfile != null && (media$SubtitleProfile == IMedia$SubtitleProfile.IMAGE || media$SubtitleProfile == IMedia$SubtitleProfile.IMAGE_ENC);
+    public boolean canHandleSubtitleProfile(final ISubtitleDef$SubtitleProfile subtitleDef$SubtitleProfile) {
+        return subtitleDef$SubtitleProfile != null && (subtitleDef$SubtitleProfile == ISubtitleDef$SubtitleProfile.IMAGE || subtitleDef$SubtitleProfile == ISubtitleDef$SubtitleProfile.IMAGE_ENC);
     }
     
     @Override
@@ -313,8 +313,8 @@ public class ImageBasedSubtitleManager extends BaseSubtitleManager
     }
     
     @Override
-    public IMedia$SubtitleProfile getSubtitleProfile() {
-        return IMedia$SubtitleProfile.IMAGE;
+    public ISubtitleDef$SubtitleProfile getSubtitleProfile() {
+        return ISubtitleDef$SubtitleProfile.IMAGE;
     }
     
     @Override

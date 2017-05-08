@@ -4,20 +4,20 @@
 
 package com.netflix.mediaclient.ui.home;
 
-import android.app.Activity;
-import com.netflix.mediaclient.ui.settings.SettingsActivity;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import android.content.Context;
+import com.netflix.mediaclient.ui.profiles.ProfileSelectionActivity;
+import android.view.View;
+import android.view.View$OnClickListener;
 
-final class StandardSlidingMenu$8 implements Runnable
+class StandardSlidingMenu$8 implements View$OnClickListener
 {
-    final /* synthetic */ NetflixActivity val$context;
+    final /* synthetic */ StandardSlidingMenu this$0;
     
-    StandardSlidingMenu$8(final NetflixActivity val$context) {
-        this.val$context = val$context;
+    StandardSlidingMenu$8(final StandardSlidingMenu this$0) {
+        this.this$0 = this$0;
     }
     
-    @Override
-    public void run() {
-        this.val$context.startActivity(SettingsActivity.createStartIntent(this.val$context));
+    public void onClick(final View view) {
+        this.this$0.activity.startActivity(ProfileSelectionActivity.createStartIntent((Context)this.this$0.activity));
     }
 }

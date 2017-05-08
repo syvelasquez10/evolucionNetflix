@@ -14,6 +14,10 @@ public class Pair<F, S>
         this.second = second;
     }
     
+    public static <A, B> Pair<A, B> create(final A a, final B b) {
+        return new Pair<A, B>(a, b);
+    }
+    
     private static boolean objectsEqual(final Object o, final Object o2) {
         return o == o2 || (o != null && o.equals(o2));
     }

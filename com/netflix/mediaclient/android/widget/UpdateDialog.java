@@ -8,7 +8,7 @@ import com.netflix.mediaclient.Log;
 import android.view.KeyEvent;
 import android.content.DialogInterface$OnCancelListener;
 import android.content.Context;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 
 public class UpdateDialog extends AlertDialog
 {
@@ -26,6 +26,7 @@ public class UpdateDialog extends AlertDialog
         super(context, b, dialogInterface$OnCancelListener);
     }
     
+    @Override
     public boolean onKeyDown(final int n, final KeyEvent keyEvent) {
         Log.i("Update", "Key " + n);
         if (n == 84) {

@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.kubrick_kids.details;
 
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.graphics.drawable.TransitionDrawable;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.ui.details.SeasonsSpinner;
@@ -25,7 +25,7 @@ class KidsParallax extends DetailsPageParallaxScrollListener
     private View toolbarView;
     
     public KidsParallax(final SeasonsSpinner seasonsSpinner, final RecyclerView recyclerView, final View[] array, final View view, final View view2) {
-        super(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131624147), 0, 0, view2);
+        super(seasonsSpinner, recyclerView, array, view, recyclerView.getContext().getResources().getColor(2131624167), 0, 0, view2);
         this.setApplyToolBarGradientTransform(false);
     }
     
@@ -60,8 +60,8 @@ class KidsParallax extends DetailsPageParallaxScrollListener
     
     @Override
     protected int getLatchPosition() {
-        if (this.trackingView != null) {
-            return ((NetflixActivity)this.trackingView.getContext()).getActionBarHeight();
+        if (this.trackingView != null && this.trackingView.getContext() != null) {
+            return ViewUtils.getDefaultActionBarHeight(this.trackingView.getContext());
         }
         return 0;
     }
@@ -117,9 +117,9 @@ class KidsParallax extends DetailsPageParallaxScrollListener
     
     @Override
     protected void setInitialToolbarColor() {
-        this.toolbarView = this.recyclerView.getRootView().findViewById(2131689586);
-        this.shadow = this.recyclerView.getRootView().findViewById(2131689601);
-        final Drawable drawable = this.toolbarView.getResources().getDrawable(2130837815);
+        this.toolbarView = this.recyclerView.getRootView().findViewById(2131689598);
+        this.shadow = this.recyclerView.getRootView().findViewById(2131689613);
+        final Drawable drawable = this.toolbarView.getResources().getDrawable(2130837870);
         if (drawable != null && this.toolbarView != null) {
             Api16Util.setBackgroundDrawableCompat(this.toolbarView, drawable);
         }

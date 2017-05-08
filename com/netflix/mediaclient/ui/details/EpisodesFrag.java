@@ -4,10 +4,13 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
+import com.netflix.mediaclient.ui.offline.TutorialHelper;
+import com.netflix.android.tooltips.Tooltip;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.widget.SpinnerAdapter;
 import android.support.v7.widget.RecyclerView$LayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,9 +18,12 @@ import android.support.v7.widget.RecyclerView$Adapter;
 import com.netflix.mediaclient.android.widget.NetflixActionBar;
 import android.support.v7.widget.RecyclerView$OnScrollListener;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.util.ConnectivityUtils;
+import java.util.Iterator;
+import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
+import com.netflix.mediaclient.util.AndroidUtils;
+import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.view.LayoutInflater;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListener;
@@ -43,9 +49,13 @@ import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
 import com.netflix.mediaclient.Log;
 import android.view.View;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentListener;
 import java.util.List;
+import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter$IViewCreator;
 import android.view.ViewGroup;
+import com.netflix.mediaclient.ui.offline.DownloadButton;
 import com.netflix.mediaclient.servicemgr.interface_.details.ShowDetails;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.android.widget.LoadingAndErrorWrapper;
@@ -53,13 +63,15 @@ import android.os.Handler;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
 import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
+import com.netflix.mediaclient.ui.offline.ActivityPageOfflineAgentListener;
 import com.netflix.mediaclient.servicemgr.AddToListData$StateListener;
+import com.netflix.mediaclient.ui.offline.TutorialHelper$Tutorialable;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag;
 
-public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Callback, ManagerStatusListener, DetailsActivity$Reloader, ServiceManagerProvider, VideoDetailsViewGroup$VideoDetailsViewGroupProvider, MdxMiniPlayerFrag$MdxMiniPlayerDialog
+public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Callback, ManagerStatusListener, DetailsActivity$Reloader, ServiceManagerProvider, VideoDetailsViewGroup$VideoDetailsViewGroupProvider, MdxMiniPlayerFrag$MdxMiniPlayerDialog, TutorialHelper$Tutorialable
 {
     protected static final String EXTRA_EPISODE_ID = "extra_episode_id";
     private static final String EXTRA_EPISODE_INDEX = "extra_episode_index";
@@ -69,6 +81,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     protected static final String EXTRA_SHOW_ID = "extra_show_id";
     private static final String TAG = "EpisodesFrag";
     private AddToListData$StateListener addToListWrapper;
+    private ActivityPageOfflineAgentListener agentListener;
     private SeasonDetails currSeasonDetails;
     protected int currSeasonIndex;
     protected VideoDetailsViewGroup detailsViewGroup;
@@ -86,6 +99,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     public int selectedEpisodeIndex;
     protected ShowDetails showDetails;
     protected boolean showDetailsOnLaunch;
+    private DownloadButton showDownloadButton;
     protected String showId;
     protected SeasonsSpinner spinner;
     protected ViewGroup spinnerViewGroup;
@@ -100,6 +114,14 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.viewCreatorEpisodes = new EpisodesFrag$1(this);
         this.episodeRefreshReceiver = new EpisodesFrag$6(this);
         this.errorCallback = new EpisodesFrag$7(this);
+    }
+    
+    private void addOfflineAgentListener(final ViewGroup viewGroup) {
+        this.removeOfflineAgentListener();
+        final OfflineAgentInterface offlineAgentOrNull = NetflixActivity.getOfflineAgentOrNull(this.getNetflixActivity());
+        if (offlineAgentOrNull != null) {
+            offlineAgentOrNull.addOfflineAgentListener(this.agentListener = new ActivityPageOfflineAgentListener(viewGroup, false));
+        }
     }
     
     private void addSpinnerAsHeader() {
@@ -145,13 +167,13 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     public static NetflixDialogFrag create(final String s, final String s2, final boolean b) {
         final EpisodesFrag episodesFrag = new EpisodesFrag();
-        episodesFrag.setStyle(1, 2131427452);
+        episodesFrag.setStyle(1, 2131427465);
         return applyCreateArgs(episodesFrag, s, s2, b, false);
     }
     
     public static NetflixDialogFrag createEpisodes(final String s, final String s2, final boolean b) {
         final EpisodesFrag episodesFrag = new EpisodesFrag();
-        episodesFrag.setStyle(1, 2131427452);
+        episodesFrag.setStyle(1, 2131427465);
         return applyCreateArgs(episodesFrag, s, s2, b, true);
     }
     
@@ -183,6 +205,14 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     private void registerEpisodeRefreshReceiver() {
         this.getActivity().registerReceiver(this.episodeRefreshReceiver, new IntentFilter("com.netflix.mediaclient.intent.action.BA_EPISODE_REFRESH"));
+    }
+    
+    private void removeOfflineAgentListener() {
+        final OfflineAgentInterface offlineAgentOrNull = NetflixActivity.getOfflineAgentOrNull(this.getNetflixActivity());
+        if (offlineAgentOrNull != null && this.agentListener != null) {
+            offlineAgentOrNull.removeOfflineAgentListener(this.agentListener);
+            this.agentListener = null;
+        }
     }
     
     private void setItemChecked(final int itemChecked) {
@@ -227,8 +257,8 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.spinner = spinner;
         this.setupSeasonsSpinnerAdapter();
         this.setupSeasonsSpinnerListener();
-        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131624153);
-        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131362292)));
+        (this.spinnerViewGroup = (ViewGroup)new FrameLayout((Context)this.getActivity())).setBackgroundResource(2131624173);
+        this.spinnerViewGroup.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, (int)this.getResources().getDimension(2131362328)));
         this.spinnerViewGroup.addView((View)this.spinner, (ViewGroup$LayoutParams)new FrameLayout$LayoutParams(-2, -2, 8388627));
         return this.spinnerViewGroup;
     }
@@ -277,7 +307,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     }
     
     protected int getlayoutId() {
-        return 2130903258;
+        return 2130903277;
     }
     
     protected void initDetailsViewGroup() {
@@ -364,6 +394,22 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         this.getActivity().unregisterReceiver(this.episodeRefreshReceiver);
     }
     
+    public void onDestroyView() {
+        super.onDestroyView();
+        this.removeOfflineAgentListener();
+    }
+    
+    public void onEpisodesUpdated(final List<EpisodeDetails> list) {
+        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)this.getNetflixActivity()) && list != null) {
+            final Iterator<EpisodeDetails> iterator = list.iterator();
+            while (iterator.hasNext()) {
+                if (iterator.next().getPlayable().isAvailableOffline()) {
+                    this.getNetflixActivity().getTutorialHelper().showTutorialForVideoWithScroll(this, list.get(0), this.recyclerView, this.getServiceManager());
+                }
+            }
+        }
+    }
+    
     @Override
     public void onManagerReady(final ServiceManager serviceManager, final Status status) {
         super.onManagerReady(serviceManager, status);
@@ -373,6 +419,9 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     public void onResume() {
         Log.v("EpisodesFrag", "onResume");
         super.onResume();
+        if (this.episodesAdapter != null) {
+            this.episodesAdapter.notifyDataSetChanged();
+        }
     }
     
     @Override
@@ -471,8 +520,10 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
         if (DeviceUtils.isTabletByContext((Context)this.getActivity()) && DeviceUtils.isLandscape((Context)this.getActivity())) {
             this.episodesAdapter.addHeaderView(ViewUtils.createActionBarDummyView(this.getNetflixActivity()));
         }
+        this.episodesAdapter.addFooterView(ViewUtils.createActionBarDummyView(this.getNetflixActivity(), this.getResources().getDimensionPixelOffset(2131362331)));
         this.recyclerView.setAdapter(this.episodesAdapter);
         this.episodesAdapter.setSingleChoiceMode(true);
+        this.addOfflineAgentListener(this.recyclerView);
     }
     
     protected void setupRecyclerViewItemDecoration() {
@@ -484,7 +535,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
     
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new EpisodesFrag$4(this));
-        adapter.setItemBackgroundColor(2130837927);
+        adapter.setItemBackgroundColor(2130837984);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     
@@ -495,6 +546,15 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
             return;
         }
         this.addSpinnerToDetailsGroup();
+    }
+    
+    @Override
+    public Tooltip setupTutorial(final UserProfile userProfile) {
+        final View viewById = this.recyclerView.findViewById(2131689849);
+        if (viewById == null) {
+            return null;
+        }
+        return TutorialHelper.buildDownloadButtonTutorial(viewById, this.getActivity(), userProfile);
     }
     
     protected void showErrorView() {
@@ -581,6 +641,7 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
             Log.v("EpisodesFrag", "Updating show details: " + showDetails.getTitle());
             Log.v("EpisodesFrag", "evidence glyph: " + showDetails.getEvidenceGlyph() + ", evidence text: " + showDetails.getEvidenceText());
         }
+        final ServiceManager serviceManager = this.getServiceManager();
         this.showDetails = showDetails;
         this.detailsViewGroup.updateDetails(showDetails, new ShowDetailsFrag$ShowDetailsStringProvider((Context)this.getActivity(), showDetails));
         this.detailsViewGroup.setCopyright(showDetails);
@@ -588,7 +649,22 @@ public class EpisodesFrag extends NetflixDialogFrag implements ErrorWrapper$Call
             this.episodeId = this.showDetails.getCurrentEpisodeId();
         }
         if (this.getActivity() instanceof DetailsActivity && this.detailsViewGroup != null) {
-            this.addToListWrapper = DetailsFrag.addToMyListWrapper(this.detailsViewGroup, (NetflixActivity)this.getActivity(), this.getServiceManager(), this.getShowId());
+            this.addToListWrapper = DetailsFrag.addToMyListWrapper(this.detailsViewGroup, (NetflixActivity)this.getActivity(), serviceManager, this.getShowId());
+            this.showDownloadButton = this.detailsViewGroup.getDownloadButton();
+            if (this.showDownloadButton != null) {
+                if (serviceManager != null && serviceManager.isOfflineFeatureAvailable()) {
+                    this.showDownloadButton.setEnabled(true);
+                    if (showDetails.getType() != VideoType.MOVIE) {
+                        this.showDownloadButton.setVisibility(8);
+                        return;
+                    }
+                    this.showDownloadButton.setStateFromPlayable(showDetails.getPlayable(), this.getNetflixActivity());
+                }
+                else {
+                    this.showDownloadButton.setVisibility(8);
+                }
+            }
+            Log.i("EpisodesFrag", "EpisodeFag updateShowDetails episodeDownloadButton= " + this.showDownloadButton);
         }
     }
 }

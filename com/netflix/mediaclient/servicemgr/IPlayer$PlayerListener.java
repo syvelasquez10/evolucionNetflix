@@ -28,6 +28,8 @@ public interface IPlayer$PlayerListener
     
     void onNrdFatalError();
     
+    void onPlaybackError(final IPlayer$PlaybackError p0);
+    
     void onPlaying();
     
     void onPrepared(final Watermark p0);

@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.common;
 
 import android.content.Context;
 import com.netflix.mediaclient.ui.mdx.MdxMiniPlayerFrag$MdxMiniPlayerDialog;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 
 class LanguageSelector$LanguageAlertDialog extends AlertDialog implements MdxMiniPlayerFrag$MdxMiniPlayerDialog
 {

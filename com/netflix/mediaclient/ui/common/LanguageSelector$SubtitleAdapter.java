@@ -61,10 +61,10 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
             Log.d("nf_language_selector", "Subtitle create row " + n);
             int n2;
             if (BrowseExperience.isKubrick()) {
-                n2 = 2130903156;
+                n2 = 2130903166;
             }
             else {
-                n2 = 2130903164;
+                n2 = 2130903174;
             }
             inflate = this.activity.getLayoutInflater().inflate(n2, viewGroup, false);
             inflate.setTag((Object)new LanguageSelector$RowHolder(inflate));
@@ -82,13 +82,13 @@ public class LanguageSelector$SubtitleAdapter extends BaseAdapter
             if (item.isCC()) {
                 Log.d("nf_language_selector", "Add CC");
                 sb.append(' ');
-                sb.append(this.activity.getText(2131230996));
+                sb.append(this.activity.getText(2131231011));
             }
             text = sb.toString();
             equals = item.equals(subtitle);
         }
         else {
-            text = this.activity.getString(2131231120);
+            text = this.activity.getString(2131231147);
             if (subtitle == null) {
                 equals = true;
                 text = text;

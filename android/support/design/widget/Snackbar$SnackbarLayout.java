@@ -8,6 +8,7 @@ import android.support.design.R$dimen;
 import android.view.View$MeasureSpec;
 import android.support.design.R$id;
 import android.content.res.TypedArray;
+import android.support.v4.view.OnApplyWindowInsetsListener;
 import android.view.ViewGroup;
 import android.support.design.R$layout;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ public class Snackbar$SnackbarLayout extends LinearLayout
     private int mMaxInlineActionWidth;
     private int mMaxWidth;
     private TextView mMessageView;
+    private Snackbar$SnackbarLayout$OnAttachStateChangeListener mOnAttachStateChangeListener;
     private Snackbar$SnackbarLayout$OnLayoutChangeListener mOnLayoutChangeListener;
     
     public Snackbar$SnackbarLayout(final Context context) {
@@ -43,6 +45,10 @@ public class Snackbar$SnackbarLayout extends LinearLayout
         obtainStyledAttributes.recycle();
         this.setClickable(true);
         LayoutInflater.from(context).inflate(R$layout.design_layout_snackbar_include, (ViewGroup)this);
+        ViewCompat.setAccessibilityLiveRegion((View)this, 1);
+        ViewCompat.setImportantForAccessibility((View)this, 1);
+        ViewCompat.setFitsSystemWindows((View)this, true);
+        ViewCompat.setOnApplyWindowInsetsListener((View)this, new Snackbar$SnackbarLayout$1(this));
     }
     
     private static void updateTopBottomPadding(final View view, final int n, final int n2) {
@@ -92,6 +98,21 @@ public class Snackbar$SnackbarLayout extends LinearLayout
         return this.mMessageView;
     }
     
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (this.mOnAttachStateChangeListener != null) {
+            this.mOnAttachStateChangeListener.onViewAttachedToWindow((View)this);
+        }
+        ViewCompat.requestApplyInsets((View)this);
+    }
+    
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (this.mOnAttachStateChangeListener != null) {
+            this.mOnAttachStateChangeListener.onViewDetachedFromWindow((View)this);
+        }
+    }
+    
     protected void onFinishInflate() {
         super.onFinishInflate();
         this.mMessageView = (TextView)this.findViewById(R$id.snackbar_text);
@@ -100,7 +121,7 @@ public class Snackbar$SnackbarLayout extends LinearLayout
     
     protected void onLayout(final boolean b, final int n, final int n2, final int n3, final int n4) {
         super.onLayout(b, n, n2, n3, n4);
-        if (b && this.mOnLayoutChangeListener != null) {
+        if (this.mOnLayoutChangeListener != null) {
             this.mOnLayoutChangeListener.onLayoutChange((View)this, n, n2, n3, n4);
         }
     }
@@ -151,6 +172,10 @@ public class Snackbar$SnackbarLayout extends LinearLayout
             n = 0;
             continue;
         }
+    }
+    
+    void setOnAttachStateChangeListener(final Snackbar$SnackbarLayout$OnAttachStateChangeListener mOnAttachStateChangeListener) {
+        this.mOnAttachStateChangeListener = mOnAttachStateChangeListener;
     }
     
     void setOnLayoutChangeListener(final Snackbar$SnackbarLayout$OnLayoutChangeListener mOnLayoutChangeListener) {

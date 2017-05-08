@@ -4,7 +4,11 @@
 
 package com.netflix.mediaclient.util;
 
+import android.util.Base64;
 import android.os.Build;
+import java.util.Arrays;
+import android.media.MediaDrm$OnEventListener;
+import com.netflix.mediaclient.service.configuration.crypto.CryptoManagerRegistry;
 import android.os.Build$VERSION;
 import com.netflix.mediaclient.service.configuration.PlayerTypeFactory;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;

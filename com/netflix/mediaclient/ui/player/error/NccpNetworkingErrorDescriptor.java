@@ -22,6 +22,6 @@ class NccpNetworkingErrorDescriptor extends PlaybackErrorDescriptor
         if (Log.isLoggable()) {
             Log.d("nf_play_error", "NccpNetworkingError " + nccpNetworkingError);
         }
-        return new NccpNetworkingErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131230847), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131231061), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
+        return new NccpNetworkingErrorDescriptor(new AlertDialogFactory$TwoButtonAlertDialogDescriptor("", playerFragment.getString(2131230850), null, new ExitPlayerAction(playerFragment.getActivity()), playerFragment.getString(2131231077), new LaunchHelpInBrowserAction(playerFragment.getActivity(), "https://help.netflix.com/en/node/14384")));
     }
 }

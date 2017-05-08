@@ -31,7 +31,7 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import android.content.Context;
-import com.android.volley.toolbox.HurlStack;
+import com.netflix.mediaclient.service.resfetcher.volley.ResourceHttpStack;
 import com.android.volley.toolbox.HttpStack;
 import com.netflix.mediaclient.Log;
 import com.android.volley.toolbox.DiskBasedCache;
@@ -71,8 +71,8 @@ public class ResourceFetcher extends ServiceAgent
     }
     
     private HttpStack createHttpStack() {
-        Log.d("nf_service_resourcefetcher", "Using HttpURLConnection for Volley");
-        return new HurlStack();
+        Log.d("nf_service_resourcefetcher", "Create resource Http Stack");
+        return new ResourceHttpStack(this.getConfigurationAgent());
     }
     
     private ImageLoader createImageLoader(final Context context) {

@@ -4,25 +4,38 @@
 
 package com.netflix.mediaclient.ui.signup;
 
+import android.widget.Toast;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory$TwoButtonAlertDialogDescriptor;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory;
+import com.netflix.mediaclient.android.widget.AlertDialogFactory$AlertDialogDescriptor;
+import java.util.Map;
+import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
+import com.netflix.mediaclient.servicemgr.CustomerServiceLogging$EntryPoint;
+import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import android.content.Context;
-import android.content.Intent;
-import com.netflix.mediaclient.android.app.Status;
-import com.netflix.model.leafs.OnRampEligibility;
+import com.netflix.mediaclient.service.configuration.PersistentConfig;
 import android.app.Activity;
-import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import java.util.concurrent.TimeUnit;
+import android.annotation.SuppressLint;
+import com.netflix.mediaclient.service.logging.perf.Sessions;
+import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
+import com.netflix.mediaclient.Log;
 
-final class OnRampActivity$1 extends SimpleManagerCallback
+class OnRampActivity$1 implements Runnable
 {
-    final /* synthetic */ Activity val$activity;
+    final /* synthetic */ OnRampActivity this$0;
     
-    OnRampActivity$1(final Activity val$activity) {
-        this.val$activity = val$activity;
+    OnRampActivity$1(final OnRampActivity this$0) {
+        this.this$0 = this$0;
     }
     
     @Override
-    public void onOnRampEligibilityAction(final OnRampEligibility onRampEligibility, final Status status) {
-        if (status != null && status.isSucces() && onRampEligibility != null && onRampEligibility.isEligible()) {
-            this.val$activity.startActivity(new Intent((Context)this.val$activity, (Class)OnRampActivity.class));
+    public void run() {
+        Log.d("OnRampActivity", "Timeout triggered");
+        if (!this.this$0.onLoadedBeenCalled && !this.this$0.isFinishing()) {
+            PerformanceProfiler.getInstance().endSession(Sessions.ONRAMP_TTR, PerformanceProfiler.createFailedMap());
+            this.this$0.finish();
         }
     }
 }

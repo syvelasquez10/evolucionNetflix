@@ -6,10 +6,15 @@ package android.support.v4.graphics.drawable;
 
 import android.graphics.PorterDuff$Mode;
 import android.content.res.ColorStateList;
+import android.util.AttributeSet;
+import org.xmlpull.v1.XmlPullParser;
+import android.content.res.Resources;
+import android.graphics.ColorFilter;
+import android.content.res.Resources$Theme;
 import android.graphics.drawable.Drawable;
 import android.os.Build$VERSION;
 
-public class DrawableCompat
+public final class DrawableCompat
 {
     static final DrawableCompat$DrawableImpl IMPL;
     
@@ -17,10 +22,6 @@ public class DrawableCompat
         final int sdk_INT = Build$VERSION.SDK_INT;
         if (sdk_INT >= 23) {
             IMPL = new DrawableCompat$MDrawableImpl();
-            return;
-        }
-        if (sdk_INT >= 22) {
-            IMPL = new DrawableCompat$LollipopMr1DrawableImpl();
             return;
         }
         if (sdk_INT >= 21) {
@@ -40,6 +41,34 @@ public class DrawableCompat
             return;
         }
         IMPL = new DrawableCompat$BaseDrawableImpl();
+    }
+    
+    public static void applyTheme(final Drawable drawable, final Resources$Theme resources$Theme) {
+        DrawableCompat.IMPL.applyTheme(drawable, resources$Theme);
+    }
+    
+    public static boolean canApplyTheme(final Drawable drawable) {
+        return DrawableCompat.IMPL.canApplyTheme(drawable);
+    }
+    
+    public static void clearColorFilter(final Drawable drawable) {
+        DrawableCompat.IMPL.clearColorFilter(drawable);
+    }
+    
+    public static int getAlpha(final Drawable drawable) {
+        return DrawableCompat.IMPL.getAlpha(drawable);
+    }
+    
+    public static ColorFilter getColorFilter(final Drawable drawable) {
+        return DrawableCompat.IMPL.getColorFilter(drawable);
+    }
+    
+    public static int getLayoutDirection(final Drawable drawable) {
+        return DrawableCompat.IMPL.getLayoutDirection(drawable);
+    }
+    
+    public static void inflate(final Drawable drawable, final Resources resources, final XmlPullParser xmlPullParser, final AttributeSet set, final Resources$Theme resources$Theme) {
+        DrawableCompat.IMPL.inflate(drawable, resources, xmlPullParser, set, resources$Theme);
     }
     
     public static boolean isAutoMirrored(final Drawable drawable) {
@@ -62,8 +91,8 @@ public class DrawableCompat
         DrawableCompat.IMPL.setHotspotBounds(drawable, n, n2, n3, n4);
     }
     
-    public static void setLayoutDirection(final Drawable drawable, final int n) {
-        DrawableCompat.IMPL.setLayoutDirection(drawable, n);
+    public static boolean setLayoutDirection(final Drawable drawable, final int n) {
+        return DrawableCompat.IMPL.setLayoutDirection(drawable, n);
     }
     
     public static void setTint(final Drawable drawable, final int n) {

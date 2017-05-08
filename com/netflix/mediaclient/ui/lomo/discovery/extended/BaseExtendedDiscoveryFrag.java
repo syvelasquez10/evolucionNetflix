@@ -56,17 +56,17 @@ public abstract class BaseExtendedDiscoveryFrag extends NetflixDialogFrag
     }
     
     protected void findViews(final View view) {
-        this.recyclerView = (RecyclerView)view.findViewById(2131689778);
-        view.findViewById(2131689776).setOnClickListener((View$OnClickListener)new BaseExtendedDiscoveryFrag$1(this));
-        this.titleView = (TextView)view.findViewById(2131689777);
-        this.bgImageView = (ImageView)view.findViewById(2131689775);
+        this.recyclerView = (RecyclerView)view.findViewById(2131689798);
+        view.findViewById(2131689796).setOnClickListener((View$OnClickListener)new BaseExtendedDiscoveryFrag$1(this));
+        this.titleView = (TextView)view.findViewById(2131689797);
+        this.bgImageView = (ImageView)view.findViewById(2131689795);
         this.leWrapper = new LoadingAndErrorWrapper(view, this.errorCallback);
     }
     
     @Override
     public void onActivityCreated(final Bundle bundle) {
         super.onActivityCreated(bundle);
-        this.getDialog().getWindow().setWindowAnimations(2131427635);
+        this.getDialog().getWindow().setWindowAnimations(2131427665);
         this.updateBackgroundIfReady();
     }
     
@@ -74,7 +74,7 @@ public abstract class BaseExtendedDiscoveryFrag extends NetflixDialogFrag
     public void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
         this.setHasOptionsMenu(true);
-        this.setStyle(1, 2131427727);
+        this.setStyle(1, 2131427766);
         if (bundle != null) {
             this.trackable = (PlayContext)bundle.getParcelable("trackable");
             this.turboId = bundle.getLong("id");
@@ -84,7 +84,7 @@ public abstract class BaseExtendedDiscoveryFrag extends NetflixDialogFrag
     
     public View onCreateView(final LayoutInflater layoutInflater, final ViewGroup viewGroup, final Bundle bundle) {
         Log.v("BaseExtendedDiscoveryFrag", "onCreateView called");
-        final View inflate = layoutInflater.inflate(2130903109, (ViewGroup)null, false);
+        final View inflate = layoutInflater.inflate(2130903117, (ViewGroup)null, false);
         this.findViews(inflate);
         this.setupRecyclerView();
         return inflate;
@@ -103,7 +103,7 @@ public abstract class BaseExtendedDiscoveryFrag extends NetflixDialogFrag
             this.fragmentWasShown = true;
             return;
         }
-        this.getDialog().getWindow().setWindowAnimations(2131427636);
+        this.getDialog().getWindow().setWindowAnimations(2131427666);
     }
     
     public void restorePage(final ServiceManager serviceManager, final PaginatedDiscoveryAdapter$BlurredStoryArtProvider paginatedDiscoveryAdapter$BlurredStoryArtProvider) {

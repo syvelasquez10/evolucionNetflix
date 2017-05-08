@@ -38,7 +38,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.Log;
-import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
@@ -60,7 +59,7 @@ import com.netflix.mediaclient.ui.details.NetflixRatingBar$RatingBarDataProvider
 import com.netflix.mediaclient.ui.details.IHandleBackPress;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 
 class MiniPlayerControlsFrag$5 implements Runnable
@@ -73,7 +72,7 @@ class MiniPlayerControlsFrag$5 implements Runnable
     
     @Override
     public void run() {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity) || this.this$0.draggingInProgress) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.activity) || this.this$0.draggingInProgress) {
             this.this$0.log("skipping seekbar update");
             return;
         }

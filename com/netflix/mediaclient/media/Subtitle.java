@@ -4,136 +4,35 @@
 
 package com.netflix.mediaclient.media;
 
-import org.json.JSONException;
-import com.netflix.mediaclient.ui.player.NccpSubtitle;
-import com.netflix.mediaclient.ui.mdx.MdxSubtitle;
 import org.json.JSONObject;
-import com.netflix.mediaclient.Log;
 
-public abstract class Subtitle implements Comparable<Subtitle>
+public interface Subtitle extends Comparable<Subtitle>
 {
-    protected static final String ATTR_CAN_DEVICE_RENDER = "canDeviceRender";
-    protected static final String ATTR_ID = "id";
-    protected static final String ATTR_LANGUAGE = "language";
-    protected static final String ATTR_LANGUAGE_DESCRIPTION = "languageDescription";
-    protected static final String ATTR_ORDER = "order";
-    protected static final String ATTR_SELECTED = "selected";
-    protected static final String ATTR_TRACK_TYPE = "trackType";
     public static final int CLOSED_CAPTION_SUBTITLE = 2;
     public static final int COMMENTARY = 4;
     public static final int DESCRIPTIONS = 5;
     public static final int FORCED_NARRATIVE = 6;
-    protected static final String IMPL = "impl";
     public static final int PRIMARY_SUBTITLE = 1;
     public static final int SUBTITLES = 3;
     public static final int UNKNOWN_SUBTITLE = 0;
-    protected boolean canDeviceRender;
-    protected String id;
-    protected String languageCodeIso639_1;
-    protected String languageCodeIso639_2;
-    protected String languageDescription;
-    protected int nccpOrderNumber;
-    protected int trackType;
     
-    public static void dumpLog(final Subtitle[] array, final String s) {
-        if (array != null) {
-            if (Log.isLoggable()) {
-                Log.d(s, "Subtitles: " + array.length);
-                for (int i = 0; i < array.length; ++i) {
-                    Log.d(s, i + " " + array[i]);
-                }
-            }
-        }
-        else {
-            Log.e(s, "Subtitles are null!");
-        }
-    }
+    boolean canDeviceRender();
     
-    static Subtitle restore(final JSONObject jsonObject) {
-        if (jsonObject == null) {
-            return null;
-        }
-        final int optInt = jsonObject.optInt("impl", -1);
-        if (optInt == 2) {
-            return MdxSubtitle.newInstance(jsonObject, jsonObject.getInt("order"));
-        }
-        if (optInt == 1) {
-            return NccpSubtitle.newInstance(jsonObject, jsonObject.getInt("order"));
-        }
-        throw new JSONException("Implementation does not support restore " + optInt);
-    }
+    String getDownloadableId();
     
-    public boolean canDeviceRender() {
-        return this.canDeviceRender;
-    }
+    String getId();
     
-    @Override
-    public int compareTo(final Subtitle subtitle) {
-        int compare = -1;
-        if (subtitle != null && this.languageDescription != null) {
-            if (subtitle.languageDescription == null) {
-                return 1;
-            }
-            if ((compare = String.CASE_INSENSITIVE_ORDER.compare(this.languageDescription, subtitle.languageDescription)) == 0) {
-                return this.languageDescription.compareTo(subtitle.languageDescription);
-            }
-        }
-        return compare;
-    }
+    String getLanguageCodeIso639_1();
     
-    @Override
-    public boolean equals(final Object o) {
-        if (this != o) {
-            if (o == null) {
-                return false;
-            }
-            if (!(o instanceof Subtitle)) {
-                return false;
-            }
-            if (this.nccpOrderNumber != ((Subtitle)o).nccpOrderNumber) {
-                return false;
-            }
-        }
-        return true;
-    }
+    String getLanguageCodeIso639_2();
     
-    public String getId() {
-        return this.id;
-    }
+    String getLanguageDescription();
     
-    public String getLanguageCodeIso639_1() {
-        return this.languageCodeIso639_1;
-    }
+    int getNccpOrderNumber();
     
-    public String getLanguageCodeIso639_2() {
-        return this.languageCodeIso639_2;
-    }
+    int getTrackType();
     
-    public String getLanguageDescription() {
-        return this.languageDescription;
-    }
+    boolean isCC();
     
-    public int getNccpOrderNumber() {
-        return this.nccpOrderNumber;
-    }
-    
-    public int getTrackType() {
-        return this.trackType;
-    }
-    
-    @Override
-    public int hashCode() {
-        return this.nccpOrderNumber + 31;
-    }
-    
-    public boolean isCC() {
-        return this.trackType == 2;
-    }
-    
-    public abstract JSONObject toJson();
-    
-    @Override
-    public String toString() {
-        return "Subtitle [id=" + this.id + ", languageCodeIso639_1=" + this.languageCodeIso639_1 + ", languageCodeIso639_2=" + this.languageCodeIso639_2 + ", languageDescription=" + this.languageDescription + ", trackType=" + this.trackType + ", canDeviceRender=" + this.canDeviceRender + ", nccpOrderNumber=" + this.nccpOrderNumber + "]";
-    }
+    JSONObject toJson();
 }

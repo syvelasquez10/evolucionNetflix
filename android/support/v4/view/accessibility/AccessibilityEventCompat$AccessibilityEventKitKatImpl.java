@@ -6,7 +6,7 @@ package android.support.v4.view.accessibility;
 
 import android.view.accessibility.AccessibilityEvent;
 
-class AccessibilityEventCompat$AccessibilityEventKitKatImpl extends AccessibilityEventCompat$AccessibilityEventIcsImpl
+class AccessibilityEventCompat$AccessibilityEventKitKatImpl extends AccessibilityEventCompat$AccessibilityEventJellyBeanImpl
 {
     @Override
     public int getContentChangeTypes(final AccessibilityEvent accessibilityEvent) {

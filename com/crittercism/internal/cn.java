@@ -6,4 +6,5 @@ package com.crittercism.internal;
 
 public final class cn extends RuntimeException
 {
+    private static final long serialVersionUID = 5379058813406132054L;
 }

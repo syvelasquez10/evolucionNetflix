@@ -4,6 +4,7 @@
 
 package com.crittercism.internal;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public final class dk extends di
@@ -13,8 +14,20 @@ public final class dk extends di
     public boolean c;
     public boolean d;
     public boolean e;
+    private dv f;
     private dr g;
     private ar h;
+    
+    public dk(final ar h) {
+        this.a = new HashMap();
+        this.b = false;
+        this.c = false;
+        this.d = false;
+        this.e = false;
+        this.h = h;
+        this.f = h.l();
+        this.g = h.m();
+    }
     
     private void a(final String s, final Object o) {
         synchronized (this) {

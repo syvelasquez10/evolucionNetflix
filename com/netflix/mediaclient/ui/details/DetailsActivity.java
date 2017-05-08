@@ -131,6 +131,11 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     }
     
     @Override
+    public boolean canShowSnackBar() {
+        return true;
+    }
+    
+    @Override
     protected ManagerStatusListener createManagerStatusListener() {
         return this;
     }
@@ -296,6 +301,11 @@ public abstract class DetailsActivity extends FragmentHostActivity implements Er
     
     public void registerLoadingStatusCallback() {
         this.setLoadingStatusCallback(new DetailsActivity$1(this));
+    }
+    
+    @Override
+    protected boolean requiresDownloadButtonListener() {
+        return true;
     }
     
     protected void setAction(final DetailsActivity$Action mAction, final String mActionToken) {

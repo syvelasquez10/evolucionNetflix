@@ -8,8 +8,8 @@ import java.lang.ref.WeakReference;
 
 class SnackbarManager$SnackbarRecord
 {
-    private final WeakReference<SnackbarManager$Callback> callback;
-    private int duration;
+    final WeakReference<SnackbarManager$Callback> callback;
+    int duration;
     
     SnackbarManager$SnackbarRecord(final int duration, final SnackbarManager$Callback snackbarManager$Callback) {
         this.callback = new WeakReference<SnackbarManager$Callback>(snackbarManager$Callback);

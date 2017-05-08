@@ -4,16 +4,19 @@
 
 package com.netflix.mediaclient.ui.common;
 
+import com.netflix.mediaclient.util.net.CronetHttpURLConnectionFactory;
 import com.netflix.mediaclient.util.PreferenceUtils;
 import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
-import android.content.Context;
 import com.netflix.mediaclient.util.PermissionUtils;
 import android.os.Handler;
 import android.os.Debug;
 import com.netflix.mediaclient.ui.home.HomeActivity;
+import android.content.Context;
+import com.netflix.mediaclient.android.debug.DebugOverlay;
 import android.view.Menu;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.Log;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
@@ -27,8 +30,14 @@ class DebugMenuItems$9 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        Log.d(this.this$0.logTag, "Making refreshCw() call");
-        this.this$0.activity.getServiceManager().getBrowse().refreshCw(false);
+        if (!this.this$0.requestExternalFileWritePermission()) {
+            Log.e(this.this$0.logTag, "Error: Don't have External write permissions yet... ");
+            return false;
+        }
+        final ServiceManager serviceManager = this.this$0.activity.getServiceManager();
+        if (serviceManager != null) {
+            serviceManager.getBrowse().dumpCacheToDisk();
+        }
         return true;
     }
 }

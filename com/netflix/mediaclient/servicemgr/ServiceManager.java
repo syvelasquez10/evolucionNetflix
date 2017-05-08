@@ -4,9 +4,12 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.mediaclient.servicemgr.interface_.offline.DownloadState;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import com.netflix.mediaclient.javabridge.ui.ActivationTokens;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
+import com.netflix.mediaclient.servicemgr.interface_.offline.OfflinePlayableViewData;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
 import com.netflix.mediaclient.service.configuration.esn.EsnProvider;
 import com.netflix.mediaclient.util.DeviceCategory;
@@ -41,6 +44,7 @@ public final class ServiceManager implements IServiceManagerAccess
     public static final String LOCAL_PLAYER_PLAY_START = "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_START";
     public static final String LOCAL_PLAYER_PLAY_STOP = "com.netflix.mediaclient.intent.action.LOCAL_PLAYER_PLAY_STOP";
     public static final String NOTIFICATIONS_LIST_STATUS = "notifications_list_status";
+    public static final String PLAYER_EXTRA_PLAYBACK_TYPE = "playbackType";
     private static final String TAG = "ServiceManager";
     private AddToMyListWrapper addToMyListWrapper;
     private final IBrowseManager mBrowseManager;
@@ -129,6 +133,14 @@ public final class ServiceManager implements IServiceManagerAccess
         return new ServiceManager$AddToListCallbackWrapper(this, managerCallback, s);
     }
     
+    public void addNetworkRequestInspector(final IMSLClient$NetworkRequestInspector imslClient$NetworkRequestInspector, final Class[] array) {
+        if (this.mService == null) {
+            Log.e("ServiceManager", "Netflix service is not available. Unable to add a network request inspector");
+            return;
+        }
+        this.mService.addNetworkRequestInspector(imslClient$NetworkRequestInspector, array);
+    }
+    
     public void addProfile(final String s, final boolean b, final String s2, final ManagerCallback managerCallback) {
         if (this.validateService()) {
             this.mService.addProfile(s, b, s2, this.mClientId, this.addCallback(managerCallback));
@@ -208,27 +220,27 @@ public final class ServiceManager implements IServiceManagerAccess
             try {
                 Log.d("ServiceManager", "fetchAndCacheResource:: resourceUrl is null");
                 return b;
-                final int addCallback = this.addCallback(managerCallback);
                 // iftrue(Label_0073:, !Log.isLoggable())
+                // iftrue(Label_0103:, !this.validateService())
                 while (true) {
-                    Block_3: {
-                        break Block_3;
+                Label_0073:
+                    while (true) {
+                        final int addCallback;
+                        Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
+                        break Label_0073;
                         this.mService.fetchAndCacheResource(s, clientLogging$AssetType, this.mClientId, addCallback);
                         b = true;
                         return b;
-                    }
-                    Log.d("ServiceManager", "fetchAndCacheResource requestId=" + addCallback + " resourceUrl=" + s);
-                    Label_0073: {
-                        break Label_0073;
-                        Label_0103: {
-                            Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
-                        }
-                        return b;
+                        addCallback = this.addCallback(managerCallback);
+                        continue;
                     }
                     continue;
                 }
+                Label_0103: {
+                    Log.w("ServiceManager", "fetchAndCacheResource:: service is not available");
+                }
+                return b;
             }
-            // iftrue(Label_0103:, !this.validateService())
             finally {
             }
             // monitorexit(this)
@@ -332,6 +344,14 @@ public final class ServiceManager implements IServiceManagerAccess
         return null;
     }
     
+    public String getCurrentProfileGuidOrNull() {
+        final UserProfile currentProfile = this.getCurrentProfile();
+        if (currentProfile != null) {
+            return currentProfile.getProfileGuid();
+        }
+        return null;
+    }
+    
     public DeviceCategory getDeviceCategory() {
         if (this.validateService()) {
             return this.mService.getDeviceCategory();
@@ -406,13 +426,44 @@ public final class ServiceManager implements IServiceManagerAccess
         return null;
     }
     
-    public IPlayer getPlayer() {
+    public OfflineAgentInterface getOfflineAgent() {
         final INetflixService mService = this.mService;
-        if (mService != null) {
-            return mService.getNflxPlayer();
+        if (mService == null) {
+            Log.w("ServiceManager", "getOfflineAgent:: service is not available");
+            return null;
         }
-        Log.w("ServiceManager", "getPlayer:: service is not available");
+        final OfflineAgentInterface offlineAgent = mService.getOfflineAgent();
+        if (offlineAgent == null) {
+            Log.w("ServiceManager", "getOfflineAgent:: is null");
+            return null;
+        }
+        if (!offlineAgent.isOfflineFeatureEnabled()) {
+            Log.w("ServiceManager", "getOfflineAgent:: not available ");
+            return null;
+        }
+        return offlineAgent;
+    }
+    
+    public OfflinePlayableViewData getOfflinePlayableData(final String s) {
+        if (this.isReady()) {
+            final OfflineAgentInterface offlineAgent = this.getOfflineAgent();
+            if (offlineAgent != null) {
+                return offlineAgent.getLatestOfflinePlayableList().getOfflinePlayableViewData(s);
+            }
+        }
         return null;
+    }
+    
+    public IPlayer getPlayer(final IPlayer$PlaybackType player$PlaybackType) {
+        final INetflixService mService = this.mService;
+        if (mService == null || player$PlaybackType == null) {
+            Log.w("ServiceManager", "getPlayer:: returning null playbackType=" + player$PlaybackType);
+            return null;
+        }
+        if (player$PlaybackType == IPlayer$PlaybackType.OfflinePlayback) {
+            return mService.getOfflinePlayer();
+        }
+        return mService.getNflxPlayer();
     }
     
     public IPushNotification getPushNotification() {
@@ -507,6 +558,10 @@ public final class ServiceManager implements IServiceManagerAccess
         }
         Log.w("ServiceManager", "isNonMemberPlayback:: service is not available");
         return false;
+    }
+    
+    public boolean isOfflineFeatureAvailable() {
+        return this.getOfflineAgent() != null;
     }
     
     public boolean isProfileSwitchingDisabled() {
@@ -726,5 +781,10 @@ public final class ServiceManager implements IServiceManagerAccess
         }
         Log.w("ServiceManager", "verifyPin:: service is not available");
         return false;
+    }
+    
+    public boolean willPlayOffline(final String s) {
+        final OfflinePlayableViewData offlinePlayableData = this.getOfflinePlayableData(s);
+        return offlinePlayableData != null && offlinePlayableData.getDownloadState() == DownloadState.Complete;
     }
 }

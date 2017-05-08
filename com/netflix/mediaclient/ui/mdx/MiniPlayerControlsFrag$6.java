@@ -35,12 +35,9 @@ import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
 import android.content.Intent;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
-import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.app.FragmentManager;
 import android.app.DialogFragment;
-import com.netflix.mediaclient.Log;
-import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
@@ -62,6 +59,9 @@ import com.netflix.mediaclient.ui.details.IHandleBackPress;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixFrag;
 import android.app.Dialog;
+import android.content.Context;
+import com.netflix.mediaclient.util.l10n.LanguageUtils;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.media.Language;
 import com.netflix.mediaclient.ui.common.LanguageSelector$LanguageSelectorCallback;
 
@@ -75,8 +75,11 @@ class MiniPlayerControlsFrag$6 implements LanguageSelector$LanguageSelectorCallb
     
     @Override
     public void languageChanged(final Language language, final boolean b) {
-        this.this$0.log("Language changed via dialog: " + language);
+        if (Log.isLoggable()) {
+            this.this$0.log("Language changed via dialog: " + language);
+        }
         if (this.this$0.remotePlayer != null) {
+            LanguageUtils.saveUserChoice((Context)this.this$0.getActivity(), language);
             this.this$0.remotePlayer.changeLanguage(language);
             this.this$0.remotePlayer.requestAudioAndSubtitleData();
         }

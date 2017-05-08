@@ -4,11 +4,6 @@
 
 package android.support.design.widget;
 
-import android.support.v4.view.MotionEventCompat;
-import android.view.MotionEvent;
-import android.view.ViewGroup;
-import android.support.v4.widget.ViewDragHelper;
-import android.support.v4.widget.ViewDragHelper$Callback;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 

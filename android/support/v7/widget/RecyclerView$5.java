@@ -4,37 +4,34 @@
 
 package android.support.v7.widget;
 
-import android.support.v4.view.ViewConfigurationCompat;
+import java.util.Collections;
 import android.os.SystemClock;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.VelocityTrackerCompat;
-import android.support.v4.os.TraceCompat;
-import android.view.ViewParent;
+import android.view.View$MeasureSpec;
 import android.view.FocusFinder;
+import android.view.ViewParent;
 import android.graphics.Canvas;
 import android.os.Parcelable;
 import android.util.SparseArray;
-import android.support.v4.util.SimpleArrayMap;
-import android.util.Log;
-import android.support.v4.util.ArrayMap;
+import android.support.v4.os.TraceCompat;
 import android.support.v4.view.MotionEventCompat;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.View$MeasureSpec;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import android.view.ViewGroup$LayoutParams;
 import android.content.res.TypedArray;
 import android.support.v7.recyclerview.R$styleable;
-import android.view.View;
 import android.support.v4.view.ViewCompat;
 import android.view.ViewConfiguration;
 import android.util.AttributeSet;
 import android.content.Context;
 import android.os.Build$VERSION;
 import android.view.VelocityTracker;
+import android.graphics.RectF;
 import android.graphics.Rect;
 import android.support.v4.view.NestedScrollingChildHelper;
 import java.util.List;
@@ -45,8 +42,10 @@ import android.view.animation.Interpolator;
 import android.support.v4.view.ScrollingView;
 import android.support.v4.view.NestedScrollingChild;
 import android.view.ViewGroup;
+import android.view.ViewGroup$LayoutParams;
+import android.view.View;
 
-class RecyclerView$5 implements AdapterHelper$Callback
+class RecyclerView$5 implements ChildHelper$Callback
 {
     final /* synthetic */ RecyclerView this$0;
     
@@ -54,71 +53,89 @@ class RecyclerView$5 implements AdapterHelper$Callback
         this.this$0 = this$0;
     }
     
-    void dispatchUpdate(final AdapterHelper$UpdateOp adapterHelper$UpdateOp) {
-        switch (adapterHelper$UpdateOp.cmd) {
-            default: {}
-            case 0: {
-                this.this$0.mLayout.onItemsAdded(this.this$0, adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount);
+    @Override
+    public void addView(final View view, final int n) {
+        this.this$0.addView(view, n);
+        this.this$0.dispatchChildAttached(view);
+    }
+    
+    @Override
+    public void attachViewToParent(final View view, final int n, final ViewGroup$LayoutParams viewGroup$LayoutParams) {
+        final RecyclerView$ViewHolder childViewHolderInt = RecyclerView.getChildViewHolderInt(view);
+        if (childViewHolderInt != null) {
+            if (!childViewHolderInt.isTmpDetached() && !childViewHolderInt.shouldIgnore()) {
+                throw new IllegalArgumentException("Called attach on a child which is not detached: " + childViewHolderInt);
             }
-            case 1: {
-                this.this$0.mLayout.onItemsRemoved(this.this$0, adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount);
+            childViewHolderInt.clearTmpDetachFlag();
+        }
+        RecyclerView.access$000(this.this$0, view, n, viewGroup$LayoutParams);
+    }
+    
+    @Override
+    public void detachViewFromParent(final int n) {
+        final View child = this.getChildAt(n);
+        if (child != null) {
+            final RecyclerView$ViewHolder childViewHolderInt = RecyclerView.getChildViewHolderInt(child);
+            if (childViewHolderInt != null) {
+                if (childViewHolderInt.isTmpDetached() && !childViewHolderInt.shouldIgnore()) {
+                    throw new IllegalArgumentException("called detach on an already detached child " + childViewHolderInt);
+                }
+                childViewHolderInt.addFlags(256);
             }
-            case 2: {
-                this.this$0.mLayout.onItemsUpdated(this.this$0, adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount, adapterHelper$UpdateOp.payload);
-            }
-            case 3: {
-                this.this$0.mLayout.onItemsMoved(this.this$0, adapterHelper$UpdateOp.positionStart, adapterHelper$UpdateOp.itemCount, 1);
-            }
+        }
+        RecyclerView.access$100(this.this$0, n);
+    }
+    
+    @Override
+    public View getChildAt(final int n) {
+        return this.this$0.getChildAt(n);
+    }
+    
+    @Override
+    public int getChildCount() {
+        return this.this$0.getChildCount();
+    }
+    
+    @Override
+    public RecyclerView$ViewHolder getChildViewHolder(final View view) {
+        return RecyclerView.getChildViewHolderInt(view);
+    }
+    
+    @Override
+    public int indexOfChild(final View view) {
+        return this.this$0.indexOfChild(view);
+    }
+    
+    @Override
+    public void onEnteredHiddenState(final View view) {
+        final RecyclerView$ViewHolder childViewHolderInt = RecyclerView.getChildViewHolderInt(view);
+        if (childViewHolderInt != null) {
+            childViewHolderInt.onEnteredHiddenState();
         }
     }
     
     @Override
-    public RecyclerView$ViewHolder findViewHolder(final int n) {
-        final RecyclerView$ViewHolder viewHolderForPosition = this.this$0.findViewHolderForPosition(n, true);
-        if (viewHolderForPosition != null && !this.this$0.mChildHelper.isHidden(viewHolderForPosition.itemView)) {
-            return viewHolderForPosition;
+    public void onLeftHiddenState(final View view) {
+        final RecyclerView$ViewHolder childViewHolderInt = RecyclerView.getChildViewHolderInt(view);
+        if (childViewHolderInt != null) {
+            childViewHolderInt.onLeftHiddenState();
         }
-        return null;
     }
     
     @Override
-    public void markViewHoldersUpdated(final int n, final int n2, final Object o) {
-        this.this$0.viewRangeUpdate(n, n2, o);
-        this.this$0.mItemsChanged = true;
+    public void removeAllViews() {
+        for (int childCount = this.getChildCount(), i = 0; i < childCount; ++i) {
+            this.this$0.dispatchChildDetached(this.getChildAt(i));
+        }
+        this.this$0.removeAllViews();
     }
     
     @Override
-    public void offsetPositionsForAdd(final int n, final int n2) {
-        this.this$0.offsetPositionRecordsForInsert(n, n2);
-        this.this$0.mItemsAddedOrRemoved = true;
-    }
-    
-    @Override
-    public void offsetPositionsForMove(final int n, final int n2) {
-        this.this$0.offsetPositionRecordsForMove(n, n2);
-        this.this$0.mItemsAddedOrRemoved = true;
-    }
-    
-    @Override
-    public void offsetPositionsForRemovingInvisible(final int n, final int n2) {
-        this.this$0.offsetPositionRecordsForRemove(n, n2, true);
-        this.this$0.mItemsAddedOrRemoved = true;
-        RecyclerView$State.access$1212(this.this$0.mState, n2);
-    }
-    
-    @Override
-    public void offsetPositionsForRemovingLaidOutOrNewView(final int n, final int n2) {
-        this.this$0.offsetPositionRecordsForRemove(n, n2, false);
-        this.this$0.mItemsAddedOrRemoved = true;
-    }
-    
-    @Override
-    public void onDispatchFirstPass(final AdapterHelper$UpdateOp adapterHelper$UpdateOp) {
-        this.dispatchUpdate(adapterHelper$UpdateOp);
-    }
-    
-    @Override
-    public void onDispatchSecondPass(final AdapterHelper$UpdateOp adapterHelper$UpdateOp) {
-        this.dispatchUpdate(adapterHelper$UpdateOp);
+    public void removeViewAt(final int n) {
+        final View child = this.this$0.getChildAt(n);
+        if (child != null) {
+            this.this$0.dispatchChildDetached(child);
+        }
+        this.this$0.removeViewAt(n);
     }
 }

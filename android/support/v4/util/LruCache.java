@@ -38,7 +38,23 @@ public class LruCache<K, V>
         return null;
     }
     
+    public final int createCount() {
+        synchronized (this) {
+            return this.createCount;
+        }
+    }
+    
     protected void entryRemoved(final boolean b, final K k, final V v, final V v2) {
+    }
+    
+    public final void evictAll() {
+        this.trimToSize(-1);
+    }
+    
+    public final int evictionCount() {
+        synchronized (this) {
+            return this.evictionCount;
+        }
     }
     
     public final V get(final K k) {
@@ -79,6 +95,24 @@ public class LruCache<K, V>
         return v;
     }
     
+    public final int hitCount() {
+        synchronized (this) {
+            return this.hitCount;
+        }
+    }
+    
+    public final int maxSize() {
+        synchronized (this) {
+            return this.maxSize;
+        }
+    }
+    
+    public final int missCount() {
+        synchronized (this) {
+            return this.missCount;
+        }
+    }
+    
     public final V put(final K k, final V v) {
         if (k == null || v == null) {
             throw new NullPointerException("key == null || value == null");
@@ -99,8 +133,54 @@ public class LruCache<K, V>
         }
     }
     
+    public final int putCount() {
+        synchronized (this) {
+            return this.putCount;
+        }
+    }
+    
+    public final V remove(final K k) {
+        if (k == null) {
+            throw new NullPointerException("key == null");
+        }
+        synchronized (this) {
+            final V remove = this.map.remove(k);
+            if (remove != null) {
+                this.size -= this.safeSizeOf(k, remove);
+            }
+            // monitorexit(this)
+            if (remove != null) {
+                this.entryRemoved(false, k, remove, null);
+            }
+            return remove;
+        }
+    }
+    
+    public void resize(final int maxSize) {
+        if (maxSize <= 0) {
+            throw new IllegalArgumentException("maxSize <= 0");
+        }
+        synchronized (this) {
+            this.maxSize = maxSize;
+            // monitorexit(this)
+            this.trimToSize(maxSize);
+        }
+    }
+    
+    public final int size() {
+        synchronized (this) {
+            return this.size;
+        }
+    }
+    
     protected int sizeOf(final K k, final V v) {
         return 1;
+    }
+    
+    public final Map<K, V> snapshot() {
+        synchronized (this) {
+            return new LinkedHashMap<K, V>((Map<? extends K, ? extends V>)this.map);
+        }
     }
     
     @Override

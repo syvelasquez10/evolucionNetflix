@@ -5,19 +5,30 @@
 package android.support.v7.app;
 
 import android.view.View;
+import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v4.widget.DrawerLayout$DrawerListener;
 
 public class ActionBarDrawerToggle implements DrawerLayout$DrawerListener
 {
     private final ActionBarDrawerToggle$Delegate mActivityImpl;
     private final int mCloseDrawerContentDescRes;
-    private boolean mDrawerIndicatorEnabled;
+    boolean mDrawerIndicatorEnabled;
     private final int mOpenDrawerContentDescRes;
-    private ActionBarDrawerToggle$DrawerToggle mSlider;
+    private DrawerArrowDrawable mSlider;
+    
+    private void setPosition(final float progress) {
+        if (progress == 1.0f) {
+            this.mSlider.setVerticalMirror(true);
+        }
+        else if (progress == 0.0f) {
+            this.mSlider.setVerticalMirror(false);
+        }
+        this.mSlider.setProgress(progress);
+    }
     
     @Override
     public void onDrawerClosed(final View view) {
-        this.mSlider.setPosition(0.0f);
+        this.setPosition(0.0f);
         if (this.mDrawerIndicatorEnabled) {
             this.setActionBarDescription(this.mOpenDrawerContentDescRes);
         }
@@ -25,7 +36,7 @@ public class ActionBarDrawerToggle implements DrawerLayout$DrawerListener
     
     @Override
     public void onDrawerOpened(final View view) {
-        this.mSlider.setPosition(1.0f);
+        this.setPosition(1.0f);
         if (this.mDrawerIndicatorEnabled) {
             this.setActionBarDescription(this.mCloseDrawerContentDescRes);
         }
@@ -33,7 +44,7 @@ public class ActionBarDrawerToggle implements DrawerLayout$DrawerListener
     
     @Override
     public void onDrawerSlide(final View view, final float n) {
-        this.mSlider.setPosition(Math.min(1.0f, Math.max(0.0f, n)));
+        this.setPosition(Math.min(1.0f, Math.max(0.0f, n)));
     }
     
     @Override

@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import android.annotation.SuppressLint;
 import com.netflix.mediaclient.Log;
 import android.os.Environment;
+import java.util.LinkedList;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.io.File;
@@ -29,6 +30,7 @@ public final class FileUtils
     public static final int BYTES_PER_MB = 1048576;
     private static final int DEFAULT_BUFFER_SIZE = 4096;
     public static final int EOF = -1;
+    public static final String FILE_COLON_TWO_SLASH = "file://";
     private static final String TAG = "FileUtils";
     
     public static void closeQuietly(final Closeable closeable) {
@@ -259,11 +261,18 @@ public final class FileUtils
         throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
+    public static boolean createDirectoryIfRequired(final String s) {
+        final File file = new File(s);
+        return file.isDirectory() || file.mkdirs();
+    }
+    
     public static boolean deleteRecursive(final File file) {
         if (file.isDirectory()) {
             final File[] listFiles = file.listFiles();
-            for (int length = listFiles.length, i = 0; i < length; ++i) {
-                deleteRecursive(listFiles[i]);
+            if (listFiles != null && listFiles.length > 0) {
+                for (int length = listFiles.length, i = 0; i < length; ++i) {
+                    deleteRecursive(listFiles[i]);
+                }
             }
         }
         return file.delete();
@@ -313,6 +322,45 @@ public final class FileUtils
         return s.substring("file://".length());
     }
     
+    public static long getDirectorySizeInBytes(File file) {
+        long n;
+        if (file == null || !file.exists()) {
+            n = 0L;
+        }
+        else {
+            if (!file.isDirectory()) {
+                return file.length();
+            }
+            final LinkedList<File> list = new LinkedList<File>();
+            list.add(file);
+            long n2 = 0L;
+            while (true) {
+                n = n2;
+                if (list.isEmpty()) {
+                    break;
+                }
+                file = (File)list.remove();
+                if (!file.exists()) {
+                    continue;
+                }
+                final File[] listFiles = file.listFiles();
+                if (listFiles == null || listFiles.length == 0) {
+                    continue;
+                }
+                for (int length = listFiles.length, i = 0; i < length; ++i) {
+                    final File file2 = listFiles[i];
+                    if (file2.isDirectory()) {
+                        list.add(file2);
+                    }
+                    else {
+                        n2 += file2.length();
+                    }
+                }
+            }
+        }
+        return n;
+    }
+    
     @SuppressLint({ "WorldReadableFiles" })
     public static FileOutputStream getOutputStream(final Context context, final String s, final boolean b) {
         if (b) {
@@ -324,6 +372,14 @@ public final class FileUtils
             file.createNewFile();
         }
         return new FileOutputStream(file);
+    }
+    
+    public static long getUsableSpace(final File file) {
+        if (file == null || !file.exists() || !file.isDirectory()) {
+            Log.e("FileUtils", "Not directory or does not exists " + file.exists());
+            return 0L;
+        }
+        return file.getUsableSpace();
     }
     
     public static boolean moveFile(final String s, final String s2) {
@@ -341,6 +397,91 @@ public final class FileUtils
             throw new IOException("File '" + file + "' cannot be read");
         }
         return new FileInputStream(file);
+    }
+    
+    public static byte[] readBytesFromFile(final File p0, final int p1, final int p2) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: iload_2        
+        //     1: ifge            15
+        //     4: new             Ljava/lang/IllegalArgumentException;
+        //     7: dup            
+        //     8: ldc_w           "We can not read less than 1 byte!"
+        //    11: invokespecial   java/lang/IllegalArgumentException.<init>:(Ljava/lang/String;)V
+        //    14: athrow         
+        //    15: iload_2        
+        //    16: newarray        B
+        //    18: astore          4
+        //    20: new             Ljava/io/RandomAccessFile;
+        //    23: dup            
+        //    24: aload_0        
+        //    25: ldc_w           "r"
+        //    28: invokespecial   java/io/RandomAccessFile.<init>:(Ljava/io/File;Ljava/lang/String;)V
+        //    31: astore_3       
+        //    32: aload_3        
+        //    33: iload_1        
+        //    34: invokevirtual   java/io/RandomAccessFile.skipBytes:(I)I
+        //    37: pop            
+        //    38: aload_3        
+        //    39: aload           4
+        //    41: invokevirtual   java/io/RandomAccessFile.readFully:([B)V
+        //    44: aload_3        
+        //    45: ifnull          52
+        //    48: aload_3        
+        //    49: invokevirtual   java/io/RandomAccessFile.close:()V
+        //    52: aload           4
+        //    54: areturn        
+        //    55: astore_0       
+        //    56: aconst_null    
+        //    57: astore_3       
+        //    58: aload_3        
+        //    59: ifnull          66
+        //    62: aload_3        
+        //    63: invokevirtual   java/io/RandomAccessFile.close:()V
+        //    66: aload_0        
+        //    67: athrow         
+        //    68: astore_0       
+        //    69: aload           4
+        //    71: areturn        
+        //    72: astore_3       
+        //    73: goto            66
+        //    76: astore_0       
+        //    77: goto            58
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type                 
+        //  -----  -----  -----  -----  ---------------------
+        //  20     32     55     58     Any
+        //  32     44     76     80     Any
+        //  48     52     68     72     Ljava/lang/Throwable;
+        //  62     66     72     76     Ljava/lang/Throwable;
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0052:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
     public static String readFile(final String s, final Charset charset) {
@@ -403,6 +544,170 @@ public final class FileUtils
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         copy(inputStream, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
+    }
+    
+    public static boolean writeBytesToFile(final String p0, final byte[] p1) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: aconst_null    
+        //     1: astore_3       
+        //     2: aconst_null    
+        //     3: astore          4
+        //     5: new             Ljava/io/FileOutputStream;
+        //     8: dup            
+        //     9: aload_0        
+        //    10: invokespecial   java/io/FileOutputStream.<init>:(Ljava/lang/String;)V
+        //    13: astore_2       
+        //    14: aload_2        
+        //    15: astore_3       
+        //    16: aload_2        
+        //    17: aload_1        
+        //    18: invokevirtual   java/io/FileOutputStream.write:([B)V
+        //    21: aload_2        
+        //    22: ifnull          196
+        //    25: aload_2        
+        //    26: invokevirtual   java/io/FileOutputStream.close:()V
+        //    29: iconst_1       
+        //    30: ireturn        
+        //    31: astore_0       
+        //    32: ldc             "FileUtils"
+        //    34: ldc_w           "persistManifest close IO Exception "
+        //    37: aload_0        
+        //    38: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //    41: pop            
+        //    42: iconst_0       
+        //    43: ireturn        
+        //    44: astore_1       
+        //    45: aconst_null    
+        //    46: astore_2       
+        //    47: aload_2        
+        //    48: astore_3       
+        //    49: ldc             "FileUtils"
+        //    51: new             Ljava/lang/StringBuilder;
+        //    54: dup            
+        //    55: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    58: ldc_w           "writeBytesToFile file not found "
+        //    61: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    64: aload_0        
+        //    65: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    68: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    71: aload_1        
+        //    72: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //    75: pop            
+        //    76: aload_2        
+        //    77: ifnull          196
+        //    80: aload_2        
+        //    81: invokevirtual   java/io/FileOutputStream.close:()V
+        //    84: iconst_1       
+        //    85: ireturn        
+        //    86: astore_0       
+        //    87: ldc             "FileUtils"
+        //    89: ldc_w           "persistManifest close IO Exception "
+        //    92: aload_0        
+        //    93: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //    96: pop            
+        //    97: iconst_0       
+        //    98: ireturn        
+        //    99: astore_2       
+        //   100: aload           4
+        //   102: astore_1       
+        //   103: aload_1        
+        //   104: astore_3       
+        //   105: ldc             "FileUtils"
+        //   107: new             Ljava/lang/StringBuilder;
+        //   110: dup            
+        //   111: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   114: ldc_w           "writeBytesToFile IOException "
+        //   117: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   120: aload_0        
+        //   121: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   124: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   127: aload_2        
+        //   128: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   131: pop            
+        //   132: aload_1        
+        //   133: ifnull          196
+        //   136: aload_1        
+        //   137: invokevirtual   java/io/FileOutputStream.close:()V
+        //   140: iconst_1       
+        //   141: ireturn        
+        //   142: astore_0       
+        //   143: ldc             "FileUtils"
+        //   145: ldc_w           "persistManifest close IO Exception "
+        //   148: aload_0        
+        //   149: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   152: pop            
+        //   153: iconst_0       
+        //   154: ireturn        
+        //   155: astore_0       
+        //   156: aload_3        
+        //   157: ifnull          164
+        //   160: aload_3        
+        //   161: invokevirtual   java/io/FileOutputStream.close:()V
+        //   164: aload_0        
+        //   165: athrow         
+        //   166: astore_1       
+        //   167: ldc             "FileUtils"
+        //   169: ldc_w           "persistManifest close IO Exception "
+        //   172: aload_1        
+        //   173: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   176: pop            
+        //   177: goto            164
+        //   180: astore_0       
+        //   181: goto            156
+        //   184: astore_3       
+        //   185: aload_2        
+        //   186: astore_1       
+        //   187: aload_3        
+        //   188: astore_2       
+        //   189: goto            103
+        //   192: astore_1       
+        //   193: goto            47
+        //   196: iconst_0       
+        //   197: ireturn        
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type                           
+        //  -----  -----  -----  -----  -------------------------------
+        //  5      14     44     47     Ljava/io/FileNotFoundException;
+        //  5      14     99     103    Ljava/io/IOException;
+        //  5      14     155    156    Any
+        //  16     21     192    196    Ljava/io/FileNotFoundException;
+        //  16     21     184    192    Ljava/io/IOException;
+        //  16     21     180    184    Any
+        //  25     29     31     44     Ljava/io/IOException;
+        //  49     76     180    184    Any
+        //  80     84     86     99     Ljava/io/IOException;
+        //  105    132    155    156    Any
+        //  136    140    142    155    Ljava/io/IOException;
+        //  160    164    166    180    Ljava/io/IOException;
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0103:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
     }
     
     public static boolean writeStringToFile(final String s, final String s2, final String s3) {

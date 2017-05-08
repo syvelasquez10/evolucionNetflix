@@ -5,37 +5,35 @@
 package android.support.v7.widget;
 
 import android.view.ContextThemeWrapper;
-import android.support.v7.internal.widget.ViewUtils;
-import android.os.Build$VERSION;
 import android.content.res.Configuration;
 import android.view.MenuItem;
-import android.support.v7.internal.view.menu.m;
+import android.support.v7.view.menu.MenuItemImpl;
 import android.graphics.drawable.Drawable;
-import android.support.v7.internal.view.menu.x;
+import android.support.v7.view.menu.MenuPresenter;
 import android.view.Menu;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.ViewGroup$LayoutParams;
-import android.support.v7.internal.view.menu.ActionMenuItemView;
+import android.support.v7.view.menu.ActionMenuItemView;
 import android.view.View$MeasureSpec;
 import android.view.View;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.support.v7.internal.view.menu.j;
-import android.support.v7.internal.view.menu.i;
-import android.support.v7.internal.view.menu.y;
-import android.support.v7.internal.view.menu.z;
-import android.support.v7.internal.view.menu.k;
+import android.support.v7.view.menu.MenuBuilder$Callback;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPresenter$Callback;
+import android.support.v7.view.menu.MenuView;
+import android.support.v7.view.menu.MenuBuilder$ItemInvoker;
 
-public class ActionMenuView extends LinearLayoutCompat implements k, z
+public class ActionMenuView extends LinearLayoutCompat implements MenuBuilder$ItemInvoker, MenuView
 {
-    private y mActionMenuPresenterCallback;
+    private MenuPresenter$Callback mActionMenuPresenterCallback;
     private boolean mFormatItems;
     private int mFormatItemsWidth;
     private int mGeneratedItemPadding;
-    private i mMenu;
-    private j mMenuBuilderCallback;
+    private MenuBuilder mMenu;
+    MenuBuilder$Callback mMenuBuilderCallback;
     private int mMinCellSize;
-    private ActionMenuView$OnMenuItemClickListener mOnMenuItemClickListener;
+    ActionMenuView$OnMenuItemClickListener mOnMenuItemClickListener;
     private Context mPopupContext;
     private int mPopupTheme;
     private ActionMenuPresenter mPresenter;
@@ -66,7 +64,7 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
         else {
             actionMenuItemView = null;
         }
-        if (actionMenuItemView != null && actionMenuItemView.a()) {
+        if (actionMenuItemView != null && actionMenuItemView.hasText()) {
             n3 = 1;
         }
         else {
@@ -144,7 +142,7 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
                 actionMenuView$LayoutParams.expandable = false;
                 actionMenuView$LayoutParams.leftMargin = 0;
                 actionMenuView$LayoutParams.rightMargin = 0;
-                actionMenuView$LayoutParams.preventEdgeOffset = (b && ((ActionMenuItemView)child).a());
+                actionMenuView$LayoutParams.preventEdgeOffset = (b && ((ActionMenuItemView)child).hasText());
                 if (actionMenuView$LayoutParams.isOverflowButton) {
                     n = 1;
                 }
@@ -405,18 +403,18 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
     public Menu getMenu() {
         if (this.mMenu == null) {
             final Context context = this.getContext();
-            (this.mMenu = new i(context)).a(new ActionMenuView$MenuBuilderCallback(this, null));
+            (this.mMenu = new MenuBuilder(context)).setCallback(new ActionMenuView$MenuBuilderCallback(this));
             (this.mPresenter = new ActionMenuPresenter(context)).setReserveOverflow(true);
             final ActionMenuPresenter mPresenter = this.mPresenter;
-            y mActionMenuPresenterCallback;
+            MenuPresenter$Callback mActionMenuPresenterCallback;
             if (this.mActionMenuPresenterCallback != null) {
                 mActionMenuPresenterCallback = this.mActionMenuPresenterCallback;
             }
             else {
-                mActionMenuPresenterCallback = new ActionMenuView$ActionMenuPresenterCallback(this, null);
+                mActionMenuPresenterCallback = new ActionMenuView$ActionMenuPresenterCallback(this);
             }
             mPresenter.setCallback(mActionMenuPresenterCallback);
-            this.mMenu.a(this.mPresenter, this.mPopupContext);
+            this.mMenu.addMenuPresenter(this.mPresenter, this.mPopupContext);
             this.mPresenter.setMenuView(this);
         }
         return (Menu)this.mMenu;
@@ -460,13 +458,13 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
     }
     
     @Override
-    public void initialize(final i mMenu) {
+    public void initialize(final MenuBuilder mMenu) {
         this.mMenu = mMenu;
     }
     
     @Override
-    public boolean invokeItem(final m m) {
-        return this.mMenu.a((MenuItem)m, 0);
+    public boolean invokeItem(final MenuItemImpl menuItemImpl) {
+        return this.mMenu.performItemAction((MenuItem)menuItemImpl, 0);
     }
     
     public boolean isOverflowMenuShowPending() {
@@ -482,9 +480,7 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
     }
     
     public void onConfigurationChanged(final Configuration configuration) {
-        if (Build$VERSION.SDK_INT >= 8) {
-            super.onConfigurationChanged(configuration);
-        }
+        super.onConfigurationChanged(configuration);
         if (this.mPresenter != null) {
             this.mPresenter.updateMenuView(false);
             if (this.mPresenter.isOverflowMenuShowing()) {
@@ -654,7 +650,7 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
         final int size = View$MeasureSpec.getSize(n);
         if (this.mFormatItems && this.mMenu != null && size != this.mFormatItemsWidth) {
             this.mFormatItemsWidth = size;
-            this.mMenu.b(true);
+            this.mMenu.onItemsChanged(true);
         }
         final int childCount = this.getChildCount();
         if (this.mFormatItems && childCount > 0) {
@@ -669,7 +665,7 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
         super.onMeasure(n, n2);
     }
     
-    public i peekMenu() {
+    public MenuBuilder peekMenu() {
         return this.mMenu;
     }
     
@@ -677,7 +673,7 @@ public class ActionMenuView extends LinearLayoutCompat implements k, z
         this.mPresenter.setExpandedActionViewsExclusive(expandedActionViewsExclusive);
     }
     
-    public void setMenuCallbacks(final y mActionMenuPresenterCallback, final j mMenuBuilderCallback) {
+    public void setMenuCallbacks(final MenuPresenter$Callback mActionMenuPresenterCallback, final MenuBuilder$Callback mMenuBuilderCallback) {
         this.mActionMenuPresenterCallback = mActionMenuPresenterCallback;
         this.mMenuBuilderCallback = mMenuBuilderCallback;
     }

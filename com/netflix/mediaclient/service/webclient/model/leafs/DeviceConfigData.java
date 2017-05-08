@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.webclient.model.leafs;
 
+import com.netflix.mediaclient.util.DeviceUtils;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
@@ -12,6 +13,10 @@ public class DeviceConfigData
 {
     @SerializedName("alertMsgForLocaleSupport")
     private String alertMsgForLocaleSupport;
+    @SerializedName("allowHevcMobile")
+    private boolean allowHevcMobile;
+    @SerializedName("allowVp9Mobile")
+    private boolean allowVp9Mobile;
     @SerializedName("appBootUrlSuffix")
     private String appBootUrlSuffix;
     @SerializedName("audioFormats")
@@ -48,6 +53,8 @@ public class DeviceConfigData
     private int gcmBrowseEventRateLimit;
     @SerializedName("gcmNListChangeEventRateLimitInSecs")
     private int gcmNListChangeEventRateLimit;
+    @SerializedName("geoCountryCode")
+    private String geoCountryCode;
     @SerializedName("ignorePreloadForPlayBilling")
     private boolean ignorePreloadForPlayBilling;
     private String image_pref;
@@ -55,7 +62,13 @@ public class DeviceConfigData
     private int ip_connectivity_policy;
     @SerializedName("jPlayerRestartOnStreamErrors")
     private int jPlayerRestartOnStreamErrors;
+    @SerializedName("disableAndroidJobScheduler")
+    private boolean mDisableAndroidJobScheduler;
+    @SerializedName("disableAndroidJobSchedulerJobFinish")
+    private boolean mDisableAndroidJobSchedulerJobFinish;
     private String min_version;
+    @SerializedName("offlineConfig")
+    private OfflineConfig offlineConfig;
     private String pt_aggregation_size;
     @SerializedName("shouldAlertForLocaleSupport")
     private boolean shouldAlertForLocaleSupport;
@@ -82,6 +95,16 @@ public class DeviceConfigData
         this.user_session_timeout_duration = -1;
         this.jPlayerRestartOnStreamErrors = 2;
         this.voipConfirmationDialogAllocationPercentage = 25;
+        this.allowHevcMobile = false;
+        this.allowVp9Mobile = DeviceUtils.DEFAULT_ALLOW_VP9_MOBILE;
+    }
+    
+    public boolean disableAndroidJobScheduler() {
+        return this.mDisableAndroidJobScheduler;
+    }
+    
+    public boolean disableAndroidJobSchedulerJobFinish() {
+        return this.mDisableAndroidJobSchedulerJobFinish;
     }
     
     public String getAlertMsgForLocaleSupport() {
@@ -140,6 +163,10 @@ public class DeviceConfigData
         return this.error_logging_specification;
     }
     
+    public String getGeoCountryCode() {
+        return this.geoCountryCode;
+    }
+    
     public String getImagePref() {
         return this.image_pref;
     }
@@ -154,6 +181,10 @@ public class DeviceConfigData
     
     public String getMdxDisabled() {
         return this.disable_mdx;
+    }
+    
+    public OfflineConfig getOfflineConfig() {
+        return this.offlineConfig;
     }
     
     public String getPTAggregationSize() {
@@ -206,6 +237,14 @@ public class DeviceConfigData
     
     public String getWebsocketDisabled() {
         return this.disable_websocket;
+    }
+    
+    public boolean isAllowHevcMobile() {
+        return this.allowHevcMobile;
+    }
+    
+    public boolean isAllowVp9Mobile() {
+        return this.allowVp9Mobile;
     }
     
     public boolean isDynecomSignInEnabled() {

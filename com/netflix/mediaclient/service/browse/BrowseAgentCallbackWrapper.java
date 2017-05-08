@@ -12,6 +12,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
@@ -167,6 +168,12 @@ public class BrowseAgentCallbackWrapper implements BrowseAgentCallback
     public void onNotificationsListFetched(final IrisNotificationsList list, final Status status) {
         this.handleResultTiming("onIrisNotificationsListFetched");
         this.callback.onNotificationsListFetched(list, this.wrapStatus(status));
+    }
+    
+    @Override
+    public void onOfflineGeoPlayabilityReceived(final Map<String, Boolean> map, final Status status) {
+        this.handleResultTiming("onOfflineGeoPlayabilityReceived");
+        this.callback.onOfflineGeoPlayabilityReceived(map, this.wrapStatus(status));
     }
     
     @Override

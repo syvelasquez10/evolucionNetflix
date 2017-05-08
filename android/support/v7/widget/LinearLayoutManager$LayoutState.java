@@ -12,6 +12,7 @@ class LinearLayoutManager$LayoutState
     int mAvailable;
     int mCurrentPosition;
     int mExtra;
+    boolean mInfinite;
     boolean mIsPreLayout;
     int mItemDirection;
     int mLastScrollDelta;

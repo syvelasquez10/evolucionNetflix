@@ -16,7 +16,7 @@ class ServiceAgent$1 implements Runnable
     
     @Override
     public void run() {
-        Log.d("nf_service_ServiceAgent", "Initing " + this.this$0.getClass().getSimpleName());
+        Log.d("nf_service_ServiceAgent", "Initing %s", this.this$0.getClass().getSimpleName());
         this.this$0.doInit();
     }
 }

@@ -4,36 +4,36 @@
 
 package android.support.v7.widget;
 
-import android.support.v7.internal.view.menu.ad;
-import android.support.v7.internal.view.menu.i;
-import android.support.v7.internal.view.menu.y;
+import android.support.v7.view.menu.SubMenuBuilder;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPresenter$Callback;
 
-class ActionMenuPresenter$PopupPresenterCallback implements y
+class ActionMenuPresenter$PopupPresenterCallback implements MenuPresenter$Callback
 {
     final /* synthetic */ ActionMenuPresenter this$0;
     
-    private ActionMenuPresenter$PopupPresenterCallback(final ActionMenuPresenter this$0) {
+    ActionMenuPresenter$PopupPresenterCallback(final ActionMenuPresenter this$0) {
         this.this$0 = this$0;
     }
     
     @Override
-    public void onCloseMenu(final i i, final boolean b) {
-        if (i instanceof ad) {
-            ((ad)i).p().a(false);
+    public void onCloseMenu(final MenuBuilder menuBuilder, final boolean b) {
+        if (menuBuilder instanceof SubMenuBuilder) {
+            menuBuilder.getRootMenu().close(false);
         }
-        final y callback = this.this$0.getCallback();
+        final MenuPresenter$Callback callback = this.this$0.getCallback();
         if (callback != null) {
-            callback.onCloseMenu(i, b);
+            callback.onCloseMenu(menuBuilder, b);
         }
     }
     
     @Override
-    public boolean onOpenSubMenu(final i i) {
-        if (i == null) {
+    public boolean onOpenSubMenu(final MenuBuilder menuBuilder) {
+        if (menuBuilder == null) {
             return false;
         }
-        this.this$0.mOpenSubMenuId = ((ad)i).getItem().getItemId();
-        final y callback = this.this$0.getCallback();
-        return callback != null && callback.onOpenSubMenu(i);
+        this.this$0.mOpenSubMenuId = ((SubMenuBuilder)menuBuilder).getItem().getItemId();
+        final MenuPresenter$Callback callback = this.this$0.getCallback();
+        return callback != null && callback.onOpenSubMenu(menuBuilder);
     }
 }

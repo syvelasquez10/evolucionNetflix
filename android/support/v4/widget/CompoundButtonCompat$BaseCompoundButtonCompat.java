@@ -13,16 +13,26 @@ class CompoundButtonCompat$BaseCompoundButtonCompat implements CompoundButtonCom
 {
     @Override
     public Drawable getButtonDrawable(final CompoundButton compoundButton) {
-        return CompoundButtonCompatDonut.getButtonDrawable(compoundButton);
+        return CompoundButtonCompatGingerbread.getButtonDrawable(compoundButton);
+    }
+    
+    @Override
+    public ColorStateList getButtonTintList(final CompoundButton compoundButton) {
+        return CompoundButtonCompatGingerbread.getButtonTintList(compoundButton);
+    }
+    
+    @Override
+    public PorterDuff$Mode getButtonTintMode(final CompoundButton compoundButton) {
+        return CompoundButtonCompatGingerbread.getButtonTintMode(compoundButton);
     }
     
     @Override
     public void setButtonTintList(final CompoundButton compoundButton, final ColorStateList list) {
-        CompoundButtonCompatDonut.setButtonTintList(compoundButton, list);
+        CompoundButtonCompatGingerbread.setButtonTintList(compoundButton, list);
     }
     
     @Override
     public void setButtonTintMode(final CompoundButton compoundButton, final PorterDuff$Mode porterDuff$Mode) {
-        CompoundButtonCompatDonut.setButtonTintMode(compoundButton, porterDuff$Mode);
+        CompoundButtonCompatGingerbread.setButtonTintMode(compoundButton, porterDuff$Mode);
     }
 }

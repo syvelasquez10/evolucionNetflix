@@ -4,7 +4,6 @@
 
 package com.netflix.mediaclient.service.mdx.notification;
 
-import android.app.Service;
 import android.util.Pair;
 import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
@@ -40,18 +39,18 @@ class MdxNotificationManagerLollipop$BuilderFactory
     @SuppressLint({ "InlinedApi" })
     private Notification$Builder createPlayerBuilder() {
         Log.i("nf_mdxnotification", "createPlayerBuilder");
-        return new Notification$Builder(this.this$0.context).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setShowWhen(false).setSmallIcon(2130837754).setStyle((Notification$Style)this.this$0.getStyle()).addAction(2130837870, (CharSequence)"Rewind", this.this$0.mdxAgent.getSkipbackIntent(-30)).addAction(2130837874, (CharSequence)"Pause", this.this$0.mdxAgent.getResumeIntent()).addAction(2130837876, (CharSequence)"Stop", this.this$0.mdxAgent.getStopIntent());
+        return new Notification$Builder(this.this$0.context).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setShowWhen(false).setSmallIcon(2130837812).setStyle((Notification$Style)this.this$0.getStyle()).addAction(2130837927, (CharSequence)"Rewind", this.this$0.mdxAgent.getSkipbackIntent(-30)).addAction(2130837931, (CharSequence)"Pause", this.this$0.mdxAgent.getResumeIntent()).addAction(2130837933, (CharSequence)"Stop", this.this$0.mdxAgent.getStopIntent());
     }
     
     @SuppressLint({ "InlinedApi" })
     private Notification$Builder createPlayerPausedBuilder() {
         Log.i("nf_mdxnotification", "createPlayerPausedBuilder");
-        return new Notification$Builder(this.this$0.context).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setShowWhen(false).setSmallIcon(2130837754).setStyle((Notification$Style)this.this$0.getStyle()).addAction(2130837870, (CharSequence)"Rewind", this.this$0.mdxAgent.getSkipbackIntent(-30)).addAction(2130837872, (CharSequence)"Play", this.this$0.mdxAgent.getPauseIntent()).addAction(2130837876, (CharSequence)"Stop", this.this$0.mdxAgent.getStopIntent());
+        return new Notification$Builder(this.this$0.context).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setShowWhen(false).setSmallIcon(2130837812).setStyle((Notification$Style)this.this$0.getStyle()).addAction(2130837927, (CharSequence)"Rewind", this.this$0.mdxAgent.getSkipbackIntent(-30)).addAction(2130837929, (CharSequence)"Play", this.this$0.mdxAgent.getPauseIntent()).addAction(2130837933, (CharSequence)"Stop", this.this$0.mdxAgent.getStopIntent());
     }
     
     @SuppressLint({ "InlinedApi" })
     private Notification$Builder createPostPlayerBuilder() {
-        return new Notification$Builder(this.this$0.context).setOngoing(true).setVisibility(1).setShowWhen(false).setOnlyAlertOnce(true).setSmallIcon(2130837754).setStyle((Notification$Style)this.this$0.getStyle()).addAction(2130837874, (CharSequence)"Play", this.this$0.mdxAgent.getPlayNextIntent()).addAction(2130837876, (CharSequence)"Stop", this.this$0.mdxAgent.getStopIntent());
+        return new Notification$Builder(this.this$0.context).setOngoing(true).setVisibility(1).setShowWhen(false).setOnlyAlertOnce(true).setSmallIcon(2130837812).setStyle((Notification$Style)this.this$0.getStyle()).addAction(2130837931, (CharSequence)"Play", this.this$0.mdxAgent.getPlayNextIntent()).addAction(2130837933, (CharSequence)"Stop", this.this$0.mdxAgent.getStopIntent());
     }
     
     Notification$Builder getBuilder(final boolean b, final boolean b2) {

@@ -4,21 +4,6 @@
 
 package android.support.v7.widget;
 
-import android.widget.Adapter;
-import android.view.MotionEvent;
-import android.graphics.PorterDuff$Mode;
-import android.content.res.ColorStateList;
-import android.view.ViewGroup$LayoutParams;
-import android.view.View$MeasureSpec;
-import android.graphics.drawable.Drawable;
-import android.support.v7.appcompat.R$attr;
-import android.util.AttributeSet;
-import android.os.Build$VERSION;
-import android.support.v7.internal.widget.TintManager;
-import android.graphics.Rect;
-import android.content.Context;
-import android.support.v4.view.TintableBackgroundView;
-import android.widget.Spinner;
 import android.database.DataSetObserver;
 import android.view.ViewGroup;
 import android.view.View;

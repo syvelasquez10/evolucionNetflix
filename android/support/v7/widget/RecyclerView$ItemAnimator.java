@@ -4,6 +4,11 @@
 
 package android.support.v7.widget;
 
+import android.util.Log;
+import android.support.v4.view.ViewCompat;
+import java.util.Collections;
+import android.view.View;
+import java.util.List;
 import java.util.ArrayList;
 
 public abstract class RecyclerView$ItemAnimator
@@ -14,7 +19,6 @@ public abstract class RecyclerView$ItemAnimator
     private RecyclerView$ItemAnimator$ItemAnimatorListener mListener;
     private long mMoveDuration;
     private long mRemoveDuration;
-    private boolean mSupportsChangeAnimations;
     
     public RecyclerView$ItemAnimator() {
         this.mListener = null;
@@ -23,26 +27,55 @@ public abstract class RecyclerView$ItemAnimator
         this.mRemoveDuration = 120L;
         this.mMoveDuration = 250L;
         this.mChangeDuration = 250L;
-        this.mSupportsChangeAnimations = true;
     }
     
-    public abstract boolean animateAdd(final RecyclerView$ViewHolder p0);
-    
-    public abstract boolean animateChange(final RecyclerView$ViewHolder p0, final RecyclerView$ViewHolder p1, final int p2, final int p3, final int p4, final int p5);
-    
-    public abstract boolean animateMove(final RecyclerView$ViewHolder p0, final int p1, final int p2, final int p3, final int p4);
-    
-    public abstract boolean animateRemove(final RecyclerView$ViewHolder p0);
-    
-    public final void dispatchAddFinished(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-        this.onAddFinished(recyclerView$ViewHolder);
-        if (this.mListener != null) {
-            this.mListener.onAddFinished(recyclerView$ViewHolder);
+    static int buildAdapterChangeFlagsForAnimations(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
+        final int n = recyclerView$ViewHolder.mFlags & 0xE;
+        int n2;
+        if (recyclerView$ViewHolder.isInvalid()) {
+            n2 = 4;
         }
+        else {
+            n2 = n;
+            if ((n & 0x4) == 0x0) {
+                final int oldPosition = recyclerView$ViewHolder.getOldPosition();
+                final int adapterPosition = recyclerView$ViewHolder.getAdapterPosition();
+                n2 = n;
+                if (oldPosition != -1) {
+                    n2 = n;
+                    if (adapterPosition != -1) {
+                        n2 = n;
+                        if (oldPosition != adapterPosition) {
+                            return n | 0x800;
+                        }
+                    }
+                }
+            }
+        }
+        return n2;
     }
     
-    public final void dispatchAddStarting(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-        this.onAddStarting(recyclerView$ViewHolder);
+    public abstract boolean animateAppearance(final RecyclerView$ViewHolder p0, final RecyclerView$ItemAnimator$ItemHolderInfo p1, final RecyclerView$ItemAnimator$ItemHolderInfo p2);
+    
+    public abstract boolean animateChange(final RecyclerView$ViewHolder p0, final RecyclerView$ViewHolder p1, final RecyclerView$ItemAnimator$ItemHolderInfo p2, final RecyclerView$ItemAnimator$ItemHolderInfo p3);
+    
+    public abstract boolean animateDisappearance(final RecyclerView$ViewHolder p0, final RecyclerView$ItemAnimator$ItemHolderInfo p1, final RecyclerView$ItemAnimator$ItemHolderInfo p2);
+    
+    public abstract boolean animatePersistence(final RecyclerView$ViewHolder p0, final RecyclerView$ItemAnimator$ItemHolderInfo p1, final RecyclerView$ItemAnimator$ItemHolderInfo p2);
+    
+    public boolean canReuseUpdatedViewHolder(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
+        return true;
+    }
+    
+    public boolean canReuseUpdatedViewHolder(final RecyclerView$ViewHolder recyclerView$ViewHolder, final List<Object> list) {
+        return this.canReuseUpdatedViewHolder(recyclerView$ViewHolder);
+    }
+    
+    public final void dispatchAnimationFinished(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
+        this.onAnimationFinished(recyclerView$ViewHolder);
+        if (this.mListener != null) {
+            this.mListener.onAnimationFinished(recyclerView$ViewHolder);
+        }
     }
     
     public final void dispatchAnimationsFinished() {
@@ -50,39 +83,6 @@ public abstract class RecyclerView$ItemAnimator
             this.mFinishedListeners.get(i).onAnimationsFinished();
         }
         this.mFinishedListeners.clear();
-    }
-    
-    public final void dispatchChangeFinished(final RecyclerView$ViewHolder recyclerView$ViewHolder, final boolean b) {
-        this.onChangeFinished(recyclerView$ViewHolder, b);
-        if (this.mListener != null) {
-            this.mListener.onChangeFinished(recyclerView$ViewHolder);
-        }
-    }
-    
-    public final void dispatchChangeStarting(final RecyclerView$ViewHolder recyclerView$ViewHolder, final boolean b) {
-        this.onChangeStarting(recyclerView$ViewHolder, b);
-    }
-    
-    public final void dispatchMoveFinished(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-        this.onMoveFinished(recyclerView$ViewHolder);
-        if (this.mListener != null) {
-            this.mListener.onMoveFinished(recyclerView$ViewHolder);
-        }
-    }
-    
-    public final void dispatchMoveStarting(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-        this.onMoveStarting(recyclerView$ViewHolder);
-    }
-    
-    public final void dispatchRemoveFinished(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-        this.onRemoveFinished(recyclerView$ViewHolder);
-        if (this.mListener != null) {
-            this.mListener.onRemoveFinished(recyclerView$ViewHolder);
-        }
-    }
-    
-    public final void dispatchRemoveStarting(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-        this.onRemoveStarting(recyclerView$ViewHolder);
     }
     
     public abstract void endAnimation(final RecyclerView$ViewHolder p0);
@@ -105,34 +105,21 @@ public abstract class RecyclerView$ItemAnimator
         return this.mRemoveDuration;
     }
     
-    public boolean getSupportsChangeAnimations() {
-        return this.mSupportsChangeAnimations;
-    }
-    
     public abstract boolean isRunning();
     
-    public void onAddFinished(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
+    public RecyclerView$ItemAnimator$ItemHolderInfo obtainHolderInfo() {
+        return new RecyclerView$ItemAnimator$ItemHolderInfo();
     }
     
-    public void onAddStarting(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
+    public void onAnimationFinished(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
     }
     
-    public void onChangeFinished(final RecyclerView$ViewHolder recyclerView$ViewHolder, final boolean b) {
+    public RecyclerView$ItemAnimator$ItemHolderInfo recordPostLayoutInformation(final RecyclerView$State recyclerView$State, final RecyclerView$ViewHolder from) {
+        return this.obtainHolderInfo().setFrom(from);
     }
     
-    public void onChangeStarting(final RecyclerView$ViewHolder recyclerView$ViewHolder, final boolean b) {
-    }
-    
-    public void onMoveFinished(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-    }
-    
-    public void onMoveStarting(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-    }
-    
-    public void onRemoveFinished(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-    }
-    
-    public void onRemoveStarting(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
+    public RecyclerView$ItemAnimator$ItemHolderInfo recordPreLayoutInformation(final RecyclerView$State recyclerView$State, final RecyclerView$ViewHolder from, final int n, final List<Object> list) {
+        return this.obtainHolderInfo().setFrom(from);
     }
     
     public abstract void runPendingAnimations();

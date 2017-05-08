@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.content.Context;
 
-class AppCompatDelegateImplV11 extends AppCompatDelegateImplV7
+class AppCompatDelegateImplV11 extends AppCompatDelegateImplV9
 {
     AppCompatDelegateImplV11(final Context context, final Window window, final AppCompatCallback appCompatCallback) {
         super(context, window, appCompatCallback);

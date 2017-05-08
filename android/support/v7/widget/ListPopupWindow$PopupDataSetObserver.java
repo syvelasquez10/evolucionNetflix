@@ -10,7 +10,7 @@ class ListPopupWindow$PopupDataSetObserver extends DataSetObserver
 {
     final /* synthetic */ ListPopupWindow this$0;
     
-    private ListPopupWindow$PopupDataSetObserver(final ListPopupWindow this$0) {
+    ListPopupWindow$PopupDataSetObserver(final ListPopupWindow this$0) {
         this.this$0 = this$0;
     }
     

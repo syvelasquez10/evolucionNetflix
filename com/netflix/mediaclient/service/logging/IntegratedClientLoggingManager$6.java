@@ -10,8 +10,9 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.SystemClock;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClientFactory;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.servicemgr.SignInLogging;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import com.netflix.mediaclient.servicemgr.SignInLogging;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
@@ -32,8 +33,10 @@ import java.io.File;
 import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import java.util.concurrent.TimeUnit;
 import com.netflix.mediaclient.util.AndroidUtils;
+import android.content.Intent;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$EndReason;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.logging.client.model.Event;
 import com.netflix.mediaclient.util.data.DataRepository$Entry;
 import java.util.HashMap;
@@ -42,6 +45,7 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.NetflixService;
 import java.util.concurrent.atomic.AtomicLong;
+import android.content.BroadcastReceiver;
 import com.netflix.mediaclient.service.logging.client.LoggingSession;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -50,57 +54,22 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.Random;
 import java.util.Map;
 import com.netflix.mediaclient.util.data.DataRepository;
+import android.content.Context;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClient;
 import com.netflix.mediaclient.android.app.ApplicationStateListener;
-import com.netflix.mediaclient.Log;
-import android.content.Intent;
-import android.content.Context;
-import android.content.BroadcastReceiver;
 
-class IntegratedClientLoggingManager$6 extends BroadcastReceiver
+class IntegratedClientLoggingManager$6 implements Runnable
 {
     final /* synthetic */ IntegratedClientLoggingManager this$0;
+    final /* synthetic */ boolean val$saveIfFailed;
     
-    IntegratedClientLoggingManager$6(final IntegratedClientLoggingManager this$0) {
+    IntegratedClientLoggingManager$6(final IntegratedClientLoggingManager this$0, final boolean val$saveIfFailed) {
         this.this$0 = this$0;
+        this.val$saveIfFailed = val$saveIfFailed;
     }
     
-    public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable()) {
-            Log.v("nf_log", "Received intent " + intent);
-        }
-        final String action = intent.getAction();
-        if ("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_STARTED".equals(action)) {
-            if (Log.isLoggable()) {
-                Log.d("nf_log", "Local playback started, was started " + this.this$0.mLocalPlaybackInProgress.get());
-            }
-            this.this$0.mLocalPlaybackInProgress.set(true);
-        }
-        else {
-            if ("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_ENDED".equals(action)) {
-                if (Log.isLoggable()) {
-                    Log.d("nf_log", "Local playback ended, was started " + this.this$0.mLocalPlaybackInProgress.get());
-                }
-                this.this$0.mLocalPlaybackInProgress.set(false);
-                return;
-            }
-            if ("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_PAUSED".equals(action)) {
-                if (Log.isLoggable()) {
-                    Log.d("nf_log", "Local playback paused, was playing " + this.this$0.mLocalPlaybackInProgress.get());
-                }
-                this.this$0.mLocalPlaybackInProgress.set(false);
-                return;
-            }
-            if ("com.netflix.mediaclient.intent.action.PLAYER_LOCAL_PLAYBACK_UNPAUSED".equals(action)) {
-                if (Log.isLoggable()) {
-                    Log.d("nf_log", "Local playback unpaused, was playing " + this.this$0.mLocalPlaybackInProgress.get());
-                }
-                this.this$0.mLocalPlaybackInProgress.set(true);
-                return;
-            }
-            if (Log.isLoggable()) {
-                Log.d("nf_log", "We do not support action " + action);
-            }
-        }
+    @Override
+    public void run() {
+        this.this$0.mEventQueue.flushEvents(this.val$saveIfFailed);
     }
 }

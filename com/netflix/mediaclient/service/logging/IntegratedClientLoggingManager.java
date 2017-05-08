@@ -10,8 +10,9 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import android.os.SystemClock;
 import com.netflix.mediaclient.service.logging.client.ClientLoggingWebClientFactory;
 import com.netflix.mediaclient.util.DeviceUtils;
-import com.netflix.mediaclient.servicemgr.SignInLogging;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.servicemgr.UIViewLogging;
+import com.netflix.mediaclient.servicemgr.SignInLogging;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.servicemgr.UserActionLogging;
@@ -77,7 +78,9 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
     private UserInputManager mInputManager;
     private final AtomicBoolean mLocalPlaybackInProgress;
     private final List<LoggingSession> mLoggingSessions;
+    private OfflineLoggingImpl mOfflineLogging;
     private final LoggingAgent mOwner;
+    private final List<String> mPendingCachedLogPayloads;
     private final BroadcastReceiver mPlayerReceiver;
     private SearchLogging mSearchLogging;
     private final AtomicLong mSequence;
@@ -95,7 +98,8 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         this.mUserSessionEnabledStatusMap = new HashMap<String, Boolean>();
         this.mEventPerSessionRndGeneratorMap = new HashMap<String, Random>();
         this.mLocalPlaybackInProgress = new AtomicBoolean(false);
-        this.mPlayerReceiver = new IntegratedClientLoggingManager$6(this);
+        this.mPendingCachedLogPayloads = new ArrayList<String>();
+        this.mPlayerReceiver = new IntegratedClientLoggingManager$7(this);
         this.mOwner = mOwner;
         this.mContext = mContext;
         this.mUser = mUser;
@@ -141,15 +145,29 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         this.mSuspendLogging.startSuspendSession();
     }
     
-    private void deliverSavedPayloads(final DataRepository$Entry[] array) {
+    private void deliverSavedPayloads(final DataRepository$Entry[] array, final boolean b) {
         if (array == null || array.length < 1) {
             Log.d("nf_log", "No saved events found");
         }
-        if (Log.isLoggable()) {
-            Log.d("nf_log", "Found " + array.length + " payloads waiting");
-        }
-        for (int length = array.length, i = 0; i < length; ++i) {
-            this.mExecutor.schedule(new IntegratedClientLoggingManager$3(this, array[i].getKey()), this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
+        else {
+            if (Log.isLoggable()) {
+                Log.d("nf_log", "Found " + array.length + " payloads waiting");
+            }
+            for (int length = array.length, i = 0; i < length; ++i) {
+                final String key = array[i].getKey();
+                if (this.mPendingCachedLogPayloads.contains(key)) {
+                    Log.w("nf_log", "We are already trying to deliver %s deliveryRequestId, skip");
+                }
+                else {
+                    if (b) {
+                        this.mExecutor.schedule(new IntegratedClientLoggingManager$3(this, key), this.mOwner.getNextTimeToDeliverAfterFailure(), TimeUnit.MILLISECONDS);
+                    }
+                    else {
+                        this.mExecutor.execute(new IntegratedClientLoggingManager$4(this, key));
+                    }
+                    this.mPendingCachedLogPayloads.add(key);
+                }
+            }
         }
     }
     
@@ -244,7 +262,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         if (Log.isLoggable()) {
             Log.d("nf_log", "Load event " + s);
         }
-        this.mDataRepository.load(s, new IntegratedClientLoggingManager$4(this, s));
+        this.mDataRepository.load(s, new IntegratedClientLoggingManager$5(this, s));
     }
     
     private void registerReceivers() {
@@ -253,6 +271,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
     
     private void removeSavedEvents(final String s) {
         try {
+            this.mPendingCachedLogPayloads.remove(s);
             this.mDataRepository.remove(s);
         }
         catch (Throwable t) {
@@ -284,7 +303,9 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
                 Log.dumpVerbose("nf_log", string);
             }
             if (b) {
-                this.mClientLoggingWebClient.sendLoggingEvents(this.saveEvents(string), string, new IntegratedClientLoggingManager$ClientLoggingWebCallbackImpl(this, string));
+                final String saveEvents = this.saveEvents(string);
+                this.mPendingCachedLogPayloads.add(saveEvents);
+                this.mClientLoggingWebClient.sendLoggingEvents(saveEvents, string, new IntegratedClientLoggingManager$ClientLoggingWebCallbackImpl(this, string));
                 return;
             }
             this.mClientLoggingWebClient.sendLoggingEvents(null, string, new IntegratedClientLoggingManager$ClientLoggingWebCallbackImpl(this, string));
@@ -391,6 +412,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
                 this.mApmLogging.endAllActiveSessions();
                 this.mSignInLogging.endAllActiveSessions();
                 this.mIkoLogging.endAllActiveSessions();
+                this.mOfflineLogging.endAllActiveSessions();
                 this.resumeDelivery(false);
             }
             catch (Throwable t) {
@@ -402,7 +424,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
     }
     
     void flush(final boolean b) {
-        this.mExecutor.execute(new IntegratedClientLoggingManager$5(this, b));
+        this.mExecutor.execute(new IntegratedClientLoggingManager$6(this, b));
     }
     
     public UserActionLogging getActionLogging() {
@@ -438,6 +460,14 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         return this.mSequence.getAndAdd(1L);
     }
     
+    public OfflineLoggingImpl getOfflineLogging() {
+        return this.mOfflineLogging;
+    }
+    
+    public SignInLogging getSignInLogging() {
+        return this.mSignInLogging;
+    }
+    
     public UIViewLogging getUiViewLogging() {
         return this.mUIViewLogging;
     }
@@ -447,12 +477,16 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         return this.mOwner.getNrdController().getNrdp().getLog().getSessionId();
     }
     
-    public SignInLogging getmSignInLogging() {
-        return this.mSignInLogging;
-    }
-    
     public void handleConnectivityChange(final Intent intent) {
         this.mApmLogging.handleConnectivityChange(this.mContext);
+        if (ConnectivityUtils.isConnectedOrConnecting(this.mContext)) {
+            Log.d("nf_log", "Device is connected, lets see if we need to deliver cached events...");
+            final DataRepository$Entry[] entries = this.mDataRepository.getEntries();
+            if (entries != null || entries.length > 0) {
+                Log.d("nf_log", "We found %d cached log entries, network is connected, lets try to deliver them");
+                this.deliverSavedPayloads(entries, false);
+            }
+        }
     }
     
     public void handleIntent(final Intent intent) {
@@ -485,6 +519,10 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
             Log.d("nf_log", "Handled by Iko logger");
             return;
         }
+        if (this.mOfflineLogging.handleIntent(intent)) {
+            Log.d("nf_log", "Handled by Offline logger");
+            return;
+        }
         Log.w("nf_log", "Action not handled!");
     }
     
@@ -506,6 +544,7 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         this.mCustomerServiceLogging = new CustomerServiceLoggingImpl(this);
         this.mSignInLogging = new SignInLoggingImpl(this);
         this.mIkoLogging = new IkoLoggingImpl(this);
+        this.mOfflineLogging = new OfflineLoggingImpl(this);
         this.initDataRepository();
         this.registerReceivers();
         this.createSession(andClearCachedIntent);
@@ -693,5 +732,6 @@ public class IntegratedClientLoggingManager implements ApplicationStateListener,
         this.mApmLogging.setDataContext(dataContext);
         this.mActionLogging.setDataContext(dataContext);
         this.mIkoLogging.setDataContext(dataContext);
+        this.mOfflineLogging.setDataContext(dataContext);
     }
 }

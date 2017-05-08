@@ -12,7 +12,7 @@ class DefaultItemAnimator$MoveInfo
     public int toX;
     public int toY;
     
-    private DefaultItemAnimator$MoveInfo(final RecyclerView$ViewHolder holder, final int fromX, final int fromY, final int toX, final int toY) {
+    DefaultItemAnimator$MoveInfo(final RecyclerView$ViewHolder holder, final int fromX, final int fromY, final int toX, final int toY) {
         this.holder = holder;
         this.fromX = fromX;
         this.fromY = fromY;

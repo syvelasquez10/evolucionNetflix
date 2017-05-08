@@ -6,9 +6,11 @@ package com.netflix.mediaclient.ui.details;
 
 import java.util.Collection;
 import com.netflix.mediaclient.android.app.CommonStatus;
-import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.service.webclient.model.leafs.TrackableObject;
+import com.netflix.mediaclient.ui.offline.TutorialHelper;
+import com.netflix.android.tooltips.Tooltip;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.support.v7.widget.GridLayoutManager$SpanSizeLookup;
 import android.support.v7.widget.RecyclerView$ItemDecoration;
 import com.netflix.mediaclient.util.ItemDecorationUniformPadding;
@@ -28,11 +30,14 @@ import java.util.List;
 import com.netflix.mediaclient.ui.lomo.LomoConfig;
 import com.netflix.mediaclient.ui.mdx.MementoMovieDetailsActivity;
 import android.support.v7.widget.RecyclerView$LayoutManager;
-import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
+import com.netflix.mediaclient.ui.offline.DownloadButton;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.DataUtil;
 import android.os.Bundle;
+import com.netflix.mediaclient.util.ViewUtils;
+import com.netflix.mediaclient.util.StringUtils;
 import android.content.Context;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import android.view.View;
@@ -40,15 +45,15 @@ import android.support.v7.widget.RecyclerView;
 import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
 import com.netflix.mediaclient.android.widget.RecyclerViewHeaderAdapter;
+import com.netflix.mediaclient.ui.offline.TutorialHelper$Tutorialable;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 
-public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayoutManager
+public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayoutManager, TutorialHelper$Tutorialable
 {
     private static final String EXTRA_LAYOUT_MANAGER_STATE = "layout_manager_state";
     protected static final String EXTRA_VIDEO_ID = "video_id";
     private static final String TAG = "MovieDetailsFrag";
     protected RecyclerViewHeaderAdapter adapter;
-    private CopyrightView copyrightView;
     private GridLayoutManager gridLayoutManager;
     protected boolean isLoading;
     private Parcelable layoutManagerSavedState;
@@ -63,14 +68,18 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
         this.isLoading = true;
     }
     
-    private void addCopyrightAsFooter() {
-        if (this.adapter != null) {
-            this.copyrightView = CopyrightView.create(null, (Context)this.getActivity());
-            if (this.copyrightView != null) {
-                this.copyrightView.setGravityAsCenter();
-                this.adapter.addFooterView(this.copyrightView.getView());
-            }
+    private void addFooter(final VideoDetails videoDetails) {
+        if (this.adapter == null) {
+            return;
         }
+        final CopyrightView create = CopyrightView.create(videoDetails, (Context)this.getActivity());
+        if (create != null && StringUtils.isNotEmpty(videoDetails.getCopyright())) {
+            create.setGravityAsCenter();
+            this.adapter.addFooterView(create.getView());
+            create.getView().setVisibility(0);
+            return;
+        }
+        this.adapter.addFooterView(ViewUtils.createActionBarDummyView(this.getNetflixActivity(), this.getResources().getDimensionPixelOffset(2131362331)));
     }
     
     public static MovieDetailsFrag create(final String s) {
@@ -100,6 +109,19 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
         }
     }
     
+    private void updateDownloadButtonIfExists() {
+        final ServiceManager serviceManager = this.getServiceManager();
+        final VideoDetails videoDetails = this.getVideoDetails();
+        if (serviceManager != null && videoDetails != null) {
+            final DownloadButton downloadButton = this.detailsViewGroup.getDownloadButton();
+            if (downloadButton != null && serviceManager.isOfflineFeatureAvailable()) {
+                downloadButton.setVisibility(0);
+                downloadButton.setEnabled(true);
+                downloadButton.setStateFromPlayable(videoDetails.getPlayable(), this.getNetflixActivity());
+            }
+        }
+    }
+    
     protected void fetchMovieData() {
         final ServiceManager serviceManager = this.getServiceManager();
         if (serviceManager == null || !serviceManager.isReady()) {
@@ -114,7 +136,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     protected void findViews(final View view) {
         this.recyclerView = (RecyclerView)this.primaryView;
-        this.rootContainer = view.findViewById(2131689869);
+        this.rootContainer = view.findViewById(2131689896);
     }
     
     @Override
@@ -124,7 +146,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     @Override
     protected int getLayoutId() {
-        return 2130903258;
+        return 2130903277;
     }
     
     @Override
@@ -203,6 +225,10 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     public void onResume() {
         super.onResume();
         SimilarItemsGridViewAdapter.refreshImagesIfNecessary(this.recyclerView);
+        if (this.adapter != null) {
+            this.adapter.notifyDataSetChanged();
+        }
+        this.updateDownloadButtonIfExists();
     }
     
     public void onSaveInstanceState(final Bundle bundle) {
@@ -223,7 +249,7 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     
     public void setExitTransition(final Transition exitTransition) {
         super.setExitTransition(exitTransition);
-        this.setBackgroundResource(2131624168);
+        this.setBackgroundResource(2131624189);
         if (exitTransition != null) {
             exitTransition.addListener((Transition$TransitionListener)new MovieDetailsFrag$3(this));
         }
@@ -262,19 +288,26 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
     }
     
     protected void setupRecyclerViewAdapter() {
-        this.adapter = new SimilarItemsGridViewAdapter(true, this.numColumns, new MovieDetailsFrag$4(this));
-        this.addCopyrightAsFooter();
-        this.adapter.addHeaderView((View)this.detailsViewGroup);
+        (this.adapter = new SimilarItemsGridViewAdapter(true, this.numColumns, new MovieDetailsFrag$4(this))).addHeaderView((View)this.detailsViewGroup);
         this.recyclerView.setAdapter(this.adapter);
     }
     
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362066), this.numColumns));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362082), this.numColumns));
     }
     
     protected void setupRecyclerViewLayoutManager() {
         (this.gridLayoutManager = new GridLayoutManager((Context)this.getActivity(), this.numColumns)).setSpanSizeLookup(new MovieDetailsFrag$5(this));
         this.recyclerView.setLayoutManager(this.gridLayoutManager);
+    }
+    
+    @Override
+    public Tooltip setupTutorial(final UserProfile userProfile) {
+        final DownloadButton downloadButton = this.getVideoDetailsViewGroup().getDownloadButton();
+        if (downloadButton == null) {
+            return null;
+        }
+        return TutorialHelper.buildDownloadButtonTutorial(downloadButton.findViewById(2131689799), this.getActivity(), userProfile);
     }
     
     @Override
@@ -284,11 +317,9 @@ public class MovieDetailsFrag extends DetailsFrag<MovieDetails> implements ILayo
         this.showSimsItems(movieDetails);
         if (this.recyclerView != null) {
             this.recyclerView.setVisibility(0);
+            this.getNetflixActivity().getTutorialHelper().showTutorialForVideoWithScroll(this, movieDetails, this.recyclerView, this.getServiceManager());
         }
-        if (this.copyrightView != null && StringUtils.isNotEmpty(movieDetails.getCopyright())) {
-            this.copyrightView.update(movieDetails);
-            this.copyrightView.getView().setVisibility(0);
-        }
+        this.addFooter(movieDetails);
         this.restoreLayoutManagerState();
         this.onLoaded(CommonStatus.OK);
     }

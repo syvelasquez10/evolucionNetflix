@@ -28,7 +28,7 @@ public class KubrickKidsCwTestView extends KubrickHighDensityCwView
     
     @Override
     protected int getLayoutId() {
-        return 2130903134;
+        return 2130903144;
     }
     
     @Override
@@ -47,7 +47,7 @@ public class KubrickKidsCwTestView extends KubrickHighDensityCwView
         final int n = 0;
         this.playContext = new PlayContextImp(trackable, progress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131230887), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131230891), cwVideo.getTitle());
         this.playView.setContentDescription((CharSequence)format);
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());
         final AdvancedImageView img = this.img;

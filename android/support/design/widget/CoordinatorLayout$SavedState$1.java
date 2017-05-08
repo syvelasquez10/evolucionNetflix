@@ -5,14 +5,16 @@
 package android.support.design.widget;
 
 import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 
-final class CoordinatorLayout$SavedState$1 implements Parcelable$Creator<CoordinatorLayout$SavedState>
+final class CoordinatorLayout$SavedState$1 implements ParcelableCompatCreatorCallbacks<CoordinatorLayout$SavedState>
 {
-    public CoordinatorLayout$SavedState createFromParcel(final Parcel parcel) {
-        return new CoordinatorLayout$SavedState(parcel);
+    @Override
+    public CoordinatorLayout$SavedState createFromParcel(final Parcel parcel, final ClassLoader classLoader) {
+        return new CoordinatorLayout$SavedState(parcel, classLoader);
     }
     
+    @Override
     public CoordinatorLayout$SavedState[] newArray(final int n) {
         return new CoordinatorLayout$SavedState[n];
     }

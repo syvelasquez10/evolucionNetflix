@@ -41,6 +41,19 @@ public class EsnCdmNexus7Provider extends BaseEsnProvider
     }
     
     @Override
+    protected void generateEsnPrefix() {
+        final StringBuilder sb = new StringBuilder(EsnCdmNexus7Provider.ESN_PREFIX);
+        sb.append("PRV-");
+        this.mEsnPrefix = sb.toString();
+        if (this.mEsnPrefix.endsWith("-")) {
+            final int n = this.mEsnPrefix.lastIndexOf("-") + 1;
+            if (n > 0) {
+                this.mEsnPrefix = this.mEsnPrefix.substring(0, n);
+            }
+        }
+    }
+    
+    @Override
     public int getCryptoFactoryType() {
         return 2;
     }

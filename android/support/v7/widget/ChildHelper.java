@@ -98,7 +98,7 @@ class ChildHelper
         for (int size = this.mHiddenViews.size(), i = 0; i < size; ++i) {
             final View view = this.mHiddenViews.get(i);
             final RecyclerView$ViewHolder childViewHolder = this.mCallback.getChildViewHolder(view);
-            if (childViewHolder.getLayoutPosition() == n && !childViewHolder.isInvalid() && (n2 == -1 || childViewHolder.getItemViewType() == n2)) {
+            if (childViewHolder.getLayoutPosition() == n && !childViewHolder.isInvalid() && !childViewHolder.isRemoved() && (n2 == -1 || childViewHolder.getItemViewType() == n2)) {
                 return view;
             }
         }
@@ -193,5 +193,17 @@ class ChildHelper
     @Override
     public String toString() {
         return this.mBucket.toString() + ", hidden list:" + this.mHiddenViews.size();
+    }
+    
+    void unhide(final View view) {
+        final int indexOfChild = this.mCallback.indexOfChild(view);
+        if (indexOfChild < 0) {
+            throw new IllegalArgumentException("view is not a child, cannot hide " + view);
+        }
+        if (!this.mBucket.get(indexOfChild)) {
+            throw new RuntimeException("trying to unhide a view that was not hidden" + view);
+        }
+        this.mBucket.clear(indexOfChild);
+        this.unhideViewInternal(view);
     }
 }

@@ -5,26 +5,39 @@
 package com.netflix.mediaclient.servicemgr;
 
 import com.netflix.mediaclient.javabridge.invoke.media.AuthorizationParams;
-import com.netflix.mediaclient.util.ConnectivityUtils;
 import java.util.List;
 import com.netflix.mediaclient.service.mdx.MdxAgent$Utils;
 import android.util.Pair;
 import java.util.ArrayList;
+import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.servicemgr.interface_.Playable;
 
 public class ServiceManagerUtils
 {
+    public static int PREFETCH_PRIORITY_CW = 0;
+    public static int PREFETCH_PRIORITY_DEFAULT = 0;
+    public static int PREFETCH_PRIORITY_DETIAL = 0;
     private static final String TAG = "ServiceManagerUtils";
+    
+    static {
+        ServiceManagerUtils.PREFETCH_PRIORITY_CW = 0;
+        ServiceManagerUtils.PREFETCH_PRIORITY_DETIAL = 1;
+        ServiceManagerUtils.PREFETCH_PRIORITY_DEFAULT = 100;
+    }
     
     public static void castPrefetchAndCacheManifestIfEnabled(final ServiceManager serviceManager, final Playable playable, final PlayContext playContext) {
         if (serviceManager == null) {
-            Log.w("ServiceManagerUtils", "manager is null - can't cache manifest");
+            Log.w("ServiceManagerUtils", "manager is null - can't prefetch manifest");
         }
         else {
+            if (!ConnectivityUtils.isConnected(serviceManager.getContext())) {
+                Log.w("ServiceManagerUtils", "no connectivity - can't prefetch manifest");
+                return;
+            }
             if (!playable.isAvailableToStream()) {
-                Log.w("ServiceManagerUtils", "video is not available for streaming - can't cache manifest");
+                Log.w("ServiceManagerUtils", "video is not available for streaming - can't prefetch manifest");
                 return;
             }
             if (!serviceManager.getConfiguration().isDisableCastFaststart()) {
@@ -35,19 +48,20 @@ public class ServiceManagerUtils
             else {
                 Log.d("ServiceManagerUtils", "CastFaststart is disabled");
             }
-            if (serviceManager.getPlayer() == null) {
+            if (serviceManager.getPlayer(IPlayer$PlaybackType.StreamingPlayback) == null) {
                 Log.w("ServiceManagerUtils", "player is null - can't cache manifest");
                 return;
             }
-            if (serviceManager.getPlayer().isManifestCacheEnabled()) {
+            final IPlayer player = serviceManager.getPlayer(IPlayer$PlaybackType.StreamingPlayback);
+            if (player.isManifestCacheEnabled()) {
                 if (Log.isLoggable()) {
                     Log.d("ServiceManagerUtils", "schedule manifest pre-fectiion for " + playable);
                 }
                 try {
-                    serviceManager.getPlayer().getManifestCache().cacheSchedule(new IManifestCache$CacheScheduleRequest[] { new IManifestCache$CacheScheduleRequest(Integer.parseInt(playable.getPlayableId()), 0L, 1L) }, new AuthorizationParams(serviceManager.getContext(), playContext, ConnectivityUtils.getCurrentNetType(serviceManager.getContext()), serviceManager.getConfiguration().isPreviewContentEnabled()));
+                    player.getManifestCache().cacheSchedule(new IManifestCache$CacheScheduleRequest[] { new IManifestCache$CacheScheduleRequest(Integer.parseInt(playable.getPlayableId()), 0L, 1L) }, new AuthorizationParams(serviceManager.getContext(), playContext, ConnectivityUtils.getCurrentNetType(serviceManager.getContext()), serviceManager.getConfiguration().isPreviewContentEnabled()));
                 }
                 catch (NumberFormatException ex) {
-                    Log.w("ServiceManagerUtils", "schedule manifest pre-fectiion gets invalid playableId, ignored");
+                    Log.w("ServiceManagerUtils", ex, "schedule manifest pre-fectiion gets invalid playableId, ignored");
                 }
             }
         }

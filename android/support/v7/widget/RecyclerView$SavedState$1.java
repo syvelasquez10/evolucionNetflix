@@ -5,14 +5,16 @@
 package android.support.v7.widget;
 
 import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 
-final class RecyclerView$SavedState$1 implements Parcelable$Creator<RecyclerView$SavedState>
+final class RecyclerView$SavedState$1 implements ParcelableCompatCreatorCallbacks<RecyclerView$SavedState>
 {
-    public RecyclerView$SavedState createFromParcel(final Parcel parcel) {
-        return new RecyclerView$SavedState(parcel);
+    @Override
+    public RecyclerView$SavedState createFromParcel(final Parcel parcel, final ClassLoader classLoader) {
+        return new RecyclerView$SavedState(parcel, classLoader);
     }
     
+    @Override
     public RecyclerView$SavedState[] newArray(final int n) {
         return new RecyclerView$SavedState[n];
     }

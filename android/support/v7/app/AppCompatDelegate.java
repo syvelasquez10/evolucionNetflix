@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.view.MenuInflater;
 import android.view.ViewGroup$LayoutParams;
 import android.view.View;
+import android.support.v4.os.BuildCompat;
 import android.os.Build$VERSION;
 import android.view.Window;
 import android.app.Dialog;
@@ -20,6 +21,14 @@ import android.app.Activity;
 
 public abstract class AppCompatDelegate
 {
+    private static boolean sCompatVectorFromResourcesEnabled;
+    private static int sDefaultNightMode;
+    
+    static {
+        AppCompatDelegate.sDefaultNightMode = -1;
+        AppCompatDelegate.sCompatVectorFromResourcesEnabled = false;
+    }
+    
     public static AppCompatDelegate create(final Activity activity, final AppCompatCallback appCompatCallback) {
         return create((Context)activity, activity.getWindow(), appCompatCallback);
     }
@@ -30,6 +39,9 @@ public abstract class AppCompatDelegate
     
     private static AppCompatDelegate create(final Context context, final Window window, final AppCompatCallback appCompatCallback) {
         final int sdk_INT = Build$VERSION.SDK_INT;
+        if (BuildCompat.isAtLeastN()) {
+            return new AppCompatDelegateImplN(context, window, appCompatCallback);
+        }
         if (sdk_INT >= 23) {
             return new AppCompatDelegateImplV23(context, window, appCompatCallback);
         }
@@ -39,10 +51,22 @@ public abstract class AppCompatDelegate
         if (sdk_INT >= 11) {
             return new AppCompatDelegateImplV11(context, window, appCompatCallback);
         }
-        return new AppCompatDelegateImplV7(context, window, appCompatCallback);
+        return new AppCompatDelegateImplV9(context, window, appCompatCallback);
+    }
+    
+    public static int getDefaultNightMode() {
+        return AppCompatDelegate.sDefaultNightMode;
+    }
+    
+    public static boolean isCompatVectorFromResourcesEnabled() {
+        return AppCompatDelegate.sCompatVectorFromResourcesEnabled;
     }
     
     public abstract void addContentView(final View p0, final ViewGroup$LayoutParams p1);
+    
+    public abstract boolean applyDayNight();
+    
+    public abstract View findViewById(final int p0);
     
     public abstract ActionBarDrawerToggle$Delegate getDrawerToggleDelegate();
     
@@ -63,6 +87,10 @@ public abstract class AppCompatDelegate
     public abstract void onPostCreate(final Bundle p0);
     
     public abstract void onPostResume();
+    
+    public abstract void onSaveInstanceState(final Bundle p0);
+    
+    public abstract void onStart();
     
     public abstract void onStop();
     

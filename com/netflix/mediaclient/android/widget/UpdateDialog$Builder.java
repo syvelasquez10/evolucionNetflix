@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.android.widget;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.content.DialogInterface$OnKeyListener;
 import android.content.DialogInterface$OnCancelListener;
 import android.content.DialogInterface$OnClickListener;

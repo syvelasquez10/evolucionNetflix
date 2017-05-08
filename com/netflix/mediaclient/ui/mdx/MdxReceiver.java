@@ -7,8 +7,9 @@ package com.netflix.mediaclient.ui.mdx;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState;
 import com.netflix.mediaclient.servicemgr.IMdxSharedState$MdxPlaybackState;
 import android.content.IntentFilter;
+import com.netflix.mediaclient.ui.verifyplay.PinAndAgeVerifier$PinAndAgeVerifyCallback;
 import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault;
-import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$PlayInvokedFrom;
+import com.netflix.mediaclient.ui.verifyplay.PlayVerifierVault$RequestedBy;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.util.StringUtils;
@@ -87,7 +88,7 @@ public final class MdxReceiver extends BroadcastReceiver
     private void verifyPinAndNotify(final Intent intent) {
         final String string = intent.getExtras().getString("uuid");
         Log.d("nf_pin", "verifyPinAndNotify on PIN_VERIFICATION_SHOW");
-        PinVerifier.getInstance().verify(this.mActivity, true, new PlayVerifierVault(PlayVerifierVault$PlayInvokedFrom.MDX.getValue(), string));
+        PinVerifier.getInstance().verify(this.mActivity, true, new PlayVerifierVault(PlayVerifierVault$RequestedBy.MDX.getValue(), string), this.mActivity);
     }
     
     public IntentFilter getFilter() {

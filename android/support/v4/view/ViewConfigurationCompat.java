@@ -7,7 +7,7 @@ package android.support.v4.view;
 import android.view.ViewConfiguration;
 import android.os.Build$VERSION;
 
-public class ViewConfigurationCompat
+public final class ViewConfigurationCompat
 {
     static final ViewConfigurationCompat$ViewConfigurationVersionImpl IMPL;
     
@@ -20,15 +20,12 @@ public class ViewConfigurationCompat
             IMPL = new ViewConfigurationCompat$HoneycombViewConfigurationVersionImpl();
             return;
         }
-        if (Build$VERSION.SDK_INT >= 8) {
-            IMPL = new ViewConfigurationCompat$FroyoViewConfigurationVersionImpl();
-            return;
-        }
         IMPL = new ViewConfigurationCompat$BaseViewConfigurationVersionImpl();
     }
     
+    @Deprecated
     public static int getScaledPagingTouchSlop(final ViewConfiguration viewConfiguration) {
-        return ViewConfigurationCompat.IMPL.getScaledPagingTouchSlop(viewConfiguration);
+        return viewConfiguration.getScaledPagingTouchSlop();
     }
     
     public static boolean hasPermanentMenuKey(final ViewConfiguration viewConfiguration) {

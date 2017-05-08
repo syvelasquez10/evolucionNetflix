@@ -105,6 +105,9 @@ public class NetflixJobServicePreL extends Service implements ServiceManagerHelp
         return 2;
     }
     
+    public void serviceManagerFailed() {
+    }
+    
     public void serviceManagerReady() {
         this.executeJobs();
     }

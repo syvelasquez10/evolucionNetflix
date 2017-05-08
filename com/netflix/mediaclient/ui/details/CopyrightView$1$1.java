@@ -4,9 +4,9 @@
 
 package com.netflix.mediaclient.ui.details;
 
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import android.view.WindowManager$LayoutParams;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.view.ViewGroup$LayoutParams;
 import android.widget.RelativeLayout$LayoutParams;
 import android.view.LayoutInflater;

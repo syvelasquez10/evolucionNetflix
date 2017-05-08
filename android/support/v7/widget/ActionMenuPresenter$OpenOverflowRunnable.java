@@ -5,30 +5,30 @@
 package android.support.v7.widget;
 
 import android.support.v4.view.ActionProvider;
-import android.support.v7.internal.transition.ActionBarTransition;
-import android.support.v7.internal.view.menu.ad;
-import android.support.v7.appcompat.R$integer;
+import android.support.v7.transition.ActionBarTransition;
+import android.support.v7.view.menu.SubMenuBuilder;
+import android.os.Parcelable;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.support.v7.internal.view.ActionBarPolicy;
+import android.support.v7.view.ActionBarPolicy;
 import android.view.ViewGroup$LayoutParams;
 import java.util.ArrayList;
 import android.view.View$MeasureSpec;
-import android.support.v7.internal.view.menu.c;
-import android.support.v7.internal.view.menu.k;
-import android.support.v7.internal.view.menu.ActionMenuItemView;
-import android.support.v7.internal.view.menu.m;
-import android.support.v7.internal.view.menu.aa;
+import android.support.v7.view.menu.ActionMenuItemView$PopupCallback;
+import android.support.v7.view.menu.MenuBuilder$ItemInvoker;
+import android.support.v7.view.menu.ActionMenuItemView;
+import android.support.v7.view.menu.MenuItemImpl;
+import android.support.v7.view.menu.MenuView$ItemView;
 import android.view.ViewGroup;
 import android.view.MenuItem;
-import android.support.v7.internal.view.menu.z;
-import android.support.v7.internal.view.menu.i;
+import android.support.v7.view.menu.MenuView;
+import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.appcompat.R$layout;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.SparseBooleanArray;
 import android.support.v4.view.ActionProvider$SubUiVisibilityListener;
-import android.support.v7.internal.view.menu.d;
+import android.support.v7.view.menu.BaseMenuPresenter;
 import android.view.View;
 
 class ActionMenuPresenter$OpenOverflowRunnable implements Runnable
@@ -43,7 +43,9 @@ class ActionMenuPresenter$OpenOverflowRunnable implements Runnable
     
     @Override
     public void run() {
-        this.this$0.mMenu.f();
+        if (this.this$0.mMenu != null) {
+            this.this$0.mMenu.changeMenuMode();
+        }
         final View view = (View)this.this$0.mMenuView;
         if (view != null && view.getWindowToken() != null && this.mPopup.tryShow()) {
             this.this$0.mOverflowPopup = this.mPopup;

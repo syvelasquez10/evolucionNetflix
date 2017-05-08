@@ -4,43 +4,19 @@
 
 package android.support.v7.widget;
 
-import android.support.v4.view.ActionProvider;
-import android.support.v7.internal.transition.ActionBarTransition;
-import android.support.v7.internal.view.menu.ad;
-import android.support.v7.appcompat.R$integer;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.support.v7.internal.view.ActionBarPolicy;
-import android.view.ViewGroup$LayoutParams;
-import java.util.ArrayList;
-import android.view.View$MeasureSpec;
-import android.support.v7.internal.view.menu.k;
-import android.support.v7.internal.view.menu.ActionMenuItemView;
-import android.support.v7.internal.view.menu.m;
-import android.support.v7.internal.view.menu.aa;
-import android.view.ViewGroup;
-import android.view.MenuItem;
-import android.support.v7.internal.view.menu.z;
-import android.support.v7.internal.view.menu.i;
-import android.support.v7.appcompat.R$layout;
-import android.content.Context;
-import android.view.View;
-import android.graphics.drawable.Drawable;
-import android.util.SparseBooleanArray;
-import android.support.v4.view.ActionProvider$SubUiVisibilityListener;
-import android.support.v7.internal.view.menu.d;
-import android.support.v7.internal.view.menu.c;
+import android.support.v7.view.menu.ShowableListMenu;
+import android.support.v7.view.menu.ActionMenuItemView$PopupCallback;
 
-class ActionMenuPresenter$ActionMenuPopupCallback extends c
+class ActionMenuPresenter$ActionMenuPopupCallback extends ActionMenuItemView$PopupCallback
 {
     final /* synthetic */ ActionMenuPresenter this$0;
     
-    private ActionMenuPresenter$ActionMenuPopupCallback(final ActionMenuPresenter this$0) {
+    ActionMenuPresenter$ActionMenuPopupCallback(final ActionMenuPresenter this$0) {
         this.this$0 = this$0;
     }
     
     @Override
-    public ListPopupWindow getPopup() {
+    public ShowableListMenu getPopup() {
         if (this.this$0.mActionButtonPopup != null) {
             return this.this$0.mActionButtonPopup.getPopup();
         }

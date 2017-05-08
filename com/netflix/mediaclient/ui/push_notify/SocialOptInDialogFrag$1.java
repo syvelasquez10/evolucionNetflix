@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.push_notify;
 
 import android.app.Activity;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import android.app.Dialog;
 import android.os.Bundle;
 import java.util.concurrent.atomic.AtomicBoolean;

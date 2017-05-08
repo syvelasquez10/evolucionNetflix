@@ -5,6 +5,7 @@
 package android.support.v4.view.accessibility;
 
 import android.graphics.Rect;
+import java.util.List;
 import android.view.View;
 
 class AccessibilityNodeInfoCompat$AccessibilityNodeInfoIcsImpl extends AccessibilityNodeInfoCompat$AccessibilityNodeInfoStubImpl
@@ -17,6 +18,11 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoIcsImpl extends Accessibi
     @Override
     public void addChild(final Object o, final View view) {
         AccessibilityNodeInfoCompatIcs.addChild(o, view);
+    }
+    
+    @Override
+    public List<Object> findAccessibilityNodeInfosByText(final Object o, final String s) {
+        return AccessibilityNodeInfoCompatIcs.findAccessibilityNodeInfosByText(o, s);
     }
     
     @Override
@@ -35,6 +41,16 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoIcsImpl extends Accessibi
     }
     
     @Override
+    public Object getChild(final Object o, final int n) {
+        return AccessibilityNodeInfoCompatIcs.getChild(o, n);
+    }
+    
+    @Override
+    public int getChildCount(final Object o) {
+        return AccessibilityNodeInfoCompatIcs.getChildCount(o);
+    }
+    
+    @Override
     public CharSequence getClassName(final Object o) {
         return AccessibilityNodeInfoCompatIcs.getClassName(o);
     }
@@ -50,8 +66,18 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoIcsImpl extends Accessibi
     }
     
     @Override
+    public Object getParent(final Object o) {
+        return AccessibilityNodeInfoCompatIcs.getParent(o);
+    }
+    
+    @Override
     public CharSequence getText(final Object o) {
         return AccessibilityNodeInfoCompatIcs.getText(o);
+    }
+    
+    @Override
+    public int getWindowId(final Object o) {
+        return AccessibilityNodeInfoCompatIcs.getWindowId(o);
     }
     
     @Override
@@ -105,6 +131,16 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoIcsImpl extends Accessibi
     }
     
     @Override
+    public Object obtain() {
+        return AccessibilityNodeInfoCompatIcs.obtain();
+    }
+    
+    @Override
+    public Object obtain(final View view) {
+        return AccessibilityNodeInfoCompatIcs.obtain(view);
+    }
+    
+    @Override
     public Object obtain(final Object o) {
         return AccessibilityNodeInfoCompatIcs.obtain(o);
     }
@@ -127,6 +163,16 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoIcsImpl extends Accessibi
     @Override
     public void setBoundsInScreen(final Object o, final Rect rect) {
         AccessibilityNodeInfoCompatIcs.setBoundsInScreen(o, rect);
+    }
+    
+    @Override
+    public void setCheckable(final Object o, final boolean b) {
+        AccessibilityNodeInfoCompatIcs.setCheckable(o, b);
+    }
+    
+    @Override
+    public void setChecked(final Object o, final boolean b) {
+        AccessibilityNodeInfoCompatIcs.setChecked(o, b);
     }
     
     @Override
@@ -175,6 +221,11 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoIcsImpl extends Accessibi
     }
     
     @Override
+    public void setPassword(final Object o, final boolean b) {
+        AccessibilityNodeInfoCompatIcs.setPassword(o, b);
+    }
+    
+    @Override
     public void setScrollable(final Object o, final boolean b) {
         AccessibilityNodeInfoCompatIcs.setScrollable(o, b);
     }
@@ -187,5 +238,10 @@ class AccessibilityNodeInfoCompat$AccessibilityNodeInfoIcsImpl extends Accessibi
     @Override
     public void setSource(final Object o, final View view) {
         AccessibilityNodeInfoCompatIcs.setSource(o, view);
+    }
+    
+    @Override
+    public void setText(final Object o, final CharSequence charSequence) {
+        AccessibilityNodeInfoCompatIcs.setText(o, charSequence);
     }
 }

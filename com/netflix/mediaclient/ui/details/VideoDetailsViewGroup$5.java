@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.ui.details;
 
 import com.netflix.mediaclient.android.activity.NetflixActivity;
-import android.app.Activity;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.View;
 import com.netflix.mediaclient.util.ViewUtils;
@@ -23,7 +22,7 @@ class VideoDetailsViewGroup$5 extends BroadcastReceiver
     
     public void onReceive(final Context context, final Intent intent) {
         final NetflixActivity netflixActivitySafely = ViewUtils.getNetflixActivitySafely((View)this.this$0);
-        if (!AndroidUtils.isActivityFinishedOrDestroyed(netflixActivitySafely) && this.this$0.details != null) {
+        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivitySafely) && this.this$0.details != null) {
             this.this$0.updateBadges(this.this$0.details, netflixActivitySafely);
         }
     }

@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.Parcelable$Creator;
 import android.os.Parcelable;
 
-class LinearLayoutManager$SavedState implements Parcelable
+public class LinearLayoutManager$SavedState implements Parcelable
 {
     public static final Parcelable$Creator<LinearLayoutManager$SavedState> CREATOR;
     boolean mAnchorLayoutFromEnd;

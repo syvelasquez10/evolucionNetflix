@@ -6,4 +6,5 @@ package com.crittercism.internal;
 
 public abstract class dl
 {
+    public abstract String a();
 }

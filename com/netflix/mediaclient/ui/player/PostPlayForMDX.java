@@ -45,7 +45,7 @@ public final class PostPlayForMDX extends PostPlay
         super(netflixActivity);
         this.mAutoPlayEnabled = true;
         this.onEverySecond = new PostPlayForMDX$1(this);
-        this.mTimerValue = netflixActivity.getResources().getInteger(2131492884);
+        this.mTimerValue = netflixActivity.getResources().getInteger(2131492885);
         this.mOffsetMs = this.mTimerValue * 1000;
     }
     
@@ -58,7 +58,7 @@ public final class PostPlayForMDX extends PostPlay
     }
     
     private void init() {
-        this.mTimerValue = this.mNetflixActivity.getResources().getInteger(2131492885);
+        this.mTimerValue = this.mNetflixActivity.getResources().getInteger(2131492886);
         this.mAutoPlayEnabled = this.isAutoPlayEnabled();
         if (Log.isLoggable()) {
             Log.d("nf_postplay", "PostPlayForMDX:: timer max value " + this.mTimerValue);
@@ -71,7 +71,7 @@ public final class PostPlayForMDX extends PostPlay
     }
     
     private void init(final Activity activity) {
-        this.mTimerValue = activity.getResources().getInteger(2131492885);
+        this.mTimerValue = activity.getResources().getInteger(2131492886);
         this.mAutoPlayEnabled = this.isAutoPlayEnabled();
         if (Log.isLoggable()) {
             Log.d("nf_postplay", "PostPlayForMDX:: timer max value " + this.mTimerValue);
@@ -124,7 +124,7 @@ public final class PostPlayForMDX extends PostPlay
             mTitle.setVisibility(visibility);
             this.mSynopsis.setVisibility(8);
             this.mPlayButton.getLayoutParams().width = -2;
-            ((ViewGroup$MarginLayoutParams)this.mPlayButton.getLayoutParams()).bottomMargin = (int)this.mNetflixActivity.getResources().getDimension(2131362268);
+            ((ViewGroup$MarginLayoutParams)this.mPlayButton.getLayoutParams()).bottomMargin = (int)this.mNetflixActivity.getResources().getDimension(2131362304);
         }
     }
     
@@ -165,10 +165,10 @@ public final class PostPlayForMDX extends PostPlay
     
     @Override
     protected void findViews() {
-        this.mTargetNameView = (TextView)this.mNetflixActivity.findViewById(2131690130);
-        this.mStopButton = this.mNetflixActivity.findViewById(2131690137);
-        this.mPlayButton = this.mNetflixActivity.findViewById(2131690136);
-        this.mMoreButton = this.mNetflixActivity.findViewById(2131690138);
+        this.mTargetNameView = (TextView)this.mNetflixActivity.findViewById(2131690176);
+        this.mStopButton = this.mNetflixActivity.findViewById(2131690183);
+        this.mPlayButton = this.mNetflixActivity.findViewById(2131690182);
+        this.mMoreButton = this.mNetflixActivity.findViewById(2131690184);
     }
     
     @Override
@@ -295,13 +295,13 @@ public final class PostPlayForMDX extends PostPlay
             this.mItemsContainer.removeAllViews();
             this.mBackgroundContainer.getLayoutParams().width = DeviceUtils.getScreenWidthInPixels((Context)this.mNetflixActivity) * this.mPostPlayExperience.getItems().size();
             final PostPlayItem postPlayItem = this.mPostPlayExperience.getItems().get(0);
-            final PostPlayBackground postPlayBackground = (PostPlayBackground)layoutInflater.inflate(2130903228, (ViewGroup)this.mBackgroundContainer, false);
+            final PostPlayBackground postPlayBackground = (PostPlayBackground)layoutInflater.inflate(2130903247, (ViewGroup)this.mBackgroundContainer, false);
             this.mBackgroundContainer.addView((View)postPlayBackground);
             postPlayBackground.updateViews(postPlayItem, this.mNetflixActivity, this.mPlayerFragment, PostPlayRequestContext.MDX);
             postPlayBackground.getLayoutParams().width = DeviceUtils.getScreenWidthInPixels((Context)this.mNetflixActivity);
             postPlayBackground.startBackgroundAutoPan();
             final PostPlayCallToAction postPlayCallToAction = new PostPlayCallToAction(this.mNetflixActivity, this.mPlayerFragment, postPlayItem.getPlayAction(), PostPlayRequestContext.MDX);
-            final PostPlayMetadata postPlayMetadata = (PostPlayMetadata)layoutInflater.inflate(2130903242, (ViewGroup)this.mItemsContainer, false);
+            final PostPlayMetadata postPlayMetadata = (PostPlayMetadata)layoutInflater.inflate(2130903261, (ViewGroup)this.mItemsContainer, false);
             this.mItemsContainer.addView((View)postPlayMetadata);
             postPlayMetadata.updateViews(postPlayItem, this.mNetflixActivity, this.mPlayerFragment, PostPlayRequestContext.MDX);
             if (this.mPlayButton != null) {

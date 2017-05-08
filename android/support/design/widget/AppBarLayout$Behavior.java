@@ -4,97 +4,98 @@
 
 package android.support.design.widget;
 
-import android.view.ViewGroup$MarginLayoutParams;
-import android.widget.LinearLayout$LayoutParams;
-import android.view.ViewGroup$LayoutParams;
-import android.support.v4.view.WindowInsetsCompat;
-import android.widget.LinearLayout;
 import android.os.Parcelable;
-import android.support.v4.view.MotionEventCompat;
-import android.view.ViewConfiguration;
-import android.view.MotionEvent;
-import android.view.animation.Interpolator;
+import android.view.View$MeasureSpec;
+import android.os.Build$VERSION;
 import java.util.List;
+import android.view.animation.Interpolator;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.support.v4.widget.ScrollerCompat;
 import android.view.View;
 import java.lang.ref.WeakReference;
 
-public class AppBarLayout$Behavior extends ViewOffsetBehavior<AppBarLayout>
+public class AppBarLayout$Behavior extends HeaderBehavior<AppBarLayout>
 {
-    private int mActivePointerId;
-    private ValueAnimatorCompat mAnimator;
-    private Runnable mFlingRunnable;
-    private boolean mIsBeingDragged;
-    private int mLastMotionY;
+    private static final int INVALID_POSITION = -1;
+    private static final int MAX_OFFSET_ANIMATION_DURATION = 600;
     private WeakReference<View> mLastNestedScrollingChildRef;
+    private ValueAnimatorCompat mOffsetAnimator;
     private int mOffsetDelta;
     private int mOffsetToChildIndexOnLayout;
     private boolean mOffsetToChildIndexOnLayoutIsMinHeight;
     private float mOffsetToChildIndexOnLayoutPerc;
-    private ScrollerCompat mScroller;
+    private AppBarLayout$Behavior$DragCallback mOnDragCallback;
     private boolean mSkipNestedPreScroll;
-    private int mTouchSlop;
+    private boolean mWasNestedFlung;
     
     public AppBarLayout$Behavior() {
         this.mOffsetToChildIndexOnLayout = -1;
-        this.mActivePointerId = -1;
-        this.mTouchSlop = -1;
     }
     
     public AppBarLayout$Behavior(final Context context, final AttributeSet set) {
         super(context, set);
         this.mOffsetToChildIndexOnLayout = -1;
-        this.mActivePointerId = -1;
-        this.mTouchSlop = -1;
     }
     
-    private void animateOffsetTo(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final int n) {
-        if (this.mAnimator == null) {
-            (this.mAnimator = ViewUtils.createAnimator()).setInterpolator(AnimationUtils.DECELERATE_INTERPOLATOR);
-            this.mAnimator.setUpdateListener(new AppBarLayout$Behavior$1(this, coordinatorLayout, appBarLayout));
+    private void animateOffsetTo(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final int n, float abs) {
+        final int abs2 = Math.abs(this.getTopBottomOffsetForScrollingSibling() - n);
+        abs = Math.abs(abs);
+        int n2;
+        if (abs > 0.0f) {
+            n2 = Math.round(abs2 / abs * 1000.0f) * 3;
         }
         else {
-            this.mAnimator.cancel();
+            n2 = (int)((abs2 / appBarLayout.getHeight() + 1.0f) * 150.0f);
         }
-        this.mAnimator.setIntValues(this.getTopBottomOffsetForScrollingSibling(), n);
-        this.mAnimator.start();
+        this.animateOffsetWithDuration(coordinatorLayout, appBarLayout, n, n2);
     }
     
-    private boolean canDragAppBarLayout() {
-        if (this.mLastNestedScrollingChildRef != null) {
-            final View view = this.mLastNestedScrollingChildRef.get();
-            return view != null && view.isShown() && !ViewCompat.canScrollVertically(view, -1);
+    private void animateOffsetWithDuration(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final int n, final int n2) {
+        final int topBottomOffsetForScrollingSibling = this.getTopBottomOffsetForScrollingSibling();
+        if (topBottomOffsetForScrollingSibling == n) {
+            if (this.mOffsetAnimator != null && this.mOffsetAnimator.isRunning()) {
+                this.mOffsetAnimator.cancel();
+            }
+            return;
         }
-        return false;
+        if (this.mOffsetAnimator == null) {
+            (this.mOffsetAnimator = ViewUtils.createAnimator()).setInterpolator(AnimationUtils.DECELERATE_INTERPOLATOR);
+            this.mOffsetAnimator.addUpdateListener(new AppBarLayout$Behavior$1(this, coordinatorLayout, appBarLayout));
+        }
+        else {
+            this.mOffsetAnimator.cancel();
+        }
+        this.mOffsetAnimator.setDuration(Math.min(n2, 600));
+        this.mOffsetAnimator.setIntValues(topBottomOffsetForScrollingSibling, n);
+        this.mOffsetAnimator.start();
     }
     
-    private void dispatchOffsetUpdates(final AppBarLayout appBarLayout) {
-        final List access$200 = appBarLayout.mListeners;
-        for (int size = access$200.size(), i = 0; i < size; ++i) {
-            final AppBarLayout$OnOffsetChangedListener appBarLayout$OnOffsetChangedListener = access$200.get(i);
-            if (appBarLayout$OnOffsetChangedListener != null) {
-                appBarLayout$OnOffsetChangedListener.onOffsetChanged(appBarLayout, this.getTopAndBottomOffset());
+    private static boolean checkFlag(final int n, final int n2) {
+        return (n & n2) == n2;
+    }
+    
+    private static View getAppBarChildOnOffset(final AppBarLayout appBarLayout, int i) {
+        final int abs = Math.abs(i);
+        int childCount;
+        View child;
+        for (childCount = appBarLayout.getChildCount(), i = 0; i < childCount; ++i) {
+            child = appBarLayout.getChildAt(i);
+            if (abs >= child.getTop() && abs <= child.getBottom()) {
+                return child;
             }
         }
+        return null;
     }
     
-    private boolean fling(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final int n, final int n2, final float n3) {
-        if (this.mFlingRunnable != null) {
-            appBarLayout.removeCallbacks(this.mFlingRunnable);
+    private int getChildIndexOnOffset(final AppBarLayout appBarLayout, final int n) {
+        for (int i = 0; i < appBarLayout.getChildCount(); ++i) {
+            final View child = appBarLayout.getChildAt(i);
+            if (child.getTop() <= -n && child.getBottom() >= -n) {
+                return i;
+            }
         }
-        if (this.mScroller == null) {
-            this.mScroller = ScrollerCompat.create(appBarLayout.getContext());
-        }
-        this.mScroller.fling(0, this.getTopBottomOffsetForScrollingSibling(), 0, Math.round(n3), 0, 0, n, n2);
-        if (this.mScroller.computeScrollOffset()) {
-            ViewCompat.postOnAnimation((View)appBarLayout, this.mFlingRunnable = new AppBarLayout$Behavior$FlingRunnable(this, coordinatorLayout, appBarLayout));
-            return true;
-        }
-        this.mFlingRunnable = null;
-        return false;
+        return -1;
     }
     
     private int interpolateOffset(final AppBarLayout appBarLayout, final int n) {
@@ -102,7 +103,7 @@ public class AppBarLayout$Behavior extends ViewOffsetBehavior<AppBarLayout>
         final int childCount = appBarLayout.getChildCount();
         int n2 = 0;
         while (true) {
-            Label_0212: {
+            Label_0233: {
                 int n3;
                 while (true) {
                     n3 = n;
@@ -119,16 +120,20 @@ public class AppBarLayout$Behavior extends ViewOffsetBehavior<AppBarLayout>
                         }
                         final int scrollFlags = appBarLayout$LayoutParams.getScrollFlags();
                         if ((scrollFlags & 0x1) == 0x0) {
-                            break Label_0212;
+                            break Label_0233;
                         }
                         int n5;
                         final int n4 = n5 = appBarLayout$LayoutParams.bottomMargin + (child.getHeight() + appBarLayout$LayoutParams.topMargin) + 0;
                         if ((scrollFlags & 0x2) != 0x0) {
                             n5 = n4 - ViewCompat.getMinimumHeight(child);
                         }
+                        int n6 = n5;
+                        if (ViewCompat.getFitsSystemWindows(child)) {
+                            n6 = n5 - appBarLayout.getTopInset();
+                        }
                         n3 = n;
-                        if (n5 > 0) {
-                            n3 = Integer.signum(n) * (Math.round(scrollInterpolator.getInterpolation((abs - child.getTop()) / n5) * n5) + child.getTop());
+                        if (n6 > 0) {
+                            n3 = Integer.signum(n) * (Math.round(scrollInterpolator.getInterpolation((abs - child.getTop()) / n6) * n6) + child.getTop());
                             break;
                         }
                         break;
@@ -144,59 +149,112 @@ public class AppBarLayout$Behavior extends ViewOffsetBehavior<AppBarLayout>
         }
     }
     
-    private int scroll(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final int n, final int n2, final int n3) {
-        return this.setAppBarTopBottomOffset(coordinatorLayout, appBarLayout, this.getTopBottomOffsetForScrollingSibling() - n, n2, n3);
+    private boolean shouldJumpElevationState(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout) {
+        final List<View> dependents = coordinatorLayout.getDependents((View)appBarLayout);
+        for (int size = dependents.size(), i = 0; i < size; ++i) {
+            final CoordinatorLayout$Behavior behavior = ((CoordinatorLayout$LayoutParams)dependents.get(i).getLayoutParams()).getBehavior();
+            if (behavior instanceof AppBarLayout$ScrollingViewBehavior) {
+                return ((AppBarLayout$ScrollingViewBehavior)behavior).getOverlayTop() != 0;
+            }
+        }
+        return false;
     }
     
-    final int getTopBottomOffsetForScrollingSibling() {
-        return this.getTopAndBottomOffset() + this.mOffsetDelta;
+    private void snapToChildIfNeeded(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout) {
+        final int topBottomOffsetForScrollingSibling = this.getTopBottomOffsetForScrollingSibling();
+        final int childIndexOnOffset = this.getChildIndexOnOffset(appBarLayout, topBottomOffsetForScrollingSibling);
+        if (childIndexOnOffset >= 0) {
+            final View child = appBarLayout.getChildAt(childIndexOnOffset);
+            final int scrollFlags = ((AppBarLayout$LayoutParams)child.getLayoutParams()).getScrollFlags();
+            if ((scrollFlags & 0x11) == 0x11) {
+                final int n = -child.getTop();
+                int n3;
+                final int n2 = n3 = -child.getBottom();
+                if (childIndexOnOffset == appBarLayout.getChildCount() - 1) {
+                    n3 = n2 + appBarLayout.getTopInset();
+                }
+                int n4;
+                if (checkFlag(scrollFlags, 2)) {
+                    n3 += ViewCompat.getMinimumHeight(child);
+                    n4 = n;
+                }
+                else if (checkFlag(scrollFlags, 5)) {
+                    final int n5 = ViewCompat.getMinimumHeight(child) + n3;
+                    if (topBottomOffsetForScrollingSibling >= (n4 = n5)) {
+                        n3 = n5;
+                        n4 = n;
+                    }
+                }
+                else {
+                    n4 = n;
+                }
+                if (topBottomOffsetForScrollingSibling >= (n3 + n4) / 2) {
+                    n3 = n4;
+                }
+                this.animateOffsetTo(coordinatorLayout, appBarLayout, MathUtils.constrain(n3, -appBarLayout.getTotalScrollRange(), 0), 0.0f);
+            }
+        }
+    }
+    
+    private void updateAppBarLayoutDrawableState(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final int n, final int n2) {
+        final boolean b = true;
+        final boolean b2 = false;
+        final View appBarChildOnOffset = getAppBarChildOnOffset(appBarLayout, n);
+        if (appBarChildOnOffset != null) {
+            final int scrollFlags = ((AppBarLayout$LayoutParams)appBarChildOnOffset.getLayoutParams()).getScrollFlags();
+            boolean collapsedState = b2;
+            if ((scrollFlags & 0x1) != 0x0) {
+                final int minimumHeight = ViewCompat.getMinimumHeight(appBarChildOnOffset);
+                if (n2 > 0 && (scrollFlags & 0xC) != 0x0) {
+                    collapsedState = (-n >= appBarChildOnOffset.getBottom() - minimumHeight - appBarLayout.getTopInset());
+                }
+                else {
+                    collapsedState = b2;
+                    if ((scrollFlags & 0x2) != 0x0) {
+                        collapsedState = (-n >= appBarChildOnOffset.getBottom() - minimumHeight - appBarLayout.getTopInset() && b);
+                    }
+                }
+            }
+            if (appBarLayout.setCollapsedState(collapsedState) && Build$VERSION.SDK_INT >= 11 && this.shouldJumpElevationState(coordinatorLayout, appBarLayout)) {
+                appBarLayout.jumpDrawablesToCurrentState();
+            }
+        }
     }
     
     @Override
-    public boolean onInterceptTouchEvent(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final MotionEvent motionEvent) {
-        if (this.mTouchSlop < 0) {
-            this.mTouchSlop = ViewConfiguration.get(coordinatorLayout.getContext()).getScaledTouchSlop();
+    boolean canDragView(final AppBarLayout appBarLayout) {
+        if (this.mOnDragCallback != null) {
+            return this.mOnDragCallback.canDrag(appBarLayout);
         }
-        if (motionEvent.getAction() == 2 && this.mIsBeingDragged) {
-            return true;
+        if (this.mLastNestedScrollingChildRef != null) {
+            final View view = this.mLastNestedScrollingChildRef.get();
+            return view != null && view.isShown() && !ViewCompat.canScrollVertically(view, -1);
         }
-        switch (MotionEventCompat.getActionMasked(motionEvent)) {
-            case 2: {
-                final int mActivePointerId = this.mActivePointerId;
-                if (mActivePointerId == -1) {
-                    break;
-                }
-                final int pointerIndex = MotionEventCompat.findPointerIndex(motionEvent, mActivePointerId);
-                if (pointerIndex == -1) {
-                    break;
-                }
-                final int mLastMotionY = (int)MotionEventCompat.getY(motionEvent, pointerIndex);
-                if (Math.abs(mLastMotionY - this.mLastMotionY) > this.mTouchSlop) {
-                    this.mIsBeingDragged = true;
-                    this.mLastMotionY = mLastMotionY;
-                    break;
-                }
-                break;
-            }
-            case 0: {
-                this.mIsBeingDragged = false;
-                final int n = (int)motionEvent.getX();
-                final int mLastMotionY2 = (int)motionEvent.getY();
-                if (coordinatorLayout.isPointInChildBounds((View)appBarLayout, n, mLastMotionY2) && this.canDragAppBarLayout()) {
-                    this.mLastMotionY = mLastMotionY2;
-                    this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, 0);
-                    break;
-                }
-                break;
-            }
-            case 1:
-            case 3: {
-                this.mIsBeingDragged = false;
-                this.mActivePointerId = -1;
-                break;
-            }
-        }
-        return this.mIsBeingDragged;
+        return true;
+    }
+    
+    @Override
+    int getMaxDragOffset(final AppBarLayout appBarLayout) {
+        return -appBarLayout.getDownNestedScrollRange();
+    }
+    
+    @Override
+    int getScrollRangeForDragFling(final AppBarLayout appBarLayout) {
+        return appBarLayout.getTotalScrollRange();
+    }
+    
+    @Override
+    int getTopBottomOffsetForScrollingSibling() {
+        return this.getTopAndBottomOffset() + this.mOffsetDelta;
+    }
+    
+    boolean isOffsetAnimatorRunning() {
+        return this.mOffsetAnimator != null && this.mOffsetAnimator.isRunning();
+    }
+    
+    @Override
+    void onFlingFinished(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout) {
+        this.snapToChildIfNeeded(coordinatorLayout, appBarLayout);
     }
     
     @Override
@@ -213,21 +271,20 @@ public class AppBarLayout$Behavior extends ViewOffsetBehavior<AppBarLayout>
             if ((pendingAction & 0x2) != 0x0) {
                 final int n = -appBarLayout.getUpNestedPreScrollRange();
                 if (topAndBottomOffset != 0) {
-                    this.animateOffsetTo(coordinatorLayout, appBarLayout, n);
+                    this.animateOffsetTo(coordinatorLayout, appBarLayout, n, 0.0f);
                 }
                 else {
-                    this.setAppBarTopBottomOffset(coordinatorLayout, appBarLayout, n);
+                    this.setHeaderTopBottomOffset(coordinatorLayout, appBarLayout, n);
                 }
             }
             else if ((pendingAction & 0x1) != 0x0) {
                 if (topAndBottomOffset != 0) {
-                    this.animateOffsetTo(coordinatorLayout, appBarLayout, 0);
+                    this.animateOffsetTo(coordinatorLayout, appBarLayout, 0, 0.0f);
                 }
                 else {
-                    this.setAppBarTopBottomOffset(coordinatorLayout, appBarLayout, 0);
+                    this.setHeaderTopBottomOffset(coordinatorLayout, appBarLayout, 0);
                 }
             }
-            appBarLayout.resetPendingAction();
         }
         else if (this.mOffsetToChildIndexOnLayout >= 0) {
             final View child = appBarLayout.getChildAt(this.mOffsetToChildIndexOnLayout);
@@ -239,10 +296,21 @@ public class AppBarLayout$Behavior extends ViewOffsetBehavior<AppBarLayout>
                 topAndBottomOffset += Math.round(child.getHeight() * this.mOffsetToChildIndexOnLayoutPerc);
             }
             this.setTopAndBottomOffset(topAndBottomOffset);
-            this.mOffsetToChildIndexOnLayout = -1;
         }
-        this.dispatchOffsetUpdates(appBarLayout);
+        appBarLayout.resetPendingAction();
+        this.mOffsetToChildIndexOnLayout = -1;
+        this.setTopAndBottomOffset(MathUtils.constrain(this.getTopAndBottomOffset(), -appBarLayout.getTotalScrollRange(), 0));
+        appBarLayout.dispatchOffsetUpdates(this.getTopAndBottomOffset());
         return onLayoutChild;
+    }
+    
+    @Override
+    public boolean onMeasureChild(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final int n, final int n2, final int n3, final int n4) {
+        if (((CoordinatorLayout$LayoutParams)appBarLayout.getLayoutParams()).height == -2) {
+            coordinatorLayout.onMeasureChild((View)appBarLayout, n, n2, View$MeasureSpec.makeMeasureSpec(0, 0), n4);
+            return true;
+        }
+        return super.onMeasureChild(coordinatorLayout, appBarLayout, n, n2, n3, n4);
     }
     
     @Override
@@ -252,25 +320,23 @@ public class AppBarLayout$Behavior extends ViewOffsetBehavior<AppBarLayout>
         if (!b) {
             fling = this.fling(coordinatorLayout, appBarLayout, -appBarLayout.getTotalScrollRange(), 0, -n2);
         }
-        else {
-            int n3;
-            if (n2 < 0.0f) {
-                n3 = -appBarLayout.getTotalScrollRange() + appBarLayout.getDownNestedPreScrollRange();
-                fling = b2;
-                if (this.getTopBottomOffsetForScrollingSibling() > n3) {
-                    return fling;
-                }
-            }
-            else if (this.getTopBottomOffsetForScrollingSibling() < (n3 = -appBarLayout.getUpNestedPreScrollRange())) {
-                return false;
-            }
+        else if (n2 < 0.0f) {
+            final int n3 = -appBarLayout.getTotalScrollRange() + appBarLayout.getDownNestedPreScrollRange();
             fling = b2;
-            if (this.getTopBottomOffsetForScrollingSibling() != n3) {
-                this.animateOffsetTo(coordinatorLayout, appBarLayout, n3);
-                return true;
+            if (this.getTopBottomOffsetForScrollingSibling() < n3) {
+                this.animateOffsetTo(coordinatorLayout, appBarLayout, n3, n2);
+                fling = true;
             }
         }
-        return fling;
+        else {
+            final int n4 = -appBarLayout.getUpNestedPreScrollRange();
+            fling = b2;
+            if (this.getTopBottomOffsetForScrollingSibling() > n4) {
+                this.animateOffsetTo(coordinatorLayout, appBarLayout, n4, n2);
+                fling = true;
+            }
+        }
+        return this.mWasNestedFlung = fling;
     }
     
     @Override
@@ -305,8 +371,8 @@ public class AppBarLayout$Behavior extends ViewOffsetBehavior<AppBarLayout>
             final AppBarLayout$Behavior$SavedState appBarLayout$Behavior$SavedState = (AppBarLayout$Behavior$SavedState)parcelable;
             super.onRestoreInstanceState(coordinatorLayout, appBarLayout, appBarLayout$Behavior$SavedState.getSuperState());
             this.mOffsetToChildIndexOnLayout = appBarLayout$Behavior$SavedState.firstVisibleChildIndex;
-            this.mOffsetToChildIndexOnLayoutPerc = appBarLayout$Behavior$SavedState.firstVisibileChildPercentageShown;
-            this.mOffsetToChildIndexOnLayoutIsMinHeight = appBarLayout$Behavior$SavedState.firstVisibileChildAtMinimumHeight;
+            this.mOffsetToChildIndexOnLayoutPerc = appBarLayout$Behavior$SavedState.firstVisibleChildPercentageShown;
+            this.mOffsetToChildIndexOnLayoutIsMinHeight = appBarLayout$Behavior$SavedState.firstVisibleChildAtMinimumHeight;
             return;
         }
         super.onRestoreInstanceState(coordinatorLayout, appBarLayout, parcelable);
@@ -315,7 +381,7 @@ public class AppBarLayout$Behavior extends ViewOffsetBehavior<AppBarLayout>
     
     @Override
     public Parcelable onSaveInstanceState(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout) {
-        boolean firstVisibileChildAtMinimumHeight = false;
+        boolean firstVisibleChildAtMinimumHeight = false;
         final Parcelable onSaveInstanceState = super.onSaveInstanceState(coordinatorLayout, appBarLayout);
         final int topAndBottomOffset = this.getTopAndBottomOffset();
         for (int childCount = appBarLayout.getChildCount(), i = 0; i < childCount; ++i) {
@@ -325,10 +391,10 @@ public class AppBarLayout$Behavior extends ViewOffsetBehavior<AppBarLayout>
                 final AppBarLayout$Behavior$SavedState appBarLayout$Behavior$SavedState = new AppBarLayout$Behavior$SavedState(onSaveInstanceState);
                 appBarLayout$Behavior$SavedState.firstVisibleChildIndex = i;
                 if (n == ViewCompat.getMinimumHeight(child)) {
-                    firstVisibileChildAtMinimumHeight = true;
+                    firstVisibleChildAtMinimumHeight = true;
                 }
-                appBarLayout$Behavior$SavedState.firstVisibileChildAtMinimumHeight = firstVisibileChildAtMinimumHeight;
-                appBarLayout$Behavior$SavedState.firstVisibileChildPercentageShown = n / child.getHeight();
+                appBarLayout$Behavior$SavedState.firstVisibleChildAtMinimumHeight = firstVisibleChildAtMinimumHeight;
+                appBarLayout$Behavior$SavedState.firstVisibleChildPercentageShown = n / child.getHeight();
                 return (Parcelable)appBarLayout$Behavior$SavedState;
             }
         }
@@ -338,8 +404,8 @@ public class AppBarLayout$Behavior extends ViewOffsetBehavior<AppBarLayout>
     @Override
     public boolean onStartNestedScroll(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final View view, final View view2, final int n) {
         final boolean b = (n & 0x2) != 0x0 && appBarLayout.hasScrollableChildren() && coordinatorLayout.getHeight() - view.getHeight() <= appBarLayout.getHeight();
-        if (b && this.mAnimator != null) {
-            this.mAnimator.cancel();
+        if (b && this.mOffsetAnimator != null) {
+            this.mOffsetAnimator.cancel();
         }
         this.mLastNestedScrollingChildRef = null;
         return b;
@@ -347,103 +413,49 @@ public class AppBarLayout$Behavior extends ViewOffsetBehavior<AppBarLayout>
     
     @Override
     public void onStopNestedScroll(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final View view) {
+        if (!this.mWasNestedFlung) {
+            this.snapToChildIfNeeded(coordinatorLayout, appBarLayout);
+        }
         this.mSkipNestedPreScroll = false;
+        this.mWasNestedFlung = false;
         this.mLastNestedScrollingChildRef = new WeakReference<View>(view);
     }
     
+    public void setDragCallback(final AppBarLayout$Behavior$DragCallback mOnDragCallback) {
+        this.mOnDragCallback = mOnDragCallback;
+    }
+    
     @Override
-    public boolean onTouchEvent(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final MotionEvent motionEvent) {
-        final boolean b = false;
-        if (this.mTouchSlop < 0) {
-            this.mTouchSlop = ViewConfiguration.get(coordinatorLayout.getContext()).getScaledTouchSlop();
-        }
-        final int n = (int)motionEvent.getX();
-        final int mLastMotionY = (int)motionEvent.getY();
-        switch (MotionEventCompat.getActionMasked(motionEvent)) {
-            case 0: {
-                boolean b2 = b;
-                if (!coordinatorLayout.isPointInChildBounds((View)appBarLayout, n, mLastMotionY)) {
-                    return b2;
-                }
-                b2 = b;
-                if (this.canDragAppBarLayout()) {
-                    this.mLastMotionY = mLastMotionY;
-                    this.mActivePointerId = MotionEventCompat.getPointerId(motionEvent, 0);
-                    break;
-                }
-                return b2;
-            }
-            case 2: {
-                final int pointerIndex = MotionEventCompat.findPointerIndex(motionEvent, this.mActivePointerId);
-                final boolean b2 = b;
-                if (pointerIndex == -1) {
-                    return b2;
-                }
-                final int mLastMotionY2 = (int)MotionEventCompat.getY(motionEvent, pointerIndex);
-                int n3;
-                final int n2 = n3 = this.mLastMotionY - mLastMotionY2;
-                if (!this.mIsBeingDragged) {
-                    n3 = n2;
-                    if (Math.abs(n2) > this.mTouchSlop) {
-                        this.mIsBeingDragged = true;
-                        if (n2 > 0) {
-                            n3 = n2 - this.mTouchSlop;
-                        }
-                        else {
-                            n3 = n2 + this.mTouchSlop;
-                        }
-                    }
-                }
-                if (this.mIsBeingDragged) {
-                    this.mLastMotionY = mLastMotionY2;
-                    this.scroll(coordinatorLayout, appBarLayout, n3, -appBarLayout.getDownNestedScrollRange(), 0);
-                    break;
-                }
-                break;
-            }
-            case 1:
-            case 3: {
-                this.mIsBeingDragged = false;
-                this.mActivePointerId = -1;
-                break;
-            }
-        }
-        return true;
-    }
-    
-    final int setAppBarTopBottomOffset(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final int n) {
-        return this.setAppBarTopBottomOffset(coordinatorLayout, appBarLayout, n, Integer.MIN_VALUE, Integer.MAX_VALUE);
-    }
-    
-    final int setAppBarTopBottomOffset(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, int interpolateOffset, int constrain, final int n) {
+    int setHeaderTopBottomOffset(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, int interpolateOffset, int constrain, final int n) {
+        final int n2 = 0;
         final int topBottomOffsetForScrollingSibling = this.getTopBottomOffsetForScrollingSibling();
-        int n3;
-        final int n2 = n3 = 0;
-        if (constrain != 0) {
-            n3 = n2;
-            if (topBottomOffsetForScrollingSibling >= constrain) {
-                n3 = n2;
-                if (topBottomOffsetForScrollingSibling <= n) {
-                    constrain = MathUtils.constrain(interpolateOffset, constrain, n);
-                    n3 = n2;
-                    if (topBottomOffsetForScrollingSibling != constrain) {
-                        if (appBarLayout.hasChildWithInterpolator()) {
-                            interpolateOffset = this.interpolateOffset(appBarLayout, constrain);
-                        }
-                        else {
-                            interpolateOffset = constrain;
-                        }
-                        final boolean setTopAndBottomOffset = this.setTopAndBottomOffset(interpolateOffset);
-                        this.mOffsetDelta = constrain - interpolateOffset;
-                        if (!setTopAndBottomOffset && appBarLayout.hasChildWithInterpolator()) {
-                            coordinatorLayout.dispatchDependentViewsChanged((View)appBarLayout);
-                        }
-                        this.dispatchOffsetUpdates(appBarLayout);
-                        n3 = topBottomOffsetForScrollingSibling - constrain;
-                    }
+        if (constrain != 0 && topBottomOffsetForScrollingSibling >= constrain && topBottomOffsetForScrollingSibling <= n) {
+            constrain = MathUtils.constrain(interpolateOffset, constrain, n);
+            interpolateOffset = n2;
+            if (topBottomOffsetForScrollingSibling != constrain) {
+                if (appBarLayout.hasChildWithInterpolator()) {
+                    interpolateOffset = this.interpolateOffset(appBarLayout, constrain);
                 }
+                else {
+                    interpolateOffset = constrain;
+                }
+                final boolean setTopAndBottomOffset = this.setTopAndBottomOffset(interpolateOffset);
+                this.mOffsetDelta = constrain - interpolateOffset;
+                if (!setTopAndBottomOffset && appBarLayout.hasChildWithInterpolator()) {
+                    coordinatorLayout.dispatchDependentViewsChanged((View)appBarLayout);
+                }
+                appBarLayout.dispatchOffsetUpdates(this.getTopAndBottomOffset());
+                if (constrain < topBottomOffsetForScrollingSibling) {
+                    interpolateOffset = -1;
+                }
+                else {
+                    interpolateOffset = 1;
+                }
+                this.updateAppBarLayoutDrawableState(coordinatorLayout, appBarLayout, constrain, interpolateOffset);
+                interpolateOffset = topBottomOffsetForScrollingSibling - constrain;
             }
+            return interpolateOffset;
         }
-        return n3;
+        return this.mOffsetDelta = 0;
     }
 }

@@ -16,4 +16,16 @@ class ViewPropertyAnimatorCompatJB
         }
         view.animate().setListener((Animator$AnimatorListener)null);
     }
+    
+    public static void withEndAction(final View view, final Runnable runnable) {
+        view.animate().withEndAction(runnable);
+    }
+    
+    public static void withLayer(final View view) {
+        view.animate().withLayer();
+    }
+    
+    public static void withStartAction(final View view, final Runnable runnable) {
+        view.animate().withStartAction(runnable);
+    }
 }

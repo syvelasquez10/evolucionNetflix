@@ -553,7 +553,7 @@ public class TargetContext implements TargetStateManager$TargetStateManagerListe
                 return new MdxTargetCapabilities(this.mTargetCapability);
             }
             catch (JSONException ex) {
-                Log.d("nf_mdx", "TargetContext: failed to parse Mdx Target Capabilities", (Throwable)ex);
+                Log.d("nf_mdx", "TargetContext: failed to parse Mdx Target Capabilities", ex);
                 return null;
             }
         }

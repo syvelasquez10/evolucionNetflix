@@ -12,12 +12,17 @@ import android.content.Context;
 
 public abstract class ActionProvider
 {
+    private static final String TAG = "ActionProvider(support)";
     private final Context mContext;
     private ActionProvider$SubUiVisibilityListener mSubUiVisibilityListener;
     private ActionProvider$VisibilityListener mVisibilityListener;
     
     public ActionProvider(final Context mContext) {
         this.mContext = mContext;
+    }
+    
+    public Context getContext() {
+        return this.mContext;
     }
     
     public boolean hasSubMenu() {
@@ -43,6 +48,12 @@ public abstract class ActionProvider
     
     public boolean overridesItemVisibility() {
         return false;
+    }
+    
+    public void refreshVisibility() {
+        if (this.mVisibilityListener != null && this.overridesItemVisibility()) {
+            this.mVisibilityListener.onActionProviderVisibilityChanged(this.isVisible());
+        }
     }
     
     public void reset() {

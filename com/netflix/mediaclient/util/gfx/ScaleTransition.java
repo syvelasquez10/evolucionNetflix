@@ -22,7 +22,7 @@ public class ScaleTransition extends Visibility
             return null;
         }
         final AnimatorSet set = (AnimatorSet)AnimatorInflater.loadAnimator(target.getContext(), 2131034113);
-        set.setDuration((long)AndroidUtils.getIntegerRes(target.getContext(), 2131492871));
+        set.setDuration((long)AndroidUtils.getIntegerRes(target.getContext(), 2131492870));
         set.setTarget((Object)target);
         return (Animator)set;
     }
@@ -32,7 +32,7 @@ public class ScaleTransition extends Visibility
             return null;
         }
         final AnimatorSet set = (AnimatorSet)AnimatorInflater.loadAnimator(target.getContext(), 2131034112);
-        set.setDuration((long)AndroidUtils.getIntegerRes(target.getContext(), 2131492871));
+        set.setDuration((long)AndroidUtils.getIntegerRes(target.getContext(), 2131492870));
         set.setTarget((Object)target);
         return (Animator)set;
     }

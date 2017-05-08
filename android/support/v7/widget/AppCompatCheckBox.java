@@ -5,30 +5,31 @@
 package android.support.v7.widget;
 
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.graphics.PorterDuff$Mode;
 import android.content.res.ColorStateList;
 import android.widget.CompoundButton;
 import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.support.v7.internal.widget.TintManager;
 import android.support.v4.widget.TintableCompoundButton;
 import android.widget.CheckBox;
 
 public class AppCompatCheckBox extends CheckBox implements TintableCompoundButton
 {
     private AppCompatCompoundButtonHelper mCompoundButtonHelper;
-    private TintManager mTintManager;
+    
+    public AppCompatCheckBox(final Context context) {
+        this(context, null);
+    }
     
     public AppCompatCheckBox(final Context context, final AttributeSet set) {
         this(context, set, R$attr.checkboxStyle);
     }
     
     public AppCompatCheckBox(final Context context, final AttributeSet set, final int n) {
-        super(context, set, n);
-        this.mTintManager = TintManager.get(context);
-        (this.mCompoundButtonHelper = new AppCompatCompoundButtonHelper((CompoundButton)this, this.mTintManager)).loadFromAttributes(set, n);
+        super(TintContextWrapper.wrap(context), set, n);
+        (this.mCompoundButtonHelper = new AppCompatCompoundButtonHelper((CompoundButton)this)).loadFromAttributes(set, n);
     }
     
     public int getCompoundPaddingLeft() {
@@ -54,14 +55,7 @@ public class AppCompatCheckBox extends CheckBox implements TintableCompoundButto
     }
     
     public void setButtonDrawable(final int n) {
-        Drawable buttonDrawable;
-        if (this.mTintManager != null) {
-            buttonDrawable = this.mTintManager.getDrawable(n);
-        }
-        else {
-            buttonDrawable = ContextCompat.getDrawable(this.getContext(), n);
-        }
-        this.setButtonDrawable(buttonDrawable);
+        this.setButtonDrawable(AppCompatResources.getDrawable(this.getContext(), n));
     }
     
     public void setButtonDrawable(final Drawable buttonDrawable) {

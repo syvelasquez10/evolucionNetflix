@@ -5,10 +5,10 @@
 package com.netflix.mediaclient.service.player;
 
 import android.view.SurfaceHolder;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleFailure;
 import com.netflix.mediaclient.media.JPlayer.AdaptiveMediaDecoderHelper;
 import android.os.Build$VERSION;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import android.graphics.Point;
 import java.nio.ByteBuffer;
 import com.netflix.mediaclient.media.AudioSource;
@@ -21,7 +21,7 @@ import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.TimerTask;
 import com.netflix.mediaclient.util.DeviceUtils;
 import com.netflix.mediaclient.util.Coppola1Utils;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
+import com.netflix.mediaclient.media.SubtitleUrl;
 import com.netflix.mediaclient.service.player.subtitles.SubtitleParser;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.media.Subtitle;
@@ -40,11 +40,12 @@ import android.annotation.SuppressLint;
 import android.media.AudioDeviceInfo;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.media.AudioManager;
-import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
+import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
+import com.netflix.mediaclient.service.configuration.ConfigurationAgent;
 import com.netflix.mediaclient.event.nrdp.media.Warning;
 import com.netflix.mediaclient.event.nrdp.media.Error;
 import com.netflix.mediaclient.event.nrdp.media.BufferRange;
@@ -188,7 +189,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     }
     
     public PlayerAgent() {
-        this.mPlayerListenerManager = new PlayerListenerManager(this);
+        this.mPlayerListenerManager = new PlayerListenerManager();
         this.mWakeLock = null;
         this.seeking = false;
         this.validPtsRecieved = false;
@@ -212,6 +213,13 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.playerChangesReceiver = new PlayerAgent$6(this);
         this.mUserAgentReceiver = new PlayerAgent$9(this);
         this.mCellularNetworkListener = new PlayerAgent$10(this);
+    }
+    
+    private void addConfigurationChangeListener() {
+        final ServiceAgent$ConfigurationAgentInterface configurationAgent = this.getConfigurationAgent();
+        if (configurationAgent instanceof ConfigurationAgent) {
+            ((ConfigurationAgent)configurationAgent).addConfigAgentListener(this);
+        }
     }
     
     private boolean canStartBifDownload() {
@@ -1175,6 +1183,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.mPlayerExecutor = Executors.newSingleThreadExecutor();
         this.mPlayerFileManager = new PlayerFileManager(this.getContext());
         this.mSubtitles = new SubtitleDownloadManager(this, this.getUserAgent());
+        this.addConfigurationChangeListener();
         this.initCompleted(CommonStatus.OK);
     }
     
@@ -1280,7 +1289,7 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
     }
     
     @Override
-    public IMedia$SubtitleProfile getSubtitleProfileFromMetadata() {
+    public ISubtitleDef$SubtitleProfile getSubtitleProfileFromMetadata() {
         final SubtitleDownloadManager mSubtitles = this.mSubtitles;
         if (mSubtitles != null && mSubtitles.getSubtitleParser() != null) {
             return mSubtitles.getSubtitleParser().getSubtitleProfile();
@@ -1598,22 +1607,19 @@ public class PlayerAgent extends ServiceAgent implements ConfigurationAgent$Conf
         this.mPlayerListenerManager.removePlayerListener(player$PlayerListener);
     }
     
-    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Status status, final String[] array) {
+    @Override
+    public void reportFailedSubtitle(final String s, final SubtitleUrl subtitleUrl, final ISubtitleDef$SubtitleFailure subtitleDef$SubtitleFailure, final boolean b, final Status status, final String[] array) {
         if (Log.isLoggable()) {
             if (status != null) {
-                Log.e(PlayerAgent.TAG, "Failed to download subtitles metadata from " + s + ", because " + media$SubtitleFailure + ", details: " + status);
+                Log.e(PlayerAgent.TAG, "Failed to download subtitles metadata from " + s + ", because " + subtitleDef$SubtitleFailure + ", details: " + status);
             }
             else {
-                Log.e(PlayerAgent.TAG, "Failed to download subtitles metadata from " + s + ", because " + media$SubtitleFailure);
+                Log.e(PlayerAgent.TAG, "Failed to download subtitles metadata from " + s + ", because " + subtitleDef$SubtitleFailure);
             }
         }
         this.getService().getClientLogging().getErrorLogging().logHandledException("Failed to download subtitle metadata");
-        this.mMedia.reportFailedSubtitle(s, subtitleUrl, media$SubtitleFailure, b, status, array);
+        this.mMedia.reportFailedSubtitle(s, subtitleUrl, subtitleDef$SubtitleFailure, b, status, array);
         this.handlePlayerListener(this.mPlayerListenerManager.getPlayerListenerOnSubtitleFailedHandler(), new Object[0]);
-    }
-    
-    public void reportHandledException(final Exception ex) {
-        this.getService().getClientLogging().getErrorLogging().logHandledException(ex);
     }
     
     @Override

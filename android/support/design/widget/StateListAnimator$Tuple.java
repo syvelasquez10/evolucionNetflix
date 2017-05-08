@@ -4,15 +4,13 @@
 
 package android.support.design.widget;
 
-import android.view.animation.Animation;
-
 class StateListAnimator$Tuple
 {
-    final Animation mAnimation;
+    final ValueAnimatorCompat mAnimator;
     final int[] mSpecs;
     
-    private StateListAnimator$Tuple(final int[] mSpecs, final Animation mAnimation) {
+    StateListAnimator$Tuple(final int[] mSpecs, final ValueAnimatorCompat mAnimator) {
         this.mSpecs = mSpecs;
-        this.mAnimation = mAnimation;
+        this.mAnimator = mAnimator;
     }
 }

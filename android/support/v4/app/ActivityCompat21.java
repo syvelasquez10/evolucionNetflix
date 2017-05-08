@@ -4,6 +4,7 @@
 
 package android.support.v4.app;
 
+import android.media.session.MediaController;
 import android.app.Activity;
 import android.app.SharedElementCallback;
 
@@ -31,6 +32,10 @@ class ActivityCompat21
     
     public static void setExitSharedElementCallback(final Activity activity, final ActivityCompat21$SharedElementCallback21 activityCompat21$SharedElementCallback21) {
         activity.setExitSharedElementCallback(createCallback(activityCompat21$SharedElementCallback21));
+    }
+    
+    public static void setMediaController(final Activity activity, final Object o) {
+        activity.setMediaController((MediaController)o);
     }
     
     public static void startPostponedEnterTransition(final Activity activity) {

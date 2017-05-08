@@ -5,8 +5,12 @@
 package com.netflix.mediaclient.ui.home;
 
 import com.netflix.mediaclient.NetflixApplication;
+import com.netflix.mediaclient.ui.offline.TutorialHelper;
+import com.netflix.android.tooltips.Tooltip;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.view.View;
 import java.io.Serializable;
+import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.MenuItem;
@@ -56,6 +60,7 @@ import android.content.Intent;
 import java.util.LinkedList;
 import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$TTRTracker;
 import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag$OptInResponseHandler;
+import com.netflix.mediaclient.ui.offline.TutorialHelper$Tutorialable;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
 import java.util.Map;

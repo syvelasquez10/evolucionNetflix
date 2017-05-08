@@ -13,9 +13,9 @@ import com.netflix.mediaclient.util.log.ConsolidatedLoggingUtils;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$UiStartupTrigger;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.protocol.nflx.NflxHandler$Response;
-import android.content.Context;
 import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
+import android.content.Context;
 import android.app.Activity;
 import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
@@ -267,7 +267,7 @@ public final class NflxProtocolUtils
     }
     
     public static void reportDelayedResponseHandled(final Activity activity) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(activity)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)activity)) {
             return;
         }
         final Intent intent = new Intent("com.netflix.mediaclient.intent.action.HANDLER_RESULT");

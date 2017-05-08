@@ -11,8 +11,15 @@ import android.app.Activity;
 
 public class ForceExitAction extends BaseAction
 {
+    private boolean doNotWait;
+    
     public ForceExitAction(final Activity activity) {
         super(activity);
+    }
+    
+    public ForceExitAction(final Activity activity, final boolean doNotWait) {
+        super(activity);
+        this.doNotWait = doNotWait;
     }
     
     @Override
@@ -20,7 +27,9 @@ public class ForceExitAction extends BaseAction
         while (true) {
             try {
                 Log.d("ErrorManager", "Waiting 1.5 second to exit app");
-                this.wait(1500L);
+                if (!this.doNotWait) {
+                    this.wait(1500L);
+                }
                 Log.d("ErrorManager", "Kill app");
                 AndroidUtils.forceStop((Context)this.mActivity);
             }

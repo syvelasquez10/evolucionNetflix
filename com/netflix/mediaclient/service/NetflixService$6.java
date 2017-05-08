@@ -4,8 +4,11 @@
 
 package com.netflix.mediaclient.service;
 
+import android.app.Notification;
 import com.netflix.mediaclient.service.logging.perf.Events;
 import android.os.Process;
+import com.netflix.mediaclient.media.BookmarkStore;
+import com.netflix.mediaclient.service.player.OfflinePlaybackInterface;
 import com.netflix.mediaclient.service.job.NetflixJobSchedulerSelector;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
@@ -14,10 +17,12 @@ import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import com.netflix.mediaclient.servicemgr.SignUpParams;
 import com.netflix.mediaclient.servicemgr.IPushNotification;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
 import com.netflix.mediaclient.repository.SecurityRepository;
 import com.netflix.mediaclient.servicemgr.NrdpComponent;
 import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.servicemgr.IMdx;
+import com.netflix.mediaclient.servicemgr.IMSLClient;
 import com.netflix.mediaclient.util.gfx.ImageLoader;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import com.netflix.mediaclient.service.webclient.model.leafs.EogAlert;
@@ -32,6 +37,7 @@ import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
 import com.netflix.model.leafs.OnRampEligibility$Action;
 import com.netflix.mediaclient.service.user.UserAgent$UserAgentCallback;
+import com.netflix.mediaclient.servicemgr.IMSLClient$NetworkRequestInspector;
 import android.os.SystemClock;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging$Trigger;
 import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
@@ -42,11 +48,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import java.io.Serializable;
 import android.content.IntentFilter;
 import com.netflix.mediaclient.util.ThreadUtils;
-import com.netflix.mediaclient.util.ConnectivityUtils;
 import com.netflix.mediaclient.util.AndroidUtils;
-import com.netflix.mediaclient.util.StringUtils;
 import android.app.PendingIntent;
 import android.app.AlarmManager;
+import java.util.HashSet;
 import com.netflix.mediaclient.android.app.CommonStatus;
 import java.util.HashMap;
 import com.netflix.mediaclient.service.voip.WhistleVoipAgent;
@@ -54,11 +59,16 @@ import com.netflix.mediaclient.service.user.UserAgent;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
 import com.netflix.mediaclient.service.pushnotification.PushNotificationAgent;
 import com.netflix.mediaclient.service.preapp.PreAppAgent;
+import java.util.Set;
 import com.netflix.mediaclient.service.player.PlayerAgent;
+import com.netflix.mediaclient.service.pdslogging.PdsAgent;
+import com.netflix.mediaclient.service.player.exoplayback.ExoPlayback;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgent;
 import com.netflix.mediaclient.service.job.NetflixJobScheduler;
 import com.netflix.mediaclient.service.job.NetflixJobExecutor;
 import com.netflix.mediaclient.service.job.NetflixJob$NetflixJobId;
 import java.util.Map;
+import com.netflix.mediaclient.service.msl.MSLAgent;
 import com.netflix.mediaclient.service.mdx.MdxAgent;
 import com.netflix.mediaclient.android.app.Status;
 import java.util.ArrayList;
@@ -72,10 +82,14 @@ import android.os.IBinder;
 import android.os.Handler;
 import com.netflix.mediaclient.servicemgr.INetflixService;
 import android.app.Service;
-import com.netflix.mediaclient.NetflixApplication;
+import com.netflix.mediaclient.ui.verifyplay.PinVerifier;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
+import com.netflix.mediaclient.ui.common.PlayContext;
+import com.netflix.mediaclient.util.StringUtils;
+import com.netflix.mediaclient.servicemgr.Asset;
 import android.content.BroadcastReceiver;
 
 class NetflixService$6 extends BroadcastReceiver
@@ -86,13 +100,62 @@ class NetflixService$6 extends BroadcastReceiver
         this.this$0 = this$0;
     }
     
-    public void onReceive(final Context context, final Intent intent) {
-        if (intent == null || !"com.netflix.mediaclient.service.ACTION_SHOW_MDX_PLAYER".equals(intent.getAction())) {
-            Log.d("NetflixService", "Invalid intent: ", intent);
-            return;
+    private Asset getMdxAgentVideoAsset() {
+        final Asset asset = null;
+        Playable playable;
+        if (this.this$0.mMdxAgent.getVideoDetail() != null) {
+            playable = this.this$0.mMdxAgent.getVideoDetail().getPlayable();
         }
-        Log.v("NetflixService", "Sending show app intent");
-        this.this$0.startActivity(NetflixApplication.createShowApplicationIntent((Context)this.this$0).addFlags(268435456));
-        this.this$0.handler.postDelayed((Runnable)new NetflixService$6$1(this), 400L);
+        else {
+            playable = null;
+        }
+        Asset create = asset;
+        if (playable != null) {
+            create = asset;
+            if (StringUtils.isNotEmpty(playable.getPlayableId())) {
+                create = Asset.create(playable, PlayContext.EMPTY_CONTEXT, true);
+            }
+        }
+        return create;
+    }
+    
+    public void onReceive(final Context context, final Intent intent) {
+        boolean pinProtected = false;
+        final String action = intent.getAction();
+        if ("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKEND".equals(action)) {
+            if (Log.isLoggable()) {
+                Log.d("NetflixService", "mdx exit, stop service in 28800000ms");
+            }
+            this.this$0.stopSelfInMs(28800000L);
+            final Asset mdxAgentVideoAsset = this.getMdxAgentVideoAsset();
+            PinVerifier.getInstance().registerPlayEvent(mdxAgentVideoAsset != null && mdxAgentVideoAsset.isPinProtected());
+            Log.d("NetflixService", "Refreshing CW for MDXUPDATE_PLAYBACKEND...");
+            this.this$0.getBrowse().refreshCw(false);
+        }
+        else if ("com.netflix.mediaclient.intent.action.MDXUPDATE_PLAYBACKSTART".equals(action)) {
+            if (this.this$0.mMdxAgent == null || !this.this$0.mMdxAgent.hasActiveSession()) {
+                Log.e("NetflixService", "false MDXUPDATE_PLAYBACKSTART");
+                return;
+            }
+            Log.i("NetflixService", "start mdx notification");
+            this.this$0.cancelPendingSelfStop();
+            final Asset mdxAgentVideoAsset2 = this.getMdxAgentVideoAsset();
+            if (mdxAgentVideoAsset2 != null) {
+                Log.d("NetflixService", "refreshing episodes data on play start");
+                this.this$0.getBrowse().refreshEpisodeData(mdxAgentVideoAsset2);
+            }
+        }
+        else if ("com.netflix.mediaclient.intent.action.MDXUPDATE_STATE".equals(action)) {
+            final int intExtra = intent.getIntExtra("time", -1);
+            Log.v("NetflixService", "on MDX state update - received updated mdx position: " + intExtra);
+            final Asset mdxAgentVideoAsset3 = this.getMdxAgentVideoAsset();
+            if (mdxAgentVideoAsset3 != null) {
+                mdxAgentVideoAsset3.setPlaybackBookmark(intExtra);
+                Log.v("NetflixService", "updating cached video position");
+                this.this$0.getBrowse().updateCachedVideoPosition(mdxAgentVideoAsset3);
+                pinProtected = mdxAgentVideoAsset3.isPinProtected();
+            }
+            PinVerifier.getInstance().registerPlayEvent(pinProtected);
+        }
     }
 }

@@ -7,7 +7,7 @@ package android.support.v4.os;
 import android.os.Build$VERSION;
 import android.os.AsyncTask;
 
-public class AsyncTaskCompat
+public final class AsyncTaskCompat
 {
     public static <Params, Progress, Result> AsyncTask<Params, Progress, Result> executeParallel(final AsyncTask<Params, Progress, Result> asyncTask, final Params... array) {
         if (asyncTask == null) {

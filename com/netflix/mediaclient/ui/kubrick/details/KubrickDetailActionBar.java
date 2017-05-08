@@ -18,7 +18,7 @@ public class KubrickDetailActionBar extends NetflixActionBar
     
     @Override
     protected int getLayoutId() {
-        return 2130903065;
+        return 2130903067;
     }
     
     public void setWidth() {

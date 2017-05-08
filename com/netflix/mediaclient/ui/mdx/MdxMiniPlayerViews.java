@@ -209,7 +209,7 @@ public class MdxMiniPlayerViews
     private void initDividersAndCollapsedViews(final boolean b) {
         Collection<View> viewsById = null;
         if (b) {
-            viewsById = ViewUtils.getViewsById((View)this.content, 2131689966, 2131689967, 2131689968, 2131689969);
+            viewsById = ViewUtils.getViewsById((View)this.content, 2131689994, 2131689995, 2131689996, 2131689997);
             ViewUtils.showViews(viewsById);
         }
         else {
@@ -218,13 +218,13 @@ public class MdxMiniPlayerViews
             this.episodesDivider = null;
         }
         if (this.languageCollapsed != null) {
-            this.initCollapsedButton(this.languageCollapsed, 2131231324, 2131230879, 18);
+            this.initCollapsedButton(this.languageCollapsed, 2131231471, 2131230883, 18);
         }
         if (this.episodesCollapsed != null) {
-            this.initCollapsedButton(this.episodesCollapsed, 2131231326, 2131230878, 20);
+            this.initCollapsedButton(this.episodesCollapsed, 2131231473, 2131230882, 20);
         }
         if (this.skipBackCollapsed != null) {
-            this.initCollapsedButton(this.skipBackCollapsed, 2131231341, 2131230884, 24);
+            this.initCollapsedButton(this.skipBackCollapsed, 2131231488, 2131230888, 24);
         }
         this.collapsedViews = new ArrayList<View>();
         if (this.playOrPauseCollapsed != null) {
@@ -299,7 +299,7 @@ public class MdxMiniPlayerViews
             final int dimensionPixelSize = resources.getDimensionPixelSize(2131361832);
             this.seekBar.setPadding(dimensionPixelSize, 0, dimensionPixelSize, 0);
             if (b) {
-                this.seekBar.setScrubberDentBitmap(2130837841);
+                this.seekBar.setScrubberDentBitmap(2130837896);
                 this.seekBar.setShouldSnapToTouchStartPosition(true);
             }
         }
@@ -441,38 +441,38 @@ public class MdxMiniPlayerViews
     }
     
     protected void findViews() {
-        this.titleGroup = this.content.findViewById(2131689932);
-        this.title = (TextView)this.content.findViewById(2131689935);
-        this.subtitle = (TextView)this.content.findViewById(2131689936);
-        this.titleExpanded = (TextView)this.content.findViewById(2131689990);
-        this.subtitleExpanded = (TextView)this.content.findViewById(2131689991);
-        this.titleTextGroup = this.content.findViewById(2131689933);
-        this.playcardCaret = (ImageView)this.content.findViewById(2131689934);
-        this.artwork = (AdvancedImageView)this.content.findViewById(2131689938);
-        this.bifSeekTime = (TextView)this.content.findViewById(2131689940);
-        this.bifImage = (ImageView)this.content.findViewById(2131689941);
-        this.deviceNameGroup = this.content.findViewById(2131689931);
-        this.deviceName = (TextView)this.content.findViewById(2131689939);
-        this.playcardControlsGroup = this.content.findViewById(2131689957);
-        this.playOrPauseExpanded = (ImageView)this.content.findViewById(2131689959);
-        this.skipBackExpanded = (IconFontTextView)this.content.findViewById(2131689958);
-        this.stop = (ImageView)this.content.findViewById(2131689960);
-        this.auxControlsGroup = this.content.findViewById(2131689926);
-        this.languageExpanded = (ImageView)this.content.findViewById(2131689927);
-        this.episodesExpanded = (ImageView)this.content.findViewById(2131689930);
-        this.rating = (ImageView)this.content.findViewById(2131689929);
-        this.volume = (ImageView)this.content.findViewById(2131689928);
-        this.currentTime = (TextView)this.content.findViewById(2131689955);
-        this.remainingTime = (TextView)this.content.findViewById(2131689956);
-        this.seekBar = (SnappableSeekBar)this.content.findViewById(2131689961);
-        this.languageCollapsed = (IconFontTextView)this.content.findViewById(2131689962);
-        this.episodesCollapsed = (IconFontTextView)this.content.findViewById(2131689963);
-        this.skipBackCollapsed = (IconFontTextView)this.content.findViewById(2131689965);
-        this.episodesDivider = this.content.findViewById(2131689967);
+        this.titleGroup = this.content.findViewById(2131689960);
+        this.title = (TextView)this.content.findViewById(2131689963);
+        this.subtitle = (TextView)this.content.findViewById(2131689964);
+        this.titleExpanded = (TextView)this.content.findViewById(2131690018);
+        this.subtitleExpanded = (TextView)this.content.findViewById(2131690019);
+        this.titleTextGroup = this.content.findViewById(2131689961);
+        this.playcardCaret = (ImageView)this.content.findViewById(2131689962);
+        this.artwork = (AdvancedImageView)this.content.findViewById(2131689966);
+        this.bifSeekTime = (TextView)this.content.findViewById(2131689968);
+        this.bifImage = (ImageView)this.content.findViewById(2131689969);
+        this.deviceNameGroup = this.content.findViewById(2131689959);
+        this.deviceName = (TextView)this.content.findViewById(2131689967);
+        this.playcardControlsGroup = this.content.findViewById(2131689985);
+        this.playOrPauseExpanded = (ImageView)this.content.findViewById(2131689987);
+        this.skipBackExpanded = (IconFontTextView)this.content.findViewById(2131689986);
+        this.stop = (ImageView)this.content.findViewById(2131689988);
+        this.auxControlsGroup = this.content.findViewById(2131689954);
+        this.languageExpanded = (ImageView)this.content.findViewById(2131689955);
+        this.episodesExpanded = (ImageView)this.content.findViewById(2131689958);
+        this.rating = (ImageView)this.content.findViewById(2131689957);
+        this.volume = (ImageView)this.content.findViewById(2131689956);
+        this.currentTime = (TextView)this.content.findViewById(2131689983);
+        this.remainingTime = (TextView)this.content.findViewById(2131689984);
+        this.seekBar = (SnappableSeekBar)this.content.findViewById(2131689989);
+        this.languageCollapsed = (IconFontTextView)this.content.findViewById(2131689990);
+        this.episodesCollapsed = (IconFontTextView)this.content.findViewById(2131689991);
+        this.skipBackCollapsed = (IconFontTextView)this.content.findViewById(2131689993);
+        this.episodesDivider = this.content.findViewById(2131689995);
         if (DeviceUtils.isNotTabletByContext(this.content.getContext())) {
-            this.skipBackCollapsed = (IconFontTextView)this.content.findViewById(2131689962);
+            this.skipBackCollapsed = (IconFontTextView)this.content.findViewById(2131689990);
         }
-        this.playOrPauseCollapsed = (ImageView)this.content.findViewById(2131689964);
+        this.playOrPauseCollapsed = (ImageView)this.content.findViewById(2131689992);
     }
     
     public View getContentView() {
@@ -481,9 +481,9 @@ public class MdxMiniPlayerViews
     
     protected int getLayoutId() {
         if (DeviceUtils.isPortrait((Context)this.activity)) {
-            return 2130903177;
+            return 2130903187;
         }
-        return 2130903183;
+        return 2130903193;
     }
     
     public int getProgress() {
@@ -712,10 +712,10 @@ public class MdxMiniPlayerViews
             if (imageView != null) {
                 int imageResource;
                 if (b) {
-                    imageResource = 2130837728;
+                    imageResource = 2130837781;
                 }
                 else {
-                    imageResource = 2130837725;
+                    imageResource = 2130837778;
                 }
                 imageView.setImageResource(imageResource);
                 View$OnClickListener onClickListener;
@@ -782,7 +782,7 @@ public class MdxMiniPlayerViews
     
     public void updateToEmptyState(final boolean controlsEnabled) {
         this.updateSubtitleText(null);
-        final String string = this.activity.getString(2131231092);
+        final String string = this.activity.getString(2131231116);
         if (this.title != null) {
             this.title.setText((CharSequence)string);
         }

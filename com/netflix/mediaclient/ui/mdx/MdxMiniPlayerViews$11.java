@@ -20,7 +20,6 @@ import com.netflix.mediaclient.util.gfx.AnimationUtils$HideViewOnAnimatorEnd;
 import java.util.Iterator;
 import android.animation.Animator$AnimatorListener;
 import java.util.Collection;
-import android.content.Context;
 import com.netflix.mediaclient.util.DeviceUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
@@ -39,7 +38,7 @@ import com.netflix.mediaclient.util.TimeFormatterHelper;
 import android.app.DialogFragment;
 import com.netflix.mediaclient.ui.common.VolumeDialogFrag;
 import com.netflix.mediaclient.Log;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.View;
 import android.view.View$OnClickListener;
@@ -53,7 +52,7 @@ class MdxMiniPlayerViews$11 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.activity)) {
             this.this$0.log("Activity destroyed, can't show volume frag");
             return;
         }

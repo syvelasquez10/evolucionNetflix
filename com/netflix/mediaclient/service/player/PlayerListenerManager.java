@@ -9,10 +9,9 @@ import java.util.ArrayList;
 import com.netflix.mediaclient.servicemgr.IPlayer$PlayerListener;
 import java.util.List;
 
-class PlayerListenerManager
+public class PlayerListenerManager
 {
     private static final String TAG;
-    private PlayerAgent mPlayer;
     private PlayerListenerManager$PlayerListenerOnAudioChangeHandler mPlayerListenerOnAudioChangeHandler;
     private PlayerListenerManager$PlayerListenerOnBandwidthChangeHandler mPlayerListenerOnBandwidthChangeHandler;
     private PlayerListenerManager$PlayerListenerOnBufferingUpdateHandler mPlayerListenerOnBufferingUpdateHandler;
@@ -20,6 +19,7 @@ class PlayerListenerManager
     private PlayerListenerManager$PlayerListenerOnMediaErrorHandler mPlayerListenerOnMediaErrorHandler;
     private PlayerListenerManager$PlayerListenerOnNccpErrorHandler mPlayerListenerOnNccpErrorHandler;
     private PlayerListenerManager$PlayerListenerOnNrdFatalErrorHandler mPlayerListenerOnNrdFatalErrorHandler;
+    private PlayerListenerManager$PlayerListenerOnPlaybackErrorHandler mPlayerListenerOnPlaybackErrorHandler;
     private PlayerListenerManager$PlayerListenerOnPlayingHandler mPlayerListenerOnPlayingHandler;
     private PlayerListenerManager$PlayerListenerOnSeekCompleteHandler mPlayerListenerOnSeekCompleteHandler;
     private PlayerListenerManager$PlayerListenerOnStalledHandler mPlayerListenerOnStalledHandler;
@@ -36,7 +36,7 @@ class PlayerListenerManager
         TAG = PlayerAgent.class.getSimpleName();
     }
     
-    PlayerListenerManager(final PlayerAgent mPlayer) {
+    public PlayerListenerManager() {
         this.mPlayerListeners = new ArrayList<IPlayer$PlayerListener>();
         this.mPlayerListenerPrepareHandler = new PlayerListenerManager$PlayerListenerPrepareHandler(this, null);
         this.mPlayerListenerOnUpdatePtsHandler = new PlayerListenerManager$PlayerListenerOnUpdatePtsHandler(this, null);
@@ -55,10 +55,10 @@ class PlayerListenerManager
         this.mPlayerListenerOnSubtitleFailedHandler = new PlayerListenerManager$PlayerListenerOnSubtitleFailedHandler(this, null);
         this.mPlayerListenerPlaybackClosedHandler = new PlayerListenerManager$PlayerListenerPlaybackClosedHandler(this, null);
         this.mPlayerListenerRestartPlaybackHandler = new PlayerListenerManager$PlayerListenerRestartPlaybackHandler(this, null);
-        this.mPlayer = mPlayer;
+        this.mPlayerListenerOnPlaybackErrorHandler = new PlayerListenerManager$PlayerListenerOnPlaybackErrorHandler(this, null);
     }
     
-    void addPlayerListener(final IPlayer$PlayerListener player$PlayerListener) {
+    public void addPlayerListener(final IPlayer$PlayerListener player$PlayerListener) {
         synchronized (this) {
             if (!this.mPlayerListeners.contains(player$PlayerListener)) {
                 this.mPlayerListeners.add(player$PlayerListener);
@@ -69,17 +69,17 @@ class PlayerListenerManager
         }
     }
     
-    List<IPlayer$PlayerListener> getListeners() {
+    public List<IPlayer$PlayerListener> getListeners() {
         synchronized (this) {
             return this.mPlayerListeners;
         }
     }
     
-    PlayerListenerManager$PlayerListenerOnAudioChangeHandler getPlayerListenerOnAudioChangeHandler() {
+    public PlayerListenerManager$PlayerListenerOnAudioChangeHandler getPlayerListenerOnAudioChangeHandler() {
         return this.mPlayerListenerOnAudioChangeHandler;
     }
     
-    PlayerListenerManager$PlayerListenerOnBandwidthChangeHandler getPlayerListenerOnBandwidthChangeHandler() {
+    public PlayerListenerManager$PlayerListenerOnBandwidthChangeHandler getPlayerListenerOnBandwidthChangeHandler() {
         return this.mPlayerListenerOnBandwidthChangeHandler;
     }
     
@@ -87,7 +87,7 @@ class PlayerListenerManager
         return this.mPlayerListenerOnBufferingUpdateHandler;
     }
     
-    PlayerListenerManager$PlayerListenerOnCompletionHandler getPlayerListenerOnCompletionHandler() {
+    public PlayerListenerManager$PlayerListenerOnCompletionHandler getPlayerListenerOnCompletionHandler() {
         return this.mPlayerListenerOnCompletionHandler;
     }
     
@@ -103,47 +103,51 @@ class PlayerListenerManager
         return this.mPlayerListenerOnNrdFatalErrorHandler;
     }
     
-    PlayerListenerManager$PlayerListenerOnPlayingHandler getPlayerListenerOnPlayingHandler() {
+    public PlayerListenerManager$PlayerListenerOnPlaybackErrorHandler getPlayerListenerOnPlaybackErrorHandler() {
+        return this.mPlayerListenerOnPlaybackErrorHandler;
+    }
+    
+    public PlayerListenerManager$PlayerListenerOnPlayingHandler getPlayerListenerOnPlayingHandler() {
         return this.mPlayerListenerOnPlayingHandler;
     }
     
-    PlayerListenerManager$PlayerListenerOnSeekCompleteHandler getPlayerListenerOnSeekCompleteHandler() {
+    public PlayerListenerManager$PlayerListenerOnSeekCompleteHandler getPlayerListenerOnSeekCompleteHandler() {
         return this.mPlayerListenerOnSeekCompleteHandler;
     }
     
-    PlayerListenerManager$PlayerListenerOnStalledHandler getPlayerListenerOnStalledHandler() {
+    public PlayerListenerManager$PlayerListenerOnStalledHandler getPlayerListenerOnStalledHandler() {
         return this.mPlayerListenerOnStalledHandler;
     }
     
-    PlayerListenerManager$PlayerListenerOnStartedHandler getPlayerListenerOnStartedHandler() {
+    public PlayerListenerManager$PlayerListenerOnStartedHandler getPlayerListenerOnStartedHandler() {
         return this.mPlayerListenerOnStartedHandler;
     }
     
-    PlayerListenerManager$PlayerListenerOnSubtitleChangeHandler getPlayerListenerOnSubtitleChangeHandler() {
+    public PlayerListenerManager$PlayerListenerOnSubtitleChangeHandler getPlayerListenerOnSubtitleChangeHandler() {
         return this.mPlayerListenerOnSubtitleChangeHandler;
     }
     
-    PlayerListenerManager$PlayerListenerOnSubtitleFailedHandler getPlayerListenerOnSubtitleFailedHandler() {
+    public PlayerListenerManager$PlayerListenerOnSubtitleFailedHandler getPlayerListenerOnSubtitleFailedHandler() {
         return this.mPlayerListenerOnSubtitleFailedHandler;
     }
     
-    PlayerListenerManager$PlayerListenerOnUpdatePtsHandler getPlayerListenerOnUpdatePtsHandler() {
+    public PlayerListenerManager$PlayerListenerOnUpdatePtsHandler getPlayerListenerOnUpdatePtsHandler() {
         return this.mPlayerListenerOnUpdatePtsHandler;
     }
     
-    PlayerListenerManager$PlayerListenerPlaybackClosedHandler getPlayerListenerPlaybackClosedHandler() {
+    public PlayerListenerManager$PlayerListenerPlaybackClosedHandler getPlayerListenerPlaybackClosedHandler() {
         return this.mPlayerListenerPlaybackClosedHandler;
     }
     
-    PlayerListenerManager$PlayerListenerPrepareHandler getPlayerListenerPrepareHandler() {
+    public PlayerListenerManager$PlayerListenerPrepareHandler getPlayerListenerPrepareHandler() {
         return this.mPlayerListenerPrepareHandler;
     }
     
-    PlayerListenerManager$PlayerListenerRestartPlaybackHandler getPlayerListenerRestartPlaybackHandler() {
+    public PlayerListenerManager$PlayerListenerRestartPlaybackHandler getPlayerListenerRestartPlaybackHandler() {
         return this.mPlayerListenerRestartPlaybackHandler;
     }
     
-    void removePlayerListener(final IPlayer$PlayerListener player$PlayerListener) {
+    public void removePlayerListener(final IPlayer$PlayerListener player$PlayerListener) {
         synchronized (this) {
             this.mPlayerListeners.remove(player$PlayerListener);
         }

@@ -4,8 +4,13 @@
 
 package com.netflix.mediaclient.service.webclient;
 
-public interface ApiEndpointRegistry
+import java.util.Map;
+import com.netflix.msl.client.NetflixUrlProvider;
+
+public interface ApiEndpointRegistry extends NetflixUrlProvider
 {
+    Map<String, String> getApiRequestParams(final ApiEndpointRegistry$ResponsePathFormat p0);
+    
     String getApiUrlFull(final ApiEndpointRegistry$ResponsePathFormat p0);
     
     String getClientLoggingUrlFull();

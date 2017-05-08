@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityManagerCompat;
 import android.app.ActivityManager;
 import android.support.v4.media.session.MediaSessionCompat$OnActiveChangeListener;
 import java.lang.ref.WeakReference;
+import android.support.v4.media.session.MediaSessionCompat;
 import java.util.ArrayList;
 import android.support.v4.hardware.display.DisplayManagerCompat;
 import android.content.Context;

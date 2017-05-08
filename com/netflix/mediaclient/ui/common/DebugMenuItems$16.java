@@ -4,18 +4,7 @@
 
 package com.netflix.mediaclient.ui.common;
 
-import com.netflix.mediaclient.util.PreferenceUtils;
-import android.app.Activity;
-import android.support.v4.app.ActivityCompat;
-import android.content.Context;
-import com.netflix.mediaclient.util.PermissionUtils;
-import android.os.Handler;
-import android.os.Debug;
-import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.ui.home.HomeActivity;
-import android.view.Menu;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
-import com.netflix.mediaclient.service.NetflixService;
+import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.MenuItem;
 import android.view.MenuItem$OnMenuItemClickListener;
 
@@ -28,8 +17,7 @@ class DebugMenuItems$16 implements MenuItem$OnMenuItemClickListener
     }
     
     public boolean onMenuItemClick(final MenuItem menuItem) {
-        NetflixService.toggleFetchErrorsEnabled();
-        this.this$0.activity.showFetchErrorsToast();
+        AndroidUtils.dumpHprofToDisk();
         return true;
     }
 }

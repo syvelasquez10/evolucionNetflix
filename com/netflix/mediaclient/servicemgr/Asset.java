@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.servicemgr;
 
+import com.netflix.mediaclient.ui.common.PlayContextImp;
+import android.os.Bundle;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.ui.common.PlayLocationType;
 import android.content.Intent;
@@ -39,6 +41,7 @@ public class Asset implements Parcelable, PlayContext
     public static final String PARAM_IS_SUPPLEMENTAL_VIDEO = "isSupplementalVideo";
     public static final String PARAM_LIST_POS = "listpos";
     public static final String PARAM_LOGICAL_START = "logicalStart";
+    public static final String PARAM_OFFLINE_AVAILABLE = "offlineAvailable";
     public static final String PARAM_ORIGINAL_URL = "nflx";
     public static final String PARAM_PARENT_ID = "parentid";
     public static final String PARAM_PARENT_TITLE = "parent_title";
@@ -59,6 +62,7 @@ public class Asset implements Parcelable, PlayContext
     private boolean mIsAdvisoryDisabled;
     private boolean mIsAgeProtected;
     private boolean mIsAutoPlayEnabled;
+    private boolean mIsAvailableOffline;
     private boolean mIsBrowsePlay;
     private boolean mIsEpisode;
     private boolean mIsExemptFromInterrupterLimit;
@@ -126,6 +130,7 @@ public class Asset implements Parcelable, PlayContext
         this.mSeasonAbbrSeqLabel = ParcelUtils.readString(parcel);
         this.mAutoPlayMaxCount = ParcelUtils.readInt(parcel);
         this.mIsExemptFromInterrupterLimit = ParcelUtils.readBoolean(parcel);
+        this.mIsAvailableOffline = ParcelUtils.readBoolean(parcel);
     }
     
     public static Asset create(final Playable playable, final PlayContext playContext, final boolean mIsPinVerified) {
@@ -157,6 +162,7 @@ public class Asset implements Parcelable, PlayContext
             asset.mExpirationTime = playable.getExpirationTime();
             asset.mIsAdvisoryDisabled = playable.isAdvisoryDisabled();
             asset.mSeasonAbbrSeqLabel = playable.getSeasonAbbrSeqLabel();
+            asset.mIsAvailableOffline = playable.isAvailableOffline();
         }
         if (playContext != null) {
             asset.mTrackId = playContext.getTrackId();
@@ -364,6 +370,10 @@ public class Asset implements Parcelable, PlayContext
         return this.mIsSupplementalVideo;
     }
     
+    public Bundle playContextToBundle() {
+        return PlayContextImp.playContextToBundle(this);
+    }
+    
     public void setAdvisoryDisabled(final boolean mIsAdvisoryDisabled) {
         this.mIsAdvisoryDisabled = mIsAdvisoryDisabled;
     }
@@ -420,6 +430,7 @@ public class Asset implements Parcelable, PlayContext
         intent.putExtra("isAdvisoryDisabled", this.mIsAdvisoryDisabled);
         intent.putExtra("isBrowsePlay", this.mIsBrowsePlay);
         intent.putExtra("seasonNumAbbrLabel", this.mSeasonAbbrSeqLabel);
+        intent.putExtra("offlineAvailable", this.mIsAvailableOffline);
         return intent;
     }
     
@@ -461,5 +472,6 @@ public class Asset implements Parcelable, PlayContext
         ParcelUtils.writeString(parcel, this.mSeasonAbbrSeqLabel);
         ParcelUtils.writeInt(parcel, this.mAutoPlayMaxCount);
         ParcelUtils.writeBoolean(parcel, this.mIsExemptFromInterrupterLimit);
+        ParcelUtils.writeBoolean(parcel, this.mIsAvailableOffline);
     }
 }

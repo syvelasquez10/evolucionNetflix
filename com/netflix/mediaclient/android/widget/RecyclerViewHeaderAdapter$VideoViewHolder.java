@@ -45,6 +45,6 @@ class RecyclerViewHeaderAdapter$VideoViewHolder extends RecyclerView$ViewHolder 
         if (Log.isLoggable()) {
             Log.v("RecyclerViewHeaderAdapter", "VideoViewHolder - onClick");
         }
-        this.this$0.setItemChecked(this.getPosition());
+        this.this$0.setItemChecked(this.getAdapterPosition());
     }
 }

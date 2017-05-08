@@ -4,9 +4,12 @@
 
 package com.netflix.mediaclient.ui.player;
 
-import com.netflix.mediaclient.Log;
 import java.util.Arrays;
+import com.netflix.mediaclient.util.SubtitleUtils;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.LanguageChoice;
+import com.netflix.mediaclient.util.l10n.LanguageUtils;
+import android.content.Context;
 import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.media.AudioSubtitleDefaultOrderInfo;
 import com.netflix.mediaclient.media.AudioSource;
@@ -20,58 +23,16 @@ public class LocalizationManager
     private AudioSource userChoiceAudio;
     private Subtitle userChoiceSubtitle;
     
-    public LocalizationManager(final Subtitle[] subtitles, final AudioSource[] audioSources, final AudioSubtitleDefaultOrderInfo[] mDefaults, final LanguageChoice languageChoice) {
-        AudioSource.dumpLog(audioSources, "nf-l10n");
-        Subtitle.dumpLog(subtitles, "nf-l10n");
-        AudioSubtitleDefaultOrderInfo.dumpLog(mDefaults, "nf-l10n");
-        if (subtitles == null) {
-            this.subtitles = new Subtitle[0];
+    public LocalizationManager(final Context context, final Subtitle[] array, final AudioSource[] array2, final AudioSubtitleDefaultOrderInfo[] array3, final boolean b) {
+        LanguageChoice languageChoice = null;
+        if (b) {
+            languageChoice = LanguageUtils.toLanguageChoice(LanguageUtils.getSelectedLanguage(context), array, array2, array3);
         }
-        else {
-            Arrays.sort(subtitles);
-            Subtitle.dumpLog(subtitles, "nf-l10n");
-            this.subtitles = subtitles;
-        }
-        if (audioSources == null) {
-            this.audioSources = new AudioSource[0];
-        }
-        else {
-            Arrays.sort(audioSources);
-            AudioSource.dumpLog(audioSources, "nf-l10n");
-            this.audioSources = audioSources;
-        }
-        if (mDefaults == null) {
-            this.mDefaults = new AudioSubtitleDefaultOrderInfo[0];
-        }
-        else {
-            Arrays.sort(mDefaults);
-            AudioSubtitleDefaultOrderInfo.dumpLog(mDefaults, "nf-l10n");
-            this.mDefaults = mDefaults;
-        }
-        if (Log.isLoggable()) {
-            Log.d("nf-l10n", "User choice for language was " + languageChoice);
-        }
-        if (languageChoice == null) {
-            Log.d("nf-l10n", "User choice for audio AND subtitle did not existed!");
-            return;
-        }
-        if (languageChoice.getSubtitle() != null) {
-            this.userChoiceSubtitle = this.getSubtitleById(languageChoice.getSubtitle().getId());
-            if (Log.isLoggable()) {
-                Log.d("nf-l10n", "User choice for subtitle was " + languageChoice.getSubtitle().getId() + ". In movie medatadata we found match: " + this.userChoiceSubtitle);
-            }
-        }
-        else {
-            Log.d("nf-l10n", "User choice for subtitle did not existed!");
-        }
-        if (languageChoice.getAudio() != null) {
-            this.userChoiceAudio = this.getAudioSourceById(languageChoice.getAudio().getId());
-            if (Log.isLoggable()) {
-                Log.d("nf-l10n", "User choice for audio was " + languageChoice.getAudio().getId() + ". In movie medatadata we found match: " + this.userChoiceAudio);
-            }
-            return;
-        }
-        Log.d("nf-l10n", "User choice for audio did not existed!");
+        this.init(array, array2, array3, languageChoice);
+    }
+    
+    public LocalizationManager(final Subtitle[] array, final AudioSource[] array2, final AudioSubtitleDefaultOrderInfo[] array3, final LanguageChoice languageChoice) {
+        this.init(array, array2, array3, languageChoice);
     }
     
     private AudioSource findInitialAudio() {
@@ -209,5 +170,59 @@ public class LocalizationManager
     
     public Subtitle[] getSubtitles() {
         return this.subtitles;
+    }
+    
+    public void init(final Subtitle[] subtitles, final AudioSource[] audioSources, final AudioSubtitleDefaultOrderInfo[] mDefaults, final LanguageChoice languageChoice) {
+        AudioSource.dumpLog(audioSources, "nf-l10n");
+        SubtitleUtils.dumpLog(subtitles, "nf-l10n");
+        AudioSubtitleDefaultOrderInfo.dumpLog(mDefaults, "nf-l10n");
+        if (subtitles == null) {
+            this.subtitles = new Subtitle[0];
+        }
+        else {
+            Arrays.sort(subtitles);
+            SubtitleUtils.dumpLog(subtitles, "nf-l10n");
+            this.subtitles = subtitles;
+        }
+        if (audioSources == null) {
+            this.audioSources = new AudioSource[0];
+        }
+        else {
+            Arrays.sort(audioSources);
+            AudioSource.dumpLog(audioSources, "nf-l10n");
+            this.audioSources = audioSources;
+        }
+        if (mDefaults == null) {
+            this.mDefaults = new AudioSubtitleDefaultOrderInfo[0];
+        }
+        else {
+            Arrays.sort(mDefaults);
+            AudioSubtitleDefaultOrderInfo.dumpLog(mDefaults, "nf-l10n");
+            this.mDefaults = mDefaults;
+        }
+        if (Log.isLoggable()) {
+            Log.d("nf-l10n", "User choice for language was " + languageChoice);
+        }
+        if (languageChoice == null) {
+            Log.d("nf-l10n", "User choice for audio AND subtitle did not existed!");
+            return;
+        }
+        if (languageChoice.getSubtitle() != null) {
+            this.userChoiceSubtitle = this.getSubtitleById(languageChoice.getSubtitle().getId());
+            if (Log.isLoggable()) {
+                Log.d("nf-l10n", "User choice for subtitle was " + languageChoice.getSubtitle().getId() + ". In movie medatadata we found match: " + this.userChoiceSubtitle);
+            }
+        }
+        else {
+            Log.d("nf-l10n", "User choice for subtitle did not existed!");
+        }
+        if (languageChoice.getAudio() != null) {
+            this.userChoiceAudio = this.getAudioSourceById(languageChoice.getAudio().getId());
+            if (Log.isLoggable()) {
+                Log.d("nf-l10n", "User choice for audio was " + languageChoice.getAudio().getId() + ". In movie medatadata we found match: " + this.userChoiceAudio);
+            }
+            return;
+        }
+        Log.d("nf-l10n", "User choice for audio did not existed!");
     }
 }

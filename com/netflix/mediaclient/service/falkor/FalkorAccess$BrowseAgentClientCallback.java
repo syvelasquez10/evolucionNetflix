@@ -8,7 +8,6 @@ import com.netflix.model.leafs.advisory.ExpiringContentAdvisory$ContentAction;
 import com.netflix.mediaclient.service.pushnotification.MessageData;
 import com.netflix.mediaclient.servicemgr.Asset;
 import com.netflix.model.leafs.social.IrisNotificationSummary;
-import java.util.Map;
 import com.netflix.mediaclient.servicemgr.BillboardInteractionType;
 import com.netflix.falkor.ModelProxy;
 import com.netflix.falkor.CachedModelProxy$CmpTaskDetails;
@@ -25,6 +24,7 @@ import com.netflix.mediaclient.servicemgr.interface_.details.SeasonDetails;
 import com.netflix.mediaclient.servicemgr.interface_.search.ISearchResults;
 import com.netflix.mediaclient.servicemgr.interface_.details.PostPlayVideosProvider;
 import com.netflix.mediaclient.servicemgr.interface_.Video;
+import java.util.Map;
 import com.netflix.mediaclient.servicemgr.interface_.search.IrisNotificationsList;
 import com.netflix.mediaclient.servicemgr.interface_.details.MovieDetails;
 import com.netflix.mediaclient.servicemgr.interface_.LoMo;
@@ -244,6 +244,15 @@ class FalkorAccess$BrowseAgentClientCallback implements BrowseAgentCallback
             return;
         }
         netflixServiceCallback.onIrisNotificationsListFetched(this.requestId, list, status);
+    }
+    
+    @Override
+    public void onOfflineGeoPlayabilityReceived(final Map<String, Boolean> map, final Status status) {
+        if (Log.isLoggable()) {
+            final String string = "No client callback found for onOfflineGeoPlayabilityReceived: " + status;
+            Log.w("FalkorAccess", string);
+            ErrorLoggingManager.logHandledException(string);
+        }
     }
     
     @Override

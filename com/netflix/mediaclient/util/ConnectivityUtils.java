@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.util;
 
 import android.content.Intent;
-import android.telephony.TelephonyManager;
 import android.net.wifi.WifiInfo;
 import android.text.format.Formatter;
 import android.net.wifi.WifiManager;
@@ -13,6 +12,7 @@ import java.util.Enumeration;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import android.telephony.TelephonyManager;
 import com.netflix.mediaclient.service.net.LogMobileType;
 import com.netflix.mediaclient.Log;
 import android.net.TrafficStats;
@@ -73,6 +73,17 @@ public final class ConnectivityUtils
         return connectivityManager.getActiveNetworkInfo();
     }
     
+    public static int getActiveNetworkTypeOrMinusOne(final Context context) {
+        final ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService("connectivity");
+        if (connectivityManager != null) {
+            final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            if (activeNetworkInfo != null) {
+                return activeNetworkInfo.getType();
+            }
+        }
+        return -1;
+    }
+    
     public static long getApplicationRx() {
         long uidRxBytes;
         if ((uidRxBytes = TrafficStats.getUidRxBytes(Process.myUid())) == -1L) {
@@ -118,6 +129,16 @@ public final class ConnectivityUtils
                 return ConnectivityUtils$NetType.wifi;
             }
         }
+    }
+    
+    public static String getCurrentOperatorNameOrEmptyString(final TelephonyManager telephonyManager) {
+        if (telephonyManager != null) {
+            final String networkOperatorName = telephonyManager.getNetworkOperatorName();
+            if (networkOperatorName != null) {
+                return networkOperatorName;
+            }
+        }
+        return "";
     }
     
     public static String getLocalIP4Address(final Context context) {
@@ -420,6 +441,20 @@ public final class ConnectivityUtils
             }
         }
         return n;
+    }
+    
+    public static String getSsidOrEmptyString(final WifiManager wifiManager) {
+        if (wifiManager != null) {
+            final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+            if (connectionInfo != null) {
+                final String ssid = connectionInfo.getSSID();
+                if (ssid != null) {
+                    return ssid;
+                }
+                return "";
+            }
+        }
+        return "";
     }
     
     public static long getTx() {

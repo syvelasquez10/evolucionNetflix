@@ -4,6 +4,40 @@
 
 package com.netflix.mediaclient.partner.playbilling;
 
+import android.support.v4.app.ActivityCompatHoneycomb;
+import android.content.IntentSender;
+import android.support.v4.app.ActivityCompat21;
+import android.support.v4.app.SharedElementCallback;
+import android.support.v4.app.BaseFragmentActivityGingerbread;
+import android.app.Activity;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.util.SimpleArrayMap;
+import android.view.MenuItem;
+import android.view.Menu;
+import android.support.v4.app.FragmentManagerNonConfig;
+import android.os.Parcelable;
+import android.content.res.Configuration;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentActivity$NonConfigurationInstances;
+import android.os.Build$VERSION;
+import java.io.FileDescriptor;
+import android.util.AttributeSet;
+import android.content.res.Resources;
+import android.content.res.Resources$NotFoundException;
+import android.view.ViewGroup;
+import android.view.View;
+import java.io.PrintWriter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentHostCallback;
+import android.support.v4.app.FragmentActivity$HostCallbacks;
+import android.support.v4.app.FragmentActivity$1;
+import android.support.v4.util.SparseArrayCompat;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.app.FragmentController;
+import android.support.v4.app.ActivityCompatApi23$RequestPermissionsRequestCodeValidator;
+import android.support.v4.app.ActivityCompat$OnRequestPermissionsResultCallback;
+import android.support.v4.app.BaseFragmentActivityJB;
 import com.netflix.mediaclient.android.app.BackgroundTask;
 import android.app.PendingIntent;
 import com.netflix.mediaclient.util.StringUtils;
@@ -352,7 +386,7 @@ public class PlayBilling
             Log.d("playBilling", "Launching buy intent for " + s + ". Request code: " + mRequestCode);
             this.mRequestCode = mRequestCode;
             this.mPurchasingItemType = "subs";
-            netflixActivity.startIntentSenderForResult(pendingIntent.getIntentSender(), mRequestCode, new Intent(), (int)Integer.valueOf(0), (int)Integer.valueOf(0), (int)Integer.valueOf(0));
+            netflixActivity.startIntentSenderForResult(pendingIntent.getIntentSender(), mRequestCode, new Intent(), Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(0));
             return null;
         }
         catch (Exception ex) {

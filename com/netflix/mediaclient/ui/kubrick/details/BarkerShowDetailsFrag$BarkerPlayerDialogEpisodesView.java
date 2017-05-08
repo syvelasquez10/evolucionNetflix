@@ -64,7 +64,7 @@ public class BarkerShowDetailsFrag$BarkerPlayerDialogEpisodesView extends Barker
     final /* synthetic */ BarkerShowDetailsFrag this$0;
     
     public BarkerShowDetailsFrag$BarkerPlayerDialogEpisodesView(final BarkerShowDetailsFrag barkerShowDetailsFrag, final Context context) {
-        this(barkerShowDetailsFrag, context, 2130903144);
+        this(barkerShowDetailsFrag, context, 2130903154);
     }
     
     public BarkerShowDetailsFrag$BarkerPlayerDialogEpisodesView(final BarkerShowDetailsFrag this$0, final Context context, final int n) {
@@ -79,7 +79,7 @@ public class BarkerShowDetailsFrag$BarkerPlayerDialogEpisodesView extends Barker
     @Override
     protected void findViews() {
         super.findViews();
-        this.nowPlaying = (TextView)this.findViewById(2131689746);
+        this.nowPlaying = (TextView)this.findViewById(2131689758);
     }
     
     @Override

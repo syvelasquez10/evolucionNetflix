@@ -28,9 +28,9 @@ class LandingPageScreen
     
     LandingPageScreen(final ContactUsActivity mOwner) {
         this.mOwner = mOwner;
-        this.mFab = mOwner.findViewById(2131689728);
-        this.mCancelMyAccount = mOwner.findViewById(2131689732);
-        this.mChangePassword = mOwner.findViewById(2131689730);
+        this.mFab = mOwner.findViewById(2131689740);
+        this.mCancelMyAccount = mOwner.findViewById(2131689744);
+        this.mChangePassword = mOwner.findViewById(2131689742);
         if (this.shouldHidePersonalizedLinks()) {
             ViewUtils.setVisibility(this.mCancelMyAccount, ViewUtils$Visibility.GONE);
             ViewUtils.setVisibility(this.mChangePassword, ViewUtils$Visibility.GONE);
@@ -124,27 +124,27 @@ class LandingPageScreen
                 }
                 return false;
             }
-            case 2131689729: {
-                this.openUrl(this.mOwner.getString(2131231383));
+            case 2131689741: {
+                this.openUrl(this.mOwner.getString(2131231539));
                 return true;
             }
-            case 2131689730: {
-                this.openUrl(this.mOwner.getString(2131231384));
+            case 2131689742: {
+                this.openUrl(this.mOwner.getString(2131231540));
                 return true;
             }
-            case 2131689732: {
-                this.openUrl(this.mOwner.getString(2131231381));
+            case 2131689744: {
+                this.openUrl(this.mOwner.getString(2131231537));
                 return true;
             }
-            case 2131689731: {
-                this.openUrl(this.mOwner.getString(2131231382));
+            case 2131689743: {
+                this.openUrl(this.mOwner.getString(2131231538));
                 return true;
             }
-            case 2131689728: {
+            case 2131689740: {
                 this.mOwner.startDial();
                 return true;
             }
-            case 2131689679: {
+            case 2131689691: {
                 Log.d("VoipActivity", "Perform up action");
                 this.mOwner.performUpAction();
                 return true;

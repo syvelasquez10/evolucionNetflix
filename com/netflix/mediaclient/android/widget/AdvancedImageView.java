@@ -29,21 +29,21 @@ public class AdvancedImageView extends LoggingImageView
     
     public AdvancedImageView(final Context context) {
         super(context);
-        this.defaultForegroundResId = 2130837928;
+        this.defaultForegroundResId = 2130837985;
         this.pressedHandler = null;
         this.init(null);
     }
     
     public AdvancedImageView(final Context context, final AttributeSet set) {
         super(context, set);
-        this.defaultForegroundResId = 2130837928;
+        this.defaultForegroundResId = 2130837985;
         this.pressedHandler = null;
         this.init(set);
     }
     
     public AdvancedImageView(final Context context, final AttributeSet set, final int n) {
         super(context, set, n);
-        this.defaultForegroundResId = 2130837928;
+        this.defaultForegroundResId = 2130837985;
         this.pressedHandler = null;
         this.init(set);
     }
@@ -95,7 +95,7 @@ public class AdvancedImageView extends LoggingImageView
     }
     
     public AdvancedImageView$ImageLoaderInfo getImageLoaderInfo() {
-        return (AdvancedImageView$ImageLoaderInfo)this.getTag(2131689487);
+        return (AdvancedImageView$ImageLoaderInfo)this.getTag(2131689488);
     }
     
     @Override
@@ -179,7 +179,7 @@ public class AdvancedImageView extends LoggingImageView
     }
     
     public void setImageLoaderInfo(final AdvancedImageView$ImageLoaderInfo advancedImageView$ImageLoaderInfo) {
-        this.setTag(2131689487, (Object)advancedImageView$ImageLoaderInfo);
+        this.setTag(2131689488, (Object)advancedImageView$ImageLoaderInfo);
     }
     
     public void setPressedStateHandlerEnabled(final boolean enabled) {

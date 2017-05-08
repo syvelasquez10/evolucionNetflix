@@ -9,15 +9,15 @@ import com.android.volley.NetworkResponse;
 import com.netflix.mediaclient.android.app.NetworkErrorStatus;
 import org.json.JSONException;
 import org.json.JSONArray;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.util.StringUtils;
 import org.json.JSONObject;
 import com.android.volley.VolleyError;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.media.Subtitle;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleFailure;
+import com.netflix.mediaclient.media.SubtitleUrl;
 import com.netflix.mediaclient.javabridge.invoke.BaseInvoke;
 
 public class SendSubtitleError extends BaseInvoke
@@ -48,9 +48,9 @@ public class SendSubtitleError extends BaseInvoke
     private static final String SUBTITLE_TYPE_TEXT = "text";
     private static final String TARGET = "android";
     
-    public SendSubtitleError(final String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Subtitle subtitle, final Status status, final String[] array) {
+    public SendSubtitleError(final String s, final SubtitleUrl subtitleUrl, final ISubtitleDef$SubtitleFailure subtitleDef$SubtitleFailure, final boolean b, final Subtitle subtitle, final Status status, final String[] array) {
         super("android", "sendSubtitleError");
-        this.setArguments(s, subtitleUrl, media$SubtitleFailure, b, subtitle, status, array);
+        this.setArguments(s, subtitleUrl, subtitleDef$SubtitleFailure, b, subtitle, status, array);
     }
     
     private void addThrowable(final VolleyError volleyError, final JSONObject jsonObject) {
@@ -79,22 +79,22 @@ public class SendSubtitleError extends BaseInvoke
         }
     }
     
-    private void setArguments(String s, final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final boolean b, final Subtitle subtitle, final Status status, final String[] array) {
+    private void setArguments(String s, final SubtitleUrl subtitleUrl, final ISubtitleDef$SubtitleFailure subtitleDef$SubtitleFailure, final boolean b, final Subtitle subtitle, final Status status, final String[] array) {
         if (s != null) {
             if (Log.isLoggable()) {
                 Log.d("nf_invoke", "Subtitle data: " + subtitle);
             }
             while (true) {
                 while (true) {
-                    Label_0415: {
+                    Label_0429: {
                         while (true) {
                             JSONObject jsonObject;
                             try {
                                 jsonObject = new JSONObject();
                                 jsonObject.put("url", (Object)s);
                                 jsonObject.put("retry", b);
-                                if (media$SubtitleFailure != null) {
-                                    jsonObject.put("reason", (Object)media$SubtitleFailure.toString());
+                                if (subtitleDef$SubtitleFailure != null) {
+                                    jsonObject.put("reason", (Object)subtitleDef$SubtitleFailure.toString());
                                 }
                                 if (subtitleUrl != null) {
                                     jsonObject.put("xid", subtitleUrl.getXid());
@@ -103,15 +103,15 @@ public class SendSubtitleError extends BaseInvoke
                                         jsonObject.put("did", (Object)subtitleUrl.getDownloadableId());
                                     }
                                     if (subtitleUrl.getProfile() != null) {
-                                        if (subtitleUrl.getProfile() == IMedia$SubtitleProfile.IMAGE) {
-                                            break Label_0415;
+                                        if (subtitleUrl.getProfile() == ISubtitleDef$SubtitleProfile.IMAGE) {
+                                            break Label_0429;
                                         }
                                         s = "text";
                                         jsonObject.put("subtitleType", (Object)s);
                                     }
                                 }
                                 if (array == null || array.length <= 0) {
-                                    goto Label_0375;
+                                    goto Label_0389;
                                 }
                                 final JSONArray jsonArray = new JSONArray();
                                 for (int length = array.length, i = 0; i < length; ++i) {

@@ -4,14 +4,60 @@
 
 package android.support.v4.graphics.drawable;
 
-import android.graphics.drawable.DrawableContainer;
-import android.graphics.drawable.GradientDrawable;
 import android.graphics.PorterDuff$Mode;
 import android.content.res.ColorStateList;
+import android.util.AttributeSet;
+import org.xmlpull.v1.XmlPullParser;
+import android.content.res.Resources;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.DrawableContainer$DrawableContainerState;
+import android.graphics.drawable.DrawableContainer;
+import android.graphics.drawable.InsetDrawable;
+import android.content.res.Resources$Theme;
 import android.graphics.drawable.Drawable;
 
 class DrawableCompatLollipop
 {
+    public static void applyTheme(final Drawable drawable, final Resources$Theme resources$Theme) {
+        drawable.applyTheme(resources$Theme);
+    }
+    
+    public static boolean canApplyTheme(final Drawable drawable) {
+        return drawable.canApplyTheme();
+    }
+    
+    public static void clearColorFilter(final Drawable drawable) {
+        drawable.clearColorFilter();
+        if (drawable instanceof InsetDrawable) {
+            clearColorFilter(((InsetDrawable)drawable).getDrawable());
+        }
+        else {
+            if (drawable instanceof DrawableWrapper) {
+                clearColorFilter(((DrawableWrapper)drawable).getWrappedDrawable());
+                return;
+            }
+            if (drawable instanceof DrawableContainer) {
+                final DrawableContainer$DrawableContainerState drawableContainer$DrawableContainerState = (DrawableContainer$DrawableContainerState)((DrawableContainer)drawable).getConstantState();
+                if (drawableContainer$DrawableContainerState != null) {
+                    for (int i = 0; i < drawableContainer$DrawableContainerState.getChildCount(); ++i) {
+                        final Drawable child = drawableContainer$DrawableContainerState.getChild(i);
+                        if (child != null) {
+                            clearColorFilter(child);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public static ColorFilter getColorFilter(final Drawable drawable) {
+        return drawable.getColorFilter();
+    }
+    
+    public static void inflate(final Drawable drawable, final Resources resources, final XmlPullParser xmlPullParser, final AttributeSet set, final Resources$Theme resources$Theme) {
+        drawable.inflate(resources, xmlPullParser, set, resources$Theme);
+    }
+    
     public static void setHotspot(final Drawable drawable, final float n, final float n2) {
         drawable.setHotspot(n, n2);
     }
@@ -21,36 +67,22 @@ class DrawableCompatLollipop
     }
     
     public static void setTint(final Drawable drawable, final int tint) {
-        if (drawable instanceof DrawableWrapperLollipop) {
-            DrawableCompatBase.setTint(drawable, tint);
-            return;
-        }
         drawable.setTint(tint);
     }
     
     public static void setTintList(final Drawable drawable, final ColorStateList tintList) {
-        if (drawable instanceof DrawableWrapperLollipop) {
-            DrawableCompatBase.setTintList(drawable, tintList);
-            return;
-        }
         drawable.setTintList(tintList);
     }
     
     public static void setTintMode(final Drawable drawable, final PorterDuff$Mode tintMode) {
-        if (drawable instanceof DrawableWrapperLollipop) {
-            DrawableCompatBase.setTintMode(drawable, tintMode);
-            return;
-        }
         drawable.setTintMode(tintMode);
     }
     
     public static Drawable wrapForTinting(final Drawable drawable) {
-        if (!(drawable instanceof GradientDrawable)) {
-            final Drawable drawable2 = drawable;
-            if (!(drawable instanceof DrawableContainer)) {
-                return drawable2;
-            }
+        Drawable drawable2 = drawable;
+        if (!(drawable instanceof TintAwareDrawable)) {
+            drawable2 = new DrawableWrapperLollipop(drawable);
         }
-        return new DrawableWrapperLollipop(drawable);
+        return drawable2;
     }
 }

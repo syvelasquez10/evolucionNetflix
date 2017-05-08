@@ -30,7 +30,6 @@ import android.animation.Animator$AnimatorListener;
 import com.netflix.mediaclient.util.l10n.LocalizationUtils;
 import android.view.View$OnTouchListener;
 import android.text.method.LinkMovementMethod;
-import android.content.Context;
 import com.netflix.mediaclient.service.webclient.model.leafs.UmaAlert;
 import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
@@ -41,7 +40,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.view.ViewPropertyAnimator;
 import android.widget.LinearLayout;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.view.View;
@@ -60,7 +59,7 @@ class UserMessageAreaView$8 implements View$OnClickListener
     
     public void onClick(final View view) {
         final NetflixActivity netflixActivity = AndroidUtils.getContextAs(view.getContext(), NetflixActivity.class);
-        if (netflixActivity != null && !AndroidUtils.isActivityFinishedOrDestroyed(netflixActivity)) {
+        if (netflixActivity != null && !AndroidUtils.isActivityFinishedOrDestroyed((Context)netflixActivity)) {
             netflixActivity.getServiceManager().recordUserMessageImpression(this.this$0.mUmaAlert.messageName(), this.val$umaCta.callback());
             netflixActivity.getServiceManager().consumeUmaAlert();
             this.this$0.dismiss(true);

@@ -173,6 +173,10 @@ final class BackStackState implements Parcelable
                     ++n9;
                 }
             }
+            backStackRecord.mEnterAnim = backStackRecord$Op.enterAnim;
+            backStackRecord.mExitAnim = backStackRecord$Op.exitAnim;
+            backStackRecord.mPopEnterAnim = backStackRecord$Op.popEnterAnim;
+            backStackRecord.mPopExitAnim = backStackRecord$Op.popExitAnim;
             backStackRecord.addOp(backStackRecord$Op);
             ++n;
         }

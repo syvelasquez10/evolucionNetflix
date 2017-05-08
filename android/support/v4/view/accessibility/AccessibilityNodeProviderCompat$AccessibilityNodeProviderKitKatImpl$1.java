@@ -30,6 +30,9 @@ class AccessibilityNodeProviderCompat$AccessibilityNodeProviderKitKatImpl$1 impl
     @Override
     public List<Object> findAccessibilityNodeInfosByText(final String s, int i) {
         final List<AccessibilityNodeInfoCompat> accessibilityNodeInfosByText = this.val$compat.findAccessibilityNodeInfosByText(s, i);
+        if (accessibilityNodeInfosByText == null) {
+            return null;
+        }
         final ArrayList<Object> list = new ArrayList<Object>();
         int size;
         for (size = accessibilityNodeInfosByText.size(), i = 0; i < size; ++i) {

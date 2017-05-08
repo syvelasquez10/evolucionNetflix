@@ -4,7 +4,6 @@
 
 package android.support.v4.text;
 
-import android.os.Build$VERSION;
 import java.util.Locale;
 
 class TextUtilsCompat$TextUtilsCompatImpl
@@ -32,5 +31,39 @@ class TextUtilsCompat$TextUtilsCompatImpl
             }
         }
         return 0;
+    }
+    
+    public String htmlEncode(final String s) {
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < s.length(); ++i) {
+            final char char1 = s.charAt(i);
+            switch (char1) {
+                default: {
+                    sb.append(char1);
+                    break;
+                }
+                case 60: {
+                    sb.append("&lt;");
+                    break;
+                }
+                case 62: {
+                    sb.append("&gt;");
+                    break;
+                }
+                case 38: {
+                    sb.append("&amp;");
+                    break;
+                }
+                case 39: {
+                    sb.append("&#39;");
+                    break;
+                }
+                case 34: {
+                    sb.append("&quot;");
+                    break;
+                }
+            }
+        }
+        return sb.toString();
     }
 }

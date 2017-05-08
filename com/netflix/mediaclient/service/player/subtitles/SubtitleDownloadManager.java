@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.player.subtitles;
 
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleFailure;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitleDownloadRetryPolicy;
@@ -13,7 +13,7 @@ import com.netflix.mediaclient.service.ServiceAgent$ConfigurationAgentInterface;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.service.player.PlayerAgent;
 import com.netflix.mediaclient.event.nrdp.media.SubtitleData;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
+import com.netflix.mediaclient.media.SubtitleUrl;
 import com.netflix.mediaclient.util.net.BackOff;
 
 public class SubtitleDownloadManager implements SubtitleParser$DownloadFailedCallback
@@ -126,7 +126,7 @@ public class SubtitleDownloadManager implements SubtitleParser$DownloadFailedCal
     }
     
     @Override
-    public boolean downloadFailed(final SubtitleUrl subtitleUrl, final IMedia$SubtitleFailure media$SubtitleFailure, final String s) {
+    public boolean downloadFailed(final SubtitleUrl subtitleUrl, final ISubtitleDef$SubtitleFailure subtitleDef$SubtitleFailure, final String s) {
         while (true) {
             boolean b = true;
             Label_0087: {

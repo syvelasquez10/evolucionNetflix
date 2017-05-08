@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 
 public class FalkorParseUtils
 {
-    private static final String FIELD_VALUE = "value";
+    public static final String FIELD_VALUE = "value";
     public static final String METHOD_TYPE_CALL = "call";
     public static final String METHOD_TYPE_GET = "get";
     private static final String TAG = "FalkorParseUtils";

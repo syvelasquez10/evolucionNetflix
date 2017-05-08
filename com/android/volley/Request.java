@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import android.net.Uri;
 import android.text.TextUtils;
+import java.net.HttpURLConnection;
 
 public abstract class Request<T> implements Comparable<Request<T>>
 {
@@ -26,6 +27,7 @@ public abstract class Request<T> implements Comparable<Request<T>>
     private int mDefaultTrafficStatsTag;
     private final Response$ErrorListener mErrorListener;
     private final VolleyLog$MarkerLog mEventLog;
+    private HttpURLConnection mHttpURLConnection;
     private final int mMethod;
     private long mRequestBirthTime;
     private RequestQueue mRequestQueue;
@@ -286,8 +288,55 @@ public abstract class Request<T> implements Comparable<Request<T>>
     
     protected abstract Response<T> parseNetworkResponse(final NetworkResponse p0);
     
+    public void releaseResources() {
+        VolleyLog.d("Request::releaseResources: %s", this.getClass().getSimpleName());
+        final StringBuilder append = new StringBuilder().append("Request::releaseResources: connection exist: ");
+        Label_0131: {
+            if (this.mHttpURLConnection == null) {
+                break Label_0131;
+            }
+            boolean b = true;
+        Label_0073_Outer:
+            while (true) {
+                VolleyLog.d(append.append(b).toString(), new Object[0]);
+                Label_0136: {
+                    if (this.mHttpURLConnection == null) {
+                        break Label_0136;
+                    }
+                    String string = this.mHttpURLConnection.toString();
+                    while (true) {
+                        VolleyLog.d("Request::releaseResources: connection %s: ", string);
+                        if (this.mHttpURLConnection == null || !"org.chromium.net.urlconnection.CronetHttpURLConnection".equals(this.mHttpURLConnection.getClass().getName())) {
+                            return;
+                        }
+                        try {
+                            this.mHttpURLConnection.disconnect();
+                            VolleyLog.d("Request::releaseResources: Cronet:: HTTP disconnect!", new Object[0]);
+                            return;
+                            string = "null";
+                            continue;
+                            b = false;
+                            continue Label_0073_Outer;
+                        }
+                        catch (Throwable t) {
+                            if (Request.DEBUG) {
+                                VolleyLog.d("Request::releaseResources: HTTP disconnect fails!", new Object[0]);
+                            }
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+    }
+    
     public void setCacheEntry(final Cache$Entry mCacheEntry) {
         this.mCacheEntry = mCacheEntry;
+    }
+    
+    public void setHttpURLConnection(final HttpURLConnection mHttpURLConnection) {
+        this.mHttpURLConnection = mHttpURLConnection;
     }
     
     public void setRequestQueue(final RequestQueue mRequestQueue) {

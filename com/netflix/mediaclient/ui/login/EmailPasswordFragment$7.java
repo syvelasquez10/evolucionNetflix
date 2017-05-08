@@ -4,6 +4,8 @@
 
 package com.netflix.mediaclient.ui.login;
 
+import android.content.Context;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.SimpleManagerCallback;
 
@@ -17,6 +19,9 @@ class EmailPasswordFragment$7 extends SimpleManagerCallback
     
     @Override
     public void onLoginComplete(final Status status) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.getActivity())) {
+            return;
+        }
         this.this$0.getActivity().runOnUiThread((Runnable)new EmailPasswordFragment$7$1(this, status));
     }
 }

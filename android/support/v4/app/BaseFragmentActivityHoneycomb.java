@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.content.Context;
 import android.view.View;
 
-abstract class BaseFragmentActivityHoneycomb extends BaseFragmentActivityDonut
+abstract class BaseFragmentActivityHoneycomb extends BaseFragmentActivityGingerbread
 {
     public View onCreateView(final View view, final String s, final Context context, final AttributeSet set) {
         View view3;

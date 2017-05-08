@@ -68,7 +68,7 @@ class BarkerShowDetailsFrag$6 implements RecyclerViewHeaderAdapter$IViewCreator
     @Override
     public View createItemView() {
         if (this.this$0.showDetailsOnLaunch) {
-            return (View)new BarkerShowDetailsFrag$BarkerEpisodeView(this.this$0, (Context)this.this$0.getActivity(), 2130903073);
+            return (View)new BarkerShowDetailsFrag$BarkerEpisodeView(this.this$0, (Context)this.this$0.getActivity(), 2130903075);
         }
         return (View)new BarkerShowDetailsFrag$BarkerPlayerDialogEpisodesView(this.this$0, (Context)this.this$0.getActivity());
     }

@@ -8,7 +8,7 @@ class AppCompatDelegateImplBase$ActionBarDrawableToggleImpl implements ActionBar
 {
     final /* synthetic */ AppCompatDelegateImplBase this$0;
     
-    private AppCompatDelegateImplBase$ActionBarDrawableToggleImpl(final AppCompatDelegateImplBase this$0) {
+    AppCompatDelegateImplBase$ActionBarDrawableToggleImpl(final AppCompatDelegateImplBase this$0) {
         this.this$0 = this$0;
     }
     

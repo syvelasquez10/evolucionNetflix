@@ -4,9 +4,10 @@
 
 package com.netflix.mediaclient.ui.lolomo;
 
-import com.netflix.mediaclient.android.widget.ErrorWrapper$Callback;
+import com.netflix.mediaclient.servicemgr.ServiceManager;
+import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
 
-class LoLoMoFrag$1 implements ErrorWrapper$Callback
+class LoLoMoFrag$1 extends NetflixActivity$ServiceManagerRunnable
 {
     final /* synthetic */ LoLoMoFrag this$0;
     
@@ -15,7 +16,9 @@ class LoLoMoFrag$1 implements ErrorWrapper$Callback
     }
     
     @Override
-    public void onRetryRequested() {
-        this.this$0.refresh();
+    public void run(final ServiceManager serviceManager) {
+        if (serviceManager.isOfflineFeatureAvailable() && serviceManager.getOfflineAgent().getLatestOfflinePlayableList().getTitleCount() > 0) {
+            this.this$0.leWrapper.showViewMyDownloadsButton();
+        }
     }
 }

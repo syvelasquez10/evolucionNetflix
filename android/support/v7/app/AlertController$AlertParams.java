@@ -4,26 +4,6 @@
 
 package android.support.v7.app;
 
-import android.view.KeyEvent;
-import android.util.TypedValue;
-import android.widget.FrameLayout;
-import android.support.v7.internal.widget.TintTypedArray;
-import android.support.v7.appcompat.R$id;
-import android.text.TextUtils;
-import android.view.ViewGroup$LayoutParams;
-import android.widget.LinearLayout$LayoutParams;
-import android.content.res.TypedArray;
-import android.util.AttributeSet;
-import android.support.v7.appcompat.R$attr;
-import android.support.v7.appcompat.R$styleable;
-import android.content.DialogInterface;
-import android.view.Window;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.ImageView;
-import android.os.Handler;
-import android.widget.Button;
-import android.view.View$OnClickListener;
 import android.os.Message;
 import android.widget.AdapterView$OnItemClickListener;
 import android.widget.SimpleCursorAdapter;
@@ -51,6 +31,7 @@ public class AlertController$AlertParams
     public final Context mContext;
     public Cursor mCursor;
     public View mCustomTitleView;
+    public boolean mForceInverseBackground;
     public Drawable mIcon;
     public int mIconAttrId;
     public int mIconId;
@@ -96,14 +77,14 @@ public class AlertController$AlertParams
     }
     
     private void createListView(final AlertController alertController) {
-        final ListView listView = (ListView)this.mInflater.inflate(alertController.mListLayout, (ViewGroup)null);
+        final ListView mListView = (ListView)this.mInflater.inflate(alertController.mListLayout, (ViewGroup)null);
         Object mAdapter;
         if (this.mIsMultiChoice) {
             if (this.mCursor == null) {
-                mAdapter = new AlertController$AlertParams$1(this, this.mContext, alertController.mMultiChoiceItemLayout, 16908308, this.mItems, listView);
+                mAdapter = new AlertController$AlertParams$1(this, this.mContext, alertController.mMultiChoiceItemLayout, 16908308, this.mItems, mListView);
             }
             else {
-                mAdapter = new AlertController$AlertParams$2(this, this.mContext, this.mCursor, false, listView, alertController);
+                mAdapter = new AlertController$AlertParams$2(this, this.mContext, this.mCursor, false, mListView, alertController);
             }
         }
         else {
@@ -114,39 +95,37 @@ public class AlertController$AlertParams
             else {
                 n = alertController.mListItemLayout;
             }
-            if (this.mCursor == null) {
-                if (this.mAdapter != null) {
-                    mAdapter = this.mAdapter;
-                }
-                else {
-                    mAdapter = new AlertController$CheckedItemAdapter(this.mContext, n, 16908308, this.mItems);
-                }
+            if (this.mCursor != null) {
+                mAdapter = new SimpleCursorAdapter(this.mContext, n, this.mCursor, new String[] { this.mLabelColumn }, new int[] { 16908308 });
+            }
+            else if (this.mAdapter != null) {
+                mAdapter = this.mAdapter;
             }
             else {
-                mAdapter = new SimpleCursorAdapter(this.mContext, n, this.mCursor, new String[] { this.mLabelColumn }, new int[] { 16908308 });
+                mAdapter = new AlertController$CheckedItemAdapter(this.mContext, n, 16908308, this.mItems);
             }
         }
         if (this.mOnPrepareListViewListener != null) {
-            this.mOnPrepareListViewListener.onPrepareListView(listView);
+            this.mOnPrepareListViewListener.onPrepareListView(mListView);
         }
         alertController.mAdapter = (ListAdapter)mAdapter;
         alertController.mCheckedItem = this.mCheckedItem;
         if (this.mOnClickListener != null) {
-            listView.setOnItemClickListener((AdapterView$OnItemClickListener)new AlertController$AlertParams$3(this, alertController));
+            mListView.setOnItemClickListener((AdapterView$OnItemClickListener)new AlertController$AlertParams$3(this, alertController));
         }
         else if (this.mOnCheckboxClickListener != null) {
-            listView.setOnItemClickListener((AdapterView$OnItemClickListener)new AlertController$AlertParams$4(this, listView, alertController));
+            mListView.setOnItemClickListener((AdapterView$OnItemClickListener)new AlertController$AlertParams$4(this, mListView, alertController));
         }
         if (this.mOnItemSelectedListener != null) {
-            listView.setOnItemSelectedListener(this.mOnItemSelectedListener);
+            mListView.setOnItemSelectedListener(this.mOnItemSelectedListener);
         }
         if (this.mIsSingleChoice) {
-            listView.setChoiceMode(1);
+            mListView.setChoiceMode(1);
         }
         else if (this.mIsMultiChoice) {
-            listView.setChoiceMode(2);
+            mListView.setChoiceMode(2);
         }
-        alertController.mListView = listView;
+        alertController.mListView = mListView;
     }
     
     public void apply(final AlertController alertController) {

@@ -4,11 +4,6 @@
 
 package android.support.v7.widget;
 
-import java.util.Iterator;
-import java.util.Collection;
-import android.support.v4.animation.AnimatorCompatHelper;
-import java.util.List;
-import java.util.ArrayList;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.view.View;
@@ -24,7 +19,6 @@ class DefaultItemAnimator$7 extends DefaultItemAnimator$VpaListenerAdapter
         this.this$0 = this$0;
         this.val$changeInfo = val$changeInfo;
         this.val$oldViewAnim = val$oldViewAnim;
-        super(null);
     }
     
     @Override

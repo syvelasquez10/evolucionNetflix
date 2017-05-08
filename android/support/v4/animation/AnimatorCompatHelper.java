@@ -7,19 +7,23 @@ package android.support.v4.animation;
 import android.view.View;
 import android.os.Build$VERSION;
 
-public abstract class AnimatorCompatHelper
+public final class AnimatorCompatHelper
 {
-    static AnimatorProvider IMPL;
+    private static final AnimatorProvider IMPL;
     
     static {
         if (Build$VERSION.SDK_INT >= 12) {
-            AnimatorCompatHelper.IMPL = new HoneycombMr1AnimatorCompatProvider();
+            IMPL = new HoneycombMr1AnimatorCompatProvider();
             return;
         }
-        AnimatorCompatHelper.IMPL = new DonutAnimatorCompatProvider();
+        IMPL = new GingerbreadAnimatorCompatProvider();
     }
     
     public static void clearInterpolator(final View view) {
         AnimatorCompatHelper.IMPL.clearInterpolator(view);
+    }
+    
+    public static ValueAnimatorCompat emptyValueAnimator() {
+        return AnimatorCompatHelper.IMPL.emptyValueAnimator();
     }
 }

@@ -9,9 +9,9 @@ import android.util.SparseArray;
 import java.util.ArrayList;
 import android.graphics.Bitmap;
 import android.app.PendingIntent;
-import android.widget.RemoteViews;
 import android.app.Notification;
 import android.content.Context;
+import android.widget.RemoteViews;
 import android.os.Bundle;
 import java.util.List;
 import android.app.Notification$Builder;
@@ -20,9 +20,11 @@ public class NotificationCompatJellybean$Builder implements NotificationBuilderW
 {
     private Notification$Builder b;
     private List<Bundle> mActionExtrasList;
+    private RemoteViews mBigContentView;
+    private RemoteViews mContentView;
     private final Bundle mExtras;
     
-    public NotificationCompatJellybean$Builder(final Context context, final Notification notification, final CharSequence contentTitle, final CharSequence contentText, final CharSequence contentInfo, final RemoteViews remoteViews, final int number, final PendingIntent contentIntent, final PendingIntent pendingIntent, final Bitmap largeIcon, final int n, final int n2, final boolean b, final boolean usesChronometer, final int priority, final CharSequence subText, final boolean b2, final Bundle bundle, final String s, final boolean b3, final String s2) {
+    public NotificationCompatJellybean$Builder(final Context context, final Notification notification, final CharSequence contentTitle, final CharSequence contentText, final CharSequence contentInfo, final RemoteViews remoteViews, final int number, final PendingIntent contentIntent, final PendingIntent pendingIntent, final Bitmap largeIcon, final int n, final int n2, final boolean b, final boolean usesChronometer, final int priority, final CharSequence subText, final boolean b2, final Bundle bundle, final String s, final boolean b3, final String s2, final RemoteViews mContentView, final RemoteViews mBigContentView) {
         this.mActionExtrasList = new ArrayList<Bundle>();
         this.b = new Notification$Builder(context).setWhen(notification.when).setSmallIcon(notification.icon, notification.iconLevel).setContent(notification.contentView).setTicker(notification.tickerText, remoteViews).setSound(notification.sound, notification.audioStreamType).setVibrate(notification.vibrate).setLights(notification.ledARGB, notification.ledOnMS, notification.ledOffMS).setOngoing((notification.flags & 0x2) != 0x0).setOnlyAlertOnce((notification.flags & 0x8) != 0x0).setAutoCancel((notification.flags & 0x10) != 0x0).setDefaults(notification.defaults).setContentTitle(contentTitle).setContentText(contentText).setSubText(subText).setContentInfo(contentInfo).setContentIntent(contentIntent).setDeleteIntent(notification.deleteIntent).setFullScreenIntent(pendingIntent, (notification.flags & 0x80) != 0x0).setLargeIcon(largeIcon).setNumber(number).setUsesChronometer(usesChronometer).setPriority(priority).setProgress(n, n2, b);
         this.mExtras = new Bundle();
@@ -44,6 +46,8 @@ public class NotificationCompatJellybean$Builder implements NotificationBuilderW
         if (s2 != null) {
             this.mExtras.putString("android.support.sortKey", s2);
         }
+        this.mContentView = mContentView;
+        this.mBigContentView = mBigContentView;
     }
     
     @Override
@@ -65,6 +69,12 @@ public class NotificationCompatJellybean$Builder implements NotificationBuilderW
         final SparseArray<Bundle> buildActionExtrasMap = NotificationCompatJellybean.buildActionExtrasMap(this.mActionExtrasList);
         if (buildActionExtrasMap != null) {
             NotificationCompatJellybean.getExtras(build).putSparseParcelableArray("android.support.actionExtras", (SparseArray)buildActionExtrasMap);
+        }
+        if (this.mContentView != null) {
+            build.contentView = this.mContentView;
+        }
+        if (this.mBigContentView != null) {
+            build.bigContentView = this.mBigContentView;
         }
         return build;
     }

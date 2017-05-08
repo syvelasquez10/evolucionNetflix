@@ -61,40 +61,40 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
         if (detailsPageContentWidth > 0) {
             n = (KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) - detailsPageContentWidth) / 2;
         }
-        return n + (int)this.getResources().getDimension(2131362196);
+        return n + (int)this.getResources().getDimension(2131362225);
     }
     
     @SuppressLint({ "ResourceAsColor" })
     @Override
     protected ViewGroup createSeasonsSelectorGroup() {
         final ViewGroup seasonsSelectorGroup = super.createSeasonsSelectorGroup();
-        this.setSpinnerBackground(this.getResources().getColor(2131624052));
+        this.setSpinnerBackground(this.getResources().getColor(2131624064));
         final SeasonsSpinnerAdapter seasonsSpinnerAdapter = (SeasonsSpinnerAdapter)this.spinner.getAdapter();
         if (seasonsSpinnerAdapter != null) {
-            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131624167);
-            seasonsSpinnerAdapter.setDropDownTextColor(2131624052);
+            seasonsSpinnerAdapter.setDropDownBackgroundColor(2131624188);
+            seasonsSpinnerAdapter.setDropDownTextColor(2131624064);
         }
         return seasonsSelectorGroup;
     }
     
     @Override
     protected int getBackgroundResource() {
-        return 2131624152;
+        return 2131624172;
     }
     
     @Override
     protected int getNumColumns() {
-        return this.getActivity().getResources().getInteger(2131492882);
+        return this.getActivity().getResources().getInteger(2131492883);
     }
     
     @Override
     protected int getRecyclerViewShadowWidth() {
-        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362185) * 2;
+        return KidsUtils.getDetailsPageContentWidth((Context)this.getActivity()) + (int)this.getResources().getDimension(2131362214) * 2;
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903152;
+        return 2130903162;
     }
     
     @Override
@@ -104,9 +104,9 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     }
     
     protected void setSpinnerBackground(final int n) {
-        final Drawable drawable = this.getResources().getDrawable(2130837596);
+        final Drawable drawable = this.getResources().getDrawable(2130837618);
         drawable.setColorFilter(n, PorterDuff$Mode.MULTIPLY);
-        final LayerDrawable layerDrawable = (LayerDrawable)this.getResources().getDrawable(2130837813);
+        final LayerDrawable layerDrawable = (LayerDrawable)this.getResources().getDrawable(2130837868);
         final Drawable drawable2 = layerDrawable.getDrawable(1);
         if (drawable2 != null) {
             drawable2.setColorFilter(n, PorterDuff$Mode.MULTIPLY);
@@ -157,7 +157,7 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     
     @Override
     protected void setupRecyclerViewItemDecoration() {
-        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362161), this.getNumColumns()));
+        this.recyclerView.addItemDecoration(new ItemDecorationUniformPadding(this.getActivity().getResources().getDimensionPixelOffset(2131362190), this.getNumColumns()));
     }
     
     @Override
@@ -170,7 +170,7 @@ public class BarkerKidsShowDetailsFrag extends BarkerShowDetailsFrag
     @Override
     protected void setupSeasonsSpinnerAdapter() {
         final SeasonsSpinnerAdapter adapter = new SeasonsSpinnerAdapter(this.getNetflixActivity(), new BarkerKidsShowDetailsFrag$3(this));
-        adapter.setItemBackgroundColor(2131624052);
+        adapter.setItemBackgroundColor(2131624064);
         this.spinner.setAdapter((SpinnerAdapter)adapter);
     }
     

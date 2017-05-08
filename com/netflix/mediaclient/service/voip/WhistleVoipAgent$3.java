@@ -49,7 +49,6 @@ import java.util.concurrent.ThreadFactory;
 import com.vailsys.whistleengine.WhistleEngineDelegate;
 import com.netflix.mediaclient.servicemgr.IVoip;
 import com.netflix.mediaclient.service.ServiceAgent;
-import android.app.Service;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.Log;
@@ -90,7 +89,7 @@ class WhistleVoipAgent$3 implements Runnable
             this.this$0.mLockManager.callStarted();
             this.this$0.requestAudioFocus();
             LocalBroadcastManager.getInstance(this.this$0.getContext()).sendBroadcast(new Intent("com.netflix.mediaclient.ui.cs.ACTION_CALL_STARTED"));
-            this.this$0.mNotificationManager.showCallingNotification(this.this$0.getService());
+            this.this$0.mNotificationManager.showCallingNotification(this.this$0.getService(), this.this$0.getMainHandler());
             return;
         }
         Log.e("nf_voip", "Whistle engine was unable to start dial!");

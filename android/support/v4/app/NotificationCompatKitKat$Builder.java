@@ -8,9 +8,9 @@ import android.util.SparseArray;
 import java.util.ArrayList;
 import android.graphics.Bitmap;
 import android.app.PendingIntent;
-import android.widget.RemoteViews;
 import android.app.Notification;
 import android.content.Context;
+import android.widget.RemoteViews;
 import android.os.Bundle;
 import java.util.List;
 import android.app.Notification$Builder;
@@ -19,9 +19,11 @@ public class NotificationCompatKitKat$Builder implements NotificationBuilderWith
 {
     private Notification$Builder b;
     private List<Bundle> mActionExtrasList;
+    private RemoteViews mBigContentView;
+    private RemoteViews mContentView;
     private Bundle mExtras;
     
-    public NotificationCompatKitKat$Builder(final Context context, final Notification notification, final CharSequence contentTitle, final CharSequence contentText, final CharSequence contentInfo, final RemoteViews remoteViews, final int number, final PendingIntent contentIntent, final PendingIntent pendingIntent, final Bitmap largeIcon, final int n, final int n2, final boolean b, final boolean showWhen, final boolean usesChronometer, final int priority, final CharSequence subText, final boolean b2, final ArrayList<String> list, final Bundle bundle, final String s, final boolean b3, final String s2) {
+    public NotificationCompatKitKat$Builder(final Context context, final Notification notification, final CharSequence contentTitle, final CharSequence contentText, final CharSequence contentInfo, final RemoteViews remoteViews, final int number, final PendingIntent contentIntent, final PendingIntent pendingIntent, final Bitmap largeIcon, final int n, final int n2, final boolean b, final boolean showWhen, final boolean usesChronometer, final int priority, final CharSequence subText, final boolean b2, final ArrayList<String> list, final Bundle bundle, final String s, final boolean b3, final String s2, final RemoteViews mContentView, final RemoteViews mBigContentView) {
         this.mActionExtrasList = new ArrayList<Bundle>();
         this.b = new Notification$Builder(context).setWhen(notification.when).setShowWhen(showWhen).setSmallIcon(notification.icon, notification.iconLevel).setContent(notification.contentView).setTicker(notification.tickerText, remoteViews).setSound(notification.sound, notification.audioStreamType).setVibrate(notification.vibrate).setLights(notification.ledARGB, notification.ledOnMS, notification.ledOffMS).setOngoing((notification.flags & 0x2) != 0x0).setOnlyAlertOnce((notification.flags & 0x8) != 0x0).setAutoCancel((notification.flags & 0x10) != 0x0).setDefaults(notification.defaults).setContentTitle(contentTitle).setContentText(contentText).setSubText(subText).setContentInfo(contentInfo).setContentIntent(contentIntent).setDeleteIntent(notification.deleteIntent).setFullScreenIntent(pendingIntent, (notification.flags & 0x80) != 0x0).setLargeIcon(largeIcon).setNumber(number).setUsesChronometer(usesChronometer).setPriority(priority).setProgress(n, n2, b);
         this.mExtras = new Bundle();
@@ -46,6 +48,8 @@ public class NotificationCompatKitKat$Builder implements NotificationBuilderWith
         if (s2 != null) {
             this.mExtras.putString("android.support.sortKey", s2);
         }
+        this.mContentView = mContentView;
+        this.mBigContentView = mBigContentView;
     }
     
     @Override
@@ -60,7 +64,14 @@ public class NotificationCompatKitKat$Builder implements NotificationBuilderWith
             this.mExtras.putSparseParcelableArray("android.support.actionExtras", (SparseArray)buildActionExtrasMap);
         }
         this.b.setExtras(this.mExtras);
-        return this.b.build();
+        final Notification build = this.b.build();
+        if (this.mContentView != null) {
+            build.contentView = this.mContentView;
+        }
+        if (this.mBigContentView != null) {
+            build.bigContentView = this.mBigContentView;
+        }
+        return build;
     }
     
     @Override

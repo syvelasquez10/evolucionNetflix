@@ -5,7 +5,6 @@
 package com.netflix.mediaclient.service.mdx;
 
 import com.netflix.mediaclient.ui.player.MDXControllerActivity;
-import android.app.Service;
 import com.netflix.mediaclient.service.user.UserAgentBroadcastIntents;
 import java.util.List;
 import java.util.Collection;
@@ -123,9 +122,9 @@ class MdxAgent$EpisodeBrowseAgentCallback extends SimpleBrowseAgentCallback
             this.this$0.logPlaystart(false);
         }
         this.this$0.updateMdxRemoteClient(this.isPostPlay);
-        String s = this.this$0.getContext().getString(2131231065, new Object[] { this.vidDetails.getPlayable().getSeasonAbbrSeqLabel(), this.vidDetails.getPlayable().getEpisodeNumber(), this.vidDetails.getTitle() });
+        String s = this.this$0.getContext().getString(2131231088, new Object[] { this.vidDetails.getPlayable().getSeasonAbbrSeqLabel(), this.vidDetails.getPlayable().getEpisodeNumber(), this.vidDetails.getTitle() });
         if (this.vidDetails.isNSRE()) {
-            s = this.this$0.getContext().getString(2131231066, new Object[] { this.vidDetails.getTitle() });
+            s = this.this$0.getContext().getString(2131231089, new Object[] { this.vidDetails.getTitle() });
         }
         this.this$0.updateMdxNotification(true, this.vidDetails.getPlayable().getParentTitle(), s, this.isPostPlay);
     }

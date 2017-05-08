@@ -7,7 +7,7 @@ package android.support.v4.os;
 import android.os.Build$VERSION;
 import android.os.Parcelable$Creator;
 
-public class ParcelableCompat
+public final class ParcelableCompat
 {
     public static <T> Parcelable$Creator<T> newCreator(final ParcelableCompatCreatorCallbacks<T> parcelableCompatCreatorCallbacks) {
         if (Build$VERSION.SDK_INT >= 13) {

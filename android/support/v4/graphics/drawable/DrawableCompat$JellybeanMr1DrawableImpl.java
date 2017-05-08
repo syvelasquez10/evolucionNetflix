@@ -9,7 +9,16 @@ import android.graphics.drawable.Drawable;
 class DrawableCompat$JellybeanMr1DrawableImpl extends DrawableCompat$HoneycombDrawableImpl
 {
     @Override
-    public void setLayoutDirection(final Drawable drawable, final int n) {
-        DrawableCompatJellybeanMr1.setLayoutDirection(drawable, n);
+    public int getLayoutDirection(final Drawable drawable) {
+        final int layoutDirection = DrawableCompatJellybeanMr1.getLayoutDirection(drawable);
+        if (layoutDirection >= 0) {
+            return layoutDirection;
+        }
+        return 0;
+    }
+    
+    @Override
+    public boolean setLayoutDirection(final Drawable drawable, final int n) {
+        return DrawableCompatJellybeanMr1.setLayoutDirection(drawable, n);
     }
 }

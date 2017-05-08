@@ -10,6 +10,11 @@ import android.view.MenuItem;
 class MenuItemCompat$HoneycombMenuVersionImpl implements MenuItemCompat$MenuVersionImpl
 {
     @Override
+    public boolean collapseActionView(final MenuItem menuItem) {
+        return false;
+    }
+    
+    @Override
     public boolean expandActionView(final MenuItem menuItem) {
         return false;
     }
@@ -32,6 +37,11 @@ class MenuItemCompat$HoneycombMenuVersionImpl implements MenuItemCompat$MenuVers
     @Override
     public MenuItem setActionView(final MenuItem menuItem, final View view) {
         return MenuItemCompatHoneycomb.setActionView(menuItem, view);
+    }
+    
+    @Override
+    public MenuItem setOnActionExpandListener(final MenuItem menuItem, final MenuItemCompat$OnActionExpandListener menuItemCompat$OnActionExpandListener) {
+        return menuItem;
     }
     
     @Override

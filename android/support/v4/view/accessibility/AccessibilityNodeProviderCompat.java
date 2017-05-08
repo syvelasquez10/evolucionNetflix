@@ -10,6 +10,7 @@ import android.os.Build$VERSION;
 
 public class AccessibilityNodeProviderCompat
 {
+    public static final int HOST_VIEW_ID = -1;
     private static final AccessibilityNodeProviderCompat$AccessibilityNodeProviderImpl IMPL;
     private final Object mProvider;
     

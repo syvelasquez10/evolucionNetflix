@@ -6,27 +6,27 @@ package android.support.v7.widget;
 
 import java.util.Iterator;
 import java.util.Collection;
+import android.view.View;
 import android.support.v4.animation.AnimatorCompatHelper;
 import java.util.List;
-import android.view.View;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v4.view.ViewCompat;
 import java.util.ArrayList;
 
-public class DefaultItemAnimator extends RecyclerView$ItemAnimator
+public class DefaultItemAnimator extends SimpleItemAnimator
 {
-    private ArrayList<RecyclerView$ViewHolder> mAddAnimations;
-    private ArrayList<ArrayList<RecyclerView$ViewHolder>> mAdditionsList;
-    private ArrayList<RecyclerView$ViewHolder> mChangeAnimations;
-    private ArrayList<ArrayList<DefaultItemAnimator$ChangeInfo>> mChangesList;
-    private ArrayList<RecyclerView$ViewHolder> mMoveAnimations;
-    private ArrayList<ArrayList<DefaultItemAnimator$MoveInfo>> mMovesList;
+    ArrayList<RecyclerView$ViewHolder> mAddAnimations;
+    ArrayList<ArrayList<RecyclerView$ViewHolder>> mAdditionsList;
+    ArrayList<RecyclerView$ViewHolder> mChangeAnimations;
+    ArrayList<ArrayList<DefaultItemAnimator$ChangeInfo>> mChangesList;
+    ArrayList<RecyclerView$ViewHolder> mMoveAnimations;
+    ArrayList<ArrayList<DefaultItemAnimator$MoveInfo>> mMovesList;
     private ArrayList<RecyclerView$ViewHolder> mPendingAdditions;
     private ArrayList<DefaultItemAnimator$ChangeInfo> mPendingChanges;
     private ArrayList<DefaultItemAnimator$MoveInfo> mPendingMoves;
     private ArrayList<RecyclerView$ViewHolder> mPendingRemovals;
-    private ArrayList<RecyclerView$ViewHolder> mRemoveAnimations;
+    ArrayList<RecyclerView$ViewHolder> mRemoveAnimations;
     
     public DefaultItemAnimator() {
         this.mPendingRemovals = new ArrayList<RecyclerView$ViewHolder>();
@@ -42,65 +42,10 @@ public class DefaultItemAnimator extends RecyclerView$ItemAnimator
         this.mChangeAnimations = new ArrayList<RecyclerView$ViewHolder>();
     }
     
-    private void animateAddImpl(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
-        final ViewPropertyAnimatorCompat animate = ViewCompat.animate(recyclerView$ViewHolder.itemView);
-        this.mAddAnimations.add(recyclerView$ViewHolder);
-        animate.alpha(1.0f).setDuration(this.getAddDuration()).setListener(new DefaultItemAnimator$5(this, recyclerView$ViewHolder, animate)).start();
-    }
-    
-    private void animateChangeImpl(final DefaultItemAnimator$ChangeInfo defaultItemAnimator$ChangeInfo) {
-        View itemView = null;
-        final RecyclerView$ViewHolder oldHolder = defaultItemAnimator$ChangeInfo.oldHolder;
-        View itemView2;
-        if (oldHolder == null) {
-            itemView2 = null;
-        }
-        else {
-            itemView2 = oldHolder.itemView;
-        }
-        final RecyclerView$ViewHolder newHolder = defaultItemAnimator$ChangeInfo.newHolder;
-        if (newHolder != null) {
-            itemView = newHolder.itemView;
-        }
-        if (itemView2 != null) {
-            final ViewPropertyAnimatorCompat setDuration = ViewCompat.animate(itemView2).setDuration(this.getChangeDuration());
-            this.mChangeAnimations.add(defaultItemAnimator$ChangeInfo.oldHolder);
-            setDuration.translationX(defaultItemAnimator$ChangeInfo.toX - defaultItemAnimator$ChangeInfo.fromX);
-            setDuration.translationY(defaultItemAnimator$ChangeInfo.toY - defaultItemAnimator$ChangeInfo.fromY);
-            setDuration.alpha(0.0f).setListener(new DefaultItemAnimator$7(this, defaultItemAnimator$ChangeInfo, setDuration)).start();
-        }
-        if (itemView != null) {
-            final ViewPropertyAnimatorCompat animate = ViewCompat.animate(itemView);
-            this.mChangeAnimations.add(defaultItemAnimator$ChangeInfo.newHolder);
-            animate.translationX(0.0f).translationY(0.0f).setDuration(this.getChangeDuration()).alpha(1.0f).setListener(new DefaultItemAnimator$8(this, defaultItemAnimator$ChangeInfo, animate, itemView)).start();
-        }
-    }
-    
-    private void animateMoveImpl(final RecyclerView$ViewHolder recyclerView$ViewHolder, int n, int n2, final int n3, final int n4) {
-        final View itemView = recyclerView$ViewHolder.itemView;
-        n = n3 - n;
-        n2 = n4 - n2;
-        if (n != 0) {
-            ViewCompat.animate(itemView).translationX(0.0f);
-        }
-        if (n2 != 0) {
-            ViewCompat.animate(itemView).translationY(0.0f);
-        }
-        final ViewPropertyAnimatorCompat animate = ViewCompat.animate(itemView);
-        this.mMoveAnimations.add(recyclerView$ViewHolder);
-        animate.setDuration(this.getMoveDuration()).setListener(new DefaultItemAnimator$6(this, recyclerView$ViewHolder, n, n2, animate)).start();
-    }
-    
     private void animateRemoveImpl(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
         final ViewPropertyAnimatorCompat animate = ViewCompat.animate(recyclerView$ViewHolder.itemView);
         this.mRemoveAnimations.add(recyclerView$ViewHolder);
         animate.setDuration(this.getRemoveDuration()).alpha(0.0f).setListener(new DefaultItemAnimator$4(this, recyclerView$ViewHolder, animate)).start();
-    }
-    
-    private void dispatchFinishedWhenDone() {
-        if (!this.isRunning()) {
-            this.dispatchAnimationsFinished();
-        }
     }
     
     private void endChangeAnimation(final List<DefaultItemAnimator$ChangeInfo> list, final RecyclerView$ViewHolder recyclerView$ViewHolder) {
@@ -155,8 +100,17 @@ public class DefaultItemAnimator extends RecyclerView$ItemAnimator
         return true;
     }
     
+    void animateAddImpl(final RecyclerView$ViewHolder recyclerView$ViewHolder) {
+        final ViewPropertyAnimatorCompat animate = ViewCompat.animate(recyclerView$ViewHolder.itemView);
+        this.mAddAnimations.add(recyclerView$ViewHolder);
+        animate.alpha(1.0f).setDuration(this.getAddDuration()).setListener(new DefaultItemAnimator$5(this, recyclerView$ViewHolder, animate)).start();
+    }
+    
     @Override
     public boolean animateChange(final RecyclerView$ViewHolder recyclerView$ViewHolder, final RecyclerView$ViewHolder recyclerView$ViewHolder2, final int n, final int n2, final int n3, final int n4) {
+        if (recyclerView$ViewHolder == recyclerView$ViewHolder2) {
+            return this.animateMove(recyclerView$ViewHolder, n, n2, n3, n4);
+        }
         final float translationX = ViewCompat.getTranslationX(recyclerView$ViewHolder.itemView);
         final float translationY = ViewCompat.getTranslationY(recyclerView$ViewHolder.itemView);
         final float alpha = ViewCompat.getAlpha(recyclerView$ViewHolder.itemView);
@@ -166,14 +120,42 @@ public class DefaultItemAnimator extends RecyclerView$ItemAnimator
         ViewCompat.setTranslationX(recyclerView$ViewHolder.itemView, translationX);
         ViewCompat.setTranslationY(recyclerView$ViewHolder.itemView, translationY);
         ViewCompat.setAlpha(recyclerView$ViewHolder.itemView, alpha);
-        if (recyclerView$ViewHolder2 != null && recyclerView$ViewHolder2.itemView != null) {
+        if (recyclerView$ViewHolder2 != null) {
             this.resetAnimation(recyclerView$ViewHolder2);
             ViewCompat.setTranslationX(recyclerView$ViewHolder2.itemView, -n5);
             ViewCompat.setTranslationY(recyclerView$ViewHolder2.itemView, -n6);
             ViewCompat.setAlpha(recyclerView$ViewHolder2.itemView, 0.0f);
         }
-        this.mPendingChanges.add(new DefaultItemAnimator$ChangeInfo(recyclerView$ViewHolder, recyclerView$ViewHolder2, n, n2, n3, n4, null));
+        this.mPendingChanges.add(new DefaultItemAnimator$ChangeInfo(recyclerView$ViewHolder, recyclerView$ViewHolder2, n, n2, n3, n4));
         return true;
+    }
+    
+    void animateChangeImpl(final DefaultItemAnimator$ChangeInfo defaultItemAnimator$ChangeInfo) {
+        View itemView = null;
+        final RecyclerView$ViewHolder oldHolder = defaultItemAnimator$ChangeInfo.oldHolder;
+        View itemView2;
+        if (oldHolder == null) {
+            itemView2 = null;
+        }
+        else {
+            itemView2 = oldHolder.itemView;
+        }
+        final RecyclerView$ViewHolder newHolder = defaultItemAnimator$ChangeInfo.newHolder;
+        if (newHolder != null) {
+            itemView = newHolder.itemView;
+        }
+        if (itemView2 != null) {
+            final ViewPropertyAnimatorCompat setDuration = ViewCompat.animate(itemView2).setDuration(this.getChangeDuration());
+            this.mChangeAnimations.add(defaultItemAnimator$ChangeInfo.oldHolder);
+            setDuration.translationX(defaultItemAnimator$ChangeInfo.toX - defaultItemAnimator$ChangeInfo.fromX);
+            setDuration.translationY(defaultItemAnimator$ChangeInfo.toY - defaultItemAnimator$ChangeInfo.fromY);
+            setDuration.alpha(0.0f).setListener(new DefaultItemAnimator$7(this, defaultItemAnimator$ChangeInfo, setDuration)).start();
+        }
+        if (itemView != null) {
+            final ViewPropertyAnimatorCompat animate = ViewCompat.animate(itemView);
+            this.mChangeAnimations.add(defaultItemAnimator$ChangeInfo.newHolder);
+            animate.translationX(0.0f).translationY(0.0f).setDuration(this.getChangeDuration()).alpha(1.0f).setListener(new DefaultItemAnimator$8(this, defaultItemAnimator$ChangeInfo, animate, itemView)).start();
+        }
     }
     
     @Override
@@ -194,8 +176,23 @@ public class DefaultItemAnimator extends RecyclerView$ItemAnimator
         if (n6 != 0) {
             ViewCompat.setTranslationY(itemView, -n6);
         }
-        this.mPendingMoves.add(new DefaultItemAnimator$MoveInfo(recyclerView$ViewHolder, n, n2, n3, n4, null));
+        this.mPendingMoves.add(new DefaultItemAnimator$MoveInfo(recyclerView$ViewHolder, n, n2, n3, n4));
         return true;
+    }
+    
+    void animateMoveImpl(final RecyclerView$ViewHolder recyclerView$ViewHolder, int n, int n2, final int n3, final int n4) {
+        final View itemView = recyclerView$ViewHolder.itemView;
+        n = n3 - n;
+        n2 = n4 - n2;
+        if (n != 0) {
+            ViewCompat.animate(itemView).translationX(0.0f);
+        }
+        if (n2 != 0) {
+            ViewCompat.animate(itemView).translationY(0.0f);
+        }
+        final ViewPropertyAnimatorCompat animate = ViewCompat.animate(itemView);
+        this.mMoveAnimations.add(recyclerView$ViewHolder);
+        animate.setDuration(this.getMoveDuration()).setListener(new DefaultItemAnimator$6(this, recyclerView$ViewHolder, n, n2, animate)).start();
     }
     
     @Override
@@ -205,9 +202,20 @@ public class DefaultItemAnimator extends RecyclerView$ItemAnimator
         return true;
     }
     
+    @Override
+    public boolean canReuseUpdatedViewHolder(final RecyclerView$ViewHolder recyclerView$ViewHolder, final List<Object> list) {
+        return !list.isEmpty() || super.canReuseUpdatedViewHolder(recyclerView$ViewHolder, list);
+    }
+    
     void cancelAll(final List<RecyclerView$ViewHolder> list) {
         for (int i = list.size() - 1; i >= 0; --i) {
             ViewCompat.animate(list.get(i).itemView).cancel();
+        }
+    }
+    
+    void dispatchFinishedWhenDone() {
+        if (!this.isRunning()) {
+            this.dispatchAnimationsFinished();
         }
     }
     

@@ -49,5 +49,13 @@ public abstract class Transaction
     
     public abstract void a();
     
+    public abstract void a(final int p0);
+    
+    public abstract int a_();
+    
     public abstract void b();
+    
+    public abstract void c();
+    
+    public abstract void d();
 }

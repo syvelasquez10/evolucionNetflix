@@ -34,6 +34,7 @@ import com.netflix.model.leafs.TrackableListSummary;
 import com.netflix.model.leafs.Video$SearchTitle;
 import com.netflix.model.leafs.Video$UserRating;
 import com.netflix.model.leafs.PostPlayImpression;
+import com.netflix.model.leafs.Video$OfflineAvailable;
 import com.netflix.model.leafs.Video$KubrickSummary;
 import com.netflix.model.leafs.InteractivePlaybackMoments;
 import com.netflix.model.leafs.Video$InQueue;
@@ -76,6 +77,7 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     private InteractivePlaybackMoments interactivePlaybackMoments;
     private Video$KubrickSummary kubrick;
     private UnsummarizedList<MementoVideoSwatch> mementoVideoSwatches;
+    protected Video$OfflineAvailable offlineAvailable;
     private BranchMap<Ref> performerStills;
     private BranchMap<Ref> performers;
     private Ref postPlayExperience;
@@ -220,6 +222,9 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             }
             case "bookmark": {
                 return this.bookmark;
+            }
+            case "offlineAvailable": {
+                return this.offlineAvailable;
             }
             case "searchTitle": {
                 return this.searchTitle;
@@ -667,6 +672,9 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
         if (this.bookmark != null) {
             set.add("bookmark");
         }
+        if (this.offlineAvailable != null) {
+            set.add("offlineAvailable");
+        }
         if (this.searchTitle != null) {
             set.add("searchTitle");
         }
@@ -835,6 +843,9 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             }
             case "bookmark": {
                 return this.bookmark = new Video$Bookmark();
+            }
+            case "offlineAvailable": {
+                return this.offlineAvailable = new Video$OfflineAvailable();
             }
             case "searchTitle": {
                 return this.searchTitle = new Video$SearchTitle();
@@ -1250,6 +1261,11 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
     }
     
     @Override
+    public boolean isAvailableOffline() {
+        return this.offlineAvailable != null && this.offlineAvailable.isAvailableOffline();
+    }
+    
+    @Override
     public boolean isAvailableToStream() {
         final Video$Detail detail = this.getDetail();
         return detail == null || detail.isAvailableToStream;
@@ -1422,6 +1438,9 @@ public class FalkorVideo extends BaseFalkorObject implements BasicVideo, Billboa
             }
             case "bookmark": {
                 this.bookmark = (Video$Bookmark)o;
+            }
+            case "offlineAvailable": {
+                this.offlineAvailable = (Video$OfflineAvailable)o;
             }
             case "searchTitle": {
                 this.searchTitle = (Video$SearchTitle)o;

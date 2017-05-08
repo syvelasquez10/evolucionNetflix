@@ -4,11 +4,17 @@
 
 package android.support.v4.view;
 
+import android.view.accessibility.AccessibilityManager;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.View;
 import android.view.ViewParent;
 
 class ViewParentCompat$ViewParentCompatStubImpl implements ViewParentCompat$ViewParentCompatImpl
 {
+    @Override
+    public void notifySubtreeAccessibilityStateChanged(final ViewParent viewParent, final View view, final View view2, final int n) {
+    }
+    
     @Override
     public boolean onNestedFling(final ViewParent viewParent, final View view, final float n, final float n2, final boolean b) {
         return viewParent instanceof NestedScrollingParent && ((NestedScrollingParent)viewParent).onNestedFling(view, n, n2, b);
@@ -50,5 +56,14 @@ class ViewParentCompat$ViewParentCompatStubImpl implements ViewParentCompat$View
         if (viewParent instanceof NestedScrollingParent) {
             ((NestedScrollingParent)viewParent).onStopNestedScroll(view);
         }
+    }
+    
+    @Override
+    public boolean requestSendAccessibilityEvent(final ViewParent viewParent, final View view, final AccessibilityEvent accessibilityEvent) {
+        if (view == null) {
+            return false;
+        }
+        ((AccessibilityManager)view.getContext().getSystemService("accessibility")).sendAccessibilityEvent(accessibilityEvent);
+        return true;
     }
 }

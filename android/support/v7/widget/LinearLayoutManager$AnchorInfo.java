@@ -11,15 +11,12 @@ class LinearLayoutManager$AnchorInfo
     int mCoordinate;
     boolean mLayoutFromEnd;
     int mPosition;
+    boolean mValid;
     final /* synthetic */ LinearLayoutManager this$0;
     
     LinearLayoutManager$AnchorInfo(final LinearLayoutManager this$0) {
         this.this$0 = this$0;
-    }
-    
-    private boolean isViewValidAsAnchor(final View view, final RecyclerView$State recyclerView$State) {
-        final RecyclerView$LayoutParams recyclerView$LayoutParams = (RecyclerView$LayoutParams)view.getLayoutParams();
-        return !recyclerView$LayoutParams.isItemRemoved() && recyclerView$LayoutParams.getViewLayoutPosition() >= 0 && recyclerView$LayoutParams.getViewLayoutPosition() < recyclerView$State.getItemCount();
+        this.reset();
     }
     
     void assignCoordinateFromPadding() {
@@ -77,14 +74,20 @@ class LinearLayoutManager$AnchorInfo
         }
     }
     
+    boolean isViewValidAsAnchor(final View view, final RecyclerView$State recyclerView$State) {
+        final RecyclerView$LayoutParams recyclerView$LayoutParams = (RecyclerView$LayoutParams)view.getLayoutParams();
+        return !recyclerView$LayoutParams.isItemRemoved() && recyclerView$LayoutParams.getViewLayoutPosition() >= 0 && recyclerView$LayoutParams.getViewLayoutPosition() < recyclerView$State.getItemCount();
+    }
+    
     void reset() {
         this.mPosition = -1;
         this.mCoordinate = Integer.MIN_VALUE;
         this.mLayoutFromEnd = false;
+        this.mValid = false;
     }
     
     @Override
     public String toString() {
-        return "AnchorInfo{mPosition=" + this.mPosition + ", mCoordinate=" + this.mCoordinate + ", mLayoutFromEnd=" + this.mLayoutFromEnd + '}';
+        return "AnchorInfo{mPosition=" + this.mPosition + ", mCoordinate=" + this.mCoordinate + ", mLayoutFromEnd=" + this.mLayoutFromEnd + ", mValid=" + this.mValid + '}';
     }
 }

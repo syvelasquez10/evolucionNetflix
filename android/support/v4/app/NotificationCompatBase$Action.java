@@ -11,6 +11,8 @@ public abstract class NotificationCompatBase$Action
 {
     public abstract PendingIntent getActionIntent();
     
+    public abstract boolean getAllowGeneratedReplies();
+    
     public abstract Bundle getExtras();
     
     public abstract int getIcon();

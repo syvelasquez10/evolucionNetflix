@@ -9,6 +9,7 @@ import java.util.Date;
 import org.json.JSONArray;
 import java.io.OutputStream;
 import android.location.Location;
+import java.util.Locale;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -85,6 +86,16 @@ public final class c extends bn
         if (i != null) {
             this.i = i;
         }
+    }
+    
+    public static boolean c(String upperCase) {
+        if (upperCase != null) {
+            upperCase = upperCase.toUpperCase(Locale.US);
+            if (c.s.contains(upperCase)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     private long f() {

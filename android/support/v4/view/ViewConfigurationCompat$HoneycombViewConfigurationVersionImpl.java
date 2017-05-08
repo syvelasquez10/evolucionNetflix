@@ -6,7 +6,7 @@ package android.support.v4.view;
 
 import android.view.ViewConfiguration;
 
-class ViewConfigurationCompat$HoneycombViewConfigurationVersionImpl extends ViewConfigurationCompat$FroyoViewConfigurationVersionImpl
+class ViewConfigurationCompat$HoneycombViewConfigurationVersionImpl extends ViewConfigurationCompat$BaseViewConfigurationVersionImpl
 {
     @Override
     public boolean hasPermanentMenuKey(final ViewConfiguration viewConfiguration) {

@@ -39,25 +39,21 @@ class Channel$BlockingWebSocketClient extends WebSocketClient
         Channel.backgroundWebSocket = null;
     }
     
-    @Override
     public void onClose(final int n, final String s, final boolean b) {
         log("Channel closed " + s);
         this.clearWebSocketSingleton();
     }
     
-    @Override
     public void onError(final Exception ex) {
         log("Channel error " + ex.getMessage());
         this.clearWebSocketSingleton();
     }
     
-    @Override
     public void onMessage(final String response) {
         this.response = response;
         this.receiveSignal.countDown();
     }
     
-    @Override
     public void onOpen(final ServerHandshake serverHandshake) {
         log("Channel opened");
     }

@@ -10,6 +10,10 @@ import android.view.View;
 class ViewPropertyAnimatorCompatKK
 {
     public static void setUpdateListener(final View view, final ViewPropertyAnimatorUpdateListener viewPropertyAnimatorUpdateListener) {
-        view.animate().setUpdateListener((ValueAnimator$AnimatorUpdateListener)new ViewPropertyAnimatorCompatKK$1(viewPropertyAnimatorUpdateListener, view));
+        Object updateListener = null;
+        if (viewPropertyAnimatorUpdateListener != null) {
+            updateListener = new ViewPropertyAnimatorCompatKK$1(viewPropertyAnimatorUpdateListener, view);
+        }
+        view.animate().setUpdateListener((ValueAnimator$AnimatorUpdateListener)updateListener);
     }
 }

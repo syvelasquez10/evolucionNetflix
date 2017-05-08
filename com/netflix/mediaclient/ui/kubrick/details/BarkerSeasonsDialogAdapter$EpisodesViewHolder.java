@@ -27,8 +27,8 @@ public class BarkerSeasonsDialogAdapter$EpisodesViewHolder extends RecyclerView$
     public BarkerSeasonsDialogAdapter$EpisodesViewHolder(final BarkerSeasonsDialogAdapter this$0, final View view) {
         this.this$0 = this$0;
         super(view);
-        this.text = (TextView)view.findViewById(2131689871);
-        this.selectIndicator = view.findViewById(2131689870);
+        this.text = (TextView)view.findViewById(2131689898);
+        this.selectIndicator = view.findViewById(2131689897);
         if (view != null) {
             view.setOnClickListener((View$OnClickListener)this);
         }
@@ -38,6 +38,6 @@ public class BarkerSeasonsDialogAdapter$EpisodesViewHolder extends RecyclerView$
         if (Log.isLoggable()) {
             Log.v("sdf", "VideoViewHolder - onClick");
         }
-        this.this$0.setItemClicked(this.getPosition());
+        this.this$0.setItemClicked(this.getAdapterPosition());
     }
 }

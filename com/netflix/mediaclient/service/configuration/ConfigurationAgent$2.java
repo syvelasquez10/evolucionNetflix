@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.service.configuration;
 
+import com.netflix.mediaclient.media.JPlayer.DolbyDigitalHelper;
 import com.netflix.mediaclient.service.webclient.model.leafs.VoipConfiguration;
 import android.view.Display;
 import android.util.DisplayMetrics;
@@ -11,6 +12,7 @@ import android.hardware.display.DisplayManager;
 import com.netflix.mediaclient.media.VideoResolutionRange;
 import com.netflix.mediaclient.service.webclient.model.leafs.SubtitleDownloadRetryPolicy;
 import com.netflix.mediaclient.service.webclient.model.leafs.SignInConfigData;
+import com.netflix.mediaclient.service.webclient.model.leafs.OfflineConfig;
 import com.netflix.mediaclient.service.webclient.model.leafs.NrmConfigData;
 import org.json.JSONObject;
 import com.netflix.mediaclient.service.net.IpConnectivityPolicy;
@@ -30,6 +32,7 @@ import android.media.UnsupportedSchemeException;
 import com.netflix.mediaclient.service.configuration.esn.EsnProviderRegistry;
 import com.netflix.mediaclient.service.configuration.drm.DrmManager$DrmReadyCallback;
 import com.netflix.mediaclient.service.configuration.drm.DrmManagerRegistry;
+import com.netflix.mediaclient.service.error.crypto.CryptoErrorManager;
 import java.util.Map;
 import com.netflix.mediaclient.service.logging.perf.Sessions;
 import com.netflix.mediaclient.service.logging.perf.PerformanceProfiler;
@@ -41,7 +44,6 @@ import com.netflix.mediaclient.javabridge.transport.NativeTransport;
 import com.netflix.mediaclient.ui.bandwidthsetting.BandwidthUtility;
 import com.netflix.mediaclient.android.app.NetflixImmutableStatus;
 import com.netflix.mediaclient.android.app.BackgroundTask;
-import com.netflix.mediaclient.media.JPlayer.DolbyDigitalHelper;
 import android.content.pm.PackageManager;
 import com.netflix.mediaclient.service.voip.VoipAuthorizationTokensUpdater;
 import com.netflix.mediaclient.android.app.CommonStatus;

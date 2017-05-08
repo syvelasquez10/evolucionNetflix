@@ -57,10 +57,14 @@ public class RecyclerView$LayoutParams extends ViewGroup$MarginLayoutParams
     }
     
     public boolean isItemChanged() {
-        return this.mViewHolder.isChanged();
+        return this.mViewHolder.isUpdated();
     }
     
     public boolean isItemRemoved() {
         return this.mViewHolder.isRemoved();
+    }
+    
+    public boolean isViewInvalid() {
+        return this.mViewHolder.isInvalid();
     }
 }

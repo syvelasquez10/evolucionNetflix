@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.mdx;
 
 import android.content.Context;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 
 public class MdxTargetSelectionDialog extends AlertDialog
 {

@@ -80,7 +80,7 @@ public class KubrickPaginatedGalleryAdapter extends BasePaginatedAdapter<Kubrick
         int n2;
         final int n = n2 = (int)(LoMoViewPager.computeViewPagerWidth(this.activity, 1 != 0) / this.numItemsPerPage * 0.5625f) * 4;
         if (BrowseExperience.showKidsExperience()) {
-            n2 = n + this.activity.getResources().getDimensionPixelSize(2131362204);
+            n2 = n + this.activity.getResources().getDimensionPixelSize(2131362233);
         }
         if (Log.isLoggable()) {
             Log.v("KubrickPaginatedGalleryAdapter", "Computed view height: " + n2 + " (px)");

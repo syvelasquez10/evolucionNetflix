@@ -8,6 +8,10 @@ import java.util.Map;
 
 public class SimpleArrayMap<K, V>
 {
+    private static final int BASE_SIZE = 4;
+    private static final int CACHE_SIZE = 10;
+    private static final boolean DEBUG = false;
+    private static final String TAG = "ArrayMap";
     static Object[] mBaseCache;
     static int mBaseCacheSize;
     static Object[] mTwiceBaseCache;
@@ -31,6 +35,13 @@ public class SimpleArrayMap<K, V>
             this.allocArrays(n);
         }
         this.mSize = 0;
+    }
+    
+    public SimpleArrayMap(final SimpleArrayMap simpleArrayMap) {
+        this();
+        if (simpleArrayMap != null) {
+            this.putAll(simpleArrayMap);
+        }
     }
     
     private void allocArrays(final int n) {
@@ -166,9 +177,9 @@ public class SimpleArrayMap<K, V>
     @Override
     public boolean equals(final Object o) {
         if (this != o) {
-            if (o instanceof Map) {
-                final Map map = (Map)o;
-                if (this.size() != map.size()) {
+            if (o instanceof SimpleArrayMap) {
+                final SimpleArrayMap simpleArrayMap = (SimpleArrayMap)o;
+                if (this.size() != simpleArrayMap.size()) {
                     return false;
                 }
                 int i = 0;
@@ -176,9 +187,9 @@ public class SimpleArrayMap<K, V>
                     while (i < this.mSize) {
                         final K key = this.keyAt(i);
                         final V value = this.valueAt(i);
-                        final Object value2 = map.get(key);
+                        final Object value2 = simpleArrayMap.get(key);
                         if (value == null) {
-                            if (value2 != null || !map.containsKey(key)) {
+                            if (value2 != null || !simpleArrayMap.containsKey(key)) {
                                 return false;
                             }
                         }
@@ -193,6 +204,36 @@ public class SimpleArrayMap<K, V>
                     return false;
                 }
                 catch (ClassCastException ex2) {
+                    return false;
+                }
+            }
+            if (o instanceof Map) {
+                final Map map = (Map)o;
+                if (this.size() != map.size()) {
+                    return false;
+                }
+                int j = 0;
+                try {
+                    while (j < this.mSize) {
+                        final K key2 = this.keyAt(j);
+                        final V value3 = this.valueAt(j);
+                        final Object value4 = map.get(key2);
+                        if (value3 == null) {
+                            if (value4 != null || !map.containsKey(key2)) {
+                                return false;
+                            }
+                        }
+                        else if (!value3.equals(value4)) {
+                            return false;
+                        }
+                        ++j;
+                    }
+                    return true;
+                }
+                catch (NullPointerException ex3) {
+                    return false;
+                }
+                catch (ClassCastException ex4) {
                     return false;
                 }
                 return false;
@@ -381,6 +422,25 @@ public class SimpleArrayMap<K, V>
         this.mArray[(n4 << 1) + 1] = v;
         ++this.mSize;
         return null;
+    }
+    
+    public void putAll(final SimpleArrayMap<? extends K, ? extends V> simpleArrayMap) {
+        int i = 0;
+        final int mSize = simpleArrayMap.mSize;
+        this.ensureCapacity(this.mSize + mSize);
+        if (this.mSize == 0) {
+            if (mSize > 0) {
+                System.arraycopy(simpleArrayMap.mHashes, 0, this.mHashes, 0, mSize);
+                System.arraycopy(simpleArrayMap.mArray, 0, this.mArray, 0, mSize << 1);
+                this.mSize = mSize;
+            }
+        }
+        else {
+            while (i < mSize) {
+                this.put(simpleArrayMap.keyAt(i), simpleArrayMap.valueAt(i));
+                ++i;
+            }
+        }
     }
     
     public V remove(final Object o) {

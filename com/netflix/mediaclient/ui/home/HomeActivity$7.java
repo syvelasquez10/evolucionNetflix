@@ -5,8 +5,12 @@
 package com.netflix.mediaclient.ui.home;
 
 import com.netflix.mediaclient.NetflixApplication;
+import com.netflix.mediaclient.ui.offline.TutorialHelper;
+import com.netflix.android.tooltips.Tooltip;
+import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import android.view.View;
 import java.io.Serializable;
+import com.netflix.mediaclient.android.activity.NetflixActivity$ServiceManagerRunnable;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.MenuItem;
@@ -48,6 +52,7 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.servicemgr.ApplicationPerformanceMetricsLogging;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecycler;
 import android.os.Handler;
+import com.netflix.mediaclient.util.IrisUtils$NotificationsListStatus;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.interface_.genre.GenreList;
@@ -55,10 +60,9 @@ import android.support.v4.widget.DrawerLayout;
 import java.util.LinkedList;
 import com.netflix.mediaclient.service.logging.perf.InteractiveTracker$TTRTracker;
 import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag$OptInResponseHandler;
+import com.netflix.mediaclient.ui.offline.TutorialHelper$Tutorialable;
 import com.netflix.mediaclient.android.widget.ObjectRecycler$ViewRecyclerProvider;
 import com.netflix.mediaclient.android.activity.FragmentHostActivity;
-import com.netflix.mediaclient.util.IrisUtils$NotificationsListStatus;
-import com.netflix.mediaclient.util.IrisUtils;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import android.content.Context;
@@ -73,16 +77,15 @@ class HomeActivity$7 extends BroadcastReceiver
     }
     
     public void onReceive(final Context context, final Intent intent) {
-        if (Log.isLoggable()) {
-            Log.v("HomeActivity", "notificationsListUpdateReceiver, onReceive");
+        if (intent == null) {
+            Log.w("HomeActivity", "Received null intent");
         }
-        final IrisUtils$NotificationsListStatus handleNotificationsUpdateReceiver = IrisUtils.handleNotificationsUpdateReceiver(intent, "HomeActivity");
-        if (handleNotificationsUpdateReceiver != this.this$0.notificationsListStatus) {
-            this.this$0.notificationsListStatus = handleNotificationsUpdateReceiver;
-            if (Log.isLoggable()) {
-                Log.v("HomeActivity", "Updating menu indicator with new status: " + handleNotificationsUpdateReceiver);
+        else {
+            final String action = intent.getAction();
+            Log.i("HomeActivity", "RefreshHomeReceiver invoked and received Intent with Action " + action);
+            if ("com.netflix.mediaclient.intent.action.REFRESH_HOME_LOLOMO".equals(action)) {
+                this.this$0.clearAllStateAndRefresh();
             }
-            this.this$0.getNetflixActionBar().setSandwichIcon(this.this$0.notificationsListStatus == IrisUtils$NotificationsListStatus.HAS_UNREAD_MESSAGES);
         }
     }
 }

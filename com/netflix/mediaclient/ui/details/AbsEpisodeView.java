@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.details;
 
+import com.netflix.mediaclient.servicemgr.interface_.Playable;
 import android.content.res.Resources;
 import com.netflix.mediaclient.ui.lomo.LoMoUtils;
 import com.netflix.mediaclient.ui.common.PlayLocationType;
@@ -17,6 +18,7 @@ import com.netflix.mediaclient.util.TimeUtils;
 import android.content.Context;
 import android.widget.ProgressBar;
 import android.widget.ImageView;
+import com.netflix.mediaclient.ui.offline.DownloadButton;
 import android.widget.TextView;
 import com.netflix.mediaclient.servicemgr.interface_.details.EpisodeDetails;
 import android.widget.Checkable;
@@ -27,6 +29,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     private static final String TAG = "EpisodeRowView";
     protected boolean checked;
     protected TextView episodeBadge;
+    protected DownloadButton episodeDownloadButton;
     protected TextView episodeNumber;
     protected TextView episodeTime;
     private boolean isCheckable;
@@ -59,7 +62,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             return episodeDetails.getTitle();
         }
         if (StringUtils.isEmpty(episodeDetails.getAvailabilityDateMessage())) {
-            return context.getString(2131231122);
+            return context.getString(2131231149);
         }
         return episodeDetails.getAvailabilityDateMessage();
     }
@@ -79,13 +82,14 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
     }
     
     protected void findViews() {
-        this.episodeBadge = (TextView)this.findViewById(2131689627);
-        this.title = (TextView)this.findViewById(2131689628);
-        this.episodeNumber = (TextView)this.findViewById(2131689825);
-        this.synopsis = (TextView)this.findViewById(2131689629);
-        this.playButton = (ImageView)this.findViewById(2131689622);
-        this.progressBar = (ProgressBar)this.findViewById(2131689624);
-        this.episodeTime = (TextView)this.findViewById(2131689826);
+        this.episodeBadge = (TextView)this.findViewById(2131689639);
+        this.title = (TextView)this.findViewById(2131689640);
+        this.episodeNumber = (TextView)this.findViewById(2131689847);
+        this.synopsis = (TextView)this.findViewById(2131689641);
+        this.playButton = (ImageView)this.findViewById(2131689634);
+        this.episodeDownloadButton = (DownloadButton)this.findViewById(2131689849);
+        this.progressBar = (ProgressBar)this.findViewById(2131689636);
+        this.episodeTime = (TextView)this.findViewById(2131689848);
     }
     
     protected int getDefaultSynopsisVisibility() {
@@ -161,7 +165,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
         }
         this.isNSRE = episodeDetails.episodeIsNSRE();
         this.isCurrentEpisode = isCurrentEpisode;
-        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131230888), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
+        this.setContentDescription((CharSequence)String.format(this.getResources().getString(2131230892), episodeDetails.getEpisodeNumber(), episodeDetails.getTitle(), episodeDetails.getSynopsis(), TimeUtils.convertSecondsToMinutes(episodeDetails.getPlayable().getRuntime())));
         if (episodeDetails.isAvailableToStream() && !this.isNSRE && this.episodeNumber != null) {
             this.episodeNumber.setText((CharSequence)createEpisodeNumber(episodeDetails, this.getContext()));
         }
@@ -171,10 +175,10 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
             final Resources resources = this.getResources();
             int n;
             if (episodeDetails.isAvailableToStream()) {
-                n = 2131624102;
+                n = 2131624117;
             }
             else {
-                n = 2131624118;
+                n = 2131624133;
             }
             title.setTextColor(resources.getColor(n));
             this.title.setClickable(false);
@@ -197,6 +201,7 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
         this.updateSynopsis(episodeDetails);
         this.updateBookmark(episodeDetails);
         this.setupPlayButton(episodeDetails);
+        this.updateDownloadButton(episodeDetails.getPlayable());
         this.setChecked(false);
         this.updateCheckability(episodeDetails);
     }
@@ -209,6 +214,8 @@ public abstract class AbsEpisodeView extends RelativeLayout implements Checkable
         }
         this.progressVal = progressVal;
     }
+    
+    protected abstract void updateDownloadButton(final Playable p0);
     
     protected void updateProgressBar() {
         if (this.progressVal <= 0) {

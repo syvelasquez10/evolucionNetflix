@@ -8,6 +8,7 @@ import com.netflix.mediaclient.service.logging.client.model.DataContext;
 import android.content.Intent;
 import com.netflix.mediaclient.service.ServiceAgent$UserAgentInterface;
 import com.netflix.mediaclient.servicemgr.PresentationTracking;
+import com.netflix.mediaclient.servicemgr.LogblobLogging;
 import com.netflix.mediaclient.servicemgr.AdvertiserIdLogging;
 import com.netflix.mediaclient.service.logging.client.model.SessionKey;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.concurrent.Executors;
 import com.netflix.mediaclient.util.IntentUtils;
 import com.netflix.mediaclient.javabridge.ui.LogArguments;
 import android.support.v4.content.LocalBroadcastManager;
+import com.netflix.mediaclient.servicemgr.OfflineLogging;
 import com.netflix.mediaclient.servicemgr.IkoLogging;
 import com.netflix.mediaclient.servicemgr.SignInLogging;
 import com.netflix.mediaclient.servicemgr.CustomerServiceLogging;
@@ -52,7 +54,9 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
 {
     private static final long EVENT_POST_TIMEOUT_MS = 60000L;
     static final String ICL_REPOSITORY_DIR = "iclevents";
+    static final String LOGBLOB_REPOSITORY_DIR = "logblobs";
     static final int NEXT_DELIVERY_ATTEMPT_TIMEOUT_IN_MS = 60000;
+    static final String PDSEVENT_REPOSITORY_DIR = "pdsevents";
     static final String PT_REPOSITORY_DIR = "ptevents";
     private static final String TAG = "nf_log";
     private static final ThreadFactory sThreadFactory;
@@ -65,8 +69,10 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     private ScheduledExecutorService mExecutor;
     private AtomicInteger mFailureCounter;
     private IntegratedClientLoggingManager mIntegratedClientLoggingManager;
+    private LogblobLoggingImpl mLogblobLogging;
     private final BroadcastReceiver mLoggerReceiver;
     private Log mNrdpLog;
+    private PdsLoggingImpl mPdsLogging;
     private PresentationTrackingManager mPresentationTrackingManager;
     private long mStartedTime;
     private final Handler mWorkerHandler;
@@ -86,6 +92,7 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
         this.mErrorLogging = new CrittercismErrorLoggingImpl();
         (this.mWorkerThread = new HandlerThread("ClientLoggingAgentWorker")).start();
         this.mWorkerHandler = new Handler(this.mWorkerThread.getLooper());
+        this.mPdsLogging = new PdsLoggingImpl(this);
         com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent:: done");
     }
     
@@ -125,8 +132,12 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
             intentFilter.addAction(actions6[n3]);
         }
         final String[] actions7 = IkoLogging.ACTIONS;
-        for (int length7 = actions7.length, n4 = n; n4 < length7; ++n4) {
+        for (int length7 = actions7.length, n4 = 0; n4 < length7; ++n4) {
             intentFilter.addAction(actions7[n4]);
+        }
+        final String[] actions8 = OfflineLogging.ACTIONS;
+        for (int length8 = actions8.length, n5 = n; n5 < length8; ++n5) {
+            intentFilter.addAction(actions8[n5]);
         }
         intentFilter.addCategory("com.netflix.mediaclient.intent.category.LOGGING");
         intentFilter.setPriority(999);
@@ -172,6 +183,9 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
             this.mNrdpLog.setAppIdChangedListener(null);
             this.mNrdpLog = null;
         }
+        if (this.mLogblobLogging != null) {
+            this.mLogblobLogging.destroy();
+        }
         super.destroy();
     }
     
@@ -183,6 +197,7 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
         this.mIntegratedClientLoggingManager = new IntegratedClientLoggingManager(this.getContext(), this, this.getUser(), this.getService());
         this.mPresentationTrackingManager = new PresentationTrackingManager(this.getContext(), this, this.getUser());
         this.mAdvertiserIdLoggingManager = new AdvertiserIdLoggingManager(this.getContext(), this);
+        this.mLogblobLogging = new LogblobLoggingImpl(this);
         com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent::init create executor thread start ");
         this.mExecutor = Executors.newSingleThreadScheduledExecutor(LoggingAgent.sThreadFactory);
         com.netflix.mediaclient.Log.d("nf_log", "ClientLoggingAgent::init create executor thread done ");
@@ -190,6 +205,8 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
         this.mIntegratedClientLoggingManager.init(this.mExecutor);
         this.mPresentationTrackingManager.init(this.mExecutor);
         this.mAdvertiserIdLoggingManager.init();
+        this.mLogblobLogging.init(this.mExecutor);
+        this.mPdsLogging.init(this.mExecutor);
         this.registerReceiver();
         ErrorLoggingManager.onConfigurationChanged(this.getContext(), this.getConfigurationAgent().getErrorLoggingSpecification(), this.getConfigurationAgent().getBreadcrumbLoggingSpecification());
         this.addConfigurationChangeListener();
@@ -226,6 +243,11 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     }
     
     @Override
+    public String getApplicationId() {
+        return this.getNrdController().getNrdp().getLog().getAppId();
+    }
+    
+    @Override
     public ApplicationPerformanceMetricsLogging getApplicationPerformanceMetricsLogging() {
         final IntegratedClientLoggingManager mIntegratedClientLoggingManager = this.mIntegratedClientLoggingManager;
         if (mIntegratedClientLoggingManager == null) {
@@ -255,6 +277,11 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     }
     
     @Override
+    public LogblobLogging getLogblobLogging() {
+        return this.mLogblobLogging;
+    }
+    
+    @Override
     public long getNextSequence() {
         if (this.mIntegratedClientLoggingManager == null) {
             return 0L;
@@ -264,6 +291,11 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     
     long getNextTimeToDeliverAfterFailure() {
         return this.mFailureCounter.incrementAndGet() * 60000;
+    }
+    
+    @Override
+    public IPdsLogging getPdsLogging() {
+        return this.mPdsLogging;
     }
     
     @Override
@@ -277,6 +309,11 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     
     public ServiceAgent$UserAgentInterface getUser() {
         return this.getUserAgent();
+    }
+    
+    @Override
+    public String getUserSessionId() {
+        return this.getNrdController().getNrdp().getLog().getSessionId();
     }
     
     public boolean handleCommand(final Intent intent) {
@@ -293,6 +330,15 @@ public final class LoggingAgent extends ServiceAgent implements Log$AppIdChanged
     public void handleConnectivityChange(final Intent intent) {
         if (this.mIntegratedClientLoggingManager != null) {
             this.mIntegratedClientLoggingManager.handleConnectivityChange(intent);
+        }
+        if (this.mLogblobLogging != null) {
+            this.mLogblobLogging.handleConnectivityChange(intent);
+        }
+        if (this.mPresentationTrackingManager != null) {
+            this.mPresentationTrackingManager.handleConnectivityChange(intent);
+        }
+        if (this.mPdsLogging != null) {
+            this.mPdsLogging.handleConnectivityChange(intent);
         }
     }
     

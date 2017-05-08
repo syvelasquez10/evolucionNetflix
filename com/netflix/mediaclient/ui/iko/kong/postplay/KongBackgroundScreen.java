@@ -70,15 +70,15 @@ public class KongBackgroundScreen extends KongBaseScreen
     
     @Override
     void initViews(final View view) {
-        this.background = (ImageView)view.findViewById(2131690040);
-        this.backgroundPattern = (ImageView)view.findViewById(2131690041);
+        this.background = (ImageView)view.findViewById(2131690087);
+        this.backgroundPattern = (ImageView)view.findViewById(2131690088);
         this.background.setOnTouchListener((View$OnTouchListener)new KongBackgroundScreen$1(this, view));
-        this.title = (TextView)view.findViewById(2131689863);
-        this.titleContainer = (ViewGroup)view.findViewById(2131690060);
-        this.titleFlare = (ImageView)view.findViewById(2131689864);
-        this.progress = (ProgressBar)view.findViewById(2131690061);
-        this.closeButton = (ImageView)view.findViewById(2131690054);
-        (this.backButton = (ImageView)view.findViewById(2131689776)).setOnClickListener((View$OnClickListener)new KongBackgroundScreen$2(this));
+        this.title = (TextView)view.findViewById(2131689890);
+        this.titleContainer = (ViewGroup)view.findViewById(2131690106);
+        this.titleFlare = (ImageView)view.findViewById(2131689891);
+        this.progress = (ProgressBar)view.findViewById(2131690107);
+        this.closeButton = (ImageView)view.findViewById(2131690072);
+        (this.backButton = (ImageView)view.findViewById(2131689796)).setOnClickListener((View$OnClickListener)new KongBackgroundScreen$2(this));
     }
     
     @Override

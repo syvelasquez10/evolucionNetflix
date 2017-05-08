@@ -6,6 +6,7 @@ package com.netflix.mediaclient.service;
 
 import com.netflix.mediaclient.service.webclient.UserCredentialRegistry;
 import com.netflix.mediaclient.service.player.subtitles.text.TextStyle;
+import com.netflix.mediaclient.servicemgr.IMSLClient$MSLUserCredentialRegistry;
 import com.netflix.mediaclient.servicemgr.interface_.user.UserProfile;
 import com.netflix.mediaclient.util.l10n.UserLocale;
 import com.netflix.mediaclient.service.user.UserAgentWebCallback;
@@ -29,6 +30,10 @@ public interface ServiceAgent$UserAgentInterface
     String getCurrentProfileGuid();
     
     String getGeoCountry();
+    
+    IMSLClient$MSLUserCredentialRegistry getMSLUserCredentialRegistry();
+    
+    String getPrimaryProfileGuid();
     
     String getReqCountry();
     

@@ -4,8 +4,6 @@
 
 package android.support.v4.widget;
 
-import android.view.View;
-
 class DrawerLayout$ViewDragCallback$1 implements Runnable
 {
     final /* synthetic */ DrawerLayout$ViewDragCallback this$1;

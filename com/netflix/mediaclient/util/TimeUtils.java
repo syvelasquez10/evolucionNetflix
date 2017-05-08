@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.util;
 
 import android.content.Context;
+import android.os.SystemClock;
 
 public class TimeUtils
 {
@@ -49,12 +50,16 @@ public class TimeUtils
         return (int)(n / 60.0f + 0.5f);
     }
     
+    public static long getDeviceCurrentBootTimeInMs() {
+        return System.currentTimeMillis() - SystemClock.elapsedRealtime();
+    }
+    
     public static String getFormattedTime(int n, final Context context) {
         final int n2 = n / 3600;
         n = (n - n2 * 3600) / 60;
         if (n2 > 0) {
-            return context.getResources().getString(2131231125, new Object[] { n2, n });
+            return context.getResources().getString(2131231162, new Object[] { n2, n });
         }
-        return context.getResources().getString(2131231126, new Object[] { n });
+        return context.getResources().getString(2131231163, new Object[] { n });
     }
 }

@@ -4,17 +4,15 @@
 
 package android.support.v7.widget;
 
+import android.support.v7.content.res.AppCompatResources;
 import android.graphics.drawable.Drawable;
 import android.graphics.PorterDuff$Mode;
 import android.content.res.ColorStateList;
 import android.widget.TextView;
 import android.view.View;
-import android.support.v7.internal.widget.TintTypedArray;
-import android.support.v7.internal.widget.TintContextWrapper;
 import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.support.v7.internal.widget.TintManager;
 import android.support.v4.view.TintableBackgroundView;
 import android.widget.AutoCompleteTextView;
 
@@ -23,7 +21,6 @@ public class AppCompatAutoCompleteTextView extends AutoCompleteTextView implemen
     private static final int[] TINT_ATTRS;
     private AppCompatBackgroundHelper mBackgroundTintHelper;
     private AppCompatTextHelper mTextHelper;
-    private TintManager mTintManager;
     
     static {
         TINT_ATTRS = new int[] { 16843126 };
@@ -40,19 +37,22 @@ public class AppCompatAutoCompleteTextView extends AutoCompleteTextView implemen
     public AppCompatAutoCompleteTextView(final Context context, final AttributeSet set, final int n) {
         super(TintContextWrapper.wrap(context), set, n);
         final TintTypedArray obtainStyledAttributes = TintTypedArray.obtainStyledAttributes(this.getContext(), set, AppCompatAutoCompleteTextView.TINT_ATTRS, n, 0);
-        this.mTintManager = obtainStyledAttributes.getTintManager();
         if (obtainStyledAttributes.hasValue(0)) {
             this.setDropDownBackgroundDrawable(obtainStyledAttributes.getDrawable(0));
         }
         obtainStyledAttributes.recycle();
-        (this.mBackgroundTintHelper = new AppCompatBackgroundHelper((View)this, this.mTintManager)).loadFromAttributes(set, n);
-        (this.mTextHelper = new AppCompatTextHelper((TextView)this)).loadFromAttributes(set, n);
+        (this.mBackgroundTintHelper = new AppCompatBackgroundHelper((View)this)).loadFromAttributes(set, n);
+        (this.mTextHelper = AppCompatTextHelper.create((TextView)this)).loadFromAttributes(set, n);
+        this.mTextHelper.applyCompoundDrawablesTints();
     }
     
     protected void drawableStateChanged() {
         super.drawableStateChanged();
         if (this.mBackgroundTintHelper != null) {
             this.mBackgroundTintHelper.applySupportBackgroundTint();
+        }
+        if (this.mTextHelper != null) {
+            this.mTextHelper.applyCompoundDrawablesTints();
         }
     }
     
@@ -84,12 +84,8 @@ public class AppCompatAutoCompleteTextView extends AutoCompleteTextView implemen
         }
     }
     
-    public void setDropDownBackgroundResource(final int dropDownBackgroundResource) {
-        if (this.mTintManager != null) {
-            this.setDropDownBackgroundDrawable(this.mTintManager.getDrawable(dropDownBackgroundResource));
-            return;
-        }
-        super.setDropDownBackgroundResource(dropDownBackgroundResource);
+    public void setDropDownBackgroundResource(final int n) {
+        this.setDropDownBackgroundDrawable(AppCompatResources.getDrawable(this.getContext(), n));
     }
     
     public void setSupportBackgroundTintList(final ColorStateList supportBackgroundTintList) {

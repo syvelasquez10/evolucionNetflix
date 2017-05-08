@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.ui.lomo.discovery.extended;
 
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 
 class CWExtendedDiscoveryFrag$CWViewHolder$1 implements CWExtendedDiscoveryFrag$RemotePlaybackListener
@@ -16,7 +17,7 @@ class CWExtendedDiscoveryFrag$CWViewHolder$1 implements CWExtendedDiscoveryFrag$
     
     @Override
     public void onRemotePlaybackInitiated() {
-        if (!AndroidUtils.isActivityFinishedOrDestroyed(this.this$1.this$0.getActivity())) {
+        if (!AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$1.this$0.getActivity())) {
             this.this$1.this$0.dismiss();
         }
     }

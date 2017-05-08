@@ -18,7 +18,7 @@ import com.netflix.mediaclient.util.StringUtils;
 import android.view.ViewTreeObserver$OnGlobalLayoutListener;
 import android.widget.ListAdapter;
 import android.widget.GridView;
-import android.content.Context;
+import android.app.Activity;
 import com.netflix.mediaclient.util.gfx.AnimationUtils;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
 import android.widget.TextView;
@@ -36,7 +36,7 @@ import java.util.List;
 import com.netflix.mediaclient.servicemgr.interface_.trackable.Trackable;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.Log;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.interface_.search.SearchVideoListProvider;
@@ -56,7 +56,7 @@ class SearchQueryDetailsActivity$OnSimsFetchedCallback extends LoggingManagerCal
     @Override
     public void onSimilarVideosFetched(final SearchVideoListProvider searchVideoListProvider, final Status status) {
         super.onSimilarVideosFetched(searchVideoListProvider, status);
-        if (this.requestId != this.this$0.requestId || AndroidUtils.isActivityFinishedOrDestroyed(this.this$0)) {
+        if (this.requestId != this.this$0.requestId || AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0)) {
             Log.v("SearchQueryDetailsActivity", "Ignoring stale callback");
             return;
         }

@@ -11,11 +11,11 @@ import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
 import com.netflix.mediaclient.ui.details.AbsEpisodeView$EpisodeRowListener;
 import com.netflix.mediaclient.android.fragment.NetflixDialogFrag$DialogCanceledListener;
 import com.netflix.mediaclient.service.logging.client.model.DataContext;
+import com.netflix.mediaclient.ui.common.PlayContextImp;
 import android.app.Fragment;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.Asset;
-import android.os.Parcelable;
 import com.netflix.mediaclient.Log;
 import android.content.Intent;
 import com.netflix.mediaclient.ui.common.PlayContext;
@@ -31,7 +31,7 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
 {
     static final String EXTRA_GET_DETAILS_EPISODE_DETAILS = "extra_get_details_EPISODE_DETAILS";
     static final String EXTRA_GET_DETAILS_IS_EPISODE = "extra_get_details_is_episode";
-    static final String EXTRA_GET_DETAILS_PLAY_CONTEXT = "extra_get_details_play_context";
+    static final String EXTRA_GET_DETAILS_PLAY_CONTEXT_BUNDLE = "extra_get_details_play_context_bundle";
     static final String EXTRA_GET_DETAILS_VIDEO_ID = "extra_get_details_video_id";
     static final String EXTRA_GET_DETAILS_VIDEO_TYPE = "extra_get_details_video_type";
     public static final String INTENT_PLAY = "com.netflix.mediaclient.intent.action.NOTIFICATION_PLAY";
@@ -46,19 +46,7 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
         intent.addFlags(131072);
         intent.putExtra("extra_get_details_video_id", s);
         intent.putExtra("extra_get_details_video_type", videoType.getValue());
-        intent.putExtra("extra_get_details_play_context", (Parcelable)playContext);
-        return intent;
-    }
-    
-    public static Intent createColdStartIntentForService(final String s, final VideoType videoType, final PlayContext playContext) {
-        if (Log.isLoggable()) {
-            Log.d("PlayerActivity", "Performing 'cold start' - activity itself will get details for videoId: " + s);
-        }
-        final Intent intent = new Intent("com.netflix.mediaclient.intent.action.NOTIFICATION_PLAY");
-        intent.addFlags(131072);
-        intent.putExtra("extra_get_details_video_id", s);
-        intent.putExtra("extra_get_details_video_type", videoType.getValue());
-        intent.putExtra("extra_get_details_play_context", (Parcelable)playContext);
+        intent.putExtra("extra_get_details_play_context_bundle", playContext.playContextToBundle());
         return intent;
     }
     
@@ -106,7 +94,7 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     protected Fragment createPrimaryFrag() {
         final Intent intent = this.getIntent();
         if (intent.hasExtra("extra_get_details_video_id")) {
-            this.playerFragment = PlayerFragment.createPlayerFragment(intent.getStringExtra("extra_get_details_video_id"), intent.getStringExtra("extra_get_details_video_type"), intent.getParcelableExtra("extra_get_details_play_context"), -1);
+            this.playerFragment = PlayerFragment.createPlayerFragment(intent.getStringExtra("extra_get_details_video_id"), intent.getStringExtra("extra_get_details_video_type"), PlayContextImp.createPlayContextFromBundle(intent.getBundleExtra("extra_get_details_play_context_bundle")), -1);
         }
         else {
             this.playerFragment = PlayerFragment.createPlayerFragment(getAssetFromIntent(this.getIntent()));
@@ -122,7 +110,7 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     
     @Override
     protected int getContentLayoutId() {
-        return 2130903128;
+        return 2130903137;
     }
     
     @Override
@@ -195,18 +183,17 @@ public class PlayerActivity extends FragmentHostActivity implements NetflixDialo
     
     @Override
     protected void onNewIntent(final Intent intent) {
-        super.onNewIntent(intent);
         if (shouldResumePreviousPlay(this.getIntent(), intent)) {
             Log.d("PlayerActivity", "Got same video ID - resuming the playback...");
             return;
         }
-        this.setIntent(intent);
+        super.onNewIntent(intent);
         if (this.playerFragment == null) {
             ErrorLoggingManager.logHandledException("SPY-8343 - PlayerActivity received onNewIntent() prior to onCreate() - skipping to avoid crash");
             return;
         }
         if (intent.hasExtra("extra_get_details_video_id")) {
-            this.playerFragment.setExternalBundle(PlayerFragment.getBundle(intent.getStringExtra("extra_get_details_video_id"), intent.getStringExtra("extra_get_details_video_type"), intent.getParcelableExtra("extra_get_details_play_context")));
+            this.playerFragment.setExternalBundle(PlayerFragment.getBundle(intent.getStringExtra("extra_get_details_video_id"), intent.getStringExtra("extra_get_details_video_type"), PlayContextImp.createPlayContextFromBundle(intent.getBundleExtra("extra_get_details_play_context_bundle"))));
         }
         else {
             this.playerFragment.setExternalBundle(PlayerFragment.getBundle(getAssetFromIntent(this.getIntent())));

@@ -51,38 +51,38 @@ public abstract class MdxRemoteViews
             return null;
         }
         if (b) {
-            return new RemoteViews(this.mPackageName, 2130903195);
+            return new RemoteViews(this.mPackageName, 2130903205);
         }
-        return new RemoteViews(this.mPackageName, 2130903194);
+        return new RemoteViews(this.mPackageName, 2130903204);
     }
     
     private void updateBoxart(final RemoteViews remoteViews) {
         if (this.mBoxart == null || remoteViews == null) {
             return;
         }
-        remoteViews.setImageViewBitmap(2131689971, this.mBoxart);
+        remoteViews.setImageViewBitmap(2131689999, this.mBoxart);
     }
     
     private void updateTitles(final RemoteViews remoteViews) {
         if (remoteViews != null) {
             if (StringUtils.isNotEmpty(this.mMainTitle)) {
-                remoteViews.setTextViewText(2131689972, (CharSequence)this.mMainTitle);
+                remoteViews.setTextViewText(2131690000, (CharSequence)this.mMainTitle);
             }
             else {
-                remoteViews.setTextViewText(2131689972, (CharSequence)"");
+                remoteViews.setTextViewText(2131690000, (CharSequence)"");
             }
             if (StringUtils.isNotEmpty(this.getHeader())) {
-                remoteViews.setTextViewText(2131689978, (CharSequence)this.getHeader());
+                remoteViews.setTextViewText(2131690006, (CharSequence)this.getHeader());
             }
             else {
-                remoteViews.setTextViewText(2131689978, (CharSequence)"");
+                remoteViews.setTextViewText(2131690006, (CharSequence)"");
             }
             if (this.mIsEpisode) {
                 if (StringUtils.isNotEmpty(this.mSubTitle)) {
-                    remoteViews.setTextViewText(2131689973, (CharSequence)this.mSubTitle);
+                    remoteViews.setTextViewText(2131690001, (CharSequence)this.mSubTitle);
                     return;
                 }
-                remoteViews.setTextViewText(2131689973, (CharSequence)"");
+                remoteViews.setTextViewText(2131690001, (CharSequence)"");
             }
         }
     }
@@ -122,40 +122,40 @@ public abstract class MdxRemoteViews
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131689975, 2130837872);
-        remoteViews.setOnClickPendingIntent(2131689975, this.mIntentRetriever.getPauseIntent());
+        remoteViews.setImageViewResource(2131690003, 2130837929);
+        remoteViews.setOnClickPendingIntent(2131690003, this.mIntentRetriever.getPauseIntent());
     }
     
     protected void setPauseInactive(final RemoteViews remoteViews) {
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131689975, 2130837873);
-        remoteViews.setOnClickPendingIntent(2131689975, this.mIntentRetriever.getNoActionIntent());
+        remoteViews.setImageViewResource(2131690003, 2130837930);
+        remoteViews.setOnClickPendingIntent(2131690003, this.mIntentRetriever.getNoActionIntent());
     }
     
     protected void setPlayActiveWithGetNext(final RemoteViews remoteViews) {
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131689975, 2130837874);
-        remoteViews.setOnClickPendingIntent(2131689975, this.mIntentRetriever.getPlayNextIntent());
+        remoteViews.setImageViewResource(2131690003, 2130837931);
+        remoteViews.setOnClickPendingIntent(2131690003, this.mIntentRetriever.getPlayNextIntent());
     }
     
     protected void setPlayActiveWithResume(final RemoteViews remoteViews) {
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131689975, 2130837874);
-        remoteViews.setOnClickPendingIntent(2131689975, this.mIntentRetriever.getResumeIntent());
+        remoteViews.setImageViewResource(2131690003, 2130837931);
+        remoteViews.setOnClickPendingIntent(2131690003, this.mIntentRetriever.getResumeIntent());
     }
     
     protected void setPlayInactive(final RemoteViews remoteViews) {
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131689975, 2130837875);
-        remoteViews.setOnClickPendingIntent(2131689975, this.mIntentRetriever.getNoActionIntent());
+        remoteViews.setImageViewResource(2131690003, 2130837932);
+        remoteViews.setOnClickPendingIntent(2131690003, this.mIntentRetriever.getNoActionIntent());
     }
     
     public abstract void setState(final boolean p0, final boolean p1);
@@ -164,16 +164,16 @@ public abstract class MdxRemoteViews
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131689976, 2130837876);
-        remoteViews.setOnClickPendingIntent(2131689976, this.mIntentRetriever.getStopIntent());
+        remoteViews.setImageViewResource(2131690004, 2130837933);
+        remoteViews.setOnClickPendingIntent(2131690004, this.mIntentRetriever.getStopIntent());
     }
     
     protected void setStopInactive(final RemoteViews remoteViews) {
         if (remoteViews == null || this.mIntentRetriever == null) {
             return;
         }
-        remoteViews.setImageViewResource(2131689976, 2130837877);
-        remoteViews.setOnClickPendingIntent(2131689976, this.mIntentRetriever.getNoActionIntent());
+        remoteViews.setImageViewResource(2131690004, 2130837934);
+        remoteViews.setOnClickPendingIntent(2131690004, this.mIntentRetriever.getNoActionIntent());
     }
     
     public void setTitles(final boolean mIsEpisode, final String mMainTitle, final String mSubTitle) {

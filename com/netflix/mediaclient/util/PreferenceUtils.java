@@ -13,7 +13,7 @@ import android.content.Context;
 
 public final class PreferenceUtils
 {
-    static final String PREFS_NAME = "nfxpref";
+    public static final String PREFS_NAME = "nfxpref";
     
     public static boolean containsPref(final Context context, final String s) {
         if (!validate(context, s)) {

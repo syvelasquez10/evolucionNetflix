@@ -8,7 +8,5 @@ import android.view.ViewConfiguration;
 
 interface ViewConfigurationCompat$ViewConfigurationVersionImpl
 {
-    int getScaledPagingTouchSlop(final ViewConfiguration p0);
-    
     boolean hasPermanentMenuKey(final ViewConfiguration p0);
 }

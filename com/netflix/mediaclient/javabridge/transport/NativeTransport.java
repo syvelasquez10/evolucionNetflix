@@ -112,6 +112,14 @@ public class NativeTransport implements Transport
         return native_getDnsList();
     }
     
+    public static long getNativeTimeMono() {
+        return native_getTimeMono();
+    }
+    
+    public static long getNativeTimeNow() {
+        return native_getTimeNow();
+    }
+    
     public static String[] getSupportedVideoProfiles() {
         return native_getSupportedProfiles();
     }
@@ -163,6 +171,10 @@ public class NativeTransport implements Transport
     private static final synchronized native String[] native_getDnsList();
     
     private static final synchronized native String[] native_getSupportedProfiles();
+    
+    private static final synchronized native long native_getTimeMono();
+    
+    private static final synchronized native long native_getTimeNow();
     
     private static final synchronized native boolean native_init(final int p0);
     
@@ -352,11 +364,14 @@ public class NativeTransport implements Transport
                 try {
                     this.native_invokeMethod(string, s, s3);
                     return;
-                    Label_0103: {
-                        string = "nrdp." + string;
-                    }
-                    continue;
                     // iftrue(Label_0103:, !string.startsWith("nrdp"))
+                    Block_5: {
+                        break Block_5;
+                        Label_0103: {
+                            string = "nrdp." + string;
+                        }
+                        continue;
+                    }
                     Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
                     continue;
                 }
@@ -383,13 +398,10 @@ public class NativeTransport implements Transport
                 while (true) {
                     this.native_setProperty(string, s, s2);
                     return;
-                    Block_4: {
-                        break Block_4;
-                        Label_0090: {
-                            string = "nrdp." + string;
-                        }
-                        continue;
+                    Label_0090: {
+                        string = "nrdp." + string;
                     }
+                    continue;
                     Log.d("nf-NativeTransport", "setProperty:: Already starts nrdp");
                     continue;
                 }
@@ -407,6 +419,11 @@ public class NativeTransport implements Transport
     
     @Override
     public void uiUnloaded() {
-        this.native_uiUnloaded();
+        try {
+            this.native_uiUnloaded();
+        }
+        catch (Throwable t) {
+            Log.w("nf-NativeTransport", t, "Catching runtime exception, so service will shutdown...");
+        }
     }
 }

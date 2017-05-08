@@ -12,6 +12,7 @@ import java.util.HashMap;
 import com.android.volley.AuthFailureError;
 import java.util.Map;
 import java.util.Iterator;
+import com.netflix.mediaclient.service.offline.agent.PlayabilityEnforcer;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.service.logging.client.model.DeepErrorElement;
 import java.util.List;
@@ -127,6 +128,7 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
                 }
             }
             ApmLogUtils.reportDataRequestEnded(this.mContext, String.valueOf(this.mUuid), IClientLogging$CompletionReason.success, (List<FalkorPathResult>)list, null, httpResponse);
+            PlayabilityEnforcer.updateLastContactNetflix(this.mContext);
         }
     }
     
@@ -153,6 +155,16 @@ public abstract class FalkorVolleyWebClientRequest<T> extends VolleyWebClientReq
     }
     
     protected abstract List<String> getPQLQueries();
+    
+    public String getPQLQueriesRepresentationAsString() {
+        if (this.getPQLQueries() == null) {
+            return "null";
+        }
+        if (this.getPQLQueries().size() == 1) {
+            return this.getPQLQueries().get(0);
+        }
+        return this.getPQLQueries().toString();
+    }
     
     protected String getQueryPathName() {
         if ("get".equals(this.getMethodType())) {

@@ -18,7 +18,7 @@ class DefaultItemAnimator$ChangeInfo
         this.newHolder = newHolder;
     }
     
-    private DefaultItemAnimator$ChangeInfo(final RecyclerView$ViewHolder recyclerView$ViewHolder, final RecyclerView$ViewHolder recyclerView$ViewHolder2, final int fromX, final int fromY, final int toX, final int toY) {
+    DefaultItemAnimator$ChangeInfo(final RecyclerView$ViewHolder recyclerView$ViewHolder, final RecyclerView$ViewHolder recyclerView$ViewHolder2, final int fromX, final int fromY, final int toX, final int toY) {
         this(recyclerView$ViewHolder, recyclerView$ViewHolder2);
         this.fromX = fromX;
         this.fromY = fromY;

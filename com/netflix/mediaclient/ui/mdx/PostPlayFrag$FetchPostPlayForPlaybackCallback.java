@@ -51,16 +51,20 @@ class PostPlayFrag$FetchPostPlayForPlaybackCallback extends LoggingManagerCallba
     @Override
     public void onEpisodeDetailsFetched(final EpisodeDetails episodeDetails, final Status status) {
         super.onEpisodeDetailsFetched(episodeDetails, status);
-        this.this$0.episodeDetails = episodeDetails;
-        this.this$0.updateDetails(episodeDetails);
-        this.this$0.showPostPlayViewsForNext();
+        if (episodeDetails != null) {
+            this.this$0.episodeDetails = episodeDetails;
+            this.this$0.updateDetails(episodeDetails);
+            this.this$0.showPostPlayViewsForNext();
+        }
     }
     
     @Override
     public void onMovieDetailsFetched(final MovieDetails movieDetails, final Status status) {
         super.onMovieDetailsFetched(movieDetails, status);
-        this.this$0.updateDetails(movieDetails);
-        this.this$0.showPostPlayViewsForTitleEnd();
+        if (movieDetails != null) {
+            this.this$0.updateDetails(movieDetails);
+            this.this$0.showPostPlayViewsForTitleEnd();
+        }
     }
     
     @Override
@@ -74,7 +78,9 @@ class PostPlayFrag$FetchPostPlayForPlaybackCallback extends LoggingManagerCallba
     @Override
     public void onShowDetailsFetched(final ShowDetails showDetails, final Status status) {
         super.onShowDetailsFetched(showDetails, status);
-        this.this$0.updateDetails(showDetails);
-        this.this$0.showPostPlayViewsForTitleEnd();
+        if (showDetails != null) {
+            this.this$0.updateDetails(showDetails);
+            this.this$0.showPostPlayViewsForTitleEnd();
+        }
     }
 }

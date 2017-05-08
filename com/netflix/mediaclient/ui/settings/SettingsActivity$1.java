@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.settings;
 
-import android.util.Log;
+import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.android.app.Status;
 import com.netflix.mediaclient.servicemgr.ServiceManager;
 import com.netflix.mediaclient.servicemgr.ManagerStatusListener;

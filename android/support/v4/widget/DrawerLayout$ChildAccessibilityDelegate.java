@@ -4,29 +4,6 @@
 
 package android.support.v4.widget;
 
-import android.graphics.drawable.ColorDrawable;
-import android.support.v4.content.ContextCompat;
-import android.os.Parcelable;
-import android.view.View$MeasureSpec;
-import android.support.v4.view.KeyEventCompat;
-import android.view.KeyEvent;
-import android.support.v4.view.MotionEventCompat;
-import android.view.ViewGroup$MarginLayoutParams;
-import android.support.v4.view.GravityCompat;
-import android.graphics.Canvas;
-import android.view.MotionEvent;
-import android.os.SystemClock;
-import android.view.ViewGroup$LayoutParams;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.ViewGroupCompat;
-import android.support.v4.view.ViewCompat;
-import android.util.AttributeSet;
-import android.content.Context;
-import android.os.Build$VERSION;
-import android.graphics.drawable.Drawable;
-import android.graphics.Paint;
-import java.util.ArrayList;
-import android.view.ViewGroup;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.View;
 import android.support.v4.view.AccessibilityDelegateCompat;
@@ -42,7 +19,7 @@ final class DrawerLayout$ChildAccessibilityDelegate extends AccessibilityDelegat
     @Override
     public void onInitializeAccessibilityNodeInfo(final View view, final AccessibilityNodeInfoCompat accessibilityNodeInfoCompat) {
         super.onInitializeAccessibilityNodeInfo(view, accessibilityNodeInfoCompat);
-        if (!includeChildForAccessibility(view)) {
+        if (!DrawerLayout.includeChildForAccessibility(view)) {
             accessibilityNodeInfoCompat.setParent(null);
         }
     }

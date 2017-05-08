@@ -6,7 +6,7 @@ package com.netflix.mediaclient.service.player.subtitles;
 
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
 import com.netflix.mediaclient.ui.player.subtitles.SubtitleManagerFactory;
 import com.netflix.mediaclient.ui.player.PlayerFragment;
 import com.netflix.mediaclient.ui.player.subtitles.SubtitleManager;
@@ -24,7 +24,7 @@ public class SafeSubtitleManager implements SubtitleManager
     private SubtitleManager getRealSubtitleManager() {
         synchronized (this) {
             if (this.mSubtitleManager == null) {
-                IMedia$SubtitleProfile subtitleProfileFromMetadata = null;
+                ISubtitleDef$SubtitleProfile subtitleProfileFromMetadata = null;
                 if (this.mPlayerFrag.getPlayer() != null) {
                     subtitleProfileFromMetadata = this.mPlayerFrag.getPlayer().getSubtitleProfileFromMetadata();
                 }
@@ -36,22 +36,22 @@ public class SafeSubtitleManager implements SubtitleManager
         }
     }
     
-    private boolean shouldCreateNewSubtitleManager(final IMedia$SubtitleProfile media$SubtitleProfile) {
-        final IMedia$SubtitleProfile subtitleProfile = this.getSubtitleProfile();
+    private boolean shouldCreateNewSubtitleManager(final ISubtitleDef$SubtitleProfile subtitleDef$SubtitleProfile) {
+        final ISubtitleDef$SubtitleProfile subtitleProfile = this.getSubtitleProfile();
         if (Log.isLoggable()) {
-            Log.d("nf_subtitles", "Old profile " + subtitleProfile + ", newProfile " + media$SubtitleProfile);
+            Log.d("nf_subtitles", "Old profile " + subtitleProfile + ", newProfile " + subtitleDef$SubtitleProfile);
         }
-        final boolean b = this.mSubtitleManager != null && this.mSubtitleManager.canHandleSubtitleProfile(media$SubtitleProfile);
+        final boolean b = this.mSubtitleManager != null && this.mSubtitleManager.canHandleSubtitleProfile(subtitleDef$SubtitleProfile);
         if (Log.isLoggable()) {
-            Log.d("nf_subtitles", "Existing manager can handle new profile " + media$SubtitleProfile + ", yes? " + b);
+            Log.d("nf_subtitles", "Existing manager can handle new profile " + subtitleDef$SubtitleProfile + ", yes? " + b);
         }
         return !b;
     }
     
     @Override
-    public boolean canHandleSubtitleProfile(final IMedia$SubtitleProfile media$SubtitleProfile) {
+    public boolean canHandleSubtitleProfile(final ISubtitleDef$SubtitleProfile subtitleDef$SubtitleProfile) {
         final SubtitleManager realSubtitleManager = this.getRealSubtitleManager();
-        return realSubtitleManager != null && realSubtitleManager.canHandleSubtitleProfile(media$SubtitleProfile);
+        return realSubtitleManager != null && realSubtitleManager.canHandleSubtitleProfile(subtitleDef$SubtitleProfile);
     }
     
     @Override
@@ -78,7 +78,7 @@ public class SafeSubtitleManager implements SubtitleManager
     }
     
     @Override
-    public IMedia$SubtitleProfile getSubtitleProfile() {
+    public ISubtitleDef$SubtitleProfile getSubtitleProfile() {
         final SubtitleManager realSubtitleManager = this.getRealSubtitleManager();
         if (realSubtitleManager != null) {
             return realSubtitleManager.getSubtitleProfile();
@@ -97,7 +97,7 @@ public class SafeSubtitleManager implements SubtitleManager
     @Override
     public void onSubtitleChange(final SubtitleScreen subtitleScreen) {
         synchronized (this) {
-            final IMedia$SubtitleProfile subtitleProfile = subtitleScreen.getParser().getSubtitleProfile();
+            final ISubtitleDef$SubtitleProfile subtitleProfile = subtitleScreen.getParser().getSubtitleProfile();
             if (this.shouldCreateNewSubtitleManager(subtitleProfile)) {
                 Log.d("nf_subtitles", "========> Create new subtitle manager!");
                 if (this.mSubtitleManager != null) {

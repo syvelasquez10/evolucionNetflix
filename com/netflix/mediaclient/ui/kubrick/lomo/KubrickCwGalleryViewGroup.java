@@ -31,7 +31,7 @@ public class KubrickCwGalleryViewGroup extends RecyclerView
     
     public KubrickCwGalleryViewGroup(final Context context, final int n) {
         super(context);
-        this.setId(2131689500);
+        this.setId(2131689504);
         this.setLayoutParams((ViewGroup$LayoutParams)new AbsListView$LayoutParams(-1, -2));
         final KubrickCwGalleryViewGroup$1 layoutManager = new KubrickCwGalleryViewGroup$1(this, context, 2, 0, false);
         layoutManager.setSpanSizeLookup(new KubrickCwGalleryViewGroup$2(this));

@@ -6,6 +6,8 @@ package com.netflix.mediaclient.service.job;
 
 public enum NetflixJob$NetflixJobId
 {
+    DOWNLOAD_MAINTENANCE(2), 
+    DOWNLOAD_RESUME(1), 
     FALKOR_METADATA(3), 
     UNKNOWN_JOB_ID(-1);
     

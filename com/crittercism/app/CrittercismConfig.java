@@ -7,6 +7,7 @@ package com.crittercism.app;
 import com.crittercism.internal.dw;
 import java.util.Collection;
 import android.os.Build$VERSION;
+import org.json.JSONObject;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,6 +64,28 @@ public class CrittercismConfig
         this.i = crittercismConfig.i;
     }
     
+    public CrittercismConfig(final JSONObject jsonObject) {
+        this.b = null;
+        this.c = false;
+        this.d = false;
+        this.e = true;
+        this.f = false;
+        this.g = b();
+        this.a = "com.crittercism/dumps";
+        this.h = "Developer Reply";
+        this.i = null;
+        this.j = new LinkedList();
+        this.k = new LinkedList();
+        this.b = a(jsonObject, "customVersionName", this.b);
+        this.d = a(jsonObject, "includeVersionCode", this.d);
+        this.e = a(jsonObject, "installNdk", this.e);
+        this.c = a(jsonObject, "delaySendingAppLoad", this.c);
+        this.f = a(jsonObject, "shouldCollectLogcat", this.f);
+        this.a = a(jsonObject, "nativeDumpPath", this.a);
+        this.h = a(jsonObject, "notificationTitle", this.h);
+        this.g = a(jsonObject, "installApm", this.g);
+    }
+    
     private static int a(final String s) {
         int hashCode = 0;
         if (s != null) {
@@ -71,11 +94,39 @@ public class CrittercismConfig
         return hashCode;
     }
     
+    private static String a(final JSONObject jsonObject, final String s, final String s2) {
+        String string = s2;
+        if (!jsonObject.has(s)) {
+            return string;
+        }
+        try {
+            string = jsonObject.getString(s);
+            return string;
+        }
+        catch (Exception ex) {
+            return s2;
+        }
+    }
+    
     public static boolean a(final String s, final String s2) {
         if (s == null) {
             return s2 == null;
         }
         return s.equals(s2);
+    }
+    
+    private static boolean a(final JSONObject jsonObject, final String s, final boolean b) {
+        boolean boolean1 = b;
+        if (!jsonObject.has(s)) {
+            return boolean1;
+        }
+        try {
+            boolean1 = jsonObject.getBoolean(s);
+            return boolean1;
+        }
+        catch (Exception ex) {
+            return b;
+        }
     }
     
     private static final boolean b() {
@@ -107,6 +158,10 @@ public class CrittercismConfig
     
     public List getPreserveQueryStringPatterns() {
         return new LinkedList(this.k);
+    }
+    
+    public final String getRateMyAppTestTarget() {
+        return this.i;
     }
     
     public List getURLBlacklistPatterns() {
@@ -181,6 +236,10 @@ public class CrittercismConfig
         this.b = b;
     }
     
+    public final void setDelaySendingAppLoad(final boolean c) {
+        this.c = c;
+    }
+    
     public final void setLogcatReportingEnabled(final boolean f) {
         this.f = f;
     }
@@ -205,6 +264,10 @@ public class CrittercismConfig
         }
     }
     
+    public final void setRateMyAppTestTarget(final String i) {
+        this.i = i;
+    }
+    
     public final void setServiceMonitoringEnabled(final boolean optmzEnabled) {
         this.setOptmzEnabled(optmzEnabled);
     }
@@ -214,5 +277,9 @@ public class CrittercismConfig
         if (list != null) {
             this.j.addAll(list);
         }
+    }
+    
+    public final void setVersionCodeToBeIncludedInVersionString(final boolean d) {
+        this.d = d;
     }
 }

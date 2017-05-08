@@ -4,14 +4,13 @@
 
 package android.support.v4.view;
 
-import android.view.animation.Interpolator;
 import android.os.Build$VERSION;
-import java.lang.ref.WeakReference;
 import android.graphics.Paint;
 import android.view.View;
 
 class ViewPropertyAnimatorCompat$ICSViewPropertyAnimatorCompatImpl$MyVpaListener implements ViewPropertyAnimatorListener
 {
+    boolean mAnimEndCalled;
     ViewPropertyAnimatorCompat mVpa;
     
     ViewPropertyAnimatorCompat$ICSViewPropertyAnimatorCompatImpl$MyVpaListener(final ViewPropertyAnimatorCompat mVpa) {
@@ -39,29 +38,37 @@ class ViewPropertyAnimatorCompat$ICSViewPropertyAnimatorCompatImpl$MyVpaListener
             ViewCompat.setLayerType(view, this.mVpa.mOldLayerType, null);
             this.mVpa.mOldLayerType = -1;
         }
-        if (this.mVpa.mEndAction != null) {
-            this.mVpa.mEndAction.run();
-        }
-        final Object tag = view.getTag(2113929216);
-        ViewPropertyAnimatorListener viewPropertyAnimatorListener;
-        if (tag instanceof ViewPropertyAnimatorListener) {
-            viewPropertyAnimatorListener = (ViewPropertyAnimatorListener)tag;
-        }
-        else {
-            viewPropertyAnimatorListener = null;
-        }
-        if (viewPropertyAnimatorListener != null) {
-            viewPropertyAnimatorListener.onAnimationEnd(view);
+        if (Build$VERSION.SDK_INT >= 16 || !this.mAnimEndCalled) {
+            if (this.mVpa.mEndAction != null) {
+                final Runnable mEndAction = this.mVpa.mEndAction;
+                this.mVpa.mEndAction = null;
+                mEndAction.run();
+            }
+            final Object tag = view.getTag(2113929216);
+            ViewPropertyAnimatorListener viewPropertyAnimatorListener;
+            if (tag instanceof ViewPropertyAnimatorListener) {
+                viewPropertyAnimatorListener = (ViewPropertyAnimatorListener)tag;
+            }
+            else {
+                viewPropertyAnimatorListener = null;
+            }
+            if (viewPropertyAnimatorListener != null) {
+                viewPropertyAnimatorListener.onAnimationEnd(view);
+            }
+            this.mAnimEndCalled = true;
         }
     }
     
     @Override
     public void onAnimationStart(final View view) {
+        this.mAnimEndCalled = false;
         if (this.mVpa.mOldLayerType >= 0) {
             ViewCompat.setLayerType(view, 2, null);
         }
         if (this.mVpa.mStartAction != null) {
-            this.mVpa.mStartAction.run();
+            final Runnable mStartAction = this.mVpa.mStartAction;
+            this.mVpa.mStartAction = null;
+            mStartAction.run();
         }
         final Object tag = view.getTag(2113929216);
         ViewPropertyAnimatorListener viewPropertyAnimatorListener;

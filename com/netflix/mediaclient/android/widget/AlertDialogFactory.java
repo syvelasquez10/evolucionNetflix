@@ -4,6 +4,7 @@
 
 package com.netflix.mediaclient.android.widget;
 
+import com.netflix.mediaclient.Log;
 import android.text.util.Linkify;
 import android.text.SpannableString;
 import com.netflix.mediaclient.util.StringUtils;
@@ -17,6 +18,8 @@ import android.app.Dialog;
 
 public final class AlertDialogFactory
 {
+    private static final String TAG = "nf_dialog";
+    
     public static void activateLinkIfExist(final Dialog dialog) {
         final TextView textView = (TextView)dialog.findViewById(16908299);
         if (textView != null) {
@@ -41,10 +44,10 @@ public final class AlertDialogFactory
         updateDialog$Builder.setTitle(noNull(s));
         updateDialog$Builder.setMessage((CharSequence)processMessage(s2));
         if (string == null) {
-            string = context.getString(2131231128);
+            string = context.getString(2131231167);
         }
         if (string2 == null) {
-            string2 = context.getString(2131230993);
+            string2 = context.getString(2131231008);
         }
         if (handler != null) {
             updateDialog$Builder.setPositiveButton(string, (DialogInterface$OnClickListener)new AlertDialogFactory$1(runnable, handler, runnable3));
@@ -74,12 +77,18 @@ public final class AlertDialogFactory
         return s2;
     }
     
-    private static Spannable processMessage(final String s) {
+    private static Spannable processMessage(String s) {
         if (StringUtils.isEmpty(s)) {
             return (Spannable)new SpannableString((CharSequence)"");
         }
-        final SpannableString spannableString = new SpannableString((CharSequence)s);
-        Linkify.addLinks((Spannable)spannableString, 15);
-        return (Spannable)spannableString;
+        s = (String)new SpannableString((CharSequence)s);
+        try {
+            Linkify.addLinks((Spannable)s, 15);
+            return (Spannable)s;
+        }
+        catch (Throwable t) {
+            Log.e("nf_dialog", "SPY-10546: Unable to add links to spannable", t);
+            return (Spannable)s;
+        }
     }
 }

@@ -4,30 +4,48 @@
 
 package android.support.design.widget;
 
+import android.os.Parcelable;
 import android.view.View$MeasureSpec;
-import android.support.v4.view.ViewCompat;
+import android.os.Build$VERSION;
+import android.view.animation.Interpolator;
+import java.lang.ref.WeakReference;
+import android.graphics.Rect;
 import java.util.List;
+import android.support.v4.view.ViewCompat;
+import android.view.View;
 import android.content.res.TypedArray;
 import android.support.design.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.view.View;
 
-public class AppBarLayout$ScrollingViewBehavior extends ViewOffsetBehavior<View>
+public class AppBarLayout$ScrollingViewBehavior extends HeaderScrollingViewBehavior
 {
-    private int mOverlayTop;
-    
     public AppBarLayout$ScrollingViewBehavior() {
     }
     
     public AppBarLayout$ScrollingViewBehavior(final Context context, final AttributeSet set) {
         super(context, set);
-        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.ScrollingViewBehavior_Params);
-        this.mOverlayTop = obtainStyledAttributes.getDimensionPixelSize(R$styleable.ScrollingViewBehavior_Params_behavior_overlapTop, 0);
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.ScrollingViewBehavior_Layout);
+        this.setOverlayTop(obtainStyledAttributes.getDimensionPixelSize(R$styleable.ScrollingViewBehavior_Layout_behavior_overlapTop, 0));
         obtainStyledAttributes.recycle();
     }
     
-    private static AppBarLayout findFirstAppBarLayout(final List<View> list) {
+    private static int getAppBarLayoutOffset(final AppBarLayout appBarLayout) {
+        final CoordinatorLayout$Behavior behavior = ((CoordinatorLayout$LayoutParams)appBarLayout.getLayoutParams()).getBehavior();
+        if (behavior instanceof AppBarLayout$Behavior) {
+            return ((AppBarLayout$Behavior)behavior).getTopBottomOffsetForScrollingSibling();
+        }
+        return 0;
+    }
+    
+    private void offsetChildAsNeeded(final CoordinatorLayout coordinatorLayout, final View view, final View view2) {
+        final CoordinatorLayout$Behavior behavior = ((CoordinatorLayout$LayoutParams)view2.getLayoutParams()).getBehavior();
+        if (behavior instanceof AppBarLayout$Behavior) {
+            ViewCompat.offsetTopAndBottom(view, ((AppBarLayout$Behavior)behavior).mOffsetDelta + (view2.getBottom() - view.getTop()) + this.getVerticalLayoutGap() - this.getOverlapPixelsForOffset(view2));
+        }
+    }
+    
+    AppBarLayout findFirstDependency(final List<View> list) {
         for (int size = list.size(), i = 0; i < size; ++i) {
             final View view = list.get(i);
             if (view instanceof AppBarLayout) {
@@ -38,55 +56,51 @@ public class AppBarLayout$ScrollingViewBehavior extends ViewOffsetBehavior<View>
     }
     
     @Override
+    float getOverlapRatioForOffset(final View view) {
+        if (view instanceof AppBarLayout) {
+            final AppBarLayout appBarLayout = (AppBarLayout)view;
+            final int totalScrollRange = appBarLayout.getTotalScrollRange();
+            final int downNestedPreScrollRange = appBarLayout.getDownNestedPreScrollRange();
+            final int appBarLayoutOffset = getAppBarLayoutOffset(appBarLayout);
+            if (downNestedPreScrollRange == 0 || totalScrollRange + appBarLayoutOffset > downNestedPreScrollRange) {
+                final int n = totalScrollRange - downNestedPreScrollRange;
+                if (n != 0) {
+                    return 1.0f + appBarLayoutOffset / n;
+                }
+            }
+        }
+        return 0.0f;
+    }
+    
+    @Override
+    int getScrollRange(final View view) {
+        if (view instanceof AppBarLayout) {
+            return ((AppBarLayout)view).getTotalScrollRange();
+        }
+        return super.getScrollRange(view);
+    }
+    
+    @Override
     public boolean layoutDependsOn(final CoordinatorLayout coordinatorLayout, final View view, final View view2) {
         return view2 instanceof AppBarLayout;
     }
     
     @Override
     public boolean onDependentViewChanged(final CoordinatorLayout coordinatorLayout, final View view, final View view2) {
-        final CoordinatorLayout$Behavior behavior = ((CoordinatorLayout$LayoutParams)view2.getLayoutParams()).getBehavior();
-        if (behavior instanceof AppBarLayout$Behavior) {
-            final int topBottomOffsetForScrollingSibling = ((AppBarLayout$Behavior)behavior).getTopBottomOffsetForScrollingSibling();
-            final int height = view2.getHeight();
-            final int mOverlayTop = this.mOverlayTop;
-            final int height2 = coordinatorLayout.getHeight();
-            final int height3 = view.getHeight();
-            if (this.mOverlayTop != 0 && view2 instanceof AppBarLayout) {
-                this.setTopAndBottomOffset(AnimationUtils.lerp(height - mOverlayTop, height2 - height3, Math.abs(topBottomOffsetForScrollingSibling) / ((AppBarLayout)view2).getTotalScrollRange()));
-            }
-            else {
-                this.setTopAndBottomOffset(topBottomOffsetForScrollingSibling + (view2.getHeight() - this.mOverlayTop));
-            }
-        }
+        this.offsetChildAsNeeded(coordinatorLayout, view, view2);
         return false;
     }
     
     @Override
-    public boolean onMeasureChild(final CoordinatorLayout coordinatorLayout, final View view, final int n, final int n2, int n3, final int n4) {
-        final int height = view.getLayoutParams().height;
-        if (height == -1 || height == -2) {
-            final List<View> dependencies = coordinatorLayout.getDependencies(view);
-            if (!dependencies.isEmpty()) {
-                final AppBarLayout firstAppBarLayout = findFirstAppBarLayout(dependencies);
-                if (firstAppBarLayout != null && ViewCompat.isLaidOut((View)firstAppBarLayout)) {
-                    if (ViewCompat.getFitsSystemWindows((View)firstAppBarLayout)) {
-                        ViewCompat.setFitsSystemWindows(view, true);
-                    }
-                    if ((n3 = View$MeasureSpec.getSize(n3)) == 0) {
-                        n3 = coordinatorLayout.getHeight();
-                    }
-                    final int measuredHeight = firstAppBarLayout.getMeasuredHeight();
-                    final int totalScrollRange = firstAppBarLayout.getTotalScrollRange();
-                    int n5;
-                    if (height == -1) {
-                        n5 = 1073741824;
-                    }
-                    else {
-                        n5 = Integer.MIN_VALUE;
-                    }
-                    coordinatorLayout.onMeasureChild(view, n, n2, View$MeasureSpec.makeMeasureSpec(totalScrollRange + (n3 - measuredHeight), n5), n4);
-                    return true;
-                }
+    public boolean onRequestChildRectangleOnScreen(final CoordinatorLayout coordinatorLayout, final View view, final Rect rect, final boolean b) {
+        final AppBarLayout firstDependency = this.findFirstDependency(coordinatorLayout.getDependencies(view));
+        if (firstDependency != null) {
+            rect.offset(view.getLeft(), view.getTop());
+            final Rect mTempRect1 = this.mTempRect1;
+            mTempRect1.set(0, 0, coordinatorLayout.getWidth(), coordinatorLayout.getHeight());
+            if (!mTempRect1.contains(rect)) {
+                firstDependency.setExpanded(false, !b);
+                return true;
             }
         }
         return false;

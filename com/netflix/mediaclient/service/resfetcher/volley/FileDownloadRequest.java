@@ -136,103 +136,118 @@ public class FileDownloadRequest extends Request<String>
         //   161: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
         //   164: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
         //   167: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   170: aload_2        
-        //   171: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   174: pop            
-        //   175: aload_1        
-        //   176: areturn        
-        //   177: astore          4
-        //   179: aconst_null    
-        //   180: astore_1       
-        //   181: aload_1        
-        //   182: astore_2       
-        //   183: new             Lcom/android/volley/VolleyError;
-        //   186: dup            
-        //   187: new             Ljava/lang/StringBuilder;
-        //   190: dup            
-        //   191: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   194: ldc             "Could not save bytes to "
-        //   196: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   199: aload           5
-        //   201: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
-        //   204: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   207: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   210: aload           4
-        //   212: invokespecial   com/android/volley/VolleyError.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
-        //   215: invokestatic    com/android/volley/Response.error:(Lcom/android/volley/VolleyError;)Lcom/android/volley/Response;
-        //   218: astore_3       
-        //   219: aload_3        
-        //   220: astore_2       
-        //   221: aload_1        
-        //   222: ifnull          142
-        //   225: aload_1        
-        //   226: invokevirtual   java/io/BufferedOutputStream.close:()V
-        //   229: aload_3        
-        //   230: areturn        
-        //   231: astore_1       
-        //   232: ldc             "nf_service_filedownloadrequest"
-        //   234: new             Ljava/lang/StringBuilder;
-        //   237: dup            
-        //   238: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   241: ldc             "Could not close the stream for "
-        //   243: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   246: aload           5
-        //   248: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
-        //   251: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   254: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   257: aload_1        
-        //   258: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   261: pop            
-        //   262: aload_3        
-        //   263: areturn        
-        //   264: astore_1       
-        //   265: aconst_null    
-        //   266: astore_2       
-        //   267: aload_2        
-        //   268: ifnull          275
-        //   271: aload_2        
-        //   272: invokevirtual   java/io/BufferedOutputStream.close:()V
-        //   275: aload_1        
-        //   276: athrow         
-        //   277: astore_2       
-        //   278: ldc             "nf_service_filedownloadrequest"
-        //   280: new             Ljava/lang/StringBuilder;
-        //   283: dup            
-        //   284: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   287: ldc             "Could not close the stream for "
-        //   289: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   292: aload           5
-        //   294: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
-        //   297: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   300: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   303: aload_2        
-        //   304: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   307: pop            
-        //   308: goto            275
-        //   311: astore_1       
-        //   312: goto            267
-        //   315: astore          4
-        //   317: aload_3        
-        //   318: astore_1       
-        //   319: goto            181
+        //   170: iconst_1       
+        //   171: anewarray       Ljava/lang/Object;
+        //   174: dup            
+        //   175: iconst_0       
+        //   176: aload_2        
+        //   177: aastore        
+        //   178: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)I
+        //   181: pop            
+        //   182: aload_1        
+        //   183: areturn        
+        //   184: astore          4
+        //   186: aconst_null    
+        //   187: astore_1       
+        //   188: aload_1        
+        //   189: astore_2       
+        //   190: new             Lcom/android/volley/VolleyError;
+        //   193: dup            
+        //   194: new             Ljava/lang/StringBuilder;
+        //   197: dup            
+        //   198: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   201: ldc             "Could not save bytes to "
+        //   203: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   206: aload           5
+        //   208: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
+        //   211: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   214: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   217: aload           4
+        //   219: invokespecial   com/android/volley/VolleyError.<init>:(Ljava/lang/String;Ljava/lang/Throwable;)V
+        //   222: invokestatic    com/android/volley/Response.error:(Lcom/android/volley/VolleyError;)Lcom/android/volley/Response;
+        //   225: astore_3       
+        //   226: aload_3        
+        //   227: astore_2       
+        //   228: aload_1        
+        //   229: ifnull          142
+        //   232: aload_1        
+        //   233: invokevirtual   java/io/BufferedOutputStream.close:()V
+        //   236: aload_3        
+        //   237: areturn        
+        //   238: astore_1       
+        //   239: ldc             "nf_service_filedownloadrequest"
+        //   241: new             Ljava/lang/StringBuilder;
+        //   244: dup            
+        //   245: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   248: ldc             "Could not close the stream for "
+        //   250: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   253: aload           5
+        //   255: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
+        //   258: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   261: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   264: iconst_1       
+        //   265: anewarray       Ljava/lang/Object;
+        //   268: dup            
+        //   269: iconst_0       
+        //   270: aload_1        
+        //   271: aastore        
+        //   272: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)I
+        //   275: pop            
+        //   276: aload_3        
+        //   277: areturn        
+        //   278: astore_1       
+        //   279: aconst_null    
+        //   280: astore_2       
+        //   281: aload_2        
+        //   282: ifnull          289
+        //   285: aload_2        
+        //   286: invokevirtual   java/io/BufferedOutputStream.close:()V
+        //   289: aload_1        
+        //   290: athrow         
+        //   291: astore_2       
+        //   292: ldc             "nf_service_filedownloadrequest"
+        //   294: new             Ljava/lang/StringBuilder;
+        //   297: dup            
+        //   298: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   301: ldc             "Could not close the stream for "
+        //   303: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   306: aload           5
+        //   308: invokevirtual   java/io/File.getAbsolutePath:()Ljava/lang/String;
+        //   311: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   314: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   317: iconst_1       
+        //   318: anewarray       Ljava/lang/Object;
+        //   321: dup            
+        //   322: iconst_0       
+        //   323: aload_2        
+        //   324: aastore        
+        //   325: invokestatic    com/netflix/mediaclient/Log.w:(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)I
+        //   328: pop            
+        //   329: goto            289
+        //   332: astore_1       
+        //   333: goto            281
+        //   336: astore          4
+        //   338: aload_3        
+        //   339: astore_1       
+        //   340: goto            188
         //    Signature:
         //  (Lcom/android/volley/NetworkResponse;)Lcom/android/volley/Response<Ljava/lang/String;>;
         //    Exceptions:
         //  Try           Handler
         //  Start  End    Start  End    Type                 
         //  -----  -----  -----  -----  ---------------------
-        //  67     84     177    181    Ljava/io/IOException;
-        //  67     84     264    267    Any
-        //  86     94     315    322    Ljava/io/IOException;
-        //  86     94     311    315    Any
-        //  96     100    315    322    Ljava/io/IOException;
-        //  96     100    311    315    Any
-        //  102    130    315    322    Ljava/io/IOException;
-        //  102    130    311    315    Any
-        //  136    140    144    177    Ljava/io/IOException;
-        //  183    219    311    315    Any
-        //  225    229    231    264    Ljava/io/IOException;
-        //  271    275    277    311    Ljava/io/IOException;
+        //  67     84     184    188    Ljava/io/IOException;
+        //  67     84     278    281    Any
+        //  86     94     336    343    Ljava/io/IOException;
+        //  86     94     332    336    Any
+        //  96     100    336    343    Ljava/io/IOException;
+        //  96     100    332    336    Any
+        //  102    130    336    343    Ljava/io/IOException;
+        //  102    130    332    336    Any
+        //  136    140    144    184    Ljava/io/IOException;
+        //  190    226    332    336    Any
+        //  232    236    238    278    Ljava/io/IOException;
+        //  285    289    291    332    Ljava/io/IOException;
         // 
         // The error that occurred was:
         // 

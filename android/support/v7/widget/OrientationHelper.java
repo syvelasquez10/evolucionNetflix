@@ -5,14 +5,17 @@
 package android.support.v7.widget;
 
 import android.view.View;
+import android.graphics.Rect;
 
 public abstract class OrientationHelper
 {
     private int mLastTotalSpace;
     protected final RecyclerView$LayoutManager mLayoutManager;
+    final Rect mTmpRect;
     
     private OrientationHelper(final RecyclerView$LayoutManager mLayoutManager) {
         this.mLastTotalSpace = Integer.MIN_VALUE;
+        this.mTmpRect = new Rect();
         this.mLayoutManager = mLayoutManager;
     }
     
@@ -52,6 +55,10 @@ public abstract class OrientationHelper
     
     public abstract int getEndPadding();
     
+    public abstract int getMode();
+    
+    public abstract int getModeInOther();
+    
     public abstract int getStartAfterPadding();
     
     public abstract int getTotalSpace();
@@ -62,6 +69,10 @@ public abstract class OrientationHelper
         }
         return this.getTotalSpace() - this.mLastTotalSpace;
     }
+    
+    public abstract int getTransformedEndWithDecoration(final View p0);
+    
+    public abstract int getTransformedStartWithDecoration(final View p0);
     
     public abstract void offsetChildren(final int p0);
     

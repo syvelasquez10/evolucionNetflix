@@ -9,7 +9,13 @@ import org.json.JSONObject;
 
 public final class dr$b extends di
 {
+    private dr a;
     private boolean b;
+    
+    public dr$b(final dr a, final boolean b) {
+        this.a = a;
+        this.b = b;
+    }
     
     @Override
     public final void a() {

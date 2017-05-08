@@ -4,11 +4,12 @@
 
 package android.support.v4.view;
 
+import android.view.accessibility.AccessibilityEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.os.Build$VERSION;
 
-public class ViewParentCompat
+public final class ViewParentCompat
 {
     static final ViewParentCompat$ViewParentCompatImpl IMPL;
     
@@ -27,6 +28,10 @@ public class ViewParentCompat
             return;
         }
         IMPL = new ViewParentCompat$ViewParentCompatStubImpl();
+    }
+    
+    public static void notifySubtreeAccessibilityStateChanged(final ViewParent viewParent, final View view, final View view2, final int n) {
+        ViewParentCompat.IMPL.notifySubtreeAccessibilityStateChanged(viewParent, view, view2, n);
     }
     
     public static boolean onNestedFling(final ViewParent viewParent, final View view, final float n, final float n2, final boolean b) {
@@ -55,5 +60,9 @@ public class ViewParentCompat
     
     public static void onStopNestedScroll(final ViewParent viewParent, final View view) {
         ViewParentCompat.IMPL.onStopNestedScroll(viewParent, view);
+    }
+    
+    public static boolean requestSendAccessibilityEvent(final ViewParent viewParent, final View view, final AccessibilityEvent accessibilityEvent) {
+        return ViewParentCompat.IMPL.requestSendAccessibilityEvent(viewParent, view, accessibilityEvent);
     }
 }

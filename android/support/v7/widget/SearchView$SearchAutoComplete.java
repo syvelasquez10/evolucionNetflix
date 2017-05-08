@@ -4,34 +4,15 @@
 
 package android.support.v7.widget;
 
-import android.view.View$MeasureSpec;
-import android.widget.ListAdapter;
-import android.database.Cursor;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.annotation.TargetApi;
-import android.support.v7.appcompat.R$dimen;
-import android.text.style.ImageSpan;
-import android.text.SpannableStringBuilder;
-import android.net.Uri;
-import android.os.Build$VERSION;
-import android.content.Intent;
-import android.support.v4.widget.CursorAdapter;
-import android.app.SearchableInfo;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Drawable$ConstantState;
-import java.util.WeakHashMap;
-import android.view.View$OnClickListener;
-import android.view.View$OnFocusChangeListener;
-import android.widget.ImageView;
-import android.os.Bundle;
-import android.support.v7.view.CollapsibleActionView;
 import android.widget.AutoCompleteTextView;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.view.KeyEvent$DispatcherState;
 import android.view.KeyEvent;
 import android.graphics.Rect;
+import android.util.TypedValue;
+import android.content.res.Configuration;
+import android.support.v4.content.res.ConfigurationHelper;
 import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
 import android.content.Context;
@@ -54,8 +35,26 @@ public class SearchView$SearchAutoComplete extends AppCompatAutoCompleteTextView
         this.mThreshold = this.getThreshold();
     }
     
+    private int getSearchViewTextMinWidthDp() {
+        final Configuration configuration = this.getResources().getConfiguration();
+        final int screenWidthDp = ConfigurationHelper.getScreenWidthDp(this.getResources());
+        final int screenHeightDp = ConfigurationHelper.getScreenHeightDp(this.getResources());
+        if (screenWidthDp >= 960 && screenHeightDp >= 720 && configuration.orientation == 2) {
+            return 256;
+        }
+        if (screenWidthDp >= 600 || (screenWidthDp >= 640 && screenHeightDp >= 480)) {
+            return 192;
+        }
+        return 160;
+    }
+    
     public boolean enoughToFilter() {
         return this.mThreshold <= 0 || super.enoughToFilter();
+    }
+    
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        this.setMinWidth((int)TypedValue.applyDimension(1, (float)this.getSearchViewTextMinWidthDp(), this.getResources().getDisplayMetrics()));
     }
     
     protected void onFocusChanged(final boolean b, final int n, final Rect rect) {

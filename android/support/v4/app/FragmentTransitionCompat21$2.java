@@ -23,12 +23,13 @@ final class FragmentTransitionCompat21$2 implements ViewTreeObserver$OnPreDrawLi
     final /* synthetic */ View val$container;
     final /* synthetic */ Transition val$enterTransition;
     final /* synthetic */ ArrayList val$enteringViews;
+    final /* synthetic */ Transition val$exitTransition;
     final /* synthetic */ FragmentTransitionCompat21$ViewRetriever val$inFragment;
     final /* synthetic */ Map val$nameOverrides;
     final /* synthetic */ View val$nonExistentView;
     final /* synthetic */ Map val$renamedViews;
     
-    FragmentTransitionCompat21$2(final View val$container, final Transition val$enterTransition, final View val$nonExistentView, final FragmentTransitionCompat21$ViewRetriever val$inFragment, final Map val$nameOverrides, final Map val$renamedViews, final ArrayList val$enteringViews) {
+    FragmentTransitionCompat21$2(final View val$container, final Transition val$enterTransition, final View val$nonExistentView, final FragmentTransitionCompat21$ViewRetriever val$inFragment, final Map val$nameOverrides, final Map val$renamedViews, final ArrayList val$enteringViews, final Transition val$exitTransition) {
         this.val$container = val$container;
         this.val$enterTransition = val$enterTransition;
         this.val$nonExistentView = val$nonExistentView;
@@ -36,6 +37,7 @@ final class FragmentTransitionCompat21$2 implements ViewTreeObserver$OnPreDrawLi
         this.val$nameOverrides = val$nameOverrides;
         this.val$renamedViews = val$renamedViews;
         this.val$enteringViews = val$enteringViews;
+        this.val$exitTransition = val$exitTransition;
     }
     
     public boolean onPreDraw() {
@@ -43,25 +45,28 @@ final class FragmentTransitionCompat21$2 implements ViewTreeObserver$OnPreDrawLi
         if (this.val$enterTransition != null) {
             this.val$enterTransition.removeTarget(this.val$nonExistentView);
         }
-        final View view = this.val$inFragment.getView();
-        if (view != null) {
-            if (!this.val$nameOverrides.isEmpty()) {
-                FragmentTransitionCompat21.findNamedViews(this.val$renamedViews, view);
-                this.val$renamedViews.keySet().retainAll(this.val$nameOverrides.values());
-                for (final Map.Entry<K, String> entry : this.val$nameOverrides.entrySet()) {
-                    final View view2 = this.val$renamedViews.get(entry.getValue());
-                    if (view2 != null) {
-                        view2.setTransitionName((String)entry.getKey());
+        if (this.val$inFragment != null) {
+            final View view = this.val$inFragment.getView();
+            if (view != null) {
+                if (!this.val$nameOverrides.isEmpty()) {
+                    FragmentTransitionCompat21.findNamedViews(this.val$renamedViews, view);
+                    this.val$renamedViews.keySet().retainAll(this.val$nameOverrides.values());
+                    for (final Map.Entry<K, String> entry : this.val$nameOverrides.entrySet()) {
+                        final View view2 = this.val$renamedViews.get(entry.getValue());
+                        if (view2 != null) {
+                            view2.setTransitionName((String)entry.getKey());
+                        }
                     }
                 }
-            }
-            if (this.val$enterTransition != null) {
-                captureTransitioningViews(this.val$enteringViews, view);
-                this.val$enteringViews.removeAll(this.val$renamedViews.values());
-                this.val$enteringViews.add(this.val$nonExistentView);
-                FragmentTransitionCompat21.addTargets(this.val$enterTransition, this.val$enteringViews);
+                if (this.val$enterTransition != null) {
+                    captureTransitioningViews(this.val$enteringViews, view);
+                    this.val$enteringViews.removeAll(this.val$renamedViews.values());
+                    this.val$enteringViews.add(this.val$nonExistentView);
+                    FragmentTransitionCompat21.addTargets(this.val$enterTransition, this.val$enteringViews);
+                }
             }
         }
+        excludeViews(this.val$exitTransition, this.val$enterTransition, this.val$enteringViews, true);
         return true;
     }
 }

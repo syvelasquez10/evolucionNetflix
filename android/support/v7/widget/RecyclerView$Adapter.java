@@ -6,6 +6,7 @@ package android.support.v7.widget;
 
 import java.util.List;
 import android.view.ViewGroup;
+import android.view.ViewGroup$LayoutParams;
 import android.support.v4.os.TraceCompat;
 
 public abstract class RecyclerView$Adapter<VH extends RecyclerView$ViewHolder>
@@ -27,6 +28,10 @@ public abstract class RecyclerView$Adapter<VH extends RecyclerView$ViewHolder>
         TraceCompat.beginSection("RV OnBindView");
         this.onBindViewHolder(vh, mPosition, vh.getUnmodifiedPayloads());
         vh.clearPayload();
+        final ViewGroup$LayoutParams layoutParams = vh.itemView.getLayoutParams();
+        if (layoutParams instanceof RecyclerView$LayoutParams) {
+            ((RecyclerView$LayoutParams)layoutParams).mInsetsDirty = true;
+        }
         TraceCompat.endSection();
     }
     

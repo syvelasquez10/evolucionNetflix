@@ -34,7 +34,7 @@ public class CwTestView extends CwView implements VideoViewGroup$IVideoView<CWVi
     
     @Override
     protected int getLayoutId() {
-        return 2130903087;
+        return 2130903089;
     }
     
     @Override
@@ -53,7 +53,7 @@ public class CwTestView extends CwView implements VideoViewGroup$IVideoView<CWVi
         final int n = 0;
         this.playContext = new PlayContextImp(trackable, progress);
         this.setVisibility(0);
-        final String format = String.format(this.getResources().getString(2131230887), cwVideo.getTitle());
+        final String format = String.format(this.getResources().getString(2131230891), cwVideo.getTitle());
         this.setContentDescription((CharSequence)format);
         final String imageUrl = this.getImageUrl(cwVideo, b2);
         final ImageLoader imageLoader = NetflixActivity.getImageLoader(this.getContext());

@@ -11,7 +11,7 @@ public class ItemDecorationBarkerGrid extends ItemDecorationUniformPadding
     Context context;
     
     public ItemDecorationBarkerGrid(final Context context, final int n) {
-        super(context.getResources().getDimensionPixelSize(2131362014), n);
+        super(context.getResources().getDimensionPixelSize(2131362025), n);
         this.context = context;
     }
     

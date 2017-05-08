@@ -5,6 +5,7 @@
 package com.crittercism.internal;
 
 import android.util.Log;
+import com.crittercism.app.Crittercism$LoggingLevel;
 
 public final class dw
 {
@@ -17,6 +18,10 @@ public final class dw
         dw.a = dw$a.a;
         dw.c = dw$b.d;
         dw.d = new dw();
+    }
+    
+    public static void a(final Crittercism$LoggingLevel crittercism$LoggingLevel) {
+        dw.c = dw$b.a(crittercism$LoggingLevel);
     }
     
     public static void a(final ea b) {

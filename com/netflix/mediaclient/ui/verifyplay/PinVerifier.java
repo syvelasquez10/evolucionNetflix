@@ -4,8 +4,6 @@
 
 package com.netflix.mediaclient.ui.verifyplay;
 
-import android.app.DialogFragment;
-import com.netflix.mediaclient.util.ViewUtils;
 import com.netflix.mediaclient.NetflixApplication;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 import android.content.Intent;
@@ -65,7 +63,7 @@ public class PinVerifier implements ApplicationStateListener
         if (Log.isLoggable()) {
             Log.w("nf_pin", String.format("Error.. new pin request while in progress.. %s, visibile:%b, hidden:%b", playVerifierVault.getInvokeLocation(), PinVerifier.sPinDialog.isVisible(), PinVerifier.sPinDialog.isHidden()));
         }
-        if (PlayVerifierVault$PlayInvokedFrom.MDX.getValue().equals(playVerifierVault.getInvokeLocation())) {
+        if (PlayVerifierVault$RequestedBy.MDX.getValue().equals(playVerifierVault.getInvokeLocation())) {
             if (Log.isLoggable()) {
                 Log.d("nf_pin", String.format("Dismissing new request new one Invoked from: %s", playVerifierVault.getInvokeLocation()));
             }
@@ -161,17 +159,23 @@ public class PinVerifier implements ApplicationStateListener
         return PinVerifier.sAppInBackground && System.currentTimeMillis() - PinVerifier.sBackgroundTime > 180000L;
     }
     
-    public void verify(final NetflixActivity netflixActivity, final boolean b, final PlayVerifierVault playVerifierVault) {
+    public void verify(final NetflixActivity netflixActivity, final boolean b, final PlayVerifierVault playVerifierVault, final PinAndAgeVerifier$PinAndAgeVerifyCallback pinVerifierCallback) {
         if (!this.shouldVerifyPin(b)) {
-            PinDialog.notifyCallerPinVerified(netflixActivity, playVerifierVault);
+            PinDialog.notifyCallerPinVerified(netflixActivity, playVerifierVault, pinVerifierCallback);
         }
         else {
             if (Log.isLoggable()) {
                 Log.d("nf_pin", String.format("verifyPin loc:%s", playVerifierVault.getInvokeLocation()));
             }
             if (PinVerifier.sPinDialog == null || this.shouldHandleNewRequest(playVerifierVault)) {
-                ((NetflixApplication)netflixActivity.getApplication()).getUserInput().addListener(this);
-                ViewUtils.safeShowDialogFragment(PinVerifier.sPinDialog = PinDialog.createPinDialog(playVerifierVault), netflixActivity.getFragmentManager(), "frag_dialog");
+                final NetflixApplication netflixApplication = (NetflixApplication)netflixActivity.getApplication();
+                if (netflixApplication.wasInBackground()) {
+                    Log.d("nf_pin", "skip pin dialog - was in backgound");
+                    return;
+                }
+                netflixApplication.getUserInput().addListener(this);
+                (PinVerifier.sPinDialog = PinDialog.createPinDialog(playVerifierVault)).setPinVerifierCallback(pinVerifierCallback);
+                PinVerifier.sPinDialog.show(netflixActivity.getFragmentManager(), "frag_dialog");
             }
         }
     }

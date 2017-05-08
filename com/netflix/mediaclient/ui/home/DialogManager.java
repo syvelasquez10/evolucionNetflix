@@ -8,11 +8,12 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.content.Intent;
 import com.netflix.mediaclient.util.log.ApmLogUtils;
 import com.netflix.mediaclient.servicemgr.IClientLogging$ModalView;
-import android.app.DialogFragment;
 import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag;
-import android.content.Context;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import android.app.DialogFragment;
+import com.netflix.mediaclient.ui.offline.OfflineTutorialDialogFrag;
 import android.app.Activity;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.Log;
 import com.netflix.mediaclient.ui.push_notify.SocialOptInDialogFrag$OptInResponseHandler;
@@ -31,7 +32,7 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
             Log.d("DialogManager", "Activity has saved instance state - can't display dialog");
             return false;
         }
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.mOwner)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.mOwner)) {
             Log.d("DialogManager", "Activity is destroyed - can't display dialog");
             return false;
         }
@@ -72,6 +73,12 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
         return false;
     }
     
+    private void displayOfflineTutorialIfNeeded() {
+        if (this.shouldDisplayOfflineTutorialDialog()) {
+            this.mOwner.showDialog(new OfflineTutorialDialogFrag());
+        }
+    }
+    
     private boolean displayOptInDialogIfNeeded() {
         boolean b = false;
         if (this.shouldDisplayOptInDialog()) {
@@ -84,6 +91,10 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
             b = true;
         }
         return b;
+    }
+    
+    private boolean shouldDisplayOfflineTutorialDialog() {
+        return !this.mOwner.isDialogFragmentVisible() && this.canDialogBeDisplayedSafely() && this.mOwner.getTutorialHelper().shouldDisplayFullscreenTutorial(this.mOwner.getServiceManager());
     }
     
     private boolean shouldDisplayOptInDialog() {
@@ -100,6 +111,7 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
     }
     
     public boolean displayDialogsIfNeeded() {
+        this.displayOfflineTutorialIfNeeded();
         if (this.displayOptInDialogIfNeeded()) {
             Log.d("DialogManager", "OptIn dialog displayed");
             return true;
@@ -110,7 +122,7 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
     
     @Override
     public void onAccept() {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.mOwner)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.mOwner)) {
             return;
         }
         Log.v("DialogManager", "Sending PUSH_OPTIN...");
@@ -123,7 +135,7 @@ class DialogManager implements SocialOptInDialogFrag$OptInResponseHandler
     
     @Override
     public void onDecline() {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.mOwner)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.mOwner)) {
             return;
         }
         Log.v("DialogManager", "Sending PUSH_OPTOUT...");

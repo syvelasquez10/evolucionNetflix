@@ -4,82 +4,77 @@
 
 package android.support.design.widget;
 
-import android.annotation.TargetApi;
-import android.view.View$MeasureSpec;
-import android.graphics.drawable.Drawable;
+import java.util.List;
+import android.view.ViewGroup;
+import android.support.v4.view.ViewCompat;
+import android.view.ViewGroup$LayoutParams;
+import android.view.View;
 import android.content.res.TypedArray;
-import android.support.design.R$dimen;
-import android.support.design.R$style;
 import android.support.design.R$styleable;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.graphics.PorterDuff$Mode;
-import android.content.res.ColorStateList;
-import android.widget.ImageView;
-import android.support.v4.view.ViewPropertyAnimatorListener;
-import android.view.ViewGroup;
-import java.util.List;
-import android.support.v4.view.ViewCompat;
-import android.view.View;
-import android.os.Build$VERSION;
 import android.graphics.Rect;
 
 public class FloatingActionButton$Behavior extends CoordinatorLayout$Behavior<FloatingActionButton>
 {
-    private static final boolean SNACKBAR_BEHAVIOR_ENABLED;
+    private static final boolean AUTO_HIDE_DEFAULT = true;
+    private boolean mAutoHideEnabled;
+    private FloatingActionButton$OnVisibilityChangedListener mInternalAutoHideListener;
     private Rect mTmpRect;
     
-    static {
-        SNACKBAR_BEHAVIOR_ENABLED = (Build$VERSION.SDK_INT >= 11);
+    public FloatingActionButton$Behavior() {
+        this.mAutoHideEnabled = true;
     }
     
-    private float getFabTranslationYForSnackbar(final CoordinatorLayout coordinatorLayout, final FloatingActionButton floatingActionButton) {
-        float min = 0.0f;
-        final List<View> dependencies = coordinatorLayout.getDependencies((View)floatingActionButton);
-        for (int size = dependencies.size(), i = 0; i < size; ++i) {
-            final View view = dependencies.get(i);
-            if (view instanceof Snackbar$SnackbarLayout && coordinatorLayout.doViewsOverlap((View)floatingActionButton, view)) {
-                min = Math.min(min, ViewCompat.getTranslationY(view) - view.getHeight());
-            }
-        }
-        return min;
+    public FloatingActionButton$Behavior(final Context context, final AttributeSet set) {
+        super(context, set);
+        final TypedArray obtainStyledAttributes = context.obtainStyledAttributes(set, R$styleable.FloatingActionButton_Behavior_Layout);
+        this.mAutoHideEnabled = obtainStyledAttributes.getBoolean(R$styleable.FloatingActionButton_Behavior_Layout_behavior_autoHide, true);
+        obtainStyledAttributes.recycle();
+    }
+    
+    private static boolean isBottomSheet(final View view) {
+        final ViewGroup$LayoutParams layoutParams = view.getLayoutParams();
+        return layoutParams instanceof CoordinatorLayout$LayoutParams && ((CoordinatorLayout$LayoutParams)layoutParams).getBehavior() instanceof BottomSheetBehavior;
     }
     
     private void offsetIfNeeded(final CoordinatorLayout coordinatorLayout, final FloatingActionButton floatingActionButton) {
         int bottom = 0;
-        final Rect access$000 = floatingActionButton.mShadowPadding;
-        if (access$000 != null && access$000.centerX() > 0 && access$000.centerY() > 0) {
+        final Rect mShadowPadding = floatingActionButton.mShadowPadding;
+        if (mShadowPadding != null && mShadowPadding.centerX() > 0 && mShadowPadding.centerY() > 0) {
             final CoordinatorLayout$LayoutParams coordinatorLayout$LayoutParams = (CoordinatorLayout$LayoutParams)floatingActionButton.getLayoutParams();
             int right;
             if (floatingActionButton.getRight() >= coordinatorLayout.getWidth() - coordinatorLayout$LayoutParams.rightMargin) {
-                right = access$000.right;
+                right = mShadowPadding.right;
             }
             else if (floatingActionButton.getLeft() <= coordinatorLayout$LayoutParams.leftMargin) {
-                right = -access$000.left;
+                right = -mShadowPadding.left;
             }
             else {
                 right = 0;
             }
-            if (floatingActionButton.getBottom() >= coordinatorLayout.getBottom() - coordinatorLayout$LayoutParams.bottomMargin) {
-                bottom = access$000.bottom;
+            if (floatingActionButton.getBottom() >= coordinatorLayout.getHeight() - coordinatorLayout$LayoutParams.bottomMargin) {
+                bottom = mShadowPadding.bottom;
             }
             else if (floatingActionButton.getTop() <= coordinatorLayout$LayoutParams.topMargin) {
-                bottom = -access$000.top;
+                bottom = -mShadowPadding.top;
             }
-            floatingActionButton.offsetTopAndBottom(bottom);
-            floatingActionButton.offsetLeftAndRight(right);
+            if (bottom != 0) {
+                ViewCompat.offsetTopAndBottom((View)floatingActionButton, bottom);
+            }
+            if (right != 0) {
+                ViewCompat.offsetLeftAndRight((View)floatingActionButton, right);
+            }
         }
     }
     
-    private void updateFabTranslationForSnackbar(final CoordinatorLayout coordinatorLayout, final FloatingActionButton floatingActionButton, final View view) {
-        if (floatingActionButton.getVisibility() != 0) {
-            return;
-        }
-        ViewCompat.setTranslationY((View)floatingActionButton, this.getFabTranslationYForSnackbar(coordinatorLayout, floatingActionButton));
+    private boolean shouldUpdateVisibility(final View view, final FloatingActionButton floatingActionButton) {
+        final CoordinatorLayout$LayoutParams coordinatorLayout$LayoutParams = (CoordinatorLayout$LayoutParams)floatingActionButton.getLayoutParams();
+        return this.mAutoHideEnabled && coordinatorLayout$LayoutParams.getAnchorId() == view.getId() && floatingActionButton.getUserSetVisibility() == 0;
     }
     
-    private boolean updateFabVisibility(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final FloatingActionButton floatingActionButton) {
-        if (((CoordinatorLayout$LayoutParams)floatingActionButton.getLayoutParams()).getAnchorId() != appBarLayout.getId()) {
+    private boolean updateFabVisibilityForAppBarLayout(final CoordinatorLayout coordinatorLayout, final AppBarLayout appBarLayout, final FloatingActionButton floatingActionButton) {
+        if (!this.shouldUpdateVisibility((View)appBarLayout, floatingActionButton)) {
             return false;
         }
         if (this.mTmpRect == null) {
@@ -88,35 +83,54 @@ public class FloatingActionButton$Behavior extends CoordinatorLayout$Behavior<Fl
         final Rect mTmpRect = this.mTmpRect;
         ViewGroupUtils.getDescendantRect(coordinatorLayout, (View)appBarLayout, mTmpRect);
         if (mTmpRect.bottom <= appBarLayout.getMinimumHeightForVisibleOverlappingContent()) {
-            floatingActionButton.hide();
+            floatingActionButton.hide(this.mInternalAutoHideListener, false);
         }
         else {
-            floatingActionButton.show();
+            floatingActionButton.show(this.mInternalAutoHideListener, false);
+        }
+        return true;
+    }
+    
+    private boolean updateFabVisibilityForBottomSheet(final View view, final FloatingActionButton floatingActionButton) {
+        if (!this.shouldUpdateVisibility(view, floatingActionButton)) {
+            return false;
+        }
+        if (view.getTop() < ((CoordinatorLayout$LayoutParams)floatingActionButton.getLayoutParams()).topMargin + floatingActionButton.getHeight() / 2) {
+            floatingActionButton.hide(this.mInternalAutoHideListener, false);
+        }
+        else {
+            floatingActionButton.show(this.mInternalAutoHideListener, false);
         }
         return true;
     }
     
     @Override
-    public boolean layoutDependsOn(final CoordinatorLayout coordinatorLayout, final FloatingActionButton floatingActionButton, final View view) {
-        return FloatingActionButton$Behavior.SNACKBAR_BEHAVIOR_ENABLED && view instanceof Snackbar$SnackbarLayout;
+    public boolean getInsetDodgeRect(final CoordinatorLayout coordinatorLayout, final FloatingActionButton floatingActionButton, final Rect rect) {
+        final Rect mShadowPadding = floatingActionButton.mShadowPadding;
+        rect.set(floatingActionButton.getLeft() + mShadowPadding.left, floatingActionButton.getTop() + mShadowPadding.top, floatingActionButton.getRight() - mShadowPadding.right, floatingActionButton.getBottom() - mShadowPadding.bottom);
+        return true;
+    }
+    
+    public boolean isAutoHideEnabled() {
+        return this.mAutoHideEnabled;
+    }
+    
+    @Override
+    public void onAttachedToLayoutParams(final CoordinatorLayout$LayoutParams coordinatorLayout$LayoutParams) {
+        if (coordinatorLayout$LayoutParams.dodgeInsetEdges == 0) {
+            coordinatorLayout$LayoutParams.dodgeInsetEdges = 80;
+        }
     }
     
     @Override
     public boolean onDependentViewChanged(final CoordinatorLayout coordinatorLayout, final FloatingActionButton floatingActionButton, final View view) {
-        if (view instanceof Snackbar$SnackbarLayout) {
-            this.updateFabTranslationForSnackbar(coordinatorLayout, floatingActionButton, view);
+        if (view instanceof AppBarLayout) {
+            this.updateFabVisibilityForAppBarLayout(coordinatorLayout, (AppBarLayout)view, floatingActionButton);
         }
-        else if (view instanceof AppBarLayout) {
-            this.updateFabVisibility(coordinatorLayout, (AppBarLayout)view, floatingActionButton);
+        else if (isBottomSheet(view)) {
+            this.updateFabVisibilityForBottomSheet(view, floatingActionButton);
         }
         return false;
-    }
-    
-    @Override
-    public void onDependentViewRemoved(final CoordinatorLayout coordinatorLayout, final FloatingActionButton floatingActionButton, final View view) {
-        if (view instanceof Snackbar$SnackbarLayout && ViewCompat.getTranslationY((View)floatingActionButton) != 0.0f) {
-            ViewCompat.animate((View)floatingActionButton).translationY(0.0f).scaleX(1.0f).scaleY(1.0f).alpha(1.0f).setInterpolator(AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR).setListener(null);
-        }
     }
     
     @Override
@@ -124,12 +138,25 @@ public class FloatingActionButton$Behavior extends CoordinatorLayout$Behavior<Fl
         final List<View> dependencies = coordinatorLayout.getDependencies((View)floatingActionButton);
         for (int size = dependencies.size(), i = 0; i < size; ++i) {
             final View view = dependencies.get(i);
-            if (view instanceof AppBarLayout && this.updateFabVisibility(coordinatorLayout, (AppBarLayout)view, floatingActionButton)) {
+            if (view instanceof AppBarLayout) {
+                if (this.updateFabVisibilityForAppBarLayout(coordinatorLayout, (AppBarLayout)view, floatingActionButton)) {
+                    break;
+                }
+            }
+            else if (isBottomSheet(view) && this.updateFabVisibilityForBottomSheet(view, floatingActionButton)) {
                 break;
             }
         }
         coordinatorLayout.onLayoutChild((View)floatingActionButton, n);
         this.offsetIfNeeded(coordinatorLayout, floatingActionButton);
         return true;
+    }
+    
+    public void setAutoHideEnabled(final boolean mAutoHideEnabled) {
+        this.mAutoHideEnabled = mAutoHideEnabled;
+    }
+    
+    void setInternalAutoHideListener(final FloatingActionButton$OnVisibilityChangedListener mInternalAutoHideListener) {
+        this.mInternalAutoHideListener = mInternalAutoHideListener;
     }
 }

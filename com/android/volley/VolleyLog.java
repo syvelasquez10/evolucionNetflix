@@ -39,15 +39,21 @@ public class VolleyLog
     }
     
     public static void d(final String s, final Object... array) {
-        Log.d(VolleyLog.TAG, buildMessage(s, array));
+        if (VolleyLog.LOG_VERBOSE) {
+            Log.d(VolleyLog.TAG, buildMessage(s, array));
+        }
     }
     
     public static void e(final String s, final Object... array) {
-        Log.e(VolleyLog.TAG, buildMessage(s, array));
+        if (VolleyLog.LOG_VERBOSE) {
+            Log.e(VolleyLog.TAG, buildMessage(s, array));
+        }
     }
     
     public static void e(final Throwable t, final String s, final Object... array) {
-        Log.e(VolleyLog.TAG, buildMessage(s, array), t);
+        if (VolleyLog.LOG_VERBOSE) {
+            Log.e(VolleyLog.TAG, buildMessage(s, array), t);
+        }
     }
     
     public static void v(final String s, final Object... array) {

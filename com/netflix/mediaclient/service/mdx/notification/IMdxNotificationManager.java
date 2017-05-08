@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.service.mdx.notification;
 
-import android.app.Service;
+import com.netflix.mediaclient.service.NetflixService;
 import android.graphics.Bitmap;
 import android.app.Notification;
 import android.util.Pair;
@@ -27,9 +27,9 @@ public interface IMdxNotificationManager
     
     void setUpNextStateNotify(final boolean p0, final boolean p1, final boolean p2);
     
-    void startNotification(final Notification p0, final Service p1, final boolean p2);
+    void startNotification(final Notification p0, final NetflixService p1, final boolean p2);
     
-    void stopNotification(final Service p0);
+    void stopNotification(final NetflixService p0);
     
-    void stopPostplayNotification(final Service p0);
+    void stopPostplayNotification(final NetflixService p0);
 }

@@ -24,6 +24,7 @@ import com.netflix.mediaclient.service.logging.client.model.ActionOnUIError;
 import com.netflix.mediaclient.service.logging.client.model.RootCause;
 import android.net.Uri;
 import android.content.Intent;
+import com.netflix.mediaclient.util.AndroidUtils;
 import com.netflix.mediaclient.service.logging.client.model.Error;
 import com.netflix.mediaclient.servicemgr.IClientLogging$CompletionReason;
 import com.netflix.mediaclient.StatusCode;
@@ -69,6 +70,6 @@ class EmailPasswordFragment$5 implements Runnable
     
     @Override
     public void run() {
-        this.this$0.getNetflixActivity().displayDialog(AlertDialogFactory.createDialog((Context)this.this$0.getNetflixActivity(), this.this$0.mHandler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131231119), this.this$0.getString(2131231128), null)));
+        this.this$0.getNetflixActivity().displayDialog(AlertDialogFactory.createDialog((Context)this.this$0.getNetflixActivity(), this.this$0.mHandler, new AlertDialogFactory$AlertDialogDescriptor(null, this.this$0.getString(2131231146), this.this$0.getString(2131231167), null)));
     }
 }

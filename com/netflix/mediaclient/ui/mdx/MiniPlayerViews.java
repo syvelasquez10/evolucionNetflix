@@ -39,18 +39,18 @@ public class MiniPlayerViews extends MdxMiniPlayerViews
     @Override
     protected void findViews() {
         super.findViews();
-        this.pager = (ViewPager)this.content.findViewById(2131689981);
-        this.indicator = (CirclePageIndicator)this.content.findViewById(2131689982);
-        this.mementoGroup = this.content.findViewById(2131689988);
-        this.puller = this.content.findViewById(2131689998);
-        this.titleExpanded = this.content.findViewById(2131689989);
-        this.mementoTabs = this.content.findViewById(2131689983);
-        this.pullerContainer = this.activity.findViewById(2131689942);
+        this.pager = (ViewPager)this.content.findViewById(2131690009);
+        this.indicator = (CirclePageIndicator)this.content.findViewById(2131690010);
+        this.mementoGroup = this.content.findViewById(2131690016);
+        this.puller = this.content.findViewById(2131690026);
+        this.titleExpanded = this.content.findViewById(2131690017);
+        this.mementoTabs = this.content.findViewById(2131690011);
+        this.pullerContainer = this.activity.findViewById(2131689970);
     }
     
     @Override
     protected int getLayoutId() {
-        return 2130903200;
+        return 2130903210;
     }
     
     @Override
@@ -78,9 +78,9 @@ public class MiniPlayerViews extends MdxMiniPlayerViews
     @Override
     protected void translateTitleGroup(final float n) {
         final float n2 = 1.0f - n;
-        final float n3 = this.getContentView().getResources().getDimensionPixelOffset(2131362232);
-        final float n4 = -(BarkerUtils.getDetailsPageContentWidth(this.getContentView().getContext()) / 2 - this.getContentView().getResources().getDimensionPixelOffset(2131362230)) * (1.0f - n);
-        final float n5 = this.getContentView().getResources().getDimensionPixelSize(2131362232);
+        final float n3 = this.getContentView().getResources().getDimensionPixelOffset(2131362261);
+        final float n4 = -(BarkerUtils.getDetailsPageContentWidth(this.getContentView().getContext()) / 2 - this.getContentView().getResources().getDimensionPixelOffset(2131362259)) * (1.0f - n);
+        final float n5 = this.getContentView().getResources().getDimensionPixelSize(2131362261);
         if (this.mementoGroup != null) {
             this.mementoGroup.setY(n3 * n);
             this.mementoGroup.setAlpha(n2);
@@ -99,7 +99,7 @@ public class MiniPlayerViews extends MdxMiniPlayerViews
             else {
                 this.playcardCaret.setAlpha(n2);
             }
-            this.playcardCaret.setY(n5 * n2 * 0.09f - this.getContentView().getResources().getDimensionPixelSize(2131362231) * n);
+            this.playcardCaret.setY(n5 * n2 * 0.09f - this.getContentView().getResources().getDimensionPixelSize(2131362260) * n);
         }
         if (this.puller != null) {
             this.puller.setTranslationX(n4);

@@ -6,7 +6,7 @@ package com.netflix.mediaclient.ui.kubrick_kids.details;
 
 import android.graphics.drawable.Drawable;
 import com.netflix.mediaclient.util.api.Api16Util;
-import com.netflix.mediaclient.android.activity.NetflixActivity;
+import com.netflix.mediaclient.util.ViewUtils;
 import android.support.v7.widget.RecyclerView;
 import com.netflix.mediaclient.ui.details.SeasonsSpinner;
 import android.view.View;

@@ -4,23 +4,23 @@
 
 package android.support.v7.widget;
 
-import android.support.v7.internal.view.menu.i;
-import android.support.v7.internal.view.menu.y;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPresenter$Callback;
 
-class ActionMenuView$ActionMenuPresenterCallback implements y
+class ActionMenuView$ActionMenuPresenterCallback implements MenuPresenter$Callback
 {
     final /* synthetic */ ActionMenuView this$0;
     
-    private ActionMenuView$ActionMenuPresenterCallback(final ActionMenuView this$0) {
+    ActionMenuView$ActionMenuPresenterCallback(final ActionMenuView this$0) {
         this.this$0 = this$0;
     }
     
     @Override
-    public void onCloseMenu(final i i, final boolean b) {
+    public void onCloseMenu(final MenuBuilder menuBuilder, final boolean b) {
     }
     
     @Override
-    public boolean onOpenSubMenu(final i i) {
+    public boolean onOpenSubMenu(final MenuBuilder menuBuilder) {
         return false;
     }
 }

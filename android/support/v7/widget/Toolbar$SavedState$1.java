@@ -5,14 +5,16 @@
 package android.support.v7.widget;
 
 import android.os.Parcel;
-import android.os.Parcelable$Creator;
+import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 
-final class Toolbar$SavedState$1 implements Parcelable$Creator<Toolbar$SavedState>
+final class Toolbar$SavedState$1 implements ParcelableCompatCreatorCallbacks<Toolbar$SavedState>
 {
-    public Toolbar$SavedState createFromParcel(final Parcel parcel) {
-        return new Toolbar$SavedState(parcel);
+    @Override
+    public Toolbar$SavedState createFromParcel(final Parcel parcel, final ClassLoader classLoader) {
+        return new Toolbar$SavedState(parcel, classLoader);
     }
     
+    @Override
     public Toolbar$SavedState[] newArray(final int n) {
         return new Toolbar$SavedState[n];
     }

@@ -9,11 +9,14 @@ import android.view.Surface;
 import com.netflix.mediaclient.service.webclient.model.leafs.PreviewContentConfigData;
 import com.netflix.mediaclient.media.bitrate.AudioBitrateRange;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleFailure;
+import com.netflix.mediaclient.media.SubtitleUrl;
 import com.netflix.mediaclient.util.ConnectivityUtils$NetType;
 import com.netflix.mediaclient.ui.common.PlayContext;
 import com.netflix.mediaclient.media.Watermark;
 import com.netflix.mediaclient.media.TrickplayUrl;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleOutputMode;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import android.graphics.Point;
 import com.netflix.mediaclient.media.Subtitle;
@@ -70,9 +73,9 @@ public interface IMedia
     
     int getState();
     
-    IMedia$SubtitleOutputMode getSubtitleOutputMode();
+    ISubtitleDef$SubtitleOutputMode getSubtitleOutputMode();
     
-    IMedia$SubtitleProfile getSubtitleProfile();
+    ISubtitleDef$SubtitleProfile getSubtitleProfile();
     
     Subtitle[] getSubtitleTrackList();
     
@@ -92,7 +95,7 @@ public interface IMedia
     
     void removeEventListener(final String p0, final EventListener p1);
     
-    void reportFailedSubtitle(final String p0, final SubtitleUrl p1, final IMedia$SubtitleFailure p2, final boolean p3, final Status p4, final String[] p5);
+    void reportFailedSubtitle(final String p0, final SubtitleUrl p1, final ISubtitleDef$SubtitleFailure p2, final boolean p3, final Status p4, final String[] p5);
     
     void reportSubtitleQoe(final String p0, final int p1, final int p2);
     
@@ -120,9 +123,9 @@ public interface IMedia
     
     void setStreamingQoe(final String p0, final boolean p1, final boolean p2);
     
-    void setSubtitleOutputMode(final IMedia$SubtitleOutputMode p0);
+    void setSubtitleOutputMode(final ISubtitleDef$SubtitleOutputMode p0);
     
-    void setSubtitleProfile(final IMedia$SubtitleProfile p0);
+    void setSubtitleProfile(final ISubtitleDef$SubtitleProfile p0);
     
     void setSurface(final Surface p0);
     

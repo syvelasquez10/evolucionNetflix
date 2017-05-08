@@ -5,7 +5,7 @@
 package com.netflix.mediaclient.ui.home;
 
 import android.app.Activity;
-import com.netflix.mediaclient.ui.login.LogoutActivity;
+import com.netflix.mediaclient.ui.settings.AboutActivity;
 import com.netflix.mediaclient.android.activity.NetflixActivity;
 
 final class StandardSlidingMenu$12 implements Runnable
@@ -18,6 +18,6 @@ final class StandardSlidingMenu$12 implements Runnable
     
     @Override
     public void run() {
-        LogoutActivity.showLogoutDialog(this.val$context);
+        this.val$context.startActivity(AboutActivity.createStartIntent(this.val$context));
     }
 }

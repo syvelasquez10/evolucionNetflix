@@ -41,10 +41,7 @@ public class AddToMyListWrapper
     }
     
     public TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final TextView textView2, final String s, final VideoType videoType, final int n, final boolean b) {
-        if (BrowseExperience.isKubrick()) {
-            return new KubrickTextViewWrapper(this, netflixActivity, textView, textView2, s, videoType, n, b);
-        }
-        return new TextViewWrapper(this, netflixActivity, textView, s, videoType, n, b);
+        return new KubrickTextViewWrapper(this, netflixActivity, textView, textView2, s, videoType, n, b);
     }
     
     public TextViewWrapper createAddToMyListWrapper(final NetflixActivity netflixActivity, final TextView textView, final String s, final VideoType videoType, final int n) {
@@ -112,10 +109,10 @@ public class AddToMyListWrapper
             if (b2) {
                 int n;
                 if (b) {
-                    n = 2131231072;
+                    n = 2131231095;
                 }
                 else {
-                    n = 2131231075;
+                    n = 2131231098;
                 }
                 Toast.makeText(this.serviceMan.getContext(), n, 1).show();
             }

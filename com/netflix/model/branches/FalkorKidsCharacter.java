@@ -579,6 +579,12 @@ public class FalkorKidsCharacter extends BaseFalkorObject implements BasicVideo,
     }
     
     @Override
+    public boolean isAvailableOffline() {
+        final FalkorVideo watchNextVideo = this.getWatchNextVideo();
+        return watchNextVideo != null && watchNextVideo.isAvailableOffline();
+    }
+    
+    @Override
     public boolean isAvailableToStream() {
         final Playable playable = this.getPlayable();
         return playable != null && playable.isAvailableToStream();

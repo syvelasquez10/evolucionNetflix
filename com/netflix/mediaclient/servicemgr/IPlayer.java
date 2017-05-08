@@ -7,8 +7,9 @@ package com.netflix.mediaclient.servicemgr;
 import android.view.SurfaceHolder;
 import android.view.Surface;
 import com.netflix.mediaclient.media.JPlayer.JPlayer$JplayerListener;
+import com.netflix.mediaclient.android.app.Status;
+import com.netflix.mediaclient.media.SubtitleUrl;
 import com.netflix.mediaclient.ui.common.PlayContext;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
 import com.netflix.mediaclient.service.configuration.SubtitleConfiguration;
 import com.netflix.mediaclient.media.PlayoutMetadata;
 import android.graphics.Point;
@@ -61,7 +62,7 @@ public interface IPlayer
     
     SubtitleConfiguration getSubtitleConfiguration();
     
-    IMedia$SubtitleProfile getSubtitleProfileFromMetadata();
+    ISubtitleDef$SubtitleProfile getSubtitleProfileFromMetadata();
     
     Subtitle[] getSubtitleTrackList();
     
@@ -84,6 +85,8 @@ public interface IPlayer
     void play();
     
     void removePlayerListener(final IPlayer$PlayerListener p0);
+    
+    void reportFailedSubtitle(final String p0, final SubtitleUrl p1, final ISubtitleDef$SubtitleFailure p2, final boolean p3, final Status p4, final String[] p5);
     
     void reportSubtitleQoe(final String p0, final int p1, final int p2);
     

@@ -43,11 +43,10 @@ import com.netflix.mediaclient.servicemgr.interface_.VideoType;
 import com.netflix.mediaclient.util.MdxUtils;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.servicemgr.UserActionLogging$CommandName;
-import android.content.Context;
 import com.netflix.mediaclient.util.log.UserActionLogUtils;
 import com.netflix.mediaclient.service.falkor.Falkor$Utils;
 import com.netflix.mediaclient.Log;
-import android.app.Activity;
+import android.content.Context;
 import com.netflix.mediaclient.util.AndroidUtils;
 import android.view.View;
 import android.view.View$OnClickListener;
@@ -61,7 +60,7 @@ class MdxMiniPlayerViews$10 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        if (AndroidUtils.isActivityFinishedOrDestroyed(this.this$0.activity)) {
+        if (AndroidUtils.isActivityFinishedOrDestroyed((Context)this.this$0.activity)) {
             this.this$0.log("Activity destroyed, can't show rating");
         }
         else {
@@ -95,7 +94,7 @@ class MdxMiniPlayerViews$10 implements View$OnClickListener
             else {
                 videoType = currentVideo.getType();
             }
-            final RatingDialogFrag create = RatingDialogFrag.create(playableVideoId, videoType, s, null, 2130903254, true);
+            final RatingDialogFrag create = RatingDialogFrag.create(playableVideoId, videoType, s, null, 2130903273, true);
             create.setCancelable(true);
             this.this$0.activity.showDialog(create);
             if (this.this$0.activity != null && this.this$0.activity.getServiceManager() != null) {

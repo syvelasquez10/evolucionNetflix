@@ -9,11 +9,9 @@ import android.graphics.PorterDuff$Mode;
 import android.content.res.ColorStateList;
 import android.widget.TextView;
 import android.view.View;
-import android.support.v7.internal.widget.TintContextWrapper;
 import android.support.v7.appcompat.R$attr;
 import android.util.AttributeSet;
 import android.content.Context;
-import android.support.v7.internal.widget.TintManager;
 import android.support.v4.view.TintableBackgroundView;
 import android.widget.EditText;
 
@@ -21,7 +19,10 @@ public class AppCompatEditText extends EditText implements TintableBackgroundVie
 {
     private AppCompatBackgroundHelper mBackgroundTintHelper;
     private AppCompatTextHelper mTextHelper;
-    private TintManager mTintManager;
+    
+    public AppCompatEditText(final Context context) {
+        this(context, null);
+    }
     
     public AppCompatEditText(final Context context, final AttributeSet set) {
         this(context, set, R$attr.editTextStyle);
@@ -29,15 +30,18 @@ public class AppCompatEditText extends EditText implements TintableBackgroundVie
     
     public AppCompatEditText(final Context context, final AttributeSet set, final int n) {
         super(TintContextWrapper.wrap(context), set, n);
-        this.mTintManager = TintManager.get(this.getContext());
-        (this.mBackgroundTintHelper = new AppCompatBackgroundHelper((View)this, this.mTintManager)).loadFromAttributes(set, n);
-        (this.mTextHelper = new AppCompatTextHelper((TextView)this)).loadFromAttributes(set, n);
+        (this.mBackgroundTintHelper = new AppCompatBackgroundHelper((View)this)).loadFromAttributes(set, n);
+        (this.mTextHelper = AppCompatTextHelper.create((TextView)this)).loadFromAttributes(set, n);
+        this.mTextHelper.applyCompoundDrawablesTints();
     }
     
     protected void drawableStateChanged() {
         super.drawableStateChanged();
         if (this.mBackgroundTintHelper != null) {
             this.mBackgroundTintHelper.applySupportBackgroundTint();
+        }
+        if (this.mTextHelper != null) {
+            this.mTextHelper.applyCompoundDrawablesTints();
         }
     }
     

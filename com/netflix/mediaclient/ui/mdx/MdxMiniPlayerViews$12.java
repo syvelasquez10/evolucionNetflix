@@ -52,6 +52,6 @@ class MdxMiniPlayerViews$12 implements View$OnClickListener
     }
     
     public void onClick(final View view) {
-        this.this$0.activity.displayDialog((Dialog)MdxUtils.createMdxMenuDialog(this.this$0.activity, this.this$0.dialogCallbacks));
+        this.this$0.activity.displayDialog(MdxUtils.createMdxMenuDialog(this.this$0.activity, this.this$0.dialogCallbacks));
     }
 }

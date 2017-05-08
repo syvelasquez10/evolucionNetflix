@@ -14,18 +14,22 @@ import android.graphics.Paint$Style;
 import android.graphics.RectF;
 import android.graphics.Rect;
 import android.graphics.Paint;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 
 class CircularBorderDrawable extends Drawable
 {
+    private static final float DRAW_STROKE_WIDTH_MULTIPLE = 1.3333f;
+    private ColorStateList mBorderTint;
     float mBorderWidth;
     private int mBottomInnerStrokeColor;
     private int mBottomOuterStrokeColor;
+    private int mCurrentBorderTintColor;
     private boolean mInvalidateShader;
     final Paint mPaint;
     final Rect mRect;
     final RectF mRectF;
-    private int mTintColor;
+    private float mRotation;
     private int mTopInnerStrokeColor;
     private int mTopOuterStrokeColor;
     
@@ -40,7 +44,7 @@ class CircularBorderDrawable extends Drawable
         final Rect mRect = this.mRect;
         this.copyBounds(mRect);
         final float n = this.mBorderWidth / mRect.height();
-        return (Shader)new LinearGradient(0.0f, (float)mRect.top, 0.0f, (float)mRect.bottom, new int[] { ColorUtils.compositeColors(this.mTopOuterStrokeColor, this.mTintColor), ColorUtils.compositeColors(this.mTopInnerStrokeColor, this.mTintColor), ColorUtils.compositeColors(ColorUtils.setAlphaComponent(this.mTopInnerStrokeColor, 0), this.mTintColor), ColorUtils.compositeColors(ColorUtils.setAlphaComponent(this.mBottomInnerStrokeColor, 0), this.mTintColor), ColorUtils.compositeColors(this.mBottomInnerStrokeColor, this.mTintColor), ColorUtils.compositeColors(this.mBottomOuterStrokeColor, this.mTintColor) }, new float[] { 0.0f, n, 0.5f, 0.5f, 1.0f - n, 1.0f }, Shader$TileMode.CLAMP);
+        return (Shader)new LinearGradient(0.0f, (float)mRect.top, 0.0f, (float)mRect.bottom, new int[] { ColorUtils.compositeColors(this.mTopOuterStrokeColor, this.mCurrentBorderTintColor), ColorUtils.compositeColors(this.mTopInnerStrokeColor, this.mCurrentBorderTintColor), ColorUtils.compositeColors(ColorUtils.setAlphaComponent(this.mTopInnerStrokeColor, 0), this.mCurrentBorderTintColor), ColorUtils.compositeColors(ColorUtils.setAlphaComponent(this.mBottomInnerStrokeColor, 0), this.mCurrentBorderTintColor), ColorUtils.compositeColors(this.mBottomInnerStrokeColor, this.mCurrentBorderTintColor), ColorUtils.compositeColors(this.mBottomOuterStrokeColor, this.mCurrentBorderTintColor) }, new float[] { 0.0f, n, 0.5f, 0.5f, 1.0f - n, 1.0f }, Shader$TileMode.CLAMP);
     }
     
     public void draw(final Canvas canvas) {
@@ -56,7 +60,10 @@ class CircularBorderDrawable extends Drawable
         mRectF.top += n;
         mRectF.right -= n;
         mRectF.bottom -= n;
+        canvas.save();
+        canvas.rotate(this.mRotation, mRectF.centerX(), mRectF.centerY());
         canvas.drawOval(mRectF, this.mPaint);
+        canvas.restore();
     }
     
     public int getOpacity() {
@@ -72,12 +79,39 @@ class CircularBorderDrawable extends Drawable
         return true;
     }
     
+    public boolean isStateful() {
+        return (this.mBorderTint != null && this.mBorderTint.isStateful()) || super.isStateful();
+    }
+    
     protected void onBoundsChange(final Rect rect) {
         this.mInvalidateShader = true;
     }
     
+    protected boolean onStateChange(final int[] array) {
+        if (this.mBorderTint != null) {
+            final int colorForState = this.mBorderTint.getColorForState(array, this.mCurrentBorderTintColor);
+            if (colorForState != this.mCurrentBorderTintColor) {
+                this.mInvalidateShader = true;
+                this.mCurrentBorderTintColor = colorForState;
+            }
+        }
+        if (this.mInvalidateShader) {
+            this.invalidateSelf();
+        }
+        return this.mInvalidateShader;
+    }
+    
     public void setAlpha(final int alpha) {
         this.mPaint.setAlpha(alpha);
+        this.invalidateSelf();
+    }
+    
+    void setBorderTint(final ColorStateList mBorderTint) {
+        if (mBorderTint != null) {
+            this.mCurrentBorderTintColor = mBorderTint.getColorForState(this.getState(), this.mCurrentBorderTintColor);
+        }
+        this.mBorderTint = mBorderTint;
+        this.mInvalidateShader = true;
         this.invalidateSelf();
     }
     
@@ -102,9 +136,10 @@ class CircularBorderDrawable extends Drawable
         this.mBottomInnerStrokeColor = mBottomInnerStrokeColor;
     }
     
-    void setTintColor(final int mTintColor) {
-        this.mTintColor = mTintColor;
-        this.mInvalidateShader = true;
-        this.invalidateSelf();
+    final void setRotation(final float mRotation) {
+        if (mRotation != this.mRotation) {
+            this.mRotation = mRotation;
+            this.invalidateSelf();
+        }
     }
 }

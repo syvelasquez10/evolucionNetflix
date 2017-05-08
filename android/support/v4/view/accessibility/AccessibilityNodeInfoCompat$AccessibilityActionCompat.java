@@ -4,11 +4,6 @@
 
 package android.support.v4.view.accessibility;
 
-import android.os.Bundle;
-import android.graphics.Rect;
-import android.view.View;
-import android.os.Build$VERSION;
-
 public class AccessibilityNodeInfoCompat$AccessibilityActionCompat
 {
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_ACCESSIBILITY_FOCUS;
@@ -17,6 +12,7 @@ public class AccessibilityNodeInfoCompat$AccessibilityActionCompat
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_CLEAR_SELECTION;
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_CLICK;
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_COLLAPSE;
+    public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_CONTEXT_CLICK;
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_COPY;
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_CUT;
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_DISMISS;
@@ -29,11 +25,18 @@ public class AccessibilityNodeInfoCompat$AccessibilityActionCompat
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY;
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_PREVIOUS_HTML_ELEMENT;
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_SCROLL_BACKWARD;
+    public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_SCROLL_DOWN;
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_SCROLL_FORWARD;
+    public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_SCROLL_LEFT;
+    public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_SCROLL_RIGHT;
+    public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_SCROLL_TO_POSITION;
+    public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_SCROLL_UP;
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_SELECT;
+    public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_SET_PROGRESS;
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_SET_SELECTION;
     public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_SET_TEXT;
-    private final Object mAction;
+    public static final AccessibilityNodeInfoCompat$AccessibilityActionCompat ACTION_SHOW_ON_SCREEN;
+    final Object mAction;
     
     static {
         ACTION_FOCUS = new AccessibilityNodeInfoCompat$AccessibilityActionCompat(1, null);
@@ -58,13 +61,29 @@ public class AccessibilityNodeInfoCompat$AccessibilityActionCompat
         ACTION_COLLAPSE = new AccessibilityNodeInfoCompat$AccessibilityActionCompat(524288, null);
         ACTION_DISMISS = new AccessibilityNodeInfoCompat$AccessibilityActionCompat(1048576, null);
         ACTION_SET_TEXT = new AccessibilityNodeInfoCompat$AccessibilityActionCompat(2097152, null);
+        ACTION_SHOW_ON_SCREEN = new AccessibilityNodeInfoCompat$AccessibilityActionCompat(AccessibilityNodeInfoCompat.IMPL.getActionShowOnScreen());
+        ACTION_SCROLL_TO_POSITION = new AccessibilityNodeInfoCompat$AccessibilityActionCompat(AccessibilityNodeInfoCompat.IMPL.getActionScrollToPosition());
+        ACTION_SCROLL_UP = new AccessibilityNodeInfoCompat$AccessibilityActionCompat(AccessibilityNodeInfoCompat.IMPL.getActionScrollUp());
+        ACTION_SCROLL_LEFT = new AccessibilityNodeInfoCompat$AccessibilityActionCompat(AccessibilityNodeInfoCompat.IMPL.getActionScrollLeft());
+        ACTION_SCROLL_DOWN = new AccessibilityNodeInfoCompat$AccessibilityActionCompat(AccessibilityNodeInfoCompat.IMPL.getActionScrollDown());
+        ACTION_SCROLL_RIGHT = new AccessibilityNodeInfoCompat$AccessibilityActionCompat(AccessibilityNodeInfoCompat.IMPL.getActionScrollRight());
+        ACTION_CONTEXT_CLICK = new AccessibilityNodeInfoCompat$AccessibilityActionCompat(AccessibilityNodeInfoCompat.IMPL.getActionContextClick());
+        ACTION_SET_PROGRESS = new AccessibilityNodeInfoCompat$AccessibilityActionCompat(AccessibilityNodeInfoCompat.IMPL.getActionSetProgress());
     }
     
     public AccessibilityNodeInfoCompat$AccessibilityActionCompat(final int n, final CharSequence charSequence) {
         this(AccessibilityNodeInfoCompat.IMPL.newAccessibilityAction(n, charSequence));
     }
     
-    private AccessibilityNodeInfoCompat$AccessibilityActionCompat(final Object mAction) {
+    AccessibilityNodeInfoCompat$AccessibilityActionCompat(final Object mAction) {
         this.mAction = mAction;
+    }
+    
+    public int getId() {
+        return AccessibilityNodeInfoCompat.IMPL.getAccessibilityActionId(this.mAction);
+    }
+    
+    public CharSequence getLabel() {
+        return AccessibilityNodeInfoCompat.IMPL.getAccessibilityActionLabel(this.mAction);
     }
 }

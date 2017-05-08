@@ -11,6 +11,7 @@ import org.apache.http.client.ClientProtocolException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import org.apache.http.conn.ConnectTimeoutException;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import org.apache.http.util.EntityUtils;
 import org.apache.http.client.methods.HttpUriRequest;
 import com.netflix.mediaclient.Log;
@@ -76,23 +77,22 @@ public final class WidevineCDMProvisionRequestTask extends AsyncTask<String, Voi
                             return (byte[])o;
                         }
                     }
-                    goto Label_0444;
-                    // iftrue(Label_0331:, statusCode != 400)
-                    // iftrue(Label_0251:, this.callback == null)
-                    Block_7: {
-                        break Block_7;
-                        while (true) {
-                            while (true) {
-                                this.callback.abort();
-                                return null;
-                                continue;
-                            }
-                            Log.d("nf_net", "Server returned HTTP error code 400 (BAD REQUEST), assume Widevine plugun is NOT recognized: " + statusCode);
-                            continue;
-                        }
+                    goto Label_0468;
+                    // iftrue(Label_0292:, !Log.isLoggable())
+                    // iftrue(Label_0355:, statusCode != 400)
+                Block_8:
+                    while (true) {
+                        break Block_8;
+                        this.callback.abort();
+                        return null;
+                        continue;
+                    }
+                    Log.d("nf_net", "Server returned HTTP error code 400 (BAD REQUEST), assume Widevine plugun is NOT recognized: " + statusCode);
+                    Label_0292: {
+                        ErrorLoggingManager.logHandledException("15002. Provisiong failed with status code 400 " + array[0]);
                     }
                 }
-                // iftrue(Label_0292:, !Log.isLoggable())
+                // iftrue(Label_0251:, this.callback == null)
                 catch (ConnectTimeoutException ex) {}
                 catch (SocketTimeoutException ex2) {}
                 catch (IOException ex3) {}
@@ -103,11 +103,11 @@ public final class WidevineCDMProvisionRequestTask extends AsyncTask<String, Voi
         catch (IOException ex6) {}
         catch (SocketTimeoutException o2) {
             final int statusCode = 0;
-            goto Label_0379;
+            goto Label_0403;
         }
         catch (ConnectTimeoutException o2) {
             final int statusCode = 0;
-            goto Label_0312;
+            goto Label_0336;
         }
     }
 }

@@ -4,6 +4,8 @@
 
 package android.support.v4.app;
 
+import android.content.IntentSender;
+import android.os.Bundle;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +26,7 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer
     private final Handler mHandler;
     private LoaderManagerImpl mLoaderManager;
     private boolean mLoadersStarted;
+    private boolean mRetainLoaders;
     final int mWindowAnimations;
     
     FragmentHostCallback(final Activity mActivity, final Context mContext, final Handler mHandler, final int mWindowAnimations) {
@@ -32,6 +35,10 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer
         this.mContext = mContext;
         this.mHandler = mHandler;
         this.mWindowAnimations = mWindowAnimations;
+    }
+    
+    public FragmentHostCallback(final Context context, final Handler handler, final int n) {
+        this(null, context, handler, n);
     }
     
     FragmentHostCallback(final FragmentActivity fragmentActivity) {
@@ -43,6 +50,13 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer
             return;
         }
         this.mLoaderManager.doDestroy();
+    }
+    
+    void doLoaderRetain() {
+        if (this.mLoaderManager == null) {
+            return;
+        }
+        this.mLoaderManager.doRetain();
     }
     
     void doLoaderStart() {
@@ -62,12 +76,13 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer
         this.mCheckedForLoaderManager = true;
     }
     
-    void doLoaderStop(final boolean b) {
+    void doLoaderStop(final boolean mRetainLoaders) {
+        this.mRetainLoaders = mRetainLoaders;
         if (this.mLoaderManager == null || !this.mLoadersStarted) {
             return;
         }
         this.mLoadersStarted = false;
-        if (b) {
+        if (mRetainLoaders) {
             this.mLoaderManager.doRetain();
             return;
         }
@@ -127,6 +142,10 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer
         return this.mLoaderManager = this.getLoaderManager("(root)", this.mLoadersStarted, true);
     }
     
+    boolean getRetainLoaders() {
+        return this.mRetainLoaders;
+    }
+    
     void inactivateFragment(final String s) {
         if (this.mAllLoaderManagers != null) {
             final LoaderManagerImpl loaderManagerImpl = this.mAllLoaderManagers.get(s);
@@ -179,10 +198,21 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer
     }
     
     public void onStartActivityFromFragment(final Fragment fragment, final Intent intent, final int n) {
+        this.onStartActivityFromFragment(fragment, intent, n, null);
+    }
+    
+    public void onStartActivityFromFragment(final Fragment fragment, final Intent intent, final int n, final Bundle bundle) {
         if (n != -1) {
             throw new IllegalStateException("Starting activity with a requestCode requires a FragmentActivity host");
         }
         this.mContext.startActivity(intent);
+    }
+    
+    public void onStartIntentSenderFromFragment(final Fragment fragment, final IntentSender intentSender, final int n, final Intent intent, final int n2, final int n3, final int n4, final Bundle bundle) {
+        if (n != -1) {
+            throw new IllegalStateException("Starting intent sender with a requestCode requires a FragmentActivity host");
+        }
+        ActivityCompat.startIntentSenderForResult(this.mActivity, intentSender, n, intent, n2, n3, n4, bundle);
     }
     
     public void onSupportInvalidateOptionsMenu() {
@@ -216,6 +246,7 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer
             for (int i = size - 1; i >= 0; --i) {
                 array[i] = (LoaderManagerImpl)this.mAllLoaderManagers.valueAt(i);
             }
+            final boolean retainLoaders = this.getRetainLoaders();
             int n2 = 0;
             while (true) {
                 n3 = n2;
@@ -223,6 +254,12 @@ public abstract class FragmentHostCallback<E> extends FragmentContainer
                     break;
                 }
                 final LoaderManagerImpl loaderManagerImpl = array[n];
+                if (!loaderManagerImpl.mRetaining && retainLoaders) {
+                    if (!loaderManagerImpl.mStarted) {
+                        loaderManagerImpl.doStart();
+                    }
+                    loaderManagerImpl.doRetain();
+                }
                 if (loaderManagerImpl.mRetaining) {
                     n2 = 1;
                 }

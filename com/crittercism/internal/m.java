@@ -15,6 +15,25 @@ public final class m extends InputStream implements ah
     private z d;
     private e e;
     
+    public m(final z d, final InputStream b, final e e) {
+        if (d == null) {
+            throw new NullPointerException("socket was null");
+        }
+        if (b == null) {
+            throw new NullPointerException("delegate was null");
+        }
+        if (e == null) {
+            throw new NullPointerException("dispatch was null");
+        }
+        this.d = d;
+        this.b = b;
+        this.e = e;
+        this.c = this.b();
+        if (this.c == null) {
+            throw new NullPointerException("parser was null");
+        }
+    }
+    
     private void a(final Exception ex) {
         try {
             final c d = this.d();

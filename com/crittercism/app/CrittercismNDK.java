@@ -13,7 +13,10 @@ import android.content.Context;
 
 public class CrittercismNDK
 {
+    private static final String ASSET_SO_FILE_NAME = "lib64libcrittercism-v3.crt";
+    private static final String DST_SO_FILE_NAME = "lib64libcrittercism-v3.so";
     private static final String[] LEGACY_SO_FILE_NAMES;
+    private static final String LIBRARY_NAME = "64libcrittercism-v3";
     private static boolean isNdkInstalled;
     
     static {
@@ -59,6 +62,10 @@ public class CrittercismNDK
             dw.c("doNdkSharedLibrariesExist: ", ex);
             return false;
         }
+    }
+    
+    public static File getInstalledLibraryFile(final Context context) {
+        return new File(context.getFilesDir().getAbsolutePath() + "/com.crittercism/lib/" + "lib64libcrittercism-v3.so");
     }
     
     public static InputStream getJarredLibFileStream(final Context context) {
@@ -107,6 +114,10 @@ public class CrittercismNDK
             return;
         }
         dw.b("Unable to initialize NDK crash reporting.");
+    }
+    
+    public static boolean isNdkCrashReportingInstalled() {
+        return CrittercismNDK.isNdkInstalled;
     }
     
     public static boolean loadLibraryFromAssets(final Context context) {

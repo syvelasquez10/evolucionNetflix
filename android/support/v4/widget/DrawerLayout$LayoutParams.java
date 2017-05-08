@@ -4,27 +4,6 @@
 
 package android.support.v4.widget;
 
-import android.graphics.drawable.ColorDrawable;
-import android.support.v4.content.ContextCompat;
-import android.os.Parcelable;
-import android.view.View$MeasureSpec;
-import android.support.v4.view.KeyEventCompat;
-import android.view.KeyEvent;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v4.view.GravityCompat;
-import android.graphics.Canvas;
-import android.view.MotionEvent;
-import android.os.SystemClock;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.ViewGroupCompat;
-import android.support.v4.view.AccessibilityDelegateCompat;
-import android.support.v4.view.ViewCompat;
-import android.os.Build$VERSION;
-import android.graphics.drawable.Drawable;
-import android.graphics.Paint;
-import android.view.View;
-import java.util.ArrayList;
-import android.view.ViewGroup;
 import android.view.ViewGroup$LayoutParams;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
@@ -33,14 +12,22 @@ import android.view.ViewGroup$MarginLayoutParams;
 
 public class DrawerLayout$LayoutParams extends ViewGroup$MarginLayoutParams
 {
+    private static final int FLAG_IS_CLOSING = 4;
+    private static final int FLAG_IS_OPENED = 1;
+    private static final int FLAG_IS_OPENING = 2;
     public int gravity;
     boolean isPeeking;
-    boolean knownOpen;
     float onScreen;
+    int openState;
     
     public DrawerLayout$LayoutParams(final int n, final int n2) {
         super(n, n2);
         this.gravity = 0;
+    }
+    
+    public DrawerLayout$LayoutParams(final int n, final int n2, final int gravity) {
+        this(n, n2);
+        this.gravity = gravity;
     }
     
     public DrawerLayout$LayoutParams(final Context context, final AttributeSet set) {

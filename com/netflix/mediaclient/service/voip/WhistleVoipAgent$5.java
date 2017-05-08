@@ -32,7 +32,6 @@ import com.netflix.mediaclient.util.FileUtils;
 import com.vailsys.whistleengine.WhistleEngineConfig$TransportMode;
 import com.vailsys.whistleengine.WhistleEngineConfig;
 import com.netflix.mediaclient.service.user.UserLocaleRepository;
-import android.app.Service;
 import android.support.v4.content.LocalBroadcastManager;
 import com.netflix.mediaclient.util.l10n.UserLocale;
 import com.netflix.mediaclient.service.NetflixService;

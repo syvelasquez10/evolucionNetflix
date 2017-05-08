@@ -6,9 +6,9 @@ package com.netflix.mediaclient.ui.mdx;
 
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
-import com.netflix.mediaclient.media.Subtitle;
+import com.netflix.mediaclient.media.BaseSubtitle;
 
-public final class MdxSubtitle extends Subtitle
+public final class MdxSubtitle extends BaseSubtitle
 {
     protected static final String ATTR_LABEL = "label";
     public static final int IMPL_VALUE = 2;
@@ -25,6 +25,11 @@ public final class MdxSubtitle extends Subtitle
     
     public static final MdxSubtitle newInstance(final JSONObject jsonObject, final int n) {
         return new MdxSubtitle(jsonObject, n);
+    }
+    
+    @Override
+    public String getDownloadableId() {
+        return null;
     }
     
     public boolean isSelected() {

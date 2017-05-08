@@ -78,10 +78,10 @@ public class DiagnosisAgent extends ServiceAgent implements IDiagnosis
             this.mListener.onDiagnosisComplete();
             LogArguments logArguments;
             if (this.isTestSuccess()) {
-                logArguments = new LogArguments(LogArguments$LogLevel.DEBUG.getLevelInString(), this.getResultString(), "NetworkDiagnostics", null);
+                logArguments = new LogArguments(LogArguments$LogLevel.DEBUG, this.getResultString(), "NetworkDiagnostics", null);
             }
             else {
-                logArguments = new LogArguments(LogArguments$LogLevel.ERROR.getLevelInString(), this.getResultString(), "NetworkDiagnostics", null);
+                logArguments = new LogArguments(LogArguments$LogLevel.ERROR, this.getResultString(), "NetworkDiagnostics", null);
             }
             this.mNrdp.getLog().log(logArguments);
         }

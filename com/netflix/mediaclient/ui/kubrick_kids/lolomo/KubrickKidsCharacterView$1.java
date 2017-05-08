@@ -10,10 +10,10 @@ import java.util.ArrayList;
 final class KubrickKidsCharacterView$1 extends ArrayList<Pair<Integer, Integer>>
 {
     KubrickKidsCharacterView$1() {
-        this.add(new Pair<Integer, Integer>(2130837808, 2131624058));
-        this.add(new Pair<Integer, Integer>(2130837806, 2131624054));
-        this.add(new Pair<Integer, Integer>(2130837805, 2131624053));
-        this.add(new Pair<Integer, Integer>(2130837804, 2131624051));
-        this.add(new Pair<Integer, Integer>(2130837807, 2131624055));
+        this.add(new Pair<Integer, Integer>(2130837863, 2131624070));
+        this.add(new Pair<Integer, Integer>(2130837861, 2131624066));
+        this.add(new Pair<Integer, Integer>(2130837860, 2131624065));
+        this.add(new Pair<Integer, Integer>(2130837859, 2131624062));
+        this.add(new Pair<Integer, Integer>(2130837862, 2131624067));
     }
 }

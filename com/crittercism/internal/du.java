@@ -90,27 +90,27 @@ public final class du
                                         a.put(s, opt);
                                         b = true;
                                         continue Label_0086_Outer;
+                                        n = 0;
+                                        continue;
                                         // iftrue(Label_0031:, !b)
                                         // iftrue(Label_0173:, opt2.equals(opt))
                                         Block_10: {
                                             Block_11: {
                                                 break Block_11;
                                                 break Block_10;
-                                                n = 0;
-                                                continue Label_0129_Outer;
                                             }
                                             this.b(a);
                                             this.a(true);
                                             return;
-                                            Label_0173: {
-                                                n = 0;
-                                            }
-                                            continue;
                                         }
                                         n = 1;
                                         continue;
-                                        n = 0;
+                                        Label_0173: {
+                                            n = 0;
+                                        }
                                         continue;
+                                        n = 0;
+                                        continue Label_0129_Outer;
                                     }
                                     catch (JSONException ex) {}
                                     break;

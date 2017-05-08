@@ -4,7 +4,7 @@
 
 package com.netflix.mediaclient.ui.verifyplay;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.text.method.MovementMethod;
 import android.view.View$OnKeyListener;
 import android.widget.TextView$OnEditorActionListener;
@@ -13,7 +13,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.view.View;
 import android.content.DialogInterface$OnClickListener;
-import android.app.AlertDialog$Builder;
+import android.support.v7.app.AlertDialog$Builder;
 import android.util.TypedValue;
 import android.view.WindowManager$LayoutParams;
 import com.netflix.mediaclient.servicemgr.ManagerCallback;
@@ -47,7 +47,7 @@ class PinDialog$1 extends LinkMovementMethod
     }
     
     public boolean onTouchEvent(final TextView textView, final Spannable spannable, final MotionEvent motionEvent) {
-        this.this$0.mPinForgotView.setLinkTextColor(this.this$0.getResources().getColor(2131624087));
+        this.this$0.mPinForgotView.setLinkTextColor(this.this$0.getResources().getColor(2131624102));
         return super.onTouchEvent(textView, spannable, motionEvent);
     }
 }

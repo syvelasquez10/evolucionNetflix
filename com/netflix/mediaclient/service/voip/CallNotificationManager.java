@@ -5,7 +5,8 @@
 package com.netflix.mediaclient.service.voip;
 
 import com.netflix.mediaclient.Log;
-import android.app.Service;
+import android.os.Handler;
+import com.netflix.mediaclient.service.NetflixService;
 import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
@@ -25,9 +26,9 @@ class CallNotificationManager
     private static final String CALL_NOTIFICATION_ACTION_CANCEL = "com.netflix.mediaclient.intent.action.CALL_CANCEL";
     private static final int NOTIFICATION_ID = 20;
     private static final String TAG = "nf_voip";
-    private Context mContext;
-    private NotificationManager mNotificationManager;
-    private AtomicBoolean mShowNotification;
+    private final Context mContext;
+    private final NotificationManager mNotificationManager;
+    private final AtomicBoolean mShowNotification;
     
     CallNotificationManager(final Context mContext) {
         this.mShowNotification = new AtomicBoolean(false);
@@ -37,16 +38,16 @@ class CallNotificationManager
     
     private Notification createNotification(final boolean usesChronometer) {
         final long currentTimeMillis = System.currentTimeMillis();
-        final String string = this.mContext.getString(2131231040);
-        final String string2 = this.mContext.getString(2131231041);
+        final String string = this.mContext.getString(2131231055);
+        final String string2 = this.mContext.getString(2131231056);
         String contentText;
         if (usesChronometer) {
-            contentText = this.mContext.getString(2131231042);
+            contentText = this.mContext.getString(2131231057);
         }
         else {
-            contentText = this.mContext.getString(2131231043);
+            contentText = this.mContext.getString(2131231058);
         }
-        final Notification build = new NotificationCompat$Builder(this.mContext).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setCategory("call").setSmallIcon(2130837770).setLargeIcon(this.getLargeIcon()).setPriority(2).setContentTitle(string).setContentText(contentText).setTicker(string).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).addAction(2130837671, string2, this.createNotificationPendingIntentDelete()).setAutoCancel(false).setWhen(currentTimeMillis).setUsesChronometer(usesChronometer).build();
+        final Notification build = new NotificationCompat$Builder(this.mContext).setOngoing(true).setVisibility(1).setOnlyAlertOnce(true).setCategory("call").setSmallIcon(2130837828).setLargeIcon(this.getLargeIcon()).setPriority(2).setContentTitle(string).setContentText(contentText).setTicker(string).setContentIntent(this.createNotificationPendingIntentResume()).setDeleteIntent(this.createNotificationPendingIntentDelete()).addAction(2130837707, string2, this.createNotificationPendingIntentDelete()).setAutoCancel(false).setWhen(currentTimeMillis).setUsesChronometer(usesChronometer).build();
         build.flags |= 0x40;
         this.mNotificationManager.notify(20, build);
         return build;
@@ -61,7 +62,7 @@ class CallNotificationManager
     }
     
     private Bitmap getLargeIcon() {
-        return BitmapFactory.decodeResource(this.mContext.getResources(), 2130837724);
+        return BitmapFactory.decodeResource(this.mContext.getResources(), 2130837777);
     }
     
     public static IntentFilter getNotificationIntentFilter() {
@@ -76,19 +77,19 @@ class CallNotificationManager
         return "com.netflix.mediaclient.intent.action.CALL_CANCEL".equalsIgnoreCase(s);
     }
     
-    void cancelNotification(final Service service) {
+    void cancelNotification(final NetflixService netflixService, final Handler handler) {
         Log.d("nf_voip", "Cancel notification");
         this.mShowNotification.set(false);
-        service.stopForeground(true);
+        handler.post((Runnable)new CallNotificationManager$3(this, netflixService));
     }
     
-    void showCallingNotification(final Service service) {
+    void showCallingNotification(final NetflixService netflixService, final Handler handler) {
         this.mShowNotification.set(true);
-        service.startForeground(20, this.createNotification(false));
+        handler.post((Runnable)new CallNotificationManager$1(this, netflixService, this.createNotification(false)));
     }
     
-    void updateConnectedNotification(final Service service) {
+    void updateConnectedNotification(final NetflixService netflixService, final Handler handler) {
         this.mShowNotification.set(true);
-        service.startForeground(20, this.createNotification(true));
+        handler.post((Runnable)new CallNotificationManager$2(this, netflixService, this.createNotification(true)));
     }
 }

@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import com.netflix.mediaclient.util.Coppola1Utils;
 import com.netflix.mediaclient.ui.player.subtitles.SubtitleManager;
 import com.netflix.mediaclient.util.DeviceUtils;
+import com.netflix.mediaclient.servicemgr.IPlayer$PlaybackType;
 import com.netflix.mediaclient.servicemgr.interface_.details.VideoDetails;
 import com.netflix.mediaclient.media.Language;
 import android.content.res.Configuration;

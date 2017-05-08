@@ -4,23 +4,26 @@
 
 package com.netflix.mediaclient.ui.player;
 
+import com.netflix.mediaclient.media.Subtitle;
 import com.netflix.mediaclient.util.JsonUtils;
 import org.json.JSONObject;
-import com.netflix.mediaclient.media.Subtitle;
+import com.netflix.mediaclient.media.BaseSubtitle;
 
-public class NccpSubtitle extends Subtitle
+public final class NccpSubtitle extends BaseSubtitle
 {
     public static final int IMPL_VALUE = 1;
     private static final String TRACK_TYPE_ASSISTIVE = "ASSISTIVE";
     private static final String TRACK_TYPE_FORCED_NARRATIVE_SUBTITLE = "FORCED_NARRATIVE_SUBTITLE";
     private static final String TRACK_TYPE_PRIMARY = "PRIMARY";
     
-    protected NccpSubtitle(final JSONObject jsonObject, final int nccpOrderNumber) {
+    protected NccpSubtitle(final JSONObject jsonObject) {
+        if (jsonObject.has("order")) {
+            this.nccpOrderNumber = jsonObject.getInt("order");
+        }
         this.canDeviceRender = JsonUtils.getBoolean(jsonObject, "canDeviceRender", false);
         this.id = JsonUtils.getString(jsonObject, "id", null);
         this.languageCodeIso639_1 = JsonUtils.getString(jsonObject, "language", "en");
         this.languageDescription = JsonUtils.getString(jsonObject, "languageDescription", "English");
-        this.nccpOrderNumber = nccpOrderNumber;
         final String string = JsonUtils.getString(jsonObject, "trackType", null);
         if (string == null) {
             this.trackType = 0;
@@ -40,8 +43,19 @@ public class NccpSubtitle extends Subtitle
         }
     }
     
-    public static final Subtitle newInstance(final JSONObject jsonObject, final int n) {
-        return new NccpSubtitle(jsonObject, n);
+    public static final Subtitle newInstance(final JSONObject jsonObject) {
+        return new NccpSubtitle(jsonObject);
+    }
+    
+    public static final Subtitle newInstance(final JSONObject jsonObject, final int nccpOrderNumber) {
+        final NccpSubtitle nccpSubtitle = new NccpSubtitle(jsonObject);
+        nccpSubtitle.nccpOrderNumber = nccpOrderNumber;
+        return nccpSubtitle;
+    }
+    
+    @Override
+    public String getDownloadableId() {
+        return null;
     }
     
     @Override
@@ -62,5 +76,10 @@ public class NccpSubtitle extends Subtitle
         }
         jsonObject.put("trackType", o);
         return jsonObject;
+    }
+    
+    @Override
+    public String toString() {
+        return "NccpSubtitle[id=" + this.id + ", languageCodeIso639_1=" + this.languageCodeIso639_1 + ", languageCodeIso639_2=" + this.languageCodeIso639_2 + ", languageDescription=" + this.languageDescription + ", trackType=" + this.trackType + ", canDeviceRender=" + this.canDeviceRender + ", nccpOrderNumber=" + this.nccpOrderNumber + "]";
     }
 }

@@ -5,10 +5,11 @@
 package com.netflix.mediaclient.util;
 
 import android.support.v4.content.LocalBroadcastManager;
-import com.netflix.mediaclient.Log;
 import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import com.netflix.mediaclient.Log;
+import android.content.Intent;
 
 public final class IntentUtils
 {
@@ -19,6 +20,20 @@ public final class IntentUtils
     
     static {
         TAG = IntentUtils.class.getSimpleName();
+    }
+    
+    public static String getIntentActionOrNull(final Intent intent) {
+        String action;
+        if (intent != null) {
+            action = intent.getAction();
+        }
+        else {
+            action = null;
+        }
+        if (action == null && Log.isLoggable()) {
+            Log.e(IntentUtils.TAG, "getIntentActionOrNull intentAction is null");
+        }
+        return action;
     }
     
     private static int getSafePriority(final int n) {

@@ -9,12 +9,14 @@ import android.os.Build$VERSION;
 import android.view.View;
 import java.lang.ref.WeakReference;
 
-public class ViewPropertyAnimatorCompat
+public final class ViewPropertyAnimatorCompat
 {
     static final ViewPropertyAnimatorCompat$ViewPropertyAnimatorCompatImpl IMPL;
-    private Runnable mEndAction;
-    private int mOldLayerType;
-    private Runnable mStartAction;
+    static final int LISTENER_TAG_ID = 2113929216;
+    private static final String TAG = "ViewAnimatorCompat";
+    Runnable mEndAction;
+    int mOldLayerType;
+    Runnable mStartAction;
     private WeakReference<View> mView;
     
     static {
@@ -57,6 +59,14 @@ public class ViewPropertyAnimatorCompat
         return this;
     }
     
+    public ViewPropertyAnimatorCompat alphaBy(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.alphaBy(this, view, n);
+        }
+        return this;
+    }
+    
     public void cancel() {
         final View view = this.mView.get();
         if (view != null) {
@@ -72,6 +82,70 @@ public class ViewPropertyAnimatorCompat
         return 0L;
     }
     
+    public Interpolator getInterpolator() {
+        final View view = this.mView.get();
+        if (view != null) {
+            return ViewPropertyAnimatorCompat.IMPL.getInterpolator(this, view);
+        }
+        return null;
+    }
+    
+    public long getStartDelay() {
+        final View view = this.mView.get();
+        if (view != null) {
+            return ViewPropertyAnimatorCompat.IMPL.getStartDelay(this, view);
+        }
+        return 0L;
+    }
+    
+    public ViewPropertyAnimatorCompat rotation(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.rotation(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat rotationBy(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.rotationBy(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat rotationX(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.rotationX(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat rotationXBy(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.rotationXBy(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat rotationY(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.rotationY(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat rotationYBy(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.rotationYBy(this, view, n);
+        }
+        return this;
+    }
+    
     public ViewPropertyAnimatorCompat scaleX(final float n) {
         final View view = this.mView.get();
         if (view != null) {
@@ -80,10 +154,26 @@ public class ViewPropertyAnimatorCompat
         return this;
     }
     
+    public ViewPropertyAnimatorCompat scaleXBy(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.scaleXBy(this, view, n);
+        }
+        return this;
+    }
+    
     public ViewPropertyAnimatorCompat scaleY(final float n) {
         final View view = this.mView.get();
         if (view != null) {
             ViewPropertyAnimatorCompat.IMPL.scaleY(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat scaleYBy(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.scaleYBy(this, view, n);
         }
         return this;
     }
@@ -143,10 +233,114 @@ public class ViewPropertyAnimatorCompat
         return this;
     }
     
+    public ViewPropertyAnimatorCompat translationXBy(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.translationXBy(this, view, n);
+        }
+        return this;
+    }
+    
     public ViewPropertyAnimatorCompat translationY(final float n) {
         final View view = this.mView.get();
         if (view != null) {
             ViewPropertyAnimatorCompat.IMPL.translationY(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat translationYBy(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.translationYBy(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat translationZ(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.translationZ(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat translationZBy(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.translationZBy(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat withEndAction(final Runnable runnable) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.withEndAction(this, view, runnable);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat withLayer() {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.withLayer(this, view);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat withStartAction(final Runnable runnable) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.withStartAction(this, view, runnable);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat x(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.x(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat xBy(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.xBy(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat y(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.y(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat yBy(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.yBy(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat z(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.z(this, view, n);
+        }
+        return this;
+    }
+    
+    public ViewPropertyAnimatorCompat zBy(final float n) {
+        final View view = this.mView.get();
+        if (view != null) {
+            ViewPropertyAnimatorCompat.IMPL.zBy(this, view, n);
         }
         return this;
     }

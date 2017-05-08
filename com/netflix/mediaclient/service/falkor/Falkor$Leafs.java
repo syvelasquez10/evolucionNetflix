@@ -21,6 +21,7 @@ public class Falkor$Leafs
     public static final String IN_QUEUE = "inQueue";
     public static final String KUBRICK = "kubrick";
     public static final String NOTIFICATION_VIDEO = "notificationVideo";
+    public static final String OFFLINE_AVAILABLE = "offlineAvailable";
     public static final String POSTPLAY_CONTEXT = "postplayContext";
     public static final String POST_PLAY_EXPERIENCE_DATA = "experienceData";
     public static final String POST_PLAY_IMPRESSION = "postPlayImpression";

@@ -4,29 +4,29 @@
 
 package com.netflix.mediaclient.service.player.subtitles;
 
-import java.util.List;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleProfile;
-import java.util.ArrayList;
 import com.netflix.mediaclient.service.player.subtitles.image.v2.BoxHeader;
 import java.io.InputStream;
 import java.io.DataInputStream;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
+import java.util.List;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleProfile;
+import java.util.ArrayList;
 import com.netflix.mediaclient.service.player.subtitles.image.ImageDescriptor;
 import java.io.File;
 import com.netflix.mediaclient.util.FileUtils;
 import com.netflix.mediaclient.android.app.Status;
-import com.netflix.mediaclient.javabridge.ui.IMedia$SubtitleFailure;
+import com.netflix.mediaclient.servicemgr.ISubtitleDef$SubtitleFailure;
 import com.netflix.mediaclient.util.StringUtils;
 import com.netflix.mediaclient.service.net.DnsManager;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcherCallback;
 import com.netflix.mediaclient.servicemgr.IClientLogging$AssetType;
+import com.netflix.mediaclient.service.player.subtitles.image.v2.SegmentIndex;
 import com.netflix.mediaclient.service.player.subtitles.image.v2.SegmentEncryptionInfo$ImageEncryptionInfo;
 import com.netflix.mediaclient.service.player.subtitles.image.v2.ImageDecryptorFactory;
-import com.netflix.mediaclient.service.player.subtitles.image.v2.SegmentIndex;
 import com.netflix.mediaclient.Log;
-import com.netflix.mediaclient.event.nrdp.media.SubtitleUrl;
-import com.netflix.mediaclient.service.player.PlayerAgent;
+import com.netflix.mediaclient.media.SubtitleUrl;
+import com.netflix.mediaclient.servicemgr.IPlayer;
 import com.netflix.mediaclient.service.player.subtitles.image.v2.ISCSegment;
 import com.netflix.mediaclient.service.player.subtitles.image.v2.ISCTrack;
 import com.netflix.mediaclient.service.player.subtitles.image.ImageSubtitleMetadata;
@@ -34,12 +34,12 @@ import com.netflix.mediaclient.service.player.subtitles.image.ImageSubtitleMetad
 public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements ImageSubtitleMetadata
 {
     protected static final String TAG = "nf_subtitles_imv2";
-    private ISCTrack mMasterIndexContainer;
+    protected ISCTrack mMasterIndexContainer;
     private boolean mSaveImagesToCache;
-    private ISCSegment[] mSegmentIndexContainers;
+    protected ISCSegment[] mSegmentIndexContainers;
     
-    public ImageV2SubtitleParser(final PlayerAgent playerAgent, final SubtitleUrl subtitleUrl, final long n, final SubtitleParser$DownloadFailedCallback subtitleParser$DownloadFailedCallback, final long n2) {
-        super(playerAgent, subtitleUrl, n, subtitleParser$DownloadFailedCallback, n2);
+    public ImageV2SubtitleParser(final IPlayer player, final SubtitleUrl subtitleUrl, final long n, final SubtitleParser$DownloadFailedCallback subtitleParser$DownloadFailedCallback, final long n2) {
+        super(player, subtitleUrl, n, subtitleParser$DownloadFailedCallback, n2);
         Log.d("nf_subtitles_imv2", "Create image V2 based subtitle parser");
     }
     
@@ -86,7 +86,7 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
         }
         final String decryptionKey = this.mSubtitleData.getDecryptionKey();
         segmentIndex.downloadStarted();
-        this.mPlayer.getResourceFetcher().fetchResource(downloadUrl, IClientLogging$AssetType.imageSubtitlesSegment, segmentIndex.getSegmentStartPosition(), segmentIndex.getSegmentSize(), new ImageV2SubtitleParser$3(this, segmentIndex, downloadUrl, decryptionKey));
+        this.getResourceFetcher().fetchResource(downloadUrl, IClientLogging$AssetType.imageSubtitlesSegment, segmentIndex.getSegmentStartPosition(), segmentIndex.getSegmentSize(), new ImageV2SubtitleParser$3(this, segmentIndex, downloadUrl, decryptionKey));
     }
     
     private int getCurrentSegmentIndex() {
@@ -137,26 +137,26 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
         final String[] nameServers = DnsManager.getInstance().getNameServers();
         if (StringUtils.isEmpty(this.mSubtitleData.getDownloadUrl())) {
             Log.e("nf_subtitles_imv2", "Subtitle URL is empty!");
-            this.onError("", nameServers, IMedia$SubtitleFailure.badMasterIndex, null);
+            this.onError("", nameServers, ISubtitleDef$SubtitleFailure.badMasterIndex, null);
             return;
         }
         if (this.mSubtitleData.getMasterIndexSize() <= 0) {
             if (Log.isLoggable()) {
                 Log.e("nf_subtitles_imv2", "Subtitle master index size is wrong " + this.mSubtitleData.getMasterIndexSize());
             }
-            this.onError(this.mSubtitleData.getDownloadUrl(), nameServers, IMedia$SubtitleFailure.badMasterIndex, null);
+            this.onError(this.mSubtitleData.getDownloadUrl(), nameServers, ISubtitleDef$SubtitleFailure.badMasterIndex, null);
             return;
         }
         if (Log.isLoggable()) {
             Log.d("nf_subtitles_imv2", "Subtitle data " + this.mSubtitleData);
         }
-        this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getDownloadUrl(), IClientLogging$AssetType.imageSubtitlesMasterIndex, this.mSubtitleData.getMasterIndexOffset(), this.mSubtitleData.getMasterIndexSize(), new ImageV2SubtitleParser$1(this, nameServers));
+        this.getResourceFetcher().fetchResource(this.mSubtitleData.getDownloadUrl(), IClientLogging$AssetType.imageSubtitlesMasterIndex, this.mSubtitleData.getMasterIndexOffset(), this.mSubtitleData.getMasterIndexSize(), new ImageV2SubtitleParser$1(this, nameServers));
     }
     
     private void handleDownloadSegmentIndexes() {
         Log.d("nf_subtitles_imv2", "Start to download segment indexes");
         final int segmentIndexesSize = this.mMasterIndexContainer.getMasterIndex().getSegmentIndexesSize();
-        this.mPlayer.getResourceFetcher().fetchResource(this.mSubtitleData.getDownloadUrl(), IClientLogging$AssetType.imageSubtitlesSegmentIndex, this.mMasterIndexContainer.getMasterIndex().getSegmentOffset(), segmentIndexesSize, new ImageV2SubtitleParser$2(this, segmentIndexesSize));
+        this.getResourceFetcher().fetchResource(this.mSubtitleData.getDownloadUrl(), IClientLogging$AssetType.imageSubtitlesSegmentIndex, this.mMasterIndexContainer.getMasterIndex().getSegmentOffset(), segmentIndexesSize, new ImageV2SubtitleParser$2(this, segmentIndexesSize));
     }
     
     private boolean handleImport() {
@@ -260,254 +260,6 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
             }
         }
         return segmentIndexes;
-    }
-    
-    private boolean parseMasterIndexContainer(final byte[] p0) {
-        // 
-        // This method could not be decompiled.
-        // 
-        // Original Bytecode:
-        // 
-        //     0: ldc             "nf_subtitles_imv2"
-        //     2: ldc_w           "Master index received, parse it..."
-        //     5: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //     8: pop            
-        //     9: new             Ljava/io/ByteArrayInputStream;
-        //    12: dup            
-        //    13: aload_1        
-        //    14: invokespecial   java/io/ByteArrayInputStream.<init>:([B)V
-        //    17: astore          4
-        //    19: new             Ljava/io/DataInputStream;
-        //    22: dup            
-        //    23: aload           4
-        //    25: invokespecial   java/io/DataInputStream.<init>:(Ljava/io/InputStream;)V
-        //    28: astore          5
-        //    30: new             Lcom/netflix/mediaclient/service/player/subtitles/image/v2/BoxHeader;
-        //    33: dup            
-        //    34: aload           5
-        //    36: invokespecial   com/netflix/mediaclient/service/player/subtitles/image/v2/BoxHeader.<init>:(Ljava/io/DataInputStream;)V
-        //    39: astore          6
-        //    41: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
-        //    44: ifeq            74
-        //    47: ldc             "nf_subtitles_imv2"
-        //    49: new             Ljava/lang/StringBuilder;
-        //    52: dup            
-        //    53: invokespecial   java/lang/StringBuilder.<init>:()V
-        //    56: ldc_w           "Header succeafully parsed "
-        //    59: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //    62: aload           6
-        //    64: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
-        //    67: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //    70: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //    73: pop            
-        //    74: aload_0        
-        //    75: new             Lcom/netflix/mediaclient/service/player/subtitles/image/v2/ISCTrack;
-        //    78: dup            
-        //    79: aload           6
-        //    81: aload           5
-        //    83: invokespecial   com/netflix/mediaclient/service/player/subtitles/image/v2/ISCTrack.<init>:(Lcom/netflix/mediaclient/service/player/subtitles/image/v2/BoxHeader;Ljava/io/DataInputStream;)V
-        //    86: putfield        com/netflix/mediaclient/service/player/subtitles/ImageV2SubtitleParser.mMasterIndexContainer:Lcom/netflix/mediaclient/service/player/subtitles/image/v2/ISCTrack;
-        //    89: iconst_1       
-        //    90: istore_3       
-        //    91: iconst_1       
-        //    92: istore_2       
-        //    93: aload           5
-        //    95: invokevirtual   java/io/DataInputStream.close:()V
-        //    98: aload           4
-        //   100: invokevirtual   java/io/InputStream.close:()V
-        //   103: aload_0        
-        //   104: ldc_w           "master.idx"
-        //   107: aload_1        
-        //   108: invokevirtual   com/netflix/mediaclient/service/player/subtitles/ImageV2SubtitleParser.saveFileSafelyToCache:(Ljava/lang/String;[B)V
-        //   111: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
-        //   114: ifeq            145
-        //   117: ldc             "nf_subtitles_imv2"
-        //   119: new             Ljava/lang/StringBuilder;
-        //   122: dup            
-        //   123: invokespecial   java/lang/StringBuilder.<init>:()V
-        //   126: ldc             ""
-        //   128: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
-        //   131: aload_0        
-        //   132: getfield        com/netflix/mediaclient/service/player/subtitles/ImageV2SubtitleParser.mMasterIndexContainer:Lcom/netflix/mediaclient/service/player/subtitles/image/v2/ISCTrack;
-        //   135: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
-        //   138: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
-        //   141: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
-        //   144: pop            
-        //   145: iload_2        
-        //   146: ireturn        
-        //   147: astore_1       
-        //   148: iconst_0       
-        //   149: istore_2       
-        //   150: iload_2        
-        //   151: ifeq            167
-        //   154: ldc             "nf_subtitles_imv2"
-        //   156: ldc_w           "Failed to close master index input stream"
-        //   159: aload_1        
-        //   160: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   163: pop            
-        //   164: goto            111
-        //   167: ldc             "nf_subtitles_imv2"
-        //   169: ldc_w           "Failed to parse master index"
-        //   172: aload_1        
-        //   173: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
-        //   176: pop            
-        //   177: goto            111
-        //   180: astore_1       
-        //   181: iload_3        
-        //   182: istore_2       
-        //   183: goto            150
-        //    Exceptions:
-        //  Try           Handler
-        //  Start  End    Start  End    Type                 
-        //  -----  -----  -----  -----  ---------------------
-        //  30     74     147    150    Ljava/lang/Throwable;
-        //  74     89     147    150    Ljava/lang/Throwable;
-        //  93     111    180    186    Ljava/lang/Throwable;
-        // 
-        // The error that occurred was:
-        // 
-        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0111:
-        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
-        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
-        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
-        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
-        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
-        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
-        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
-        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
-        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
-        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
-        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
-        // 
-        throw new IllegalStateException("An error occurred while decompiling this method.");
-    }
-    
-    private void parseSegment(final byte[] array, final SegmentIndex segmentIndex, final String s, final String s2) {
-        if (array == null) {
-            Log.e("nf_subtitles_imv2", "Response data for segment is NULL");
-        }
-        else {
-            while (true) {
-                Log.d("nf_subtitles_imv2", "Segment received, parse it...");
-                while (true) {
-                    int n;
-                    try {
-                        final long segmentStartPosition = segmentIndex.getSegmentStartPosition();
-                        n = 0;
-                        if (n >= segmentIndex.getImages().length) {
-                            break;
-                        }
-                        final ImageDescriptor imageDescriptor = segmentIndex.getImages()[n];
-                        final int n2 = (int)(imageDescriptor.getImageStartPosition() - segmentStartPosition);
-                        final int n3 = imageDescriptor.getSize() + n2;
-                        if (Log.isLoggable()) {
-                            Log.d("nf_subtitles_imv2", "Extract image " + imageDescriptor.getName() + ", start byte " + n2 + ", size " + imageDescriptor.getSize() + ", end byte " + n3);
-                        }
-                        final byte[] decodeImageIfNeeded = this.decodeImageIfNeeded(Arrays.copyOfRange(array, n2, n3), segmentIndex.getContainer(), n, s2, imageDescriptor.getTotalIndex());
-                        if (decodeImageIfNeeded != null) {
-                            imageDescriptor.setLocalImagePath(this.mPlayer.getPlayerFileCache().saveFile(this.mKey, imageDescriptor.getName(), decodeImageIfNeeded));
-                            if (Log.isLoggable()) {
-                                Log.d("nf_subtitles_imv2", "" + imageDescriptor);
-                            }
-                        }
-                        else if (Log.isLoggable()) {
-                            Log.e("nf_subtitles_imv2", "No image for " + imageDescriptor);
-                        }
-                    }
-                    catch (Throwable t) {
-                        Log.e("nf_subtitles_imv2", "Failed to parse segment", t);
-                        this.onError(s, DnsManager.getInstance().getNameServers(), IMedia$SubtitleFailure.parsing, null);
-                        return;
-                    }
-                    ++n;
-                    continue;
-                }
-            }
-        }
-    }
-    
-    private boolean parseSegmentIndexes(byte[] t, int index) {
-        boolean b = true;
-        if (t == null) {
-            Log.e("nf_subtitles_imv2", "Response data for segment indexes is NULL");
-            return false;
-        }
-        if (Log.isLoggable()) {
-            Log.d("nf_subtitles_imv2", "Downloaded " + t.length + " bytes of all segment indexes. Expecting " + index);
-        }
-        Label_0269: {
-            if (t.length == index) {
-                break Label_0269;
-            }
-            Log.e("nf_subtitles_imv2", "Size mismatch!");
-            if (t.length < index) {
-                Log.e("nf_subtitles_imv2", "Not enough data, abort parsing");
-                return false;
-            }
-            Log.w("nf_subtitles_imv2", "More data than expected, start parsing...");
-        Label_0149_Outer:
-            while (true) {
-                t = (Throwable)new ByteArrayInputStream((byte[])(Object)t);
-                final DataInputStream dataInputStream = new DataInputStream((InputStream)t);
-                final int segmentCount = this.mMasterIndexContainer.getMasterIndex().getSegmentCount();
-                this.mSegmentIndexContainers = new ISCSegment[segmentCount];
-                index = 0;
-                int n = 0;
-                int n2 = 1;
-            Label_0293_Outer:
-                while (true) {
-                    Label_0281: {
-                        if (index >= segmentCount) {
-                            break Label_0281;
-                        }
-                        while (true) {
-                            try {
-                                final ISCSegment iscSegment = new ISCSegment(new BoxHeader(dataInputStream), n2, n, dataInputStream);
-                                this.mSegmentIndexContainers[index] = iscSegment;
-                                n2 += iscSegment.getSegmentIndex().getDuration();
-                                n += iscSegment.getSegmentIndex().getSampleCount();
-                                iscSegment.getSegmentIndex().setIndex(index);
-                                if (Log.isLoggable()) {
-                                    Log.d("nf_subtitles_imv2", "Segment index " + index + " " + iscSegment);
-                                }
-                                ++index;
-                                continue Label_0293_Outer;
-                                Label_0311: {
-                                    Log.e("nf_subtitles_imv2", "Failed to parse segment index", t);
-                                }
-                                return b;
-                                try {
-                                    dataInputStream.close();
-                                    ((InputStream)t).close();
-                                    return true;
-                                }
-                                catch (Throwable t2) {}
-                                break Label_0293;
-                                Log.d("nf_subtitles_imv2", "Expected data, start parsing...");
-                                continue Label_0149_Outer;
-                                // iftrue(Label_0311:, !b)
-                                Log.e("nf_subtitles_imv2", "Failed to close segment indexes input stream", t);
-                                return b;
-                            }
-                            catch (Throwable t) {
-                                b = false;
-                                continue;
-                            }
-                            break;
-                        }
-                    }
-                    break;
-                }
-                break;
-            }
-        }
     }
     
     @Override
@@ -651,8 +403,8 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
     }
     
     @Override
-    public IMedia$SubtitleProfile getSubtitleProfile() {
-        return IMedia$SubtitleProfile.IMAGE_ENC;
+    public ISubtitleDef$SubtitleProfile getSubtitleProfile() {
+        return ISubtitleDef$SubtitleProfile.IMAGE_ENC;
     }
     
     @Override
@@ -675,13 +427,267 @@ public class ImageV2SubtitleParser extends BaseImageSubtitleParser implements Im
     }
     
     @Override
+    protected String initCache() {
+        return this.mKey = this.getCacheName();
+    }
+    
+    @Override
     public void load() {
+        this.initCache();
         if (this.handleImport()) {
             Log.d("nf_subtitles_imv2", "Sucesfully imported cached data!");
             return;
         }
         Log.d("nf_subtitles_imv2", "Unable to import from cached data, go and start downloading itrk!");
         this.handleDownloadMasterIndexContainer();
+    }
+    
+    protected boolean parseMasterIndexContainer(final byte[] p0) {
+        // 
+        // This method could not be decompiled.
+        // 
+        // Original Bytecode:
+        // 
+        //     0: ldc             "nf_subtitles_imv2"
+        //     2: ldc_w           "Master index received, parse it..."
+        //     5: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //     8: pop            
+        //     9: new             Ljava/io/ByteArrayInputStream;
+        //    12: dup            
+        //    13: aload_1        
+        //    14: invokespecial   java/io/ByteArrayInputStream.<init>:([B)V
+        //    17: astore          4
+        //    19: new             Ljava/io/DataInputStream;
+        //    22: dup            
+        //    23: aload           4
+        //    25: invokespecial   java/io/DataInputStream.<init>:(Ljava/io/InputStream;)V
+        //    28: astore          5
+        //    30: new             Lcom/netflix/mediaclient/service/player/subtitles/image/v2/BoxHeader;
+        //    33: dup            
+        //    34: aload           5
+        //    36: invokespecial   com/netflix/mediaclient/service/player/subtitles/image/v2/BoxHeader.<init>:(Ljava/io/DataInputStream;)V
+        //    39: astore          6
+        //    41: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //    44: ifeq            74
+        //    47: ldc             "nf_subtitles_imv2"
+        //    49: new             Ljava/lang/StringBuilder;
+        //    52: dup            
+        //    53: invokespecial   java/lang/StringBuilder.<init>:()V
+        //    56: ldc_w           "Header succeafully parsed "
+        //    59: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //    62: aload           6
+        //    64: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //    67: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //    70: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //    73: pop            
+        //    74: aload_0        
+        //    75: new             Lcom/netflix/mediaclient/service/player/subtitles/image/v2/ISCTrack;
+        //    78: dup            
+        //    79: aload           6
+        //    81: aload           5
+        //    83: invokespecial   com/netflix/mediaclient/service/player/subtitles/image/v2/ISCTrack.<init>:(Lcom/netflix/mediaclient/service/player/subtitles/image/v2/BoxHeader;Ljava/io/DataInputStream;)V
+        //    86: putfield        com/netflix/mediaclient/service/player/subtitles/ImageV2SubtitleParser.mMasterIndexContainer:Lcom/netflix/mediaclient/service/player/subtitles/image/v2/ISCTrack;
+        //    89: iconst_1       
+        //    90: istore_3       
+        //    91: iconst_1       
+        //    92: istore_2       
+        //    93: aload           5
+        //    95: invokevirtual   java/io/DataInputStream.close:()V
+        //    98: aload           4
+        //   100: invokevirtual   java/io/InputStream.close:()V
+        //   103: aload_0        
+        //   104: ldc_w           "master.idx"
+        //   107: aload_1        
+        //   108: invokevirtual   com/netflix/mediaclient/service/player/subtitles/ImageV2SubtitleParser.saveFileSafelyToCache:(Ljava/lang/String;[B)V
+        //   111: invokestatic    com/netflix/mediaclient/Log.isLoggable:()Z
+        //   114: ifeq            145
+        //   117: ldc             "nf_subtitles_imv2"
+        //   119: new             Ljava/lang/StringBuilder;
+        //   122: dup            
+        //   123: invokespecial   java/lang/StringBuilder.<init>:()V
+        //   126: ldc             ""
+        //   128: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;
+        //   131: aload_0        
+        //   132: getfield        com/netflix/mediaclient/service/player/subtitles/ImageV2SubtitleParser.mMasterIndexContainer:Lcom/netflix/mediaclient/service/player/subtitles/image/v2/ISCTrack;
+        //   135: invokevirtual   java/lang/StringBuilder.append:(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+        //   138: invokevirtual   java/lang/StringBuilder.toString:()Ljava/lang/String;
+        //   141: invokestatic    com/netflix/mediaclient/Log.d:(Ljava/lang/String;Ljava/lang/String;)I
+        //   144: pop            
+        //   145: iload_2        
+        //   146: ireturn        
+        //   147: astore_1       
+        //   148: iconst_0       
+        //   149: istore_2       
+        //   150: iload_2        
+        //   151: ifeq            167
+        //   154: ldc             "nf_subtitles_imv2"
+        //   156: ldc_w           "Failed to close master index input stream"
+        //   159: aload_1        
+        //   160: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   163: pop            
+        //   164: goto            111
+        //   167: ldc             "nf_subtitles_imv2"
+        //   169: ldc_w           "Failed to parse master index"
+        //   172: aload_1        
+        //   173: invokestatic    com/netflix/mediaclient/Log.e:(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+        //   176: pop            
+        //   177: goto            111
+        //   180: astore_1       
+        //   181: iload_3        
+        //   182: istore_2       
+        //   183: goto            150
+        //    Exceptions:
+        //  Try           Handler
+        //  Start  End    Start  End    Type                 
+        //  -----  -----  -----  -----  ---------------------
+        //  30     74     147    150    Ljava/lang/Throwable;
+        //  74     89     147    150    Ljava/lang/Throwable;
+        //  93     111    180    186    Ljava/lang/Throwable;
+        // 
+        // The error that occurred was:
+        // 
+        // java.lang.IllegalStateException: Expression is linked from several locations: Label_0111:
+        //     at com.strobel.decompiler.ast.Error.expressionLinkedFromMultipleLocations(Error.java:27)
+        //     at com.strobel.decompiler.ast.AstOptimizer.mergeDisparateObjectInitializations(AstOptimizer.java:2592)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:235)
+        //     at com.strobel.decompiler.ast.AstOptimizer.optimize(AstOptimizer.java:42)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:214)
+        //     at com.strobel.decompiler.languages.java.ast.AstMethodBodyBuilder.createMethodBody(AstMethodBodyBuilder.java:99)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethodBody(AstBuilder.java:757)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createMethod(AstBuilder.java:655)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addTypeMembers(AstBuilder.java:532)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeCore(AstBuilder.java:499)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createTypeNoCache(AstBuilder.java:141)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.createType(AstBuilder.java:130)
+        //     at com.strobel.decompiler.languages.java.ast.AstBuilder.addType(AstBuilder.java:105)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.buildAst(JavaLanguage.java:71)
+        //     at com.strobel.decompiler.languages.java.JavaLanguage.decompileType(JavaLanguage.java:59)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileType(DecompilerDriver.java:317)
+        //     at com.strobel.decompiler.DecompilerDriver.decompileJar(DecompilerDriver.java:238)
+        //     at com.strobel.decompiler.DecompilerDriver.main(DecompilerDriver.java:138)
+        // 
+        throw new IllegalStateException("An error occurred while decompiling this method.");
+    }
+    
+    protected void parseSegment(final byte[] array, final SegmentIndex segmentIndex, final String s, final String s2) {
+        if (array == null) {
+            Log.e("nf_subtitles_imv2", "Response data for segment is NULL");
+        }
+        else {
+            while (true) {
+                Log.d("nf_subtitles_imv2", "Segment received, parse it...");
+                while (true) {
+                    int n;
+                    try {
+                        final long segmentStartPosition = segmentIndex.getSegmentStartPosition();
+                        n = 0;
+                        if (n >= segmentIndex.getImages().length) {
+                            break;
+                        }
+                        final ImageDescriptor imageDescriptor = segmentIndex.getImages()[n];
+                        final int n2 = (int)(imageDescriptor.getImageStartPosition() - segmentStartPosition);
+                        final int n3 = imageDescriptor.getSize() + n2;
+                        if (Log.isLoggable()) {
+                            Log.d("nf_subtitles_imv2", "Extract image " + imageDescriptor.getName() + ", start byte " + n2 + ", size " + imageDescriptor.getSize() + ", end byte " + n3);
+                        }
+                        final byte[] decodeImageIfNeeded = this.decodeImageIfNeeded(Arrays.copyOfRange(array, n2, n3), segmentIndex.getContainer(), n, s2, imageDescriptor.getTotalIndex());
+                        if (decodeImageIfNeeded != null) {
+                            imageDescriptor.setLocalImagePath(this.mPlayer.getPlayerFileCache().saveFile(this.mKey, imageDescriptor.getName(), decodeImageIfNeeded));
+                            if (Log.isLoggable()) {
+                                Log.d("nf_subtitles_imv2", "" + imageDescriptor);
+                            }
+                        }
+                        else if (Log.isLoggable()) {
+                            Log.e("nf_subtitles_imv2", "No image for " + imageDescriptor);
+                        }
+                    }
+                    catch (Throwable t) {
+                        Log.e("nf_subtitles_imv2", "Failed to parse segment", t);
+                        this.onError(s, DnsManager.getInstance().getNameServers(), ISubtitleDef$SubtitleFailure.parsing, null);
+                        return;
+                    }
+                    ++n;
+                    continue;
+                }
+            }
+        }
+    }
+    
+    protected boolean parseSegmentIndexes(byte[] t, int index) {
+        boolean b = true;
+        if (t == null) {
+            Log.e("nf_subtitles_imv2", "Response data for segment indexes is NULL");
+            return false;
+        }
+        if (Log.isLoggable()) {
+            Log.d("nf_subtitles_imv2", "Downloaded " + t.length + " bytes of all segment indexes. Expecting " + index);
+        }
+        Label_0269: {
+            if (t.length == index) {
+                break Label_0269;
+            }
+            Log.e("nf_subtitles_imv2", "Size mismatch!");
+            if (t.length < index) {
+                Log.e("nf_subtitles_imv2", "Not enough data, abort parsing");
+                return false;
+            }
+            Log.w("nf_subtitles_imv2", "More data than expected, start parsing...");
+        Label_0149_Outer:
+            while (true) {
+                t = (Throwable)new ByteArrayInputStream((byte[])(Object)t);
+                final DataInputStream dataInputStream = new DataInputStream((InputStream)t);
+                final int segmentCount = this.mMasterIndexContainer.getMasterIndex().getSegmentCount();
+                this.mSegmentIndexContainers = new ISCSegment[segmentCount];
+                index = 0;
+                int n = 0;
+                int n2 = 1;
+            Label_0293_Outer:
+                while (true) {
+                    Label_0281: {
+                        if (index >= segmentCount) {
+                            break Label_0281;
+                        }
+                        while (true) {
+                            try {
+                                final ISCSegment iscSegment = new ISCSegment(new BoxHeader(dataInputStream), n2, n, dataInputStream);
+                                this.mSegmentIndexContainers[index] = iscSegment;
+                                n2 += iscSegment.getSegmentIndex().getDuration();
+                                n += iscSegment.getSegmentIndex().getSampleCount();
+                                iscSegment.getSegmentIndex().setIndex(index);
+                                if (Log.isLoggable()) {
+                                    Log.d("nf_subtitles_imv2", "Segment index " + index + " " + iscSegment);
+                                }
+                                ++index;
+                                continue Label_0293_Outer;
+                                // iftrue(Label_0311:, !b)
+                                Log.e("nf_subtitles_imv2", "Failed to close segment indexes input stream", t);
+                                return b;
+                                try {
+                                    dataInputStream.close();
+                                    ((InputStream)t).close();
+                                    return true;
+                                }
+                                catch (Throwable t2) {}
+                                continue;
+                                Label_0311: {
+                                    Log.e("nf_subtitles_imv2", "Failed to parse segment index", t);
+                                }
+                                return b;
+                                Log.d("nf_subtitles_imv2", "Expected data, start parsing...");
+                                continue Label_0149_Outer;
+                            }
+                            catch (Throwable t) {
+                                b = false;
+                                continue;
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+                break;
+            }
+        }
     }
     
     @Override

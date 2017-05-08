@@ -11,7 +11,7 @@ class CursorAdapter$ChangeObserver extends ContentObserver
 {
     final /* synthetic */ CursorAdapter this$0;
     
-    public CursorAdapter$ChangeObserver(final CursorAdapter this$0) {
+    CursorAdapter$ChangeObserver(final CursorAdapter this$0) {
         this.this$0 = this$0;
         super(new Handler());
     }

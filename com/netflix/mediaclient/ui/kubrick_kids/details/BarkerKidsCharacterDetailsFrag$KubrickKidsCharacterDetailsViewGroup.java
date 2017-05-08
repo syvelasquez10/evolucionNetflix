@@ -72,22 +72,22 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
     private Drawable getBackgroundResource() {
         switch (this.this$0.kidsColorId) {
             default: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837578);
+                return this.this$0.getActivity().getResources().getDrawable(2130837599);
             }
-            case 2131624058: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837582);
+            case 2131624070: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837603);
             }
-            case 2131624051: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837578);
+            case 2131624062: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837599);
             }
-            case 2131624053: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837579);
+            case 2131624065: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837600);
             }
-            case 2131624055: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837581);
+            case 2131624067: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837602);
             }
-            case 2131624054: {
-                return this.this$0.getActivity().getResources().getDrawable(2130837580);
+            case 2131624066: {
+                return this.this$0.getActivity().getResources().getDrawable(2130837601);
             }
         }
     }
@@ -99,27 +99,27 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
         int imageResource = 0;
         switch (this.this$0.kidsColorId) {
             default: {
-                imageResource = 2130837590;
+                imageResource = 2130837612;
                 break;
             }
-            case 2131624058: {
-                imageResource = 2130837594;
+            case 2131624070: {
+                imageResource = 2130837616;
                 break;
             }
-            case 2131624051: {
-                imageResource = 2130837589;
+            case 2131624062: {
+                imageResource = 2130837611;
                 break;
             }
-            case 2131624053: {
-                imageResource = 2130837591;
+            case 2131624065: {
+                imageResource = 2130837613;
                 break;
             }
-            case 2131624055: {
-                imageResource = 2130837593;
+            case 2131624067: {
+                imageResource = 2130837615;
                 break;
             }
-            case 2131624054: {
-                imageResource = 2130837592;
+            case 2131624066: {
+                imageResource = 2130837614;
                 break;
             }
         }
@@ -162,14 +162,14 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
     @Override
     protected void findViews() {
         super.findViews();
-        this.characterView = (AdvancedImageView)this.findViewById(2131689841);
-        this.playView = (ImageView)this.findViewById(2131689844);
-        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131689842);
+        this.characterView = (AdvancedImageView)this.findViewById(2131689868);
+        this.playView = (ImageView)this.findViewById(2131689871);
+        this.pressableCWImgGroup = (PressAnimationFrameLayout)this.findViewById(2131689869);
     }
     
     @Override
     protected int getlayoutId() {
-        return 2130903133;
+        return 2130903143;
     }
     
     @Override
@@ -181,7 +181,7 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
             return;
         }
         final String storyUrl = kidsCharacterDetails.getStoryUrl();
-        NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.horzDispImg, storyUrl, IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131230893), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
+        NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.horzDispImg, storyUrl, IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131230897), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
         this.horzDispImg.setTag((Object)storyUrl);
     }
     
@@ -193,7 +193,7 @@ class BarkerKidsCharacterDetailsFrag$KubrickKidsCharacterDetailsViewGroup extend
     
     protected void updateCharacterImage() {
         if (this.characterView != null) {
-            NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.characterView, this.this$0.kidsCharacterDetails.getCharacterImageUrl(), IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131230893), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
+            NetflixActivity.getImageLoader((Context)this.this$0.getActivity()).showImg(this.characterView, this.this$0.kidsCharacterDetails.getCharacterImageUrl(), IClientLogging$AssetType.boxArt, String.format(this.getResources().getString(2131230897), this.this$0.kidsCharacterDetails.getTitle()), BrowseExperience.getImageLoaderConfig(), true);
         }
     }
     

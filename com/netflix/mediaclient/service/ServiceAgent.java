@@ -5,9 +5,15 @@
 package com.netflix.mediaclient.service;
 
 import com.netflix.mediaclient.android.app.BackgroundTask;
+import com.netflix.mediaclient.service.logging.error.ErrorLoggingManager;
 import com.netflix.mediaclient.util.ThreadUtils;
 import com.netflix.mediaclient.service.logging.perf.AgentPerfHelper;
 import com.netflix.mediaclient.service.resfetcher.ResourceFetcher;
+import com.netflix.mediaclient.service.pdslogging.PdsPlayInterface;
+import com.netflix.mediaclient.service.pdslogging.PdsDownloadInterface;
+import com.netflix.mediaclient.service.offline.agent.OfflineAgentInterface;
+import com.netflix.mediaclient.servicemgr.IMSLClient;
+import com.netflix.mediaclient.servicemgr.IClientLogging;
 import com.netflix.mediaclient.servicemgr.IErrorHandler;
 import android.content.Context;
 import com.netflix.mediaclient.NetflixApplication;
@@ -76,6 +82,22 @@ public abstract class ServiceAgent
         return null;
     }
     
+    public IClientLogging getLoggingAgent() {
+        final ServiceAgent$AgentContext agentContext = this.agentContext;
+        if (agentContext != null) {
+            return agentContext.getLoggingAgent();
+        }
+        return null;
+    }
+    
+    public IMSLClient getMSLClient() {
+        final ServiceAgent$AgentContext agentContext = this.agentContext;
+        if (agentContext != null) {
+            return agentContext.getMSLClient();
+        }
+        return null;
+    }
+    
     public Handler getMainHandler() {
         return this.mainHandler;
     }
@@ -84,6 +106,30 @@ public abstract class ServiceAgent
         final ServiceAgent$AgentContext agentContext = this.agentContext;
         if (agentContext != null) {
             return agentContext.getNrdController();
+        }
+        return null;
+    }
+    
+    public OfflineAgentInterface getOfflineAgent() {
+        final ServiceAgent$AgentContext agentContext = this.agentContext;
+        if (agentContext != null) {
+            return agentContext.getOfflineAgent();
+        }
+        return null;
+    }
+    
+    public PdsDownloadInterface getPdsAgentForDownload() {
+        final ServiceAgent$AgentContext agentContext = this.agentContext;
+        if (agentContext != null) {
+            return agentContext.getPdsAgentForDownload();
+        }
+        return null;
+    }
+    
+    public PdsPlayInterface getPdsAgentForPlay() {
+        final ServiceAgent$AgentContext agentContext = this.agentContext;
+        if (agentContext != null) {
+            return agentContext.getPdsAgentForPlay();
         }
         return null;
     }
@@ -121,25 +167,27 @@ public abstract class ServiceAgent
     }
     
     public final void init(final ServiceAgent$AgentContext serviceAgent$AgentContext, final ServiceAgent$InitCallback initCallback) {
-        synchronized (this) {
-            AgentPerfHelper.startSession(this);
-            ThreadUtils.assertOnMain();
-            Log.d("nf_service_ServiceAgent", "Request to init " + this.getClass().getSimpleName());
-            if (this.initCalled) {
-                throw new IllegalStateException("ServiceAgent init already called");
+        while (true) {
+            synchronized (this) {
+                AgentPerfHelper.startSession(this);
+                ThreadUtils.assertOnMain();
+                Log.d("nf_service_ServiceAgent", "Request to init %s", this.getClass().getSimpleName());
+                if (this.initCalled) {
+                    ErrorLoggingManager.logHandledException(new IllegalStateException(this.getClass().getSimpleName() + " init already called!"));
+                    return;
+                }
+                if (serviceAgent$AgentContext == null) {
+                    throw new NullPointerException("AgentContext can not be null");
+                }
             }
+            final ServiceAgent$AgentContext agentContext;
+            this.agentContext = agentContext;
+            this.initCalled = true;
+            this.initCallback = initCallback;
+            this.mainHandler = new Handler();
+            new BackgroundTask().execute(new ServiceAgent$1(this));
         }
-        final ServiceAgent$AgentContext agentContext;
-        if (agentContext == null) {
-            throw new NullPointerException("AgentContext can not be null");
-        }
-        this.agentContext = agentContext;
-        this.initCalled = true;
-        this.initCallback = initCallback;
-        this.mainHandler = new Handler();
-        new BackgroundTask().execute(new ServiceAgent$1(this));
     }
-    // monitorexit(this)
     
     protected final void initCompleted(final Status initErrorResult) {
         synchronized (this) {
@@ -162,5 +210,15 @@ public abstract class ServiceAgent
         synchronized (this) {
             return this.initErrorResult.isSucces();
         }
+    }
+    
+    public void onTrimMemory(final int n) {
+        if (Log.isLoggable()) {
+            Log.d("nf_service_ServiceAgent", "onTrimMemory " + this.getClass().getSimpleName());
+        }
+    }
+    
+    public void reportHandledException(final Exception ex) {
+        this.getService().getClientLogging().getErrorLogging().logHandledException(ex);
     }
 }
