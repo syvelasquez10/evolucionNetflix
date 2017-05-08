@@ -5,6 +5,7 @@
 package com.netflix.mediaclient.util;
 
 import android.media.MediaCodecInfo$CodecCapabilities;
+import com.netflix.mediaclient.Log;
 import java.util.Arrays;
 import org.json.JSONArray;
 import android.media.MediaCodecInfo$CodecProfileLevel;
@@ -70,55 +71,75 @@ public final class MediaUtils
     }
     
     private static JSONArray getQualifiedDecoders(final String s) {
-        final JSONArray jsonArray = new JSONArray();
-        MediaCodecInfo[] array;
-        if (AndroidUtils.getAndroidVersion() >= 21) {
-            array = getDecoders();
-        }
-        else {
-            array = getDecodersForK();
-        }
-        final int length = array.length;
-        int i = 0;
-        MediaCodecInfo mediaCodecInfo = null;
         while (true) {
-            while (i < length) {
-                final MediaCodecInfo mediaCodecInfo2 = array[i];
-                MediaCodecInfo mediaCodecInfo3 = mediaCodecInfo;
-                if (mediaCodecInfo2 != null) {
-                    if (mediaCodecInfo2.isEncoder()) {
-                        mediaCodecInfo3 = mediaCodecInfo;
-                    }
-                    else {
-                        mediaCodecInfo3 = mediaCodecInfo;
-                        if (Arrays.asList(mediaCodecInfo2.getSupportedTypes()).indexOf(s) >= 0) {
-                            final MediaCodecInfo$CodecCapabilities capabilitiesForType = mediaCodecInfo2.getCapabilitiesForType(s);
-                            mediaCodecInfo3 = mediaCodecInfo;
-                            if (capabilitiesForType != null) {
+            final JSONArray jsonArray = new JSONArray();
+            while (true) {
+                int n = 0;
+                MediaCodecInfo mediaCodecInfo3 = null;
+                Label_0210: {
+                    while (true) {
+                        MediaCodecInfo mediaCodecInfo;
+                        try {
+                            MediaCodecInfo[] array;
+                            if (AndroidUtils.getAndroidVersion() >= 21) {
+                                array = getDecoders();
+                            }
+                            else {
+                                array = getDecodersForK();
+                            }
+                            final int length = array.length;
+                            n = 0;
+                            mediaCodecInfo = null;
+                            if (n < length) {
+                                final MediaCodecInfo mediaCodecInfo2 = array[n];
                                 mediaCodecInfo3 = mediaCodecInfo;
-                                if (capabilitiesForType.isFeatureSupported("adaptive-playback")) {
-                                    if (capabilitiesForType.isFeatureSupported("secure-playback")) {
-                                        if (mediaCodecInfo2 != null) {
-                                            final JSONObject logDecoder = logDecoder(mediaCodecInfo2, s);
-                                            if (logDecoder != null) {
-                                                jsonArray.put((Object)logDecoder);
-                                            }
-                                        }
-                                        return jsonArray;
-                                    }
-                                    if ((mediaCodecInfo3 = mediaCodecInfo) == null) {
-                                        mediaCodecInfo3 = mediaCodecInfo2;
-                                    }
+                                if (mediaCodecInfo2 == null) {
+                                    break Label_0210;
                                 }
+                                if (mediaCodecInfo2.isEncoder()) {
+                                    mediaCodecInfo3 = mediaCodecInfo;
+                                    break Label_0210;
+                                }
+                                mediaCodecInfo3 = mediaCodecInfo;
+                                if (Arrays.asList(mediaCodecInfo2.getSupportedTypes()).indexOf(s) < 0) {
+                                    break Label_0210;
+                                }
+                                final MediaCodecInfo$CodecCapabilities capabilitiesForType = mediaCodecInfo2.getCapabilitiesForType(s);
+                                mediaCodecInfo3 = mediaCodecInfo;
+                                if (capabilitiesForType == null) {
+                                    break Label_0210;
+                                }
+                                mediaCodecInfo3 = mediaCodecInfo;
+                                if (!capabilitiesForType.isFeatureSupported("adaptive-playback")) {
+                                    break Label_0210;
+                                }
+                                if (capabilitiesForType.isFeatureSupported("secure-playback")) {
+                                    if (mediaCodecInfo2 != null) {
+                                        final JSONObject logDecoder = logDecoder(mediaCodecInfo2, s);
+                                        if (logDecoder != null) {
+                                            jsonArray.put((Object)logDecoder);
+                                        }
+                                    }
+                                    return jsonArray;
+                                }
+                                if ((mediaCodecInfo3 = mediaCodecInfo) == null) {
+                                    mediaCodecInfo3 = mediaCodecInfo2;
+                                }
+                                break Label_0210;
                             }
                         }
+                        catch (Throwable t) {
+                            Log.w("MediaUtils", "getQualifiedDecoders for " + s + " failed");
+                            return jsonArray;
+                        }
+                        final MediaCodecInfo mediaCodecInfo2 = mediaCodecInfo;
+                        continue;
                     }
                 }
-                ++i;
-                mediaCodecInfo = mediaCodecInfo3;
+                ++n;
+                MediaCodecInfo mediaCodecInfo = mediaCodecInfo3;
+                continue;
             }
-            final MediaCodecInfo mediaCodecInfo2 = mediaCodecInfo;
-            continue;
         }
     }
     

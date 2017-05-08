@@ -260,6 +260,7 @@ public abstract class ConsolidatedLoggingUtils
                         break Label_0241;
                         while (true) {
                             final JSONObject message = new JSONObject();
+                        Block_11_Outer:
                             while (true) {
                                 DeepErrorElement deepErrorElement = null;
                                 Label_0307: {
@@ -276,22 +277,24 @@ public abstract class ConsolidatedLoggingUtils
                                             return error;
                                         }
                                         break Label_0307;
-                                    Label_0275:
+                                        // iftrue(Label_0109:, !volleyError instanceof NetworkError)
                                         while (true) {
-                                            Block_12: {
-                                                break Block_12;
-                                                error.setRootCause(RootCause.serverFailure);
+                                            while (true) {
+                                                error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
                                                 break;
                                                 error.setRootCause(RootCause.tcpConnectionTimeout);
                                                 break;
+                                                Label_0275: {
+                                                    continue Block_11_Outer;
+                                                }
                                             }
-                                            error.setRootCause(getRootCauseFromVolleyNetworkError(volleyError));
+                                            error.setRootCause(RootCause.serverFailure);
                                             break;
-                                            Label_0258:
-                                            continue;
+                                            Label_0258: {
+                                                continue;
+                                            }
                                         }
                                     }
-                                    // iftrue(Label_0109:, !volleyError instanceof NetworkError)
                                     // iftrue(Label_0258:, !volleyError instanceof ServerError)
                                     // iftrue(Label_0275:, !volleyError instanceof TimeoutError)
                                     catch (Throwable t) {
