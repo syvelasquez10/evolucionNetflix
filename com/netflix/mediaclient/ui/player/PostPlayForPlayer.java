@@ -208,7 +208,7 @@ public final class PostPlayForPlayer extends PostPlay
                     text = this.mPostPlayExperience.getExperienceTitle().get(0).getDisplayText();
                 }
                 else if ("recommendations".equals(this.mPostPlayExperience.getType())) {
-                    text = this.mNetflixActivity.getResources().getString(2131231152);
+                    text = this.mNetflixActivity.getResources().getString(2131231153);
                 }
                 else {
                     text = "";

@@ -235,11 +235,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         final SubtitleConfiguration loadQaLocalOverride = SubtitleConfiguration.loadQaLocalOverride((Context)this.activity);
         final ArrayList<CharSequence> list = new ArrayList<CharSequence>();
         final ArrayList<String> list2 = new ArrayList<String>();
-        list.add(this.getText(2131231368));
+        list.add(this.getText(2131231365));
         list2.add("DEFAULT");
-        list.add(this.getText(2131231369));
+        list.add(this.getText(2131231366));
         list2.add("ENHANCED_XML");
-        list.add(this.getText(2131231371));
+        list.add(this.getText(2131231368));
         list2.add("SIMPLE_XML");
         listPreference.setDefaultValue((Object)"DEFAULT");
         if (loadQaLocalOverride == SubtitleConfiguration.SIMPLE_XML) {

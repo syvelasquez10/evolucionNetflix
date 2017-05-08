@@ -94,7 +94,7 @@ public final class PersistentConfig
     }
     
     public static boolean isOnRampTest(final Context context) {
-        return PersistentConfig.mConfigs.get(Memento.class).getCell(context).ordinal() == ABTestConfig$Cell.CELL_ONE.ordinal();
+        return PersistentConfig.mConfigs.get(OnRamp.class).getCell(context).ordinal() == ABTestConfig$Cell.CELL_ONE.ordinal();
     }
     
     public static void refresh() {

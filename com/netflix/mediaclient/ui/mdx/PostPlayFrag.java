@@ -136,7 +136,7 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
             if (serviceManager != null && ServiceManagerUtils.isMdxAgentAvailable(serviceManager)) {
                 final String currentDeviceFriendlyName = ServiceManagerUtils.getCurrentDeviceFriendlyName(serviceManager);
                 if (!TextUtils.isEmpty((CharSequence)currentDeviceFriendlyName)) {
-                    this.targetName.setText((CharSequence)Html.fromHtml(this.getString(2131231363, new Object[] { String.valueOf(currentDeviceFriendlyName) })));
+                    this.targetName.setText((CharSequence)Html.fromHtml(this.getString(2131231148, new Object[] { String.valueOf(currentDeviceFriendlyName) })));
                 }
             }
         }
@@ -246,7 +246,7 @@ public class PostPlayFrag extends NetflixFrag implements NetflixRatingBar$Rating
             final int time = this.countdownTimer.getTime();
             int n;
             if (this.countdownTimer.getTime() > 1) {
-                n = 2131231364;
+                n = 2131231150;
             }
             else {
                 n = 2131231149;
